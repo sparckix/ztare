@@ -5,7 +5,7 @@ description: "Evidence matrix for ZTARE agentic engineering patterns, anti-patte
 
 > **Up:** [Evidence Atlas](README.md)
 
-Three things are easy to conflate, and this matrix separates them:
+Three things are easy to conflate, and the matrix keeps them apart:
 
 - a construct being named in a catalog
 - a construct being implemented or wired into the workbench

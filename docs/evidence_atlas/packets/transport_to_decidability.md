@@ -32,7 +32,7 @@ kernel-checked witness, every negative result must be a concrete counterexample
 or explicit `OUT_OF_FRAGMENT`, and transport attempts that launder an analogy
 are rejected by the audit gate.
 
-The table below links each claim to its receipt and reproducible anchor.
+Each claim links to its receipt and reproducible anchor.
 
 | Claim | Result | Receipt | Re-run (committable) |
 |---|---|---|---|

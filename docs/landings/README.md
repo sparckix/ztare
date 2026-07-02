@@ -13,7 +13,7 @@ HTML demo.
 
 | File | What it shows |
 |---|---|
-| [`forensic_workbench_prototype.html`](forensic_workbench_prototype.html) | Static D4 Project Workbench fallback for inspecting a local project diagnosis, source/evidence state, preflight status, review receipts, and report support. |
+| [`forensic_workbench_prototype.html`](forensic_workbench_prototype.html) | Static Project Workbench fallback for inspecting a local project diagnosis, source/evidence state, readiness, saved history, and report readiness. |
 | [`org_runtime_landing.html`](org_runtime_landing.html) | One-page walkthrough of the org-runtime concept: persistent roles, mandates, transition logs, the cognitive-firm productization path. |
 
 <!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->

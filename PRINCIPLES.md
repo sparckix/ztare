@@ -69,6 +69,8 @@ rule looked attractive and then broke.
 the window it was fit in with fewer assumptions. Discovery is usually limited
 by the available vocabulary of structural forms, not by raw search effort. More
 compute over the wrong vocabulary produces more attempts, not more structure.
+A small declared primitive set can be stronger than a large loose language when
+the system can compose inside it and reject vocabulary escapes.
 
 **2. Invert before building.** Ask how the system would fail before asking how
 it would succeed. Most checks in this repository exist because a plausible

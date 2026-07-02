@@ -5,7 +5,7 @@ description: "Coverage map for ZTARE review packets: what exists, what is partia
 
 > **Up:** [Evidence Atlas](README.md)
 
-This page answers a narrower question than the claim cards: do the public
+A narrower question than the claim cards: do the public
 claims have enough packet structure for an outside reviewer to inspect them
 without reading the whole repo?
 

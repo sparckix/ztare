@@ -1,0 +1,46 @@
+{
+  "schema": "ztare-workbench-principle-rail-v1",
+  "purpose": "Sparse Workbench principle lines. Keep these short, sourced, and subordinate to the user's task.",
+  "principles": [
+    {
+      "id": "epistemic_modesty_derivation",
+      "surface": "general",
+      "text": "Epistemic modesty is a derivation, not a disclaimer.",
+      "attribution": "ZTARE insight ledger",
+      "source_path": "research_areas/insights_ledger.md",
+      "source_note": "INS-010 pull-quote candidate"
+    },
+    {
+      "id": "truth_evidence_ledge",
+      "surface": "general",
+      "text": "Truth begins at the evidence ledge.",
+      "attribution": "ZTARE insight ledger",
+      "source_path": "research_areas/insights_ledger.md",
+      "source_note": "INS-010 pull-quote candidate"
+    },
+    {
+      "id": "friendly_review_not_evidence",
+      "surface": "general",
+      "text": "A friendly model review is not evidence.",
+      "attribution": "Epistemic supervision principles",
+      "source_path": "docs/concepts/epistemic_principles.md",
+      "source_note": "P4 rule heading"
+    },
+    {
+      "id": "computed_check_floor",
+      "surface": "leanmill",
+      "text": "At least one important check must be computed.",
+      "attribution": "Epistemic supervision principles",
+      "source_path": "docs/concepts/epistemic_principles.md",
+      "source_note": "P5 rule heading"
+    },
+    {
+      "id": "critic_review_signal",
+      "surface": "leanmill",
+      "text": "A critic persona is only a review signal.",
+      "attribution": "Epistemic supervision principles",
+      "source_path": "docs/concepts/epistemic_principles.md",
+      "source_note": "P6 application"
+    }
+  ]
+}

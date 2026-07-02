@@ -4,8 +4,8 @@ description: "How reusable code capabilities enter the primitive catalog, semant
 
 ## Reusable capabilities and primitive surfacing
 
-This page answers one practical question: when the repo already has a useful
-capability, how does a cold Research Director find it and reuse it?
+When the repo already has a useful capability, how does a cold Research
+Director find it and reuse it?
 
 There are two parts. First, the capability should have one general engine with
 many consumers configuring it, so each subject stays a caller of that single

@@ -22,6 +22,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [Runtime Smoke Test](runtime_smoke_test.md) - Sub-five-second runtime sanity check that spends no API credits.
 - [ZTARE Workflow](workflow.md) - The day-to-day guide for running ZTARE on a real project.
 - [ZTARE Pilot Brief](ztare_pilot_executive_brief.md) - One-page pilot brief: using ZTARE to audit AI-assisted decision work.
+- [ZTARE use cases](ztare_use_cases.md) - Use cases for ZTARE across diligence, legal, scientific, policy, product, security, formal, and other source-backed reasoning work.
 
-<sub>0 sub-folder(s), 14 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 15 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

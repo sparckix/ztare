@@ -5,12 +5,12 @@ description: "How ZTARE positions itself among related AI research systems and h
 
 > Up: [Documentation map](../README.md)
 
-ZTARE is a local workbench for checking reasoning before it becomes a claim.
-It turns sources, code, proofs, data, model outputs, checks, failures,
-forecasts, reports, and review decisions into claim states a reviewer can
-inspect.
+ZTARE is a local reasoning system for turning important reasoning into durable,
+inspectable state. It turns sources, code, proofs, data, model outputs,
+checks, failures, forecasts, reports, and review decisions into project and
+claim states a reviewer can inspect.
 
-The technical machinery matters, but it is not the whole object. The workbench
+The technical machinery matters, but it is not the whole object. The system
 also includes a human reviewer, agentic workers, role offices, source
 boundaries, verification tools, governance gates, public/private boundaries,
 ledgers, and publication discipline.
@@ -24,14 +24,22 @@ artifacts are allowed to mean.
 The shortest accurate summary is:
 
 ```text
-ZTARE turns sources, artifacts, and agent work into claim states a reviewer can
-inspect.
+ZTARE turns messy reasoning work into durable state: what was being decided,
+what supported it, what failed, what changed, and what should be checked next.
 ```
+
+That is the product-level differentiator. Chat products produce fluent work.
+Coding agents change repositories. Observability systems trace applications.
+Proof tools check formal artifacts. ZTARE compiles reasoning work into a local
+record that can be audited, demoted, resumed, or handed to another person or
+agent.
 
 Term boundaries matter here:
 
-- Workbench is the user-facing product: repo, CLI, docs, review surfaces,
-  and D4.
+- ZTARE is the whole local reasoning system: repo, CLI, docs, engines, project
+  files, read models, and review surfaces.
+- Project Workbench is one interface over ZTARE project state. It
+  should not be treated as the whole system.
 - Kernel is the trusted boundary: checks, contracts, demotions, source
   readiness, and ledger/read-model rules.
 - Engine is runnable machinery: validation, proof search, evidence
@@ -42,10 +50,11 @@ Term boundaries matter here:
 The long-term idea is simple: code has compilers, and reasoning needs similar
 discipline. A code compiler does not make a program useful. It gives source
 code a form that other tools can parse, check, reject, and inspect. ZTARE
-borrows that shape for reasoning work: proposals become bounded claims,
-source/evidence objects, checks, receipts, demotions, reports, and next
-falsifiers. This is a design direction, not a claim that the current repo
-compiles all reasoning.
+borrows that shape for reasoning work: questions become project objects,
+proposals become bounded claims, sources become typed evidence state, runs
+become verdicts or holds, and reviews become saved records with a next check. This
+is a design direction, not a claim that the current repo compiles all
+reasoning.
 
 ## Product boundary
 
@@ -54,10 +63,10 @@ Codex, Claude Code, Kimi-style swarms, LangSmith, AI co-scientist systems, and
 formal proof tools all matter here. ZTARE should be compared against them at
 the right boundary.
 
-The boundary is the durable claim lifecycle. A chat or agent product can
-generate, edit, search, code, summarize, or run tools. An observability system
-can trace an application. A proof assistant can check a formal artifact. ZTARE
-owns the local state that decides what a claim is allowed to mean after those
+The boundary is durable reasoning state. A chat or agent product can generate,
+edit, search, code, summarize, or run tools. An observability system can trace
+an application. A proof assistant can check a formal artifact. ZTARE owns the
+local state that decides what a project or claim is allowed to mean after those
 systems have acted:
 
 ```text
@@ -67,9 +76,9 @@ bounded claim -> source intake -> attempt -> adversarial check
 ```
 
 This makes outside models and agent products workers, judges, or input
-channels inside the workbench. They are useful when they produce files,
+channels inside ZTARE. They are useful when they produce files,
 proposals, critiques, traces, forecasts, proof fragments, or source summaries
-that ZTARE can bind to a claim and inspect. They are insufficient when the
+that ZTARE can bind to a project and inspect. They are insufficient when the
 project needs a defensible record of what was checked, what failed, what was
 demoted, and what the next run is forbidden to forget.
 
@@ -80,9 +89,9 @@ The practical test for positioning is simple:
   agent.
 - If the user wants traces and evaluations for an LLM application, use an
   observability/eval platform.
-- If the user wants to stand behind a bounded claim using local sources,
-  explicit weakest links, replayable checks, demotions, and next falsifiers,
-  ZTARE is the workbench.
+- If the user wants a durable decision trail over local sources, explicit
+  weakest links, replayable checks, demotions, saved review records, and next
+  falsifiers, ZTARE is the system to use.
 
 That means the repo has several modules that look different on the surface but
 serve one architecture: make research moves explicit enough that another
@@ -97,7 +106,7 @@ ZTARE can be described as neuro-symbolic, but the useful split is operational:
   route work.
 - Symbolic and file-backed systems define the objects that survive a run:
   bounded claims, source references, intake files, evidence hashes, gates,
-  receipts, forecasts, ledgers, verdicts, demotions, and next falsifiers.
+  saved records, forecasts, ledgers, verdicts, demotions, and next falsifiers.
 - The human reviewer owns public accountability and strategic risk.
 
 No layer self-certifies. A model-produced sentence is not a claim until it is
@@ -153,8 +162,8 @@ demotion was produced.
 
 ## Related systems
 
-Related systems are mentioned as orientation. The point is to locate
-ZTARE in the system landscape. A current external benchmark would be needed before treating any as a target to beat.
+The systems below are orientation, locating ZTARE in the landscape. A
+current external benchmark would be needed before treating any as a target to beat.
 
 *AI Co-Mathematician.* Google DeepMind's
 [AI Co-Mathematician](https://arxiv.org/abs/2605.06651) is a math-focused
@@ -175,7 +184,7 @@ durable knowledge.
 *Formal proof factories.* ZTARE has a formal/proof subsystem inside the
 larger workbench. This map records the public interface only:
 source-qualified proof workflows, candidate proof rows, source-quality
-decisions, governed receipts, and benchmark artifacts. The detailed LeanMill
+decisions, governed records, and benchmark artifacts. The detailed LeanMill
 design lives in [leanmill_architecture.md](leanmill_architecture.md), which owns
 proof-search policy, queue topology, worker stations, move catalogs, benchmark
 contracts, and proof-credit mechanics. Public performance claims belong in
@@ -242,7 +251,7 @@ many projections, one filesystem-backed source of truth
 
 Orbit makes governance state legible. The supervisor routes bounded programs.
 The console session handles live ambiguity. The validator attacks a bounded
-claim. Each surface must point back to the files, commands, receipts, or ledgers
+claim. Each surface must point back to the files, commands, saved records, or ledgers
 that own the state it displays.
 
 This doc uses two research-actor classes:
@@ -308,7 +317,7 @@ Key surfaces:
 
 The cross-system contract is typed proof evidence: verified fragments, failed
 fragments, unresolved identifiers, missing primitives, closure-utility results,
-and proof-credit receipts. Queue design, worker specialization, move selection,
+and proof-credit records. Queue design, worker specialization, move selection,
 and benchmark policy remain in the LeanMill architecture document.
 
 ### 4. Graph, GNN, and novelty diagnostics
@@ -408,8 +417,8 @@ licensing a domain-level claim.
 Use this if someone asks what ZTARE is:
 
 ```text
-ZTARE is a local workbench for checking high-stakes reasoning before it becomes
-a claim.
+ZTARE is a local reasoning system for checking high-stakes reasoning before it
+becomes a claim.
 It binds sources, code, proofs, data, model outputs, agent work, checks,
 forecasts, reports, and review decisions into claim states a reviewer can
 inspect: promoted, demoted, blocked, deferred, or ready for the next falsifier.

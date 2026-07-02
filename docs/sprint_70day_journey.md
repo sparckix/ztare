@@ -329,14 +329,14 @@ empirical-law substrates. They were de-prioritized for theorem-formalization
 and open-math attempts where the bottleneck is parallel typed-companion
 decomposition, a different bottleneck from parametric search.
 
-## §5, Phase 5: ZTARE as a workbench of primitives the agents call
+## §5, Phase 5: ZTARE as a system of primitives the agents call
 
 The 2026-05-08 architectural change inverted the relationship between
 ZTARE and Claude Code agents.
 
 Through Phase 4 the implicit framing was "ZTARE iter loops or Claude Code
 agents, pick one for this task." That framing was wrong, and the corrected
-framing is: **ZTARE is the workbench, and the Claude Code agents call its primitives**.
+framing is: **ZTARE is the local reasoning system, and the Claude Code agents call its primitives**.
 The architecture-index meta-graph (RP-001, the first registered _reflexive
 primitive_) is the wire that connects them.
 

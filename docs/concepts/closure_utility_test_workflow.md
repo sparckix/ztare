@@ -20,7 +20,7 @@ description: "Codex-facing procedure for the apparatus closure-utility test."
 
 ## The two novelty tools: when to use each
 
-There are two "novelty" tools that produce different kinds of signal. They are NOT redundant. Use both.
+There are two "novelty" tools that produce different kinds of signal. Use both.
 
 ### Tool 1: LLM novelty (`scripts/public/analytics_shared/llm_novelty_nomination.py`)
 

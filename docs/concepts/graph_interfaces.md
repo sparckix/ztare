@@ -9,8 +9,8 @@ description: "Canonical registry and protocol for graph records and decision rec
 ZTARE already uses several graph-shaped records: probability DAGs in the
 in-loop validator, primitive-family edges in the capability surface, source to
 claim graphs in project intake, and the Navier-Stokes constraint-basin graph.
-This page defines the common interface for those records so graph work can be
-reused without turning every project into a special case.
+The common interface below covers those records so graph work can be reused
+without turning every project into a special case.
 
 Older code and a few schema names use `graph_carrier`. Treat that as the
 implementation name for a graph record plus a decision receipt. Public docs

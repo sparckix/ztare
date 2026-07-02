@@ -33,8 +33,7 @@ answer and makes the missing evidence visible.
 Suppose a model proposes a compact formula for a dataset and writes a polished
 explanation.
 
-A weak review asks whether the explanation sounds plausible. This stack asks
-different questions:
+A weak review asks whether the explanation sounds plausible. This stack asks:
 
 1. Did deterministic code fit the parameters, or did the model guess them?
 2. Did the form survive a held-out region, or only the visible window?

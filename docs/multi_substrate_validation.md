@@ -6,7 +6,7 @@ description: "Evidence inventory for what ZTARE's claim discipline has and has n
 Has ZTARE only worked on one research domain, or has its checking discipline
 started to travel?
 
-It has started to travel, but the current v0.4 workbench has not yet been
+It has started to travel, but the current v1 Project Workbench has not been
 validated as one repeatable product path across all domains.
 
 Several tempting claims were narrowed after checks forced the repo to name
@@ -15,7 +15,7 @@ No domain was solved.
 
 ## Bottom line
 
-This is an evidence memo. It records where the same discipline showed up in
+This memo records where the same discipline showed up in
 different domains, and where that discipline was not enough to support the
 larger claim someone might want to make.
 
@@ -30,8 +30,8 @@ One maintained repo used a consistent checking discipline across several
 unrelated campaigns and recorded where claims became smaller.
 
 Do not read this as: solved Millennium problems, consciousness solved, a new
-gravity law, a universal neural-scaling law, or proof that the current v0.4
-workbench has already generalized across all four domains.
+gravity law, a universal neural-scaling law, or proof that the current v1
+Project Workbench has already generalized across all four domains.
 
 The filename is retained for historical links. The reader-facing claim is
 "multi-domain evidence inventory," meaning an inventory, not completed
@@ -155,9 +155,9 @@ make the claim inspectable -> run a check that can fail
 -> narrow or block the claim -> record the next check
 ```
 
-That behavior has appeared in more than one domain. The current release still
-owes a fresh non-NS pass through the v0.4 workbench path before it can claim
-repeatable cross-domain product validation.
+That behavior has appeared in more than one domain. The current release now has
+one stronger non-NS workbench path and one historical recovery path, but that is
+still not repeatable cross-domain product validation.
 
 For the claim-by-claim version, read
 [the public claim register](public_claim_register.md). For the evidence-level

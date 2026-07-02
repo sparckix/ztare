@@ -7,7 +7,7 @@ This file is read by compatible agent runtimes on every repo entry. Token-effici
 2. **Read on demand:** §2-§7 (archival, audiences, modes, tactical primitives, hard rules).
 3. **After AGENTS.md:** follow `org/bootstrap_manifest.yaml` for role bootstrap.
 
-Note: We fucking hate words like "load bearing"; "its not X; its Y"; "real work"; "lands hard" and other such AI prose for neither internal discourse nor external communication. Avoid like the plague.
+Note: We really hate words like "load bearing"; "honest"; "its not X; its Y"; "real" (e.g., real work); "genuine"; "lands hard" and any variatin thereof as well as AI prose for either internal discourse or external communications. Avoid like the plague.
 
 ---
 

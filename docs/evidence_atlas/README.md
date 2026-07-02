@@ -7,7 +7,7 @@ description: "Reviewer-facing atlas that links public ZTARE claims, patterns, pr
 
 ## Purpose
 
-This atlas is the reviewer-facing layer over the existing evidence system. It
+The atlas is the reviewer-facing layer over the existing evidence system. It
 does not create new claims. It links the public claim register, project claim
 summaries, pattern catalogs, reflexive primitives, experiments, scripts, and
 known caveats into one traversable surface.
@@ -55,6 +55,14 @@ packets, and the claim register. General repo scale is not a substitute.
 
 - [Claim Cards](claim_cards.md): curated high-signal claims and where the
   evidence lives.
+- [Reasoning Compiler Capability Map](reasoning_compiler_capabilities.json):
+  machine-readable rows for each public-facing compiler capability: input
+  object, check or transform, output object, falsifier, evidence refs, and
+  runnable anchors.
+- [Research Anchors](research_anchors.json): external research lessons used to
+  ground those capability rows. This is a v1.1 design-anchor baseline, not a
+  claim that the repo has reproduced each paper's result or exhausted every
+  relevant field.
 - [Primitive Evidence Matrix](primitive_evidence_matrix.md): agentic patterns,
   anti-patterns, and reflexive primitives, with implementation and evidence
   status.
@@ -113,6 +121,9 @@ experiments.
 - [Executable review pack](executable_review_pack.md) - Small command set for reviewing ZTARE evidence without traversing the whole repository.
 - [Packet Coverage](packet_coverage.md) - Coverage map for ZTARE review packets: what exists, what is partial, and which experiment packets are still missing.
 - [Primitive evidence matrix](primitive_evidence_matrix.md) - Evidence matrix for ZTARE agentic engineering patterns, anti-patterns, and reflexive primitives.
+- [reasoning_compiler_capabilities.json](reasoning_compiler_capabilities.json)
+- [research_anchors.json](research_anchors.json)
+- [workbench_principles.json](workbench_principles.json)
 
-<sub>1 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>1 sub-folder(s), 7 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

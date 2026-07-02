@@ -31,6 +31,13 @@ history rows, it reports `latest_eval_not_in_eval_history` so the user does not
 mistake stale projection nodes for the current run state. The overlay is not a
 synthetic node and does not promote latest-eval state into history.
 
+The trace also exposes `recent_loop.compression_progress` when a project has
+BIC/MDL-style fit history or per-iteration compression telemetry. This is an
+advisory simpler-explanation signal: it says whether recent iterations made the
+project easier to defend, stayed flat, or should be narrowed before more spend.
+It does not replace source/evidence readiness, report support, or loop-control
+decisions.
+
 Loop writer behavior: the baseline evaluation is materialized into
 `workspace/eval_history.jsonl` before the iteration loop, and iteration rows use
 the same append helper. New rows carry artifact refs for latest-eval, graph,
@@ -77,7 +84,7 @@ ztare autoresearch trace --project "$PROJECT" --json
 ztare autoresearch trace --project demo_claims --rubric demo_claims --intake examples/project_packets/ready_demo_claims_intake.json --json
 ztare autoresearch projection --project "$PROJECT" --out ztare_projection_smoke.json
 ztare autoresearch carrier-replay --project "$PROJECT" --json
-make synth PROJECT="$PROJECT" MODEL=gemini RENDERER=research_note
+make synth PROJECT="$PROJECT" MODEL="$ZTARE_MODEL" RENDERER=research_note
 rg -n 'projection_kind|action_intelligence_link_count|action_intelligence_refs|worker_archetype|transport|status|artifact_refs|branch_cue|failure_signature' ztare_projection_smoke.json
 rg -n 'latest_eval_overlay|latest_eval_without_eval_history|latest_eval_not_in_eval_history' ztare_projection_smoke.json
 ```
@@ -112,6 +119,9 @@ The smoke trace should report:
   digest
 - `loop_admission`, a top-level summary of unique admitted receipts, reporting
   intake hash status separately from run-readiness hash status
+- `recent_loop.compression_progress` when compression evidence exists, including
+  `recommendation`, `stagnation_length`, source refs, and recent
+  `complexity_runtime_profile` points
 - `route_preview`, using the intake's exact `expected_command` when the intake
   validates and marking whether the route/run handoff can execute now
 - `plan_preview`, a deterministic read-before-run view of the dependency order,

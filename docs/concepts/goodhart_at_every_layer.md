@@ -6,7 +6,7 @@ description: "How optimization pressure corrupts measurement at each architectur
 
 > Up: [Documentation map](../README.md)
 
-> Role among the concept docs. This doc owns the *per-layer manifestation map*: where the same optimization-pressure gradient shows up at each level of a verification stack. Three concept docs cover non-overlapping facets of the failure axis. The canonical *structural law* explaining why the gradient exists lives in [epistemic_principles.md](epistemic_principles.md) Part I. The canonical *operational field guide* of catalogued instances lives in [anti_pattern_catalog.md](anti_pattern_catalog.md). This doc is the per-layer recurrence map and does not restate the law or the instance catalogue.
+> Role among the concept docs. This doc owns the *per-layer manifestation map*: where the same optimization-pressure gradient shows up at each level of a verification stack. Three concept docs cover non-overlapping facets of the failure axis. The *structural law* explaining why the gradient exists lives in [epistemic_principles.md](epistemic_principles.md) Part I. The *operational field guide* of catalogued instances lives in [anti_pattern_catalog.md](anti_pattern_catalog.md). The per-layer recurrence map here does not restate the law or the instance catalogue.
 
 A catalog of how optimization pressure corrupts measurement at each
 level of a verification stack, what ZTARE has caught, and what it

@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "purpose": "Research anchors used to ground the public reasoning-compiler capability map. These are design lessons, not claims that ZTARE has externally matched the papers' results.",
+  "coverage_status": "complete",
+  "coverage_note": "This registry covers the v1.1 reasoning-compiler capability map baseline. It is a design-anchor registry, not a complete bibliography for every field ZTARE touches.",
+  "known_missing_anchor_backlog": [],
+  "anchors": [
+    {
+      "id": "explicit_source_grounding",
+      "label": "Explicit source grounding",
+      "sources": [
+        {
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "year": 2020,
+          "url": "https://arxiv.org/abs/2005.11401"
+        },
+        {
+          "title": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2310.11511"
+        }
+      ],
+      "design_lesson": "Factual work should separate model output from retrieved or local source material, then inspect whether the source is relevant enough to support the answer.",
+      "ztare_implication": "Keep source files, evidence refs, compiled evidence, gap records, and report support separate and inspectable."
+    },
+    {
+      "id": "attribution_verifiability",
+      "label": "Attribution and verifiability",
+      "sources": [
+        {
+          "title": "Measuring Attribution in Natural Language Generation Models",
+          "year": 2021,
+          "url": "https://arxiv.org/abs/2112.12870"
+        },
+        {
+          "title": "Evaluating Verifiability in Generative Search Engines",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2304.09848"
+        },
+        {
+          "title": "Enabling Large Language Models to Generate Text with Citations",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2305.14627"
+        },
+        {
+          "title": "FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2305.14251"
+        }
+      ],
+      "design_lesson": "Trustworthy generated text needs sentence- or fact-level support checks; citations and source links are not enough unless the cited source actually supports the claim.",
+      "ztare_implication": "Report support, evidence summaries, and claim cards should separate generated wording from source-backed facts, unsupported facts, citation/support gaps, and the repair action that would make the claim admissible."
+    },
+    {
+      "id": "source_quality",
+      "label": "Source quality",
+      "sources": [
+        {
+          "title": "SourceBench: Can AI Answers Reference Quality Web Sources?",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2602.16942"
+        },
+        {
+          "title": "Retrieval-Augmented Generation with Estimation of Source Reliability",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2410.22954"
+        },
+        {
+          "title": "MSRS: Evaluating Multi-Source Retrieval-Augmented Generation",
+          "year": 2025,
+          "url": "https://arxiv.org/abs/2508.20867"
+        }
+      ],
+      "design_lesson": "Source support is not only about whether a source exists. Quality, reliability, freshness, authority, and multi-source synthesis can change whether a cited answer should be trusted.",
+      "ztare_implication": "Source readiness, evidence summaries, and report support should keep source type, freshness, authority/reliability hints, backing-file paths, unresolved source-quality gaps, and multi-source synthesis boundaries inspectable."
+    },
+    {
+      "id": "intermediate_verification",
+      "label": "Intermediate verification",
+      "sources": [
+        {
+          "title": "Let's Verify Step by Step",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2305.20050"
+        },
+        {
+          "title": "Chain-of-Verification Reduces Hallucination in Large Language Models",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2309.11495"
+        }
+      ],
+      "design_lesson": "Reasoning improves when intermediate steps are checked, not only the final answer.",
+      "ztare_implication": "Expose run readiness, preflight, support checks, reviews, and saved records as separate project states."
+    },
+    {
+      "id": "task_specific_interfaces",
+      "label": "Task-specific interfaces",
+      "sources": [
+        {
+          "title": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2405.15793"
+        }
+      ],
+      "design_lesson": "Agents and users perform better when the software interface is built around the task's actual actions, files, and feedback.",
+      "ztare_implication": "The Workbench should expose project actions, write boundaries, file viewers, and saved history instead of generic chat or generic dashboards."
+    },
+    {
+      "id": "durable_feedback_memory",
+      "label": "Durable feedback memory",
+      "sources": [
+        {
+          "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2303.11366"
+        }
+      ],
+      "design_lesson": "Feedback improves later attempts when it is preserved and reused across trials.",
+      "ztare_implication": "Reviews, next steps, source warnings, run history, action intelligence, and saved records should become durable project state."
+    },
+    {
+      "id": "appropriate_human_reliance",
+      "label": "Appropriate human reliance",
+      "sources": [
+        {
+          "title": "Towards Human-AI Deliberation: Design and Evaluation of LLM-Empowered Deliberative AI for AI-Assisted Decision-Making",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2403.16812"
+        },
+        {
+          "title": "From Trust to Appropriate Reliance: Measurement Constructs in Human-AI Decision-Making",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2604.23896"
+        }
+      ],
+      "design_lesson": "The goal of human-AI decision support is not more trust; it is calibrated reliance, explicit disagreement, and enough structure for the human to accept, defer, or reject advice for the right reason.",
+      "ztare_implication": "Workbench reviews, next steps, report-support decisions, and saved project files should expose the decision point, backing evidence, unresolved disagreement, and no-change boundary before the human records a decision."
+    },
+    {
+      "id": "evaluation_discipline",
+      "label": "Evaluation discipline",
+      "sources": [
+        {
+          "title": "AI Agents That Matter",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2407.01502"
+        }
+      ],
+      "design_lesson": "Accuracy alone is not enough; cost, reproducibility, holdouts, baselines, and overfitting matter.",
+      "ztare_implication": "Preserve no-spend checks, frozen evidence, non-claims, missing arms, benchmark artifacts, and public claim boundaries."
+    },
+    {
+      "id": "compression_progress",
+      "label": "Compression progress",
+      "sources": [
+        {
+          "title": "Interestingness as an Inductive Heuristic for Future Compression Progress",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2605.14831"
+        }
+      ],
+      "design_lesson": "Future discovery is more plausible after recent compression progress and less plausible after a long flat stretch; exact complexity profiles are only available in bounded formal settings.",
+      "ztare_implication": "Use BIC, MDL, proof length, artifact size, and effort as advisory compression proxies; replay them on historical runs before changing loop control."
+    },
+    {
+      "id": "model_selection_compression",
+      "label": "Model-selection compression",
+      "sources": [
+        {
+          "title": "Estimating the Dimension of a Model",
+          "year": 1978,
+          "url": "https://doi.org/10.1214/aos/1176344136"
+        },
+        {
+          "title": "Modeling by shortest data description",
+          "year": 1978,
+          "url": "https://doi.org/10.1016/0005-1098(78)90005-5"
+        }
+      ],
+      "design_lesson": "A better fit is not automatically a better explanation; model complexity and description length need their own pressure.",
+      "ztare_implication": "Treat BIC, MDL-style length, proof length, and script length as first-class signals next to raw score movement."
+    },
+    {
+      "id": "expression_grammar_compression",
+      "label": "Expression-grammar compression",
+      "sources": [
+        {
+          "title": "All elementary functions from a single binary operator",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2603.21852"
+        }
+      ],
+      "design_lesson": "A compact operator basis can express a broad elementary-function vocabulary, which makes grammar reachability a separate question from search quality.",
+      "ztare_implication": "Use restricted expression grammars such as `eml_only` as a concrete primitive-composition test: declare the allowed primitives, compose inside them, and reject vocabulary escapes before trusting a fit or score."
+    },
+    {
+      "id": "symbolic_equation_discovery",
+      "label": "Symbolic equation discovery",
+      "sources": [
+        {
+          "title": "Sparse Identification of Nonlinear Dynamics (SINDy)",
+          "year": 2016,
+          "url": "https://doi.org/10.1073/pnas.1517384113"
+        },
+        {
+          "title": "AI Feynman: A physics-inspired method for symbolic regression",
+          "year": 2019,
+          "url": "https://arxiv.org/abs/1905.11481"
+        },
+        {
+          "title": "PySR: High-Performance Symbolic Regression in Python and Julia",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2305.01582"
+        }
+      ],
+      "design_lesson": "Equation discovery works best when search is constrained by structure, simplicity, invariances, and a clear distinction between fit quality and expression complexity.",
+      "ztare_implication": "Autoresearch fit loops should show grammar limits, fitted expression, BIC/MDL-style complexity, residual diagnostics, out-of-sample support, and whether a candidate is a simpler explanation or only a better-looking fit."
+    },
+    {
+      "id": "forecast_calibration",
+      "label": "Forecast calibration",
+      "sources": [
+        {
+          "title": "ForecastBench: A Dynamic Benchmark of AI Forecasting Capabilities",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2409.19839"
+        },
+        {
+          "title": "Approaching Human-Level Forecasting with Language Models",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2402.18563"
+        },
+        {
+          "title": "Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2305.14975"
+        }
+      ],
+      "design_lesson": "Forecasting quality depends on dated questions, explicit probabilities, retrieval or aggregation, and later resolution against outcomes.",
+      "ztare_implication": "Keep forecast rows, decision-use evidence, resolution timing, calibration scores, and downstream action boundaries separate."
+    },
+    {
+      "id": "proxy_gaming_and_leakage",
+      "label": "Proxy gaming and leakage",
+      "sources": [
+        {
+          "title": "Scaling Laws for Reward Model Overoptimization",
+          "year": 2022,
+          "url": "https://arxiv.org/abs/2210.10760"
+        },
+        {
+          "title": "Leakage and the Reproducibility Crisis in ML-based Science",
+          "year": 2022,
+          "url": "https://arxiv.org/abs/2207.07048"
+        },
+        {
+          "title": "SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2605.21384"
+        }
+      ],
+      "design_lesson": "Optimizing an imperfect score, leaking target information, or passing visible tests can produce confident but unsupported results.",
+      "ztare_implication": "Keep frozen artifacts, hidden checks, ordinary-review gaps, non-claims, and evaluator-gaming catches visible."
+    },
+    {
+      "id": "rubric_and_judge_reliability",
+      "label": "Rubric and judge reliability",
+      "sources": [
+        {
+          "title": "G-Eval: NLG Evaluation using GPT-4 with Better Human Alignment",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2303.16634"
+        },
+        {
+          "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2306.05685"
+        },
+        {
+          "title": "TruthfulQA: Measuring How Models Mimic Human Falsehoods",
+          "year": 2021,
+          "url": "https://arxiv.org/abs/2109.07958"
+        },
+        {
+          "title": "LLMs are Narcissistic Evaluators",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2311.09766"
+        }
+      ],
+      "design_lesson": "Rubrics and model judges can be useful, but they carry bias, self-preference, calibration, truthfulness, and benchmark-design risks that must be measured rather than assumed away.",
+      "ztare_implication": "Scoring guides, adversarial reviews, evaluator-hardening artifacts, ordinary-review gaps, and non-claims should stay visible next to any score or judge verdict."
+    },
+    {
+      "id": "formal_proof_governance",
+      "label": "Formal proof governance",
+      "sources": [
+        {
+          "title": "Graph Sequence Learning for Premise Selection",
+          "year": 2023,
+          "url": "https://arxiv.org/abs/2303.15642"
+        },
+        {
+          "title": "Premise Selection for Theorem Proving by Deep Graph Embedding",
+          "year": 2017,
+          "url": "https://arxiv.org/abs/1709.09994"
+        },
+        {
+          "title": "DeepSeek-Prover-V2: Advancing Formal Mathematical Reasoning via Reinforcement Learning for Subgoal Decomposition",
+          "year": 2025,
+          "url": "https://arxiv.org/abs/2504.21801"
+        }
+      ],
+      "design_lesson": "Formal proof systems need premise selection, subgoal decomposition, kernel checking, and proof-state feedback rather than free-form proof text alone.",
+      "ztare_implication": "Treat LeanMill outputs as governed formal artifacts: parse the statement, compile through Lean, audit axioms, preserve proof attempts, and separate formalization failures from proof failures."
+    },
+    {
+      "id": "stateful_tool_use",
+      "label": "Stateful tool use",
+      "sources": [
+        {
+          "title": "tau-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2406.12045"
+        },
+        {
+          "title": "tau2-Bench: Evaluating Conversational Agents in a Dual-Control Environment",
+          "year": 2025,
+          "url": "https://arxiv.org/abs/2506.07982"
+        }
+      ],
+      "design_lesson": "Tool agents must follow domain rules, coordinate with user state, and leave verifiable state changes.",
+      "ztare_implication": "Workbench actions should show the rule, target files, confirmation boundary, saved-record path, and resulting project state."
+    },
+    {
+      "id": "computer_use_execution",
+      "label": "Computer-use execution",
+      "sources": [
+        {
+          "title": "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2404.07972"
+        },
+        {
+          "title": "WorkArena: How Capable Are Web Agents at Solving Common Knowledge Work Tasks?",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2403.07718"
+        },
+        {
+          "title": "CRAB: Cross-environment Agent Benchmark for Multimodal Language Model Agents",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2407.01511"
+        },
+        {
+          "title": "TheAgentCompany: Benchmarking LLM Agents on Consequential Real World Tasks",
+          "year": 2024,
+          "url": "https://arxiv.org/abs/2412.14161"
+        },
+        {
+          "title": "WebGym: Scaling Training Environments for Visual Web Agents with Realistic Tasks",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2601.02439"
+        },
+        {
+          "title": "WindowsWorld: A Process-Centric Benchmark of Autonomous GUI Agents in Professional Cross-Application Environments",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2604.27776"
+        }
+      ],
+      "design_lesson": "Real computer-use and web-agent work is brittle unless execution, subgoals, file or app state, and evaluation results are inspected.",
+      "ztare_implication": "Treat the Workbench UI as an execution surface over repo state; success requires changed files, checks, saved records, and refreshed read models."
+    },
+    {
+      "id": "structural_code_memory",
+      "label": "Structural code memory",
+      "sources": [
+        {
+          "title": "Codebase-Memory: Tree-Sitter-Based Knowledge Graphs for LLM Code Exploration via MCP",
+          "year": 2026,
+          "url": "https://arxiv.org/abs/2603.27277"
+        },
+        {
+          "title": "DeusData/codebase-memory-mcp",
+          "year": 2026,
+          "url": "https://github.com/DeusData/codebase-memory-mcp"
+        }
+      ],
+      "design_lesson": "Large codebases need persistent structural memory over symbols, call paths, architecture decisions, and change impact; repeated file-by-file exploration wastes context and misses dependencies.",
+      "ztare_implication": "Federate the existing architecture index, graph, primitive recall, route contracts, and map validators into repository-memory questions instead of adding another disconnected map."
+    }
+  ]
+}

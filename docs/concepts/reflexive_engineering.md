@@ -26,8 +26,8 @@ routing, memory, and attention allocation.
 ## The reader decision
 
 Use this page when you see the same failure twice and need to decide whether it
-deserves machinery. The deciding question is not whether the failure is
-interesting:
+deserves machinery. The deciding question is whether the failure earns its keep
+in a later run:
 
 ```text
 Will a future run behave differently because this failure was recorded?
@@ -50,8 +50,8 @@ that future launches read:
 4. a later audit can see whether the blocker was consumed.
 
 That is a reflexive primitive only if the blocker changes later behavior. The
-primitive is not the prose explanation. It is the consumed artifact plus the
-changed route.
+primitive lives in the consumed artifact plus the changed route, past the prose
+explanation.
 
 ## Evidence boundary
 
@@ -143,7 +143,7 @@ and the gap a maintainer should respect.
 
 ## Primitive audit matrix
 
-This table is the promotion surface for reflexive primitives. A row must identify the repeated failure,
+A primitive earns promotion through a row here. Each row must identify the repeated failure,
 the signal that selects it, the artifact a future run consumes, and the nearby
 false pattern it must not collapse into. Sounding useful is not enough.
 
@@ -189,8 +189,8 @@ dependency edges, invariant rows, and edit-intent lookups.
 constraints matter. The system can surface existing primitives for reuse before
 the agent rebuilds them from memory.
 
-*Boundary:* this is not a prose architecture overview. It must be structured
-enough for retrieval, validation, and drift checks.
+*Boundary:* the surface must be structured enough for retrieval, validation,
+and drift checks, past what a prose architecture overview offers.
 
 *Current owner and status:* Live, but shared with
 [Agentic Pattern 9](agentic_engineering_patterns.md#pattern-9-token-optimized-self-modeling).

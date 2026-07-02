@@ -2,10 +2,10 @@
 
 > **Up:** [Repository root](../README.md) · **Tooling:** [scripts/](../scripts/README.md) · [analytics/](../analytics/README.md)
 
-This is the canonical public map for the docs tree. The root `README.md` is
-the entry point. This file explains which layer each document belongs to and
+The canonical public map for the docs tree. The root `README.md` is
+the entry point. This map sorts each document into its layer and marks
 which documents are canonical versus supporting context. Every doc carries an
-`> **Up:**` breadcrumb back to this map, so the tree is walkable in both
+`> **Up:**` breadcrumb back here, so the tree is walkable in both
 directions and in an Obsidian vault as well as on GitHub.
 
 ## Layer map
@@ -17,6 +17,7 @@ directions and in an Obsidian vault as well as on GitHub.
 | ZTARE architecture | `docs/concepts/architecture.md`, `docs/concepts/leanmill_architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Current map of in-loop validation, out-of-loop research operations, LeanMill station workflow, reflexive intelligence, and the project workflow. |
 | Capabilities surface | `docs/concepts/capabilities.md` | canonical / public | Reviewer-oriented capability inventory: first-run commands, gaming-catalog audit, evaluator-hardening review artifacts, autoresearch routing, project intake, primitive health, LeanMill governance, and claim/evidence registers, each linked to implementation or evidence. |
 | System position and module map | `docs/concepts/system_position_and_module_map.md` | canonical / public | How ZTARE positions itself as a socio-technical research system, how related systems such as AI Co-Mathematician and LeanMill fit as orientation points, and how the validator, proof-search, GNN, forecast, workbench, org-runtime, and claim layers compose. |
+| ZTARE use cases | `docs/guides/ztare_use_cases.md` | public / practical | Profession-level use cases for ZTARE as a reasoning compiler: diligence, legal review, science, strategy, product, policy, security, investigations, and formal fragments. |
 | Proof/governance/residual loop | `docs/concepts/closure_claim_governance.md` | canonical / public | Human-facing map of Proof Execution, Governance Gate, and Residual Compiler, plus the closure-claim governance contract. |
 | Claim-review constraint stack / recursive primitives | `docs/concepts/cognitive_gym.md`, `docs/concepts/epistemic_principles.md`, `docs/concepts/reflexive_engineering.md` | conceptual / partially mechanized | The constraint stack and epistemic operations behind bounded validation, anti-laundering checks, and reusable research moves. |
 | Reflexive mining methodology | `docs/concepts/reflexive_mining_methodology.md` | authoritative / canonical | Weekly mining + taste-rating procedure, RCA from the 2026-05-16 procedure-inversion incident, gap register, and pre-cycle prevention checklist. Read before running `scripts/public/mining/run_reflexive_mine.py`. |
@@ -57,17 +58,18 @@ tenant notification provider as part of the generic kernel.
 
 1. `README.md`
 2. Run `make first-run` or read `docs/guides/first-30-minutes.md`
-3. `docs/concepts/capabilities.md` (current capability inventory)
-4. `docs/gaming_behavior_catalog.md` (the public catalog and catch patterns)
-5. `docs/evidence_atlas/README.md` (how to review claim evidence)
-6. `docs/public_claim_register.md`
-7. `docs/concepts/glossary.md`: evidence levels, historical seam ids
+3. `docs/guides/ztare_use_cases.md` (who uses it and for what)
+4. `docs/concepts/capabilities.md` (current capability inventory)
+5. `docs/gaming_behavior_catalog.md` (the public catalog and catch patterns)
+6. `docs/evidence_atlas/README.md` (how to review claim evidence)
+7. `docs/public_claim_register.md`
+8. `docs/concepts/glossary.md`: evidence levels, historical seam ids
    (for example LeanMill, forecast contracts, and action intelligence), and
    other recurring terms
-8. `docs/guides/quickstart.md`
-9. `docs/guides/workflow.md`
-10. `docs/concepts/architecture.md`
-11. `priority_roadmap.md` (what is next)
+9. `docs/guides/quickstart.md`
+10. `docs/guides/workflow.md`
+11. `docs/concepts/architecture.md`
+12. `priority_roadmap.md` (what is next)
 
 ### Researcher evaluating claims
 
@@ -135,8 +137,8 @@ tenant notification provider as part of the generic kernel.
 **Sub-folders**
 
 - [`concepts/`](concepts/) - 36 file(s)
-- [`evidence_atlas/`](evidence_atlas/) - 14 file(s)
-- [`guides/`](guides/) - 14 file(s)
+- [`evidence_atlas/`](evidence_atlas/) - 17 file(s)
+- [`guides/`](guides/) - 15 file(s)
 - [`landings/`](landings/) - 2 file(s)
 - [`reference/`](reference/) - 5 file(s)
 

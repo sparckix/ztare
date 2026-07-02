@@ -11,12 +11,12 @@ description: "Code primitives for separating agent roles, authority, and work ro
 *Philosophical parent:* Chandler (1962), Matzinger (2002), Margulis (1967), Kauffman (1993), Doerr (2018), Hölldobler & Wilson (1990)
 *Last revised:* 2026-05-20 (aligned ZTARE tenant overlay with the generic cognitive-firm kernel and added the action-intelligence boundary)
 
-> How this relates to the sibling org docs. This doc owns the code primitives
+> Place in the sibling org docs. This doc owns the code primitives
 > for role separation: signals, sessions, alignment audits, and routing. The
 > reference architecture for a persistent research org is
 > [ztare_research_company_architecture.md](ztare_research_company_architecture.md).
-> The runnable org tree is [org/README.md](../../org/README.md). This doc
-> explains the primitive layer those two build on.
+> The runnable org tree is [org/README.md](../../org/README.md). The primitive
+> layer here is what those two build on.
 
 ---
 
@@ -24,7 +24,7 @@ description: "Code primitives for separating agent roles, authority, and work ro
 
 *Cognitive Firm* argues that recursive AI systems require the same structural separation that Chandler documented in human firms: strategic oversight in a general office, operational execution in autonomous divisions, with a deterministic governance layer between them. When the division that generates output also evaluates it, you get specification gaming, metric inflation, and fabricated compliance, regardless of substrate.
 
-This document describes the code primitives that make that separation executable.
+The code primitives below make that separation executable.
 They are to *Cognitive Firm* what the
 [constrained validation loop](cognitive_gym.md) is to *Epistemic Verification*:
 the code-level instantiation of a theoretical claim.

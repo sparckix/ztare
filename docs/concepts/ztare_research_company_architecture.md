@@ -8,14 +8,14 @@ description: "How the ZTARE tenant instantiates cognitive-firm primitives."
 *Status:* ZTARE tenant reference architecture over the reusable cognitive-firm kernel.
 *Last revised:* 2026-05-20
 
-> How this relates to the sibling org docs. This doc owns the ZTARE-specific
+> Place in the sibling org docs. This doc owns the ZTARE-specific
 > tenant architecture: how the generic cognitive-firm primitives are
 > instantiated around scientific work, evidence, gates, forecasts, action
 > impact, and human-agent collaboration. The code primitives it uses are
 > summarized in [organizational_primitives.md](organizational_primitives.md).
 > The runnable org tree (roles, mandates, tasks, gates as files) is
-> [org/README.md](../../org/README.md). This doc covers the applied architecture,
-> not the generic kernel reference or the runtime layout.
+> [org/README.md](../../org/README.md). The scope here is the applied
+> architecture, above the generic kernel reference and the runtime layout.
 
 ---
 

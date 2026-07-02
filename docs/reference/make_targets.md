@@ -17,6 +17,7 @@ make first-run
 make hello
 make gaming-catalog-audit
 make benchmark-evidence
+make reasoning-compiler-capability-audit
 make evaluator-hardening-frozen-check
 make scope-boundary-audit
 make public-terminology-audit
@@ -31,6 +32,9 @@ make docs-check
   the live registry, promotion evidence, and hardening map.
 - `make benchmark-evidence` checks the model-free public benchmark evidence and
   review-artifact coverage.
+- `make reasoning-compiler-capability-audit` checks that public
+  reasoning-compiler capability rows carry research anchors, local evidence
+  refs, runnable anchors, and falsifiers.
 - `make evaluator-hardening-frozen-check` explicitly verifies the frozen
   evaluator-hardening proof point and keeps the ordinary-review arm blocked
   until real frozen outputs exist.
@@ -70,23 +74,23 @@ promoting a completed ordinary-review run into frozen-suite metadata.
 
 ## Full target list
 
-  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # standard pre-run: fetch→prepare→review→pause
+  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=<model>]   # standard pre-run: fetch→prepare→review→pause
   make honeypot-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=50]       # honeypot run: no pre-run, MODE=honeypot
   make source-check PROJECT=<project>                                    # offline raw/source typing preflight
-  make evidence-prepare PROJECT=<project> MODEL=gemini                    # source-check + workspace-update + evidence-compile
-  make evidence-prepare PROJECT=<project> MODEL=kimi EVIDENCE_LLM_TIMEOUT=120 EVIDENCE_LLM_RETRIES=1 EVIDENCE_DEBUG=1
-  make workspace-update PROJECT=<project> MODEL=gemini
-  make evidence-compile PROJECT=<project> MODEL=gemini
-  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=gemini] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [AUTO_COMPILE=0] [ALLOW_INFERRED_PUBLIC=1]
-  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]
-  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] [PREFLIGHT_ONLY=1] MUTATOR_MODEL=gemini JUDGE_MODEL=gemini
-  make experiment-loop PROJECT=<project> RUBRIC=<rubric> ITERS=3 MUTATOR_MODEL=kimi JUDGE_MODEL=gpt4.1 AUTORESEARCH_LLM_TIMEOUT=120 AUTORESEARCH_LLM_RETRIES=1
+  make evidence-prepare PROJECT=<project> MODEL=<model>                    # source-check + workspace-update + evidence-compile
+  make evidence-prepare PROJECT=<project> MODEL=<model> EVIDENCE_LLM_TIMEOUT=120 EVIDENCE_LLM_RETRIES=1 EVIDENCE_DEBUG=1
+  make workspace-update PROJECT=<project> MODEL=<model>
+  make evidence-compile PROJECT=<project> MODEL=<model>
+  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=<model>] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [AUTO_COMPILE=0] [ALLOW_INFERRED_PUBLIC=1]
+  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=<model>]
+  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] [PREFLIGHT_ONLY=1] MUTATOR_MODEL=<model> JUDGE_MODEL=<model>
+  make experiment-loop PROJECT=<project> RUBRIC=<rubric> ITERS=3 MUTATOR_MODEL=<model> JUDGE_MODEL=<model> AUTORESEARCH_LLM_TIMEOUT=120 AUTORESEARCH_LLM_RETRIES=1
   make experiment-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [PREFLIGHT_ONLY=1]  # auto-configures from rubric (holdout gate, underidentified_after)
   make experiment-loop PROJECT=<project> RUBRIC=<rubric> AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 [AGENT_RUNTIME=codex]
   make experiment-loop PROJECT=<project> RUBRIC=<rubric> MATCHED_RUN_ID=<id> MATCHED_RUN_ROLE=api|subscription
   make autoresearch-route TASK='<task>' PROJECT=<project> RUBRIC=<rubric> [BOUNDED=1 STABLE=1 RUBRIC_READY=1 ARTIFACT=1]
   make autoresearch-projection PROJECT=<project> [OUT=<path>]
-  make autoresearch-trace PROJECT=<project> [RUBRIC=<rubric>] [INTAKE=<project_intake.json>] [MODEL=gemini] [FULL_HEALTH=1] [BRIEF=1] [JSON=1]
+  make autoresearch-trace PROJECT=<project> [RUBRIC=<rubric>] [INTAKE=<project_intake.json>] [MODEL=<model>] [FULL_HEALTH=1] [BRIEF=1] [JSON=1]
   make autoresearch-dispatch-validate [JSON=1]
   make autoresearch-dispatch-canary [CONTRACT=text|mutator|judge|committee|inverter] [DISPATCH_CALL_SITE=mutator] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]
   make autoresearch-dispatch-parity [CONTRACTS=text,mutator,judge,committee,inverter] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]
@@ -99,6 +103,7 @@ promoting a completed ordinary-review run into frozen-suite metadata.
   make autoresearch-kernel-health [PROJECT=<project>] [RUBRIC=<path>] [INTAKE=<project_intake.json>] [WORKSPACE=<path>] [JSON=1] [STRICT=1] [STAGNATION_THRESHOLD=2]
   make forensic-workbench-snapshot [WORKBENCH_PROJECT=<project>] [WORKBENCH_OUT=<html>]
   make forensic-workbench-data [WORKBENCH_PROJECT=<project>]
+  make forensic-workbench-state [WORKBENCH_PROJECT=<project>]
   make forensic-workbench-build
   make forensic-workbench-api
   make forensic-workbench-dev
@@ -135,16 +140,16 @@ search. When the search backend and `MODEL=` differ, the fetch provenance record
 the requested model. `evidence-prepare`, `evidence-compile`, and
 `experiment-loop` use the general LLM runtime aliases from
 [model_aliases.md](model_aliases.md).
-  make primitive-catalog-build-atlas [EMBEDDER=gemini-code]
+  make primitive-catalog-build-atlas [EMBEDDER=<embedder>]
   make move-card-atlas-build
-  make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
+  make synth PROJECT=<project> MODEL=<model> QA_MODEL=<model> RENDERER=founder_memo
   make synth-contract PROJECT=<project> RENDERER=decision_brief
   make committee PROJECT=<project>
-  make benchmark BENCH_JUDGE=gemini BENCH_JOBS=3
-  make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
-  make benchmark-stage1-ood BENCH_JUDGE=gemini BENCH_JOBS=3
-  make benchmark-stage2 BENCH_JUDGE=gemini BENCH_JOBS=3
-  make benchmark-stage3 BENCH_JUDGE=gemini BENCH_JOBS=3
+  make benchmark BENCH_JUDGE=<model> BENCH_JOBS=3
+  make benchmark-stage1 BENCH_JUDGE=<model> BENCH_JOBS=3
+  make benchmark-stage1-ood BENCH_JUDGE=<model> BENCH_JOBS=3
+  make benchmark-stage2 BENCH_JUDGE=<model> BENCH_JOBS=3
+  make benchmark-stage3 BENCH_JUDGE=<model> BENCH_JOBS=3
   make benchmark-stage4
   make benchmark-stage5
   make benchmark-stage6
@@ -194,7 +199,7 @@ the requested model. `evidence-prepare`, `evidence-compile`, and
   make baseline
   make camouflage
   make primitives-extract
-  make primitives-draft MODEL=gemini
+  make primitives-draft MODEL=<model>
   make primitive-approve PRIMITIVE_KEY=cooked_books PRIMITIVE_DECISION=approved
   make paper1-legacy
   make paper1-tsmc-legacy
@@ -209,11 +214,12 @@ the requested model. `evidence-prepare`, `evidence-compile`, and
   make v4-debate-merge TASK_ID=<task_id>
   make hello                                # first-run offline demo: overclaim in, demotion + missing evidence out
   make benchmark-evidence                   # model-free public benchmark-evidence check
+  make reasoning-compiler-capability-audit  # reasoning-compiler capability map vs evidence refs
   make evaluator-hardening-frozen-check     # frozen evaluator-hardening proof-point check
   make scope-boundary-audit                 # public broad-claim boundary audit
   make public-terminology-audit             # front-door public terminology audit
   make first-run                            # aggregate offline public first-run path
-  make benchmark-ordinary-review BENCH_ORDINARY_MODEL=gemini [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_IMPORT=<rows.json>]
+  make benchmark-ordinary-review BENCH_ORDINARY_MODEL=<model> [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_IMPORT=<rows.json>]
   make benchmark-ordinary-review-prompts [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_EXPORT=<dir>]
   make benchmark-ordinary-review-validate-import BENCH_ORDINARY_IMPORT=<rows.json> [BENCH_SPECIMEN=<id>]
   make benchmark-ordinary-review-freeze-check BENCH_ORDINARY_RUN=<run_dir>

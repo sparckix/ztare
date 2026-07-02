@@ -10,12 +10,16 @@ A single command entry point for the zero-trust workbench's
 human-facing surface. Replaces `cd repo && python scripts/public/control/<name>.py …`
 with `ztare <subcommand> …`.
 
-The CLI is deliberately a thin wrapper. It dispatches to the existing
-control scripts and does not own business logic.
+The CLI is deliberately a thin user route. Reusable behavior lives under
+[`src/ztare`](../../src/ztare); files under
+[`scripts/public/control`](../../scripts/public/control) are public adapters for
+Make targets, local scripts, and compatibility entry points. A new command
+should put the product behavior in `src/ztare/...` first, then expose it through
+`ztare ...` and, when needed, a thin control script.
 
 ## Scope
 
-This CLI is the ZTARE workbench's human-facing surface only. The
+The CLI covers the ZTARE workbench's human-facing surface only. The
 governance / org side (roles, mandates, role daemons, closure
 daemons, OKR-tree polling) belongs to the sibling
 [`cognitive-firm`](https://github.com/sparckix/cognitive-firm) project
@@ -30,13 +34,16 @@ tenant overlay.
 |---|---|---|
 | `ztare forecast <verb> …` | Forecast-pool, calibration DB, and experiment execution operations | `scripts/public/control/forecast/` plus selected experiment runners |
 | `ztare leanmill <verb> …` | LeanMill governed proof search: station control, source review, proof audit, harness runs | `scripts/public/control/leanmill/` |
+| `ztare research <verb> …` | Advisory research scaffold: eigenquestion (the question that matters most), isomorphism (what is this like) | `src/ztare/research_director/` |
 | `ztare bundle <verb> …` | Sealed-bundle run / verify | `bundle_run.py`, `bundle_verify.py` |
 | `ztare charter …` | Project-charter commit | `charter_commit.py` |
 | `ztare routine-review …` | RD routine reviews | `rd_routine_review.py` |
 | `ztare action-intel …` | Action intelligence read surface: decisions, routes, and outcome impact | `action_intelligence.py` |
 | `ztare autoresearch …` | In-loop autoresearch run and read-only trace/projection/replay surfaces | `Makefile` targets plus report modules |
-| `ztare forensic-workbench …` | File-backed review receipts from the local Project Workbench | `forensic_workbench_review.py` |
-| `ztare project ...` | Public project userland before run readiness: walkthrough, source checks, evidence-output binding, create, prepare, seal, intake, optional prep ledger | `generate_substrate.py` + `Makefile` targets + `substrate_queue.py` |
+| `ztare forensic-workbench …` | Local Project Workbench state, review receipts, and saved next steps | `forensic_workbench_state.py`, `forensic_workbench_review.py`, `forensic_workbench_action.py` |
+| `ztare project ...` | Public project userland before run readiness: walkthrough, source files/checks, evidence-output binding, project-local checks, create, prepare, seal, intake, optional prep ledger | `generate_substrate.py` + `Makefile` targets + workspace modules + `substrate_queue.py` |
+| `ztare synth ...` | Build or refresh a project report support contract and synthesis outputs | `src/ztare/synthesis/synthesize.py` |
+| `ztare card build|verify|open ...` | Build or verify a portable project claim card from the synthesis contract | `src/ztare/workspace/claim_card.py`; optional wrapper `scripts/public/control/claim_card.py` |
 | `ztare substrate …` | Compatibility namespace for the same project/data surface commands | same implementation as `ztare project …` |
 | `ztare eigenquestion …` | Advisory eigenquestion proposal + explored-class evidence lint | `eigenquestion_generator.py` |
 | `ztare mine …` | Weekly reflexive-mining orchestrator | `reflexive_mining_weekly.py` |
@@ -50,8 +57,8 @@ tenant overlay.
 `ztare leanmill` verbs include station control (`schedule`, `run`,
 `andon`, `triage`, `backlog`), source review (`source-scout`,
 `source-search`, `source-review`, `source-bind`), proof work
-(`solver`, `slice-prep`, `proof-audit`, `external-proof-audit`), and
-read models (`ui-state`, `intel`, `credit`, `growth`, `convert`).
+(`target`, `autoformalize-notes`, `solver`, `slice-prep`, `proof-audit`, `external-proof-audit`),
+and read models (`ui-state`, `intel`, `credit`, `growth`, `convert`).
 Historical provenance: the older GNN lemma-relevance seam is
 [`GP-225`](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md);
 newer governed-DAG proof search is tracked separately in the LeanMill docs.
@@ -125,6 +132,11 @@ ztare forecast cutoff-panel-run --mode preview --max-calls 6
 ztare forecast nurture-score --pilot-id <pilot_id> --queue <dispatch_queue.jsonl>
 
 # LeanMill: one-shot station-scheduler plan, then start the 24/7 worker
+ztare leanmill target --title "Example target" --target "State the theorem or formalization target." --notes-file notes.md --json
+ztare leanmill target --title "Example target" --target "State the theorem or formalization target." --notes-file notes.md --save --yes --json
+ztare leanmill target --project my_project --title "Project target" --target "State the theorem or formalization target." --notes-file notes.md --save --yes --json
+ztare leanmill autoformalize-notes ztare_proofs/leanmill-formalizations/blueprints/example_target_blueprint.md
+# Project-local LeanMill layout: projects/<project>/leanmill/{targets,lean,notes,history}/
 ztare leanmill schedule --contract analytics/public/leanmill/_legacy_lemma_relevance/...
 ztare leanmill run --max-rows 100
 
@@ -145,12 +157,15 @@ ztare project walkthrough
 ztare project walkthrough --project demo_claims --rubric demo_claims --task "test bounded claim X" --bounded-claim "bounded claim X holds on fixture Y" --source-ref paper.md --evidence-ref projects/demo_claims/workspace/min_repro.json --non-claim "not a full replication" --next-falsifier "run the full setup from a clean checkout" --intake-out demo_claims_intake.json
 ztare project source-init --project demo_claims --rubric demo_claims
 ztare project source-check --project demo_claims --json
+ztare project source-file add --project demo_claims --filename notes.md --source-type source_evidence --kind project_note --body "Paste the source note here." --json
+ztare project source-file edit --project demo_claims --relative notes.md --source-type source_evidence --body "Updated source note." --json
 ztare project source-index --project demo_claims
 ztare project evidence-bind --project demo_claims --json
 ztare project evidence-replay --project demo_claims --json
 ztare project claim-support --project demo_claims --json
 ztare project evidence-gap list --project demo_claims --json
 ztare project evidence-gap justify --project demo_claims --gap-id gap1 --reason "Covered by the bounded non-claim; no extra public fetch is needed." --json
+ztare project check --project demo_claims --rubric demo_claims --json
 ztare project new --help
 ztare project prepare --project demo_claims --rubric demo_claims
 ztare project seal --project demo_claims --rubric demo_claims
@@ -160,6 +175,7 @@ ztare project intake create --path demo_claims_intake.json --project demo_claims
 ztare project intake draft-from-compiled --project demo_claims --path projects/demo_claims/demo_claims_intake.json
 ztare project intake draft-from-compiled --project demo_claims --path projects/demo_claims/demo_claims_intake.json --repair-moved-sources
 ztare project intake validate --path demo_claims_intake.json
+ztare project brief-edit --project demo_claims --intake projects/demo_claims/demo_claims_intake.json --field next_falsifier="Run the next source-backed check." --json
 ztare project intake falsify --path demo_claims_intake.json --remove-ref 'evidence_refs[1]'
 ztare project intake validate --path demo_claims_intake.json --source-preflight
 ztare project intake enqueue --path demo_claims_intake.json
@@ -175,7 +191,7 @@ ztare autoresearch route --task "test bounded claim X" --project demo_claims --r
 ztare autoresearch route --task "test bounded claim X" --project demo_claims --rubric demo_claims --record-decision-id decision_demo_claims_route --queue-missing-surface
 ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --preflight-only
 ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --iters 10
-ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --iters 10 --mutator kimi --judge grok --inverter claude
+ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --iters 10 --mutator <model> --judge <review_model> --inverter <inverter_model>
 ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --agent-mutator --agent-runtime codex
 ztare autoresearch run --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --agent-mutator --agent-judge --agent-committee --agent-inverter --agent-runtime codex
 ztare autoresearch workbench-recommend --prompt-only
@@ -183,7 +199,7 @@ ztare autoresearch workbench-recommend --agent-recommender --agent-runtime codex
 # Legacy spelling kept for older scripts:
 ztare autoresearch substrate-recommend --prompt-only
 ztare autoresearch projection --project demo_claims --out demo_claims_projection.json
-ztare autoresearch trace --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --model gemini --json
+ztare autoresearch trace --project demo_claims --rubric demo_claims --intake demo_claims_intake.json --model <model> --json
 ztare autoresearch carrier-replay --project demo_claims --json
 ztare autoresearch hillclimb-audit --project demo_claims
 ztare autoresearch hillclimb-audit --json --limit 20
@@ -210,9 +226,24 @@ ztare autoresearch subscription-outcomes --json
 ztare autoresearch dispatch-parity --json
 ztare autoresearch dispatch-parity --contracts text,mutator,judge,committee,inverter --runtime codex --live --json
 
+# Project Workbench: inspect the live project object used by the browser.
+ztare forensic-workbench project-state --project ops_root_cause_diagnosis_demo --json --strict
+ztare forensic-workbench settings get --json
+ztare forensic-workbench settings save --set ZTARE_WORKBENCH_MODEL=claude --set ZTARE_WORKBENCH_MODEL_FALLBACK=0 --json
+
 # Project Workbench: apply an inspectable review file copied from the workbench.
 # --project-check takes the project-check slug, then refreshes the project data.
+ztare forensic-workbench brief-edit --project ops_root_cause_diagnosis_demo --field next_falsifier="Check the causal direction against source timing." --json
+ztare forensic-workbench source-file add --project ops_root_cause_diagnosis_demo --filename timing_note.md --source-type source_evidence --kind project_note --body "Source timing note."
+ztare forensic-workbench source-action --project ops_root_cause_diagnosis_demo --action evidence_prepare --json
+ztare project evidence-fetch --project ops_root_cause_diagnosis_demo --severity degrading --max-fetches 1 --search-backend openai --no-auto-compile
+ztare forensic-workbench report-action --project ops_root_cause_diagnosis_demo --action check_readiness --json
+ztare forensic-workbench run-project-check --project ops_root_cause_diagnosis_demo --json
+ztare forensic-workbench save-charter --project ops_root_cause_diagnosis_demo --from project_charter.md --json
 ztare forensic-workbench apply-review --project ops_root_cause_diagnosis_demo --project-check report_support --from ops_root_cause_diagnosis_demo_report_support_review.json
+ztare forensic-workbench save-scoring-guide --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --from rubric.json --json
+ztare forensic-workbench save-project-file --project ops_root_cause_diagnosis_demo --from prepared_project_file.json --json
+ztare forensic-workbench save-research-map --project ops_root_cause_diagnosis_demo --from prepared_research_map.json --json
 make forensic-workbench-data WORKBENCH_PROJECT=ops_root_cause_diagnosis_demo
 
 # Advisory eigenquestion rotation
@@ -254,7 +285,8 @@ remains a compatibility alias.
 `projects/<slug>/raw/`, `projects/<slug>/workspace/`, and an empty
 `projects/<slug>/raw/source_type_map.json`. It does not create fake evidence,
 launch autoresearch, or enqueue out-of-loop work. Type raw documents with
-frontmatter or the source-type map before running `make evidence-prepare`.
+frontmatter or the source-type map before running
+`ztare forensic-workbench source-action --project <project> --action evidence_prepare`.
 `source_evidence` is the type allowed to support immutable facts and
 constraints. `project source-check` runs the same source-type preflight without
 calling a model or compiling evidence. The Make target runs that preflight
@@ -374,8 +406,8 @@ contract includes `synthesis_input_binding`, which blocks stale or unbound
 generated ledgers after artifact content changes, and
 `report_action_authority`, which separates actions that can be recommended now
 from conditional branches, deferred work, and forbidden claim upgrades. Use
-`make synth-contract PROJECT=<project> RENDERER=<renderer>` to refresh that
-deterministic contract without model calls.
+`ztare forensic-workbench report-action --project <project> --action check_readiness`
+to refresh that deterministic contract without model calls.
 After an in-loop iteration has rendered a mutator briefing, `carrier_chain`
 also includes `mutator_briefing`; that row reports the latest briefing record
 count and any graph-focus receipt that was actually surfaced to the candidate
@@ -417,9 +449,9 @@ empty and `history_missing` should name the absent run history. Other
 `partial_trace` reports named missing trace surfaces and recovery commands.
 `blocked_on_out_of_loop_prep` means a trace record, usually the source-claim
 graph, found prep debt that belongs outside the autoresearch loop. Public-source
-evidence gaps route to `make evidence-fetch ...` and keep
+evidence gaps route to `ztare project evidence-fetch ...` and keep
 `route_preview.can_run_now=false` until the debt is cleared or justified.
-`make evidence-fetch` now requires an explicit public recovery contract by
+`ztare project evidence-fetch` now requires an explicit public recovery contract by
 default (`recovery_kind=public_evidence`, or equivalent public-fetch booleans).
 Rows classified only by legacy prose inference are skipped until promoted. Use
 `ALLOW_INFERRED_PUBLIC=1` only when intentionally replaying old rows.
@@ -428,7 +460,7 @@ active gap and names whether it is public-source recovery or local verification.
 `workspace/evidence_gap_action.json` carries the same selected action for
 scripts or future UI surfaces.
 Use `--evidence-search-backend auto|openai|anthropic` when you want the
-suggested `make evidence-fetch` command to name a specific public-source search
+suggested evidence-fetch command to name a specific public-source search
 backend separately from the model label rendered with `--model`.
 
 `autoresearch carrier-replay` is the batch integrity check for projection
@@ -444,7 +476,8 @@ readiness by themselves.
 `project_charter.md`, `thesis.md`, or rubric launch rules are missing.
 `source_index_stale` or `evidence_compile_stale` means raw sources changed after
 the workspace source index or compiled evidence manifest was generated. Rerun
-`make evidence-prepare PROJECT=<project> MODEL=<model>` before routing.
+`ztare forensic-workbench source-action --project <project> --action evidence_prepare`
+before routing.
 When a project-intake file validates, `route_preview` uses its exact
 `expected_command`; placeholders appear only for legacy or missing-intake
 traces. It does not run out-of-loop agents, schedule iterations, or call a

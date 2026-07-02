@@ -261,7 +261,7 @@ The most common question for general-purpose users is "which step do I have to r
 
 | Trigger                                                         | Rerun starting at                                   | Why                                                                                                 |
 |-----------------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| You added or edited files under `projects/<project>/raw/`      | `ztare project source-check --project <project> --json`, then `make evidence-prepare PROJECT=<project> MODEL=gemini` | Source typing should fail before any model-backed workspace/evidence call. `evidence-prepare` repeats the preflight, updates workspace memory, and compiles evidence. |
+| You added or edited files under `projects/<project>/raw/`      | `ztare project source-check --project <project> --json`, then `make evidence-prepare PROJECT=<project> MODEL=<model>` | Source typing should fail before any model-backed workspace/evidence call. `evidence-prepare` repeats the preflight, updates workspace memory, and compiles evidence. |
 | `contradictions.md` / `facts.md` / `open_questions.md` changed from a workspace update | `evidence-compile`                          | Evidence snapshot is derived from workspace memory.                                                 |
 | `compiled_evidence.txt` changed (new bounded snapshot)          | promote to `evidence.txt`, then `loop`              | Promotion is a rebaseline event: score regime fingerprints the bytes of `evidence.txt`; prior champions become `regime_mismatch` by design. |
 | You changed the rubric, model pairing, or iteration budget      | `loop`                                              | Validator is stateless. No upstream rerun needed; workspace and evidence are independent of rubric. |
@@ -290,15 +290,15 @@ For common tasks, you can also use the repo `Makefile`:
 ```bash
 make help
 ztare project source-check --project <project> --json
-make evidence-prepare PROJECT=<project> MODEL=gemini
-make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=gemini JUDGE_MODEL=gemini
+make evidence-prepare PROJECT=<project> MODEL=<model>
+make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=<model> JUDGE_MODEL=<model>
 make autoresearch-projection PROJECT=<project> OUT=<project>_projection.json
 make autoresearch-kernel-health JSON=1
 make operations-intelligence OUT=ztare_intel.json MD_OUT=ztare_intel.md
 make blitz-survival-report PROJECT=<project> OUT=<project>_blitz_survival.json
 make action-intel-materialize-dry
-make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
-make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
+make synth PROJECT=<project> MODEL=<model> QA_MODEL=<review_model> RENDERER=founder_memo
+make benchmark-stage1 BENCH_JUDGE=<model> BENCH_JOBS=3
 ```
 
 ### When to use `make loop` vs `make experiment-loop`
@@ -529,8 +529,8 @@ It prints the API row, subscription row, and follow-up audit command. Add
 `MATCHED_RUN_ID` is omitted, the wrapper uses a UTC timestamp plus shell-PID id
 so repeated wrapper invocations do not collide. The equivalent CLI surface is
 `ztare autoresearch matched-transport-pair --project <project> --rubric
-<rubric> --intake <project_intake.json> --mutator kimi --judge grok --inverter
-deepseek --llm-timeout-seconds 240 --llm-retries 1 [--agent-timeout 240]
+<rubric> --intake <project_intake.json> --mutator <model> --judge <review_model> --inverter
+<inverter_model> --llm-timeout-seconds 240 --llm-retries 1 [--agent-timeout 240]
 [--run]`. Pass `--pair-id <id>` only when you deliberately want a specific id.
 Do not omit `--intake` for project-intake-backed runs. Otherwise the comparison
 will not exercise the same run-readiness surface as the normal loop command.
@@ -706,7 +706,7 @@ python -m ztare.validator.tests.champion_artifacts_fixture_regression
 ### Step 1: Update the workspace
 
 ```bash
-python -m ztare.workspace.update_workspace --project <project> --model gemini
+python -m ztare.workspace.update_workspace --project <project> --model <model>
 ```
 
 This reads `projects/<project>/raw/` and updates:
@@ -815,8 +815,8 @@ python -m ztare.validator.autoresearch_loop \
   --project <project> \
   --rubric <rubric> \
   --iters 10 \
-  --mutator_model gemini \
-  --judge_model gemini
+  --mutator_model <model> \
+  --judge_model <model>
 ```
 
 Legacy *Cognitive Camouflage* benchmark shortcuts:
@@ -923,8 +923,8 @@ python -m ztare.validator.autoresearch_loop \
   --project eu_union_stability \
   --rubric eu_union_integration \
   --iters 3 \
-  --mutator_model claude \
-  --judge_model claude \
+  --mutator_model <model> \
+  --judge_model <review_model> \
   --deterministic_score_gates
 ```
 
@@ -955,19 +955,19 @@ make v4-debate-merge TASK_ID=<task_id>
 Founder pack:
 
 ```bash
-python -m ztare.synthesis.synthesize --project <project> --model gemini --pack founder
+python -m ztare.synthesis.synthesize --project <project> --model <model> --pack founder
 ```
 
 Single artifact:
 
 ```bash
-python -m ztare.synthesis.synthesize --project <project> --model gemini --renderer-type founder_memo
+python -m ztare.synthesis.synthesize --project <project> --model <model> --renderer-type founder_memo
 ```
 
 Multi-project artifact:
 
 ```bash
-python -m ztare.synthesis.synthesize --projects p1,p2 --model gemini --renderer-type research_note
+python -m ztare.synthesis.synthesize --projects p1,p2 --model <model> --renderer-type research_note
 ```
 
 When a project has autoresearch run artifacts, synthesis also creates
@@ -1241,7 +1241,7 @@ python -m ztare.workspace.extract_incidents
 
 2. draft candidate primitives
 ```bash
-python -m ztare.primitives.draft_primitives --model gemini --skip-existing
+python -m ztare.primitives.draft_primitives --model <model> --skip-existing
 ```
 
 3. review and promote selectively
@@ -1451,8 +1451,8 @@ make experiment-loop \
     PROJECT=<slug> \
     RUBRIC=rubrics/<slug>.json \
     ITERS=10 \
-    MUTATOR_MODEL=gemini-pro \
-    JUDGE_MODEL=gpt4.1
+    MUTATOR_MODEL=<model> \
+    JUDGE_MODEL=<review_model>
 ```
 
 5. If you stop and restart
@@ -1464,7 +1464,7 @@ rm -f projects/<slug>/workspace/*.json projects/<slug>/workspace/*.jsonl project
 # Re-seal
 make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
 # Relaunch
-make experiment-loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1
+make experiment-loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 MUTATOR_MODEL=<model> JUDGE_MODEL=<review_model>
 ```
 
 ### RMSE gate calibration rule

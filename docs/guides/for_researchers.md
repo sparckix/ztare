@@ -183,8 +183,9 @@ recovery commands. The trace command does not call a model. Default trace health
 is local and bounded. Add `--full-health` only when you need the aggregate
 autoresearch health report.
 
-When `route_preview.can_run_now=true`, inspect `plan_preview.status` and run
-`plan_preview.recommended_first_command`. There are two ready states:
+Inspect `plan_preview.status` and run `plan_preview.recommended_first_command`.
+When readiness is blocked, the recommended command is the first repair command.
+When `route_preview.can_run_now=true`, there are two ready states:
 
 - `ready_for_preflight`: run the no-spend launch check before a full iteration.
 - `ready_for_bounded_run`: the trace already sees a fresh, hash-verified intake
@@ -414,7 +415,7 @@ intake file, trace, and evidence surface, inspect the deterministic report
 boundary before you read generated prose:
 
 ```bash
-make synth-contract PROJECT=<project> RENDERER=research_note
+ztare forensic-workbench report-action --project <project> --action check_readiness --renderer research_note --confirmed --json
 ```
 
 This path does not call a model. It refreshes the trace-derived review context

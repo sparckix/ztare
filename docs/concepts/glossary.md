@@ -5,7 +5,7 @@ description: "Plain-English definitions for every ZTARE term that matters."
 
 > Up: [Documentation map](../README.md)
 
-> Last revised: 2026-06-22. The canonical principle set is [epistemic_principles.md](epistemic_principles.md) (P1-P16). This glossary surfaces only the plain-language terms.
+> Last revised: 2026-06-27. The canonical principle set is [PRINCIPLES.md](../../PRINCIPLES.md). This glossary surfaces only the plain-language terms.
 
 Plain-English definitions for every term that matters. If a term isn't here, it's either standard (Google it) or jargon inflation that should be removed.
 
@@ -16,9 +16,9 @@ Plain-English definitions for every term that matters. If a term isn't here, it'
 Layer Taxonomy (workbench / kernel / engine / apparatus)
 These words are not synonyms.
 
-- Workbench is the user-facing surface: the local repo, CLI, docs, and D4
-  UI that help a person inspect a bounded claim, evidence, blockers, receipts,
-  and reports.
+- Workbench is the user-facing view: the local repo, CLI, docs, and Project
+  Workbench UI that help a person inspect a project, claim, evidence, blockers,
+  saved history, and reports.
 - Kernel is the trusted core: deterministic checks, evidence contracts,
   demotion rules, source/readiness contracts, proof-governance checks, and
   ledger/read-model boundaries that decide what a claim is allowed to mean.
@@ -39,16 +39,17 @@ GP-NNN (project / seam tracking ID)
 A numbered identifier the repository uses to tag a project, a seam (a design contract), a primitive, or a sealed result. It is not part of any public API. The convention is read-only for outside readers: an entry such as "[GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) (LeanMill)" is a pointer into the ledger, not a commitment about an interface. Public docs link stable seam IDs directly where relevant. The full maintainer index is not part of the public API. Recurring examples a public reader will encounter: [GP-191](../../research_areas/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md) (cognitive-firm kernel overlay), [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) (LeanMill / GNN lemma-relevance work), [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) (forecast pool), [GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) (research-yield decomposition seam), [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) (commit-membrane daemon), [GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) (action intelligence).
 
 ZTARE (zero-trust workbench)
-A local reasoning workbench for turning informal work into inspectable claim
-states. It helps you bind a claim to sources, evidence, checks, blockers,
-demotions, receipts, and next falsifiers so a later reviewer can see what is
-supported and what remains open.
+A local reasoning workbench for turning important thinking into durable,
+inspectable state. It helps you bind a project, claim, proof attempt, report,
+or model output to source material, evidence snapshots, checks, blockers,
+demotions, saved records, and next falsifiers so a later reviewer can see what
+is supported, what changed, and what remains open.
 
 The long-term analogy is compiler-like discipline for reasoning: proposals
-should become objects you can check, narrow, reject, log, and review. The
-current public slice is smaller and concrete: local project intake, evidence
-readiness, trace/preflight, report support, and D4 review workflow over repo
-artifacts.
+should become objects you can check, narrow, reject, log, review, and hand to
+the next person or agent. The current public slice is smaller and concrete:
+local project brief, evidence readiness, trace/preflight, report readiness, and
+Project Workbench review workflow over repo artifacts.
 
 Model-Environment Thesis
 The core intuition behind ZTARE, also called the *nurture thesis*: model
@@ -82,7 +83,7 @@ checks, falsifiers, and review artifacts before it can be promoted.
 Meta-Judge
 Historical validation-loop term for the scorer over executed outputs. In the
 current public slice, use the more concrete surface name: report-support
-contract, deterministic check, trace/preflight, or review receipt.
+contract, deterministic check, trace/preflight, or saved review.
 
 Champion
 Historical validation-loop term for the current leading candidate. Public docs
@@ -90,12 +91,12 @@ should prefer candidate, selected result, or promoted artifact.
 
 Iteration
 One cycle of proposal, checking, scoring or review, and candidate update. In
-v0.4 user-facing docs, avoid leading with iteration mechanics unless the page is
-about the validation engine itself.
+user-facing docs, avoid leading with iteration mechanics unless the page is about
+the validation engine itself.
 
 Project
 A named repo-backed work area: source files, workspace artifacts, evidence,
-rubric, intake files, traces, and outputs for one campaign or bounded problem.
+scoring guide, project brief, traces, and outputs for one campaign or bounded problem.
 Examples include a paper-reproduction project, a policy claim audit, a proof
 campaign, or a scientific experiment.
 
@@ -108,7 +109,8 @@ validator when it is still exploratory.
 Substrate
 The problem/evaluator surface a kernel primitive runs against: data shape,
 rubric, gate family, proof target, benchmark fixture, or domain-specific
-contract. Public userland should usually say project or project intake.
+contract. Public userland should usually say project, project type, or project
+brief.
 Use substrate when discussing internal kernel routing, reusable gates, or a
 class of problems that can share machinery.
 
@@ -116,8 +118,16 @@ class of problems that can share machinery.
 
 ## Evidence & Data
 
+Source Material
+The original material a project is allowed to draw from: papers, notes,
+datasets, transcripts, reports, logs, code, proof notes, webpages, or raw
+documents. Source material can be large, messy, and growing. It is not the same
+thing as the bounded evidence snapshot used by a run.
+
 Evidence (evidence.txt)
-The data the AI is allowed to see: the bounded input everything the mutator and judge work from. It is a snapshot taken at run time, not updated incrementally.
+The bounded snapshot a run is allowed to use. It is extracted or compiled from
+source material and then held fixed for that run. Source material can keep
+growing; evidence is the smaller reviewable slice the validator actually checks.
 
 Hidden Holdout
 Data points the mutator never sees. Used to check if the answer actually generalizes vs. just memorizing the visible data. Standard machine learning practice, like a teacher keeping some exam questions secret.
@@ -128,20 +138,21 @@ The split between data the mutator can see (visible, typically 75%) and data res
 Workspace
 The persistent memory layer where source material accumulates over time. Think of it as a research folder that grows as you add documents. The validator never trusts it directly, it only sees the bounded evidence snapshot extracted from it.
 
-Project Intake
+Project Brief (`ztare project intake`)
 The pre-run handoff for a bounded project: task, bounded claim, source refs,
 evidence refs, non-claims, next falsifier, and the expected route command.
-New commands use `project intake`, `--intake`, and `--intake-out`. A valid
-intake file does not run an agent and does not prove the project is ready for
-the validation engine. It is only the boundary object that trace and preflight
-checks can inspect.
+The user-facing name is project brief. The CLI still uses `ztare project
+intake`, `--intake`, and `--intake-out` for compatibility. A valid brief does
+not run an agent and does not prove the project is ready for the validation
+engine. It is only the boundary object that trace and preflight checks can
+inspect.
 
 Project Packet
-The old name for project intake in early CLI and JSON receipts. Old
+The old name for project brief in early CLI and JSON records. Old
 `project packet`, `--packet`, `--packet-out`, and `project_packet` fields remain
 compatibility aliases because existing run telemetry and tests still contain
-that spelling. New docs and tools should say project intake unless they are
-describing a legacy receipt field.
+that spelling. New docs and tools should say project brief unless they are
+describing a legacy field.
 
 Review Packet
 A reviewer-facing bundle assembled from existing public artifacts. It is not
@@ -151,7 +162,7 @@ falsifiers, and external-readiness status. In this repo, retrospective review
 packets live under `docs/evidence_atlas/packets/`.
 
 Packet
-Avoid this word by itself in public-facing docs. Use project intake for the
+Avoid this word by itself in public-facing docs. Use project brief for the
 pre-run file that admits a bounded project to trace/preflight checks. Use
 review packet for the public evidence dossier that helps a reader audit a
 claim. Use project packet only when naming old CLI aliases or legacy JSON
@@ -163,10 +174,10 @@ strategic direction, public-claim approval, budget/risk acceptance, and final
 authority when evidence does not decide the question.
 
 Agentic Worker
-A tool-using AI agent operating inside the workbench, such as Codex, Claude
-Code, or a role-bound Research Director. It can inspect files, run probes,
-edit artifacts, repair proofs, and leave receipts. It can execute or recommend
-within mandate, but it is not the final accountability holder for public claims
+A tool-using AI agent operating inside ZTARE, such as Codex, Claude Code, or a
+role-bound research agent. It can inspect files, run probes, edit artifacts,
+repair proofs, and save review records. It can execute or recommend within a
+bounded role, but it is not the final accountability holder for public claims
 unless the repo explicitly delegates a narrow decision.
 
 Evidence Atlas

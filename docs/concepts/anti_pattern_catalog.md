@@ -6,7 +6,7 @@ description: "Mining-derived catalogue of epistemic failure modes with cross-LLM
 
 > Up: [Documentation map](../README.md)
 
-> Role among the concept docs. This is the canonical *operational field guide* to epistemic failure modes: the catalogued instances. The canonical *structural* statement of why they occur is [epistemic_principles.md](epistemic_principles.md) Part I. [cognitive_gym.md](cognitive_gym.md) and [agentic_engineering_patterns.md](agentic_engineering_patterns.md) point here for the catalogue.
+> Role among the concept docs. The canonical *operational field guide* to epistemic failure modes: the catalogued instances. The canonical *structural* statement of why they occur is [epistemic_principles.md](epistemic_principles.md) Part I. [cognitive_gym.md](cognitive_gym.md) and [agentic_engineering_patterns.md](agentic_engineering_patterns.md) point here for the catalogue.
 
 > ⚠ 2026-04-24 CROSS-LLM VALIDATION UPDATE, cross-provider classifier audit (100-record sample, 3 providers: gpt-4.1-mini / claude-haiku-4.5 / gemini-3.1-flash-lite) produced 48% three-way agreement (pairwise κ 0.56-0.58). Verdict: FAILS cross-LLM validation (<0.60 threshold).
 >
@@ -18,14 +18,14 @@ description: "Mining-derived catalogue of epistemic failure modes with cross-LLM
 >
 > 2026-04-24 SUPER-CLASS COLLAPSE TEST ([GP-151](../../research_areas/seams/engine/diagnostics/GP-151_classifier_telemetry_downgrade_seam.md) §5.4): same 100-record sample, labels collapsed from 15 classes to 3 super-classes (`structural_blocker` / `ceiling_breaker` / `other`). Three-way agreement jumps 48% → 75% (below the 90% gate for live adoption). Per-super-class stability: `ceiling_breaker` 72.2%, `structural_blocker` 28.6%. Verdict: observability-only, do not adopt live super-class routing. Task 12 stagnation-reset on fine-grained regex labels remains live because regex is deterministic within-session. See `GP-151 (internal seam)` §8.
 >
-> 2026-06-02 STRONG-MODEL RETEST (better design): the 2026-04-24 run used weak models (gpt-4.1-mini / haiku / flash-lite). Re-ran on the same records with a sharp 2-stage super-class prompt and STRONG cross-family raters routed correctly (deepseek via API; codex-GPT + claude via subscription CLI), each gated by a positive control. n=50, 3 raters: 3-way super-class agreement 70%, but the two frontier raters agree substantially: codex↔claude κ=0.72 (deepseek is the divergent/weaker rater, κ≈0.50 vs each). Diagnosis of the residual: the disagreements are principled, not noise, ~25% of critiques are genuinely dual (an unsupported assumption that ALSO overclaims scope; a missing mechanism that IS a scope limitation), so a forced single dominant label caps agreement. Net: the original FINE 15-class failure was over-granularity (stands); the ceiling-breaker SUPER-CLASS is substantially reliable between strong raters (κ=0.72); the right fix is MULTI-LABEL (a critique can be both structural and ceiling), where a finer single-label taxonomy would not help. Script: `scripts/public/mining/research_mode/ceiling_breaker_retest.py`; data: `analytics/public/queries/classification/ceiling_breaker_retest_2026-06-02.json`.
+> 2026-06-02 STRONG-MODEL RETEST (better design): the 2026-04-24 run used weak models (gpt-4.1-mini / haiku / flash-lite). Re-ran on the same records with a sharp 2-stage super-class prompt and STRONG cross-family raters routed correctly (deepseek via API; codex-GPT + claude via subscription CLI), each gated by a positive control. n=50, 3 raters: 3-way super-class agreement 70%, but the two frontier raters agree substantially: codex↔claude κ=0.72 (deepseek is the divergent/weaker rater, κ≈0.50 vs each). Diagnosis of the residual: the disagreements are principled, not noise, ~25% of critiques are truly dual (an unsupported assumption that ALSO overclaims scope; a missing mechanism that IS a scope limitation), so a forced single dominant label caps agreement. Net: the original FINE 15-class failure was over-granularity (stands); the ceiling-breaker SUPER-CLASS is substantially reliable between strong raters (κ=0.72); the right fix is MULTI-LABEL (a critique can be both structural and ceiling), where a finer single-label taxonomy would not help. Script: `scripts/public/mining/research_mode/ceiling_breaker_retest.py`; data: `analytics/public/queries/classification/ceiling_breaker_retest_2026-06-02.json`.
 
 
 *Source:* first mining pass over the enriched trajectory archive (1825 records, 84 projects, 2026-04-24). Findings reported in `GP-149 (internal seam)` §2.
 
 *Purpose:* two distinct lists of failure patterns observed in 65%+ of the corpus. Injected into Newton-mode substrate theses (when rubric `inject_antipattern_catalog: true`) so the mutator sees them before writing, ahead of any judge flag.
 
-How these two lists differ (the distinction that matters):
+How these two lists differ:
 
 The mining data splits failure classes into two causal categories based on frequency lift (freq in high-score iters / freq in low-score iters):
 
@@ -306,7 +306,7 @@ Both substantive-looking flaws DIED on second-pass re-implementation. Two patch 
 
 ### RH-11: Apparatus-proposed fix sign errors
 
-*Pattern:* Apparatus-generated fix formulas carry sign errors and/or missing terms vs the first-principles derivation, even when the underlying flaw is real. The apparatus reliably FINDS flaws but is unreliable at PROPOSING formulas.
+*Pattern:* Apparatus-generated fix formulas carry sign errors and/or missing terms vs the first-principles derivation, even when the underlying flaw is valid. The apparatus reliably FINDS flaws but is unreliable at PROPOSING formulas.
 
 *Source:* Framer spec evolution v1.0 → v2.0:
 - v1.0: Jacobian term sign +1 (should be −2)
@@ -336,7 +336,7 @@ The 10× threshold has no derivation. It's a round number chosen to look approxi
 
 *Pattern:* A technically sound thesis (high probability on logical premise nodes A, B) has low outcome probability because the judge doubts the gap's practical consequence (low probability on "materiality" node C).
 
-*Source:* gp150, champion DAG: Node A (mixtures impose exponential tails) = 0.80, Node B (fractional-Laplacian needs power-law tail) = 0.75, Node C (divergent M₄ materially affects observable) = 0.35. Outcome = 0.58 despite strong premises. The judge's "engineer's veto": real but operationally immaterial.
+*Source:* gp150, champion DAG: Node A (mixtures impose exponential tails) = 0.80, Node B (fractional-Laplacian needs power-law tail) = 0.75, Node C (divergent M₄ materially affects observable) = 0.35. Outcome = 0.58 despite strong premises. The judge's "engineer's veto": valid but operationally immaterial.
 
 *Resolution:* The user's FOM validation (M₄_FOM grows 28× as domain quadruples, M₄_MIX stays flat at ~35) is the canonical answer: supply the finite-domain benchmark that demonstrates operational materiality. Feed back as evidence to push Node C from 0.35 toward 0.80+.
 
@@ -400,15 +400,15 @@ The judge: "The Lookup Table Fallacy: The thesis attempts to pass off an if/else
 
 The mutator's intuition is partly right, the Sharma branch (`α = 2/d`) IS a physical law and the variance-limited branch (`α = 1`) IS a regime claim. But the Cerebras / Bansal / Hoffmann branches are pure memorization: they hardcode the very values the holdout would test. There's no generative content. The function is a dictionary.
 
-Distinguishing real-law-piecewise from lookup-table:
-- A real piecewise law has a generative formula in each branch that takes continuous predictors as input. `α = 2/d` is law-like because if you give it a new d=8, it predicts α=0.25, without ever having seen d=8.
+Distinguishing a true piecewise law from a lookup-table:
+- A true piecewise law has a generative formula in each branch that takes continuous predictors as input. `α = 2/d` is law-like because if you give it a new d=8, it predicts α=0.25, without ever having seen d=8.
 - A lookup-table branch has the answer hardcoded for each categorical case. `if data_quality == "target_noise": return 2.772` predicts nothing for an unseen data_quality value; it's just rote.
 
-The honest test: if you remove a categorical branch and ask the model to predict a row in that category, can it produce ANY answer better than chance? If no, that branch was a lookup.
+The decisive test: if you remove a categorical branch and ask the model to predict a row in that category, can it produce ANY answer better than chance? If no, that branch was a lookup.
 
 *Avoidance for the mutator:*
 - For each piecewise branch, write the GENERATIVE rule first, then the parameters that instantiate it. `α = 2/d` is the rule; d is the parameter. `α = 2.772 if target_noise` has no rule, just a constant, that's a lookup.
-- For categoricals where you genuinely have no generative theory, declare them as honest free parameters (e.g., `α_target_noise: float = 2.772 # fitted to row 104`). This makes the parameter count explicit so the K_law budget catches the memorization.
+- For categoricals where you have no generative theory, declare them as explicit free parameters (e.g., `α_target_noise: float = 2.772 # fitted to row 104`). This makes the parameter count explicit so the K_law budget catches the memorization.
 - Better still: propose a relationship between the categorical and a continuous derived feature. E.g., "data_quality maps to noise_entropy_bits via [hypothesis]; α = f(noise_entropy_bits)". This converts a lookup into a falsifiable hypothesis.
 
 *Failure family:* `lookup_table_dressed_as_law` (NEW, extension of CB-1 "memorization" applied to piecewise functions where each branch hides a constant in plain sight).
@@ -423,19 +423,19 @@ The judge scored the form 100 because it passed every gate in the existing stack
 
 *Why this is a distinct pattern from RH-17:*
 - RH-17 has explicit class-conditional branches: `if class=='B': return 10·c else return c`. Detectable by AST inspection for class-label string literals in conditions.
-- RH-18 has no class-label conditionals. The class structure is encoded in the *coordinates* of a continuous function. The form looks indistinguishable from a real physical rule until you compare the hardcoded centers to the briefing's exposed withheld-class feature values.
+- RH-18 has no class-label conditionals. The class structure is encoded in the *coordinates* of a continuous function. The form looks indistinguishable from a true physical rule until you compare the hardcoded centers to the briefing's exposed withheld-class feature values.
 
-The empirical disambiguator: substrate-perturbation testing. When Class C's mass coordinate was changed mid-run from kg-units (~30) to solar-units (-0.30), the suppression kernel went inactive on Class C (sigmoid at M=-0.3 is essentially zero) and Class C MRE jumped from "passes near-miss" to 1.95. The boost kernel at M=14.5 stayed unchanged because Class B was unchanged. A real continuous law is invariant under substrate-coordinate perturbations (refit may shift c0 but the kernel SHAPE is data-driven). RH-18 forms collapse on the perturbed class because their kernel coordinates were tuned to the unperturbed substrate.
+The empirical disambiguator: substrate-perturbation testing. When Class C's mass coordinate was changed mid-run from kg-units (~30) to solar-units (-0.30), the suppression kernel went inactive on Class C (sigmoid at M=-0.3 is essentially zero) and Class C MRE jumped from "passes near-miss" to 1.95. The boost kernel at M=14.5 stayed unchanged because Class B was unchanged. A true continuous law is invariant under substrate-coordinate perturbations (refit may shift c0 but the kernel SHAPE is data-driven). RH-18 forms collapse on the perturbed class because their kernel coordinates were tuned to the unperturbed substrate.
 
-Distinguishing real-continuous-law from kernel-camouflage:
-- A real law has kernel centers/widths/amplitudes that emerge from FITTING against visible data. If the form has 6 structural constants, declare 6 in PARAMETER_NAMES and let scipy optimize them on visible Class A.
+Distinguishing a true continuous law from kernel-camouflage:
+- A true law has kernel centers/widths/amplitudes that emerge from FITTING against visible data. If the form has 6 structural constants, declare 6 in PARAMETER_NAMES and let scipy optimize them on visible Class A.
 - RH-18 has those 6 constants HARDCODED to match exposed withheld-class values. The form would not survive being refit on a perturbed substrate, as the centers would have to be reset by the mutator each time.
 
-The honest test: if you remove the suspect constant from PARAMETRIC_FORM, declare it as a free parameter, and refit on visible data, do you recover (a) the same hardcoded value (then the form has discoverable physics), (b) something close to it within 50% (the form is consistent with physics but the mutator memorized one good initialization), or (c) something far away or unconverged (pure memorization, no underlying signal)? Only (a) earns RH-18 acquittal.
+The decisive test: if you remove the suspect constant from PARAMETRIC_FORM, declare it as a free parameter, and refit on visible data, do you recover (a) the same hardcoded value (then the form has discoverable physics), (b) something close to it within 50% (the form is consistent with physics but the mutator memorized one good initialization), or (c) something far away or unconverged (pure memorization, no underlying signal)? Only (a) earns RH-18 acquittal.
 
 *Avoidance for the mutator:*
 - Every numeric constant whose value matches a briefing-exposed withheld-class feature value to within 5% must be promoted to a free parameter. The apparatus's withheld-value-leakage gate (G-WITHHELD-VALUE-LEAKAGE) detects this pattern and rejects.
-- If you genuinely have no theory for what the kernel center should be, declare it as a free parameter with a wide prior. Do not pin it to "where the briefing said the withheld class sits."
+- If you have no theory for what the kernel center should be, declare it as a free parameter with a wide prior. Do not pin it to "where the briefing said the withheld class sits."
 - The substrate critic surfaces extrapolation gaps so you can REFRAME (commit to a publishable null on the gap) or REQUEST ENRICHMENT (operator action). Using the gap's exposed numerical values to position a kernel is the camouflage move.
 
 *Failure family:* `kernel_camouflage_of_class_label` (extension of RH-17 lookup-table-dressed-as-law to the continuous-function disguise. Same Goodhart pattern, different detector signature.)

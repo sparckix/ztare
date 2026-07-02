@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "purpose": "Machine-readable capability map for the v1.1 reasoning-compiler bar. Each row names the input object, check or transform, output object, and falsifier that keep the capability inspectable.",
+  "capabilities": [
+    {
+      "id": "claim_boundary_compiler",
+      "label": "Claim boundary compiler",
+      "user_problem": "Turn an informal project question into a thesis, limits, and a concrete change test.",
+      "input_object": "Project brief JSON, thesis text, ruled-out alternatives, source files, evidence files, and next-falsifier field.",
+      "check_or_transform": "Project brief validation, source preflight, falsifier checks, and claim-support inspection.",
+      "output_object": "Bounded project brief, thesis/support rows, non-claim boundary, and next-falsifier state.",
+      "falsifier": "A project can pass while the Workbench, trace, and saved project file disagree on the thesis, limits, or next falsifier.",
+      "workbench_requirement": "The selected project must show the thesis, assumptions, caveats, change test, source files, evidence files, and next action from the same project object.",
+      "user_visible_proof": "Open Project / Charter, Project / Thesis, or save the project file; the same charter, thesis, and change test must match `ztare forensic-workbench project-state --project <project> --json`.",
+      "current_boundary": "Implemented for local project files and public demos; not a hosted multi-user claim system.",
+      "research_anchor_ids": [
+        "explicit_source_grounding",
+        "intermediate_verification",
+        "attribution_verifiability",
+        "source_quality"
+      ],
+      "evidence_refs": [
+        "docs/concepts/capabilities.md",
+        "docs/guides/workflow.md",
+        "docs/public_claim_register.md",
+        "scripts/public/control/forensic_workbench_server.py"
+      ],
+      "runnable_anchors": [
+        "ztare project intake validate --path <intake.json> --source-preflight",
+        "ztare forensic-workbench project-state --project <project> --json"
+      ],
+      "workbench_surface": "Project / Charter; Project / Thesis; Files / Project brief; saved project file"
+    },
+    {
+      "id": "source_evidence_compiler",
+      "label": "Source and evidence compiler",
+      "user_problem": "Know which local files support the thesis and which evidence gaps still block confidence.",
+      "input_object": "Raw source files, source type map, evidence files, compiled evidence file, and evidence-gap saved records.",
+      "check_or_transform": "Source check, source index, evidence binding, replay, evidence fetch, and gap-justification saved records.",
+      "output_object": "Source readiness, evidence readiness, evidence support, active gaps, and source/evidence saved records.",
+      "falsifier": "A source or evidence warning can be cleared without a target path, saved-record path, or inspectable backing file.",
+      "workbench_requirement": "Files and evidence views must group source files, compiled evidence, active gaps, and backing files by the user's next repair task.",
+      "user_visible_proof": "Open Files / Prepare files or Project / Evidence summary; every repair action must show its source path, target path, and saved-record path before it writes.",
+      "current_boundary": "Strongest on local projects with typed files; external evidence fetching depends on configured providers.",
+      "research_anchor_ids": [
+        "explicit_source_grounding",
+        "stateful_tool_use",
+        "attribution_verifiability",
+        "source_quality"
+      ],
+      "evidence_refs": [
+        "docs/guides/cli.md",
+        "docs/concepts/forensic_workbench_interface.md",
+        "src/ztare/scaffold/source_check.py",
+        "projects/ops_root_cause_diagnosis_demo/compiled_evidence_packet.json"
+      ],
+      "runnable_anchors": [
+        "ztare project source-check --project <project> --json",
+        "ztare project source-index --project <project> --json",
+        "ztare project evidence-replay --project <project> --json"
+      ],
+      "workbench_surface": "Files / Prepare files; Project / Evidence summary; file viewer"
+    },
+    {
+      "id": "run_readiness_compiler",
+      "label": "Run-readiness compiler",
+      "user_problem": "Know whether the next local run is allowed before spending model calls or trusting a score.",
+      "input_object": "Project brief, rubric, source/evidence state, launch command, and trace context.",
+      "check_or_transform": "Autoresearch trace, plan preview, source/evidence preflight, rubric validation, and preflight-only run.",
+      "output_object": "Run-readiness state, recommended first command, blockers, recovery channel, and preflight saved record.",
+      "falsifier": "A project can start a model-spend run while source, evidence, rubric, or preflight state is still blocked.",
+      "workbench_requirement": "Run readiness must separate no-spend inspection, preflight, and confirmed run launch, with blockers visible before any model-spend action.",
+      "user_visible_proof": "Open Run / Ready to run and Run / Check readiness; the command and blockers must match `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json`.",
+      "current_boundary": "No-spend trace/preflight path is public; full runs still depend on configured models.",
+      "research_anchor_ids": [
+        "intermediate_verification",
+        "stateful_tool_use",
+        "evaluation_discipline",
+        "rubric_and_judge_reliability"
+      ],
+      "evidence_refs": [
+        "docs/reference/autoresearch_state_carrier.md",
+        "src/ztare/reports/autoresearch_trace.py",
+        "src/ztare/research_director/autoresearch_plan_preview.py",
+        "scripts/public/control/forensic_workbench_server.py"
+      ],
+      "runnable_anchors": [
+        "ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json",
+        "ztare autoresearch run --project <project> --rubric <rubric> --intake <intake.json> --preflight-only"
+      ],
+      "workbench_surface": "Run / Ready to run; Run / Check readiness; Run / Start run"
+    },
+    {
+      "id": "expression_grammar_compiler",
+      "label": "Expression-grammar compiler",
+      "user_problem": "Know whether a candidate mathematical form was composed from the declared primitive set before trusting a fit or score.",
+      "input_object": "Rubric grammar fields, fit declaration, Python model body, declared variables and parameters, evidence file, and grammar-specific primitive such as eml(x, y).",
+      "check_or_transform": "Rubric preflight, expression grammar validation, Python model grammar validation, deterministic fit compilation, and grammar-compliance scoring.",
+      "output_object": "Grammar-legal fit candidate, fail-closed primitive escape, fitted parameters, gate verdict, or vocabulary-reachability finding.",
+      "falsifier": "A candidate using forbidden math functions can pass as if it obeyed `eml_only` or `math_exp_only`, or a restricted grammar is blamed before a reachability probe shows the target is outside the grammar.",
+      "workbench_requirement": "Run results must show the declared grammar, fitted form, complexity signal, and any grammar escape or reachability failure as inspectable artifacts.",
+      "user_visible_proof": "Open Run / Results and the file viewer for the fit artifact; a forbidden primitive must appear as a failed check, not as a valid score improvement.",
+      "current_boundary": "Implemented for selected local grammars and Planck/OEIS-style rubrics; not a general theorem that one primitive set fits all domains.",
+      "research_anchor_ids": [
+        "expression_grammar_compression",
+        "symbolic_equation_discovery",
+        "compression_progress",
+        "model_selection_compression",
+        "evaluation_discipline",
+        "rubric_and_judge_reliability"
+      ],
+      "evidence_refs": [
+        "docs/concepts/capabilities.md",
+        "docs/concepts/rubric_specification.md",
+        "src/ztare/fit/fit_primitive.py",
+        "src/ztare/validator/autoresearch_loop.py",
+        "rubrics/gp023_planck_sandbox_08.json",
+        "docs/public_claim_register.md"
+      ],
+      "runnable_anchors": [
+        "ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json",
+        "./venv/bin/python research_areas/probes/gp059_eml_expressibility_check.py"
+      ],
+      "workbench_surface": "Run / Ready to run; Run / Results; file viewer"
+    },
+    {
+      "id": "run_result_compiler",
+      "label": "Run-result compiler",
+      "user_problem": "Understand what a run changed: score movement, weak point, demotion, support issue, or next check.",
+      "input_object": "Run artifacts, scores, weakest points, provider telemetry, constraints, and action links.",
+      "check_or_transform": "Validator loop, deterministic gates, support checks, carrier replay, and run-history rendering.",
+      "output_object": "Verdict, demotion or support issue, run history, derived constraints, and suggested next check.",
+      "falsifier": "A run result is shown as progress without before/after state, score boundary, weak point, or backing artifact.",
+      "workbench_requirement": "Run history must show latest score, best score, weak point, run count, backing artifact, and the next check selected by the project state.",
+      "user_visible_proof": "Open Run / Results; the score and weak point must match the append-only run history or trace output, not only a stale latest-result overlay.",
+      "current_boundary": "Run history and replay are implemented; serious-project before/after narratives remain a v1.1 hardening target.",
+      "research_anchor_ids": [
+        "durable_feedback_memory",
+        "intermediate_verification",
+        "computer_use_execution",
+        "model_selection_compression",
+        "appropriate_human_reliance",
+        "symbolic_equation_discovery",
+        "rubric_and_judge_reliability"
+      ],
+      "evidence_refs": [
+        "src/ztare/validator/autoresearch_loop.py",
+        "src/ztare/reports/autoresearch_carrier_replay.py",
+        "docs/reference/autoresearch_state_carrier.md",
+        "scripts/public/control/forensic_workbench_server.py"
+      ],
+      "runnable_anchors": [
+        "ztare autoresearch carrier-replay --project <project> --json",
+        "ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json"
+      ],
+      "workbench_surface": "Run / Results; Project / Overview; saved project file"
+    },
+    {
+      "id": "compression_progress_compiler",
+      "label": "Compression-progress compiler",
+      "user_problem": "Know whether a research route is making the explanation simpler or only producing different-looking churn.",
+      "input_object": "Iteration telemetry, fit-result BIC, MDL-style description length, proof/script length, effort, and run history.",
+      "check_or_transform": "Compression-progress replay, complexity/runtime profile construction, stagnation check, and advisory recommendation.",
+      "output_object": "Advisory continue/watch/narrow-or-pivot signal, shorter-explanation profile, effort summary, and backing fit or telemetry files.",
+      "falsifier": "A score-improving route is shown as progress even when description length stays flat and no backing complexity profile is available.",
+      "workbench_requirement": "Run results must label compression progress as advisory, show the recent complexity profile, and keep it next to score and effort rather than replacing them.",
+      "user_visible_proof": "Open Run / Results for a project with BIC/MDL-style telemetry; the visible advice must match `compression_progress_replay.py --project <project> --json`.",
+      "current_boundary": "Advisory only. It is surfaced in run history and replay, but it does not control run admission or pivot decisions by itself.",
+      "research_anchor_ids": [
+        "compression_progress",
+        "model_selection_compression",
+        "evaluation_discipline",
+        "intermediate_verification",
+        "symbolic_equation_discovery"
+      ],
+      "evidence_refs": [
+        "src/ztare/validator/core/compression_progress.py",
+        "scripts/public/control/compression_progress_replay.py",
+        "src/ztare/orchestrator/iteration_telemetry.py",
+        "docs/concepts/capabilities.md",
+        "tests/validator/test_compression_progress.py"
+      ],
+      "runnable_anchors": [
+        "./venv/bin/python scripts/public/control/compression_progress_replay.py --project <project> --json",
+        "./venv/bin/python scripts/public/control/compression_progress_replay.py --scan-projects --json"
+      ],
+      "workbench_surface": "Run / Results; Project / Overview; file viewer"
+    },
+    {
+      "id": "report_support_compiler",
+      "label": "Report-support compiler",
+      "user_problem": "Know whether a report can be used or must stay blocked because support is stale, missing, or unbound.",
+      "input_object": "Candidate report, synthesis ledger, backing artifacts, report-input saved record, and support contract.",
+      "check_or_transform": "Synthesis refresh, artifact digest binding, stale-output check, and report-support contract validation.",
+      "output_object": "Promoted report action or blocked report-support issue with backing files and next repair action.",
+      "falsifier": "A stale or unsupported report appears as current support in the Workbench, docs, or saved project file.",
+      "workbench_requirement": "Report readiness must show whether the report is current, what support issue remains, the first allowed action, and the backing files before a review is saved.",
+      "user_visible_proof": "Open Report / Report readiness; the support issue, next action, and backing files must match `ztare forensic-workbench report-action --project <project> --action check_readiness --renderer decision_brief --confirmed --json` output.",
+      "current_boundary": "Implemented for local synthesis/report-support paths; public claims remain bounded by support contracts.",
+      "research_anchor_ids": [
+        "explicit_source_grounding",
+        "intermediate_verification",
+        "evaluation_discipline",
+        "attribution_verifiability",
+        "appropriate_human_reliance",
+        "source_quality"
+      ],
+      "evidence_refs": [
+        "src/ztare/synthesis/synthesize.py",
+        "docs/concepts/forensic_workbench_interface.md",
+        "projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json",
+        "scripts/public/control/forensic_workbench_server.py"
+      ],
+      "runnable_anchors": [
+        "ztare forensic-workbench report-action --project <project> --action check_readiness --renderer decision_brief --confirmed --json",
+        "ztare forensic-workbench project-state --project <project> --json"
+      ],
+      "workbench_surface": "Report / Report readiness; Report / Report inputs; file viewer"
+    },
+    {
+      "id": "review_history_compiler",
+      "label": "Review and saved-history compiler",
+      "user_problem": "Save what a human accepted, deferred, repaired, or chose next, with proof of changed files.",
+      "input_object": "Review decision, next-step note, project file save request, source edit, or evidence-gap justification.",
+      "check_or_transform": "Workbench write boundary, review apply, next-step apply, source edit, project-file save, and saved-history update.",
+      "output_object": "Review record, next-step record, source/edit record, latest project file, and no-change boundary.",
+      "falsifier": "A Workbench write changes files without showing target path, saved-record path, and no-change boundary first.",
+      "workbench_requirement": "Every write-capable panel must show what can change, what stays read-only, where the saved record lands, and what refreshed after saving.",
+      "user_visible_proof": "Open Review / Saved history or Report / Project file after a save; the saved record path and changed artifact must be previewable from the Workbench.",
+      "current_boundary": "Local file-backed storage is implemented; detached cloud storage is a future provider boundary.",
+      "research_anchor_ids": [
+        "task_specific_interfaces",
+        "durable_feedback_memory",
+        "stateful_tool_use",
+        "appropriate_human_reliance"
+      ],
+      "evidence_refs": [
+        "scripts/public/control/forensic_workbench_review.py",
+        "scripts/public/control/forensic_workbench_action.py",
+        "scripts/public/control/forensic_workbench_server.py",
+        "docs/concepts/forensic_workbench_interface.md"
+      ],
+      "runnable_anchors": [
+        "ztare forensic-workbench apply-review --project <project> --project-check <project_check_slug> --from <review.json>",
+        "make forensic-workbench-data WORKBENCH_PROJECT=<project>"
+      ],
+      "workbench_surface": "Review / Save review; Review / Save next step; Review / Saved history; Report / Project file"
+    },
+    {
+      "id": "gaming_evaluator_compiler",
+      "label": "Gaming and evaluator compiler",
+      "user_problem": "Bound evaluator-hardening claims to reproducible artifacts instead of trusting self-certification.",
+      "input_object": "Evaluator claim, gaming pattern, frozen benchmark artifact, benchmark evidence, and non-claim field.",
+      "check_or_transform": "Gaming catalog audit, frozen evaluator check, benchmark evidence check, and evidence packet check.",
+      "output_object": "Bounded evidence claim, missing-arm warning, non-claim, and reviewer-safe benchmark artifact.",
+      "falsifier": "A public evaluator-hardening claim passes without the frozen artifact or while the ordinary-review arm is still missing.",
+      "workbench_requirement": "Public evidence claims must stay outside the project Workbench unless the frozen artifact, missing-arm status, and non-claim boundary are visible.",
+      "user_visible_proof": "Run `make benchmark-evidence` or the frozen evaluator check; a missing artifact must block the claim instead of being hidden by prose.",
+      "current_boundary": "Selected proof points have public frozen evidence; no blanket evaluator superiority claim.",
+      "research_anchor_ids": [
+        "evaluation_discipline",
+        "intermediate_verification",
+        "proxy_gaming_and_leakage",
+        "rubric_and_judge_reliability"
+      ],
+      "evidence_refs": [
+        "docs/evidence_atlas/claim_cards.md",
+        "docs/evidence_atlas/packets/gaming_catalog.md",
+        "scripts/public/control/gaming_catalog_audit.py",
+        "scripts/public/control/benchmark_evidence_check.py",
+        "benchmarks/evaluator_hardening_frozen/README.md"
+      ],
+      "runnable_anchors": [
+        "make gaming-catalog-audit",
+        "make benchmark-evidence",
+        "make evaluator-hardening-frozen-check"
+      ],
+      "workbench_surface": "Public evidence atlas; release gates"
+    },
+    {
+      "id": "reflexive_advisory_compiler",
+      "label": "Reflexive advisory compiler",
+      "user_problem": "Separate useful suggestions from stale diagnostics and from state-changing controls.",
+      "input_object": "Action recommendation, source-health row, forecast row, run-history archive, and decision-use evidence.",
+      "check_or_transform": "Action-intelligence materialization, source-health audit, forecast capability audit, and decision-use boundary check.",
+      "output_object": "Advisory row, source warning, hard blocker, or decision-use record with backing files.",
+      "falsifier": "A suggested next move is promoted to project state without source freshness, consumed-surface evidence, or backing files.",
+      "workbench_requirement": "Warnings must be labeled as advisory, repair, or inspect actions with plain issue names and backing evidence paths.",
+      "user_visible_proof": "Open Run / Fix warnings; each warning must match `action_intelligence.py health --json` source-health rows without duplicate issue identities.",
+      "current_boundary": "Action intelligence is advisory by default; stronger authority requires evidence of consumption and source freshness.",
+      "research_anchor_ids": [
+        "durable_feedback_memory",
+        "stateful_tool_use",
+        "evaluation_discipline",
+        "forecast_calibration"
+      ],
+      "evidence_refs": [
+        "analytics/public/action_intelligence/README.md",
+        "analytics/public/action_intelligence/state/source_health.json",
+        "analytics/public/action_intelligence/state/shadow_recommendations.json",
+        "scripts/public/control/action_intelligence.py",
+        "src/ztare/reports/forecast_capability_audit.py"
+      ],
+      "runnable_anchors": [
+        "./venv/bin/python scripts/public/control/action_intelligence.py health --json",
+        "make forecast-capability-audit JSON=1"
+      ],
+      "workbench_surface": "Run / Fix warnings; Project / Overview; action-intelligence read models"
+    },
+    {
+      "id": "primitive_compiler",
+      "label": "Primitive compiler",
+      "user_problem": "Promote repeated reasoning moves into reusable machinery only when the selecting signal and refusal condition are explicit.",
+      "input_object": "Repeated residual, pattern invocation, primitive candidate, nearest confuser, and required artifact slot.",
+      "check_or_transform": "Primitive amnesia, pattern action contract, nearest-confuser check, and primitive health audit.",
+      "output_object": "Candidate primitive, typed action record, refusal, demotion, or cataloged reusable primitive.",
+      "falsifier": "A new primitive is promoted without the signal that selects it, the artifact it requires, or the condition that should demote it.",
+      "workbench_requirement": "Primitive suggestions must remain a kernel/read-model backlog item until they name the user problem, selecting signal, required artifact, and demotion condition.",
+      "user_visible_proof": "Run `ztare primitive health` or primitive amnesia; a suggested primitive must point to its nearest existing confuser before promotion.",
+      "current_boundary": "Primitive recall and pattern contracts are implemented; broad autonomous primitive generation remains below the line.",
+      "research_anchor_ids": [
+        "durable_feedback_memory",
+        "task_specific_interfaces",
+        "evaluation_discipline",
+        "formal_proof_governance",
+        "structural_code_memory"
+      ],
+      "evidence_refs": [
+        "src/ztare/research_director/primitive_amnesia.py",
+        "src/ztare/research_director/pattern_action_contract.py",
+        "src/ztare/reflexive_primitives/INDEX.md",
+        "docs/evidence_atlas/primitive_evidence_matrix.md"
+      ],
+      "runnable_anchors": [
+        "ztare primitive health",
+        "python -m ztare.research_director.primitive_amnesia \"<task description>\""
+      ],
+      "workbench_surface": "Kernel/read-model backlog"
+    },
+    {
+      "id": "repository_memory_compiler",
+      "label": "Repository memory compiler",
+      "user_problem": "Find the existing module, primitive, route, map, or validator before adding duplicate machinery or breaking a live project path.",
+      "input_object": "Task description, changed file, symbol or route name, architecture-index row, graph edge, primitive-amnesia result, and workbench action contract.",
+      "check_or_transform": "Architecture-index validation, rendered index lookup, graph lookup, primitive recall, architecture-map drift check, and workbench route/action contract inspection.",
+      "output_object": "Owned module, consumer list, relevant primitive, stale-map warning, affected workbench action, and the next file or check to inspect.",
+      "falsifier": "A code change can alter a project-facing route, primitive, or read model without the repo naming the owner, consumer, stale map, or validation command that should catch it.",
+      "workbench_requirement": "Help and future repository-memory views must answer who owns this capability, what consumes it, what will break if it changes, and which existing primitive should be reused first.",
+      "user_visible_proof": "Open Run / Help and inspect the capability map; structural questions must point to the architecture index, graph, primitive recall, route contract, or map validator rather than vague doc prose.",
+      "current_boundary": "The repository already has architecture indexes, maps, graph edges, primitive recall, and validators; v1.1 still needs one unified query surface over them.",
+      "research_anchor_ids": [
+        "structural_code_memory",
+        "task_specific_interfaces",
+        "stateful_tool_use",
+        "durable_feedback_memory",
+        "evaluation_discipline"
+      ],
+      "evidence_refs": [
+        "analytics/public/index/architecture_index.jsonl",
+        "analytics/public/index/architecture_index_schema.md",
+        "src/ztare/architecture_index/graph.yaml",
+        "src/ztare/architecture_index/INDEX.md",
+        "docs/concepts/primitive_surfacing.md",
+        "scripts/public/control/render_architecture_index.py",
+        "scripts/public/validators/validate_architecture_index.py",
+        "scripts/public/validators/validate_autoresearch_arch_map.py",
+        "scripts/public/control/forensic_workbench_server.py"
+      ],
+      "runnable_anchors": [
+        "python scripts/public/validators/validate_architecture_index.py",
+        "python scripts/public/control/render_architecture_index.py --grep <term>",
+        "ztare primitive health",
+        "python -m ztare.research_director.primitive_amnesia \"<task description>\"",
+        "python scripts/public/validators/validate_autoresearch_arch_map.py ex-post"
+      ],
+      "workbench_surface": "Run / Help; Kernel/read-model backlog"
+    }
+  ]
+}

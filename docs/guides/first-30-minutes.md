@@ -5,19 +5,20 @@ description: "First 30 minutes for a new ZTARE reader or agent."
 
 > Up: [Documentation map](../README.md)
 
-This path is for a new reader or agent opening ZTARE for the first time. It
+For a new reader or agent opening ZTARE for the first time. It
 checks the runnable path, names the durable records, and points to the
 right next document for each kind of work.
 
 The first half hour should leave you with three things: a green offline value
 check, a map of the durable records, and the right route for your task. Most
-mistakes come from launching a loop before the project surface is ready, or from
+mistakes come from launching a loop before the project is ready, or from
 treating out-of-loop agent work as if it were an in-loop validation run.
 
-The current public roadmap is organized around one first-reader question:
-can a claim be traced from proposal, through evidence and gates, to a bounded
-verdict or next falsifier? Keep that frame in mind while reading. Many older
-files serve as historical provenance, and this path is the current entry point.
+The current public roadmap is organized around one first-reader question: can a
+project move from thesis and source files to a bounded result, support issue,
+saved review, or next falsifier? Keep that frame in mind while reading. Many
+older files serve as historical provenance, and this path is the current entry
+point.
 
 ## 0-5: Run The First Value Check
 
@@ -52,12 +53,12 @@ ztare autoresearch trace \
 
 The ops demo is synthetic, but it is a real ZTARE path: typed local sources,
 a bounded root-cause claim, explicit rivals, evidence gaps, graph-derived
-in-loop focus, preflight, and an optional one-iteration run. Use this before a
+in-loop focus, readiness check, and an optional one-iteration run. Use this before a
 custom project because it shows the boundary between source/evidence prep,
 read-only inspection, and the validation engine.
 
 The brief trace should show `run readiness: ready`, fresh source/evidence
-surfaces, no blockers, and the remaining local verification targets. Use
+state, no blockers, and the remaining local verification targets. Use
 `--json` on the same trace command when a script needs the full carrier chain.
 
 ## 15-20: Check The Catalog And Public Smoke
@@ -99,7 +100,7 @@ then start from:
 6. `docs/public_claim_register.md`
 7. `docs/concepts/system_position_and_module_map.md`
 
-The core rule: chat is not the system of record. Durable artifacts live under
+The core rule: chat is not the system of record. Durable files and records live under
 `projects/`, `research_areas/`, `org/`, `ztare_workspace/`, `analytics/`, and
 the public ledgers.
 
@@ -111,17 +112,16 @@ here as the ZTARE deployment of that kernel, with no second canonical upstream.
 Use this mental model while reading:
 
 ```text
-hard problem or operating question -> route choice
--> validator / proof / script / panel / human-agent work
--> durable artifact -> ledger or outcome -> next routing decision
+local project -> thesis -> sources and evidence -> readiness check
+-> readiness check or run -> saved review, support issue, or next test
 ```
 
 ## 25-30: Pick The Right Route
 
 | Route | Use it when | Start |
 |---|---|---|
-| Project intake | Source files, evidence refs, or a bounded task still need to be prepared | `ztare project walkthrough` and `docs/guides/workflow.md` section 0 project intake |
-| In-loop autoresearch | Bounded claim, evaluator/gate, rubric, and artifact output are ready | `ztare autoresearch trace --brief`, then its recommended first command |
+| Project brief | Source files, evidence refs, or a bounded task still need to be prepared | `ztare project walkthrough` and `docs/guides/workflow.md` section 0 project brief |
+| In-loop autoresearch | Bounded claim, evaluator/gate, rubric, and saved output are ready | `ztare autoresearch trace --brief`, then its recommended first command |
 | Out-of-loop research operations | The work is source gathering, proof splitting, setup, synthesis, or one-off agent work | `ztare autoresearch route` and `docs/guides/workflow.md` section 0 out-of-loop route |
 | Proof work | The task is Lean formalization, proof search, or proof-credit governance | `docs/concepts/leanmill_architecture.md` |
 | Org/runtime work | Roles, mandates, tasks, gates, or transition logs are the object | `docs/guides/org_runtime_quickstart.md` |
@@ -137,18 +137,18 @@ Then use the deeper map below.
 | Understand proof execution / governance gate / residual compiler | `docs/concepts/closure_claim_governance.md` |
 | Understand current priorities | `priority_roadmap.md` |
 | Run a bounded claim or project/data test | `docs/guides/workflow.md` section 0 in-loop route |
-| Prepare missing project/evidence surfaces before a loop | `docs/guides/workflow.md` section 0 project intake; [examples/project_packets/](../../examples/project_packets/) for ready and malformed fixtures |
-| Inspect an operational diagnosis starter | `docs/guides/quickstart.md` section "Create or probe a project/data surface"; `projects/ops_root_cause_diagnosis_demo/` |
-| Do frontier work before bounded intake and evidence surfaces exist | `docs/guides/workflow.md` section 0 out-of-loop route |
+| Prepare missing project/evidence files before a loop | `docs/guides/workflow.md` section 0 project brief; [examples/project_packets/](../../examples/project_packets/) for ready and malformed fixtures |
+| Inspect an operational diagnosis starter | `docs/guides/quickstart.md` section "Create or probe project data"; `projects/ops_root_cause_diagnosis_demo/` |
+| Do frontier work before bounded intake and evidence files exist | `docs/guides/workflow.md` section 0 out-of-loop route |
 | Inspect the org runtime | `docs/guides/org_runtime_quickstart.md` |
 | Inspect forecast-market work | [Forecast-pool decision market spec](../../research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md) |
-| Inspect action intelligence | [Action-intelligence loop seam](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) |
+| Inspect action intelligence | [Action-intelligence loop design](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) |
 | Review the current research-company architecture | `docs/concepts/ztare_research_company_architecture.md` |
 | Learn the repo with an agent | `docs/guides/agent-prompts.md` |
 
 If you are using an agent, do not start with a broad "summarize this repo"
 request. Use the route-choice prompt in `docs/guides/agent-prompts.md` and make
-the agent name the durable artifact it expects to produce.
+the agent name the durable file or record it expects to produce.
 
 ## After 30: Agent Prompt
 
@@ -162,10 +162,10 @@ Then explain:
 
 1. the durable system of record
 2. whether my task belongs in in-loop autoresearch, out-of-loop research
-   operations, project intake, program hardening, org runtime overlay,
+   operations, project-brief prep, program hardening, org runtime overlay,
    or a tiny manual note
 3. the safest next command or file to inspect
-4. what artifact should be written if the work should persist.
+4. what file or record should be written if the work should persist.
 
 My task is: [describe task].
 ```

@@ -28,9 +28,71 @@ Capability here means "there is an implementation surface a reviewer can
 inspect or run." It does not mean the capability has external validation,
 benchmark lift, or broad domain reliability. When a capability supports a
 public claim, the claim register and evidence atlas carry that scope.
+For the v1.1 reasoning-compiler language, the inspectable capability map is
+[`reasoning_compiler_capabilities.json`](../evidence_atlas/reasoning_compiler_capabilities.json).
+`make reasoning-compiler-capability-audit` checks that each row names an input
+object, check or transform, output object, falsifier, evidence refs, and a
+runnable anchor, plus at least two research anchors from
+[`research_anchors.json`](../evidence_atlas/research_anchors.json).
 This page uses `substrate` only for internal kernel routing or reusable gate
-families. Public workflows should usually say project, project intake, review
-artifact, or review packet. The glossary owns the exact distinction.
+families. Public workflows should usually say project, project brief, review
+artifact, or saved review file. The glossary owns the exact distinction.
+
+## Table of Contents
+
+- [Fast map for reviewers](#fast-map-for-reviewers)
+- [1. The architectural stack](#1-the-architectural-stack)
+  - [Kernel gate dispatcher](#kernel-gate-dispatcher)
+  - [Statistical meta-diagnostics](#statistical-meta-diagnostics)
+  - [In-loop validator: the iteration pipeline](#in-loop-validator-the-iteration-pipeline)
+  - [Grammar tiers and the EML primitive](#grammar-tiers-and-the-eml-primitive)
+  - [Fit primitives and Stage 1/2/2.5 compression](#fit-primitives-and-stage-1225-compression)
+  - [The mutator briefing](#the-mutator-briefing)
+  - [Structural-presence and negative-space extractors](#structural-presence-and-negative-space-extractors)
+  - [Residual diagnostics and symbolic regression](#residual-diagnostics-and-symbolic-regression)
+  - [Information-yield evaluator and stagnation pivots](#information-yield-evaluator-and-stagnation-pivots)
+  - [DAG steering](#dag-steering)
+  - [Graph action interface and route provenance](#graph-action-interface-and-route-provenance)
+  - [Invariant-search mode: Lagrangian derivation + Buckingham π + Noether variance](#invariant-search-mode-lagrangian-derivation--buckingham-π--noether-variance)
+  - [REFRAME and ANALOGY: the two non-grammar primitives](#reframe-and-analogy-the-two-non-grammar-primitives)
+  - [Full-catalog primitive families](#full-catalog-primitive-families)
+  - [LLM-mediated primitive families](#llm-mediated-primitive-families)
+  - [Provider runtime, aliases, and telemetry](#provider-runtime-aliases-and-telemetry)
+  - [Constraint-to-isomorphism router (cross-domain)](#constraint-to-isomorphism-router-cross-domain)
+  - [Kepler vs Newton: two observable layers, judged separately](#kepler-vs-newton-two-observable-layers-judged-separately)
+  - [Post-run discriminator wiring](#post-run-discriminator-wiring)
+  - [The gate library](#the-gate-library)
+  - [The Framer language](#the-framer-language)
+  - [The Research Director: out-of-loop orchestration](#the-research-director-out-of-loop-orchestration)
+  - [Synthetic personas and debate orchestrator](#synthetic-personas-and-debate-orchestrator)
+  - [Commit-membrane daemon](#commit-membrane-daemon)
+  - [Work daemons](#work-daemons)
+  - [Org-runtime tenant overlay](#org-runtime-tenant-overlay)
+- [2. Operating discipline (workbench-wide)](#2-operating-discipline-workbench-wide)
+  - [Deterministic enforcement floor](#deterministic-enforcement-floor)
+  - [Sealed-result discipline](#sealed-result-discipline)
+  - [Forecast pool and prediction market](#forecast-pool-and-prediction-market)
+  - [Gaming behavior catalog and runtime guard](#gaming-behavior-catalog-and-runtime-guard)
+  - [Reflexive primitives (the workbench measures itself)](#reflexive-primitives-the-workbench-measures-itself)
+  - [Research-yield decomposition](#research-yield-decomposition)
+  - [Action intelligence and operations surface](#action-intelligence-and-operations-surface)
+  - [Audit-integrity chain manifests](#audit-integrity-chain-manifests)
+  - [Epistemic Airgap gate (cross-provider enforcement)](#epistemic-airgap-gate-cross-provider-enforcement)
+  - [Cold cross-provider pass](#cold-cross-provider-pass)
+  - [Damage signals](#damage-signals)
+  - [Supervisor and agent-rotation layer](#supervisor-and-agent-rotation-layer)
+  - [Self-demotion and recovery as discipline](#self-demotion-and-recovery-as-discipline)
+- [3. Named primitives](#3-named-primitives)
+  - [Vocabulary escape and observable rotation](#vocabulary-escape-and-observable-rotation)
+  - [Cross-mutator / cross-tool triangulation](#cross-mutator--cross-tool-triangulation)
+  - [Grammar-vs-space diagnosis](#grammar-vs-space-diagnosis)
+  - [Project readiness and constraint-to-DoF analysis](#project-readiness-and-constraint-to-dof-analysis)
+  - [LeanMill governed proof-search solver](#leanmill-governed-proof-search-solver)
+  - [Power-aware experimental statistics](#power-aware-experimental-statistics)
+  - [Forecasting-program calibration database and Brier/Elo stats](#forecasting-program-calibration-database-and-brierelo-stats)
+  - [Lean / formal-verification bridge](#lean--formal-verification-bridge)
+  - [Recent additions tracked through June 2026](#recent-additions-tracked-through-june-2026)
+- [Current boundaries](#current-boundaries)
 
 ## Fast map for reviewers
 
@@ -43,14 +105,17 @@ the historical seam names are secondary.
 | Does the repo catch basic release-time code drift? | Exact undefined-name tripwire plus public terminology, scope, evidence-atlas, routing, and docs checks | `make flakes` and `make gates` |
 | Does the gaming behavior catalog correspond to live checks? | Gaming behavior registry, hardening map, promotion evidence, and executable fixture anchors | `make gaming-catalog-audit` |
 | Is the evaluator-hardening proof point bounded and reproducible? | Frozen constraint-memory suite, three artifact-backed arms, pending ordinary-review arm | `make evaluator-hardening-frozen-check` |
-| Should a task enter the in-loop autoresearch kernel? | Workbench router over bounded claim, evaluator, rubric, artifact surface, and move-card route provenance (`operator_card_routes[]`) | `ztare autoresearch route --task "<task>" --project <project> --rubric <rubric>` |
-| Is a project missing surfaces before run readiness? | Project intake JSON, source index, artifact-source binding contracts, output binding, replay manifest, evidence-gap receipts, and optional prep ledger | `ztare project intake create --help`, `ztare project source-index --help`, `ztare project evidence-bind --help`, and `ztare project evidence-replay --help` |
-| Can launch readiness be checked without model calls? | Intake-bound `plan_preview`, preflight-only run path, expected-command inheritance, and admission receipt | `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json` then run `plan_preview.recommended_first_command` |
-| What happened in an autoresearch run? | Read-only trace chain over intake readiness (`readiness_canonical`), loop admission, source/evidence receipts, mutator briefing, graph focus, prediction contracts, projection, and trace-local health | `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json` |
-| What should the first local UI consume? | Case workbench interface contract over project intake, source/evidence readiness, trace, preflight, verdict/demotion, and export state | [`forensic_workbench_interface.md`](forensic_workbench_interface.md) |
+| Should a task enter the in-loop autoresearch kernel? | Workbench router over bounded claim, evaluator, rubric, artifact surface, and move-card route provenance | `ztare autoresearch route --task "<task>" --project <project> --rubric <rubric>` |
+| Is a project missing surfaces before run readiness? | Project brief JSON, source index, artifact-source binding contracts, output binding, replay manifest, evidence-gap records, and optional prep ledger | `ztare project intake create --help`, `ztare project source-index --help`, `ztare project evidence-bind --help`, and `ztare project evidence-replay --help` |
+| Can launch readiness be checked without model calls? | Intake-bound `plan_preview`, repair-first recommendation, readiness-only run path, expected-command inheritance, and admission record | `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json` then run `plan_preview.recommended_first_command` |
+| Did a candidate stay inside the declared mathematical vocabulary? | Expression-grammar compiler over rubric grammar, fit declaration, model body, fitter, and gate verdict | `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json` or `./venv/bin/python research_areas/probes/gp059_eml_expressibility_check.py` |
+| What happened in an autoresearch run? | Read-only trace chain over intake readiness (`readiness_canonical`), loop admission, source/evidence records, mutator briefing, graph focus, prediction contracts, projection, and trace-local health | `ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json` |
+| What should the local UI consume? | Project Workbench contract over all project folders, project brief repair, source/evidence readiness, trace, readiness check, run history, report state, saved history, and file-backed write boundaries | [`forensic_workbench_interface.md`](forensic_workbench_interface.md), `ztare forensic-workbench project-state --project <project> --json` |
+| Can I pressure-test a project before or without a full run? | Pre-run rubric critique (gaming surface, evidence anchoring, ceiling reachability), plain-language research-map queries, single-claim falsification, and document→bounded-claim drafting — CLI-first, surfaced in the workbench | `ztare rubric review --project <project> --json`, `ztare research map-query`, `ztare research falsify`, `ztare project draft --doc <path> --json` |
+| Is a loop getting simpler to defend or just different? | Advisory compression-progress signal over BIC, MDL, proof length, and telemetry-backed effort; use it beside information yield, not instead of it | [`compression_progress.py`](../../src/ztare/validator/core/compression_progress.py) and `./venv/bin/python scripts/public/control/compression_progress_replay.py --project <project>` |
 | Does a project preserve the raw/source/evidence/projection chain before run readiness? | DK0 evidence-trace audit over raw sources, source index, source-binding contracts, compile provenance, evidence output, constraints, projection, route preview, and guarded run command | `make autoresearch-evidence-trace PROJECT=<project> RUBRIC=<rubric> INTAKE=<intake.json> JSON=1` |
 | Do run-state traces replay cleanly across projects? | Trace replay over projection fields, latest-eval overlay, current-carrier readiness, artifact refs, worker provenance, transport, constraints, and action links | `ztare autoresearch carrier-replay --project <project> --json` |
-| Are graph/DAG signals wired without overstating general graph support? | Graph decision receipts, graph-derived RD actions, and graph capability audit | [`graph_interfaces.md`](graph_interfaces.md) and `make graph-capability-audit` |
+| Are graph/DAG signals wired without overstating general graph support? | Graph decision records, graph-derived RD actions, and graph capability audit | [`graph_interfaces.md`](graph_interfaces.md) and `make graph-capability-audit` |
 | Do move cards route task phrasings to the intended action surface? | Fixed paraphrase audit over the compact move-card router; semantic atlas must match current content-hash rows before use | `ztare audit move-card-router --json` |
 | Are forecast/prediction rows measurement or authority? | Forecast-pool lifecycle, prediction-contract read model, and forecast capability audit | `make forecast-capability-audit` |
 | Are subscription/API worker paths comparable? | Dispatch parity and outcome audit | `ztare autoresearch dispatch-parity --json` and `ztare autoresearch subscription-outcomes --json` |
@@ -126,6 +191,10 @@ fused exp/ln operator forces it to build composites *out of* the primitive,
 closing the vocabulary-drift escape. `py_exec` is gated by an explicit `py_exec_authorized_by` rubric flag
 plus an `expression_byte_budget` ceiling, enforced fail-closed at
 rubric-preflight.
+
+This is also a small example of the broader engine philosophy: declare a small
+primitive set, compose inside it, and make vocabulary escapes fail at the parser
+or gate layer instead of in prose review.
 
 ### Fit primitives and Stage 1/2/2.5 compression
 
@@ -323,7 +392,7 @@ analogy / framer trees referenced in
 
 ### Full-catalog primitive families
 
-The live architecture index is a generated 927-row capability catalog. Each row
+The live architecture index is a generated 932-row capability catalog. Each row
 now carries two derived taxonomy fields:
 
 - `source_category`: where the implementation lives, such as `research-operator`,
@@ -359,7 +428,7 @@ symbols:
   proposal-class labeling.
 
 This parent graph is a legibility layer for dispatchable LLM/agent workers. It
-is not a second primitive catalog and does not cover the whole 882-row index.
+is not a second primitive catalog and does not cover the whole 932-row index.
 The RD primitive surface displays both full-catalog parent nodes and these
 worker-family nodes before concrete hits, so a director sees the family of move
 first and the exact reusable primitive second.
@@ -622,16 +691,16 @@ as source-backed. The audit also reads the raw source files referenced by the
 source index, verifies their stripped-source hashes, and emits bounded preview
 context. If the source index points at missing or edited raw files, the audit
 blocks even when the claim row still names a known `source_id`.
-`ztare project intake` records bounded intake files, source/evidence
+`ztare project intake` records project-brief files, source/evidence
 references, non-claims, and next falsifiers so a task can be reviewed for later
-in-loop autoresearch entry. An intake can also seed `evidence_gap_contracts`
+in-loop autoresearch entry. A project brief can also seed `evidence_gap_contracts`
 for the first local-verification targets. Validation canonicalizes them into
 the same recovery-contract object used by graph routing, evidence fetch, and
 the graph-focus briefing. `ztare project intake draft-from-compiled` can draft
-the same intake shape from a compiled evidence artifact and its provenance, but
+the same project-brief shape from a compiled evidence artifact and its provenance, but
 the ordinary validator still rejects stale source refs or missing falsifiers.
 `ztare project prep-ledger` is only the optional
-append-only prep ledger for intake blockers or missing artifacts. These commands do not
+append-only prep ledger for project-brief blockers or missing artifacts. These commands do not
 execute RD out-of-loop agent work or run the autoresearch loop. The `task`
 field is the bounded work item that the router or loop may later evaluate once
 the intake file has the required surfaces.
@@ -782,7 +851,7 @@ public surface at
 [`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)):
 
 - forecast rows collect a separately-elicited tail-worry token
-  (`tail_insurance_premium`, int 1–100) alongside `p_success` and the
+  (`tail_insurance_premium`, int 1 to 100) alongside `p_success` and the
   decomposed risk channels. The tail token predicts per-row Brier
   independently of the point estimate across four replicated pilots.
 - forecasters are kept blind to each other's outputs until resolution
@@ -1067,7 +1136,7 @@ Thirteen public functions:
 - Three legal verdicts: `power_aware_verdict(observed_rho, n, target_rho)` returns one of `h1_supported` / `h0_kept` / `inconclusive_underpowered`. `h0_kept` requires the CI to wholly exclude $\pm$target_rho, otherwise the verdict is `inconclusive_underpowered`. The "underpowered null misread as h0_kept" error is what the [Forecast Calibration Program](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) found in 8 of 12 of its own earlier nulls. This resolver makes the correct verdict unavoidable.
 - Reproducibility manifest: `reproducibility_hash(prompt_template, dispatcher_version, corpus_row, agent_id)`: per-call SHA-256 of inputs so any score row can be audited back to the exact prompt + corpus row that produced it.
 
-Codified disciplines that the toolkit supports (referenced by [`AGENTS.md`](../../AGENTS.md) §6n.6–§6n.9):
+Codified disciplines that the toolkit supports (referenced by [`AGENTS.md`](../../AGENTS.md) §6n.6 to §6n.9):
 
 - Power before fire. Every pilot ships with `n_required` from `n_required_for_rho` written into the pre-registration row before the first call.
 - Three legal verdicts, no fourth. Findings resolve to `h1_supported` / `h0_kept` / `inconclusive_underpowered`. The "I tried, got p>0.05, calling it null" verdict is now `inconclusive_underpowered` unless the equivalence-bound condition is met.
@@ -1104,7 +1173,7 @@ named axioms (typed infrastructure, not analytic-PDE closure). See
 - Autoformalization + faithfulness firewall (`src/ztare/leanmill/solver/autoformalize.py`, opt-in): NL→Lean via a frozen leaf, gated by governance-as-faithfulness: compile, non-triviality, non-vacuity, structural preservation, and a directional cold cross-family judge. It fails closed because a false accept would fabricate success. It routes through the existing governance kernel, reusing that path. Efficacy remains unproven.
 - Isomorphism-surfaced default-off levers (`governance_organs.py` MDL-generativity + Schwartz-Zippel [advisory]; equiv-keyed proof cache; reachability invent-criterion). Built, self-tested, and parity-safe. Lift remains mostly unproven because easy-target A/Bs came out null. The discriminating measurement needs a critical-difficulty proof target. Full status: `leanmill_architecture.md`.
 - Three-tier proof reuse (`src/ztare/leanmill/solver/proof_cache.py`): the α-keyed within-run cache (binder axis) + semantic-defeq reuse (`defeq_reuse_candidate`, default-on), `semantic_premise_shelf` embeddings RETRIEVE cross-vocab candidates, the kernel `@goal=@cand:=rfl` oracle VERIFIES before any cite (similarity never closes; the cite is re-verified by governance), and theory-identity (`autoformalize_notes.theory_consolidation` refuses to re-formalize a RESET substrate that has prior banked facts, the AMM vocab-orphan prevention). Sound by construction; metamorphic guards in `tests/test_leanmill_agentic_invariants.py` fail on the pre-fix code.
-- Warm-compile door (`agentic_leaf.verify_lean_proof` + `v33_preflight._compile_probe`, default-on): the leaf ratify gate and the audit/composite compile route through the pre-elaborated warm campaign env (the SAME compile + `#print-axioms` gate, fail-closed) when a substrate is registered, eliminating the recurring cold-`lake env lean` Mathlib-re-import tax (592–1016s heavy-substrate); cold fallback when no substrate.
+- Warm-compile door (`agentic_leaf.verify_lean_proof` + `v33_preflight._compile_probe`, default-on): the leaf ratify gate and the audit/composite compile route through the pre-elaborated warm campaign env (the SAME compile + `#print-axioms` gate, fail-closed) when a substrate is registered, eliminating the recurring cold-`lake env lean` Mathlib-re-import tax (592 to 1016s heavy-substrate); cold fallback when no substrate.
 - Single-door closure invariant + deterministic conjunctive split (`governed_dag_search`, `isomorphism_decompose.derive_conjunctive_dag`): `status=="closed"` ⟺ a kernel-verified `proof_text` exists (no status-flip false-clean); a top-level `∧` target is split mechanically into its conjuncts and assembled via `composite_ratify`. Kernel-validated end-to-end.
 - Campaign-start P0 forecast (`forecast_router.forecast_campaign_p0`): predicts expected yield + time-to-closure + cost from per-lemma `P(close)` × the domain's historical mean time (`phase_timing`), logged at campaign start and scored ex-post against the actual (the self-learning loop via `reweight`). Enables admissibility filtering + budget focus; validated by backfilling the filed campaigns (APR/AMM/Topkis).
 
@@ -1114,7 +1183,8 @@ Concrete non-claims, listed so a reader is not left guessing:
 
 - No fully autonomous research replacement. ZTARE has autonomous loops and
   agent workers, but the human maintainer remains an uncontrolled variable and public
-  claims still require bounded evidence, gates, non-claims, and review packets.
+  claims still require bounded evidence, checks, non-claims, and saved review
+  files.
 - No domain-knowledge replacement. ZTARE does not substitute for
   an expert physicist, mathematician, or biologist.
 - No autonomous optimizer or RL routing of governance state. Reward
