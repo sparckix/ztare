@@ -1,0 +1,256 @@
+{
+  "mode": "anonymous_signature_census",
+  "eigenquestion": "Which exact-two anonymous equations define a nontrivial stable region of the frozen finite structures and create consequences that survive deduction, singleton ablation, and larger-carrier countermodel search?",
+  "signature": {
+    "schema": "leanmill.theory_signature.v1",
+    "name": "AnonymousBinaryDivisionDiagonal",
+    "sorts": [{"name": "S0"}],
+    "operations": [
+      {"name": "op0", "arg_sorts": ["S0", "S0"], "result_sort": "S0"},
+      {"name": "op1", "arg_sorts": ["S0", "S0"], "result_sort": "S0"},
+      {"name": "op2", "arg_sorts": ["S0"], "result_sort": "S0"}
+    ],
+    "relations": []
+  },
+  "primitive_semantics": {
+    "operation_bindings": {
+      "op0": "total finite binary operation table",
+      "op1": "total finite rowwise inverse table for op0",
+      "op2": "total finite inverse of the op0 diagonal map"
+    },
+    "relation_bindings": {}
+  },
+  "base_axioms": [
+    {
+      "schema": "leanmill.axiom_formula.v1",
+      "name": "base_0",
+      "formula": {
+        "kind": "forall",
+        "binders": [
+          {"name": "x", "sort": "S0"},
+          {"name": "y", "sort": "S0"}
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "kind": "app",
+            "symbol": "op0",
+            "args": [
+              {"kind": "var", "name": "x"},
+              {
+                "kind": "app",
+                "symbol": "op1",
+                "args": [
+                  {"kind": "var", "name": "x"},
+                  {"kind": "var", "name": "y"}
+                ]
+              }
+            ]
+          },
+          "right": {"kind": "var", "name": "y"}
+        }
+      }
+    },
+    {
+      "schema": "leanmill.axiom_formula.v1",
+      "name": "base_1",
+      "formula": {
+        "kind": "forall",
+        "binders": [
+          {"name": "x", "sort": "S0"},
+          {"name": "y", "sort": "S0"}
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "kind": "app",
+            "symbol": "op1",
+            "args": [
+              {"kind": "var", "name": "x"},
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "x"},
+                  {"kind": "var", "name": "y"}
+                ]
+              }
+            ]
+          },
+          "right": {"kind": "var", "name": "y"}
+        }
+      }
+    },
+    {
+      "schema": "leanmill.axiom_formula.v1",
+      "name": "base_2",
+      "formula": {
+        "kind": "forall",
+        "binders": [
+          {"name": "x", "sort": "S0"},
+          {"name": "y", "sort": "S0"},
+          {"name": "z", "sort": "S0"}
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "kind": "app",
+            "symbol": "op0",
+            "args": [
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "x"},
+                  {"kind": "var", "name": "y"}
+                ]
+              },
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "x"},
+                  {"kind": "var", "name": "z"}
+                ]
+              }
+            ]
+          },
+          "right": {
+            "kind": "app",
+            "symbol": "op0",
+            "args": [
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "y"},
+                  {"kind": "var", "name": "x"}
+                ]
+              },
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "y"},
+                  {"kind": "var", "name": "z"}
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "schema": "leanmill.axiom_formula.v1",
+      "name": "base_3",
+      "formula": {
+        "kind": "forall",
+        "binders": [{"name": "x", "sort": "S0"}],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "kind": "app",
+            "symbol": "op2",
+            "args": [
+              {
+                "kind": "app",
+                "symbol": "op0",
+                "args": [
+                  {"kind": "var", "name": "x"},
+                  {"kind": "var", "name": "x"}
+                ]
+              }
+            ]
+          },
+          "right": {"kind": "var", "name": "x"}
+        }
+      }
+    },
+    {
+      "schema": "leanmill.axiom_formula.v1",
+      "name": "base_4",
+      "formula": {
+        "kind": "forall",
+        "binders": [{"name": "x", "sort": "S0"}],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "kind": "app",
+            "symbol": "op0",
+            "args": [
+              {
+                "kind": "app",
+                "symbol": "op2",
+                "args": [{"kind": "var", "name": "x"}]
+              },
+              {
+                "kind": "app",
+                "symbol": "op2",
+                "args": [{"kind": "var", "name": "x"}]
+              }
+            ]
+          },
+          "right": {"kind": "var", "name": "x"}
+        }
+      }
+    }
+  ],
+  "base_theory_status": "typed_resolved",
+  "adapter_id": "generic_fol_finite.v1",
+  "adapter_config": {
+    "isomorphism_quotient": true,
+    "max_relabelings_per_model": 720,
+    "model_generation": {
+      "mode": "smt_exact",
+      "max_canonical_models_per_stratum": 100,
+      "timeout_ms_per_stratum": 120000
+    }
+  },
+  "formula_grammar": {
+    "schema": "leanmill.universal_equation_grammar.v1",
+    "max_total_operation_order": 2,
+    "max_formulas": 10000,
+    "variable_renaming_quotient": true,
+    "equation_side_quotient": true,
+    "exclude_nonvariable_reflexive": true
+  },
+  "model_or_observation_strata": [
+    {"sort_sizes": {"S0": 5}}
+  ],
+  "pack_arity": 2,
+  "collapse_controls": [],
+  "visible_evidence_manifest": {"interpretation_labels": []},
+  "sealed_evidence_manifest_digest": "sha256:f43afd5a88cd3927c8bfea90b8d4bc90f89361c541f7bd33ffe239742e7cf485",
+  "deanchoring_policy": {"cold_after_signature_compilation": true},
+  "navigator_contract": {
+    "adapter_id": "axiompack",
+    "presentation_size": {"minimum": 2, "maximum": 2}
+  },
+  "query_budget": {
+    "max_finalists": 3,
+    "max_ranked_queries": 8,
+    "larger_model_queries": 2,
+    "conditional_lean_queries": 1
+  },
+  "stop_rule": {
+    "freeze_after_finalists": 3,
+    "freeze_before_interpretation": true,
+    "stop_on_no_eligible_independent_synergistic_nodes": true
+  },
+  "verification_plan": {
+    "larger_model_strata": [
+      {"sort_sizes": {"S0": 6}},
+      {"sort_sizes": {"S0": 7}}
+    ],
+    "conditional_isabelle": true,
+    "isabelle_timeout_ms": 120000,
+    "conditional_lean": true,
+    "post_freeze_interpretation": true,
+    "smt_timeout_ms": 120000
+  },
+  "codec_versions": {
+    "formula": "generic-equation-v1",
+    "model": "generic-finite-model-v3"
+  },
+  "authority_refs": ["solver-exhausted-census", "campaign-signer"]
+}

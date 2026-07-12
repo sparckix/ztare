@@ -16,6 +16,8 @@ import subprocess
 import sys
 import tempfile
 import difflib
+import time
+import uuid
 from pathlib import Path
 
 
@@ -34,6 +36,10 @@ DEFAULT_REMOTE_PATH_PREFIXES = (
     "/usr/local/bin:"
     "/usr/bin:"
     "/bin"
+)
+SSH_CONTROL_PATH = os.environ.get(
+    "ZTARE_VPS_SSH_CONTROL_PATH",
+    f"/tmp/ztare-vps-{os.getuid()}-{os.getpid()}-%C",
 )
 
 
@@ -59,10 +65,33 @@ Usage:
   bash deploy/vps_run.sh posttick <tick_id> <forecast_contract_id> <substrate> <goal> [owner] [artifact_path] [--decision-changed]
   bash deploy/vps_run.sh deploy-update [--dry-run]
   bash deploy/vps_run.sh toolchain-smoke
+  bash deploy/vps_run.sh isabelle-smoke
+  bash deploy/vps_run.sh transport-probe
+  bash deploy/vps_run.sh subscription-runtime-smoke
+  bash deploy/vps_run.sh codex-upgrade [version|latest]
   bash deploy/vps_run.sh sync-listed <repo-relative-file> [file...]
   bash deploy/vps_run.sh lean-check-file <allowlisted repo-relative .lean>
   bash deploy/vps_run.sh lean-build <Lake target>
   bash deploy/vps_run.sh lean-parity [--build <Lake target>] [--all-allowlisted] <allowlisted repo-relative-file> [file...]
+  bash deploy/vps_run.sh leanmill-preflight <allowlisted campaign.md>
+  bash deploy/vps_run.sh leanmill-source-fetch <https-url> <sha256> </tmp/leanmill_source_snapshots/file>
+  bash deploy/vps_run.sh leanmill-campaign <allowlisted campaign.md> <remote-output-root> [--detach]
+  bash deploy/vps_run.sh leanmill-latest <remote-output-root>
+  bash deploy/vps_run.sh leanmill-agent-output <remote-attempt-dir> <blueprint_compiler|semantic_reviewer|navigator|lean_solver> <call-index> [stdout|stderr|call|result|schema|dispatch]
+  bash deploy/vps_run.sh leanmill-agent-results <remote-attempt-dir> <blueprint_compiler|semantic_reviewer|navigator|lean_solver>
+  bash deploy/vps_run.sh leanmill-status <remote-attempt-dir>
+  bash deploy/vps_run.sh leanmill-inspect <remote-attempt-dir>
+  bash deploy/vps_run.sh leanmill-verify <remote-attempt-dir> [--with-isabelle] [--with-lean] [--lean-root <remote-lean-root>]
+  bash deploy/vps_run.sh leanmill-replay <remote-attempt-dir>
+  bash deploy/vps_run.sh leanmill-resume <remote-attempt-dir> [--detach] [--delay-s <seconds>]
+  bash deploy/vps_run.sh leanmill-continue-epoch <remote-attempt-dir>
+  bash deploy/vps_run.sh leanmill-recover <remote-attempt-dir>
+  bash deploy/vps_run.sh leanmill-recheck <remote-attempt-dir> --lean-root <remote-lean-root> [--timeout-s <seconds>]
+  bash deploy/vps_run.sh leanmill-interpret <remote-attempt-dir> [--model <model>] [--reasoning-effort <low|medium|high|ultra>] [--retry-inconclusive] [--retry-failed]
+  bash deploy/vps_run.sh leanmill-adapter-forge <remote-attempt-dir> [--model <model>] [--reasoning-effort <low|medium|high|ultra>]
+  bash deploy/vps_run.sh leanmill-extend-budget <remote-attempt-dir> [--seconds <n>] [--phase <phase> --provider-calls <n> --agent-turns <n> --workbench-actions <n>] --authority-ref <ref> --reason <text>
+  bash deploy/vps_run.sh leanmill-stop <remote-attempt-dir> <authority-ref>
+  bash deploy/vps_run.sh leanmill-retire <remote-attempt-dir> <authority-ref> <reason>
   bash deploy/vps_run.sh tick-close-payload <tick_id> <forecast_contract_id> <remote_payload_dir> [owner]
   bash deploy/vps_run.sh rd-close <tick_id> <forecast_contract_id> <remote_payload_dir> [owner]
   bash deploy/vps_run.sh rd-close-local-payload <tick_id> <forecast_contract_id> <local_payload_dir> <remote_payload_dir> [owner]
@@ -108,6 +137,14 @@ def ssh_base() -> list[str]:
         "BatchMode=yes",
         "-o",
         "ConnectTimeout=20",
+        "-o",
+        "ServerAliveInterval=30",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        "ControlPersist=300",
+        "-o",
+        f"ControlPath={SSH_CONTROL_PATH}",
         VPS,
     ]
 
@@ -125,6 +162,14 @@ def scp_base() -> list[str]:
         "BatchMode=yes",
         "-o",
         "ConnectTimeout=20",
+        "-o",
+        "ServerAliveInterval=30",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        "ControlPersist=300",
+        "-o",
+        f"ControlPath={SSH_CONTROL_PATH}",
     ]
 
 
@@ -180,6 +225,11 @@ def remote_exports(
 ) -> str:
     env = {
         "PYTHONPATH": "src",
+        # Hetzner supplies the worker boundary, but its AppArmor profile blocks
+        # bubblewrap UID maps.  Codex capability seals still disable shell/JS/
+        # MCP as requested; only the unavailable nested process sandbox is
+        # omitted by the shared subscription runtime.
+        "ZTARE_CODEX_NESTED_SANDBOX": "0",
     }
     if membrane:
         env["ZTARE_MEMBRANE_OBSERVE"] = "0"
@@ -1002,6 +1052,78 @@ def action_toolchain_smoke(args: list[str]) -> None:
     )
 
 
+def action_isabelle_smoke(args: list[str]) -> None:
+    if args:
+        usage()
+    remote_cmd(
+        [
+            "./venv/bin/python",
+            "-m",
+            "ztare.leanmill.solver.sledgehammer",
+            "--live-theory-smoke",
+        ]
+    )
+
+
+def action_transport_probe(args: list[str]) -> None:
+    if args:
+        usage()
+    samples_ms: list[int] = []
+    for _index in range(3):
+        started = time.monotonic_ns()
+        output = remote_cmd(
+            ["python3", "-c", "print('ztare-transport-ok')"],
+            capture=True,
+        ).strip()
+        if output != "ztare-transport-ok":
+            die(f"unexpected transport probe output: {output!r}")
+        samples_ms.append((time.monotonic_ns() - started) // 1_000_000)
+    print(json.dumps({
+        "schema": "ztare.vps_transport_probe.v1",
+        "samples_ms": samples_ms,
+        "cold_ms": samples_ms[0],
+        "warm_mean_ms": sum(samples_ms[1:]) // 2,
+    }, sort_keys=True))
+
+
+def action_subscription_runtime_smoke(args: list[str]) -> None:
+    if args:
+        usage()
+    remote_cmd(
+        [
+            "python3",
+            "-c",
+            (
+                "import json,shutil,subprocess; rows={}; "
+                "[(lambda n,p: rows.update({n:{'executable':p or '',"
+                "'version':(subprocess.run([p,'--version'],capture_output=True,text=True).stdout.strip() if p else '')}}))"
+                "(name,shutil.which(name)) for name in ('codex','claude','npm')]; "
+                "print(json.dumps(rows,sort_keys=True))"
+            ),
+        ]
+    )
+
+
+def action_codex_upgrade(args: list[str]) -> None:
+    if len(args) > 1:
+        usage()
+    version = args[0] if args else "latest"
+    if version != "latest" and re.fullmatch(r"[0-9]+(?:\.[0-9]+){1,2}", version) is None:
+        die("codex-upgrade version must be numeric or latest")
+    prefix = str(Path(REMOTE_REPO).parent / ".local")
+    remote_cmd(
+        [
+            "npm",
+            "install",
+            "--global",
+            "--prefix",
+            prefix,
+            f"@openai/codex@{version}",
+        ]
+    )
+    remote_cmd(["codex", "--version"])
+
+
 def action_sync_listed(args: list[str]) -> None:
     if not args:
         usage()
@@ -1057,6 +1179,541 @@ def action_lean_parity(args: list[str]) -> None:
         validate_lake_target(build_target)
         remote_cmd([REMOTE_LAKE, "build", build_target], cwd=f"{REMOTE_REPO}/ztare_proofs")
     print(f"OK lean-parity synced={len(paths)} lean_checks={lean_count} build={build_target or 'none'}")
+
+
+def _campaign_metadata(campaign_path: str) -> dict:
+    safe_repo_path(campaign_path)
+    path = LOCAL_REPO / campaign_path
+    if not path.is_file():
+        die(f"local campaign file missing: {campaign_path}")
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        return {}
+    parts = text.split("---", 2)
+    if len(parts) != 3:
+        die(f"invalid campaign frontmatter: {campaign_path}")
+    try:
+        import yaml  # type: ignore[import-not-found]
+
+        metadata = yaml.safe_load(parts[1]) or {}
+    except Exception as exc:
+        die(f"cannot parse campaign frontmatter: {exc}")
+    if not isinstance(metadata, dict):
+        die("campaign frontmatter must be an object")
+    return metadata
+
+
+def _campaign_input_paths(campaign_path: str) -> list[str]:
+    """Return the campaign and the small, explicitly declared input files."""
+
+    metadata = _campaign_metadata(campaign_path)
+
+    declared = [campaign_path]
+    typed = str(metadata.get("typed_blueprint") or "").strip()
+    if typed:
+        typed_path = Path(typed)
+        if typed_path.is_absolute():
+            try:
+                typed_path = typed_path.relative_to(LOCAL_REPO)
+            except ValueError:
+                die("typed_blueprint must be inside the repository")
+        elif len(typed_path.parts) == 1:
+            typed_path = Path(campaign_path).parent / typed_path
+        declared.append(typed_path.as_posix())
+
+    frozen = metadata.get("frozen_context_ref") or {}
+    if isinstance(frozen, dict) and str(frozen.get("path") or "").strip():
+        snapshot_path = Path(str(frozen["path"]))
+        if snapshot_path.is_absolute():
+            try:
+                snapshot_path = snapshot_path.relative_to(LOCAL_REPO)
+            except ValueError:
+                die("frozen context must be inside the repository")
+        declared.append(snapshot_path.as_posix())
+
+    ordered: list[str] = []
+    for declared_path in declared:
+        safe_repo_path(declared_path)
+        if declared_path not in ordered:
+            ordered.append(declared_path)
+    return ordered
+
+
+def action_leanmill_campaign(args: list[str]) -> None:
+    detached = False
+    if len(args) == 3 and args[-1] == "--detach":
+        detached = True
+        args = args[:-1]
+    if len(args) != 2:
+        usage()
+    campaign_path, output_root = args
+    if not campaign_path.endswith(".md"):
+        die("leanmill-campaign expects a Markdown campaign")
+    validate_remote_tmp_or_repo(output_root, "LeanMill output root")
+    campaign_inputs = _campaign_input_paths(campaign_path)
+    for path in campaign_inputs:
+        sync_one_allowlisted(path)
+    # Admission is provider-free and must run before a detached launch can
+    # reserve any paid turn.  The campaign command repeats the check locally
+    # on the VPS, but this gate makes a bad input fail at the transport door.
+    if str(_campaign_metadata(campaign_path).get("typed_blueprint") or "").strip():
+        remote_cmd(
+            [
+                "./venv/bin/python",
+                "-m",
+                "ztare.leanmill.cli",
+                "preflight",
+                campaign_path,
+            ]
+        )
+    command = [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "campaign",
+        campaign_path,
+        "--output-root",
+        output_root,
+    ]
+    prefix = (
+        f"cd {shlex.quote(REMOTE_REPO)} && export {remote_exports()} "
+        f"ZTARE_LEANMILL_CAMPAIGN_STATE_ROOT={shlex.quote(output_root)} && "
+        f"mkdir -p {shlex.quote(output_root)} && "
+    )
+    if not detached:
+        remote_shell(prefix + shlex.join(command))
+        return
+    launch_id = "launch-" + uuid.uuid4().hex
+    log_path = f"{output_root.rstrip('/')}/{launch_id}.log"
+    unit_name = "ztare-leanmill-" + launch_id.removeprefix("launch-")
+    service_script = (
+        f"export {remote_exports()} "
+        f"ZTARE_LEANMILL_CAMPAIGN_STATE_ROOT={shlex.quote(output_root)}; "
+        f"exec {shlex.join(command)} >{shlex.quote(log_path)} 2>&1"
+    )
+    detached_command = [
+        "systemd-run",
+        "--user",
+        "--quiet",
+        "--collect",
+        f"--unit={unit_name}",
+        f"--working-directory={REMOTE_REPO}",
+        "--",
+        "/bin/bash",
+        "-lc",
+        service_script,
+    ]
+    remote_shell(
+        f"mkdir -p {shlex.quote(output_root)} && {shlex.join(detached_command)}"
+    )
+    print(json.dumps({
+        "schema": "leanmill.campaign_launch.v1",
+        "launch_id": launch_id,
+        "unit_name": unit_name,
+        "output_root": output_root,
+        "log_path": log_path,
+        "campaign_path": campaign_path,
+        "status": "launched",
+    }, sort_keys=True))
+
+
+def action_leanmill_preflight(args: list[str]) -> None:
+    if len(args) != 1:
+        usage()
+    campaign_path = args[0]
+    if not campaign_path.endswith(".md"):
+        die("leanmill-preflight expects a Markdown campaign")
+    for path in _campaign_input_paths(campaign_path):
+        sync_one_allowlisted(path)
+    remote_cmd(
+        [
+            "./venv/bin/python",
+            "-m",
+            "ztare.leanmill.cli",
+            "preflight",
+            campaign_path,
+        ]
+    )
+
+
+def action_leanmill_source_fetch(args: list[str]) -> None:
+    """Fetch one digest-pinned campaign reference without a substrate-specific route."""
+
+    if len(args) != 3:
+        usage()
+    url, expected_sha, destination = args
+    if not re.fullmatch(r"https://[^\s'\"`;&|<>]+", url):
+        die("leanmill-source-fetch requires one safe HTTPS URL")
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
+        die("leanmill-source-fetch requires a lowercase SHA-256 digest")
+    if not destination.startswith("/tmp/leanmill_source_snapshots/"):
+        die("leanmill-source-fetch destination must be under /tmp/leanmill_source_snapshots")
+    if any(part in {"", ".", ".."} for part in Path(destination).parts[3:]):
+        die("leanmill-source-fetch destination contains unsafe path components")
+    partial = destination + ".part"
+    remote_cmd(["mkdir", "-p", str(Path(destination).parent)], cwd=None)
+    remote_cmd(
+        ["curl", "--fail", "--location", "--silent", "--show-error", "--output", partial, url],
+        cwd=None,
+    )
+    actual = remote_cmd(["sha256sum", partial], cwd=None, capture=True).split()[0]
+    if actual != expected_sha:
+        die(
+            "leanmill source digest mismatch: "
+            f"expected={expected_sha} actual={actual}",
+            1,
+        )
+    remote_cmd(["mv", partial, destination], cwd=None)
+    print(f"OK leanmill-source-fetch {destination} {actual}")
+
+
+def _leanmill_attempt_action(command: str, args: list[str]) -> None:
+    if len(args) != 1:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    remote_cmd(
+        ["./venv/bin/python", "-m", "ztare.leanmill.cli", command, attempt_dir]
+    )
+
+
+def action_leanmill_latest(args: list[str]) -> None:
+    if len(args) != 1:
+        usage()
+    output_root = args[0]
+    validate_remote_tmp_or_repo(output_root, "LeanMill output root")
+    remote_cmd(
+        [
+            "python3",
+            "-c",
+            (
+                "from pathlib import Path; import sys; "
+                "root=Path(sys.argv[1]); "
+                "rows=sorted([p for pat in ('attempt-*','formalize-*') for p in root.glob(pat) if p.is_dir()], "
+                "key=lambda p:p.stat().st_mtime_ns); "
+                "print(rows[-1] if rows else 'NONE')"
+            ),
+            output_root,
+        ]
+    )
+
+
+def action_leanmill_agent_output(args: list[str]) -> None:
+    if len(args) not in {3, 4}:
+        usage()
+    attempt_dir, role, index_text = args[:3]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    if role not in {
+        "blueprint_compiler",
+        "semantic_reviewer",
+        "navigator",
+        "lean_solver",
+        "post_freeze_interpreter",
+        "adapter_forge",
+        "adapter_reviewer",
+    }:
+        die(f"unsupported LeanMill role: {role}")
+    if not index_text.isdigit() or int(index_text) > 999:
+        die(f"invalid LeanMill call index: {index_text}")
+    kind = args[3] if len(args) == 4 else "stdout"
+    suffixes = {
+        "stdout": "stdout.txt",
+        "stderr": "stderr.txt",
+        "call": "call.json",
+        "prompt": "prompt.txt",
+        "result": "result.json",
+        "schema": "schema.json",
+        "dispatch": "dispatch.json",
+    }
+    if kind not in suffixes:
+        die(f"unsupported LeanMill call artifact: {kind}")
+    output_path = (
+        f"{attempt_dir}/agent_calls/{role}/"
+        f"{int(index_text):03d}.{suffixes[kind]}"
+    )
+    validate_remote_tmp_or_repo(output_path, "LeanMill agent output")
+    remote_cmd(
+        [
+            "python3",
+            "-c",
+            (
+                "from pathlib import Path; import sys; p=Path(sys.argv[1]); "
+                "print(p.read_text(encoding='utf-8') if p.is_file() else 'MISSING')"
+            ),
+            output_path,
+        ]
+    )
+
+
+def action_leanmill_agent_results(args: list[str]) -> None:
+    if len(args) != 2:
+        usage()
+    attempt_dir, role = args
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    if role not in {
+        "blueprint_compiler",
+        "semantic_reviewer",
+        "navigator",
+        "lean_solver",
+        "post_freeze_interpreter",
+    }:
+        die(f"unsupported LeanMill role: {role}")
+    role_dir = f"{attempt_dir}/agent_calls/{role}"
+    remote_cmd(
+        [
+            "python3",
+            "-c",
+            (
+                "from pathlib import Path; import json,sys; root=Path(sys.argv[1]); rows=[]; "
+                "calls=sorted(root.glob('*.call.json')); "
+                "[(lambda p,r: rows.append({'index':p.name.split('.')[0],"
+                "'call':json.loads(p.read_text()),"
+                "'result':json.loads(r.read_text()) if r.is_file() else None}))"
+                "(p,p.parent/(p.name.split('.')[0]+'.result.json')) for p in calls]; "
+                "print(json.dumps(rows,sort_keys=True))"
+            ),
+            role_dir,
+        ]
+    )
+
+
+def action_leanmill_status(args: list[str]) -> None:
+    _leanmill_attempt_action("status", args)
+
+
+def action_leanmill_inspect(args: list[str]) -> None:
+    _leanmill_attempt_action("inspect", args)
+
+
+def action_leanmill_replay(args: list[str]) -> None:
+    _leanmill_attempt_action("replay", args)
+
+
+def action_leanmill_resume(args: list[str]) -> None:
+    if not args:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    detached = "--detach" in args[1:]
+    delay_s = 0
+    extras = list(args[1:])
+    if "--detach" in extras:
+        extras.remove("--detach")
+    if "--delay-s" in extras:
+        index = extras.index("--delay-s")
+        if index + 1 >= len(extras) or not extras[index + 1].isdigit():
+            usage()
+        delay_s = int(extras[index + 1])
+        del extras[index : index + 2]
+    if extras or (delay_s and not detached):
+        usage()
+    if not detached:
+        _leanmill_attempt_action("resume", [attempt_dir])
+        return
+    launch_id = "resume-" + uuid.uuid4().hex
+    unit_name = "ztare-leanmill-" + launch_id
+    log_path = f"{attempt_dir.rstrip('/')}/{launch_id}.log"
+    command = [
+        "./venv/bin/python", "-m", "ztare.leanmill.cli", "resume", attempt_dir,
+    ]
+    service_script = (
+        f"export {remote_exports()}; "
+        f"exec {shlex.join(command)} >{shlex.quote(log_path)} 2>&1"
+    )
+    detached_command = [
+        "systemd-run", "--user", "--quiet", "--collect",
+        f"--unit={unit_name}",
+        f"--working-directory={REMOTE_REPO}",
+    ]
+    if delay_s:
+        detached_command.append(f"--on-active={delay_s}s")
+    detached_command.extend(["--", "/bin/bash", "-lc", service_script])
+    remote_shell(shlex.join(detached_command))
+    print(json.dumps({
+        "schema": "leanmill.campaign_resume_launch.v1",
+        "launch_id": launch_id,
+        "unit_name": unit_name,
+        "attempt_dir": attempt_dir,
+        "log_path": log_path,
+        "delay_s": delay_s,
+        "status": "scheduled" if delay_s else "launched",
+    }, sort_keys=True))
+
+
+def action_leanmill_continue_epoch(args: list[str]) -> None:
+    _leanmill_attempt_action("continue-epoch", args)
+
+
+def action_leanmill_recover(args: list[str]) -> None:
+    _leanmill_attempt_action("recover", args)
+
+
+def action_leanmill_recheck(args: list[str]) -> None:
+    if len(args) not in {3, 5} or args[1] != "--lean-root":
+        usage()
+    attempt_dir, lean_root = args[0], args[2]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    validate_remote_tmp_or_repo(lean_root, "Lean root")
+    command = [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "recheck",
+        attempt_dir,
+        "--lean-root",
+        lean_root,
+    ]
+    if len(args) == 5:
+        if args[3] != "--timeout-s" or not args[4].isdigit():
+            usage()
+        command.extend(args[3:])
+    remote_cmd(command)
+
+
+def action_leanmill_interpret(args: list[str]) -> None:
+    if not args:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    command = [
+        "./venv/bin/python", "-m", "ztare.leanmill.cli", "interpret", attempt_dir
+    ]
+    i = 1
+    while i < len(args):
+        if args[i] == "--model" and i + 1 < len(args):
+            command.extend(args[i:i + 2])
+            i += 2
+        elif args[i] == "--reasoning-effort" and i + 1 < len(args):
+            if args[i + 1] not in {"low", "medium", "high", "ultra"}:
+                die("literature reasoning effort must be low, medium, high, or ultra")
+            command.extend(args[i:i + 2])
+            i += 2
+        elif args[i] == "--retry-inconclusive":
+            command.append(args[i])
+            i += 1
+        elif args[i] == "--retry-failed":
+            command.append(args[i])
+            i += 1
+        else:
+            die(f"unknown leanmill-interpret option: {args[i]}")
+    remote_cmd(command)
+
+
+def action_leanmill_adapter_forge(args: list[str]) -> None:
+    if not args:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    command = [
+        "./venv/bin/python", "-m", "ztare.leanmill.cli", "adapter-forge", attempt_dir
+    ]
+    i = 1
+    while i < len(args):
+        if args[i] == "--model" and i + 1 < len(args):
+            command.extend(args[i:i + 2])
+            i += 2
+        elif args[i] == "--reasoning-effort" and i + 1 < len(args):
+            if args[i + 1] not in {"low", "medium", "high", "ultra"}:
+                die("AdapterForge reasoning effort must be low, medium, high, or ultra")
+            command.extend(args[i:i + 2])
+            i += 2
+        else:
+            die(f"unknown leanmill-adapter-forge option: {args[i]}")
+    remote_cmd(command)
+
+
+def action_leanmill_extend_budget(args: list[str]) -> None:
+    if not args:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    command = [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "extend-budget",
+        attempt_dir,
+    ]
+    i = 1
+    while i < len(args):
+        if args[i] in {
+            "--seconds", "--phase", "--provider-calls", "--agent-turns",
+            "--workbench-actions", "--adapter-forge-attempts",
+            "--authority-ref", "--reason",
+        } and i + 1 < len(args):
+            command.extend(args[i:i + 2])
+            i += 2
+        else:
+            die(f"unknown leanmill-extend-budget option: {args[i]}")
+    remote_cmd(command)
+
+
+def action_leanmill_verify(args: list[str]) -> None:
+    if not args:
+        usage()
+    attempt_dir = args[0]
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    command = [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "verify",
+        attempt_dir,
+    ]
+    i = 1
+    while i < len(args):
+        if args[i] == "--with-isabelle":
+            command.append("--with-isabelle")
+            i += 1
+        elif args[i] == "--with-lean":
+            command.append("--with-lean")
+            i += 1
+        elif args[i] == "--lean-root" and i + 1 < len(args):
+            lean_root = args[i + 1]
+            validate_remote_tmp_or_repo(lean_root, "Lean root")
+            command.extend(["--lean-root", lean_root])
+            i += 2
+        else:
+            die(f"unknown leanmill-verify option: {args[i]}")
+    remote_cmd(command)
+
+
+def action_leanmill_stop(args: list[str]) -> None:
+    if len(args) != 2:
+        usage()
+    attempt_dir, authority_ref = args
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    remote_cmd(
+        [
+            "./venv/bin/python",
+            "-m",
+            "ztare.leanmill.cli",
+            "stop",
+            attempt_dir,
+            "--authority-ref",
+            authority_ref,
+        ]
+    )
+
+
+def action_leanmill_retire(args: list[str]) -> None:
+    if len(args) != 3:
+        usage()
+    attempt_dir, authority_ref, reason = args
+    validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
+    remote_cmd(
+        [
+            "./venv/bin/python",
+            "-m",
+            "ztare.leanmill.cli",
+            "retire",
+            attempt_dir,
+            "--authority-ref",
+            authority_ref,
+            "--reason",
+            reason,
+        ]
+    )
 
 
 def action_tick_close_payload(args: list[str]) -> None:
@@ -1150,10 +1807,33 @@ ACTIONS = {
     "posttick": action_posttick,
     "deploy-update": action_deploy_update,
     "toolchain-smoke": action_toolchain_smoke,
+    "isabelle-smoke": action_isabelle_smoke,
+    "transport-probe": action_transport_probe,
+    "subscription-runtime-smoke": action_subscription_runtime_smoke,
+    "codex-upgrade": action_codex_upgrade,
     "sync-listed": action_sync_listed,
     "lean-check-file": action_lean_check_file,
     "lean-build": action_lean_build,
     "lean-parity": action_lean_parity,
+    "leanmill-preflight": action_leanmill_preflight,
+    "leanmill-source-fetch": action_leanmill_source_fetch,
+    "leanmill-campaign": action_leanmill_campaign,
+    "leanmill-latest": action_leanmill_latest,
+    "leanmill-agent-output": action_leanmill_agent_output,
+    "leanmill-agent-results": action_leanmill_agent_results,
+    "leanmill-status": action_leanmill_status,
+    "leanmill-inspect": action_leanmill_inspect,
+    "leanmill-verify": action_leanmill_verify,
+    "leanmill-replay": action_leanmill_replay,
+    "leanmill-resume": action_leanmill_resume,
+    "leanmill-continue-epoch": action_leanmill_continue_epoch,
+    "leanmill-recover": action_leanmill_recover,
+    "leanmill-recheck": action_leanmill_recheck,
+    "leanmill-interpret": action_leanmill_interpret,
+    "leanmill-adapter-forge": action_leanmill_adapter_forge,
+    "leanmill-extend-budget": action_leanmill_extend_budget,
+    "leanmill-stop": action_leanmill_stop,
+    "leanmill-retire": action_leanmill_retire,
     "tick-close-payload": action_tick_close_payload,
     "rd-close": action_rd_close,
     "rd-close-local-payload": action_rd_close_local_payload,

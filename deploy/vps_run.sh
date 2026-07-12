@@ -6,6 +6,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PYTHON="${PYTHON:-python3}"
 
+# Optional ignored connection profile. Keeping host/key selection outside the
+# command line lets the named-action launcher retain one narrow approval rule.
+LOCAL_ENV="${SCRIPT_DIR}/vps.local.env"
+if [ -f "$LOCAL_ENV" ]; then
+  # shellcheck disable=SC1090
+  source "$LOCAL_ENV"
+fi
+
 # Remote noninteractive SSH must not depend on login-shell PATH setup.
 # Keep this as a literal remote expression; vps_run.py expands $REMOTE_REPO
 # locally and leaves $HOME for the remote shell.

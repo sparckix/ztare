@@ -78,13 +78,13 @@ def claim_lemma(campaign: str, lemma: str, *, lease_s: int, db_path: "str | None
         cx.close()
 
 
-def complete_lemma(campaign: str, lemma: str, *, solved: bool, db_path: "str | None" = None) -> None:
-    """Mark a leased lemma terminal (`solved` → done) or release it back to the queue for retry."""
+def complete_lemma(campaign: str, lemma: str, *, solved: bool, db_path: "str | None" = None) -> bool:
+    """Mark this node's leased lemma terminal or release it; ``False`` means its lease was lost."""
     p = db_path or _db_path()
     cx = work_queue.connect(p)
     try:
         wid = lemma_work_id(campaign, lemma)
-        work_queue.finish_specific(cx, work_id=wid, worker_id=node(), done=bool(solved))
+        return work_queue.finish_specific(cx, work_id=wid, worker_id=node(), done=bool(solved))
     finally:
         cx.close()
 
@@ -128,7 +128,7 @@ def _self_test() -> int:
         # node A finishes its lemmas (solved) → terminal done → node B cannot claim them
         for l in nA:
             os.environ["LEANMILL_NODE_ID"] = "nodeA"
-            complete_lemma(camp, l, solved=True)
+            ok(f"owner can complete {l}", complete_lemma(camp, l, solved=True) is True)
         os.environ["LEANMILL_NODE_ID"] = "nodeB"
         ok("done lemmas are not re-claimable by another node", all(not claim_lemma(camp, l, lease_s=300) for l in nA))
 
@@ -136,7 +136,7 @@ def _self_test() -> int:
         if nB:
             relq = nB[0]
             os.environ["LEANMILL_NODE_ID"] = "nodeB"
-            complete_lemma(camp, relq, solved=False)            # release
+            ok("owner can release an unsolved lemma", complete_lemma(camp, relq, solved=False) is True)
             os.environ["LEANMILL_NODE_ID"] = "nodeA"
             ok("released (unsolved) lemma is re-claimable by another node", claim_lemma(camp, relq, lease_s=300) is True)
 
@@ -147,6 +147,17 @@ def _self_test() -> int:
             fresh = "lemma_fresh"
             ok("first claim of fresh lemma", claim_lemma(camp, fresh, lease_s=300) is True)
             ok("idempotent re-claim by same node", claim_lemma(camp, fresh, lease_s=300) is True)
+            cx = work_queue.connect(db)
+            try:
+                fresh_row = cx.execute(
+                    "SELECT attempts FROM work_items WHERE work_id=?", (lemma_work_id(camp, fresh),)
+                ).fetchone()
+                ok("idempotent re-claim does not consume another attempt", fresh_row and fresh_row["attempts"] == 1)
+            finally:
+                cx.close()
+            os.environ["LEANMILL_NODE_ID"] = "nodeB"
+            ok("foreign node cannot finalize active lease", complete_lemma(camp, fresh, solved=True) is False)
+            os.environ["LEANMILL_NODE_ID"] = "nodeA"
     finally:
         for k in ("ZTARE_LEANMILL_QUEUE_DB", "ZTARE_LEANMILL_DISTRIBUTED_LEMMAS", "LEANMILL_NODE_ID"):
             os.environ.pop(k, None)

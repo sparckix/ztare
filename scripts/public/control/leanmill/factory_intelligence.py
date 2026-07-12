@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sqlite3
 import subprocess
 import sys
@@ -38,6 +39,19 @@ from leanmill_c_supply_credit import (
 from src.ztare.leanmill.common import read_json, sha256_file, write_json_atomic, write_text_atomic
 from src.ztare.leanmill.contracts import handoff as handoff_contract
 from src.ztare.leanmill.policy import c_supply_breadth_policy_from_policy, lane_budget_plan, priority_policy_from_policy
+from src.ztare.leanmill.run_observability import (
+    DEFAULT_ATTEMPTS_DB as DEFAULT_RUN_OBSERVABILITY_ATTEMPTS_DB,
+    DEFAULT_AXIOM_PACKS as DEFAULT_RUN_OBSERVABILITY_AXIOM_PACKS,
+    DEFAULT_BANK_ATTEMPTS as DEFAULT_RUN_OBSERVABILITY_BANK_ATTEMPTS,
+    DEFAULT_COT_TRACES as DEFAULT_RUN_OBSERVABILITY_COT_TRACES,
+    DEFAULT_DECOMPOSITION_CACHE as DEFAULT_RUN_OBSERVABILITY_DECOMPOSITION_CACHE,
+    DEFAULT_FAITHFULNESS_STORE as DEFAULT_RUN_OBSERVABILITY_FAITHFULNESS,
+    DEFAULT_FORMALIZE_ATTEMPTS as DEFAULT_RUN_OBSERVABILITY_FORMALIZE_ATTEMPTS,
+    DEFAULT_NO_GOOD_STORE as DEFAULT_RUN_OBSERVABILITY_NO_GOOD,
+    DEFAULT_NOTES_TRACE as DEFAULT_RUN_OBSERVABILITY_NOTES_TRACE,
+    DEFAULT_PROOF_CACHE as DEFAULT_RUN_OBSERVABILITY_PROOF_CACHE,
+    DEFAULT_VERDICTS as DEFAULT_RUN_OBSERVABILITY_VERDICTS,
+)
 from src.ztare.leanmill.typed_exit import typed_exit_summary
 from leanmill_paths import DATA_DIR as DEFAULT_DATA_DIR
 from leanmill_paths import FACTORY_POLICY as DEFAULT_FACTORY_POLICY
@@ -176,6 +190,42 @@ def _read_json(path: str | Path | None) -> Any:
 
 def _write_json(path: str | Path, obj: Any) -> None:
     write_json_atomic(path, obj)
+
+
+def _run_observability_read_model(args: argparse.Namespace) -> dict[str, Any]:
+    run_tag = str(getattr(args, "run_observability_tag", "") or "").strip()
+    manifest = str(getattr(args, "run_observability_manifest", "") or "").strip()
+    if not run_tag and not manifest:
+        return {}
+    try:
+        src = str(REPO / "src")
+        if src not in sys.path:
+            sys.path.insert(0, src)
+        from ztare.leanmill.run_observability import build_observability_bundle
+
+        return build_observability_bundle(
+            run_tag=run_tag,
+            attempts_db=getattr(args, "run_observability_attempts_db"),
+            manifest_path=manifest or None,
+            lean_root=(getattr(args, "run_observability_lean_root", "") or None),
+            verdicts_path=getattr(args, "run_observability_verdicts"),
+            bank_attempts_path=getattr(args, "run_observability_bank_attempts"),
+            formalize_attempts_path=getattr(args, "run_observability_formalize_attempts"),
+            notes_trace_path=getattr(args, "run_observability_notes_trace"),
+            cot_traces_path=getattr(args, "run_observability_cot_traces"),
+            proof_cache_path=getattr(args, "run_observability_proof_cache"),
+            no_good_path=getattr(args, "run_observability_no_good"),
+            faithfulness_path=getattr(args, "run_observability_faithfulness"),
+            decomposition_cache_path=getattr(args, "run_observability_decomposition_cache"),
+            staged_index_path=(getattr(args, "run_observability_staged_index", "") or None),
+            axiom_packs_path=getattr(args, "run_observability_axiom_packs"),
+        )
+    except Exception as exc:  # noqa: BLE001 - read model must not block factory intelligence
+        return {
+            "schema": "leanmill.run_observability_bundle.v1",
+            "run_tag": run_tag,
+            "error": repr(exc)[:240],
+        }
 
 
 def _read_events(path: str | Path, *, limit: int) -> list[dict[str, Any]]:
@@ -1167,6 +1217,40 @@ def _campaign_cycle_time_read_model() -> dict[str, Any]:
         return summarize_campaign_cycle_time(rows)
     except Exception as _e:  # noqa: BLE001 — surfacing must never break the read model
         return {**_EMPTY_CYCLE_TIME, "error": repr(_e)[:160]}
+
+
+def denotation_rollup(roots: "list[Path] | None" = None) -> dict[str, Any]:
+    """DENOTATION-PINNED FRACTION — the repo-level headline behind architecture §4.2b: of the formalizations
+    whose built defs the def-denotation REPORTER measured, what fraction is PINNED by a kernel-verified
+    external anchor? Verdicts persist ONLY in the per-run `<notes>.autoformalize_result.json` artifacts
+    written by `ztare.leanmill.solver.autoformalize_notes.main` (`res["denotation"]` — advisory telemetry,
+    never a gate), so this scans those; there is no jsonl store. Artifacts with `denotation: null` (check
+    off / non-theory-first run) are EXCLUDED — "reporter never ran" must not be laundered as NOT_APPLICABLE.
+    `pinned_fraction` denominator = pinned+underdetermined+refuted (NOT_APPLICABLE has no built defs →
+    nothing to pin); None when no applicable rows. Pure read-model: never writes, never gates, no Lean.
+    NOTE: the laptop's artifacts are a stale synced snapshot — the authoritative run is on the VPS repo."""
+    counts = {"pinned": 0, "underdetermined": 0, "refuted": 0, "not_applicable": 0}
+    key = {"PINNED": "pinned", "UNDERDETERMINED": "underdetermined",
+           "REFUTED": "refuted", "NOT_APPLICABLE": "not_applicable"}
+    prune = {".git", ".lake", ".venv", "node_modules", "__pycache__", "lake-packages", "build"}
+    for root in (roots if roots is not None else [REPO]):
+        # ponytail: full-repo walk (~seconds, pruned); index the artifacts if this ever gets hot.
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in prune]
+            for fn in filenames:
+                if not fn.endswith(".autoformalize_result.json"):
+                    continue
+                try:
+                    den = (json.loads((Path(dirpath) / fn).read_text(encoding="utf-8")) or {}).get("denotation")
+                except Exception:  # noqa: BLE001 — one unreadable artifact must never break the read model
+                    continue
+                k = key.get(str((den or {}).get("verdict"))) if isinstance(den, dict) else None
+                if k:
+                    counts[k] += 1
+    applicable = counts["pinned"] + counts["underdetermined"] + counts["refuted"]
+    return {**counts,
+            "pinned_fraction": (counts["pinned"] / applicable) if applicable else None,
+            "n_formalizations": sum(counts.values())}
 
 
 def _extract_scoreboard_from_stdout(text: str) -> dict[str, int]:
@@ -3827,6 +3911,23 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
     feedback_exit_counts = _dict_field(learning_feedback_model, "exit_counts")
     upstream_rater = _dict_field(payload, "c_supply_upstream_rater")
     upstream_validation = _dict_field(upstream_rater, "model_validation")
+    run_obs = _dict_field(payload, "run_observability")
+    run_readout = _dict_field(run_obs, "operator_readout")
+    run_status = str(run_readout.get("status") or "")
+    if run_readout and run_status in {"blocked", "stuck", "needs_inspection"}:
+        recommendations.append({
+            "priority": _recommendation_priority(payload, "run_observability_operator_bottleneck", 158),
+            "class": "run_observability_operator_bottleneck",
+            "why": run_readout.get("why"),
+            "next_action": run_readout.get("next_action"),
+            "evidence": {
+                "run_tag": run_obs.get("run_tag"),
+                "status": run_status,
+                "primary_bottleneck": run_readout.get("primary_bottleneck"),
+                "warnings": run_obs.get("warnings", []),
+                "readout": run_readout,
+            },
+        })
     if upstream_rater and upstream_validation and bool(upstream_rater.get("run_model")) and not upstream_validation.get("ok", True):
         recommendations.append({
             "priority": _recommendation_priority(payload, "upstream_rater_output_invalid", 134),
@@ -4708,6 +4809,15 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
         f"- feedback_review_required_count: `{payload.get('learning_feedback_read_model', {}).get('review_required_count')}`",
         f"- feedback_contract_note: {payload.get('learning_feedback_read_model', {}).get('contract_note')}",
         "",
+        "## Run Observability",
+        "",
+        f"- run_tag: `{payload.get('run_observability', {}).get('run_tag', '')}`",
+        f"- operator_status: `{payload.get('run_observability', {}).get('operator_readout', {}).get('status', '')}`",
+        f"- primary_bottleneck: `{payload.get('run_observability', {}).get('operator_readout', {}).get('primary_bottleneck', '')}`",
+        f"- next_action: {payload.get('run_observability', {}).get('operator_readout', {}).get('next_action', '')}",
+        f"- warnings: `{payload.get('run_observability', {}).get('warnings', [])}`",
+        f"- axiom_packs: `{payload.get('run_observability', {}).get('axiom_packs', {})}`",
+        "",
         "## Proof-Lane RCA",
         "",
         f"- bottleneck_class: `{payload.get('proof_lane_rca', {}).get('bottleneck_class')}`",
@@ -5051,6 +5161,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "subprocess_metrics": _build_subprocess_metrics(rows, events, trailing_window_s=args.window_s),
         "phase_timing": _phase_timing_read_model(),
         "campaign_cycle_time": _campaign_cycle_time_read_model(),
+        "denotation_rollup": denotation_rollup(),
         "learning_unit_flow": _learning_unit_flow(rows, events, trailing_window_s=args.window_s),
         "learning_feedback_read_model": _learning_feedback_read_model(rows, trailing_window_s=args.window_s),
         "target_resolution_read_model": _target_resolution_read_model(rows),
@@ -5140,6 +5251,9 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         factory_policy if isinstance(factory_policy, dict) else {},
         trailing_window_s=args.window_s,
     )
+    run_observability = _run_observability_read_model(args)
+    if run_observability:
+        payload["run_observability"] = run_observability
     payload["conversion_diagnostics"] = _conversion_diagnostics(
         rows,
         events,
@@ -5771,7 +5885,26 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--window-s", type=int, default=3600)
     ap.add_argument("--integration-receipt-limit", type=int, default=200)
     ap.add_argument("--worker-heartbeat-stale-s", type=int, default=0)
+    ap.add_argument("--run-observability-tag", default="",
+                    help="optional LeanMill run_tag to join into this factory read model")
+    ap.add_argument("--run-observability-manifest", default="",
+                    help="optional .solver_scratch/<run_tag>/run_manifest.json path")
+    ap.add_argument("--run-observability-lean-root", default="")
+    ap.add_argument("--run-observability-attempts-db", default=str(DEFAULT_RUN_OBSERVABILITY_ATTEMPTS_DB))
+    ap.add_argument("--run-observability-verdicts", default=str(DEFAULT_RUN_OBSERVABILITY_VERDICTS))
+    ap.add_argument("--run-observability-bank-attempts", default=str(DEFAULT_RUN_OBSERVABILITY_BANK_ATTEMPTS))
+    ap.add_argument("--run-observability-formalize-attempts", default=str(DEFAULT_RUN_OBSERVABILITY_FORMALIZE_ATTEMPTS))
+    ap.add_argument("--run-observability-notes-trace", default=str(DEFAULT_RUN_OBSERVABILITY_NOTES_TRACE))
+    ap.add_argument("--run-observability-cot-traces", default=str(DEFAULT_RUN_OBSERVABILITY_COT_TRACES))
+    ap.add_argument("--run-observability-proof-cache", default=str(DEFAULT_RUN_OBSERVABILITY_PROOF_CACHE))
+    ap.add_argument("--run-observability-no-good", default=str(DEFAULT_RUN_OBSERVABILITY_NO_GOOD))
+    ap.add_argument("--run-observability-faithfulness", default=str(DEFAULT_RUN_OBSERVABILITY_FAITHFULNESS))
+    ap.add_argument("--run-observability-decomposition-cache", default=str(DEFAULT_RUN_OBSERVABILITY_DECOMPOSITION_CACHE))
+    ap.add_argument("--run-observability-staged-index", default="")
+    ap.add_argument("--run-observability-axiom-packs", default=str(DEFAULT_RUN_OBSERVABILITY_AXIOM_PACKS))
     ap.add_argument("--self-test", action="store_true")
+    ap.add_argument("--denotation-rollup", action="store_true",
+                    help="print the repo-level def-denotation verdict rollup as JSON and exit (pure read)")
     return ap
 
 
@@ -5779,6 +5912,9 @@ def main() -> int:
     args = _build_arg_parser().parse_args()
     if args.self_test:
         return _self_test()
+    if args.denotation_rollup:
+        print(json.dumps(denotation_rollup(), indent=2, sort_keys=True))
+        return 0
     payload = build(args)
     print(json.dumps({
         "out": args.out,

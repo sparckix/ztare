@@ -1,0 +1,56 @@
+{
+  "authority": "advisory_only",
+  "model": "claude-fable-5",
+  "prompt_sha256": "4ace64cd94aafb8517c2ddafad262163fb0b0fae1ccb9ecaa9c2af9db637bf1b",
+  "receipt_sha256": "ab93c934f9859a4e5ac190681891cac9952821e3972d33152540eaee4c34be6d",
+  "recommended_question_id": "exact_two_magma",
+  "review": {
+    "portfolio_rationale": "Run exact_two_magma first: it is the only question executable within the 20-minute zero-API cap, and its complete ETP ground truth plus the conjunction-ablation artifact make it the sole candidate that can cleanly separate apparatus weakness from mathematical scarcity. Its ablation harness is also a prerequisite instrument for interpreting new_executable_algebra, which should run second only after a frozen fixture and positive-control battery exist. mechanism_transport_value runs last, and only if a pre-registered blinded protocol with ground-truthed destination outcomes can be written; otherwise it stays parked as unfalsifiable.",
+    "portfolio_sequence": [
+      "exact_two_magma",
+      "new_executable_algebra",
+      "mechanism_transport_value"
+    ],
+    "ranked_questions": [
+      {
+        "apparatus_vs_scarcity": "Best of the three: the complete ETP graph plus ablation gives a ground-truthed control, so 'campaign finds nothing' can be attributed to either the search (apparatus) or the space (scarcity) by checking whether known conjunctive implications are recoverable when planted.",
+        "discriminating_test": "For each candidate target, ablate each premise and re-run the endogenous cheap-deduction baseline plus ETP single-law closure on the remaining one; a genuine conjunction target must fail under both single-premise ablations AND fail ETP closure from either premise alone, with the residual-information score dropping under ablation.",
+        "fatal_confounder": "Conjunction laundering: a target that is formally attributed to two premises but is semantically a single-law ETP consequence reachable by a short rewrite bridge \u2014 attempt 3 (Eq101 \u2192 Eq8) is exactly this shape. Attribution machinery can certify 'both premises used' while the mathematical content is still catalogued.",
+        "harness_readiness": "High. Size-2/3 context, anonymous navigator, exact-two presentation bounds, residual information, and premise attribution all exist and ran end to end. This is the only question runnable inside the 20-minute cap today.",
+        "information_yield": "High. The complete ETP 4694-law single-equation graph gives exact ground truth for 'known vs new', so every outcome (attributable conjunction target, cheap-deduction collapse, ETP-closure collapse) is a labeled datapoint about the campaign itself. Attempts 1\u20133 already show the failure taxonomy is measurable.",
+        "kill_condition": "Kill if three consecutive runs produce only targets that either collapse under single-premise ablation or match an ETP-closure entry \u2014 that establishes the exact-two space at this model size is scarcity, not apparatus.",
+        "minimum_artifact": "A frozen conjunction-ablation harness: the exact-two campaign config plus a scripted single-premise-ablation + ETP-closure check that runs automatically on every surviving target, with its verdicts logged per target.",
+        "novelty_headroom": "Moderate. The single-law space is fully catalogued; headroom lives only in genuinely conjunctive (two-law) implications, which the ETP graph does not cover. Non-trivial but bounded.",
+        "question_id": "exact_two_magma",
+        "rank": 1
+      },
+      {
+        "apparatus_vs_scarcity": "Weak as designed \u2014 without an external implication graph there is no scarcity baseline; the positive-control battery is the minimum needed to separate 'adapter broken' from 'domain thin', and even then scarcity remains unmeasurable.",
+        "discriminating_test": "Compile the same substrate through two independent encodings (or one adapter plus a hand-written reference evaluator) and check that the extracted rule, its counterexamples, and its premise attribution are invariant across encodings; divergence means adapter artifact.",
+        "fatal_confounder": "Adapter-induced artifacts: a 'missing rule' that is really a quirk of the adapter's operational encoding (normalization choices, executable semantics diverging from the intended algebra), so falsifiers and proof attribution validate the encoding rather than the mathematics.",
+        "harness_readiness": "Low. AdapterForge compilation of a new substrate is untested end to end, and 'no mature external implication graph' removes the very control that made exact_two_magma's verdicts interpretable. Likely exceeds the 20-minute subscription-only cap.",
+        "information_yield": "Moderate-high if it runs: it tests whether the inlet generalizes beyond magmas, which is the north-star claim. But yield is conditional on substrate compilation succeeding, which is itself unproven.",
+        "kill_condition": "Kill if the adapter cannot reproduce a small set of known, pre-registered ground-truth identities of the substrate before rule extraction begins \u2014 proceeding past a failed positive control produces uninterpretable output.",
+        "minimum_artifact": "A frozen executable fixture: the substrate's evaluator compiled and pinned, plus 5\u201310 pre-registered known identities as a positive-control battery that must pass before any extraction run.",
+        "novelty_headroom": "Highest on paper \u2014 but current evidence explicitly states no external executable substrate is frozen as a fixture, and novelty cannot be inferred from the absence of a mature implication graph (absence of a catalogue is not absence of prior results).",
+        "question_id": "new_executable_algebra",
+        "rank": 2
+      },
+      {
+        "apparatus_vs_scarcity": "Poor \u2014 a null result cannot distinguish 'fingerprints carry no signal' (scarcity of transportable mechanism) from 'the evaluation instrument is too blunt' (apparatus), unless the ground-truthed control set is built first.",
+        "discriminating_test": "Blinded A/B: give matched evaluators either (theorem + counterexamples) or (theorem + counterexamples + fingerprint), on targets whose destination outcome is already ground-truthed, and score conjecture quality against that ground truth; lift must survive blinding and evaluator swap.",
+        "fatal_confounder": "Leakage through the evaluator: the agent or user judging 'useful destination-side conjecture' has seen the source theorem or shares training priors with the extractor, so the fingerprint's apparent predictive lift is contamination, not transported mechanism content.",
+        "harness_readiness": "Moderate for generation (key-idea extraction and fingerprints exist), low for evaluation \u2014 no destination-side conjecture scorer or blinded comparison protocol exists.",
+        "information_yield": "Low per run. The outcome is a comparative judgment ('predicts a useful conjecture better than baseline') with no objective scoring function specified; small-N human/agent evaluation under a 20-minute cap yields anecdotes, not information.",
+        "kill_condition": "Kill if fingerprint-augmented predictions do not beat the theorem-plus-counterexamples baseline on ground-truthed cases in the first blinded batch, or if no objective destination-side scoring rule can be pre-registered at all.",
+        "minimum_artifact": "A pre-registered evaluation protocol: fixed set of source theorems with known destination outcomes, the blinding procedure, and the scoring rubric \u2014 written and frozen before any fingerprint is shown to an evaluator.",
+        "novelty_headroom": "Low-to-unknown. It evaluates a presentation layer over already-verified theorems; the constraint list explicitly warns against new transport layers, and this question sits adjacent to that boundary.",
+        "question_id": "mechanism_transport_value",
+        "rank": 3
+      }
+    ],
+    "scope_notes": "Advisory only: no proof or promotion authority granted, no budgets changed, no mathematics attempted, no novelty asserted beyond what the provided evidence supports."
+  },
+  "runtime": "claude",
+  "schema": "leanmill.eigenquestion_review.v1"
+}

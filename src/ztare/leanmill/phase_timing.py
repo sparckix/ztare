@@ -94,6 +94,32 @@ def summarize_phase_timings(*, run_tag: str = "", ledger: "Optional[str | Path]"
     rep = _shared_summarize_timings(Path(ledger) if ledger else ledger_path(), run_tag=run_tag, group_key="phase")
     rep = dict(rep)
     rep["phases"] = rep.pop("groups", {})
+    # Dispatch-budget utilization comes from the same timing events. This makes
+    # stale/ignored caps visible in both run diagnostics and factory intelligence.
+    dispatch = []
+    try:
+        import json as _json
+        path = Path(ledger) if ledger else ledger_path()
+        for line in path.read_text(encoding="utf-8").splitlines():
+            row = _json.loads(line)
+            if row.get("phase") != "leaf.dispatch" or (run_tag and row.get("run_tag") != run_tag):
+                continue
+            tags = row.get("tags") if isinstance(row.get("tags"), dict) else {}
+            cap = float(tags.get("requested_timeout_s") or 0)
+            if cap > 0:
+                dispatch.append((float(row.get("duration_s") or 0), cap, str(tags.get("requested_runtime") or "default")))
+    except Exception:  # noqa: BLE001 — read model stays fail-soft
+        dispatch = []
+    ratios = sorted(min(10.0, duration / cap) for duration, cap, _ in dispatch)
+    rep["dispatch_budget"] = {
+        "count": len(dispatch),
+        "requested_timeout_total_s": round(sum(cap for _, cap, _ in dispatch), 2),
+        "observed_wall_total_s": round(sum(duration for duration, _, _ in dispatch), 2),
+        "utilization_mean": round(sum(ratios) / len(ratios), 3) if ratios else 0.0,
+        "utilization_p95": round(_pct(ratios, 0.95), 3) if ratios else 0.0,
+        "near_cap_count": sum(1 for ratio in ratios if ratio >= 0.95),
+        "by_runtime": dict(sorted(__import__("collections").Counter(runtime for _, _, runtime in dispatch).items())),
+    }
     return rep
 
 
@@ -229,9 +255,17 @@ def _consolidate_from_ledger(ledger) -> "dict[str, float]":
 def campaign_family(run_tag: str) -> str:
     """Group run_tags that are RE-RUNS of the same campaign (`_v2`/`_v3`, `_dbg`) under one family, so a campaign
     worked across several runs gets a SINGLE P0 view (e.g. `amm_cpmm`, `amm_cpmm_v2`, `amm_cpmm_v3` → `amm_cpmm`).
-    Strips a trailing `_v<N>` or `_dbg<N>` suffix; a tag with no such suffix is its own family."""
+    Strips a trailing `_v<N>` or `_dbg<N>` suffix; a tag with no such suffix is its own family.
+
+    NOTES-channel runs also strip the per-launch timestamp (2026-07-02, the ftap_hard milestone undercount):
+    `autoformalize_notes.main` stamps `notes_<stem>_<MMDD>T<HHMM>` — a FRESH timestamp per launch — so reruns of
+    the same blueprint never rolled up and a multi-run milestone reported only its closing run's wall (the
+    recurring time-to-closure under-count class). Anchored (`_\\d{4}T\\d{4}$`), so a stem that merely contains
+    digits elsewhere is untouched."""
     import re as _re
-    return _re.sub(r"_(v\d+|dbg\d*)$", "", run_tag or "") or (run_tag or "")
+    t = _re.sub(r"_(v\d+|dbg\d*)$", "", run_tag or "")
+    t = _re.sub(r"_\d{4}T\d{4}$", "", t)
+    return t or (run_tag or "")
 
 
 def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]" = None) -> dict:

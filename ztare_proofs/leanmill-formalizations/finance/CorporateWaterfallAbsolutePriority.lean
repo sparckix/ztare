@@ -37,6 +37,9 @@ senior-claims monotonicity (`seniorClaim_le_juniorSeniorClaims`).
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/corporate_waterfalls_apr_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 abbrev ClaimSchedule (ι : Type*) := ι → NNReal
 
 abbrev PaymentSchedule (ι : Type*) := ι → NNReal

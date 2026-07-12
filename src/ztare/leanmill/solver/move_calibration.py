@@ -52,8 +52,10 @@ PROVIDER_TO_MOVE: dict[str, str] = {
     "native_hammer": MOVE_NATIVE_HAMMER,
     "claude_opus_warm": MOVE_CLAUDE_WARM,
     "claude_opus_warm_refine": MOVE_CLAUDE_WARM_REFINE,  # gap-refine retry → its OWN tracked arm (#30)
+    "codex_refine": MOVE_CLAUDE_WARM_REFINE,  # 2026-07-05: warm move now records the ACTUAL provider (codex) + _refine
+    "claude_refine": MOVE_CLAUDE_WARM_REFINE,
     "agentic_leaf": MOVE_CLAUDE_WARM,
-    "codex": MOVE_CLAUDE_WARM,            # agentic-leaf best-of-N winner label
+    "codex": MOVE_CLAUDE_WARM,            # agentic-leaf best-of-N winner label (the ACTUAL warm-solve provider)
     "claude": MOVE_CLAUDE_WARM,
     "claude_opus": MOVE_COLD_SHOT,
     "codex_gpt5": MOVE_COLD_SHOT,

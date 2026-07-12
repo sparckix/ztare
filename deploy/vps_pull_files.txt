@@ -43,6 +43,19 @@ analytics/public/queries/faithfulness_roundtrip_observations.jsonl
 analytics/public/queries/formalize_observations.jsonl
 analytics/public/queries/solver_lane_plan_choices.jsonl
 analytics/public/queries/prompt_evolution.jsonl
+# Explicit-envelope formalization attempts are durable campaign receipts, not
+# rendered dashboard state. Pull their manifests, budget events, diagnostics,
+# and completion records before any later VPS update can replace a campaign's
+# locally grown theory file.
+analytics/public/queries/campaign_runs/
+# P1 RUNG A is an append-only campaign theory file on the VPS; pull it with
+# its attempt receipts so the next allowlisted deploy starts from the same
+# formal environment.
+projects/leanmill_experiments/p1_rungA_blueprint.md
+projects/leanmill_experiments/p1_rungA_campaign.md
+projects/leanmill_experiments/p1_rungA_blueprint.autoformalize_result.json
+projects/leanmill_experiments/p1_rungA_blueprint.refined.md
+ztare_proofs/P1_n1_rungA_theory.lean
 analytics/public/pretick/
 analytics/public/posttick/
 projects/ns_millennium_hunt/public/
@@ -87,3 +100,4 @@ analytics/public/leanmill/dashboard_data/c_supply_upstream_rater_prompt.txt
 analytics/public/leanmill/dashboard_data/leanmill_population_elo.json
 analytics/public/leanmill/dashboard_data/leanmill_population_elo.md
 analytics/public/leanmill/dashboard_data/leanmill_governance_sentinel_suite_latest.json
+research_areas/pre_registrations/axiompack_cycle_structure_frontier_20260710/frozen_synthesis_input_wave1.json

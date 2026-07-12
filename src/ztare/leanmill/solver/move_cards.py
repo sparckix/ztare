@@ -1,8 +1,9 @@
 """Agent-facing MOVE CARDS — render the EXOGENOUS-compute moves as tool cards the proving agent reads and
 calls itself (the Ax-Prover / agentic-tool-use shape), instead of a hand-wired router scheduling them.
 
-Scope (deliberate): these cards surface ONLY the EXOGENOUS-COMPUTE tools (SymPy witnesses, z3-QE abduction,
-Isabelle premise selection AND independent full-theory verification, Mathlib library search) — what the
+Scope (deliberate): these cards surface ONLY bounded agent tools (SymPy witnesses, z3-QE abduction,
+Isabelle premise selection AND independent full-theory verification, Mathlib library search, and
+quarantined structural-isomorphism conjecture search) — what the
 agent genuinely cannot do in its head, with MEASURED lift on the LLM's blind spots (witness 12/12 on Pell,
 QE 6/6). The Isabelle `verify` card is the cross-substrate-CONSENSUS leg: a peer-kernel accept/reject the
 agent can elect, NOT a Lean closure (the Lean kernel remains the sole closure arbiter).
@@ -184,6 +185,20 @@ _TOOL_SPECS = [
                     "candidate sequence into ONE call, never one call per tactic. State is NOT kept between "
                     "calls (pass the full prefix again). REPL-closed is NOT credit — write the assembled "
                     "proof into your probe; the kernel + governance still verify it.",
+    },
+    {
+        "tool": "isomorphism", "move_key": None,
+        "cli": (
+            _TOOL_CMD
+            + " isomorphism "
+            + "'{\"mode\":\"conjecture\",\"left_state\":{\"constraint_class\":\"<left>\"},"
+            + "\"right_state\":{\"constraint_class\":\"<right>\"},\"model\":\"codex\",\"n\":3,\"debug\":true}'"
+        ),
+        "when": prompts.STRUCTURAL_ISOMORPHISM_MOVE_CARD,
+        "confuser": "NOT a proof tool and NOT a permission to add axioms: its JSON output is quarantined "
+                    "candidate structure only. If it proposes an AxiomPack or hypothesis, run blueprint lint, "
+                    "cheap finite-model/countermodel stress, and the separate promotion membrane before any "
+                    "theorem campaign can consume it.",
     },
 ]
 # Pattern-action-contract conformance (RP-002 / epistemic-generation research_log): each card = pattern (when)

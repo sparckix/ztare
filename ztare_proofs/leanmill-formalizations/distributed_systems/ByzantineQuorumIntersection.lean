@@ -16,6 +16,9 @@ telemetry (run_tag=notes_bft_quorum_intersection_blueprint_0701T0602) by promote
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/bft_quorum_intersection_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-!
 # Byzantine threshold quorum substrate
 
@@ -609,8 +612,8 @@ end ByzantineQuorumIntersection
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open ByzantineQuorumIntersection
 
--- [family-lemma-library] banked: byzantine_threshold_quorum_safe_available_iff_and_tight_witness__c64ef761
-theorem byzantine_threshold_quorum_safe_available_iff_and_tight_witness__c64ef761 : ∀ (n f : ℕ) (hf : 1 ≤ f), (∀ q : ℕ,
+-- [family-lemma-library] banked: byzantine_threshold_quorum_safe_available_iff_and_tight_witness
+theorem byzantine_threshold_quorum_safe_available_iff_and_tight_witness : ∀ (n f : ℕ) (hf : 1 ≤ f), (∀ q : ℕ,
       ThresholdSafeBound n f q →
         ThresholdSafe n f q ∧
         ∀ Q₁ Q₂ : NodeSet n,
@@ -700,4 +703,4 @@ theorem byzantine_threshold_quorum_safe_available_iff_and_tight_witness__c64ef76
 
 end
 
-#print axioms byzantine_threshold_quorum_safe_available_iff_and_tight_witness__c64ef761
+#print axioms byzantine_threshold_quorum_safe_available_iff_and_tight_witness

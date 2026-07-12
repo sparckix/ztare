@@ -113,15 +113,29 @@ def decl_blocks(text: str) -> "list[tuple[str, str]]":
             prefix = ".".join(ns)
             starts.append((i, f"{prefix}.{nm}" if prefix else nm))
     out = []
+    from ztare.leanmill.lean_source import DECL_TERMINATORS as _DT   # the ONE canonical scope/terminator list
     for k, (i, name) in enumerate(starts):
         end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
+        # SCOPE/TERMINATOR FENCE (2026-07-02 — the drifted-sibling ROOT fix): a decl's block ENDS at the next decl
+        # OR at a top-level scope command (`variable`/`open`/`section`/`end`/`#…`/`set_option`/notation/…) that
+        # scopes the FOLLOWING decls, not this one — exactly as the canonical `lean_source.decl_spans` fences. THIS
+        # local decl_blocks had drifted WITHOUT the fence, so a trailing `variable {K}` was ABSORBED into the
+        # preceding structure's block ⇒ a byte-identical def compared UNEQUAL ⇒ the Basel false `definition_altered`
+        # that looped a valid proof 25 min. Reuse the ONE terminator list (no new regex); match the comment-blanked
+        # lines so a `variable` inside a comment never fences.
+        for j in range(i + 1, end):
+            if _DT.match(blines[j]):
+                end = j
+                break
         out.append((name, "".join(lines[i:end]).rstrip()))
     return out
 
 
 def _signature(block: str) -> str:
     """The decl header up to the top-level `:=` (the STATEMENT); body excluded. Bracket-depth aware
-    so a `:=` inside binders/terms is not mistaken for the body separator."""
+    so a `:=` inside binders/terms is not mistaken for the body separator. Comments BLANKED first
+    (2026-07-02 audit #4) so a `:=` inside a `/- … -/` doesn't truncate the signature early."""
+    block = _blank_comments(block or "")
     depth = 0
     pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "⦃": "⦄"}
     closes = set(pairs.values())
@@ -206,7 +220,8 @@ def kernel_type_equiv_fn(target_name: str, lean_root) -> "Optional[Callable[[str
     compile failure (never fail-OPEN — that would be a laundering hole)."""
     try:
         from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
-                                               campaign_namespaces, compile_probe_via_repl)
+                                               campaign_namespaces, campaign_variables,
+                                               compile_probe_via_repl)
         from ztare.gates.v33_preflight_risk_detector import _compile_probe
         from ztare.leanmill import lean_source as _ls
         from pathlib import Path as _Path
@@ -260,12 +275,123 @@ def kernel_type_equiv_fn(target_name: str, lean_root) -> "Optional[Callable[[str
                     _env = None
                 if _env is not None:
                     _nss = campaign_namespaces()
-                    _open, _close = (f"namespace {_nss[0]}\n", f"\nend {_nss[0]}\n") if len(_nss) == 1 else ("", "")
+                    # VARIABLE-CONTEXT (2026-07-02 synthInstance sibling): re-entering the namespace resolves
+                    # sibling def NAMES but NOT the substrate's section-scoped `variable [Inst …]` binders (dropped
+                    # at `end`); a section-style campaign's signatures (`Fintype.card V` ⇒ `[Fintype V]`) then fail
+                    # `synthInstanceFailed` ⇒ the probe won't compile ⇒ this oracle fail-CLOSES to FALSE on every
+                    # faithful reformulation — the SAME gap fixed in warm_verify_campaign / _campaign_probe, via the
+                    # ONE door campaign_variables(). Re-declare them so the rfl-compare actually elaborates.
+                    from ztare.leanmill.lean_source import strip_scope_commands
+                    _body = strip_scope_commands(_body)   # harness owns scoping (EF1 end-mismatch RCA); no-op if clean
+                    if len(_nss) == 1:
+                        _vb = "".join(_v + "\n" for _v in campaign_variables())
+                        _open, _close = (f"namespace {_nss[0]}\n{_vb}", f"\nend {_nss[0]}\n")
+                    else:
+                        _open, _close = ("", "")
                     _r = compile_probe_via_repl(f"{_open}{_body}{_close}", lean_root, 60, env=_env)
-                    return bool(isinstance(_r, tuple) and _r[0])
-            # WORLD 2: self-contained (no substrate) — SAME body against base Mathlib.
+                    if isinstance(_r, tuple):
+                        return bool(_r[0])          # the warm env RAN ⇒ a real verdict (same Prop / differ)
+                    # _r is None ⇒ warm env UNAVAILABLE (busy/dead/contended) ⇒ do NOT read it as 'types differ';
+                    # fall through to the INDEPENDENT WORLD-2 cold compile (audit #2, 2026-07-05 — the verdict-
+                    # collapse sibling: never let a contended REPL manufacture a `statement_altered` false-reject).
+            # WORLD 2: self-contained (no substrate / warm unavailable) — SAME body against base Mathlib.
             return _compile_probe(f"import Mathlib\n{_body}", lean_root, "TypeEquiv", 60) is True
         except Exception:  # noqa: BLE001 — any failure ⇒ not-confirmed (text verdict stands)
+            return False
+    return _fn
+
+
+def _synthesis_example(block: str) -> str:
+    """`example <binders> : <declared-type> := inferInstance` reconstructed from an `instance` block — the
+    synthesis probe. '' if the head / type can't be isolated (⇒ caller keeps the conservative flag)."""
+    sig = _signature(block)
+    m = _INSTANCE_HEAD.match(sig)
+    if not m:
+        return ""
+    rest = sig[m.end():].lstrip()
+    nm = re.match(r"[A-Za-z_][\w.']*", rest)               # drop an OPTIONAL instance name before the binders/`:`
+    if nm and rest[nm.end():].lstrip()[:1] in "{[(:":
+        rest = rest[nm.end():].lstrip()
+    if rest[:1] not in "{[(:":                             # not a `<binders>? : <type>` shape ⇒ can't build a probe
+        return ""
+    return f"example {rest} := inferInstance"
+
+
+def instance_synthesizable_fn(lean_root, orig_source: "Optional[str]" = None) -> "Optional[Callable[[str], bool]]":
+    """KERNEL oracle: can the registered campaign SUBSTRATE already SYNTHESIZE an instance of the type an ADDED
+    `instance` block declares? If yes, the added instance is REDUNDANT — the substrate derives it (`deriving
+    DecidableEq` ⇒ `Decidable (Marketable …)`), so it CANNOT semantically hijack: when the proof banks, the
+    substrate's OWN synthesis is authoritative, and a proof that leaned on a DIFFERENT redundant instance fails
+    the in-order substrate-append compile (the env-parity retract). Only an instance the substrate CANNOT
+    synthesize — a novel `HAdd α Nat α := fun a _ => a`, a fake `Decidable P := isTrue …` for a P the theory
+    can't actually decide — introduces new behavior, so its text flag STANDS. This UPGRADES an instance_shadowing
+    reject to ACCEPT for a derivable instance, exactly mirroring how `kernel_type_equiv_fn` upgrades a text
+    signature-diff reject; it never turns an accept into a reject. Compiles `example … := inferInstance` in the
+    warm campaign env with the substrate's namespaces opened (`campaign_scope_prefix`, the nested-namespace door).
+    None if infra/substrate absent ⇒ conservative text flag. Fail-CLOSED (any compile failure ⇒ False ⇒ NOT
+    cleared ⇒ the flag stands — never a laundering hole)."""
+    try:
+        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                               campaign_scope_prefix, compile_probe_via_repl)
+        from pathlib import Path as _Path
+    except Exception:  # noqa: BLE001
+        return None
+    # Resolve the lake PROJECT root — governance hands us `…/.solver_scratch/notes_…` (a subdir with no lakefile),
+    # where `campaign_file_env`'s compile can't find the toolchain ⇒ env None ⇒ FALSE ⇒ the flag never clears (the
+    # SAME `_probe_root`-is-wrong class kernel_type_equiv_fn already cures). Walk up to the lakefile so it resolves.
+    def _lake_root(_p):
+        try:
+            _p = _Path(_p).resolve()
+            for _d in [_p, *_p.parents]:
+                if (_d / "lakefile.toml").exists() or (_d / "lakefile.lean").exists():
+                    return _d
+        except Exception:  # noqa: BLE001
+            pass
+        return _p
+    lean_root = _lake_root(lean_root)
+    try:
+        _sub = get_campaign_substrate()
+    except Exception:  # noqa: BLE001
+        _sub = None
+    _orig = (orig_source or "").strip()            # what check() already holds — the robust, always-present source
+    if not _sub and not _orig:
+        return None
+    try:
+        from ztare.gates.v33_preflight_risk_detector import _compile_probe
+    except Exception:  # noqa: BLE001
+        _compile_probe = None
+    import re as _re_op
+
+    def _fn(_inst_block: str) -> bool:
+        try:
+            _ex = _synthesis_example(_inst_block)
+            if not _ex:
+                return False
+            # FAST path: the registered warm campaign env, if available (cached by mtime).
+            if _sub:
+                try:
+                    _env = campaign_file_env(_sub, lean_root)
+                except Exception:  # noqa: BLE001
+                    _env = None
+                if _env is not None:
+                    _scope = campaign_scope_prefix(_ex) or ""
+                    _r = compile_probe_via_repl(f"{_scope}{_ex}\n", lean_root, 60, env=_env)
+                    return bool(isinstance(_r, tuple) and _r[0])
+            # ROBUST fallback (2026-07-05): at the LIVE governance seam the substrate may not be registered / the
+            # warm env may be busy → don't fail-REJECT a redundant instance. Compile the probe SELF-CONTAINED
+            # against `original_source` (which check() always holds — every def is in it), re-emitting its own
+            # `open`s so the example is in scope. Cold (slower) but ZERO dependency on the warm env / global state.
+            if _orig and _compile_probe is not None:
+                _body = _re_op.sub(r"\A\s*import\s+Mathlib\s*\n+", "", _orig, count=1).rstrip()
+                _opens = []
+                for _l in _orig.splitlines():
+                    _s = _l.strip()
+                    if _s.startswith("open ") and _s not in _opens:
+                        _opens.append(_s)
+                _scope = ("\n".join(_opens) + "\n\n") if _opens else ""
+                return _compile_probe(f"import Mathlib\n{_body}\n\n{_scope}{_ex}\n", lean_root, "SynthCheck", 150) is True
+            return False
+        except Exception:  # noqa: BLE001 — any failure ⇒ NOT cleared (fail-closed; the text flag stands)
             return False
     return _fn
 
@@ -291,10 +417,32 @@ def check(original_source: str, probe_source: str, target_name: str,
     pass neither (no lean_root) ⇒ pure text behavior (byte-parity; tests + non-Lean callers)."""
     if target_type_equiv_fn is None and lean_root is not None:
         target_type_equiv_fn = kernel_type_equiv_fn(target_name, lean_root)
+    # KERNEL backstop for instance_shadowing (2026-07-05): clears an ADDED core-class instance the SUBSTRATE can
+    # already synthesize (redundant ⇒ can't hijack). Built default-on from lean_root, same as the type oracle.
+    _synth_fn = instance_synthesizable_fn(lean_root, original_source) if lean_root is not None else None
     orig = dict(decl_blocks(original_source))
     probe = dict(decl_blocks(probe_source))
     # the target may be namespace-qualified (e.g. `AlmostPeriodic.leaf_X`); match by exact OR suffix.
     _tgt = {n for n in orig if n == target_name or n.endswith("." + target_name)} or {target_name}
+    # A governed probe may emit the target outside the source namespace while preserving the theorem statement
+    # verbatim. Resolve only the target this way; non-target decls still use exact/env-provided identity.
+    _probe_target_by_orig: dict[str, str] = {}
+    for _on in _tgt:
+        _short = str(_on).split(".")[-1]
+        _cands = [
+            _pn for _pn in probe
+            if _pn == _on or _pn == target_name or _pn == _short
+            or _pn.endswith("." + target_name) or _pn.endswith("." + _short)
+        ]
+        if _cands:
+            _cands.sort(key=lambda _pn: (
+                0 if _pn == _on else
+                1 if _pn == target_name else
+                2 if _pn == _short else
+                3,
+                len(_pn),
+            ))
+            _probe_target_by_orig[_on] = _cands[0]
     # ENV-PROVIDED decls are not "deleted" (2026-06-25 RCA — the AMM target cache-cite false-reject): a cache-cite
     # / warm-env proof legitimately OMITS the substrate's defs (ConstantProductPool/PoolWellFormed) from its probe
     # because they are resolved in the pre-elaborated campaign env, not re-inlined. The text-only diff can't see
@@ -306,14 +454,15 @@ def check(original_source: str, probe_source: str, target_name: str,
     _env_decls = _campaign_substrate_decl_names()
     violations: list[str] = []
     for name, oblock in orig.items():
-        if name not in probe:
+        _probe_name = _probe_target_by_orig.get(name, name)
+        if _probe_name not in probe:
             if name in _env_decls or str(name).split(".")[-1] in _env_decls:
                 continue   # provided by the registered campaign env — not a deletion
             violations.append(f"deleted: original decl `{name}` is missing from the probe")
             continue
         if name in _tgt:
             # only the proof BODY may change — the SIGNATURE (statement) must be preserved
-            if _norm(_signature(oblock)) != _norm(_signature(probe[name])):
+            if _norm(_signature(oblock)) != _norm(_signature(probe[_probe_name])):
                 # ENV-INDEPENDENT ∀-FRONTING PRE-CHECK FIRST (2026-06-25 RCA — the AMM `reachable_pool_wellFormed`
                 # gap): the agent stated the SAME Pi type with ∀-fronted binders (`: ∀ (a)(b), C`) instead of
                 # named-before-colon (`(a)(b) : C`). The kernel oracle SHOULD accept that, but it needs the campaign
@@ -334,13 +483,24 @@ def check(original_source: str, probe_source: str, target_name: str,
                 # coercions / defeq the syntactic normalizer can't): same type ⇒ accept; real weakening ⇒ reject.
                 if not _kernel_ok and target_type_equiv_fn is not None:
                     try:
-                        _kernel_ok = bool(target_type_equiv_fn(oblock, probe[name]))
+                        _kernel_ok = bool(target_type_equiv_fn(oblock, probe[_probe_name]))
                     except Exception:  # noqa: BLE001 — oracle failure ⇒ keep the text verdict (fail-closed)
                         _kernel_ok = False
                 if not _kernel_ok:
                     violations.append(f"target_signature_altered: `{name}`'s statement was changed")
         else:
-            # every OTHER original decl (structures/defs/lemmas) must be byte-identical (mod ws/comments)
+            # ENV-PROVIDED defs are KERNEL-enforced, not text-diffed (2026-07-02 RCA — the Basel `ExposureComponents`
+            # false `definition_altered` that looped a valid proof 25 min). A decl present in the REGISTERED campaign
+            # substrate is live in the pre-elaborated env the probe COMPILED against; a divergent redefinition there
+            # `already declared`-clashes and FAILS the compile — so the kernel, not a brittle text-diff, guarantees it
+            # is unaltered (same trust model the env-provided DELETION skip above already uses). The text-diff was ALSO
+            # wrong on its own terms: it compares the whole decl BLOCK, which `decl_blocks` fences up to the next DECL
+            # and so ABSORBS a trailing top-level `variable`/`open` SCOPE command (scoping the FOLLOWING decls) — a
+            # byte-identical structure with a trailing `variable {K}` compared unequal. Soundness lives in the
+            # kernel+env+axiom-audit, never in a text match; a genuinely-NEW agent decl (NOT in the env, e.g. a
+            # standalone cold probe) still gets text-checked below.
+            if name in _env_decls or str(name).split(".")[-1] in _env_decls:
+                continue
             if _norm(oblock) != _norm(probe[name]):
                 violations.append(f"definition_altered: original decl `{name}` was modified "
                                   "(e.g. a hypothesis/field added that weakens the target)")
@@ -371,6 +531,9 @@ def check(original_source: str, probe_source: str, target_name: str,
         if name in orig:
             continue
         if _INSTANCE_HEAD.match(block) and _CORE_CLASS.search(_signature(block)):
+            if _synth_fn is not None and _synth_fn(block):
+                continue   # KERNEL-CLEARED: the substrate already synthesizes this instance ⇒ redundant re-decl,
+                #            not a hijack (a novel / fake instance is NOT synthesizable ⇒ falls through to the flag)
             violations.append(f"instance_shadowing: probe ADDED a typeclass instance `{name}` providing a "
                               "CORE operation/notation class — an added instance can redefine the notation "
                               "the statement uses (semantic hijack of a verbatim statement). Added helper "
@@ -433,6 +596,32 @@ def _self_test() -> int:
         "  sorry\n", "  trivial\n")
     v = check(original, benign, "target")
     ok("benign_comment_reformat_ok", v.ok)
+
+    # ENV-PROVIDED DEF + TRAILING SCOPE COMMAND (2026-07-02 RCA — the Basel `ExposureComponents` false
+    # `definition_altered` that looped a kernel-VALID proof for 25 min). A decl that lives in the REGISTERED
+    # campaign substrate is kernel-enforced (the probe COMPILED against the env copy; a real redefinition
+    # `already declared`-clashes), so it must NOT be text-diffed. The old diff also compared the whole decl
+    # BLOCK, which `decl_blocks` fences to the next DECL and so ABSORBS a trailing `variable {K}` scope line
+    # (scoping the FOLLOWING decls) — making a byte-identical structure compare unequal. Both are cured by the
+    # env-provided skip; without a registered substrate the diff still fires (the cheat test above still passes).
+    import tempfile as _tf, os as _os
+    from pathlib import Path as _Path
+    from ztare.formal.repl_compile import set_campaign_substrate as _scs
+    _sub = _tf.mktemp(suffix=".lean")
+    _Path(_sub).write_text("import Mathlib\nnamespace S\nstructure Comp (K : Type) where\n  a : K\n  b : K\nend S\n",
+                           encoding="utf-8")
+    _scs(_sub)
+    try:
+        _o = ("import Mathlib\nnamespace S\nstructure Comp (K : Type) where\n  a : K\n  b : K\n"
+              "theorem target (c : Comp K) : True := by sorry\nend S\n")
+        # probe: BYTE-IDENTICAL Comp, but a trailing `variable {K}` sits after it (decl_blocks absorbs it) + proof filled
+        _p = ("import Mathlib\nnamespace S\nstructure Comp (K : Type) where\n  a : K\n  b : K\n"
+              "variable {K : Type}\ntheorem target (c : Comp K) : True := by trivial\nend S\n")
+        ok("env-provided def w/ trailing `variable` NOT false-flagged altered (Basel 25-min-loop RCA)",
+           check(_o, _p, "target").ok)
+    finally:
+        _scs(None)
+        _os.path.exists(_sub) and _os.remove(_sub)
 
     # ── INSTANCE-SHADOWING (2026-06-06, surfaced by the FALSIFY false-statement control) ──
     iorig = "import Mathlib\n\ntheorem fls : ∀ n : ℕ, n = n + 1 := by\n  sorry\n"

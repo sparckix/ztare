@@ -397,7 +397,7 @@ class MoveResult:
     kernel_clean: bool = False      # kernel-clean per _is_compile_ok (no sorry/admit/error, allowlisted axioms)
     mnc_passed: bool = False        # matched-negative-control passed (NOT leakage)
     proof_text: str = ""
-    residual: Optional[str] = None  # if the move exposed a NEW sub-obligation
+    residual: Optional[str] = None  # diagnostic / remaining obligation; never an executable theorem by itself
     new_sub_goal_text: Optional[str] = None  # text for the new sub_goal node, if any
     falsifier: bool = False         # the move found a falsifying candidate
     rung: bool = False              # SPECIALIZE produced a kernel-verified WEAKER special case (honest
@@ -1252,12 +1252,13 @@ def residual_to_lever(node: DagNode) -> str:
                 "remaining obligation for a future lever (stronger prover slot / human)"
             )
         return "exact_gap"
-    # An open node that produced a residual → a NEW sub-target was the lever.
+    # An open node can carry a diagnostic residual, but it is not a theorem
+    # until a producer supplies `new_sub_goal_text`.
     node.next_lever = (
-        f"new_sub_target: node {node.node_id} exposed residual "
-        f"'{node.residual}' → added as a typed sub_goal node"
+        f"exact_gap: node {node.node_id} retains diagnostic residual "
+        f"'{node.residual or 'unspecified'}'; require a typed proposed theorem before spawning work"
     )
-    return "new_sub_target"
+    return "exact_gap"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1325,6 +1326,9 @@ def run_governed_dag_search(
     cache=None,   # optional ProofCache (COMPRESS+SCALE): reuse + bank verified lemmas
     cache_verify=None,  # optional (goal_text, cached_proof)->bool: RE-VERIFY a cache hit in THIS
                         # context before closing (no-false-closure on reuse). None ⇒ trust (mock).
+    cache_get=None,  # optional (DagNode)->proof|None: context-bound lookup supplied by the solver.
+    cache_verify_node=None,  # optional (DagNode, proof)->bool: context-bound reverify supplied by the solver.
+    cache_put=None,  # optional (DagNode, proof)->None: context-bound deposit supplied by the solver.
     on_cache_reuse=None,  # optional (node_id, goal_text, reverified: bool, wallclock_s: float)->None:
                           # TELEMETRY hook for a CLOSED-FROM-CACHE reuse. The cache hit closes + `continue`s
                           # BEFORE move_runner, so without this the reuse writes NO attempts-DB row and is
@@ -1458,9 +1462,13 @@ def run_governed_dag_search(
         # a cheap compile vs an expensive LLM move, so the reuse lift survives. A failed
         # re-verify is treated as a cache MISS (fall through to the normal moves), never a
         # closure. (cache_verify=None keeps the trust-the-cache path for the offline mock test.)
-        if cache is not None and node.goal_text and cache.has(node.goal_text):
-            cached = cache.get(node.goal_text)
-            if cache_verify is not None:
+        cached = cache_get(node) if cache_get is not None else (
+            cache.get(node.goal_text) if cache is not None and node.goal_text and cache.has(node.goal_text) else None
+        )
+        if cached:
+            if cache_verify_node is not None:
+                reuse_ok = bool(cache_verify_node(node, cached))
+            elif cache_verify is not None:
                 reuse_ok = bool(cache_verify(node.goal_text, cached))
             elif os.environ.get("ZTARE_LEANMILL_EQUIV_CACHE", "1") != "0":   # default-on 2026-06-19
                 # MUST-FIX (adversarial review 2026-06-04): the equiv key is α-COLLAPSED and the
@@ -1477,7 +1485,7 @@ def run_governed_dag_search(
                 node.proof_text = cached
                 residual_to_lever(node)
                 trace.append({"event": "closed_from_cache", "node_id": node.node_id,
-                              "reverified": cache_verify is not None})
+                              "reverified": cache_verify_node is not None or cache_verify is not None})
                 # TELEMETRY (audit gap #3): record the reuse as a first-class move so cache lift is sliceable
                 # in move_yield_report / per-arm. Both an in-loop attribution row AND the injected DB hook —
                 # the cache-hit `continue` below skips the normal move_attribution.append + move_runner record.
@@ -1486,11 +1494,12 @@ def run_governed_dag_search(
                     "kernel_clean": True, "mnc_passed": True, "ratified_close": True,
                     "falsifier": None, "rung": None, "residual": None, "progress": 1.0,
                     "goals_remaining": 0, "error_class": "", "wallclock_s": time.time() - start,
-                    "reverified": cache_verify is not None,
+                    "reverified": cache_verify_node is not None or cache_verify is not None,
                 })
                 if on_cache_reuse is not None:
                     try:
-                        on_cache_reuse(node.node_id, node.goal_text, cache_verify is not None, time.time() - start)
+                        on_cache_reuse(node.node_id, node.goal_text,
+                                       cache_verify_node is not None or cache_verify is not None, time.time() - start)
                     except Exception:  # telemetry must NEVER block a real reuse-closure
                         pass
                 _propagate_closure(nodes, node, trace)
@@ -1552,6 +1561,7 @@ def run_governed_dag_search(
             "progress": result.progress,
             "goals_remaining": result.goals_remaining,
             "error_class": result.error_class,
+            "tail": (result.tail or "")[-300:],
             "wallclock_s": result.wallclock_s,
         })
         # Record the partial-progress gradient (GP-187) so the frontier/policy can
@@ -1607,7 +1617,9 @@ def run_governed_dag_search(
             node.status = "closed"
             node.proof_text = result.proof_text
             # COMPRESS+SCALE: bank the verified lemma so it's free everywhere else.
-            if cache is not None and node.proof_text:
+            if cache_put is not None and node.proof_text:
+                cache_put(node, node.proof_text)
+            elif cache is not None and node.proof_text:
                 cache.put(node.goal_text, node.proof_text, source=f"dag:{node.node_id}")
             residual_to_lever(node)
             trace.append({"event": "closed", "node_id": node.node_id, "move": move,
@@ -1615,23 +1627,24 @@ def run_governed_dag_search(
             _propagate_closure(nodes, node, trace)
             continue
 
-        # INVERT (conjecture) OR residual: turn the proposed/needed lemma into a NEW typed
-        # sub_goal child and keep this node open. A conjecture move sets new_sub_goal_text
-        # (the proposed lemma) with no residual; a failed move may expose a residual. Both
-        # spawn a child — this is goal-directed decomposition.
-        if result.residual or result.new_sub_goal_text:
+        # A proposal and a residual are different kinds of information. Only a
+        # typed proposed theorem may become executable child work. A residual is
+        # evidence about the current node; treating strings such as
+        # `abduce_no_seed` or a compiler diagnosis as Lean source creates bogus
+        # children and destroys source/target identity downstream.
+        if result.new_sub_goal_text:
             new_idx = sum(1 for n in nodes.values() if n.kind == "sub_goal") + 1
             new_id = f"n{len(nodes)}_sub_goal_{new_idx}"
             nodes[new_id] = DagNode(
                 node_id=new_id,
                 kind="sub_goal",
-                goal_text=result.new_sub_goal_text or result.residual,
+                goal_text=result.new_sub_goal_text,
                 parent_id=node.node_id,
             )
             # Record that this open node spawned a sub-target (lever), without
             # finishing it — it still has remaining moves.
             node.residual = result.residual
-            spawned = result.new_sub_goal_text or result.residual
+            spawned = result.new_sub_goal_text
             trace.append({
                 "event": "conjectured_sub_lemma" if move == MOVE_CONJECTURE else "new_sub_target",
                 "node_id": node.node_id,
@@ -1643,6 +1656,12 @@ def run_governed_dag_search(
             })
             # A sorry/non-clean attempt that yields a residual MUST NOT close the
             # node; it stays open and is later resolved (closure or exact_gap).
+            continue
+
+        if result.residual:
+            node.residual = result.residual
+            trace.append({"event": "residual", "node_id": node.node_id, "move": move,
+                          "residual": result.residual[:160]})
             continue
 
         # Move failed, no residual, no falsifier: just a failed attempt. The node
@@ -1674,6 +1693,19 @@ def run_governed_dag_search(
             trace.append({"event": "closed_without_proof_DOWNGRADED_to_gap", "node_id": _n.node_id,
                           "note": "single-door invariant: closed ⟺ kernel-verified proof_text"})
     root_resolution = residual_to_lever(root)
+    terminal_row = next(
+        (row for row in reversed(move_attribution)
+         if row.get("error_class") or row.get("tail") or row.get("move")),
+        {},
+    )
+    terminal_signal = {
+        "node_id": str(terminal_row.get("node_id") or root_id),
+        "move": str(terminal_row.get("move") or ""),
+        "error_class": str(terminal_row.get("error_class") or root.last_error_class or ""),
+        "tail": str(terminal_row.get("tail") or "")[-300:],
+        "stop_reason": next((str(row.get("reason") or "") for row in reversed(trace)
+                             if row.get("event") == "stop"), ""),
+    }
 
     return {
         "schema": "leanmill-governed-dag-search-v1",
@@ -1690,6 +1722,7 @@ def run_governed_dag_search(
 
         "nodes": {nid: asdict(n) for nid, n in nodes.items()},
         "levers": {nid: n.next_lever for nid, n in nodes.items()},
+        "terminal_signal": terminal_signal,
         "trace": trace,
         "move_attribution": move_attribution,
     }

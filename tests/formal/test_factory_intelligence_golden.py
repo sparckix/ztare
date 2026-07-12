@@ -34,7 +34,8 @@ import work_queue  # noqa: E402  (resolved via _FI_DIR on sys.path, same as the 
 _GOLDEN = _HERE.parent / "factory_intelligence_recs.golden.json"
 _FROZEN_NOW = 1_700_000_000  # any fixed epoch; kills _now() timestamp volatility
 _SCALAR_ARGS = {"event_tail", "window_s", "integration_receipt_limit",
-                "worker_heartbeat_stale_s", "policy_profile", "self_test"}
+                "worker_heartbeat_stale_s", "policy_profile", "self_test",
+                "run_observability_tag", "run_observability_manifest", "run_observability_lean_root"}
 
 
 def _deterministic_args(tmp: Path) -> argparse.Namespace:
@@ -60,13 +61,34 @@ def _recommendation_contract() -> list[list]:
     try:
         with tempfile.TemporaryDirectory(prefix="fi_golden_") as td:
             payload = fi.build(_deterministic_args(Path(td)))
+            if "run_observability" in payload:
+                raise AssertionError("default factory_intelligence build should not enable run_observability")
     finally:
         fi._now = orig_now  # type: ignore[assignment]
     recs = payload.get("recommendations") or []
     return sorted([str(r.get("class")), int(r.get("priority"))] for r in recs)
 
 
+def _check_run_observability_opt_in() -> None:
+    with tempfile.TemporaryDirectory(prefix="fi_run_obs_") as td:
+        root = Path(td)
+        args = _deterministic_args(root)
+        manifest = root / "run_manifest.json"
+        manifest.write_text(json.dumps({
+            "schema": "leanmill.run_manifest.v1",
+            "run_tag": "vtest",
+            "substrate": {"path": str(root / "Substrate.lean")},
+        }) + "\n")
+        args.run_observability_tag = "vtest"
+        args.run_observability_manifest = str(manifest)
+        payload = fi.build(args)
+    obs = payload.get("run_observability") or {}
+    assert obs.get("schema") == "leanmill.run_observability_bundle.v1", obs
+    assert obs.get("run_tag") == "vtest", obs
+
+
 def main() -> int:
+    _check_run_observability_opt_in()
     contract_a = _recommendation_contract()
     contract_b = _recommendation_contract()
     if contract_a != contract_b:

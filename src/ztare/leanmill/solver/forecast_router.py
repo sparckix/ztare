@@ -130,10 +130,14 @@ class ProofCacheForecaster(Forecaster):
             self.cache = None
 
     def forecast(self, c: WorkCandidate) -> SignalForecast:
-        if self.cache is None or not c.statement or not self.cache.has(c.statement):
+        context_source = str(c.context_features.get("source_text") or "")
+        if self.cache is None or not c.statement:
             return SignalForecast(self.name)  # abstain
+        status, _ = self.cache.compatibility(c.statement, context_source=context_source)
+        if status != "compatible":
+            return SignalForecast(self.name, rationale=f"cache {status}")
         return SignalForecast(self.name, p_close=_CACHE_P, cost=1.0, abstain=False,
-                              route_first=True, rationale="cache hit (re-verify)")
+                              route_first=True, rationale="cache compatible (re-verify)")
 
 
 class NoGoodForecaster(Forecaster):
@@ -456,9 +460,20 @@ def rank_rows(rows: list, *, db_path=None, cache_path=None, no_good_path=None, f
         fcs = default_forecasters(db_path=db_path, cache_path=cache_path,
                                   no_good_path=no_good_path, faithfulness_path=faithfulness_path,
                                   agent_votes=agent_votes, pool_forecasts=_pool_forecasts_for_rows(rows))
-        cands = [WorkCandidate(id=str(r.get("row_id", i)), target=str(r.get("row_id", i)),
-                               move="solve", statement=(r.get("goal") or r.get("target_theorem_name") or ""))
-                 for i, r in enumerate(rows)]
+        def _source_text(row):
+            text = str(row.get("source_text") or "")
+            if text:
+                return text
+            try:
+                return Path(str(row.get("source_file") or "")).read_text(encoding="utf-8")
+            except (OSError, ValueError):
+                return ""
+
+        cands = [WorkCandidate(
+            id=str(r.get("row_id", i)), target=str(r.get("row_id", i)), move="solve",
+            statement=(r.get("goal") or r.get("target_theorem_name") or ""),
+            context_features={"source_text": _source_text(r)},
+        ) for i, r in enumerate(rows)]
         priced = price(cands, fcs)
         by_id = {pc.candidate.id: pc for pc in priced}
         rank = {pc.candidate.id: k for k, pc in enumerate(priced)}
@@ -602,12 +617,15 @@ def _selftest() -> int:
     with tempfile.TemporaryDirectory() as d:
         from ztare.leanmill.solver.proof_cache import ProofCache
         from ztare.leanmill.solver.no_good_store import NoGoodStore
-        cache = ProofCache(Path(d) / "pc.jsonl"); cache.put("theorem hit : True := trivial", "trivial", "t")
+        _cached_stmt = "theorem hit : True := trivial"
+        cache = ProofCache(Path(d) / "pc.jsonl"); cache.put(_cached_stmt, "trivial", "t",
+                                                               context_source=_cached_stmt)
         ng = NoGoodStore(Path(d) / "ng.jsonl"); ng.record("theorem bad : False := by sorry", "other_error", "w", confirmed=True)
         fcs = default_forecasters(cache_path=Path(d) / "pc.jsonl", no_good_path=Path(d) / "ng.jsonl",
                                   agent_votes={"hi": 0.9, "lo": 0.2})
         cands = [
-            WorkCandidate("cached", move="m", statement="theorem hit : True := trivial", value=1.0),
+            WorkCandidate("cached", move="m", statement=_cached_stmt, value=1.0,
+                          context_features={"source_text": _cached_stmt}),
             WorkCandidate("nogood", move="m", statement="theorem bad : False := by sorry", value=5.0),
             WorkCandidate("hi", move="m", value=2.0, base_cost=10),
             WorkCandidate("lo", move="m", value=2.0, base_cost=10),

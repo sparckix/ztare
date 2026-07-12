@@ -35,10 +35,32 @@ def _strip_hijack_context(probe_source: str, original_source: str,
     from ztare.leanmill.solver.statement_integrity import (
         decl_blocks, _signature, _INSTANCE_HEAD, _CORE_CLASS)
     orig_names = {n for n, _ in decl_blocks(original_source)}
+    # ALSO treat the REGISTERED campaign substrate's decls as ORIGINAL (2026-07-05): the CITED-rung governance
+    # passes a row/probe source as `original_source` that OMITS substrate defs resolved via the warm env, so a
+    # legitimate substrate instance (`instDecidableMarketable`) looked 'added' → got stripped → the stripped probe
+    # couldn't resolve `Decidable (Marketable …)` → FALSE context_hijack, run after run. A decl the SUBSTRATE
+    # declares is NEVER a hijack. Sound: a same-named MALICIOUS shadow clashes at substrate-append bank ⇒
+    # reverted_noncompile (no laundering); a genuinely-ADDED (not-in-substrate) hijack is still stripped + caught.
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        _subp = get_campaign_substrate()
+        if _subp:
+            orig_names |= {n for n, _ in decl_blocks(Path(_subp).read_text(encoding="utf-8", errors="replace"))}
+    except Exception:  # noqa: BLE001 — substrate union is best-effort; original_source membership still holds
+        pass
+    _orig_short = {n.split(".")[-1] for n in orig_names}
     drop_blocks: list[str] = []
     removed: list[str] = []
     for name, block in decl_blocks(probe_source):
-        if name in orig_names:
+        # NAME-ROBUST substrate-membership (2026-07-05): a decl the SUBSTRATE also declares is NOT "added" — never
+        # strip it, whether the probe names it QUALIFIED (`NS.foo`) or SHORT (`foo`). The exact-only match false-
+        # stripped the substrate's OWN `LimitOrderBookV3.instDecidableMarketable` (declared short inside the ns) →
+        # the stripped probe couldn't resolve `Decidable (Marketable …)` → FALSE `context_hijack`. NO laundering: a
+        # same-named MALICIOUS shadow cannot PERSIST (it clashes at substrate-append bank ⇒ reverted_noncompile),
+        # and a genuinely-ADDED (different-named) hijack is still stripped + caught. Mirrors the name-agnostic
+        # matching statement_integrity / faithfulness already use (the recurring qualified-vs-short brittleness).
+        _sn = name.split(".")[-1]
+        if name in orig_names or _sn in _orig_short or any(name.endswith("." + o) for o in orig_names):
             continue
         _short = name.split(".")[-1]
         # 1a. ADDED instance providing a (widened) core class — the shadowing vector.

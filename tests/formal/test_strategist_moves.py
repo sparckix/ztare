@@ -48,7 +48,8 @@ def _runner(captured=None):
         return True, "compiled clean (mock)"
 
     def fake_validate(contract, proof_text, enriched_goal, target_name, lean_root,
-                      timeout_s, kernel_compile_ok, kernel_compile_tail, goal_type=None):
+                      timeout_s, kernel_compile_ok, kernel_compile_tail, goal_type=None,
+                      closure_source=None, posed_source=None):
         return {"receipts": {"kernel_compile_receipt": {"passed": True},
                              "matched_negative_control_receipt": {"passed": True}}}
 
@@ -106,6 +107,89 @@ def test_generalize_negative_sorry_no_closure():
     res = runner(_N(), gds.MOVE_GENERALIZE, 100.0)
     assert res.ratified_close is False
     assert pt[-1]["outcome"] == "failed_compile"
+
+
+def test_spawned_goal_materializes_parent_vocabulary(tmp_path, monkeypatch):
+    parent = tmp_path / "AdHoc_parent.lean"
+    parent.write_text(
+        "import Mathlib\n\ndef CampaignDef : Prop := True\n\n"
+        "theorem parent : CampaignDef := by sorry\n",
+        encoding="utf-8",
+    )
+    row = {
+        "row_id": "spawned",
+        "target_theorem_name": "parent",
+        "goal": "theorem parent : CampaignDef := by",
+        "source_file": str(parent),
+        "sorried_file": str(parent),
+    }
+    seen = {}
+
+    def fake_native(child, *_args):
+        seen.update(child)
+        return False, "", "expected miss"
+
+    monkeypatch.setenv("ZTARE_CONJECTURE_DECOMPOSE", "1")
+    monkeypatch.setattr(sc, "_native_hammer_probe", fake_native)
+    monkeypatch.setattr(sc, "_record_attempt", lambda *a, **k: None)
+    runner = sc._build_dag_move_runner(
+        r=row, contract={}, enriched_goal=row["goal"], verify_timeout=30,
+        provider="codex", fallbacks=[], invoke_with_routing=lambda *a, **k: None,
+        providers_tried=[], lean_root=tmp_path,
+    )
+    child = _N()
+    child.kind = "sub_goal"
+    child.node_id = "n1_sub_goal_1"
+    child.goal_text = "theorem child : CampaignDef := by sorry"
+    runner(child, gds.MOVE_NATIVE_HAMMER, 30.0)
+
+    materialized = Path(seen["source_file"])
+    assert materialized != parent
+    assert seen["target_theorem_name"] == "child"
+    assert "def CampaignDef" in materialized.read_text(encoding="utf-8")
+    assert "theorem child : CampaignDef" in materialized.read_text(encoding="utf-8")
+
+
+def test_spawned_child_governance_is_invariant_to_root_identity(tmp_path, monkeypatch):
+    """A child closure is governed as its own theorem, even when its parent is renamed."""
+    parent = tmp_path / "AdHoc_parent.lean"
+    parent.write_text(
+        "import Mathlib\n\ndef CampaignDef : Prop := True\n\n"
+        "theorem renamed_root : CampaignDef := by sorry\n",
+        encoding="utf-8",
+    )
+    row = {
+        "row_id": "spawned-governance", "target_theorem_name": "renamed_root",
+        "goal": "theorem renamed_root : CampaignDef := by", "source_file": str(parent),
+        "sorried_file": str(parent),
+    }
+    seen = {}
+
+    monkeypatch.setenv("ZTARE_CONJECTURE_DECOMPOSE", "1")
+    monkeypatch.setattr(sc, "_native_hammer_probe", lambda *_a, **_k: (True, "trivial", "compiled"))
+    monkeypatch.setattr(sc, "_record_attempt", lambda *a, **k: None)
+
+    def governed(**kwargs):
+        seen.update(kwargs)
+        return {"receipts": {"kernel_compile_receipt": {"passed": True},
+                              "matched_negative_control_receipt": {"passed": True}}}
+
+    monkeypatch.setattr(sc, "_validate_against_contract", governed)
+    runner = sc._build_dag_move_runner(
+        r=row, contract={}, enriched_goal=row["goal"], verify_timeout=30,
+        provider="codex", fallbacks=[], invoke_with_routing=lambda *a, **k: None,
+        providers_tried=[], lean_root=tmp_path,
+    )
+    child = _N()
+    child.kind, child.node_id = "sub_goal", "n1_sub_goal_1"
+    child.goal_text = "theorem child_identity : CampaignDef := by sorry"
+    result = runner(child, gds.MOVE_NATIVE_HAMMER, 30.0)
+
+    assert result.ratified_close
+    assert seen["target_name"] == "child_identity"
+    assert seen["goal_type"].startswith("theorem child_identity")
+    assert "theorem child_identity" in seen["posed_source"]
+    assert "renamed_root" not in seen["enriched_goal"]
 
 
 def _main():

@@ -17,6 +17,7 @@ from ztare.research_director.mathlib_semantic import (
     _embed_query_genai,
     mathlib_semantic_neighbours,
 )
+from ztare.common.embeddings import cached_text_embeddings
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -332,28 +333,22 @@ def own_ledger_hits(
     if not corpus:
         return [], 0, None     # an empty ledger is a young campaign, not a degradation
     cache_path = Path(cache_path) if cache_path else OWN_LEDGER_EMBED_CACHE
-    cache = _own_cache_load(cache_path)
-    new_embeds, pending = 0, 0
-    for row in corpus:
-        if row["id"] in cache:
-            continue
-        if new_embeds >= _OWN_LEDGER_MAX_NEW_EMBEDS:
-            pending += 1       # REPORTED below — a capped sweep must never read as "covered everything"
-            continue
-        vec = embedder(row["text"])
-        new_embeds += 1
-        if vec:
-            cache[row["id"]] = vec
-    if new_embeds:
-        try:
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
-            cache_path.write_text(json.dumps(cache), encoding="utf-8")
-        except OSError:
-            pass               # cache is an optimization; recall still works this call
+    texts = [row["text"] for row in corpus]
+    vecs, new_embeds, pending = cached_text_embeddings(
+        texts,
+        cache_path=cache_path,
+        cache_keys=[row["id"] for row in corpus],
+        embedder=embedder,
+        max_new=_OWN_LEDGER_MAX_NEW_EMBEDS,
+    )
     qvec = embedder(query)
     if qvec is None:
         return [], len(corpus), "query embedding unavailable (no GOOGLE_API_KEY or google.genai)"
-    scored = [( _mathlib_cosine(qvec, cache[row["id"]]), row) for row in corpus if row["id"] in cache]
+    scored = [
+        (_mathlib_cosine(qvec, vec), row)
+        for row, vec in zip(corpus, vecs)
+        if vec is not None
+    ]
     scored.sort(reverse=True, key=lambda item: item[0])
     hits = []
     _proof_sim = float(os.environ.get("ZTARE_LEANMILL_OWN_LEDGER_PROOF_SIM", "0.82"))

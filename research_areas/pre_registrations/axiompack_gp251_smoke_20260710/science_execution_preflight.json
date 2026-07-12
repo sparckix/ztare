@@ -1,0 +1,21 @@
+{
+  "schema": "leanmill.frontier_science_execution_preflight.v1",
+  "status": "passed",
+  "provider_calls": 0,
+  "campaign_id": "leanmill-campaign:34aa8b53eeaab7b648bb95013d3c3fe635cade8c26b5e9ae66bff7597e7b0847",
+  "definition_id": "frontier-campaign-definition:fbdee95e90da92235df97f922f3c3adfe3622dfbe0cfe1b0a124cc4bf4b493f7",
+  "blueprint_id": "blueprint:943dbee7be0f16225365b61bd5608c2dcbd4cc98eb42127f65be8e7b9a9a05c5",
+  "context_hash": "d22e5a390f117cbcbd4f1972dfb93d88b0e10db2bb5eaef1cf7b59c1f3e87206",
+  "formula_count": 410,
+  "model_count": 3340,
+  "allocation_policy": "roll_forward_protected_future",
+  "cumulative_provider_headroom": {
+    "compilation": 4,
+    "context": 4,
+    "navigation": 9,
+    "expansion": 12,
+    "boundary": 15,
+    "interpretation": 16
+  },
+  "receipt_sha256": "03c15e3929382dcf423257b053cca1cebf8023742c1c4aa0665f715dfaa2a82f"
+}

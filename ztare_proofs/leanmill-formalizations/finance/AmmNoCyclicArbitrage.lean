@@ -20,6 +20,9 @@ telemetry (run_tag=amm_nocyclic_v6) by promote_campaign_artifact.py — not hand
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/amm_no_cyclic_arbitrage_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 structure ConstantProductPool where
   reserveX : NNReal
   reserveY : NNReal
@@ -560,3 +563,5 @@ theorem no_history_enables_round_trip_arbitrage : (∀ (fee : FeeFactor) (p : Co
       have hpos : 0 < (1 : NNReal) := by norm_num
       simpa [reachableRoundTripReturn, reachablePool, executeTrades, roundTripReturn] using
         roundTripYReturn_lt_input_of_real_fee fee p 1 hp hfee hpos
+
+#print axioms no_history_enables_round_trip_arbitrage

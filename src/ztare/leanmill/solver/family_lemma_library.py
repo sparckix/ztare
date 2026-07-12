@@ -18,16 +18,123 @@ NON-IATROGENIC by construction:
 from __future__ import annotations
 
 import json
+import os
 import re
+import tempfile
+import threading
 from pathlib import Path
 
 from ztare.fit.mdl import MDLLibrary  # canonical MDL engine; we plug in a Lean-token size function
+
+# ATOMIC substrate edits + a bank serializer (2026-07-02, the median-voter substrate-corruption RCA). The
+# banked-rung append was an in-place `open("a")` write, so a concurrent reader (the campaign_file_env positive
+# control; a parallel-pool bank) could see a HALF-WRITTEN file ("substrate does not compile"), and two banks racing
+# their read→append→revert restored STALE snapshots that accumulated broken rungs (12→4→21 errors). `_atomic_write`
+# makes every substrate mutation an all-or-nothing `os.replace`, so a reader ALWAYS sees a complete before-or-after
+# state and a failed bank leaves the file byte-identical; `_BANK_LOCK` serializes the compound read-mutate-verify-
+# revert so reverts can't interleave. Efficiency/hygiene only — soundness was already guaranteed by the revert +
+# campaign_file_env→None fallback; this stops the corruption + warm-env death, so a bank is transactional: all or nothing.
+_BANK_LOCK = threading.RLock()
+_REVERIFY_UNAVAILABLE_SHA: "set[tuple[str, str]]" = set()
+
+
+def _sha_text(text: str) -> str:
+    import hashlib
+    return hashlib.sha256((text or "").encode("utf-8", errors="replace")).hexdigest()
+
+
+def _atomic_write(path: "str | Path", text: str) -> None:
+    """Write `text` to `path` atomically: a temp file in the same dir + `os.replace` (atomic on POSIX). A reader
+    never observes a partial write, and a crash mid-write leaves the original intact."""
+    p = Path(path)
+    fd, tmp = tempfile.mkstemp(dir=str(p.parent), prefix=p.name + ".", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, str(p))
+        try:
+            from ztare.formal.repl_compile import drop_campaign_file_env_cache
+            drop_campaign_file_env_cache(p)
+        except Exception:  # noqa: BLE001 — cache invalidation is a freshness guard; content-hash key is the backstop
+            pass
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _candidate_reverifies(path: "str | Path", text: str, reverify) -> bool:
+    """Run the path-based verifier on candidate bytes without swapping the live substrate first."""
+    p = Path(path)
+    fd, tmp = tempfile.mkstemp(dir=str(p.parent), prefix=p.name + ".candidate.", suffix=".lean")
+    tmp_path = Path(tmp)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        return bool(reverify(tmp_path))
+    except Exception:  # noqa: BLE001
+        return False
+    finally:
+        try:
+            from ztare.formal.repl_compile import drop_campaign_file_env_cache
+            drop_campaign_file_env_cache(tmp_path)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+
+
+def _commit_if_candidate_reverifies(path: "str | Path", text: str, reverify) -> bool:
+    if not _candidate_reverifies(path, text, reverify):
+        return False
+    _atomic_write(path, text)
+    return True
+
+
+def _record_bank_attempt(context_path: "str | Path", target_name: str, result: dict,
+                         *, before: str = "", after: str = "", stage: str = "") -> None:
+    """Append-only observability for substrate mutation attempts. Best-effort, never part of the verdict."""
+    try:
+        import time
+        from ztare.leanmill.common import append_jsonl_locked
+        from ztare.leanmill.control_plane import SubstrateMutationKind, SubstrateMutationReceipt
+        p = _repo_root() / "analytics" / "public" / "queries" / "solver_lane_bank_attempts.jsonl"
+        receipt = SubstrateMutationReceipt(
+            kind=SubstrateMutationKind.BANK_DECL_TO_ENV,
+            target_name=target_name,
+            context_path=str(context_path),
+            stage=stage,
+            before_sha256=_sha_text(before) if before else "",
+            after_sha256=_sha_text(after) if after else "",
+            changed=bool(before and after and before != after),
+            result=dict(result or {}),
+        )
+        rec = {
+            "schema": "leanmill.substrate_mutation.v1",
+            "ts": time.time(),
+            "run_tag": os.environ.get("ZTARE_SOLVER_RUN_TAG", ""),
+            "context": str(context_path),
+            "target": target_name,
+            "stage": stage,
+            "result": result,
+            "before_sha256": receipt.before_sha256,
+            "after_sha256": receipt.after_sha256,
+            "changed": receipt.changed,
+            "mutation": receipt.to_json(),
+        }
+        append_jsonl_locked(p, rec, ensure_ascii=True)
+    except Exception:  # noqa: BLE001
+        pass
 
 # Decl-span parsing is the CANONICAL `lean_source` parser (single source of the decl-kind list — no sibling
 # that can drift; the missing-kind span-swallow bug was RCA 2026-07-01). `_DECL_START`/`_TERMINATORS` are
 # re-export aliases so existing call sites + the anti-drift CI guard keep referencing them by their old names.
 from ztare.leanmill.lean_source import (  # noqa: E402
-    DECL_START as _DECL_START, DECL_TERMINATORS as _TERMINATORS, decl_blocks)
+    DECL_START as _DECL_START, DECL_TERMINATORS as _TERMINATORS, decl_blocks, has_sorry)
 
 
 def decl_names(text: str) -> "set[str]":
@@ -77,55 +184,260 @@ def strip_dead_sorried_orphans(text: str) -> "tuple[str, list[str]]":
 
 
 def bankable_helpers(proof_text: str, context_names: "set[str]",
-                     exclude_prefixes=("leaf_", "lift_", "barr", "AgenticLeafProbe")) -> "list[tuple[str, str]]":
-    """Invented helpers worth banking from a closure: decls NOT already in the family context
-    (dedup by name) and NOT the target/probe theorem itself."""
-    out = []
-    for name, block in decl_blocks(proof_text):
-        if not name:                     # anonymous `example` — a span boundary, never a bankable named helper
+                     exclude_prefixes=("leaf_", "lift_", "barr", "AgenticLeafProbe"),
+                     context_text: str = "", keep_name: str = "") -> "list[tuple[str, str]]":
+    """Invented helpers worth banking from a closure: decls NOT already in the family context and NOT the
+    target/probe theorem itself.
+
+    Dedup is SEMANTIC, not name-based (2026-07-05 RCA — operator "we are mangling along the reuse path and re-
+    banking duplicates"): the formalizer mangles a rung's name run-to-run (`iso_lemma1__411321b2` one run,
+    `iso_lemma1__89847c75` the next), so a NAME-only dedup misses the semantic duplicate and re-banks the SAME
+    lemma EVERY run — the substrate accretes redundant `section … end` blocks (3× `iso_lemma1` on CLOB) until the
+    section-variable scope breaks. So a STANDALONE statement-duplicate is dropped (via `proof_cache.normalize_
+    statement`, the one name-agnostic door).
+
+    DEPENDENCY-AWARE (RCA 2026-07-06, operator "fix that semantic dedup shit once and for all"): a statement-only
+    dedup ALSO collapsed a proof's OWN carried decls — it dropped the TARGET headline when its statement duplicated
+    the substrate (`dedup_or_excluded`), and dropped an inline HELPER the headline cites (`reverted_noncompile`,
+    the renamed headline can't recompile without it). Fix: the dedup applies ONLY to a STANDALONE rung — the TARGET
+    (`keep_name`) is never a candidate, and any decl a KEPT decl transitively CITES is carried even if its statement
+    duplicates the context (an inline helper needed in scope). A duplicate cited ONLY by an already-dropped decl
+    stays dropped, so a mangled re-bank's helpers still don't accrete. `context_text` omitted / no normalizer ⇒
+    every named decl is kept (byte-parity for callers that don't dedup)."""
+    try:
+        from ztare.leanmill.solver.proof_cache import normalize_statement as _ns
+    except Exception:  # noqa: BLE001 — normalizer optional; fall back to name-only dedup
+        _ns = None
+    context_norms: "set[str]" = set()
+    if context_text and _ns is not None:
+        for _, cblk in decl_blocks(context_text):
+            try:
+                nrm = _ns(cblk)
+                if nrm:
+                    context_norms.add(nrm)
+            except Exception:  # noqa: BLE001
+                pass
+    cands = [(n, b) for n, b in decl_blocks(proof_text)
+             if n and n not in context_names and not any(n.startswith(p) for p in exclude_prefixes)]
+    _keep = keep_name.rsplit(".", 1)[-1] if keep_name else ""
+
+    def _norm(b: str) -> str:
+        if _ns is None:
+            return ""
+        try:
+            return _ns(b) or ""
+        except Exception:  # noqa: BLE001
+            return ""
+
+    # PASS 1 — keep every candidate EXCEPT a standalone statement-duplicate (the mangled cross-run re-bank). The
+    # TARGET headline is never a dedup candidate (dropping it was the `dedup_or_excluded` bug).
+    seen_norms: "set[str]" = set()
+    kept: "set[int]" = set()
+    for i, (name, block) in enumerate(cands):
+        is_target = bool(_keep) and name.rsplit(".", 1)[-1] == _keep
+        nrm = _norm(block)
+        if not is_target and nrm and (nrm in context_norms or nrm in seen_norms):
             continue
-        if name in context_names:
-            continue
-        if any(name.startswith(p) for p in exclude_prefixes):
-            continue
-        out.append((name, block))
-    return out
+        if nrm:
+            seen_norms.add(nrm)
+        kept.add(i)
+    # PASS 2 — carry back any dropped decl a KEPT decl (transitively) CITES: an inline helper the headline needs in
+    # scope to recompile. A duplicate cited only by an already-dropped decl stays dropped (no re-bank helper accretion).
+    changed = True
+    while changed:
+        changed = False
+        for i, (name, _b) in enumerate(cands):
+            if i in kept:
+                continue
+            pat = re.compile(rf"(?<![\w.]){re.escape(name)}(?![\w'.])")
+            if any(pat.search(cands[j][1]) for j in kept):
+                kept.add(i)
+                changed = True
+    return [cands[i] for i in sorted(kept)]
 
 
 _BANK_MARKER = re.compile(r"^-- \[family-lemma-library\] banked: (\S+)\s*$")
 
+_FAMILY_SEC_HDR = "section  -- [family-lemma-library] banked rungs"
 
-def bank(context_path: "str | Path", proof_text: str) -> "list[str]":
+
+def _extract_family_sections(text: str) -> "tuple[str, list[str]]":
+    """Split out every `section  -- [family-lemma-library] banked rungs … end` block. Returns (text_without_them,
+    [block, …]). The block runs header→its own bare `end` line (these sections never nest; each is header + opens
+    + section vars + banked helper decls + `end`, emitted only by `bank`)."""
+    lines = text.splitlines(keepends=True)
+    keep: "list[str]" = []
+    blocks: "list[str]" = []
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith(_FAMILY_SEC_HDR):
+            j = i + 1
+            while j < len(lines) and lines[j].strip() != "end" and not lines[j].startswith(_FAMILY_SEC_HDR):
+                j += 1
+            end = j + 1 if (j < len(lines) and lines[j].strip() == "end") else j
+            blocks.append("".join(lines[i:end]).rstrip("\n"))
+            i = end
+            if i < len(lines) and lines[i].strip() == "":   # swallow one trailing blank so blanks don't accrete
+                i += 1
+        else:
+            keep.append(lines[i])
+            i += 1
+    return "".join(keep), blocks
+
+
+def _topo_sort_family_blocks(blocks: "list[str]", body: str = "") -> "list[str]":
+    """Sort the DECLS inside each family-section block into DEPENDENCY order (a helper's helper-deps first) so a
+    banked helper never forward-references a sibling — `ProposalStepRel` before `ProposalState` was the gale
+    internal-order corruption (2026-07-06). Preserves each block's `section … end` wrapper + comments; reorders
+    only the top-level decls within it. Cycles (mutual recursion) fall back to natural order. `body` reserved for
+    a future cross-block pass; unused today."""
+    out: "list[str]" = []
+    for blk in blocks:
+        named = [(n, d) for n, d in decl_blocks(blk) if n]
+        if len(named) < 2:
+            out.append(blk)
+            continue
+        first = blk.find(named[0][1])
+        lend = blk.rfind(named[-1][1]) + len(named[-1][1])
+        header, footer = blk[:first], blk[lend:]
+        text_of = {n: d for n, d in named}
+        order = [n for n, _ in named]
+        names = set(order)
+        dep = {n: {m for m in names if m != n and re.search(rf"(?<![\w.]){re.escape(m)}(?![\w'.])", d)}
+               for n, d in named}
+        res: "list[str]" = []
+        done: "set[str]" = set()
+
+        def _visit(n: str, stack: "set[str]") -> None:
+            if n in done or n in stack:
+                return
+            stack.add(n)
+            for m in order:
+                if m in dep[n]:
+                    _visit(m, stack)
+            stack.discard(n)
+            done.add(n)
+            res.append(n)
+
+        for n in order:
+            _visit(n, set())
+        out.append(header.rstrip("\n") + "\n" + "\n\n".join(text_of[n].strip() for n in res)
+                   + "\n" + footer.lstrip("\n"))
+    return out
+
+
+def reorder_banked_before_workitems(text: str) -> str:
+    """TOPOLOGICAL PLACEMENT (2026-07-05, CLOB `reverted_noncompile` churn cure): move every family-library banked
+    `section … end` block to immediately BEFORE the first SORRIED work-item decl, so a work-item's proof
+    (superseded IN PLACE at its original position) that cites a banked helper is a BACKWARD reference. The bug it
+    kills: helpers were appended at EOF — AFTER the work-items that cite them — so a work-item→helper cite was a
+    FORWARD reference. warm-verify (order-blind full env) passed; the in-order substrate-append compile failed
+    (`Unknown identifier`) ⇒ retract ⇒ revert ⇒ re-attack ⇒ churn (nothing ever sticks). Placed before the work-
+    items, both envs agree ⇒ closed ⟺ compiles-in-substrate holds at the placement level. The work-items sit
+    INSIDE the theory namespace, so the section (with its own `open`/vars) lands there too and the helpers resolve
+    by short name backward. Anchor = the EARLIEST decl that either is a sorried work-item OR cites a banked helper
+    by name (the true topological constraint — it catches both a still-open work-item AND one just superseded to a
+    proof that cites the helper). Idempotent (already-ordered ⇒ re-inserts at the same spot). Nothing cites a
+    helper and no open work-item ⇒ returns `text` unchanged (helpers stay at EOF; byte-parity for prior use)."""
+    if _FAMILY_SEC_HDR not in text:
+        return text
+    body, blocks = _extract_family_sections(text)
+    if not blocks:
+        return text
+    helper_names = {n for b in blocks for n, _ in decl_blocks(b) if n}
+    if not helper_names:
+        return text
+    off = None
+    for name, blk in decl_blocks(body):
+        if name in helper_names:                      # never anchor on a helper that cites another helper
+            continue
+        cites = any(re.search(rf"(?<![\w.]){re.escape(h)}(?![\w'.])", blk) for h in helper_names)
+        if cites or has_sorry(blk):
+            idx = body.find(blk)
+            if idx >= 0:
+                off = body.rfind("\n", 0, idx) + 1
+            break                                     # decl_blocks is in file order ⇒ first hit is earliest
+    if off is None:                                   # nothing cites a helper and no open work-item ⇒ leave at EOF
+        return text
+    # (A prior "dependency-floor" heuristic here pushed `off` PAST the first citer via coincidental name matches and
+    # broke `openingState` on gale, 2026-07-06 — removed. A single-block move CANNOT topologically order theory defs
+    # that banking has SCATTERED across blocks (`ProposalState`→`ProposalStepRel`→`ProposalRun`); the robust
+    # containment for a bad reorder is the compile guard, which reverts the substrate to its last-good snapshot.
+    # So keep this placement minimal and let `guard_substrate_compiles` be the safety net.)
+    blob = "\n\n".join(blocks) + "\n\n"
+    return body[:off] + blob + body[off:]
+
+
+def bank(context_path: "str | Path", proof_text: str, *, reverify=None, keep_name: str = "",
+         return_meta: bool = False) -> "list[str] | tuple[list[str], dict]":
     """Append the closure's NEW invented helpers to the family context file. Returns the names
     banked. The context file's existing decl names are the dedup/exclusion set, so the corpus
     preamble (present from init) and prior helpers are never re-banked or duplicated.
 
+    `reverify` (a `path -> bool` compile check) enables KERNEL-ARBITRATED PLACEMENT (2026-07-06, the gale
+    `reverted_noncompile` root, solved general): the reorder places banked sections before the first citer
+    (CLOB's forward-ref cure), but that text-surgery can splice a `section` between a decl and its leading
+    `/-- … -/` doc-comment (orphaned comment) OR mis-order a scattered theory-def dep chain
+    (`ProposalState`→`ProposalStepRel`→`ProposalRun`) — corrupting the file. With `reverify` supplied, the
+    reorder is TRIED, and iff it changed the text AND the result won't compile, we fall back to the plain EOF
+    placement (which the kernel then re-checks upstream). No `reverify` ⇒ reorder unconditionally (byte-parity).
+    The ledger/MDL write happens ONCE either way (no double-bank side effects).
+
     Each banked lemma is also REGISTERED in the MDL ledger (reuse=0, exposure=0) so the selection
     layer can later compute its compression value."""
+    meta = {"attempted_write": False, "reverify_failed": False}
     p = Path(context_path)
     existing = p.read_text(encoding="utf-8") if p.exists() else ""
     existing_names = decl_names(existing)
-    new = bankable_helpers(proof_text, existing_names)
+    new = bankable_helpers(proof_text, existing_names, context_text=existing, keep_name=keep_name)   # dependency-aware SEMANTIC dedup
     if not new:
-        return []
+        return ([], meta) if return_meta else []
     # NAMESPACED ENV: re-open the env's namespaces in a SECTION so the appended flat rungs can resolve the campaign
     # defs by short name (the decls themselves persist top-level — `section` scopes only the `open`, not the decls,
     # so a later rung still cites them flat). Non-namespaced env ⇒ nss empty ⇒ bare append (byte-parity). 2026-06-24.
     nss = _open_namespaces(existing)
-    with p.open("a", encoding="utf-8") as f:
-        if nss:
-            f.write("\nsection  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)\n")
-            for n in nss:
-                f.write(f"open {n}\n")
-        for name, block in new:
-            f.write(f"\n-- [family-lemma-library] banked: {name}\n{block}\n")
-        if nss:
-            f.write("\nend\n")
+    # SECTION VARIABLES (RCA 2026-07-02, Basel `[Field K]` reverted_noncompile): re-opening the namespace restores
+    # the def NAMES but NOT the substrate's `variable {K} [Field K] …` SECTION VARIABLES. A banked rung whose proof
+    # body uses a section-variable-bound type (`K`'s field/order instances) then loses them at EOF ⇒ `K` autobinds
+    # with no `Field K` ⇒ `failed to synthesize instance` ⇒ revert. This is the SAME class the probe/verify/kernel-
+    # equiv sites already cure via `campaign_variables()`; `bank()` was the ONE append site that bypassed the single
+    # extractor `section_variable_lines`. Route it through the same door here. MONOTONE: flat theory ⇒ [] ⇒ byte-
+    # parity; only the substrate's OWN consistent context is re-declared (fresh section, no clash with the closed one).
+    from ztare.leanmill.lean_source import section_variable_lines
+    svars = section_variable_lines(existing)
+    # build the FULL new content in memory, then ATOMIC-replace (was an in-place `open("a")` append whose
+    # partial-write window a concurrent reader saw as a broken substrate — the corruption RCA above).
+    parts = [existing.rstrip("\n"), ""]
+    if nss or svars:
+        parts.append("section  -- [family-lemma-library] banked rungs (re-open env namespaces + section variables)")
+        parts.extend(f"open {n}" for n in nss)
+        parts.extend(svars)
+    for name, block in new:
+        parts.append(f"\n-- [family-lemma-library] banked: {name}\n{block}")
+    if nss or svars:
+        parts.append("\nend")
+    # TOPOLOGICAL PLACEMENT: keep banked helpers BEFORE the work-items that cite them (else a work-item
+    # superseded in place forward-references an EOF helper ⇒ reverted_noncompile churn). No-op on a helper-only
+    # context file / a fully-closed substrate ⇒ byte-parity for prior callers.
+    _full = "\n".join(parts).rstrip("\n") + "\n"
+    _reordered = reorder_banked_before_workitems(_full)
+    meta["attempted_write"] = True
+    if reverify is None:
+        _atomic_write(p, _reordered)
+    else:
+        if _commit_if_candidate_reverifies(p, _reordered, reverify):
+            pass
+        elif _reordered != _full and _commit_if_candidate_reverifies(p, _full, reverify):
+            pass
+        else:
+            meta["reverify_failed"] = True
+            return ([], meta) if return_meta else []
     led = _load_ledger(context_path)
     for name, _ in new:
         _ensure_ledger(led, name)
     _save_ledger(context_path, led)
-    return [n for n, _ in new]
+    out = [n for n, _ in new]
+    return (out, meta) if return_meta else out
 
 
 # --- MDL selection layer (reuse/exposure ledger + MDL-optimal provisioning) ----------------------
@@ -350,13 +662,27 @@ def _strip_named_decl(text: str, name: str) -> str:
 
 
 def _default_reverify(file_path: "str | Path", lean_root: "str | Path") -> bool:
-    """Reverify the appended campaign file via the PRODUCTION load path (`repl_compile.campaign_file_env`): it
-    re-elaborates the file's decls onto the warm Mathlib env and returns an env id iff the file compiles (None on
-    a hard error / dead REPL / toolchain drift). Read-only on the file — NOT `_compile_probe`, which copies to a
-    temp probe and runs a substrate-hygiene cleanup that DELETED the file (real bug, caught in the real-Lean
-    test 2026-06-19). Faithful: an env here ⇒ the run's verify seam can actually cite the rung."""
-    from ztare.formal.repl_compile import campaign_file_env
-    return campaign_file_env(str(Path(file_path).resolve()), str(Path(lean_root).resolve())) is not None
+    """Reverify a mutated campaign file before a bank write is allowed to persist.
+
+    The cold full-file compile is first: this is a source mutation commit check, and `campaign_file_env` is cached
+    by file mtime. A bank can write two candidate texts within one filesystem timestamp tick, so asking warm first
+    can return the previous healthy env for new broken bytes. After cold passes, clear this file's warm cache and
+    require a fresh campaign env load so the run can cite the persisted rung."""
+    fp = Path(file_path).resolve()
+    root = str(Path(lean_root).resolve())
+    from ztare.formal import repl_compile as rc
+    try:
+        from ztare.common.timeouts import timeout_s as _timeout_s
+        cold_timeout = int(_timeout_s("cold_compile"))
+    except Exception:  # noqa: BLE001
+        return False
+    if rc._substrate_cold_compiles(fp, root, cold_timeout) is not True:
+        return False
+    try:
+        rc._FILE_ENV_CACHE.pop(str(fp), None)
+    except Exception:  # noqa: BLE001 — private cache best-effort; campaign_file_env below still gates liveness
+        pass
+    return rc.campaign_file_env(str(fp), root) is not None
 
 
 def _default_axiom_audit(file_path: "str | Path", lean_root: "str | Path", decl_name: str) -> "tuple[bool, str]":
@@ -442,77 +768,137 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
     block = blocks.get(target_name) or (next(iter(blocks.values()), "") if len(blocks) == 1 else "")
     if not block or "sorry" in block:
         return {"banked_as": None, "reason": "no_proven_decl"}
-    before = p.read_text(encoding="utf-8")
-    # SUPERSESSION (RCA 2026-06-25): if `target_name` is a sorried work-item PLACEHOLDER in the env, the proof
-    # must TAKE OVER that canonical name so downstream short-name / `exact?` citations bind to the PROOF, not the
-    # sorry (the laundered-sorried-decl class). Done IN PLACE (`_supersede_in_place`) — the body is swapped where
-    # the placeholder sits, KEEPING its namespace + qualified name `NS.F`, so COMPOSITE proofs citing `F` still
-    # resolve. (The earlier strip+rebank-at-EOF RELOCATED `F` to top-level → `NS.F` vanished → every composite
-    # citing it failed reverted_noncompile — the v3 bug.) Otherwise (a generic planner node name, no placeholder)
-    # keep the content-stable mangling that disambiguates distinct same-name theorems. The reverify + axiom-guard
-    # backstop either path (a non-porting / sorry-tainted bank reverts to `before`, restoring the placeholder).
-    _superseded, _superseded_names, _new_text = False, [], None
-    if _sorried_placeholder_present(before, target_name):
-        _new_text, _superseded_names = _supersede_in_place(before, target_name, decl_text)
-        _superseded = _new_text is not None
-    if _superseded:
-        new_name = target_name
-        renamed = decl_text                                    # (for the event log)
-        p.write_text(_new_text, encoding="utf-8")
-    else:
-        if target_name in decl_names(before) and not _sorried_placeholder_present(before, target_name):
-            return {"banked_as": None, "reason": "already"}    # canonical proof already banked (superseded)
-        new_name = content_stable_name(target_name, block)
-        if new_name in decl_names(before):
-            return {"banked_as": None, "reason": "already"}        # identical statement already in the env
-        # CARRY THE INLINE HELPERS (RCA 2026-06-24): rename the target's head IN THE FULL PROBE so `bank()` appends
-        # the renamed headline AND the inline helper lemmas its proof cites — TOGETHER. `bankable_helpers` dedups
-        # NEW decls by name, so the probe's def preamble + already-banked helpers are skipped (no duplicate-def).
-        renamed = _rename_decl_head(decl_text, target_name, new_name)
-    _rv = reverify_fn or _default_reverify
+    # SERIALIZE the whole read→mutate→verify→revert so two concurrent banks can't interleave (a stale-snapshot
+    # revert would leave the other bank's broken append). Every write inside is atomic (`_atomic_write`), so a
+    # reader outside the lock still only ever sees a complete before-or-after file.
+    with _BANK_LOCK:
+        before = p.read_text(encoding="utf-8")
+        # SUPERSESSION (RCA 2026-06-25): if `target_name` is a sorried work-item PLACEHOLDER in the env, the proof
+        # must TAKE OVER that canonical name so downstream short-name / `exact?` citations bind to the PROOF, not the
+        # sorry (the laundered-sorried-decl class). Done IN PLACE (`_supersede_in_place`) — the body is swapped where
+        # the placeholder sits, KEEPING its namespace + qualified name `NS.F`, so COMPOSITE proofs citing `F` still
+        # resolve. (The earlier strip+rebank-at-EOF RELOCATED `F` to top-level → `NS.F` vanished → every composite
+        # citing it failed reverted_noncompile — the v3 bug.) Otherwise (a generic planner node name, no placeholder)
+        # keep the content-stable mangling that disambiguates distinct same-name theorems. The reverify + axiom-guard
+        # backstop either path (a non-porting / sorry-tainted bank reverts to `before`, restoring the placeholder).
+        _superseded, _superseded_names, _new_text = False, [], None
+        if _sorried_placeholder_present(before, target_name):
+            _new_text, _superseded_names = _supersede_in_place(before, target_name, decl_text)
+            _superseded = _new_text is not None
+        _superseded_candidate = ""
+        if _superseded:
+            new_name = target_name
+            renamed = decl_text                                    # (for the event log)
+            # TOPOLOGICAL PLACEMENT (2026-07-05): the work-item's proof is superseded IN PLACE (kept at its
+            # original position so composites citing it still resolve), but it may cite a family-library helper
+            # that was EOF-appended AFTER it ⇒ a forward reference the in-order substrate compile rejects
+            # (reverted_noncompile). Pull the banked helper sections BEFORE the (still-earlier) work-items so the
+            # cite is backward. Idempotent + no-op when already ordered / no sorried work-item remains.
+            _superseded_candidate = reorder_banked_before_workitems(_new_text)
+        else:
+            if target_name in decl_names(before) and not _sorried_placeholder_present(before, target_name):
+                return {"banked_as": None, "reason": "already"}    # canonical proof already banked (superseded)
+            new_name = content_stable_name(target_name, block)
+            if new_name in decl_names(before):
+                return {"banked_as": None, "reason": "already"}        # identical statement already in the env
+            # CARRY THE INLINE HELPERS (RCA 2026-06-24): rename the target's head IN THE FULL PROBE so `bank()` appends
+            # the renamed headline AND the inline helper lemmas its proof cites — TOGETHER. `bankable_helpers` dedups
+            # NEW decls by name, so the probe's def preamble + already-banked helpers are skipped (no duplicate-def).
+            renamed = _rename_decl_head(decl_text, target_name, new_name)
+        _rv = reverify_fn or _default_reverify
 
-    def _try(path) -> bool:
-        try:
-            return bool(_rv(path, lean_root))
-        except Exception:  # noqa: BLE001 — a tooling error ⇒ treat as a failed reverify, never a crash
-            return False
+        def _try(path) -> bool:
+            try:
+                return bool(_rv(path, lean_root))
+            except Exception:  # noqa: BLE001 — a tooling error ⇒ treat as a failed reverify, never a crash
+                return False
 
-    banked = _superseded_names if _superseded else bank(p, renamed)   # in-place supersede, else EOF append+dedup+MDL
-    if new_name not in banked:
-        return {"banked_as": None, "reason": "dedup_or_excluded"}
-    if _try(p):
-        # THE GUARD (RCA 2026-06-25): persistence-context axiom audit — a banked rung must be #print-axioms
-        # clean IN THE FILE, not just compile. Catches a rung that cites a still-`sorry` canonical name (the
-        # proven proof banked under a MANGLED name, the sorried work-item placeholder still owning the canonical
-        # namespaced name reachable via the `open`). Skipped only under an injected reverify_fn (unit tests, no
-        # live REPL) unless an explicit axiom_audit_fn is supplied. Fail-CLOSED on a detected sorryAx (revert).
-        _aa = axiom_audit_fn if axiom_audit_fn is not None else (_default_axiom_audit if reverify_fn is None else None)
-        if _aa is not None:
-            _clean, _areason = _aa(p, lean_root, new_name)
-            if not _clean:
-                p.write_text(before, encoding="utf-8")   # REVERT a sorry-tainted bank (no false-clean rung)
-                return {"banked_as": None, "reason": f"reverted_axiom_taint:{_areason}"}
-        _helpers = [n for n in banked if n != new_name]
-        # EVENT-SOURCING (the derived-view leg, 2026-06-25): also emit the bank as a durable, node-stamped event
-        # to the mergeable bank-events log. The .lean file is the live MATERIALIZED VIEW (cited this run); the
-        # event log is the SOURCE OF TRUTH a merged or fresh node re-derives the view from (see
-        # `rederive_library_from_events`). This makes the compounding library node-agnostic and dissolves the
-        # concurrent-append race (each node appends to a content-addressed log; the union re-materializes
-        # deterministically). Non-fatal: a telemetry failure must never break banking.
-        try:
-            record_bank_event(p.name, new_name, renamed, helpers=_helpers)
-        except Exception:  # noqa: BLE001
-            pass
-        return {"banked_as": new_name, "reason": "banked", "helpers_banked": _helpers}
-    p.write_text(before, encoding="utf-8")                     # REVERT — a non-porting rung must not poison the env
-    # CLASSIFY the failure honestly (positive control on the reverted file): a reverify that returns False for
-    # BOTH "infra is dead" (toolchain-less root / dead REPL / flag off) and "the rung genuinely breaks the env"
-    # is a dead instrument — that conflation hid the wrong-lean_root banking bug for an entire P1 run (every
-    # rung silently mislabeled `reverted_noncompile`). The unmodified `before` file is known-good (it loaded as
-    # the campaign env), so if it ALSO fails to reverify, the reverify apparatus — not the rung — is the
-    # problem. Only paid on the failure path; the common (banked) path stays one elaboration.
-    reason = "reverted_noncompile" if _try(p) else "reverify_unavailable"
-    return {"banked_as": None, "reason": reason}
+        _before_sha = _sha_text(before)
+        _unavailable_key = (str(p.resolve()), _before_sha)
+        if reverify_fn is None and _unavailable_key in _REVERIFY_UNAVAILABLE_SHA:
+            out = {"banked_as": None, "reason": "reverify_unavailable"}
+            _record_bank_attempt(p, target_name, out, before=before, after=before, stage="cached_reverify_unavailable")
+            return out
+
+        _bank_meta = {"attempted_write": bool(_superseded), "reverify_failed": False}
+        if _superseded:
+            if _commit_if_candidate_reverifies(p, _superseded_candidate, _try):
+                banked = _superseded_names
+            elif _new_text is not None and _superseded_candidate != _new_text and _commit_if_candidate_reverifies(p, _new_text, _try):
+                banked = _superseded_names
+            else:
+                banked = []
+                _bank_meta["reverify_failed"] = True
+        else:
+            banked, _bank_meta = bank(p, renamed, reverify=_try, keep_name=new_name, return_meta=True)   # append+kernel-arbitrated placement
+        if new_name not in banked:
+            _atomic_write(p, before)
+            if _bank_meta.get("reverify_failed"):
+                # Classify against the restored `before` bytes exactly once. If the unmodified substrate cannot be
+                # ratified under the policy budget, memoize that content SHA and skip later bank mutations for it.
+                _reason = "reverted_noncompile" if _try(p) else "reverify_unavailable"
+                if _reason == "reverify_unavailable" and reverify_fn is None:
+                    _REVERIFY_UNAVAILABLE_SHA.add(_unavailable_key)
+            else:
+                _reason = "dedup_or_excluded"
+            out = {"banked_as": None, "reason": _reason}
+            _record_bank_attempt(p, target_name, out, before=before,
+                                 after=p.read_text(encoding="utf-8", errors="replace"),
+                                 stage="missing_banked_name_reverted")
+            return out
+        def _on_reverify_ok() -> dict:
+            # THE GUARD (RCA 2026-06-25): persistence-context axiom audit — a banked rung must be #print-axioms
+            # clean IN THE FILE, not just compile. Catches a rung that cites a still-`sorry` canonical name (the
+            # proven proof banked under a MANGLED name, the sorried work-item placeholder still owning the canonical
+            # namespaced name reachable via the `open`). Skipped only under an injected reverify_fn (unit tests, no
+            # live REPL) unless an explicit axiom_audit_fn is supplied. Fail-CLOSED on a detected sorryAx (revert).
+            _aa = axiom_audit_fn if axiom_audit_fn is not None else (_default_axiom_audit if reverify_fn is None else None)
+            if _aa is not None:
+                _clean, _areason = _aa(p, lean_root, new_name)
+                if not _clean:
+                    _atomic_write(p, before)   # REVERT a sorry-tainted bank (no false-clean rung)
+                    return {"banked_as": None, "reason": f"reverted_axiom_taint:{_areason}"}
+            _helpers = [n for n in banked if n != new_name]
+            # EVENT-SOURCING (the derived-view leg, 2026-06-25): also emit the bank as a durable, node-stamped event
+            # to the mergeable bank-events log. The .lean file is the live MATERIALIZED VIEW (cited this run); the
+            # event log is the SOURCE OF TRUTH a merged or fresh node re-derives the view from (see
+            # `rederive_library_from_events`). This makes the compounding library node-agnostic and dissolves the
+            # concurrent-append race (each node appends to a content-addressed log; the union re-materializes
+            # deterministically). Non-fatal: a telemetry failure must never break banking.
+            try:
+                record_bank_event(p.name, new_name, renamed, helpers=_helpers)
+            except Exception:  # noqa: BLE001
+                pass
+            out = {"banked_as": new_name, "reason": "banked", "helpers_banked": _helpers}
+            _record_bank_attempt(p, target_name, out, before=before,
+                                 after=p.read_text(encoding="utf-8", errors="replace"),
+                                 stage="committed")
+            return out
+
+        if _try(p):
+            return _on_reverify_ok()
+        # REORDER-COMPILE FALLBACK (2026-07-06, gale): a SUPERSEDED rung's OWN in-place splice is valid (it excludes
+        # substrate-held decls), but `reorder_banked_before_workitems` (applied at the supersession write above) can
+        # mis-order a theory whose interdependent defs banking has SCATTERED across blocks (gale
+        # `ProposalState`→`ProposalStepRel`→`ProposalRun`) → the REORDERED file does not compile even though the rung
+        # PORTS → a valid closure gets `reverted_noncompile`-retracted. Before retracting, retry the plain in-place
+        # supersession WITHOUT the reorder. Regression-safe: the reorder is still tried FIRST (the CLOB
+        # helper-before-workitem forward-ref case it was built for), so this only rescues the rung the reorder would
+        # have wrongly killed; if the un-reordered splice ALSO fails to reverify, it is a genuine parity failure and
+        # we revert honestly below.
+        _atomic_write(p, before)                     # REVERT — a non-porting rung must not poison the env
+        # CLASSIFY the failure honestly (positive control on the reverted file): a reverify that returns False for
+        # BOTH "infra is dead" (toolchain-less root / dead REPL / flag off) and "the rung genuinely breaks the env"
+        # is a dead instrument — that conflation hid the wrong-lean_root banking bug for an entire P1 run (every
+        # rung silently mislabeled `reverted_noncompile`). The unmodified `before` file is known-good (it loaded as
+        # the campaign env), so if it ALSO fails to reverify, the reverify apparatus — not the rung — is the
+        # problem. Only paid on the failure path; the common (banked) path stays one elaboration.
+        reason = "reverted_noncompile" if _try(p) else "reverify_unavailable"
+        out = {"banked_as": None, "reason": reason}
+        _record_bank_attempt(p, target_name, out, before=before,
+                             after=p.read_text(encoding="utf-8", errors="replace"),
+                             stage="final_revert")
+        return out
 
 
 # --- event-sourcing: the bank-events log + view re-derivation (the derived-view leg, 2026-06-25) ----
@@ -556,8 +942,10 @@ def record_bank_event(substrate: str, name: str, decl_text: str,
     except Exception:  # noqa: BLE001 — provenance is optional; the fact still records
         rec = {"substrate": substrate, "name": name, "decl_text": decl_text,
                "helpers": list(helpers or [])}
-    with p.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(rec, ensure_ascii=True) + "\n")
+    # CROSS-PROCESS-SAFE append (2026-07-05 audit): this bank-events log is the SOURCE OF TRUTH the `.lean` view is
+    # folded from; a torn multi-KB `decl_text` record ⇒ the reader drops it ⇒ the rung vanishes from the fold.
+    from ztare.leanmill.common import append_jsonl_locked
+    append_jsonl_locked(p, rec, ensure_ascii=True)
 
 
 def read_bank_events(path: "str | Path | None" = None) -> "list[dict]":
@@ -733,6 +1121,19 @@ def _self_test() -> int:
     h = bank_decl_to_env(nsenv, "uses_foo", "theorem uses_foo : foo = foo := rfl", ".", reverify_fn=_rv_ns)
     ok("env: namespaced-env rung banks WITH open (flat refs to namespaced defs resolve)", bool(h["banked_as"]))
     ok("env: banked block re-opens the env namespace", "open NS" in Path(nsenv).read_text(encoding="utf-8"))
+    # SECTION-VARIABLE ENV (RCA 2026-07-02, Basel `[Field K]` reverted_noncompile): re-opening the namespace restores
+    # def NAMES but NOT the substrate's `variable {K} [Field K] …` SECTION VARIABLES — a rung whose proof uses K's
+    # instances loses them at EOF ⇒ `failed to synthesize Field K` ⇒ revert. bank() must re-emit the section variables
+    # via the ONE extractor `section_variable_lines` (the door the probe/verify/kernel-equiv sites already use). This
+    # is the exact sibling of the `open NS` test above — the 4th append site that had bypassed the single door.
+    venv = tempfile.mktemp(suffix=".lean")
+    init_context(venv, "import Mathlib\nnamespace BV\nvariable {K : Type*} [Field K] [LinearOrder K]\n"
+                       "def LC (t e : K) : Prop := e ≤ t\nend BV\n")
+    _rv_var = lambda path, root: ("uses_K" not in (_t := Path(path).read_text(encoding="utf-8"))) or ("variable {K" in _t)
+    v = bank_decl_to_env(venv, "uses_K", "theorem uses_K (t e : K) (h : LC t e) : e ≤ t := h", ".", reverify_fn=_rv_var)
+    ok("env: section-variable-env rung banks WITH the variable re-emitted (Field K instances survive)", bool(v["banked_as"]))
+    ok("env: banked block re-declares the section variables", "variable {K : Type*} [Field K]" in Path(venv).read_text(encoding="utf-8"))
+    os.path.exists(venv) and os.remove(venv)
     # AXIOM GUARD (RCA 2026-06-25): a rung that COMPILES but is sorry-tainted in the PERSISTED env must be
     # REVERTED, not banked — the laundered-sorried-canonical-name class (proven proof under a mangled name; the
     # sorried work-item placeholder still owning the canonical namespaced name reachable via the `open`).

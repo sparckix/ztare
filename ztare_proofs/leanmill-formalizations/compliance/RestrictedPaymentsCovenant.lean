@@ -14,6 +14,9 @@ telemetry (run_tag=restricted_payments_covenant_v1) by promote_campaign_artifact
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/restricted_payments_covenant_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 theorem restricted_payments_permission_safety_invariants : ∀ {State RP : Type*}
     [Nonempty State] [Nonempty RP]
     (NoDefault : State → Prop) (FCCRTestPasses : State → Prop)

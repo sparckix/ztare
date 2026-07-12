@@ -44,6 +44,9 @@ set order is not in Mathlib); by inspection it is the faithful Veinott order (`�
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/topkis_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 
 def OrdinalSingleCrossing
     {X T α : Type*} [Preorder X] [Preorder T] [Preorder α]

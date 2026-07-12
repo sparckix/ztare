@@ -16,12 +16,14 @@ NO soundness surface — read-only over telemetry; it changes what the operator 
 from __future__ import annotations
 
 import os
+import json
 import sqlite3
 from collections import Counter
 from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[3]
 _DEFAULT_DB = _REPO / "analytics/public/queries/solver_lane_attempts.db"
+_DEFAULT_LEAN_ROOT = _REPO / "ztare_proofs"
 
 # Refine the coarse `other_error` bucket from the attempt notes — THIS is what makes a scope/context bug visible
 # (it was buried under `other_error` before). Ordered: first match wins. (substring, refined_class, is_structural).
@@ -59,6 +61,14 @@ _REFINE = [
     ("compile_error", "leaf_proof_compile_error", False),
     ("dead instrument", "dead_instrument", True),
     ("inadmissible", "dead_instrument", True),
+    # proposer-pool per-model attribution rows (`solver_core._governed_pool_preattack` → `_record_attempt(...,
+    # outcome="failed", notes="governed_pool")`): a tried proposal whose proof FAILED the campaign-aware compile
+    # verify — an honest non-closure (same class as failed_compile), NOT a harness fault. Bare `"failed"` isn't in
+    # the honest-non-close outcome map and "governed_pool" matched nothing, so these fell through to
+    # `other_error`/structural and made a healthy pool read as a kernel bug (2026-07-02 ftap_hard false alarm).
+    # LAST in the list on purpose: if the writer ever enriches notes with the verify's actual Lean error, the
+    # specific rules above (unknown identifier / type mismatch / …) win first-match and classify it better.
+    ("governed_pool", "pool_proposal_compile_error", False),
 ]
 
 
@@ -74,6 +84,69 @@ _HONEST_NONCLOSE_OUTCOMES = {
     "no_close": ("unproven", False),
     "deferred": ("deferred_wall", False),               # campaign wall reached → honestly deferred, not a failure
 }
+
+
+def _definition_api_summary(obj: dict) -> dict:
+    receipt = obj.get("definition_api_receipt")
+    if not isinstance(receipt, dict):
+        return {}
+    defs = receipt.get("definitions") if isinstance(receipt.get("definitions"), list) else []
+    flagged = []
+    for row in defs:
+        if not isinstance(row, dict):
+            continue
+        flags = row.get("flags") if isinstance(row.get("flags"), list) else []
+        if flags:
+            flagged.append({
+                "name": str(row.get("name") or ""),
+                "kind": str(row.get("kind") or ""),
+                "computability": str(row.get("computability") or ""),
+                "flags": [str(f) for f in flags],
+            })
+    return {
+        "schema": "leanmill.definition_api_summary.v1",
+        "receipt_schema": str(receipt.get("schema") or ""),
+        "target_name": str(receipt.get("target_name") or ""),
+        "definition_count": len([r for r in defs if isinstance(r, dict)]),
+        "summary_flags": [str(f) for f in receipt.get("summary_flags", [])]
+        if isinstance(receipt.get("summary_flags"), list) else [],
+        "flagged_definitions": flagged[:12],
+        "flagged_definition_count": len(flagged),
+    }
+
+
+def _library_delta_summary(obj: dict) -> dict:
+    receipt = obj.get("library_delta_receipt")
+    if not isinstance(receipt, dict):
+        return {}
+    summary = receipt.get("summary") if isinstance(receipt.get("summary"), dict) else {}
+    decls = receipt.get("public_decls") if isinstance(receipt.get("public_decls"), list) else []
+    flagged = []
+    for row in decls:
+        if not isinstance(row, dict):
+            continue
+        warnings = row.get("warnings") if isinstance(row.get("warnings"), list) else []
+        if warnings:
+            flagged.append({
+                "name": str(row.get("name") or ""),
+                "kind": str(row.get("kind") or ""),
+                "namespace": str(row.get("namespace") or ""),
+                "warnings": [str(w) for w in warnings],
+            })
+    return {
+        "schema": "leanmill.library_delta_summary.v1",
+        "receipt_schema": str(receipt.get("schema") or ""),
+        "target_name": str(receipt.get("target_name") or ""),
+        "public_decl_count": int(summary.get("public_decl_count") or 0),
+        "theorem_count": int(summary.get("theorem_count") or 0),
+        "definition_count": int(summary.get("definition_count") or 0),
+        "dependency_edge_count": int(summary.get("dependency_edge_count") or 0),
+        "warning_count": int(summary.get("warning_count") or len(flagged)),
+        "warnings": [str(w) for w in receipt.get("warnings", [])]
+        if isinstance(receipt.get("warnings"), list) else [],
+        "flagged_decls": flagged[:12],
+        "flagged_decl_count": len(flagged),
+    }
 
 
 def _refine_class(error_class: "str | None", notes: "str | None",
@@ -107,14 +180,69 @@ def _iso_span_minutes(stamps: "list[str]") -> "float | None":
         return None
 
 
+def read_run_manifest(*, run_tag: "str | None" = None, manifest_path: "str | Path | None" = None,
+                      lean_root: "str | Path | None" = None) -> dict:
+    """Read the diagnostics subset of a LeanMill `run_manifest.json`.
+
+    The manifest can carry large receipts; diagnostics only need launch inputs
+    and authority modes. Missing or malformed manifests return `{}`.
+    """
+    try:
+        if manifest_path:
+            p = Path(manifest_path)
+        elif run_tag:
+            p = Path(lean_root or _DEFAULT_LEAN_ROOT) / ".solver_scratch" / run_tag / "run_manifest.json"
+        else:
+            return {}
+        if not p.exists():
+            return {}
+        obj = json.loads(p.read_text(encoding="utf-8"))
+        return {
+            "path": str(p),
+            "schema": obj.get("schema") or "",
+            "run_tag": obj.get("run_tag") or "",
+            "run_scratch": obj.get("run_scratch") or "",
+            "git_head": obj.get("git_head") or "",
+            "blueprint": obj.get("blueprint") if isinstance(obj.get("blueprint"), dict) else {},
+            "substrate": obj.get("substrate") if isinstance(obj.get("substrate"), dict) else {},
+            "providers": obj.get("providers") if isinstance(obj.get("providers"), dict) else {},
+            "code_fingerprints": (
+                obj.get("code_fingerprints") if isinstance(obj.get("code_fingerprints"), dict) else {}
+            ),
+            "authority_modes": obj.get("authority_modes") if isinstance(obj.get("authority_modes"), dict) else {},
+            "cache_authority_classes": (
+                obj.get("cache_authority_classes") if isinstance(obj.get("cache_authority_classes"), dict) else {}
+            ),
+            "definition_api_summary": _definition_api_summary(obj),
+            "library_delta_summary": _library_delta_summary(obj),
+        }
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" = None,
-                  since_iso: "str | None" = None, window_min: "float | None" = None) -> dict:
+                  since_iso: "str | None" = None, window_min: "float | None" = None,
+                  manifest_path: "str | Path | None" = None,
+                  lean_root: "str | Path | None" = None,
+                  verdict_path: "str | Path | None" = None) -> dict:
     """Read the attempts for ONE run (by run_tag, or a recent time window) and summarize the failure mode.
     Filter precedence: run_tag (exact) > since_iso > window_min (now-window) > all rows. Returns a dict
     (also feeds `render`). Never raises on a missing/locked DB — returns {"error": ...}."""
     db = Path(db_path) if db_path else _DEFAULT_DB
+    manifest = read_run_manifest(run_tag=run_tag, manifest_path=manifest_path, lean_root=lean_root)
+    verdict_summary = {}
+    try:
+        from ztare.leanmill.verdict_store import summarize_verdicts
+        verdict_summary = summarize_verdicts(verdict_path, run_tag=run_tag or "")
+    except Exception:  # noqa: BLE001
+        verdict_summary = {}
     if not db.exists():
-        return {"error": f"no attempts DB at {db}", "total": 0}
+        out = {"error": f"no attempts DB at {db}", "total": 0}
+        if manifest:
+            out["run_manifest"] = manifest
+        if verdict_summary.get("total"):
+            out["typed_verdicts"] = verdict_summary
+        return out
     if since_iso is None and window_min:
         try:
             from datetime import datetime, timezone, timedelta
@@ -200,7 +328,7 @@ def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" 
             watch.append(f"{str(tgt)[:48]}: NOT closed; dominant block = governance_block (statement_integrity/"
                          "signature_altered) ×{} — likely a FALSE-NEGATIVE (gate rejected a proof, not a math gap), "
                          "ESPECIALLY if a sibling/isomorphic target DID close.".format(pt['blocks']['governance_block']))
-    return {
+    out = {
         "total": total, "closed": closed, "ratified": ratified, "failures": fails,
         "structural_failures": structural, "dedup_skips": dedup_skips,
         "wall_minutes": (round(span, 1) if span else None),
@@ -211,6 +339,16 @@ def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" 
         "headline": headline, "detail": detail,
         "filter": (f"run_tag={run_tag}" if run_tag else (f"since={since_iso}" if since_iso else "ALL")),
     }
+    if manifest:
+        out["run_manifest"] = manifest
+    if verdict_summary.get("total"):
+        out["typed_verdicts"] = verdict_summary
+    try:
+        from ztare.leanmill.phase_timing import summarize_phase_timings
+        out["dispatch_budget"] = summarize_phase_timings(run_tag=run_tag or "").get("dispatch_budget", {})
+    except Exception:  # noqa: BLE001 — diagnostics remain available without timing telemetry
+        out["dispatch_budget"] = {}
+    return out
 
 
 def _classify(total, closed, ratified, fails, structural, by_class, span) -> "tuple[str, str]":
@@ -241,12 +379,62 @@ def _classify(total, closed, ratified, fails, structural, by_class, span) -> "tu
 
 def render(summary: dict) -> str:
     if summary.get("error"):
-        return f"[run-diagnostics] {summary['error']}"
+        msg = f"[run-diagnostics] {summary['error']}"
+        if summary.get("run_manifest"):
+            mf = summary["run_manifest"]
+            msg += f"\n  manifest: {mf.get('path', '')}"
+            das = mf.get("definition_api_summary") if isinstance(mf.get("definition_api_summary"), dict) else {}
+            if das:
+                msg += ("\n  definition/api: "
+                        f"defs={das.get('definition_count', 0)} "
+                        f"flagged={das.get('flagged_definition_count', 0)} "
+                        f"flags={das.get('summary_flags', [])}")
+            lds = mf.get("library_delta_summary") if isinstance(mf.get("library_delta_summary"), dict) else {}
+            if lds:
+                msg += ("\n  library-delta: "
+                        f"decls={lds.get('public_decl_count', 0)} "
+                        f"edges={lds.get('dependency_edge_count', 0)} "
+                        f"flagged={lds.get('flagged_decl_count', 0)} "
+                        f"warnings={lds.get('warnings', [])}")
+        if summary.get("typed_verdicts"):
+            msg += f"\n  typed verdicts: {summary['typed_verdicts'].get('by_kind', {})}"
+        return msg
     L = ["", "=" * 72, f"[run-diagnostics] {summary['headline']} — {summary['filter']}", "-" * 72,
          f"  attempts={summary['total']}  closed={summary['closed']}  ratified={summary['ratified']}"
          f"  failures={summary['failures']}  structural={summary['structural_failures']}"]
+    if summary.get("run_manifest"):
+        mf = summary["run_manifest"]
+        modes = mf.get("authority_modes") or {}
+        L.append("  manifest: "
+                 f"{mf.get('path', '')}  "
+                 f"pool={modes.get('proposer_pool', '')} "
+                 f"staged={modes.get('staged_reuse', '')} "
+                 f"bank_ratify={modes.get('bank_env_ratify', '')}")
+        das = mf.get("definition_api_summary") if isinstance(mf.get("definition_api_summary"), dict) else {}
+        if das:
+            L.append("  definition/api: "
+                     f"defs={das.get('definition_count', 0)} "
+                     f"flagged={das.get('flagged_definition_count', 0)} "
+                     f"flags={das.get('summary_flags', [])}")
+        lds = mf.get("library_delta_summary") if isinstance(mf.get("library_delta_summary"), dict) else {}
+        if lds:
+            L.append("  library-delta: "
+                     f"decls={lds.get('public_decl_count', 0)} "
+                     f"edges={lds.get('dependency_edge_count', 0)} "
+                     f"flagged={lds.get('flagged_decl_count', 0)} "
+                     f"warnings={lds.get('warnings', [])}")
+    if summary.get("typed_verdicts"):
+        tv = summary["typed_verdicts"]
+        L.append("  typed verdicts: "
+                 + ", ".join(f"{k}×{v}" for k, v in sorted((tv.get("by_kind") or {}).items())))
     if summary.get("wall_minutes") is not None:
         L.append(f"  wall={summary['wall_minutes']}min  throughput={summary['throughput_per_min']}/min")
+    db = summary.get("dispatch_budget") or {}
+    if db.get("count"):
+        L.append("  dispatch budget: "
+                 f"calls={db.get('count')} near_cap={db.get('near_cap_count', 0)} "
+                 f"mean_use={db.get('utilization_mean', 0):.2f} p95_use={db.get('utilization_p95', 0):.2f} "
+                 f"runtime={db.get('by_runtime', {})}")
     if summary.get("by_failure_class"):
         L.append("  failure classes: " + ", ".join(f"{k}×{v}" for k, v in summary["by_failure_class"].items()))
     if summary.get("dedup_skips"):
@@ -271,9 +459,11 @@ def render(summary: dict) -> str:
     return "\n".join(L)
 
 
-def print_epilogue(*, run_tag=None, since_iso=None, window_min=None, db_path=None) -> dict:
+def print_epilogue(*, run_tag=None, since_iso=None, window_min=None, db_path=None,
+                   manifest_path=None, lean_root=None, verdict_path=None) -> dict:
     """Convenience for runners: compute + print + return the summary in one call."""
-    s = summarize_run(db_path=db_path, run_tag=run_tag, since_iso=since_iso, window_min=window_min)
+    s = summarize_run(db_path=db_path, run_tag=run_tag, since_iso=since_iso, window_min=window_min,
+                      manifest_path=manifest_path, lean_root=lean_root, verdict_path=verdict_path)
     print(render(s), flush=True)
     return s
 
@@ -285,8 +475,12 @@ def _main() -> int:
     ap.add_argument("--run-tag", default=None)
     ap.add_argument("--since", default=None, help="ISO-8601; rows with attempt_at > this")
     ap.add_argument("--window-min", type=float, default=None, help="last N minutes")
+    ap.add_argument("--manifest", default=None, help="explicit run_manifest.json path")
+    ap.add_argument("--lean-root", default=None, help="Lean root containing .solver_scratch/<run_tag>/run_manifest.json")
+    ap.add_argument("--verdicts", default=None, help="explicit leanmill_verdicts.jsonl path")
     a = ap.parse_args()
-    s = summarize_run(db_path=a.db, run_tag=a.run_tag, since_iso=a.since, window_min=a.window_min)
+    s = summarize_run(db_path=a.db, run_tag=a.run_tag, since_iso=a.since, window_min=a.window_min,
+                      manifest_path=a.manifest, lean_root=a.lean_root, verdict_path=a.verdicts)
     print(render(s))
     return 0
 

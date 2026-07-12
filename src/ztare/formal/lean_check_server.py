@@ -141,6 +141,29 @@ def ensure_server(project: str, *, socket_path: "str | None" = None, warm_wait_s
     return None                                   # warmup did not finish in time ⇒ fall back to cold lake
 
 
+def ensure_server_advertised(project: str, *, context: str = "", warm_wait_s: int = 180) -> "str | None":
+    """THE SINGLE DOOR for the warm Lean checker (RCA 2026-07-03 — the cold-compile STARVATION). Start/reuse the
+    warm server, ADVERTISE its socket in `os.environ` (so every in-process prompt-builder AND child dispatch
+    inherits it), and — critically — LOG the verdict LOUDLY. The prior lazy per-caller `ensure_server` returned
+    None SILENTLY when the server was still warming OR had died / been reaped mid-run; every caller then fell back
+    to cold `lake env lean` (~30-90s/iter, full Mathlib) with NO signal, starving a frontier leaf's iterate-loop
+    until it sorried (recovered from the CoT: gpt-5.5 high-effort FOUND the proof, then lost it waiting on ONE cold
+    Mathlib compile). Dead-instrument class → cure = advertise-once + a LOUD positive control, never a silent cold
+    fallback. Callers self-heal a mid-run server death by re-calling this (ensure_server restarts + re-advertises).
+    Returns the live socket (also set in the env) or None (after logging the loud DOWN warning)."""
+    sock = ensure_server(project, warm_wait_s=warm_wait_s)
+    if sock:
+        os.environ["ZTARE_LEANMILL_LEAN_SOCKET"] = sock
+        print(f"[warm-lean] LIVE — socket {sock} ({context or 'ready'}); leaf/planner checks ~0.1s (warm Mathlib)",
+              flush=True)
+        return sock
+    os.environ.pop("ZTARE_LEANMILL_LEAN_SOCKET", None)   # never advertise a dead socket → no false 'unreachable' hint
+    print(f"[warm-lean] ⚠️ DOWN — warm Lean server unreachable ({context or 'run'}); the leaf/planner will "
+          f"COLD-compile (~30-90s/iter, full Mathlib) and may EXHAUST its budget before closing. "
+          f"See /tmp/lean_check_server.log.", flush=True)
+    return None
+
+
 def _check_cli(socket_path: str, file_path: str, reject_sorry: bool) -> int:
     """The command the AGENT runs: `lean-check <socket> <file>`. Prints the warm diagnostics, exit 0 iff clean.
     Strips a leading `import Mathlib` (the warm prelude already has it). Exit 3 = server unreachable (fall back)."""

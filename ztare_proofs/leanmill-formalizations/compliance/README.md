@@ -55,3 +55,21 @@ boundary the whole library discloses applies here too, sharply: the kernel certi
 from the covenant as formalized, not that the abstraction level (opaque accounting) or the clause reading is the
 one a court would adopt. That reading is the human's, argued in the blueprint; the logic's faithfulness is
 machine-checked.
+
+### Definitions
+
+The vocabulary these theorems are stated over — read them to check the faithfulness boundary; each is documented at the top of its file.
+
+**`BaselLeverageRatio.lean`**
+- `TotalExposureMeasure (x : ExposureComponents K) : K`
+- `RiskWeightInRange (w : K) : Prop` — Effective average risk weight lies in the Basel range `[0,1]`.
+- `LowRiskWeightCrossover (w : K) : Prop` — The crossover regime where the 8% risk-weighted floor does not dominate the 3% flat floor.
+- `RiskWeightedExposure (exposure w : K) : K` — Risk-weighted assets from total exposure and effective risk weight.
+- `LeverageCompliant (tier1 exposure : K) : Prop` — Basel leverage-ratio compliance: Tier-1 capital is at least 3% of total exposure.
+- `RiskWeightedCapitalFloor (tier1 exposure w : K) : Prop`
+
+**`RestrictedPaymentsFaithfulness.lean`**
+- `Permitted (noDefault fccrPass : Prop) (builderBasket cumulativeRP amount : ℝ) : Prop` — Faithful covenant permission: (a) ∧ (b) ∧ (c), with (c) a STRICT basket inequality.
+- `Permitted_or (noDefault fccrPass : Prop) (builderBasket cumulativeRP amount : ℝ) : Prop` — Laundered `∧→∨`: permit on ANY one condition.
+- `Permitted_dropC (noDefault fccrPass : Prop) (_builderBasket _cumulativeRP _amount : ℝ) : Prop` — Laundered dropped-(c): omit the builder-basket cap entirely.
+- `Permitted_le (noDefault fccrPass : Prop) (builderBasket cumulativeRP amount : ℝ) : Prop` — Laundered `<→≤`: allow a payment landing exactly at the basket.

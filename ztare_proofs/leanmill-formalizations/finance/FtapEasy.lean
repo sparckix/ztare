@@ -33,6 +33,9 @@ confirms `hq_pos : ∀ s, 0 < q s` is used (via `mul_pos`).
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/ftap_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-- Lemma 1 (cost identity). Under the pricing hypothesis, a portfolio's cost equals the state-price-weighted
 total payoff — by substituting prices and exchanging the order of the two finite sums. -/
 theorem cost_eq_statePriceWeighted_payoff : ∀ {nAssets nStates : Nat}

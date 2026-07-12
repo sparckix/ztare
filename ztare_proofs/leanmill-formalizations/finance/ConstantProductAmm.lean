@@ -19,6 +19,9 @@ telemetry (run_tag=amm_cpmm_v2) by promote_campaign_artifact.py — not hand-aut
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/constant_product_amm_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-!
 # Constant-product AMM substrate
 
@@ -1188,3 +1191,5 @@ theorem constantProductAMM_temporal_invariant_and_no_roundTrip_profit : (∀ (fe
   exact ⟨singleTradeInvariant, strictSingleTradeInvariant, tradeSequenceInvariant,
     roundTripXReturn_le_input, roundTripYReturn_le_input,
     roundTripXReturn_lt_input_of_real_fee, roundTripYReturn_lt_input_of_real_fee⟩
+
+#print axioms constantProductAMM_temporal_invariant_and_no_roundTrip_profit

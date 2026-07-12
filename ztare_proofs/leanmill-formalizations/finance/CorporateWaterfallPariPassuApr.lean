@@ -17,13 +17,8 @@ telemetry (run_tag=apr_paripassu_v2) by promote_campaign_artifact.py — not han
 -/
 import Mathlib
 
--- 📊 LEARNED move track-record (all attempts so far) — the apparatus's OWN kernel-arbitrated close-rates (a caught cheat counts as a loss). Prefer what has CLOSED; don't burn budget on dead moves. Advisory, not a constraint:
---   claude_warm: 98/622 closed (16%)
---   native_hammer: 67/715 closed (9%)
---   cold_shot_fanout: 1/93 closed (1%)
---   external_frontier_prover: 0/19 closed (0%)
---   generalize: 0/11 closed (0%)
-
+-- Natural-language specification (blueprint): blueprints/corporate_waterfalls_apr_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
 
 abbrev ClaimSchedule (ι : Type*) := ι → NNReal
 

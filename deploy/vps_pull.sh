@@ -51,16 +51,26 @@ say "2. rsync VPS → STAGING (curated list${DRY:+ — DRY-RUN})"
 # file is copied exactly as before.
 STAGE="${LOCAL_REPO}/.vps_pull_staging/${TS}"
 mkdir -p "$STAGE"
-rsync -az ${DRY} --files-from="$FILES" -e "$SSH" \
+# `vps_pull_files.txt` intentionally contains optional campaign artifacts. The
+# macOS-bundled openrsync does not support `--ignore-missing-args`, and aborting
+# the entire recovery when an older optional artifact is absent loses newer
+# completed attempts. Filter the trusted curated manifest on the VPS first;
+# connectivity/auth failures still stop here under `set -e`.
+AVAILABLE="${STAGE}/available_pull_files.txt"
+$SSH "$SSH_TGT" "cd '$REMOTE_REPO' && while IFS= read -r p; do case \"\$p\" in ''|'#'*) continue;; esac; if [ -d \"\$p\" ]; then find \"\$p\" -type f -print; elif [ -e \"\$p\" ]; then printf '%s\\n' \"\$p\"; fi; done" \
+  < "$FILES" > "$AVAILABLE"
+echo "  available entries: $(wc -l < "$AVAILABLE" | tr -d ' ') / $(grep -cv '^[[:space:]]*\(#\|$\)' "$FILES")"
+rsync -az ${DRY} --files-from="$AVAILABLE" -e "$SSH" \
   "$SSH_TGT:$REMOTE_REPO/" "$STAGE/" | tail -8
 
 if [ -z "$DRY" ]; then
   say "2b. reconcile staging → local (MERGE convergent fact logs, copy the rest)"
-  PYTHONPATH="${LOCAL_REPO}/src" python3 - "$LOCAL_REPO" "$STAGE" "$FILES" <<'PYEOF'
+  PYTHONPATH="${LOCAL_REPO}/src" python3 - "$LOCAL_REPO" "$STAGE" "$AVAILABLE" <<'PYEOF'
 import sys, shutil
 from pathlib import Path
 sys.path.insert(0, str(Path(sys.argv[1]) / "src"))
-from ztare.leanmill.state_convergence import CONVERGENT_STORES, merge_into, detect_conflicts
+from ztare.leanmill.state_convergence import (CONVERGENT_STORES, DB_STORES, merge_into,
+                                              merge_sqlite_by_key, detect_conflicts)
 local_repo, stage, files = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
 convergent, qdirs = set(CONVERGENT_STORES), set()
 for rel in files.read_text().splitlines():
@@ -73,6 +83,8 @@ for rel in files.read_text().splitlines():
     if src.name in convergent:                 # CvRDT union-merge, idempotent
         print("  " + merge_into(dst, src).line())
         qdirs.add(dst.parent)
+    elif src.name in DB_STORES and dst.exists():  # sqlite: row-level union by natural key, never clobber
+        print("  " + merge_sqlite_by_key(dst, src, *DB_STORES[src.name]).line())
     else:                                       # non-fact file: copy as before
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)

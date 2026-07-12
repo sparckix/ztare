@@ -131,8 +131,9 @@ class AttackRecord(BaseModel):
     bare per-lemma dict that carried THE famous bug class: `solved` is decided ONCE, here, as
     `firewall_outcome == "closed"` — so no caller can re-derive it as `bool(outcome)` and read the TRUTHY
     strings "exact_gap"/"open" as a closure (that false-positive marked unproven gaps solved). `solved` is a
-    typed BOOL field, so the bug is impossible by construction; `model_dump()` re-emits the exact legacy dict
-    keys, so the notes loop / write-back consumers are unchanged. `extra="ignore"` keeps it forward-compatible."""
+    typed BOOL field, so the bug is impossible by construction; `model_dump()` re-emits the legacy fields plus
+    the solver's gap classification, so notes / Workbench can route gaps without re-classifying them.
+    `extra="ignore"` keeps it forward-compatible."""
 
     model_config = ConfigDict(extra="ignore")
 
@@ -144,6 +145,8 @@ class AttackRecord(BaseModel):
     faithfulness_reason: Optional[str] = None
     faithfulness_checks: Any = None              # list|dict, move-specific until worth typing
     decomposition: Any = None                    # the planner's sub-DAG (route_and_solve), #81
+    failure_class: Optional[dict[str, Any]] = None  # solver's apparatus|math|cheat_caught classification
+    budget_killed: bool = Field(default=False, strict=True)
 
     @classmethod
     def from_firewall_result(cls, r: "dict | AttackRecord", *, nl: str) -> "AttackRecord":
@@ -161,6 +164,8 @@ class AttackRecord(BaseModel):
             faithfulness_reason=r.get("faithfulness_reason"),
             faithfulness_checks=r.get("faithfulness_checks"),
             decomposition=r.get("decomposition"),
+            failure_class=r.get("failure_class"),
+            budget_killed=(False if r.get("budget_killed") is None else r.get("budget_killed")),
         )
 
 
@@ -282,6 +287,41 @@ class FirewallResult(BaseModel):
     @property
     def governance_verdict(self) -> GovernanceVerdict:
         return GovernanceVerdict.from_dict(self.governance if isinstance(self.governance, dict) else None)
+
+
+class SolveResult(BaseModel):
+    """Top-level `solve()` / `solve_adhoc()` return contract.
+
+    The solver still carries move-specific telemetry as dict extras, but the
+    cross-module keys are validated at the boundary so a producer cannot omit
+    or mistype the shape silently.
+    """
+    model_config = ConfigDict(extra="allow")
+
+    results: list[dict[str, Any]] = Field(default_factory=list)
+    quarantined_references: list[str] = Field(default_factory=list)
+    closure_certificate: Optional[str] = None
+    closure_lean: Optional[str] = None
+    statement_false_verified: bool = False
+    env_parity_retracted: bool = False
+    governance: Any = None
+
+    @field_validator("results", "quarantined_references", mode="before")
+    @classmethod
+    def _none_to_list(cls, v):
+        return [] if v is None else v
+
+    @classmethod
+    def from_dict(cls, r: "dict | SolveResult | None") -> "SolveResult":
+        if isinstance(r, SolveResult):
+            return r
+        return cls.model_validate(dict(r or {}))
+
+    def primary(self) -> dict[str, Any]:
+        return primary_result(self.as_dict())
+
+    def as_dict(self) -> dict[str, Any]:
+        return dict(self.model_dump(exclude_none=False))
 
 
 def primary_result(res: dict, *, warn_missing: bool = True) -> dict:

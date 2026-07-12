@@ -47,6 +47,308 @@ REPO = Path(__file__).resolve().parents[4]
 LEAN_ROOT_DEFAULT = (REPO / "ztare_proofs").resolve()
 
 
+_RUN_MANIFEST_CODE_FINGERPRINTS = (
+    "src/ztare/leanmill/control_plane.py",
+    "src/ztare/leanmill/verdict_store.py",
+    "src/ztare/leanmill/run_diagnostics.py",
+    "src/ztare/leanmill/run_observability.py",
+    "src/ztare/leanmill/definition_contract.py",
+    "src/ztare/leanmill/lean_source.py",
+    "src/ztare/leanmill/solver/autoformalize.py",
+    "src/ztare/leanmill/solver/autoformalize_notes.py",
+    "src/ztare/leanmill/solver/conjecture.py",
+    "src/ztare/leanmill/solver/family_lemma_library.py",
+    "src/ztare/leanmill/solver/no_good_store.py",
+    "src/ztare/leanmill/solver/proof_cache.py",
+    "src/ztare/leanmill/solver/solver_core.py",
+    "src/ztare/formal/repl_compile.py",
+)
+
+
+def _sha256_file(path: Path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _code_fingerprints() -> dict:
+    files = {}
+    for rel in _RUN_MANIFEST_CODE_FINGERPRINTS:
+        path = REPO / rel
+        files[rel] = _sha256_file(path) if path.exists() else ""
+    return {
+        "schema": "leanmill.code_fingerprints.v1",
+        "files": files,
+    }
+
+
+def _provider_manifest() -> dict:
+    import os
+    raw = os.environ.get("ZTARE_LEANMILL_SOLVE_PROVIDERS", "")
+    providers = [p.strip() for p in raw.replace(";", ",").split(",") if p.strip()]
+    return {
+        "schema": "leanmill.provider_manifest.v1",
+        "solve_providers_raw": raw,
+        "solve_providers": providers,
+        "subscription_runtime": os.environ.get("ZTARE_DEFAULT_SUBSCRIPTION_RUNTIME", ""),
+        "claude_agent_model": os.environ.get("ZTARE_CLAUDE_AGENT_MODEL", ""),
+        "roundtrip_model": os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_MODEL", ""),
+    }
+
+
+def _launch_config_manifest() -> dict:
+    import os
+
+    def _env(name: str, default: str = "") -> str:
+        return os.environ.get(name, default)
+
+    def _int_env(name: str, default: int) -> int:
+        try:
+            return int(_env(name, str(default)) or default)
+        except (TypeError, ValueError):
+            return default
+
+    return {
+        "schema": "leanmill.launch_config.v1",
+        "identity": {
+            "run_tag": _env("ZTARE_SOLVER_RUN_TAG"),
+            "run_scratch": _env("ZTARE_LEANMILL_RUN_SCRATCH"),
+            "domain": _env("ZTARE_SOLVER_DOMAIN"),
+        },
+        "reuse": {
+            "proof_cache": _env("ZTARE_PROOF_CACHE", "1"),
+            "exact_reference_reuse": _env("ZTARE_LEANMILL_REFERENCE_REUSE_STATEMENT", "1"),
+            "decomposition_cache": _env("ZTARE_LEANMILL_DECOMP_CACHE", "1"),
+            "staged_reuse": _env("ZTARE_LEANMILL_STAGED_REUSE", "1"),
+            "reuse_banked_lemmas": _env("ZTARE_LEANMILL_REUSE_BANKED_LEMMAS", "1"),
+        },
+        "execution": {
+            "proposer_pool": _env("ZTARE_LEANMILL_PROPOSER_POOL", "1"),
+            "warm_verify": _env("ZTARE_LEANMILL_WARM_VERIFY", "1"),
+            "warm_compile": _env("ZTARE_LEANMILL_WARM_COMPILE", "1"),
+            "lean_warm": _env("ZTARE_LEANMILL_LEAN_WARM", "1"),
+            "bank_env_ratify": _env("ZTARE_LEANMILL_BANK_ENV_RATIFY", "1"),
+            "bank_rungs_to_theory": _env("ZTARE_LEANMILL_BANK_RUNGS_TO_THEORY", "1"),
+        },
+        "budgets": {
+            "campaign_wall_s": _int_env("ZTARE_LEANMILL_CAMPAIGN_WALL_S", 14400),
+            "notes_lemma_s": _int_env("ZTARE_LEANMILL_NOTES_LEMMA_S", 0),
+            "notes_target_s": _int_env("ZTARE_LEANMILL_NOTES_TARGET_S", 0),
+            "direct_continue_turns": _int_env("ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS", 6),
+            "proposer_pool_max_depth": _int_env("ZTARE_LEANMILL_PROPOSER_POOL_MAX_DEPTH", 0),
+        },
+        "gates": {
+            "run_standards": _env("ZTARE_LEANMILL_RUN_STANDARDS", "1"),
+            "instrument_liveness": _env("ZTARE_LEANMILL_INSTRUMENT_LIVENESS", "1"),
+            "blueprint_lint": _env("ZTARE_LEANMILL_BLUEPRINT_LINT", "1"),
+            "substrate_liveness": _env("ZTARE_LEANMILL_SUBSTRATE_LIVENESS", "1"),
+            "denotation_check": _env("ZTARE_LEANMILL_DENOTATION_CHECK", "1"),
+        },
+    }
+
+
+def _emit_notes_writeback_trace(row: dict) -> None:
+    """Best-effort JSONL breadcrumbs for notes/refined-note mutation. Never affects the campaign result."""
+    try:
+        import os
+        import time
+        p = Path(os.environ.get(
+            "ZTARE_LEANMILL_NOTES_TRACE",
+            str(REPO / "analytics" / "public" / "queries" / "leanmill_notes_writeback_trace.jsonl"),
+        ))
+        p.parent.mkdir(parents=True, exist_ok=True)
+        rec = {"ts": time.time(), "run_tag": os.environ.get("ZTARE_SOLVER_RUN_TAG", ""), **row}
+        with p.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(rec, sort_keys=True) + "\n")
+    except Exception:  # noqa: BLE001
+        return
+
+
+def _write_run_manifest(notes_path: Path, *, theory_rel: str = "") -> Path | None:
+    """Best-effort run manifest for diagnostics: one receipt for launch flags, inputs, and authority modes."""
+    try:
+        import os
+        import time
+        import subprocess
+        from ztare.leanmill.control_plane import cache_authority
+        run_tag = os.environ.get("ZTARE_SOLVER_RUN_TAG", "")
+        scratch = os.environ.get("ZTARE_LEANMILL_RUN_SCRATCH", run_tag or "default")
+        out = LEAN_ROOT_DEFAULT / ".solver_scratch" / scratch / "run_manifest.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        substrate = (LEAN_ROOT_DEFAULT / theory_rel).resolve() if theory_rel else None
+        blueprint_snapshot = out.parent / "launch_blueprint.md"
+        blueprint_snapshot_sha = ""
+        blueprint_snapshot_bytes = 0
+        if notes_path.exists():
+            blueprint_bytes = notes_path.read_bytes()
+            blueprint_snapshot.write_bytes(blueprint_bytes)
+            blueprint_snapshot_sha = _sha256_file(blueprint_snapshot)
+            blueprint_snapshot_bytes = len(blueprint_bytes)
+        env_keys = [
+            "ZTARE_LEANMILL_SOLVE_PROVIDERS",
+            "ZTARE_DEFAULT_SUBSCRIPTION_RUNTIME",
+            "ZTARE_CLAUDE_AGENT_MODEL",
+            "ZTARE_LEANMILL_ROUNDTRIP_MODEL",
+            "ZTARE_LEANMILL_PROPOSER_POOL",
+            "ZTARE_LEANMILL_PROPOSER_POOL_MAX_DEPTH",
+            "ZTARE_LEANMILL_STAGED_REUSE",
+            "ZTARE_PROOF_CACHE",
+            "ZTARE_LEANMILL_REFERENCE_REUSE_STATEMENT",
+            "ZTARE_LEANMILL_DECOMP_CACHE",
+            "ZTARE_LEANMILL_BANK_ENV_RATIFY",
+            "ZTARE_LEANMILL_BANK_RUNGS_TO_THEORY",
+            "ZTARE_LEANMILL_WARM_VERIFY",
+            "ZTARE_LEANMILL_WARM_COMPILE",
+            "ZTARE_LEANMILL_SUBSTRATE_GUARD",
+            "ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS",
+            "ZTARE_LEANMILL_NOTES_LEMMA_S",
+            "ZTARE_LEANMILL_NOTES_TARGET_S",
+            "ZTARE_LEANMILL_CAMPAIGN_WALL_S",
+        ]
+        try:
+            git_head = subprocess.check_output(
+                ["git", "rev-parse", "--short=12", "HEAD"], cwd=REPO, text=True,
+                stderr=subprocess.DEVNULL, timeout=3).strip()
+        except Exception:
+            git_head = ""
+        manifest = {
+            "schema": "leanmill.run_manifest.v1",
+            "created_at_s": time.time(),
+            "run_tag": run_tag,
+            "run_scratch": scratch,
+            "git_head": git_head,
+            "blueprint": {
+                "path": str(notes_path),
+                "sha256": _sha256_file(notes_path) if notes_path.exists() else "",
+                "launch_snapshot_path": str(blueprint_snapshot) if blueprint_snapshot_sha else "",
+                "launch_snapshot_sha256": blueprint_snapshot_sha,
+                "launch_snapshot_bytes": blueprint_snapshot_bytes,
+            },
+            "substrate": {
+                "path": str(substrate) if substrate else "",
+                "sha256": _sha256_file(substrate) if substrate and substrate.exists() else "",
+            },
+            "providers": _provider_manifest(),
+            "launch_config": _launch_config_manifest(),
+            "code_fingerprints": _code_fingerprints(),
+            "authority_modes": {
+                "proof_cache": os.environ.get("ZTARE_PROOF_CACHE", "1"),
+                "exact_reference_reuse": os.environ.get("ZTARE_LEANMILL_REFERENCE_REUSE_STATEMENT", "1"),
+                "decomposition_cache": os.environ.get("ZTARE_LEANMILL_DECOMP_CACHE", "1"),
+                "staged_reuse": os.environ.get("ZTARE_LEANMILL_STAGED_REUSE", "1"),
+                "proposer_pool": os.environ.get("ZTARE_LEANMILL_PROPOSER_POOL", "1"),
+                "bank_env_ratify": os.environ.get("ZTARE_LEANMILL_BANK_ENV_RATIFY", "1"),
+                "bank_rungs_to_theory": os.environ.get("ZTARE_LEANMILL_BANK_RUNGS_TO_THEORY", "1"),
+            },
+            "cache_authority_classes": {
+                name: cache_authority(name).value
+                for name in (
+                    "proof_cache",
+                    "exact_reference_reuse",
+                    "decomposition_cache",
+                    "staged_reuse",
+                    "semantic_shelf",
+                    "wip_probe",
+                    "banked_rung",
+                )
+            },
+            "env": {k: os.environ.get(k, "") for k in env_keys},
+        }
+        if substrate and substrate.exists():
+            _substrate_text = substrate.read_text(encoding="utf-8", errors="replace")
+            try:
+                from ztare.leanmill.definition_contract import emit_definition_api_receipt
+                manifest["definition_api_receipt"] = emit_definition_api_receipt(
+                    _substrate_text,
+                ).to_json()
+            except Exception as exc:  # noqa: BLE001
+                manifest["definition_api_receipt_error"] = str(exc)[:240]
+            try:
+                from ztare.leanmill.library_delta import emit_library_delta_receipt
+                manifest["library_delta_receipt"] = emit_library_delta_receipt(_substrate_text).to_json()
+            except Exception as exc:  # noqa: BLE001
+                manifest["library_delta_receipt_error"] = str(exc)[:240]
+        out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return out
+    except Exception:
+        return None
+
+
+def _log_formalize_attempt(campaign_id: str, lemma_idx: int, rec: dict, phase: str) -> None:
+    """FIX #2 (2026-07-06, operator "don't we have cot or debug on that"): campaign-scoped per-attempt formalize
+    log so "was it the SAME render N times or did it vary, and why was each rejected" is a one-line query — not a
+    40-line grep of the GLOBAL, all-campaigns-mixed `cot_traces.jsonl` (the observability gap that made a def-body
+    divergence read as a generic reject). One line per attack (first pass + each retry): render_hash (⇒ dedup),
+    render_head, outcome, reason. Best-effort; never breaks the loop."""
+    try:
+        import hashlib
+        import time
+        stmt = re.sub(r"\s+", " ", (rec.get("lean_statement") or "").strip())
+        p = LEAN_ROOT_DEFAULT.parent / "analytics" / "public" / "queries" / "formalize_attempts.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(json.dumps({
+                "ts": time.time(), "run_tag": campaign_id, "lemma_idx": lemma_idx, "phase": phase,
+                "render_hash": hashlib.sha1(stmt.encode("utf-8")).hexdigest()[:10] if stmt else "",
+                "render_head": stmt[:220], "outcome": rec.get("outcome"),
+                "faithful": rec.get("faithful"), "solved": bool(rec.get("solved")),
+                "reason": str(rec.get("faithfulness_reason") or "")[:240],
+            }) + "\n")
+    except Exception:  # noqa: BLE001 — telemetry is advisory; never break the campaign
+        pass
+
+
+def _falsify_bridge_marker(open_recs: "list[tuple]", lean_root: Path, timeout_s: int,
+                           log=print) -> "tuple[str, str, Optional[int]]":
+    """FIX #1 (2026-07-06, operator "wire to falsify indeed"): bridge a FORMALIZE-stage divergence deadlock into
+    the EXISTING falsify recovery. A goal the firewall rejects for a substrate def-body DIVERGENCE means the
+    formalizer kept STRENGTHENING a too-weak substrate def to render a TRUE goal (the gale flagship
+    `quiescent_reachable_stable` was FALSE-AS-STATED — missing list-completeness `∀ w, w ∈ fullList m`). The
+    falsify/reformulate recovery lives DOWNSTREAM at solve, so a goal blocked at FORMALIZE never reaches it and
+    the self-correction round (which needs a `-- STATEMENT-FALSE:` marker the solve leaf drops) never fires —
+    the goal churns silently. Bridge it: canonicalize the divergent render back to the substrate's canonical defs
+    (`enforce_canonical_defs` — a function BUILT for exactly this but previously wired NOWHERE) and dispatch the
+    EXISTING kernel-gated skeptic (`verify_statement_false_claim`). A genuine sorry-free ¬G ⇒ the registered goal
+    really IS false → return (counterexample_block, false_lemma_nl, lemma_idx) so it SURFACES + the existing
+    `governed_def_revision` self-correction can fire. Returns ("", "", None) when no open lemma is a divergence
+    reject, or the canonicalized (substrate-faithful) goal is NOT falsifiable — i.e. the divergence was a
+    WEAKENING / carrier-ghost, correctly left as a hard reject (never a false "it's false"). NEVER accepts
+    anything (only reclassifies a reject + surfaces). Fail-safe; gated by ZTARE_LEANMILL_FALSIFY_ESCALATION=0."""
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        from ztare.leanmill.lean_source import enforce_canonical_defs
+        from ztare.leanmill.solver.conjecture import verify_statement_false_claim
+        sub = get_campaign_substrate()
+        if not sub or not Path(sub).exists():
+            return "", "", None
+        sub_src = Path(sub).read_text(encoding="utf-8", errors="replace")
+        for nl, rec, idx in open_recs:
+            stmt = (rec.get("lean_statement") or "").strip()
+            reason = str(rec.get("faithfulness_reason") or "")
+            if "UNFAITHFUL to the registered substrate" not in reason or not stmt:
+                continue
+            canonical, swapped = enforce_canonical_defs(stmt, sub_src)
+            if not swapped:                       # nothing canonicalized ⇒ not a bridgeable def-body divergence
+                continue
+            m = re.search(r"(?m)^\s*(?:noncomputable\s+|private\s+|@\[[^\]]*\]\s*)*"
+                          r"(?:theorem|lemma)\s+(\w+)", canonical)
+            if not m:
+                continue
+            confirmed, detail, refute = verify_statement_false_claim(
+                m.group(1), canonical, "", Path(lean_root), min(int(timeout_s), 600))
+            if confirmed and refute:
+                log(f"  *** FALSIFY FIRED (formalize-divergence bridge): goal FALSE-AS-STATED — the registered "
+                    f"`{', '.join(swapped)}` is too WEAK (kernel-checked ¬G confirms it). The formalizer's "
+                    f"STRENGTHENING is the fix → routing to governed def-revision. [{detail[:100]}]")
+                return refute, nl, idx
+    except Exception as e:  # noqa: BLE001 — best-effort bridge; never break the campaign
+        log(f"  (falsify bridge errored, no marker: {repr(e)[:110]})")
+    return "", "", None
+
+
 def parse_theory_file(text: str) -> "Optional[str]":
     """Parse the optional `## Theory file` section → the campaign-owned .lean path (#123, theory-first
     campaigns): the file the agent CREATES AND EXTENDS with definitions + API lemmas that Mathlib lacks —
@@ -118,6 +420,46 @@ def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | N
     return AttackRecord.from_firewall_result(r, nl=nl).model_dump()
 
 
+def _is_execution_stop(record: object) -> bool:
+    """Identify a host/provider stop, which is neither a math negative nor an empty answer."""
+    if not isinstance(record, dict):
+        return False
+    outcome = str(record.get("outcome") or "").strip().lower()
+    reason = str(record.get("faithfulness_reason") or "").upper()
+    return outcome in {
+        "budget_exhausted",
+        "provider_budget_exhausted",
+        "inadmissible_provider_dead",
+    } or "BUDGET_EXCEEDED" in reason or "BUDGET_EXHAUSTED" in reason
+
+
+def _bullet_decl_name_candidates(bullet: str) -> "set[str]":
+    """Declaration names explicitly carried by a Markdown lemma bullet.
+
+    This is Markdown/input parsing, not Lean parsing. Lean names still come
+    from `decl_blocks` below. The point is to recognize the common authoring
+    forms:
+      - `**(foo)** ...`        campaign convention
+      - `` `foo`: ... ``       README/blueprint convention
+      - `foo: ...`             compact queue convention
+    """
+    b = bullet or ""
+    names: "set[str]" = set()
+    name_pat = r"[A-Za-z_][\w.']*"
+    for m in re.finditer(r"`(" + name_pat + r")`", b):
+        names.add(m.group(1))
+    for m in re.finditer(r"\((" + name_pat + r")\)", b):
+        names.add(m.group(1))
+    s = b.strip()
+    m = re.match(r"^(?:\*\*)?`?(" + name_pat + r")`?(?:\*\*)?\s*:", s)
+    if m:
+        names.add(m.group(1))
+    m = re.match(r"^(?:theorem|lemma)\s+(" + name_pat + r")\b", s)
+    if m:
+        names.add(m.group(1))
+    return names
+
+
 def _banked_lemma_reuse(bullet: str, lean_root) -> "Optional[str]":
     """BANKED-DECL REUSE (2026-06-25, operator "don't re-formalize, reuse"): if a lemma BULLET's intended decl
     name (`**(name)**`, the campaign naming convention) is ALREADY a PROVEN (sorry-free) decl in the registered
@@ -141,18 +483,151 @@ def _banked_lemma_reuse(bullet: str, lean_root) -> "Optional[str]":
             return None
         src = Path(cs).read_text(encoding="utf-8", errors="replace")
         from ztare.leanmill.solver.statement_integrity import decl_blocks
-        from ztare.leanmill.lean_source import signature_before_proof, first_theorem_name, has_sorry
+        from ztare.leanmill.lean_source import DECL_START, signature_before_proof, first_theorem_name, has_sorry
         b = bullet or ""
+        named = _bullet_decl_name_candidates(b)
+        # SEMANTIC identity, not the brittle NAME (2026-07-05, operator "world-class semantic reuse — is it
+        # semantic or what … siblings of how we cache"): route the "is this the same lemma?" check through the ONE
+        # name-agnostic normalizer (`proof_cache.normalize_statement`) — the DOCUMENTED general rule (faithfulness
+        # `confirms()`, the structural + def-faithfulness legs already route through it; THIS reuse door was the
+        # missed sibling). A generic bullet `iso_lemma1` then recognizes the substrate's content-stable-mangled
+        # `iso_lemma1__89847c75` (proven, sorry-free) as THE SAME statement and SHELVES it — the ROOT cure for
+        # "the campaign re-litigates proven lemmas through the cited-rung governance seam (where get_campaign_
+        # substrate is None) and never CLOSES". The `(name)` substring stays a fast path. SOUND: reuse only
+        # SHELVES an ALREADY-kernel-proven decl; a wrong match fails when the target CITES it and won't compile
+        # (caught downstream — never a false closure), the same argument as the confirms() short-circuit.
+        from ztare.leanmill.solver.proof_cache import normalize_statement as _ns
+        _bnorm = _ns(b)
         for n, blk in decl_blocks(src):
             if has_sorry(blk):
                 continue
+            m_kind = DECL_START.match((blk or "").lstrip())
+            if not m_kind or m_kind.group(1) not in ("theorem", "lemma"):
+                continue
             short = first_theorem_name(blk) or str(n).split(".")[-1]
-            # the bullet NAMES this banked, sorry-free decl via the `**(name)**` convention (substring, not regex)
-            if short and (f"({short})" in b):
-                return " ".join((signature_before_proof(blk) or "").split())
+            decl_names = {str(n), str(n).split(".")[-1], short, str(short).split(".")[-1]}
+            _sig = signature_before_proof(blk) or ""
+            if ((named and any(x in named for x in decl_names if x))
+                    or (short and (f"({short})" in b))
+                    or (not named and _bnorm and _sig and _ns(_sig) == _bnorm)):
+                return " ".join(_sig.split())
         return None
     except Exception:  # noqa: BLE001 — reuse is an optimization; any failure ⇒ fall through to the normal attack
         return None
+
+
+def _campaign_door_warning(*, attack_injected: bool, target: str) -> "str | None":
+    """MISLAUNCH REPORTER (2026-07-02, the §4.3.0 trap's sibling caught live on the ftap_hard run): calling
+    `autoformalize_from_notes()` bare skips everything the module `main()` arms — instrument standards
+    (fail-closed), embedder/round-trip liveness, run_tag/domain attribution, theory consolidation, and the warm
+    substrate — so the run proves DEGRADED (no shelf/vocab surfacing, no warm-verify, unattributable P0) while
+    looking healthy. Returns the one warning line, or None for every LEGITIMATE direct use:
+      · an injected attack_fn (hermetic tests / selftests drive the loop with a stub);
+      · ZTARE_SOLVER_RUN_TAG already set (main() or an A/B harness armed the run);
+      · no campaign shape (no `## Target` parsed — not a campaign at all).
+    ADVISORY ONLY (Gate/Reporter/Move): the caller logs it and proceeds; soundness never depended on the arming
+    (the kernel gates regardless) — this guards against silent DEGRADATION, not unsoundness.
+    `ZTARE_LEANMILL_DOOR_GUARD=0` reverts. solve_adhoc's single-target entry is deliberately untouched."""
+    import os as _o
+    if _o.environ.get("ZTARE_LEANMILL_DOOR_GUARD", "1") == "0":
+        return None
+    if attack_injected or _o.environ.get("ZTARE_SOLVER_RUN_TAG") or not (target or "").strip():
+        return None
+    return ("⚠ campaign-door: autoformalize_from_notes() called WITHOUT the campaign door (no run_tag) — "
+            "instrument standards / liveness probes / theory consolidation / substrate arming were NOT run, so "
+            "reuse and attribution are silently degraded. Launch campaigns via "
+            "`leanmill campaign <blueprint.md>` (the sanctioned CLI). Proceeding (advisory).")
+
+
+def _run_closures_dir() -> Path:
+    """The run-scratch-ISOLATED closures dir where the solver writes closure certs — `.solver_scratch/<run_tag>/
+    closures` when `ZTARE_LEANMILL_RUN_SCRATCH` is set, else `.solver_scratch/closures`. THE single resolver the
+    solver-writer + `promote --run-tag` reader already share (`agentic_leaf.probe_dir`). The P0-sidecar + auto-
+    promote had hardcoded the NON-isolated `.solver_scratch/closures` — a path that predates run-scratch isolation
+    (2026-07-02) — so under an isolated run (every `leanmill campaign`) the P0 landed in the wrong dir and the
+    auto-promote's `_cert.exists()` guard silently FAILED before any log line → the verified close never staged its
+    filed artifact (corpgov, 2026-07-03). Route all three through here so the write/read paths can never drift."""
+    from ztare.leanmill.solver.agentic_leaf import probe_dir as _pd
+    return _pd(LEAN_ROOT_DEFAULT) / "closures"
+
+
+def _modeling_faithfulness_audit(res: dict, theory_rel: "Optional[str]", lean_root: Path, *,
+                                 log=print) -> None:
+    """Attach theory-first modeling-faithfulness receipts to `res`.
+
+    The statement firewall handles NL↔target faithfulness. Theory-first runs
+    also introduce local definitions, so publication staging needs the
+    denotation/non-vacuity receipts before it decides whether to file a
+    review artifact. This helper is receipt-only: it never flips
+    `target.solved`.
+    """
+    import os as _os
+    if not theory_rel or _os.environ.get("ZTARE_LEANMILL_DENOTATION_CHECK", "1") == "0":
+        return
+    try:
+        from ztare.leanmill.solver.def_denotation import (
+            certify_def_denotation, kernel_denotation_verifier, mentions_token)
+        tp = lean_root / theory_rel
+        theory_final = tp.read_text(encoding="utf-8") if tp.exists() else ""
+        if not theory_final.strip():
+            return
+        from ztare.leanmill import lean_source as _lsd
+        built = _lsd.def_names(theory_final)
+        proof_blob = "\n".join((d.get("closure_lean") or "") + "\n" + (d.get("statement") or "")
+                               for d in res.get("deep_closures", []))
+        for rec in res.get("lemmas", []):
+            if isinstance(rec, dict) and rec.get("solved"):
+                proof_blob += "\n" + "\n".join(str(rec.get(k) or "") for k in
+                                                ("closure_lean", "proof_text", "lean_statement", "statement"))
+        tgt = res.get("target") or {}
+        proof_blob += "\n" + "\n".join(str(tgt.get(k) or "") for k in
+                                        ("closure_lean", "proof_text", "lean_statement", "statement"))
+        composed = {d for d in built if mentions_token(proof_blob, d)}
+        verify = kernel_denotation_verifier(theory_final, lean_root)
+        den = certify_def_denotation(theory_final, verify_anchor_fn=verify, composed_defs=composed)
+        res["denotation"] = den
+        log(f"[notes] denotation-faithfulness: {den['verdict']} — {den['reason']}")
+        if _os.environ.get("ZTARE_LEANMILL_VACUITY_CHECK", "1") != "0":
+            from ztare.leanmill.solver.def_denotation import certify_nonvacuity
+            vac = certify_nonvacuity(theory_final, verify_fn=verify)
+            res["nonvacuity"] = vac
+            log(f"[notes] vacuity-faithfulness: {vac['verdict']} — {vac['reason']}")
+    except Exception as e:  # noqa: BLE001
+        res["denotation_error"] = repr(e)[:240]
+        log(f"[notes] denotation/vacuity check skipped: {repr(e)[:120]}")
+
+
+def _auto_promote_blockers(res: dict, theory_rel: "Optional[str]") -> "list[str]":
+    """Reasons a closed campaign should not auto-stage a publish-review file."""
+    import os as _os
+    if _os.environ.get("ZTARE_LEANMILL_ALLOW_UNPINNED_AUTO_PROMOTE", "0") == "1":
+        return []
+    if not theory_rel or _os.environ.get("ZTARE_LEANMILL_DENOTATION_CHECK", "1") == "0":
+        return []
+    try:
+        from ztare.leanmill.policy import faithfulness_promotion_policy
+        pol = faithfulness_promotion_policy()
+    except Exception:  # noqa: BLE001
+        pol = {
+            "require_def_denotation_receipt_for_auto_promote": True,
+            "require_pinned_def_denotation_for_auto_promote": True,
+            "block_refuted_def_denotation_auto_promote": True,
+            "block_vacuity_exposed_auto_promote": False,
+        }
+    blockers: "list[str]" = []
+    den = res.get("denotation") if isinstance(res.get("denotation"), dict) else None
+    verdict = str((den or {}).get("verdict") or "")
+    if pol.get("require_def_denotation_receipt_for_auto_promote", True) and not verdict:
+        blockers.append("missing denotation-faithfulness receipt")
+    if verdict == "REFUTED" and pol.get("block_refuted_def_denotation_auto_promote", True):
+        blockers.append(str((den or {}).get("reason") or "def denotation refuted"))
+    if verdict == "UNDERDETERMINED" and pol.get("require_pinned_def_denotation_for_auto_promote", True):
+        blockers.append(str((den or {}).get("reason") or "def denotation underdetermined"))
+    vac = res.get("nonvacuity") if isinstance(res.get("nonvacuity"), dict) else None
+    if (str((vac or {}).get("verdict") or "") == "VACUITY_EXPOSED"
+            and pol.get("block_vacuity_exposed_auto_promote", False)):
+        blockers.append(str((vac or {}).get("reason") or "vacuity exposed"))
+    return blockers
 
 
 def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = None,
@@ -167,7 +642,8 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
         {target_nl, lemmas:[record], target:record|None, shelf:[lean_statement of CLOSED lemmas], summary}.
     Wiring the shelf into the target solve as cited premises is the planner / composite-ratification path."""
     lean_root = Path(lean_root) if lean_root is not None else LEAN_ROOT_DEFAULT
-    attack_fn = attack_fn or _default_attack
+    _attack_injected = attack_fn is not None      # captured BEFORE the default: an injected attack_fn marks a
+    attack_fn = attack_fn or _default_attack      # hermetic/self-test caller, which the door guard must not nag
     log = on_progress or (lambda m: print(m, flush=True))
     # GENEROUS whole-attack wallclocks from the central factory (NOT hardcoded 400/600 — those guillotined a
     # codex run that had an audit-passing DAG ready). The planner draws from these (no arbitrary sub-cap);
@@ -201,6 +677,20 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
         pass
     log(f"[notes] target: {target!r}")
     log(f"[notes] {len(lemmas)} lemma(s) (foundational first)")
+    # BLUEPRINT LINT (§4.2a REPORTER, 2026-07-01): surface authoring smells (definition-bullets, typed-in
+    # formalization restrictions, missing sections) at campaign START, when the maintainer can still fix the
+    # blueprint — NEVER blocks (Gate/Reporter/Move law: a blueprint fault at worst wastes wall; the kernel
+    # still gates every closure). Default-on; "0" disables. try/except so a lint crash can't touch a campaign.
+    if _os_w.environ.get("ZTARE_LEANMILL_BLUEPRINT_LINT", "1") != "0":
+        try:
+            from ztare.leanmill.blueprint_lint import lint_blueprint
+            for _w in lint_blueprint(notes_text):
+                log(f"[notes] blueprint-lint ⚠ [{_w['rule']}] {_w['msg']}")
+        except Exception:  # noqa: BLE001 — advisory only; a lint failure must never affect the campaign
+            pass
+    _dw = _campaign_door_warning(attack_injected=_attack_injected, target=target)
+    if _dw:
+        log(f"[notes] {_dw}")
 
     from datetime import datetime as _dt2, timezone as _tz2
     out: dict = {"target_nl": target, "lemmas": [], "shelf": [],
@@ -220,6 +710,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
             f"lemmas leased via the work bus; peers' results converge via the fact-log merge")
     out["distributed"] = _dist
     out["wall_deferred"] = []
+    out["execution_stop"] = None
     # CAMPAIGN-START P0 FORECAST (2026-06-25): before spending the wall, PREDICT expected yield + time-to-closure
     # from the DOMAIN's historical P0 (phase_timing read-models) via the Brier-calibrated forecast router — an
     # admissibility/budget signal AND a prediction PRE-REGISTERED to a ledger, scored ex-post against the actual
@@ -282,9 +773,23 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                 except Exception:  # noqa: BLE001
                     pass
             continue
+        # SUBSTRATE HEALTH GATE (2026-07-03 fix-forever for the silent substrate-death class): a mid-run write (a
+        # fragile `by aesop` target stub, a bad bank) can leave the substrate NON-COMPILING → the campaign verify
+        # env goes DEAD → CORRECT proofs false-reject → the run SPINS degraded (the EF1 lemma-4 saga). Before each
+        # attack, verify the substrate compiles; AUTO-REVERT to the last-good snapshot on a break (LOUD, never a
+        # silent degrade). Cheap: the warm env is cached on unchanged mtime, so a healthy substrate is ~free.
+        try:
+            from ztare.formal.repl_compile import get_campaign_substrate, guard_substrate_compiles
+            _sub_h = get_campaign_substrate()
+            if _sub_h and not guard_substrate_compiles(_sub_h, lean_root, log=log):
+                log(f"[notes] ⚠️ substrate DEAD before lemma {i + 1}/{len(lemmas)} and no snapshot to revert — "
+                    f"attacking anyway but citing/warm-verify will degrade; FIX THE SUBSTRATE.")
+        except Exception:  # noqa: BLE001 — the health gate is best-effort; never break the campaign
+            pass
         # the WHOLE blueprint is the planner context for each lemma (the surrounding lemmas are scaffold)
         rec = attack_fn(lem, lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
         out["lemmas"].append(rec)
+        _log_formalize_attempt(_campaign_id, i, rec, "first_pass")   # FIX #2 (per-attempt observability)
         if rec.get("solved"):
             out["shelf"].append(rec.get("lean_statement") or "")
         if _dist:
@@ -298,6 +803,18 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
             # a gate false-positive hid across a whole campaign instead of surfacing on the first lemma.
             + (f" | reason={str(rec.get('faithfulness_reason'))[:240]}"
                if (not rec.get('solved') and rec.get('faithfulness_reason')) else ""))
+        if _is_execution_stop(rec):
+            # A host reservation stop is not a mathematical result.  Leave
+            # untouched work queued and avoid retry/falsify/target dispatches.
+            out["execution_stop"] = str(
+                rec.get("outcome") or rec.get("faithfulness_reason") or "execution_stop"
+            )
+            out["wall_deferred"] = [str(x) for x in lemmas[i + 1:]]
+            log(
+                f"[notes] execution stop after lemma {i + 1}/{len(lemmas)} — "
+                f"deferred {len(out['wall_deferred'])} untouched item(s)"
+            )
+            break
         if notes_path is not None:               # INCREMENTAL write-back — survive a timeout/kill. The end-of-run
             try:                                 # write was LOST when the 100-min budget killed the run mid-solve;
                 # KILL-SAFE deep rungs (v3/v4 lesson: killed runs are the NORM, not the exception): surface
@@ -318,7 +835,9 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     # retry pass over the still-open lemmas, with the GROWN shelf in context, wall-respecting. Default-on
     # (sound knob — every retry still goes through the full firewall+kernel); ZTARE_LEANMILL_NOTES_RETRY=0
     # reverts to the single pass. Bounded (one pass) so it can't loop; the campaign wall caps total time.
-    if _os_w.environ.get("ZTARE_LEANMILL_NOTES_RETRY", "1") != "0" and out["shelf"] and not _wall_exceeded():
+    if (not out.get("execution_stop")
+            and _os_w.environ.get("ZTARE_LEANMILL_NOTES_RETRY", "1") != "0"
+            and out["shelf"] and not _wall_exceeded()):
         _open_idx = [i for i, l in enumerate(out["lemmas"]) if not l.get("solved")]
         if _open_idx:
             _shelf_notes = (notes_text.rstrip() + "\n\n## Proven lemmas (citable):\n"
@@ -330,6 +849,13 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                     log("[notes] skip-and-return: wall reached — stopping retries (earned rungs written back)")
                     break
                 rec2 = attack_fn(lemmas[i], lean_root=lean_root, timeout_s=lemma_timeout_s, notes=_shelf_notes)
+                _log_formalize_attempt(_campaign_id, i, rec2, "retry")   # FIX #2 (per-attempt observability)
+                if _is_execution_stop(rec2):
+                    out["execution_stop"] = str(
+                        rec2.get("outcome") or rec2.get("faithfulness_reason") or "execution_stop"
+                    )
+                    out["wall_deferred"] = [str(x) for x in lemmas[i:]]
+                    break
                 if rec2.get("solved"):
                     out["lemmas"][i] = rec2
                     out["shelf"].append(rec2.get("lean_statement") or "")
@@ -345,6 +871,30 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                         except Exception:  # noqa: BLE001
                             pass
 
+    # FIX #1 (2026-07-06, operator "wire to falsify indeed"): FORMALIZE-divergence → FALSIFY bridge. A goal the
+    # firewall rejected for a substrate def-body divergence (the formalizer STRENGTHENING a too-weak substrate def
+    # to render it TRUE) never reaches the solve-stage falsify recovery, so a FALSE-AS-STATED goal churns silently
+    # (the gale flagship spun here). Dispatch the kernel-gated skeptic on the canonicalized render: a genuine ¬G ⇒
+    # SURFACE it loudly (the actionable "your target is FALSE, `{def}` too weak" a silent rejected_by_firewall hid)
+    # + hand the marker to the self-correction below. Gated (=0 reverts), fail-safe, NEVER accepts anything.
+    _falsify_marker = ""
+    _falsify_nl = ""
+    if (not out.get("execution_stop")
+            and _os_w.environ.get("ZTARE_LEANMILL_FALSIFY_ESCALATION", "1") != "0"
+            and not _wall_exceeded()):
+        _open_fb = [(str(lemmas[i]), out["lemmas"][i], i)
+                    for i, l in enumerate(out["lemmas"]) if not l.get("solved")]
+        if _open_fb:
+            _falsify_marker, _falsify_nl, _fb_idx = _falsify_bridge_marker(
+                _open_fb, lean_root, lemma_timeout_s, log=log)
+            if _falsify_marker and _fb_idx is not None:
+                out["lemmas"][_fb_idx]["outcome"] = "target_false_as_stated"
+                out["lemmas"][_fb_idx]["faithfulness_reason"] = (
+                    "FALSE-AS-STATED (falsify fired at the formalize-divergence bridge): "
+                    + str(out["lemmas"][_fb_idx].get("faithfulness_reason", ""))[:180])
+                out["target_false_as_stated"] = {"lemma_nl": _falsify_nl,
+                                                 "counterexample": _falsify_marker[:2000]}
+
     # SELF-CORRECTION (supersession-acting, 2026-06-23): if lemmas remain OPEN and a lemma was kernel-CONFIRMED
     # FALSE (a `-- STATEMENT-FALSE:` marker survives in this run's scratch), a DEFINITION it cites is too WEAK.
     # Run ONE governed def-revision round — the agent STRENGTHENS the implicated def, GATED so only a kernel-
@@ -352,7 +902,8 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     # theory. Bounded (one round → can't loop), default-on (sound: the gate + kernel are the boundary), wall-
     # respecting, fail-safe (never breaks the campaign). ZTARE_LEANMILL_SELF_CORRECT_DEFS=0 reverts.
     _theory_rel_sc = parse_theory_file(notes_text)
-    if (_os_w.environ.get("ZTARE_LEANMILL_SELF_CORRECT_DEFS", "1") != "0" and _theory_rel_sc
+    if (not out.get("execution_stop")
+            and _os_w.environ.get("ZTARE_LEANMILL_SELF_CORRECT_DEFS", "1") != "0" and _theory_rel_sc
             and not _wall_exceeded()):
         _open_sc = [i for i, l in enumerate(out["lemmas"]) if not l.get("solved")]
         _marker = ""
@@ -363,6 +914,11 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                 _marker = scan_probes_for_statement_false(_pdir_sc(lean_root))
             except Exception:  # noqa: BLE001
                 _marker = ""
+        # NOTE (2026-07-06, operator "no more iatrogenic changes in kernel"): the formalize-divergence FALSIFY
+        # bridge above is SURFACE-ONLY — it flags a false-as-stated target loudly (out["target_false_as_stated"])
+        # but does NOT feed governed_def_revision, so it never auto-edits the substrate. A human fixes the
+        # blueprint (uplevel NL). This self-correction still fires on a genuine SOLVE-stage `-- STATEMENT-FALSE:`
+        # marker (existing behaviour), which is the vetted path.
         if _open_sc and _marker:
             log(f"[notes] SELF-CORRECT: a lemma was kernel-confirmed FALSE (marker: {_marker[:80]!r}) → governed "
                 f"def-revision (strengthen the too-weak def; gated — only a proven strengthening passes)")
@@ -386,6 +942,12 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                     if _wall_exceeded():
                         break
                     rec_sc = attack_fn(lemmas[i], lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
+                    if _is_execution_stop(rec_sc):
+                        out["execution_stop"] = str(
+                            rec_sc.get("outcome") or rec_sc.get("faithfulness_reason") or "execution_stop"
+                        )
+                        out["wall_deferred"] = [str(x) for x in lemmas[i:]]
+                        break
                     if rec_sc.get("solved"):
                         out["lemmas"][i] = rec_sc
                         out["shelf"].append(rec_sc.get("lean_statement") or "")
@@ -408,7 +970,16 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
             target_shelf_prelude = _run_shelf_prelude(out, out.get("run_started", ""))
         except Exception:  # noqa: BLE001 — composition is additive; never break the target attack
             target_shelf_prelude = ""
-    if target and _wall_exceeded():
+    if out.get("execution_stop"):
+        log("[notes] execution stop — deferring the TARGET attack (no additional provider dispatch)")
+        if target:
+            out["wall_deferred"].append(str(target))
+        out["target"] = {
+            "deferred": "execution_stop",
+            "solved": False,
+            "outcome": str(out["execution_stop"]),
+        }
+    elif target and _wall_exceeded():
         log("[notes] *** CAMPAIGN WALL reached — deferring the TARGET attack (proven rungs are written "
             "back; the target stays HONESTLY OPEN, never a fake closure) ***")
         out["wall_deferred"].append(str(target))
@@ -420,6 +991,23 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
         out["target"] = (attack_fn(target, lean_root=lean_root, timeout_s=target_timeout_s, notes=target_notes,
                                    shelf_prelude=target_shelf_prelude)
                          if target else None)
+    # RESOLVE target_theorem_name (2026-07-02 RCA — the P0-sidecar + auto-promote at RATIFICATION silently SKIPPED).
+    # Both ratification-time automations key on `out["target"]["target_theorem_name"]` to locate `closures/<name>.lean`
+    # / the banked decl — but `attack_fn` returns no such field, and an iso-route target is formalized under the
+    # planner's GENERIC `iso_lemmaN` (its closure lands at `closures/iso_lemma1.lean`). With the name empty, the
+    # `if _tname …` / `if _tn_ap …` guards no-op'd, so a ratified target neither stamped its P0 sidecar nor auto-staged.
+    # Resolve the name from the formalized `lean_statement` via the comment-safe `first_theorem_name` so both fire.
+    # Only fills when absent (respects an explicit name); best-effort (never blocks the campaign).
+    if isinstance(out.get("target"), dict) and not str(out["target"].get("target_theorem_name") or "").strip():
+        try:
+            from ztare.leanmill.lean_source import first_theorem_name as _ftn_tgt
+            _resolved_tn = _ftn_tgt(out["target"].get("lean_statement") or "")
+            if _resolved_tn:
+                out["target"]["target_theorem_name"] = _resolved_tn
+                log(f"[notes] resolved target_theorem_name='{_resolved_tn}' from lean_statement "
+                    f"(enables the P0-sidecar + auto-promote at ratification)")
+        except Exception:  # noqa: BLE001 — name resolution is best-effort; never block the campaign
+            pass
     if out["target"]:
         t = out["target"]
         log(f"  -> faithful={t.get('faithful')} outcome={t.get('outcome')} solved={t.get('solved')}"
@@ -441,8 +1029,15 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
             if _tname and _tp.exists():
                 _names = _dn(_tp.read_text(encoding="utf-8"))
                 _banked = _tname if _tname in _names else next((n for n in _names if n.startswith(_tname + "__")), "")
-                if _banked:
-                    _clean, _areason = _default_axiom_audit(str(_tp), str(LEAN_ROOT_DEFAULT), _banked)
+                # AXIOM SOURCE (2026-07-02 recurring-skip fix): a COMPOSITE is banked INTO the substrate (_banked);
+                # a DIRECT close lives ONLY in the self-contained closure cert (closures/<t>.lean) and is NOT in the
+                # substrate ⇒ _banked='' ⇒ the whole audit/sidecar block was skipped SILENTLY (median-voter + every
+                # non-composite target) ⇒ promote fell back to a cold recompute reporting 'axioms none printed'. Read
+                # the cert when the target isn't banked, so the P0 sidecar stamps for direct closes too.
+                _cert = _run_closures_dir() / f"{_tname}.lean"
+                _ax_src, _ax_decl = (_tp, _banked) if _banked else ((_cert, _tname) if _cert.exists() else (None, ""))
+                if _ax_decl and _ax_src is not None:
+                    _clean, _areason = _default_axiom_audit(str(_ax_src), str(LEAN_ROOT_DEFAULT), _ax_decl)
                     if not _clean:
                         log(f"[notes] *** TARGET AXIOM-TAINT in the persisted theory ({_areason}) — DOWNGRADING "
                             f"'closed' → HONEST GAP (the assembled proof bound to a sorried sibling, not the "
@@ -463,7 +1058,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                             _ax_str = _areason if ("unavailable" not in _areason) else ""
                             if not _ax_str:
                                 from ztare.formal.repl_compile import axioms_raw_via_repl as _araw
-                                _raw = _araw(_tp.read_text(encoding="utf-8"), _banked, str(LEAN_ROOT_DEFAULT))
+                                _raw = _araw(_ax_src.read_text(encoding="utf-8"), _ax_decl, str(LEAN_ROOT_DEFAULT))
                                 if _raw and "depends on axioms" in _raw:
                                     _ax_str = ", ".join(_re_p0.findall(r"[A-Za-z_][\w.]*",
                                                         _raw.split("depends on axioms", 1)[-1]))
@@ -471,11 +1066,11 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                                 _banked_n = sum(1 for _l in out["lemmas"]
                                                 if _l.get("solved") and _l.get("outcome") != "reused_from_bank")
                                 _reused_n = sum(1 for _l in out["lemmas"] if _l.get("outcome") == "reused_from_bank")
-                                _cdir_p0 = LEAN_ROOT_DEFAULT / ".solver_scratch" / "closures"
+                                _cdir_p0 = _run_closures_dir()
                                 _cdir_p0.mkdir(parents=True, exist_ok=True)
                                 (_cdir_p0 / f"{_tname}.p0.json").write_text(_json_p0.dumps({
                                     "axioms": _ax_str,               # persisted-world #print axioms (warm campaign-env, else base-env fallback)
-                                    "composite_decl": _banked,
+                                    "composite_decl": _ax_decl,
                                     "theory_file": _theory_rel_final,
                                     "banked_this_run": _banked_n,
                                     "reused_from_bank": _reused_n,
@@ -489,6 +1084,45 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                             pass
         except Exception:  # noqa: BLE001 — defense-in-depth backstop; never break the run
             pass
+
+    _modeling_faithfulness_audit(out, _theory_rel_final, lean_root, log=log)
+    _promote_blockers = _auto_promote_blockers(out, _theory_rel_final)
+
+    # AUTO-PROMOTE (2026-07-02): on a verified close, GENERATE the filed artifact (provenance header w/ the honest
+    # family P0 + persisted axioms from the sidecar above + clean public names + the laundering-boundary guard) into
+    # a STAGING dir, so filing to the public library is a review-and-move, not a hand-run of promote (the manual step
+    # that silently under-counted P0 when --family/--axioms were forgotten). Best-effort — the close is already
+    # complete; a promote failure only skips the convenience artifact. STAGING ONLY (`.solver_scratch/filed/`) —
+    # publishing to the public repo stays a deliberate manual push. ZTARE_LEANMILL_AUTO_PROMOTE=0 reverts.
+    if (out.get("target") or {}).get("solved") and _os_w.environ.get("ZTARE_LEANMILL_AUTO_PROMOTE", "1") != "0":
+        if _promote_blockers:
+            log("[notes] auto-promote blocked by modeling-faithfulness policy: "
+                + " ; ".join(_promote_blockers)[:500])
+        else:
+            try:
+                _rt_ap = _os_w.environ.get("ZTARE_SOLVER_RUN_TAG", "")
+                _tn_ap = str((out.get("target") or {}).get("target_theorem_name") or "").strip()
+                _repo_ap = Path(__file__).resolve().parents[4]
+                _cert_ap = _run_closures_dir() / f"{_tn_ap}.lean"
+                if _rt_ap and _tn_ap and _cert_ap.exists():
+                    import subprocess as _sp_ap, sys as _sys_ap
+                    _filed_ap = LEAN_ROOT_DEFAULT / ".solver_scratch" / "filed"
+                    _filed_ap.mkdir(parents=True, exist_ok=True)
+                    _prom_ap = _repo_ap / "scripts/public/control/leanmill/promote_campaign_artifact.py"
+                    _prom_args = [_sys_ap.executable, str(_prom_ap), "--run-tag", _rt_ap, "--target", _tn_ap,
+                                  "--dest", str(_filed_ap / f"{_tn_ap}.lean")]
+                    if notes_path is not None:   # link the English spec next to the proof (translation boundary)
+                        _prom_args += ["--blueprint", notes_path.name]
+                    _res_ap = _sp_ap.run(
+                        _prom_args, capture_output=True, text=True, timeout=600,
+                        env={**_os_w.environ, "PYTHONPATH": str(_repo_ap / "src")})
+                    if _res_ap.returncode == 0:
+                        log(f"[notes] AUTO-PROMOTED → .solver_scratch/filed/{_tn_ap}.lean (family P0 + axioms; review + move to publish)")
+                    else:
+                        log(f"[notes] auto-promote skipped (rc={_res_ap.returncode}): "
+                            f"{((_res_ap.stderr or _res_ap.stdout) or '').strip()[-160:]}")
+            except Exception as _e_ap:  # noqa: BLE001 — best-effort convenience; never blocks a verified close
+                log(f"[notes] auto-promote skipped: {repr(_e_ap)[:120]}")
 
     # SUBSTRATE HYGIENE (2026-07-01): sweep DEAD sorried orphans — sorried decls nothing else references, the
     # scaffolding a campaign leaves when a proven sibling supersedes an abstract stub (VCG's general witness vs
@@ -518,6 +1152,8 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     target_closed = bool((out["target"] or {}).get("solved"))
     out["summary"] = (f"{n_ok}/{len(lemmas)} lemmas formalized+closed; shelf={len(out['shelf'])}; "
                       f"target {'closed' if target_closed else 'open'}")
+    if out.get("execution_stop"):
+        out["summary"] += f"; execution_stop={out['execution_stop']}"
     # FINAL deterministic write-back — the COMPLETE gap ledger. The incremental writes above are kill-safety
     # snapshots taken BEFORE the target attack + wall-deferral were known, so they can't carry the TARGET gap
     # or the `wall_deferred` rungs (the 5 never-attempted lemmas a campaign-wall run leaves). This last write
@@ -562,7 +1198,8 @@ def _anti_unify_block(lean_root: Path) -> str:
 
 def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
                          dispatch: "Optional[Callable]" = None,
-                         compile_fn: "Optional[Callable]" = None) -> dict:
+                         compile_fn: "Optional[Callable]" = None,
+                         triviality_fn: "Optional[Callable]" = None) -> dict:
     """Phase 0 of a theory-first campaign (#123): the agent CREATES/EXTENDS the campaign-owned theory file;
     deterministic gates decide whether the round counts (Goldilocks: authorship is the agent's, the gates
     are mechanical):
@@ -643,6 +1280,7 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
             return {"ok": False, "reverted": True,
                     "reason": f"append-only violated: prior line altered/removed: {l[:80]!r}"}
     # GATE 2: kernel compile, sorry-tolerant (the canonical v33 probe — same oracle the solver trusts)
+    _real_sandbox = compile_fn is None   # a real run uses the live probe; an injected mock ⇒ GATE 3 has no Lean env
     if compile_fn is None:
         from ztare.gates.v33_preflight_risk_detector import _compile_probe as compile_fn  # type: ignore
     from ztare.common.timeouts import timeout_s as _ts
@@ -650,6 +1288,27 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     if ok is not True:
         theory_path.write_text(before, encoding="utf-8")
         return {"ok": False, "reverted": True, "reason": "extended theory file does not compile"}
+    # REPRESENTATION-DEPENDENCE audit (2026-07-05, CLOB `bestBid=head` RCA — general-purpose foresight). A def that
+    # extracts the "best"/"top" of a SET-like collection through a POSITION primitive (`.head?`/`.getLast`/`.get`…)
+    # is representation-dependent: faithful to a suggestive NL adjective yet FALSE downstream when the collection is
+    # order-agnostic (the firewall gates target-faithfulness, not def-faithfulness, so it slips to prove-time). This
+    # is the FIRST failure surface for data-structure campaigns (all prior closures had representation-INDEPENDENT
+    # defs). ADVISORY reporter (never gates — order may be genuinely meant, e.g. a `foldl` over a sequence); surfaced
+    # LOUD at consolidation so the maintainer switches to an order-independent def (max/min/Finset) + an anchor
+    # lemma BEFORE the campaign spends. ZTARE_LEANMILL_REPRESENTATION_AUDIT=0 reverts.
+    # DEF-QUALITY audit — the SINGLE DOOR for every meaning-bearing def-shape check (representation-dependence,
+    # non-reduction, partial/WF-recursion, classical branch). ONE registry (`lean_source._DEF_AUDITS`): a new audit
+    # is added there and inherited here with no sibling to drift. The firewall gates NL↔target faithfulness, not def
+    # MEANING/TRACTABILITY — each new domain opens a new "faithful-but-X" surface — so these run at consolidation,
+    # surfaced LOUD so the author fixes a faithful-but-false/intractable def BEFORE the campaign spends; never gates.
+    # Supersedes the split REPRESENTATION_AUDIT/TRACTABILITY_AUDIT flags. ZTARE_LEANMILL_DEF_QUALITY_AUDIT=0 reverts.
+    if _os_ti.environ.get("ZTARE_LEANMILL_DEF_QUALITY_AUDIT", "1") != "0":
+        try:
+            from ztare.leanmill.lean_source import def_quality_audit as _dqa
+            for _cat, _flag in _dqa(after):
+                print(f"[consolidation] ⚠️ {_cat}: {_flag}", flush=True)
+        except Exception:  # noqa: BLE001 — advisory only; never block consolidation
+            pass
     # SUPERSESSION HEAL (sorried-sibling class, 2026-07-01): the APPEND-ONLY gate above forbids the AGENT editing
     # `X := sorry` → `X := proof`, so when it proves a shelf lemma it appends a proven TWIN (`X_banked`) and the
     # canonical `X` stays sorried — sorried-canonical / proven-twin pairs ACCUMULATE across rounds (inflating the
@@ -672,6 +1331,30 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
                     theory_path.write_text(after, encoding="utf-8")   # REVERT — never poison the substrate
         except Exception:  # noqa: BLE001 — heal is best-effort; the un-healed file already passed GATE 2
             pass
+    # SIMP-FRIENDLY SUBSTRATE (durable fix, RCA 2026-07-04 RBAC iso_lemma3): theory-consolidation emits reduction
+    # anchors (`anchor_grants_assignRole … := rfl`) but never `@[simp]` — so a leaf's CORRECT constructor-reduction
+    # simp-proof (`simp [grants,…]`) reduces in the self-contained probe but NOT against the substrate → unsolved
+    # goal → reverted_noncompile → env-parity RETRACT of a correct proof (we were hurting the leaf iatrogenically).
+    # Tag the COMPUTATION anchors (single door `lean_source.simp_tag_computational_anchors`: rfl + application-LHS,
+    # no logical connective ⇒ never over-unfolds) so every leaf's standard simp-proof PORTS. Compile-GATED: a tag
+    # that breaks the substrate (e.g. a simp loop in the theory's own proofs) reverts. First bit on RBAC because it
+    # is the first CONSTRUCTOR-REDUCTION-heavy substrate (an `Operation` inductive + pattern-matching reducers);
+    # prior substrates used plain def-unfold that ports without @[simp]. ZTARE_LEANMILL_SIMP_TAG_ANCHORS=0 reverts.
+    import os as _os_st
+    if _real_sandbox and _os_st.environ.get("ZTARE_LEANMILL_SIMP_TAG_ANCHORS", "1") != "0":
+        try:
+            from ztare.leanmill.lean_source import simp_tag_computational_anchors as _simptag
+            _tagged = _simptag(after)
+            if _tagged != after:
+                theory_path.write_text(_tagged, encoding="utf-8")
+                if compile_fn(_tagged, lean_root, "SimpTagAnchors", _ts("cold_compile")) is True:
+                    after = _tagged
+                    print("[consolidation] tagged reduction anchors @[simp] (substrate now simp-friendly ⇒ leaf "
+                          "constructor-reduction proofs PORT, not reverted_noncompile)", flush=True)
+                else:
+                    theory_path.write_text(after, encoding="utf-8")   # REVERT — tagging broke the substrate
+        except Exception:  # noqa: BLE001 — hygiene is best-effort; never poison a good consolidation
+            theory_path.write_text(after, encoding="utf-8")
     # extract the NEW sorried API statements → solver work items. "Is this decl OPEN?" is a KERNEL fact,
     # NOT a lexical grep (the operator's "fix once and for all"): the file just compiled, so ask the
     # elaborator which NEW decls carry `sorryAx` (`kernel_structure.sorried_names`). This CANNOT be fooled
@@ -681,16 +1364,60 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     from ztare.leanmill.solver.statement_integrity import decl_blocks
     from ztare.leanmill.lean_source import strip_comments as _sc, has_sorry as _has_sorry, split_at_proof as _sap
     before_names = {n for n, _ in decl_blocks(before)}
-    after_blocks = [(n, b) for n, b in decl_blocks(after) if n not in before_names]
-    new_decls = [n for n, _ in after_blocks]
+    # WORK-ITEM COMPLETENESS (Goldilocks: surface the KERNEL FACT of what's OPEN — do not curate a partial list;
+    # 2026-07-05 restOrder_preserves ORPHAN bug + operator "why targeting logic at all, are we goldilocks"). The
+    # old filter `n not in before_names` queued ONLY decls THIS round added — so a leaf left sorried by a PRIOR
+    # run (already in `before`) was never re-queued: the flagship's last lemma never got a 2nd shot, and the engine
+    # ground the TOP (which cites the sorried leaf → admitted_and_exact_gap) forever. Now ALSO re-surface any
+    # PERSISTENT decl whose OWN proof body still carries a literal `sorry` (the true open leaf). Comment-`sorry`
+    # can't fool it (strip_comments + split_at_proof isolate the proof body). Transitive-sorryAx PARENTS
+    # (textually sorry-free, merely citing the open leaf) are NOT re-queued — only the literal-sorry leaves — so
+    # once the leaf closes the parents become genuinely clean. The agent still CHOOSES how to prove each; this
+    # only reports the complete open-set (a fact), never a strategy.
+    def _own_body_sorried(_blk):
+        return _has_sorry(_sap(_sc(_blk))[1])
+    after_blocks = [(n, b) for n, b in decl_blocks(after)
+                    if (n not in before_names) or _own_body_sorried(b)]
+    new_decls = [n for n, _ in after_blocks if n not in before_names]
     from ztare.leanmill.solver.kernel_structure import sorried_names as _ksorried
-    _kernel_open = _ksorried(after, lean_root, names=new_decls)   # set[name] | None (None ⇒ fall back)
+    _kernel_open = _ksorried(after, lean_root, names=[n for n, _ in after_blocks])   # set[name] | None (None ⇒ fall back)
     new_sorried = []
     for name, block in after_blocks:
         _clean = _sc(block)
         _open = (name in _kernel_open) if _kernel_open is not None else _has_sorry(_sap(_clean)[1])  # proof-body, binder-safe
         if _open:
             new_sorried.append(" ".join(_clean.split()))   # clean signature, no comment/proof cruft
+    # GATE 3: NON-TRIVIALITY of the new sorried shelf lemmas (the vacuous-bridge class, EF1 RCA 2026-07-03).
+    # A frontier model scaffolding a hard proof can weaken a hard bridge lemma to a trivially-true shell
+    # (`∃ dropped, True`), which compiles (GATE 2 passes) and enters the decomposition DAG as a "core" lemma; it
+    # is only caught at PROVE time by the firewall's triviality leg, AFTER the target's proof already routes
+    # through it → the run wastes cycles / can stick. Move the SAME leg (`default_triviality`, the single door)
+    # upstream to consolidation: a new sorried lemma the cheap-tactic cascade closes is a fake stepping stone —
+    # REVERT with a naming reason so the agent re-states it faithfully. Defense-in-depth (the prove-time firewall
+    # still gates every rung); default-on, ZTARE_LEANMILL_CONSOLIDATION_NONTRIVIAL=0 reverts.
+    import os as _os_nt
+    if (new_sorried and (triviality_fn is not None or _real_sandbox)
+            and _os_nt.environ.get("ZTARE_LEANMILL_CONSOLIDATION_NONTRIVIAL", "1") != "0"):
+        _triv = triviality_fn
+        if _triv is None:
+            from ztare.leanmill.solver.autoformalize import default_triviality as _triv
+        _degenerate = []
+        for _stmt in new_sorried:
+            try:
+                if _triv(_stmt, lean_root):
+                    _degenerate.append(_stmt[:90])
+            except Exception as _e:  # noqa: BLE001 — a triviality PROBE infra failure is advisory here: GATE 2
+                # already elaborated the file and the prove-time firewall re-checks every rung, so probe
+                # flakiness must not block a good consolidation round (fail-open ONLY for the probe, not the check).
+                print(f"[consolidation] GATE3 triviality probe inconclusive ({repr(_e)[:70]}) — advisory skip "
+                      "(prove-time firewall still gates)", flush=True)
+        if _degenerate:
+            theory_path.write_text(before, encoding="utf-8")   # REVERT — a vacuous shelf lemma cannot discharge the target
+            return {"ok": False, "reverted": True, "vacuous_shelf_lemmas": _degenerate,
+                    "reason": (f"GATE 3 non-triviality: {len(_degenerate)} new shelf lemma(s) are trivially true "
+                               f"(a cheap tactic closes them) — a fake stepping stone that cannot discharge the "
+                               f"target. State each lemma's REAL conclusion; if the vocabulary lacks the "
+                               f"intermediate predicate it needs, define it. Offenders: {_degenerate}")}
     # SUPERSESSION REQUESTS (captured, not auto-applied): the agent may flag a wrong-shaped EXISTING
     # definition with `-- SUPERSEDE: <name>: <why>`. Editing is still forbidden this round (append-only
     # stands); the request is surfaced in the result/receipt and queued for a governed revision — the
@@ -851,7 +1578,7 @@ def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional
         agent must never author these or it could write down a closure that never happened (fake closure).
       • The WARM AGENT authors the SYNTHESIS — for each still-OPEN lemma it proposes a DEEPER decomposition
         (the next sub-lemmas to attempt). Research-notes authoring is creative, not a mechanical dump.
-    Gated by `ZTARE_LEANMILL_AGENT_REFINE_NOTES` (default-off ⇒ deterministic factual fallback, parity). The
+    Gated by `ZTARE_LEANMILL_AGENT_REFINE_NOTES` (default-on; `=0` ⇒ deterministic factual fallback, parity). The
     next run reads `<name>.refined.md` and compounds (cites the shelf, attacks the agent's finer breakdown);
     the operator's seed is preserved. This closes the loop — the planner drafts+refines, no human in it."""
     import os as _os
@@ -955,6 +1682,21 @@ def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional
             det.append(f"- ✅ {d.get('target')} [sha:{d.get('goal_sha')}] {d.get('statement', '')}{flag}{loc}")
     refined = notes_path.with_suffix(".refined.md")
     refined.write_text("\n".join(det) + "\n\n" + agent_md + "\n", encoding="utf-8")
+    try:
+        _emit_notes_writeback_trace({
+            "kind": "write_refined_notes",
+            "notes_path": str(notes_path),
+            "refined_path": str(refined),
+            "closed_count": len(closed),
+            "open_count": len(open_),
+            "shelf_count": len(shelf),
+            "gap_count": len(gap_lines),
+            "deep_closure_count": len(deep),
+            "agent_frontier_chars": len(agent_md or ""),
+            "agent_refine_enabled": __import__("os").environ.get("ZTARE_LEANMILL_AGENT_REFINE_NOTES", "1") != "0",
+        })
+    except Exception:  # noqa: BLE001
+        pass
     return refined
 
 
@@ -1267,6 +2009,27 @@ def _self_test() -> int:
            r_ok["ok"] and "NewDef" in r_ok["new_decls"]
            and any("newdef_api" in s for s in r_ok["sorried_statements"]))
 
+        # GATE 3 (vacuous-bridge class, EF1 RCA): a trivially-true new sorried shelf lemma is rejected + reverted.
+        def disp_vacuous(prompt, *, repo=None, timeout=None):
+            tfile.write_text(tfile.read_text(encoding="utf-8")
+                             + "\ntheorem vacuous_bridge (n : Nat) : ∃ d : Option Nat, True := by sorry\n",
+                             encoding="utf-8")
+        _before_vac = tfile.read_text(encoding="utf-8")
+        r_vac = theory_consolidation("## Target\nX.\n", "T.lean", lean_root=troot, dispatch=disp_vacuous,
+                                     compile_fn=lambda *a: True,
+                                     triviality_fn=lambda stmt, sb: ", True :=" in stmt or stmt.rstrip().endswith(": True"))
+        ok("theory: GATE3 rejects a vacuous (trivially-true) sorried shelf lemma + reverts",
+           r_vac["ok"] is False and r_vac.get("vacuous_shelf_lemmas")
+           and tfile.read_text(encoding="utf-8") == _before_vac)
+
+        def disp_real(prompt, *, repo=None, timeout=None):   # a genuine (non-trivial) bridge passes GATE 3
+            tfile.write_text(tfile.read_text(encoding="utf-8")
+                             + "\ntheorem real_bridge (n : Nat) (h : 0 < n) : n ≠ 0 := by sorry\n", encoding="utf-8")
+        r_real = theory_consolidation("## Target\nX.\n", "T.lean", lean_root=troot, dispatch=disp_real,
+                                      compile_fn=lambda *a: True, triviality_fn=lambda stmt, sb: False)
+        ok("theory: GATE3 accepts a non-trivial sorried shelf lemma",
+           r_real["ok"] and any("real_bridge" in s for s in r_real["sorried_statements"]))
+
         def disp_edit(prompt, *, repo=None, timeout=None):   # REWRITES an existing line — the launder
             tfile.write_text(tfile.read_text(encoding="utf-8")
                              .replace("def GoodDef (n : Nat) : Prop := n = n",
@@ -1438,6 +2201,14 @@ def compound_into_original_notes(result: dict, notes_path: "Optional[Path]") -> 
         body += ("\n<!-- proven-rungs:auto -->\n## Proven rungs (kernel-closed, auto — citable)\n"
                  + "\n".join(_rung_lines) + "\n<!-- /proven-rungs:auto -->\n")
     notes_path.write_text(body, encoding="utf-8")
+    _emit_notes_writeback_trace({
+        "kind": "compound_original_notes",
+        "notes_path": str(notes_path),
+        "generated_lemma_count": len(gen),
+        "proven_rung_count": len(_rung_lines),
+        "new_rung_input_count": len(rungs),
+        "wrote_lemmas_section": bool(gen),
+    })
     return notes_path
 
 
@@ -1473,6 +2244,43 @@ def regenerate_dashboard(repo_root, runner=None) -> "str | None":
     return None
 
 
+def _free_mem_gb() -> "Optional[float]":
+    """Available RAM in GB from /proc/meminfo MemAvailable (Linux). None where unavailable (non-Linux / no proc)."""
+    try:
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemAvailable:"):
+                return int(line.split()[1]) / (1024 * 1024)   # kB → GB
+    except Exception:  # noqa: BLE001
+        return None
+    return None
+
+
+def _reap_orphan_repls() -> "list[int]":
+    """Kill lean_repl processes whose PARENT IS DEAD (PPID==1, reparented to init) — true orphans holding
+    Mathlib-sized RAM from a prior run. A LIVE run's REPL has a live parent (PPID != 1), so it is never touched.
+    Conservative by construction; returns the PIDs reaped. Best-effort (`ps` + SIGTERM); any error → reap nothing."""
+    import signal
+    import subprocess
+    reaped: "list[int]" = []
+    try:
+        out = subprocess.run(["ps", "-eo", "pid,ppid,args"], capture_output=True, text=True, timeout=15).stdout
+    except Exception:  # noqa: BLE001 — no ps / timeout ⇒ reap nothing
+        return reaped
+    for line in out.splitlines()[1:]:
+        parts = line.split(None, 2)
+        if len(parts) < 3:
+            continue
+        pid_s, ppid_s, args = parts
+        if "lean_repl" in args and "/repl" in args and ppid_s == "1":   # orphaned REPL (dead parent)
+            try:
+                import os as _o
+                _o.kill(int(pid_s), signal.SIGTERM)
+                reaped.append(int(pid_s))
+            except (ValueError, ProcessLookupError, PermissionError):
+                pass
+    return reaped
+
+
 def main(argv: "Optional[list[str]]" = None) -> int:
     import os as _os   # FUNCTION-SCOPE binding: the embedder-liveness preflight (below) reads _os BEFORE the old
     #   later `import os as _os` bound it — Python made _os local throughout main(), so the early read raised
@@ -1485,6 +2293,22 @@ def main(argv: "Optional[list[str]]" = None) -> int:
         return 2
     from ztare.leanmill.preflight_carriers import assert_carriers_live
     assert_carriers_live()
+    # RUN-START RESOURCE GUARD (2026-07-02): a prior run's ORPHANED lean_repl (parent dead → reparented to init)
+    # holds Mathlib-sized RAM and can starve THIS run's warm env (a live warm env died to memory pressure today; 6
+    # stale REPLs were hand-reaped). Reap ONLY demonstrably-dead-parent orphans (PPID==1) — never a live run's
+    # REPL — and warn (not block) on low memory. Conservative + reversible (ZTARE_LEANMILL_REAP_ORPHAN_REPLS=0).
+    if _os.environ.get("ZTARE_LEANMILL_REAP_ORPHAN_REPLS", "1") != "0":
+        try:
+            _reaped = _reap_orphan_repls()
+            if _reaped:
+                print(f"[notes] resource-guard: reaped {len(_reaped)} orphaned lean_repl(s) (dead parent): {_reaped}",
+                      flush=True)
+            _memg = _free_mem_gb()
+            if _memg is not None and _memg < 3.0:
+                print(f"[notes] resource-guard ⚠ only {_memg:.1f} GB free — the warm env may not fit; "
+                      f"a heavy substrate can degrade to cold verify", flush=True)
+        except Exception as _e:  # noqa: BLE001 — a guard failure must never block the run
+            print(f"[notes] resource-guard skipped: {repr(_e)[:100]}", flush=True)
     # #116 INTERNAL STANDARDS (isotope-dilution discipline): a known-positive must CLOSE + a canned cheat must
     # be REJECTED through the same pipeline BEFORE the run spends its wallclock — fail-closed on a dead
     # instrument; the certificate is stamped into the run artifact so every closure is traceable to a
@@ -1522,6 +2346,15 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     from datetime import datetime as _dt, timezone as _tz
     _os.environ.setdefault("ZTARE_SOLVER_RUN_TAG", f"notes_{notes_path.stem}_{_dt.now().strftime('%m%dT%H%M')}")
     print(f"[notes] run_tag = {_os.environ['ZTARE_SOLVER_RUN_TAG']}", flush=True)
+    # RUN-SCRATCH ISOLATION (2026-07-02 RCA — the Basel `target_signature_altered` false-reject): the planner's
+    # generic decomposition name `iso_lemmaN` is REUSED across EVERY campaign, and this notes entry never set
+    # ZTARE_LEANMILL_RUN_SCRATCH (only a higher-level launcher did), so every notes run shared the base
+    # `.solver_scratch/` — where the winner-probe readback grabbed a STALE `iso_lemma1` probe from a PRIOR
+    # campaign (wholly different signature) and governance false-flagged `target_signature_altered`. Isolate each
+    # run's scratch by its run_tag (the per-campaign isolation built in task #16, `probe_dir` already honors the
+    # env var) so a cross-campaign generic-name collision is IMPOSSIBLE. setdefault respects an explicit override.
+    _os.environ.setdefault("ZTARE_LEANMILL_RUN_SCRATCH", _os.environ["ZTARE_SOLVER_RUN_TAG"])
+    print(f"[notes] run-scratch isolated → .solver_scratch/{_os.environ['ZTARE_LEANMILL_RUN_SCRATCH']}/", flush=True)
     _since = _dt.now(_tz.utc).isoformat()   # cert-ledger watermark (same format solve_adhoc stamps `ts` with)
     _notes_text = notes_path.read_text(encoding="utf-8")
     # CAMPAIGN DOMAIN STAMP (factory time-to-closure segmentation): label this run math vs non-math formalization
@@ -1542,6 +2375,9 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     # API statement becomes a first-class lemma work item; the file's content rides the notes so every
     # downstream formalize/solve sees the campaign substrate. Receipt → the work-items ledger.
     _theory_rel = parse_theory_file(_notes_text)
+    _manifest_path = _write_run_manifest(notes_path, theory_rel=_theory_rel or "")
+    if _manifest_path is not None:
+        print(f"[notes] run manifest → {_manifest_path.relative_to(LEAN_ROOT_DEFAULT)}", flush=True)
     if _theory_rel:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch as _dd0
         import time as _tmc
@@ -1660,6 +2496,18 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                                   flush=True)
                     except Exception as _e:  # noqa: BLE001 — the control is advisory; never break the run
                         print(f"[notes] substrate positive control skipped: {repr(_e)[:100]}", flush=True)
+                # WARM-LEAN POSITIVE CONTROL (2026-07-03 RCA — the cold-compile STARVATION): start + ADVERTISE the
+                # warm Lean checker ONCE at run start so EVERY leaf/planner dispatch inherits a LIVE socket (~0.1s
+                # checks) instead of each lazily starting it (or silently getting None → cold `lake env lean`
+                # 30-90s/iter → a frontier leaf burns its whole budget on ONE compile and sorries — recovered from
+                # the CoT). Same LOUD fail-closed discipline as the substrate control above; the door logs LIVE/DOWN
+                # + sets the socket, and each dispatch re-calls it (self-heals a reaped mid-run server).
+                if _os.environ.get("ZTARE_LEANMILL_LEAN_WARM", "1") != "0":
+                    try:
+                        from ztare.formal.lean_check_server import ensure_server_advertised as _esa
+                        _esa(str(LEAN_ROOT_DEFAULT), context="run start")
+                    except Exception as _e:  # noqa: BLE001 — warm-lean is an optimization; never break the run
+                        print(f"[notes] warm-lean positive control skipped: {repr(_e)[:100]}", flush=True)
             _theory_src = _tp.read_text(encoding="utf-8") if _tp.exists() else ""
             if _theory_src.strip():   # the substrate rides the notes (formal scaffolding channel, #88)
                 _notes_text += ("\n\n## Theory (campaign substrate — cite, do not re-derive)\n```lean\n"
@@ -1674,6 +2522,27 @@ def main(argv: "Optional[list[str]]" = None) -> int:
             # theory got built but its crux lemmas were never attacked. These are ALREADY formal Lean (no NL
             # round-trip), so attacking them sidesteps the target's formalization firewall entirely.
             _sorried = list(_tc.get("sorried_statements", []))
+            # COMPLETE THE OPEN-SET FROM THE SUBSTRATE (Goldilocks: report the kernel FACT of what's open; do not
+            # rely on a consolidation-round diff). 2026-07-05 restOrder_preserves ORPHAN fix + operator "why
+            # targeting logic at all / are we goldilocks": consolidation extracts work-items only from decls IT
+            # changed and EARLY-RETURNS 'unchanged' on a stable rerun — so a leaf a PRIOR run left sorried was
+            # never re-queued (the engine ground the TOP, which cites it, forever). Here — regardless of
+            # consolidation outcome — re-queue EVERY substrate decl whose OWN proof body still carries a literal
+            # `sorry` (the true open leaf; comment-`sorry` can't fool split_at_proof+strip_comments). Deduped by
+            # clean statement. The agent still chooses HOW to prove each; this only surfaces the complete open set.
+            try:
+                from ztare.leanmill.solver.statement_integrity import decl_blocks as _dbk
+                from ztare.leanmill.lean_source import (strip_comments as _sc2, has_sorry as _hs2,
+                                                        split_at_proof as _sap2)
+                _seen = {" ".join(s.split()) for s in _sorried}
+                for _n, _blk in _dbk(_theory_src):
+                    if _n and _hs2(_sap2(_sc2(_blk))[1]):       # OWN proof body still carries a literal sorry ⇒ OPEN
+                        _stmt = " ".join(_sc2(_blk).split())
+                        if _stmt not in _seen:
+                            _sorried.append(_stmt); _seen.add(_stmt)
+                            print(f"[notes] re-queued ORPHANED open substrate leaf: {_n}", flush=True)
+            except Exception as _e:  # noqa: BLE001 — completeness is best-effort; never break the run
+                print(f"[notes] open-leaf re-queue skipped: {repr(_e)[:100]}", flush=True)
             if _sorried:
                 _notes_text = _insert_lemmas_section(_notes_text, _sorried)
     res = autoformalize_from_notes(_notes_text, notes_path=notes_path)  # notes_path ⇒ incremental write-back (timeout-safe)
@@ -1741,48 +2610,8 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                   f"+ {_man.get('falsification_pairs')} falsification (clean since {_man.get('clean_since')})", flush=True)
         except Exception as _e:  # noqa: BLE001 — flywheel tap is best-effort; never blocks the run
             print(f"[notes] training-corpus export skipped: {repr(_e)[:120]}", flush=True)
-    # DENOTATION-FAITHFULNESS EPILOGUE (#162, theory-first honest catch). For a theory-first run the agent
-    # BUILT new defs (the substrate Mathlib lacks) — the firewall only governs the STATEMENT, so a self-
-    # consistent DECOY def can pass every internal check. We MEASURE (never assert) whether each built def's
-    # denotation is PINNED by a kernel-verified EXTERNAL anchor: an `anchor_…` overlap-agreement the agent
-    # proved (Kalman external output) OR participation in a kernel-closed proof with the shelf (UC). The
-    # verdict (PINNED / UNDERDETERMINED=honest-gap / REFUTED=decoy-caught) is ADVISORY telemetry — it never
-    # gates a closure — so default-on is safe; only pays kernel cost when defs+anchors actually exist.
-    # ZTARE_LEANMILL_DENOTATION_CHECK=0 reverts. See docs/concepts/leanmill_architecture.md §denotation.
-    if _theory_rel and _os.environ.get("ZTARE_LEANMILL_DENOTATION_CHECK", "1") != "0":
-        try:
-            from ztare.leanmill.solver.def_denotation import (
-                certify_def_denotation, kernel_denotation_verifier, mentions_token)
-            _tp2 = LEAN_ROOT_DEFAULT / _theory_rel
-            _theory_final = _tp2.read_text(encoding="utf-8") if _tp2.exists() else ""
-            if _theory_final.strip():
-                from ztare.leanmill import lean_source as _lsd
-                _built = _lsd.def_names(_theory_final)
-                # composition anchor (UC): a built def appearing in a kernel-closed proof composed soundly.
-                _proof_blob = "\n".join((d.get("closure_lean") or "") + "\n" + (d.get("statement") or "")
-                                        for d in res["deep_closures"])
-                # ALSO the TARGET composite (2026-07-01): a def used in the top kernel-verified theorem's
-                # STATEMENT or proof is denotationally pinned by that theorem (UC) even if it appears in no
-                # sub-rung — the gap that left BFT's `ThresholdSafeAndAvailableBound` (used only in the composite's
-                # `iff` statement, lines 607-609) falsely UNDERDETERMINED. The composite is the strongest pin there is.
-                _tgt = res.get("target") or {}
-                _proof_blob += "\n" + "\n".join(str(_tgt.get(_k) or "") for _k in
-                                                ("closure_lean", "proof_text", "lean_statement", "statement"))
-                _composed = {d for d in _built if mentions_token(_proof_blob, d)}
-                _verify = kernel_denotation_verifier(_theory_final, LEAN_ROOT_DEFAULT)
-                _den = certify_def_denotation(_theory_final, verify_anchor_fn=_verify, composed_defs=_composed)
-                res["denotation"] = _den
-                print(f"[notes] denotation-faithfulness: {_den['verdict']} — {_den['reason']}", flush=True)
-                # VACUITY-faithfulness (sibling leg): a ∀-over-membership Prop def is vacuously true on ∅, so a
-                # theorem concluding it of a constructed set can be true-but-empty. Reuses the SAME kernel
-                # verifier; advisory telemetry, never gates. ZTARE_LEANMILL_VACUITY_CHECK=0 reverts.
-                if _os.environ.get("ZTARE_LEANMILL_VACUITY_CHECK", "1") != "0":
-                    from ztare.leanmill.solver.def_denotation import certify_nonvacuity
-                    _vac = certify_nonvacuity(_theory_final, verify_fn=_verify)
-                    res["nonvacuity"] = _vac
-                    print(f"[notes] vacuity-faithfulness: {_vac['verdict']} — {_vac['reason']}", flush=True)
-        except Exception as _e:  # noqa: BLE001 — advisory telemetry; never blocks the run
-            print(f"[notes] denotation/vacuity check skipped: {repr(_e)[:120]}", flush=True)
+    _modeling_faithfulness_audit(
+        res, _theory_rel, LEAN_ROOT_DEFAULT, log=lambda m: print(m, flush=True))
     # TRUST-CONSERVATION EPILOGUE (v3 RCA): the layers must AGREE — every ratified DB win has a verified,
     # recompilable cert. Read-only, seconds, fail-LOUD (the v3 disease was exactly a silent disagreement
     # between these layers that no layer-local selftest could see).

@@ -12,7 +12,7 @@ Type=simple
 User=ztare_judge
 Group=ztare_judge
 Environment=ZTARE_OFFICIAL_STORE=/srv/ztare_official_store
-Environment=PYTHONPATH=/srv/ztare_gate
+Environment=PYTHONPATH=/srv/ztare_gate:/srv/ztare_gate/src
 Environment=PATH=/usr/local/bin:/usr/bin:/bin:/home/ztare/.local/bin
 Environment=PYTHONDONTWRITEBYTECODE=1
 # Judge transport is provider-neutral API first, subscription CLI

@@ -46,3 +46,18 @@ This is a fault-tolerance / quorum-systems result: a property of the quorum syst
 must form (intersection ⇒ safety, availability ⇒ liveness), not an execution/state-machine proof of a specific
 protocol. It is deliberately about the *counting bound* — the reason `n > 3f` — proved over finite `Finset`s with
 no measure theory. Nothing in Mathlib or (at the time of filing) any public Lean repository covers it.
+
+### Definitions
+
+The vocabulary these theorems are stated over — read them to check the faithfulness boundary; each is documented at the top of its file.
+
+**`ByzantineQuorumIntersection.lean`**
+- `FaultAdmissible (n f : ℕ) (F : NodeSet n) : Prop` — An at-most-`f` faulty set.
+- `CorrectNode {n : ℕ} (F : NodeSet n) (x : Nodes n) : Prop` — A node is correct with respect to a concrete faulty set.
+- `ThresholdQuorum (n q : ℕ) (Q : NodeSet n) : Prop` — A concrete quorum for threshold `q`.
+- `ThresholdQuorumSystem (n q : ℕ) : Set (NodeSet n)` — The size-`q` threshold quorum family.
+- `ThresholdSafe (n f q : ℕ) : Prop`
+- `ThresholdAvailable (n f q : ℕ) : Prop`
+- `ThresholdSafeBound (n f q : ℕ) : Prop` — Numeric side condition sufficient for threshold safety.
+- `ThresholdAvailableBound (n f q : ℕ) : Prop` — Numeric side condition expressing that a correct quorum fits.
+- `ThresholdSafeAndAvailableBound (n f q : ℕ) : Prop` — Numeric simultaneous safe-and-available region.

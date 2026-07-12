@@ -72,3 +72,18 @@ It is deliberately **not** a computational-hardness result (no adversary running
 protocol/execution proof — it is the algebra the security argument rests on, stated so the reconstruction and
 secrecy guarantees are kernel facts rather than prose. The compounding rungs (root count → low-degree uniqueness
 → reconstruction / secrecy) are banked and cited, not re-derived.
+
+### Definitions
+
+The vocabulary these theorems are stated over — read them to check the faithfulness boundary; each is documented at the top of its file.
+
+**`ShamirSecretSharing.lean`**
+- `IsThreshold (t : ℕ) : Prop` — The threshold is the natural number of shares required for reconstruction.
+- `DegreeBelowThreshold [Semiring F] (t : ℕ) (P : F[X]) : Prop`
+- `IsSharingPolynomial [Semiring F] (t : ℕ) (s : F) (P : F[X]) : Prop`
+- `shareAt [Semiring F] (P : F[X]) (x : ShareNode F) : F`
+- `Shares [Semiring F] (P : F[X]) : ShareNode F → F`
+- `ConsistentOn [Semiring F] (nodes : Finset (ShareNode F)) (obs : ShareNode F → F)`
+- `ReconstructsPolynomial [Semiring F] (t : ℕ) (nodes : Finset (ShareNode F))`
+- `PerfectSecrecy [Semiring F] (t : ℕ) (nodes : Finset (ShareNode F))`
+- `secretOf [Semiring F] (P : F[X]) : F`

@@ -71,6 +71,7 @@ cd "$REMOTE_REPO"
 # Force propose.py into local-enforce against the REAL daemon store
 # (not the ~/ztare_official_store sandbox that yields observe/DRY-RUN).
 export ZTARE_OFFICIAL_STORE="$OFFICIAL_STORE"
+export PYTHONPATH=src
 unset ZTARE_MEMBRANE_OBSERVE ZTARE_VERIFICATOR_SSH 2>/dev/null || true
 [ -d "\$ZTARE_OFFICIAL_STORE" ] || { echo "FAIL: official store \$ZTARE_OFFICIAL_STORE not found on VPS" >&2; exit 3; }
 

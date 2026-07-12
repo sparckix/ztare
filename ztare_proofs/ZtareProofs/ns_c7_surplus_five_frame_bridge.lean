@@ -537,6 +537,116 @@ def TraceFreeVariationC7CofinalOwnerPrefixBudget.ofC7PackingOwnerPreimageAndFive
       hOwner.notScalarMeasureCarrier_proof⟩
 
 /--
+Common-constructor Carleson receipt for the five-frame C7 owner-preimage route.
+
+This is the Gowers-style coordinate change for TICK669: the active Carleson
+budget is not selected by matching the visible Nat-indexed payment stream.
+It is the same complete owner-prefix budget record constructed from the same
+`C7PackingOwnerPreimageReceipt`, five-frame source, and route binding.
+-/
+def TraceFreeVariationSameCarrierFreshNoReuseCarlesonReceipt.ofC7PackingOwnerPreimageAndFiveFrameSource
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    {hPack : C7SameCarrierPackingNoReuseReceipt hIndexed hId}
+    (hOwner : C7PackingOwnerPreimageReceipt hPack)
+    (hSource : FiveFrameTracefreeValuationSource formula)
+    (hSameRoute : hSource.eventRadiusPayment = routeActiveTail) :
+    TraceFreeVariationSameCarrierFreshNoReuseCarlesonReceipt where
+  budget :=
+    TraceFreeVariationC7CofinalOwnerPrefixBudget.ofC7PackingOwnerPreimageAndFiveFrameSource
+      hOwner hSource hSameRoute
+  traceFreeCarlesonBudgetIndependentOfAngularSpend :=
+    hOwner.productionSourceFixedBeforeOwnerMap ∧
+      hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation
+  traceFreeCarlesonBudgetIndependentOfAngularSpend_proof :=
+    ⟨hOwner.productionSourceFixedBeforeOwnerMap_proof,
+      hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation_proof⟩
+  sameCarrierFreshNoReuseForTraceFreeAtoms :=
+    hOwner.ownerBudgetIsSameCoronaDuhamelCarrier ∧
+      hOwner.noReuseSeparatedFromOwnerBudget ∧
+        hSource.fiveShadowMeasuresOnExactSameSource
+  sameCarrierFreshNoReuseForTraceFreeAtoms_proof :=
+    ⟨hOwner.ownerBudgetIsSameCoronaDuhamelCarrier_proof,
+      hOwner.noReuseSeparatedFromOwnerBudget_proof,
+      hSource.fiveShadowMeasuresOnExactSameSource_proof⟩
+  selectedC7TraceFreePrefixCofinalMap :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound
+  selectedC7TraceFreePrefixCofinalMap_proof :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound_proof
+  ownerAtomChargeNotBesovBVProxy :=
+    hSource.notBesovBVProductL2OrCFImport ∧
+      hOwner.notUniformEnstrophyBudgetDisguise
+  ownerAtomChargeNotBesovBVProxy_proof :=
+    ⟨hSource.notBesovBVProductL2OrCFImport_proof,
+      hOwner.notUniformEnstrophyBudgetDisguise_proof⟩
+  ownerAtomChargeNotProductL2OrGlobalL4Proxy :=
+    hSource.notBesovBVProductL2OrCFImport ∧
+      hOwner.notUniformEnstrophyBudgetDisguise
+  ownerAtomChargeNotProductL2OrGlobalL4Proxy_proof :=
+    ⟨hSource.notBesovBVProductL2OrCFImport_proof,
+      hOwner.notUniformEnstrophyBudgetDisguise_proof⟩
+  sparseHighHighTraceFreePrefixOverflowExcludedByMechanism :=
+    hOwner.pressureReserveSeparatedFromOwnerBudget ∧
+      hOwner.selectedEventInheritedOrRenewedByAnnularOwner
+  sparseHighHighTraceFreePrefixOverflowExcludedByMechanism_proof :=
+    ⟨hOwner.pressureReserveSeparatedFromOwnerBudget_proof,
+      hOwner.selectedEventInheritedOrRenewedByAnnularOwner_proof⟩
+  boundedMultiplicityDoesNotDefineBudget :=
+    hOwner.boundedOwnerMultiplicityOnLineage ∧
+      hOwner.ownerPreimage.globalSelectedTreePreimageBound
+  boundedMultiplicityDoesNotDefineBudget_proof :=
+    ⟨hOwner.boundedOwnerMultiplicityOnLineage_proof,
+      hOwner.ownerPreimage.globalSelectedTreePreimageBound_proof⟩
+  identityOwnerSummableVariationReceipt :=
+    ∀ N : Nat,
+      NS.nsPrefixSum hOwner.atomCharge (hOwner.activeOwnerAtomBound N) ≤
+        hOwner.atomBudget
+  identityOwnerSummableVariationReceipt_proof :=
+    hOwner.ownerPreimage.activeAtomPrefixBudget
+  noCFCoherenceOrStrictMarginImported :=
+    hSource.notBesovBVProductL2OrCFImport ∧
+      hOwner.notUniformEnstrophyBudgetDisguise
+  noCFCoherenceOrStrictMarginImported_proof :=
+    ⟨hSource.notBesovBVProductL2OrCFImport_proof,
+      hOwner.notUniformEnstrophyBudgetDisguise_proof⟩
+
+/--
 Valuation-specific owner budget from the C7 owner-preimage receipt.  This is
 the direct consumer needed by the TICK669 A_visc five-frame route: once the
 five-frame source is bound to the route-active tail and the typed C7

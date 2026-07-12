@@ -21,6 +21,8 @@ These are THIN wrappers over the canonical move functions (extend, don't fork):
   • certify  → solver.certified_faithfulness  (during FORMALIZATION: certify a boolean policy/spec candidate is
                faithful to a trusted reference over the whole integer domain → CERTIFIED_EQUIVALENT / REFUTED
                with a concrete distinguishing input / OUT_OF_FRAGMENT — an artifact, never an opinion)
+  • isomorphism → research_director.research_isomorphism (bounded structural-transfer/conjecture move card;
+               emits quarantined candidates only, never proof credit or substrate mutation)
 
 These are the EXOGENOUS-COMPUTE tools (help PROVE the current goal). The recursive STRATEGY layer (decompose a
 hard goal into sub-lemmas → kernel-audit the plan → prove each recursively → composite-ratify) is NOT a tool here:
@@ -36,6 +38,7 @@ Output is plain text for the agent to read; exit 0 if a result was produced, 1 i
 from __future__ import annotations
 
 import dataclasses
+import json
 import os
 import sys
 
@@ -319,20 +322,60 @@ def _tool_verify(theory: str) -> int:
     return 1
 
 
+# Loogle/Cloudflare 403s the default `Python-urllib/x.y` User-Agent (curl and browsers get 200). A named UA fixes
+# it — the RCA of the EF1 `list_sum_le_of_get` hallucination (2026-07-03): search silently 403'd, the fallback told
+# the agent to "reason from the lemmas you know", and it invented a lemma. One header was all it needed.
+_MATHLIB_SEARCH_UA = "Mozilla/5.0 (compatible; leanmill-mathlib-search/1.0)"
+
+
+def _local_mathlib_grep(query: str, max_hits: int = 8) -> str:
+    """Offline Mathlib search: ripgrep the local Mathlib source for `theorem/lemma` decls whose name contains the
+    query's most specific identifier. Weaker than Loogle's type search but works when Loogle is unreachable, so the
+    tool never degrades to 'guess from memory'. Returns '' if no local Mathlib tree or no hit."""
+    import os
+    import re
+    import subprocess
+    root = ""
+    for c in (os.environ.get("ZTARE_MATHLIB_SRC"), ".lake/packages/mathlib/Mathlib",
+              "../.lake/packages/mathlib/Mathlib", "ztare_proofs/.lake/packages/mathlib/Mathlib"):
+        if c and os.path.isdir(c):
+            root = c
+            break
+    toks = [t for t in re.findall(r"[A-Za-z_][A-Za-z0-9_]{2,}", query) if t[0].islower() or "_" in t] \
+        or re.findall(r"[A-Za-z_][A-Za-z0-9_]{2,}", query)
+    if not root or not toks:
+        return ""
+    key = max(toks, key=len)   # the most specific identifier (e.g. `sum_le_sum` out of `Finset.sum_le_sum`)
+    try:
+        rg = subprocess.run(["rg", "-N", "--no-heading", "-m", str(max_hits), "-g", "*.lean",
+                             r"^(theorem|lemma|def)\s+\w*" + re.escape(key), root],
+                            capture_output=True, text=True, timeout=15)
+    except Exception:  # noqa: BLE001 — rg missing / timeout ⇒ no local result
+        return ""
+    lines = [l.split(":", 2)[-1].strip() for l in rg.stdout.splitlines() if ":" in l][:max_hits]
+    return "\n".join("  • " + l[:160] for l in lines) if lines else ""
+
+
 def loogle_search_text(query: str, max_hits: int = 8) -> str:
     """THE canonical Loogle Mathlib-search primitive, returning a text result (one home for the HTTP + format).
     Both the CLI tool (`_tool_search`, prints it) and the API agentic leaf (`api_agentic_leaf._mathlib_search`,
     returns it) call this — no re-rolled Loogle endpoint. Query forms: a name (`Polynomial.roots`), a pattern
-    (`Polynomial.Splits ?f ?p`), or a type. Returns an honest `NONE`/`unreachable` line on no match / 5xx."""
+    (`Polynomial.Splits ?f ?p`), or a type. When Loogle is unreachable it falls back to a LOCAL ripgrep of the
+    Mathlib source (never degrades to 'guess from memory'), and on a true miss it tells the agent to DECOMPOSE."""
     import json
     import urllib.parse
     import urllib.request
     url = "https://loogle.lean-lang.org/json?q=" + urllib.parse.quote(query)
     try:
-        with urllib.request.urlopen(url, timeout=20) as resp:  # noqa: S310 — fixed trusted host
+        req = urllib.request.Request(url, headers={"User-Agent": _MATHLIB_SEARCH_UA})  # 403-fix: named UA
+        with urllib.request.urlopen(req, timeout=20) as resp:  # noqa: S310 — fixed trusted host
             data = json.loads(resp.read().decode("utf-8"))
-    except Exception as e:  # noqa: BLE001 — offline / 5xx ⇒ honest NONE, never crash
-        return f"search: NONE (Loogle unreachable: {str(e)[:120]}). Reason from the lemmas you know."
+    except Exception as e:  # noqa: BLE001 — offline / 5xx ⇒ LOCAL grep, never "guess from memory"
+        local = _local_mathlib_grep(query, max_hits)
+        if local:
+            return f"search: (Loogle unreachable: {str(e)[:60]}) — local Mathlib grep:\n" + local
+        return (f"search: NONE (Loogle unreachable: {str(e)[:100]}; no local Mathlib hit). Do NOT invent a lemma "
+                "name — DECOMPOSE: state the fact you need as a `have`/sub-lemma and prove it from lemmas you can confirm.")
     hits = data.get("hits") or []
     if not hits:
         return (f"search: NONE — {str(data.get('header', 'no match'))[:200]}. The name/pattern may not exist; "
@@ -354,6 +397,107 @@ def _tool_search(query: str) -> int:
     `loogle_search_text` (shared with the API leaf); never crashes the agent's turn."""
     print(loogle_search_text(query))
     return 0
+
+
+def _tool_isomorphism(arg: str) -> int:
+    """Bounded structural-isomorphism move card for leaves.
+
+    Input is a JSON object. For solve-like modes:
+      {"mode":"solve","seam":"...","abstract":"...","home":"...","model":"codex","n":3}
+    For conjecture mode:
+      {"mode":"conjecture","left_state":{...},"right_state":{...},"model":"codex","n":3}
+
+    Output is a quarantined action receipt. It can seed AxiomPack candidates or research notes; it cannot
+    grant proof credit, mutate the Lean substrate, or be consumed by a theorem campaign.
+    """
+    try:
+        payload = json.loads(arg or "{}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"isomorphism: NEED JSON input ({type(exc).__name__}: {str(exc)[:120]})")
+        print('example: {"mode":"conjecture","left_state":{"constraint_class":"..."},"right_state":{"constraint_class":"..."},"model":"codex","n":3}')
+        return 2
+    if not isinstance(payload, dict):
+        print("isomorphism: NEED a JSON object")
+        return 2
+    mode = str(payload.get("mode") or "solve").strip()
+    model = str(payload.get("model") or "").strip()
+    if not model:
+        print("isomorphism: NEED explicit `model` so live dispatch is deliberate")
+        return 2
+    n = max(1, min(int(payload.get("n") or 3), 3))
+    debug = bool(payload.get("debug", True))
+    try:
+        from ztare.research_director import research_isomorphism as ri
+        if mode == "conjecture":
+            left = payload.get("left_state") if isinstance(payload.get("left_state"), dict) else {}
+            right = payload.get("right_state") if isinstance(payload.get("right_state"), dict) else {}
+            if not left or not right:
+                print("isomorphism: mode=conjecture requires left_state and right_state JSON objects")
+                return 2
+            result = (
+                ri.debug_conjecture_for_seams(left, right, model=model, n=n)
+                if debug
+                else ri.conjecture_between(left, right, model=model, n=n, ledger=None)
+            )
+        else:
+            seam = str(payload.get("seam") or payload.get("constraint_class") or "").strip()
+            if not seam:
+                print("isomorphism: solve-like mode requires `seam` or `constraint_class`")
+                return 2
+            invariants = payload.get("invariants") if isinstance(payload.get("invariants"), dict) else {}
+            result = (
+                ri.debug_query_for_seam(
+                    seam,
+                    abstract_form=str(payload.get("abstract") or ""),
+                    home_field=str(payload.get("home") or payload.get("home_field") or ""),
+                    model=model,
+                    n=n,
+                    invariants=invariants,
+                    typed_mapping=bool(payload.get("typed_mapping", True)),
+                    mode=mode,
+                )
+                if debug
+                else ri.prescribe_for_seam(
+                    seam,
+                    abstract_form=str(payload.get("abstract") or ""),
+                    home_field=str(payload.get("home") or payload.get("home_field") or ""),
+                    model=model,
+                    n=n,
+                    invariants=invariants,
+                    typed_mapping=bool(payload.get("typed_mapping", True)),
+                    mode=mode,
+                )
+            )
+    except Exception as exc:  # noqa: BLE001
+        print(json.dumps({
+            "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+            "status": "unavailable",
+            "mode": mode,
+            "model": model,
+            "error": repr(exc)[:500],
+            "proof_credit_eligible": False,
+            "theorem_campaign_admissible": False,
+        }, indent=2, sort_keys=True, default=str))
+        return 1
+    receipt = {
+        "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+        "status": "ok",
+        "mode": mode,
+        "model": model,
+        "n": n,
+        "debug": debug,
+        "canonical_engine": "ztare.research_director.research_isomorphism",
+        "result": result,
+        "allowed_use": "quarantined_candidate_generation",
+        "proof_credit_eligible": False,
+        "theorem_campaign_admissible": False,
+        "can_mutate_substrate": False,
+    }
+    print(json.dumps(receipt, indent=2, sort_keys=True, default=str))
+    result_count = 0
+    if isinstance(result, dict):
+        result_count = int(result.get("candidate_count") or len(result.get("conjectures") or []))
+    return 0 if result_count else 1
 
 
 def _tool_goalstate(decl: str, tactics: "list[str] | None" = None) -> int:
@@ -409,7 +553,8 @@ def _tool_goalstate(decl: str, tactics: "list[str] | None" = None) -> int:
 
 _TOOLS = {"witness": _tool_witness, "abduct": _tool_abduct, "hammer": _tool_hammer, "search": _tool_search,
           "falsity": _tool_falsity, "sos": _tool_sos, "goalstate": _tool_goalstate, "verify": _tool_verify,
-          "groebner": _tool_groebner, "nlsat": _tool_nlsat, "certify": _tool_certify}
+          "groebner": _tool_groebner, "nlsat": _tool_nlsat, "certify": _tool_certify,
+          "isomorphism": _tool_isomorphism}
 
 
 def _log_tool_call(tool: str, arg: str, exit_code: int) -> None:

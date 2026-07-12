@@ -1,0 +1,50 @@
+{
+  "mode": "anonymous_signature_census",
+  "eigenquestion": "Which anonymous two-law theory regions have conjunction-specific consequences that survive larger-model and conditional proof checks?",
+  "signature": {
+    "schema": "leanmill.theory_signature.v1",
+    "name": "AnonymousMagma",
+    "sorts": [{"name": "S0"}],
+    "operations": [{"name": "op0", "arg_sorts": ["S0", "S0"], "result_sort": "S0"}],
+    "relations": []
+  },
+  "primitive_semantics": {
+    "operation_bindings": {"op0": "total finite binary operation table"},
+    "relation_bindings": {}
+  },
+  "base_axioms": [],
+  "base_theory_status": "explicit_empty",
+  "adapter_id": "magma_equational.v1",
+  "adapter_config": {"max_total_operation_order": 3},
+  "formula_grammar": {
+    "schema": "leanmill.magma_law_universe.v1",
+    "max_total_operation_order": 3,
+    "variable_renaming_quotient": true,
+    "equation_side_quotient": true
+  },
+  "model_or_observation_strata": [{"carrier_size": 2}, {"carrier_size": 3}],
+  "pack_arity": 2,
+  "collapse_controls": [],
+  "visible_evidence_manifest": {"interpretation_labels": []},
+  "sealed_evidence_manifest_digest": "sha256:8094461e9862242091e96f713dc6b2f8347bf4062e48072e5c79cbc9c52dd279",
+  "deanchoring_policy": {"cold_after_signature_compilation": true},
+  "navigator_contract": {"adapter_id": "axiompack"},
+  "query_budget": {
+    "max_finalists": 8,
+    "max_ranked_queries": 16,
+    "larger_model_queries": 16,
+    "conditional_lean_queries": 8
+  },
+  "stop_rule": {
+    "freeze_after_finalists": 8,
+    "freeze_before_interpretation": true,
+    "stop_on_no_eligible_independent_synergistic_nodes": true
+  },
+  "verification_plan": {
+    "larger_carriers": [4, 5],
+    "conditional_lean": true,
+    "post_freeze_interpretation": true
+  },
+  "codec_versions": {"formula": "magma-postfix-v1", "model": "finite-table-v1"},
+  "authority_refs": ["deterministic-census", "campaign-signer"]
+}

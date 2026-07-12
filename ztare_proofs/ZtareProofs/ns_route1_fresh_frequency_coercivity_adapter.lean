@@ -13887,14 +13887,24 @@ structure SameLedgerFreshEventCarriesRadiusInvoice
   invoiceRegionsUseResidualFreshCarrier :
     invoice.invoiceRegion = hSrc.residualFreshExcess.freshRegion
   eventDataMatchesSameLedgerAuditSource : Prop
+  eventDataMatchesSameLedgerAuditSource_proof :
+    eventDataMatchesSameLedgerAuditSource
   eventWeightsPayNodeRadii : Prop
+  eventWeightsPayNodeRadii_proof :
+    eventWeightsPayNodeRadii
   pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
   inheritedBranchDoesNotCreateParentInvoice :
     hLock.inheritedBadnessDoesNotCreateNewEvent
   oneUseAccountingIsDisplayedInvoiceField :
     invoice.oneUseNoDescendantRebilling = hLock.noRepeatedDescendantCharging
   notBetaSquareRadiusRelabel : Prop
+  notBetaSquareRadiusRelabel_proof :
+    notBetaSquareRadiusRelabel
   notArtifactDependencyRestatement : Prop
+  notArtifactDependencyRestatement_proof :
+    notArtifactDependencyRestatement
 
 /-- Projection from the TICK653 lift to the displayed C7 invoice. -/
 def C7SameTreeFreshRadiusInvoice.ofSameLedgerFreshEventInvoice
@@ -13920,6 +13930,1094 @@ def C7SameTreeFreshRadiusInvoice.ofSameLedgerFreshEventInvoice
       SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock) :
     C7SameTreeFreshRadiusInvoice seq K hRho :=
   h.invoice
+
+/--
+Displayed C7 invoice plus source-identification proofs constructs the
+same-ledger event-to-radius lift.
+
+This is the downward form of the bridge: the displayed invoice pays the
+radius field, while the additional fields verify that the invoice is attached
+to the residual same-ledger audit source and not to a relabelled numerical
+surface.
+-/
+def SameLedgerFreshEventCarriesRadiusInvoice.ofDisplayedInvoiceAndSourceProofs
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (invoice : C7SameTreeFreshRadiusInvoice seq K hRho)
+    (invoiceBadNodesAreSelectedBadNodes :
+      invoice.badNodes = hCarrier.selectedBadNodes)
+    (invoiceRegionsUseResidualFreshCarrier :
+      invoice.invoiceRegion = hSrc.residualFreshExcess.freshRegion)
+    (eventDataMatchesSameLedgerAuditSource : Prop)
+    (eventDataMatchesSameLedgerAuditSource_proof :
+      eventDataMatchesSameLedgerAuditSource)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+      pressureLocalizationProvedOnPuncturedInvoiceRegions)
+    (inheritedBranchDoesNotCreateParentInvoice :
+      hLock.inheritedBadnessDoesNotCreateNewEvent)
+    (oneUseAccountingIsDisplayedInvoiceField :
+      invoice.oneUseNoDescendantRebilling = hLock.noRepeatedDescendantCharging)
+    (notBetaSquareRadiusRelabel : Prop)
+    (notBetaSquareRadiusRelabel_proof :
+      notBetaSquareRadiusRelabel)
+    (notArtifactDependencyRestatement : Prop)
+    (notArtifactDependencyRestatement_proof :
+      notArtifactDependencyRestatement) :
+    SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock where
+  invoice := invoice
+  invoiceBadNodesAreSelectedBadNodes := invoiceBadNodesAreSelectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :=
+    invoiceRegionsUseResidualFreshCarrier
+  eventDataMatchesSameLedgerAuditSource :=
+    eventDataMatchesSameLedgerAuditSource
+  eventDataMatchesSameLedgerAuditSource_proof :=
+    eventDataMatchesSameLedgerAuditSource_proof
+  eventWeightsPayNodeRadii :=
+    invoice.invoicePaysRadiusForEachSelectedBadNode
+  eventWeightsPayNodeRadii_proof :=
+    invoice.invoicePaysRadiusForEachSelectedBadNode_proof
+  pressureLocalizationProvedOnPuncturedInvoiceRegions :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+  inheritedBranchDoesNotCreateParentInvoice :=
+    inheritedBranchDoesNotCreateParentInvoice
+  oneUseAccountingIsDisplayedInvoiceField :=
+    oneUseAccountingIsDisplayedInvoiceField
+  notBetaSquareRadiusRelabel := notBetaSquareRadiusRelabel
+  notBetaSquareRadiusRelabel_proof := notBetaSquareRadiusRelabel_proof
+  notArtifactDependencyRestatement := notArtifactDependencyRestatement
+  notArtifactDependencyRestatement_proof :=
+    notArtifactDependencyRestatement_proof
+
+/--
+Typed displayed-invoice target for the next lower C7 source theorem.
+
+The displayed invoice is not accepted by shape alone: it must carry the
+same-ledger source equalities, pressure-localization source field, inherited
+branch no-parent-invoice proof, one-use/no-rebilling identification, and
+anti-relabel guards.
+-/
+structure SameLedgerGuardedC7FreshRadiusInvoice
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc) where
+  invoice :
+    C7SameTreeFreshRadiusInvoice seq K hRho
+  invoiceBadNodesAreSelectedBadNodes :
+    invoice.badNodes = hCarrier.selectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :
+    invoice.invoiceRegion = hSrc.residualFreshExcess.freshRegion
+  eventDataMatchesSameLedgerAuditSource : Prop
+  eventDataMatchesSameLedgerAuditSource_proof :
+    eventDataMatchesSameLedgerAuditSource
+  pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  inheritedBranchDoesNotCreateParentInvoice :
+    hLock.inheritedBadnessDoesNotCreateNewEvent
+  oneUseAccountingIsDisplayedInvoiceField :
+    invoice.oneUseNoDescendantRebilling = hLock.noRepeatedDescendantCharging
+  notBetaSquareRadiusRelabel : Prop
+  notBetaSquareRadiusRelabel_proof :
+    notBetaSquareRadiusRelabel
+  notArtifactDependencyRestatement : Prop
+  notArtifactDependencyRestatement_proof :
+    notArtifactDependencyRestatement
+
+/--
+Excess-drop telescoping invoice plus same-ledger source guards constructs the
+guarded displayed C7 invoice.
+
+The telescoping side condition supplies the displayed invoice, displayed
+bad-node identity, and one-use/no-reuse accounting.  The residual same-ledger
+source still has to pay the fresh-region, event-source, pressure, inherited
+branch, and anti-relabel guards.
+-/
+def SameLedgerGuardedC7FreshRadiusInvoice.ofExcessDropTelescopingInvoiceAndSourceGuards
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    (hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel)
+    (dropBadNodesAreSelectedBadNodes :
+      hDrop.badNodes = hCarrier.selectedBadNodes)
+    (invoiceRegionsUseResidualFreshCarrier :
+      (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+        hInvoice).invoiceRegion = hSrc.residualFreshExcess.freshRegion)
+    (eventDataMatchesSameLedgerAuditSource : Prop)
+    (eventDataMatchesSameLedgerAuditSource_proof :
+      eventDataMatchesSameLedgerAuditSource)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+      pressureLocalizationProvedOnPuncturedInvoiceRegions)
+    (inheritedBranchDoesNotCreateParentInvoice :
+      hLock.inheritedBadnessDoesNotCreateNewEvent)
+    (dropNoReuseMatchesSameTreeLock :
+      hDrop.noReuseOfSameDropAlongNestedBadNodes =
+        hLock.noRepeatedDescendantCharging)
+    (notBetaSquareRadiusRelabel : Prop)
+    (notBetaSquareRadiusRelabel_proof :
+      notBetaSquareRadiusRelabel)
+    (notArtifactDependencyRestatement : Prop)
+    (notArtifactDependencyRestatement_proof :
+      notArtifactDependencyRestatement) :
+    SameLedgerGuardedC7FreshRadiusInvoice hSrc hLock where
+  invoice :=
+    C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice hInvoice
+  invoiceBadNodesAreSelectedBadNodes := by
+    calc
+      (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+        hInvoice).badNodes = hDrop.badNodes :=
+          hInvoice.invoiceUsesDisplayedBadNodes
+      _ = hCarrier.selectedBadNodes := dropBadNodesAreSelectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :=
+    invoiceRegionsUseResidualFreshCarrier
+  eventDataMatchesSameLedgerAuditSource :=
+    eventDataMatchesSameLedgerAuditSource
+  eventDataMatchesSameLedgerAuditSource_proof :=
+    eventDataMatchesSameLedgerAuditSource_proof
+  pressureLocalizationProvedOnPuncturedInvoiceRegions :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+  inheritedBranchDoesNotCreateParentInvoice :=
+    inheritedBranchDoesNotCreateParentInvoice
+  oneUseAccountingIsDisplayedInvoiceField := by
+    calc
+      (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+        hInvoice).oneUseNoDescendantRebilling =
+          hDrop.noReuseOfSameDropAlongNestedBadNodes :=
+            hInvoice.oneUseAccountingIsTheNoReuseField
+      _ = hLock.noRepeatedDescendantCharging :=
+        dropNoReuseMatchesSameTreeLock
+  notBetaSquareRadiusRelabel := notBetaSquareRadiusRelabel
+  notBetaSquareRadiusRelabel_proof := notBetaSquareRadiusRelabel_proof
+  notArtifactDependencyRestatement := notArtifactDependencyRestatement
+  notArtifactDependencyRestatement_proof :=
+    notArtifactDependencyRestatement_proof
+
+/--
+Projection/tail invoice receipt for the excess-drop route into the guarded C7
+displayed invoice.
+
+This is stricter than the raw telescoping adapter: the projected invoice must
+come with a preprojection identity, a paid pressure/tail reserve, and a
+same-source window before the same-ledger source guards are allowed to feed
+the guarded invoice.
+-/
+structure C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc)
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    (hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel) where
+  preprojectionIdentity : Prop
+  preprojectionIdentity_proof :
+    preprojectionIdentity
+  tailReservePaid : Prop
+  tailReservePaid_proof :
+    tailReservePaid
+  sameSourceWindow : Prop
+  sameSourceWindow_proof :
+    sameSourceWindow
+  dropBadNodesAreSelectedBadNodes :
+    hDrop.badNodes = hCarrier.selectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :
+    (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+      hInvoice).invoiceRegion = hSrc.residualFreshExcess.freshRegion
+  eventDataMatchesSameLedgerAuditSource : Prop
+  eventDataMatchesSameLedgerAuditSource_proof :
+    eventDataMatchesSameLedgerAuditSource
+  pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  inheritedBranchDoesNotCreateParentInvoice :
+    hLock.inheritedBadnessDoesNotCreateNewEvent
+  dropNoReuseMatchesSameTreeLock :
+    hDrop.noReuseOfSameDropAlongNestedBadNodes =
+      hLock.noRepeatedDescendantCharging
+  notBetaSquareRadiusRelabel : Prop
+  notBetaSquareRadiusRelabel_proof :
+    notBetaSquareRadiusRelabel
+  notArtifactDependencyRestatement : Prop
+  notArtifactDependencyRestatement_proof :
+    notArtifactDependencyRestatement
+
+/--
+Finite-prefix limit-passage receipt beneath the projection/tail invoice.
+
+The finite prefixes must already carry the preprojection identity and
+tail-reserve payment, and the passage to the projected invoice must preserve
+the same-source window without losing the tail reserve.
+-/
+structure C7ProjectionTailFinitePrefixLimitPassageReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc)
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    (hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel) where
+  finitePrefixPreprojectionIdentity : Prop
+  finitePrefixPreprojectionIdentity_proof :
+    finitePrefixPreprojectionIdentity
+  finitePrefixTailReservePaid : Prop
+  finitePrefixTailReservePaid_proof :
+    finitePrefixTailReservePaid
+  finitePrefixSameSourceWindow : Prop
+  finitePrefixSameSourceWindow_proof :
+    finitePrefixSameSourceWindow
+  preprojectionIdentityPersistsToLimit : Prop
+  preprojectionIdentityPersistsToLimit_proof :
+    preprojectionIdentityPersistsToLimit
+  tailReservePaymentPersistsToLimit : Prop
+  tailReservePaymentPersistsToLimit_proof :
+    tailReservePaymentPersistsToLimit
+  sameSourceWindowPersistsToLimit : Prop
+  sameSourceWindowPersistsToLimit_proof :
+    sameSourceWindowPersistsToLimit
+  noProjectionTailLossAtLimit : Prop
+  noProjectionTailLossAtLimit_proof :
+    noProjectionTailLossAtLimit
+  dropBadNodesAreSelectedBadNodes :
+    hDrop.badNodes = hCarrier.selectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :
+    (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+      hInvoice).invoiceRegion = hSrc.residualFreshExcess.freshRegion
+  eventDataMatchesSameLedgerAuditSource : Prop
+  eventDataMatchesSameLedgerAuditSource_proof :
+    eventDataMatchesSameLedgerAuditSource
+  pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  inheritedBranchDoesNotCreateParentInvoice :
+    hLock.inheritedBadnessDoesNotCreateNewEvent
+  dropNoReuseMatchesSameTreeLock :
+    hDrop.noReuseOfSameDropAlongNestedBadNodes =
+      hLock.noRepeatedDescendantCharging
+  notBetaSquareRadiusRelabel : Prop
+  notBetaSquareRadiusRelabel_proof :
+    notBetaSquareRadiusRelabel
+  notArtifactDependencyRestatement : Prop
+  notArtifactDependencyRestatement_proof :
+    notArtifactDependencyRestatement
+
+/--
+Finite-prefix limit-passage data constructs the projection/tail invoice
+receipt by bundling finite-prefix payment with the persistence fields.
+-/
+def C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice.ofFinitePrefixLimitPassage
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (h :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) :
+    C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+      hSrc hLock hInvoice where
+  preprojectionIdentity :=
+    h.finitePrefixPreprojectionIdentity ∧
+      h.preprojectionIdentityPersistsToLimit
+  preprojectionIdentity_proof :=
+    ⟨h.finitePrefixPreprojectionIdentity_proof,
+      h.preprojectionIdentityPersistsToLimit_proof⟩
+  tailReservePaid :=
+    h.finitePrefixTailReservePaid ∧
+      h.tailReservePaymentPersistsToLimit ∧
+        h.noProjectionTailLossAtLimit
+  tailReservePaid_proof :=
+    ⟨h.finitePrefixTailReservePaid_proof,
+      h.tailReservePaymentPersistsToLimit_proof,
+      h.noProjectionTailLossAtLimit_proof⟩
+  sameSourceWindow :=
+    h.finitePrefixSameSourceWindow ∧ h.sameSourceWindowPersistsToLimit
+  sameSourceWindow_proof :=
+    ⟨h.finitePrefixSameSourceWindow_proof,
+      h.sameSourceWindowPersistsToLimit_proof⟩
+  dropBadNodesAreSelectedBadNodes :=
+    h.dropBadNodesAreSelectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :=
+    h.invoiceRegionsUseResidualFreshCarrier
+  eventDataMatchesSameLedgerAuditSource :=
+    h.eventDataMatchesSameLedgerAuditSource
+  eventDataMatchesSameLedgerAuditSource_proof :=
+    h.eventDataMatchesSameLedgerAuditSource_proof
+  pressureLocalizationProvedOnPuncturedInvoiceRegions :=
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :=
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+  inheritedBranchDoesNotCreateParentInvoice :=
+    h.inheritedBranchDoesNotCreateParentInvoice
+  dropNoReuseMatchesSameTreeLock :=
+    h.dropNoReuseMatchesSameTreeLock
+  notBetaSquareRadiusRelabel :=
+    h.notBetaSquareRadiusRelabel
+  notBetaSquareRadiusRelabel_proof :=
+    h.notBetaSquareRadiusRelabel_proof
+  notArtifactDependencyRestatement :=
+    h.notArtifactDependencyRestatement
+  notArtifactDependencyRestatement_proof :=
+    h.notArtifactDependencyRestatement_proof
+
+/--
+Finite-prefix limit-passage receipt directly supplies the guarded displayed
+invoice by first constructing the projection/tail receipt.
+-/
+def SameLedgerGuardedC7FreshRadiusInvoice.ofProjectionTailFinitePrefixLimitPassage
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (h :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) :
+    SameLedgerGuardedC7FreshRadiusInvoice hSrc hLock :=
+  SameLedgerGuardedC7FreshRadiusInvoice.ofExcessDropTelescopingInvoiceAndSourceGuards
+      hInvoice
+      h.dropBadNodesAreSelectedBadNodes
+      h.invoiceRegionsUseResidualFreshCarrier
+      h.eventDataMatchesSameLedgerAuditSource
+      h.eventDataMatchesSameLedgerAuditSource_proof
+      h.pressureLocalizationProvedOnPuncturedInvoiceRegions
+      h.pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+      h.inheritedBranchDoesNotCreateParentInvoice
+      h.dropNoReuseMatchesSameTreeLock
+      h.notBetaSquareRadiusRelabel
+      h.notBetaSquareRadiusRelabel_proof
+      h.notArtifactDependencyRestatement
+      h.notArtifactDependencyRestatement_proof
+
+/--
+Confuser for the finite-prefix limit-passage layer under the projection/tail
+receipt.
+-/
+structure C7ProjectionTailFinitePrefixLimitPassageConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc)
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    (hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel) where
+  noFinitePrefixPreprojectionIdentityForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice,
+      ¬ hReceipt.finitePrefixPreprojectionIdentity
+  noTailReservePersistenceForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice,
+      ¬ hReceipt.tailReservePaymentPersistsToLimit
+  noSameSourceWindowPersistenceForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice,
+      ¬ hReceipt.sameSourceWindowPersistsToLimit
+  noProjectionTailLossExclusionForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice,
+      ¬ hReceipt.noProjectionTailLossAtLimit
+
+/-- Missing finite-prefix preprojection identity blocks the lower receipt. -/
+theorem no_C7ProjectionTailFinitePrefixLimitPassageReceipt_of_missingFinitePrefixPreprojectionIdentity
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailFinitePrefixLimitPassageConfuser
+        hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noFinitePrefixPreprojectionIdentityForAnyReceipt hReceipt.some
+      hReceipt.some.finitePrefixPreprojectionIdentity_proof
+
+/-- Missing tail-reserve persistence blocks the lower receipt. -/
+theorem no_C7ProjectionTailFinitePrefixLimitPassageReceipt_of_missingTailReservePersistence
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailFinitePrefixLimitPassageConfuser
+        hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noTailReservePersistenceForAnyReceipt hReceipt.some
+      hReceipt.some.tailReservePaymentPersistsToLimit_proof
+
+/-- Missing same-source window persistence blocks the lower receipt. -/
+theorem no_C7ProjectionTailFinitePrefixLimitPassageReceipt_of_missingSameSourceWindowPersistence
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailFinitePrefixLimitPassageConfuser
+        hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noSameSourceWindowPersistenceForAnyReceipt hReceipt.some
+      hReceipt.some.sameSourceWindowPersistsToLimit_proof
+
+/-- Unpaid projection/tail loss at the limit blocks the lower receipt. -/
+theorem no_C7ProjectionTailFinitePrefixLimitPassageReceipt_of_projectionTailLossAtLimit
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailFinitePrefixLimitPassageConfuser
+        hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailFinitePrefixLimitPassageReceipt
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noProjectionTailLossExclusionForAnyReceipt hReceipt.some
+      hReceipt.some.noProjectionTailLossAtLimit_proof
+
+/--
+Projection/tail receipt supplies the guarded displayed invoice by routing
+through the excess-drop telescoping invoice constructor.
+-/
+def SameLedgerGuardedC7FreshRadiusInvoice.ofProjectionTailInvoiceReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (h :
+      C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice) :
+    SameLedgerGuardedC7FreshRadiusInvoice hSrc hLock :=
+  SameLedgerGuardedC7FreshRadiusInvoice.ofExcessDropTelescopingInvoiceAndSourceGuards
+    hInvoice
+    h.dropBadNodesAreSelectedBadNodes
+    h.invoiceRegionsUseResidualFreshCarrier
+    h.eventDataMatchesSameLedgerAuditSource
+    h.eventDataMatchesSameLedgerAuditSource_proof
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+    h.inheritedBranchDoesNotCreateParentInvoice
+    h.dropNoReuseMatchesSameTreeLock
+    h.notBetaSquareRadiusRelabel
+    h.notBetaSquareRadiusRelabel_proof
+    h.notArtifactDependencyRestatement
+    h.notArtifactDependencyRestatement_proof
+
+/--
+Confuser for the projection/tail discriminator: it blocks the stricter
+receipt when the preprojection identity, tail reserve, or same-source window
+is missing.
+-/
+structure C7ProjectionTailInvoiceUnpaidConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc)
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    (hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel) where
+  noPreprojectionIdentityForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice,
+      ¬ hReceipt.preprojectionIdentity
+  noTailReservePaidForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice,
+      ¬ hReceipt.tailReservePaid
+  noSameSourceWindowForAnyReceipt :
+    ∀ hReceipt :
+      C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice,
+      ¬ hReceipt.sameSourceWindow
+
+/-- Missing preprojection identity blocks the projection/tail receipt. -/
+theorem no_C7ProjectionTailInvoiceReceipt_of_missingPreprojectionIdentity
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailInvoiceUnpaidConfuser hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noPreprojectionIdentityForAnyReceipt hReceipt.some
+      hReceipt.some.preprojectionIdentity_proof
+
+/-- Unpaid pressure/tail reserve blocks the projection/tail receipt. -/
+theorem no_C7ProjectionTailInvoiceReceipt_of_unpaidTailReserve
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailInvoiceUnpaidConfuser hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noTailReservePaidForAnyReceipt hReceipt.some
+      hReceipt.some.tailReservePaid_proof
+
+/-- Missing same-source window blocks the projection/tail receipt. -/
+theorem no_C7ProjectionTailInvoiceReceipt_of_missingSameSourceWindow
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hConfuser :
+      C7ProjectionTailInvoiceUnpaidConfuser hSrc hLock hInvoice) :
+    ¬ Nonempty
+      (C7ProjectionTailInvoiceReceiptForGuardedDisplayedInvoice
+        hSrc hLock hInvoice) := by
+  intro hReceipt
+  exact
+    hConfuser.noSameSourceWindowForAnyReceipt hReceipt.some
+      hReceipt.some.sameSourceWindow_proof
+
+/--
+The guarded displayed invoice is exactly the next positive input needed for
+the same-ledger event-to-radius lift.
+-/
+def SameLedgerFreshEventCarriesRadiusInvoice.ofGuardedDisplayedInvoice
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (h :
+      SameLedgerGuardedC7FreshRadiusInvoice hSrc hLock) :
+    SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock :=
+  SameLedgerFreshEventCarriesRadiusInvoice.ofDisplayedInvoiceAndSourceProofs
+    h.invoice
+    h.invoiceBadNodesAreSelectedBadNodes
+    h.invoiceRegionsUseResidualFreshCarrier
+    h.eventDataMatchesSameLedgerAuditSource
+    h.eventDataMatchesSameLedgerAuditSource_proof
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions
+    h.pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+    h.inheritedBranchDoesNotCreateParentInvoice
+    h.oneUseAccountingIsDisplayedInvoiceField
+    h.notBetaSquareRadiusRelabel
+    h.notBetaSquareRadiusRelabel_proof
+    h.notArtifactDependencyRestatement
+    h.notArtifactDependencyRestatement_proof
+
+/--
+Confuser for displayed invoices whose visible C7 radius-charge surface is
+detached from the residual same-ledger source fields.
+-/
+structure C7SourceLaunderedDisplayedInvoiceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    (hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L))
+    (hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc) where
+  noEventDataMatchForAnyLift :
+    ∀ hLift : SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock,
+      ¬ hLift.eventDataMatchesSameLedgerAuditSource
+  noResidualFreshRegionMatchForAnyLift :
+    ∀ hLift : SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock,
+      hLift.invoice.invoiceRegion ≠ hSrc.residualFreshExcess.freshRegion
+  noAntiArtifactDependencyForAnyLift :
+    ∀ hLift : SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock,
+      ¬ hLift.notArtifactDependencyRestatement
+
+/-- Source-laundered event data blocks the same-ledger lift. -/
+theorem no_SameLedgerFreshEventCarriesRadiusInvoice_of_sourceLaunderedEventData
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hConfuser :
+      C7SourceLaunderedDisplayedInvoiceConfuser hSrc hLock) :
+    ¬ Nonempty (SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock) := by
+  intro hLift
+  exact
+    hConfuser.noEventDataMatchForAnyLift hLift.some
+      hLift.some.eventDataMatchesSameLedgerAuditSource_proof
+
+/-- Source-laundered invoice regions block the same-ledger lift. -/
+theorem no_SameLedgerFreshEventCarriesRadiusInvoice_of_sourceLaunderedFreshRegion
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hConfuser :
+      C7SourceLaunderedDisplayedInvoiceConfuser hSrc hLock) :
+    ¬ Nonempty (SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock) := by
+  intro hLift
+  exact
+    hConfuser.noResidualFreshRegionMatchForAnyLift hLift.some
+      hLift.some.invoiceRegionsUseResidualFreshCarrier
+
+/-- Artifact-dependency restatement blocks the same-ledger lift. -/
+theorem no_SameLedgerFreshEventCarriesRadiusInvoice_of_artifactDependencyRestatement
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hSrc :
+      ResidualFreshExcessSameLedgerAuditEventSource
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hConfuser :
+      C7SourceLaunderedDisplayedInvoiceConfuser hSrc hLock) :
+    ¬ Nonempty (SameLedgerFreshEventCarriesRadiusInvoice hSrc hLock) := by
+  intro hLift
+  exact
+    hConfuser.noAntiArtifactDependencyForAnyLift hLift.some
+      hLift.some.notArtifactDependencyRestatement_proof
 
 /--
 TICK653 boundary.  The same-ledger residual audit source plus same-tree
@@ -14017,22 +15115,52 @@ structure SameTreeCarlesonInvoiceEmbedding
       FreshFrequencyEventSameTreeLock
         seq K hRho hCarrier hBeta hEvents L hScale hInc) where
   invoiceAssignedBeforeSubtreeSelection : Prop
+  invoiceAssignedBeforeSubtreeSelection_proof :
+    invoiceAssignedBeforeSubtreeSelection
   eventDataMatchedToResidualFreshAuditIndex : Prop
+  eventDataMatchedToResidualFreshAuditIndex_proof :
+    eventDataMatchedToResidualFreshAuditIndex
   residualBranchLedgerEventsPayNodeRadii : Prop
+  residualBranchLedgerEventsPayNodeRadii_proof :
+    residualBranchLedgerEventsPayNodeRadii
   pressureCarrierIdentifiedWithResidualFreshRegion : Prop
+  pressureCarrierIdentifiedWithResidualFreshRegion_proof :
+    pressureCarrierIdentifiedWithResidualFreshRegion
   pressureLocalizationProvedOnPuncturedInvoiceCarrier : Prop
+  pressureLocalizationProvedOnPuncturedInvoiceCarrier_proof :
+    pressureLocalizationProvedOnPuncturedInvoiceCarrier
   inheritedNodesRoutedOffSameLedgerParentInvoice : Prop
+  inheritedNodesRoutedOffSameLedgerParentInvoice_proof :
+    inheritedNodesRoutedOffSameLedgerParentInvoice
   inheritedBranchMarkedNonChargeableForParentRadius :
     hLock.inheritedBadnessDoesNotCreateNewEvent
   descendantInvoicesDisjointOrBoundedOverlap : Prop
+  descendantInvoicesDisjointOrBoundedOverlap_proof :
+    descendantInvoicesDisjointOrBoundedOverlap
   finiteFreshInvoiceBudget : Prop
+  finiteFreshInvoiceBudget_proof :
+    finiteFreshInvoiceBudget
   invoiceUsesSameNormalizedExcessStoppingTree : Prop
+  invoiceUsesSameNormalizedExcessStoppingTree_proof :
+    invoiceUsesSameNormalizedExcessStoppingTree
   doesNotFactorThroughCFDirectionAlignment : Prop
+  doesNotFactorThroughCFDirectionAlignment_proof :
+    doesNotFactorThroughCFDirectionAlignment
   notDegreeZeroRieszBookkeeping : Prop
+  notDegreeZeroRieszBookkeeping_proof :
+    notDegreeZeroRieszBookkeeping
   notParabolicRateSlavedScalar : Prop
+  notParabolicRateSlavedScalar_proof :
+    notParabolicRateSlavedScalar
   noPostHocRadiusInvoiceAssignment : Prop
+  noPostHocRadiusInvoiceAssignment_proof :
+    noPostHocRadiusInvoiceAssignment
   notBetaFrequencyPaymentRelabel : Prop
+  notBetaFrequencyPaymentRelabel_proof :
+    notBetaFrequencyPaymentRelabel
   notAbstractRadiusChargeProjectionOnly : Prop
+  notAbstractRadiusChargeProjectionOnly_proof :
+    notAbstractRadiusChargeProjectionOnly
   producesRadiusCharging :
     RadiusChargingBadScaleMeasure seq K hRho
 
@@ -14607,6 +15735,8 @@ structure ResidualFreshAuditIndexFixedBeforeSpendPartition
   duhamelSectionIdentity :
     ResidualFreshAuditDuhamelSectionIdentity hElig hDuhamel
   auditIndexChosenBeforeParentInvoiceAccounting : Prop
+  auditIndexChosenBeforeParentInvoiceAccounting_proof :
+    auditIndexChosenBeforeParentInvoiceAccounting
   noPostHocAuditIndexFromSpendOutcome : Prop
 
 /--
@@ -15384,10 +16514,259 @@ structure ResidualFreshAuditIndexedSingleSpendCarrier
   noRepeatedDescendantCharging :
     hLock.noRepeatedDescendantCharging
   notBetaFrequencyPaymentRelabel : Prop
+  notBetaFrequencyPaymentRelabel_proof :
+    notBetaFrequencyPaymentRelabel
   notShellProcessReserveRelabel : Prop
+  notShellProcessReserveRelabel_proof :
+    notShellProcessReserveRelabel
   notConstantinFeffermanAlignment : Prop
   notDegreeZeroRieszBookkeeping : Prop
   notParabolicRateSlavedScalar : Prop
+
+/-- The indexed carrier now carries the exact event/invoice binding proof. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.exactEventScheduleBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hIndexed.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex :=
+  hIndexed.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex_proof
+
+/-- The indexed carrier now carries the exact fresh-charge/radius binding proof. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.exactFreshChargeBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hIndexed.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii :=
+  hIndexed.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii_proof
+
+/-- Audit-index timing proof projected from the indexed carrier. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.auditIndexBeforeParentInvoice
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hIndexed.auditIndexFixedBeforeSpendPartition.auditIndexChosenBeforeParentInvoiceAccounting :=
+  hIndexed.auditIndexFixedBeforeSpendPartition.auditIndexChosenBeforeParentInvoiceAccounting_proof
+
+/-- Same-tree nonadaptivity proof projected from the indexed carrier lock. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.nonadaptiveBeforeRadius
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (_hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hLock.nonadaptiveBeforeRadiusAccounting :=
+  hLock.nonadaptiveBeforeRadiusAccounting_proof
+
+/-- Same bad-center stopping-tree proof projected from the indexed carrier lock. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.generatedFromSameBadTree
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (_hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hLock.generatedFromSameBadCenterStoppingTree :=
+  hLock.generatedFromSameBadCenterStoppingTree_proof
+
+/-- Beta-frequency anti-relabel proof projected from the indexed carrier. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.betaFrequencyNotRelabel
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hIndexed.notBetaFrequencyPaymentRelabel :=
+  hIndexed.notBetaFrequencyPaymentRelabel_proof
+
+/-- Shell-process anti-relabel proof projected from the indexed carrier. -/
+theorem ResidualFreshAuditIndexedSingleSpendCarrier.shellProcessNotRelabel
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) :
+    hIndexed.notShellProcessReserveRelabel :=
+  hIndexed.notShellProcessReserveRelabel_proof
 
 /-- The audit-indexed single-spend carrier projects to the older C7 bridge.
 The reverse projection is absent because the older bridge does not display the
@@ -16771,10 +18150,14 @@ structure CoronaDuhamelProductionSingleSpendCarrier
     hDuhamel.assignedBeforeRadiusAccounting
   pressureReserveNotParentInvoice : Prop
   duhamelReserveNotShellProcessLedger : Prop
+  duhamelReserveNotShellProcessLedger_proof :
+    duhamelReserveNotShellProcessLedger
   inheritedDescendantsDoNotMintParentInvoices : Prop
   noRepeatedDescendantCharging :
     hLock.noRepeatedDescendantCharging
   heatLengthOnlyParabolicScale : Prop
+  heatLengthOnlyParabolicScale_proof :
+    heatLengthOnlyParabolicScale
   notConstantinFeffermanAlignment : Prop
   notDegreeZeroRieszBookkeeping : Prop
   notParabolicRateSlavedScalar : Prop
@@ -17260,7 +18643,9 @@ def ResidualFreshAuditIndexedSingleSpendCarrier.ofCoronaDuhamelProduction
     h.inheritedDescendantsDoNotMintParentInvoices
   noRepeatedDescendantCharging := h.noRepeatedDescendantCharging
   notBetaFrequencyPaymentRelabel := h.heatLengthOnlyParabolicScale
+  notBetaFrequencyPaymentRelabel_proof := h.heatLengthOnlyParabolicScale_proof
   notShellProcessReserveRelabel := h.duhamelReserveNotShellProcessLedger
+  notShellProcessReserveRelabel_proof := h.duhamelReserveNotShellProcessLedger_proof
   notConstantinFeffermanAlignment := h.notConstantinFeffermanAlignment
   notDegreeZeroRieszBookkeeping := h.notDegreeZeroRieszBookkeeping
   notParabolicRateSlavedScalar := h.notParabolicRateSlavedScalar
@@ -17790,19 +19175,36 @@ def C7SameTreeFreshRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding
   invoiceRegion := hElig.residualFreshExcess.freshRegion
   invoiceAssignedBeforeSubtreeSelection :=
     h.invoiceAssignedBeforeSubtreeSelection
+  invoiceAssignedBeforeSubtreeSelection_proof :=
+    h.invoiceAssignedBeforeSubtreeSelection_proof
   invoicePaysRadiusForEachSelectedBadNode :=
     h.residualBranchLedgerEventsPayNodeRadii
+  invoicePaysRadiusForEachSelectedBadNode_proof :=
+    h.residualBranchLedgerEventsPayNodeRadii_proof
   invoiceUsesSameNormalizedExcessStoppingTree :=
     h.invoiceUsesSameNormalizedExcessStoppingTree
+  invoiceUsesSameNormalizedExcessStoppingTree_proof :=
+    h.invoiceUsesSameNormalizedExcessStoppingTree_proof
   oneUseNoDescendantRebilling :=
     hLock.noRepeatedDescendantCharging
+  oneUseNoDescendantRebilling_proof :=
+    hLock.noRepeatedDescendantCharging_proof
   descendantInvoicesDisjointOrBoundedOverlap :=
     h.descendantInvoicesDisjointOrBoundedOverlap
+  descendantInvoicesDisjointOrBoundedOverlap_proof :=
+    h.descendantInvoicesDisjointOrBoundedOverlap_proof
   finiteFreshInvoiceBudget := h.finiteFreshInvoiceBudget
+  finiteFreshInvoiceBudget_proof := h.finiteFreshInvoiceBudget_proof
   doesNotFactorThroughCFDirectionAlignment :=
     h.doesNotFactorThroughCFDirectionAlignment
+  doesNotFactorThroughCFDirectionAlignment_proof :=
+    h.doesNotFactorThroughCFDirectionAlignment_proof
   notDegreeZeroRieszBookkeeping := h.notDegreeZeroRieszBookkeeping
+  notDegreeZeroRieszBookkeeping_proof :=
+    h.notDegreeZeroRieszBookkeeping_proof
   notParabolicRateSlavedScalar := h.notParabolicRateSlavedScalar
+  notParabolicRateSlavedScalar_proof :=
+    h.notParabolicRateSlavedScalar_proof
   producesRadiusCharging := h.producesRadiusCharging
 
 /--
@@ -17838,16 +19240,138 @@ def SameLedgerFreshEventCarriesRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding
   invoiceRegionsUseResidualFreshCarrier := rfl
   eventDataMatchesSameLedgerAuditSource :=
     h.eventDataMatchedToResidualFreshAuditIndex
+  eventDataMatchesSameLedgerAuditSource_proof :=
+    h.eventDataMatchedToResidualFreshAuditIndex_proof
   eventWeightsPayNodeRadii :=
     h.residualBranchLedgerEventsPayNodeRadii
+  eventWeightsPayNodeRadii_proof :=
+    h.residualBranchLedgerEventsPayNodeRadii_proof
   pressureLocalizationProvedOnPuncturedInvoiceRegions :=
     h.pressureLocalizationProvedOnPuncturedInvoiceCarrier
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :=
+    h.pressureLocalizationProvedOnPuncturedInvoiceCarrier_proof
   inheritedBranchDoesNotCreateParentInvoice :=
     h.inheritedBranchMarkedNonChargeableForParentRadius
   oneUseAccountingIsDisplayedInvoiceField := rfl
   notBetaSquareRadiusRelabel := h.notBetaFrequencyPaymentRelabel
+  notBetaSquareRadiusRelabel_proof := h.notBetaFrequencyPaymentRelabel_proof
   notArtifactDependencyRestatement :=
     h.notAbstractRadiusChargeProjectionOnly
+  notArtifactDependencyRestatement_proof :=
+    h.notAbstractRadiusChargeProjectionOnly_proof
+
+/--
+Construct the TICK654 same-tree embedding from the TICK653 event-to-radius
+invoice lift, once the remaining same-tree guard fields are supplied.
+
+The exact event-data and radius-payment proofs come from the lift itself.
+-/
+def SameTreeCarlesonInvoiceEmbedding.ofSameLedgerFreshEventInvoiceAndGuards
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hLift :
+      SameLedgerFreshEventCarriesRadiusInvoice
+        (sameLedgerAuditEventSource_of_auditEligibilityData hElig) hLock)
+    (invoiceAssignedBeforeSubtreeSelection : Prop)
+    (invoiceAssignedBeforeSubtreeSelection_proof :
+      invoiceAssignedBeforeSubtreeSelection)
+    (pressureCarrierIdentifiedWithResidualFreshRegion : Prop)
+    (pressureCarrierIdentifiedWithResidualFreshRegion_proof :
+      pressureCarrierIdentifiedWithResidualFreshRegion)
+    (descendantInvoicesDisjointOrBoundedOverlap : Prop)
+    (descendantInvoicesDisjointOrBoundedOverlap_proof :
+      descendantInvoicesDisjointOrBoundedOverlap)
+    (finiteFreshInvoiceBudget : Prop)
+    (finiteFreshInvoiceBudget_proof :
+      finiteFreshInvoiceBudget)
+    (invoiceUsesSameNormalizedExcessStoppingTree : Prop)
+    (invoiceUsesSameNormalizedExcessStoppingTree_proof :
+      invoiceUsesSameNormalizedExcessStoppingTree)
+    (doesNotFactorThroughCFDirectionAlignment : Prop)
+    (doesNotFactorThroughCFDirectionAlignment_proof :
+      doesNotFactorThroughCFDirectionAlignment)
+    (notDegreeZeroRieszBookkeeping : Prop)
+    (notDegreeZeroRieszBookkeeping_proof :
+      notDegreeZeroRieszBookkeeping)
+    (notParabolicRateSlavedScalar : Prop)
+    (notParabolicRateSlavedScalar_proof :
+      notParabolicRateSlavedScalar)
+    (noPostHocRadiusInvoiceAssignment : Prop)
+    (noPostHocRadiusInvoiceAssignment_proof :
+      noPostHocRadiusInvoiceAssignment)
+    (producesRadiusCharging :
+      RadiusChargingBadScaleMeasure seq K hRho) :
+    SameTreeCarlesonInvoiceEmbedding hElig hLock where
+  invoiceAssignedBeforeSubtreeSelection :=
+    invoiceAssignedBeforeSubtreeSelection
+  invoiceAssignedBeforeSubtreeSelection_proof :=
+    invoiceAssignedBeforeSubtreeSelection_proof
+  eventDataMatchedToResidualFreshAuditIndex :=
+    hLift.eventDataMatchesSameLedgerAuditSource
+  eventDataMatchedToResidualFreshAuditIndex_proof :=
+    hLift.eventDataMatchesSameLedgerAuditSource_proof
+  residualBranchLedgerEventsPayNodeRadii :=
+    hLift.eventWeightsPayNodeRadii
+  residualBranchLedgerEventsPayNodeRadii_proof :=
+    hLift.eventWeightsPayNodeRadii_proof
+  pressureCarrierIdentifiedWithResidualFreshRegion :=
+    pressureCarrierIdentifiedWithResidualFreshRegion
+  pressureCarrierIdentifiedWithResidualFreshRegion_proof :=
+    pressureCarrierIdentifiedWithResidualFreshRegion_proof
+  pressureLocalizationProvedOnPuncturedInvoiceCarrier :=
+    hLift.pressureLocalizationProvedOnPuncturedInvoiceRegions
+  pressureLocalizationProvedOnPuncturedInvoiceCarrier_proof :=
+    hLift.pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+  inheritedNodesRoutedOffSameLedgerParentInvoice :=
+    hLock.inheritedBadnessDoesNotCreateNewEvent
+  inheritedNodesRoutedOffSameLedgerParentInvoice_proof :=
+    hLift.inheritedBranchDoesNotCreateParentInvoice
+  inheritedBranchMarkedNonChargeableForParentRadius :=
+    hLift.inheritedBranchDoesNotCreateParentInvoice
+  descendantInvoicesDisjointOrBoundedOverlap :=
+    descendantInvoicesDisjointOrBoundedOverlap
+  descendantInvoicesDisjointOrBoundedOverlap_proof :=
+    descendantInvoicesDisjointOrBoundedOverlap_proof
+  finiteFreshInvoiceBudget := finiteFreshInvoiceBudget
+  finiteFreshInvoiceBudget_proof := finiteFreshInvoiceBudget_proof
+  invoiceUsesSameNormalizedExcessStoppingTree :=
+    invoiceUsesSameNormalizedExcessStoppingTree
+  invoiceUsesSameNormalizedExcessStoppingTree_proof :=
+    invoiceUsesSameNormalizedExcessStoppingTree_proof
+  doesNotFactorThroughCFDirectionAlignment :=
+    doesNotFactorThroughCFDirectionAlignment
+  doesNotFactorThroughCFDirectionAlignment_proof :=
+    doesNotFactorThroughCFDirectionAlignment_proof
+  notDegreeZeroRieszBookkeeping := notDegreeZeroRieszBookkeeping
+  notDegreeZeroRieszBookkeeping_proof := notDegreeZeroRieszBookkeeping_proof
+  notParabolicRateSlavedScalar := notParabolicRateSlavedScalar
+  notParabolicRateSlavedScalar_proof := notParabolicRateSlavedScalar_proof
+  noPostHocRadiusInvoiceAssignment := noPostHocRadiusInvoiceAssignment
+  noPostHocRadiusInvoiceAssignment_proof := noPostHocRadiusInvoiceAssignment_proof
+  notBetaFrequencyPaymentRelabel := hLift.notBetaSquareRadiusRelabel
+  notBetaFrequencyPaymentRelabel_proof :=
+    hLift.notBetaSquareRadiusRelabel_proof
+  notAbstractRadiusChargeProjectionOnly :=
+    hLift.notArtifactDependencyRestatement
+  notAbstractRadiusChargeProjectionOnly_proof :=
+    hLift.notArtifactDependencyRestatement_proof
+  producesRadiusCharging := producesRadiusCharging
 
 /--
 TICK665 separated-source target.
@@ -18013,10 +19537,103 @@ structure BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier
     hIndexed.notShellProcessReserveRelabel
 
 /--
+Schedule receipts from an indexed carrier whose same-tree invoice embedding
+carries the exact event/fresh binding proofs.
+
+Only the first two receipt fields are paid by the indexed carrier itself here;
+the remaining invoice, timing, and anti-relabel fields are still explicit
+proof obligations.
+-/
+def BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier.ofExactBindingsAndProofs
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock)
+    (hInvoiceBeforeSubtree :
+      hIndexed.sameTreeInvoiceEmbedding.invoiceAssignedBeforeSubtreeSelection)
+    (hInvoiceSameTree :
+      hIndexed.sameTreeInvoiceEmbedding.invoiceUsesSameNormalizedExcessStoppingTree)
+    (hDescendantOverlap :
+      hIndexed.sameTreeInvoiceEmbedding.descendantInvoicesDisjointOrBoundedOverlap)
+    (hFiniteInvoiceBudget :
+      hIndexed.sameTreeInvoiceEmbedding.finiteFreshInvoiceBudget)
+    (hPressureReserveNotParent :
+      hIndexed.pressureReserveNotParentInvoice)
+    (hDuhamelReserveNotShell :
+      hIndexed.duhamelReserveNotShellProcessLedger)
+    (hInheritedNoParentInvoices :
+      hIndexed.inheritedDescendantsDoNotMintParentInvoices)
+    (hAuditBeforeInvoice :
+      hIndexed.auditIndexFixedBeforeSpendPartition.auditIndexChosenBeforeParentInvoiceAccounting)
+    (hNonadaptiveBeforeRadius :
+      hLock.nonadaptiveBeforeRadiusAccounting)
+    (hGeneratedSameBadTree :
+      hLock.generatedFromSameBadCenterStoppingTree)
+    (hNotBetaFrequencyRelabel :
+      hIndexed.notBetaFrequencyPaymentRelabel)
+    (hNotShellProcessRelabel :
+      hIndexed.notShellProcessReserveRelabel) :
+    BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed where
+  eventScheduleEnumeratesInvoiceBadNodes_proof :=
+    hIndexed.exactEventScheduleBinding
+  freshChargeQuantifiesInvoiceRegions_proof :=
+    hIndexed.exactFreshChargeBinding
+  invoiceAssignedBeforeSubtreeSelection_proof :=
+    hInvoiceBeforeSubtree
+  invoiceUsesSameNormalizedExcessStoppingTree_proof :=
+    hInvoiceSameTree
+  descendantInvoicesDisjointOrBoundedOverlap_proof :=
+    hDescendantOverlap
+  finiteFreshInvoiceBudget_proof :=
+    hFiniteInvoiceBudget
+  pressureReserveNotParentInvoice_proof :=
+    hPressureReserveNotParent
+  duhamelReserveNotShellProcessLedger_proof :=
+    hDuhamelReserveNotShell
+  inheritedDescendantsDoNotMintParentInvoices_proof :=
+    hInheritedNoParentInvoices
+  auditIndexChosenBeforeParentInvoiceAccounting_proof :=
+    hAuditBeforeInvoice
+  nonadaptiveBeforeRadiusAccounting_proof :=
+    hNonadaptiveBeforeRadius
+  generatedFromSameBadCenterStoppingTree_proof :=
+    hGeneratedSameBadTree
+  notBetaFrequencyPaymentRelabel_proof :=
+    hNotBetaFrequencyRelabel
+  notShellProcessReserveRelabel_proof :=
+    hNotShellProcessRelabel
+
+/--
 Negative audit after the failed projection attempt: the indexed carrier names
 the schedule-receipt propositions, but Lean correctly refuses to turn those
-proposition names into proofs.  The receipt bundle remains a genuine PDE
-obligation unless the carrier is strengthened to carry proof fields.
+proposition names into proofs.  The receipt bundle remains a PDE obligation
+unless the carrier is strengthened to carry proof fields.
 -/
 structure BadCenterBetaSquareScheduleReceiptsNotProjectedFromIndexedCarrier
     {seq : LerayHopfSequence} {K : CompactSubCylinder}
@@ -19042,6 +20659,274 @@ structure C7SameCarrierPackingNoReuseReceipt
     capacityNotScalarLedgerOnly
 
 /--
+Same-carrier packing/no-reuse supplies the finite-prefix half of the
+projection/tail limit-passage receipt.
+
+The finite-prefix preprojection identity is represented by saturated route
+demand, the finite-prefix same-source window by the matched capacity living on
+the residual fresh carrier, and the finite-prefix tail reserve by pressure
+reserve separation plus no same-capacity descendant rebilling.
+-/
+def C7ProjectionTailFinitePrefixLimitPassageReceipt.ofSameCarrierPackingNoReuseAndPersistence
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hPack :
+      C7SameCarrierPackingNoReuseReceipt hIndexed hId)
+    (hPressureReserveNotParentInvoice :
+      hIndexed.pressureReserveNotParentInvoice)
+    (preprojectionIdentityPersistsToLimit : Prop)
+    (hPreprojectionIdentityPersistsToLimit :
+      preprojectionIdentityPersistsToLimit)
+    (tailReservePaymentPersistsToLimit : Prop)
+    (hTailReservePaymentPersistsToLimit :
+      tailReservePaymentPersistsToLimit)
+    (sameSourceWindowPersistsToLimit : Prop)
+    (hSameSourceWindowPersistsToLimit :
+      sameSourceWindowPersistsToLimit)
+    (noProjectionTailLossAtLimit : Prop)
+    (hNoProjectionTailLossAtLimit :
+      noProjectionTailLossAtLimit)
+    (dropBadNodesAreSelectedBadNodes :
+      hDrop.badNodes = hCarrier.selectedBadNodes)
+    (invoiceRegionsUseResidualFreshCarrier :
+      (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+        hInvoice).invoiceRegion =
+          (sameLedgerAuditEventSource_of_auditEligibilityData
+            hElig).residualFreshExcess.freshRegion)
+    (eventDataMatchesSameLedgerAuditSource : Prop)
+    (eventDataMatchesSameLedgerAuditSource_proof :
+      eventDataMatchesSameLedgerAuditSource)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+      pressureLocalizationProvedOnPuncturedInvoiceRegions)
+    (inheritedBranchDoesNotCreateParentInvoice :
+      hLock.inheritedBadnessDoesNotCreateNewEvent)
+    (dropNoReuseMatchesSameTreeLock :
+      hDrop.noReuseOfSameDropAlongNestedBadNodes =
+        hLock.noRepeatedDescendantCharging)
+    (notBetaSquareRadiusRelabel : Prop)
+    (notBetaSquareRadiusRelabel_proof :
+      notBetaSquareRadiusRelabel)
+    (notArtifactDependencyRestatement : Prop)
+    (notArtifactDependencyRestatement_proof :
+      notArtifactDependencyRestatement) :
+    C7ProjectionTailFinitePrefixLimitPassageReceipt
+      (sameLedgerAuditEventSource_of_auditEligibilityData hElig)
+      hLock hInvoice where
+  finitePrefixPreprojectionIdentity :=
+    hPack.finitePrefixMatchingSaturatesRouteDemand
+  finitePrefixPreprojectionIdentity_proof :=
+    hPack.finitePrefixMatchingSaturatesRouteDemand_proof
+  finitePrefixTailReservePaid :=
+    hIndexed.pressureReserveNotParentInvoice ∧
+      hPack.noSameCapacityDescendantRebilling
+  finitePrefixTailReservePaid_proof :=
+    ⟨hPressureReserveNotParentInvoice,
+      hPack.noSameCapacityDescendantRebilling_proof⟩
+  finitePrefixSameSourceWindow :=
+    hPack.matchedCapacityLivesOnSameResidualFreshCarrier
+  finitePrefixSameSourceWindow_proof :=
+    hPack.matchedCapacityLivesOnSameResidualFreshCarrier_proof
+  preprojectionIdentityPersistsToLimit :=
+    preprojectionIdentityPersistsToLimit
+  preprojectionIdentityPersistsToLimit_proof :=
+    hPreprojectionIdentityPersistsToLimit
+  tailReservePaymentPersistsToLimit :=
+    tailReservePaymentPersistsToLimit
+  tailReservePaymentPersistsToLimit_proof :=
+    hTailReservePaymentPersistsToLimit
+  sameSourceWindowPersistsToLimit :=
+    sameSourceWindowPersistsToLimit
+  sameSourceWindowPersistsToLimit_proof :=
+    hSameSourceWindowPersistsToLimit
+  noProjectionTailLossAtLimit := noProjectionTailLossAtLimit
+  noProjectionTailLossAtLimit_proof :=
+    hNoProjectionTailLossAtLimit
+  dropBadNodesAreSelectedBadNodes :=
+    dropBadNodesAreSelectedBadNodes
+  invoiceRegionsUseResidualFreshCarrier :=
+    invoiceRegionsUseResidualFreshCarrier
+  eventDataMatchesSameLedgerAuditSource :=
+    eventDataMatchesSameLedgerAuditSource
+  eventDataMatchesSameLedgerAuditSource_proof :=
+    eventDataMatchesSameLedgerAuditSource_proof
+  pressureLocalizationProvedOnPuncturedInvoiceRegions :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+  pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :=
+    pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+  inheritedBranchDoesNotCreateParentInvoice :=
+    inheritedBranchDoesNotCreateParentInvoice
+  dropNoReuseMatchesSameTreeLock :=
+    dropNoReuseMatchesSameTreeLock
+  notBetaSquareRadiusRelabel := notBetaSquareRadiusRelabel
+  notBetaSquareRadiusRelabel_proof :=
+    notBetaSquareRadiusRelabel_proof
+  notArtifactDependencyRestatement :=
+    notArtifactDependencyRestatement
+  notArtifactDependencyRestatement_proof :=
+    notArtifactDependencyRestatement_proof
+
+/--
+Schedule receipts pay the pressure-reserve separation field needed by the
+same-carrier projection/tail finite-prefix constructor.
+
+The limit-persistence and no-loss fields remain explicit inputs.
+-/
+def C7ProjectionTailFinitePrefixLimitPassageReceipt.ofSameCarrierPackingScheduleReceiptsAndPersistence
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hPot : ExcessDropPotentialCandidate seq K hRho}
+    {hTree : ExcessDropTreeSuperadditivity seq K hRho hPot}
+    {hDrop : BadNodeRadiusDrop seq K hRho hPot hTree}
+    {hTel :
+      ExcessDropTelescopesToRadiusCharging
+        seq K hRho hPot hTree hDrop}
+    {hInvoice :
+      ExcessDropTelescopingCarriesSameTreeFreshInvoice
+        seq K hRho hPot hTree hDrop hTel}
+    (hPack :
+      C7SameCarrierPackingNoReuseReceipt hIndexed hId)
+    (hSchedule :
+      BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed)
+    (preprojectionIdentityPersistsToLimit : Prop)
+    (hPreprojectionIdentityPersistsToLimit :
+      preprojectionIdentityPersistsToLimit)
+    (tailReservePaymentPersistsToLimit : Prop)
+    (hTailReservePaymentPersistsToLimit :
+      tailReservePaymentPersistsToLimit)
+    (sameSourceWindowPersistsToLimit : Prop)
+    (hSameSourceWindowPersistsToLimit :
+      sameSourceWindowPersistsToLimit)
+    (noProjectionTailLossAtLimit : Prop)
+    (hNoProjectionTailLossAtLimit :
+      noProjectionTailLossAtLimit)
+    (dropBadNodesAreSelectedBadNodes :
+      hDrop.badNodes = hCarrier.selectedBadNodes)
+    (invoiceRegionsUseResidualFreshCarrier :
+      (C7SameTreeFreshRadiusInvoice.ofExcessDropTelescopingInvoice
+        hInvoice).invoiceRegion =
+          (sameLedgerAuditEventSource_of_auditEligibilityData
+            hElig).residualFreshExcess.freshRegion)
+    (eventDataMatchesSameLedgerAuditSource : Prop)
+    (eventDataMatchesSameLedgerAuditSource_proof :
+      eventDataMatchesSameLedgerAuditSource)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions : Prop)
+    (pressureLocalizationProvedOnPuncturedInvoiceRegions_proof :
+      pressureLocalizationProvedOnPuncturedInvoiceRegions)
+    (inheritedBranchDoesNotCreateParentInvoice :
+      hLock.inheritedBadnessDoesNotCreateNewEvent)
+    (dropNoReuseMatchesSameTreeLock :
+      hDrop.noReuseOfSameDropAlongNestedBadNodes =
+        hLock.noRepeatedDescendantCharging)
+    (notBetaSquareRadiusRelabel : Prop)
+    (notBetaSquareRadiusRelabel_proof :
+      notBetaSquareRadiusRelabel)
+    (notArtifactDependencyRestatement : Prop)
+    (notArtifactDependencyRestatement_proof :
+      notArtifactDependencyRestatement) :
+    C7ProjectionTailFinitePrefixLimitPassageReceipt
+      (sameLedgerAuditEventSource_of_auditEligibilityData hElig)
+      hLock hInvoice :=
+  C7ProjectionTailFinitePrefixLimitPassageReceipt.ofSameCarrierPackingNoReuseAndPersistence
+    hPack
+    hSchedule.pressureReserveNotParentInvoice_proof
+    preprojectionIdentityPersistsToLimit
+    hPreprojectionIdentityPersistsToLimit
+    tailReservePaymentPersistsToLimit
+    hTailReservePaymentPersistsToLimit
+    sameSourceWindowPersistsToLimit
+    hSameSourceWindowPersistsToLimit
+    noProjectionTailLossAtLimit
+    hNoProjectionTailLossAtLimit
+    dropBadNodesAreSelectedBadNodes
+    invoiceRegionsUseResidualFreshCarrier
+    eventDataMatchesSameLedgerAuditSource
+    eventDataMatchesSameLedgerAuditSource_proof
+    pressureLocalizationProvedOnPuncturedInvoiceRegions
+    pressureLocalizationProvedOnPuncturedInvoiceRegions_proof
+    inheritedBranchDoesNotCreateParentInvoice
+    dropNoReuseMatchesSameTreeLock
+    notBetaSquareRadiusRelabel
+    notBetaSquareRadiusRelabel_proof
+    notArtifactDependencyRestatement
+    notArtifactDependencyRestatement_proof
+
+/--
 Consumer-side obstruction for the current C7 lane: any same-carrier
 packing/no-reuse receipt must first supply the nonadaptive source-selection
 receipt.  This keeps the live obstruction at the timing/filtration edge rather
@@ -19710,6 +21595,786 @@ structure CoronaDuhamelC7SourceCompletion
   sourceCompletionNotDeclarationOnly : Prop
 
 /--
+Source completion from a paid schedule-completion object plus the remaining
+timing receipts.
+
+This is the local positive constructor once the beta-square schedule receipt
+layer has already been paid.  It leaves exactly the audit-index no-posthoc
+proof and fresh-capacity/matching timing receipts visible.
+-/
+def CoronaDuhamelC7SourceCompletion.ofScheduleCompletionAndTiming
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (hNoPostHocAuditIndexFromSpendOutcome :
+      hSchedule.projectedCarrier.auditIndexFixedBeforeSpendPartition.noPostHocAuditIndexFromSpendOutcome)
+    (freshCapacitySelectionFixedBeforeMatching : Prop)
+    (hFreshCapacitySelectionFixedBeforeMatching :
+      freshCapacitySelectionFixedBeforeMatching)
+    (noPostHocFreshCapacityFromRealizedRadiusSum : Prop)
+    (hNoPostHocFreshCapacityFromRealizedRadiusSum :
+      noPostHocFreshCapacityFromRealizedRadiusSum)
+    (matchingScheduleFixedBeforeRadiusSum : Prop)
+    (hMatchingScheduleFixedBeforeRadiusSum :
+      matchingScheduleFixedBeforeRadiusSum)
+    (sourceCompletionNotDeclarationOnly : Prop) :
+    CoronaDuhamelC7SourceCompletion h hId where
+  scheduleCompletion := hSchedule
+  noPostHocAuditIndexFromSpendOutcome_proof :=
+    hNoPostHocAuditIndexFromSpendOutcome
+  freshCapacitySelectionFixedBeforeMatching :=
+    freshCapacitySelectionFixedBeforeMatching
+  freshCapacitySelectionFixedBeforeMatching_proof :=
+    hFreshCapacitySelectionFixedBeforeMatching
+  noPostHocFreshCapacityFromRealizedRadiusSum :=
+    noPostHocFreshCapacityFromRealizedRadiusSum
+  noPostHocFreshCapacityFromRealizedRadiusSum_proof :=
+    hNoPostHocFreshCapacityFromRealizedRadiusSum
+  matchingScheduleFixedBeforeRadiusSum :=
+    matchingScheduleFixedBeforeRadiusSum
+  matchingScheduleFixedBeforeRadiusSum_proof :=
+    hMatchingScheduleFixedBeforeRadiusSum
+  sourceCompletionNotDeclarationOnly :=
+    sourceCompletionNotDeclarationOnly
+
+/--
+Optional-stopping style timing receipt for C7 source completion.
+
+The analogy is only the predictable/stopping-time shape: the audit index,
+fresh-capacity selector, and matching schedule must be fixed before the
+radius-sum payoff is observed.  No martingale theorem is imported here.
+-/
+structure C7PredictableScheduleStoppingTimeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h) where
+  auditIndexStoppingTimeBeforeSpendOutcome :
+    hSchedule.projectedCarrier.auditIndexFixedBeforeSpendPartition.noPostHocAuditIndexFromSpendOutcome
+  freshCapacityPredictableBeforeMatching : Prop
+  freshCapacityPredictableBeforeMatching_proof :
+    freshCapacityPredictableBeforeMatching
+  freshCapacityNotTerminalRadiusSumFunctional : Prop
+  freshCapacityNotTerminalRadiusSumFunctional_proof :
+    freshCapacityNotTerminalRadiusSumFunctional
+  matchingSchedulePredictableBeforeRadiusSum : Prop
+  matchingSchedulePredictableBeforeRadiusSum_proof :
+    matchingSchedulePredictableBeforeRadiusSum
+  sourceCompletionNotDeclarationOnly : Prop
+
+/--
+Source completion from schedule completion plus the optional-stopping style
+predictability receipt.
+-/
+def CoronaDuhamelC7SourceCompletion.ofScheduleCompletionAndStoppingTimeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (hStop :
+      C7PredictableScheduleStoppingTimeReceipt hSchedule) :
+    CoronaDuhamelC7SourceCompletion h hId :=
+  CoronaDuhamelC7SourceCompletion.ofScheduleCompletionAndTiming
+    hSchedule
+    hStop.auditIndexStoppingTimeBeforeSpendOutcome
+    hStop.freshCapacityPredictableBeforeMatching
+    hStop.freshCapacityPredictableBeforeMatching_proof
+    hStop.freshCapacityNotTerminalRadiusSumFunctional
+    hStop.freshCapacityNotTerminalRadiusSumFunctional_proof
+    hStop.matchingSchedulePredictableBeforeRadiusSum
+    hStop.matchingSchedulePredictableBeforeRadiusSum_proof
+    hStop.sourceCompletionNotDeclarationOnly
+
+/--
+Minimal no-posthoc audit-index blocker for source completion.
+
+The field is not inferred from schedule completion.  It is a separate timing
+inhabitant required before the selected audit index can be spent downstream.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_without_noPostHocAuditIndex
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hNoAudit :
+      ¬ hComplete.scheduleCompletion.projectedCarrier.auditIndexFixedBeforeSpendPartition.noPostHocAuditIndexFromSpendOutcome) :
+    False :=
+  hNoAudit hComplete.noPostHocAuditIndexFromSpendOutcome_proof
+
+/--
+Same-schedule audit-index timing confuser.
+
+It grants schedule completion but rejects the no-posthoc audit-index timing
+proof on that exact projected carrier.
+-/
+structure C7PostSpendAuditIndexSurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h) where
+  auditIndexChosenFromSpendOutcome : Prop
+  auditIndexChosenFromSpendOutcome_proof :
+    auditIndexChosenFromSpendOutcome
+  scheduleSurfaceStillVisible : Prop
+  scheduleSurfaceStillVisible_proof :
+    scheduleSurfaceStillVisible
+  noNoPostHocAuditIndexForSurface :
+    ¬ hSchedule.projectedCarrier.auditIndexFixedBeforeSpendPartition.noPostHocAuditIndexFromSpendOutcome
+
+/--
+The same-schedule post-spend audit-index confuser blocks source completion.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_of_postSpendAuditIndexSurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hConfuser :
+      C7PostSpendAuditIndexSurfaceConfuser hComplete.scheduleCompletion) :
+    False :=
+  hConfuser.noNoPostHocAuditIndexForSurface
+    hComplete.noPostHocAuditIndexFromSpendOutcome_proof
+
+/--
+Minimal fresh-capacity timing blocker for source completion.
+
+The source-completion object carries a proof that fresh capacity is selected
+before matching.  If that exact field is absent, source completion is absent.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_without_freshCapacitySelectionFixedBeforeMatching
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hNoFreshCapacityTiming :
+      ¬ hComplete.freshCapacitySelectionFixedBeforeMatching) :
+    False :=
+  hNoFreshCapacityTiming
+    hComplete.freshCapacitySelectionFixedBeforeMatching_proof
+
+/--
+Field-level confuser for fresh capacity chosen after the matching problem is
+visible.
+
+It is parameterized by the exact fresh-capacity timing proposition consumed by
+the proposed source completion, so the blocker cannot change the proposition
+while keeping the same schedule surface.
+-/
+structure C7PostMatchingFreshCapacitySurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (freshCapacitySelectionFixedBeforeMatching : Prop) where
+  scheduleSurfaceStillVisible : Prop
+  scheduleSurfaceStillVisible_proof :
+    scheduleSurfaceStillVisible
+  freshCapacitySelectedAfterMatchingDemand : Prop
+  freshCapacitySelectedAfterMatchingDemand_proof :
+    freshCapacitySelectedAfterMatchingDemand
+  noFreshCapacitySelectionFixedBeforeMatching :
+    ¬ freshCapacitySelectionFixedBeforeMatching
+
+/--
+The same-field post-matching fresh-capacity confuser blocks source completion.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_of_postMatchingFreshCapacitySurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hConfuser :
+      C7PostMatchingFreshCapacitySurfaceConfuser
+        hComplete.scheduleCompletion
+        hComplete.freshCapacitySelectionFixedBeforeMatching) :
+    False :=
+  hConfuser.noFreshCapacitySelectionFixedBeforeMatching
+    hComplete.freshCapacitySelectionFixedBeforeMatching_proof
+
+/--
+Minimal blocker for the no-posthoc fresh-capacity-from-radius-sum field.
+
+This field is separate from choosing capacity before matching: it rules out
+extracting the capacity value from the realized target radius sum after payoff.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_without_noPostHocFreshCapacityFromRealizedRadiusSum
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hNoFreshCapacityRadiusTiming :
+      ¬ hComplete.noPostHocFreshCapacityFromRealizedRadiusSum) :
+    False :=
+  hNoFreshCapacityRadiusTiming
+    hComplete.noPostHocFreshCapacityFromRealizedRadiusSum_proof
+
+/--
+Field-level confuser for fresh capacity extracted from the realized target
+radius sum after payoff.
+-/
+structure C7PostRadiusSumFreshCapacitySurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (noPostHocFreshCapacityFromRealizedRadiusSum : Prop) where
+  scheduleSurfaceStillVisible : Prop
+  scheduleSurfaceStillVisible_proof :
+    scheduleSurfaceStillVisible
+  freshCapacitySelectedAfterRadiusPayoff : Prop
+  freshCapacitySelectedAfterRadiusPayoff_proof :
+    freshCapacitySelectedAfterRadiusPayoff
+  realizedRadiusSumUsedToDefineCapacity : Prop
+  realizedRadiusSumUsedToDefineCapacity_proof :
+    realizedRadiusSumUsedToDefineCapacity
+  noNoPostHocFreshCapacityFromRealizedRadiusSum :
+    ¬ noPostHocFreshCapacityFromRealizedRadiusSum
+
+/--
+The same-field post-radius-sum fresh-capacity confuser blocks source
+completion.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_of_postRadiusSumFreshCapacitySurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hConfuser :
+      C7PostRadiusSumFreshCapacitySurfaceConfuser
+        hComplete.scheduleCompletion
+        hComplete.noPostHocFreshCapacityFromRealizedRadiusSum) :
+    False :=
+  hConfuser.noNoPostHocFreshCapacityFromRealizedRadiusSum
+    hComplete.noPostHocFreshCapacityFromRealizedRadiusSum_proof
+
+/--
+Minimal blocker for the matching-schedule-before-radius-sum field.
+
+This field is separate from no-posthoc capacity selection: it rules out
+choosing the matching schedule after the target radius-sum payoff is visible.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_without_matchingScheduleFixedBeforeRadiusSum
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hNoMatchingTiming :
+      ¬ hComplete.matchingScheduleFixedBeforeRadiusSum) :
+    False :=
+  hNoMatchingTiming
+    hComplete.matchingScheduleFixedBeforeRadiusSum_proof
+
+/--
+Field-level confuser for matching schedules selected after the realized target
+radius sum is visible.
+-/
+structure C7PostRadiusSumMatchingScheduleSurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (matchingScheduleFixedBeforeRadiusSum : Prop) where
+  scheduleSurfaceStillVisible : Prop
+  scheduleSurfaceStillVisible_proof :
+    scheduleSurfaceStillVisible
+  matchingScheduleSelectedAfterRadiusSum : Prop
+  matchingScheduleSelectedAfterRadiusSum_proof :
+    matchingScheduleSelectedAfterRadiusSum
+  realizedRadiusSumUsedToSelectMatchingSchedule : Prop
+  realizedRadiusSumUsedToSelectMatchingSchedule_proof :
+    realizedRadiusSumUsedToSelectMatchingSchedule
+  noMatchingScheduleFixedBeforeRadiusSum :
+    ¬ matchingScheduleFixedBeforeRadiusSum
+
+/--
+The same-field post-radius-sum matching-schedule confuser blocks source
+completion.
+-/
+theorem no_coronaDuhamelC7SourceCompletion_of_postRadiusSumMatchingScheduleSurfaceConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hConfuser :
+      C7PostRadiusSumMatchingScheduleSurfaceConfuser
+        hComplete.scheduleCompletion
+        hComplete.matchingScheduleFixedBeforeRadiusSum) :
+    False :=
+  hConfuser.noMatchingScheduleFixedBeforeRadiusSum
+    hComplete.matchingScheduleFixedBeforeRadiusSum_proof
+
+/--
 Positive source-completion constructor from the explicit projected-carrier
 proof list plus the remaining fresh-capacity/matching timing receipts.
 
@@ -20177,6 +22842,29 @@ theorem OwnerPreimagePackingReceipt.eventPrefix_le_ownerBudget
         h.C_nonnegative)
 
 /--
+Hall/min-cut style blocker for owner-preimage packing.
+
+The cross-field transport is exact here: a proposed owner map is rejected by a
+single selected prefix whose demand exceeds the predeclared owner-preimage
+capacity.  Pointwise ownership and total atom budget do not repair a failed
+prefix cut.
+-/
+theorem no_OwnerPreimagePackingReceipt_of_prefixCapacityDeficit
+    {owner : Nat → Nat}
+    {eventPay atomCharge : Nat → Real}
+    {activeAtomBound : Nat → Nat}
+    {C atomBudget : Real}
+    (h :
+      OwnerPreimagePackingReceipt
+        owner eventPay atomCharge activeAtomBound C atomBudget)
+    (N : Nat)
+    (hDeficit :
+      C * NS.nsPrefixSum atomCharge (activeAtomBound N) <
+        NS.nsPrefixSum eventPay N) :
+    False :=
+  not_le_of_gt hDeficit (h.ownerPreimagePackingPrefix N)
+
+/--
 Named C7-facing alias for the global selected-tree owner-preimage budget.
 
 The alias is intentionally numerical and substrate-light: the PDE work is to
@@ -20375,6 +23063,121 @@ def CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
     hSelect.sourceCompletionNotDeclarationOnly
 
 /--
+The annular source-selection theorem pays the optional-stopping style timing
+receipt.
+
+This is the positive route selected by the martingale analogy: the analogy
+contributes only the predictable/stopping-time schema.  The proof inhabitants
+still come from the source-selection theorem.
+-/
+def C7PredictableScheduleStoppingTimeReceipt.ofNonadaptiveAnnularC7SourceSelection
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect :
+      NonadaptiveAnnularC7SourceSelection h hId) :
+    C7PredictableScheduleStoppingTimeReceipt hSelect.scheduleCompletion where
+  auditIndexStoppingTimeBeforeSpendOutcome :=
+    hSelect.noPostHocAuditIndexFromSpendOutcome_proof
+  freshCapacityPredictableBeforeMatching :=
+    hSelect.freshCapacitySelectionFixedBeforeMatching
+  freshCapacityPredictableBeforeMatching_proof :=
+    hSelect.freshCapacitySelectionFixedBeforeMatching_proof
+  freshCapacityNotTerminalRadiusSumFunctional :=
+    hSelect.noPostHocFreshCapacityFromRealizedRadiusSum
+  freshCapacityNotTerminalRadiusSumFunctional_proof :=
+    hSelect.noPostHocFreshCapacityFromRealizedRadiusSum_proof
+  matchingSchedulePredictableBeforeRadiusSum :=
+    hSelect.matchingScheduleFixedBeforeRadiusSum
+  matchingSchedulePredictableBeforeRadiusSum_proof :=
+    hSelect.matchingScheduleFixedBeforeRadiusSum_proof
+  sourceCompletionNotDeclarationOnly :=
+    hSelect.sourceCompletionNotDeclarationOnly
+
+/--
+Source completion through the explicit optional-stopping timing receipt.
+
+This factors the existing source-selection constructor through
+`C7PredictableScheduleStoppingTimeReceipt`, making the timing residual a single
+filtration theorem rather than four unrelated field names.
+-/
+def CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelectionViaStoppingTimeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect :
+      NonadaptiveAnnularC7SourceSelection h hId) :
+    CoronaDuhamelC7SourceCompletion h hId :=
+  CoronaDuhamelC7SourceCompletion.ofScheduleCompletionAndStoppingTimeReceipt
+    hSelect.scheduleCompletion
+    (C7PredictableScheduleStoppingTimeReceipt.ofNonadaptiveAnnularC7SourceSelection
+      hSelect)
+
+/--
 The annular C7 source-selection theorem carries the concrete nonadaptive
 source-selection receipt for its projected audit-indexed carrier.
 -/
@@ -20534,6 +23337,61 @@ theorem no_nonadaptiveAnnularC7SourceSelection_without_ownerPreimagePackingPrefi
               (hSelect.activeOwnerAtomBound N)) :
     False :=
   hMissingPrefix hSelect.ownerPreimagePackingReceipt.ownerPreimagePackingPrefix
+
+/--
+Concrete Hall/min-cut blocker for annular C7 source selection.
+
+A selected event prefix whose demand exceeds the owner-preimage prefix capacity
+rules out the source-selection theorem for that owner map.  This is the
+formalized content of the matching/max-flow analogy for TICK669.
+-/
+theorem no_nonadaptiveAnnularC7SourceSelection_of_ownerPreimagePrefixCapacityDeficit
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect :
+      NonadaptiveAnnularC7SourceSelection h hId)
+    (N : Nat)
+    (hDeficit :
+      hSelect.multiplicityBound *
+          NS.nsPrefixSum hSelect.atomCharge
+            (hSelect.activeOwnerAtomBound N) <
+        NS.nsPrefixSum hSelect.eventRadiusPayment N) :
+    False :=
+  no_OwnerPreimagePackingReceipt_of_prefixCapacityDeficit
+    hSelect.ownerPreimagePackingReceipt N hDeficit
 
 /--
 The qualitative global-preimage clause is also mandatory.  A future proof may
@@ -21890,6 +24748,207 @@ theorem no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_selectedTreeRe
     False :=
   no_C7ScaledOwnerPreimageCarrierTransfer_of_selectedTreeRebillingPacket
     hPacket hBridge.scaledTransfer
+
+/--
+Currency-name-only normalization confuser.
+
+It targets the exact residual field on the annular-to-scaled bridge: the
+normalization must identify atom charge, root budget, owner map, owner bound,
+and multiplicity with the scaled same-carrier transfer; naming the currency is
+not enough.
+-/
+structure C7CurrencyNameOnlyNormalizationConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect : NonadaptiveAnnularC7SourceSelection h hId) where
+  atomCurrencyNamedButNotIdentified : Prop
+  atomCurrencyNamedButNotIdentified_proof :
+    atomCurrencyNamedButNotIdentified
+  ownerMapNamedButNotIdentified : Prop
+  ownerMapNamedButNotIdentified_proof :
+    ownerMapNamedButNotIdentified
+  noNotCurrencyNameOnly :
+    ∀ hBridge :
+      C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect,
+      ¬ hBridge.notCurrencyNameOnly
+
+/--
+Post-payoff normalization confuser.
+
+This packet blocks normalization schedules chosen after the radius-payoff data
+are visible, even if the atom/owner equalities are later written down.
+-/
+structure C7PostPayoffNormalizationTimingConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect : NonadaptiveAnnularC7SourceSelection h hId) where
+  normalizationChosenFromTerminalRadiusSum : Prop
+  normalizationChosenFromTerminalRadiusSum_proof :
+    normalizationChosenFromTerminalRadiusSum
+  noPrePayoffNormalizationTiming :
+    ∀ hBridge :
+      C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect,
+      ¬ hBridge.normalizationTimingFixedBeforePayoff
+
+/--
+Currency-name-only packets block the scaled-currency normalization bridge.
+-/
+theorem no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_currencyNameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hSelect : NonadaptiveAnnularC7SourceSelection h hId}
+    (hConfuser : C7CurrencyNameOnlyNormalizationConfuser hSelect)
+    (hBridge :
+      C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect) :
+    False :=
+  hConfuser.noNotCurrencyNameOnly hBridge hBridge.notCurrencyNameOnly_proof
+
+/--
+Post-payoff normalization packets block the scaled-currency normalization
+bridge.
+-/
+theorem no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_postPayoffNormalizationTimingConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hSelect : NonadaptiveAnnularC7SourceSelection h hId}
+    (hConfuser : C7PostPayoffNormalizationTimingConfuser hSelect)
+    (hBridge :
+      C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect) :
+    False :=
+  hConfuser.noPrePayoffNormalizationTiming hBridge
+    hBridge.normalizationTimingFixedBeforePayoff_proof
 
 /--
 Same-carrier packing pays the identity-owner prefix in scaled currency.
@@ -24266,6 +27325,702 @@ def C7CompletionBackedChannelSeparationReceipt.ofCompletion
     hComplete.scheduleCompletion.projectedCarrier.noRepeatedDescendantCharging
 
 /--
+Completion-backed timing and same-tree inheritance for the identity-owner
+route.
+
+The owner map is fixed by the no-posthoc audit-index field, while selected
+event inheritance is the same-tree invoice event match plus fresh-charge
+receipt.  The remaining owner geometry and anti-laundering fields stay
+outside this receipt.
+-/
+structure C7IdentityOwnerTimingInheritanceReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId) where
+  ownerMapFixedBeforePayoff : Prop
+  ownerMapFixedBeforePayoff_proof : ownerMapFixedBeforePayoff
+  selectedEventInheritedOrRenewedByAnnularOwner : Prop
+  selectedEventInheritedOrRenewedByAnnularOwner_proof :
+    selectedEventInheritedOrRenewedByAnnularOwner
+
+/--
+The source completion already pays the timing/inheritance half of the
+identity-owner route.
+-/
+def C7IdentityOwnerTimingInheritanceReceipt.ofCoronaDuhamelCompletionSameTreeInvoice
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId) :
+    C7IdentityOwnerTimingInheritanceReceipt hComplete where
+  ownerMapFixedBeforePayoff :=
+    hComplete.scheduleCompletion.projectedCarrier.auditIndexFixedBeforeSpendPartition.noPostHocAuditIndexFromSpendOutcome
+  ownerMapFixedBeforePayoff_proof :=
+    hComplete.noPostHocAuditIndexFromSpendOutcome_proof
+  selectedEventInheritedOrRenewedByAnnularOwner :=
+    And
+      hComplete.scheduleCompletion.projectedCarrier.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex
+      hComplete.scheduleCompletion.projectedCarrier.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii
+  selectedEventInheritedOrRenewedByAnnularOwner_proof :=
+    And.intro
+      hComplete.scheduleCompletion.scheduleReceipts.eventScheduleEnumeratesInvoiceBadNodes_proof
+      hComplete.scheduleCompletion.scheduleReceipts.freshChargeQuantifiesInvoiceRegions_proof
+
+/--
+Qualitative receipt for the identity scaled-transfer side of the C7
+carrier-radius route.
+
+Same-carrier packing and selected-radius positivity pay the numerical identity
+transfer.  This receipt names the remaining non-numerical conditions that stop
+the transfer from being a low-frequency catalyst, a pointwise-only preimage, a
+phase-space label, or a carrier-name-only declaration.
+-/
+structure C7IdentityScaledTransferQualitativeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId) where
+  noLowFrequencyCatalystOwner : Prop
+  noLowFrequencyCatalystOwner_proof : noLowFrequencyCatalystOwner
+  sameAnnularOutputScaleOwner : Prop
+  sameAnnularOutputScaleOwner_proof : sameAnnularOutputScaleOwner
+  selectedPrefixPreimageNotPointwiseOnly : Prop
+  selectedPrefixPreimageNotPointwiseOnly_proof :
+    selectedPrefixPreimageNotPointwiseOnly
+  globalSelectedTreePreimageBound : Prop
+  globalSelectedTreePreimageBound_proof :
+    globalSelectedTreePreimageBound
+  smoothOrInheritedFactorRoutedOffResidualFreshStream : Prop
+  smoothOrInheritedFactorRoutedOffResidualFreshStream_proof :
+    smoothOrInheritedFactorRoutedOffResidualFreshStream
+  sameCarrierPhaseSpaceOwnership : Prop
+  sameCarrierPhaseSpaceOwnership_proof :
+    sameCarrierPhaseSpaceOwnership
+  transferNotCarrierNameOnly : Prop
+  transferNotCarrierNameOnly_proof :
+    transferNotCarrierNameOnly
+
+/--
+Carrier-name-only escape for the identity scaled-transfer qualitative receipt.
+-/
+structure C7IdentityScaledTransferNameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId) where
+  transferNotCarrierNameOnly : Prop
+  transferNameOnlyCounterexample :
+    ¬ transferNotCarrierNameOnly
+  nameOnlyLooksLikeIdentityTransfer : Prop
+  nameOnlyLooksLikeIdentityTransfer_proof :
+    nameOnlyLooksLikeIdentityTransfer
+  doesNotPayQualitativeReceipt : Prop
+  doesNotPayQualitativeReceipt_proof :
+    doesNotPayQualitativeReceipt
+
+/--
+A carrier-name-only packet cannot be the identity scaled-transfer qualitative
+receipt when it targets the same transfer-not-name-only field.
+-/
+theorem no_C7IdentityScaledTransferQualitativeReceipt_of_nameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    (hConfuser :
+      C7IdentityScaledTransferNameOnlyConfuser hComplete)
+    (hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete)
+    (hSameField :
+      hQual.transferNotCarrierNameOnly =
+        hConfuser.transferNotCarrierNameOnly) :
+    False :=
+  hConfuser.transferNameOnlyCounterexample
+    (by
+      simpa [hSameField] using
+        hQual.transferNotCarrierNameOnly_proof)
+
+/--
+Typed escape modes against the identity scaled-transfer qualitative receipt.
+
+Each constructor targets one of the seven non-numerical fields.  The older
+counterexamples show why these modes matter: catalyst rebilling, pointwise-only
+owner payment, and phase-space labels can all preserve local-looking payment
+while failing the selected-prefix source theorem.
+-/
+inductive C7IdentityScaledTransferQualitativeEscape
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    (hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete) : Prop where
+  | lowFrequencyCatalyst
+      (hNo : ¬ hQual.noLowFrequencyCatalystOwner)
+      (hWitness :
+        ∀ B : Real,
+          ∃ eventRadiusPayment : Nat → Real,
+          ∃ factorOwnerOfEvent : Nat → Nat,
+          ∃ factorCharge : Nat → Real,
+          ∃ outputPacketOfEvent : Nat → Nat,
+          ∃ outputPacketCharge : Nat → Real,
+          ∃ factorBudget : Real,
+          ∃ N : Nat,
+            (∀ n : Nat, factorOwnerOfEvent n = 0) ∧
+            (∀ n : Nat, outputPacketOfEvent n = n) ∧
+            (∀ n : Nat,
+              eventRadiusPayment n ≤
+                outputPacketCharge (outputPacketOfEvent n)) ∧
+            (∀ M : Nat, NS.nsPrefixSum factorCharge M ≤ factorBudget) ∧
+            B < NS.nsPrefixSum eventRadiusPayment N) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | outputScale
+      (hNo : ¬ hQual.sameAnnularOutputScaleOwner) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | pointwiseOnly
+      (hNo : ¬ hQual.selectedPrefixPreimageNotPointwiseOnly)
+      (hWitness :
+        ∀ B : Real,
+          ∃ eventRadiusPayment : Nat → Real,
+          ∃ ownerOfEvent : Nat → Nat,
+          ∃ atomCharge : Nat → Real,
+          ∃ atomBudget : Real,
+          ∃ N : Nat,
+            (∀ n : Nat, 0 ≤ atomCharge n) ∧
+            (∀ n : Nat,
+              eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+            (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+            B < NS.nsPrefixSum eventRadiusPayment N) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | missingGlobalPrefix
+      (hNo : ¬ hQual.globalSelectedTreePreimageBound) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | residualFreshStreamMixed
+      (hNo :
+        ¬ hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | phaseSpaceLabelOnly
+      (hNo : ¬ hQual.sameCarrierPhaseSpaceOwnership)
+      (hWitness :
+        ∀ B : Real,
+          ∃ eventRadiusPayment : Nat → Real,
+          ∃ ownerOfEvent : Nat → Nat,
+          ∃ atomCharge : Nat → Real,
+          ∃ atomBudget : Real,
+          ∃ N : Nat,
+            (∀ n : Nat, 0 ≤ atomCharge n) ∧
+            (∀ n : Nat,
+              eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+            (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+            True ∧ True ∧ True ∧
+            B < NS.nsPrefixSum eventRadiusPayment N) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+  | carrierNameOnly
+      (hNo : ¬ hQual.transferNotCarrierNameOnly) :
+      C7IdentityScaledTransferQualitativeEscape hQual
+
+/--
+The qualitative receipt excludes every typed identity-transfer escape mode.
+-/
+theorem no_C7IdentityScaledTransferQualitativeReceipt_of_escape
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete}
+    (hEscape :
+      C7IdentityScaledTransferQualitativeEscape hQual) :
+    False := by
+  cases hEscape with
+  | lowFrequencyCatalyst hNo _ =>
+      exact hNo hQual.noLowFrequencyCatalystOwner_proof
+  | outputScale hNo =>
+      exact hNo hQual.sameAnnularOutputScaleOwner_proof
+  | pointwiseOnly hNo _ =>
+      exact hNo hQual.selectedPrefixPreimageNotPointwiseOnly_proof
+  | missingGlobalPrefix hNo =>
+      exact hNo hQual.globalSelectedTreePreimageBound_proof
+  | residualFreshStreamMixed hNo =>
+      exact
+        hNo
+          hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+  | phaseSpaceLabelOnly hNo _ =>
+      exact hNo hQual.sameCarrierPhaseSpaceOwnership_proof
+  | carrierNameOnly hNo =>
+      exact hNo hQual.transferNotCarrierNameOnly_proof
+
+/--
+Build the identity scaled-transfer qualitative receipt from the numerical
+owner-preimage receipt.
+
+This is the positive counterpart to the pointwise-only and phase-space-label
+escapes: the selected-prefix owner-preimage inequality is the field that makes
+the transfer more than local owner payment.  The only extra qualitative input
+kept outside `OwnerPreimagePackingReceipt` is the assertion that the transfer is
+not a carrier-name declaration.
+-/
+def C7IdentityScaledTransferQualitativeReceipt.ofOwnerPreimagePackingReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {owner atomCharge : Nat → Nat}
+    {eventPay scaledAtomCharge : Nat → Real}
+    {C atomBudget : Real}
+    (hOwner :
+      OwnerPreimagePackingReceipt
+        owner eventPay scaledAtomCharge atomCharge C atomBudget)
+    (hEventPay : eventPay = routeActiveTail)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof :
+      transferNotCarrierNameOnly) :
+    C7IdentityScaledTransferQualitativeReceipt hComplete where
+  noLowFrequencyCatalystOwner :=
+    hOwner.ownerNotReusableLowFrequencyCatalyst
+  noLowFrequencyCatalystOwner_proof :=
+    hOwner.ownerNotReusableLowFrequencyCatalyst_proof
+  sameAnnularOutputScaleOwner :=
+    hOwner.ownerIsFullOutputScalePacket
+  sameAnnularOutputScaleOwner_proof :=
+    hOwner.ownerIsFullOutputScalePacket_proof
+  selectedPrefixPreimageNotPointwiseOnly :=
+    ∀ N : Nat,
+      NS.nsPrefixSum routeActiveTail N ≤
+        C * NS.nsPrefixSum scaledAtomCharge (atomCharge N)
+  selectedPrefixPreimageNotPointwiseOnly_proof := by
+    intro N
+    rw [← hEventPay]
+    exact hOwner.ownerPreimagePackingPrefix N
+  globalSelectedTreePreimageBound :=
+    hOwner.globalSelectedTreePreimageBound
+  globalSelectedTreePreimageBound_proof :=
+    hOwner.globalSelectedTreePreimageBound_proof
+  smoothOrInheritedFactorRoutedOffResidualFreshStream :=
+    hOwner.smoothOrInheritedFactorRoutedOffResidualFreshStream
+  smoothOrInheritedFactorRoutedOffResidualFreshStream_proof :=
+    hOwner.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+  sameCarrierPhaseSpaceOwnership :=
+    hOwner.sameCarrierPhaseSpaceOwnership
+  sameCarrierPhaseSpaceOwnership_proof :=
+    hOwner.sameCarrierPhaseSpaceOwnership_proof
+  transferNotCarrierNameOnly := transferNotCarrierNameOnly
+  transferNotCarrierNameOnly_proof :=
+    transferNotCarrierNameOnly_proof
+
+/--
+Convenience constructor for the catalyst escape using the compiled witness.
+-/
+def C7IdentityScaledTransferQualitativeEscape.lowHighCatalyst
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete}
+    (hNo : ¬ hQual.noLowFrequencyCatalystOwner) :
+    C7IdentityScaledTransferQualitativeEscape hQual :=
+  C7IdentityScaledTransferQualitativeEscape.lowFrequencyCatalyst
+    hNo factorOnlyOwner_allows_lowHighCatalyst_rebilling
+
+/--
+Convenience constructor for the pointwise-only escape using the compiled
+owner-budget witness.
+-/
+def C7IdentityScaledTransferQualitativeEscape.pointwiseOwnerOnly
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete}
+    (hNo : ¬ hQual.selectedPrefixPreimageNotPointwiseOnly) :
+    C7IdentityScaledTransferQualitativeEscape hQual :=
+  C7IdentityScaledTransferQualitativeEscape.pointwiseOnly
+    hNo annularOwnerPointwiseBudget_allows_unbounded_eventPrefix
+
+/--
+Convenience constructor for the phase-space-label-only escape using the
+compiled phase-space rebilling witness.
+-/
+def C7IdentityScaledTransferQualitativeEscape.phaseSpaceOnly
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete}
+    (hNo : ¬ hQual.sameCarrierPhaseSpaceOwnership) :
+    C7IdentityScaledTransferQualitativeEscape hQual :=
+  C7IdentityScaledTransferQualitativeEscape.phaseSpaceLabelOnly
+    hNo
+    phaseSpaceOwnerLabelsWithoutPreimageBudget_allow_unboundedEventPrefix
+
+/--
 Build the annular-to-scaled currency bridge once the scaled transfer and
 completion-backed channel facts are separately supplied.
 
@@ -24993,6 +28748,399 @@ def C7OwnerPreimageGeometryCoreReceipt.ofScaledCarrierTransferResidual
     hResidual.sourceSelectionNotDeclarationOnly_proof
 
 /--
+After a fixed scaled carrier transfer, the residual receipt is equivalent to
+the owner-geometry core plus the same-transfer non-name-only guard.
+
+The forward direction projects the guard and the owner core.  The reverse
+direction uses the owner-core fields as the residual payload and supplies the
+guard on the exact transfer, preventing a carrier-name-only relabel.
+-/
+theorem C7OwnerGeometryResidualAfterScaledTransfer.nonempty_iff_ownerCore_and_transferNotNameOnly
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    (hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)) :
+    Nonempty (C7OwnerGeometryResidualAfterScaledTransfer hTransfer) ↔
+      hTransfer.transferNotCarrierNameOnly ∧
+        Nonempty (C7OwnerPreimageGeometryCoreReceipt hComplete) :=
+  ⟨fun hResidualNonempty =>
+      hResidualNonempty.elim
+        (fun hResidual =>
+          ⟨hResidual.transferNotCarrierNameOnly_proof,
+            ⟨C7OwnerPreimageGeometryCoreReceipt.ofScaledCarrierTransferResidual
+              hResidual⟩⟩),
+    fun hPair =>
+      hPair.2.elim
+        (fun hCore =>
+          ⟨{ transferNotCarrierNameOnly_proof := hPair.1
+             selectedEventInheritedOrRenewedByAnnularOwner :=
+               hCore.selectedEventInheritedOrRenewedByAnnularOwner
+             selectedEventInheritedOrRenewedByAnnularOwner_proof :=
+               hCore.selectedEventInheritedOrRenewedByAnnularOwner_proof
+             boundedOwnerMultiplicityOnLineage :=
+               hCore.boundedOwnerMultiplicityOnLineage
+             boundedOwnerMultiplicityOnLineage_proof :=
+               hCore.boundedOwnerMultiplicityOnLineage_proof
+             ownerBudgetIsSameCoronaDuhamelCarrier :=
+               hCore.ownerBudgetIsSameCoronaDuhamelCarrier
+             ownerBudgetIsSameCoronaDuhamelCarrier_proof :=
+               hCore.ownerBudgetIsSameCoronaDuhamelCarrier_proof
+             notMonotoneTailCarrier := hCore.notMonotoneTailCarrier
+             notMonotoneTailCarrier_proof :=
+               hCore.notMonotoneTailCarrier_proof
+             notScalarMeasureCarrier := hCore.notScalarMeasureCarrier
+             notScalarMeasureCarrier_proof :=
+               hCore.notScalarMeasureCarrier_proof
+             notUniformEnstrophyBudgetDisguise :=
+               hCore.notUniformEnstrophyBudgetDisguise
+             notUniformEnstrophyBudgetDisguise_proof :=
+               hCore.notUniformEnstrophyBudgetDisguise_proof
+             sourceSelectionNotDeclarationOnly :=
+               hCore.sourceSelectionNotDeclarationOnly
+             sourceSelectionNotDeclarationOnly_proof :=
+               hCore.sourceSelectionNotDeclarationOnly_proof }⟩)⟩
+
+/--
+Carrier-name-only transfer blocks the residual-after-scaled-transfer receipt
+when it targets the same non-name-only field.
+-/
+theorem no_C7OwnerGeometryResidualAfterScaledTransfer_of_nameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)}
+    (hConfuser :
+      C7IdentityScaledTransferNameOnlyConfuser hComplete)
+    (hSameField :
+      hTransfer.transferNotCarrierNameOnly =
+        hConfuser.transferNotCarrierNameOnly)
+    (hResidual :
+      C7OwnerGeometryResidualAfterScaledTransfer hTransfer) :
+    False :=
+  hConfuser.transferNameOnlyCounterexample
+    (by
+      simpa [hSameField] using hResidual.transferNotCarrierNameOnly_proof)
+
+/--
+Carrier-name-only transfer also blocks the owner-geometry core when it targets
+the same non-name-only field.
+-/
+theorem no_C7OwnerPreimageGeometryCoreReceipt_of_nameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    (hConfuser :
+      C7IdentityScaledTransferNameOnlyConfuser hComplete)
+    (hCore :
+      C7OwnerPreimageGeometryCoreReceipt hComplete)
+    (hSameField :
+      hCore.transferNotCarrierNameOnly =
+        hConfuser.transferNotCarrierNameOnly) :
+    False :=
+  hConfuser.transferNameOnlyCounterexample
+    (by
+      simpa [hSameField] using hCore.transferNotCarrierNameOnly_proof)
+
+/--
+Carrier-name-only transfer blocks carrier-radius separation through the projected
+owner-core field.
+-/
+theorem no_C7CarrierRadiusCanonicalOwnerSeparationReceipt_of_nameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    (hConfuser :
+      C7IdentityScaledTransferNameOnlyConfuser hComplete)
+    (hSep :
+      C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete)
+    (hSameField :
+      hSep.transferNotCarrierNameOnly =
+        hConfuser.transferNotCarrierNameOnly) :
+    False :=
+  no_C7OwnerPreimageGeometryCoreReceipt_of_nameOnlyConfuser
+    hConfuser
+    (C7OwnerPreimageGeometryCoreReceipt.ofSeparationReceipt hSep)
+    hSameField
+
+/--
+Transport the non-name-only field from the identity qualitative receipt to a
+fixed scaled transfer, provided the target field is the same one.
+-/
+theorem C7ScaledOwnerPreimageCarrierTransfer.transferNotCarrierNameOnly_of_identityQualitativeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)}
+    (hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete)
+    (hSameField :
+      hTransfer.transferNotCarrierNameOnly =
+        hQual.transferNotCarrierNameOnly) :
+    hTransfer.transferNotCarrierNameOnly := by
+  simpa [hSameField] using hQual.transferNotCarrierNameOnly_proof
+
+/--
+Residual-after-transfer from owner core plus the identity qualitative receipt,
+with an explicit same-field check for the non-name-only guard.
+-/
+def C7OwnerGeometryResidualAfterScaledTransfer.ofOwnerCoreAndIdentityQualitativeReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)}
+    (hCore :
+      C7OwnerPreimageGeometryCoreReceipt hComplete)
+    (hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete)
+    (hSameField :
+      hTransfer.transferNotCarrierNameOnly =
+        hQual.transferNotCarrierNameOnly) :
+    C7OwnerGeometryResidualAfterScaledTransfer hTransfer where
+  transferNotCarrierNameOnly_proof :=
+    C7ScaledOwnerPreimageCarrierTransfer.transferNotCarrierNameOnly_of_identityQualitativeReceipt
+      hQual hSameField
+  selectedEventInheritedOrRenewedByAnnularOwner :=
+    hCore.selectedEventInheritedOrRenewedByAnnularOwner
+  selectedEventInheritedOrRenewedByAnnularOwner_proof :=
+    hCore.selectedEventInheritedOrRenewedByAnnularOwner_proof
+  boundedOwnerMultiplicityOnLineage :=
+    hCore.boundedOwnerMultiplicityOnLineage
+  boundedOwnerMultiplicityOnLineage_proof :=
+    hCore.boundedOwnerMultiplicityOnLineage_proof
+  ownerBudgetIsSameCoronaDuhamelCarrier :=
+    hCore.ownerBudgetIsSameCoronaDuhamelCarrier
+  ownerBudgetIsSameCoronaDuhamelCarrier_proof :=
+    hCore.ownerBudgetIsSameCoronaDuhamelCarrier_proof
+  notMonotoneTailCarrier := hCore.notMonotoneTailCarrier
+  notMonotoneTailCarrier_proof := hCore.notMonotoneTailCarrier_proof
+  notScalarMeasureCarrier := hCore.notScalarMeasureCarrier
+  notScalarMeasureCarrier_proof := hCore.notScalarMeasureCarrier_proof
+  notUniformEnstrophyBudgetDisguise :=
+    hCore.notUniformEnstrophyBudgetDisguise
+  notUniformEnstrophyBudgetDisguise_proof :=
+    hCore.notUniformEnstrophyBudgetDisguise_proof
+  sourceSelectionNotDeclarationOnly :=
+    hCore.sourceSelectionNotDeclarationOnly
+  sourceSelectionNotDeclarationOnly_proof :=
+    hCore.sourceSelectionNotDeclarationOnly_proof
+
+/--
 Owner-geometry core from the identity-owner same-carrier packing route.
 
 The numerical owner-preimage part is not a hidden matching theorem here: the
@@ -25451,6 +29599,357 @@ def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore
       hCore.sourceSelectionNotDeclarationOnly_proof }
 
 /--
+Owner-geometry core and carrier-radius separation are equivalent as source
+receipts for a fixed completed C7 source.
+
+The reverse direction is the field projection
+`C7OwnerPreimageGeometryCoreReceipt.ofSeparationReceipt`; the forward direction
+is `C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore`,
+which adds only completion-backed channel-separation fields.
+-/
+theorem C7OwnerPreimageGeometryCoreReceipt.nonempty_iff_carrierRadiusSeparation
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId} :
+    Nonempty (C7OwnerPreimageGeometryCoreReceipt hComplete) ↔
+      Nonempty (C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete) :=
+  ⟨fun hCoreNonempty =>
+      hCoreNonempty.elim
+        (fun hCore =>
+          ⟨C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore
+            hCore⟩),
+    fun hSepNonempty =>
+      hSepNonempty.elim
+        (fun hSep =>
+          ⟨C7OwnerPreimageGeometryCoreReceipt.ofSeparationReceipt hSep⟩)⟩
+
+/--
+Build the carrier-radius separation receipt directly from the residual after
+scaled transfer.
+
+This bypasses the named owner-core packaging step: the scaled transfer supplies
+the owner/preimage side, completion supplies channel separation, and the
+residual supplies the remaining lineage and anti-laundering fields.
+-/
+def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofScaledCarrierTransferResidual
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)}
+    (hResidual :
+      C7OwnerGeometryResidualAfterScaledTransfer hTransfer) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore
+    (C7OwnerPreimageGeometryCoreReceipt.ofScaledCarrierTransferResidual
+      hResidual)
+
+/--
+Carrier-radius separation from the identity-owner same-carrier route.
+
+The numerical owner map and scaled currency are fixed by identity ownership;
+the remaining arguments are exactly the qualitative owner, lineage, and
+anti-laundering fields.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofCoronaDuhamelCompletionIdentityOwnerFields
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (ownerMapFixedBeforePayoff : Prop)
+    (ownerMapFixedBeforePayoff_proof : ownerMapFixedBeforePayoff)
+    (noLowFrequencyCatalystOwner : Prop)
+    (noLowFrequencyCatalystOwner_proof : noLowFrequencyCatalystOwner)
+    (sameAnnularOutputScaleOwner : Prop)
+    (sameAnnularOutputScaleOwner_proof : sameAnnularOutputScaleOwner)
+    (selectedPrefixPreimageNotPointwiseOnly : Prop)
+    (selectedPrefixPreimageNotPointwiseOnly_proof :
+      selectedPrefixPreimageNotPointwiseOnly)
+    (globalSelectedTreePreimageBound : Prop)
+    (globalSelectedTreePreimageBound_proof :
+      globalSelectedTreePreimageBound)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream : Prop)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream_proof :
+      smoothOrInheritedFactorRoutedOffResidualFreshStream)
+    (sameCarrierPhaseSpaceOwnership : Prop)
+    (sameCarrierPhaseSpaceOwnership_proof :
+      sameCarrierPhaseSpaceOwnership)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof : transferNotCarrierNameOnly)
+    (selectedEventInheritedOrRenewedByAnnularOwner : Prop)
+    (selectedEventInheritedOrRenewedByAnnularOwner_proof :
+      selectedEventInheritedOrRenewedByAnnularOwner)
+    (boundedOwnerMultiplicityOnLineage : Prop)
+    (boundedOwnerMultiplicityOnLineage_proof :
+      boundedOwnerMultiplicityOnLineage)
+    (ownerBudgetIsSameCoronaDuhamelCarrier : Prop)
+    (ownerBudgetIsSameCoronaDuhamelCarrier_proof :
+      ownerBudgetIsSameCoronaDuhamelCarrier)
+    (notMonotoneTailCarrier : Prop)
+    (notMonotoneTailCarrier_proof :
+      notMonotoneTailCarrier)
+    (notScalarMeasureCarrier : Prop)
+    (notScalarMeasureCarrier_proof :
+      notScalarMeasureCarrier)
+    (notUniformEnstrophyBudgetDisguise : Prop)
+    (notUniformEnstrophyBudgetDisguise_proof :
+      notUniformEnstrophyBudgetDisguise)
+    (sourceSelectionNotDeclarationOnly : Prop)
+    (sourceSelectionNotDeclarationOnly_proof :
+      sourceSelectionNotDeclarationOnly) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore
+    (C7OwnerPreimageGeometryCoreReceipt.ofCoronaDuhamelCompletionIdentityOwnerFields
+      hComplete
+      ownerMapFixedBeforePayoff
+      ownerMapFixedBeforePayoff_proof
+      noLowFrequencyCatalystOwner
+      noLowFrequencyCatalystOwner_proof
+      sameAnnularOutputScaleOwner
+      sameAnnularOutputScaleOwner_proof
+      selectedPrefixPreimageNotPointwiseOnly
+      selectedPrefixPreimageNotPointwiseOnly_proof
+      globalSelectedTreePreimageBound
+      globalSelectedTreePreimageBound_proof
+      smoothOrInheritedFactorRoutedOffResidualFreshStream
+      smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+      sameCarrierPhaseSpaceOwnership
+      sameCarrierPhaseSpaceOwnership_proof
+      transferNotCarrierNameOnly
+      transferNotCarrierNameOnly_proof
+      selectedEventInheritedOrRenewedByAnnularOwner
+      selectedEventInheritedOrRenewedByAnnularOwner_proof
+      boundedOwnerMultiplicityOnLineage
+      boundedOwnerMultiplicityOnLineage_proof
+      ownerBudgetIsSameCoronaDuhamelCarrier
+      ownerBudgetIsSameCoronaDuhamelCarrier_proof
+      notMonotoneTailCarrier
+      notMonotoneTailCarrier_proof
+      notScalarMeasureCarrier
+      notScalarMeasureCarrier_proof
+      notUniformEnstrophyBudgetDisguise
+      notUniformEnstrophyBudgetDisguise_proof
+      sourceSelectionNotDeclarationOnly
+      sourceSelectionNotDeclarationOnly_proof)
+
+/--
+Carrier-radius separation from identity-owner fields after the timing and
+same-tree inheritance part has been supplied by completion.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofCoronaDuhamelCompletionIdentityTimingInheritanceFields
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hTiming :
+      C7IdentityOwnerTimingInheritanceReceipt hComplete)
+    (noLowFrequencyCatalystOwner : Prop)
+    (noLowFrequencyCatalystOwner_proof : noLowFrequencyCatalystOwner)
+    (sameAnnularOutputScaleOwner : Prop)
+    (sameAnnularOutputScaleOwner_proof : sameAnnularOutputScaleOwner)
+    (selectedPrefixPreimageNotPointwiseOnly : Prop)
+    (selectedPrefixPreimageNotPointwiseOnly_proof :
+      selectedPrefixPreimageNotPointwiseOnly)
+    (globalSelectedTreePreimageBound : Prop)
+    (globalSelectedTreePreimageBound_proof :
+      globalSelectedTreePreimageBound)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream : Prop)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream_proof :
+      smoothOrInheritedFactorRoutedOffResidualFreshStream)
+    (sameCarrierPhaseSpaceOwnership : Prop)
+    (sameCarrierPhaseSpaceOwnership_proof :
+      sameCarrierPhaseSpaceOwnership)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof : transferNotCarrierNameOnly)
+    (boundedOwnerMultiplicityOnLineage : Prop)
+    (boundedOwnerMultiplicityOnLineage_proof :
+      boundedOwnerMultiplicityOnLineage)
+    (ownerBudgetIsSameCoronaDuhamelCarrier : Prop)
+    (ownerBudgetIsSameCoronaDuhamelCarrier_proof :
+      ownerBudgetIsSameCoronaDuhamelCarrier)
+    (notMonotoneTailCarrier : Prop)
+    (notMonotoneTailCarrier_proof :
+      notMonotoneTailCarrier)
+    (notScalarMeasureCarrier : Prop)
+    (notScalarMeasureCarrier_proof :
+      notScalarMeasureCarrier)
+    (notUniformEnstrophyBudgetDisguise : Prop)
+    (notUniformEnstrophyBudgetDisguise_proof :
+      notUniformEnstrophyBudgetDisguise)
+    (sourceSelectionNotDeclarationOnly : Prop)
+    (sourceSelectionNotDeclarationOnly_proof :
+      sourceSelectionNotDeclarationOnly) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofCoronaDuhamelCompletionIdentityOwnerFields
+    hComplete
+    hTiming.ownerMapFixedBeforePayoff
+    hTiming.ownerMapFixedBeforePayoff_proof
+    noLowFrequencyCatalystOwner
+    noLowFrequencyCatalystOwner_proof
+    sameAnnularOutputScaleOwner
+    sameAnnularOutputScaleOwner_proof
+    selectedPrefixPreimageNotPointwiseOnly
+    selectedPrefixPreimageNotPointwiseOnly_proof
+    globalSelectedTreePreimageBound
+    globalSelectedTreePreimageBound_proof
+    smoothOrInheritedFactorRoutedOffResidualFreshStream
+    smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+    sameCarrierPhaseSpaceOwnership
+    sameCarrierPhaseSpaceOwnership_proof
+    transferNotCarrierNameOnly
+    transferNotCarrierNameOnly_proof
+    hTiming.selectedEventInheritedOrRenewedByAnnularOwner
+    hTiming.selectedEventInheritedOrRenewedByAnnularOwner_proof
+    boundedOwnerMultiplicityOnLineage
+    boundedOwnerMultiplicityOnLineage_proof
+    ownerBudgetIsSameCoronaDuhamelCarrier
+    ownerBudgetIsSameCoronaDuhamelCarrier_proof
+    notMonotoneTailCarrier
+    notMonotoneTailCarrier_proof
+    notScalarMeasureCarrier
+    notScalarMeasureCarrier_proof
+    notUniformEnstrophyBudgetDisguise
+    notUniformEnstrophyBudgetDisguise_proof
+    sourceSelectionNotDeclarationOnly
+    sourceSelectionNotDeclarationOnly_proof
+
+/--
 Source selection from the bundled remaining separation receipt.
 -/
 noncomputable def NonadaptiveAnnularC7SourceSelection.ofCoronaDuhamelCompletionAndCarrierRadiusPositiveSeparationReceipt
@@ -25694,6 +30193,116 @@ noncomputable def C7AnnularSelectionScaledCurrencyNormalizationBridge.ofCanonica
       hSelect.ownerChosenByStoppingRuleBeforePayoff_proof
       hCore.transferNotCarrierNameOnly
       hCore.transferNotCarrierNameOnly_proof
+
+/--
+Canonical owner-separation receipts also carry the annular-to-scaled currency
+bridge definitionally.
+
+This exposes the same normalization as
+`ofCanonicalOwnerGeometryCore`, but starts from the bundled
+carrier-radius separation receipt.  The equalities are still `rfl`: the
+annular source-selection constructor uses identity owner map, active owner
+bound, multiplicity one, and the scaled same-carrier atom currency
+`freshCharge / c`.
+-/
+noncomputable def C7AnnularSelectionScaledCurrencyNormalizationBridge.ofCarrierRadiusCanonicalOwnerSeparationReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hSep :
+      C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete) :
+    let hSelect :=
+      NonadaptiveAnnularC7SourceSelection.ofCoronaDuhamelCompletionAndCarrierRadiusPositiveSeparationReceipt
+        hComplete hSep
+    C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect := by
+  let hSelect :=
+    NonadaptiveAnnularC7SourceSelection.ofCoronaDuhamelCompletionAndCarrierRadiusPositiveSeparationReceipt
+      hComplete hSep
+  let hProjected :=
+    CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+      hSelect
+  let hPack :=
+    C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+      hProjected
+  let hTransfer :=
+    C7ScaledOwnerPreimageCarrierTransfer.ofSameCarrierPackingIdentityCarrierRadiusPositive
+      hPack
+      hSep.ownerMapFixedBeforePayoff
+      hSep.ownerMapFixedBeforePayoff_proof
+      hSep.noLowFrequencyCatalystOwner
+      hSep.noLowFrequencyCatalystOwner_proof
+      hSep.sameAnnularOutputScaleOwner
+      hSep.sameAnnularOutputScaleOwner_proof
+      hSep.selectedPrefixPreimageNotPointwiseOnly
+      hSep.selectedPrefixPreimageNotPointwiseOnly_proof
+      hSep.globalSelectedTreePreimageBound
+      hSep.globalSelectedTreePreimageBound_proof
+      hSep.smoothOrInheritedFactorRoutedOffResidualFreshStream
+      hSep.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+      hSep.sameCarrierPhaseSpaceOwnership
+      hSep.sameCarrierPhaseSpaceOwnership_proof
+      hSep.transferNotCarrierNameOnly
+  exact
+    C7AnnularSelectionScaledCurrencyNormalizationBridge.ofScaledTransferAndCompletionChannels
+      hTransfer
+      (C7CompletionBackedChannelSeparationReceipt.ofCompletion hProjected)
+      True
+      True.intro
+      rfl
+      True
+      True.intro
+      rfl
+      True
+      True.intro
+      rfl
+      True
+      True.intro
+      rfl
+      True
+      True.intro
+      rfl
+      hProjected.scheduleCompletion.projectedCarrier.duhamelReserveNotShellProcessLedger
+      hProjected.scheduleCompletion.scheduleReceipts.duhamelReserveNotShellProcessLedger_proof
+      hProjected.scheduleCompletion.projectedCarrier.inheritedDescendantsDoNotMintParentInvoices
+      hProjected.scheduleCompletion.scheduleReceipts.inheritedDescendantsDoNotMintParentInvoices_proof
+      hSelect.ownerChosenByStoppingRuleBeforePayoff
+      hSelect.ownerChosenByStoppingRuleBeforePayoff_proof
+      hSep.transferNotCarrierNameOnly
+      hSep.transferNotCarrierNameOnly_proof
 
 /--
 Source selection from a scaled transfer plus its residual geometry receipt.
@@ -26900,6 +31509,74 @@ theorem no_coronaDuhamelC7SourceCompletion_of_postPayoffMatchingConfuser
         hComplete⟩⟩
 
 /--
+The post-payoff matching confuser also rejects the optional-stopping timing
+receipt.
+
+Given a schedule completion, the predictable timing receipt would construct
+`CoronaDuhamelC7SourceCompletion`; the existing confuser then rejects the
+nonadaptive source-selection receipt projected from that completion.
+-/
+theorem no_C7PredictableScheduleStoppingTimeReceipt_of_postPayoffMatchingConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSchedule :
+      CoronaDuhamelProductionScheduleReceiptCompletion h)
+    (hStop :
+      C7PredictableScheduleStoppingTimeReceipt hSchedule)
+    (hConf :
+      C7PostPayoffMatchingConfuserFromIndexedCarrier
+        hSchedule.projectedCarrier) :
+    False := by
+  exact
+    C7PostPayoffMatchingConfuserFromIndexedCarrier.noSameCarrierPackingNoReuseReceipt
+      hConf
+      ⟨routeActiveTail, hId,
+        ⟨C7SameCarrierPackingNoReuseReceipt.ofRouteIdentificationAndScheduleReceipts
+          hSchedule.projectedCarrier
+          hId
+          hSchedule.scheduleReceipts
+          hStop.auditIndexStoppingTimeBeforeSpendOutcome
+          hStop.freshCapacityPredictableBeforeMatching
+          hStop.freshCapacityPredictableBeforeMatching_proof
+          hStop.freshCapacityNotTerminalRadiusSumFunctional
+          hStop.freshCapacityNotTerminalRadiusSumFunctional_proof
+          hStop.matchingSchedulePredictableBeforeRadiusSum
+          hStop.matchingSchedulePredictableBeforeRadiusSum_proof⟩⟩
+
+/--
 Post-payoff matching kills annular C7 source selection through its projected
 completion.
 -/
@@ -27375,6 +32052,255 @@ def FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofNumericalSchedule
     hIndexed.noRepeatedDescendantCharging
 
 /--
+Positive strengthening for the schedule-receipt layer.
+
+A separated indexed source already supplies the invoice proof inhabitants for
+assignment, same-tree carrier use, bounded-overlap, finite budget, reserve
+separation, and Duhamel section identity.  It does not by itself force the
+first two event-family bindings or the remaining timing/anti-relabel fields to
+be the exact propositions consumed by the beta-square schedule receipt.  This
+record names precisely those extra fields.
+-/
+structure BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    (hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock) where
+  separatedSource :
+    FreshAnnularChargeSeparatedSourceFromIndexedCarrier hIndexed
+  exactEventScheduleEnumeratesInvoiceBadNodes :
+    hIndexed.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex
+  exactFreshChargeQuantifiesInvoiceRegions :
+    hIndexed.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii
+  auditIndexChosenBeforeParentInvoiceAccounting :
+    hIndexed.auditIndexFixedBeforeSpendPartition.auditIndexChosenBeforeParentInvoiceAccounting
+  nonadaptiveBeforeRadiusAccounting :
+    hLock.nonadaptiveBeforeRadiusAccounting
+  generatedFromSameBadCenterStoppingTree :
+    hLock.generatedFromSameBadCenterStoppingTree
+  notBetaFrequencyPaymentRelabel :
+    hIndexed.notBetaFrequencyPaymentRelabel
+  notShellProcessReserveRelabel :
+    hIndexed.notShellProcessReserveRelabel
+
+/--
+Separated-source strengthening once the exact event/fresh bindings are carried
+by the same-tree invoice embedding.
+
+The constructor deliberately leaves the five remaining timing/same-tree/
+anti-relabel fields visible.
+-/
+def BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource.ofSeparatedSourceAndExactBindings
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier hIndexed)
+    (hAuditBeforeInvoice :
+      hIndexed.auditIndexFixedBeforeSpendPartition.auditIndexChosenBeforeParentInvoiceAccounting)
+    (hNonadaptiveBeforeRadius :
+      hLock.nonadaptiveBeforeRadiusAccounting)
+    (hGeneratedSameBadTree :
+      hLock.generatedFromSameBadCenterStoppingTree)
+    (hNotBetaFrequencyRelabel :
+      hIndexed.notBetaFrequencyPaymentRelabel)
+    (hNotShellProcessRelabel :
+      hIndexed.notShellProcessReserveRelabel) :
+    BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+      hIndexed where
+  separatedSource := hSeparated
+  exactEventScheduleEnumeratesInvoiceBadNodes :=
+    hIndexed.exactEventScheduleBinding
+  exactFreshChargeQuantifiesInvoiceRegions :=
+    hIndexed.exactFreshChargeBinding
+  auditIndexChosenBeforeParentInvoiceAccounting :=
+    hAuditBeforeInvoice
+  nonadaptiveBeforeRadiusAccounting :=
+    hNonadaptiveBeforeRadius
+  generatedFromSameBadCenterStoppingTree :=
+    hGeneratedSameBadTree
+  notBetaFrequencyPaymentRelabel :=
+    hNotBetaFrequencyRelabel
+  notShellProcessReserveRelabel :=
+    hNotShellProcessRelabel
+
+/--
+Full separated-source strengthening from the proof-carrying indexed source
+objects.
+
+After the same-tree invoice embedding, audit timing, same-tree lock, and
+anti-relabel fields carry proof inhabitants, a separated indexed source
+supplies the complete strengthening record without additional field arguments.
+-/
+def BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource.ofSeparatedSourceAndSourceProofs
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier hIndexed) :
+    BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+      hIndexed :=
+  BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource.ofSeparatedSourceAndExactBindings
+    hSeparated
+    hIndexed.auditIndexBeforeParentInvoice
+    hIndexed.nonadaptiveBeforeRadius
+    hIndexed.generatedFromSameBadTree
+    hIndexed.betaFrequencyNotRelabel
+    hIndexed.shellProcessNotRelabel
+
+/--
+The strengthened separated-source packet constructs the beta-square schedule
+receipt bundle consumed by source completion.
+-/
+def BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier.ofSeparatedSourceStrengthening
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (h :
+      BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+        hIndexed) :
+    BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed where
+  eventScheduleEnumeratesInvoiceBadNodes_proof :=
+    h.exactEventScheduleEnumeratesInvoiceBadNodes
+  freshChargeQuantifiesInvoiceRegions_proof :=
+    h.exactFreshChargeQuantifiesInvoiceRegions
+  invoiceAssignedBeforeSubtreeSelection_proof := by
+    simpa [C7SameTreeFreshRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding]
+      using h.separatedSource.extraction.assignedBeforePayoff_fromInvoice
+  invoiceUsesSameNormalizedExcessStoppingTree_proof := by
+    simpa [C7SameTreeFreshRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding]
+      using h.separatedSource.extraction.sameCarrier_fromInvoice
+  descendantInvoicesDisjointOrBoundedOverlap_proof := by
+    simpa [C7SameTreeFreshRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding]
+      using h.separatedSource.extraction.notLocalDominationOnly_fromInvoice
+  finiteFreshInvoiceBudget_proof := by
+    simpa [C7SameTreeFreshRadiusInvoice.ofSameTreeCarlesonInvoiceEmbedding]
+      using h.separatedSource.extraction.invoiceBudgetQuantifiedAsRootPrefixBudget
+  pressureReserveNotParentInvoice_proof :=
+    h.separatedSource.pressureReserveSeparatedFromParentInvoice
+  duhamelReserveNotShellProcessLedger_proof :=
+    h.separatedSource.duhamelReserveSeparatedFromShellLedger
+  inheritedDescendantsDoNotMintParentInvoices_proof :=
+    h.separatedSource.inheritedReserveSeparatedFromParentInvoice
+  auditIndexChosenBeforeParentInvoiceAccounting_proof :=
+    h.auditIndexChosenBeforeParentInvoiceAccounting
+  nonadaptiveBeforeRadiusAccounting_proof :=
+    h.nonadaptiveBeforeRadiusAccounting
+  generatedFromSameBadCenterStoppingTree_proof :=
+    h.generatedFromSameBadCenterStoppingTree
+  notBetaFrequencyPaymentRelabel_proof :=
+    h.notBetaFrequencyPaymentRelabel
+  notShellProcessReserveRelabel_proof :=
+    h.notShellProcessReserveRelabel
+
+/--
 The proof-carrying beta-square receipt also gives the separated C7 source.
 This is the consumer-facing projection: without the receipt record above, the
 projection is intentionally unavailable.
@@ -27419,6 +32345,260 @@ def FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofBadCenterBetaSquareEve
   FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofNumericalSchedule
     (FreshAnnularNumericalScheduleFromIndexedCarrier.ofBadCenterBetaSquareEventSourceWithReceipts
       hIndexed hPoint hReceipts)
+
+/--
+For a fixed route-tail identification, beta-square schedule receipts and the
+separated-source strengthening are the same source surface.
+
+The forward direction builds the separated source from the pointwise
+beta-square identity carried by `hId`; the reverse direction is
+`BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier.ofSeparatedSourceStrengthening`.
+-/
+theorem BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier.nonempty_iff_separatedSourceStrengthening
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    (hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail) :
+    Nonempty (BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed) ↔
+      Nonempty
+        (BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+          hIndexed) := by
+  constructor
+  · intro hReceiptsNonempty
+    rcases hReceiptsNonempty with ⟨hReceipts⟩
+    exact
+      ⟨{
+        separatedSource :=
+          FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofBadCenterBetaSquareEventSourceWithReceipts
+            hIndexed hId.pointwiseBetaSquareIdentity hReceipts
+        exactEventScheduleEnumeratesInvoiceBadNodes :=
+          hReceipts.eventScheduleEnumeratesInvoiceBadNodes_proof
+        exactFreshChargeQuantifiesInvoiceRegions :=
+          hReceipts.freshChargeQuantifiesInvoiceRegions_proof
+        auditIndexChosenBeforeParentInvoiceAccounting :=
+          hReceipts.auditIndexChosenBeforeParentInvoiceAccounting_proof
+        nonadaptiveBeforeRadiusAccounting :=
+          hReceipts.nonadaptiveBeforeRadiusAccounting_proof
+        generatedFromSameBadCenterStoppingTree :=
+          hReceipts.generatedFromSameBadCenterStoppingTree_proof
+        notBetaFrequencyPaymentRelabel :=
+          hReceipts.notBetaFrequencyPaymentRelabel_proof
+        notShellProcessReserveRelabel :=
+          hReceipts.notShellProcessReserveRelabel_proof
+      }⟩
+  · intro hStrengtheningNonempty
+    rcases hStrengtheningNonempty with ⟨hStrengthening⟩
+    exact
+      ⟨BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier.ofSeparatedSourceStrengthening
+        hStrengthening⟩
+
+/--
+Exact event-schedule binding blocker.
+
+An indexed carrier may display the event/invoice proposition as a field label;
+the beta-square schedule receipt requires an inhabitant of that exact
+proposition.
+-/
+theorem no_BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier_of_not_exactEventScheduleBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hNoExactEvent :
+      ¬ hIndexed.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex) :
+    ¬ Nonempty (BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed) := by
+  intro hReceipts
+  exact hNoExactEvent
+    hReceipts.some.eventScheduleEnumeratesInvoiceBadNodes_proof
+
+/--
+Exact fresh-charge binding blocker.
+
+Numerical fresh-charge visibility is insufficient unless it inhabits the same
+invoice-region proposition consumed by the schedule receipt.
+-/
+theorem no_BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier_of_not_exactFreshChargeBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hNoExactFresh :
+      ¬ hIndexed.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii) :
+    ¬ Nonempty (BadCenterBetaSquareScheduleReceiptsFromIndexedCarrier hIndexed) := by
+  intro hReceipts
+  exact hNoExactFresh
+    hReceipts.some.freshChargeQuantifiesInvoiceRegions_proof
+
+/--
+The separated-source strengthening is also blocked by failure of exact
+event-schedule binding.
+-/
+theorem no_BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource_of_not_exactEventScheduleBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hNoExactEvent :
+      ¬ hIndexed.sameTreeInvoiceEmbedding.eventDataMatchedToResidualFreshAuditIndex) :
+    ¬ Nonempty
+      (BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+        hIndexed) := by
+  intro hStrengthening
+  exact hNoExactEvent
+    hStrengthening.some.exactEventScheduleEnumeratesInvoiceBadNodes
+
+/--
+The separated-source strengthening is also blocked by failure of exact
+fresh-charge/invoice-region binding.
+-/
+theorem no_BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource_of_not_exactFreshChargeBinding
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    (hNoExactFresh :
+      ¬ hIndexed.sameTreeInvoiceEmbedding.residualBranchLedgerEventsPayNodeRadii) :
+    ¬ Nonempty
+      (BadCenterBetaSquareScheduleReceiptStrengtheningFromSeparatedSource
+        hIndexed) := by
+  intro hStrengthening
+  exact hNoExactFresh
+    hStrengthening.some.exactFreshChargeQuantifiesInvoiceRegions
 
 /--
 Consumer-facing separated source from the minimal same-carrier packing/no-reuse
@@ -29900,6 +35080,69 @@ structure C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering
           hSelect)
 
 /--
+Add same-source anti-laundering to an already-paid scaled-currency bridge.
+
+The bridge input is essential: this constructor does not normalize an arbitrary
+annular selection into the scaled same-carrier currency.  It only records that,
+once the currency normalization has been paid, the nonadaptive annular source
+selection supplies the anti-laundering receipt on the identical separated
+fresh-annular source.
+-/
+noncomputable def C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering.ofNormalizationBridge
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hSelect : NonadaptiveAnnularC7SourceSelection h hId}
+    (hBase :
+      C7AnnularSelectionScaledCurrencyNormalizationBridge hSelect) :
+    C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering
+      hSelect := by
+  let hProjected :=
+    CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+      hSelect
+  let hSeparated :=
+    FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofCoronaDuhamelC7SourceCompletion
+      hProjected
+  exact
+    { baseBridge := hBase
+      antiLaundering :=
+        C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource.ofNonadaptiveAnnularC7SourceSelection
+          hSelect hSeparated
+      antiLaunderingSameSeparatedSource := rfl }
+
+/--
 Canonical owner-geometry source selections also carry the same-source
 anti-laundering field.
 
@@ -30084,6 +35327,104 @@ theorem no_C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering_of
     False :=
   no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_selectedTreeRebillingPacket
     hPacket hStrong.baseBridge
+
+/--
+Currency-name-only normalization also blocks the same-source anti-laundering
+wrapper through its base bridge.
+-/
+theorem no_C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering_of_currencyNameOnlyConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hSelect : NonadaptiveAnnularC7SourceSelection h hId}
+    (hConfuser : C7CurrencyNameOnlyNormalizationConfuser hSelect)
+    (hStrong :
+      C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering
+        hSelect) :
+    False :=
+  no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_currencyNameOnlyConfuser
+    hConfuser hStrong.baseBridge
+
+/--
+Post-payoff normalization timing also blocks the same-source anti-laundering
+wrapper through its base bridge.
+-/
+theorem no_C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering_of_postPayoffNormalizationTimingConfuser
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hSelect : NonadaptiveAnnularC7SourceSelection h hId}
+    (hConfuser : C7PostPayoffNormalizationTimingConfuser hSelect)
+    (hStrong :
+      C7AnnularSelectionScaledCurrencyBridgeWithSameSourceAntiLaundering
+        hSelect) :
+    False :=
+  no_C7AnnularSelectionScaledCurrencyNormalizationBridge_of_postPayoffNormalizationTimingConfuser
+    hConfuser hStrong.baseBridge
 
 /--
 Canonical owner-geometry source selection rejects the selected-tree rebilling
@@ -30995,6 +36336,625 @@ noncomputable def C7OwnerGeometryResidualBridgeFromFreshAnnularChargeSeparatedSo
         transferNotCarrierNameOnly_proof))
     hAnti
     hSameSource
+
+/--
+Carrier-radius separation from timing/inheritance, same-tree owner-invoice
+geometry, and same-source anti-laundering.
+
+This composes the invoice-owner bridge through the residual-after-transfer
+receipt back to the carrier-radius separation target.  The only remaining
+inputs are the identity scaled-transfer fields and the anti-laundering receipt
+on the same separated source.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofIdentityTimingSameTreeInvoiceAndAntiLaundering
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier
+        hComplete.scheduleCompletion.projectedCarrier)
+    (hTiming :
+      C7IdentityOwnerTimingInheritanceReceipt hComplete)
+    (noLowFrequencyCatalystOwner : Prop)
+    (noLowFrequencyCatalystOwner_proof : noLowFrequencyCatalystOwner)
+    (sameAnnularOutputScaleOwner : Prop)
+    (sameAnnularOutputScaleOwner_proof : sameAnnularOutputScaleOwner)
+    (selectedPrefixPreimageNotPointwiseOnly : Prop)
+    (selectedPrefixPreimageNotPointwiseOnly_proof :
+      selectedPrefixPreimageNotPointwiseOnly)
+    (globalSelectedTreePreimageBound : Prop)
+    (globalSelectedTreePreimageBound_proof :
+      globalSelectedTreePreimageBound)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream : Prop)
+    (smoothOrInheritedFactorRoutedOffResidualFreshStream_proof :
+      smoothOrInheritedFactorRoutedOffResidualFreshStream)
+    (sameCarrierPhaseSpaceOwnership : Prop)
+    (sameCarrierPhaseSpaceOwnership_proof :
+      sameCarrierPhaseSpaceOwnership)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof : transferNotCarrierNameOnly)
+    (hAnti :
+      C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource
+        (C7ScaledOwnerPreimageCarrierTransfer.ofSameCarrierPackingIdentityCarrierRadiusPositive
+          (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+            hComplete)
+          hTiming.ownerMapFixedBeforePayoff
+          hTiming.ownerMapFixedBeforePayoff_proof
+          noLowFrequencyCatalystOwner
+          noLowFrequencyCatalystOwner_proof
+          sameAnnularOutputScaleOwner
+          sameAnnularOutputScaleOwner_proof
+          selectedPrefixPreimageNotPointwiseOnly
+          selectedPrefixPreimageNotPointwiseOnly_proof
+          globalSelectedTreePreimageBound
+          globalSelectedTreePreimageBound_proof
+          smoothOrInheritedFactorRoutedOffResidualFreshStream
+          smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+          sameCarrierPhaseSpaceOwnership
+          sameCarrierPhaseSpaceOwnership_proof
+          transferNotCarrierNameOnly))
+    (hSameSource : hSeparated = hAnti.separatedSource) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofScaledCarrierTransferResidual
+    (C7OwnerGeometryResidualAfterScaledTransfer.ofFreshAnnularChargeSeparatedBridge
+      (C7OwnerGeometryResidualBridgeFromFreshAnnularChargeSeparatedSource.ofCarrierRadiusPositiveIdentitySameTreeInvoiceAndAntiLaundering
+        hComplete
+        hSeparated
+        hTiming.ownerMapFixedBeforePayoff
+        hTiming.ownerMapFixedBeforePayoff_proof
+        noLowFrequencyCatalystOwner
+        noLowFrequencyCatalystOwner_proof
+        sameAnnularOutputScaleOwner
+        sameAnnularOutputScaleOwner_proof
+        selectedPrefixPreimageNotPointwiseOnly
+        selectedPrefixPreimageNotPointwiseOnly_proof
+        globalSelectedTreePreimageBound
+        globalSelectedTreePreimageBound_proof
+        smoothOrInheritedFactorRoutedOffResidualFreshStream
+        smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+        sameCarrierPhaseSpaceOwnership
+        sameCarrierPhaseSpaceOwnership_proof
+        transferNotCarrierNameOnly
+        transferNotCarrierNameOnly_proof
+        hAnti
+        hSameSource))
+
+/--
+Carrier-radius separation from the three remaining named receipts:
+identity-owner timing, identity scaled-transfer qualitative fields, and
+anti-laundering on the same separated source.
+
+The same-tree invoice bridge supplies owner-lineage multiplicity internally;
+the qualitative receipt supplies the non-numerical identity-transfer fields.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofIdentityTimingQualitativeSameTreeInvoiceAndAntiLaundering
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier
+        hComplete.scheduleCompletion.projectedCarrier)
+    (hTiming :
+      C7IdentityOwnerTimingInheritanceReceipt hComplete)
+    (hQual :
+      C7IdentityScaledTransferQualitativeReceipt hComplete)
+    (hAnti :
+      C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource
+        (C7ScaledOwnerPreimageCarrierTransfer.ofSameCarrierPackingIdentityCarrierRadiusPositive
+          (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+            hComplete)
+          hTiming.ownerMapFixedBeforePayoff
+          hTiming.ownerMapFixedBeforePayoff_proof
+          hQual.noLowFrequencyCatalystOwner
+          hQual.noLowFrequencyCatalystOwner_proof
+          hQual.sameAnnularOutputScaleOwner
+          hQual.sameAnnularOutputScaleOwner_proof
+          hQual.selectedPrefixPreimageNotPointwiseOnly
+          hQual.selectedPrefixPreimageNotPointwiseOnly_proof
+          hQual.globalSelectedTreePreimageBound
+          hQual.globalSelectedTreePreimageBound_proof
+          hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream
+          hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+          hQual.sameCarrierPhaseSpaceOwnership
+          hQual.sameCarrierPhaseSpaceOwnership_proof
+          hQual.transferNotCarrierNameOnly))
+    (hSameSource : hSeparated = hAnti.separatedSource) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofIdentityTimingSameTreeInvoiceAndAntiLaundering
+    hComplete
+    hSeparated
+    hTiming
+    hQual.noLowFrequencyCatalystOwner
+    hQual.noLowFrequencyCatalystOwner_proof
+    hQual.sameAnnularOutputScaleOwner
+    hQual.sameAnnularOutputScaleOwner_proof
+    hQual.selectedPrefixPreimageNotPointwiseOnly
+    hQual.selectedPrefixPreimageNotPointwiseOnly_proof
+    hQual.globalSelectedTreePreimageBound
+    hQual.globalSelectedTreePreimageBound_proof
+    hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream
+    hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+    hQual.sameCarrierPhaseSpaceOwnership
+    hQual.sameCarrierPhaseSpaceOwnership_proof
+    hQual.transferNotCarrierNameOnly
+    hQual.transferNotCarrierNameOnly_proof
+    hAnti
+    hSameSource
+
+/--
+Identity-timing transfer built from an owner-preimage packing receipt.
+
+This names the isomorphism carrier used by the same-source anti-laundering
+step: owner-preimage packing first supplies the qualitative identity-transfer
+fields, then the timing receipt supplies the owner-map predictability field.
+-/
+noncomputable def C7ScaledOwnerPreimageCarrierTransfer.ofOwnerPreimagePackingIdentityTiming
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hTiming :
+      C7IdentityOwnerTimingInheritanceReceipt hComplete)
+    {owner activeAtomBound : Nat → Nat}
+    {eventPay scaledAtomCharge : Nat → Real}
+    {C atomBudget : Real}
+    (hOwner :
+      OwnerPreimagePackingReceipt
+        owner eventPay scaledAtomCharge activeAtomBound C atomBudget)
+    (hEventPay : eventPay = routeActiveTail)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof :
+      transferNotCarrierNameOnly) :
+    C7ScaledOwnerPreimageCarrierTransfer
+      (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+        hComplete) :=
+  let hQual : C7IdentityScaledTransferQualitativeReceipt hComplete :=
+    C7IdentityScaledTransferQualitativeReceipt.ofOwnerPreimagePackingReceipt
+      (hComplete := hComplete)
+      hOwner
+      hEventPay
+      transferNotCarrierNameOnly
+      transferNotCarrierNameOnly_proof
+  C7ScaledOwnerPreimageCarrierTransfer.ofSameCarrierPackingIdentityCarrierRadiusPositive
+    (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+      hComplete)
+    hTiming.ownerMapFixedBeforePayoff
+    hTiming.ownerMapFixedBeforePayoff_proof
+    hQual.noLowFrequencyCatalystOwner
+    hQual.noLowFrequencyCatalystOwner_proof
+    hQual.sameAnnularOutputScaleOwner
+    hQual.sameAnnularOutputScaleOwner_proof
+    hQual.selectedPrefixPreimageNotPointwiseOnly
+    hQual.selectedPrefixPreimageNotPointwiseOnly_proof
+    hQual.globalSelectedTreePreimageBound
+    hQual.globalSelectedTreePreimageBound_proof
+    hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream
+    hQual.smoothOrInheritedFactorRoutedOffResidualFreshStream_proof
+    hQual.sameCarrierPhaseSpaceOwnership
+    hQual.sameCarrierPhaseSpaceOwnership_proof
+    hQual.transferNotCarrierNameOnly
+
+/--
+Residual-after-transfer from owner core plus owner-preimage packing.
+
+The owner-preimage receipt pays the identity qualitative transfer fields, while
+the owner core supplies the non-name-only guard shared by the constructed
+transfer and by the residual receipt.
+-/
+noncomputable def C7OwnerGeometryResidualAfterScaledTransfer.ofOwnerCoreAndOwnerPreimagePackingReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hCore :
+      C7OwnerPreimageGeometryCoreReceipt hComplete)
+    {owner activeAtomBound : Nat → Nat}
+    {eventPay scaledAtomCharge : Nat → Real}
+    {C atomBudget : Real}
+    (hOwner :
+      OwnerPreimagePackingReceipt
+        owner eventPay scaledAtomCharge activeAtomBound C atomBudget)
+    (hEventPay : eventPay = routeActiveTail) :
+    C7OwnerGeometryResidualAfterScaledTransfer
+      (C7ScaledOwnerPreimageCarrierTransfer.ofOwnerPreimagePackingIdentityTiming
+        hComplete
+        (C7IdentityOwnerTimingInheritanceReceipt.ofCoronaDuhamelCompletionSameTreeInvoice
+          hComplete)
+        hOwner
+        hEventPay
+        hCore.transferNotCarrierNameOnly
+        hCore.transferNotCarrierNameOnly_proof) :=
+  let hQual : C7IdentityScaledTransferQualitativeReceipt hComplete :=
+    C7IdentityScaledTransferQualitativeReceipt.ofOwnerPreimagePackingReceipt
+      (hComplete := hComplete)
+      hOwner
+      hEventPay
+      hCore.transferNotCarrierNameOnly
+      hCore.transferNotCarrierNameOnly_proof
+  C7OwnerGeometryResidualAfterScaledTransfer.ofOwnerCoreAndIdentityQualitativeReceipt
+    hCore
+    hQual
+    rfl
+
+/--
+Carrier-radius separation from owner-preimage packing plus same-source
+anti-laundering.
+
+This removes the separate qualitative-transfer receipt from the caller: the
+owner-preimage receipt supplies the selected-prefix and qualitative owner
+fields, while `transferNotCarrierNameOnly` remains an explicit guard against a
+name-only identity transfer.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimagePackingSameTreeInvoiceAndAntiLaundering
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hComplete :
+      CoronaDuhamelC7SourceCompletion h hId)
+    (hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier
+        hComplete.scheduleCompletion.projectedCarrier)
+    (hTiming :
+      C7IdentityOwnerTimingInheritanceReceipt hComplete)
+    {owner activeAtomBound : Nat → Nat}
+    {eventPay scaledAtomCharge : Nat → Real}
+    {C atomBudget : Real}
+    (hOwner :
+      OwnerPreimagePackingReceipt
+        owner eventPay scaledAtomCharge activeAtomBound C atomBudget)
+    (hEventPay : eventPay = routeActiveTail)
+    (transferNotCarrierNameOnly : Prop)
+    (transferNotCarrierNameOnly_proof :
+      transferNotCarrierNameOnly)
+    (hAnti :
+      C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource
+        (C7ScaledOwnerPreimageCarrierTransfer.ofOwnerPreimagePackingIdentityTiming
+          hComplete hTiming hOwner hEventPay
+          transferNotCarrierNameOnly
+          transferNotCarrierNameOnly_proof))
+    (hSameSource : hSeparated = hAnti.separatedSource) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+  let hQual :=
+    C7IdentityScaledTransferQualitativeReceipt.ofOwnerPreimagePackingReceipt
+      hOwner hEventPay
+      transferNotCarrierNameOnly
+      transferNotCarrierNameOnly_proof
+  C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofIdentityTimingQualitativeSameTreeInvoiceAndAntiLaundering
+    hComplete
+    hSeparated
+    hTiming
+    hQual
+    hAnti
+    hSameSource
+
+/--
+The full nonadaptive annular source-selection object supplies carrier-radius
+separation through the same owner-preimage/same-source anti-laundering route.
+
+This is the positive endpoint of the current isomorphism chain: once the
+annular source-selection theorem exists, its owner-preimage receipt and
+projected same-source anti-laundering receipt are enough to construct the
+carrier-radius separation receipt for the induced C7 source completion.
+-/
+noncomputable def C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofNonadaptiveAnnularC7SourceSelection
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect :
+      NonadaptiveAnnularC7SourceSelection h hId) :
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt
+      (CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+        hSelect) := by
+  let hComplete :=
+    CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+      hSelect
+  let hTiming :=
+    C7IdentityOwnerTimingInheritanceReceipt.ofCoronaDuhamelCompletionSameTreeInvoice
+      hComplete
+  let hSeparated :
+      FreshAnnularChargeSeparatedSourceFromIndexedCarrier
+        hComplete.scheduleCompletion.projectedCarrier :=
+    FreshAnnularChargeSeparatedSourceFromIndexedCarrier.ofCoronaDuhamelC7SourceCompletion
+      hComplete
+  let transferNotCarrierNameOnly : Prop :=
+    Nonempty (NonadaptiveAnnularC7SourceSelection h hId)
+  let hTransfer :=
+    C7ScaledOwnerPreimageCarrierTransfer.ofOwnerPreimagePackingIdentityTiming
+      hComplete
+      hTiming
+      hSelect.ownerPreimagePackingReceipt
+      hSelect.eventRadiusPayment_eq_routeActiveTail
+      transferNotCarrierNameOnly
+      ⟨hSelect⟩
+  let hAnti : C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource hTransfer :=
+    C7FreshAnnularAntiLaunderingReceiptFromSeparatedSource.ofNonadaptiveAnnularC7SourceSelection
+      hSelect
+      hSeparated
+  exact
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimagePackingSameTreeInvoiceAndAntiLaundering
+      hComplete
+      hSeparated
+      hTiming
+      hSelect.ownerPreimagePackingReceipt
+      hSelect.eventRadiusPayment_eq_routeActiveTail
+      transferNotCarrierNameOnly
+      ⟨hSelect⟩
+      hAnti
+      rfl
+
+/--
+The full nonadaptive annular source-selection object also pays the
+residual-after-transfer receipt for the induced owner-preimage transfer.
+
+The owner core is projected through the already-compiled separation receipt,
+while the owner-preimage packing receipt is spent on the same route active
+tail carried by the source-selection object.
+-/
+noncomputable def C7OwnerGeometryResidualAfterScaledTransfer.ofNonadaptiveAnnularC7SourceSelection
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hSelect :
+      NonadaptiveAnnularC7SourceSelection h hId) :
+    let hComplete :=
+      CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+        hSelect
+    let hCore :=
+      C7OwnerPreimageGeometryCoreReceipt.ofSeparationReceipt
+        (C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofNonadaptiveAnnularC7SourceSelection
+          hSelect)
+    C7OwnerGeometryResidualAfterScaledTransfer
+      (C7ScaledOwnerPreimageCarrierTransfer.ofOwnerPreimagePackingIdentityTiming
+        hComplete
+        (C7IdentityOwnerTimingInheritanceReceipt.ofCoronaDuhamelCompletionSameTreeInvoice
+          hComplete)
+        hSelect.ownerPreimagePackingReceipt
+        hSelect.eventRadiusPayment_eq_routeActiveTail
+        hCore.transferNotCarrierNameOnly
+        hCore.transferNotCarrierNameOnly_proof) := by
+  let hComplete :=
+    CoronaDuhamelC7SourceCompletion.ofNonadaptiveAnnularC7SourceSelection
+      hSelect
+  let hCore :=
+    C7OwnerPreimageGeometryCoreReceipt.ofSeparationReceipt
+      (C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofNonadaptiveAnnularC7SourceSelection
+        hSelect)
+  exact
+    C7OwnerGeometryResidualAfterScaledTransfer.ofOwnerCoreAndOwnerPreimagePackingReceipt
+      hComplete
+      hCore
+      hSelect.ownerPreimagePackingReceipt
+      hSelect.eventRadiusPayment_eq_routeActiveTail
 
 /--
 Post-payoff owner selection also kills the separated-source bridge.
@@ -33187,6 +39147,79 @@ def LocalEnergyDuhamelPaymentChannelGap.unit :
   sameCarrierUnsignedExchange := by norm_num
   productionSpend_zero := rfl
   inheritedReserveSpend_zero := rfl
+
+/--
+Annular Riesz/PSD trace payment receipt for the C7 pressure-tail lane.
+
+This is the Lean-side mirror of the workbench theorem profile
+`annular_bandlimited_riesz_l1_psd_trace_payment`: the selected annular output
+packet must be tied to the prior nonadaptive event stream, paid by PSD trace
+and owner-prefix budgets, and separated from raw unlocalized CZ/Riesz
+variation substitutes.
+-/
+structure AnnularRieszPSDTracePaymentReceipt where
+  selectedTargetUsesAnnularBandlimitedOutputPacket : Prop
+  annularBandlimitFixedBeforePayoff : Prop
+  outputPacketSupportSameAnnularCarrier : Prop
+  tracefreeVariationPointwiseSameCarrierPayment : Prop
+  annularProjectedPacketIdentifiedWithNonadaptiveEventStream : Prop
+  annularEventPayEqPriorNonadaptiveEventStream : Prop
+  tracefreeTensorTotalVariationNotSignedMoment : Prop
+  noLowHighLeakageAfterProjection : Prop
+  annularRieszKernelUniformL1Norm : Prop
+  psdTracePaysAnnularProjectedPacket : Prop
+  cutoffCommutatorTailsPaidBySameStreamShardC : Prop
+  selectedPSDTraceOwnerPrefixBudget : Prop
+  notRawCZMeasureL1 : Prop
+  notRawCZMeasureL1_proof : notRawCZMeasureL1
+  notBesovBVOrCFImport : Prop
+
+/--
+Raw CZ/Riesz payment confuser for the annular pressure-tail lane.
+
+It records the failure mode surfaced by the PDE workbench: a local
+Calderon-Zygmund pressure oscillation estimate can have analytic content while
+still lacking the positive annular payment fields required by
+`AnnularRieszPSDTracePaymentReceipt`.
+-/
+structure RawCZPressureTailPaymentConfuser where
+  localizedCZPressureEstimateMayHold : Prop
+  rawUnlocalizedRieszMeasureTarget : Prop
+  czMeasureL1VariationUnpaid : Prop
+  lowHighLeakageAfterProjectionUnpaid : Prop
+  rejectsRawCZAsAnnularPayment :
+    AnnularRieszPSDTracePaymentReceipt → False
+
+/--
+Raw unlocalized CZ/Riesz spending cannot pay the annular Riesz/PSD trace
+receipt.
+-/
+theorem no_annularRieszPSDTracePaymentReceipt_of_rawCZPressureTailPaymentConfuser
+    (h : RawCZPressureTailPaymentConfuser) :
+    ¬ Nonempty AnnularRieszPSDTracePaymentReceipt := by
+  intro hReceipt
+  exact h.rejectsRawCZAsAnnularPayment hReceipt.some
+
+/--
+Field-level blocker: if the raw-CZ confuser contradicts the
+`notRawCZMeasureL1` field, the annular Riesz/PSD payment receipt is absent.
+-/
+def RawCZPressureTailPaymentConfuser.of_notRawCZMeasureL1
+    (localizedCZPressureEstimateMayHold : Prop)
+    (rawUnlocalizedRieszMeasureTarget : Prop)
+    (czMeasureL1VariationUnpaid : Prop)
+    (lowHighLeakageAfterProjectionUnpaid : Prop)
+    (hRaw :
+      ∀ receipt : AnnularRieszPSDTracePaymentReceipt,
+        ¬ receipt.notRawCZMeasureL1) :
+    RawCZPressureTailPaymentConfuser where
+  localizedCZPressureEstimateMayHold := localizedCZPressureEstimateMayHold
+  rawUnlocalizedRieszMeasureTarget := rawUnlocalizedRieszMeasureTarget
+  czMeasureL1VariationUnpaid := czMeasureL1VariationUnpaid
+  lowHighLeakageAfterProjectionUnpaid := lowHighLeakageAfterProjectionUnpaid
+  rejectsRawCZAsAnnularPayment := by
+    intro hReceipt
+    exact hRaw hReceipt hReceipt.notRawCZMeasureL1_proof
 
 end Route1FreshFrequencyCoercivity
 

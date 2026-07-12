@@ -3584,6 +3584,42 @@ structure TraceFreeVariationProjectedTargetPreprojectionIdentityReceipt where
     noLerayRieszL1PaymentHiddenInIdentity
 
 /--
+Construct the preprojection identity only after the target move and projection
+accounting fields have been supplied explicitly.
+
+This is the narrow positive route for the PSD-trace reinterpretation: the PSD
+matrix-defect receipt supplies the pointwise payment, while the caller still
+owes the theorem that the selected C7 projected target is the preprojection PSD
+fiber and that no Leray/Riesz payment is hidden in that relabeling.
+-/
+def TraceFreeVariationProjectedTargetPreprojectionIdentityReceipt.ofPSDMatrixDefectAndTargetIdentity
+    (hPSD : TraceFreeVariationPSDMatrixDefectPaymentReceipt)
+    (selectedC7ProjectedTargetIsPreprojectionPSDFiber : Prop)
+    (hSelectedC7ProjectedTargetIsPreprojectionPSDFiber :
+      selectedC7ProjectedTargetIsPreprojectionPSDFiber)
+    (projectionKernelFixedBeforePayoff : Prop)
+    (hProjectionKernelFixedBeforePayoff :
+      projectionKernelFixedBeforePayoff)
+    (noLerayRieszL1PaymentHiddenInIdentity : Prop)
+    (hNoLerayRieszL1PaymentHiddenInIdentity :
+      noLerayRieszL1PaymentHiddenInIdentity) :
+    TraceFreeVariationProjectedTargetPreprojectionIdentityReceipt where
+  psdPayment := hPSD
+  selectedC7ProjectedTargetIsPreprojectionPSDFiber :=
+    selectedC7ProjectedTargetIsPreprojectionPSDFiber
+  selectedC7ProjectedTargetIsPreprojectionPSDFiber_proof :=
+    hSelectedC7ProjectedTargetIsPreprojectionPSDFiber
+  selectedC7ReadsPreprojectionStress := hPSD.selectedC7ReadsPreprojectionStress
+  selectedC7ReadsPreprojectionStress_proof :=
+    hPSD.selectedC7ReadsPreprojectionStress_proof
+  projectionKernelFixedBeforePayoff := projectionKernelFixedBeforePayoff
+  projectionKernelFixedBeforePayoff_proof := hProjectionKernelFixedBeforePayoff
+  noLerayRieszL1PaymentHiddenInIdentity :=
+    noLerayRieszL1PaymentHiddenInIdentity
+  noLerayRieszL1PaymentHiddenInIdentity_proof :=
+    hNoLerayRieszL1PaymentHiddenInIdentity
+
+/--
 If the preprojection identity is supplied, the PSD matrix-defect payment
 receipt can be consumed by the trace-free payment branch.
 -/

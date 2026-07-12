@@ -162,6 +162,39 @@ def write_jsonl_atomic(
     )
 
 
+def append_jsonl_locked(path: str | Path, rec: dict[str, Any], *, ensure_ascii: bool = False) -> bool:
+    """Cross-process-safe APPEND of one JSON record + newline to a SHARED ``.jsonl``, serialized by an exclusive
+    ``flock`` so two concurrent workers cannot INTERLEAVE a multi-``write()`` large record — a torn line the
+    reader then silently ``except: continue``-drops, losing BOTH adjacent records (the reuse-loss / artifact-
+    corruption class from the 2026-07-05 shared-resource audit). THE single door for the large-record shared
+    ledgers (proof-cache, closure-certs, bank-events, cot) that exceed the ~4 KB ``PIPE_BUF`` atomic-append
+    guarantee. Best-effort: on any lock/IO error it falls back to a plain append (degrades to the prior torn
+    risk, NEVER raises into the caller — a telemetry/ledger write must never break a closure). Returns True on a
+    locked write. ``flock`` is advisory + local-FS; every writer to a given path MUST route through here for the
+    guarantee to hold (same network-FS caveat the sqlite helper documents)."""
+    line = json.dumps(rec, ensure_ascii=ensure_ascii) + "\n"
+    p = Path(path)
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        import fcntl                                     # POSIX (Linux VPS + macOS); ImportError ⇒ plain-append fallback
+        with open(p, "a", encoding="utf-8") as f:
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)   # block until we own the exclusive lock
+                f.write(line)
+                f.flush()
+                os.fsync(f.fileno())
+            finally:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+        return True
+    except Exception:  # noqa: BLE001 — lock/fs/platform failure ⇒ plain append (never break the caller)
+        try:
+            with open(p, "a", encoding="utf-8") as f:
+                f.write(line)
+        except Exception:  # noqa: BLE001
+            pass
+        return False
+
+
 def sha256_file(path: str | Path) -> str | None:
     """Return sha256 for a regular file, or None when unavailable."""
     p = Path(path)

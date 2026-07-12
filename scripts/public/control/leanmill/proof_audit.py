@@ -10,6 +10,7 @@ records evidence only — no proof credit, no public correctness claim.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -491,6 +492,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "schema": "leanmill-pr-a1-compile-l3-audit-v1",
         "generated_at_epoch": int(time.time()),
         "target": str(target),
+        "target_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
         "lean_root": str(lean_root),
         "status": status,
         "static_clean": static_clean,

@@ -18,6 +18,7 @@ NON-IATROGENIC by construction: the audit (Step 4, calibrated 6/6) rejects the l
 vacuous decompositions that would otherwise manufacture fake lift; the lemmas are proved by the
 unchanged kernel-gated solver. The loop never closes the goal — it produces a sound sub-goal DAG."""
 from __future__ import annotations
+import json
 import re
 from pathlib import Path
 
@@ -256,8 +257,23 @@ def _plan_choice_prefix(situation: str = "proof_stuck", *, enable=None, disable=
                 "path (SOLVE_DIRECT) and a refutation/¬G move (FALSIFY). Only pick a DAG action above when a "
                 "genuine reduction exists. The format serves the proof — never the reverse.)\n")
     research = _plan_research_moves(goal)   # the math catalogue + transport attacks, goal-ranked (lever deeper)
+    # WHY_NOT_DIRECT discipline (2026-07-05 CLOB "decompose-forever, 0 closes" RCA): the agent reflexively splits
+    # because a sound reduction is easy to find at every level — so it never GRINDS a reachable leaf. Force it to
+    # default to SOLVE_DIRECT and justify any decompose. Only surfaced when SOLVE_DIRECT is actually offered (the
+    # full `proof_stuck` menu); on the `target_weakened` recourse subset decomposition IS the point, so it stays off
+    # (also keeps the subset ballast-free — the selftest asserts no out-of-subset action names leak into the prompt).
+    direct_discipline = ""
+    if "SOLVE_DIRECT" in names:
+        direct_discipline = (
+            "\n\nYOU ARE A FRONTIER PROVER — DEFAULT TO SOLVE_DIRECT. Attempt the full proof yourself; splitting is "
+            "a LAST RESORT. A sound reduction is easy to find at every level — that is the trap: decomposing forever "
+            "closes nothing. If you choose any decomposing action you MUST append to the PLAN line `; WHY_NOT_DIRECT: "
+            "<the ONE concrete obstruction that makes proving G directly infeasible RIGHT NOW — a specific missing "
+            "lemma, a genuinely hard induction, an unavailable Mathlib result>`. If you cannot name a concrete "
+            "obstruction — a membership/subset/monotonicity/`filter` fact, a one-branch case split, anything a "
+            "careful proof would just DO — the leaf is within reach: choose SOLVE_DIRECT and PROVE IT.\n")
     return ("FIRST, choose the single best STRUCTURAL ACTION for this goal and state it on ONE line as "
-            "`PLAN: <ACTION> — <one-line reason>`, where <ACTION> is EXACTLY one of:\n" + opts +
+            "`PLAN: <ACTION> — <one-line reason>`, where <ACTION> is EXACTLY one of:\n" + opts + direct_discipline +
             "\nThen PRODUCE THE ARTIFACT FOR YOUR CHOSEN ACTION in the DECOMP format below — a sub-lemma DAG "
             "whose sorry-free chain proves the goal G. The SAME kernel audit (sorry-free + non-circular + "
             "every-lemma-load-bearing + proves-G) gates every action, so your CHOICE drives WHICH artifact you "
@@ -295,11 +311,11 @@ def deanchor(source: str, target_name: str, banned_terms: "list[str] | None" = N
     and builds a banned-terms clause so the leaf can't cite a memorized named result. Local decl names
     are left intact (renaming them reversibly is a v2 refinement); comment-strip + name-ban + the
     'treat as abstract' instruction carry the deanchor for v1."""
-    from ztare.leanmill.lean_source import blank_comments as _bc   # canonical nested-aware scanner
+    from ztare.leanmill.lean_source import (blank_comments as _bc, preamble_before_target as _preamble)
     nocomment = _bc(source)   # offset/newline-preserving so `^theorem` anchor + decl spans stay valid
     blocks = dict(_decl_blocks(nocomment))
     goal_decl = next((blocks[n] for n in blocks if n == target_name or n.endswith("." + target_name)), "")
-    preamble = re.split(r"(?m)^(?:theorem|lemma)\s+" + re.escape(target_name) + r"\b", nocomment, maxsplit=1)[0].rstrip()
+    preamble = _preamble(nocomment, target_name)
     sig = _signature(goal_decl)
     j = sig.find(":") if ":" not in (target_name) else -1
     goal_concl = _lemma_conclusion(goal_decl)
@@ -404,17 +420,26 @@ def _sample_diverse(k: int, generate, verify, base_ctx: dict):
         ctxs.append(ctx)
     audited, attempts = [], []
     if k > 1 and os.environ.get("ZTARE_ISO_SAMPLES_PARALLEL", "1") != "0":
-        import concurrent.futures as _cf
+        from contextvars import copy_context
+        from ztare.common.work_plan import fanout, run as wp_run
 
-        def _gen_safe(c):
+        def _gen_safe(lane_idx: int):
+            ctx = ctxs[lane_idx]
             try:
-                return generate(c)
+                return copy_context().run(generate, ctx)
             except Exception as e:  # noqa: BLE001 — one failed sample must not sink the round
                 return {"lemmas": [], "chain": "", "lnames": [], "raw": f"sample dispatch error: {e!r}"}
 
+        # ponytail: fanout/collect — generate is pure fan-out (K independent LLM calls);
+        # collect returns all in lane-index order (= ctxs order). VERIFY stays serial.
         workers = max(1, min(k, int(os.environ.get("ZTARE_ISO_SAMPLES_WORKERS", "3") or 3)))
-        with _cf.ThreadPoolExecutor(max_workers=workers) as ex:
-            arts = list(ex.map(_gen_safe, ctxs))      # order-stable fan-out
+        plan = fanout(
+            _gen_safe,
+            K=k,
+            diversify=lambda i: i,
+            merge={"kind": "collect"},
+        )
+        arts = wp_run(plan, max_workers=workers)
         for art in arts:                              # SERIAL audit in sample order
             v = verify(art)
             attempts.append((art, v))
@@ -471,6 +496,53 @@ def _render_semantic_shelf_block(goal: str, *, top_k: int = 4) -> str:
                 + "\n".join(lines) + "\n\n")
     except Exception:  # noqa: BLE001 — advisory; never break planner-prompt assembly
         return ""
+
+
+class DecompositionCache:
+    """`proof_cache` for DECOMPOSITIONS. Caches the agent's AUDITED DAG (lemmas + chain) per TARGET, keyed by the
+    α/∀-invariant statement-hash the proof_cache/checkpoint use. WHY (the RBAC 'no reuse after hours' RCA,
+    2026-07-05): the planner re-decomposes a STABLE target into DIFFERENTLY-named/stated sub-lemmas every run, so
+    the rungs banked in run N are ORPHANED in run N+1 (a different split cites nothing banked) → each run
+    re-formalizes + re-solves from scratch and the library never compounds. Reusing the FIRST audited DAG makes the
+    decomposition CONVERGE, so its rungs (banked once) are cited on every later run — expert iteration needs STABLE
+    sub-goals. NON-IATROGENIC (this is NOT the 'pin use-lemma-X-here' brittle determinism the arch doc warns
+    against): it AMORTIZES the agent's decision (decided once, reused) EXACTLY as proof_cache amortizes a proof; it
+    reuses a KERNEL-AUDITED artifact, not a mid-reasoning hint; the caller RE-AUDITS the cached DAG before use (a
+    substrate change ⇒ the reused DAG simply fails the audit ⇒ falls through to a fresh plan); and the kernel
+    ratifies every closure regardless. `ZTARE_LEANMILL_DECOMP_CACHE=0` reverts to per-run re-planning."""
+
+    def __init__(self, path):
+        self.path = Path(path)
+        self._mem: dict = {}
+        if self.path.exists():
+            try:
+                for line in self.path.read_text(encoding="utf-8").splitlines():
+                    try:
+                        r = json.loads(line)
+                    except Exception:  # noqa: BLE001 — skip a garbled row, never fail the read
+                        continue
+                    if isinstance(r, dict) and r.get("key"):
+                        self._mem[r["key"]] = r
+            except Exception:  # noqa: BLE001
+                pass
+
+    def get(self, key: str) -> "dict | None":
+        r = self._mem.get(key)
+        if not r or not r.get("lemmas") or not (r.get("chain") or "").strip():
+            return None
+        return {"lemmas": r["lemmas"], "chain": r["chain"], "lnames": r.get("lnames") or []}
+
+    def put(self, key: str, lemmas: list, chain: str, lnames: list) -> None:
+        if not key or key in self._mem or not lemmas or not (chain or "").strip():
+            return
+        rec = {"key": key, "lemmas": lemmas, "chain": chain, "lnames": lnames}
+        self._mem[key] = rec
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(rec) + "\n")
+        except Exception:  # noqa: BLE001 — cache persistence must never break the solve
+            pass
 
 
 def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 180,
@@ -566,9 +638,14 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
     try:
         import sys as _sys
         from ztare.leanmill.solver.agentic_leaf import probe_dir as _probe_dir
-        from ztare.formal.lean_check_server import ensure_server as _ensure, default_socket_path as _dsock
+        from ztare.formal.lean_check_server import ensure_server_advertised as _ensure_adv
         _repo = Path(__file__).resolve().parents[4]
-        _sock = _ensure(str(lean_root)) or _dsock(str(lean_root))
+        # SINGLE DOOR (2026-07-03): advertise-or-loud. Only inject the warm-check block when the socket is LIVE —
+        # the prior `or default_socket_path` injected a hint pointing at a possibly-DEAD socket, so codex saw
+        # 'unreachable' and cold-compiled anyway. A live socket ⇒ real ~0.1s checks; None ⇒ no block (loud already).
+        _sock = _ensure_adv(str(lean_root), context=f"planner {target_name}")
+        if not _sock:
+            raise RuntimeError("warm server down — no warm-check block (loud warning already logged)")
         # per-target probe name (2026-06-13 audit B3): a FIXED `IsoDagProbe.lean` collides across
         # concurrent shards on the same lean_root — one shard's warm-check reads another's probe. Key it
         # to the target (sound either way — the kernel re-verifies every closure — but a collision wastes
@@ -609,8 +686,10 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         print(f"[iso] planner dispatch (budget {_plan_budget}s, {_src}) for: {goal_concl[:70]}", flush=True)
         try:
             _kw = {"repo": lean_root, "timeout": _plan_budget}
-            if (ctx or {}).get("agent_tag"):   # #117 parallel sampling: per-sample durable session
-                _kw["agent_tag"] = ctx["agent_tag"]
+            # agent_tag: parallel-sample session key if present, else `{target}__planner` so the CoT trace carries
+            # the CLEAN target (cot_traces splits on `__`) instead of an empty label (2026-07-03 fix). #117 sampling.
+            _kw["agent_tag"] = ((ctx or {}).get("agent_tag")
+                                or f"{re.sub(r'[^A-Za-z0-9_.]+', '_', str(target_name or 'tgt'))[:50]}__planner")
             raw = dispatch_fn(prompt, **_kw) or ""
         except TypeError:
             # an injected dispatch (test fake / older signature) without `agent_tag` — retry untagged:
@@ -688,6 +767,38 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
                           better=lambda a, va, b, vb: (b, vb) if vb.accepted else (a, va),
                           max_refines=max_refines)
 
+    # DECOMPOSITION CACHE (2026-07-05, RBAC no-reuse RCA): reuse the FIRST audited DAG for THIS target so the
+    # decomposition CONVERGES across runs (else the planner re-splits differently every run → banked rungs orphaned
+    # → no compounding). The cached DAG is RE-AUDITED before use (fail-safe); the agent's decision is amortized like
+    # a cached proof; the kernel ratifies every closure. Checked BEFORE planning; stored on any audited DAG below.
+    _dcache = None
+    _dkey = None
+    if os.environ.get("ZTARE_LEANMILL_DECOMP_CACHE", "1") != "0":
+        try:
+            from ztare.formal.repl_compile import canonical_type_hash_via_repl as _cth
+            _h = _cth(source, target_name, lean_root, env=None)
+            if _h:
+                _dkey = "d" + str(_h)
+                from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
+                _dcache = DecompositionCache(_OUT / "decomposition_cache.jsonl")
+                _hit = _dcache.get(_dkey)
+                if _hit:
+                    _dv = _verify(_hit)
+                    if _dv.accepted:
+                        print(f"[iso] REUSED cached decomposition ({len(_hit.get('lnames') or [])} rungs) for "
+                              f"'{target_name}' — CONVERGED, not re-planning (banked rungs stay citable)", flush=True)
+                        return {"audited": True, "lemmas": _hit["lemmas"], "chain": _hit["chain"],
+                                "lnames": _hit.get("lnames") or [], "verdict": _dv.detail, "rounds": 0,
+                                "iso_source": "decomp_cache", "raw_tail": "", "notes_used": bool(_notes_block)}
+                    print(f"[iso] cached decomposition for '{target_name}' no longer audits "
+                          f"({str(_dv.reason)[:70]}) — re-planning", flush=True)
+        except Exception:  # noqa: BLE001 — cache is best-effort; fall through to planning
+            _dcache = None
+
+    def _store_decomp(_lemmas, _chain, _lnames, _audited) -> None:
+        if _audited and _dcache is not None and _dkey and _lemmas and (_chain or "").strip():
+            _dcache.put(_dkey, _lemmas, _chain, _lnames or [])
+
     # DETERMINISTIC CONJUNCTIVE DECOMPOSITION (2026-06-25): when the target is a top-level conjunction, its
     # work-items ARE the conjuncts — derive them MECHANICALLY (no LLM consolidation lottery) and AUDIT through
     # the SAME `decomposition_dag_audit` kernel gate the agentic planner uses. On a pass we skip the agent
@@ -702,6 +813,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
             if _dv.accepted:
                 print(f"[iso] DETERMINISTIC conjunctive decomposition: {len(_det['lnames'])} conjunct "
                       f"work-items audited (no LLM split) for: {goal_concl[:60]}", flush=True)
+                _store_decomp(_det["lemmas"], _det["chain"], _det["lnames"], True)
                 return {"audited": True, "lemmas": _det["lemmas"], "chain": _det["chain"],
                         "lnames": _det["lnames"], "verdict": _dv.detail, "rounds": 0,
                         "iso_source": "deterministic_conjunctive", "raw_tail": "",
@@ -716,6 +828,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         audited, attempts = _sample_diverse(n_samples, _generate, _verify, {})
         if audited:  # best-of-K: the richest SOUND blueprint
             art, v = _richest(audited)
+            _store_decomp(art.get("lemmas"), art.get("chain"), art.get("lnames"), True)
             return {"audited": True, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
                     "lnames": art.get("lnames"), "verdict": v.detail, "rounds": len(attempts),
                     "n_samples": n_samples, "n_audited": len(audited), "iso_source": _iso_source,
@@ -724,6 +837,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         # explore K structures, then fix the most-sound one) instead of regenerating blind.
         seed_ctx = _refine_ctx(*_richest(attempts), {}) if attempts else {}
         art, verdict, trace = loop.run(seed_ctx)
+        _store_decomp(art.get("lemmas"), art.get("chain"), art.get("lnames"), verdict.accepted)
         return {"audited": verdict.accepted, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
                 "lnames": art.get("lnames"), "verdict": verdict.detail, "rounds": len(attempts) + len(trace),
                 "n_samples": n_samples, "n_audited": 0, "iso_source": _iso_source,
@@ -731,6 +845,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
                 **({} if verdict.accepted else {"killed": verdict.reason})}
 
     art, verdict, trace = loop.run({})
+    _store_decomp(art.get("lemmas"), art.get("chain"), art.get("lnames"), verdict.accepted)
     return {"audited": verdict.accepted, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
             "lnames": art.get("lnames"), "verdict": verdict.detail, "rounds": len(trace),
             "iso_source": _iso_source, "raw_tail": (art.get("raw") or "")[-200:], "notes_used": bool(_notes_block),
@@ -822,6 +937,20 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
            "n_lemmas": len(out), "lemmas": out}
     if false_rungs:
         res["false_rungs"] = false_rungs   # planner produced provably-false sub-lemma(s) → route_and_solve re-plans
+    # STALL HARVEST (2026-07-03, DeepSeek-Prover-V2 / POETRY / Hilbert recursive decomposition): a rung that is TRUE
+    # but the leaf could NOT close in one shot (an honest exact_gap/open/failed — NOT budget_exhausted, NOT false) is
+    # the signal to DECOMPOSE IT FURTHER, not to keep one-shotting it. Every prior re-plan trigger fired ONLY on a
+    # kernel-FALSE rung, so a hard-but-true stalling rung (EF1 iso_lemma1's cycle-position argument) was left to
+    # grind whole-goal. Surface these `open_rungs` so `route_and_solve` re-plans with a "split each stalled rung into
+    # strictly smaller steps" cue. SOUND: the finer split re-enters the SAME kernel audit + composite_ratify — a
+    # re-plan can never launder. Excludes budget_exhausted (no headroom ⇒ re-planning cannot help).
+    _lemma_by_name = {ln: lm for lm, ln in _pairs}
+    _STALL_SKIP = ("closed", "statement_false_confirmed", "budget_exhausted")
+    open_rungs = [{"name": x["name"], "outcome": str(x["outcome"]),
+                   "lemma": (_lemma_by_name.get(x["name"], "") or "").strip()[:600]}
+                  for x in out if x["outcome"] not in _STALL_SKIP]
+    if open_rungs:
+        res["open_rungs"] = open_rungs     # TRUE-but-stalled sub-lemma(s) → route_and_solve re-decomposes them finer
     if _radj_telemetry is not None:
         res["rung_adjacency"] = _radj_telemetry   # the #121 A/B evidence trail (order + scores per run)
     # COMPOSITE RATIFICATION (2026-06-07): when EVERY sub-lemma closed, assemble {proven lemmas} + {chain}
@@ -879,6 +1008,17 @@ def _splice_proof(lemma: str, proof: str) -> str:
     return f"{head} := {proof.strip()}"
 
 
+def _strip_trailing_diagnostics(proof: str) -> str:
+    """Drop trailing `#print` / `#check` / `#eval` COMMAND(s) a leaf appended after its proof term. In its OWN
+    probe those reference the leaf's own decl name and verify fine, but spliced under the composite's decl name
+    they become `unknown constant <leaf-name>` and break the assembly (2026-07-03 — the DeFi conjunct proofs each
+    carried a trailing `#print axioms reachable_state_solvency_guarded_actions_conjᵢ`). A `#`-command is only ever a
+    top-level diagnostic here (never inside a tactic block), so cutting at the first one is safe + comment-agnostic
+    enough for the assembler (the kernel re-ratifies the spliced result regardless)."""
+    import re as _re
+    return _re.split(r"\n\s*#(?:print|check|eval)\b", proof or "")[0].rstrip()
+
+
 def assemble_composite_proof(preamble: str, lemmas, lnames, lemma_proofs: dict, chain: str) -> str:
     """PURE (no Lean): splice each lemma's ratified proof in place of its sorry, then append the CHAIN (which
     proves G using the lemma names) — a single sorry-free Lean source proving G. '' if any lemma's proof is
@@ -890,11 +1030,52 @@ def assemble_composite_proof(preamble: str, lemmas, lnames, lemma_proofs: dict, 
         proof = (lemma_proofs or {}).get(lname)
         if not proof or _hs_assemble(proof):
             return ""
+        proof = _strip_trailing_diagnostics(proof)   # a leaf's trailing `#print axioms <own-name>` becomes an
+                                                      # `unknown constant` under the composite's decl (2026-07-03)
         parts.append(_splice_proof(lemma, proof))
     if not (chain or "").strip() or not parts:
         return ""
     parts.append(chain.strip())
     return "\n\n".join(parts) + "\n"
+
+
+def kernel_conjunction_split(binders: str, concl: str) -> "list[str] | None":
+    """REPL-AUTHORITATIVE conjunction split (2026-07-03 — the GENERAL-PURPOSE fix for the recurring regex
+    `safe_conjunction_split` bug class). Instead of regex-parsing `C₁ ∧ … ∧ Cₙ` (which can't know `∃`/`∀`/`Σ` binds
+    loosest, so it split a binder's OWN body and orphaned the witness — the DeFi false-gap), ASK LEAN: elaborate
+    `example <binders> : <concl> := by (repeat' apply And.intro) <;> sorry` in the campaign env and read the LEAF-goal
+    sorries — those ARE the conjuncts, from Lean's real parser+elaborator (every binder/precedence/macro/unicode).
+    `And.intro` only splits `∧`, never a binder's body, so a ∃/∀ conjunct comes back WHOLE. SYMMETRIC with the
+    composite (which already does `repeat' apply And.intro`). Returns [C₁…Cₙ] (n≥2) or None (no campaign env / no REPL
+    / not a conjunction / ANY elaboration issue) — the caller falls back to the regex splitter, and the decomposition
+    AUDIT (`decomposition_dag_audit`, kernel) gates whichever conjuncts result, so this can never regress or unsound."""
+    try:
+        from pathlib import Path as _P
+        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env, campaign_variables,
+                                                campaign_namespaces, _get_repl, _strip_prelude_for_repl)
+        sub = get_campaign_substrate()
+        if not sub:
+            return None
+        project = str(_P(sub).parent)
+        env = campaign_file_env(str(_P(sub).resolve()), project)   # the defs the target's conjuncts reference
+        pl = _get_repl(project)
+        if env is None or pl is None:
+            return None
+        _ns = campaign_namespaces()
+        _vb = "".join(v + "\n" for v in campaign_variables())       # section-variable/instance context (K, [Field K]…)
+        _open = "".join(f"namespace {n}\n" for n in _ns) if len(_ns) == 1 else ""
+        _end = "".join(f"end {n}\n" for n in _ns) if len(_ns) == 1 else ""
+        _b = (" " + binders.strip()) if binders.strip() else ""
+        ex = f"import Mathlib\n{_open}{_vb}example{_b} : {concl} := by (repeat' apply And.intro) <;> sorry\n{_end}"
+        r = pl.check(_strip_prelude_for_repl(ex), timeout=90, env=env)
+        if not isinstance(r, dict) or r.get("errors"):             # a real elaboration error ⇒ not a valid split
+            return None
+        conj = [(s.get("goal", "") if isinstance(s, dict) else "").rsplit("⊢", 1)[-1].strip()
+                for s in (r.get("sorries") or [])]
+        conj = [c for c in conj if c]
+        return conj if len(conj) >= 2 else None
+    except Exception:  # noqa: BLE001 — best-effort; ANY failure ⇒ the regex fallback in the caller (never blocks)
+        return None
 
 
 def derive_conjunctive_dag(goal_decl: str, target_name: str) -> "dict | None":
@@ -928,18 +1109,36 @@ def derive_conjunctive_dag(goal_decl: str, target_name: str) -> "dict | None":
     # shared with governed_dag_search.derive_structural_decomposition so a quantifier guard can never drift into a
     # sibling (2026-07-01 NS-hunt RCA: `∃ w, A∧B` was split as a plain conjunction in the un-guarded twin, orphaning
     # the shared witness `w` as a free variable). `∀` distributes → the prefix is re-prepended to each conjunct.
-    _split = safe_conjunction_split(concl)
-    if not _split:
-        return None   # ∃-led (shared witness), top-level ↔, or atomic — the guarded door decides
-    qprefix, conjuncts = _split
+    # REPL-AUTHORITATIVE split FIRST (2026-07-03 general fix): ask Lean for the conjuncts — respects every binder a
+    # regex can't (the DeFi `∃`-conjunct false-gap). The binders are applied in the elaborated `example`, so the
+    # conjuncts carry no ∀-prefix (qprefix=""). Fall back to the regex `safe_conjunction_split` (now binder-scoping-
+    # fixed) when the REPL split is unavailable; `decomposition_dag_audit` gates whichever conjuncts result, so this
+    # can never regress or unsound. Symmetric with the composite, which already uses `repeat' apply And.intro`.
+    _kconj = kernel_conjunction_split(binders, concl)
+    if _kconj:
+        qprefix, conjuncts = "", _kconj
+    else:
+        _split = safe_conjunction_split(concl)
+        if not _split:
+            return None   # ∃-led (shared witness), top-level ↔, or atomic — the guarded door decides
+        qprefix, conjuncts = _split
     _bind = (" " + binders) if binders else ""
     _q = (qprefix + " ") if qprefix else ""
     lemmas, lnames = [], []
     for i, c in enumerate(conjuncts, start=1):
         lname = f"{target_name}_conj{i}"
         lnames.append(lname)
-        # each conjunct carries the theorem binders AND the fronted ∀-prefix → always well-typed.
-        lemmas.append(f"theorem {lname}{_bind} : {_q}{c} := by sorry")
+        # ∀-FRONT the binder telescope (2026-07-03 general fix — the DeFi 3-conjunct composite never compiled).
+        # The leaf solver ∀-fronts the goal (`pi_normalized_signature`), so a ratified conjunct proof BEGINS
+        # `intro <binders>`. A param-BOUND conjunct theorem (`theorem <name> <binders> : Cᵢ`) then makes that intro
+        # fail (`introN failed`: no binders in the goal) the instant the proof is spliced back → the composite stays
+        # open even though every conjunct is proven. Emit the conjunct ∀-fronted so the leaf proof splices as-is;
+        # `solve_by_elim [<names>]` in the chain applies the ∀-fronted lemma under unification (validated compile,
+        # axiom-clean). Empty telescope ⇒ no ∀ (would be `∀ ,`).
+        if binders.strip():
+            lemmas.append(f"theorem {lname} : ∀{_bind}, {_q}{c} := by sorry")
+        else:
+            lemmas.append(f"theorem {lname} : {_q}{c} := by sorry")
     cites = ", ".join(lnames)
     # N-agnostic + associativity-robust: `intro` the fronted quantifier (no-op when there is none), peel every
     # top-level `∧`, then close each leaf citing the conjunct lemmas (`solve_by_elim` applies them under unification).
@@ -1103,6 +1302,24 @@ def _render_false_rung_feedback(false_rungs: list) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _render_open_rung_feedback(open_rungs: list) -> str:
+    """Planner-prompt cue for the STALL→DEEPER-DECOMPOSE escalation (2026-07-03; the recursive-decomposition
+    mechanism of DeepSeek-Prover-V2 / POETRY / Hilbert). These sub-lemmas are TRUE but the leaf could not close
+    them in ONE shot — the fix is not to retry the same whole-goal proof, but to break EACH into strictly smaller
+    intermediate steps and hand those back as their OWN sub-lemmas (the prover's `have hStep : … := by …` steps
+    become sibling rungs). Advisory: the kernel audit + composite_ratify still gate every new lemma, so this can
+    only STEER toward a finer sound decomposition — it can never launder."""
+    lines = ["\n\nPRIOR-DECOMPOSITION STALL — these sub-lemmas are TRUE but could NOT be proved in a single pass "
+             "(an honest gap, not a false statement). Do NOT re-emit them unchanged. DECOMPOSE EACH ONE FURTHER: "
+             "write the proof as a chain of strictly simpler intermediate `have` steps and PROMOTE EACH such step "
+             "to its own named sub-lemma, so every new rung is materially smaller than the one that stalled. If you "
+             "produced a partial proof with `sorry` placeholders, turn each remaining `sorry` subgoal into a rung."]
+    for orr in open_rungs:
+        lines.append(f"  • `{orr.get('name')}` stalled ({orr.get('outcome')}) — split it into smaller steps. "
+                     f"Statement: {(orr.get('lemma') or '').strip()[:240]}")
+    return "\n".join(lines) + "\n"
+
+
 def route_and_solve(source: str, target_name: str, goal: str, *, lean_root: Path,
                     timeout_s: int = 400, substrate=None, notes: "str | None" = None,
                     _depth: "int | None" = None) -> dict:
@@ -1154,8 +1371,16 @@ def route_and_solve(source: str, target_name: str, goal: str, *, lean_root: Path
     # so the run would otherwise STALL with the agent's correct correction thrown away. Feed that correction back
     # to the planner (advisory notes; the kernel audit + composite_ratify still gate soundness — a re-plan can
     # NEVER launder) and re-decompose, bounded by ZTARE_LEANMILL_REPLAN_FALSE_RUNG rounds (default 1).
-    _replan_budget = (int(os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") or "1")
-                      if os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") != "0" else 0)
+    _replan_false_budget = (int(os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") or "1")
+                            if os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") != "0" else 0)
+    # STALL-DRIVEN re-plan (2026-07-03): a TRUE-but-stalled rung triggers ONE finer re-decomposition. OPT-IN
+    # (default OFF, =1 enables) — unlike the false-rung re-plan (kernel-fact trigger), "stall" is a heuristic
+    # trigger, so a DEFAULT-ON harness-forced re-decompose is goldilocks determinism-creep (the arch invariant:
+    # decompose-vs-direct is the AGENT's call; a `falsify-on-stall` was reverted for exactly this). Kept available
+    # for A/B / explicit runs; the agent electing DECOMPOSE at re-entry is the invariant-clean path.
+    _replan_stalled_budget = (int(os.environ.get("ZTARE_LEANMILL_REPLAN_STALLED_RUNG", "0") or "0")
+                              if os.environ.get("ZTARE_LEANMILL_REPLAN_STALLED_RUNG", "0") != "0" else 0)
+    _replan_budget = max(_replan_false_budget, _replan_stalled_budget)
     import time as _time
     from ztare.common.timeouts import timeout_s as _budget   # the ONE timeout home (no inline magic numbers)
     # BUDGET CONTRACT (the v3 budget-leak lesson + byte-parity): ROUND 0 is the original single-shot — attack
@@ -1190,11 +1415,23 @@ def route_and_solve(source: str, target_name: str, goal: str, *, lean_root: Path
         sol = solve_decomposition(res, source, target_name, lean_root=lean_root,
                                   timeout_s=_sol_t, substrate=substrate, notes=_notes, _depth=depth + 1)
         _false = sol.get("false_rungs") or []
-        # stop: no false rung, OR the parent already ratified, OR the re-plan budget is spent
-        if not _false or sol.get("parent_closed") or _round >= _replan_budget:
+        # STALL-DRIVEN rungs re-plan too (2026-07-03): a TRUE-but-stalled rung is re-decomposed FINER.
+        _open = (sol.get("open_rungs") or []) if _replan_stalled_budget else []
+        # Each path re-plans ONLY within ITS OWN budget, so `REPLAN_FALSE_RUNG=0` or `REPLAN_STALLED_RUNG=0`
+        # independently restores that path's single-shot A/B baseline (no cross-contamination via the shared loop).
+        _do_false = bool(_false) and _round < _replan_false_budget
+        _do_open = bool(_open) and _round < _replan_stalled_budget
+        # stop: parent already ratified, OR neither path has an actionable rung within its remaining budget.
+        if sol.get("parent_closed") or not (_do_false or _do_open):
             break
-        _replan_trace.append({"round": _round, "false_rungs": [f["name"] for f in _false]})
-        _notes = (notes or "") + _render_false_rung_feedback(_false)   # correction → next planner round
+        _replan_trace.append({"round": _round,
+                              "false_rungs": [f["name"] for f in _false] if _do_false else [],
+                              "open_rungs": [o["name"] for o in _open] if _do_open else []})
+        # correction (false) + decompose-further cue (stalled) → next planner round. Both steer the SAME
+        # kernel-audited re-plan; a stalled rung asks for a strictly finer split of that rung.
+        _notes = ((notes or "")
+                  + (_render_false_rung_feedback(_false) if _do_false else "")
+                  + (_render_open_rung_feedback(_open) if _do_open else ""))
     return {"routed": True, "audited": True, "decomposition": res, "solution": sol, "depth": depth,
             "rungs_closed": sol.get("n_closed", 0), "rungs_total": sol.get("n_lemmas", 0),
             "replan_trace": _replan_trace or None}
@@ -1238,6 +1475,19 @@ def _selftest() -> int:
        _parse_dag("DECOMP:\n```lean\ntheorem l1 : <statement> := by sorry\n```\n", "iso") == ([], "", []))
     ok("parse: empty input ⇒ empty", _parse_dag("", "iso") == ([], "", []))
     ok("parse: fenced but no theorem ⇒ empty", _parse_dag("DECOMP:\n```lean\njust prose\n```\n", "iso") == ([], "", []))
+
+    # --- STALL→DECOMPOSE-FURTHER re-plan (2026-07-03): the open-rung classifier + the decompose-further cue ---
+    _stall_skip = ("closed", "statement_false_confirmed", "budget_exhausted")
+    _demo = [{"name": "a", "outcome": "closed"}, {"name": "b", "outcome": "exact_gap"},
+             {"name": "c", "outcome": "budget_exhausted"}, {"name": "d", "outcome": "statement_false_confirmed"},
+             {"name": "e", "outcome": "open"}]
+    ok("stall-harvest: ONLY true-stalled rungs (exact_gap/open) become open_rungs — not closed/false/budget",
+       [x["name"] for x in _demo if x["outcome"] not in _stall_skip] == ["b", "e"])
+    _ofb = _render_open_rung_feedback([{"name": "b", "outcome": "exact_gap", "lemma": "theorem b : P := by sorry"}])
+    ok("stall-harvest: cue tells the planner to DECOMPOSE the stalled rung FURTHER (not retry whole-goal)",
+       "DECOMPOSE EACH ONE FURTHER" in _ofb and "`b`" in _ofb and "sorry" in _ofb)
+    ok("stall-harvest: false-rung + stall cues are independent (false path byte-unchanged)",
+       "FALSE" in _render_false_rung_feedback([{"name": "z", "claim": "cx"}]) and "STALL" in _ofb)
 
     # --- DETERMINISTIC CONJUNCTIVE DECOMPOSITION (2026-06-25): conjuncts ARE the work-items, no LLM split ---
     _cg = ("theorem amm_cpmm (x y k : Real) (hx : 0 < x) : "

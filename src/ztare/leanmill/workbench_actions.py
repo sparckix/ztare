@@ -25,6 +25,7 @@ REPO = Path(__file__).resolve().parents[3]
 PROJECT_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,120}$")
 NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_'.]*$")
 MODE_CHOICES = {"cascade", "dag_search"}
+AXIOM_PACK_TRIAL_PREPARATION_SCHEMA = "leanmill.axiom_pack_trial_preparation.v1"
 
 
 # Storage is the shared common provider (S3/DB-swappable). Aliased to the historical names so the type hints
@@ -41,6 +42,20 @@ def utc_now() -> str:
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def sha256_ref_bytes(data: bytes) -> str:
+    return "sha256:" + sha256_bytes(data)
+
+
+def canonical_json_bytes(value: Any) -> bytes:
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 def job_root(*, repo: Path = REPO) -> Path:
@@ -81,6 +96,12 @@ def repo_env(repo: Path) -> dict[str, str]:
 
 def project_leanmill_root(project: str, *, repo: Path = REPO) -> Path:
     return repo / "projects" / project / "leanmill"
+
+
+def axiom_pack_trial_root(*, project: str = "", repo: Path = REPO) -> Path:
+    if project:
+        return project_leanmill_root(project, repo=repo) / "axiom_pack_trials"
+    return repo / "analytics" / "public" / "leanmill" / "workbench" / "axiom_pack_trials"
 
 
 def action_paths(action: str, *, project: str = "", repo: Path = REPO) -> dict[str, Path]:
@@ -274,6 +295,182 @@ def ratify_job(request: dict[str, Any], *, repo: Path, storage: ActionStorage) -
     return job
 
 
+def campaign_run_job(request: dict[str, Any], *, repo: Path, storage: ActionStorage) -> dict[str, Any]:
+    """Launch a LeanMill campaign (formalize or AxiomPack frontier) via the existing
+    `ztare.leanmill.cli campaign` entry point — the SAME orchestration `arc3_play_loop.py` already shells
+    out to. This job only tracks whether the background process is alive; campaign STATE (status, budget,
+    journal) lives entirely in the attempt_dir the CLI writes, read back through
+    `frontier_campaign_actions.frontier_campaign_status` — never duplicated here."""
+    job = _base_job("campaign_run", request, repo=repo, storage=storage)
+    blueprint_raw = str(request.get("blueprint") or "").strip()
+    if not blueprint_raw:
+        raise ValueError("blueprint is required")
+    blueprint_path = storage.resolve(blueprint_raw)
+    if not blueprint_path.exists() or not blueprint_path.is_file():
+        raise ValueError(f"blueprint not found: {storage.rel(blueprint_path)}")
+    command = [
+        sys.executable, "-m", "ztare.leanmill.cli", "campaign", storage.rel(blueprint_path),
+    ]
+    job.update(
+        {
+            "label": "Run a LeanMill campaign",
+            "blueprint_path": storage.rel(blueprint_path),
+            "blueprint_sha256": sha256_bytes(storage.read_bytes(blueprint_path)),
+            # ponytail: 0 = no outer kill. The campaign's OWN exploration_budget wall-clock is the real
+            # cap (GP-251 §13.2) — killing the wrapper subprocess early would skip its BudgetStopReceipt
+            # and journal finalization, which is worse than letting it run to its own stop condition.
+            "timeout_s": 0,
+            "command": command,
+        }
+    )
+    return job
+
+
+def _receipt_bundle(receipt_bundle_bytes: bytes) -> list[dict[str, Any]]:
+    from ztare.leanmill.contracts.proof_gap import PROOF_GAP_RECEIPT_BUNDLE_SCHEMA
+
+    try:
+        bundle = json.loads(receipt_bundle_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("receipt bundle must be UTF-8 JSON") from exc
+    if not isinstance(bundle, dict):
+        raise ValueError("receipt bundle must be a JSON object")
+    if set(bundle) != {"schema", "receipts"}:
+        raise ValueError("receipt bundle fields must be exactly schema and receipts")
+    if bundle.get("schema") != PROOF_GAP_RECEIPT_BUNDLE_SCHEMA:
+        raise ValueError("unsupported proof-gap receipt bundle schema")
+    receipts = bundle.get("receipts")
+    if not isinstance(receipts, list):
+        raise ValueError("receipt bundle receipts must be a list")
+    if not all(isinstance(receipt, dict) for receipt in receipts):
+        raise ValueError("every bundled receipt must be a JSON object")
+    return receipts
+
+
+def build_axiom_pack_trial_preparation(
+    receipt_bundle_bytes: bytes,
+    *,
+    receipt_bundle_path: str,
+) -> dict[str, Any]:
+    """Replay repeated-gap eligibility into a deterministic quarantine packet."""
+
+    from ztare.leanmill.contracts.proof_gap import evaluate_axiom_pack_escalation
+
+    receipts = _receipt_bundle(receipt_bundle_bytes)
+    evaluation = evaluate_axiom_pack_escalation(receipts)
+    evaluation_digest = sha256_ref_bytes(canonical_json_bytes(evaluation))
+    core = {
+        "schema": AXIOM_PACK_TRIAL_PREPARATION_SCHEMA,
+        "action": "prepare_axiom_pack_trial",
+        "promotion_status": "quarantined",
+        "routing_only": True,
+        "proof_credit_eligible": False,
+        "theorem_campaign_admissible": False,
+        "theory_mutation_allowed": False,
+        "family_inferred": False,
+        "discovery_started": False,
+        "receipt_bundle_path": receipt_bundle_path,
+        "receipt_bundle_sha256": sha256_ref_bytes(receipt_bundle_bytes),
+        "receipt_count": len(receipts),
+        "evaluation": evaluation,
+        "evaluation_packet_digest": evaluation_digest,
+    }
+    return {
+        **core,
+        "preparation_artifact_digest": sha256_ref_bytes(canonical_json_bytes(core)),
+    }
+
+
+def axiom_pack_trial_artifact_path(
+    packet: dict[str, Any], *, project: str = "", repo: Path = REPO
+) -> Path:
+    project = normalize_project(project)
+    digest = str(packet.get("preparation_artifact_digest") or "")
+    if not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+        raise ValueError("preparation packet has no canonical artifact digest")
+    return axiom_pack_trial_root(project=project, repo=repo) / (
+        f"axiom_pack_trial_{digest.removeprefix('sha256:')}.json"
+    )
+
+
+def prepare_axiom_pack_trial_file(
+    receipt_bundle_path: str | Path,
+    *,
+    expected_input_sha256: str,
+    project: str = "",
+    repo: Path = REPO,
+    storage: ActionStorage | None = None,
+) -> dict[str, Any]:
+    """Verify frozen input bytes, replay the evaluator, and write one packet."""
+
+    storage = storage or FileActionStorage(repo)
+    source = storage.resolve(receipt_bundle_path)
+    if not source.exists() or not source.is_file():
+        raise ValueError(f"receipt bundle not found: {storage.rel(source)}")
+    raw = storage.read_bytes(source)
+    observed_digest = sha256_ref_bytes(raw)
+    if expected_input_sha256 != observed_digest:
+        raise ValueError("receipt bundle bytes changed after action preview")
+    packet = build_axiom_pack_trial_preparation(
+        raw,
+        receipt_bundle_path=storage.rel(source),
+    )
+    output = storage.resolve(axiom_pack_trial_artifact_path(packet, project=project, repo=repo))
+    if source == output:
+        raise ValueError("preparation output must not overwrite the receipt bundle")
+    storage.write_text(output, json.dumps(packet, indent=2, sort_keys=True) + "\n")
+    return packet
+
+
+def axiom_pack_trial_job(
+    request: dict[str, Any], *, repo: Path, storage: ActionStorage
+) -> dict[str, Any]:
+    job = _base_job("prepare_axiom_pack_trial", request, repo=repo, storage=storage)
+    source_raw = str(
+        request.get("receipt_bundle_path") or request.get("receipt_bundle") or ""
+    ).strip()
+    if not source_raw:
+        raise ValueError("receipt_bundle_path is required")
+    source = storage.resolve(source_raw)
+    if not source.exists() or not source.is_file():
+        raise ValueError(f"receipt bundle not found: {storage.rel(source)}")
+    raw = storage.read_bytes(source)
+    preview = build_axiom_pack_trial_preparation(
+        raw,
+        receipt_bundle_path=storage.rel(source),
+    )
+    input_digest = preview["receipt_bundle_sha256"]
+    output = axiom_pack_trial_artifact_path(preview, project=job["project"], repo=repo)
+    output_rel = storage.rel(output)
+    command = [
+        sys.executable,
+        "-m",
+        "ztare.leanmill.workbench_actions",
+        "execute-axiom-pack-trial",
+        storage.rel(source),
+        "--expected-input-sha256",
+        input_digest,
+    ]
+    if job["project"]:
+        command.extend(["--project", job["project"]])
+    job.update(
+        {
+            "label": "Prepare quarantined AxiomPack trial",
+            "receipt_bundle_path": storage.rel(source),
+            "receipt_bundle_sha256": input_digest,
+            "receipt_count": preview["receipt_count"],
+            "preview_eligible": preview["evaluation"]["eligible"],
+            "preview_evaluation_packet_digest": preview["evaluation_packet_digest"],
+            "expected_preparation_artifact_digest": preview["preparation_artifact_digest"],
+            "expected_artifact": output_rel,
+            "artifact_promotion_status": "quarantined",
+            "timeout_s": 60,
+            "command": command,
+        }
+    )
+    return job
+
+
 def build_job(action: str, request: dict[str, Any], *, repo: Path = REPO,
               storage: ActionStorage | None = None) -> dict[str, Any]:
     storage = storage or FileActionStorage(repo)
@@ -283,6 +480,10 @@ def build_job(action: str, request: dict[str, Any], *, repo: Path = REPO,
         return adhoc_job(request, repo=repo, storage=storage)
     if action == "proof_audit":
         return ratify_job(request, repo=repo, storage=storage)
+    if action == "prepare_axiom_pack_trial":
+        return axiom_pack_trial_job(request, repo=repo, storage=storage)
+    if action == "campaign_run":
+        return campaign_run_job(request, repo=repo, storage=storage)
     raise ValueError(f"unknown LeanMill action: {action}")
 
 
@@ -305,6 +506,8 @@ def append_history(job: dict[str, Any], *, repo: Path, storage: ActionStorage) -
         "target_name": job.get("target_name", ""),
         "notes_path": job.get("notes_path", ""),
         "source_file": job.get("source_file", ""),
+        "receipt_bundle_path": job.get("receipt_bundle_path", ""),
+        "expected_artifact": job.get("expected_artifact", ""),
     }
     storage.append_jsonl(history_path(repo=repo), row)
     storage.write_text(latest_path(repo=repo), json.dumps(row, indent=2, sort_keys=True) + "\n")
@@ -363,6 +566,8 @@ def action_write_boundary(job: dict[str, Any], *, repo: Path = REPO, storage: Ac
         storage.rel(history_path(repo=repo)),
         storage.rel(latest_path(repo=repo)),
     ])
+    if job.get("expected_artifact"):
+        write_paths.append(str(job["expected_artifact"]))
     return {
         "writes_repo_files": True,
         "writes_project_files": bool(job.get("project")),
@@ -373,6 +578,7 @@ def action_write_boundary(job: dict[str, Any], *, repo: Path = REPO, storage: Ac
         "result_path": paths.get("result"),
         "stdout_path": paths.get("stdout"),
         "stderr_path": paths.get("stderr"),
+        "domain_artifact_path": job.get("expected_artifact", ""),
     }
 
 
@@ -477,6 +683,21 @@ def build_parser() -> argparse.ArgumentParser:
     adhoc.add_argument("--timeout", type=int, default=500)
     adhoc.add_argument("--save", action="store_true", help="start the background job")
     adhoc.add_argument("--json", action="store_true")
+    trial = sub.add_parser(
+        "prepare-axiom-pack-trial",
+        help="prepare a quarantined AxiomPack trial from proof-gap receipts",
+    )
+    trial.add_argument("receipt_bundle")
+    trial.add_argument("--project", default="")
+    trial.add_argument("--save", action="store_true", help="start the background preparation job")
+    trial.add_argument("--json", action="store_true")
+    execute_trial = sub.add_parser(
+        "execute-axiom-pack-trial",
+        help="execute a frozen AxiomPack preparation job",
+    )
+    execute_trial.add_argument("receipt_bundle")
+    execute_trial.add_argument("--expected-input-sha256", required=True)
+    execute_trial.add_argument("--project", default="")
     runner = sub.add_parser("run-job", help="run a saved job file")
     runner.add_argument("job_file")
     return parser
@@ -486,6 +707,14 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.cmd == "run-job":
         return run_job_file(args.job_file)
+    if args.cmd == "execute-axiom-pack-trial":
+        packet = prepare_axiom_pack_trial_file(
+            args.receipt_bundle,
+            expected_input_sha256=args.expected_input_sha256,
+            project=args.project,
+        )
+        print(json.dumps(packet, indent=2, sort_keys=True))
+        return 0
     if args.cmd == "autoformalize-notes":
         payload = start_action(
             "autoformalize_notes",
@@ -496,7 +725,7 @@ def main(argv: list[str] | None = None) -> int:
                 "confirmed": args.save,
             },
         )
-    else:
+    elif args.cmd == "solve-adhoc":
         payload = start_action(
             "solve_adhoc",
             {
@@ -509,6 +738,15 @@ def main(argv: list[str] | None = None) -> int:
                 "substrate": args.substrate,
                 "mode": args.mode,
                 "timeout_s": args.timeout,
+                "confirmed": args.save,
+            },
+        )
+    else:
+        payload = start_action(
+            "prepare_axiom_pack_trial",
+            {
+                "project": args.project,
+                "receipt_bundle_path": args.receipt_bundle,
                 "confirmed": args.save,
             },
         )

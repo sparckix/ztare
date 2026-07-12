@@ -17,12 +17,52 @@ from __future__ import annotations
 import json
 import os
 import re
+import hashlib
 from pathlib import Path
 
 # Strip the leading `theorem/lemma <name>` so `theorem foo : P` and `theorem bar : P`
 # (same statement, different local name) collapse to one key.
 _NAME_RE = re.compile(r"^\s*(?:theorem|lemma)\s+[A-Za-z_][\w'.]*")
 _WS_RE = re.compile(r"\s+")
+_RUN_LOCAL_DEP_RE = re.compile(
+    r"\b(?:iso_lemma\d+[A-Za-z0-9_']*|[A-Za-z][A-Za-z0-9_']*_auxiliary_bridge|PROVEN_[A-Za-z0-9_']+)\b"
+)
+
+
+def _statement_name(statement: str) -> str:
+    try:
+        from ztare.leanmill.lean_source import theorem_names
+        names = theorem_names(statement or "")
+        return names[-1] if names else ""
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _environment_hash(context_source: str) -> str:
+    return hashlib.sha256((context_source or "").encode("utf-8")).hexdigest() if context_source else ""
+
+
+def _proof_cache_record(statement: str, proof: str, source: str, primary: str, text_key: str,
+                        context_source: str = "") -> dict:
+    from ztare.leanmill.control_plane import StatementId, cache_authority
+    sid = StatementId.from_parts(
+        target_name=_statement_name(statement),
+        source_text=statement or "",
+        closed_prop=normalize_statement(statement or ""),
+    )
+    return {
+        "schema": "leanmill.proof_cache.v1",
+        "key": primary,
+        "text_key": text_key,
+        "statement": statement.strip(),
+        "statement_id": sid.to_json(),
+        "proof": proof,
+        "source": source,
+        "environment_hash": _environment_hash(context_source),
+        "cache_authority": cache_authority("proof_cache").value,
+        "proof_credit_eligible": True,
+        "proof_credit_authority": "caller_kernel_verified_then_reverify_on_use",
+    }
 
 
 def normalize_statement(statement: str) -> str:
@@ -54,7 +94,19 @@ def normalize_statement(statement: str) -> str:
     if not re.match(r"(?:theorem|lemma|def|abbrev|example|instance|structure|inductive)\b", s):
         s = "theorem _ " + s
     s = signature_before_proof(s)              # drop the proof `:=` body, BINDER-SAFE (not first `:=`,
-    return _WS_RE.sub(" ", s).strip()          # which truncated a `let k := 5` hypothesis — same key bug)
+    # ∀-FRONTING canonical form via the ONE established door (2026-07-05, operator "CLOB is closed — why is it
+    # RECREATING / cache not firing? … we had this way to fix other bugs, check memory, don't regress"). The SAME
+    # theorem written binders-before-colon (`theorem _ {a}(h) : G`, the campaign bullet) vs ∀-FRONTED (`theorem _ :
+    # ∀ {a}(h), G`, how the CLOB substrate decl is authored) keyed DIFFERENTLY here, so `_banked_lemma_reuse` MISSED
+    # the already-proven decl and RE-DERIVED the whole closed theorem. `lean_source.pi_normalized_signature` is the
+    # existing single-door ∀-fronting canonicalizer the faithfulness gate already uses (statement_integrity) — reuse
+    # it (NO sibling normalizer to drift). It takes a BARE `binders : C` signature, so strip the `theorem _` head
+    # first. SOUND: ∀-fronting is defeq; a wrong collapse still fails the downstream re-verify, never a false close.
+    _hm = re.match(r"(?:theorem|lemma|def|abbrev|example|instance|structure|inductive)\s+\S+\s*", s)
+    _bare = s[_hm.end():] if _hm else s
+    from ztare.leanmill.lean_source import pi_normalized_signature
+    s = "theorem _ : " + pi_normalized_signature(_bare)
+    return _WS_RE.sub(" ", s).strip()          # (proof `:=` already dropped above, binder-safe)
 
 
 # --- EQUIVALENCE-keyed normalization (default OFF; ZTARE_LEANMILL_EQUIV_CACHE=1) -----------------
@@ -147,38 +199,78 @@ class ProofCache:
                 except Exception:
                     continue
 
-    def get(self, statement: str, key: "str | None" = None) -> "str | None":
+    def get(
+        self,
+        statement: str,
+        key: "str | None" = None,
+        *,
+        context_source: str = "",
+    ) -> "str | None":
         # CANONICAL KEY (2026-06-24): the caller may supply a precomputed `key` — the kernel `Expr.hash` of the
         # target's de-Bruijn TYPE (`repl_compile.canonical_type_hash_via_repl`), which is α-/∀-fronting-invariant
         # where the text key is not. Try it FIRST, then fall back to the text key so a legacy text-keyed entry
         # (and the no-REPL path) still hits. The cache stays a pure store: it never calls Lean; the solver, which
         # already runs the REPL to verify, computes the key and passes it in.
-        if key:
-            r = self._mem.get("H:" + key)
-            if r:
-                return r["proof"]
-        r = self._mem.get(_key_for(statement))
-        return r["proof"] if r else None
+        status, proof = self.compatibility(statement, key=key, context_source=context_source)
+        # A cache row remains a candidate under a changed or legacy environment,
+        # but only a matching environment earns routing priority. The caller's
+        # kernel replay remains the authority for candidate reuse.
+        return proof if status in {"compatible", "legacy_unassessed", "context_unassessed", "context_mismatch"} else None
+
+    def compatibility(
+        self, statement: str, key: "str | None" = None, *, context_source: str = ""
+    ) -> "tuple[str, str | None]":
+        """Return (status, proof): exact environment compatibility for routing and replay."""
+        r = self._mem.get("H:" + key) if key else None
+        r = r or self._mem.get(_key_for(statement))
+        if not r:
+            return "miss", None
+        proof = str(r.get("proof") or "")
+        if proof.lstrip().startswith((":=", "```")):
+            return "malformed", None
+        # Old cache rows stored proof bodies without their run-local helper
+        # environment. Reverification is sound but a doomed hit still skips
+        # early search and receives near-certain forecast credit. When the
+        # caller supplies the current source, decline dependency-shaped cites
+        # that are absent there; ordinary Mathlib citations remain untouched.
+        dependency_text = re.sub(r"(?m)^\s*#print\s+axioms\b.*$", "", proof)
+        dependencies = set(_RUN_LOCAL_DEP_RE.findall(dependency_text))
+        if any(name not in context_source for name in dependencies):
+            if context_source:
+                return "incompatible", None
+        stored_environment = str(r.get("environment_hash") or "")
+        current_environment = _environment_hash(context_source)
+        if stored_environment:
+            if not current_environment:
+                return "context_unassessed", proof
+            if stored_environment != current_environment:
+                return "context_mismatch", proof
+            return "compatible", proof
+        return "legacy_unassessed", proof
 
     def has(self, statement: str, key: "str | None" = None) -> bool:
         return (bool(key) and ("H:" + key) in self._mem) or _key_for(statement) in self._mem
 
-    def put(self, statement: str, proof: str, source: str = "", key: "str | None" = None) -> bool:
+    def put(self, statement: str, proof: str, source: str = "", key: "str | None" = None,
+            *, context_source: str = "") -> bool:
         """Cache a VERIFIED proof. Returns True if newly added (False if the statement
         was already cached). Caller MUST have kernel-verified `proof` first. `key` (optional) = the canonical
         `Expr.hash` key (see `get`); when supplied the entry is stored under BOTH it and the text key, so a later
         lookup hits whether or not the REPL is live."""
         text_key = _key_for(statement)
         primary = ("H:" + key) if key else text_key
-        if not primary or not (proof or "").strip() or primary in self._mem:
+        if (not primary or not (proof or "").strip() or primary in self._mem
+                or str(proof).lstrip().startswith((":=", "```"))):
             return False
-        rec = {"key": primary, "text_key": text_key, "statement": statement.strip(), "proof": proof, "source": source}
+        rec = _proof_cache_record(statement, proof, source, primary, text_key, context_source)
         self._mem[primary] = rec
         if text_key:
             self._mem.setdefault(text_key, rec)   # DUAL-INDEX: also reachable by the text key (no-REPL lookups)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(rec) + "\n")
+        # CROSS-PROCESS-SAFE append (2026-07-05 shared-resource audit): proof bodies exceed PIPE_BUF (verified
+        # 32 KB records), so two concurrent workers' plain appends INTERLEAVE → a torn line the reader drops →
+        # the banked lemma is re-derived. Route through the flock'd single door.
+        from ztare.leanmill.common import append_jsonl_locked
+        append_jsonl_locked(self.path, rec)
         return True
 
     def __len__(self) -> int:
@@ -250,7 +342,11 @@ def defeq_reuse_candidate(goal_source: str, target_name: str, candidates: "list[
         except Exception:  # noqa: BLE001 — a probe error is a no-match (fail-closed), never a reuse
             same = False
         if same:
+            from ztare.leanmill.control_plane import cache_authority
             return {"name": name, "statement": stmt, "reuse_proof": f"by exact @{name}",
+                    "cache_authority": cache_authority("exact_reference_reuse").value,
+                    "proof_credit_eligible": True,
+                    "proof_credit_authority": "kernel_defeq_then_governance_reverify",
                     "reason": f"kernel-defeq to banked `{name}` (retrieve→verify; cite re-verified by governance)"}
     return None
 
@@ -272,6 +368,116 @@ def _restate_under(candidate_stmt: str, goal_name: str) -> str:
     return f"theorem {goal_name} {sig} := by sorry"
 
 
+# ── STAGED (near-complete) proof reuse tier ──────────────────────────────────────────────────────────────
+# The tiers above hold CLOSED proofs (retrieved to CITE `by exact @name`). This is their sibling: NEAR-COMPLETE
+# proofs — a sorry-FREE attempt that does not YET compile (the agent was cut off a few errors from done by the
+# codex-exec one-turn ceiling). It is the single most valuable artifact to retrieve — a 99%-done proof, seeded
+# back, is finished in one short turn — yet it had ONLY a brittle statement-HASH checkpoint that silently missed
+# on any re-styling of the goal. The EF1 iso_lemma2 wall (2026-07-03): the REPL statement-hash failed on that
+# statement → text-key fallback → the planner re-styled the goal each attempt → key drift → 0 retrievals in 9h,
+# re-deriving a 400-line proof from scratch every time and timing out 2 errors from done. The fix is the SAME
+# retrieve-then-verify the closed tier already uses — kernel-DEFEQ (`defeq_reuse_candidate`), which is
+# formatting/α/∀-invariant — so a re-styled goal still finds its own proof. SOUND: the seeded body is the
+# agent's OWN prior work and the kernel re-verifies the finished proof like any attempt; a stale/mis-matched
+# seed simply fails to compile (never a false closure). FRUGAL: a tiny jsonl index over the checkpoint bodies +
+# kernel-defeq over the handful of staged rows (capped). The embedding prefilter is the SCALE upgrade — reuse
+# the SAME `semantic_premise_shelf` when rows exceed the probe cap; unneeded at campaign scale (a few rows).
+
+class StagedProofStore:
+    """Near-complete (sorry-free, non-compiling) proof bodies, retrieved by kernel-defeq retrieve→verify (NOT a
+    brittle hash). `root` is the (non-run-isolated) checkpoints dir, so a staged proof survives restarts; the
+    bodies ARE the checkpoint `<key>.lean` files — this adds the statement index + the sound retrieval the hash
+    lacked. One store home, one matcher — homogeneous with the closed-proof reuse tier above."""
+
+    def __init__(self, root: "str | Path"):
+        self.root = Path(root)
+        self.index = self.root / "_staged_index.jsonl"
+
+    def stage(self, key: str, target_name: str, statement: str) -> None:
+        """Record that checkpoint `<key>.lean` is a staged proof of `statement` (a `theorem … := …` decl, or a
+        bare `<binders> : <concl>`). Best-effort; `_rows` dedups by key (last wins)."""
+        if not (key and (statement or "").strip()):
+            return
+        try:
+            self.root.mkdir(parents=True, exist_ok=True)
+            from ztare.leanmill.common import append_jsonl_locked
+            from ztare.leanmill.control_plane import cache_authority
+            append_jsonl_locked(self.index, {
+                "schema": "leanmill.staged_proof.v1",
+                "key": key,
+                "target": target_name or "",
+                "statement": statement,
+                "cache_authority": cache_authority("staged_reuse").value,
+                "proof_credit_eligible": False,
+            })
+        except Exception:  # noqa: BLE001 — staging is best-effort; never break the solve
+            pass
+
+    def _rows(self) -> "list[dict]":
+        if not self.index.exists():
+            return []
+        seen: dict = {}
+        try:
+            for line in self.index.read_text(encoding="utf-8").splitlines():
+                try:
+                    r = json.loads(line)
+                except Exception:  # noqa: BLE001 — skip a garbled row, never fail the read
+                    continue
+                # keep only rows whose body still exists (a purged checkpoint drops out cleanly)
+                if r.get("key") and (r.get("statement") or "").strip() and (self.root / (str(r["key"]) + ".lean")).exists():
+                    seen[str(r["key"])] = r          # last write wins
+        except Exception:  # noqa: BLE001
+            return []
+        return list(seen.values())
+
+    def retrieve(self, goal_statement: str, target_name: str, lean_root=None, *,
+                 min_score: float = 0.6, **_ignored) -> "dict | None":
+        """Return {key, proof_text, score, reason} of the staged proof best matching the goal, else None. Match is
+        CHEAP — target short-name gate + normalized-statement token overlap, NO kernel/REPL probe — deliberately:
+        the seed is only a STARTING POINT, and the leaf's FINAL kernel verify is the soundness gate, so a
+        near-match seed is safe (a wrong seed just fails to compile and the agent rewrites). Kernel-defeq was
+        exact-but-too-slow on a large `let`-bound type (>300s on EF1 iso_lemma2); embedding is the documented
+        upgrade for cross-vocab. Token overlap on the α-normalized statement suffices for the same-lemma-restyled
+        case (identifiers are shared). `lean_root` accepted + ignored for call-site parity with the closed tier."""
+        rows = self._rows()
+        if not rows:
+            return None
+
+        def _short(n):
+            return (n or "").rsplit(".", 1)[-1].strip()
+
+        def _toks(s):
+            return set(re.findall(r"[A-Za-z_][A-Za-z0-9_.']*", normalize_statement_equiv(s or "")))
+
+        _tgt = _short(target_name)
+        _gt = _toks(goal_statement)
+        if not _gt:
+            return None
+        best = None
+        for r in rows:
+            rt = _toks(r.get("statement", ""))
+            if not rt:
+                continue
+            jac = len(_gt & rt) / max(1, len(_gt | rt))          # token Jaccard on the α-normalized statements
+            name_ok = (not _tgt) or (_short(r.get("target", "")) == _tgt)
+            score = jac if name_ok else jac * 0.5                # soft name gate (a strong text match still wins)
+            if score >= min_score and (best is None or score > best[0]):
+                best = (score, r)
+        if not best:
+            return None
+        _score, r = best
+        try:
+            body = (self.root / (str(r["key"]) + ".lean")).read_text(encoding="utf-8")
+        except Exception:  # noqa: BLE001
+            return None
+        if not body.strip() or "sorry" in body or "admit" in body:
+            return None
+        return {"key": r["key"], "proof_text": body, "score": round(_score, 3),
+                "cache_authority": r.get("cache_authority") or "affordance",
+                "proof_credit_eligible": False,
+                "reason": f"staged proof `{r['key']}` (token-overlap {round(_score, 2)}; kernel re-verifies the seed)"}
+
+
 def _selftest() -> int:
     import tempfile, os
     fails = []
@@ -286,6 +492,15 @@ def _selftest() -> int:
     ok("empty get", c.get("theorem foo : P") is None)
     ok("put new", c.put("theorem foo : P", "by exact h", "leaf"))
     ok("get hit", c.get("theorem foo : P") == "by exact h")
+    try:
+        _row0 = json.loads(Path(db).read_text(encoding="utf-8").splitlines()[0])
+    except Exception:
+        _row0 = {}
+    ok("proof_cache: row declares proof-credit authority",
+       _row0.get("schema") == "leanmill.proof_cache.v1"
+       and _row0.get("cache_authority") == "proof_credit"
+       and _row0.get("proof_credit_eligible") is True
+       and bool((_row0.get("statement_id") or {}).get("closed_prop_hash")))
     # name-agnostic: same statement, different local name → same key → hit
     ok("name-agnostic hit", c.get("theorem bar : P") == "by exact h")
     # body-agnostic key: a `:= sorry`-suffixed statement hits the same key
@@ -296,6 +511,15 @@ def _selftest() -> int:
     c2 = ProofCache(db)
     ok("persisted across reopen", c2.get("theorem foo : P") == "by exact h" and len(c2) == 1)
     os.remove(db)
+    db_legacy = tempfile.mktemp(suffix=".jsonl")
+    Path(db_legacy).write_text(json.dumps({
+        "key": _key_for("theorem legacy : P"),
+        "statement": "theorem legacy : P",
+        "proof": "by exact h",
+        "source": "legacy",
+    }) + "\n", encoding="utf-8")
+    ok("legacy proof_cache row still loads", ProofCache(db_legacy).get("theorem other : P") == "by exact h")
+    os.remove(db_legacy)
 
     # --- CANONICAL Expr.hash KEY (2026-06-24): the caller supplies a precomputed key (the kernel type hash);
     # the entry is dual-indexed so it hits by the Expr key AND by the text key (no-REPL fallback), survives reopen,
@@ -368,6 +592,10 @@ def _selftest() -> int:
     _hit = defeq_reuse_candidate(_GOAL, "g", _cands, lean_root=None, equiv_fn=_fake_eq)
     ok("semantic_reuse: defeq candidate found + cites it",
        bool(_hit) and _hit["name"] == "addComm_banked" and _hit["reuse_proof"] == "by exact @addComm_banked")
+    ok("semantic_reuse: defeq hit declares proof-credit authority",
+       bool(_hit) and _hit.get("cache_authority") == "proof_credit"
+       and _hit.get("proof_credit_eligible") is True
+       and _hit.get("proof_credit_authority") == "kernel_defeq_then_governance_reverify")
     ok("semantic_reuse: no defeq match → None (no spurious reuse)",
        defeq_reuse_candidate(_GOAL, "g", [_cands[1]], lean_root=None, equiv_fn=_fake_eq) is None)
     ok("semantic_reuse: oracle None → None (fail-closed)",
@@ -376,6 +604,21 @@ def _selftest() -> int:
     defeq_reuse_candidate(_GOAL, "g", _cands * 50, lean_root=None,
                           equiv_fn=lambda o, a: _probes.__setitem__("n", _probes["n"] + 1) or False, max_check=3)
     ok("semantic_reuse: max_check caps kernel probes", _probes["n"] <= 3)
+
+    # STAGED tier: a near-complete body retrieved by CHEAP α-normalized token overlap (the seed is gated by the
+    # leaf's FINAL kernel verify, so no expensive defeq is needed) — general-purpose, keyed on any target.
+    _sd = tempfile.mkdtemp()
+    _store = StagedProofStore(_sd)
+    (Path(_sd) / "k1.lean").write_text(
+        "theorem g (a b : Nat) : a + b = b + a := by exact Nat.add_comm a b", encoding="utf-8")
+    _store.stage("k1", "g", "theorem g (a b : Nat) : a + b = b + a := by sorry")
+    ok("staged: RE-STYLED same statement retrieves its near-complete body (α-normalized token overlap)",
+       bool(_store.retrieve("theorem g (x y : Nat) : x + y = y + x := by sorry", "g")))
+    ok("staged: unrelated goal → None (below overlap threshold)",
+       _store.retrieve("theorem g (l : List Nat) : l.reverse.reverse = l := by sorry", "g") is None)
+    (Path(_sd) / "k1.lean").unlink()
+    ok("staged: purged body drops out of the index cleanly",
+       _store.retrieve("theorem g (a b : Nat) : a + b = b + a := by sorry", "g") is None)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED {fails}")
     return 1 if fails else 0

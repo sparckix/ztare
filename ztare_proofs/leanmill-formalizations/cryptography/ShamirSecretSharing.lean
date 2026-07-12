@@ -19,6 +19,9 @@ telemetry (run_tag=shamir_secret_sharing_v6) by promote_campaign_artifact.py —
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/shamir_secret_sharing_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-!
 # Shamir secret sharing: foundational vocabulary
 
@@ -497,3 +500,5 @@ theorem shamir_threshold_reconstruction_secrecy_tightness [Field F] [Nontrivial 
     shamir_threshold_reconstruction_secrecy_tightness_conj3 ht⟩
 
 end
+
+#print axioms shamir_threshold_reconstruction_secrecy_tightness

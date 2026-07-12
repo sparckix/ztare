@@ -90,8 +90,12 @@ def verify_lean_proof(probe_path: str | Path, target: str, *, lake_bin: str,
                     # warm-verify caller inherits it — no per-caller strip that could rot into siblings.
                     _wv = warm_verify_campaign(txt, target, Path(project_dir), timeout, env=_env)
                     if _wv is not None:
+                        # include the reject REASON head (2026-07-02): a bare "reject" left the log blind to
+                        # WHY (honest proof failure vs a false-reject class like the env-declared clash), so
+                        # every triage had to re-derive it from stores. The reason is already in _wv[1].
+                        _why = "" if _wv[0] else f" · {' '.join(str(_wv[1]).split())[:180]}"
                         print(f"[verify] WARM campaign-env verify ({p.name}, target={target}): "
-                              f"{'clean' if _wv[0] else 'reject'} — skipped cold `lake env lean`", flush=True)
+                              f"{'clean' if _wv[0] else 'reject'} — skipped cold `lake env lean`{_why}", flush=True)
                         return _wv
         except Exception:  # noqa: BLE001 — warm is best-effort; the cold path below is the sound fallback
             pass
@@ -167,11 +171,19 @@ def leaf_runtime() -> str:
     return default_subscription_runtime("ZTARE_LEANMILL_LEAF_RUNTIME")
 
 
-def leaf_provider_order() -> "tuple[str, str]":
+def leaf_provider_order() -> "tuple[str, ...]":
     """The solver leaf's provider TRY-ORDER: the configured leaf runtime first, the other second (a diversity
     shot + failover headroom). One env switch (ZTARE_LEANMILL_LEAF_RUNTIME / the global
     ZTARE_DEFAULT_SUBSCRIPTION_RUNTIME) thus puts the LIVE provider first and the dead one second, instead of
-    wasting the first attempt on an exhausted provider. Default-codex (parity) until a switch is set."""
+    wasting the first attempt on an exhausted provider. Default-codex (parity) until a switch is set.
+
+    OPERATOR PIN (general-purpose): `ZTARE_LEANMILL_SOLVE_PROVIDERS=codex` (or `codex,kimi`, `claude`, …) restricts
+    the best-of-N portfolio to EXACTLY those providers, with NO auto-added alternate — so a run can be pinned to one
+    subscription (e.g. codex-only, to conserve a claude budget). This is THE single door for the try-order, so the
+    warm best-of-N (`_agentic_leaf_warm_solve`) and every other consumer inherit the pin. Unset ⇒ default order."""
+    pin = (os.environ.get("ZTARE_LEANMILL_SOLVE_PROVIDERS", "") or "").strip()
+    if pin:
+        return tuple(p.strip() for p in pin.split(",") if p.strip())
     primary = leaf_runtime()
     return (primary, _alternate_runtime(primary))
 
@@ -184,6 +196,10 @@ def leaf_provider_order() -> "tuple[str, str]":
 # caller must deposit/learn NOTHING and must NOT read it as a real negative (faithful=False / open). Distinct
 # from "" (a real empty answer). The formalizer + firewall detect this and mark the outcome inadmissible (#89).
 INADMISSIBLE_DISPATCH = "__LEANMILL_INADMISSIBLE_PROVIDER_DEAD__"
+# A host budget stop is an execution boundary, not a failed mathematical
+# attempt.  Keep it distinct from provider death so campaign loops can defer
+# the untouched queue instead of manufacturing empty formalizations.
+BUDGET_EXHAUSTED_DISPATCH = "__LEANMILL_BUDGET_EXHAUSTED__"
 
 # Process-scoped dead-API-leaf cache (2026-06-22): an API leaf (kimi/deepseek) that 429s / quota-dies stays
 # dead for the rest of a sustained campaign — re-probing it on EVERY dispatch wasted 9 probe-then-failover
@@ -307,6 +323,22 @@ def _dispatch_once(prompt: str, runtime: str, repo: "str | Path", timeout: int,
         persist_warm_session(sess_dir, runtime=runtime, agent_id=agent_id, session_state=run.final_session_state)
     out = (run.result.stdout or "") + "\n" + (run.result.stderr or "")
     print(f"[dispatch] {runtime} done in {int(_t.time() - _t0)}s (exit {rc})", flush=True)
+    # CoT CAPTURE (2026-07-03): persist the leaf's reasoning first-class before it's discarded — the STaR/
+    # rejection-sampling training signal + the RCA trace (reading it corrected the "underpowered model"
+    # misdiagnosis → the real compile-latency cause). agent_tag encodes {target}__{probe}; outcome joins at export.
+    try:
+        from ztare.leanmill.solver.cot_traces import record_cot
+        _sid = ""
+        try:
+            _sid = str((getattr(run, "final_session_state", None) or {}).get("session_id", ""))
+        except Exception:  # noqa: BLE001
+            _sid = ""
+        # agent_tag is the mangled `{target}__{probe}` session key; store the CLEAN target theorem name (the
+        # campaign identity is the run_tag, recorded separately) + keep the full tag for probe-level joins.
+        _clean_target = (agent_tag or "").split("__", 1)[0]
+        record_cot(target=_clean_target, runtime=runtime, cot=out, session_id=_sid, rc=rc, probe_tag=agent_tag or "")
+    except Exception:  # noqa: BLE001 — telemetry must never break the dispatch
+        pass
     return out, rc
 
 
@@ -322,7 +354,10 @@ def default_dispatch(prompt: str, *, runtime: str = "", repo: str | Path, timeou
     # PHASE TIMING (observability): wrap the WHOLE dispatch (api-leaf + CLI + failover) at this single chokepoint
     # so the `leaf.dispatch` phase — the dominant, previously-uninstrumented wall-clock — is emitted; advisory,
     # never alters the dispatch result. target=agent_tag so it slices by caller (planner vs leaf vs sample).
-    with _phase_timer("leaf.dispatch", target=agent_tag):
+    with _phase_timer("leaf.dispatch", target=agent_tag, extra={
+        "requested_timeout_s": int(timeout),
+        "requested_runtime": runtime or "default",
+    }):
         return _default_dispatch_impl(prompt, runtime=runtime, repo=repo, timeout=timeout, agent_tag=agent_tag)
 
 
@@ -351,6 +386,13 @@ def _default_dispatch_impl(prompt: str, *, runtime: str = "", repo: str | Path, 
     runtime = runtime or leaf_runtime()
     out, rc = _dispatch_once(prompt, runtime, repo, timeout, agent_tag)
     if _provider_dead(out, rc):
+        # OPERATOR TOGGLE (temporary, token-budget): pin to the single subscription — a dead primary returns
+        # INADMISSIBLE instead of failing over to the other CLI (e.g. codex→claude), so a claude-token budget is
+        # never spent under back-to-back load. Reversible: unset ZTARE_LEANMILL_NO_SUBSCRIPTION_FAILOVER.
+        if os.environ.get("ZTARE_LEANMILL_NO_SUBSCRIPTION_FAILOVER") == "1":
+            print(f"[dispatch] {runtime} PROVIDER-DEAD — failover SUPPRESSED "
+                  "(ZTARE_LEANMILL_NO_SUBSCRIPTION_FAILOVER=1) → INADMISSIBLE", flush=True)
+            return INADMISSIBLE_DISPATCH
         alt = _alternate_runtime(runtime)
         print(f"[dispatch] {runtime} PROVIDER-DEAD (quota/auth) → failover to {alt}", flush=True)
         out2, rc2 = _dispatch_once(prompt, alt, repo, timeout, agent_tag)
@@ -496,6 +538,9 @@ class LeafResult:
     recovered_from_response: bool = False  # True ⇒ the proof was salvaged from the agent's RESPONSE because it
     #                              left the probe FILE sorried (the 2026-06-23 "leaf solved it but didn't write
     #                              the file" RCA — a correct proof was about to be discarded as uses_sorry)
+    direct_continued: bool = False  # True ⇒ closed by granting the agent extra DIRECT turns via warm-resume to
+    #                              finish its OWN in-progress proof (the `codex exec` one-turn cutoff; affordance,
+    #                              not the reverted harness error-feedback — no errors/strategy injected)
 
 
 # Timeout-aware retry (adaptive budget, 2026-06-03): when an agent dispatch RUNS OUT OF TIME
@@ -887,6 +932,74 @@ def _scan_scratch_for_drifted_proof(probe: Path, target: str, verify: Callable) 
     return ""
 
 
+def _checkpoint_key(probe_source: str, target: str, project_dir, goal: str) -> str:
+    """The cross-run checkpoint key = the SAME canonical statement hash `proof_cache` keys on
+    (`repl_compile.canonical_type_hash_via_repl`: α-/∀-fronting-invariant kernel Expr.hash of the target's
+    binder-erased TYPE), with the SAME `proof_cache.normalize_statement_equiv` text fallback. ONE door, no
+    name-brittle sibling (the operator: "one single way of doing things"): a re-named but same-STATEMENT target
+    (the planner names the crux `iso_lemma1`/`conj_iso_lemma1`/… non-deterministically) still resumes its own
+    in-progress proof AND cites its cached closed proof. The self-contained stub carries the campaign defs, so
+    env=None (base Mathlib) elaborates the type. Prefix marks which door produced the key (s=hash, t=text)."""
+    try:
+        from ztare.formal.repl_compile import canonical_type_hash_via_repl
+        h = canonical_type_hash_via_repl(probe_source, target, project_dir, env=None)
+        if h:
+            return "s" + str(h)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        import hashlib
+        from ztare.leanmill.solver.proof_cache import normalize_statement_equiv
+        return "t" + hashlib.sha256(normalize_statement_equiv(goal or target or "").encode("utf-8")).hexdigest()[:32]
+    except Exception:  # noqa: BLE001
+        return "n" + re.sub(r"[^A-Za-z0-9_.-]+", "_", str(target))[:60]
+
+
+# STALL-ESCALATION store (2026-07-03): a per-statement counter of prior leaf attempts that did NOT close,
+# keyed by the SAME statement-hash as the checkpoint (`_checkpoint_key`). Sits beside the checkpoint `.lean`
+# in the non-run-isolated checkpoints dir so it SURVIVES restarts (the escalation must persist v→v, since the
+# hard core keeps re-appearing). One tiny file per key ⇒ no shared-JSON read-modify-write race across keys.
+def _stall_path(project_dir, key: str) -> "Path":
+    return Path(project_dir) / PROBE_SUBDIR / "checkpoints" / (key + ".stall")
+
+
+def _stall_count(project_dir, key: str) -> int:
+    try:
+        return int((_stall_path(project_dir, key).read_text(encoding="utf-8").strip() or "0"))
+    except Exception:  # noqa: BLE001 — missing/garbled ⇒ no prior stalls
+        return 0
+
+
+def _stall_bump(project_dir, key: str) -> None:
+    try:
+        p = _stall_path(project_dir, key)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(str(_stall_count(project_dir, key) + 1), encoding="utf-8")
+    except Exception:  # noqa: BLE001 — advisory budget knob; never break the solve
+        pass
+
+
+def _stall_clear(project_dir, key: str) -> None:
+    try:
+        _stall_path(project_dir, key).unlink(missing_ok=True)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _harvest_scaffold(probe_text: str, target: str) -> str:
+    """The individually sorry-FREE helper decls of a NON-closing probe — the CLOB-compounding unit (a proven
+    lemma), NOT a sorried whole. Drops the target decl and EVERY decl carrying a `sorry`/`admit`, so the result
+    is sorry-free BY CONSTRUCTION and safe to persist under the same hygiene invariant as the checkpoint (a
+    sorry compiles as `sorryAx` → a persisted sorry would be a phantom closure; we never persist one). Returns
+    '' if there are no proven helpers. This is what lets a conjecture-style theory-building leaf stop rebuilding
+    its helpers on every re-dispatch. Shares the ONE decl parser (`lean_source.decl_blocks`) — no sibling."""
+    from ztare.leanmill import lean_source as _ls
+    helpers = [blk for nm, blk in _ls.decl_blocks(probe_text)
+               if nm and nm != target and "sorry" not in blk and "admit" not in blk]
+    scaf = "\n\n".join(helpers).strip()
+    return scaf if (scaf and "sorry" not in scaf and "admit" not in scaf) else ""
+
+
 def solve_leaf(
     goal: str,
     *,
@@ -933,11 +1046,9 @@ def solve_leaf(
     # baseline). Graceful: a None socket ⇒ nothing advertised ⇒ the prompt keeps cold lake. Set BEFORE the
     # dispatch so the CLI-agent subprocess inherits ZTARE_LEANMILL_LEAN_SOCKET.
     if os.environ.get("ZTARE_LEANMILL_LEAN_WARM", "1") != "0":
-        try:
-            from ztare.formal.lean_check_server import ensure_server as _ensure_lean
-            _sock = _ensure_lean(str(project_dir))
-            if _sock:
-                os.environ["ZTARE_LEANMILL_LEAN_SOCKET"] = _sock
+        try:                                          # SINGLE DOOR (2026-07-03): advertise-or-loud (self-heals a
+            from ztare.formal.lean_check_server import ensure_server_advertised   # reaped mid-run server on re-call)
+            ensure_server_advertised(str(project_dir), context=f"leaf {target}")
         except Exception:  # noqa: BLE001 — warm-Lean is an optimization; never block the solve
             pass
 
@@ -976,10 +1087,119 @@ def solve_leaf(
     def _budget() -> int:
         return max(0, int(_dl - time.time()))
 
-    # 2) direct agentic attempt
-    probe.write_text(_probe_text(defs, goal, target), encoding="utf-8")
-    direct = _leaf_prompt(target, goal, probe_ref, mode="direct")
-    out = dispatch(direct, runtime=runtime, repo=repo, timeout=max(_MIN_DISPATCH_S, _budget()), agent_tag=_agent_tag)
+    # 2) direct agentic attempt — SEED from the cross-run CHECKPOINT if a prior run left a sorry-FREE (but
+    # non-compiling) proof of this target, so a hard proof cut off by codex-exec's turn-end (§direct-continuation)
+    # is RESUMED, not re-derived from a bare stub EVERY run (the bank preserves CLOSED lemmas; this preserves
+    # NEAR-complete ones — the "progress lost every restart" the operator flagged). Sound: the seed is the agent's
+    # OWN prior work + the kernel re-verifies every closure; a stale checkpoint just fails verify and the agent
+    # fixes/rewrites it. NOT run-tag-isolated (surviving a restart is the whole point). =0 ⇒ always-stub (parity).
+    _stub_src = _probe_text(defs, goal, target)
+    _ck_key = _checkpoint_key(_stub_src, target, project_dir, goal)   # SAME statement-hash door as proof_cache
+    _ckpt = Path(project_dir) / PROBE_SUBDIR / "checkpoints" / (_ck_key + ".lean")
+    _scaffold = _ckpt.with_name(_ck_key + ".scaffold.lean")   # sorry-FREE proven helpers harvested from a
+    # NON-closing probe (the CLOB-compounding unit): persisted across re-dispatches of THIS exact goal so a
+    # conjecture-style theory-building leaf builds ON its helpers instead of rebuilding them from the stub.
+    # STALL-ESCALATION (2026-07-03, EF1 lemma-4 RCA): a rung whose EXACT statement stalled without closing on
+    # prior attempts gets an escalating single-shot budget. The hard combinatorial core (iso_lemma2's shifted
+    # sequential-domination) needs more than one flat 350s codex turn; the flat budget made it re-derive-from-
+    # scratch-and-time-out (exit 124) forever while the composite stayed blocked. Statement-keyed ⇒ ONLY the
+    # genuinely-stuck rung escalates (easy rungs close on attempt 1 at count 0); bounded ≤4× (350→700→1400);
+    # the kernel still gates every close ⇒ no new determinism, just more wall for the identified wall.
+    _stall_esc = os.environ.get("ZTARE_LEANMILL_STALL_ESCALATE", "1") != "0"
+    if _stall_esc:
+        _stall_n = _stall_count(project_dir, _ck_key)
+        if _stall_n > 0:
+            _factor = min(2 ** _stall_n, 4)
+            _dl = time.time() + int(max(_MIN_DISPATCH_S, timeout) * _factor)
+            print(f"[leaf] {target}: statement stalled {_stall_n}× before — escalating leaf budget "
+                  f"{int(timeout)}s→{int(timeout) * _factor}s (key {_ck_key[:12]}…)", flush=True)
+    _seeded = False
+    if os.environ.get("ZTARE_LEANMILL_PROOF_CHECKPOINT", "1") != "0" and _ckpt.exists():
+        try:
+            _ct = _ckpt.read_text(encoding="utf-8")
+            if _ct.strip() and "sorry" not in _ct and "admit" not in _ct:
+                probe.write_text(_ct, encoding="utf-8")
+                _seeded = True
+                print(f"[leaf] {target}: RESUMED from cross-run checkpoint (key {_ck_key[:16]}…, "
+                      f"{_ct.count(chr(10))} lines, sorry-free) — statement-matched, not re-deriving", flush=True)
+        except Exception:  # noqa: BLE001
+            _seeded = False
+    # SEMANTIC staged-artifact retrieval (2026-07-03, the "homogenize the world-class way" fix): the exact-key
+    # checkpoint above is BRITTLE — the statement-hash silently degraded to a formatting-brittle text key for
+    # iso_lemma2 and ORPHANED a 400-line 99%-done proof for 9h (0 retrievals), re-deriving it every attempt and
+    # timing out 2 errors from done. On an exact-key MISS, fall back to the SAME sound kernel-defeq retrieve-then-
+    # verify the closed-proof reuse tier uses (`proof_cache.StagedProofStore`) — formatting/α/∀-invariant — so a
+    # re-styled goal still finds ITS OWN near-complete proof. FRUGAL: a tiny index + capped kernel-defeq probes,
+    # no-op (no REPL) when there are no staged rows. Sound: the seeded body is the agent's own work, kernel
+    # re-verified; a mis-match just fails to compile. ZTARE_LEANMILL_STAGED_REUSE=0 reverts.
+    if not _seeded and os.environ.get("ZTARE_LEANMILL_STAGED_REUSE", "1") != "0":
+        try:
+            from ztare.leanmill.solver.proof_cache import StagedProofStore
+            from ztare.leanmill import lean_source as _ls
+            _sig = _ls.extract_signature(_stub_src, target)
+            _goal_decl = f"theorem {target} {_sig} := by sorry" if (_sig or "").strip() else ""
+            if _goal_decl:
+                _hit = StagedProofStore(Path(project_dir) / PROBE_SUBDIR / "checkpoints").retrieve(
+                    _goal_decl, target, project_dir)
+                if _hit and "sorry" not in _hit["proof_text"]:
+                    probe.write_text(_hit["proof_text"], encoding="utf-8")
+                    _seeded = True
+                    print(f"[leaf] {target}: SEEDED from SEMANTIC staged retrieval ({_hit['reason']}, "
+                          f"{_hit['proof_text'].count(chr(10))} lines) — not re-deriving", flush=True)
+        except Exception:  # noqa: BLE001 — retrieval is best-effort; never break the solve
+            pass
+    # SCAFFOLD-SEED (2026-07-06, gale-Shapley thrash RCA): the checkpoint/staged paths above fire only on a WHOLE
+    # sorry-free probe. A conjecture-style leaf (proves helpers, leaves the target `:= by sorry`) never makes one,
+    # so it rebuilt its whole development from the stub on every re-dispatch — the observed 3× identical re-dispatch
+    # of `WeaklyPrefers prefW w new old`. Seed the PROVEN HELPERS harvested from prior non-closing probes ABOVE a
+    # fresh target stub. Invariant intact: the scaffold file holds no sorry/admit; only the COMPOSED probe carries
+    # the target stub, exactly as the bare stub always did. General (any multi-lemma build compounds), sound
+    # (helpers re-elaborate in the composed probe; a stale one just fails to compile and the agent repairs it —
+    # the kernel still gates every close). ZTARE_LEANMILL_SCAFFOLD_SEED=0 reverts to byte-parity.
+    _scaffolded = False
+    if (not _seeded and os.environ.get("ZTARE_LEANMILL_SCAFFOLD_SEED", "1") != "0" and _scaffold.exists()):
+        try:
+            _sc = _scaffold.read_text(encoding="utf-8")
+            if _sc.strip() and "sorry" not in _sc and "admit" not in _sc:
+                probe.write_text(_sc.rstrip() + "\n\n" + _stub_src, encoding="utf-8")
+                _seeded = _scaffolded = True
+                print(f"[leaf] {target}: SCAFFOLDED on {_sc.count(chr(10)) + 1} lines of prior proven helpers "
+                      f"(key {_ck_key[:12]}…) — proving the target on top, NOT rebuilding them", flush=True)
+        except Exception:  # noqa: BLE001 — scaffold seeding is best-effort; never break the solve
+            _scaffolded = False
+    if not _seeded:
+        probe.write_text(_stub_src, encoding="utf-8")
+    from ztare.leanmill.solver import prompts as _pp
+    # a scaffold-seed is a FRESH dispatch onto pre-proven helpers → tell the agent to REUSE them (not the
+    # warm-resume "continue your proof" message, which would invite a rewrite).
+    direct = (_pp.LEAF_SCAFFOLD_CONTINUE.format(target=target, probe=probe_ref) if _scaffolded
+              else _pp.LEAF_DIRECT_CONTINUE.format(target=target, probe=probe_ref) if _seeded
+              else _leaf_prompt(target, goal, probe_ref, mode="direct"))
+    # PREMATURE-TURN-END detection (2026-07-05, RBAC postOps RCA): capture how much of the granted budget the
+    # agent actually USED. `codex exec` routinely ends a turn at ~8% of budget after PLANNING but before
+    # EXECUTING (documented #10828/#26860); such a turn is an affordance to CONTINUE, so a `sorry` it leaves is
+    # NOT the agent's decompose decision — only a `sorry` left after the agent SPENT its turn is. The signal is
+    # the agent's OWN turn-length (config `ZTARE_LEANMILL_PREMATURE_FRACTION`, not a hardcoded route).
+    # A leaf turn ends one of THREE ways; the leaf grants a resource-affordance matched to which — never driving
+    # the proof CONTENT (the agent finishes its OWN proof, the kernel gates every closure):
+    #   (1) TIMED OUT  → grant more WALL-TIME (the timeout-retry below).
+    #   (2) PREMATURE  → ran a REAL but SHORT turn then ended cleanly (codex-exec plans-then-ends #10828/#26860):
+    #                    grant more TURNS (the direct-continuation loop). A `sorry` it left is NOT a decision.
+    #   (3) GENUINE give-up → SPENT its budget and still left a `sorry` → the agent's real signal to DECOMPOSE.
+    # (2) is the exact DUAL of (1): both are the agent's turn-END condition, both re-enter with NO content
+    # injection. Only (3) decomposes. Config-tuned, not a hardcoded route.
+    _prem_frac = float(os.environ.get("ZTARE_LEANMILL_PREMATURE_FRACTION", "0.4") or 0.4)
+    _prem_floor = float(os.environ.get("ZTARE_LEANMILL_PREMATURE_FLOOR_S", "3") or 3)
+
+    def _is_premature(dur: float, grant: float, out_str: str) -> bool:
+        # floor excludes an instant/broken/no-op dispatch (0s ≠ a real planned-then-ended turn); ceiling excludes
+        # a give-up that actually spent its budget; a timeout takes the OTHER affordance (wall-time), not this one.
+        return (_prem_floor < dur < _prem_frac * grant) and not _dispatch_timed_out(out_str)
+
+    _grant = max(_MIN_DISPATCH_S, _budget())
+    _t0 = time.time()
+    out = dispatch(direct, runtime=runtime, repo=repo, timeout=_grant, agent_tag=_agent_tag)
+    _last_premature = _is_premature(time.time() - _t0, _grant, out)
     _dump_transcript(target, "direct", out)
     res.rounds = 1
     ok, why = verify()
@@ -993,7 +1213,94 @@ def solve_leaf(
         ok, why = verify()
     if not ok and _recover_proof_from_response(out, probe, target, verify):
         ok, why, res.recovered_from_response = True, "recovered: proof salvaged from the agent response (file left sorried)", True
+    # DIRECT-CONTINUATION via WARM-RESUME (2026-07-03; goldilocks AFFORDANCE — more TURNS, not harness content).
+    # `codex exec` is ONE turn: on a hard proof the agent PLANS its next helper lemmas, the turn ends (rc=0 at ~4%
+    # of our 1200s budget — NOT our budget, NOT a wall-timeout, NOT a give-up), and the harness jumped straight to
+    # DECOMPOSE, abandoning the agent's in-progress DIRECT proof. warm-resume already preserves the session, so give
+    # the agent the NEXT direct turn to execute its OWN plan — the sibling of the timeout-retry (that grants more
+    # wall-time; this grants more turns). INVARIANT-CLEAN vs the reverted error-feedback loop: the harness injects NO
+    # errors and NO fix-strategy — the agent re-runs its OWN warm-check and fixes its OWN proof; we re-enter DIRECT
+    # ONLY while it is MID-PROOF (a sorry-FREE, non-compiling probe = a full attempt to finish; a `sorry` is the
+    # agent's own signal to DECOMPOSE, which owns that path). Bounded by ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS + the
+    # shared budget; the kernel gates every closure. =0 ⇒ byte-parity (loop never runs).
+    _dct = int(os.environ.get("ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS", "2") or 0)
+    _dct_i = 0
+    while not ok and _dct_i < _dct and _budget() >= _MIN_DISPATCH_S:
+        try:
+            _pc = probe.read_text(encoding="utf-8")
+        except Exception:  # noqa: BLE001
+            break
+        # DECOMPOSE only on a GENUINE give-up: a `sorry`/`admit` left after the agent SPENT its turn. A `sorry`
+        # left by a PREMATURE turn-end (short, budget remaining) is codex-exec ending early — NOT the agent's
+        # decision — so grant another DIRECT turn to execute its OWN plan (the same affordance the sorry-free
+        # mid-proof case already gets). This is the RBAC postOps fix: a 10-line `induction ops` ended at ~8% of
+        # budget → `sorry` → was wrongly force-decomposed while the agent had only PLANNED it.
+        if ("sorry" in _pc or "admit" in _pc) and not _last_premature:
+            break
+        from ztare.leanmill.solver import prompts as _p   # canonical prompt home
+        print(f"[leaf] direct-continuation turn {_dct_i + 1}/{_dct} for {target} "
+              f"({'PREMATURE end — execute your own plan' if _last_premature else 'mid-proof, sorry-free'}; "
+              f"warm-resume, the agent finishes its OWN proof)", flush=True)
+        _g = max(_MIN_DISPATCH_S, _budget())
+        _t1 = time.time()
+        out = dispatch(_p.LEAF_DIRECT_CONTINUE.format(target=target, probe=probe_ref),
+                       runtime=runtime, repo=repo, timeout=_g, agent_tag=_agent_tag)   # SAME tag ⇒ warm-resume
+        _last_premature = _is_premature(time.time() - _t1, _g, out)
+        _dump_transcript(target, f"cont{_dct_i}", out)
+        res.rounds += 1
+        _dct_i += 1
+        ok, why = verify()
+        if ok:
+            res.direct_continued = True
+            print(f"[leaf] direct-continuation verify PASSED for {target} after {_dct_i} extra turn(s) — "
+                  f"the agent finished its OWN direct attempt (statement-integrity gate below decides "
+                  f"closure vs falsification)", flush=True)
     res.reason = why
+    # SAVE the cross-run CHECKPOINT (paired with the seed above): a sorry-FREE non-closing proof is the best
+    # in-progress state — persist it so the NEXT run RESUMES here instead of re-deriving. On a CLOSE, drop it (the
+    # bank owns the proof now). This is what stops "progress lost every restart" for a hard, multi-turn proof.
+    if os.environ.get("ZTARE_LEANMILL_PROOF_CHECKPOINT", "1") != "0":
+        try:
+            if ok:
+                _ckpt.unlink(missing_ok=True)
+                # on a genuine close the helpers are PROMOTED to the permanent bank (bankable_helpers at close),
+                # so the ephemeral scaffold's job is done — drop it, same as the checkpoint above.
+                _scaffold.unlink(missing_ok=True)
+            else:
+                _pc2 = probe.read_text(encoding="utf-8")
+                # SCAFFOLD HARVEST: persist the individually sorry-FREE helpers even when the WHOLE probe still
+                # carries the target `sorry`, so the next dispatch of THIS goal builds on them instead of
+                # rebuilding (the CLOB-compounding unit). Invariant-safe by construction — `_harvest_scaffold`
+                # drops the target and every sorried decl, so nothing with a `sorry` is ever persisted.
+                if os.environ.get("ZTARE_LEANMILL_SCAFFOLD_SEED", "1") != "0":
+                    try:
+                        _scaf = _harvest_scaffold(_pc2, target)
+                        if _scaf:
+                            _scaffold.parent.mkdir(parents=True, exist_ok=True)
+                            _scaffold.write_text(_scaf, encoding="utf-8")
+                    except Exception:  # noqa: BLE001 — harvest is best-effort; never break the solve
+                        pass
+                if _pc2.strip() and "sorry" not in _pc2 and "admit" not in _pc2:
+                    _ckpt.parent.mkdir(parents=True, exist_ok=True)
+                    _ckpt.write_text(_pc2, encoding="utf-8")
+                    # STAGE it for SEMANTIC (kernel-defeq) retrieval too: index this checkpoint body by its
+                    # STATEMENT so a re-styled future goal finds it even when the brittle exact-hash key drifts.
+                    if os.environ.get("ZTARE_LEANMILL_STAGED_REUSE", "1") != "0":
+                        try:
+                            from ztare.leanmill.solver.proof_cache import StagedProofStore
+                            from ztare.leanmill import lean_source as _ls2
+                            _sig2 = _ls2.extract_signature(_stub_src, target)
+                            if (_sig2 or "").strip():
+                                StagedProofStore(_ckpt.parent).stage(
+                                    _ck_key, target, f"theorem {target} {_sig2} := by sorry")
+                        except Exception:  # noqa: BLE001 — staging is best-effort
+                            pass
+        except Exception:  # noqa: BLE001 — checkpoint persistence must never break the solve
+            pass
+    # STALL-ESCALATION bookkeeping: a CLOSE resets the counter (proof owned by the bank now); a non-close on the
+    # DIRECT attempt records the stall so the NEXT attempt on this exact statement gets the escalated budget above.
+    if _stall_esc:
+        (_stall_clear if ok else _stall_bump)(project_dir, _ck_key)
     try:   # RECEIPT-a-priori capture (gap #2): log the technique-receipts the leaf declared, joined to atlas rank
         from ztare.leanmill.solver import move_atlas as _ma
         for _mv, _pre in _extract_receipts(probe):
@@ -1001,10 +1308,46 @@ def solve_leaf(
     except Exception:  # noqa: BLE001 — receipt telemetry is best-effort
         pass
     if ok:
+        # STATEMENT-INTEGRITY gate (2026-07-05, CLOB v7): `ok` from verify_lean_proof means "a decl named <target>
+        # compiles sorry-free with clean axioms" — it does NOT confirm the decl's STATEMENT is the original G. In a
+        # direct-continuation turn the agent can write ¬G / a counterexample UNDER the target's name (its CoT: "the
+        # declaration now carries the STATEMENT-FALSE refutation") — verify PASSES, but this is a FALSIFICATION, not
+        # a closure. Marking it closed silently skips the falsify→reformulation recovery (CLOB v7: closed=1 yet
+        # reformulat=0 — the flagship target recorded "closed as false" instead of reformalizing to the true theorem
+        # with the blueprint's priority-ordered invariant). SINGLE DOOR: if a STATEMENT-FALSE claim is present AND
+        # the kernel CONFIRMS ¬goal (via the same verifier the other two falsify paths use — carrier-ghost-guarded),
+        # the `target` decl is ¬G, not G → route to reformulation, do NOT close. Kernel-gated ⇒ an incidental marker
+        # whose ¬goal does NOT confirm still closes normally (no false-negative). closed ⟺ compiles ∧ clean ∧ ==G.
+        _sf_close = _extract_statement_false(probe)
+        if _sf_close and statement_false_verifier is not None:
+            try:
+                if statement_false_verifier():
+                    res.statement_false = _sf_close
+                    res.statement_false_confirmed = True
+                    res.reason = ("¬G proved under the target name (kernel-confirmed STATEMENT-FALSE) — routed to "
+                                  "reformulation, NOT closed (statement-integrity gate)")
+                    print(f"[leaf] ⚠️ direct attempt proved ¬{target} (target is FALSE as formalized) — NOT a "
+                          f"closure; routing to reformulation (strengthen the too-weak def/statement)", flush=True)
+                    return res
+            except Exception:  # noqa: BLE001 — a verifier failure falls through to the normal close (kernel still gated it)
+                pass
         res.closed = True
         return res
     res.gap = _extract_gap(probe)   # capture the leaf's own diagnosis from the direct attempt
     res.statement_false = _extract_statement_false(probe)   # SOFT reformulation trigger (target mis-formalized)
+    # LEAF-CLOSENESS TELEMETRY (2026-07-03 — operator "why does it take my constant probing?"): a NEAR-MISS
+    # (0 sorry, a handful of compile errors) previously read IDENTICALLY to a bare stub in the logs, so a proof
+    # that was N errors from done was invisible unless someone read the files by hand. Surface the closeness
+    # LOUDLY so a near-miss SCREAMS instead of hiding as a generic "gap".
+    try:
+        _bc = probe.read_text(encoding="utf-8")
+        _nerr = str(res.reason or "").count("error:")
+        if "sorry" not in _bc and "admit" not in _bc and _nerr > 0:
+            print(f"[leaf] ⚠️ NEAR-MISS {target}: the agent returned a SORRY-FREE proof with {_nerr} compile "
+                  f"error(s) — NOT closed (the agent stopped its own check-loop early). First: "
+                  f"{str(res.reason or '')[:140]}", flush=True)
+    except Exception:  # noqa: BLE001 — telemetry only
+        pass
 
     # SHORT-CIRCUIT a KERNEL-CONFIRMED false target (2026-06-23 iso_lemma1 loop). The agent flagged
     # STATEMENT-FALSE; if the kernel confirms ¬goal NOW, decomposing or retrying is pure waste — a false

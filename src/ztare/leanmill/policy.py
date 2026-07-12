@@ -115,6 +115,132 @@ def priority_value(
     return priority_value_from_policy(read_policy(path), namespace=namespace, key=key, fallback=fallback)
 
 
+def semantic_reference_threshold(*, path: str | Path = FACTORY_POLICY, fallback: float = 0.70) -> float:
+    """Policy-owned cosine floor for `FaithfulnessStore` semantic reference-reuse (the reuse-churn fix — a
+    paraphrased/agnostic-decomposed sub-lemma NL still recalls its CONFIRMED rendering instead of re-formalizing).
+    Resolution order (highest first): the env override `ZTARE_LEANMILL_SEMANTIC_REFERENCE_THRESHOLD`; the factory
+    policy `operations.faithfulness.semantic_reference_threshold`; else the calibrated `fallback`. Calibrated on
+    all-MiniLM-L6-v2 over real CLOB NLs: correct paraphrase→lemma ≈ 0.76, wrong same-domain lemma ≈ 0.50, unrelated
+    ≈ 0.12 ⇒ 0.70 separates cleanly. Only trades recall vs a cheap firewall check (a mis-retrieval is re-gated and
+    rejected downstream — the kernel is the sole arbiter, this number is an affordance knob, never a soundness one."""
+    env = os.environ.get("ZTARE_LEANMILL_SEMANTIC_REFERENCE_THRESHOLD")
+    if env:
+        try:
+            return float(env)
+        except ValueError:
+            pass
+    operations = read_policy(path).get("operations") if isinstance(read_policy(path).get("operations"), dict) else {}
+    obj = operations.get("faithfulness") if isinstance(operations.get("faithfulness"), dict) else {}
+    try:
+        v = obj.get("semantic_reference_threshold")
+        return float(v) if v is not None else float(fallback)
+    except (TypeError, ValueError):
+        return float(fallback)
+
+
+def prompt_transport_policy(*, path: str | Path = FACTORY_POLICY) -> dict[str, Any]:
+    """Return the shared prompt-size policy used by subscription leaves.
+
+    The factory policy owns the limits; callers receive a conservative
+    platform-derived fallback only when an isolated test has no policy file.
+    """
+
+    policy = read_policy(path)
+    operations = policy.get("operations") if isinstance(policy.get("operations"), dict) else {}
+    raw = operations.get("prompt_transport") if isinstance(operations.get("prompt_transport"), dict) else {}
+    try:
+        platform_arg_max = int(os.sysconf("SC_ARG_MAX"))
+    except (AttributeError, OSError, ValueError):
+        platform_arg_max = 0
+    derived_inline = max(1, platform_arg_max // 4)
+    try:
+        inline = int(raw.get("inline_prompt_max_bytes"))
+    except (TypeError, ValueError):
+        inline = derived_inline
+    try:
+        trace = int(raw.get("navigator_trace_max_bytes"))
+    except (TypeError, ValueError):
+        trace = max(1, inline // 2)
+    return {
+        "schema": str(raw.get("schema") or "leanmill-prompt-transport-policy-v1"),
+        "inline_prompt_max_bytes": max(1, inline),
+        "navigator_trace_max_bytes": max(1, trace),
+        "source": "factory_policy" if raw else "platform_fallback",
+        "policy_path": str(path),
+    }
+
+
+def faithfulness_promotion_policy_from_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
+    """Return publication-staging policy for modeling-faithfulness receipts.
+
+    This does not decide theorem closure. It only controls whether a closed
+    campaign may auto-stage a public-review artifact when its theory-first
+    modeling receipts are missing or expose unpinned definitions.
+    """
+    if not isinstance(policy, dict):
+        policy = {}
+    operations = policy.get("operations") if isinstance(policy.get("operations"), dict) else {}
+    obj = operations.get("faithfulness") if isinstance(operations.get("faithfulness"), dict) else {}
+
+    def bool_value(key: str, fallback: bool) -> bool:
+        value = obj.get(key)
+        if value is None:
+            return bool(fallback)
+        if isinstance(value, bool):
+            return value
+        return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+    return {
+        "schema": str(obj.get("schema") or "leanmill-faithfulness-policy-v1"),
+        "source": "factory_policy" if obj else "kernel_default",
+        "require_def_denotation_receipt_for_auto_promote": bool_value(
+            "require_def_denotation_receipt_for_auto_promote", True),
+        "require_pinned_def_denotation_for_auto_promote": bool_value(
+            "require_pinned_def_denotation_for_auto_promote", True),
+        "block_refuted_def_denotation_auto_promote": bool_value(
+            "block_refuted_def_denotation_auto_promote", True),
+        "block_vacuity_exposed_auto_promote": bool_value(
+            "block_vacuity_exposed_auto_promote", False),
+    }
+
+
+def faithfulness_promotion_policy(*, path: str | Path = FACTORY_POLICY) -> dict[str, Any]:
+    return faithfulness_promotion_policy_from_policy(read_policy(path))
+
+
+def definition_api_contract_policy_from_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
+    """Return policy for definition/API receipt generation and review routing."""
+    if not isinstance(policy, dict):
+        policy = {}
+    operations = policy.get("operations") if isinstance(policy.get("operations"), dict) else {}
+    obj = operations.get("definition_api_contract") if isinstance(
+        operations.get("definition_api_contract"), dict) else {}
+
+    def bool_value(key: str, fallback: bool) -> bool:
+        value = obj.get(key)
+        if value is None:
+            return bool(fallback)
+        if isinstance(value, bool):
+            return value
+        return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+    return {
+        "schema": str(obj.get("schema") or "leanmill-definition-api-contract-policy-v1"),
+        "source": "factory_policy" if obj else "kernel_default",
+        "mode": str(obj.get("mode") or "diagnostic"),
+        "require_receipt_for_public_review": bool_value("require_receipt_for_public_review", False),
+        "warn_on_target_definition_without_named_api": bool_value(
+            "warn_on_target_definition_without_named_api", True),
+        "warn_on_noncomputable_definition": bool_value("warn_on_noncomputable_definition", True),
+        "warn_on_structure_without_visible_invariant": bool_value(
+            "warn_on_structure_without_visible_invariant", True),
+    }
+
+
+def definition_api_contract_policy(*, path: str | Path = FACTORY_POLICY) -> dict[str, Any]:
+    return definition_api_contract_policy_from_policy(read_policy(path))
+
+
 def c_supply_breadth_policy_from_policy(policy: dict[str, Any] | None) -> dict[str, Any]:
     """Return the strict C-supply breadth policy stanza.
 
@@ -405,6 +531,8 @@ __all__ = [
     "priority_policy_from_policy",
     "priority_value_from_policy",
     "priority_value",
+    "semantic_reference_threshold",
+    "prompt_transport_policy",
     "FACTORY_POLICY",
 ]
 
@@ -474,6 +602,17 @@ def _self_test() -> int:
             fallback=1,
         ) == 145
         assert priority_value(path=policy, namespace="work_queue", key="missing", fallback=7) == 7
+        policy.write_text(json.dumps({
+            "operations": {
+                "faithfulness": {
+                    "require_pinned_def_denotation_for_auto_promote": False,
+                    "block_vacuity_exposed_auto_promote": True,
+                }
+            }
+        }) + "\n")
+        fp = faithfulness_promotion_policy(path=policy)
+        assert fp["require_pinned_def_denotation_for_auto_promote"] is False
+        assert fp["block_vacuity_exposed_auto_promote"] is True
     print("ztare.leanmill.policy self-test PASS")
     return 0
 

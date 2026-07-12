@@ -130,6 +130,20 @@ def run_instrument_liveness_battery(*, embed_fn=None, atlas_nonempty=None, backt
         out["roundtrip"] = {"live": live, "why": why}
         if not live:
             out["banners"].append(liveness_banner(live, why, instrument="firewall round-trip judge"))
+    # 3) Mathlib SEARCH (Loogle) — the agent's premise-discovery backstop. A DEAD search silently degrades to
+    #    "guess from memory", and the agent invents lemma names (the EF1 `list_sum_le_of_get` RCA, 2026-07-03: the
+    #    default urllib User-Agent 403'd, unprobed). Probe it LOUD at run start; a local-grep fallback counts live.
+    try:
+        from ztare.leanmill.agent_tools import loogle_search_text
+        _r = loogle_search_text("Nat.add_zero", max_hits=1)
+        live = ("declarations match" in _r) or ("local Mathlib grep" in _r)
+        why = ("live (Loogle)" if "declarations match" in _r
+               else "live (local grep; Loogle down)" if "local Mathlib grep" in _r else _r[:90])
+        out["mathlib_search"] = {"live": bool(live), "why": why}
+        if not live:
+            out["banners"].append(liveness_banner(live, why, instrument="Mathlib search (Loogle)"))
+    except Exception:  # noqa: BLE001 — probe wiring failure ⇒ skip that leg, never block the run
+        pass
     return out
 
 

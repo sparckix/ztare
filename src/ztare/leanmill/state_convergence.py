@@ -58,6 +58,7 @@ import hashlib
 import json
 import os
 import socket
+import sqlite3
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -292,6 +293,36 @@ def merge_into(local_path: "str | Path", incoming_path: "str | Path") -> MergeRe
     return rep
 
 
+def merge_sqlite_by_key(local_db: "str | Path", incoming_db: "str | Path", table: str, key: str,
+                        *, apply: bool = True) -> MergeReport:
+    """The jsonl merge's sqlite sibling: converge a table the same CvRDT way — insert rows whose natural `key` is
+    absent, never overwrite. Idempotent and order-free (keyed, not positional). Uses the INTERSECTION of the two
+    nodes' columns, so a drifted schema still merges. `apply=False` reports the delta without writing (dry-run)."""
+    con = sqlite3.connect(str(local_db), timeout=30)
+    try:
+        con.execute("PRAGMA busy_timeout=30000")
+        con.execute("ATTACH ? AS src", (str(incoming_db),))
+        mcols = [r[1] for r in con.execute(f"PRAGMA main.table_info({table})")]
+        scols = [r[1] for r in con.execute(f"PRAGMA src.table_info({table})")]
+        cols = [c for c in mcols if c in scols]
+        if key not in cols:
+            raise ValueError(f"natural key {key!r} missing from {table} on one node")
+        collist = ",".join(cols)
+        before = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        src_total = con.execute(f"SELECT COUNT(*) FROM src.{table}").fetchone()[0]
+        add = con.execute(f"SELECT COUNT(*) FROM src.{table} "
+                          f"WHERE {key} NOT IN (SELECT {key} FROM {table})").fetchone()[0]
+        if apply and add:
+            con.execute(f"INSERT INTO {table} ({collist}) SELECT {collist} FROM src.{table} "
+                        f"WHERE {key} NOT IN (SELECT {key} FROM {table})")
+            con.commit()
+        total = before + (add if apply else 0)
+        return MergeReport(path=str(local_db), local_before=before, incoming=src_total,
+                           merged_total=total, added_from_incoming=add, spec_note=f"sqlite {table} by {key}")
+    finally:
+        con.close()
+
+
 # ---------------------------------------------------------------------------
 # The DDIA-elegant bit: the merge as a soundness BUG DETECTOR.
 # A statement both PROVED (proof_cache) and REFUTED (no_good_store) violates
@@ -301,6 +332,11 @@ def merge_into(local_path: "str | Path", incoming_path: "str | Path") -> MergeRe
 class Conflict:
     key: str
     detail: str
+
+
+def _is_confirmed_refutation_class(failure_class: str) -> bool:
+    fc = str(failure_class or "")
+    return fc == "statement_false" or fc.startswith("refut")
 
 
 def detect_conflicts(queries_dir: "str | Path") -> "list[Conflict]":
@@ -321,8 +357,9 @@ def detect_conflicts(queries_dir: "str | Path") -> "list[Conflict]":
         k = r.get("key")
         # Only a CONFIRMED counterexample refutes a Prop; a tactical dead-end
         # (failure_class without a witness) is not a soundness claim.
-        if k and r.get("witness") and (r.get("failure_class") or "").startswith("refut"):
-            refuted[k] = r.get("failure_class", "")
+        fc = r.get("failure_class") or ""
+        if k and r.get("witness") and _is_confirmed_refutation_class(fc):
+            refuted[k] = fc
     out: "list[Conflict]" = []
     for k in sorted(proved & set(refuted)):
         out.append(Conflict(key=k, detail=f"proved AND refuted ({refuted[k]})"))
@@ -333,6 +370,12 @@ def detect_conflicts(queries_dir: "str | Path") -> "list[Conflict]":
 # The read-only daemon-owned snapshots are NOT here — they are authoritative on
 # the VPS and rightly clobber-copied, never merged.
 CONVERGENT_STORES = tuple(STORE_SPECS.keys())
+
+# The sqlite sibling of STORE_SPECS: DB stores that reconcile by a natural key via `merge_sqlite_by_key`, so a
+# cross-node pull unions their rows instead of clobbering one node's with the other's. `{filename: (table, key)}`.
+DB_STORES: "dict[str, tuple[str, str]]" = {
+    "solver_lane_attempts.db": ("attempts", "row_id"),
+}
 
 
 def merge_dir(local_dir: "str | Path", incoming_dir: "str | Path") -> "list[MergeReport]":
@@ -462,6 +505,11 @@ def _selftest() -> int:
                         "witness": "n=2"}) + "\n", encoding="utf-8")
         confs = detect_conflicts(d)
         check("conflict detector flags proved-AND-refuted", len(confs) == 1)
+        (d / "solver_lane_no_good_store.jsonl").write_text(
+            json.dumps({"key": "BAD", "failure_class": "statement_false",
+                        "witness": "counterexample"}) + "\n", encoding="utf-8")
+        confs = detect_conflicts(d)
+        check("conflict detector flags proved-AND-statement_false", len(confs) == 1)
         (d / "solver_lane_no_good_store.jsonl").write_text(
             json.dumps({"key": "OK", "failure_class": "timeout",
                         "witness": ""}) + "\n", encoding="utf-8")

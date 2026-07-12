@@ -21,10 +21,11 @@ import shlex
 import sqlite3
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 _SRC = Path(__file__).resolve().parents[2]
 if str(_SRC) not in sys.path:
@@ -1181,9 +1182,14 @@ def claim_specific(
     cur = cx.execute(
         """
         UPDATE work_items
-        SET status='claimed', attempts=attempts+1, claimed_by=?, lease_until=?, updated_at=?
+        SET status='claimed',
+            attempts=attempts + CASE WHEN status='queued' THEN 1 ELSE 0 END,
+            claimed_by=?, lease_until=?, updated_at=?
         WHERE work_id=?
-          AND (status='queued' OR (status='claimed' AND claimed_by=?))
+          AND (
+              (status='queued' AND attempts < max_attempts)
+              OR (status='claimed' AND claimed_by=?)
+          )
         """,
         (worker_id, now + int(lease_s), now, work_id, worker_id),
     )
@@ -1200,21 +1206,24 @@ def finish_specific(
     work_id: str,
     worker_id: str,
     done: bool,
-) -> None:
+) -> bool:
     """Release a claimed item: `done=True` → terminal `done`; `done=False` → back to `queued`
     (so another node — possibly with a larger proven shelf — can retry it). The lease is cleared
-    either way. Only acts on an item this worker holds (or any claimed item, for crash recovery)."""
+    either way. An expired or foreign lease cannot be finalized by this worker;
+    expiration recovery remains the queue's separate state transition."""
+    reclaim_expired(cx)
     now = _now()
     status = "done" if done else "queued"
-    cx.execute(
+    cur = cx.execute(
         """
         UPDATE work_items
         SET status=?, claimed_by=NULL, lease_until=NULL, updated_at=?
-        WHERE work_id=? AND (claimed_by=? OR status='claimed')
+        WHERE work_id=? AND status='claimed' AND claimed_by=?
         """,
         (status, now, work_id, worker_id),
     )
     cx.commit()
+    return int(cur.rowcount or 0) == 1
 
 
 def _apply_terminal_payload_defaults(payload: dict[str, Any], *, status: str) -> None:
@@ -1287,7 +1296,6 @@ def heartbeat(
     payload_update: dict[str, Any] | None = None,
 ) -> bool:
     now = _now()
-    record_worker_heartbeat(cx, worker_id=worker_id, claimed_work_id=work_id, worker_kind="leased_work")
     row = cx.execute(
         """
         SELECT payload_json FROM work_items
@@ -1300,16 +1308,205 @@ def heartbeat(
     payload = json.loads(row["payload_json"] or "{}")
     if payload_update:
         payload.update(payload_update)
-    cx.execute(
+    cur = cx.execute(
         """
         UPDATE work_items
         SET lease_until=?, payload_json=?, updated_at=?
         WHERE work_id=? AND claimed_by=? AND status IN ('claimed', 'running')
+          AND lease_until IS NOT NULL AND lease_until >= ?
         """,
-        (now + int(lease_s), _json(payload), now, work_id, worker_id),
+        (now + int(lease_s), _json(payload), now, work_id, worker_id, now),
     )
     cx.commit()
+    if int(cur.rowcount or 0) != 1:
+        return False
+    record_worker_heartbeat(
+        cx,
+        worker_id=worker_id,
+        claimed_work_id=work_id,
+        worker_kind="leased_work",
+    )
     return True
+
+
+class QueueLeaseBusy(RuntimeError):
+    """A live worker already owns the requested mutable work identity."""
+
+
+class QueueLeaseLost(RuntimeError):
+    """The worker could no longer renew or release its queue lease."""
+
+
+class QueueLease:
+    """Reusable single-owner lease over one mutable work identity.
+
+    The queue row is authoritative.  Callers provide the identity and payload;
+    immutable receipts remain caller-owned.  The lease renews in a daemon thread
+    so a long provider call cannot silently outlive ownership, and an optional
+    ``on_change`` callback may refresh a derived status view.
+    """
+
+    def __init__(
+        self,
+        db_path: str | Path,
+        *,
+        work_id: str,
+        worker_id: str | None = None,
+        kind: str = "leased_work",
+        worker_kind: str = "leased_work",
+        payload: Mapping[str, Any] | None = None,
+        max_attempts: int = 1_000_000_000,
+        lease_s: int = 900,
+        heartbeat_s: float | None = None,
+        on_change: Callable[[], None] | None = None,
+    ) -> None:
+        self.db_path = str(db_path)
+        self.work_id = str(work_id)
+        if not self.work_id.strip():
+            raise ValueError("queue lease requires work_id")
+        self.worker_id = worker_id or (
+            f"queue-lease:{node_id()}:{os.getpid()}:{uuid.uuid4().hex[:12]}"
+        )
+        self.kind = str(kind or "leased_work")
+        self.worker_kind = str(worker_kind or self.kind)
+        self.payload = dict(payload or {})
+        self.max_attempts = max(1, int(max_attempts))
+        self.lease_s = max(1, int(lease_s))
+        self.heartbeat_s = max(
+            0.05,
+            float(
+                heartbeat_s
+                if heartbeat_s is not None
+                else min(60, max(5, self.lease_s / 3))
+            ),
+        )
+        self._on_change = on_change
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+        self._renew_lock = threading.Lock()
+        self._acquired = False
+        self._lost = False
+        self._last_error = ""
+
+    @property
+    def lost(self) -> bool:
+        return self._lost
+
+    def __enter__(self) -> "QueueLease":
+        cx = connect(self.db_path)
+        try:
+            enqueue(
+                cx,
+                kind=self.kind,
+                priority=0,
+                max_attempts=self.max_attempts,
+                payload={**self.payload, "work_id": self.work_id},
+            )
+            if not claim_specific(
+                cx,
+                work_id=self.work_id,
+                worker_id=self.worker_id,
+                lease_s=self.lease_s,
+            ):
+                row = cx.execute(
+                    "SELECT claimed_by, lease_until FROM work_items WHERE work_id=?",
+                    (self.work_id,),
+                ).fetchone()
+                owner = str(row["claimed_by"] or "") if row else ""
+                until = int(row["lease_until"] or 0) if row else 0
+                raise QueueLeaseBusy(
+                    "queue work is currently owned by another worker"
+                    + (f" ({owner} until {until})" if owner else "")
+                )
+            self._acquired = True
+        finally:
+            cx.close()
+        self._emit_change()
+        self._thread = threading.Thread(
+            target=self._renew_loop,
+            name=f"queue-lease-{self.work_id[-8:]}",
+            daemon=True,
+        )
+        self._thread.start()
+        return self
+
+    def __exit__(self, exc_type: Any, _exc: Any, _traceback: Any) -> bool:
+        try:
+            self.release()
+        except QueueLeaseLost:
+            if exc_type is None:
+                raise
+        return False
+
+    def update(self, payload_update: Mapping[str, Any]) -> None:
+        if not self._acquired:
+            raise QueueLeaseLost("queue lease was never acquired")
+        self.payload.update(dict(payload_update))
+        self.renew()
+
+    def renew(self) -> None:
+        with self._renew_lock:
+            if not self._acquired:
+                raise QueueLeaseLost("queue lease was never acquired")
+            cx = connect(self.db_path)
+            try:
+                renewed = heartbeat(
+                    cx,
+                    work_id=self.work_id,
+                    worker_id=self.worker_id,
+                    lease_s=self.lease_s,
+                    payload_update=dict(self.payload),
+                )
+            finally:
+                cx.close()
+            if not renewed:
+                self._lost = True
+                raise QueueLeaseLost("queue lease ownership was lost")
+            self._emit_change()
+
+    def _renew_loop(self) -> None:
+        while not self._stop.wait(self.heartbeat_s):
+            try:
+                self.renew()
+            except QueueLeaseLost as exc:
+                self._last_error = str(exc)
+                return
+            except Exception as exc:  # transient coordinator errors are retried
+                self._last_error = str(exc)
+
+    def release(self) -> None:
+        if not self._acquired:
+            return
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=6.0)
+        with self._renew_lock:
+            cx = connect(self.db_path)
+            try:
+                released = finish_specific(
+                    cx,
+                    work_id=self.work_id,
+                    worker_id=self.worker_id,
+                    done=False,
+                )
+            finally:
+                cx.close()
+            self._acquired = False
+        self._emit_change()
+        if not released:
+            self._lost = True
+        if self._lost:
+            detail = f": {self._last_error}" if self._last_error else ""
+            raise QueueLeaseLost("queue lease was lost before release" + detail)
+
+    def _emit_change(self) -> None:
+        if self._on_change is None:
+            return
+        try:
+            self._on_change()
+        except Exception:
+            # A derived view must never decide queue ownership.
+            return
 
 
 def row_to_dict(row: sqlite3.Row) -> dict[str, Any]:
@@ -1635,6 +1832,25 @@ def main() -> int:
             assert not _pid_identity_matches_worker("python worker.py --worker-id current", worker_id="previous")
             assert _pid_identity_matches_worker("python worker.py --daemon", worker_id="watchdog")
             assert heartbeat(tcx, work_id=wid, worker_id="w", lease_s=1)
+            heartbeat_expired = enqueue(
+                tcx,
+                kind="heartbeat-expired",
+                priority=1,
+                payload={"work_id": "heartbeat-expired"},
+                max_attempts=2,
+            )
+            assert claim(tcx, worker_id="heartbeat-worker", kinds=["heartbeat-expired"], lease_s=1)
+            tcx.execute(
+                "UPDATE work_items SET lease_until=? WHERE work_id=?",
+                (_now() - 1, heartbeat_expired),
+            )
+            tcx.commit()
+            assert not heartbeat(
+                tcx,
+                work_id=heartbeat_expired,
+                worker_id="heartbeat-worker",
+                lease_s=1,
+            )
             update_status(tcx, work_id=wid, status="done")
             wid_a = enqueue(tcx, kind="probe", priority=10, payload={"work_id": "a", "lane": "source"})
             wid_b = enqueue(tcx, kind="probe", priority=9, payload={"work_id": "b", "lane": "family"})

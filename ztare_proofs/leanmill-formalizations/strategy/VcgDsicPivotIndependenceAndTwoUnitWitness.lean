@@ -16,6 +16,9 @@ telemetry (run_tag=notes_vcg_dsic_blueprint_0701T0201) by promote_campaign_artif
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/vcg_dsic_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-!
 VCG dominant-strategy truthfulness substrate.
 
@@ -261,7 +264,7 @@ noncomputable def vcgMechanism
   welfare_maximizing := vcgAllocation_isWelfareMaximizer
   payment_is_clarke_pivot := by intro r i; rfl
 
-theorem socialWelfare_updateReport__c1af565a
+theorem socialWelfare_updateReport
     {Agent Outcome K : Type*} [Fintype Agent] [DecidableEq Agent] [AddCommMonoid K]
     (r : ValuationProfile Agent Outcome K) (i : Agent) (vi : Valuation Outcome K)
     (a : Outcome) :
@@ -277,7 +280,7 @@ theorem socialWelfare_updateReport__c1af565a
     have hji : j ≠ i := (Finset.mem_erase.mp hj).1
     simp [updateReport, hji]
 
-theorem othersWelfare_updateReport_self__2aa855d9
+theorem othersWelfare_updateReport_self
     {Agent Outcome K : Type*} [Fintype Agent] [DecidableEq Agent] [AddCommMonoid K]
     (r : ValuationProfile Agent Outcome K) (i : Agent) (vi : Valuation Outcome K)
     (a : Outcome) :
@@ -288,12 +291,12 @@ theorem othersWelfare_updateReport_self__2aa855d9
   have hji : j ≠ i := (Finset.mem_erase.mp hj).1
   simp [updateReport, hji]
 
-theorem pivotBenchmark_updateReport_self__04530a39
+theorem pivotBenchmark_updateReport_self
     {Agent Outcome K : Type*} [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [LinearOrder K] [AddCommMonoid K]
     (r : ValuationProfile Agent Outcome K) (i : Agent) (vi : Valuation Outcome K) :
     pivotBenchmark (updateReport r i vi) i = pivotBenchmark r i := by
-  simp [pivotBenchmark, othersWelfare_updateReport_self__2aa855d9]
+  simp [pivotBenchmark, othersWelfare_updateReport_self]
 
 theorem vcg_dominantStrategyTruthful : ∀ (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [LinearOrder K] [AddCommGroup K]
@@ -312,7 +315,7 @@ theorem vcg_dominantStrategyTruthful : ∀ (Agent Outcome K : Type*) [Fintype Ag
   have hwelfare :
       trueVal deviatingOutcome + othersWelfare othersReports i deviatingOutcome ≤
         trueVal truthfulOutcome + othersWelfare othersReports i truthfulOutcome := by
-    simpa [truthfulReports, truthfulOutcome, deviatingOutcome, socialWelfare_updateReport__c1af565a] using hmax
+    simpa [truthfulReports, truthfulOutcome, deviatingOutcome, socialWelfare_updateReport] using hmax
   have hwithBenchmark :
       trueVal deviatingOutcome + othersWelfare othersReports i deviatingOutcome +
           -(pivotBenchmark othersReports i) ≤
@@ -322,7 +325,7 @@ theorem vcg_dominantStrategyTruthful : ∀ (Agent Outcome K : Type*) [Fintype Ag
       add_le_add_right hwelfare (-(pivotBenchmark othersReports i))
   simpa [DominantStrategyTruthful, quasilinearUtility, clarkePivotPayment,
     truthfulReports, deviatingReports, truthfulOutcome, deviatingOutcome,
-    pivotBenchmark_updateReport_self__04530a39, othersWelfare_updateReport_self__2aa855d9,
+    pivotBenchmark_updateReport_self, othersWelfare_updateReport_self,
     sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hwithBenchmark
 structure TwoUnitMarginals (K : Type*) where
   first : K
@@ -545,8 +548,8 @@ end VCG
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_dsic__485057d3
-theorem iso_lemma_dsic__485057d3
+-- [family-lemma-library] banked: iso_lemma_dsic
+theorem iso_lemma_dsic
     (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [Field K] [LinearOrder K] [IsStrictOrderedRing K] :
     DominantStrategyTruthful Agent Outcome K := by
@@ -557,8 +560,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_mechanism_welfare__60ccfe51
-theorem iso_lemma_mechanism_welfare__60ccfe51
+-- [family-lemma-library] banked: iso_lemma_mechanism_welfare
+theorem iso_lemma_mechanism_welfare
     (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [Field K] [LinearOrder K] [IsStrictOrderedRing K] :
     ∀ r : ValuationProfile Agent Outcome K,
@@ -570,8 +573,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_mechanism_payment__fec3071b
-theorem iso_lemma_mechanism_payment__fec3071b
+-- [family-lemma-library] banked: iso_lemma_mechanism_payment
+theorem iso_lemma_mechanism_payment
     (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [Field K] [LinearOrder K] [IsStrictOrderedRing K] :
     ∀ (r : ValuationProfile Agent Outcome K) (i : Agent),
@@ -583,8 +586,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_pivot_independent__ff66be29
-theorem iso_lemma_pivot_independent__ff66be29 : ∀ (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
+-- [family-lemma-library] banked: iso_lemma_pivot_independent
+theorem iso_lemma_pivot_independent : ∀ (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [Field K] [LinearOrder K] [IsStrictOrderedRing K], ∀ (i : Agent) (othersReports : ValuationProfile Agent Outcome K)
         (trueVal misreport : Valuation Outcome K),
       pivotBenchmark (updateReport othersReports i trueVal) i =
@@ -603,8 +606,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_true0_decreasing__2ead5523
-theorem iso_lemma_true0_decreasing__2ead5523 :
+-- [family-lemma-library] banked: iso_lemma_true0_decreasing
+theorem iso_lemma_true0_decreasing :
     DecreasingMarginals twoUnitWitnessTrue0Marginals := by
   rfl
 
@@ -613,8 +616,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_other_decreasing__126d9db5
-theorem iso_lemma_other_decreasing__126d9db5 :
+-- [family-lemma-library] banked: iso_lemma_other_decreasing
+theorem iso_lemma_other_decreasing :
     DecreasingMarginals twoUnitWitnessOtherMarginals := by
   rfl
 
@@ -623,8 +626,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_mis0_decreasing__324f1454
-theorem iso_lemma_mis0_decreasing__324f1454 :
+-- [family-lemma-library] banked: iso_lemma_mis0_decreasing
+theorem iso_lemma_mis0_decreasing :
     DecreasingMarginals twoUnitWitnessMis0Marginals := by
   rfl
 
@@ -633,8 +636,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: iso_lemma_twoUnit_witness__ae76456e
-theorem iso_lemma_twoUnit_witness__ae76456e :
+-- [family-lemma-library] banked: iso_lemma_twoUnit_witness
+theorem iso_lemma_twoUnit_witness :
     vcgAllocation (updateReport twoUnitWitnessBaseProfile (0 : TwoAgent) twoUnitWitnessTrue0) ≠
         vcgAllocation (updateReport twoUnitWitnessBaseProfile (0 : TwoAgent) twoUnitWitnessMis0) ∧
       quasilinearUtility twoUnitWitnessTrue0
@@ -653,8 +656,8 @@ end
 section  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)
 open VCG
 
--- [family-lemma-library] banked: vcg_dsic_pivot_independence_and_twoUnit_witness__a8cfdaac
-theorem vcg_dsic_pivot_independence_and_twoUnit_witness__a8cfdaac : ∀ (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
+-- [family-lemma-library] banked: vcg_dsic_pivot_independence_and_twoUnit_witness
+theorem vcg_dsic_pivot_independence_and_twoUnit_witness : ∀ (Agent Outcome K : Type*) [Fintype Agent] [DecidableEq Agent] [Fintype Outcome]
     [Nonempty Outcome] [Field K] [LinearOrder K] [IsStrictOrderedRing K], (∀ r : ValuationProfile Agent Outcome K,
         IsWelfareMaximizer r ((vcgMechanism Agent Outcome K).allocation r)) ∧
       (∀ (r : ValuationProfile Agent Outcome K) (i : Agent),
@@ -894,4 +897,4 @@ theorem vcg_dsic_pivot_independence_and_twoUnit_witness__a8cfdaac : ∀ (Agent O
 
 end
 
-#print axioms vcg_dsic_pivot_independence_and_twoUnit_witness__a8cfdaac
+#print axioms vcg_dsic_pivot_independence_and_twoUnit_witness

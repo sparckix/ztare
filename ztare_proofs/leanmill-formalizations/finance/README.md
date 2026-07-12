@@ -22,6 +22,12 @@ the elementary half (the hard direction is the Farkas/separation slice). 3 theor
 accounting is explicit: strict positivity of `q` is load-bearing, and the market is frictionless (no bid–ask
 spread). [roadmap §4.1]
 
+### `DoubleEntryLedger.lean` — balanced journal conservation
+`balanced_journal_conservation_zero_endpoint_and_separate_sharpness`. In a finite account universe with signed
+integer balances, posting any finite journal whose entries balance to zero preserves the total account balance.
+The theorem also includes the zero-opening-ledger endpoint and a separate one-leg sharpness witness showing that a
+nonzero single-sided entry is not balanced and changes the total.
+
 ### `ConstantProductAmm.lean` — constant-product AMM temporal + no-arbitrage invariants
 `constantProductAMM_temporal_invariant_and_no_roundTrip_profit`. For an `x·y = k` pool with fee `γ ∈ (0,1]`:
 the product `k` **never decreases** across any adversarial finite trade sequence, and a single round-trip returns
@@ -64,3 +70,60 @@ lake env lean <file>.lean
 ```
 
 It should elaborate with no errors and print the axiom audit (standard axioms only).
+
+### Definitions
+
+The vocabulary these theorems are stated over — read them to check the faithfulness boundary; each is documented at the top of its file.
+
+**`AmmNoCyclicArbitrage.lean`**
+- `PoolWellFormed (p : ConstantProductPool) : Prop`
+- `poolProduct (p : ConstantProductPool) : NNReal`
+- `FeeIsReal (fee : FeeFactor) : Prop`
+
+**`ConstantProductAmm.lean`**
+- `PoolWellFormed (p : ConstantProductPool) : Prop` — A pool is live exactly when both reserves are strictly positive.
+- `poolProduct (p : ConstantProductPool) : NNReal` — The constant-product quantity `k = x*y`.
+- `FeeIsReal (fee : FeeFactor) : Prop` — A real fee, excluding the feeless boundary.
+- `ProductNondecreasing (p q : ConstantProductPool) : Prop` — Product monotonicity between two pool states.
+- `ProductStrictlyIncreases (p q : ConstantProductPool) : Prop` — Strict product growth between two pool states.
+
+**`CorporateWaterfallAbsolutePriority.lean`**
+- `DistributionFeasible {ι : Type*} [Fintype ι]`
+- `AbsolutePriority {ι : Type*} [Preorder ι]`
+- `APRTriggered {ι : Type*} [Preorder ι] (pay : PaymentSchedule ι) : Prop`
+
+**`CorporateWaterfallPariPassuApr.lean`**
+- `DistributionFeasible {ι : Type*} [Fintype ι]`
+- `AbsolutePriority {ι : Type*} [Preorder ι]`
+- `APRTriggered {ι : Type*} [Preorder ι] (pay : PaymentSchedule ι) : Prop`
+- `RankedStrictlySenior {ι : Type*} (rank : ι → ℕ) (senior junior : ι) : Prop`
+
+**`DoubleEntryLedger.lean`**
+- `Ledger (Account : Type u) : Type u`
+- `Leg (Account : Type u)`
+- `Entry (Account : Type u) : Type u`
+- `Journal (Account : Type u) : Type u`
+- `entrySum {Account : Type u} (entry : Entry Account) : Int`
+- `BalancedEntry {Account : Type u} (entry : Entry Account) : Prop`
+- `applyLeg {Account : Type u} [DecidableEq Account]`
+- `applyEntry {Account : Type u} [DecidableEq Account]`
+- `postJournal {Account : Type u} [DecidableEq Account]`
+- `totalBalance {Account : Type u} [Fintype Account] (ledger : Ledger Account) : Int`
+
+**`DefiLiquidationSafety.lean`**
+- `CollateralFactor (theta : K) : Prop`
+- `Healthy (theta : K) (p : Position K) : Prop`
+- `Liquidatable (theta : K) (p : Position K) : Prop`
+- `healthGap (theta : K) (p : Position K) : K`
+- `depositAction (amount : K) (hamount : 0 ≤ amount) : UserAction K`
+- `repayAction (amount : K) (hamount : 0 ≤ amount) : UserAction K`
+- `borrowAction (amount : K) (hamount : 0 ≤ amount) : UserAction K`
+- `withdrawAction (amount : K) (hamount : 0 ≤ amount) : UserAction K`
+- `applyUserAction (p : Position K) (a : UserAction K) : Position K`
+
+**`FtapHard.lean`**
+- `ftapCost {numAssets : ℕ}` — Cost of portfolio `theta` at prices `p`.
+- `ftapPayoff {numAssets numStates : ℕ}` — State payoff of portfolio `theta` under payoff matrix `D`.
+- `StrictPositiveVector {ι : Type*} (x : ι → ℝ) : Prop` — Strict positivity for a finite vector.
+- `FTAPNoArbitrage {numAssets numStates : ℕ}`
+- `StatePriceVector {numAssets numStates : ℕ}` — A strictly positive state-price vector normalized to price assets directly.

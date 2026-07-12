@@ -10,6 +10,9 @@ each theorem is `[propext, Classical.choice, Quot.sound]`; no `sorry`.
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/restricted_payments_covenant_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 /-!
 The faithful covenant permits a Restricted Payment iff THREE conditions hold together: no Default (a), the
 pro-forma coverage test passes (b), and the payment stays strictly under the builder basket (c). Each laundered

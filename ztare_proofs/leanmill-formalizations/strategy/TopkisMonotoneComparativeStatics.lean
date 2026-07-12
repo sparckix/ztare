@@ -37,6 +37,9 @@ will emit them IN-FILE and flip the verdict to PINNED. Until then the denotation
 -/
 import Mathlib
 
+-- Natural-language specification (blueprint): blueprints/topkis_blueprint.md
+-- Read the blueprint to check the faithfulness boundary — the guarantee stops where the English intent is argued, not proved.
+
 
 def IncreasingDifferences
     {X T : Type*} [Preorder X] [Preorder T] (f : X → T → ℝ) : Prop :=

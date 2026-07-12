@@ -34,6 +34,477 @@ def test_no_split_brain_flag_defaults():
                      + "\n".join(f"  {f}: {dict(d)}" for f, d in sorted(bad.items())))
 
 
+def test_refutation_reuse_requires_current_statement():
+    """A same-name counterexample for an older weaker statement must not be reused for a strengthened target."""
+    from ztare.leanmill.solver.conjecture import _current_goal_prop, _refutation_matches_current_goal
+    goal = ("theorem capstone (fullList : Nat → List Nat) "
+            "(hComplete : ∀ m w, w ∈ fullList m) : ∀ m w, m = m")
+    current = _current_goal_prop("capstone", goal, "")
+    stale_probe = (
+        "theorem capstone_counterexample : "
+        "¬ (∀ (fullList : Nat → List Nat), ∀ m w, m = m) := by\n"
+        "  intro h\n"
+        "  exact False.elim (by contradiction)\n"
+    )
+    matching_probe = (
+        "theorem capstone_counterexample : "
+        "¬ (∀ (fullList : Nat → List Nat) (hComplete : ∀ m w, w ∈ fullList m), ∀ m w, m = m) := by\n"
+        "  intro h\n"
+        "  exact False.elim (by contradiction)\n"
+    )
+    assert current
+    assert _refutation_matches_current_goal(stale_probe, "capstone", current) is False
+    assert _refutation_matches_current_goal(matching_probe, "capstone", current) is True
+
+
+def test_control_plane_statement_id_and_cache_authority():
+    """Statement identity changes on strengthened propositions; semantic/staged caches stay advisory."""
+    from ztare.leanmill.control_plane import CacheAuthority, StatementId, cache_authority
+    weak = StatementId.from_parts(
+        target_name="capstone",
+        source_text="theorem capstone : ∀ m, m = m := by sorry",
+        closed_prop="∀ m, m = m",
+        nl_exact="prove capstone",
+        substrate_text="def A := Nat",
+    )
+    strong = StatementId.from_parts(
+        target_name="capstone",
+        source_text="theorem capstone (h : True) : ∀ m, m = m := by sorry",
+        closed_prop="True → ∀ m, m = m",
+        nl_exact="prove capstone",
+        substrate_text="def A := Nat",
+    )
+    assert weak.closed_prop_hash != strong.closed_prop_hash
+    assert weak.cache_key() != strong.cache_key()
+    assert cache_authority("proof_cache") is CacheAuthority.PROOF_CREDIT
+    assert cache_authority("banked_rung") is CacheAuthority.PROOF_CREDIT
+    assert cache_authority("staged_reuse") is CacheAuthority.AFFORDANCE
+    assert cache_authority("semantic_shelf") is CacheAuthority.AFFORDANCE
+
+
+def test_staged_proof_store_marks_reuse_as_affordance(tmp_path):
+    """Staged proof reuse is a seed only; it must never present itself as proof-credit."""
+    import json
+    from ztare.leanmill.solver.proof_cache import StagedProofStore
+
+    store = StagedProofStore(tmp_path)
+    (tmp_path / "k1.lean").write_text(
+        "theorem g (a b : Nat) : a + b = b + a := by exact Nat.add_comm a b",
+        encoding="utf-8",
+    )
+    store.stage("k1", "g", "theorem g (a b : Nat) : a + b = b + a := by sorry")
+
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "_staged_index.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert rows[-1]["schema"] == "leanmill.staged_proof.v1"
+    assert rows[-1]["cache_authority"] == "affordance"
+    assert rows[-1]["proof_credit_eligible"] is False
+
+    hit = store.retrieve("theorem g (x y : Nat) : x + y = y + x := by sorry", "g")
+    assert hit is not None
+    assert hit["cache_authority"] == "affordance"
+    assert hit["proof_credit_eligible"] is False
+
+
+def test_defeq_reuse_candidate_marks_kernel_verified_credit():
+    """Defeq-filtered banked reuse is not semantic advice; it is credit only through kernel/governance."""
+    from ztare.leanmill.solver.proof_cache import defeq_reuse_candidate
+
+    hit = defeq_reuse_candidate(
+        "theorem g (x y : Nat) : x + y = y + x := by sorry",
+        "g",
+        [{"name": "addComm_banked", "statement": "theorem addComm_banked (a b : Nat) : a + b = b + a := by sorry"}],
+        lean_root=None,
+        equiv_fn=lambda _goal, _candidate: True,
+    )
+    assert hit is not None
+    assert hit["cache_authority"] == "proof_credit"
+    assert hit["proof_credit_eligible"] is True
+    assert hit["proof_credit_authority"] == "kernel_defeq_then_governance_reverify"
+
+
+def test_memory_regression_registry_points_to_executable_guards():
+    """Every promoted LeanMill memory/RCA class should point at an executable regression guard."""
+    from pathlib import Path
+    from ztare.leanmill.memory_regressions import REGRESSIONS, validate_memory_regressions
+
+    repo = Path(__file__).resolve().parents[1]
+    missing = validate_memory_regressions(repo)
+    assert not missing, "\n".join(missing)
+    ids = {r.id for r in REGRESSIONS}
+    for required in {
+        "stale_refutation_dropped_hypothesis",
+        "falsify_probe_glob_single_door",
+        "exact_nl_verbatim_reference_reuse",
+        "cold_dependency_resolution_is_inconclusive",
+        "transactional_bank_rollback",
+        "bank_candidate_reverify_before_live_swap",
+        "reorder_fallback_rollback",
+        "substrate_mutation_receipt",
+        "run_manifest_authority_modes",
+        "diagnostics_reads_run_manifest",
+        "observability_bundle_joins_ledgers",
+        "substrate_liveness_typed_verdicts",
+        "statement_false_conflict_detection",
+        "statement_false_typed_verdict_surface",
+        "strategy_falsify_single_door",
+        "soft_refutation_not_confirmed_memory",
+        "governance_no_good_typed_verdict_surface",
+        "no_good_statement_id_metadata",
+        "faithfulness_statement_id_metadata",
+        "definition_api_receipt",
+        "cache_env_observability_matrix",
+        "proof_flow_observability_timeline",
+        "run_manifest_code_fingerprints",
+        "observability_layering_no_factory_bypass",
+        "definition_api_summary_in_diagnostics",
+        "library_delta_receipt",
+        "library_delta_summary_in_diagnostics",
+        "control_plane_audit_covers_roadmap",
+        "triviality_targets_multidecl_theorem_signature",
+        "cheap_triviality_probe_bounded_tactics",
+    }:
+        assert required in ids
+
+
+def test_control_plane_audit_covers_roadmap():
+    """The cleanup roadmap should have a machine-readable artifact+guard coverage audit."""
+    from pathlib import Path
+    from ztare.leanmill.control_plane_audit import audit_control_plane
+
+    repo = Path(__file__).resolve().parents[1]
+    audit = audit_control_plane(repo)
+    assert audit["schema"] == "leanmill.control_plane_audit.v1"
+    assert audit["ok"], audit
+    assert audit["item_count"] == 9
+    assert audit["objective_1_7"]["schema"] == "leanmill.control_plane_objective_1_7.v1"
+    assert audit["objective_1_7"]["ok"], audit["objective_1_7"]
+    assert audit["objective_1_7"]["item_count"] == 7
+    by_title = {item["title"]: item for item in audit["items"]}
+    assert by_title["first_class_statement_identity"]["regression_ids"]
+    assert "bank_candidate_reverify_before_live_swap" in by_title["transactional_substrate_mutation"]["regression_ids"]
+    assert "observability_layering_no_factory_bypass" in by_title["unified_run_observability"]["regression_ids"]
+
+
+def test_observability_layering_no_factory_bypass():
+    """Factory should consume the unified run bundle instead of rebuilding run RCA from lower-level readers."""
+    import inspect
+    from pathlib import Path
+    from ztare.leanmill import run_observability as ro
+
+    repo = Path(__file__).resolve().parents[1]
+    factory_src = (repo / "scripts/public/control/leanmill/factory_intelligence.py").read_text(encoding="utf-8")
+    assert "build_observability_bundle" in factory_src
+    assert "from ztare.leanmill.run_diagnostics import" not in factory_src
+    assert "summarize_run(" not in factory_src
+    obs_src = inspect.getsource(ro.build_observability_bundle)
+    assert "from ztare.leanmill.run_diagnostics import summarize_run" in obs_src
+    assert "from ztare.leanmill.verdict_store import summarize_verdicts" in obs_src
+
+
+def test_falsify_refutation_reuse_uses_canonical_robust_probe_glob():
+    """The falsify reuse reader must route through the canonical robust-probe glob, not only `*target*`."""
+    import inspect
+    from ztare.leanmill.solver import conjecture
+
+    src = inspect.getsource(conjecture._reverify_agent_refutation)
+    assert "robust_probe_glob" in src
+    assert "_rpg(target_name)" in src
+    assert 'f"*{target_name}*.lean"' in src
+
+
+def test_reference_reuse_verbatim_requires_exact_nl_match():
+    """Semantic reference recall may guide the gate, but verbatim reuse requires an exact NL key hit."""
+    import inspect
+    from ztare.leanmill.solver import autoformalize
+
+    src = inspect.getsource(autoformalize.autoformalize_and_solve)
+    assert '_ref_exact = bool(_ref0.get("exact"))' in src
+    assert '_reuse_stmt = (_ref_stmt or "").strip() if locals().get("_ref_exact") else ""' in src
+
+
+def test_cold_compile_dependency_resolution_failure_is_inconclusive(monkeypatch, tmp_path):
+    """A cold toolchain/dependency failure is unavailable instrumentation, not a broken substrate verdict."""
+    from types import SimpleNamespace
+    import os
+    import subprocess
+    import shutil
+    from ztare.formal import repl_compile
+
+    fake_lake = os.sys.executable
+    monkeypatch.setattr(shutil, "which", lambda _cmd: fake_lake)
+
+    def run_dep_fail(*_args, **_kwargs):
+        return SimpleNamespace(returncode=1, stdout="", stderr="error: unknown module prefix 'Mathlib'")
+
+    monkeypatch.setattr(subprocess, "run", run_dep_fail)
+    assert repl_compile._substrate_cold_compiles(tmp_path / "T.lean", str(tmp_path), 1) is None
+
+    def run_real_error(*_args, **_kwargs):
+        return SimpleNamespace(returncode=1, stdout="", stderr="T.lean:1:1: error: unsolved goals")
+
+    monkeypatch.setattr(subprocess, "run", run_real_error)
+    assert repl_compile._substrate_cold_compiles(tmp_path / "T.lean", str(tmp_path), 1) is False
+
+    def run_clean(*_args, **_kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", run_clean)
+    assert repl_compile._substrate_cold_compiles(tmp_path / "T.lean", str(tmp_path), 1) is True
+
+
+def test_substrate_liveness_emits_typed_verdicts(tmp_path, monkeypatch):
+    """Warm/cold substrate RCA should expose unavailable vs broken as typed verdicts, not prose only."""
+    from ztare.formal import repl_compile
+    from ztare.leanmill.verdict_store import iter_verdict_rows
+
+    verdicts = tmp_path / "verdicts.jsonl"
+    theory = tmp_path / "T.lean"
+    theory.write_text("theorem t : True := by trivial\n", encoding="utf-8")
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", str(verdicts))
+    monkeypatch.setenv("ZTARE_SOLVER_RUN_TAG", "run-substrate")
+    src = theory.read_text(encoding="utf-8")
+    repl_compile._emit_substrate_verdict(theory, str(tmp_path), "unavailable", "toolchain unavailable", src)
+    repl_compile._emit_substrate_verdict(theory, str(tmp_path), "broken", "unexpected token", src)
+    rows = iter_verdict_rows(verdicts, run_tag="run-substrate", target_name="T.lean")
+    assert [r["verdict"]["kind"] for r in rows] == ["substrate_unavailable", "substrate_broken"]
+    assert rows[0]["extra"]["substrate_verdict"] == "unavailable"
+    assert rows[1]["extra"]["substrate_verdict"] == "broken"
+
+
+def test_typed_verdict_store_writes_locked_jsonl(tmp_path, monkeypatch):
+    """Typed verdicts should have one append surface instead of ad hoc prose-log reconstruction."""
+    import json
+    from ztare.leanmill.control_plane import StatementId, Verdict, VerdictKind
+    from ztare.leanmill.verdict_store import emit_verdict, iter_verdict_rows, summarize_verdicts
+
+    out = tmp_path / "verdicts.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", str(out))
+    monkeypatch.setenv("ZTARE_SOLVER_RUN_TAG", "run-a")
+    sid = StatementId.from_parts(target_name="T", closed_prop="∀ n : Nat, n = n")
+    ok = emit_verdict(Verdict(
+        kind=VerdictKind.UNVERIFIED,
+        statement_id=sid,
+        provenance="unit_test",
+        detail="candidate did not compile",
+    ), extra={"probe": "p"})
+    row = json.loads(out.read_text(encoding="utf-8").strip())
+    assert ok is True
+    assert row["schema"] == "leanmill.verdict.v1"
+    assert row["verdict"]["kind"] == "unverified"
+    assert row["verdict"]["statement_id"]["closed_prop_hash"] == sid.closed_prop_hash
+    assert row["extra"]["probe"] == "p"
+    out.write_text(out.read_text(encoding="utf-8") + "not-json\n", encoding="utf-8")
+    rows = iter_verdict_rows(out, run_tag="run-a", target_name="T")
+    assert len(rows) == 1
+    assert iter_verdict_rows(out, run_tag="other") == []
+    summary = summarize_verdicts(out, run_tag="run-a")
+    assert summary["total"] == 1
+    assert summary["by_kind"]["unverified"] == 1
+    assert summary["latest_provenance"] == "unit_test"
+
+
+def test_substrate_mutation_receipt_shape():
+    """Transactional bank diagnostics should be typed, not only legacy prose/dict fields."""
+    from ztare.leanmill.control_plane import SubstrateMutationKind, SubstrateMutationReceipt
+    rec = SubstrateMutationReceipt(
+        kind=SubstrateMutationKind.BANK_DECL_TO_ENV,
+        target_name="foo",
+        context_path="theory.lean",
+        stage="missing_banked_name_reverted",
+        before_sha256="a",
+        after_sha256="b",
+        changed=True,
+        result={"banked_as": None, "reason": "reverted_noncompile"},
+    ).to_json()
+    assert rec["kind"] == "bank_decl_to_env"
+    assert rec["changed"] is True
+    assert rec["result"]["reason"] == "reverted_noncompile"
+
+
+def test_bank_attempts_emit_typed_mutation_receipt():
+    """The transactional bank logger should carry the typed receipt beside legacy fields."""
+    import inspect
+    from ztare.leanmill.solver import family_lemma_library
+
+    src = inspect.getsource(family_lemma_library._record_bank_attempt)
+    assert "leanmill.substrate_mutation.v1" in src
+    assert "SubstrateMutationReceipt" in src
+    assert '"run_tag": os.environ.get("ZTARE_SOLVER_RUN_TAG", "")' in src
+    assert '"mutation": receipt.to_json()' in src
+
+
+def test_falsify_gate_emits_typed_verdict_telemetry():
+    """The falsify single door should emit typed verdict telemetry without changing its tuple API."""
+    import inspect
+    from ztare.leanmill.solver.conjecture import (
+        adjudicate_statement_false_verdict,
+        verify_statement_false_claim,
+    )
+
+    gate_src = inspect.getsource(adjudicate_statement_false_verdict)
+    verify_src = inspect.getsource(verify_statement_false_claim)
+    assert "emit_verdict" in gate_src
+    assert "VerdictKind.REFUTED if verdict[0] else VerdictKind.UNVERIFIED" in gate_src
+    assert "verify_statement_false_claim" in verify_src
+    assert "adjudicate_statement_false_verdict" in verify_src
+
+
+def test_statement_false_adjudicator_records_memo_and_typed_verdict(tmp_path, monkeypatch):
+    """A kernel-confirmed ¬G from any producer should feed the same memo and typed verdict surface."""
+    from ztare.leanmill.solver import conjecture
+    from ztare.leanmill.verdict_store import iter_verdict_rows
+
+    out = tmp_path / "verdicts.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", str(out))
+    monkeypatch.setenv("ZTARE_SOLVER_RUN_TAG", "run-falsify")
+    conjecture._CONFIRMED_REFUTATIONS.clear()
+    goal = "theorem target_false_route (n : Nat) : n = n := by sorry"
+    block = "theorem target_false_route_refute : ¬ (∀ n : Nat, n = n) := by intro h; exact False.elim (by contradiction)"
+    ok, detail, kept = conjecture.adjudicate_statement_false_verdict(
+        "target_false_route", "", goal, True, "unit-confirmed", block,
+        provenance="unit.strategy_falsify")
+    assert ok is True
+    assert detail == "unit-confirmed"
+    assert kept == block
+    assert conjecture.confirmed_refutation("target_false_route", "", goal) == block
+    rows = iter_verdict_rows(out, run_tag="run-falsify", target_name="target_false_route")
+    assert len(rows) == 1
+    assert rows[0]["verdict"]["kind"] == "refuted"
+    assert rows[0]["verdict"]["provenance"] == "unit.strategy_falsify"
+
+
+def test_soft_refutation_does_not_pollute_statement_false_memory(tmp_path, monkeypatch):
+    """Soft reformulation feedback is not confirmed no-good memory."""
+    from ztare.leanmill.solver import autoformalize, solver_core
+
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", "0")
+    monkeypatch.setattr(solver_core, "OUT_DIR", tmp_path)
+    statement = "theorem soft_refutation_target : True := by trivial"
+    assert autoformalize._record_statement_false_no_good(
+        statement, "leaf marker only", confirmed=False, source="unit_soft") is False
+    assert not (tmp_path / "solver_lane_no_good_store.jsonl").exists()
+    assert autoformalize._record_statement_false_no_good(
+        statement, "kernel-confirmed counterexample", confirmed=True, source="unit_confirmed") is True
+    txt = (tmp_path / "solver_lane_no_good_store.jsonl").read_text(encoding="utf-8")
+    assert '"failure_class": "statement_false"' in txt
+    assert '"source": "unit_confirmed"' in txt
+
+
+def test_strategy_falsify_uses_shared_statement_false_gate():
+    """The strategist falsify/corroborate sink should not bypass the shared ¬G verdict door."""
+    import inspect
+    from ztare.leanmill.solver import solver_core
+
+    src = inspect.getsource(solver_core._build_dag_move_runner)
+    assert "adjudicate_statement_false_verdict" in src
+    assert "strategy_move." in src
+    assert "NoGoodStore" in src
+    assert 'source=f"strategy_{_mkey}' in src
+
+
+def test_closure_certificate_emits_typed_verdict_telemetry():
+    """Governed closure certificates should also feed the typed verdict ledger."""
+    import inspect
+    from ztare.leanmill.solver import solver_core
+
+    src = inspect.getsource(solver_core.solve_adhoc)
+    assert "solve_adhoc_governed_closure_certificate" in src
+    assert "VerdictKind.CLOSED if r0.get(\"outcome\") == \"closed\" and _gov_verified" in src
+    assert "VerdictKind.REJECTED_BY_GOVERNANCE" in src
+    assert "emit_verdict(Verdict(" in src
+
+
+def test_definition_api_receipt_surfaces_reuse_risks():
+    """Definition/API receipts expose noncomputable defs and target-used defs without named API."""
+    from ztare.leanmill.definition_contract import emit_definition_api_receipt
+    src = """
+def ReducibleThing (n : Nat) : Nat := n + 1
+
+noncomputable def picked (p : ∃ n : Nat, n = n) : Nat := Classical.choose p
+
+structure Matching where
+  held : Nat -> Option Nat
+
+theorem target : picked ⟨0, rfl⟩ = picked ⟨0, rfl⟩ := by
+  rfl
+"""
+    receipt = emit_definition_api_receipt(src, target_name="target")
+    by_name = {d.name: d for d in receipt.definitions}
+    assert by_name["picked"].computability == "noncomputable"
+    assert by_name["picked"].name_signature_text.startswith("picked :: noncomputable def picked")
+    assert "target_depends_without_named_api" in by_name["picked"].flags
+    assert "structure_without_visible_invariant" in by_name["Matching"].flags
+    assert "has_noncomputable_definition" in receipt.summary_flags
+
+
+def test_library_delta_receipt_surfaces_api_graph_risks():
+    """Library-delta receipts expose public declaration identity, graph edges, namespaces, and API warnings."""
+    from ztare.leanmill.library_delta import emit_library_delta_receipt
+    src = """
+namespace Ledger
+
+def total (xs : List Int) : Int := xs.foldl (· + ·) 0
+
+def isolated : Nat := 0
+
+theorem applyLeg_total (xs : List Int) : total xs = total xs := by
+  rfl
+
+theorem punit_bad : PUnit = PUnit := by
+  rfl
+
+end Ledger
+"""
+    receipt = emit_library_delta_receipt(src, target_name="applyLeg_total")
+    assert receipt.schema == "leanmill.library_delta_receipt.v1"
+    assert receipt.summary["target_present"] is True
+    by_name = {d.name: d for d in receipt.public_decls}
+    assert by_name["total"].namespace == "Ledger"
+    assert by_name["total"].signature_hash
+    assert by_name["applyLeg_total"].kind == "theorem"
+    assert any(e.source == "applyLeg_total" and e.target == "total" for e in receipt.dependency_edges)
+    assert "definition_without_theorem_surface" in by_name["isolated"].warnings
+    assert "unit_surface_outside_named_counterexample" in by_name["punit_bad"].warnings
+    assert receipt.summary["dependency_edge_count"] >= 1
+    assert "definition_without_theorem_surface" in receipt.warnings
+
+
+def test_definition_api_policy_accessor_reads_factory_shape():
+    """Definition/API contract readers should go through policy.py, not parse JSON locally."""
+    from ztare.leanmill.policy import definition_api_contract_policy_from_policy
+    pol = definition_api_contract_policy_from_policy({"operations": {"definition_api_contract": {
+        "mode": "diagnostic",
+        "require_receipt_for_public_review": True,
+        "warn_on_noncomputable_definition": False,
+    }}})
+    assert pol["mode"] == "diagnostic"
+    assert pol["require_receipt_for_public_review"] is True
+    assert pol["warn_on_noncomputable_definition"] is False
+    assert pol["warn_on_target_definition_without_named_api"] is True
+
+
+def test_gale_filed_artifact_has_definition_api_receipt():
+    """The filed Gale artifact should emit a reusable API receipt for reviewer-visible modeling facts."""
+    from pathlib import Path
+    from ztare.leanmill.definition_contract import emit_definition_api_receipt
+    p = Path(__file__).resolve().parents[2] / "nonmathlib4" / "Nonmathlib" / "SocialChoice" / (
+        "DeferredAcceptanceStabilityAndQuiescenceLoadBearing.lean")
+    if not p.exists():
+        return
+    receipt = emit_definition_api_receipt(
+        p.read_text(encoding="utf-8", errors="replace"),
+        target_name="deferred_acceptance_stability_and_quiescence_load_bearing",
+    )
+    names = {d.name for d in receipt.definitions}
+    assert "ProposalRun" in names
+    assert "BlockingPairNoDecidable" in names
+    assert any("noncomputable" in d.flags for d in receipt.definitions if d.name == "BlockingPairNoDecidable")
+
+
 def test_governance_probe_comparand_no_sibling():
     """statement_integrity's comparand is THIS closure's probe, never a sibling attempt's body.
 
@@ -162,6 +633,519 @@ def test_closure_conservation_flags_unratified_closed():
     assert any("dropped_target" in v for v in res["violations"]), res
     assert not any("good_target" in v for v in res["violations"]), res    # ratified=1 → conserved
     assert not any("cert_target" in v for v in res["violations"]), res    # has a cert → conserved
+
+
+def test_run_diagnostics_reads_run_manifest_even_when_attempts_db_missing(tmp_path):
+    """Diagnostics should preserve launch authority state from run_manifest, not rely only on attempts/logs."""
+    import json
+    import time
+    from ztare.leanmill.run_diagnostics import read_run_manifest, render, summarize_run
+
+    manifest = tmp_path / "run_manifest.json"
+    manifest.write_text(json.dumps({
+        "schema": "leanmill.run_manifest.v1",
+        "run_tag": "r1",
+        "run_scratch": "r1",
+        "git_head": "abc123",
+        "blueprint": {"path": "bp.md", "sha256": "b"},
+        "substrate": {"path": "theory.lean", "sha256": "s"},
+        "providers": {
+            "schema": "leanmill.provider_manifest.v1",
+            "solve_providers": ["codex"],
+            "subscription_runtime": "codex",
+        },
+        "code_fingerprints": {
+            "schema": "leanmill.code_fingerprints.v1",
+            "files": {"src/ztare/leanmill/solver/autoformalize_notes.py": "abc"},
+        },
+        "authority_modes": {"proposer_pool": "0", "staged_reuse": "0", "bank_env_ratify": "1"},
+        "cache_authority_classes": {"proof_cache": "proof_credit", "staged_reuse": "affordance"},
+        "definition_api_receipt": {
+            "schema": "leanmill.definition_api_receipt.v1",
+            "target_name": "target",
+            "summary_flags": ["has_noncomputable_definition"],
+            "definitions": [
+                {
+                    "name": "picked",
+                    "kind": "def",
+                    "computability": "noncomputable",
+                    "flags": ["noncomputable", "target_depends_without_named_api"],
+                },
+                {"name": "Plain", "kind": "structure", "computability": "computable_or_structural", "flags": []},
+            ],
+        },
+        "library_delta_receipt": {
+            "schema": "leanmill.library_delta_receipt.v1",
+            "target_name": "target",
+            "summary": {
+                "public_decl_count": 3,
+                "theorem_count": 1,
+                "definition_count": 2,
+                "dependency_edge_count": 2,
+                "warning_count": 1,
+            },
+            "warnings": ["definition_without_theorem_surface"],
+            "public_decls": [
+                {
+                    "name": "target",
+                    "kind": "theorem",
+                    "namespace": "",
+                    "warnings": [],
+                },
+                {
+                    "name": "picked",
+                    "kind": "def",
+                    "namespace": "",
+                    "warnings": ["definition_without_theorem_surface"],
+                },
+            ],
+        },
+    }), encoding="utf-8")
+
+    mf = read_run_manifest(manifest_path=manifest)
+    assert mf["authority_modes"]["bank_env_ratify"] == "1"
+    assert mf["cache_authority_classes"]["staged_reuse"] == "affordance"
+    assert mf["providers"]["solve_providers"] == ["codex"]
+    assert mf["code_fingerprints"]["files"]["src/ztare/leanmill/solver/autoformalize_notes.py"] == "abc"
+    assert mf["definition_api_summary"]["definition_count"] == 2
+    assert mf["definition_api_summary"]["flagged_definition_count"] == 1
+    assert mf["definition_api_summary"]["summary_flags"] == ["has_noncomputable_definition"]
+    assert mf["library_delta_summary"]["public_decl_count"] == 3
+    assert mf["library_delta_summary"]["dependency_edge_count"] == 2
+    assert mf["library_delta_summary"]["flagged_decl_count"] == 1
+    assert mf["library_delta_summary"]["warnings"] == ["definition_without_theorem_surface"]
+    assert "definition_api_receipt" not in mf
+    assert "library_delta_receipt" not in mf
+
+    summary = summarize_run(db_path=tmp_path / "missing.db", run_tag="r1", manifest_path=manifest)
+    assert summary["total"] == 0 and "error" in summary
+    assert summary["run_manifest"]["path"] == str(manifest)
+    assert summary["run_manifest"]["definition_api_summary"]["flagged_definition_count"] == 1
+    assert summary["run_manifest"]["library_delta_summary"]["flagged_decl_count"] == 1
+    assert "manifest:" in render(summary)
+    assert "definition/api:" in render(summary)
+    assert "library-delta:" in render(summary)
+
+    verdicts = tmp_path / "verdicts.jsonl"
+    verdicts.write_text(json.dumps({
+        "schema": "leanmill.verdict.v1",
+        "ts": time.time(),
+        "run_tag": "r1",
+        "verdict": {
+            "kind": "refuted",
+            "statement_id": {"target_name": "T", "closed_prop_hash": "h"},
+            "provenance": "unit",
+        },
+    }) + "\n", encoding="utf-8")
+    summary2 = summarize_run(
+        db_path=tmp_path / "missing.db",
+        run_tag="r1",
+        manifest_path=manifest,
+        verdict_path=verdicts,
+    )
+    assert summary2["typed_verdicts"]["by_kind"]["refuted"] == 1
+    assert "typed verdicts:" in render(summary2)
+
+
+def test_run_observability_bundle_joins_existing_ledgers(tmp_path):
+    """One RCA bundle should join manifest, attempts, verdicts, bank, formalize, notes, and CoT ledgers."""
+    import json
+    import sqlite3
+    from ztare.leanmill.run_observability import build_observability_bundle, render_bundle
+
+    run_tag = "run-obs"
+    manifest = tmp_path / "run_manifest.json"
+    substrate = tmp_path / "theory.lean"
+    substrate.write_text("theorem t : True := by trivial\n", encoding="utf-8")
+    manifest.write_text(json.dumps({
+        "schema": "leanmill.run_manifest.v1",
+        "run_tag": run_tag,
+        "substrate": {"path": str(substrate), "sha256": "s"},
+        "authority_modes": {"proposer_pool": "0", "staged_reuse": "0", "bank_env_ratify": "1"},
+        "cache_authority_classes": {"proof_cache": "proof_credit"},
+    }), encoding="utf-8")
+
+    attempts = tmp_path / "attempts.db"
+    con = sqlite3.connect(attempts)
+    con.execute("CREATE TABLE attempts (row_id TEXT, attempt_at TEXT, move TEXT, outcome TEXT, "
+                "error_class TEXT, notes TEXT, ratified INT, run_tag TEXT)")
+    con.execute("INSERT INTO attempts VALUES (?,?,?,?,?,?,?,?)",
+                ("T", "2026-07-07T00:00:00+00:00", "codex", "failed_compile",
+                 "other_error", "unknown identifier Foo", None, run_tag))
+    con.commit()
+    con.close()
+
+    verdicts = tmp_path / "verdicts.jsonl"
+    verdicts.write_text(json.dumps({
+        "schema": "leanmill.verdict.v1",
+        "ts": 1,
+        "run_tag": run_tag,
+        "verdict": {"kind": "unverified", "statement_id": {"target_name": "T"}, "provenance": "unit"},
+    }) + "\n", encoding="utf-8")
+    bank = tmp_path / "bank.jsonl"
+    bank.write_text(
+        json.dumps({
+            "schema": "leanmill.substrate_mutation.v1",
+            "run_tag": run_tag,
+            "context": str(substrate),
+            "target": "T",
+            "stage": "final_revert",
+            "result": {"reason": "reverted_noncompile"},
+            "changed": False,
+        }) + "\n" +
+        json.dumps({
+            "schema": "leanmill.substrate_mutation.v1",
+            "context": str(substrate),
+            "stage": "legacy",
+            "result": {"reason": "legacy_unscoped"},
+        }) + "\n",
+        encoding="utf-8",
+    )
+    formalize = tmp_path / "formalize.jsonl"
+    formalize.write_text(json.dumps({
+        "run_tag": run_tag,
+        "phase": "lemma",
+        "render_hash": "abc",
+        "outcome": "rejected",
+        "reason": "UNFAITHFUL to the registered substrate",
+    }) + "\n", encoding="utf-8")
+    notes = tmp_path / "notes.jsonl"
+    notes.write_text(json.dumps({"run_tag": run_tag, "kind": "write_refined_notes"}) + "\n", encoding="utf-8")
+    cot = tmp_path / "cot.jsonl"
+    cot.write_text(json.dumps({"run_tag": run_tag, "runtime": "codex", "gap": "need helper"}) + "\n", encoding="utf-8")
+    proof_cache = tmp_path / "proof_cache.jsonl"
+    proof_cache.write_text(json.dumps({
+        "schema": "leanmill.proof_cache.v1",
+        "key": "H:abc",
+        "proof": "by trivial",
+        "source": "adhoc_closure:T",
+        "cache_authority": "proof_credit",
+        "proof_credit_eligible": True,
+        "statement_id": {"target_name": "T", "closed_prop_hash": "h"},
+    }) + "\n", encoding="utf-8")
+    staged_dir = tmp_path / "checkpoints"
+    staged_dir.mkdir()
+    (staged_dir / "s1.lean").write_text("theorem t : True := by trivial\n", encoding="utf-8")
+    staged_index = staged_dir / "_staged_index.jsonl"
+    staged_index.write_text(json.dumps({
+        "schema": "leanmill.staged_proof.v1",
+        "key": "s1",
+        "target": "T",
+        "body_path": "s1.lean",
+        "cache_authority": "affordance",
+        "proof_credit_eligible": False,
+    }) + "\n", encoding="utf-8")
+    no_good = tmp_path / "no_good.jsonl"
+    no_good.write_text(json.dumps({
+        "key": "H:abc",
+        "failure_class": "statement_false",
+        "source": "unit",
+        "statement_id": {"target_name": "T", "closed_prop_hash": "h"},
+    }) + "\n", encoding="utf-8")
+    faithfulness = tmp_path / "faithfulness.jsonl"
+    faithfulness.write_text(json.dumps({
+        "kind": "faithful",
+        "source": "unit",
+        "statement_id": {"target_name": "T", "closed_prop_hash": "h"},
+    }) + "\n", encoding="utf-8")
+    decomp = tmp_path / "decomp.jsonl"
+    decomp.write_text(json.dumps({
+        "schema": "leanmill.decomposition_cache.v1",
+        "target": "T",
+        "lemmas": ["a", "b"],
+    }) + "\n", encoding="utf-8")
+
+    bundle = build_observability_bundle(
+        run_tag=run_tag,
+        attempts_db=attempts,
+        manifest_path=manifest,
+        verdicts_path=verdicts,
+        bank_attempts_path=bank,
+        formalize_attempts_path=formalize,
+        notes_trace_path=notes,
+        cot_traces_path=cot,
+        proof_cache_path=proof_cache,
+        no_good_path=no_good,
+        faithfulness_path=faithfulness,
+        decomposition_cache_path=decomp,
+        staged_index_path=staged_index,
+    )
+    assert bundle["schema"] == "leanmill.run_observability_bundle.v1"
+    assert bundle["attempts"]["by_failure_class"]["unknown_identifier"] == 1
+    assert bundle["typed_verdicts"]["by_kind"]["unverified"] == 1
+    assert bundle["bank_mutations"]["by_reason"]["reverted_noncompile"] == 1
+    assert bundle["bank_mutations"]["unscoped_rows_seen"] == 1
+    assert bundle["bank_mutations"]["scope"] == "run_tag"
+    assert "bank_attempt_rows_without_run_tag_present" not in bundle["warnings"]
+    assert bundle["formalize_attempts"]["unique_render_hashes"] == 1
+    assert bundle["notes_writebacks"]["by_kind"]["write_refined_notes"] == 1
+    assert bundle["cot_traces"]["gaps"]["need helper"] == 1
+    assert bundle["cache_surfaces"]["proof_cache"]["expr_key_rows"] == 1
+    assert bundle["cache_surfaces"]["proof_cache"]["scope"] == "cross_run_store"
+    assert bundle["cache_surfaces"]["proof_cache"]["proof_credit_eligible"] == 1
+    assert bundle["cache_surfaces"]["staged_reuse"]["active_rows"] == 1
+    assert bundle["cache_surfaces"]["staged_reuse"]["scope"] == "explicit_index"
+    assert bundle["cache_surfaces"]["staged_reuse"]["proof_credit_eligible"] == 0
+    assert bundle["cache_surfaces"]["no_good"]["by_failure_class"]["statement_false"] == 1
+    assert bundle["cache_surfaces"]["faithfulness"]["by_kind"]["faithful"] == 1
+    assert bundle["cache_surfaces"]["decomposition_cache"]["avg_lemmas"] == 2.0
+    assert bundle["cache_surfaces"]["authority_totals"]["proof_credit"] == 1
+    assert bundle["cache_surfaces"]["authority_totals"]["affordance"] == 1
+    assert bundle["env_transitions"]["chain"][1]["environment"] == "campaign_warm_repl"
+    assert bundle["env_transitions"]["chain"][3]["environment"] == "lake_env_lean_from_byte_zero"
+    flow = bundle["proof_flows"]["targets"]["T"]
+    assert flow["by_state"]["attempt"] == 1
+    assert flow["by_state"]["typed_verdict"] == 1
+    assert flow["by_state"]["substrate_mutation"] == 1
+    assert flow["by_state"]["cache_surface"] >= 3
+    assert "governance_certificate" in flow["by_environment"] or "typed_verdict_ledger" in flow["by_environment"]
+    assert "persisted_substrate_file_then_cold_reverify" in flow["by_environment"]
+    assert bundle["operator_readout"]["status"] == "blocked"
+    assert bundle["operator_readout"]["primary_bottleneck"] == "substrate_env_parity"
+    rendered = render_bundle(bundle)
+    assert "leanmill-observability" in rendered
+    assert "operator: status=blocked bottleneck=substrate_env_parity" in rendered
+    assert "cache:" in rendered and "env:" in rendered and "flows:" in rendered
+
+
+def test_axiom_pack_priority_pilot_is_quarantined_and_observable(tmp_path):
+    """AxiomPack v1 should stress a pilot pack without granting theorem credit."""
+    import json
+    from ztare.leanmill.axiom_pack import (
+        append_axiom_pack_event,
+        generate_candidate_axiom_pack,
+        lint_axiom_pack_blueprint,
+        priority_uncrossed_order_blueprint,
+        stress_axiom_pack,
+        stress_pack_for_domain,
+        theorem_campaign_consumption_gate,
+    )
+    from ztare.leanmill.run_observability import build_observability_bundle, render_bundle
+
+    blueprint = priority_uncrossed_order_blueprint()
+    lint = lint_axiom_pack_blueprint(blueprint)
+    assert lint["ok"] is True
+
+    pack, generation = generate_candidate_axiom_pack(blueprint)
+    assert generation["ok"] is True
+    assert generation["move_card"]["canonical_engine"] == "ztare.research_director.research_isomorphism"
+    stressed = stress_pack_for_domain(pack, blueprint)
+    stress = stress_axiom_pack(stressed)
+
+    assert stress["ok"] is False
+    assert {"strength_comparison", "separation_or_interpretation", "downstream_yield"} <= set(
+        stress["missing_stress_receipts"]
+    )
+    assert stressed.to_json()["proof_credit_eligible"] is False
+    assert stressed.to_json()["theorem_campaign_admissible"] is False
+    assert theorem_campaign_consumption_gate(stressed)["allowed"] is False
+    semantic = next(
+        row for row in stressed.stress_receipts if row.get("dimension") == "semantic_certification"
+    )
+    assert semantic["suite"]["status"] == "SAT_WITHOUT_COMPLETE_INDEPENDENCE_WITNESSES"
+
+    store = tmp_path / "axiom_pack_candidates.jsonl"
+    append_axiom_pack_event(store, pack=stressed, stress=stress, blueprint=blueprint, generation=generation)
+    bundle = build_observability_bundle(
+        run_tag="",
+        attempts_db=tmp_path / "missing.db",
+        verdicts_path=tmp_path / "missing_verdicts.jsonl",
+        bank_attempts_path=tmp_path / "missing_bank.jsonl",
+        formalize_attempts_path=tmp_path / "missing_formalize.jsonl",
+        notes_trace_path=tmp_path / "missing_notes.jsonl",
+        cot_traces_path=tmp_path / "missing_cot.jsonl",
+        proof_cache_path=tmp_path / "missing_proof_cache.jsonl",
+        no_good_path=tmp_path / "missing_no_good.jsonl",
+        faithfulness_path=tmp_path / "missing_faithfulness.jsonl",
+        decomposition_cache_path=tmp_path / "missing_decomp.jsonl",
+        axiom_packs_path=store,
+    )
+    assert bundle["axiom_packs"]["total"] == 1
+    assert bundle["axiom_packs"]["by_status"]["quarantined"] == 1
+    assert bundle["axiom_packs"]["proof_credit_eligible_rows"] == 0
+    assert "axiom_packs:" in render_bundle(bundle)
+
+
+def test_agent_isomorphism_tool_uses_canonical_research_engine_without_credit():
+    """The leaf move must delegate to research_isomorphism and remain advisory."""
+    import inspect
+    from ztare.leanmill import agent_tools
+
+    src = inspect.getsource(agent_tools._tool_isomorphism)
+    assert "ztare.research_director" in src
+    assert "research_isomorphism" in src
+    assert "proof_credit_eligible" in src
+    assert "can_mutate_substrate" in src
+
+
+def test_axiom_pack_discovery_eval_scores_cached_agent_trial():
+    """A cached agent blueprint trial should be measurable but remain quarantined."""
+    from ztare.leanmill.axiom_pack import run_axiom_pack_discovery_eval
+
+    report = run_axiom_pack_discovery_eval(domain="priority", include_second_domain=True)
+
+    assert report["schema"] == "leanmill.axiom_pack_discovery_eval.v1"
+    assert report["ok"] is False
+    assert report["mode"] == "cached"
+    assert report["hand_tooled_risk"] is True
+    assert report["primary"]["agent_blueprint_lint"]["ok"] is False
+    assert any(
+        str(reason).startswith("typed_formula_ir:")
+        for reason in report["primary"]["agent_blueprint_lint"]["violations"]
+    )
+    criteria = {
+        row["name"]: row["pass"]
+        for row in report["primary"]["usefulness_score"]["criteria"]
+    }
+    assert criteria["no_proof_credit_leakage"] is True
+    assert report["primary"]["isomorphism_receipt"]["canonical_engine"] == "ztare.research_director.research_isomorphism"
+    second = report["second_domain_eval"]
+    assert second is not None
+    assert second["domain"] == "inverse_semigroup_partial_symmetry_structures"
+    assert second["usefulness_score"]["ok"] is False
+
+
+def test_inverse_semigroup_cheap_stress_surfaces_second_domain():
+    """The second AxiomPack domain should separate partial inverse behavior from group collapse."""
+    from ztare.leanmill.axiom_pack import (
+        generate_candidate_axiom_pack,
+        inverse_semigroup_axiom_blueprint,
+        score_axiom_pack_usefulness,
+        stress_axiom_pack,
+        stress_pack_for_domain,
+    )
+
+    blueprint = inverse_semigroup_axiom_blueprint()
+    pack, generation = generate_candidate_axiom_pack(blueprint)
+    assert generation["ok"] is True
+    stressed = stress_pack_for_domain(pack, blueprint)
+    stress = stress_axiom_pack(stressed)
+    score = score_axiom_pack_usefulness(stressed, stress)
+
+    assert stress["ok"] is False
+    assert score["ok"] is False
+    semantic = next(
+        row for row in stressed.stress_receipts if row.get("dimension") == "semantic_certification"
+    )
+    assert semantic["suite"]["joint_satisfiability"]["status"] == "SAT"
+    assert semantic["suite"]["status"] == "SAT_WITHOUT_COMPLETE_INDEPENDENCE_WITNESSES"
+
+
+def test_state_convergence_conflicts_include_statement_false(tmp_path):
+    """A cached proof and a kernel-¬G no-good for the same key must surface as a convergence conflict."""
+    import json
+    from ztare.leanmill.state_convergence import detect_conflicts
+
+    (tmp_path / "solver_lane_proof_cache.jsonl").write_text(
+        json.dumps({"key": "K", "proof": "by trivial"}) + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "solver_lane_no_good_store.jsonl").write_text(
+        json.dumps({"key": "K", "failure_class": "statement_false", "witness": "counterexample"}) + "\n",
+        encoding="utf-8",
+    )
+    conflicts = detect_conflicts(tmp_path)
+    assert len(conflicts) == 1
+    assert conflicts[0].key == "K"
+    assert "statement_false" in conflicts[0].detail
+
+
+def test_no_good_statement_false_emits_typed_refuted_verdict(tmp_path, monkeypatch):
+    """The shared statement_false ledger should also feed the typed verdict surface."""
+    import json
+    from ztare.leanmill.solver.no_good_store import NoGoodStore
+    from ztare.leanmill.verdict_store import iter_verdict_rows
+
+    verdicts = tmp_path / "verdicts.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", str(verdicts))
+    monkeypatch.setenv("ZTARE_SOLVER_RUN_TAG", "run-ng")
+    store = NoGoodStore(tmp_path / "solver_lane_no_good_store.jsonl")
+    stmt = "theorem refuted_target : False := by sorry"
+    assert store.record(stmt, "statement_false", "counterexample", confirmed=True, source="unit")
+    assert not store.record(stmt, "statement_false", "counterexample", confirmed=True, source="unit")
+
+    rows = iter_verdict_rows(verdicts, run_tag="run-ng", target_name="refuted_target")
+    assert len(rows) == 1
+    verdict = rows[0]["verdict"]
+    assert verdict["kind"] == "refuted"
+    assert verdict["provenance"] == "no_good_store.confirmed_no_good"
+    assert verdict["statement_id"]["target_name"] == "refuted_target"
+    assert json.loads((tmp_path / "solver_lane_no_good_store.jsonl").read_text())["failure_class"] == "statement_false"
+
+
+def test_no_good_governance_classes_emit_typed_rejected_verdict(tmp_path, monkeypatch):
+    """Confirmed governance no-goods should not bypass the typed verdict surface."""
+    from ztare.leanmill.solver.no_good_store import NoGoodStore
+    from ztare.leanmill.verdict_store import iter_verdict_rows
+
+    verdicts = tmp_path / "verdicts.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", str(verdicts))
+    store = NoGoodStore(tmp_path / "solver_lane_no_good_store.jsonl")
+    stmt = "theorem altered_target : Nat = Nat := by sorry"
+    assert store.record(stmt, "definition_altered", "definition_altered: helper changed", confirmed=True, source="unit")
+
+    rows = iter_verdict_rows(verdicts, target_name="altered_target")
+    assert len(rows) == 1
+    assert rows[0]["verdict"]["kind"] == "rejected_by_governance"
+    assert rows[0]["verdict"]["provenance"] == "no_good_store.confirmed_no_good"
+    assert rows[0]["extra"]["failure_class"] == "definition_altered"
+
+
+def test_no_good_rows_carry_statement_id_and_legacy_rows_still_load(tmp_path, monkeypatch):
+    """New no-good rows should carry StatementId metadata without orphaning legacy key-only rows."""
+    import json
+    from ztare.leanmill.solver.no_good_store import NoGoodStore
+
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", "0")
+    path = tmp_path / "solver_lane_no_good_store.jsonl"
+    store = NoGoodStore(path)
+    stmt = "theorem no_good_target (n : Nat) : n = n := by sorry"
+    assert store.record(stmt, "definition_altered", "definition_altered: helper changed", confirmed=True)
+    row = json.loads(path.read_text(encoding="utf-8").strip())
+    assert row["statement_id"]["target_name"] == "no_good_target"
+    assert row["statement_id"]["closed_prop_hash"]
+    assert row["statement_id"]["target_source_hash"]
+    assert store.matches("theorem renamed_target (n : Nat) : n = n := by sorry")
+
+    legacy = tmp_path / "legacy_no_good.jsonl"
+    legacy.write_text(json.dumps({
+        "key": row["key"],
+        "statement": stmt,
+        "failure_class": "definition_altered",
+        "witness": "legacy witness",
+    }) + "\n", encoding="utf-8")
+    legacy_store = NoGoodStore(legacy)
+    assert legacy_store.matches(stmt)[0]["witness"] == "legacy witness"
+
+
+def test_faithfulness_rows_carry_statement_id_and_legacy_rows_still_load(tmp_path):
+    """Faithfulness correspondences should expose StatementId metadata while preserving legacy `norm` matching."""
+    import json
+    from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore, _stmt_identity
+
+    path = tmp_path / "solver_lane_faithfulness_store.jsonl"
+    nl = "addition on natural numbers commutes"
+    stmt = "theorem faithful_target (a b : Nat) : a + b = b + a := by sorry"
+    store = FaithfulnessStore(path)
+    assert store.record(nl, stmt, confirmed=True, fingerprint={"conclusion_op": "eq"}, source="unit")
+    row = json.loads(path.read_text(encoding="utf-8").strip())
+    assert row["statement_id"]["target_name"] == "faithful_target"
+    assert row["statement_id"]["closed_prop_hash"]
+    assert row["statement_id"]["nl_exact_hash"]
+    assert store.confirms(nl, "theorem renamed_target (a b : Nat) : a + b = b + a := by sorry")
+
+    legacy = tmp_path / "legacy_faithfulness.jsonl"
+    legacy.write_text(json.dumps({
+        "key": row["key"],
+        "kind": "faithful",
+        "nl": nl,
+        "statement": stmt,
+        "norm": _stmt_identity(stmt),
+        "fingerprint": {"conclusion_op": "eq"},
+    }) + "\n", encoding="utf-8")
+    legacy_store = FaithfulnessStore(legacy)
+    assert (legacy_store.reference(nl) or {}).get("statement") == stmt
+    assert legacy_store.confirms(nl, "theorem renamed_target (a b : Nat) : a + b = b + a := by sorry")
 
 
 def test_except_audit_catches_swallowed_nameerror():
@@ -502,7 +1486,9 @@ def test_nonvacuity_check_flags_unwitnessed_set_property():
            "Prop :=\n  ∀ ⦃x y : X⦄, x ∈ s → y ∈ u → x ⊓ y ∈ s ∧ x ⊔ y ∈ u\n")
     assert "StrongSetLE" in vacuity_prone_defs(src)
     assert certify_nonvacuity(src, verify_fn=lambda w: True)["verdict"] == VACUITY_EXPOSED
-    w = src + "theorem witness_StrongSetLE_nonvacuous : True := trivial\n"
+    w = src + ("theorem witness_StrongSetLE_nonvacuous {X : Type*} [SemilatticeSup X] "
+               "[SemilatticeInf X] : ∃ s u : Set X, s.Nonempty ∧ u.Nonempty ∧ "
+               "StrongSetLE s u := by sorry\n")
     assert certify_nonvacuity(w, verify_fn=lambda x: True)["verdict"] == WITNESSED
     assert certify_nonvacuity(src + "-- @vacuity-scope: StrongSetLE: empty when unbounded\n",
                               verify_fn=lambda x: False)["verdict"] == VACUITY_SCOPED
@@ -688,15 +1674,255 @@ def test_proof_cache_keyed_on_canonical_expr_hash_not_text():
     # the canonical-hash helper exists and is wired into solve_adhoc for BOTH lookup and deposit
     assert hasattr(repl_compile, "canonical_type_hash_via_repl")
     # the cache stores/reads under the supplied key, dual-indexed with the text key, and re-keys H: keys on reload
+    import json
     import tempfile, os as _os
     p = tempfile.mktemp(suffix=".jsonl")
     c = ProofCache(p)
     assert c.put("theorem a (h:p) : q := by sorry", "by exact e", key="K1")
+    row = json.loads(open(p, encoding="utf-8").read().strip())
+    assert row["schema"] == "leanmill.proof_cache.v1"
+    assert row["cache_authority"] == "proof_credit"
+    assert row["proof_credit_eligible"] is True
+    assert row["proof_credit_authority"] == "caller_kernel_verified_then_reverify_on_use"
+    assert row["statement_id"]["closed_prop_hash"]
     assert c.get("theorem a (h:p) : q := by sorry", key="K1") == "by exact e"           # Expr-key hit
     assert c.get("theorem DIFFERENT_TEXT : zzz := by sorry", key="K1") == "by exact e"   # variant, same Expr key ⇒ hit
     assert c.get("theorem a (h:p) : q := by sorry") == "by exact e"                       # text-key fallback (no REPL)
     assert ProofCache(p).get("theorem whatever : w", key="K1") == "by exact e"            # survives reopen
     _os.remove(p)
+
+
+def test_proof_cache_legacy_rows_still_load(tmp_path):
+    """Adding proof-credit metadata must not orphan existing legacy proof-cache JSONL rows."""
+    import json
+    from ztare.leanmill.solver.proof_cache import ProofCache, _key_for
+
+    stmt = "theorem legacy (n : Nat) : n = n := by sorry"
+    p = tmp_path / "proof_cache.jsonl"
+    p.write_text(json.dumps({
+        "key": _key_for(stmt),
+        "statement": stmt,
+        "proof": "by rfl",
+        "source": "legacy",
+    }) + "\n", encoding="utf-8")
+    assert ProofCache(p).get(stmt) == "by rfl"
+
+
+def test_proof_cache_declines_missing_run_local_dependency_only(tmp_path):
+    from ztare.leanmill.solver.proof_cache import ProofCache
+
+    p = tmp_path / "proof_cache.jsonl"
+    cache = ProofCache(p)
+    statement = "theorem target : True := by sorry"
+    assert cache.put(
+        statement,
+        "by exact denef_lipshitz_auxiliary_bridge",
+        source="legacy-run-local",
+    )
+    assert cache.get(statement) == "by exact denef_lipshitz_auxiliary_bridge"
+    assert cache.compatibility(statement) == (
+        "legacy_unassessed", "by exact denef_lipshitz_auxiliary_bridge"
+    )
+    assert cache.get(statement, context_source=statement) is None
+    assert cache.compatibility(statement, context_source=statement) == ("incompatible", None)
+    assert cache.get(
+        statement,
+        context_source="theorem denef_lipshitz_auxiliary_bridge : True := by trivial\n" + statement,
+    ) == "by exact denef_lipshitz_auxiliary_bridge"
+
+    ordinary = "theorem ordinary : 1 = 1 := by sorry"
+    assert cache.put(ordinary, "by rfl", source="ordinary", context_source=ordinary)
+    assert cache.get(ordinary, context_source=ordinary) == "by rfl"
+    assert cache.compatibility(ordinary) == ("context_unassessed", "by rfl")
+    assert cache.compatibility(ordinary, context_source=ordinary) == ("compatible", "by rfl")
+
+
+def test_cache_forecast_requires_compatible_context(tmp_path):
+    from ztare.leanmill.solver.forecast_router import ProofCacheForecaster, WorkCandidate
+    from ztare.leanmill.solver.proof_cache import ProofCache
+
+    path = tmp_path / "proof_cache.jsonl"
+    statement = "theorem target : True := by sorry"
+    context = "theorem iso_lemma1 : True := by trivial\n" + statement
+    ProofCache(path).put(statement, "by exact iso_lemma1", source="new", context_source=context)
+    forecaster = ProofCacheForecaster(path)
+    unassessed = forecaster.forecast(WorkCandidate("u", statement=statement))
+    incompatible = forecaster.forecast(WorkCandidate(
+        "i", statement=statement, context_features={"source_text": statement}
+    ))
+    compatible = forecaster.forecast(WorkCandidate(
+        "c", statement=statement,
+        context_features={"source_text": context},
+    ))
+    assert unassessed.abstain and unassessed.rationale == "cache context_unassessed"
+    assert incompatible.abstain and incompatible.rationale == "cache incompatible"
+    assert compatible.route_first and compatible.p_close == 0.98
+
+    malformed_statement = "theorem malformed : 1 = 1 := by sorry"
+    from ztare.leanmill.solver.proof_cache import _key_for
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(__import__("json").dumps({
+            "key": _key_for(malformed_statement), "statement": malformed_statement,
+            "proof": ":= by rfl", "source": "legacy",
+        }) + "\n")
+    malformed = ProofCacheForecaster(path).forecast(WorkCandidate(
+        "m", statement=malformed_statement, context_features={"source_text": malformed_statement}
+    ))
+    assert malformed.abstain and malformed.rationale == "cache malformed"
+    assert not ProofCache(path).put("theorem new_bad : 2 = 2", "```lean\nrfl\n```", source="leaf")
+
+
+def test_permove_cap_uses_canonical_move_override(monkeypatch):
+    from ztare.leanmill.solver.solver_core import _permove_cap
+
+    monkeypatch.setenv("ZTARE_LEANMILL_CAP_WARM", "17")
+    monkeypatch.setenv("ZTARE_LEANMILL_CAP_COLD_FRONTIER", "19")
+    assert _permove_cap("warm", 999, 999) == 17
+    assert _permove_cap("cold_frontier", 999, 999) == 19
+
+
+def test_dag_failure_classifier_receives_trace_errors():
+    import inspect
+    from ztare.leanmill.solver import solver_core
+
+    source = inspect.getsource(solver_core)
+    assert '_dag_terminal = dag_res.get("terminal_signal") or {}' in source
+    assert '"tail": str(_dag_terminal.get("tail") or _dag_terminal.get("error_class") or "")' in source
+    assert '"terminal_signal": _dag_terminal' in source
+
+
+def test_phase_timing_surfaces_dispatch_budget_utilization(tmp_path, monkeypatch):
+    from ztare.leanmill.phase_timing import record_phase, summarize_phase_timings
+
+    ledger = tmp_path / "timings.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_PHASE_TIMING_LEDGER", str(ledger))
+    record_phase("leaf.dispatch", 9.7, run_tag="r1",
+                 extra={"requested_timeout_s": 10, "requested_runtime": "codex"})
+    record_phase("leaf.dispatch", 2.0, run_tag="other",
+                 extra={"requested_timeout_s": 20, "requested_runtime": "claude"})
+    budget = summarize_phase_timings(run_tag="r1", ledger=ledger)["dispatch_budget"]
+    assert budget["count"] == 1
+    assert budget["near_cap_count"] == 1
+    assert budget["utilization_mean"] == 0.97
+    assert budget["by_runtime"] == {"codex": 1}
+
+
+def test_observability_counts_orphaned_cache_environments(tmp_path):
+    import json
+    from ztare.leanmill.run_observability import _summarize_proof_cache
+    from ztare.leanmill.solver.proof_cache import _key_for
+
+    path = tmp_path / "proof_cache.jsonl"
+    rows = [
+        {"key": _key_for("theorem a : True"), "statement": "theorem a : True",
+         "proof": "by exact iso_lemma1", "source": "legacy"},
+        {"key": _key_for("theorem b : True"),
+         "statement": "theorem iso_lemma2 : True := by trivial\ntheorem b : True",
+         "proof": "by exact iso_lemma2\n#print axioms iso_lemma2", "source": "banked"},
+    ]
+    path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+    summary = _summarize_proof_cache(path, "")
+    assert summary["dependency_bearing_rows"] == 2
+    assert summary["orphaned_environment_rows"] == 1
+
+
+def test_statement_integrity_accepts_bare_target_probe_for_namespaced_original():
+    """Cache-reuse probes may preserve the target statement while emitting the target outside the source namespace."""
+    from ztare.leanmill.solver.statement_integrity import check
+    original = (
+        "namespace GaleShapleyStableMatchingProbe\n"
+        "theorem rejected_man_stays_below_later_holds : True := by\n"
+        "  sorry\n"
+        "end GaleShapleyStableMatchingProbe\n"
+    )
+    probe = "theorem rejected_man_stays_below_later_holds : True := by\n  trivial\n"
+    bad_probe = "theorem rejected_man_stays_below_later_holds : False := by\n  contradiction\n"
+
+    ok = check(original, probe, "rejected_man_stays_below_later_holds")
+    assert ok.ok, ok.violations
+
+    bad = check(original, bad_probe, "rejected_man_stays_below_later_holds")
+    assert any("target_signature_altered" in v for v in bad.violations), bad.violations
+
+
+def test_warm_verify_self_contained_probe_audits_probe_namespace_not_campaign_namespace():
+    """A self-contained probe may use a formalizer namespace; Path A must audit that decl before env-stripping."""
+    import inspect
+    from ztare.formal import repl_compile
+
+    src = inspect.getsource(repl_compile.warm_verify_campaign)
+    assert "_probe_decl_name(code, decl_name)" in src
+    assert "_warm_check_audit(pl, project, code, _qual(decl_name), None, timeout)" not in src
+    assert "_emit_verify_trace" in src
+
+
+def test_warm_verify_trace_writes_jsonl_without_affecting_verdict(tmp_path, monkeypatch):
+    """Verifier routing needs one-row RCA breadcrumbs; the trace must be best-effort and external to verdicts."""
+    import json
+    from ztare.formal import repl_compile
+
+    out = tmp_path / "trace.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERIFY_TRACE", str(out))
+    repl_compile._emit_verify_trace(str(tmp_path), {
+        "kind": "warm_verify_campaign",
+        "target": "t",
+        "path": "self_contained_base",
+        "result": False,
+        "diag": "type mismatch",
+    })
+    row = json.loads(out.read_text(encoding="utf-8").strip())
+    assert row["kind"] == "warm_verify_campaign"
+    assert row["target"] == "t"
+    assert row["path"] == "self_contained_base"
+    assert row["result"] is False
+
+
+def test_notes_writeback_trace_writes_jsonl(tmp_path, monkeypatch):
+    """Notes mutation must leave a compact breadcrumb: what file changed and what counts changed."""
+    import json
+    from ztare.leanmill.solver import autoformalize_notes as notes
+
+    out = tmp_path / "notes_trace.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_NOTES_TRACE", str(out))
+    monkeypatch.setenv("ZTARE_SOLVER_RUN_TAG", "run-x")
+    notes._emit_notes_writeback_trace({
+        "kind": "write_refined_notes",
+        "notes_path": "blueprint.md",
+        "closed_count": 2,
+        "open_count": 1,
+    })
+    row = json.loads(out.read_text(encoding="utf-8").strip())
+    assert row["kind"] == "write_refined_notes"
+    assert row["run_tag"] == "run-x"
+    assert row["closed_count"] == 2
+    assert row["open_count"] == 1
+
+
+def test_compounding_dedup_message_does_not_claim_lost_citability():
+    """A bank-env no-op is not automatically a lost reuse event; proof_cache/certs can still carry reuse."""
+    import inspect
+    from ztare.leanmill.solver import solver_core
+
+    src = inspect.getsource(solver_core)
+    assert "closure remains reusable through proof_cache/certs" in src
+    assert "not citable next run; investigate bank_decl_to_env" not in src
+
+
+def test_bank_reverify_uses_central_cold_compile_budget():
+    """Bank-env ratification should honor the same cold_compile budget surfaced in the run manifest."""
+    import inspect
+    from ztare.formal import repl_compile
+    from ztare.leanmill.solver import family_lemma_library
+
+    src = inspect.getsource(family_lemma_library._default_reverify)
+    assert 'timeout_s("cold_compile")' in src
+    assert "_substrate_cold_compiles(fp, root, 600)" not in src
+    assert "cold_timeout = 480" not in src
+    cold_src = inspect.getsource(repl_compile._substrate_cold_compiles)
+    assert "min(timeout, 600)" not in cold_src
+    live_src = inspect.getsource(repl_compile)
+    assert "_substrate_cold_compiles(p.resolve(), str(Path(lean_root).resolve()), 600)" not in live_src
+    assert 'timeout_s("cold_compile")' in live_src
 
 
 def test_def_shell_detection_canonical_and_shared_with_vocab():
@@ -951,6 +2177,57 @@ def test_firewall_gates_validated_on_production_shape_not_toys():
         "statement_fingerprint must count the TARGET theorem's binders (≥2), not the leading def's"
 
 
+def test_default_triviality_risk_detector_targets_theorem_in_multidecl(monkeypatch):
+    """Production formalizations often use define-then-state blobs. The cheap-tactic gate must run lexical risk
+    detection on the target theorem signature, not the leading definition/abbrev; otherwise a useful theorem can
+    be rejected because the detector inspected `abbrev Ledger ...` instead of `theorem target ...`."""
+    from ztare.leanmill.solver import autoformalize as A
+    from ztare.gates import v33_preflight_risk_detector as R
+
+    seen = {}
+
+    def fake_detect(sig):
+        seen["sig"] = sig
+        return {"vacuity_suspected": sig.lstrip().startswith(("def ", "abbrev ", "structure "))}
+
+    def fail_compile_probe(body, *a, **k):
+        raise AssertionError("multi-decl define-then-state triviality must not run the cold cheap-proof probe")
+
+    monkeypatch.setattr(R, "detect_risks", fake_detect)
+    monkeypatch.setattr(R, "_compile_probe", fail_compile_probe)
+    monkeypatch.setattr(R, "nondegenerate_instance_probe", lambda *a, **k: {"vacuity_confirmed": False})
+
+    stmt = (
+        "abbrev Ledger (Account : Type u) : Type u := Account → Int\n"
+        "def totalBalance {Account : Type u} [Fintype Account] (ledger : Ledger Account) : Int := "
+        "Finset.univ.sum ledger\n"
+        "theorem target {Account : Type u} [Fintype Account] (ledger : Ledger Account) : "
+        "totalBalance ledger = totalBalance ledger := by sorry"
+    )
+    assert A.default_triviality(stmt, sandbox=".") is False
+    assert "ledger : Ledger Account" in (seen.get("sig") or ""), seen
+    assert "totalBalance ledger = totalBalance ledger" in (seen.get("sig") or ""), seen
+    assert "abbrev Ledger" not in (seen.get("sig") or ""), "risk detector must not see the leading abbrev"
+    assert "def totalBalance" not in (seen.get("sig") or ""), "risk detector must not see the leading def"
+
+
+def test_default_triviality_single_theorem_uses_bounded_cheap_tactics(monkeypatch):
+    from ztare.leanmill.solver import autoformalize as A
+    from ztare.gates import v33_preflight_risk_detector as R
+
+    seen = {}
+    monkeypatch.setattr(R, "detect_risks", lambda sig: {"vacuity_suspected": False})
+    monkeypatch.setattr(R, "nondegenerate_instance_probe", lambda *a, **k: {"vacuity_confirmed": False})
+
+    def fake_compile_probe(body, *a, **k):
+        seen["probe_body"] = body
+        return False
+
+    monkeypatch.setattr(R, "_compile_probe", fake_compile_probe)
+    assert A.default_triviality("theorem target (n : Nat) : n = n := by sorry", sandbox=".") is False
+    assert "aesop" not in (seen.get("probe_body") or ""), "the cheap-tactic probe must stay bounded; no aesop"
+
+
 # ── METAMORPHIC guards (2026-06-25, the AMM vocab-orphan RCA) ─────────────────────────────────────────────
 # The recurring class = a check correct for the SHAPE it was authored against, silently wrong on an
 # equivalent RE-ENCODING (research_isomorphism named it: read the invariant, not the coordinate). The cure
@@ -1124,12 +2401,21 @@ def test_banked_lemma_reuse_skips_already_proven(tmp_path, monkeypatch):
     from ztare.leanmill.solver.autoformalize_notes import _banked_lemma_reuse
     sub = tmp_path / "substrate.lean"
     sub.write_text("import Mathlib\n"
+                   "def some_def (n : Nat) : Nat := n\n"
                    "theorem proven_lemma (n : Nat) : n + 0 = n := by simp\n"
                    "theorem open_lemma (n : Nat) : 0 + n = n := by sorry\n", encoding="utf-8")
     monkeypatch.setattr(rc, "_CAMPAIGN_SUBSTRATE", str(sub), raising=False)
     rc.set_campaign_substrate(str(sub))
-    assert _banked_lemma_reuse("**(proven_lemma)** the foundational fact", str(tmp_path)), \
+    reused_paren = _banked_lemma_reuse("**(proven_lemma)** the foundational fact", str(tmp_path))
+    assert reused_paren and reused_paren.startswith("theorem proven_lemma "), \
         "a bullet naming a PROVEN sorry-free banked decl must be REUSED (skip re-formalize)"
+    reused_code = _banked_lemma_reuse("`proven_lemma`: the same fact in blueprint-code style", str(tmp_path))
+    assert reused_code and reused_code.startswith("theorem proven_lemma "), \
+        "a backtick-named blueprint bullet must reuse the existing proven decl"
+    reused_colon = _banked_lemma_reuse("proven_lemma: the same fact in compact queue style", str(tmp_path))
+    assert reused_colon and reused_colon.startswith("theorem proven_lemma "), \
+        "a colon-named blueprint bullet must reuse the existing proven decl"
+    assert _banked_lemma_reuse("`some_def`: looks like a lemma bullet but names a definition", str(tmp_path)) is None
     assert _banked_lemma_reuse("**(open_lemma)** still has a hole", str(tmp_path)) is None, \
         "a bullet naming a SORRIED decl must NOT be reused (it isn't proven)"
     assert _banked_lemma_reuse("**(nonexistent_decl)** not banked", str(tmp_path)) is None, \
@@ -1198,6 +2484,30 @@ def test_promote_reads_p0_sidecar(tmp_path):
     closure2.write_text("theorem t : True := trivial\n", encoding="utf-8")
     hdr2 = pca.build_header("no_such_run", "old_run", closure2, None, axioms="n/a")
     assert "cited 0 banked rung(s)" in hdr2, "no-sidecar path must fall back to the log-regex reuse line"
+
+
+def test_auto_promote_blocks_underdetermined_denotation_for_theory_campaign(monkeypatch):
+    """A theorem can close while its introduced defs remain modeling-underdetermined. That should block only
+    publish-review staging, not theorem closure."""
+    from ztare.leanmill.solver import autoformalize_notes as notes
+
+    monkeypatch.delenv("ZTARE_LEANMILL_ALLOW_UNPINNED_AUTO_PROMOTE", raising=False)
+    res = {"target": {"solved": True}, "denotation": {
+        "verdict": "UNDERDETERMINED",
+        "reason": "under-determined def(s): ['proposalStep']",
+    }}
+    blockers = notes._auto_promote_blockers(res, "Demo.lean")
+    assert blockers and "proposalStep" in blockers[0]
+
+
+def test_auto_promote_allows_pinned_or_mathlib_only_denotation(monkeypatch):
+    from ztare.leanmill.solver import autoformalize_notes as notes
+
+    monkeypatch.delenv("ZTARE_LEANMILL_ALLOW_UNPINNED_AUTO_PROMOTE", raising=False)
+    assert notes._auto_promote_blockers(
+        {"denotation": {"verdict": "PINNED", "reason": "ok"}}, "Demo.lean") == []
+    assert notes._auto_promote_blockers(
+        {"denotation": {"verdict": "NOT_APPLICABLE", "reason": "Mathlib only"}}, "Demo.lean") == []
 
 
 def test_promote_refuses_probe_stub_body(tmp_path, monkeypatch):

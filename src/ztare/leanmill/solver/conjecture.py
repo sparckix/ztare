@@ -13,6 +13,7 @@ decomposition). The cite-check below is comment-stripped but is NOT yet a full l
 (replace-L-with-False); both are tracked under #35."""
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
@@ -23,6 +24,20 @@ from ztare.leanmill.lean_source import (has_sorry as _has_sorry, strip_comments 
 
 # Prompts live in the canonical registry (prompts.py); local names preserved for the call sites.
 from ztare.leanmill.solver.prompts import CONJECTURE_PROMPT as _CONJECTURE_PROMPT
+
+
+def _goal_head_for_exemplar(goal_text: str) -> str:
+    """The head (signature, no proof `:=`) of the GOAL theorem, for the `{goal_head}` PROOF exemplar.
+    `goal_text` is the FULL theory blob (preamble defs + the goal theorem). `signature_before_proof`
+    cuts at the FIRST depth-0 `:=`, which for a preamble carrying a helper `abbrev/def := …` is the
+    HELPER's `:=`, not the goal's — so the exemplar would restate a stray def as the goal (observed:
+    CLOB's `abbrev betterPrice := _root_.betterPrice` preceding the target). The goal theorem is always
+    the LAST decl; take its head. Falls back to the whole-blob behaviour if unparsable."""
+    from ztare.leanmill.lean_source import decl_blocks
+    blocks = decl_blocks(goal_text or "")
+    tail = blocks[-1][1] if blocks else (goal_text or "")
+    return (signature_before_proof(tail).strip()
+            or signature_before_proof(goal_text or "").strip() or (goal_text or ""))
 
 
 def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
@@ -39,7 +54,7 @@ def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
     is unchanged, so both arms go through the IDENTICAL parse + `conjecture_advances` kernel gate."""
     base = re.sub(r"[^A-Za-z0-9_]", "", (row.get("target_theorem_name") or "lem"))[:28] or "lem"
     lname = f"conj_{base}"
-    goal_head = signature_before_proof(goal_text or "").strip() or (goal_text or "")
+    goal_head = _goal_head_for_exemplar(goal_text or "")
     if prompt_override:
         prompt = (prompt_override.replace("{lname}", lname)
                   .replace("{goal_head}", goal_head).replace("{goal}", goal_text or ""))
@@ -94,6 +109,32 @@ def _norm_ws(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
 
+def _campaign_probe(preamble: str, body: str) -> str:
+    """THE one door for building an audit compile-snippet (2026-07-02 synthInstance RCA). When a single-namespace
+    campaign substrate is registered, compile `body` against the REAL substrate — re-entering its namespace AND
+    re-declaring its section `variable` context (the SAME restoration warm_verify_campaign uses, sourced from the
+    ONE helper lean_source.section_variable_lines) — so a section-style theory's type/instance binders resolve.
+    Without this, every audit here (decompose / conjecture-advance / specialize / falsify) compiled the flat
+    deanchored `preamble`, which loses those section binders ⇒ `synthInstanceFailed` ⇒ a VALID move REJECTED ⇒
+    the expensive agentic fallback (the median-voter token burn). Non-campaign / multi-namespace / flat theory ⇒
+    the flat preamble (byte-parity — every prior campaign shape is unchanged). The target is posed EXTERNALLY
+    (not in the substrate) so re-inlining the substrate never clashes with the probe's own decls."""
+    try:
+        # THE ONE cold-probe door (2026-07-06): substrate + scope + the PREAMBLE's OWN warm-only defs (an inline
+        # `inductive ProposalRun` the substrate never banked) + the body. Dropping the preamble here used to make a
+        # body citing `ProposalRun` fail `unknown identifier` cold ⇒ a FALSE `no_advance` (the gale thrash);
+        # native_hammer shares this exact door now, so they can never drift again. None off-campaign ⇒ flat fallback.
+        from ztare.formal.repl_compile import assemble_cold_probe
+        _probe = assemble_cold_probe(preamble, body=body, keep="")
+        if _probe is not None:
+            return _probe
+    except Exception:  # noqa: BLE001 — never let the campaign path break an audit; fall through to flat
+        pass
+    pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
+    s = pre + body
+    return s if s.lstrip().startswith("import") else "import Mathlib\n\n" + s
+
+
 def _typecheck_diag(snippet: str, lean_root: Path, timeout_s: int) -> str:
     """Best-effort SHORT diagnostic suffix for a failed advance probe — the FIRST Lean error, so a
     `did not typecheck` no_advance is self-classifying (vocabulary FALSE-negative vs genuine non-following).
@@ -138,10 +179,7 @@ def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
     if goal_conclusion and _norm_ws(_lemma_conclusion(lemma)) == _norm_ws(goal_conclusion):
         return False, "conjectured lemma RESTATES the goal (circular — not a genuine sub-lemma reduction)"
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
-    _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
-    snippet = _pre + lemma.strip() + "\n\n" + proof.strip()
-    if not snippet.lstrip().startswith("import"):
-        snippet = "import Mathlib\n\n" + snippet
+    snippet = _campaign_probe(preamble, lemma.strip() + "\n\n" + proof.strip())
     ok = _compile_probe(snippet, lean_root, "ConjAdvance", timeout_s)
     if ok is not True:
         # SELF-EXPLAINING no_advance (2026-06-21): surface the FIRST Lean error so a `did not typecheck`
@@ -156,9 +194,7 @@ def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
     # effort: if L's signature can't be parsed to swap the type, skip this leg (keep the advance).
     _useless = _useless_lemma(lemma)
     if _useless and "True := by sorry" in _useless:
-        _snip2 = _pre + _useless + "\n\n" + proof.strip()
-        if not _snip2.lstrip().startswith("import"):
-            _snip2 = "import Mathlib\n\n" + _snip2
+        _snip2 = _campaign_probe(preamble, _useless + "\n\n" + proof.strip())
         if _compile_probe(_snip2, lean_root, "ConjLoadBearing", timeout_s) is True:
             return False, "conjectured lemma is NOT load-bearing (goal-proof compiles with L:=True — cited but unused)"
     return True, "compiled — goal follows from the conjectured lemma (load-bearing)"
@@ -234,12 +270,9 @@ def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list
         except Exception:  # noqa: BLE001 — fail-OPEN: the kernel leg only ADDS catches; an error never rejects
             pass
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
-    _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
+    _snip = lambda body: _campaign_probe(preamble, body)   # noqa: E731 — the ONE campaign-context door (see _campaign_probe)
     body = "\n\n".join(L.strip() for L in lemmas) + "\n\n" + chain_proof.strip()
-    snippet = _pre + body
-    if not snippet.lstrip().startswith("import"):
-        snippet = "import Mathlib\n\n" + snippet
-    if _compile_probe(snippet, lean_root, "DagAudit", timeout_s) is not True:
+    if _compile_probe(_snip(body), lean_root, "DagAudit", timeout_s) is not True:
         return False, {**v, "killed": "decomposition does NOT typecheck (G does not follow from the Lᵢ, or a Lᵢ is ill-typed)"}
     v["compiles"] = True
     # LOAD-BEARING: gut every lemma to `: True` and re-compile the chain. If it STILL compiles, the
@@ -251,9 +284,7 @@ def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list
     if not all(u and "True := by sorry" in u for u in useless):
         return False, {**v, "compiles": True,
                        "killed": "cannot verify load-bearing — a lemma signature is unparseable (fail-closed)"}
-    snip2 = _pre + "\n\n".join(useless) + "\n\n" + chain_proof.strip()
-    if not snip2.lstrip().startswith("import"):
-        snip2 = "import Mathlib\n\n" + snip2
+    snip2 = _snip("\n\n".join(useless) + "\n\n" + chain_proof.strip())
     if _compile_probe(snip2, lean_root, "DagLoadBearing", timeout_s) is True:
         return False, {**v, "compiles": True,
                        "killed": "NOT load-bearing (chain compiles with every Lᵢ:=True — decomposition unused)"}
@@ -309,7 +340,6 @@ def specialization_is_genuine(special_block: str, implies_block: str, sname: str
     if _has_sorry(special_block):
         return False, "special case not sorry-free (must be a genuinely PROVED instance)"
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
-    _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
     g_concl = _lemma_conclusion(special_block)
     if not g_concl:
         return False, "could not parse the special case's conclusion"
@@ -317,19 +347,13 @@ def specialization_is_genuine(special_block: str, implies_block: str, sname: str
         return False, "special case is IDENTICAL to the goal (not a specialization)"
     if _norm_ws(g_concl) in ("True", "(True)"):
         return False, "special case is vacuous (`True`)"
-    # (a) G' closes sorry-free
-    snip = _pre + special_block.strip()
-    if not snip.lstrip().startswith("import"):
-        snip = "import Mathlib\n\n" + snip
-    if _compile_probe(snip, lean_root, "SpecClose", timeout_s) is not True:
+    # (a) G' closes sorry-free  [_campaign_probe = the ONE campaign-context door, see its docstring]
+    if _compile_probe(_campaign_probe(preamble, special_block.strip()), lean_root, "SpecClose", timeout_s) is not True:
         return False, "special case does NOT compile sorry-free (not a genuine closed instance)"
     # (b) G ⇒ G' : the implication must typecheck sorry-free (so G' is a genuine consequence of G)
     if not implies_block or _has_sorry(implies_block):
         return False, "missing/incomplete `G ⇒ G'` implication — cannot confirm G' is a genuine special case of G"
-    snip2 = _pre + implies_block.strip()
-    if not snip2.lstrip().startswith("import"):
-        snip2 = "import Mathlib\n\n" + snip2
-    if _compile_probe(snip2, lean_root, "SpecImplies", timeout_s) is not True:
+    if _compile_probe(_campaign_probe(preamble, implies_block.strip()), lean_root, "SpecImplies", timeout_s) is not True:
         return False, "`G ⇒ G'` does not typecheck — G' is NOT a genuine consequence of the goal (possible laundered unrelated theorem)"
     return True, "genuine special-case rung — G' closes sorry-free AND is a kernel-checked consequence of G"
 
@@ -419,22 +443,95 @@ def _closed_goal_prop(goal_text: str) -> str:
     return f"∀ {binders}, {concl}" if binders else concl
 
 
+def _current_goal_prop(target_name: str, source_text: str, goal: str) -> str:
+    """Closed Prop for the target currently under adjudication."""
+    goal = (goal or "").strip()
+    if not goal and source_text and target_name:
+        try:
+            from ztare.leanmill.lean_source import extract_signature as _exsig
+            goal = (_exsig(source_text, target_name) or "").strip()
+        except Exception:  # noqa: BLE001
+            goal = ""
+    return _closed_goal_prop(goal)
+
+
+def _strip_wrapping_parens(s: str) -> str:
+    s = (s or "").strip()
+    changed = True
+    while changed and s.startswith("(") and s.endswith(")"):
+        changed, depth = False, 0
+        for i, ch in enumerate(s):
+            if ch in "([{⟨":
+                depth += 1
+            elif ch in ")]}⟩":
+                depth -= 1
+                if depth == 0 and i != len(s) - 1:
+                    return s
+        if depth == 0:
+            s = s[1:-1].strip()
+            changed = True
+    return s
+
+
+def _negated_prop(concl: str) -> str:
+    concl = (concl or "").strip()
+    if concl.startswith("¬"):
+        return _strip_wrapping_parens(concl[1:].strip())
+    if concl.startswith("Not "):
+        return _strip_wrapping_parens(concl[4:].strip())
+    return ""
+
+
+def _refutation_matches_current_goal(refute_source: str, target_name: str, current_gprop: str) -> bool:
+    """A reusable refutation must negate the closed Prop for this exact target signature."""
+    if not (refute_source and target_name and current_gprop):
+        return False
+    try:
+        from ztare.leanmill.lean_source import decl_blocks
+        for name, block in decl_blocks(refute_source):
+            if not block.strip():
+                continue
+            lower_name = (name or "").lower()
+            mentions_target = target_name in block
+            refute_named = any(tok in lower_name for tok in ("false", "counterexample", "refut"))
+            if not (mentions_target or refute_named):
+                continue
+            neg = _negated_prop(_lemma_conclusion(block))
+            if neg and _norm_ws(neg) == _norm_ws(_strip_wrapping_parens(current_gprop)):
+                return True
+    except Exception:  # noqa: BLE001
+        return False
+    return False
+
+
 from ztare.leanmill.solver.prompts import FALSIFY_PROMPT as _FALSIFY_PROMPT
 
 
 def falsify_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
-                     preamble: str = "") -> "tuple[str, str, str, str]":
+                     preamble: str = "", nugget: str = "") -> "tuple[str, str, str, str]":
     """Ask the leaf for a proof of ¬G (a falsifying witness). Returns (refute_block, fname, gprop,
     raw_tail) where refute_block is the FULLY-ASSEMBLED `[helpers]\\n\\ntheorem <fname>_refute : ¬ (G)
     := by <body>` (statement owned by US, not the leaf). ('', fname, gprop, err) on failure / no
-    refutation (⇒ no falsifier, never a false 'it's false')."""
+    refutation (⇒ no falsifier, never a false 'it's false').
+
+    `nugget` (the CEGAR/proof-sketch reuse): a counterexample INSIGHT a prior skeptic/leaf already found
+    for THIS statement (recycled from `no_good_store`'s `statement_false` witness, or the current leaf's own
+    probe). Seeded as a HINT so the skeptic ADAPTS the known crux to OUR goal instead of re-deriving from a
+    blank page (why CLOB looped: the leaf found a hard ULift counterexample the throwaway fresh skeptic could
+    not reproduce). SOUND + un-launderable: the refutation theorem's signature (¬ of OUR goal) is still fixed
+    and the kernel re-checks the proof — a wrong nugget merely fails to help. Goldilocks: nugget = affordance,
+    kernel = the only determinism."""
     base = re.sub(r"[^A-Za-z0-9_]", "", (row.get("target_theorem_name") or "tgt"))[:24] or "tgt"
     fname = f"fls_{base}"
     gprop = _closed_goal_prop(goal_text)
     if not gprop:
         return "", fname, "", "could not build a closed Prop from the goal signature"
     pre = ("\nPREAMBLE:\n" + preamble.strip() + "\n") if preamble.strip() else ""
-    prompt = _FALSIFY_PROMPT.format(fname=fname, gprop=gprop, goal=goal_text, pre=pre)
+    _nug = ""
+    if (nugget or "").strip():
+        from ztare.leanmill.solver.prompts import FALSIFY_NUGGET_SEED as _NUG
+        _nug = _NUG.format(nugget=nugget.strip()[:1600])
+    prompt = _FALSIFY_PROMPT.format(fname=fname, gprop=gprop, goal=goal_text, pre=pre, nugget=_nug)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
         raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
@@ -468,17 +565,217 @@ def falsification_is_genuine(refute_block: str, fname: str, gprop: str,
     if not gprop or _norm_ws(gprop) in ("True", "(True)", "False", "(False)"):
         return False, "degenerate/empty negated Prop"
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
-    _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
-    snip = _pre + refute_block.strip()
-    if not snip.lstrip().startswith("import"):
-        snip = "import Mathlib\n\n" + snip
-    if _compile_probe(snip, lean_root, "FalsifyRefute", timeout_s) is not True:
+    if _compile_probe(_campaign_probe(preamble, refute_block.strip()), lean_root, "FalsifyRefute", timeout_s) is not True:
         return False, "¬G does NOT compile sorry-free — not a genuine refutation"
     return True, "genuine falsifier — a kernel-checked sorry-free proof of ¬(the verbatim goal Prop)"
 
 
+def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: int,
+                               source_text: str = "", goal: str = "") -> "tuple[bool, str, str]":
+    """REUSE the agent's OWN kernel-checked counterexample instead of re-deriving ¬G — the fix for the recurring
+    'FALSIFY recovery never fires' bug (CLOB v1/v2, EF1: the FRESH skeptic in `falsify_generate` could not reproduce
+    the leaf's complex ULift/list counterexample, so `¬G NOT kernel-confirmed` → the reformulation re-entry never
+    fired and the campaign GROUND A FALSE LEMMA forever). The leaf ALREADY proved the target false: a sorry-free
+    `-- STATEMENT-FALSE:` probe carrying a `¬`/`_false`/`counterexample`/`target_false` theorem. Re-compile THAT
+    probe (self-contained → base Mathlib, `reject_sorry=True`): compiles sorry-free ⇒ the agent's ¬G is GENUINE, no
+    re-derivation, fast. SOUND: (a) the probe must RESTATE the TARGET (a decl named `target_name`) so it refutes the
+    ACTUAL statement, not a strawman; (b) the governed reformulation re-gates faithfulness vs the original NL
+    downstream (it can never launder — the design's stated soundness model). ZTARE_LEANMILL_REUSE_AGENT_REFUTATION=0
+    reverts to always-re-derive. Returns (confirmed, detail, refute_block) or (False, why, '')."""
+    import os
+    if os.environ.get("ZTARE_LEANMILL_REUSE_AGENT_REFUTATION", "1") == "0":
+        return False, "reuse disabled", ""
+    current_gprop = _current_goal_prop(target_name, source_text, goal)
+    if not current_gprop:
+        return False, "cannot compute current target proposition for refutation reuse", ""
+    try:
+        import glob as _glob
+        from ztare.leanmill.solver.agentic_leaf import probe_dir as _pd, robust_probe_glob as _rpg
+        from ztare.formal.repl_compile import compile_probe_via_repl as _cpv, _strip_prelude_for_repl as _spr
+    except Exception:  # noqa: BLE001 — reuse is best-effort; fall through to the skeptic
+        return False, "no probe infra", ""
+    try:
+        # ROBUST probe search (the run-scratch split-brain, RCA 2026-07-04): `probe_dir` returns the RUN-ISOLATED
+        # subdir only when ZTARE_LEANMILL_RUN_SCRATCH is set in THIS process; a caller (or a differently-launched
+        # run) may leave it flat while the probes sit in `.solver_scratch/<run_tag>/`. Search the resolver's dir
+        # AND the flat base AND every run subdir (isolated-first + fallback) so the reuse never misses the probe.
+        pdir = _pd(lean_root)
+        base = Path(lean_root) / ".solver_scratch"
+        search = [pdir, base] + (sorted(base.glob("*/"), key=lambda d: d.stat().st_mtime, reverse=True)[:12]
+                                 if base.exists() else [])
+        seen, cands = set(), []
+        for d in search:
+            # BOTH the broad name-substring glob AND the canonical `robust_probe_glob` — `robust_probe_name`
+            # TRUNCATES the target segment (`_probe_target_seg`), so a long target's RobustProbe file
+            # (`RobustProbe_quiescent…no_blockin_codex_0.lean`) is INVISIBLE to `*{full_target}*` and the agent's
+            # kernel-VALID refutation is silently discarded → falsify falls to a fresh skeptic that fails → the
+            # campaign grinds a FALSE statement. The forgotten-sibling class the canonical glob exists to kill
+            # ("route every reader through here"). RCA 2026-07-06 (gale capstone, 46-char target).
+            for _pat in (f"*{target_name}*.lean", _rpg(target_name)):
+                for pf in _glob.glob(str(Path(d) / _pat)):
+                    if pf not in seen:
+                        seen.add(pf); cands.append(pf)
+        cands = sorted(cands, key=lambda p: os.path.getmtime(p) if os.path.exists(p) else 0.0, reverse=True)
+    except Exception:  # noqa: BLE001
+        return False, "probe dir unreadable", ""
+    for pf in cands[:8]:
+        try:
+            txt = Path(pf).read_text(encoding="utf-8", errors="replace")
+        except Exception:  # noqa: BLE001
+            continue
+        has_refut = ("STATEMENT-FALSE" in txt) or bool(
+            re.search(r"(?m)^\s*(?:theorem|lemma|example)\s+\w*(?:false|counterexample|refut)\w*", txt, re.I))
+        # RESTATES the target: the agent names its refutation `not_<target>` / `<target>_false` / `target_false`,
+        # so the exact `theorem <target>` decl is often ABSENT — match the target name as a SUBSTRING (it appears in
+        # the negation decl / the restated statement). Sound: the probe must still be a sorry-free REFUTATION
+        # (has_refut) that COMPILES (below), and the reformulation re-gates faithfulness downstream.
+        restates = (target_name in txt)
+        if not (has_refut and restates) or _has_sorry(txt):
+            continue
+        if not _refutation_matches_current_goal(txt, target_name, current_gprop):
+            continue
+        # ROOT FIX (2026-07-05, the recurring-ghost class ONCE AND FOR ALL): verify the counterexample against the
+        # SUBSTRATE's REAL defs, NOT base Mathlib. A self-contained probe RE-DECLARES the theory (bestBid, Book,
+        # Uncrossed …), and those re-declarations can DIVERGE from the substrate in ANY dimension — a weaker
+        # typeclass ([LT K] vs [LinearOrder K] = the carrier ghost) OR a different def BODY (bestBid=head vs the
+        # substrate's max = the def ghost). Compiled against base Mathlib (env=None), the ¬G is validated against
+        # the PROBE's OWN (possibly weaker/wrong) defs → a counterexample that does NOT hold under the real theory
+        # gets "confirmed" → a bogus reformulation forever. Every prior fix (carrier_order_weakened) patched ONE
+        # divergence dimension; this closes the CLASS: STRIP the probe's re-declarations of substrate-provided
+        # decls and re-verify the ¬G against the SUBSTRATE env (which supplies the REAL defs). A head-based
+        # counterexample then FAILS (the substrate's max breaks its `Uncrossed initial` hypothesis) ⇒ not confirmed.
+        # Falls back to base Mathlib ONLY when no substrate is registered (parity for non-campaign use).
+        # DIVERGENCE GUARD (2026-07-05, the recurring falsify-ghost class, ONCE AND FOR ALL — NO env change, so the
+        # universe-false-reject cure `env=None` for self-contained probes stays fully intact). A self-contained
+        # probe RE-DECLARES the theory (to be checkable in base Mathlib). If it re-declares a SUBSTRATE def with a
+        # DIFFERENT body/signature — `bestBid=head` vs the substrate's `max`, `[LT K]` vs `[LinearOrder K]` — its
+        # counterexample is validated against a DIVERGENT theory, so a ghost that does NOT hold under the real
+        # substrate gets "confirmed" (the CLOB head-ghost + the carrier ghost are two faces of THIS). Pure-text,
+        # name-by-name: reject the reuse when the probe re-declares a shared def differently; an IDENTICAL
+        # (universe-poly) re-statement is NOT flagged, so no regression. Subsumes `carrier_order_weakened`.
+        try:
+            from ztare.formal.repl_compile import get_campaign_substrate as _gcs2
+            from ztare.leanmill.lean_source import substrate_infidelities as _sinf2
+            _sub2 = _gcs2()
+            if _sub2 and Path(_sub2).exists():
+                _div = _sinf2(txt, Path(_sub2).read_text(encoding="utf-8", errors="replace"))
+                if _div:
+                    continue   # divergence ghost — probe's theory ≠ substrate's; its ¬G refutes a DIFFERENT theory
+        except Exception:  # noqa: BLE001 — guard best-effort; a read failure must not suppress a genuine reuse
+            pass
+        r = _cpv(_spr(txt), str(lean_root), min(timeout_s, 180), reject_sorry=True, env=None)
+        if r is not None and bool(r[0]):   # compiled sorry-free (base Mathlib) AND non-divergent ⇒ a genuine ¬G
+            return True, f"reused agent's kernel-checked counterexample ({Path(pf).name}): {str(r[1])[:80]}", txt[:1400]
+    return False, "no reusable non-divergent agent refutation probe for this target", ""
+
+
+# ── SINGLE-DOOR refutation memo (2026-07-06, gale capstone — operator "single door, do it both"). The leaf can
+# KERNEL-CONFIRM ¬G (the statement-integrity gate in agentic_leaf) but that verdict was flattened to a TEXT tail
+# in `_agentic_leaf_warm_solve` and LOST — so solve_adhoc's epilogue rolled a FRESH re-verify that a carrier
+# ghost / an overwritten probe defeats, and the reformulation never fired though the leaf ALREADY saw the target
+# was false (gale: 3 verifiers gave 3 answers on the SAME target). Fix: `verify_statement_false_claim._gate` —
+# the ONE funnel every ¬G verdict already passes through — now REMEMBERS each SURVIVING confirmed refutation for
+# the run; every consumer reads the SAME memory instead of re-deriving it. Sound: we memoize only what `_gate`
+# already kernel-confirmed AND carrier-ghost-passed (never a bare claim); keyed on the goal so a later
+# STRENGTHENED statement (new goal, same name) never reuses the weak statement's ¬G.
+_CONFIRMED_REFUTATIONS: "dict[tuple, str]" = {}
+
+
+def _statement_identity(target_name: str, source_text: str, goal: str) -> str:
+    """Canonical statement identity for the memo key. The leaf re-forms its goal into `∀`-shape
+    (`_leaf_goal_from_source`) so the raw goal STRING differs between the leaf's verify and the epilogue's read —
+    key on the target's SIGNATURE recovered from source instead (goal-form-independent, and it CHANGES when the
+    statement is reformulated, so a strengthened statement never reuses the weak one's ¬G). Both sides read the
+    SAME source for the SAME target ⇒ identical key. Falls back to the normalized goal when no signature."""
+    try:
+        from ztare.leanmill.lean_source import extract_signature as _exsig
+        sig = (_exsig(source_text, target_name) or "").strip() if source_text else ""
+        if sig:
+            return " ".join(sig.split())
+    except Exception:  # noqa: BLE001 — signature recovery is best-effort; fall back to the goal
+        pass
+    return " ".join((goal or "").split())
+
+
+def current_statement_id(target_name: str, source_text: str, goal: str):
+    """Diagnostics carrier for the exact statement currently being adjudicated."""
+    from ztare.leanmill.control_plane import StatementId
+    return StatementId.from_parts(
+        target_name=target_name,
+        source_text=source_text or "",
+        closed_prop=_statement_identity(target_name, source_text, goal),
+    )
+
+
+def _refutation_key(target_name: str, source_text: str, goal: str) -> "tuple":
+    import os as _os
+    sid = current_statement_id(target_name, source_text, goal)
+    return (_os.environ.get("ZTARE_SOLVER_RUN_TAG", ""), target_name or "",
+            sid.closed_prop_norm, sid.closed_prop_hash)
+
+
+def _remember_refutation(target_name: str, source_text: str, goal: str, block: str) -> None:
+    if not (target_name and block):
+        return
+    try:
+        _CONFIRMED_REFUTATIONS[_refutation_key(target_name, source_text, goal)] = block
+    except Exception:  # noqa: BLE001 — the memo is an optimization; never break a verdict
+        pass
+
+
+def confirmed_refutation(target_name: str, source_text: str, goal: str) -> str:
+    """The kernel-confirmed ¬G refutation block for this statement recorded earlier THIS run by
+    `verify_statement_false_claim` — or "" if none. Lets solve_adhoc's epilogue honor the leaf's already-
+    kernel-checked verdict WITHOUT a fresh re-verify (which a carrier ghost or an overwritten probe defeats).
+    ZTARE_LEANMILL_REFUTATION_MEMO=0 reverts to the re-verify-only path."""
+    import os as _os
+    if _os.environ.get("ZTARE_LEANMILL_REFUTATION_MEMO", "1") == "0":
+        return ""
+    return _CONFIRMED_REFUTATIONS.get(_refutation_key(target_name, source_text, goal), "")
+
+
+def adjudicate_statement_false_verdict(target_name: str, source_text: str, goal: str,
+                                       confirmed: bool, detail: str, block: str,
+                                       *, provenance: str = "verify_statement_false_claim",
+                                       extra: "dict | None" = None) -> "tuple[bool, str, str]":
+    """Shared admission point for an already-kernel-checked `¬G` candidate.
+
+    Generation paths may differ, but the verdict side effects must not: apply the substrate-drift guard,
+    populate the in-process refutation memo, and emit the typed verdict telemetry. This helper does not compile
+    or prove anything; callers pass `confirmed=True` only after their own kernel gate has accepted the block."""
+    verdict = (bool(confirmed), detail or "", block or "")
+    if verdict[0] and verdict[2] and os.environ.get("ZTARE_LEANMILL_CARRIER_GHOST_GUARD", "1") != "0":
+        try:
+            from ztare.formal.repl_compile import get_campaign_substrate as _gcs
+            from ztare.leanmill.lean_source import substrate_infidelities as _sinf
+            _sub = _gcs()
+            _sub_src = Path(_sub).read_text(encoding="utf-8", errors="replace") if _sub and Path(_sub).exists() else ""
+            _weak = _sinf(verdict[2], _sub_src) if _sub_src else []
+            if _weak:
+                verdict = (False, f"substrate ghost — refutation drifts from the substrate ({_weak[0]}); it "
+                                  f"refutes a DIFFERENT theory, not the committed one (no reformulation)", "")
+        except Exception:  # noqa: BLE001 — the guard is best-effort; never suppress a refutation on a read error
+            pass
+    if verdict[0] and verdict[2]:
+        _remember_refutation(target_name, source_text, goal, verdict[2])
+    try:
+        from ztare.leanmill.control_plane import Verdict, VerdictKind
+        from ztare.leanmill.verdict_store import emit_verdict
+        emit_verdict(Verdict(
+            kind=VerdictKind.REFUTED if verdict[0] else VerdictKind.UNVERIFIED,
+            statement_id=current_statement_id(target_name, source_text, goal),
+            provenance=provenance,
+            detail=verdict[1],
+            artifacts={"refutation_block_sha256": __import__("hashlib").sha256(
+                (verdict[2] or "").encode("utf-8")).hexdigest() if verdict[2] else ""},
+        ), extra={"target_name": target_name or "", "has_refutation_block": bool(verdict[2]), **(extra or {})})
+    except Exception:  # noqa: BLE001 — telemetry must never affect the falsify verdict
+        pass
+    return verdict
+
+
 def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
-                                 lean_root: Path, timeout_s: int) -> "tuple[bool, str, str]":
+                                 lean_root: Path, timeout_s: int, nugget: str = "") -> "tuple[bool, str, str]":
     """GATE a SOFT `-- STATEMENT-FALSE:` leaf CLAIM at the soundness boundary. The engine's rule is that ONLY
     a kernel-checked ¬G is a refutation verdict (a code comment is the agent's hypothesis, not a verdict);
     accepting a bare claim let the v7 leaf escape a TRUE, tractable lemma with a bogus counterexample (one
@@ -496,10 +793,26 @@ def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
     The PREAMBLE for the cold fallback is the source prelude up to the target (so a ¬G that needs the campaign
     defs can still elaborate when no warm env is available); on the warm path the env already holds them."""
     row = {"target_theorem_name": target_name}
-    # GOAL RECOVERY: the decomposition path (`solve_decomposition`) calls `solve_adhoc(lname, src, "")` with an
-    # EMPTY goal — the statement lives only in `source_text`. Without this, `falsify_generate` would build ¬G
-    # from "" and bail, so a confirmed-false PLANNER sub-lemma (iso_lemma1: the bare ∀ that DROPPED the parent's
-    # denominator-unit hypothesis) would never verify. Recover the verbatim signature for the named target.
+
+    def _gate(confirmed: bool, detail: str, block: str) -> "tuple[bool, str, str]":
+        """THE SINGLE DOOR for a ¬G verdict (2026-07-04, CLOB carrier-ghost). WHATEVER path confirmed the
+        falsification — the reuse of the leaf's own probe, the warm skeptic, the cold skeptic, or any future
+        producer — its refutation block flows through here before it counts as a refutation. Reject a CARRIER
+        GHOST: a probe that re-declares a substrate carrier with a STRICTLY WEAKER order class (`[LT K][LE K]`
+        where the substrate has `[LinearOrder K]`) refutes a WEAKER theory than the one committed to — its
+        degenerate `≤` (e.g. always-false) is impossible under the real instance, so the 'counterexample' does
+        NOT refute the substrate statement and must never drive a reformulation. One check, every path; a genuine
+        counterexample keeping the real order passes clean. Fail-safe: a substrate/read error never suppresses a
+        real refutation. ZTARE_LEANMILL_CARRIER_GHOST_GUARD=0 reverts.
+
+        Every SURVIVING confirmed verdict is also REMEMBERED for the run (`_remember_refutation`), so a downstream
+        consumer (solve_adhoc's epilogue) honors the leaf's kernel verdict without a fresh re-verify that a ghost
+        or an overwritten probe would defeat — the single door from 'the leaf saw it's false' to reformulation."""
+        return adjudicate_statement_false_verdict(
+            target_name, source_text, goal, confirmed, detail, block,
+            provenance="verify_statement_false_claim")
+    # GOAL RECOVERY: every falsification path, including probe reuse, must adjudicate THIS statement.
+    # A stale probe for an earlier same-name theorem is only reusable when it negates this closed Prop.
     goal = (goal or "").strip()
     if not goal and source_text and target_name:
         try:
@@ -509,6 +822,13 @@ def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
             goal = ""
         if not goal:
             return False, "could not recover the target signature from source (empty goal)", ""
+    # REUSE-FIRST (the recovery-never-fires fix): before dispatching a FRESH skeptic that may fail to reproduce a
+    # complex counterexample (the CLOB/EF1 deadlock), re-verify the agent's OWN sorry-free STATEMENT-FALSE probe —
+    # it already PROVED ¬G. Kernel-checked reuse, no re-derivation ⇒ the recovery fires fast. Falls through to the
+    # skeptic below when no reusable probe exists (behaviour-preserving for every prior shape).
+    _reuse = _reverify_agent_refutation(target_name, lean_root, timeout_s, source_text=source_text, goal=goal)
+    if _reuse[0]:
+        return _gate(*_reuse)
     # cold-path preamble: the source up to (but excluding) the target decl — the defs/structures the ¬G needs.
     # Match `theorem|lemma|example <name>` (not just `theorem`), so a `lemma`-declared target still gets its
     # prelude on the cold path (the warm campaign env already holds the defs, so this only matters cold).
@@ -518,7 +838,21 @@ def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
                        r"(?:theorem|lemma|example)\s+" + re.escape(target_name) + r"\b", source_text)
         if _m:
             preamble = source_text[:_m.start()].strip()
-    refute_block, fname, gprop, tail = falsify_generate(row, goal, lean_root, timeout_s, preamble=preamble)
+    # NUGGET reuse (CEGAR): seed the skeptic with the counterexample INSIGHT so it ADAPTS the known crux to OUR
+    # goal instead of re-deriving from scratch (the CLOB deadlock: the leaf found a hard ULift counterexample the
+    # throwaway fresh skeptic could not reproduce → recovery never fired). Sources, in order: (a) the caller's
+    # `nugget` (the CURRENT leaf's own probe insight — breaks the first-confirmation deadlock); (b) the RECYCLED
+    # witness from `no_good_store`'s `statement_false` no-good for this exact statement (the CEGIS no-good clause
+    # we already persist — reused across attempts/runs). Sound: the skeptic still proves ¬(OUR goal), kernel-checked.
+    _seed = (nugget or "").strip()
+    if not _seed:
+        try:
+            from ztare.leanmill.solver.no_good_store import NoGoodStore as _NGS
+            from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
+            _seed = (_NGS(_OUT / "solver_lane_no_good_store.jsonl").statement_false_witness(goal) or "").strip()
+        except Exception:  # noqa: BLE001 — the nugget is advisory; never block the refutation on a store read
+            _seed = ""
+    refute_block, fname, gprop, tail = falsify_generate(row, goal, lean_root, timeout_s, preamble=preamble, nugget=_seed)
     if not refute_block:
         return False, f"no ¬G produced (honest non-refutation): {(tail or '')[:160]}", ""
     if _has_sorry(refute_block):
@@ -537,11 +871,11 @@ def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
                                            _budget("warm_repl_ceiling"), env=_env)
                 if _wv is not None:
                     ok, diag = _wv
-                    return bool(ok), f"warm-¬G: {diag}", (refute_block if ok else "")
+                    return _gate(bool(ok), f"warm-¬G: {diag}", (refute_block if ok else ""))
     except Exception:  # noqa: BLE001 — warm verify is best-effort; fall through to the cold kernel gate
         pass
     genuine, why = falsification_is_genuine(refute_block, fname, gprop, lean_root, timeout_s, preamble=preamble)
-    return bool(genuine), f"cold-¬G: {why}", (refute_block if genuine else "")
+    return _gate(bool(genuine), f"cold-¬G: {why}", (refute_block if genuine else ""))
 
 
 def statement_false_rejection_feedback(claim: str, why: str) -> str:
@@ -842,6 +1176,17 @@ def _selftest() -> int:
     # the OLD regex bug, asserted dead: it would have produced an unbalanced "(n : True := by sorry"
     ok("useless: no unbalanced paren (old bug dead)", "(n : True" not in u)
 
+    # GOAL_HEAD: the PROOF exemplar must restate the GOAL theorem, not a helper `abbrev/def := …` that
+    # precedes it (CLOB regression: first depth-0 `:=` landed on `abbrev betterPrice`, not the target).
+    _blob = ("def betterPrice : Side → Prop\n  | .bid => True\n\n"
+             "abbrev betterPrice2 : Prop := True\n\n"
+             "theorem tgt : (∀ x ∈ ([] : List Nat), x = x) := by")
+    _gh = _goal_head_for_exemplar(_blob)
+    ok("goal_head: picks the goal theorem, not the preceding helper `:=`",
+       _gh.startswith("theorem tgt") and ":=" not in _gh and "betterPrice" not in _gh)
+    ok("goal_head: single-decl unchanged",
+       _goal_head_for_exemplar("theorem t (n : ℕ) : P n := by").strip() == "theorem t (n : ℕ) : P n")
+
     # METRIC: circularity = L's conclusion equals the goal's conclusion (verbatim / α / whitespace).
     ok("conclusion extraction", _lemma_conclusion("theorem c (n : ℕ) : Good n := by sorry") == "Good n")
     goal_concl = "Good n"
@@ -916,6 +1261,29 @@ def _selftest() -> int:
     # and it routes through the SAME falsification_is_genuine gate (a sorry'd leg is already rejected above).
     ok("corroborate: LeanConsequenceCorroborator IS-A LeanFalsifier (reuses invert+adjudicate gate)",
        issubclass(LeanConsequenceCorroborator, LeanFalsifier))
+
+    # SINGLE-DOOR refutation memo (2026-07-06, gale): the leaf's kernel-confirmed ¬G must reach the epilogue
+    # even though the leaf re-forms its goal to ∀-shape while the epilogue reads the base goal. Key on the
+    # SIGNATURE recovered from source ⇒ both resolve to the SAME key for the SAME statement.
+    import os as _os_st
+    _os_st.environ["ZTARE_SOLVER_RUN_TAG"] = "memo_selftest"
+    _CONFIRMED_REFUTATIONS.clear()
+    _src_st = ("def BlockingPair (m w) : Prop := True\n\n"
+               "theorem cap (m w : Nat) (h : P m) : ∀ x, ¬ BlockingPair m x := by sorry")
+    _leaf_goal = "∀ (m w : Nat) (h : P m), ∀ x, ¬ BlockingPair m x"   # leaf's ∀-reconstructed form
+    _epi_goal = "∀ x, ¬ BlockingPair m x"                             # epilogue's base (post-colon) form
+    _remember_refutation("cap", _src_st, _leaf_goal, "theorem cap_cex : ¬ (…) := by decide")
+    ok("memo: leaf ∀-goal write is READ under the epilogue's base goal (signature-keyed, not goal-string)",
+       confirmed_refutation("cap", _src_st, _epi_goal).startswith("theorem cap_cex"))
+    ok("memo: a DIFFERENT (reformulated) statement misses — no stale ¬G reuse",
+       confirmed_refutation("cap", _src_st.replace("∀ x, ¬ BlockingPair m x",
+                                                   "(hc : ∀ x, x ∈ full m) → ∀ x, ¬ BlockingPair m x"), _epi_goal) == "")
+    _os_st.environ["ZTARE_LEANMILL_REFUTATION_MEMO"] = "0"
+    ok("memo: kill-switch reverts to re-verify-only ('' regardless of a recorded verdict)",
+       confirmed_refutation("cap", _src_st, _epi_goal) == "")
+    _os_st.environ.pop("ZTARE_LEANMILL_REFUTATION_MEMO", None)
+    _CONFIRMED_REFUTATIONS.clear()
+    _os_st.environ.pop("ZTARE_SOLVER_RUN_TAG", None)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED {fails}")
     return 1 if fails else 0

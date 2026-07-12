@@ -46,9 +46,22 @@ external compute, fail-closed). The kernel gate is the v33 `_compile_probe`
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
 import os
 import re
 from pathlib import Path
+import time
+from typing import Any, Callable, Mapping, Sequence
+
+from ztare.leanmill.theory_ir import (
+    AxiomFormula,
+    Formula,
+    Term,
+    TheorySignature,
+    content_hash,
+    validate_axiom,
+    validate_axioms,
+)
 
 # ── 0. Server config / fail-closed ─────────────────────────────────────────────────────────────────
 _SERVER_ENV = "ZTARE_ISABELLE_SERVER"
@@ -319,6 +332,351 @@ def verify_isabelle(theory_text: str, *, timeout_s: int = 120, server=None) -> "
     if not server_ok:
         return False, f"isabelle checker: server reported not-ok: {output[-600:] or '(no output)'}"
     return True, f"isabelle accepted the theory: {output[-300:] or 'clean build, no errors'}"
+
+
+# ── 2c. Typed Theory IR → Isabelle/HOL peer proof ────────────────────────────────────────────────────────────
+# AxiomPack already owns a typed many-sorted first-order IR.  Translating its
+# conditional target through Lean source would discard that structure and hit
+# lean_to_isabelle's deliberately narrow custom-type rejection.  This renderer
+# starts from Theory IR instead: sorts become HOL type variables and every
+# operation/relation symbol is universally quantified.  Isabelle therefore
+# proves exactly `(base ∧ candidate premises) ⟶ target`, with no named theory
+# library and no extra global assumption.
+
+
+@dataclass(frozen=True)
+class IsabelleTheoryTask:
+    task_id: str
+    statement: str
+    theory_name: str
+    signature_hash: str
+    base_hashes: tuple[str, ...]
+    premise_hashes: tuple[str, ...]
+    target_hash: str
+    translation_map: Mapping[str, Any]
+    schema: str = "leanmill.isabelle_theory_task.v1"
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "schema": self.schema,
+            "task_id": self.task_id,
+            "statement": self.statement,
+            "theory_name": self.theory_name,
+            "signature_hash": self.signature_hash,
+            "base_hashes": list(self.base_hashes),
+            "premise_hashes": list(self.premise_hashes),
+            "target_hash": self.target_hash,
+            "translation_map": dict(self.translation_map),
+        }
+
+    def theory_with_proof(self, proof: str) -> str:
+        return (
+            f"theory {self.theory_name}\n"
+            "imports Main\n"
+            "begin\n\n"
+            f"lemma axiompack_goal: \"{self.statement}\"\n"
+            f"  {proof.strip()}\n\n"
+            "end\n"
+        )
+
+
+@dataclass(frozen=True)
+class IsabelleTheoryAttempt:
+    task_id: str
+    status: str
+    proof_text: str
+    kernel_checked: bool
+    transport_calls: int
+    elapsed_ms: int
+    diagnostics: str
+    schema: str = "leanmill.isabelle_theory_attempt.v1"
+
+    def to_json(self) -> dict[str, Any]:
+        core = {
+            "schema": self.schema,
+            "task_id": self.task_id,
+            "status": self.status,
+            "proof_text": self.proof_text,
+            "kernel_checked": self.kernel_checked,
+            "transport_calls": self.transport_calls,
+            "elapsed_ms": self.elapsed_ms,
+            "diagnostics": self.diagnostics,
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
+
+def _isabelle_type(
+    arg_sorts: Sequence[str],
+    result_sort: str | None,
+    sort_names: Mapping[str, str],
+) -> str:
+    pieces = [sort_names[name] for name in arg_sorts]
+    pieces.append(sort_names[result_sort] if result_sort is not None else "bool")
+    return " \\<Rightarrow> ".join(pieces)
+
+
+def _render_theory_ir_formula(
+    formula: Formula,
+    *,
+    operation_names: Mapping[str, str],
+    relation_names: Mapping[str, str],
+    sort_names: Mapping[str, str],
+) -> str:
+    counter = [0]
+
+    def term(value: Term, env: Mapping[str, str]) -> str:
+        if value.kind == "var":
+            return env[value.name]
+        head = operation_names[value.name]
+        if not value.args:
+            return head
+        return f"({head} {' '.join(term(arg, env) for arg in value.args)})"
+
+    def render(value: Formula, env: Mapping[str, str]) -> str:
+        kind = value.kind
+        if kind == "true":
+            return "True"
+        if kind == "false":
+            return "False"
+        if kind == "eq":
+            return f"({term(value.terms[0], env)} = {term(value.terms[1], env)})"
+        if kind == "rel":
+            head = relation_names[str(value.relation)]
+            if not value.terms:
+                return head
+            return f"({head} {' '.join(term(item, env) for item in value.terms)})"
+        if kind == "not":
+            return f"(\\<not> ({render(value.formulas[0], env)}))"
+        if kind in {"and", "or"}:
+            connective = "\\<and>" if kind == "and" else "\\<or>"
+            items = [render(item, env) for item in value.formulas]
+            result = items[0]
+            for item in items[1:]:
+                result = f"(({result}) {connective} ({item}))"
+            return result
+        if kind in {"implies", "iff"}:
+            connective = "\\<longrightarrow>" if kind == "implies" else "\\<longleftrightarrow>"
+            left = render(value.formulas[0], env)
+            right = render(value.formulas[1], env)
+            return f"(({left}) {connective} ({right}))"
+        local = dict(env)
+        binders: list[tuple[str, str]] = []
+        for binder in value.binders:
+            name = f"x{counter[0]}"
+            counter[0] += 1
+            local[binder.name] = name
+            binders.append((name, sort_names[binder.sort]))
+        body = render(value.formulas[0], local)
+        quantifier = "\\<forall>" if kind == "forall" else "\\<exists>"
+        for name, sort_name in reversed(binders):
+            body = f"({quantifier}{name}::{sort_name}. {body})"
+        return body
+
+    return render(formula, {})
+
+
+def render_theory_implication_to_isabelle(
+    signature: TheorySignature,
+    premises: Sequence[AxiomFormula],
+    target: AxiomFormula,
+    *,
+    base_axioms: Sequence[AxiomFormula] = (),
+) -> IsabelleTheoryTask:
+    """Render a closed, signature-generic HOL implication from typed Theory IR."""
+
+    base = tuple(sorted(base_axioms, key=lambda row: row.semantic_hash))
+    candidates = tuple(sorted(premises, key=lambda row: row.semantic_hash))
+    validate_axioms(signature, (*base, *candidates))
+    validate_axiom(signature, target)
+
+    sort_names = {row.name: f"'s{index}" for index, row in enumerate(signature.sorts)}
+    operation_names = {
+        row.name: f"f{index}" for index, row in enumerate(signature.operations)
+    }
+    relation_names = {
+        row.name: f"r{index}" for index, row in enumerate(signature.relations)
+    }
+    render = lambda axiom: _render_theory_ir_formula(  # noqa: E731 - compact closed renderer binding
+        axiom.formula,
+        operation_names=operation_names,
+        relation_names=relation_names,
+        sort_names=sort_names,
+    )
+    assumptions = [render(row) for row in (*base, *candidates)]
+    conclusion = render(target)
+    if assumptions:
+        antecedent = assumptions[0]
+        for assumption in assumptions[1:]:
+            antecedent = f"(({antecedent}) \\<and> ({assumption}))"
+        statement = f"(({antecedent}) \\<longrightarrow> ({conclusion}))"
+    else:
+        statement = conclusion
+
+    symbol_binders: list[tuple[str, str]] = []
+    for operation in signature.operations:
+        symbol_binders.append(
+            (
+                operation_names[operation.name],
+                _isabelle_type(operation.arg_sorts, operation.result_sort, sort_names),
+            )
+        )
+    for relation in signature.relations:
+        symbol_binders.append(
+            (
+                relation_names[relation.name],
+                _isabelle_type(relation.arg_sorts, None, sort_names),
+            )
+        )
+    for name, typ in reversed(symbol_binders):
+        statement = f"(\\<forall>{name}::({typ}). {statement})"
+
+    identity = {
+        "signature_hash": signature.content_hash,
+        "base_hashes": [row.semantic_hash for row in base],
+        "premise_hashes": [row.semantic_hash for row in candidates],
+        "target_hash": target.semantic_hash,
+        "statement": statement,
+    }
+    digest = content_hash(identity).split(":")[-1]
+    return IsabelleTheoryTask(
+        task_id="isabelle-theory:" + content_hash(identity),
+        statement=statement,
+        theory_name="AxiomPackPeer_" + digest[:16],
+        signature_hash=signature.content_hash,
+        base_hashes=tuple(row.semantic_hash for row in base),
+        premise_hashes=tuple(row.semantic_hash for row in candidates),
+        target_hash=target.semantic_hash,
+        translation_map={
+            "sorts": sort_names,
+            "operations": operation_names,
+            "relations": relation_names,
+        },
+    )
+
+
+HammerFn = Callable[..., Mapping[str, Any] | None]
+VerifyFn = Callable[..., tuple[bool, str]]
+
+
+def execute_isabelle_theory_task(
+    task: IsabelleTheoryTask,
+    *,
+    timeout_s: int = 120,
+    hammer_fn: HammerFn | None = None,
+    verify_fn: VerifyFn | None = None,
+    availability_fn: Callable[[], bool] | None = None,
+) -> IsabelleTheoryAttempt:
+    """Ask Sledgehammer for a proof, then rebuild it within one total wall cap."""
+
+    started = time.monotonic_ns()
+    using_live_transport = hammer_fn is None
+    hammer = hammer_fn or run_sledgehammer
+    verify = verify_fn or verify_isabelle
+    available = availability_fn or isabelle_hammer_live
+    if using_live_transport and not available():
+        return IsabelleTheoryAttempt(
+            task.task_id,
+            "unavailable",
+            "",
+            False,
+            0,
+            (time.monotonic_ns() - started) // 1_000_000,
+            "no live Isabelle server",
+        )
+    hammer_timeout_s = (
+        max(1, (int(timeout_s) - 60) // 2)
+        if using_live_transport
+        else int(timeout_s)
+    )
+    response = hammer(
+        "",
+        timeout_s=hammer_timeout_s,
+        statement=task.statement,
+        imports="Main",
+    )
+    elapsed = lambda: (time.monotonic_ns() - started) // 1_000_000
+    if response is None:
+        return IsabelleTheoryAttempt(
+            task.task_id, "unavailable", "", False, 1, elapsed(), "sledgehammer transport unavailable"
+        )
+    proof = str(response.get("proof") or "").strip()
+    if not proof:
+        return IsabelleTheoryAttempt(
+            task.task_id, "unresolved", "", False, 1, elapsed(), "sledgehammer found no proof"
+        )
+    if (
+        not proof.startswith("by ")
+        or "\n" in proof
+        or "\r" in proof
+        or _ISABELLE_CHEAT_RE.search(proof)
+    ):
+        return IsabelleTheoryAttempt(
+            task.task_id,
+            "invalid",
+            proof,
+            False,
+            1,
+            elapsed(),
+            "sledgehammer returned a non-admissible proof line",
+        )
+    verify_timeout_s = int(timeout_s)
+    if using_live_transport:
+        remaining_s = int(timeout_s) - (elapsed() + 999) // 1_000
+        if remaining_s <= 30:
+            return IsabelleTheoryAttempt(
+                task.task_id,
+                "unresolved",
+                proof,
+                False,
+                1,
+                elapsed(),
+                "formal-peer wall budget exhausted before Isabelle rebuild",
+            )
+        verify_timeout_s = max(1, remaining_s - 30)
+    ok, diagnostics = verify(
+        task.theory_with_proof(proof), timeout_s=verify_timeout_s
+    )
+    status = "proved" if ok else (
+        "unavailable"
+        if "unavailable" in diagnostics.lower() or "transport/exception" in diagnostics.lower()
+        else "verification_failed"
+    )
+    return IsabelleTheoryAttempt(
+        task.task_id,
+        status,
+        proof,
+        bool(ok),
+        2,
+        elapsed(),
+        diagnostics[-600:],
+    )
+
+
+def live_isabelle_theory_smoke() -> IsabelleTheoryAttempt:
+    """Exercise the complete typed-IR → Sledgehammer → Isabelle-build path."""
+
+    from ztare.leanmill.theory_ir import Binder, OperationSymbol, SortDecl
+
+    signature = TheorySignature(
+        "IsabelleSmokeSignature",
+        sorts=(SortDecl("S"),),
+        operations=(OperationSymbol("step", ("S",), "S"),),
+    )
+    x = Term.var("x")
+    step = lambda value: Term.app("step", value)
+    premise = AxiomFormula(
+        "involution",
+        Formula.forall((Binder("x", "S"),), Formula.eq(step(step(x)), x)),
+    )
+    target = AxiomFormula(
+        "four_steps",
+        Formula.forall(
+            (Binder("x", "S"),),
+            Formula.eq(step(step(step(step(x)))), x),
+        ),
+    )
+    task = render_theory_implication_to_isabelle(signature, (premise,), target)
+    return execute_isabelle_theory_task(task, timeout_s=120)
 
 
 def _http_verify_isabelle(theory_text: str, timeout_s: int) -> "dict":
@@ -780,4 +1138,10 @@ def _selftest() -> int:
 
 if __name__ == "__main__":
     import sys
+    if sys.argv[1:] == ["--live-theory-smoke"]:
+        import json
+
+        _attempt = live_isabelle_theory_smoke()
+        print(json.dumps(_attempt.to_json(), sort_keys=True))
+        sys.exit(0 if _attempt.status == "proved" else 1)
     sys.exit(_selftest())

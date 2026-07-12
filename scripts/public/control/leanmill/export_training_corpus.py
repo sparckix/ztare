@@ -262,7 +262,10 @@ def faithfulness_discriminator_rows(nogood: "list[dict]") -> "list[dict]":
 
 
 def export(repo: Path, out: "Path | None" = None, void_only: bool = False, all_time: bool = False,
-           dedup_near: bool = True) -> dict:
+           dedup_near: bool = False) -> dict:   # REVERTED 2026-07-02 (Gemini review B): the token-Jaccard second pass
+    # DROPS logically-DISTINCT-but-textually-close pairs — `[Semiring F]`→`[Field F]`, a one-token change that FLIPS
+    # the proof strategy — which are the HIGHEST-signal examples in formal math (~30% of near-misses discarded). The
+    # α-equivalence `_akey` already removes genuine logical duplicates; Jaccard on top is a net LOSS. Default-OFF.
     out = out or (repo / OUT_REL)
     out.mkdir(parents=True, exist_ok=True)
     certs = _read_jsonl(repo / CERTS_REL)
@@ -298,9 +301,11 @@ def main(argv=None) -> int:
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--void-only", action="store_true", help="keep only theory-built (not-in-Mathlib) statements")
     ap.add_argument("--all-time", action="store_true", help="include pre-clean-regime closures (default: forward-looking only)")
-    ap.add_argument("--no-dedup-near", action="store_true", help="keep near-duplicate reformulations (default: curate for diversity)")
+    ap.add_argument("--dedup-near", action="store_true",
+                    help="OPT-IN to the token-Jaccard second-pass dedup (default OFF — it drops high-signal "
+                         "logically-distinct-but-textually-close pairs; α-key dedup is the correct default)")
     args = ap.parse_args(argv)
-    m = export(REPO, args.out, void_only=args.void_only, all_time=args.all_time, dedup_near=not args.no_dedup_near)
+    m = export(REPO, args.out, void_only=args.void_only, all_time=args.all_time, dedup_near=args.dedup_near)
     print(json.dumps(m, indent=2))
     return 0
 

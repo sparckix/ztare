@@ -35,6 +35,9 @@ assignment). Two guards make a recorded no-good unable to suppress a genuinely-c
 from __future__ import annotations
 import json
 from pathlib import Path
+import re
+
+from ztare.common.conflict_ledger import ConflictClause, ConflictLedger
 
 # REUSE the canonical key (decl-name- + whitespace-agnostic, equiv-flag-aware) — do NOT duplicate the
 # normalizer; the no-good must hit on the SAME key the proof cache uses, so a refuted statement and its
@@ -57,6 +60,42 @@ FAILURE_CLASSES = (
     #                              reformalization against a refuted rendering (2026-06-23, the single ledger).
     "other",
 )
+
+
+def _target_name_from_statement(statement: str) -> str:
+    m = re.search(r"(?m)^\s*(?:theorem|lemma|example)\s+([A-Za-z_][\w'.]*)", statement or "")
+    return m.group(1) if m else ""
+
+
+def _emit_no_good_verdict(statement: str, failure_class: str, witness: str, *, source: str = "") -> None:
+    try:
+        from ztare.leanmill.control_plane import StatementId, Verdict, VerdictKind
+        from ztare.leanmill.verdict_store import emit_verdict
+        emit_verdict(Verdict(
+            kind=(VerdictKind.REFUTED if failure_class == "statement_false"
+                  else VerdictKind.REJECTED_BY_GOVERNANCE),
+            statement_id=StatementId.from_parts(
+                target_name=_target_name_from_statement(statement),
+                source_text=statement,
+                closed_prop=normalize_statement(statement),
+            ),
+            provenance="no_good_store.confirmed_no_good",
+            detail=(witness or "")[:600],
+        ), extra={"source": source or "", "failure_class": failure_class})
+    except Exception:  # noqa: BLE001 - telemetry must never affect no-good recording
+        pass
+
+
+def _statement_id_json(statement: str) -> dict:
+    try:
+        from ztare.leanmill.control_plane import StatementId
+        return StatementId.from_parts(
+            target_name=_target_name_from_statement(statement),
+            source_text=statement,
+            closed_prop=normalize_statement(statement),
+        ).to_json()
+    except Exception:  # noqa: BLE001 - legacy key remains authoritative
+        return {}
 
 
 def failure_class_of(witness: str) -> str:
@@ -130,12 +169,70 @@ class NoGoodStore:
         fc = failure_class if failure_class in FAILURE_CLASSES else failure_class_of(witness)
         rec = {"key": key, "statement": statement.strip(), "failure_class": fc,
                "witness": witness.strip(), "source": source}
+        sid = _statement_id_json(statement)
+        if sid:
+            rec["statement_id"] = sid
         if not self._index(rec):
             return False
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(rec) + "\n")
+        # Shared fact logs can be written by several campaign workers.  The
+        # in-memory dedupe is local; the locked append is the cross-process
+        # integrity boundary, with convergence handling duplicate facts later.
+        from ztare.leanmill.common import append_jsonl_locked
+        append_jsonl_locked(self.path, rec)
+        _emit_no_good_verdict(statement, fc, witness, source=source)
         return True
+
+    def learn(self, conflict_receipt) -> ConflictClause:
+        statement = str((conflict_receipt or {}).get("statement") or (conflict_receipt or {}).get("candidate_signature") or "")
+        failure_class = str((conflict_receipt or {}).get("failure_class") or "other")
+        witness = str((conflict_receipt or {}).get("witness_summary") or (conflict_receipt or {}).get("witness") or "")
+        source = str((conflict_receipt or {}).get("source") or "")
+        self.record(statement, failure_class, witness, confirmed=True, source=source)
+        return ConflictClause(
+            signature=_key_for(statement),
+            receipts_refs=tuple(str(x) for x in (conflict_receipt or {}).get("receipts_refs", ()) if str(x).strip()),
+            witness_summary=witness,
+            provenance=(conflict_receipt or {}).get("provenance", "no_good_store.confirmed_no_good"),
+            defeasible=bool((conflict_receipt or {}).get("defeasible", False)),
+        )
+
+    def blocks(self, candidate_signature: str) -> "ConflictClause | None":
+        hits = self.matches(candidate_signature)
+        if not hits:
+            return None
+        h = hits[-1]
+        return ConflictClause(
+            signature=_key_for(candidate_signature),
+            receipts_refs=tuple(),
+            witness_summary=h.get("witness", ""),
+            provenance=h.get("source") or "no_good_store.confirmed_no_good",
+            defeasible=h.get("failure_class") != "statement_false",
+        )
+
+    def revive(self, evidence_card):
+        if isinstance(evidence_card, dict) and evidence_card.get("statement"):
+            return self.record(
+                evidence_card["statement"],
+                str(evidence_card.get("failure_class") or "other"),
+                str(evidence_card.get("witness") or evidence_card.get("witness_summary") or ""),
+                confirmed=bool(evidence_card.get("confirmed", True)),
+                source=str(evidence_card.get("source") or ""),
+            )
+        return evidence_card
+
+    def open_clauses(self) -> list[ConflictClause]:
+        out: list[ConflictClause] = []
+        for recs in self._mem.values():
+            for rec in recs:
+                out.append(ConflictClause(
+                    signature=rec.get("key", ""),
+                    receipts_refs=tuple(),
+                    witness_summary=rec.get("witness", ""),
+                    provenance=rec.get("source") or "no_good_store.confirmed_no_good",
+                    defeasible=rec.get("failure_class") != "statement_false",
+                ))
+        return out
 
     def record_integrity_verdict(self, statement: str, verdict, *, source: str = "") -> int:
         """Adapter — turn a FAILED `statement_integrity.IntegrityVerdict` into no-goods. The integrity
@@ -167,6 +264,17 @@ class NoGoodStore:
         ledger + one canonical key, no parallel surface. Keys only (the consumer just needs membership)."""
         return {k for k, recs in self._mem.items()
                 if any(r.get("failure_class") == "statement_false" for r in recs)}
+
+    def statement_false_witness(self, statement: str) -> str:
+        """READ-side: the recorded `statement_false` WITNESS (the counterexample NUGGET) for this statement, or "".
+        The CEGIS/CDCL no-good clause RECYCLED as a refutation seed: `conjecture.falsify_generate`'s `nugget`
+        reads this so a re-attempt/re-run of the SAME goal (canonical `_key_for`) ADAPTS the known crux instead of
+        re-deriving it from scratch. Advisory only — the skeptic still proves ¬(OUR goal) and the kernel re-checks
+        it, so a stale witness merely fails to help. Most-recently recorded witness wins."""
+        from ztare.leanmill.solver.proof_cache import _key_for
+        recs = [r for r in self._mem.get(_key_for(statement), [])
+                if r.get("failure_class") == "statement_false" and (r.get("witness") or "").strip()]
+        return (recs[-1].get("witness") or "") if recs else ""
 
     def prompt_block(self, statement: str, max_items: int = 4) -> str:
         """READ-side: render the recorded no-goods as a leaf-prompt block. Empty string if none — so a

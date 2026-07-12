@@ -1,0 +1,408 @@
+{
+  "context_epoch": 0,
+  "context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+  "formula_requests": [
+    {
+      "lineage_id": "theory-lineage:54fb98666a4cff621eb624bb4ab8a6464535e1bdbbcbdd4fc1948b9a4116f728",
+      "proposal": {
+        "contrast_refinement": {
+          "authority": "exact_host_evaluation",
+          "claim_boundary": "the proposed formula has a truth profile absent from every current formula in this finite context",
+          "context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+          "object_ids": [
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd",
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef"
+          ],
+          "truth_values": {
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd": false,
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef": true
+          }
+        },
+        "formula_id": "formula:6bc519d0c1500bb1719d278b2ccf15d7fc3b927cdca809597206e886009409c3",
+        "navigator_rationale": "The selected same-stratum objects agree on all current formulas but differ on this compositional law: direct table evaluation indicates failure in the first object and satisfaction in the second. This tests a signature-preserving binary-operation coordinate distinct from a unary fixed-point profile.",
+        "schema": "leanmill.frontier_formula_epoch_request.v1",
+        "source_context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+        "source_epoch": 0,
+        "typed_axiom_proposal": {
+          "axiom": {
+            "formula": {
+              "binders": [
+                {
+                  "name": "x",
+                  "sort": "S0"
+                },
+                {
+                  "name": "y",
+                  "sort": "S0"
+                }
+              ],
+              "body": {
+                "kind": "eq",
+                "left": {
+                  "args": [
+                    {
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    {
+                      "args": [
+                        {
+                          "kind": "var",
+                          "name": "x"
+                        },
+                        {
+                          "kind": "var",
+                          "name": "y"
+                        }
+                      ],
+                      "kind": "app",
+                      "symbol": "op0"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op0"
+                },
+                "right": {
+                  "args": [
+                    {
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    {
+                      "kind": "var",
+                      "name": "y"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op1"
+                }
+              },
+              "kind": "forall"
+            },
+            "name": "op0_square_equals_op1",
+            "schema": "leanmill.axiom_formula.v1"
+          },
+          "axiom_sha256": "41c96fa60b264dd5e185a932f688747f275905995163161aef51677735f934cd",
+          "kill_condition": "Kill if the formula fails to separate the contrast pair, duplicates an existing semantic profile, or merely recovers the prior fixed-point coordinate.",
+          "nl_intent": "For every x and y, applying the x-indexed op_0 translation twice equals the corresponding op_1 action.",
+          "schema": "leanmill.typed_axiom_proposal.v1",
+          "source_conjecture_sha256": "88e2818ed1e11e0f6cc190f6e9404e3b9365dfa256412cb6e0e9ce584425d64c",
+          "theory_signature": {
+            "name": "AnonymousBinaryDivisionDiagonal",
+            "operations": [
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op0",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op1",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0"
+                ],
+                "name": "op2",
+                "result_sort": "S0"
+              }
+            ],
+            "relations": [],
+            "schema": "leanmill.theory_signature.v1",
+            "sorts": [
+              {
+                "name": "S0"
+              }
+            ]
+          },
+          "theory_signature_sha256": "6ebe89c813e8d4135fd1352e1fd957a0060d981b53e3cde421fc4e09f5dece58"
+        },
+        "typed_proposal_sha256": "82528e465696d0f5232dcaac413e8d518d211addd9a361b671ff8cc0fb2300d0",
+        "workbench_receipt_id": "sha256:7a056b550834bdf6a84d6534109c74563a31b880e83f2d76f73032111654672d"
+      },
+      "request_id": "lineage-formula-request:528eb4b0ecc3dc0f720c494b9a2766b586dbff3fb6bb568a3bb0e6b8b85b48d4"
+    },
+    {
+      "lineage_id": "theory-lineage:c2eb415efd9011cc2af7f664f361e974f482df99343389656547ed5954e5f9fa",
+      "proposal": {
+        "contrast_refinement": {
+          "authority": "exact_host_evaluation",
+          "claim_boundary": "the proposed formula has a truth profile absent from every current formula in this finite context",
+          "context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+          "object_ids": [
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd",
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef"
+          ],
+          "truth_values": {
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd": false,
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef": true
+          }
+        },
+        "formula_id": "formula:a446432ea08bc07bb70ae7d01bf05d00d2f2fdac76214cc9fed4b07b1d10f541",
+        "navigator_rationale": "The supplied pair agrees on all 210 current formulas but differs on this exact interaction law: the second structure's op_0 table is the pointwise second iterate of op_2, whereas the first structure's op_0 is the third iterate. This tests an operation-alignment coordinate rather than another fixed-point condition.",
+        "schema": "leanmill.frontier_formula_epoch_request.v1",
+        "source_context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+        "source_epoch": 0,
+        "typed_axiom_proposal": {
+          "axiom": {
+            "formula": {
+              "binders": [
+                {
+                  "name": "x",
+                  "sort": "S0"
+                },
+                {
+                  "name": "y",
+                  "sort": "S0"
+                }
+              ],
+              "body": {
+                "kind": "eq",
+                "left": {
+                  "args": [
+                    {
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    {
+                      "kind": "var",
+                      "name": "y"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op0"
+                },
+                "right": {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "kind": "var",
+                          "name": "y"
+                        }
+                      ],
+                      "kind": "app",
+                      "symbol": "op2"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op2"
+                }
+              },
+              "kind": "forall"
+            },
+            "name": "second_iterate_alignment",
+            "schema": "leanmill.axiom_formula.v1"
+          },
+          "axiom_sha256": "136646d3286ac03725bf27a4449b8409ff7a4c0e14e19077d22368d1e7269b3f",
+          "kill_condition": "Kill this coordinate if it fails to separate the supplied pair, duplicates an existing semantic profile, or its composition with the fixed-point coordinate yields no new exact prediction outside the seed chart.",
+          "nl_intent": "Test whether the first binary operation, uniformly in its first argument, is the second iterate of the unary operation on its second argument.",
+          "schema": "leanmill.typed_axiom_proposal.v1",
+          "source_conjecture_sha256": "6da6c21d36f514811adfba68afb0d5d0b34005a9b9d44e1af509f60bc22f7490",
+          "theory_signature": {
+            "name": "AnonymousBinaryDivisionDiagonal",
+            "operations": [
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op0",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op1",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0"
+                ],
+                "name": "op2",
+                "result_sort": "S0"
+              }
+            ],
+            "relations": [],
+            "schema": "leanmill.theory_signature.v1",
+            "sorts": [
+              {
+                "name": "S0"
+              }
+            ]
+          },
+          "theory_signature_sha256": "6ebe89c813e8d4135fd1352e1fd957a0060d981b53e3cde421fc4e09f5dece58"
+        },
+        "typed_proposal_sha256": "39d0f06a0c1dc49fb83f343d9f87d076f60734db30c48cf4c0164b11b8c1d42f",
+        "workbench_receipt_id": "sha256:a75f55ed7b166f9ca718672c5cd7a91d8c82aa6dd5ba22e5147bd071c7f42c2d"
+      },
+      "request_id": "lineage-formula-request:00fd000e3c7adc291d086a30f7306f3cd35b912cbcef224317318a7d491cdd32"
+    },
+    {
+      "lineage_id": "theory-lineage:0648fa897d4db429aa45cceba9ad9f7183e503e426d1c6b7ba95d1953d74f03f",
+      "proposal": {
+        "contrast_refinement": {
+          "authority": "exact_host_evaluation",
+          "claim_boundary": "the proposed formula has a truth profile absent from every current formula in this finite context",
+          "context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+          "object_ids": [
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd",
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef"
+          ],
+          "truth_values": {
+            "model:2632a80cfd68b023621ce3ea85020707fafb077958434a15e10aefa9284de2dd": false,
+            "model:53350f9386df522e810a0f737ef508eb1a385335eb438dd942be0ee6994326ef": true
+          }
+        },
+        "formula_id": "formula:5400f612644f4a08def11c8f487b90691695f60be89580a28f0c5a6c9f967bdc",
+        "navigator_rationale": "On the selected indistinguishable pair, the second structure satisfies op_2(op_2(x)) = op_0(x,x), while the first fails it. This is signature-preserving and compares an iterate with a derived diagonal action, so it is structurally distinct from merely asking whether op_2 has a fixed point.",
+        "schema": "leanmill.frontier_formula_epoch_request.v1",
+        "source_context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+        "source_epoch": 0,
+        "typed_axiom_proposal": {
+          "axiom": {
+            "formula": {
+              "binders": [
+                {
+                  "name": "x",
+                  "sort": "S0"
+                }
+              ],
+              "body": {
+                "kind": "eq",
+                "left": {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "kind": "var",
+                          "name": "x"
+                        }
+                      ],
+                      "kind": "app",
+                      "symbol": "op2"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op2"
+                },
+                "right": {
+                  "args": [
+                    {
+                      "kind": "var",
+                      "name": "x"
+                    },
+                    {
+                      "kind": "var",
+                      "name": "x"
+                    }
+                  ],
+                  "kind": "app",
+                  "symbol": "op0"
+                }
+              },
+              "kind": "forall"
+            },
+            "name": "unary_square_diagonal_coincidence",
+            "schema": "leanmill.axiom_formula.v1"
+          },
+          "axiom_sha256": "8462e1cbc29c6cc68a75c76d5f381bcf118014886ed99d0a457e260bbc17f252",
+          "kill_condition": "Kill if the formula is ill-typed, has an existing semantic profile, fails to separate the contrast pair, or merely reproduces the prior fixed-point coordinate.",
+          "nl_intent": "Test whether applying the unary operation twice coincides with the diagonal action of the first binary operation.",
+          "schema": "leanmill.typed_axiom_proposal.v1",
+          "source_conjecture_sha256": "101872945468ae85d44ba6d85f121b52e1b531fd91c4454dbc0f48fcb80e2c94",
+          "theory_signature": {
+            "name": "AnonymousBinaryDivisionDiagonal",
+            "operations": [
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op0",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0",
+                  "S0"
+                ],
+                "name": "op1",
+                "result_sort": "S0"
+              },
+              {
+                "arg_sorts": [
+                  "S0"
+                ],
+                "name": "op2",
+                "result_sort": "S0"
+              }
+            ],
+            "relations": [],
+            "schema": "leanmill.theory_signature.v1",
+            "sorts": [
+              {
+                "name": "S0"
+              }
+            ]
+          },
+          "theory_signature_sha256": "6ebe89c813e8d4135fd1352e1fd957a0060d981b53e3cde421fc4e09f5dece58"
+        },
+        "typed_proposal_sha256": "76ecbe30bcfecae4898aed9149fd78fe055dc3beb41c974b37b478508de6ecf3",
+        "workbench_receipt_id": "sha256:e38ff903d7d96d2086830a9c1a3958e257c91f410f4a859e5992ed92ea804d20"
+      },
+      "request_id": "lineage-formula-request:389c3e8dc080d262766fa8f94d43b07c7b4d1f966094e06f2a004edacc0487a4"
+    }
+  ],
+  "frozen_programs": [],
+  "host_isolated_program_comparisons": [],
+  "input_sha256": "cb589f64cfc00d841e299234d7e87482aca1cb3974dd537fa12830f0dd40310b",
+  "isolation_receipt": {
+    "agent_identities": [
+      "axiompack-navigator-lineage-000.wave-001",
+      "axiompack-navigator-lineage-001.wave-001",
+      "axiompack-navigator-lineage-002.wave-001"
+    ],
+    "authority": "deterministic_host_orchestration",
+    "claim_boundary": "host orchestration noninterference only; no claim of distinct model priors or statistical independence",
+    "context_epoch": 0,
+    "context_hash": "db20cff71d363b412a13e20dba01cd85810ebb1575a6badbb11ed860f4e3ff3c",
+    "lineage_ids": [
+      "theory-lineage:54fb98666a4cff621eb624bb4ab8a6464535e1bdbbcbdd4fc1948b9a4116f728",
+      "theory-lineage:c2eb415efd9011cc2af7f664f361e974f482df99343389656547ed5954e5f9fa",
+      "theory-lineage:0648fa897d4db429aa45cceba9ad9f7183e503e426d1c6b7ba95d1953d74f03f"
+    ],
+    "receipt_sha256": "3bb49bd39373d42171017a858819e9dc36e86d47bcafa8471ab00ac33c9d1f00",
+    "schema": "leanmill.theory_lineage_isolation.v1",
+    "shared_input_classes": [
+      "frozen_blueprint",
+      "frozen_context",
+      "host_receipted_prior_conflicts"
+    ],
+    "withheld_between_lineages": [
+      "action_trace",
+      "candidate_presentations",
+      "formula_or_language_requests",
+      "navigator_rationales"
+    ]
+  },
+  "objective_contract": {
+    "authority": "independent_leaf_choice_host_receipt_validation",
+    "instruction": "Stop only when late independent review finds that at least two agent-authored or language-expansion coordinates compose into an out-of-seed-chart prediction worth boundary verification; otherwise continue search or return an unresolved receipt.",
+    "review_stage": "post_lineage_freeze_pre_boundary",
+    "schema": "leanmill.frontier_objective_contract.v1"
+  },
+  "schema": "leanmill.lineage_synthesis_input.v1",
+  "theory_language_requests": [],
+  "visibility": "post_lineage_freeze_anonymous_only"
+}

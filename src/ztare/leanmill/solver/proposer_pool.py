@@ -156,7 +156,17 @@ def default_portfolio() -> "list[str]":
     # narrow one at steady state while maximizing failure-mode de-correlation. An unconfigured/dead family (e.g.
     # no XAI key for grok) is skipped at dispatch (advisory membership), never a crash.
     raw = os.environ.get("ZTARE_LEANMILL_PROPOSER_MODELS", "claude,codex,kimi,kimi-code,deepseek,grok,gemini")
-    return [m.strip() for m in raw.split(",") if m.strip()]
+    portfolio = [m.strip() for m in raw.split(",") if m.strip()]
+    # HONOR THE PROVIDER PIN (2026-07-03 — sibling of the `leaf_provider_order` pin the operator flagged "check
+    # for siblings"): `ZTARE_LEANMILL_SOLVE_PROVIDERS` (e.g. "codex" when conserving the claude subscription / API
+    # spend) must gate the POOL too. The leaf honored it; this default_portfolio did NOT, so the pool ran
+    # kimi-code/claude against a codex-only pin (observed v10: NFL realloc → kimi-code). Order-preserving intersect;
+    # if the pin names a provider absent from the portfolio, the PIN wins (never run an unpinned provider).
+    _pin = [p.strip() for p in os.environ.get("ZTARE_LEANMILL_SOLVE_PROVIDERS", "").split(",") if p.strip()]
+    if _pin:
+        _allowed = set(_pin)
+        portfolio = [m for m in portfolio if m in _allowed] or list(_pin)
+    return portfolio
 
 
 def model_priors(db_path: "Optional[str]" = None) -> "dict[str, float]":
@@ -356,11 +366,21 @@ def attack_node(node_key: str, prompt: str, verify_fn: "Callable[[Proposal], boo
     workers = max(1, min(len(portfolio), int(os.environ.get("ZTARE_LEANMILL_PROPOSER_WORKERS", "3") or 3)))
     proposals: "list[Proposal]" = []
     if parallel:
+        from contextvars import copy_context
+
         with _cf.ThreadPoolExecutor(max_workers=workers) as ex:
             for i in range(0, len(portfolio), workers):
                 wave = portfolio[i:i + workers]
                 idxs = range(i, i + len(wave))
-                proposals.extend(p for p in ex.map(_one, wave, idxs) if p is not None)
+                futures = [
+                    ex.submit(copy_context().run, _one, model, index)
+                    for model, index in zip(wave, idxs, strict=True)
+                ]
+                proposals.extend(
+                    proposal
+                    for proposal in (future.result() for future in futures)
+                    if proposal is not None
+                )
     else:
         proposals = [p for p in (_one(m, i) for i, m in enumerate(portfolio)) if p is not None]
     return governed_attack(node_key, proposals, verify_fn, priors=priors, max_verify=max_verify)

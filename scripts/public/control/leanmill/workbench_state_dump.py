@@ -40,32 +40,51 @@ class _ReadOnlyStore:
 
 
 def _leanmill_run_active(stale_s: int = 240) -> dict:
-    """Is a LeanMill run happening right now? PURE TELEMETRY — the freshness of worker heartbeats in the
-    work-queue SQLite (`last_seen_at`), NOT a process/pgrep check. Missing DB → no run. Never raises."""
+    """Report proof work, not merely connected worker processes.
+
+    A worker may keep heartbeating after a campaign finalizes while it waits for more work. The Workbench may
+    call that worker connected, but it must say proofs are being attempted only when a process-valid heartbeat
+    owns a non-expired claimed work item.
+    """
     try:
         import sqlite3
-        import time
         from ztare.leanmill import work_queue
 
         db = work_queue.DEFAULT_DB
         if not Path(db).exists():
-            return {"active": False, "worker_count": 0, "workers": []}
+            return {"active": False, "worker_count": 0, "connected_worker_count": 0, "idle_worker_count": 0, "workers": []}
         cx = sqlite3.connect(db)
         cx.row_factory = sqlite3.Row
-        now = int(time.time())
-        rows = cx.execute(
-            "SELECT worker_id, worker_kind, last_seen_at FROM worker_heartbeats "
-            "WHERE last_seen_at >= ? ORDER BY last_seen_at DESC",
-            (now - stale_s,),
-        ).fetchall()
+        health = work_queue.worker_version_health(cx, stale_after_s=stale_s)
+        connected = list(health.get("active_heartbeats") or [])
+        workers = []
+        for heartbeat in connected:
+            work_id = str(heartbeat.get("claimed_work_id") or "")
+            if not work_id:
+                continue
+            work = cx.execute(
+                "SELECT status, lease_until FROM work_items WHERE work_id=?",
+                (work_id,),
+            ).fetchone()
+            if not work or str(work["status"] or "") != "claimed":
+                continue
+            workers.append({
+                "worker_id": str(heartbeat.get("worker_id") or ""),
+                "kind": str(heartbeat.get("worker_kind") or "worker"),
+                "work_id": work_id,
+                "age_s": int(heartbeat.get("heartbeat_age_s") or 0),
+            })
         cx.close()
-        workers = [
-            {"worker_id": r["worker_id"], "kind": r["worker_kind"] or "worker", "age_s": now - int(r["last_seen_at"])}
-            for r in rows[:6]
-        ]
-        return {"active": len(workers) > 0, "worker_count": len(workers), "workers": workers, "stale_s": stale_s}
+        return {
+            "active": bool(workers),
+            "worker_count": len(workers),
+            "connected_worker_count": len(connected),
+            "idle_worker_count": max(0, len(connected) - len(workers)),
+            "workers": workers[:6],
+            "stale_s": stale_s,
+        }
     except Exception:
-        return {"active": False, "worker_count": 0, "workers": []}
+        return {"active": False, "worker_count": 0, "connected_worker_count": 0, "idle_worker_count": 0, "workers": []}
 
 
 def main(argv: "list[str] | None" = None) -> int:

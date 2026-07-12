@@ -46,3 +46,36 @@ lake env lean <file>.lean
 ```
 
 It should elaborate with no errors and print the axiom audit (standard axioms only).
+
+### Definitions
+
+The vocabulary these theorems are stated over — read them to check the faithfulness boundary; each is documented at the top of its file.
+
+**`TopkisMonotoneComparativeStatics.lean`**
+- `IncreasingDifferences`
+- `Supermodular`
+- `ParametricArgmaxSet`
+- `IsSublatticeSet`
+- `StrongSetLE`
+- `StrongSetMonotone`
+
+**`TopkisOrdinalMonotoneComparativeStatics.lean`**
+- `OrdinalSingleCrossing`
+- `OrdinalStrictSingleCrossing`
+- `OrdinalStrongSingleCrossing`
+- `QuasiSupermodular`
+- `IsGlobalMax {X α : Type*} [Preorder α] (g : X → α) (x : X) : Prop`
+- `ArgmaxSet {X α : Type*} [Preorder α] (g : X → α) : Set X`
+- `ParametricArgmaxSet`
+- `StrongSetLE`
+
+**`VcgDsicPivotIndependenceAndTwoUnitWitness.lean`**
+- `socialWelfare`
+- `othersWelfare`
+- `updateReport`
+- `IsWelfareMaximizer`
+- `DominantStrategyTruthful`
+- `DecreasingMarginals {K : Type*} [LE K] (m : TwoUnitMarginals K) : Prop`
+- `twoUnitStepValue {K : Type*} [Zero K] [Add K] (m : TwoUnitMarginals K) (q : Nat) : K`
+- `unitsForAgent0 (a : TwoUnitAllocation) : Nat := a.val`
+- `unitsForAgent1 (a : TwoUnitAllocation) : Nat := 2 - a.val`

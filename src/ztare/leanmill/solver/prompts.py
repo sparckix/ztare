@@ -15,6 +15,15 @@ MIGRATION (incremental, byte-identical move first, parameterise second — each 
 """
 from __future__ import annotations
 
+from ztare.leanmill.prompts import (
+    AXIOM_PACK_BAND_WORD_PROPOSER_PROMPT,
+    AXIOM_PACK_SEMANTIC_CHECKER_PROMPT,
+    AXIOM_PACK_TYPED_PROPOSER_PROMPT,
+)
+
+# AXIOM-PACK typed proposal/checker prompts. These are deliberately separate
+# roles: the proposer emits candidate structure; the checker judges intent and
+# the host signs the verdict. Payloads are inserted as data at the call site.
 # The PLANNER's DECOMPOSE prompt. Placeholders filled by the caller via `.format(iso_step=…, p=…, binders=…,
 # goal_concl=…, ban=…, preamble=…, goal=…)`. Moved VERBATIM from isomorphism_decompose._DEANCHOR_PROMPT.
 DEANCHOR_PROMPT = (
@@ -107,6 +116,25 @@ LEAF_DECOMPOSE_PREFIX = (
 LEAF_DECOMPOSE_GAP_FB = ("Your direct attempt diagnosed this missing piece: «{gap}». Build the decomposition "
                          "toward proving it. ")
 
+# DIRECT-CONTINUATION (2026-07-03): a pure "next turn" nudge for warm-resume — `codex exec` is ONE turn, so on a
+# hard proof the agent plans then its turn ends mid-proof; this gives it the next turn to finish its OWN work. It
+# deliberately injects NO compiler errors and NO fix-strategy (that would be the harness driving — the reverted
+# error-feedback loop): the agent re-runs its OWN warm-check and fixes its OWN proof. Affordance, not determinism.
+LEAF_DIRECT_CONTINUE = (
+    "Your proof of `{target}` in the file {probe} is NOT finished — it does not yet compile with zero errors. "
+    "CONTINUE from where you left off (do NOT restart from scratch): keep editing that file and re-checking with "
+    "the warm lean-check after each edit until it reports ZERO errors and contains NO `sorry`. Finish it.")
+
+# SCAFFOLD-CONTINUE (2026-07-06, gale-Shapley thrash fix): the file is pre-seeded with helper lemmas HARVESTED
+# from your own prior attempts on this goal — they are already PROVEN and compile. The point is to stop you
+# rebuilding them every dispatch. So: do NOT re-derive or rewrite the helper lemmas above; cite them and prove
+# ONLY the remaining `sorry` target on top of them.
+LEAF_SCAFFOLD_CONTINUE = (
+    "The file {probe} already contains helper lemmas that are PROVEN and compile — they are the reusable pieces "
+    "from earlier attempts on `{target}`. Do NOT rewrite, re-derive, or delete them. Prove ONLY the remaining "
+    "`sorry` (the `{target}` goal) by BUILDING ON those helpers: cite them by name. Re-check with the warm "
+    "lean-check after each edit until it reports ZERO errors and contains NO `sorry`.")
+
 # Legacy A/B baseline prompts (ZTARE_LEANMILL_LEGACY_PROMPT=1) — kept for the prompt A/B. `{target}/{goal}/{probe}`.
 LEAF_LEGACY_DECOMPOSE_PROMPT = (
     "The theorem `{target}` : {goal} in {probe} is hard and still has a sorry. DECOMPOSE it: state and prove "
@@ -128,17 +156,24 @@ STRATEGY_ASSESSMENT_PROMPT = (
     # docs/concepts/leanmill_architecture.md §4.3a. The "context may already refute it" cue is GENERAL (any goal
     # can be false; any context can hold a refutation) — not a target-specific hint, so it does not overfit.
     "You are a Lean 4 proof strategist. FIRST decide whether the GOAL is even TRUE, THEN how to act:\n"
-    "  1. Is the goal plausibly TRUE? If so, choose HOW to prove it:\n"
-    "     • SOLVE_DIRECT — a SHORT direct proof (a handful of tactics / Mathlib lemmas).\n"
-    "     • DECOMPOSE — multi-step / research-level; a one-shot direct proof would FAIL → break it into "
-    "intermediate sub-lemmas.\n"
+    "  1. Is the goal plausibly TRUE? If so, choose HOW to prove it — DEFAULT TO SOLVE_DIRECT:\n"
+    "     • SOLVE_DIRECT — prove G yourself in ONE proof, GRINDING a long/careful proof if needed. You are a "
+    "frontier prover: an induction, a `cases`/`split` on a definition's branches, chasing `OrderDual`/`max?`/"
+    "membership/`filter` facts through 50–150 lines is STILL direct — length and difficulty are what "
+    "SOLVE_DIRECT is FOR. Prove it here.\n"
+    "     • DECOMPOSE — ONLY when the proof genuinely needs a REUSABLE lemma that must be stated + proven + "
+    "cited on its own: a general prerequisite several siblings share, or a lemma Mathlib lacks. If you cannot "
+    "NAME that reusable prerequisite and say why it must be separate, the goal is within reach — choose "
+    "SOLVE_DIRECT. Splitting a leaf you could just prove is the failure mode; 'it is long' / 'it is hard' is "
+    "NOT a reason to decompose.\n"
     "  2. Or is the goal FALSE as stated? Before assuming you must prove it, judge whether it is even true — "
     "your CONTEXT / SUBSTRATE may ALREADY REFUTE this formulation (an impossibility theorem, or a counterexample "
     "to a too-weak hypothesis). If it is false:\n"
     "     • FALSIFY — prove ¬GOAL (a kernel-checked counterexample). Do NOT grind a proof that cannot exist; the "
     "engine will then reformulate toward the intended TRUE statement.\n"
-    "Be honest and decisive: do NOT grind a doomed direct attempt (choose DECOMPOSE), and do NOT grind a proof "
-    "of a FALSE statement (choose FALSIFY). Judge the MATHEMATICAL content, not the surface length.\n"
+    "Be decisive: DECOMPOSE only earns its place when it buys a REUSABLE sub-lemma you can NAME — otherwise "
+    "default to SOLVE_DIRECT and grind the full proof. Do NOT grind a proof of a FALSE statement (choose "
+    "FALSIFY). Judge the MATHEMATICAL content, not the surface length.\n"
     "Answer with EXACTLY one token on the FIRST line: SOLVE_DIRECT, DECOMPOSE, or FALSIFY.\n\nGOAL:\n{goal}\n"
 )
 
@@ -210,6 +245,23 @@ PROVEN_SHELF_NOTE = (
     "prose's paraphrase of what they conclude.\n{shelf}"
 )
 
+# CARRIER-PRESERVATION (2026-07-05, the CLOB carrier-ghost that blocked autonomous closure). The def bodies above
+# carry the substrate's EXACT typeclass instances (e.g. `[LinearOrder K]`), but a self-contained re-declaration lets
+# the LLM substitute a WEAKER order (`[LT K]`/`[LE K]`) — a partial-order version that is a DIFFERENT, FALSE theorem
+# (an antisymmetric partial order cannot compare all prices, so the "best bid ≤ every bid" safety claim fails). The
+# carrier gate then correctly REJECTS it → reject loop → the campaign never closes. Surface the substrate's own
+# `variable` context VERBATIM (the single-door `campaign_variables`) so the formalizer preserves the instances at the
+# SOURCE, instead of the gate catching the weakening downstream every run. Monotone (only the substrate's consistent
+# carrier) + ADVISORY (the firewall + carrier gate stay the deterministic boundary); domain-agnostic. "" ⇒ byte-parity.
+CARRIER_CONTEXT_NOTE = (
+    "\n\n## Carrier context (use these `variable` declarations VERBATIM — do NOT weaken the order)\n"
+    "The established definitions above were registered under these EXACT `variable` declarations and typeclass "
+    "instances. Re-state them verbatim in your probe. Do NOT substitute a WEAKER order instance — never replace a "
+    "`[LinearOrder _]` with `[LT _]`/`[LE _]`/`[Preorder _]`/`[PartialOrder _]`: the theorem is FALSE under a weaker "
+    "order (a partial order cannot compare all elements), and a weakened re-declaration is REJECTED as unfaithful to "
+    "the registered substrate.\n```lean\n{carrier}\n```"
+)
+
 # LITERAL-FIRST cue (general-purpose; the INVERSE of REFORMULATE_FEEDBACK). Injected on the ONE bounded re-entry
 # after the firewall REJECTED a first formalization as a silent STRENGTHENING of the literal claim (round-trip-
 # unfaithful + extra hypotheses) with no ¬G license yet. The honest, non-gamable order is truth-FIRST: render the
@@ -233,6 +285,14 @@ GOVERNANCE_PROOF_CONSTRAINTS_LINES = (
     "GOVERNANCE (your proof is re-audited with `#print axioms`): do NOT use `native_decide` — it adds the",
     "`Lean.ofReduceBool` compiler-trust axiom and your closure is REJECTED even though it 'compiles'. Use",
     "`decide` for kernel-decidable goals (kernel-checked, axiom-clean). Never use `sorry`/`admit`.",
+)
+
+STRUCTURAL_ISOMORPHISM_MOVE_CARD = (
+    "De-anchor from the current surface and ask the shared research-isomorphism engine for structural analogies "
+    "or conjectural correspondences. Use it when your current heuristics are cycling, when an AxiomPack blueprint "
+    "needs candidate structure, or when the same residual appears under several names. The output is a "
+    "quarantined proposal with kill conditions and mappings; it may seed a blueprint, lemma plan, or research "
+    "note, but it is not proof credit and cannot mutate the Lean substrate."
 )
 
 # NL → one-sentence NL back-translation (the faithfulness round-trip's render leg). `{lean_statement}` filled
@@ -295,6 +355,29 @@ GENERALITY_JUDGE_PROMPT = (
     "Answer on the FIRST line EXACTLY one of:\n"
     "  NARROWER: <which assumed instance is too strong; what more-general structure the intent implied>\n"
     "  FAITHFUL"
+)
+
+# The ADDED-HYPOTHESIS face of the same ambition gap (§4.2a: nothing formal checks statement ⊨ NL ambition).
+# GENERALITY_JUDGE_PROMPT covers narrowing hidden in INSTANCE binders; this covers narrowing added as an EXPLICIT
+# hypothesis binder — the round-trip judge's documented weak leg ("if the round-trip judge does not reliably catch
+# *added-hypothesis* weakenings ... that is the frontier to harden", §4.2a). Canonical instance: Topkis' blueprint-era
+# "the unique maximizer" — a uniqueness HYPOTHESIS yields a true-but-WEAK theorem whose conclusion round-trips
+# identically, so NL↔Lean faithfulness is blind to it.
+ADDED_HYPOTHESIS_JUDGE_PROMPT = (
+    "You are checking AMBITION FIDELITY of a Lean 4 formalization against its informal intent: does the formal "
+    "statement ASSUME (as an explicit hypothesis) something the intent never granted, thereby silently NARROWING "
+    "the claim?\n\n"
+    "The statement's explicit propositional hypotheses:\n{hyps}\n"
+    "Formal statement (signature): {stmt}\n\n"
+    "Informal intent:\n{nl}\n\n"
+    "An ADDED hypothesis is one the intent does not state and does not clearly imply — typical smuggles: uniqueness "
+    "of an optimum/witness; extra positivity/non-degeneracy; an ordering/comparability assumption; finiteness; "
+    "assuming a property the theorem was supposed to PROVE. It is LICENSED when the intent states it, clearly "
+    "implies it (well-formedness of the very data the intent describes counts), or it is definitional plumbing "
+    "that does not shrink the claim's scope.\n\n"
+    "Answer on the FIRST line EXACTLY one of:\n"
+    "  ADDED: <which hypothesis is unlicensed; what the intent actually granted>\n"
+    "  LICENSED"
 )
 
 # The API agentic leaf's TASK-NEUTRAL system prompt (kimi/deepseek via the OpenAI-compatible tool loop —
@@ -362,7 +445,25 @@ FALSIFY_PROMPT = (
     "NO `theorem` line, NO sorry>\n```\n"
     "Self-contained against `import Mathlib` + the PREAMBLE. If you genuinely cannot refute it, output an "
     "empty PROOF block (an honest non-refutation, NOT a sorry).\n"
-    "{pre}CONJECTURED statement to REFUTE:\n{goal}\n"
+    "VERIFY BEFORE YOU OUTPUT (this is the difference between a real refutation and a plausible-but-wrong one): "
+    "your proof MUST compile. Assemble the full file yourself — the PREAMBLE + `import Mathlib` + "
+    "`theorem {fname}_refute : ¬ ({gprop}) := <your proof>` — RUN the Lean checker on it, read the errors, and "
+    "ITERATE until ZERO errors and ZERO `sorry`. Use your FULL budget to get it compiling; a single unchecked "
+    "shot is worthless. Match the EXACT defs in the PREAMBLE — correct arities, type-class instances, and "
+    "namespaces (a structure `Foo (A B : Type*) [inst]` is applied as `Foo A B`, never `Foo A`). Only output "
+    "once your own check passes.\n"
+    "{nugget}{pre}CONJECTURED statement to REFUTE:\n{goal}\n"
+)
+
+# The counterexample NUGGET seed (CEGAR/proof-sketch reuse): when a prior skeptic/leaf already DISCOVERED the
+# crux (the witness idea), we reuse the INSIGHT — not the full self-contained proof (which restates over concrete
+# types and does not port). The goal below is still OURS and the kernel still verifies, so a wrong nugget merely
+# fails to help (it cannot launder). Injected into FALSIFY_PROMPT's `{nugget}` slot.
+FALSIFY_NUGGET_SEED = (
+    "PRIOR COUNTEREXAMPLE INSIGHT — a skeptic already found the crux for THIS statement. ADAPT it to the exact "
+    "goal + preamble below (build the concrete carrier/witness it names and prove the predicate fails); do NOT "
+    "re-derive from a blank page. The insight (and any construction) is a HINT — the refutation theorem's "
+    "signature is still fixed for you and the kernel re-checks your proof:\n{nugget}\n\n"
 )
 
 # From conjecture.py (_CORROBORATE_PROMPT): MOVE_CORROBORATE — Popper dual of falsify (refute a consequence).
@@ -521,6 +622,11 @@ THEORY_PROMPT = (
     "concept (a strong set order, a refinement, a divergence) that has NO single Mathlib equal.\n"
     "   • CHARACTERIZATION: `<def> ↔ <property expressible with Mathlib primitives>` (e.g. an increasing-"
     "differences predicate ↔ `∀ x≤x', Monotone (fun t => f x' t - f x t)`).\n"
+    "Immediately precede each anchor with a machine-readable declaration: `-- @denotation-anchor: "
+    "anchor=<theorem_name>; target=<def>; kind=<definitional|extensional|special_case|model_instance>; "
+    "external=<Mathlib_or_Lean_reference>`. The external reference must occur in the theorem type (notation "
+    "may use its canonical name, such as `LE.le` for `≤`) and must be distinct from every definition introduced "
+    "in this theory. A reflexive theorem such as `<def> = <def>` is rejected before kernel verification.\n"
     "These `anchor_…` theorems may be `sorry` — each becomes a work item like any API lemma; a kernel-PROVEN "
     "anchor pins the def (a decoy cannot prove agreement/reduction/characterization with the established "
     "concept). Reserve `-- @no-anchor: <def>: <why NONE of overlap/reduction/characterization reaches any "
