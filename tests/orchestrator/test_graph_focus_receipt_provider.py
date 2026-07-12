@@ -132,6 +132,29 @@ def test_graph_focus_receipt_provider_renders_local_verification_gap(
     ]
 
 
+def test_graph_focus_receipt_provider_skips_grid_submission_without_gap(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project = tmp_path / "projects" / "grid_world"
+    workspace = project / "workspace"
+    workspace.mkdir(parents=True)
+    provider = GraphFocusReceiptProvider()
+    ctx = BriefingContext(
+        project_dir=project,
+        iter_index=1,
+        rubric={"submission_kind": "grid_dsl"},
+        workspace_dir=workspace,
+    )
+
+    def explode(_ctx):
+        raise AssertionError("graph actions should not compute for grid no-gap applies")
+
+    monkeypatch.setattr(provider, "_actions", explode)
+
+    assert provider.applies(ctx) is False
+
+
 def test_graph_focus_receipt_provider_renders_packet_reference_resolution_gap(
     tmp_path: Path,
 ) -> None:

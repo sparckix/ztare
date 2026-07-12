@@ -249,7 +249,9 @@ def _cmd_research_router(rest: list[str]) -> int:
         print(
             "\nIsomorphism quick use:\n"
             "  ztare research isomorphism --seam <constraint> --abstract <shape> --home <field> "
-            "--model <family> --typed-mapping --invariant key=value --debug --json"
+            "--model <family> --typed-mapping --invariant key=value --debug --json\n"
+            "  ztare research isomorphism --mode conjecture --seam <left> --right-seam <right> "
+            "--model <family> --debug --json"
         )
         print("\nFor any verb's own --help, run:\n  ztare research <verb> --help")
         return 0
@@ -283,6 +285,33 @@ def _cmd_rubric_router(rest: list[str]) -> int:
         return _delegate_module("ztare.rubrics.review_rubric", args)
     print(f"ztare: unknown rubric verb {verb!r}. Known: review", file=sys.stderr)
     return 2
+
+
+_SCENARIO_VERBS: tuple[str, ...] = ("list", "show", "validate", "new", "run", "surface", "annotate", "reingest", "brief", "plugins", "agenda", "baseline", "recompile", "wager", "strength")
+
+
+def _cmd_scenario_router(rest: list[str]) -> int:
+    """Scenario tools. A Scenario (`scenarios/<name>.yaml`) is a declarative bundle that binds the reasoning
+    kernel to a use-case (rubric + run-config + capability plug-ins). `run` delegates to `autoresearch run
+    --scenario <name>` (ONE binding path — no duplicated resolution); the rest are pure scenario I/O in
+    `ztare.scenarios.cli`."""
+    if not rest or rest[0] in ("-h", "--help"):
+        print("ztare scenario <verb> [args...]\n\nVerbs:\n"
+              "  list                 → installed scenarios\n"
+              "  show <name>          → resolved rubric / run-config / capability plug-ins\n"
+              "  validate <name>      → typecheck the manifest (fails loud)\n"
+              "  new <name> [--force] → scaffold scenarios/<name>.yaml\n"
+              "  run <name> [flags]   → autoresearch run --scenario <name> (e.g. --project <slug>)\n"
+              "  reingest <doc.md> --project <slug> → re-gate an AI-polished deliverable vs the governed map")
+        return 0
+    if rest[0] == "run":
+        if len(rest) < 2 or rest[1].startswith("-"):
+            print("usage: ztare scenario run <name> --project <slug> [autoresearch flags]", file=sys.stderr)
+            return 2
+        name, flags = rest[1], rest[2:]
+        return _cmd_autoresearch_router(["run", "--scenario", name, *flags])
+    from ztare.scenarios.cli import main as _scenario_main
+    return _scenario_main(rest)
 
 
 _LEANMILL_VERBS: dict[str, str] = {
@@ -1098,7 +1127,7 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
         kv = _parse_kv_flags(args, allowed={"--project", "--rubric", "--iters",
                                              "--mutator", "--judge", "--inverter", "--agent-runtime",
                                              "--llm-timeout-seconds", "--llm-retries",
-                                             "--committee-model",
+                                             "--committee-model", "--scenario",
                                              "--intake", "--packet"})
         bools = _parse_bool_flags(
             args,
@@ -1114,8 +1143,27 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
                 "--allow-model-fallback",
             },
         )
+        # A --scenario resolves, at this boundary, into the flags the make pipeline already forwards
+        # (rubric/iters/dynamic) — reusing the ONE resolver, no Makefile plumbing. Explicit CLI flags win.
+        # The direct `python -m ...autoresearch_loop --scenario <name>` path does the full engine-side bind
+        # (incl. gate-package / capabilities); this boundary bind covers the make-driven pipeline.
+        scenario_dynamic = False
+        if kv.get("--scenario"):
+            from ztare.scenarios.loader import load_scenario
+            try:
+                _sc = load_scenario(kv["--scenario"])
+            except Exception as exc:  # noqa: BLE001 — a bad scenario name is a clean user error, not a stack trace
+                print(f"ztare: scenario '{kv['--scenario']}' failed to load: {exc}", file=sys.stderr)
+                return 2
+            if not kv.get("--rubric") and _sc.rubric:
+                kv["--rubric"] = _sc.rubric
+            if not kv.get("--iters") and _sc.iters:
+                kv["--iters"] = str(_sc.iters)
+            scenario_dynamic = bool(_sc.dynamic)
+            print(f"[scenario] '{kv['--scenario']}' -> rubric={kv.get('--rubric', '')} "
+                  f"iters={kv.get('--iters', '')} dynamic={scenario_dynamic}", flush=True)
         if not kv.get("--project") or not kv.get("--rubric"):
-            print("ztare: `autoresearch run` requires --project <slug> --rubric <name>",
+            print("ztare: `autoresearch run` requires --project <slug> and --rubric <name> (or --scenario <name>)",
                   file=sys.stderr)
             return 2
         try:
@@ -1158,7 +1206,7 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "AGENT_RUNTIME": kv.get("--agent-runtime", ""),
             # Judging committee (3-panel) and rotating/auto-evolving rubric. Off by default; the
             # experiment-loop target maps DYNAMIC->--dynamic, EVOLVE->--auto-evolve, CROSS_FAMILY->--require-cross-family.
-            "DYNAMIC": "1" if "--dynamic" in bools else "",
+            "DYNAMIC": "1" if ("--dynamic" in bools or scenario_dynamic) else "",
             "EVOLVE": "1" if "--auto-evolve" in bools else "",
             "CROSS_FAMILY": "1" if "--cross-family" in bools else "",
             "COMMITTEE_MODEL": kv.get("--committee-model", ""),
@@ -1783,6 +1831,8 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
             "Verbs:\n"
             "  new       → create project/rubric/evidence files\n"
             "              (shells to `python -m ztare.scaffold.generate_substrate`)\n"
+            "  arc3-new  → create an ARC-AGI-3 governed worldmodel project\n"
+            "              (shells to `python -m ztare.scaffold.arc3_game_project`)\n"
             "  prepare   → run the standard project setup pipeline\n"
             "              (shells to `make setup-project`)\n"
             "  seal      → run the sentinel/integration seal for a project\n"
@@ -1842,6 +1892,8 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
     verb, *args = rest
     if verb in ("new", "generate"):
         return _delegate_module("ztare.scaffold.generate_substrate", args)
+    if verb == "arc3-new":
+        return _delegate_module("ztare.scaffold.arc3_game_project", args)
     if verb in ("prepare", "setup"):
         kv = _parse_kv_flags(args, allowed={"--project", "--rubric", "--model"})
         if not kv.get("--project") or not kv.get("--rubric"):
@@ -1960,7 +2012,7 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
         return _delegate_make("portfolio-scaffold", {})
     print(
         f"ztare: unknown {command_name} verb "
-        f"{verb!r}. Known: new, prepare, seal, intake, packet, brief-edit, prep-ledger, queue, walkthrough, source-init, source-check, source-file, charter, source-index, evidence-bind, evidence-replay, claim-support, evidence-fetch, evidence-gap, check, portfolio-list, portfolio-scaffold",
+        f"{verb!r}. Known: new, arc3-new, prepare, seal, intake, packet, brief-edit, prep-ledger, queue, walkthrough, source-init, source-check, source-file, charter, source-index, evidence-bind, evidence-replay, claim-support, evidence-fetch, evidence-gap, check, portfolio-list, portfolio-scaffold",
         file=sys.stderr,
     )
     return 2
@@ -2396,6 +2448,24 @@ _SUBSTRATE_VERBS = (
 )
 _EIGENQUESTION_VERBS = ("propose", "validate", "status")
 _PRIMITIVE_VERBS = ("health", "parent-utility", "utility")
+_PDE_VERBS = (
+    "status",
+    "completion-audit",
+    "requirements",
+    "readiness",
+    "ops",
+    "currency",
+    "estimates",
+    "receipts",
+    "gates",
+    "run-gate",
+    "work-order",
+    "run-work-order",
+    "context",
+    "knowledge",
+    "formal-surface",
+    "canary-report",
+)
 _AUDIT_VERBS = tuple(_AUDIT_TARGETS)
 _ARCH_VALIDATE_VERBS = ("ex-ante", "ex-post")
 _FORENSIC_WORKBENCH_VERBS = (
@@ -2426,10 +2496,12 @@ def _completion_verb_sets() -> dict[str, str]:
         "bundle": _completion_word_list(_BUNDLE_VERBS),
         "eigenquestion": _completion_word_list(_EIGENQUESTION_VERBS),
         "autoresearch": _completion_word_list(_AUTORESEARCH_VERBS),
+        "scenario": _completion_word_list(_SCENARIO_VERBS),
         "project": _completion_word_list(_SUBSTRATE_VERBS),
         "substrate": _completion_word_list(_SUBSTRATE_VERBS),
         "forensic-workbench": _completion_word_list(_FORENSIC_WORKBENCH_VERBS),
         "primitive": _completion_word_list(_PRIMITIVE_VERBS),
+        "pde": _completion_word_list(_PDE_VERBS),
         "audit": _completion_word_list(_AUDIT_VERBS),
         "arch-validate": _completion_word_list(_ARCH_VALIDATE_VERBS),
     }
@@ -2555,6 +2627,10 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         "Rubric tools: review (pre-run model critique — is the scoring rubric gameable before you pay for a run).",
         _cmd_rubric_router,
     ),
+    "scenario": (
+        "Scenario tools: list | show | validate | new | run — compose the kernel for a use-case.",
+        _cmd_scenario_router,
+    ),
     "bundle": (
         "Sealed-bundle gates: run | verify.",
         _cmd_bundle_router,
@@ -2625,6 +2701,10 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         "Primitive catalog / amnesia health: health.",
         _cmd_primitive_router,
     ),
+    "pde": (
+        "PDE kernel: status | completion-audit | requirements | readiness | ops | currency | estimates | receipts | gates | run-gate | work-order | run-work-order | context | knowledge | formal-surface | canary-report.",
+        lambda rest: _delegate_module("ztare.pde.cli", rest),
+    ),
     "audit": (
         "Audits: gates | effectiveness | coverage | graph-capability | forecast-capability | move-card-router. Shells to Make.",
         _cmd_audit_router,
@@ -2674,6 +2754,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "eigenquestion": (_SUBCOMMANDS["eigenquestion"][0], _SUBCOMMANDS["eigenquestion"][1], ()),
     "mine": (_SUBCOMMANDS["mine"][0], _SUBCOMMANDS["mine"][1], ()),
     "autoresearch": (_SUBCOMMANDS["autoresearch"][0], _SUBCOMMANDS["autoresearch"][1], ()),
+    "scenario": (_SUBCOMMANDS["scenario"][0], _SUBCOMMANDS["scenario"][1], ()),
     "forensic-workbench": (
         _SUBCOMMANDS["forensic-workbench"][0],
         _SUBCOMMANDS["forensic-workbench"][1],
@@ -2696,6 +2777,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "project": (_SUBCOMMANDS["project"][0], _SUBCOMMANDS["project"][1], ()),
     "substrate": (_SUBCOMMANDS["substrate"][0], _SUBCOMMANDS["substrate"][1], ()),
     "primitive": (_SUBCOMMANDS["primitive"][0], _SUBCOMMANDS["primitive"][1], ()),
+    "pde": (_SUBCOMMANDS["pde"][0], _SUBCOMMANDS["pde"][1], ()),
     "audit": (_SUBCOMMANDS["audit"][0], _SUBCOMMANDS["audit"][1], ()),
     "arch-validate": (_SUBCOMMANDS["arch-validate"][0], _SUBCOMMANDS["arch-validate"][1], ()),
     "version": (_SUBCOMMANDS["version"][0], _SUBCOMMANDS["version"][1], ()),

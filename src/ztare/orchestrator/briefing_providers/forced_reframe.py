@@ -68,6 +68,9 @@ class ForcedReframeBriefingProvider(BriefingProvider):
 
     name = "forced_reframe"
     priority = 130  # render before cold-LLM seed (which is 150)
+    # ponytail: control_plane=True — the jump-forcer governs search trajectory;
+    # trimming it to fit advice cards inverts priorities. Never budget-dropped.
+    control_plane = True
 
     def applies(self, ctx: BriefingContext) -> bool:
         if not bool(ctx.rubric.get("enable_forced_reframe", True)):
@@ -89,21 +92,33 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         eh = self._load_eval_history(ctx)
         return len(eh) >= 3
 
-    def _last_cap_kind(self, eh: list[dict]) -> str:
-        """Classify the most recent capped iter's cap_kind. Returns 'none'
-        when no prior caps exist or all are non-cap (cap_inactive_*)."""
+    def _last_cap_kind(self, eh: list[dict]) -> tuple[str, str | None]:
+        """Classify the most recent capped iter's cap_kind.
+
+        Returns (kind, degraded_reason). ``kind`` is 'none' when no prior
+        caps exist. ``degraded_reason`` is None on a clean determination;
+        when set it names WHY the cap-kind is undetermined (import failure,
+        or a present-but-unrecognized cap reason). Callers MUST NOT treat an
+        undetermined kind as a REFRAME trigger — a missing/unparseable
+        cap-kind must not silently flip REFINE→REFRAME.
+        """
         try:
             from ztare.orchestrator.cap_kind import classify_cap_kind
-        except ImportError:
-            return "unknown"
+        except ImportError as exc:
+            return "unknown", f"cap_kind classifier unimportable ({exc})"
         for rec in reversed(eh):
             if not isinstance(rec, dict):
                 continue
             reason = rec.get("score_cap_reason") or ""
             kind = classify_cap_kind(reason)
-            if kind != "none":
-                return kind
-        return "none"
+            if kind == "none":
+                continue
+            if kind == "unknown":
+                # Cap present but classifier did not recognize it. Surface
+                # the raw reason; do NOT let it route as REFRAME.
+                return "unknown", f"unrecognized cap reason: {str(reason)[:120]!r}"
+            return kind, None
+        return "none", None
 
     def fragment(self, ctx: BriefingContext) -> str:
         try:
@@ -122,9 +137,50 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         # the form is structurally engaging the variational contract and the
         # cap signals a refinement target, not an architectural pivot.
         if eh:
-            last_kind = self._last_cap_kind(eh)
+            last_kind, degraded_reason = self._last_cap_kind(eh)
             if last_kind in ("generalization_gap", "physics_violation", "holdout_miss"):
-                return self._render_refine_prior_winner(ctx, eh, last_kind)
+                refine = self._render_refine_prior_winner(ctx, eh, last_kind)
+                if refine:
+                    return refine
+                # 2026-07-12: refine-prior-winner assumes a prior winner
+                # EXISTS. With an all-zero history there is nothing to
+                # refine and this returned "" — the provider vanished
+                # silently through 11 consecutive honest-cap zeros (the
+                # exact stuck-family case REFRAME exists for). No winner +
+                # honest-cap stagnation => escalate to the REFRAME panel
+                # instead of rendering nothing.
+                alts = self._load_alternatives(ctx)
+                if not alts:
+                    return ""
+                lines = [
+                    "## REFRAME — No Prior Winner To Refine (honest-cap stagnation)",
+                    "",
+                    (f"Every prior iter capped to zero ({last_kind}); there is no "
+                     "prior winner to refine. The current architectural family is "
+                     "exhausted against the deterministic gates. Do NOT resubmit a "
+                     "variant of the last family. Start from one of the framings "
+                     "below (or the staged evidence artifacts) and derive the "
+                     "candidate from ITS mechanism."),
+                    "",
+                ]
+                for a in alts[:4]:
+                    lines.append(f"- **{a.get('name','?')}** ({a.get('field_of_origin','?')}): "
+                                 f"{a.get('what_it_captures','')}")
+                return chr(10).join(lines)
+            if last_kind == "unknown":
+                # Cap-kind undetermined: do NOT upgrade REFINE→REFRAME on an
+                # unknown value. Prefer the weaker routing — refine the best
+                # prior honest iter if one exists; otherwise surface a
+                # DEGRADED note and fall through WITHOUT firing REFRAME.
+                refine = self._render_refine_prior_winner(ctx, eh, "unknown")
+                note = (
+                    "> DEGRADED — forced-reframe cap-kind undetermined "
+                    f"({degraded_reason}); REFRAME upgrade suppressed, "
+                    "prior/weaker routing kept.\n\n"
+                )
+                if refine:
+                    return note + refine
+                return note
 
         # 2026-04-27 hotfix: substrates with variational target OR substrate_domain
         # surface REFRAME framings from iter 1 (eval_history empty).
@@ -188,7 +244,9 @@ class ForcedReframeBriefingProvider(BriefingProvider):
             return ""
         alts = self._load_alternatives(ctx)
         block = build_forced_reframe_briefing_block(decision, alts)
-        # Persist decision for telemetry / iter-history tagging
+        # Persist decision for telemetry / iter-history tagging. On failure,
+        # surface a DEGRADED note (the block still rendered) rather than
+        # silently dropping the fired-decision telemetry.
         try:
             from ztare.orchestrator.forced_reframe import (
                 write_forced_reframe_decision,
@@ -198,8 +256,12 @@ class ForcedReframeBriefingProvider(BriefingProvider):
                 ctx.iter_index,
                 decision,
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            block = (
+                f"> DEGRADED — forced-reframe fired-decision telemetry not "
+                f"persisted ({type(exc).__name__}: {str(exc)[:120]}); "
+                "briefing block still in force below.\n\n"
+            ) + block
         return block
 
     def _render_refine_prior_winner(
@@ -369,6 +431,38 @@ class ForcedReframeBriefingProvider(BriefingProvider):
                         continue
         return out
 
+    def _conjecture_rung_alternatives(self, ctx: BriefingContext) -> list[dict]:
+        """Dynamic framings from the conjecture rung: mother structures the
+        isomorphism engine surfaced for THIS project's own recurring failures.
+        The rung finds new frames; REFRAME forces them — two halves of one
+        mechanism, joined 2026-07-12. Static curated framings remain as the
+        base; rung candidates are prepended (most specific first)."""
+        out: list[dict] = []
+        try:
+            ws = ctx.workspace_dir or ctx.project_dir / "workspace"
+            path = ws / "conjecture_rung_ledger.jsonl"
+            if path.exists():
+                for ln in path.read_text(encoding="utf-8").splitlines():
+                    if not ln.strip():
+                        continue
+                    try:
+                        row = json.loads(ln)
+                    except Exception:  # noqa: BLE001
+                        continue
+                    for c in row.get("candidates") or []:
+                        if not c.get("theorem"):
+                            continue
+                        out.append({
+                            "name": str(c.get("theorem"))[:80],
+                            "field_of_origin": str(c.get("field") or "surfaced by isomorphism engine"),
+                            "form": "",
+                            "what_it_captures": str(c.get("mechanism") or "")[:240],
+                            "provenance": f"conjecture_rung:{row.get('check_id')}",
+                        })
+        except Exception:  # noqa: BLE001
+            return []
+        return out[:4]  # ponytail: cap; curated base still renders below
+
     def _load_alternatives(self, ctx: BriefingContext) -> list[dict]:
         # 2026-04-27: domain-aware loader — when rubric declares
         # substrate_domain='modified_gravity', the loader returns
@@ -385,6 +479,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
                 domain = (ctx.rubric or {}).get("substrate_domain")
             except Exception:
                 domain = None
-            return load_alien_math_alternatives(ctx.project_dir, domain=domain)
+            base = load_alien_math_alternatives(ctx.project_dir, domain=domain)
+            return self._conjecture_rung_alternatives(ctx) + list(base)
         except Exception:
-            return list(_FALLBACK_ALTERNATIVES)
+            return self._conjecture_rung_alternatives(ctx) + list(_FALLBACK_ALTERNATIVES)

@@ -24,8 +24,10 @@ from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
     dispatch_model,
     dispatch_result_receipt,
+    resolve_agent_execution_mode,
     resolve_dispatch_capability,
 )
+from ztare.common.cegis_membrane import EVALUATION, select_persona
 from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import re
 from ztare.primitives.primitive_library import (
@@ -67,6 +69,7 @@ from ztare.validator.core.meta_judge_schema import (
     coerce_raw_meta_judge_score as _coerce_raw_meta_judge_score,
     raw_meta_judge_shape_errors as _raw_meta_judge_shape_errors,
 )
+from ztare.common.leaf_workbench_contract import render_leaf_workbench_mutator_surface
 from ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
@@ -79,6 +82,7 @@ from ztare.workspace.evidence_gaps import (
 )
 from ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
 from ztare.validator.utilities.v4_family import is_v4_family_project
+from ztare.common.structured_blocks import json_objects_after_marker
 
 # 1. Setup & Args
 parser = argparse.ArgumentParser()
@@ -201,6 +205,10 @@ WORKING_PATH = (
 EVIDENCE_PATH = f"{PROJECT_DIR}/evidence.txt"
 PROJECT_CHARTER_PATH = f"{PROJECT_DIR}/project_charter.md"
 WORKSPACE_DIR = f"{PROJECT_DIR}/workspace"
+LEAF_FRICTION_LEDGER_PATH = f"{WORKSPACE_DIR}/leaf_friction.jsonl"
+LEAF_SCRATCHPAD_PATH = f"{WORKSPACE_DIR}/leaf_scratchpad.md"
+LEAF_PROPOSALS_PATH = f"{WORKSPACE_DIR}/leaf_proposals.jsonl"
+LEAF_PROPOSAL_DIGEST_PATH = f"{WORKSPACE_DIR}/leaf_proposals_digest.json"
 LATEST_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/latest_eval_results.json"
 LATEST_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
 LATEST_EVIDENCE_GAPS_PATH = f"{WORKSPACE_DIR}/latest_evidence_gaps.json"
@@ -236,6 +244,225 @@ def read_optional_file(filepath):
     if not os.path.exists(filepath):
         return None
     return read_file(filepath)
+
+
+def _read_json_object(filepath):
+    try:
+        with open(filepath, "r") as f:
+            payload = json.load(f)
+        return payload if isinstance(payload, dict) else {}
+    except Exception:
+        return {}
+
+
+def _worldmodel_evidence_bound_attack_prompt(thesis: str, rubric: dict) -> str:
+    """Bind worldmodel attacker prompts to deterministic artifacts.
+
+    Worldmodel projects can carry stale narrative in current_iteration.md after
+    the log grows. The attacker may still critique the prose, but deterministic
+    replay artifacts are the current state and must dominate if the two conflict.
+    """
+    try:
+        from ztare.orchestrator.submission_path_helpers import (
+            is_worldmodel_submission_contract,
+        )
+    except Exception:
+        is_worldmodel_submission_contract = lambda _rubric: False  # noqa: E731
+    if not is_worldmodel_submission_contract(rubric):
+        return f"Identify the single most catastrophic assumption in this thesis using tools if needed: {thesis}"
+
+    latest = _read_json_object(LATEST_EVAL_RESULTS_PATH)
+    committee = _read_json_object(Path(WORKSPACE_DIR) / "worldmodel_committee.json")
+    candidate_memory = _read_json_object(Path(WORKSPACE_DIR) / "candidate_memory.json")
+    gate_payload = latest.get("pre_judge_gate_payload") if isinstance(latest, dict) else {}
+    gates = gate_payload.get("gates") if isinstance(gate_payload, dict) else {}
+    visible = gates.get("visible_replay_exact") if isinstance(gates, dict) else {}
+    diagnostics = visible.get("diagnostics") if isinstance(visible, dict) else {}
+    survivors = candidate_memory.get("candidates") or candidate_memory.get("records") or []
+    if isinstance(survivors, list):
+        survivors = survivors[:3]
+    else:
+        survivors = []
+    snapshot = {
+        "worldmodel_committee": {
+            "status": committee.get("status"),
+            "evidence_hash": committee.get("evidence_hash"),
+            "transitions": committee.get("transitions"),
+            "champion_present": bool(committee.get("champion")),
+        },
+        "latest_gate": {
+            "score": latest.get("score"),
+            "weakest_point": latest.get("weakest_point"),
+            "gated_file": gate_payload.get("gated_file") if isinstance(gate_payload, dict) else None,
+            "gated_sha256": gate_payload.get("gated_sha256") if isinstance(gate_payload, dict) else None,
+            "visible_exact_rows": diagnostics.get("exact_rows") if isinstance(diagnostics, dict) else None,
+            "visible_wrong_rows": diagnostics.get("wrong_rows") if isinstance(diagnostics, dict) else None,
+            "visible_wrong_cells": diagnostics.get("wrong_cell_count") if isinstance(diagnostics, dict) else None,
+            "first_mismatch": diagnostics.get("first_mismatch") if isinstance(diagnostics, dict) else None,
+        },
+        "candidate_memory_top": survivors,
+    }
+    return (
+        "Identify the single most catastrophic assumption in this worldmodel thesis.\n"
+        "Use the EVIDENCE-BOUND SNAPSHOT as current state. If thesis prose conflicts "
+        "with the snapshot, call out the stale-prose conflict instead of attacking "
+        "a superseded mechanism.\n\n"
+        "EVIDENCE-BOUND SNAPSHOT:\n"
+        f"{json.dumps(snapshot, indent=2, sort_keys=True)}\n\n"
+        "THESIS TEXT:\n"
+        f"{thesis}"
+    )
+
+
+def _leaf_mutator_query_menu() -> dict[str, tuple[str, str]]:
+    return {
+        "thesis_excerpt": (
+            "Return the first 1200 characters of the current thesis text.",
+            "thesis_text",
+        ),
+        "evidence_excerpt": (
+            "Return the first 1200 characters of the evidence text.",
+            "evidence_text",
+        ),
+        "test_model_excerpt": (
+            "Return the first 1200 characters of the current test model.",
+            "test_model_text",
+        ),
+        "scratchpad_tail": (
+            "Return the current scratchpad verbatim so I can continue from it.",
+            "scratchpad_text",
+        ),
+        "friction_tail": (
+            "Return the last 20 friction ledger rows as text.",
+            "friction_text",
+        ),
+    }
+
+
+def _leaf_query_result(name: str, *, thesis_text: str, evidence_text: str, scratchpad_text: str) -> str:
+    if name == "thesis_excerpt":
+        return thesis_text[:1200]
+    if name == "evidence_excerpt":
+        return evidence_text[:1200]
+    if name == "test_model_excerpt":
+        return test_code_content[:1200]
+    if name == "scratchpad_tail":
+        return scratchpad_text
+    if name == "friction_tail":
+        path = Path(LEAF_FRICTION_LEDGER_PATH)
+        if not path.exists():
+            return ""
+        rows = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        return "\n".join(rows[-20:])
+    raise ValueError(f"unknown leaf query: {name}")
+
+
+def _load_leaf_scratchpad() -> str:
+    path = Path(LEAF_SCRATCHPAD_PATH)
+    scratchpad = path.read_text(encoding="utf-8") if path.exists() else ""
+    digest_path = Path(LEAF_PROPOSAL_DIGEST_PATH)
+    if digest_path.exists():
+        try:
+            digest = json.loads(digest_path.read_text(encoding="utf-8"))
+        except Exception:
+            digest = {}
+        if isinstance(digest, dict):
+            last_k = digest.get("last_k")
+            if isinstance(last_k, list) and last_k:
+                digest_lines = ["", "LEAF_PROPOSAL_CASE_LAW_DIGEST:"]
+                for row in last_k[-5:]:
+                    if not isinstance(row, dict):
+                        continue
+                    digest_lines.append(
+                        f"- disposition={row.get('disposition', '?')}; "
+                        f"signature={row.get('proposal_signature', '?')}; "
+                        f"reason={row.get('reason', '')}"
+                    )
+                scratchpad = scratchpad + "\n".join(digest_lines)
+    return scratchpad
+
+
+def _persist_leaf_scratchpad(text: str) -> None:
+    path = Path(LEAF_SCRATCHPAD_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
+def _append_leaf_friction_record(*, diagnosis: str, friction: str, round_index: int, outcome: str,
+                                 query: str | None = None, scratchpad: str = "") -> None:
+    path = Path(LEAF_FRICTION_LEDGER_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "project": args.project,
+        "round": round_index,
+        "outcome": outcome,
+        "diagnosis": diagnosis,
+        "friction": friction,
+        "query": query or "",
+        "scratchpad": scratchpad,
+    }
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def _append_leaf_improvement_proposal_record(*, proposal: dict, round_index: int,
+                                             scratchpad: str = "",
+                                             outcome: str = "proposal_only") -> None:
+    path = Path(LEAF_PROPOSALS_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "project": args.project,
+        "round": round_index,
+        "outcome": outcome,
+        "proposal": proposal,
+        "scratchpad": scratchpad,
+    }
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def _render_leaf_mutator_prompt(
+    *,
+    thesis_text: str,
+    evidence_text: str,
+    scratchpad_text: str,
+    query_rounds_left: int,
+) -> str:
+    menu_lines = "\n".join(
+        f"- {name}: {desc}" for name, (desc, _field) in sorted(_leaf_mutator_query_menu().items())
+    )
+    menu_json = json.dumps(
+        [
+            {"name": name, "description": desc, "field": field}
+            for name, (desc, field) in sorted(_leaf_mutator_query_menu().items())
+        ],
+        indent=2,
+    )
+    control_surface = render_leaf_workbench_mutator_surface(
+        query_rounds_left=query_rounds_left,
+        query_menu=menu_lines,
+        query_menu_json=menu_json,
+        scratchpad_text=scratchpad_text,
+    )
+    return f"""
+You are the mutator leaf.
+{control_surface}
+
+Return strict JSON with exactly one of:
+1. {{"queries":[{{"name":"<menu name>"}}]}}
+2. {{"continue":{{"query":"<short query>"}},"scratchpad":"<verbatim carry-over>"}}
+3. {{"commit":{{"candidate":"<candidate text>"}},"scratchpad":"<verbatim carry-over>"}}
+4. {{"stuck":{{"diagnosis":"<what blocked progress>","friction":"<what affordance I lacked>"}},"scratchpad":"<verbatim carry-over>"}}
+5. {{"improvement_proposal":{{"observed_friction_refs":["<ref>"],"proposed_change":"<change>","expected_number_moved":{{"levels|closure|interventions":"<delta>"}},"certifier_touched":false}},"scratchpad":"<verbatim carry-over>"}}
+
+THESIS:
+{thesis_text}
+
+EVIDENCE:
+{evidence_text}
+"""
 
 
 test_code_content = (
@@ -710,14 +937,21 @@ def safe_generate(prompt, config=None, model_id=None):
             agent_id=f"autoresearch_judge_{args.project}",
             timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
             enabled_env=dispatch_env_for_call_site("judge"),
+            agent_execution_mode=resolve_agent_execution_mode("judge"),
         )
         effective_model_name = f"{result.transport}:{result.command[0] if result.command else 'agent'}"
         JUDGE_EFFECTIVE_MODELS_USED.add(effective_model_name)
         JUDGE_USAGE["model_name"] = effective_model_name
         if result.returncode != 0:
+            # Show HEAD + TAIL of stderr: the head names the command/context, but the actual
+            # cause (e.g. "ran out of room"/auto-compaction failure) is at the END — a head-only
+            # [:1200] slice silently hid it and made every failure look identical.
+            _err = result.stderr or ""
+            if len(_err) > 2000:
+                _err = _err[:1200] + "\n…[stderr truncated]…\n" + _err[-800:]
             raise RuntimeError(
                 "subscription judge dispatch failed "
-                f"(returncode={result.returncode}): {result.stderr[:1200]}"
+                f"(returncode={result.returncode}): {_err}"
             )
         JUDGE_WORKER_DISPATCH_RECEIPTS.append(
             dispatch_result_receipt("judge", result)
@@ -1087,6 +1321,169 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     print(f"💥 CRITIQUE MAGNITUDE: {len(final_critique)} chars.")
     return final_critique
 
+def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
+    primitive_context = "None."
+    if args.use_primitives:
+        routed_decision, routed_primitives = _route_v4_primitives(
+            thesis_text,
+            evidence_text,
+            attacker_profile["focus_area"],
+        )
+        if routed_decision:
+            attack_templates = [p for p in routed_primitives if p.get("epistemic_role") == "attack_template"]
+            if not attack_templates and routed_decision.requires_manual_review:
+                primitive_context = (
+                    "V4 ROUTING DECISION:\n"
+                    f"- Family: {routed_decision.family_tag.value}\n"
+                    f"- Policy: {routed_decision.policy.value}\n"
+                    "- No routed attack templates loaded; manual review fallback remains active."
+                )
+            else:
+                primitive_context = (
+                    "V4 ROUTING DECISION:\n"
+                    f"- Family: {routed_decision.family_tag.value}\n"
+                    f"- Policy: {routed_decision.policy.value}\n"
+                    f"- Primitive keys: {', '.join(routed_decision.primitive_keys) or 'none'}\n\n"
+                    + format_attack_templates(attack_templates)
+                )
+        else:
+            primitive_context = format_attack_templates(
+                retrieve_primitives(
+                    "\n".join([thesis_text, evidence_text, attacker_profile["focus_area"]]),
+                    top_k=args.primitive_top_k,
+                    epistemic_role="attack_template",
+                )
+            )
+
+    scratchpad_text = _load_leaf_scratchpad()
+    query_rounds_left = 2
+    transcript: list[str] = []
+    final_critique = ""
+    print(f"\n🚀 ATTACKER LAUNCHED: {attacker_profile['role']}")
+    print(f"🎯 FOCUS: {attacker_profile['focus_area']}")
+
+    for round_index in range(1, 4):
+        prompt = _render_leaf_mutator_prompt(
+            thesis_text=thesis_text,
+            evidence_text=evidence_text,
+            scratchpad_text=scratchpad_text,
+            query_rounds_left=query_rounds_left,
+        ) + f"""
+
+FOCUS AREA:
+{attacker_profile["focus_area"]}
+
+PRECEDENTS:
+{primitive_context}
+"""
+        config = (
+            types.GenerateContentConfig(temperature=0.2)
+            if JUDGE_PROVIDER_FAMILY == "google"
+            else None
+        )
+        response = safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID)
+        try:
+            raw_text = response.text if response else None
+        except Exception:
+            raw_text = None
+        if not raw_text:
+            continue
+        try:
+            payload = json.loads(raw_text)
+        except Exception:
+            final_critique = raw_text
+            break
+
+        scratchpad_text = str(payload.get("scratchpad", scratchpad_text) or scratchpad_text)
+        _persist_leaf_scratchpad(scratchpad_text)
+        transcript.append(json.dumps(payload, sort_keys=True))
+
+        queries = payload.get("queries")
+        if isinstance(queries, list) and queries:
+            query_rounds_left = max(0, query_rounds_left - 1)
+            query_results = []
+            for query in queries:
+                if not isinstance(query, dict):
+                    continue
+                name = str(query.get("name") or "").strip()
+                if not name:
+                    continue
+                query_results.append(
+                    {
+                        "name": name,
+                        "result": _leaf_query_result(
+                            name,
+                            thesis_text=thesis_text,
+                            evidence_text=evidence_text,
+                            scratchpad_text=scratchpad_text,
+                        ),
+                    }
+                )
+            transcript.append(json.dumps({"query_results": query_results}, sort_keys=True))
+            continue
+
+        stuck = payload.get("stuck")
+        if isinstance(stuck, dict):
+            _append_leaf_friction_record(
+                diagnosis=str(stuck.get("diagnosis", "") or ""),
+                friction=str(stuck.get("friction", "") or ""),
+                round_index=round_index,
+                outcome="stuck",
+                scratchpad=scratchpad_text,
+            )
+            final_critique = json.dumps(payload, indent=2, sort_keys=True)
+            break
+
+        proposal = payload.get("improvement_proposal")
+        if isinstance(proposal, dict):
+            _append_leaf_improvement_proposal_record(
+                proposal=proposal,
+                round_index=round_index,
+                scratchpad=scratchpad_text,
+                outcome="proposal_only" if not isinstance(payload.get("commit"), dict) else "proposal_and_commit",
+            )
+            if not isinstance(payload.get("commit"), dict) and not isinstance(payload.get("stuck"), dict):
+                final_critique = json.dumps(
+                    {
+                        "proposal_only": {
+                            "accepted": False,
+                            "reason": "optional improvement proposal rider is zero-credit and does not complete a science turn",
+                        },
+                        "scratchpad": scratchpad_text,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                break
+
+        commit = payload.get("commit")
+        if isinstance(commit, dict):
+            final_critique = json.dumps(payload, indent=2, sort_keys=True)
+            break
+
+        if isinstance(payload.get("continue"), dict):
+            continue
+
+        final_critique = json.dumps(payload, indent=2, sort_keys=True)
+        break
+
+    if not final_critique:
+        final_critique = json.dumps(
+            {
+                "stuck": {
+                    "diagnosis": "leaf failed to emit a structured exit",
+                    "friction": "no admissible continue/commit/stuck response",
+                },
+                "scratchpad": scratchpad_text,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    print("--- END ATTACK ---\n")
+    print(f"💥 CRITIQUE MAGNITUDE: {len(final_critique)} chars.")
+    return final_critique
+
+
 def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axioms):
     v4_stage_index = _load_v4_stage_index()
     rubric_str = "\n".join(
@@ -1154,7 +1551,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
         Path(DERIVED_CONSTRAINTS_PATH)
     )
     prompt = f"""
-    {main_rubric_data["persona"]}
+    {select_persona(main_rubric_data, EVALUATION)}
     MANDATE: You are the Meta-Judge (Bar-Raiser). Synthesize the attacks and score the thesis.
     
     CRITICAL MANDATE (THE AXIOMATIC GATE):
@@ -2018,7 +2415,7 @@ def _why_crux_from_analysis(crux_analysis: dict | None) -> str:
 
 def identify_crux_analysis(text, evidence, main_rubric_data, aggregated_critiques):
     prompt = f"""
-    {main_rubric_data["persona"]}
+    {select_persona(main_rubric_data, EVALUATION)}
     TASK: Identify the single crux claim / eigenquestion of the thesis BEFORE reading any failure precedents.
 
     Return strict JSON with this schema:
@@ -2187,6 +2584,198 @@ def apply_semantic_gate_stabilization(evaluation):
     )
     evaluation["semantic_gate_summary"] = summary.__dict__
     return evaluation
+
+
+def deterministic_gate_failure_evaluation(test_result_summary: str, main_rubric_data: dict) -> dict:
+    """Fail closed without a prose judge when a deterministic gate already disposed.
+
+    ARC/worldmodel authority order: replay/holdout gates dominate judge
+    rationale. A project-local deterministic gate failure can be turned into a
+    compact verdict directly; spending a large sealed judge prompt here cannot
+    change candidate status and only buys commentary.
+    """
+    criteria_keys = list((main_rubric_data.get("criteria") or {}).keys())
+    return {
+        "score": 0,
+        "is_falsified": True,
+        "computationally_feasible": True,
+        "anti_gaming_preserved": True,
+        "architectural_abstraction_preserved": True,
+        "contains_infallible_aggregator": False,
+        "proof_is_self_referential": False,
+        "self_reference_rule_fired": "not_applicable",
+        "semantic_gate_status": "not_applicable",
+        "self_reference_evidence": {
+            "target_claim": "worldmodel candidate passes deterministic replay/holdout gates",
+            "asserted_variable": "project-local deterministic gate verdict",
+            "asserted_variable_origin": "external",
+            "independent_grounding_present": True,
+            "test_recomputes_thesis_authored_target": False,
+            "causal_variable_perturbed": True,
+            "crux_claim_directly_tested": True,
+            "local_component_scope_disclaimer_present": True,
+            "whole_system_availability_claim_present": False,
+            "verifies_authored_mapping_only": False,
+            "evidence_lines": [test_result_summary[:900]],
+            "counterevidence_lines": [],
+            "confidence": "high",
+        },
+        "quarantined_crux_dependency": False,
+        "quarantine_target": "",
+        "quarantine_legitimate": False,
+        "quarantine_rationale": "",
+        "quarantine_gates_causal_mechanism": False,
+        "quarantine_gates_named_discriminator": False,
+        "quarantine_gates_falsification_environment": False,
+        "current_discriminator_directly_confirmed": False,
+        "current_support_is_directional_only": False,
+        "decisive_confirmation_deferred_to_forward_observable": False,
+        "confirmation_rationale": "deterministic gate failed before prose review",
+        "unsupported_point_probability_claim": False,
+        "forecast_overclaim_rationale": "",
+        "drift_detected": False,
+        "drift_rationale": "candidate failed the project gate; no scope expansion was evaluated",
+        "criteria_passed": [],
+        "criteria_failed": criteria_keys,
+        "weakest_point": (
+            "PRE_JUDGE_DETERMINISTIC_GATE: project-local deterministic gates failed; "
+            "candidate disposed without prose judge."
+        ),
+        "verified_axioms": [],
+        "retired_axioms_approved": [],
+        "evidence_gaps": [
+            {
+                "gap_type": "deterministic_gate_failure",
+                "target": "candidate_worldmodel",
+                "description": test_result_summary[:1000],
+                "severity": "blocking",
+                "producer": "project_local_gate_harness",
+                "producer_rationale": "Replay/holdout gates outrank judge rationale.",
+                "fetch_query": "",
+                "adversarial_direction": True,
+                "recovery_kind": "repair_candidate_against_gate_payload",
+                "recovery_channel": "deterministic_gate",
+                "required_surface": "gate_harness.py deterministic payload",
+                "can_public_fetch": False,
+                "in_loop_consumable": True,
+            }
+        ],
+        "derived_constraints": [],
+        "logic_gaps": ["candidate failed deterministic replay/holdout gates before judge review"],
+        "debate_summary": "Deterministic gate failure short-circuited prose judging.",
+        "adversarial_alignment": "gate-first",
+        "friction_points": ["repair gate payload before asking for prose judgment"],
+        "probability_dag": {
+            "outcome": {"label": "candidate passes current gate", "probability": 0.0},
+            "nodes": [
+                {
+                    "id": "deterministic_gate",
+                    "label": "project-local deterministic gate passed",
+                    "probability": 0.0,
+                    "watch_signal": "visible_replay_exact and holdout_rollout_exact",
+                }
+            ],
+            "edges": [{"from": "deterministic_gate", "to": "outcome", "weight": 1.0}],
+        },
+        "score_contract": {
+            "deterministic_gate_short_circuit": True,
+            "judge_skipped": True,
+            "judge_skip_reason": "project-local deterministic gate failed",
+        },
+    }
+
+
+def run_project_local_deterministic_gate_harness(
+    project_dir: str,
+    candidate_path: str,
+    rubric: dict,
+) -> dict | None:
+    if not bool(rubric.get("pre_judge_gate_harness")):
+        return None
+    frozen_harness_path = os.path.join(project_dir, "gate_harness.py")
+    if not (os.path.exists(candidate_path) and os.path.exists(frozen_harness_path)):
+        return None
+    run_cmd = [
+        sys.executable,
+        frozen_harness_path,
+        "--emit-deterministic-gates",
+        "--candidate-path",
+        candidate_path,
+    ]
+    try:
+        res = subprocess.run(
+            run_cmd,
+            capture_output=True,
+            text=True,
+            timeout=15,
+            cwd=project_dir,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "test_result_summary": (
+                "❌ FAIL (harness defect): deterministic gate harness timed out before "
+                "returning a harness_ok payload."
+            ),
+            "test_suite_status": "timeout",
+            "candidate_failed": False,
+            "harness_ok": False,
+            "failed_gates": [],
+        }
+
+    try:
+        gate_payload = json.loads(res.stdout or "{}")
+    except json.JSONDecodeError:
+        gate_payload = {}
+    gates_obj = gate_payload.get("gates") if isinstance(gate_payload, dict) else None
+    gate_items = list(gates_obj.values()) if isinstance(gates_obj, dict) else (
+        list(gates_obj) if isinstance(gates_obj, list) else []
+    )
+    failed_gates = [
+        str(g.get("name") or f"gate_{idx}")
+        for idx, g in enumerate(gate_items)
+        if isinstance(g, dict) and not bool(g.get("pass", g.get("passed", False)))
+    ]
+    harness_ok = bool(isinstance(gate_payload, dict) and gate_payload.get("harness_ok") is True)
+    if res.returncode == 0 and harness_ok and not failed_gates:
+        return {
+            "test_result_summary": (
+                "✅ PASS: Deterministic gate harness passed.\n"
+                f"Output: {res.stdout}"
+            ),
+            "test_suite_status": "pass",
+            "candidate_failed": False,
+            "harness_ok": True,
+            "failed_gates": [],
+        }
+    if res.returncode == 0 and harness_ok:
+        detail = gate_payload.get("import_error") or gate_payload.get("error") or failed_gates
+        return {
+            "test_result_summary": (
+                "❌ FAIL (deterministic gate): Candidate failed the project-local "
+                "deterministic gates; the harness itself executed.\n"
+                f"Failed gates: {failed_gates}\n"
+                f"Detail: {detail}\n"
+                f"Payload: {json.dumps(gate_payload, sort_keys=True)[:4000]}"
+            ),
+            "test_suite_status": "fail_assert",
+            "candidate_failed": True,
+            "harness_ok": True,
+            "failed_gates": failed_gates,
+        }
+
+    detail = res.stderr or res.stdout
+    status = "fail_runtime" if res.returncode else "fail_other"
+    return {
+        "test_result_summary": (
+            "❌ FAIL (harness defect): deterministic gate harness did not "
+            "return a valid harness_ok payload.\n"
+            f"Error: {sanitize_stderr_for_mutator(detail, 'gate_harness')}"
+        ),
+        "test_suite_status": status,
+        "candidate_failed": False,
+        "harness_ok": False,
+        "failed_gates": [],
+    }
 
 
 def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status):
@@ -2548,10 +3137,22 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
 
 if __name__ == "__main__":
     thesis, evidence = read_file(WORKING_PATH), read_file(EVIDENCE_PATH)
+    # FIX A: bounded evidence digest for the judge prompts (env ZTARE_EVIDENCE_DIGEST,
+    # default on; 0 = legacy raw path). No-op for non-interactive projects; the
+    # deterministic gates keep reading full evidence off disk.
+    from ztare.worldmodel.evidence_digest import maybe_digest_evidence
+    evidence = maybe_digest_evidence(PROJECT_DIR, evidence)
     with open(MAIN_RUBRIC_PATH, "r") as f:
         main_rubric = json.load(f)
 
     critiques_text = ""
+    pre_prose_deterministic_gate = None
+    if args.deterministic_score_gates:
+        pre_prose_deterministic_gate = run_project_local_deterministic_gate_harness(
+            PROJECT_DIR,
+            test_path,
+            main_rubric,
+        )
 
     log_path = f"{PROJECT_DIR}/debate_log_iter_{int(time.time())}.md"
     with open(log_path, "w") as log:
@@ -2560,7 +3161,16 @@ if __name__ == "__main__":
             f"<!-- rubric: {args.rubric} | mutator: {MUTATOR_MODEL_ID} | judge: {JUDGE_MODEL_ID} -->\n\n"
         )
 
-        if args.dynamic and os.path.exists(DYNAMIC_RUBRIC_PATH):
+        if pre_prose_deterministic_gate and pre_prose_deterministic_gate["candidate_failed"]:
+            critiques_text = (
+                "### PRE-PROSE DETERMINISTIC GATE RESULTS\n"
+                f"{pre_prose_deterministic_gate['test_result_summary']}\n\n"
+                "Prose attacker skipped: project-local deterministic gates already "
+                "disposed this candidate."
+            )
+            log.write(f"## Pre-Prose Deterministic Gate\n{critiques_text}\n\n")
+            print("🔒 Pre-prose deterministic gate failed; skipping attacker critique.")
+        elif args.dynamic and os.path.exists(DYNAMIC_RUBRIC_PATH):
             _raw_committee = json.load(open(DYNAMIC_RUBRIC_PATH))["committee"]
             # Normalize: committee may be a single dict or a list of dicts
             attackers = _raw_committee if isinstance(_raw_committee, list) else [_raw_committee]
@@ -2586,7 +3196,7 @@ if __name__ == "__main__":
                 executor.shutdown(wait=False, cancel_futures=True)
         else:
             # --- FIXED: Robust Extraction & Assignment ---
-            prompt = f"Identify the single most catastrophic assumption in this thesis using tools if needed: {thesis}"
+            prompt = _worldmodel_evidence_bound_attack_prompt(thesis, main_rubric)
             attacker_config = None
             if JUDGE_PROVIDER_FAMILY == "google":
                 attacker_config = (
@@ -2612,6 +3222,7 @@ if __name__ == "__main__":
         test_path = f"{PROJECT_DIR}/test_model.py"
         test_result_summary = ""
         test_suite_status = "missing"
+        _project_local_deterministic_gate_failed = False
 
         # GP-211 substrate dispatch: when the rubric declares
         # cage_meta.substrate_class == "lean_proof", the test_model.py path is
@@ -2624,7 +3235,23 @@ if __name__ == "__main__":
             run_lean_substrate_iteration,
         )
         _lean_substrate = is_lean_proof_substrate(main_rubric)
-        if _lean_substrate:
+        _lean_iter = None
+        if pre_prose_deterministic_gate is not None:
+            test_result_summary = pre_prose_deterministic_gate["test_result_summary"]
+            test_suite_status = pre_prose_deterministic_gate["test_suite_status"]
+            _project_local_deterministic_gate_failed = bool(
+                pre_prose_deterministic_gate["candidate_failed"]
+            )
+            if _project_local_deterministic_gate_failed:
+                print(
+                    "❌ Deterministic gates failed: "
+                    f"{pre_prose_deterministic_gate['failed_gates']}"
+                )
+            elif pre_prose_deterministic_gate.get("harness_ok"):
+                print("✅ Deterministic gate harness passed.")
+            else:
+                print(f"🚨 Deterministic harness defect ({test_suite_status}).")
+        elif _lean_substrate:
             print("🧮 Lean-proof substrate detected — dispatching to lake build harness")
             _lean_iter = run_lean_substrate_iteration(
                 project_dir=Path(PROJECT_DIR),
@@ -2654,7 +3281,16 @@ if __name__ == "__main__":
                 # mutator's test_model.py, so substantive falsification
                 # of the thesis still surfaces as fail_assert.
                 frozen_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
-                if os.path.exists(frozen_harness_path):
+                _uses_deterministic_gate_harness = bool(main_rubric.get("pre_judge_gate_harness"))
+                if _uses_deterministic_gate_harness and os.path.exists(frozen_harness_path):
+                    run_cmd = [
+                        sys.executable,
+                        frozen_harness_path,
+                        "--emit-deterministic-gates",
+                        "--candidate-path",
+                        test_path,
+                    ]
+                elif os.path.exists(frozen_harness_path):
                     run_cmd = [sys.executable, frozen_harness_path, "--run-visible-assertions"]
                 else:
                     run_cmd = [sys.executable, test_path]
@@ -2668,7 +3304,50 @@ if __name__ == "__main__":
                     cwd=PROJECT_DIR,
                 )
 
-                if res.returncode == 0:
+                if _uses_deterministic_gate_harness and os.path.exists(frozen_harness_path):
+                    try:
+                        gate_payload = json.loads(res.stdout or "{}")
+                    except json.JSONDecodeError:
+                        gate_payload = {}
+                    gates_obj = gate_payload.get("gates") if isinstance(gate_payload, dict) else None
+                    gate_items = list(gates_obj.values()) if isinstance(gates_obj, dict) else (
+                        list(gates_obj) if isinstance(gates_obj, list) else []
+                    )
+                    failed_gates = [
+                        str(g.get("name") or f"gate_{idx}")
+                        for idx, g in enumerate(gate_items)
+                        if isinstance(g, dict) and not bool(g.get("pass", g.get("passed", False)))
+                    ]
+                    harness_ok = bool(isinstance(gate_payload, dict) and gate_payload.get("harness_ok") is True)
+                    if res.returncode == 0 and harness_ok and not failed_gates:
+                        test_result_summary = (
+                            "✅ PASS: Deterministic gate harness passed.\n"
+                            f"Output: {res.stdout}"
+                        )
+                        test_suite_status = "pass"
+                        print("✅ Deterministic gate harness passed.")
+                    elif res.returncode == 0 and harness_ok:
+                        detail = gate_payload.get("import_error") or gate_payload.get("error") or failed_gates
+                        test_result_summary = (
+                            "❌ FAIL (deterministic gate): Candidate failed the project-local "
+                            "deterministic gates; the harness itself executed.\n"
+                            f"Failed gates: {failed_gates}\n"
+                            f"Detail: {detail}\n"
+                            f"Payload: {json.dumps(gate_payload, sort_keys=True)[:4000]}"
+                        )
+                        test_suite_status = "fail_assert"
+                        _project_local_deterministic_gate_failed = True
+                        print(f"❌ Deterministic gates failed: {failed_gates}")
+                    else:
+                        detail = res.stderr or res.stdout
+                        test_result_summary = (
+                            "❌ FAIL (harness defect): deterministic gate harness did not "
+                            "return a valid harness_ok payload.\n"
+                            f"Error: {sanitize_stderr_for_mutator(detail, 'gate_harness')}"
+                        )
+                        test_suite_status = "fail_runtime" if res.returncode else "fail_other"
+                        print(f"🚨 Deterministic harness defect ({test_suite_status}): {detail[:80]}...")
+                elif res.returncode == 0:
                     test_result_summary = f"✅ PASS: The thesis survived its own falsification suite.\nOutput: {res.stdout}"
                     test_suite_status = "pass"
                     print("✅ Unit tests passed.")
@@ -2724,9 +3403,19 @@ if __name__ == "__main__":
         if os.path.exists(AXIOM_PATH):
             with open(AXIOM_PATH, "r") as f:
                 axioms = json.load(f)
-        evaluation = run_meta_judge(
-            thesis, evidence, main_rubric, critiques_text, axioms
-        )
+        if args.deterministic_score_gates and _project_local_deterministic_gate_failed:
+            evaluation = deterministic_gate_failure_evaluation(
+                test_result_summary,
+                main_rubric,
+            )
+            print(
+                "🔒 Deterministic gate short-circuit: candidate failed replay/holdout "
+                "before prose judge."
+            )
+        else:
+            evaluation = run_meta_judge(
+                thesis, evidence, main_rubric, critiques_text, axioms
+            )
         # Lean-substrate hard ceiling on the judge's score: when the
         # G-LEAN-PROOF gate failed (compile or axiom audit), the judge
         # cannot return >10 regardless of prose-quality opinion. Closes
@@ -2734,7 +3423,11 @@ if __name__ == "__main__":
         # success in the same response that contained "compiled: False".
         # The judge's rationale text is preserved (useful signal for the
         # next iter's mutator); only the numeric score is clamped.
-        if _lean_substrate and not _lean_iter["lean_proof_gate"].get("gate_passed", False):
+        if (
+            _lean_substrate
+            and _lean_iter is not None
+            and not _lean_iter["lean_proof_gate"].get("gate_passed", False)
+        ):
             _judge_score = evaluation.get("score") or 0
             if _judge_score > 10:
                 evaluation["lean_gate_clamp_applied"] = True

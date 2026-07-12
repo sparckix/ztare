@@ -79,3 +79,45 @@ def test_non_theorem_packet_still_strips_python_from_thesis():
     thesis = preserve_theorem_packet_source("", python_code, {})
 
     assert thesis == ""
+
+
+def test_strategy_receipt_docstring_wrapper_is_normalized_out_of_python():
+    raw = '''```python
+"""
+STRATEGY_CARD_DISCHARGE: {"failure_family_sha":"abc","outcome":"blocked","observed_status":"x","evidence_refs":["r"]}
+
+WORLD_MODEL_SPEC = {"always": []}
+
+def step(grid, action, t):
+    """
+    carrier docstring
+    """
+    return tuple(tuple(row) for row in grid)
+"""
+```'''
+
+    extraction = extract_best_python_candidate(raw, {"fit_expression_grammar": "grid_dsl"})
+
+    assert extraction.python_code is not None
+    assert extraction.auto_repaired is True
+    assert extraction.clean_thesis.startswith("STRATEGY_CARD_DISCHARGE:")
+    assert "STRATEGY_CARD_DISCHARGE" not in extraction.python_code
+    assert extraction.python_code.startswith("WORLD_MODEL_SPEC")
+    assert '"""' in extraction.python_code
+    compile(extraction.python_code, "<candidate>", "exec")
+
+
+def test_strategy_receipt_alias_line_is_normalized_out_of_python():
+    raw = '''```python
+STRATEGY_CARD_RECEIPT: {"failure_family_sha":"abc","outcome":"blocked","observed_status":"x","evidence_refs":["r"]}
+
+def step(grid, action, t):
+    return grid
+```'''
+
+    extraction = extract_best_python_candidate(raw, {"fit_expression_grammar": "grid_dsl"})
+
+    assert extraction.auto_repaired is True
+    assert extraction.clean_thesis.startswith("STRATEGY_CARD_RECEIPT:")
+    assert "STRATEGY_CARD_RECEIPT" not in extraction.python_code
+    compile(extraction.python_code or "", "<candidate>", "exec")

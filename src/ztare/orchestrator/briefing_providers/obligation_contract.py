@@ -25,6 +25,7 @@ from pathlib import Path
 
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext, BriefingProvider)
+from ztare.orchestrator.briefing_providers import section_unavailable
 
 
 class ObligationContractProvider(BriefingProvider):
@@ -44,7 +45,28 @@ class ObligationContractProvider(BriefingProvider):
         no prose sniffing). Conservative seed: stagnation only."""
         return {"v4_stalled": int(getattr(ctx, "stagnation_count", 0) or 0) > 2}
 
+    def _activation_corruption(self):
+        """None if the V4 activation file is absent (legit not-applicable)
+        or parses clean; else the parse/read exc. `_load_clauses` swallows
+        a corrupt file to `[]`, which would drop every mandatory obligation
+        silently — so we probe the file ourselves to tell the two apart."""
+        import yaml
+        from ztare.surfacing.pre_tick_obligation_compiler import ROUTING
+        p = ROUTING / "v4_activation.yaml"
+        if not p.is_file():
+            return None  # absent ⇒ genuinely not-applicable
+        try:
+            yaml.safe_load(p.read_text(encoding="utf-8"))
+            return None
+        except Exception as exc:  # noqa: BLE001
+            return exc
+
     def fragment(self, ctx: BriefingContext) -> str:
+        # A corrupt activation file must NEVER coerce to "no obligations"
+        # (that silently drops a possibly-binding mandatory obligation).
+        corrupt = self._activation_corruption()
+        if corrupt is not None:
+            return section_unavailable("OBLIGATION CONTRACT", corrupt)
         try:
             from ztare.surfacing.pre_tick_obligation_compiler import (
                 start_tick)
@@ -83,5 +105,8 @@ class ObligationContractProvider(BriefingProvider):
                     f"(anchor {o.get('catalog_anchor')}): "
                     f"{o['obligation']}\n  discharge ⇒ {req}")
             return "\n".join(lines) + "\n"
-        except Exception:
-            return ""  # degrade safe — the loop must never break here
+        except Exception as exc:  # noqa: BLE001
+            # The activation file parses (probed above), so a failure here
+            # is a compute/render fault while obligations may be binding —
+            # banner it rather than silently dropping a mandatory obligation.
+            return section_unavailable("OBLIGATION CONTRACT", exc)

@@ -1,8 +1,8 @@
-"""GP-180 numeric-submission contract helpers.
+"""Submission contract helpers.
 
 Centralizes logic that was previously inline in autoresearch_loop.py and
-mutation_suite_guard.py for detecting which submission contract a mutator
-is using and assembling R1-retry prompts that respect each numeric contract.
+mutation_suite_guard.py for detecting which submission contract a mutator is
+using and assembling R1-retry prompts through the shared retry envelope.
 
 Three valid numeric submissions for the test_model.py contract:
 
@@ -31,6 +31,12 @@ from __future__ import annotations
 
 import ast
 from typing import Optional
+
+from ztare.orchestrator.retry_contract import (
+    RetryContractSurface,
+    render_retry_contract_surface,
+)
+from ztare.worldmodel.retry_surface import format_worldmodel_retry_skeleton
 
 
 def requires_i_model_submission(rubric_data: dict | None) -> bool:
@@ -79,11 +85,31 @@ def requires_i_model_submission(rubric_data: dict | None) -> bool:
     return True
 
 
+def is_worldmodel_submission_contract(rubric_data: dict | None) -> bool:
+    """Return whether the substrate expects an executable grid/world model.
+
+    ARC-style projects are not scalar fits and not qualitative assertion
+    suites. Their judge-facing artifact is a deterministic transition carrier:
+    WORLD_MODEL_SPEC, PROGRAM, or step(...), scored by replay/rollout gates.
+    """
+    rubric = rubric_data or {}
+    substrate_class = str(rubric.get("substrate_class") or "").strip().lower()
+    fit_grammar = str(rubric.get("fit_expression_grammar") or "").strip().lower()
+    fit_score_mode = str(rubric.get("fit_score_mode") or "").strip().lower()
+    return (
+        substrate_class in {"interactive_environment", "worldmodel", "grid_world"}
+        or fit_grammar == "grid_dsl"
+        or fit_score_mode == "discrete_exact"
+    )
+
+
 def submission_contract_kind(rubric_data: dict | None) -> str:
     """Classify the top-level submission contract for prompt/validator routing."""
     rubric = rubric_data or {}
     if (rubric.get("theorem_packet_contract") or {}).get("required_top_level_functions"):
         return "theorem_packet"
+    if is_worldmodel_submission_contract(rubric):
+        return "worldmodel"
     if requires_i_model_submission(rubric):
         return "numeric_model"
     return "assertion_suite"
@@ -277,11 +303,7 @@ def _format_theorem_packet_retry_skeleton(
     contract = rubric_data.get("theorem_packet_contract") or {}
     required = list(contract.get("required_top_level_functions") or [])
     fn_lines = "\n".join(f"def {name}():\n    return {{...}}\n" for name in required)
-    return (
-        "Your prior theorem-packet submission was rejected by the R1 lint check "
-        "(NOT a scientific failure — just a contract/import violation). Specific error:\n\n"
-        f"  {r1_error}\n\n"
-        f"{_format_retry_error_history(retry_error_history)}"
+    body = (
         "This substrate is NOT a scalar PARAMETRIC_FORM/LAGRANGIAN fit. Do not switch "
         "to the generic numeric-declaration template. Preserve the theorem-packet science "
         "and repair the Python/import issue in place.\n\n"
@@ -293,12 +315,42 @@ def _format_theorem_packet_retry_skeleton(
         "  - define every required function at top level\n"
         "  - I_model/PARAMETRIC_FORM/LAGRANGIAN are optional compatibility only, not the main result\n"
         "  - no module-level calls, heavy assertions, or side effects at import\n"
-        "  - keep imports stdlib-only unless the evidence explicitly allows more\n\n"
-        "RESUBMIT THE COMPLETE SUBMISSION: thesis prose plus test_model.py. "
-        "The iteration counter has NOT advanced; this is a free retry.\n\n"
-        "Your prior submission was:\n"
-        f"```\n{(prior_content or '')[:max_prior_chars]}\n```\n"
+        "  - keep imports stdlib-only unless the evidence explicitly allows more"
     )
+    return render_retry_contract_surface(
+        RetryContractSurface(
+            rejected_subject="theorem-packet submission",
+            scientific_failure_phrase=(
+                "rejected by the R1 lint check; this is a contract/import "
+                "boundary, not a gate verdict"
+            ),
+            error_text=str(r1_error or ""),
+            error_history=_format_retry_error_history(retry_error_history),
+            body=body,
+            resubmit_instruction=(
+                "RESUBMIT THE COMPLETE SUBMISSION: thesis prose plus test_model.py."
+            ),
+            prior_content=(prior_content or "")[:max_prior_chars],
+        )
+    )
+
+
+_MISSING_BLOCK_REQUIREMENT_NOTE = (
+    'VIOLATED REQUIREMENT: "Missing required Python falsification suite block; '
+    'reject candidate before evaluation."\n'
+    "Your response MUST include a fenced ```python block containing the full "
+    "test_model.py code. The apparatus extracts the highest-scoring fenced "
+    "```python block from your inline response text; if no such block is present "
+    "the submission is rejected before any gate runs.\n\n"
+    "Minimal valid example (must appear literally in your response):\n"
+    "```python\n"
+    "def test_smoke():\n"
+    "    assert True\n"
+    "```\n\n"
+    "Include your actual code there — the snippet above is only the structural "
+    "minimum. The block must be non-empty and must not consist solely of the "
+    "sentinel: assert False, 'AI failed to provide a testable falsification suite.'\n\n"
+)
 
 
 def _format_assertion_suite_retry_skeleton(
@@ -308,11 +360,10 @@ def _format_assertion_suite_retry_skeleton(
     max_prior_chars: int,
     retry_error_history: list[str] | None = None,
 ) -> str:
-    return (
-        "Your prior qualitative falsification-suite submission was rejected by "
-        "the R1 lint check. Specific error:\n\n"
-        f"  {r1_error}\n\n"
-        f"{_format_retry_error_history(retry_error_history)}"
+    _is_missing_block = "Missing required Python falsification suite block" in (r1_error or "")
+    missing_block_note = _MISSING_BLOCK_REQUIREMENT_NOTE if _is_missing_block else ""
+    body = (
+        f"{missing_block_note}"
         "This substrate is evaluated through thesis prose plus a portable "
         "assertion suite. Do not switch to a scalar numeric-declaration template.\n\n"
         "Required shape:\n"
@@ -334,11 +385,20 @@ def _format_assertion_suite_retry_skeleton(
         "PARAMETER_NAMES, or INIT_RANGE unless the rubric explicitly asks for a "
         "numeric predictor\n"
         "  - no module-level execution except definitions and constants\n"
-        "  - keep the thesis prose; repair the Python block in place\n\n"
-        "RESUBMIT THE COMPLETE SUBMISSION: thesis prose plus test_model.py. "
-        "The iteration counter has NOT advanced; this is a free retry.\n\n"
-        "Your prior submission was:\n"
-        f"```\n{(prior_content or '')[:max_prior_chars]}\n```\n"
+        "  - keep the thesis prose; repair the Python block in place"
+    )
+    return render_retry_contract_surface(
+        RetryContractSurface(
+            rejected_subject="qualitative falsification-suite submission",
+            scientific_failure_phrase="rejected by the R1 lint check",
+            error_text=str(r1_error or ""),
+            error_history=_format_retry_error_history(retry_error_history),
+            body=body,
+            resubmit_instruction=(
+                "RESUBMIT THE COMPLETE SUBMISSION: thesis prose plus test_model.py."
+            ),
+            prior_content=(prior_content or "")[:max_prior_chars],
+        )
     )
 
 
@@ -349,31 +409,26 @@ def format_r1_retry_skeleton(
     max_prior_chars: int = 12000,
     rubric_data: dict | None = None,
     retry_error_history: list[str] | None = None,
+    project_dir: str | None = None,
 ) -> str:
-    """Assemble the R1 retry prompt for the numeric submission contract.
+    """Assemble the R1 retry prompt for the active submission contract."""
 
-    Detects the mixed parametric+variational case (mutator submitted both
-    declarations and PARAMETRIC_FORM has the bug) and prepends an explicit
-    advisory to keep the variational/Lagrangian declaration.
-
-    Args:
-      r1_error: the specific R1 lint error message from the apparatus
-      prior_content: the mutator's previous response text (truncated)
-      max_prior_chars: cap on the included prior_content (default 12000)
-      retry_error_history: same-iteration R1 errors seen so far, including
-        the current error. Used to avoid repeating an earlier failed repair
-        shape when the latest error changes.
-
-    Returns: complete retry prompt as a single string.
-    """
     contract_kind = submission_contract_kind(rubric_data)
     if contract_kind == "theorem_packet":
         return _format_theorem_packet_retry_skeleton(
             r1_error,
             prior_content,
-            rubric_data=rubric_data,
+            rubric_data=rubric_data or {},
             max_prior_chars=max_prior_chars,
             retry_error_history=retry_error_history,
+        )
+    if contract_kind == "worldmodel":
+        return format_worldmodel_retry_skeleton(
+            r1_error,
+            prior_content,
+            max_prior_chars=max_prior_chars,
+            retry_error_history=retry_error_history,
+            project_dir=project_dir,
         )
     if contract_kind == "assertion_suite":
         return _format_assertion_suite_retry_skeleton(
@@ -382,6 +437,9 @@ def format_r1_retry_skeleton(
             max_prior_chars=max_prior_chars,
             retry_error_history=retry_error_history,
         )
+
+    _is_missing_block = "Missing required Python falsification suite block" in (r1_error or "")
+    missing_block_note = _MISSING_BLOCK_REQUIREMENT_NOTE if _is_missing_block else ""
 
     mixed_advice = ""
     if is_mixed_parametric_variational_submission(prior_content or "", r1_error or ""):
@@ -393,11 +451,8 @@ def format_r1_retry_skeleton(
             "apparatus-ready expression via sympy; you do not need both declarations.\n"
         )
 
-    return (
-        "Your prior submission was rejected by the R1 lint check (NOT a "
-        "scientific failure — just a contract violation). Specific error:\n\n"
-        f"  {r1_error}\n\n"
-        f"{_format_retry_error_history(retry_error_history)}"
+    body = (
+        f"{missing_block_note}"
         f"{mixed_advice}"
         "═══════════════════════════════════════════════════════════════\n"
         "MINIMAL VALID NUMERIC DECLARATION — copy ONE contract below\n"
@@ -415,22 +470,28 @@ def format_r1_retry_skeleton(
         "PARAMETRIC_FORM — those trigger the AST whitelist rejection. Submit the\n"
         "Lagrangian instead and let the apparatus handle the algebra.\n\n"
         f"{_UNIVERSAL_DONTS}\n"
-        "RESUBMIT THE COMPLETE SUBMISSION. Your response MUST contain "
-        "BOTH of the following blocks:\n"
+        "Your response MUST contain BOTH of the following blocks:\n"
         "  1. A thesis prose section (markdown, scientific argument)\n"
         "  2. A Python falsification suite section (test_model.py) — "
         "starting with one numeric declaration above.\n\n"
-        "Common contract bugs (this iter has now seen all three — DO NOT repeat):\n"
-        "  - PARAMETER_NAMES wrapped in `if __name__ == '__main__':` → must be at module scope\n"
-        "  - Module-level I_model(...) call (e.g., for sanity check) → triggers KeyError on empty MODEL_PARAMS\n"
-        "  - PARAMETRIC_FORM calls a helper (e.g., _model_expr(...)) → whitelist rejects it; inline the expression\n"
-        "  - PARAMETRIC_FORM with unmatched paren → must be valid Python expression string\n\n"
-        "Fix the specific contract violation above. Preserve the SCIENCE "
+        "Common contract bugs:\n"
+        "  - PARAMETER_NAMES wrapped in `if __name__ == '__main__':` -> must be at module scope\n"
+        "  - Module-level I_model(...) call -> triggers KeyError on empty MODEL_PARAMS\n"
+        "  - PARAMETRIC_FORM calls a helper -> whitelist rejects it; inline the expression\n"
+        "  - PARAMETRIC_FORM with unmatched paren -> must be valid Python expression string\n\n"
+        "Fix the specific contract violation above. Preserve the science "
         "from your prior submission (thesis prose, parametric_form math, "
-        "param names). The iteration counter has NOT advanced; this is a "
-        "free retry.\n\n"
-        "Your prior submission was:\n"
-        f"```\n{(prior_content or '')[:max_prior_chars]}\n```\n"
+        "param names)."
+    )
+    return render_retry_contract_surface(
+        RetryContractSurface(
+            rejected_subject="submission",
+            error_text=str(r1_error or ""),
+            error_history=_format_retry_error_history(retry_error_history),
+            body=body,
+            resubmit_instruction="RESUBMIT THE COMPLETE SUBMISSION.",
+            prior_content=(prior_content or "")[:max_prior_chars],
+        )
     )
 
 
@@ -451,7 +512,7 @@ def _format_retry_error_history(errors: list[str] | None) -> str:
         "Same-iteration R1 strike history:",
     ]
     for idx, err in enumerate(cleaned[-3:], start=max(1, len(cleaned) - 2)):
-        tail = err[:500] + ("..." if len(err) > 500 else "")
+        tail = _compact_retry_error(err, limit=260)
         lines.append(f"  {idx}. {tail}")
     lines.extend(
         [
@@ -462,3 +523,10 @@ def _format_retry_error_history(errors: list[str] | None) -> str:
         ]
     )
     return "\n".join(lines)
+
+
+def _compact_retry_error(text: str, *, limit: int = 260) -> str:
+    cleaned = " ".join(str(text or "").split())
+    if len(cleaned) > limit:
+        return cleaned[:limit].rstrip() + "..."
+    return cleaned

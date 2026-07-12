@@ -8,6 +8,7 @@ from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
     dispatch_model,
     dispatch_result_receipt,
+    resolve_agent_execution_mode,
     resolve_dispatch_capability,
 )
 from ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES, LLMRuntime, resolve_model_id
@@ -113,6 +114,7 @@ def safe_generate_committee(prompt, config=None):
             agent_id=f"autoresearch_committee_{args.project}",
             timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
             enabled_env=dispatch_env_for_call_site("committee"),
+            agent_execution_mode=resolve_agent_execution_mode("committee"),
         )
         if result.returncode != 0:
             raise RuntimeError(

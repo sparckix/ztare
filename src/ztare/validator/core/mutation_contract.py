@@ -63,13 +63,24 @@ class MutationValidationRecord:
 
 
 def parse_mutation_declaration(payload: dict[str, object]) -> MutationDeclaration:
-    scope_delta = MutationScopeDelta(str(payload["scope_delta"]))
-    claim_delta_type = ClaimDeltaType(str(payload["claim_delta_type"]))
+    # Missing/invalid keys are kernel-derived, never a reject: the breadth
+    # normalizer downstream replaces declared scope with the computed one
+    # anyway, so a permissive default here only ever gets corrected upward.
+    try:
+        scope_delta = MutationScopeDelta(str(payload["scope_delta"]))
+    except (KeyError, ValueError):
+        scope_delta = MutationScopeDelta.MULTI_ARTIFACT
+    try:
+        claim_delta_type = ClaimDeltaType(str(payload["claim_delta_type"]))
+    except (KeyError, ValueError):
+        claim_delta_type = ClaimDeltaType.REFRAMING
     primitive_invoked = payload.get("primitive_invoked")
     thesis_control_mode = ThesisControlMode(
         str(payload.get("thesis_control_mode") or ThesisControlMode.EXPLOIT_CURRENT_THESIS.value)
     )
     touched_artifacts_payload = payload.get("touched_artifacts", ())
+    if isinstance(touched_artifacts_payload, str):
+        touched_artifacts_payload = [touched_artifacts_payload]
     if not isinstance(touched_artifacts_payload, (list, tuple)):
         raise ValueError("`touched_artifacts` must be a list.")
     touched_artifacts = tuple(MutationArtifact(str(item)) for item in touched_artifacts_payload)
@@ -99,30 +110,56 @@ def evaluate_mutation_declaration(
         tuple(_map_path_to_artifact(path) for path in changed_paths)
     )
 
+    # ponytail: normalize envelope faults — bookkeeping the kernel can compute
+    # from the artifact must be computed, not extracted under threat of strike.
+    # Strikes are reserved for science-content failures (regression, gate failures).
+
+    attribution_notes: list[str] = []
+
     if declaration.primitive_invoked and declaration.primitive_invoked not in approved_primitive_keys:
-        return MutationValidationRecord(
-            mismatch_code=MutationMismatchCode.INVALID_PRIMITIVE_DECLARATION,
-            declared_scope_delta=declaration.scope_delta,
-            declared_claim_delta_type=declaration.claim_delta_type,
-            declared_thesis_control_mode=declaration.thesis_control_mode,
-            declared_primitive_invoked=declaration.primitive_invoked,
-            declared_touched_artifacts=declaration.touched_artifacts,
-            actual_touched_artifacts=actual_touched_artifacts,
-            breadth_delta=_estimate_claim_breadth(after_text) - _estimate_claim_breadth(before_text),
-            rationale="Declared primitive key is not in the approved primitive index.",
+        # INVALID_PRIMITIVE_DECLARATION: advisory metadata gone stale — drop the
+        # invalid key, attach a mismatch note, and proceed.
+        import logging as _logging
+        _logging.getLogger(__name__).info(
+            "envelope-normalize INVALID_PRIMITIVE_DECLARATION: dropping %r (not in approved index); "
+            "derived_by=kernel",
+            declaration.primitive_invoked,
+        )
+        attribution_notes.append(
+            f"INVALID_PRIMITIVE_DECLARATION normalized: dropped undeclared primitive "
+            f"{declaration.primitive_invoked!r} (not in approved index); derived_by=kernel"
+        )
+        declaration = MutationDeclaration(
+            scope_delta=declaration.scope_delta,
+            claim_delta_type=declaration.claim_delta_type,
+            primitive_invoked=None,
+            touched_artifacts=declaration.touched_artifacts,
+            thesis_control_mode=declaration.thesis_control_mode,
         )
 
     if not _artifacts_within_declared_scope(declaration, actual_touched_artifacts):
-        return MutationValidationRecord(
-            mismatch_code=MutationMismatchCode.UNDECLARED_ARTIFACT_BREADTH,
-            declared_scope_delta=declaration.scope_delta,
-            declared_claim_delta_type=declaration.claim_delta_type,
-            declared_thesis_control_mode=declaration.thesis_control_mode,
-            declared_primitive_invoked=declaration.primitive_invoked,
-            declared_touched_artifacts=declaration.touched_artifacts,
-            actual_touched_artifacts=actual_touched_artifacts,
-            breadth_delta=_estimate_claim_breadth(after_text) - _estimate_claim_breadth(before_text),
-            rationale="Actual touched artifacts exceed the declared mutation scope.",
+        # UNDECLARED_ARTIFACT_BREADTH: kernel already computed actual_touched_artifacts;
+        # upgrade scope_delta to cover them instead of rejecting.
+        upgraded_scope = _infer_scope_for_artifacts(actual_touched_artifacts)
+        import logging as _logging
+        _logging.getLogger(__name__).info(
+            "envelope-normalize UNDECLARED_ARTIFACT_BREADTH: upgrading scope %s→%s for actual=%s; "
+            "derived_by=kernel",
+            declaration.scope_delta.value,
+            upgraded_scope.value,
+            [a.value for a in actual_touched_artifacts],
+        )
+        attribution_notes.append(
+            f"UNDECLARED_ARTIFACT_BREADTH normalized: scope upgraded "
+            f"{declaration.scope_delta.value}→{upgraded_scope.value} to cover actual artifacts "
+            f"{[a.value for a in actual_touched_artifacts]}; derived_by=kernel"
+        )
+        declaration = MutationDeclaration(
+            scope_delta=upgraded_scope,
+            claim_delta_type=declaration.claim_delta_type,
+            primitive_invoked=declaration.primitive_invoked,
+            touched_artifacts=actual_touched_artifacts,
+            thesis_control_mode=declaration.thesis_control_mode,
         )
 
     breadth_delta = _estimate_claim_breadth(after_text) - _estimate_claim_breadth(before_text)
@@ -170,6 +207,9 @@ def evaluate_mutation_declaration(
             rationale="Declared widening conflicts with a measured decrease in claim breadth.",
         )
 
+    base_rationale = "Mutation declaration matches touched artifacts and measured breadth change."
+    if attribution_notes:
+        base_rationale = base_rationale + " [envelope-normalized: " + "; ".join(attribution_notes) + "]"
     return MutationValidationRecord(
         mismatch_code=MutationMismatchCode.CLEAN,
         declared_scope_delta=declaration.scope_delta,
@@ -179,8 +219,33 @@ def evaluate_mutation_declaration(
         declared_touched_artifacts=declaration.touched_artifacts,
         actual_touched_artifacts=actual_touched_artifacts,
         breadth_delta=breadth_delta,
-        rationale="Mutation declaration matches touched artifacts and measured breadth change.",
+        rationale=base_rationale,
     )
+
+
+def _infer_scope_for_artifacts(
+    actual_touched_artifacts: tuple[MutationArtifact, ...],
+) -> MutationScopeDelta:
+    """Derive the tightest MutationScopeDelta that covers all actual artifacts.
+
+    Used by the envelope normalizer when the declared scope is too narrow.
+    Falls back to MULTI_ARTIFACT for unusual artifact combinations.
+    """
+    artifact_set = set(actual_touched_artifacts)
+    thesis_only_set = {MutationArtifact.THESIS_MD, MutationArtifact.CURRENT_ITERATION_MD}
+    test_harness_set = thesis_only_set | {MutationArtifact.TEST_MODEL_PY}
+    evidence_boundary_set = thesis_only_set | {MutationArtifact.EVIDENCE_TXT}
+    rubric_interface_set = {MutationArtifact.RUBRIC_JSON, MutationArtifact.RUNNER_RUNTIME}
+
+    if artifact_set.issubset(thesis_only_set):
+        return MutationScopeDelta.THESIS_ONLY
+    if artifact_set.issubset(test_harness_set):
+        return MutationScopeDelta.TEST_HARNESS
+    if artifact_set.issubset(evidence_boundary_set):
+        return MutationScopeDelta.EVIDENCE_BOUNDARY
+    if artifact_set.issubset(rubric_interface_set):
+        return MutationScopeDelta.RUBRIC_INTERFACE
+    return MutationScopeDelta.MULTI_ARTIFACT
 
 
 def _artifacts_within_declared_scope(

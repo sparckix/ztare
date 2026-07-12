@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -25,23 +26,44 @@ class FramerRecommendationProvider(BriefingProvider):
     name = "framer_recommendation"
     priority = 320  # after fit telemetry + gate gap; before iter trajectory
 
-    def _load_report(self, ctx: BriefingContext) -> dict:
-        path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "framing_report.json"
+    def _report_path(self, ctx: BriefingContext):
+        return (ctx.workspace_dir or ctx.project_dir / "workspace") / "framing_report.json"
+
+    def _load_report(self, ctx: BriefingContext, *, strict: bool = False) -> dict:
+        path = self._report_path(ctx)
         if not path.exists():
             return {}
         try:
             return json.loads(path.read_text(encoding="utf-8"))
+        except SystemExit:
+            raise
         except Exception:
+            if strict:
+                raise
             return {}
 
     def applies(self, ctx: BriefingContext) -> bool:
         if not bool(ctx.rubric.get("enable_framer", False)):
             return False
-        report = self._load_report(ctx)
+        path = self._report_path(ctx)
+        if not path.exists():
+            return False
+        try:
+            report = self._load_report(ctx, strict=True)
+        except SystemExit:
+            raise
+        except Exception:
+            # Corrupt (not absent) report: apply so fragment() banners.
+            return True
         return bool(report.get("framer_engaged"))
 
     def fragment(self, ctx: BriefingContext) -> str:
-        report = self._load_report(ctx)
+        try:
+            report = self._load_report(ctx, strict=True)
+        except SystemExit:
+            raise
+        except Exception as exc:
+            return section_unavailable("GP-152 FRAMER RECOMMENDATION", exc)
         h_in = report.get("h_in") or "identity"
         h_out = report.get("h_out") or "identity"
         mdl_gain = report.get("MDL_gain_bits", 0.0)
@@ -51,8 +73,14 @@ class FramerRecommendationProvider(BriefingProvider):
 
         try:
             mdl_gain_f = float(mdl_gain)
-        except (TypeError, ValueError):
-            mdl_gain_f = 0.0
+        except (TypeError, ValueError) as exc:
+            # A malformed MDL number must NOT be coerced to 0.0 — that would
+            # silently downgrade a possibly-DECISIVE verdict to "suggestive".
+            # Surface the malformation; the mutator keeps its prior guidance.
+            return section_unavailable(
+                "GP-152 FRAMER RECOMMENDATION",
+                type(exc)(f"malformed MDL_gain_bits {mdl_gain!r}"),
+            )
 
         # Frame Adjudicator v2 threshold: bits at which framer signal is
         # treated as "decisive" (Kass-Raftery decisive ≈ 7 bits; we use
@@ -68,8 +96,15 @@ class FramerRecommendationProvider(BriefingProvider):
                 balanced_clear = float(mdl_gain_balanced) >= max(
                     10.0, threshold_bits * 0.5
                 )
-            except (TypeError, ValueError):
-                balanced_clear = True
+            except (TypeError, ValueError) as exc:
+                # Do NOT coerce a malformed balanced-MDL to "confirmed" — that
+                # would over-confirm a decisive switch. Banner the malformation.
+                return section_unavailable(
+                    "GP-152 FRAMER RECOMMENDATION",
+                    type(exc)(
+                        f"malformed MDL_gain_bits_balanced {mdl_gain_balanced!r}"
+                    ),
+                )
         decisive = mdl_gain_f >= threshold_bits and balanced_clear
 
         lines = [

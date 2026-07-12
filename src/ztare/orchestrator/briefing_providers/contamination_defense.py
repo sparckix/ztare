@@ -28,6 +28,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -64,10 +65,12 @@ class ContaminationDefenseBriefingProvider(BriefingProvider):
                 for line in denylist_path.read_text(encoding="utf-8").splitlines()
                 if line.strip() and not line.strip().startswith("#")
             ]
-        except Exception:
-            return ""
+        except Exception as exc:
+            # applies() confirmed a denylist file exists → read failure here
+            # means it is unreadable/corrupt.
+            return section_unavailable("CONTAMINATION DEFENSE", exc)
         if not terms:
-            return ""
+            return ""  # empty denylist — nothing is forbidden (legit)
 
         # Find the most recent submission
         sub_dir = ctx.workspace_dir / "submissions"
@@ -77,15 +80,15 @@ class ContaminationDefenseBriefingProvider(BriefingProvider):
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
             )
-        except Exception:
-            return ""
+        except Exception as exc:
+            return section_unavailable("CONTAMINATION DEFENSE", exc)
         if not subs:
-            return ""
+            return ""  # no prior submission matched — nothing to scan (legit)
         latest = subs[0]
         try:
             text = latest.read_text(encoding="utf-8")
-        except Exception:
-            return ""
+        except Exception as exc:
+            return section_unavailable("CONTAMINATION DEFENSE", exc)
 
         # Scan: case-insensitive whole-word match; record line numbers for
         # surgical-edit guidance.

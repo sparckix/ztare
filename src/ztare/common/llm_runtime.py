@@ -4,6 +4,7 @@ import concurrent.futures
 import json
 import os
 import queue
+import re
 import threading
 import time
 from dataclasses import dataclass
@@ -36,7 +37,7 @@ except Exception:  # anthropic SDK not installed / import error
     anthropic = None  # type: ignore[assignment]
 
 
-def _bootstrap_dotenv_if_needed() -> None:
+def _bootstrap_dotenv_if_needed() -> str | None:
     """Load .env from the project root when API keys are absent from os.environ.
 
     Required because daemon-spawned subprocess chains (daemon → claude CLI →
@@ -57,28 +58,28 @@ def _bootstrap_dotenv_if_needed() -> None:
             and (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))):
         # GEMINI/GOOGLE included so the embedding engine (semantic shelf / atlases) gets its key too —
         # omitting it let the gate pass while the shelf was silently dead ("no GOOGLE_API_KEY").
-        return
+        return None
     try:
         from dotenv import load_dotenv  # python-dotenv (already in requirements)
     except ImportError:
-        return  # graceful: if dotenv missing, fall back to whatever os.environ has
-    # Walk up from CWD looking for .env (stops at filesystem root).
-    cwd = Path.cwd()
-    for d in [cwd] + list(cwd.parents):
-        candidate = d / ".env"
-        if candidate.is_file():
-            load_dotenv(candidate, override=False)  # don't clobber explicit env
-            return
-    # Last resort: try the canonical project root if importable
+        return None  # graceful: if dotenv missing, fall back to whatever os.environ has
     try:
         candidate = Path(__file__).resolve().parents[3] / ".env"
         if candidate.is_file():
             load_dotenv(candidate, override=False)
+            return str(candidate)
     except Exception:  # noqa: BLE001
-        pass
+        return None
+    return None
 
 
-_bootstrap_dotenv_if_needed()
+def bootstrap_dotenv_from_repo_root() -> str | None:
+    """Explicit entrypoint for repo-root dotenv resolution.
+
+    Importing this module must not depend on the process cwd. Callers that need
+    environment hydration should invoke this once from a known entrypoint.
+    """
+    return _bootstrap_dotenv_if_needed()
 
 
 MODEL_MAP = {
@@ -91,6 +92,15 @@ MODEL_MAP = {
     "gpt4.1": "gpt-4.1",
     "gpt4.1-mini": "gpt-4.1-mini",
     "gpt5.5": "gpt-5.5",
+    # GPT-5.6 generation (sol/terra/luna) — verified 2026-07-10 via codex CLI 0.144.0.
+    # sol: most capable, high reasoning ceiling. terra: balanced. luna: fast/light.
+    "sol": "gpt-5.6-sol",
+    "terra": "gpt-5.6-terra",
+    "luna": "gpt-5.6-luna",
+    "gpt-5.6-sol": "gpt-5.6-sol",
+    "gpt-5.6-terra": "gpt-5.6-terra",
+    "gpt-5.6-luna": "gpt-5.6-luna",
+    "gpt5.6": "gpt-5.6-sol",  # ponytail: default to sol for bare version alias
     # GP-134 reasoning-model support (2026-04-23): added o3 family for
     # reasoning-heavy substrates (e.g., gp090_01 sopfr cold-recovery)
     # where chain-of-thought depth matters more than token throughput.
@@ -130,6 +140,116 @@ MODEL_MAP = {
     "grok-build-0.1": "grok-build-0.1",
 }
 
+# Engine-neutral effort vocabulary. Product surfaces use only these three
+# values; transport adapters lower `high` to the deepest documented tier of
+# the selected subscription runtime. Native spellings remain accepted by the
+# low-level runtime for expert/debug callers, never in campaign contracts.
+NORMALIZED_REASONING_EFFORTS = ("low", "medium", "high", "ultra")
+SUBSCRIPTION_MODEL_ALIASES = {
+    "fable": ("claude", "claude-fable-5"),
+    "claude-fable-5": ("claude", "claude-fable-5"),
+}
+_SUBSCRIPTION_EFFORTS = {
+    "codex": {
+        "low": "low",
+        "medium": "medium",
+        "high": "xhigh",
+        "ultra": "ultra",
+        "minimal": "minimal",
+        "xhigh": "xhigh",
+        "max": "max",
+    },
+    "claude": {
+        "low": "low",
+        "medium": "medium",
+        "high": "max",
+        "ultra": "max",
+        "xhigh": "xhigh",
+        "max": "max",
+    },
+}
+
+_SUBSCRIPTION_MODEL_EFFORTS = {
+    # Luna exposes `max` as its deepest native tier.  Keep campaign-facing
+    # `ultra` engine-neutral and lower it only after model routing.
+    ("codex", "gpt-5.6-luna"): {
+        "high": "high",
+        "ultra": "max",
+        "max": "max",
+    },
+}
+
+_SUBSCRIPTION_MODEL_MINIMUM_CLI = {
+    ("codex", "gpt-5.6-sol"): (0, 144, 0),
+    ("codex", "gpt-5.6-terra"): (0, 144, 0),
+    ("codex", "gpt-5.6-luna"): (0, 144, 0),
+}
+
+
+def subscription_model_route(
+    model: str,
+    *,
+    requested_runtime: str = "",
+) -> tuple[str, str]:
+    """Resolve a subscription model alias and its compatible agent runtime."""
+
+    raw = str(model or "").strip()
+    lowered = raw.lower()
+    alias = SUBSCRIPTION_MODEL_ALIASES.get(lowered)
+    if alias is not None:
+        return alias
+    if lowered.startswith("claude"):
+        return "claude", raw
+    if lowered.startswith(("gpt", "o1", "o3", "o4", "codex", "sol", "terra", "luna")):
+        return "codex", MODEL_MAP.get(lowered, raw)
+    runtime = str(requested_runtime or "codex").strip().lower()
+    return runtime, raw
+
+
+def subscription_reasoning_effort(
+    runtime: str,
+    value: str,
+    *,
+    model: str = "",
+) -> str | None:
+    """Lower normalized effort to one subscription CLI's native vocabulary."""
+
+    runtime_key = str(runtime).strip().lower()
+    value_key = str(value).strip().lower()
+    model_key = MODEL_MAP.get(str(model).strip().lower(), str(model).strip().lower())
+    model_table = _SUBSCRIPTION_MODEL_EFFORTS.get((runtime_key, model_key))
+    if model_table is not None and value_key in model_table:
+        return model_table[value_key]
+    table = _SUBSCRIPTION_EFFORTS.get(runtime_key)
+    if table is None:
+        return None
+    return table.get(value_key)
+
+
+def validate_subscription_model_cli(
+    runtime: str,
+    model: str,
+    cli_version: str,
+) -> None:
+    """Reject a subscription route that the installed agent CLI cannot serve."""
+
+    key = (str(runtime).strip().lower(), str(model).strip().lower())
+    minimum = _SUBSCRIPTION_MODEL_MINIMUM_CLI.get(key)
+    if minimum is None:
+        return
+    match = re.search(r"(?<![0-9])(\d+)\.(\d+)\.(\d+)(?![0-9])", str(cli_version))
+    if match is None:
+        raise ValueError(
+            f"cannot verify {key[0]} CLI compatibility for {key[1]}: {cli_version!r}"
+        )
+    installed = tuple(int(value) for value in match.groups())
+    if installed < minimum:
+        required = ".".join(str(value) for value in minimum)
+        found = ".".join(str(value) for value in installed)
+        raise ValueError(
+            f"{key[1]} requires {key[0]} CLI >= {required}; found {found}"
+        )
+
 DIRECTOR_MODEL_MAP = {
     "gemini": "gemini-3.1-pro-preview",
     "gemini-lite": "gemini-3.1-pro-preview",
@@ -140,6 +260,13 @@ DIRECTOR_MODEL_MAP = {
     "gpt4.1": "gpt-4.1",
     "gpt4.1-mini": "gpt-4.1-mini",
     "gpt5.5": "gpt-5.5",
+    "sol": "gpt-5.6-sol",
+    "terra": "gpt-5.6-terra",
+    "luna": "gpt-5.6-luna",
+    "gpt-5.6-sol": "gpt-5.6-sol",
+    "gpt-5.6-terra": "gpt-5.6-terra",
+    "gpt-5.6-luna": "gpt-5.6-luna",
+    "gpt5.6": "gpt-5.6-sol",
     "o1": "o1",
     "o3": "o3",
     "o3-mini": "o3-mini",
@@ -268,6 +395,17 @@ FALLBACK_MODEL_CHAINS = {
     "grok-build-0.1": ("grok-4.3", "gemini-3.1-pro-preview", "gpt-4.1"),
 }
 
+# Operator directive (2026-07-10): cross-provider API fallback is DISABLED by
+# default (gpt→gemini/claude silently substituting family is wrong). The ONLY
+# permitted fallback when API is dead/unreachable is the Codex SUBSCRIPTION
+# runtime with the SAME requested model family. Gate re-enabled via:
+#   ZTARE_ALLOW_CROSS_PROVIDER_FALLBACK=1   (restores old behaviour)
+#   ZTARE_DISABLE_SUBSCRIPTION_FALLBACK=1   (no fallback at all — fail loud)
+# Only models served by the Codex subscription (OpenAI family: gpt-*/o1/o3/o4)
+# qualify for subscription fallback; non-OpenAI families fail loud immediately.
+# ponytail: constant, not a function — the set never changes at runtime
+CODEX_SERVABLE_FAMILIES: frozenset[str] = frozenset({"openai"})
+
 
 def resolve_model_id(model_family: str) -> str:
     if model_family not in MODEL_MAP:
@@ -321,6 +459,35 @@ def is_grok_model(model_id: str) -> bool:
 
 def is_openai_model(model_id: str) -> bool:
     return model_id.startswith("gpt") or model_id.startswith("o1") or model_id.startswith("o3") or model_id.startswith("o4")
+
+
+def api_reasoning_effort(model_id: str, value: str) -> str | None:
+    """Lower normalized effort for the API surface selected by ``model_id``.
+
+    Providers without a supported fine-grained effort parameter return None;
+    callers still get the requested model, without fabricated control.
+    """
+
+    requested = str(value or "").strip().lower()
+    if is_claude_model(model_id):
+        return {
+            "low": "low", "medium": "medium", "high": "max", "max": "max",
+            "ultra": "max",
+        }.get(requested)
+    if is_openai_model(model_id):
+        return {
+            "minimal": "minimal", "low": "low", "medium": "medium",
+            "high": "high", "xhigh": "xhigh", "ultra": "ultra",
+        }.get(requested)
+    if is_grok_model(model_id):
+        return {
+            "low": "low", "medium": "medium", "high": "high", "ultra": "high"
+        }.get(requested)
+    if not (is_deepseek_model(model_id) or is_kimi_model(model_id)):
+        return {
+            "low": "LOW", "medium": "MEDIUM", "high": "HIGH", "ultra": "HIGH",
+        }.get(requested)
+    return None
 
 
 def is_reasoning_openai_model(model_id: str) -> bool:
@@ -971,6 +1138,11 @@ class LLMRuntime:
         timeout_seconds: int | None = None,
     ):
         provider_prompt = _prompt_with_response_contract(prompt, config)
+        requested_effort = (
+            str(config.get("reasoning_effort") or "")
+            if isinstance(config, dict) else ""
+        )
+        native_effort = api_reasoning_effort(model_id, requested_effort)
         if is_claude_model(model_id):
             client = self.anthropic_client()
             if client is None:
@@ -982,6 +1154,13 @@ class LLMRuntime:
             }
             if timeout_seconds is not None:
                 kwargs["timeout"] = timeout_seconds
+            if native_effort is not None:
+                output_config = dict(
+                    config.get("output_config") or {}
+                    if isinstance(config, dict) else {}
+                )
+                output_config["effort"] = native_effort
+                kwargs["output_config"] = output_config
             return client.messages.create(**kwargs)
 
         if is_deepseek_model(model_id):
@@ -1016,9 +1195,11 @@ class LLMRuntime:
             else:
                 kwargs["max_tokens"] = max_tokens
             if isinstance(config, dict):
-                for key in ("reasoning_effort", "verbosity", "response_format", "temperature"):
+                for key in ("verbosity", "response_format", "temperature"):
                     if key in config and config[key] is not None:
                         kwargs[key] = config[key]
+            if native_effort is not None:
+                kwargs["reasoning_effort"] = native_effort
             if timeout_seconds is not None:
                 kwargs["timeout"] = timeout_seconds
             return client.chat.completions.create(**kwargs)
@@ -1057,9 +1238,11 @@ class LLMRuntime:
             }
             kwargs.update(_chat_completion_response_params(config))
             if isinstance(config, dict):
-                for key in ("response_format", "temperature", "top_p", "reasoning_effort"):
+                for key in ("response_format", "temperature", "top_p"):
                     if key in config and config[key] is not None:
                         kwargs[key] = config[key]
+            if native_effort is not None:
+                kwargs["reasoning_effort"] = native_effort
             if timeout_seconds is not None:
                 kwargs["timeout"] = timeout_seconds
             return client.chat.completions.create(**kwargs)
@@ -1067,10 +1250,18 @@ class LLMRuntime:
         client = self.gemini_client()
         if client is None:
             raise RuntimeError("GEMINI_API_KEY is not set.")
+        gemini_config = config
+        if isinstance(config, dict) and requested_effort:
+            gemini_config = dict(config)
+            gemini_config.pop("reasoning_effort", None)
+            if native_effort is not None:
+                thinking_config = dict(gemini_config.get("thinking_config") or {})
+                thinking_config["thinking_level"] = native_effort
+                gemini_config["thinking_config"] = thinking_config
         return client.models.generate_content(
             model=model_id,
             contents=prompt,
-            config=config,
+            config=gemini_config,
         )
 
     def _response_to_text_result(
@@ -1089,6 +1280,14 @@ class LLMRuntime:
             usage = getattr(response, "usage", None)
             model_name = getattr(response, "model", None) or requested_model_id
             text = response.content[0].text if getattr(response, "content", None) else ""
+            if not (text or "").strip():
+                stop_reason = getattr(response, "stop_reason", None)
+                stop_sequence = getattr(response, "stop_sequence", None)
+                raise RuntimeError(
+                    "Claude response contained empty message content "
+                    f"(model={model_name}, stop_reason={stop_reason!r}, "
+                    f"stop_sequence={stop_sequence!r})."
+                )
             return LLMTextResponse(
                 text=text,
                 model_name=model_name,
@@ -1163,8 +1362,18 @@ class LLMRuntime:
 
         usage_metadata = getattr(response, "usage_metadata", None)
         model_name = getattr(response, "model", None) or requested_model_id
+        text = getattr(response, "text", "") or ""
+        if not text.strip():
+            candidates = getattr(response, "candidates", None) or []
+            finish_reason = getattr(candidates[0], "finish_reason", None) if candidates else None
+            prompt_feedback = getattr(response, "prompt_feedback", None)
+            raise RuntimeError(
+                "Gemini response contained empty text "
+                f"(model={model_name}, finish_reason={finish_reason!r}, "
+                f"prompt_feedback={prompt_feedback!r})."
+            )
         return LLMTextResponse(
-            text=getattr(response, "text", "") or "",
+            text=text,
             model_name=model_name,
             usage=LLMUsage(
                 model_name=model_name,
@@ -1238,6 +1447,61 @@ class LLMRuntime:
             raise payload
         return payload
 
+    def _dispatch_via_codex_subscription(
+        self,
+        prompt: str,
+        model_id: str,
+        *,
+        repo: "str | Path" = ".",
+        timeout_seconds: int = 300,
+    ) -> "LLMTextResponse":
+        """Dispatch a plain text prompt through the Codex subscription runtime.
+
+        Used as the ONLY permitted fallback when the primary OpenAI API is
+        unreachable/dead. Returns an LLMTextResponse with transport metadata
+        baked into model_name so telemetry can distinguish subscription runs.
+        Raises RuntimeError on codex CLI failure (non-zero exit).
+        """
+        # Import here to avoid circular-import at module level (subscription_agent_runtime
+        # already imports MODEL_MAP from this module; a top-level import here would cycle).
+        from ztare.common.subscription_agent_runtime import (
+            CODEX_SANDBOX_SEALED_COMPLETION,
+            build_subscription_agent_command,
+            _run_cli,  # noqa: PLC2701 — internal collab within the common package
+        )
+        from pathlib import Path as _Path
+
+        command = build_subscription_agent_command(
+            runtime="codex",
+            prompt=prompt,
+            repo=_Path(repo).resolve(),
+            codex_model=model_id,
+            codex_sandbox=CODEX_SANDBOX_SEALED_COMPLETION,
+        )
+        result = _run_cli(
+            command,
+            runtime="codex",
+            repo=_Path(repo).resolve(),
+            timeout_seconds=timeout_seconds,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Codex subscription fallback failed (rc={result.returncode}): "
+                f"{(result.stderr or '')[:400]}"
+            )
+        text = (result.stdout or "").strip()
+        # ponytail: subscription_fallback suffix in model_name is the attestation signal
+        subscription_model_name = f"{model_id}[subscription_fallback]"
+        return LLMTextResponse(
+            text=text,
+            model_name=subscription_model_name,
+            usage=LLMUsage(model_name=subscription_model_name),
+            raw_response=result,
+            requested_model_id=model_id,
+            effective_model_id=model_id,
+            fallback_from_model_id=None,
+        )
+
     def call_text(
         self,
         prompt: str,
@@ -1252,13 +1516,16 @@ class LLMRuntime:
         progress_printer: Callable[[str], None] | None = None,
         transient_wait_seconds: int = 20,
         timeout_wait_seconds: int = 15,
+        repo: "str | Path" = ".",
     ) -> LLMTextResponse:
         candidate_model_ids = [model_id]
-        if os.environ.get("ZTARE_DISABLE_MODEL_FALLBACK") == "1":
-            # Hard lock: no cross-model fallback. The caller has declared that
-            # an off-family silent failover would invalidate the run (e.g. a
-            # pre-registered experiment where the runtime family is sealed).
-            # On primary failure we raise rather than quietly switch.
+        # Operator directive: cross-provider API fallback is OFF by default.
+        # The subscription fallback (below) is the only permitted alternative.
+        # ZTARE_ALLOW_CROSS_PROVIDER_FALLBACK=1 restores the old cross-provider chain
+        # (e.g. for callers that explicitly pass fallback_model_ids with a reason).
+        _cross_provider_allowed = os.environ.get("ZTARE_ALLOW_CROSS_PROVIDER_FALLBACK") == "1"
+        if os.environ.get("ZTARE_DISABLE_MODEL_FALLBACK") == "1" or not _cross_provider_allowed:
+            # Hard lock: no cross-provider API fallback.
             fallback_candidates: tuple[str, ...] = ()
         else:
             fallback_candidates = (
@@ -1278,7 +1545,9 @@ class LLMRuntime:
                     "🔁 Provider fallback engaged for "
                     f"{request_label}: {model_id} -> {active_model_id}"
             )
-            for attempt in range(1, retries + 1):
+            # retries=0 must still make ONE attempt (this used to be range(1, 1) = zero attempts — a silent
+            # no-call bug that fell straight through to "Max retries exceeded … None"). retries is "attempts".
+            for attempt in range(1, max(int(retries), 1) + 1):
                 last_attempted_model_id = active_model_id
                 try:
                     if progress_printer is not None:
@@ -1356,17 +1625,64 @@ class LLMRuntime:
                         _record_failed_retry(prompt, active_model_id)
                         if progress_printer is not None:
                             progress_printer(f"❌ Unhandled Exception: {error_str}")
-                        raise LLMRuntimeError(
+                        # Operator directive: don't hard-raise here — let the subscription
+                        # fallback below decide (it checks family + escape hatch). If the
+                        # caller set ZTARE_DISABLE_SUBSCRIPTION_FALLBACK=1, the block below
+                        # raises the original error anyway. Preserves last_error for context.
+                        last_error = LLMRuntimeError(
                             error_str,
                             model_id=active_model_id,
                             transient=False,
                             status_code=status_code,
-                        ) from exc
+                        )
+                        break
 
             if model_index < len(candidate_model_ids) - 1 and progress_printer is not None:
                 progress_printer(
                     f"⚠️ Exhausted {active_model_id} after persistent transient failures; trying fallback provider."
                 )
+
+        # ── Subscription fallback (operator directive 2026-07-10) ────────────
+        # Primary API chain exhausted. Before raising, try the Codex subscription
+        # runtime — but ONLY for the SAME model family (no silent family substitution).
+        # Gate: ZTARE_DISABLE_SUBSCRIPTION_FALLBACK=1 → fail loud immediately.
+        if os.environ.get("ZTARE_DISABLE_SUBSCRIPTION_FALLBACK") != "1":
+            model_family = get_model_family(model_id)
+            if model_family not in CODEX_SERVABLE_FAMILIES:
+                raise LLMRuntimeError(
+                    f"API failure for {model_id} (family={model_family}): "
+                    f"subscription fallback is only available for OpenAI-family models "
+                    f"(codex subscription serves {sorted(CODEX_SERVABLE_FAMILIES)}). "
+                    f"No family substitution permitted. Primary error: {last_error}",
+                    model_id=last_attempted_model_id,
+                    transient=False,
+                ) from last_error
+            if progress_printer is not None:
+                progress_printer(
+                    f"⚠️ API chain exhausted for {model_id}; escalating to "
+                    f"Codex subscription fallback (same model, transport=subscription_fallback)."
+                )
+            try:
+                sub_response = self._dispatch_via_codex_subscription(
+                    prompt,
+                    model_id,
+                    repo=repo,
+                    timeout_seconds=timeout_seconds,
+                )
+                if progress_printer is not None:
+                    progress_printer(
+                        f"✅ Codex subscription fallback succeeded: "
+                        f"effective={sub_response.model_name}"
+                    )
+                return sub_response
+            except Exception as sub_exc:  # noqa: BLE001
+                raise LLMRuntimeError(
+                    f"API chain exhausted and Codex subscription fallback also failed "
+                    f"for {model_id}: sub_error={sub_exc!r}. "
+                    f"Primary error: {last_error}",
+                    model_id=last_attempted_model_id,
+                    transient=False,
+                ) from sub_exc
 
         raise LLMRuntimeError(
             f"Max retries exceeded across provider chain starting at {model_id}: {last_error}",

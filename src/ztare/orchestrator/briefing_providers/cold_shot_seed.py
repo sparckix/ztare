@@ -101,8 +101,12 @@ class ColdShotSeedBriefingProvider(BriefingProvider):
             return False
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
+        except SystemExit:
+            raise
         except Exception:
-            return False
+            # Corrupt (not absent) seed: DO apply, so fragment() renders its
+            # UNAVAILABLE banner instead of the section vanishing silently.
+            return True
         return bool(data.get("success"))
 
     def fragment(self, ctx: BriefingContext) -> str:

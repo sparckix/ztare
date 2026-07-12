@@ -37,13 +37,33 @@ class VariationalPromotionFloorProvider(BriefingProvider):
         target = (ctx.rubric or {}).get("tier_3_universal_law_target") or {}
         if not target.get("active", False):
             return False
-        # Only fire after iter 1 — we need a prior cap to explain.
-        eh = self._load_eval_history(ctx)
-        return len(eh) >= 1
+        # Only fire after iter 1 — we need a prior cap to explain. A corrupt
+        # eval_history read raises here; return True so fragment() renders
+        # the UNAVAILABLE banner instead of silently not applying.
+        try:
+            eh, skipped = self._load_eval_history(ctx)
+        except Exception:
+            return True
+        # Empty because every row was corrupt must still reach fragment() to
+        # surface the corruption, not be declined as "no history."
+        return len(eh) >= 1 or skipped > 0
 
     def fragment(self, ctx: BriefingContext) -> str:
-        eh = self._load_eval_history(ctx)
+        # Corrupt/unreadable eval_history → banner, never silent omission.
+        try:
+            eh, skipped = self._load_eval_history(ctx)
+        except Exception as exc:
+            from ztare.orchestrator.briefing_providers import section_unavailable
+            return section_unavailable("VARIATIONAL PROMOTION FLOOR", exc)
         if not eh:
+            if skipped:
+                return (
+                    "## ⚠️  VARIATIONAL PROMOTION FLOOR (DEGRADED)\n\n"
+                    f"VARIATIONAL PROMOTION FLOOR DEGRADED — {skipped} unparseable "
+                    f"eval_history row(s) and no readable prior cap to explain; "
+                    f"prior guidance still in force\n\n"
+                )
+            # Legit not-applicable: file absent or genuinely empty.
             return ""
 
         target = (ctx.rubric or {}).get("tier_3_universal_law_target") or {}
@@ -98,6 +118,23 @@ class VariationalPromotionFloorProvider(BriefingProvider):
             f"is the protocol."
         )
         lines.append("")
+
+        # Surface the exact apparatus cap reasons that drove the floor, so
+        # the mutator sees WHY it capped (not just the abstracted kind).
+        if cap_reasons:
+            lines.append("- cap reasons (recent, apparatus-verbatim):")
+            for r in cap_reasons:
+                lines.append(f"  - `{r}`")
+            lines.append("")
+
+        # Malformed eval_history lines were counted, not silently dropped.
+        if skipped:
+            lines.append(
+                f"> DEGRADED — {skipped} eval_history line(s) were "
+                "unparseable and skipped; cap summary reflects the "
+                "readable subset only.\n"
+            )
+            lines.append("")
 
         if "parameter-laundering" in cap_kinds:
             lines.append("### Cap reason: R20/R21/R22/R24 — parameter-laundering / kernel-camouflage")
@@ -242,25 +279,36 @@ class VariationalPromotionFloorProvider(BriefingProvider):
 
         return "\n".join(lines) + "\n"
 
-    def _load_eval_history(self, ctx: BriefingContext) -> list[dict]:
+    def _load_eval_history(self, ctx: BriefingContext) -> tuple[list[dict], int]:
+        """Return (records, skipped_corrupt_line_count).
+
+        Absent file / no workspace is legit not-applicable → ([], 0). A
+        read/decode error on an EXISTING file is a corrupt-input condition:
+        it is re-raised so ``fragment()`` can banner instead of silently
+        omitting. Individual malformed JSONL lines are counted (not dropped
+        silently) and surfaced as a DEGRADED note.
+        """
         ws = ctx.workspace_dir or (ctx.project_dir / "workspace" if ctx.project_dir else None)
         if ws is None:
-            return []
+            return [], 0
         path = Path(ws) / "eval_history.jsonl"
         if not path.exists():
-            return []
+            return [], 0
         out: list[dict] = []
-        try:
-            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    rec = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                if isinstance(rec, dict):
-                    out.append(rec)
-        except Exception:
-            return []
-        return out
+        skipped = 0
+        # A read failure on an existing file is corrupt/unreadable input —
+        # let it propagate so fragment() banners rather than omitting.
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                skipped += 1
+                continue
+            if isinstance(rec, dict):
+                out.append(rec)
+            else:
+                skipped += 1
+        return out, skipped

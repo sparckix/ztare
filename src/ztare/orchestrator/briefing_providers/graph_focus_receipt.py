@@ -11,16 +11,6 @@ from pathlib import Path
 from typing import Any
 
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
-from ztare.research_director.graph_carrier_actions import graph_carrier_action_rows
-from ztare.scaffold.substrate_queue import load_project_packet, validate_project_packet
-from ztare.validator.probability_dag_carrier import (
-    build_probability_dag_graph_carrier,
-    summarize_probability_dag_graph_carrier,
-)
-from ztare.validator.source_claim_graph_carrier import (
-    build_source_claim_graph_carrier,
-    summarize_source_claim_graph_carrier,
-)
 from ztare.workspace.evidence_gaps import (
     LOCAL_VERIFICATION_RECOVERY_KIND,
     apply_evidence_gap_recovery_policy,
@@ -39,6 +29,16 @@ class GraphFocusReceiptProvider(BriefingProvider):
     priority = 115
 
     def _actions(self, ctx: BriefingContext) -> list[dict[str, str]]:
+        from ztare.research_director.graph_carrier_actions import graph_carrier_action_rows
+        from ztare.validator.probability_dag_carrier import (
+            build_probability_dag_graph_carrier,
+            summarize_probability_dag_graph_carrier,
+        )
+        from ztare.validator.source_claim_graph_carrier import (
+            build_source_claim_graph_carrier,
+            summarize_source_claim_graph_carrier,
+        )
+
         carriers: list[dict[str, Any]] = []
         intake_gap_contracts, intake_source, _intake_rows = _intake_gap_contracts(ctx)
         intake_policy = _intake_gap_policy(ctx)
@@ -75,8 +75,14 @@ class GraphFocusReceiptProvider(BriefingProvider):
             return intake_rows
         try:
             payload = json.loads(gaps_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            return intake_rows
+        except (OSError, json.JSONDecodeError) as exc:
+            # Corrupt gaps file: don't silently drop the local-gap section.
+            # Return the intake rows plus a sentinel row so fragment() can
+            # surface a DEGRADED note instead of omitting silently.
+            return intake_rows + [
+                {"_degraded": f"latest_evidence_gaps.json unreadable "
+                              f"({type(exc).__name__}: {exc})"}
+            ]
         gaps = payload.get("evidence_gaps")
         if not isinstance(gaps, list):
             return intake_rows
@@ -158,6 +164,8 @@ class GraphFocusReceiptProvider(BriefingProvider):
         return receipts
 
     def applies(self, ctx: BriefingContext) -> bool:
+        if _grid_transition_project_without_graph_focus_input(ctx):
+            return False
         return bool(self._actions(ctx))
 
     def fragment(self, ctx: BriefingContext) -> str:
@@ -174,6 +182,10 @@ class GraphFocusReceiptProvider(BriefingProvider):
             graph_id = str(action.get("graph_id") or "").strip()
             lines.append(f"    - {graph_id}: {reason}")
         details = self._local_gap_details(ctx)
+        degraded = [str(d["_degraded"]) for d in details if d.get("_degraded")]
+        details = [d for d in details if not d.get("_degraded")]
+        for note in degraded:
+            lines.append(f"\n    ⚠️  DEGRADED: {note}; prior guidance still in force")
         if details:
             lines.append("\n    Local verifier gaps to close in the candidate artifact:")
             for detail in details[:5]:
@@ -227,7 +239,9 @@ class GraphFocusReceiptProvider(BriefingProvider):
             {
                 "record_type": "graph_focus_receipt",
                 **action,
-                "local_gap_details": self._local_gap_details(ctx),
+                "local_gap_details": [
+                    d for d in self._local_gap_details(ctx) if not d.get("_degraded")
+                ],
                 "local_verifier_receipts": self._local_verifier_receipts(ctx),
             }
             for action in self._actions(ctx)
@@ -238,6 +252,64 @@ def _repo_for_project(project_dir: Path) -> Path | None:
     if project_dir.parent.name == "projects":
         return project_dir.parent.parent
     return None
+
+
+def _grid_transition_project_without_graph_focus_input(ctx: BriefingContext) -> bool:
+    """Keep document/probability graph focus out of grid-transition prompts.
+
+    A grid worldmodel run already has transition receipts, residual quotients,
+    candidate memory, and Strategy cards. The source/probability graph carrier
+    remains available when a project packet or explicit evidence-gap receipt
+    exists, or when the rubric force-shows this provider for debugging.
+    """
+    if bool((ctx.rubric or {}).get("briefing_force_show_graph_focus_receipt", False)):
+        return False
+    rubric = ctx.rubric or {}
+    substrate_kind = (
+        rubric.get("fit_expression_grammar")
+        or rubric.get("submission_kind")
+        or rubric.get("substrate_kind")
+    )
+    if substrate_kind != "grid_dsl":
+        return False
+    workspace = ctx.workspace_dir or (ctx.project_dir / "workspace")
+    if _has_in_loop_graph_focus_gap(workspace / "latest_evidence_gaps.json"):
+        return False
+    if _packet_has_evidence_gap_contracts(ctx.project_packet):
+        return False
+    return not any(path.exists() for path in _packet_candidates(ctx))
+
+
+def _has_in_loop_graph_focus_gap(path: Path) -> bool:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return False
+    gaps = payload.get("evidence_gaps") if isinstance(payload, dict) else None
+    if not isinstance(gaps, list):
+        return False
+    for gap in gaps:
+        if not isinstance(gap, dict):
+            continue
+        if gap.get("in_loop_consumable") is True:
+            return True
+        contract = gap.get("recovery_contract")
+        if isinstance(contract, dict) and contract.get("in_loop_consumable") is True:
+            return True
+    return False
+
+
+def _packet_has_evidence_gap_contracts(packet: object) -> bool:
+    if not isinstance(packet, dict) or not packet:
+        return False
+    contracts = packet.get("evidence_gap_contracts")
+    if isinstance(contracts, list) and contracts:
+        return True
+    gaps = packet.get("evidence_gaps")
+    return isinstance(gaps, list) and any(
+        isinstance(gap, dict) and gap.get("in_loop_consumable") is True
+        for gap in gaps
+    )
 
 
 def _rel(path: Path, repo: Path | None) -> str:
@@ -274,9 +346,11 @@ def _intake_gap_contracts(
         if not path.exists():
             continue
         try:
+            from ztare.scaffold.substrate_queue import load_project_packet
+
             payload = load_project_packet(path)
         except SystemExit:
-            continue
+            raise  # NEVER swallow SystemExit — let a hard exit propagate.
         contracts, source, detail_rows = _validated_packet_contracts(
             payload,
             path_hint=_rel(path, repo),
@@ -295,6 +369,8 @@ def _validated_packet_contracts(
     repo: Path | None,
     base_dir: Path,
 ) -> tuple[list[dict[str, Any]], str, list[dict[str, str]]]:
+    from ztare.scaffold.substrate_queue import validate_project_packet
+
     validation = validate_project_packet(
         payload,
         base_dir=base_dir,
@@ -347,9 +423,11 @@ def _intake_gap_policy(ctx: BriefingContext) -> dict[str, Any]:
         if not path.exists():
             continue
         try:
+            from ztare.scaffold.substrate_queue import load_project_packet
+
             payload = load_project_packet(path)
         except SystemExit:
-            continue
+            raise  # NEVER swallow SystemExit — let a hard exit propagate.
         policy = payload.get("evidence_gap_recovery_policy")
         if isinstance(policy, dict):
             return policy

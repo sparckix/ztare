@@ -77,6 +77,14 @@ _HOLDOUT_MISS_PATTERNS = (
     r"HOLDOUT:.*<\s*0\.",
     r"HOLDOUT failed",
     r"holdout_hard_gate.*FIRED",
+    # 2026-07-12: the worldmodel loop's actual cap reasons predated this
+    # taxonomy — every one classified 'unknown', and unknown lawfully never
+    # triggers REFRAME, so the jump-forcer was unreachable on the failure
+    # modes that most needed it (receipt: two 8-iter stagnation rounds,
+    # zero reframe fires, cap reason 'pre_judge_gate_harness_failed').
+    r"pre_judge_gate_harness_failed",
+    r"holdout_hard_gate",
+    r"gate_harness_failed",
 )
 
 _NUMERICAL_FAILURE_PATTERNS = (
@@ -85,6 +93,10 @@ _NUMERICAL_FAILURE_PATTERNS = (
     r"NaN",
     r"harness defect",
     r"contract violation",
+    # process/format defects: capping is correct but REFRAME is not — a
+    # schema error or harness crash says nothing about the hypothesis family
+    r"judge_format_error",
+    r"pre_judge_gate_harness_error",
     r"adherence reject",
     r"compiler-bounce",
     r"PARAMETRIC_FORM.*Syntax",
@@ -95,6 +107,8 @@ _NUMERICAL_FAILURE_PATTERNS = (
 _NO_CAP_PATTERNS = (
     r"cap_inactive",
     r"score_already_below_cap",
+    r"strategy_card_not_discharged",
+    r"worldmodel_control_only_no_candidate",
 )
 
 

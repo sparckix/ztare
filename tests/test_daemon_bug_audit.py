@@ -290,9 +290,8 @@ class TestGateDedup(unittest.TestCase):
 #   NO API keys. Without _bootstrap_dotenv_if_needed, substrate calls fail.
 
 class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
-    def test_bootstrap_loads_dotenv_when_keys_missing(self):
-        """If ANTHROPIC_API_KEY is unset, _bootstrap_dotenv_if_needed should
-        find a .env in cwd or ancestor + populate os.environ."""
+    def test_bootstrap_loads_repo_root_dotenv_and_ignores_cwd_swap(self):
+        """A cwd swap must not retarget dotenv discovery away from repo root."""
         # Stash + clear keys
         saved = {
             k: os.environ.pop(k, None)
@@ -301,30 +300,33 @@ class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as td:
                 td_path = Path(td)
-                env_file = td_path / ".env"
-                env_file.write_text(
-                    "ANTHROPIC_API_KEY=sk-ant-test-from-dotenv\n"
-                    "OPENAI_API_KEY=sk-openai-test-from-dotenv\n"
+                repo_env = Path(__file__).resolve().parents[1] / ".env"
+                original_repo_env = repo_env.read_text(encoding="utf-8") if repo_env.exists() else None
+                repo_env.write_text(
+                    "ANTHROPIC_API_KEY=sk-ant-test-from-repo-root\n"
+                    "OPENAI_API_KEY=sk-openai-test-from-repo-root\n",
+                    encoding="utf-8",
                 )
-                # Run bootstrap with cwd switched into td
                 old_cwd = os.getcwd()
                 os.chdir(td_path)
                 try:
-                    # Re-import to trigger module-level bootstrap, but we test
-                    # the function directly to avoid import caching weirdness
-                    from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
-                    _bootstrap_dotenv_if_needed()
+                    from ztare.common.llm_runtime import bootstrap_dotenv_from_repo_root
+                    bootstrap_dotenv_from_repo_root()
                     self.assertEqual(
                         os.environ.get("ANTHROPIC_API_KEY"),
-                        "sk-ant-test-from-dotenv",
-                        "bootstrap should populate ANTHROPIC_API_KEY from .env"
+                        "sk-ant-test-from-repo-root",
+                        "bootstrap should populate ANTHROPIC_API_KEY from repo-root .env"
                     )
                     self.assertEqual(
                         os.environ.get("OPENAI_API_KEY"),
-                        "sk-openai-test-from-dotenv",
+                        "sk-openai-test-from-repo-root",
                     )
                 finally:
                     os.chdir(old_cwd)
+                    if original_repo_env is None:
+                        repo_env.unlink()
+                    else:
+                        repo_env.write_text(original_repo_env, encoding="utf-8")
         finally:
             # Restore
             for k, v in saved.items():
@@ -348,8 +350,8 @@ class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
                 old_cwd = os.getcwd()
                 os.chdir(td_path)
                 try:
-                    from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
-                    _bootstrap_dotenv_if_needed()
+                    from ztare.common.llm_runtime import bootstrap_dotenv_from_repo_root
+                    bootstrap_dotenv_from_repo_root()
                     self.assertEqual(
                         os.environ["ANTHROPIC_API_KEY"],
                         "sk-ant-from-shell",

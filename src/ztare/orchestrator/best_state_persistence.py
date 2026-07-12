@@ -395,3 +395,124 @@ def persist_best_candidate(
         shutil.copy(str(dag_src), str(history_dir / f"{history_stem}_dag.json"))
 
     return history_stem
+
+
+def retire_saved_best(
+    project_dir: str | Path,
+    *,
+    reason: str,
+    operator: str,
+    thesis_names: tuple[str, ...] = ("thesis.md", "current_iteration.md"),
+    best_iteration_re: re.Pattern = DEFAULT_BEST_ITERATION_RE,
+) -> dict:
+    """Explicitly retire a project's saved-best to a genuine fresh start.
+
+    The mechanized form of the manual "move to .retired + receipt" dance so a
+    stale saved-best (e.g. a marker inherited across a transfer test, or the
+    ``legacy_missing_meta`` debris of a scoring-regime change) can be cleared
+    repeatably instead of by hand-editing every thesis file. Never a silent
+    deletion: the history artifacts are moved under ``history/.retired/`` and a
+    receipt json records the reason/date/operator.
+
+    Effects (idempotent — a no-op once no saved-best remains):
+      - moves ``{stem}.md`` / ``{stem}_meta.json`` / ``{stem}_dag.json`` from
+        ``history/`` to ``history/.retired/``;
+      - strips the ``best_iteration`` marker from each thesis file that carries
+        it and leaves an inline breadcrumb (no parseable marker), so
+        ``current_saved_best_stem`` returns None and the comparison anchor goes
+        to status ``none`` — new candidates promote on their own merit;
+      - writes ``history/.retired/retirement_receipt.json``.
+
+    Returns the receipt dict (``retired`` False with reason ``no_saved_best``
+    when there is nothing to retire).
+    """
+    project_dir = Path(project_dir)
+    history_dir = project_dir / "history"
+    stem = next(
+        (s for s in (
+            current_saved_best_stem(project_dir / name, best_iteration_re=best_iteration_re)
+            for name in thesis_names) if s),
+        None,
+    )
+    if not stem:
+        return {"retired": False, "reason": "no_saved_best",
+                "project": project_dir.name}
+
+    retired_dir = history_dir / ".retired"
+    retired_dir.mkdir(parents=True, exist_ok=True)
+    moved = []
+    for suffix in (".md", "_meta.json", "_dag.json"):
+        src = history_dir / f"{stem}{suffix}"
+        if src.exists():
+            shutil.move(str(src), str(retired_dir / src.name))
+            moved.append(src.name)
+
+    date = datetime.now().strftime("%Y-%m-%d")
+    breadcrumb = (f"\n\n<!-- saved-best RETIRED {date}: {reason}; "
+                  "see history/.retired/retirement_receipt.json -->")
+    cleared = []
+    for name in thesis_names:
+        path = project_dir / name
+        if not path.exists():
+            continue
+        if current_saved_best_stem(path, best_iteration_re=best_iteration_re):
+            write_file(str(path), strip_best_iteration_marker(path.read_text()) + breadcrumb)
+            cleared.append(name)
+
+    receipt = {
+        "schema": "ztare-saved-best-retirement-v1",
+        "retired": True,
+        "reason": reason,
+        "date": date,
+        "operator": operator,
+        "project": project_dir.name,
+        "retired_marker_stem": stem,
+        "retired_files": moved,
+        "marker_cleared_in": cleared,
+        "note": ("never silent deletion: originals preserved under "
+                 "history/.retired/; saved-best anchor is now status 'none'."),
+    }
+    write_file(str(retired_dir / "retirement_receipt.json"),
+               json.dumps(receipt, indent=2))
+    return receipt
+
+
+def _demo() -> None:
+    """assert-based self-check: retire moves artifacts, clears the marker, and
+    is idempotent."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        proj = Path(d) / "proj"
+        (proj / "history").mkdir(parents=True)
+        stem = "9_iter0_score_5_proj"
+        for name in ("thesis.md", "current_iteration.md"):
+            write_file(str(proj / name), f"body\n\n<!-- best_iteration: {stem} -->")
+        for suffix in (".md", "_meta.json", "_dag.json"):
+            write_file(str(proj / "history" / f"{stem}{suffix}"), "{}")
+
+        r = retire_saved_best(proj, reason="unit self-check", operator="demo")
+        assert r["retired"] is True, r
+        assert set(r["retired_files"]) == {f"{stem}.md", f"{stem}_meta.json",
+                                           f"{stem}_dag.json"}, r
+        assert (proj / "history" / ".retired" / f"{stem}_meta.json").exists()
+        assert not (proj / "history" / f"{stem}.md").exists()
+        assert (proj / "history" / ".retired" / "retirement_receipt.json").exists()
+        for name in ("thesis.md", "current_iteration.md"):
+            assert current_saved_best_stem(proj / name) is None, name
+
+        again = retire_saved_best(proj, reason="x", operator="demo")
+        assert again == {"retired": False, "reason": "no_saved_best",
+                         "project": "proj"}, again
+    print("retire_saved_best self-check OK")
+
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2 or sys.argv[1] == "--demo":
+        _demo()
+    else:
+        print(json.dumps(retire_saved_best(
+            sys.argv[1],
+            reason=sys.argv[2] if len(sys.argv) > 2 else "manual retirement",
+            operator=sys.argv[3] if len(sys.argv) > 3 else "operator",
+        ), indent=2))

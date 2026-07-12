@@ -175,6 +175,13 @@ def _mock_inverter_response() -> str:
 
 def _fake_subscription_runner(**kwargs: Any) -> object:
     prompt = str(kwargs.get("prompt") or "")
+    repo = Path(str(kwargs.get("repo") or "."))
+    task_path = repo / "TASK.md"
+    if task_path.is_file():
+        try:
+            prompt = task_path.read_text(encoding="utf-8")
+        except OSError:
+            pass
     if "MutationDeclaration" in prompt:
         stdout = _mock_mutator_response()
     elif "meta-judge verdict" in prompt:

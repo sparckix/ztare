@@ -32,12 +32,21 @@ Operational path:
   4. The dispatch layer scores/tournaments the candidates and adopts the
      selected text as the iteration candidate, after which normal R1/gate
      validation continues.
+
+Implementation note on work_plan wiring
+----------------------------------------
+`run_parallel_mutators` delegates to `work_plan.fanout` with
+``merge={"kind": "collect"}``.  The collect merge is order-canonicalized
+by lane index inside work_plan; results are post-sorted here by worker_id
+so the public contract (worker_id-ordered list) is preserved exactly.
+Failed workers become sentinel MutatorResult(thesis_text="") entries —
+the same shape as before — so blitz_dispatch is unchanged.
 """
 
 from __future__ import annotations
 
-import concurrent.futures
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Callable, Optional
 
 
@@ -86,6 +95,7 @@ def run_parallel_mutators(
     mutator_fn: Callable[[MutatorTask], MutatorResult],
     *,
     max_workers: Optional[int] = None,
+    receipts_path: Optional[str | Path] = None,
 ) -> list[MutatorResult]:
     """Run K mutator tasks in parallel; return results in worker_id order.
 
@@ -98,32 +108,50 @@ def run_parallel_mutators(
     Failures in individual workers are caught: a failed worker
     contributes a result with thesis_text="" and extras={"__error__": ...}
     so combiners can decide whether to skip or retry.
+
+    Internally delegates to work_plan.fanout with merge={"kind":"collect"}.
+    collect returns all good lanes in lane-index order; failed workers are
+    re-inserted as sentinel MutatorResults so the returned list has exactly
+    len(tasks) entries in worker_id order — preserving the public contract
+    that blitz_dispatch depends on.
     """
     if not tasks:
         return []
-    if max_workers is None:
-        max_workers = max(1, len(tasks))
-    results: list[MutatorResult] = []
-    by_id: dict[int, MutatorResult] = {}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
-        futures = {ex.submit(mutator_fn, t): t for t in tasks}
-        for fut in concurrent.futures.as_completed(futures):
-            t = futures[fut]
-            try:
-                result = fut.result()
-            except Exception as exc:  # noqa: BLE001
-                result = MutatorResult(
-                    worker_id=t.worker_id,
-                    persona=t.persona,
-                    thesis_text="",
-                    test_model_text="",
-                    score=None,
-                    extras={"__error__": f"{type(exc).__name__}: {exc}"},
-                )
-            by_id[t.worker_id] = result
-    for t in tasks:
-        results.append(by_id[t.worker_id])
-    return results
+    from ztare.common.work_plan import fanout, run as wp_run
+
+    task_by_idx = {i: t for i, t in enumerate(tasks)}
+
+    def _lane(lane_idx: int) -> MutatorResult:
+        t = task_by_idx[lane_idx]
+        try:
+            return mutator_fn(t)
+        except Exception as exc:  # noqa: BLE001
+            return MutatorResult(
+                worker_id=t.worker_id,
+                persona=t.persona,
+                thesis_text="",
+                test_model_text="",
+                score=None,
+                extras={"__error__": f"{type(exc).__name__}: {exc}"},
+            )
+
+    # ponytail: collect is the honest shape — returns all lanes, order-canonicalized
+    # by lane index. We use lane index = task list position; post-sort by worker_id
+    # restores the public contract (worker_id ordering) for blitz_dispatch.
+    plan = fanout(
+        _lane,
+        K=len(tasks),
+        diversify=lambda i: i,
+        merge={"kind": "collect"},
+    )
+    collected: list[MutatorResult] = wp_run(
+        plan,
+        max_workers=max_workers if max_workers is not None else max(1, len(tasks)),
+        receipts_path=receipts_path,
+    )
+    # Restore worker_id order (lane index == task list position, not necessarily worker_id)
+    collected.sort(key=lambda r: r.worker_id)
+    return collected
 
 
 def pick_best_candidate(

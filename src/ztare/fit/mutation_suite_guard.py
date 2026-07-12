@@ -10,6 +10,51 @@ from typing import Optional
 
 NO_SUITE_SENTINEL = "assert False, 'AI failed to provide a testable falsification suite.'"
 
+_MISSING_BLOCK_ERROR = (
+    "Missing required Python falsification suite block; reject candidate before evaluation."
+)
+
+
+def is_missing_block_error(error_text: str) -> bool:
+    """True iff the R1 error is specifically the missing inline ```python block."""
+    return _MISSING_BLOCK_ERROR in (error_text or "")
+
+
+def extract_python_suite_from_workbench(
+    project_dir: str | None,
+    *,
+    require_i_model: bool = True,
+    rubric_data: Optional[dict] = None,
+) -> Optional[str]:
+    """Read the workbench test_model.py and validate it against the same lint checks.
+
+    Returns the file's content (str) when it passes validate_python_suite_candidate
+    and validate_python_suite_imports; returns None otherwise (caller must retry).
+
+    ponytail: reads only test_model.py; no submission-file traversal yet — add
+    when the designated submission file in the pack diverges from test_model.py.
+    """
+    if not project_dir:
+        return None
+    tm = Path(project_dir) / "test_model.py"
+    if not tm.exists():
+        return None
+    try:
+        code = tm.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    try:
+        validate_python_suite_candidate(code)
+        validate_python_suite_imports(
+            code,
+            project_dir=str(project_dir),
+            require_i_model=require_i_model,
+            rubric_data=rubric_data,
+        )
+    except ValueError:
+        return None
+    return code
+
 
 def validate_python_suite_candidate(python_code: str | None) -> None:
     stripped = (python_code or "").strip()

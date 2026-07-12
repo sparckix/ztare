@@ -22,6 +22,7 @@ import math
 import re
 from typing import Optional
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -33,13 +34,12 @@ class AsymptoteDeviationProvider(BriefingProvider):
     priority = 450
 
     def _load_fit(self, ctx: BriefingContext) -> dict:
+        # Absent → {} (legit). Present-but-corrupt → RAISE so applies()/
+        # fragment() can banner instead of silently dropping the section.
         path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "fit_features_result.json"
         if not path.exists():
             return {}
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
 
     def _charter_has_asymptote(self, ctx: BriefingContext) -> bool:
         if ctx.charter_meta and ctx.charter_meta.get("asymptotes_declared"):
@@ -54,38 +54,48 @@ class AsymptoteDeviationProvider(BriefingProvider):
         markers = ["asymptot", "high x", "low x", "→", "->", "as n →", "as t → ∞"]
         return any(m in text for m in markers)
 
-    def _evidence_x_range(self, ctx: BriefingContext) -> Optional[tuple[float, float]]:
-        # Best-effort: find min/max of column 1 in evidence.txt
+    def _evidence_x_range(
+        self, ctx: BriefingContext
+    ) -> tuple[Optional[tuple[float, float]], list[int]]:
+        # Best-effort: find min/max of column 1 in evidence.txt.
+        # Returns (range_or_None, 1-based line numbers of non-numeric data rows
+        # skipped). Header/separator/comment lines are filtered first and are
+        # NOT counted as skipped.
         path = ctx.project_dir / "evidence.txt"
         if not path.exists():
-            return None
-        xs = []
-        try:
-            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-                stripped = line.strip()
-                if not stripped or stripped.startswith("#"):
-                    continue
-                if "----" in stripped or "===" in stripped:
-                    continue
-                parts = stripped.split()
-                if "|" in stripped:
-                    parts = [p.strip() for p in stripped.split("|") if p.strip()]
-                try:
-                    nums = [float(p) for p in parts]
-                    if len(nums) >= 2 and nums[0] > 0:
-                        xs.append(nums[0])
-                except ValueError:
-                    continue
-        except Exception:
-            return None
+            return None, []
+        xs: list[float] = []
+        skipped: list[int] = []
+        for lineno, line in enumerate(
+            path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1
+        ):
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            if "----" in stripped or "===" in stripped:
+                continue
+            parts = stripped.split()
+            if "|" in stripped:
+                parts = [p.strip() for p in stripped.split("|") if p.strip()]
+            try:
+                nums = [float(p) for p in parts]
+                if len(nums) >= 2 and nums[0] > 0:
+                    xs.append(nums[0])
+            except ValueError:
+                skipped.append(lineno)
+                continue
         if not xs:
-            return None
-        return (min(xs), max(xs))
+            return None, skipped
+        return (min(xs), max(xs)), skipped
 
     def applies(self, ctx: BriefingContext) -> bool:
         if not self._charter_has_asymptote(ctx):
             return False
-        d = self._load_fit(ctx)
+        try:
+            d = self._load_fit(ctx)
+        except Exception:
+            # Corrupt fit artifact: run fragment() so it banners.
+            return True
         return bool(d.get("success"))
 
     def fragment(self, ctx: BriefingContext) -> str:
@@ -96,13 +106,26 @@ class AsymptoteDeviationProvider(BriefingProvider):
         # This is the substrate-agnostic ANALYTICAL reminder; substrate-
         # specific numerical asymptote checking belongs in the gate
         # harness, not here.
-        rng = self._evidence_x_range(ctx)
+        try:
+            self._load_fit(ctx)  # re-checked here so a corrupt fit banners
+            rng, skipped = self._evidence_x_range(ctx)
+        except Exception as exc:
+            return section_unavailable("ASYMPTOTE DEVIATION", exc)
         if rng is None:
-            return ""
+            return ""  # no usable evidence x-range — nothing to anchor (legit)
         xmin, xmax = rng
+        skipped_note = (
+            f"    NOTE: {len(skipped)} non-numeric evidence row(s) skipped "
+            f"(line(s) {skipped[:10]}"
+            + (f" + {len(skipped) - 10} more" if len(skipped) > 10 else "")
+            + "); x-range below is from parseable rows only.\n\n"
+            if skipped
+            else ""
+        )
         return (
             "\n    ### ASYMPTOTIC-DEVIATION CHECK (charter declares boundary behavior)\n\n"
-            "    The charter declares asymptotic behavior at boundary x's. Evaluate\n"
+            + skipped_note
+            + "    The charter declares asymptotic behavior at boundary x's. Evaluate\n"
             "    YOUR form mentally at the visible-data boundaries before refining:\n\n"
             f"    - x_min (visible): {xmin:.4g}\n"
             f"    - x_max (visible): {xmax:.4g}\n\n"

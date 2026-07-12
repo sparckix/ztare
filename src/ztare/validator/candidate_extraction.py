@@ -28,6 +28,24 @@ class PythonCandidateExtraction:
     auto_repaired: bool
 
 
+_PYTHON_CARRIER_MARKERS = (
+    "def I_model",
+    "def step(",
+    "WORLD_MODEL_SPEC",
+    "PROGRAM",
+    "EXTENSIONS_SRC",
+    "PARAMETRIC_FORM",
+    "LAGRANGIAN",
+)
+
+_STRATEGY_RECEIPT_LINE_PREFIXES = (
+    "STRATEGY_CARD_DISCHARGE:",
+    "STRATEGY_CARD_RECEIPT:",
+    "STRATEGY_CARD_DISCHARGE =",
+    "STRATEGY_CARD_RECEIPT =",
+)
+
+
 def _theorem_packet_function_markers(rubric_data: dict | None) -> tuple[str, ...]:
     contract = (rubric_data or {}).get("theorem_packet_contract") or {}
     required = contract.get("required_top_level_functions") or []
@@ -50,6 +68,10 @@ def _score_python_block(
     """
     score = 0
     markers = (
+        ("def step(", 105),
+        ("WORLD_MODEL_SPEC", 100),
+        ("PROGRAM", 95),
+        ("EXTENSIONS_SRC", 90),
         ("def I_model", 100),
         ("def vector_ledger_terms", 95),
         ("def trackb_convexity_theorem", 95),
@@ -76,6 +98,60 @@ def _score_python_block(
     if "return ..." in body:
         score -= 50
     return score
+
+
+def _looks_like_python_carrier(text: str) -> bool:
+    return any(marker in text for marker in _PYTHON_CARRIER_MARKERS)
+
+
+def _unwrap_accidental_full_block_docstring(body: str) -> tuple[str, bool]:
+    """Recover when a worker wraps executable carrier code in one docstring.
+
+    This is intentionally narrow. A normal module docstring followed by code is
+    valid Python and should be preserved. We only unwrap when the opening
+    triple-quote contains carrier markers before its first close, meaning the
+    executable body itself was quoted.
+    """
+    text = (body or "").strip()
+    for quote in ('"""', "'''"):
+        if not text.startswith(quote):
+            continue
+        close = text.find(quote, len(quote))
+        if close < 0:
+            if _looks_like_python_carrier(text[len(quote):]):
+                return text[len(quote):].strip(), True
+            continue
+        quoted_prefix = text[len(quote):close]
+        if not _looks_like_python_carrier(quoted_prefix):
+            continue
+        unwrapped = text[len(quote):].strip()
+        if unwrapped.endswith(quote):
+            unwrapped = unwrapped[: -len(quote)].rstrip()
+        return unwrapped, True
+    return body, False
+
+
+def _extract_strategy_receipt_lines(body: str) -> tuple[str, str, bool]:
+    """Move strategy-card control receipts out of candidate Python code."""
+    lines = (body or "").splitlines()
+    kept: list[str] = []
+    receipts: list[str] = []
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith(_STRATEGY_RECEIPT_LINE_PREFIXES):
+            receipts.append(line.strip())
+        else:
+            kept.append(line)
+    if not receipts:
+        return body, "", False
+    return "\n".join(kept).strip(), "\n".join(receipts).strip(), True
+
+
+def normalize_python_candidate_block(body: str) -> tuple[str, str, bool]:
+    """Return ``(python_code, thesis_prefix, repaired)`` for a selected block."""
+    code, unwrapped = _unwrap_accidental_full_block_docstring(body)
+    code, receipt_text, moved_receipt = _extract_strategy_receipt_lines(code)
+    return code.strip(), receipt_text, bool(unwrapped or moved_receipt)
 
 
 def extract_best_python_candidate(
@@ -121,7 +197,9 @@ def extract_best_python_candidate(
     # Stable tie-break: later equally-scored block wins because models often
     # show a skeleton first and the filled candidate later.
     selected_score, selected_idx, selected_match = max(candidates, key=lambda item: (item[0], item[1]))
-    python_code = (selected_match.group("body") or "").strip()
+    python_code, extracted_thesis_prefix, normalized = normalize_python_candidate_block(
+        selected_match.group("body") or ""
+    )
 
     removable_spans: list[tuple[int, int]] = []
     for score, _idx, match in candidates:
@@ -136,6 +214,12 @@ def extract_best_python_candidate(
         cursor = end
     pieces.append(text[cursor:])
     clean_thesis = "".join(pieces).strip()
+    if extracted_thesis_prefix:
+        clean_thesis = (
+            extracted_thesis_prefix
+            if not clean_thesis
+            else extracted_thesis_prefix + "\n\n" + clean_thesis
+        )
 
     first_python_idx = next(
         (idx for idx, match in enumerate(blocks) if (match.group("label") or "").strip().lower() == "python"),
@@ -145,6 +229,7 @@ def extract_best_python_candidate(
         selected_idx != first_python_idx
         or python_blocks > 1
         or any((match.group("label") or "").strip() == "" for _, _, match in candidates)
+        or normalized
     )
     return PythonCandidateExtraction(
         python_code=python_code,

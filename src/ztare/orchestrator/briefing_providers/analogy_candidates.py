@@ -30,6 +30,7 @@ from ztare.common.structural_transfer_action import (
     action_schemas_from_legacy_analogy_record,
     render_action_schema_prompt_lines,
 )
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -40,11 +41,21 @@ class AnalogyCandidatesProvider(BriefingProvider):
     name = "analogy_candidates"
     priority = 350  # after fit/gate/trajectory; before outliers/asymptote
 
-    def _load_latest_record(self, ctx: BriefingContext) -> dict | None:
+    def _load_latest_record(
+        self, ctx: BriefingContext, *, raise_on_error: bool = False
+    ) -> "tuple[dict | None, int]":
+        """Return (latest_record, corrupt_line_count).
+
+        On a top-level read failure with ``raise_on_error`` the exception
+        propagates so ``fragment()`` can banner instead of silently omitting;
+        callers that only gate (applies/structured_records) keep the lenient
+        return-None behaviour.
+        """
         path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "analogy_log.jsonl"
         if not path.exists():
-            return None
+            return None, 0
         latest: dict | None = None
+        skipped = 0
         try:
             for line in path.read_text(encoding="utf-8").splitlines():
                 line = line.strip()
@@ -53,16 +64,19 @@ class AnalogyCandidatesProvider(BriefingProvider):
                 try:
                     rec = json.loads(line)
                 except json.JSONDecodeError:
+                    skipped += 1  # corrupt row: count it, name in the fragment
                     continue
                 latest = rec  # last record wins
         except Exception:
-            return None
-        return latest
+            if raise_on_error:
+                raise
+            return None, skipped
+        return latest, skipped
 
     def applies(self, ctx: BriefingContext) -> bool:
         if not bool(ctx.rubric.get("enable_analogy", False)):
             return False
-        rec = self._load_latest_record(ctx)
+        rec, _ = self._load_latest_record(ctx)
         if not rec:
             return False
         if rec.get("error"):
@@ -70,7 +84,11 @@ class AnalogyCandidatesProvider(BriefingProvider):
         return bool(rec.get("candidate_forms"))
 
     def fragment(self, ctx: BriefingContext) -> str:
-        rec = self._load_latest_record(ctx) or {}
+        try:
+            loaded, skipped = self._load_latest_record(ctx, raise_on_error=True)
+        except Exception as exc:  # noqa: BLE001 — unreadable log → banner, not omission
+            return section_unavailable("ANALOGY CANDIDATES", exc)
+        rec = loaded or {}
         candidates = rec.get("candidate_forms") or []
         descriptors = rec.get("structural_descriptors") or []
         reasoning = rec.get("reasoning") or ""
@@ -115,6 +133,11 @@ class AnalogyCandidatesProvider(BriefingProvider):
             body_lines.append("")
         if reasoning:
             body_lines.append(f"    Reasoning (LLM): {reasoning[:300]}")
+        if skipped:
+            body_lines.append(
+                f"\n    NOTE: {skipped} corrupt/unparseable row(s) in analogy_log.jsonl "
+                "were skipped; the record shown is the last VALID one."
+            )
         body_lines.append(
             "\n    REMINDER: ANALOGY is structural, not semantic. The candidate forms\n"
             "    above are abstract patterns. Do NOT import their domain-of-origin\n"
@@ -124,6 +147,6 @@ class AnalogyCandidatesProvider(BriefingProvider):
         return header + preamble + "\n".join(body_lines) + "\n"
 
     def structured_records(self, ctx: BriefingContext) -> list[dict]:
-        rec = self._load_latest_record(ctx) or {}
+        rec = self._load_latest_record(ctx)[0] or {}
         active = bool(ctx.rubric.get("enable_analogy_active", False))
         return action_schemas_from_legacy_analogy_record(rec, active=active)

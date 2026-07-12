@@ -28,9 +28,13 @@ class QualitativeEvidenceSeedProvider(BriefingProvider):
             return False
         try:
             data = json.loads(artifact.read_text(encoding="utf-8"))
-            return len(data.get("candidates") or []) >= 2
+        except SystemExit:
+            raise
         except Exception:
-            return False
+            # Corrupt (not absent) artifact: apply so fragment() renders its
+            # UNAVAILABLE banner rather than silently omitting the section.
+            return True
+        return len(data.get("candidates") or []) >= 2
 
     def fragment(self, ctx: BriefingContext) -> str:
         ws = ctx.workspace_dir or ctx.project_dir / "workspace"

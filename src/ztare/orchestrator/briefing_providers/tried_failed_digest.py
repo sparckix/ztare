@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -26,6 +27,10 @@ class TriedFailedDigestProvider(BriefingProvider):
 
     name = "tried_failed_digest"
     priority = 19
+    max_fragment_chars = 900
+    # ponytail: control_plane=True — negative memory governs search direction.
+    # Tier 2 already exempts from budget gate, but marking intent explicitly.
+    control_plane = True
 
     def applies(self, ctx: BriefingContext) -> bool:
         if ctx.iter_index < 2:
@@ -41,15 +46,34 @@ class TriedFailedDigestProvider(BriefingProvider):
         ) or any(ws.glob("fit_result_iter_*.json"))
 
     def fragment(self, ctx: BriefingContext) -> str:
+        global _STRICT_READS, _CORRUPT_JSONL_ROWS
         ws = _workspace(ctx)
         bullets: list[str] = []
-        bullets.extend(_r1_bullets(ws / "r1_debug", ctx.iter_index))
-        bullets.extend(_contract_bullets(ws / "contract_violations.jsonl"))
-        bullets.extend(_fit_bullets(ws))
-        bullets.extend(_eval_bullets(ws / "eval_history.jsonl"))
-        bullets.extend(_projection_constraint_bullets(ctx.project_dir))
-        bullets.extend(_projection_frontier_bullets(ctx.project_dir))
+        _STRICT_READS = True
+        _CORRUPT_JSONL_ROWS = 0
+        try:
+            bullets.extend(_r1_bullets(ws / "r1_debug", ctx.iter_index))
+            bullets.extend(_contract_bullets(ws / "contract_violations.jsonl"))
+            bullets.extend(_fit_bullets(ws))
+            bullets.extend(_eval_bullets(ws / "eval_history.jsonl"))
+            bullets.extend(_projection_constraint_bullets(ctx.project_dir))
+            bullets.extend(_projection_frontier_bullets(ctx.project_dir))
+            bullets.extend(_harness_weakness_bullets(ws / "harness_weakness_receipts.jsonl"))
+            bullets.extend(_probe_row_bullets(ws / "strategy_experiment_probe_rows.jsonl"))
+        except Exception as exc:  # noqa: BLE001 — unreadable artifact → banner, not omission
+            return section_unavailable("TRIED-FAILED DIGEST", exc)
+        finally:
+            corrupt = _CORRUPT_JSONL_ROWS
+            _STRICT_READS = False
         if not bullets:
+            if corrupt:
+                # Every row was corrupt: surface it, do not omit silently.
+                return (
+                    "## ⚠️  TRIED-FAILED DIGEST (DEGRADED)\n\n"
+                    f"TRIED-FAILED DIGEST DEGRADED — {corrupt} corrupt/unparseable "
+                    f"JSONL row(s) and no readable negative-memory bullets; "
+                    f"prior guidance still in force\n\n"
+                )
             return ""
 
         lines = [
@@ -60,6 +84,21 @@ class TriedFailedDigestProvider(BriefingProvider):
         ]
         for bullet in _dedupe(bullets)[:8]:
             lines.append(f"- {bullet}")
+        if corrupt:
+            lines.append(
+                f"- NOTE: {corrupt} corrupt/unparseable JSONL row(s) skipped while "
+                "building this digest."
+            )
+        # Axis 4: also surface machine-blocked experiment families so the mutator
+        # cannot re-propose a killed failure_family that the office already pruned.
+        try:
+            from ztare.worldmodel.refuted_experiments import render_refuted_block
+            _refuted = render_refuted_block(ctx.project_dir)
+            if _refuted:
+                lines.append("")
+                lines.append(_refuted)
+        except Exception:  # noqa: BLE001 — always degrade safely
+            pass
         lines.append("")
         return "\n".join(lines)
 
@@ -82,6 +121,53 @@ def _negative_constraint_records(ctx: BriefingContext) -> list[dict[str, Any]]:
     records.extend(_projection_constraint_records(ctx.project_dir))
     records.extend(_projection_frontier_records(ctx.project_dir))
     return records
+
+
+def _harness_weakness_bullets(path: Path) -> list[str]:
+    """Surface recent harness weakness classes + recommended routes so the mutator
+    knows which capability the kernel flagged for repair (Axis 6 dead-letter fix)."""
+    rows = _read_jsonl(path)
+    bullets: list[str] = []
+    for row in rows[-4:]:
+        wc = str(row.get("weakness_class") or "").strip()
+        route = str(row.get("recommended_route") or row.get("route") or "").strip()
+        cap = str(row.get("recommended_capability_id") or "").strip()
+        if not wc:
+            continue
+        tail = f" → route={route}" if route else ""
+        tail += f" capability={cap}" if cap else ""
+        # The witness IS the feedback: without the exact mismatch the leaf
+        # only learns "you failed", not WHERE the law breaks (cells, t,
+        # action) — the one thing a deterministic gate knows better than
+        # any judge.
+        ce = row.get("counterexample") or {}
+        fm = str(ce.get("first_mismatch") or "").strip()
+        if fm:
+            tail += f" | witness: {fm[:160]}"
+        rt = ce.get("residual_table") or []
+        if rt:
+            # compact residual: the FULL function to fit, not one point —
+            # (t,a)->cells, deduped, so the leaf sees which guesses moved rows
+            cells = ", ".join(
+                f"t{r.get('t')}a{r.get('action')}:{str(r.get('cells'))[:40]}"
+                for r in rt[:8])
+            tail += f" | residual({len(rt)} rows): {cells}"
+        bullets.append(f"harness weakness: {wc}{tail}")
+    return bullets[-2:]  # ponytail: cap at 2; full ledger in workspace
+
+
+def _probe_row_bullets(path: Path) -> list[str]:
+    """Surface recent strategy-experiment probe outcomes (Axis 6 dead-letter fix)."""
+    rows = _read_jsonl(path)
+    bullets: list[str] = []
+    for row in rows[-6:]:
+        kind = str(row.get("kind") or "").strip()
+        status = str(row.get("status") or row.get("outcome") or "").strip()
+        summary = _truncate(str(row.get("outcome_summary") or row.get("summary") or ""), 100)
+        if not kind and not status:
+            continue
+        bullets.append(f"probe row: kind={kind} status={status}" + (f": {summary}" if summary else ""))
+    return bullets[-2:]  # ponytail: cap at 2; full ledger in workspace
 
 
 def _r1_bullets(r1_dir: Path, current_iter: int) -> list[str]:
@@ -395,10 +481,23 @@ def _record(
     }
 
 
+# Strict-read state for the fragment() pass. When _STRICT_READS is on, the
+# read helpers propagate OSError (top-level unreadable artifact -> banner) and
+# count corrupt JSONL rows into _CORRUPT_JSONL_ROWS so the digest can NAME how
+# many rows it skipped instead of silently dropping them. The structured-record
+# path leaves this OFF and keeps the lenient empty-on-error behaviour.
+# ponytail: module globals, set/reset around one fragment() call — briefing
+# assembly is single-threaded; make these threadlocals if that ever changes.
+_STRICT_READS = False
+_CORRUPT_JSONL_ROWS = 0
+
+
 def _read_json(path: Path) -> dict[str, Any]:
     try:
         obj = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
+        if _STRICT_READS:
+            raise
         return {}
     return obj if isinstance(obj, dict) else {}
 
@@ -406,13 +505,22 @@ def _read_json(path: Path) -> dict[str, Any]:
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
+    global _CORRUPT_JSONL_ROWS
     rows: list[dict[str, Any]] = []
-    for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        if _STRICT_READS:
+            raise
+        return []
+    for raw in text.splitlines():
         if not raw.strip():
             continue
         try:
             obj = json.loads(raw)
         except json.JSONDecodeError:
+            if _STRICT_READS:
+                _CORRUPT_JSONL_ROWS += 1  # count corrupt row, name it in fragment
             continue
         if isinstance(obj, dict):
             rows.append(obj)
@@ -423,6 +531,8 @@ def _read_text(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
+        if _STRICT_READS:
+            raise
         return ""
 
 

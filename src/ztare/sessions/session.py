@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from ztare.common.paths import REPO_ROOT
+from ztare.common.activity_meter import summarize_activity_spend
 
 
 SESSIONS_ROOT = REPO_ROOT / "org" / "sessions"
@@ -129,6 +130,24 @@ def append_action(session: Session, action: dict) -> None:
     with (session.directory / "actions.jsonl").open(
             "a", encoding="utf-8") as f:
         f.write(json.dumps(action) + "\n")
+
+
+def activity_meter_for_session(session: Session) -> dict:
+    if session.directory is None:
+        return {"activity_classes": {}, "action_rows": []}
+    path = session.directory / "actions.jsonl"
+    actions: list[dict] = []
+    if path.exists():
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except Exception:
+                continue
+            if isinstance(row, dict):
+                actions.append(row)
+    return summarize_activity_spend(actions)
 
 
 def append_transcript(session: Session, text: str) -> None:

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -23,14 +24,16 @@ class GateGapProvider(BriefingProvider):
     name = "gate_gap"
     priority = 250
 
+    def _path(self, ctx: BriefingContext):
+        return ctx.project_dir / "latest_eval_results.json"
+
     def _load(self, ctx: BriefingContext) -> dict:
-        path = ctx.project_dir / "latest_eval_results.json"
+        # Swallows only the ABSENT case → {} (legit "not applicable").
+        # Corrupt/unreadable files propagate so fragment() can banner.
+        path = self._path(ctx)
         if not path.exists():
             return {}
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
 
     def _extract_gates(self, prior_eval: dict) -> list[dict]:
         gates: list[dict] = []
@@ -64,6 +67,10 @@ class GateGapProvider(BriefingProvider):
         return gates
 
     def applies(self, ctx: BriefingContext) -> bool:
+        # Present-but-corrupt still applies so fragment() renders a banner
+        # rather than the section vanishing before fragment() is reached.
+        if self._path(ctx).exists():
+            return True
         prior = self._load(ctx)
         if not prior:
             return False
@@ -71,7 +78,10 @@ class GateGapProvider(BriefingProvider):
         return any(not g["passed"] for g in gates)
 
     def fragment(self, ctx: BriefingContext) -> str:
-        prior = self._load(ctx)
+        try:
+            prior = self._load(ctx)
+        except Exception as exc:
+            return section_unavailable("GATE GAP", exc)
         gates = self._extract_gates(prior)
         sorted_gates = sorted(gates, key=lambda g: g["gap_pct"], reverse=True)
         failed = [g for g in sorted_gates if not g["passed"]]

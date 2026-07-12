@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -36,8 +37,8 @@ class NoiseProfileBriefingProvider(BriefingProvider):
         path = ctx.workspace_dir / "noise_profile.json"
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return ""
+        except Exception as exc:
+            return section_unavailable("NOISE PROFILE", exc)
 
         lines: list[str] = []
         lines.append("## Noise-Profile Diagnostic (GP-166 pre-flight)")

@@ -33,6 +33,7 @@ from __future__ import annotations
 import json
 import re
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -124,12 +125,17 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
     def fragment(self, ctx: BriefingContext) -> str:
         ws = ctx.workspace_dir
-        np_data = self._read_json(ws / "noise_profile.json")
-        sc_data = self._read_json(ws / "substrate_critique.json")
-        sg_data = self._read_json(ws / "substrate_critique_suggestions.json")
+        try:
+            np_data = self._read_json(ws / "noise_profile.json")
+            sc_data = self._read_json(ws / "substrate_critique.json")
+            sg_data = self._read_json(ws / "substrate_critique_suggestions.json")
+        except Exception as exc:
+            # A present-but-corrupt artifact must not silently drop the whole
+            # section (applies() already confirmed at least one exists).
+            return section_unavailable("DATA DIAGNOSTICS", exc)
 
         if not np_data and not sc_data:
-            return ""
+            return ""  # both artifacts legitimately absent — nothing to show
 
         lines: list[str] = []
         lines.append("## Data Diagnostics (GP-166 + GP-167)")
@@ -156,10 +162,11 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
     @staticmethod
     def _read_json(path) -> dict:
-        try:
-            return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
-        except Exception:
+        # Absent → {} (legit not-applicable). Present-but-corrupt → RAISE so
+        # fragment() can render an explicit UNAVAILABLE banner.
+        if not path.exists():
             return {}
+        return json.loads(path.read_text(encoding="utf-8"))
 
     @staticmethod
     def _render_noise_profile(d: dict) -> list[str]:

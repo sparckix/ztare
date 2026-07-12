@@ -23,6 +23,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
+from ztare.common.cegis_membrane import EVALUATION, select_persona
+
 log = logging.getLogger(__name__)
 
 EVIDENCE_CHAR_LIMIT = 6000
@@ -138,7 +140,7 @@ def _build_evidence_cold_shot_prompt(
         f"\n## Current Champion's Weakest Point\n{weakest_point}\n"
         if weakest_point else ""
     )
-    persona = str(rubric_data.get("persona") or "")[:400]
+    persona = select_persona(rubric_data, EVALUATION)[:400]
     persona_section = (
         f"\n## Judge Persona (for calibration)\n{persona}\n"
         if persona else ""

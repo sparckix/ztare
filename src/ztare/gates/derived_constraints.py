@@ -168,15 +168,18 @@ def update_derived_constraints_ledger(
             if not signature:
                 continue
             restored = dict(item)
-            seen_run_ids = sorted(
+            # Migrate from old seen_run_ids to new seen_observations format if needed
+            seen_observations = sorted(
                 {
-                    int(run)
-                    for run in restored.get("seen_run_ids", [])
-                    if isinstance(run, int) or str(run).isdigit()
+                    (int(obs[0]), int(obs[1]))
+                    for obs in restored.get("seen_observations", [])
+                    if isinstance(obs, (list, tuple)) and len(obs) >= 2
+                    and (isinstance(obs[0], int) or str(obs[0]).isdigit())
+                    and (isinstance(obs[1], int) or str(obs[1]).isdigit())
                 }
             )
-            restored["seen_run_ids"] = seen_run_ids
-            restored["seen_count_runs"] = len(seen_run_ids)
+            restored["seen_observations"] = seen_observations
+            restored["seen_count_runs"] = len(seen_observations)
             source_examples = restored.get("source_examples", [])
             if not isinstance(source_examples, list):
                 source_examples = []
@@ -200,7 +203,7 @@ def update_derived_constraints_ledger(
                 "producer": proposal["producer"],
                 "rationale": proposal["rationale"],
                 "non_applicability_condition": proposal["non_applicability_condition"],
-                "seen_run_ids": [],
+                "seen_observations": [],
                 "seen_count_runs": 0,
                 "first_seen_run_id": run_id,
                 "last_seen_run_id": run_id,
@@ -224,12 +227,17 @@ def update_derived_constraints_ledger(
             }
         )
 
-        seen_run_ids = {int(run) for run in entry.get("seen_run_ids", [])}
-        seen_run_ids.add(int(run_id))
-        entry["seen_run_ids"] = sorted(seen_run_ids)
-        entry["seen_count_runs"] = len(entry["seen_run_ids"])
-        entry["first_seen_run_id"] = min(entry["seen_run_ids"])
-        entry["last_seen_run_id"] = max(entry["seen_run_ids"])
+        seen_observations = {
+            (int(obs[0]), int(obs[1]))
+            for obs in entry.get("seen_observations", [])
+            if isinstance(obs, (list, tuple)) and len(obs) >= 2
+        }
+        seen_observations.add((int(run_id), int(iteration_index)))
+        entry["seen_observations"] = sorted(seen_observations)
+        entry["seen_count_runs"] = len(entry["seen_observations"])
+        run_ids_seen = {obs[0] for obs in entry["seen_observations"]}
+        entry["first_seen_run_id"] = min(run_ids_seen)
+        entry["last_seen_run_id"] = max(run_ids_seen)
 
         source_example = {
             "run_id": int(run_id),

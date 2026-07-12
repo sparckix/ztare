@@ -12,9 +12,11 @@ Substrate-agnostic.
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -26,16 +28,45 @@ class IterTrajectoryProvider(BriefingProvider):
     priority = 300
     LOOKBACK = 5  # number of prior iters to summarize
 
+    # FIX E: how many bytes to seek from the end for tail-read; 8 KB covers
+    # ~50 typical JSONL rows (each ~160 bytes). Doubled on retry if K lines
+    # not found.  ponytail: constant ceiling — add if rows grow beyond ~4KB each.
+    _TAIL_BYTES = 8192
+
+    @staticmethod
+    def _tail_lines(path: Path, k: int, encoding: str = "utf-8") -> list[str]:
+        """Return the last `k` non-empty lines by seeking from the file end.
+
+        Falls back to full read when the file is smaller than the seek window.
+        Raises OSError / UnicodeDecodeError on file-level failures (callers handle).
+        """
+        size = path.stat().st_size
+        window = IterTrajectoryProvider._TAIL_BYTES
+        # Double the window until we're confident we have k lines, up to full file.
+        while True:
+            seek_pos = max(0, size - window)
+            with path.open("rb") as f:
+                f.seek(seek_pos)
+                raw = f.read()
+            text = raw.decode(encoding, errors="replace")
+            # If we seeked mid-line, drop the partial first line.
+            if seek_pos > 0:
+                nl = text.find("\n")
+                text = text[nl + 1:] if nl != -1 else ""
+            lines = [l for l in text.splitlines() if l.strip()]
+            if len(lines) >= k or seek_pos == 0:
+                return lines[-k:] if len(lines) >= k else lines
+            # Not enough lines and we haven't reached the start — widen window.
+            window = min(window * 4, size)
+
     def _load_telemetry_lines(self, ctx: BriefingContext) -> list[dict]:
         path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "iteration_telemetry.jsonl"
         if not path.exists():
             return []
         out = []
         try:
-            for line in path.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if not line:
-                    continue
+            # FIX E: tail-read last LOOKBACK lines only
+            for line in self._tail_lines(path, self.LOOKBACK):
                 try:
                     out.append(json.loads(line))
                 except json.JSONDecodeError:
@@ -44,23 +75,29 @@ class IterTrajectoryProvider(BriefingProvider):
             return []
         return out
 
-    def _load_eval_history_lines(self, ctx: BriefingContext) -> list[dict]:
+    def _load_eval_history_lines(self, ctx: BriefingContext) -> tuple[list[dict], list[int]]:
+        """Return (parsed rows, 1-based line numbers of corrupt rows skipped).
+
+        File-level read/decode failures PROPAGATE (so fragment() can banner
+        the section instead of silently omitting it); only per-line JSON
+        corruption is tolerated, and those rows are counted/named.
+
+        FIX E: tail-reads last LOOKBACK lines via seek-from-end; skipped line
+        numbers are relative to the tail window (the consumer only cares that
+        some rows were corrupt, not their absolute position in the full file).
+        """
         path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "eval_history.jsonl"
         if not path.exists():
-            return []
-        out = []
-        try:
-            for line in path.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    out.append(json.loads(line))
-                except json.JSONDecodeError:
-                    continue
-        except Exception:
-            return []
-        return out
+            return [], []
+        out: list[dict] = []
+        skipped: list[int] = []
+        tail = self._tail_lines(path, self.LOOKBACK)
+        for i, line in enumerate(tail, start=1):
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                skipped.append(i)
+        return out, skipped
 
     def _extract_form_summary(self, py_path: Path) -> str:
         """Extract a short form summary from a saved submission .py file.
@@ -84,12 +121,32 @@ class IterTrajectoryProvider(BriefingProvider):
         return form
 
     def applies(self, ctx: BriefingContext) -> bool:
-        eh = self._load_eval_history_lines(ctx)
-        return len(eh) >= 2  # need at least 2 prior iters for "trajectory"
+        path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "eval_history.jsonl"
+        if not path.exists():
+            return False
+        try:
+            eh, skipped = self._load_eval_history_lines(ctx)
+        except Exception:
+            # Corrupt/unreadable history: let fragment() run so it renders an
+            # explicit UNAVAILABLE banner rather than silently omitting.
+            return True
+        # Too few rows because every row was corrupt must still reach fragment()
+        # (to surface the corruption), not be silently declined as "no history."
+        return len(eh) >= 2 or bool(skipped)
 
     def fragment(self, ctx: BriefingContext) -> str:
-        eh = self._load_eval_history_lines(ctx)
+        try:
+            eh, skipped = self._load_eval_history_lines(ctx)
+        except Exception as exc:
+            return section_unavailable("ITER TRAJECTORY", exc)
         if len(eh) < 2:
+            if skipped:
+                return (
+                    "## ⚠️  ITER TRAJECTORY (DEGRADED)\n\n"
+                    f"ITER TRAJECTORY DEGRADED — {len(skipped)} corrupt row(s) in "
+                    f"eval_history.jsonl (line(s) {skipped[:10]}) and fewer than 2 "
+                    f"readable prior iters; prior guidance still in force\n\n"
+                )
             return ""
 
         recent = eh[-self.LOOKBACK:]
@@ -99,6 +156,13 @@ class IterTrajectoryProvider(BriefingProvider):
             "\n    ### ITER TRAJECTORY (last "
             f"{len(recent)} iters — read before re-using a structural family)\n",
         ]
+        if skipped:
+            lines.append(
+                f"    NOTE: {len(skipped)} corrupt row(s) in eval_history.jsonl "
+                f"skipped (line(s) {skipped[:10]}"
+                + (f" + {len(skipped) - 10} more" if len(skipped) > 10 else "")
+                + "); trajectory below may be incomplete.\n"
+            )
         for i, e in enumerate(recent):
             score = e.get("score", "?")
             # 2026-04-27: surface raw judge score when it differs

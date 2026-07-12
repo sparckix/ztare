@@ -1,4 +1,4 @@
-"""EmbeddingHistoryProvider — recurrent-state briefing via sentence embeddings.
+"""EmbeddingHistoryProvider — recurrent-state briefing via canonical embeddings.
 
 Sister to `IterTrajectoryProvider` (raw-text last-K-iter summarizer).
 While iter_trajectory is bounded by token budget (5 iters of summary
@@ -16,7 +16,7 @@ region the substrate has visited before.
 
 # v0.2 (2026-05-06): multi-channel embedding
 
-v0.1 used MiniLM on a single stringification per iter. Matches were
+v0.1 used one embedding on a single stringification per iter. Matches were
 dominated by score-range overlap rather than deep similarity. v0.2
 fixes this by:
 
@@ -39,8 +39,8 @@ states" pays off. Force-show via rubric `briefing_force_show_embedding_history`.
 # Inputs
 
   - `workspace/iteration_telemetry.jsonl` (already written every iter)
-  - sentence-transformers MiniLM (frozen)
-  - declines via applies() if MiniLM unavailable
+  - `ztare.common.embeddings` canonical engine
+  - declines via applies() if the canonical engine is unavailable
 
 # Output (markdown fragment)
 
@@ -66,10 +66,10 @@ with iteration_telemetry.
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -143,19 +143,37 @@ class EmbeddingHistoryProvider(BriefingProvider):
     MIN_PRIOR_ITERS = 5
 
     def _load_telemetry(self, ctx: BriefingContext) -> list[dict]:
+        """Return the iteration rows. See ``_load_telemetry_counted`` for the
+        corrupt-line count (kept separate so this method's list return contract
+        stays stable for callers/tests that assert on it)."""
+        rows, _ = self._load_telemetry_counted(ctx)
+        return rows
+
+    def _load_telemetry_counted(self, ctx: BriefingContext) -> "tuple[list[dict], int]":
+        """Return (iteration rows, count of corrupt JSONL lines skipped).
+
+        Corrupt lines are counted+reported, not silently dropped, so a fully
+        corrupt telemetry file surfaces as a banner rather than as an empty
+        (== not-applicable) history.
+        """
         path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "iteration_telemetry.jsonl"
         if not path.exists():
-            return []
+            return [], 0
         out = []
+        skipped = 0
         for line in path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line:
                 continue
             try:
-                out.append(json.loads(line))
+                row = json.loads(line)
             except json.JSONDecodeError:
+                skipped += 1
                 continue
-        return out
+            if row.get("record_type", "iteration") != "iteration":
+                continue
+            out.append(row)
+        return out, skipped
 
     def _channel_texts(self, row: dict) -> dict[str, str]:
         """Extract three separate text channels from one telemetry row."""
@@ -166,21 +184,32 @@ class EmbeddingHistoryProvider(BriefingProvider):
         }
 
     def applies(self, ctx: BriefingContext) -> bool:
-        rows = self._load_telemetry(ctx)
-        if len(rows) < self.MIN_PRIOR_ITERS:
+        rows, skipped = self._load_telemetry_counted(ctx)
+        # A telemetry file that exists but parsed to nothing because every
+        # line was corrupt must still reach fragment() (to banner), not be
+        # silently declined as "not enough history."
+        if len(rows) < self.MIN_PRIOR_ITERS and skipped == 0:
             return False
         try:
-            from sentence_transformers import SentenceTransformer  # noqa: F401
+            from ztare.common.embeddings import make_client  # noqa: F401
             return True
         except ImportError:
             return False
 
     def fragment(self, ctx: BriefingContext) -> str:
-        rows = self._load_telemetry(ctx)
+        rows, skipped = self._load_telemetry_counted(ctx)
         if len(rows) < self.MIN_PRIOR_ITERS:
+            if skipped:
+                return (
+                    "## ⚠️  EMBEDDING-HISTORY RETRIEVAL UNAVAILABLE\n\n"
+                    f"EMBEDDING-HISTORY RETRIEVAL UNAVAILABLE — CorruptTelemetry: "
+                    f"iteration_telemetry.jsonl has {skipped} unparseable line(s) and "
+                    f"only {len(rows)} valid iteration row(s) (need {self.MIN_PRIOR_ITERS}); "
+                    f"prior guidance still in force\n\n"
+                )
             return ""
         try:
-            from sentence_transformers import SentenceTransformer
+            from ztare.common.embeddings import cached_text_embeddings, make_client
             import numpy as np
         except ImportError:
             return ""
@@ -191,25 +220,57 @@ class EmbeddingHistoryProvider(BriefingProvider):
             return ""
 
         try:
-            model = SentenceTransformer("all-MiniLM-L6-v2")
-        except Exception:
-            return ""
+            client = make_client()
+        except SystemExit:
+            raise
+        except Exception as exc:
+            # Do NOT fabricate a zeros similarity matrix (which would rank
+            # every prior iter as equally dissimilar). The retrieval channel
+            # is genuinely unavailable — say so.
+            return section_unavailable("EMBEDDING-HISTORY RETRIEVAL", exc)
 
         # Multi-channel encoding
+        cache_path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "embedding_history_vectors.json"
         current_channels = self._channel_texts(current_row)
         prior_channels = [self._channel_texts(r) for r in prior_rows]
         per_channel_sims: dict[str, Any] = {}
+        cache_new = 0
+        cache_pending = 0
         for chan in ("form", "verdict", "weakest"):
             try:
-                cur_emb = model.encode(
+                cur_vecs, new_count, pending_count = cached_text_embeddings(
                     [current_channels[chan]],
-                    show_progress_bar=False, convert_to_numpy=True)[0]
-                prior_embs = model.encode(
+                    cache_path=cache_path,
+                    client=client,
+                    task_type="RETRIEVAL_QUERY",
+                )
+                cache_new += new_count
+                cache_pending += pending_count
+                prior_vecs, new_count, pending_count = cached_text_embeddings(
                     [pc[chan] for pc in prior_channels],
-                    show_progress_bar=False, convert_to_numpy=True)
-                per_channel_sims[chan] = _cosine_matrix(prior_embs, cur_emb)
-            except Exception:
-                per_channel_sims[chan] = np.zeros(len(prior_rows), dtype=np.float32)
+                    cache_path=cache_path,
+                    client=client,
+                    task_type="RETRIEVAL_DOCUMENT",
+                )
+                cache_new += new_count
+                cache_pending += pending_count
+                cur_emb = cur_vecs[0] if cur_vecs else None
+                if cur_emb is None or any(vec is None for vec in prior_vecs):
+                    # Pending async cache fill, not a hard failure: this channel
+                    # contributes 0 this iter but will populate next call.
+                    per_channel_sims[chan] = np.zeros(len(prior_rows), dtype=np.float32)
+                    continue
+                per_channel_sims[chan] = _cosine_matrix(prior_vecs, cur_emb)
+            except SystemExit:
+                raise
+            except Exception as exc:
+                # A genuine embedding-compute failure. Do NOT fabricate a
+                # zeros (== similarity 0.00) matrix and silently rank prior
+                # iters off it — banner the whole section instead.
+                return section_unavailable(
+                    "EMBEDDING-HISTORY RETRIEVAL",
+                    exc,
+                )
 
         # Structural-features cosine (no LLM)
         try:
@@ -219,8 +280,10 @@ class EmbeddingHistoryProvider(BriefingProvider):
                 for r in prior_rows
             ], dtype=np.float32)
             per_channel_sims["struct"] = struct_sims
-        except Exception:
-            per_channel_sims["struct"] = np.zeros(len(prior_rows), dtype=np.float32)
+        except SystemExit:
+            raise
+        except Exception as exc:
+            return section_unavailable("EMBEDDING-HISTORY RETRIEVAL", exc)
 
         # Weighted-sum
         total_sims = np.zeros(len(prior_rows), dtype=np.float32)
@@ -271,6 +334,14 @@ class EmbeddingHistoryProvider(BriefingProvider):
             f"weakest={CHANNEL_WEIGHTS['weakest']} struct={CHANNEL_WEIGHTS['struct']}. "
             f"Override per substrate via rubric `embedding_history_channel_weights`."
         )
+        lines.append(
+            f"  embedding cache: {cache_path.name}; fresh_vectors={cache_new}; pending={cache_pending}."
+        )
+        if skipped:
+            lines.append(
+                f"  NOTE: {skipped} corrupt telemetry line(s) were skipped when "
+                f"building this retrieval; the ranking is over the readable rows only."
+            )
 
         return "\n".join(lines)
 

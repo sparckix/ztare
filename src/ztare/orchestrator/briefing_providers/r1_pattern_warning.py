@@ -16,6 +16,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 # ── Pattern classifiers ──────────────────────────────────────────────────────
@@ -54,11 +55,13 @@ def _extract_rejection_reasons(md_text: str) -> list[str]:
     return reasons
 
 
-def _parse_r1_file(path: Path) -> dict:
+def _parse_r1_file(path: Path, *, raise_on_error: bool = False) -> dict:
     """Return a dict of pattern → count for one iter's R1 attempts file."""
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except Exception:
+        if raise_on_error:
+            raise
         return {}
     reasons = _extract_rejection_reasons(text)
     counts: dict[str, int] = {}
@@ -86,7 +89,9 @@ def _parse_r1_file(path: Path) -> dict:
     return counts
 
 
-def _aggregate_r1_patterns(r1_debug_dir: Path, current_iter: int) -> dict:
+def _aggregate_r1_patterns(
+    r1_debug_dir: Path, current_iter: int, *, raise_on_error: bool = False
+) -> dict:
     """Aggregate R1 patterns across all prior iters (iter < current_iter)."""
     totals: dict[str, int] = {}
     all_denylist: set[str] = set()
@@ -98,7 +103,7 @@ def _aggregate_r1_patterns(r1_debug_dir: Path, current_iter: int) -> dict:
             candidate = r1_debug_dir / f"iter_{i}_r1_attempts.md"
         if not candidate.exists():
             continue
-        counts = _parse_r1_file(candidate)
+        counts = _parse_r1_file(candidate, raise_on_error=raise_on_error)
         for k, v in counts.items():
             if k == "_denylist_terms":
                 all_denylist.update(v)  # type: ignore[arg-type]
@@ -124,7 +129,12 @@ class R1PatternWarningProvider(BriefingProvider):
 
     def fragment(self, ctx: BriefingContext) -> str:
         r1_dir = ctx.project_dir / "workspace" / "r1_debug"
-        patterns = _aggregate_r1_patterns(r1_dir, ctx.iter_index)
+        try:
+            patterns = _aggregate_r1_patterns(r1_dir, ctx.iter_index, raise_on_error=True)
+        except Exception as exc:  # noqa: BLE001 — unreadable r1_debug file → banner
+            return section_unavailable("R1 PATTERN WARNING", exc)
+        # No patterns here is a LEGIT empty (no R1 fired this run), not a read
+        # error — keep the silent skip.
         if not patterns or all(k.startswith("_") for k in patterns):
             return ""
 

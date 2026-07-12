@@ -81,6 +81,12 @@ def _strip_stray_fences(text: str) -> str:
     return text.strip()
 
 
+def _remove_fit_declaration_blocks(text: str) -> str:
+    """Remove stale declaration blocks before appending the recovered one."""
+
+    return FIT_DECLARATION_BLOCK_RE.sub("", text or "").strip()
+
+
 def validate_and_retry_fit_declaration(
     *,
     raw_response: str,
@@ -145,10 +151,10 @@ def validate_and_retry_fit_declaration(
             reason=f"retry-no-block (primary={primary_reason})",
         )
 
-    # Validate the retry block against the same parser
-    spliced = raw_response.rstrip() + "\n\n" + retry_block_text + "\n"
+    # Validate the retry block itself, then splice it by schema identity so an
+    # older malformed block cannot shadow the recovered declaration.
     try:
-        retry_parsed = parse_fn(spliced)
+        retry_parsed = parse_fn(retry_block_text)
     except ValueError as exc:
         return RetryOutcome(
             fired=True,
@@ -165,6 +171,8 @@ def validate_and_retry_fit_declaration(
             retry_block=retry_block_text,
             reason=f"retry-unparseable (primary={primary_reason})",
         )
+
+    spliced = _remove_fit_declaration_blocks(raw_response).rstrip() + "\n\n" + retry_block_text + "\n"
 
     return RetryOutcome(
         fired=True,

@@ -89,6 +89,8 @@ PRIMITIVE_MODULES = [
     "src/ztare/research_director/theory_building_ops.py",
     "src/ztare/research_director/graph_carrier_actions.py",
     "src/ztare/leanmill/semantic_premise_shelf.py",
+    "src/ztare/leanmill/theory_interpretation.py",  # evidence-bound key idea + isomorphism projection
+    "src/ztare/leanmill/theory_conflict_ledger.py",  # witness-replayed theory-search failure memory
     "src/ztare/common/constraint_isomorphism.py",  # strange loop (common/ not auto-swept)
     "src/ztare/common/graph_carrier.py",           # graph diagnostic carrier schema/receipt guard
     "src/ztare/workspace/source_freshness.py",     # source-bound artifact freshness / stale-provenance guard
@@ -101,6 +103,11 @@ PRIMITIVE_MODULES = [
     "src/ztare/common/sandboxed_python.py",          # the ONE sandboxed-python exec home (2026-06-07)
     "src/ztare/common/symbolic_witness.py",          # SymPy witness/recurrence/linear-system builders
     "src/ztare/fit/analogy.py",                      # GP-164 curve-fit analogy (the specialization)
+    "src/ztare/gates/pde_physical_accounting_gate.py",  # PDE physical balance/dimension/flux invoice gate
+    "src/ztare/gates/pde_equality_provenance_gate.py",  # PDE equality provenance / anti-laundering gate
+    "src/ztare/gates/pde_operator_admissibility_gate.py",  # singular-integral/CZ/Riesz payment gate
+    "src/ztare/gates/pde_rigorous_numerics_certificate_gate.py",  # interval/residual/tail certificate gate
+    "src/ztare/gates/pde_hostile_witness_gate.py",   # pec_e hostile/sharpness witness receipt gate
 ]
 # Directories swept for additional primitive-bearing modules (every public def/class).
 PRIMITIVE_DIRS = [
@@ -108,6 +115,7 @@ PRIMITIVE_DIRS = [
     "src/ztare/validator/core",      # information yield, scoring cores
     "src/ztare/motion",              # set/vector distances, motion metrics
     "src/ztare/fit",                 # fit primitives, regime combinators
+    "src/ztare/pde",                 # PDE-engine facade, gate runner, leaf dispatch
     "src/ztare/leanmill/solver",     # proof-state, statement-extract, contract
 ]
 
@@ -136,6 +144,29 @@ WHEN_TO_USE = {
     "IsomorphismLoop": "stuck structural ceiling blocked after many attempts find a theorem from another field cross-field isomorphism analogy orthogonal jump self-prompt next idea Barrington abstract the failure to pure math constraint surface established theorem that solves it transport structure when no progress what would unblock",
     "default_llm_query": "cross-field theorem search structural isomorphism query strip domain gravity name theorems that solve this abstract constraint orthogonal jump",
     "surface_for_research_ceiling": "research director stuck seam find a field where this seam is already solved transport structure cross-field isomorphism deanchor next idea abstract the frontier to operator seam leanmill architecture ceiling next Barrington",
+    "build_pde_formal_feedback_card": "PDE leaf agent LeanMill theorem retrieval formal feedback semantic premise shelf compiler typed exit formal surface adapter proof obligation before Lean edit",
+    "render_pde_formal_feedback_card": "PDE formal feedback card render LeanMill premise shelf compiler typed exit formalization next leaf summary",
+    "PDEApplicabilityCard": "PDE applicability card profile obligation theorem profile missing fields rejected substitutes confuser applicability not lemma bank",
+    "applicability_card_retrieval": "PDE applicability card retrieval theorem profile obligations missing fields rejected substitutes confuser not LeanMill premise shelf",
+    "render_applicability_cards": "PDE applicability cards render profile obligations missing fields rejected substitutes workbench pack",
+    "run_pde_physical_accounting_gate": "PDE physical accounting conservation balance law dimensions dimensional homogeneity flux boundary source sink localization carrier sign positivity operator projection cutoff tail hostile physical packet",
+    "run_pde_equality_provenance_gate": "PDE equality provenance anti laundering record field projection assumed equality source binding constructor body assignments same stream target charge tracefree valuation proxy stream",
+    "run_pde_operator_admissibility_gate": "PDE singular integral operator admissibility CZ Riesz Fourier multiplier kernel bandlimit cutoff carrier endpoint commutator tail payment",
+    "run_pde_rigorous_numerics_certificate_gate": "PDE rigorous numerics certificate validated interval arithmetic residual bound truncation tail bound a posteriori theorem linkage reproducibility validator",
+    "run_pde_hostile_witness_gate": "PDE hostile witness sharpness counterexample falsifier packet amplitude scaling support frequency hypotheses preserved conclusion stressed claim boundary update",
+    "run_pde_gate": "PDE subkernel execute one registry gate stable gate id payload theorem applicability operator admissibility hostile witness",
+    "run_pde_leaf_work_order_gates": "PDE subkernel execute all gate payloads for leaf work order normalized gate result envelope missing fields rejected substitutes",
+    "PDEFormalSurfaceRecord": "PDE formal surface inventory status primitive Lean statement proof complete external citation numerical certificate missing evidence no proof credit",
+    "normalize_pde_formal_surface_record": "PDE formal surface inventory normalize primitive status Lean statement proof citation numerical certificate missing evidence",
+    "build_pde_formal_surface_map": "PDE formal surface map build status inventory required primitives Lean proof complete informal only external citation numerical certificate routing",
+    "render_pde_formal_surface_map": "PDE formal surface map render status inventory missing evidence required primitives workbench pack",
+    "PDELeafWorkOrder": "PDE leaf agent work order schema atomic task dispatch GP219 pec op gate requirements must return theorem retrieval estimate hostile packet formalization",
+    "build_pde_leaf_work_order": "PDE leaf agent work order build atomic task dispatch GP219 pec op registry backed gates theorem retrieval estimate hostile packet formalization",
+    "render_pde_leaf_work_order": "PDE leaf work order render dispatch prompt gate requirements must return GP219 pec op estimate theorem formalization task",
+    "all_pde_gate_entries": "PDE gate registry list all gates workbench flags plugin boundary leaf agent work order GP219 pec ops",
+    "entries_for_op": "PDE gate registry find gates for GP219 pec op leaf agent work order theorem applicability analytic substance same carrier coercivity",
+    "entry_by_gate_id": "PDE gate registry stable gate id lookup workbench flag runner renderer section tags plugin boundary",
+    "build_pde_subkernel_status": "PDE subkernel readiness status gate registry runner imports service boundaries LeanMill formal feedback project app separation",
     "score_research_avenue": "research route rank avenue MDL information yield per complexity amnesia penalty source currency next lever what to pursue",
     "score_research_avenues": "portfolio rank research avenues MDL information yield density amnesia recurrence source currency proof route priority",
     "ResearchAvenue": "candidate research route avenue receipts kill conditions expected reuse exposure amnesia hits novelty hints MDL score",

@@ -110,6 +110,20 @@ FAMILY_REGISTRY: dict[str, ColdShotFamily] = {
         mutator_visible=False,
         claim_class="instrument_repair_launch_hygiene",
     ),
+    "strategy_office": ColdShotFamily(
+        family_id="strategy_office",
+        lifecycle="frontier_planning",
+        purpose=(
+            "Cross-cycle experiment commissioner (General Office, S1): reads a "
+            "completed cycle's deterministic receipts and commissions falsifiable "
+            "experiment cards for the next cycle. Advisory, never edits the rubric "
+            "(that is the GP-105 per-iteration arm)."
+        ),
+        output_schema="strategy-experiment-v1",
+        artifact_name="strategy_experiments.jsonl",
+        mutator_visible=False,
+        claim_class="cross_cycle_experiment_commissioning",
+    ),
 }
 
 
@@ -265,6 +279,13 @@ def _family_eligibility(
         return ok, (
             "enable_frontier_script_scaffold=true"
             if ok else "frontier_script_scaffold opt-in flag is false"
+        )
+
+    if family_id == "strategy_office":
+        ok = bool(rubric_data.get("enable_strategy_office", False))
+        return ok, (
+            "enable_strategy_office=true"
+            if ok else "strategy_office opt-in flag is false"
         )
 
     return False, "unknown family"

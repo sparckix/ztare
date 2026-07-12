@@ -182,6 +182,30 @@ def extract_asymptotic_claim_contract_from_charter(
     )
 
 
+def extract_deliverables_from_charter(charter_text: str | None) -> list[str]:
+    """Read the ``## Deliverables`` section — the governed OUTPUT contract, PRE-REGISTERED in the immutable
+    charter so the deliverable SET cannot be cherry-picked after outcomes exist (the scenario manifest holds
+    only the FORMAT). Each bullet is one deliverable template name; order preserved. Empty when the section is
+    absent (the run then falls back to the scenario manifest's declared set)."""
+    if not charter_text:
+        return []
+    names: list[str] = []
+    in_section = False
+    for raw_line in charter_text.splitlines():
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            in_section = stripped == "## Deliverables"
+            continue
+        if not in_section or not stripped:
+            continue
+        if stripped.startswith("### "):
+            break
+        match = re.match(r"^-\s+(.+?)\s*$", stripped)
+        if match and match.group(1).strip():
+            names.append(match.group(1).strip())
+    return names
+
+
 def extract_anchor_proxies_from_charter(charter_text: str | None) -> list[str]:
     """Read the ``## Anchor Proxies`` section, return normalized names.
 

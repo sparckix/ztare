@@ -200,21 +200,14 @@ def _strip_scoring_metadata(text: str) -> str:
 
 def write_mform_pending(finding: dict, workspace_dir: Path) -> None:
     """Write finding to pending file for application at next iteration start."""
-    pending_path = workspace_dir / _MFORM_PENDING_FILENAME
-    pending_path.write_text(json.dumps(finding, indent=2), encoding="utf-8")
+    from ztare.common.pending_file import write_pending
+    write_pending(workspace_dir, _MFORM_PENDING_FILENAME, finding)
 
 
 def load_mform_pending(workspace_dir: Path) -> dict | None:
     """Load and delete pending finding. Returns None if absent."""
-    pending_path = workspace_dir / _MFORM_PENDING_FILENAME
-    if not pending_path.exists():
-        return None
-    try:
-        finding = json.loads(pending_path.read_text(encoding="utf-8"))
-        pending_path.unlink()
-        return finding
-    except Exception:
-        return None
+    from ztare.common.pending_file import take_pending
+    return take_pending(workspace_dir, _MFORM_PENDING_FILENAME)
 
 
 # ---------------------------------------------------------------------------

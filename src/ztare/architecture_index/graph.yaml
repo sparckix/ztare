@@ -33,6 +33,27 @@ last_updated: 2026-06-27
 
 edges:
 
+  # ---- shared residual information pricing + AxiomPack cheap deduction ----
+  - capability: RESIDUAL-INFORMATION-YIELD
+    operates_on_gp: [GP-251]
+    composes_with: [EVALUATE-INFORMATION-YIELD, DIRECT-EQUATIONAL-DEDUCTION-BASELINE]
+    discharges_seam: [research_areas/seams/engine/lean/GP-251_axiompack_frontier_exploration_inlet_seam.md]
+
+  - capability: DIRECT-EQUATIONAL-DEDUCTION-BASELINE
+    operates_on_gp: [GP-251]
+    composes_with: [RESIDUAL-INFORMATION-YIELD]
+    discharges_seam: [research_areas/seams/engine/lean/GP-251_axiompack_frontier_exploration_inlet_seam.md]
+
+  - capability: THEORYCONFLICTLEDGER
+    operates_on_gp: [GP-251]
+    composes_with: [THEORY-PRESENTATION-SIGNATURE, THEORY-IMPLICATION-SIGNATURE]
+    discharges_seam: [research_areas/seams/engine/lean/GP-251_axiompack_frontier_exploration_inlet_seam.md]
+
+  - capability: EXECUTE-ISABELLE-THEORY-TASK
+    operates_on_gp: [GP-251]
+    composes_with: [RENDER-THEORY-IMPLICATION-TO-ISABELLE, VERIFY-ISABELLE]
+    discharges_seam: [research_areas/seams/engine/lean/GP-251_axiompack_frontier_exploration_inlet_seam.md]
+
   # ---- v1 project workbench live state + compression-progress surfaces ----
   - capability: PROJECT-WORKBENCH-SERVER
     composes_with: [PROJECT-WORKBENCH-STATE, ITERATION-TELEMETRY-COMPRESSION, COMPRESSION-PROGRESS, BUILD-SOURCE-CLAIM-GRAPH-CARRIER]

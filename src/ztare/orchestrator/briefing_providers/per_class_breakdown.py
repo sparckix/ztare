@@ -35,6 +35,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -55,7 +56,7 @@ class PerClassBreakdownProvider(BriefingProvider):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception as exc:
-            return ""
+            return section_unavailable("PER-CLASS BREAKDOWN", exc)
 
         lines: list[str] = []
         lines.append("## Per-Class Fit Quality (latest iter)")

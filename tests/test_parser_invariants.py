@@ -133,6 +133,44 @@ def test_decl_blocks_no_phantom_from_comment(real, fake):
     assert real in names and fake not in names and f"{fake}2" not in names
 
 
+# ── MODE 2, the 2026-07-02 Basel 25-min-loop bug: a decl's BLOCK must NOT ABSORB a trailing top-level SCOPE
+#    command (`variable`/`open`/`section`/`set_option`/…) that scopes the FOLLOWING decls. BOTH decl_blocks
+#    (statement_integrity's local one AND lean_source.decl_spans) must fence there. The old comment-only phantom
+#    test never inserted a scope command between decls, so a byte-identical def with a trailing `variable {K}`
+#    compared UNEQUAL → false `definition_altered`. This is the invariant that would have red-flagged it.
+@settings(max_examples=200)
+@given(a=_IDENT, b=_IDENT,
+       scope=st.sampled_from(["variable {K : Type}", "open Foo", "section", "set_option x true", "variable [Add K]"]))
+def test_decl_block_never_absorbs_trailing_scope_command(a, b, scope):
+    assume(a != b)
+    from ztare.leanmill.lean_source import decl_blocks as ls_decl_blocks
+    src = f"def {a} : Nat := 0\n{scope}\ndef {b} : Nat := 1\n"
+    kw = scope.split()[0]
+    assert kw not in dict(decl_blocks(src)).get(a, ""), "statement_integrity.decl_blocks absorbed a scope command"
+    assert kw not in dict(ls_decl_blocks(src)).get(a, ""), "lean_source.decl_blocks absorbed a scope command"
+
+
+# ── MODE 1 for theorem_names / first_theorem_name (audit #2/#3): a COMMENTED decl (line AND `/- … -/` block) is
+#    never a phantom name — mirrors the def_names invariant, and matches the actual agent shape (a commented echo).
+@settings(max_examples=200)
+@given(real=_IDENT, ghost=_IDENT, block=st.booleans())
+def test_theorem_names_ignore_commented_decl(real, ghost, block):
+    assume(real != ghost)
+    comment = f"/- theorem {ghost} : X -/" if block else f"-- theorem {ghost} : X"
+    src = f"{comment}\ntheorem {real} : True := by trivial\n"
+    assert ghost not in theorem_names(src)
+    assert first_theorem_name(src) == real
+
+
+# ── audit #4: a `:=` inside a COMMENT must not truncate the extracted signature. ──
+@settings(max_examples=150)
+@given(name=_IDENT, concl=st.sampled_from(["True", "0 < m", "p ∧ q"]))
+def test_signature_ignores_comment_assign(name, concl):
+    from ztare.leanmill.solver.statement_integrity import _signature
+    src = f"theorem {name} (x : Nat) /- note := here -/ : {concl} := by sorry"
+    assert concl in _signature(src)
+
+
 @settings(max_examples=200)
 @given(s=st.text(min_size=0, max_size=80))
 def test_statement_integrity_blank_offset_preserving(s):
@@ -247,17 +285,35 @@ def test_attackrecord_solved_is_bool_and_iff_closed(nl, solved_str, outcome, fai
 def test_attackrecord_model_dump_is_legacy_dict(solved_str):
     d = AttackRecord.from_firewall_result({"solved": solved_str, "outcome": solved_str}, nl="x").model_dump()
     assert set(d) == {"nl", "lean_statement", "faithful", "outcome", "solved",
-                      "faithfulness_reason", "faithfulness_checks", "decomposition"}   # back-compat keys
+                      "faithfulness_reason", "faithfulness_checks", "decomposition",
+                      "failure_class", "budget_killed"}   # legacy keys plus routing classification
     assert isinstance(d["solved"], bool)
 
 
 def test_attackrecord_empty_result_is_safe():
     rec = AttackRecord.from_firewall_result({}, nl="t")
     assert rec.solved is False and rec.outcome == "" and rec.lean_statement == "" and rec.faithful is None
+    assert rec.failure_class is None and rec.budget_killed is False
+
+
+def test_attackrecord_preserves_gap_classification_without_rederiving_it():
+    failure = {"class": "apparatus", "error_class": "timeout", "reason": "wallclock budget"}
+    rec = AttackRecord.from_firewall_result(
+        {
+            "solved": "exact_gap",
+            "outcome": "admitted_and_exact_gap",
+            "failure_class": failure,
+            "budget_killed": True,
+        },
+        nl="target",
+    )
+    assert rec.failure_class == failure
+    assert rec.budget_killed is True
+    assert rec.solved is False
 
 
 # ── TYPED CONTRACT (#49): MoveResult / GovernanceVerdict / FirewallResult — outcome vocabulary encoded once ──
-from ztare.leanmill.contracts.kernel import (MoveResult, GovernanceVerdict, FirewallResult,  # noqa: E402
+from ztare.leanmill.contracts.kernel import (MoveResult, GovernanceVerdict, FirewallResult, SolveResult,  # noqa: E402
                                              OUTCOME_CLOSED, FW_ADMITTED_PREFIX)
 
 
@@ -310,3 +366,27 @@ def test_firewallresult_agrees_with_attackrecord():
                             (None, "rejected_by_firewall")]:
         d = {"solved": solved, "outcome": outcome}
         assert AttackRecord.from_firewall_result(d, nl="x").solved == FirewallResult.from_dict(d).is_admitted_closed
+
+
+def test_solveresult_preserves_legacy_shape_and_extras():
+    raw = {
+        "results": [{"outcome": "closed", "proof_text": "by trivial"}],
+        "quarantined_references": None,
+        "closure_certificate": "cert.jsonl",
+        "statement_false_verified": True,
+        "move_specific": {"kept": True},
+    }
+    sr = SolveResult.from_dict(raw)
+    out = sr.as_dict()
+    assert out["results"][0]["outcome"] == "closed"
+    assert out["quarantined_references"] == []
+    assert out["closure_certificate"] == "cert.jsonl"
+    assert out["statement_false_verified"] is True
+    assert out["move_specific"] == {"kept": True}
+    assert sr.primary()["outcome"] == "closed"
+
+
+def test_solveresult_missing_results_is_explicit_empty_list():
+    out = SolveResult.from_dict({"closure_lean": "T.lean"}).as_dict()
+    assert out["results"] == []
+    assert out["closure_lean"] == "T.lean"

@@ -202,6 +202,26 @@ def _build_gates() -> list[Gate]:
             run=_make_run_callback("src.ztare.gates.falsifiability_gate", "evaluate_falsifiability"),
             dependencies=[],
         ),
+        # ── Interactive-environment gates (GP-250) ──────────────────
+        # Transition-program candidates on interactive substrates: exact
+        # replay over the episode log, then rollout depth on a held-out
+        # episode (the farther-tail discipline with time as the tail
+        # axis). Pure logic lives in src/ztare/worldmodel/gates.py; these
+        # entries adapt the dispatcher contract.
+        Gate(
+            name="worldmodel_replay",
+            phase="POST_FIT",
+            can_handle=_engages_on("interactive_environment"),
+            run=_make_run_callback("src.ztare.gates.worldmodel_gates", "run_replay_gate"),
+            dependencies=[],
+        ),
+        Gate(
+            name="worldmodel_rollout",
+            phase="POST_FIT",
+            can_handle=_engages_on("interactive_environment"),
+            run=_make_run_callback("src.ztare.gates.worldmodel_gates", "run_rollout_gate"),
+            dependencies=["worldmodel_replay"],
+        ),
         Gate(
             name="derived_constraints",
             phase="POST_JUDGE",

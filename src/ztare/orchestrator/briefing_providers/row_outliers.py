@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -23,14 +24,16 @@ class RowOutlierProvider(BriefingProvider):
     priority = 400
     TOP_K = 5
 
+    def _fit_path(self, ctx: BriefingContext):
+        return (ctx.workspace_dir or ctx.project_dir / "workspace") / "fit_features_result.json"
+
     def _load_fit(self, ctx: BriefingContext) -> dict:
-        path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "fit_features_result.json"
+        # Swallows only the ABSENT case → {} (legit "not applicable").
+        # Corrupt/unreadable files propagate so fragment() can banner.
+        path = self._fit_path(ctx)
         if not path.exists():
             return {}
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
 
     def _format_row(self, feats: dict, y_obs: float, y_pred: float) -> str:
         # Compact representation: 2-3 features + obs/pred
@@ -45,6 +48,10 @@ class RowOutlierProvider(BriefingProvider):
         )
 
     def applies(self, ctx: BriefingContext) -> bool:
+        # Present-but-corrupt still applies so fragment() renders a banner
+        # rather than the section vanishing before fragment() is reached.
+        if self._fit_path(ctx).exists():
+            return True
         d = self._load_fit(ctx)
         # Only fire when the fit succeeded AND has worst_residuals stored.
         # If the worst-residuals key isn't present, skip rather than
@@ -52,7 +59,10 @@ class RowOutlierProvider(BriefingProvider):
         return bool(d.get("success")) and bool(d.get("worst_residuals"))
 
     def fragment(self, ctx: BriefingContext) -> str:
-        d = self._load_fit(ctx)
+        try:
+            d = self._load_fit(ctx)
+        except Exception as exc:
+            return section_unavailable("ROW OUTLIERS", exc)
         worst = d.get("worst_residuals") or []
         if not worst:
             return ""

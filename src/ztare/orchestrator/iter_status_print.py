@@ -48,8 +48,10 @@ def print_latest_artifact_status(
         and previous_champion_fingerprint is not None
         and latest_fingerprint != previous_champion_fingerprint
     )
+    # ponytail: fail-closed on missing fingerprint — can't compare regimes if either is unknown
     shifted_label = (
-        "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+        "n/a" if previous_champion_fingerprint is None
+        else ("unknown" if latest_fingerprint is None else ("yes" if shifted else "no"))
     )
     fingerprint_label = latest_fingerprint or "unknown"
     print(
@@ -68,8 +70,10 @@ def print_champion_artifact_status(
         and previous_champion_fingerprint is not None
         and new_champion_fingerprint != previous_champion_fingerprint
     )
+    # ponytail: fail-closed on missing fingerprint — can't compare regimes if either is unknown
     shifted_label = (
-        "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+        "n/a" if previous_champion_fingerprint is None
+        else ("unknown" if new_champion_fingerprint is None else ("yes" if shifted else "no"))
     )
     fingerprint_label = new_champion_fingerprint or "unknown"
     print(
@@ -88,8 +92,10 @@ def print_champion_reconstruction_status(
         and previous_champion_fingerprint is not None
         and new_champion_fingerprint != previous_champion_fingerprint
     )
+    # ponytail: fail-closed on missing fingerprint — can't compare regimes if either is unknown
     shifted_label = (
-        "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+        "n/a" if previous_champion_fingerprint is None
+        else ("unknown" if new_champion_fingerprint is None else ("yes" if shifted else "no"))
     )
     fingerprint_label = new_champion_fingerprint or "unknown"
     print(

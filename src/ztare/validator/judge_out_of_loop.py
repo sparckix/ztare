@@ -129,6 +129,7 @@ def _llm_subscription(prompt: str, timeout: int = 300) -> _LLMResponse:
     disables repo mutation paths as far as each runtime permits.
     """
     from ztare.common.subscription_agent_runtime import (
+        CODEX_SANDBOX_SEALED_COMPLETION,
         run_subscription_agent_with_recovery,
     )
 
@@ -144,7 +145,7 @@ def _llm_subscription(prompt: str, timeout: int = 300) -> _LLMResponse:
         session_state=None,
         timeout_seconds=timeout,
         default_codex_model=JUDGE_SUBSCRIPTION_MODEL,
-        codex_sandbox="read-only",
+        codex_sandbox=CODEX_SANDBOX_SEALED_COMPLETION,
         claude_disallowed_tools=[
             "Bash", "Edit", "Write", "WebSearch", "WebFetch",
         ],

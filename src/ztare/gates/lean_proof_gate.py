@@ -696,7 +696,27 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
             and _os_reelab.environ.get("ZTARE_CANONICAL_REELAB", "1") != "0"):
         try:
             from ztare.leanmill.solver.canonical_reelaboration import check as _reelab
-            _ok_re, _d_re = _reelab(original_source, lean_source, target_name, ztare_proofs_root)
+            # SINGLE-DOOR SUBSTRATE BASELINE (2026-07-05, THE recurring cited-rung `context_hijack` — operator "for
+            # once truly fixed / why re-elaborate a solved theorem"). canonical_reelaboration STRIPS from the probe
+            # every decl not in `original_source` and re-compiles; a CITED-RUNG / composite governance path passes
+            # only the POSED statement as `original_source` (a partial slice), so the substrate's OWN inlined defs
+            # get stripped → the proof breaks → FALSE `context_hijack` (statement_integrity only flags ALTERED
+            # shared defs, so it PASSES → the `si_ok=True si_viol=[]` signature). Its internal `get_campaign_
+            # substrate()` union returned None at this seam (cross-process global). Cure at the ONE kernel door
+            # every governance path routes through (solve-time 1445 AND cited-rung 4571): read the registered
+            # substrate HERE (main process, env-var mirror live) and hand the FULL baseline to _reelab EXPLICITLY —
+            # so its decls count as PRE-EXISTING and it no longer depends on the blind global. SOUND: a genuinely-
+            # injected hijack decl is NOT in the substrate ⇒ still stripped + caught. Additive; a read failure
+            # keeps the passed baseline (byte-parity for a flat/non-campaign gate call).
+            _reelab_orig = original_source
+            try:
+                from ztare.formal.repl_compile import get_campaign_substrate as _gcs_re
+                _subp = _gcs_re()
+                if _subp and Path(_subp).exists():
+                    _reelab_orig = original_source + "\n\n" + Path(_subp).read_text(encoding="utf-8", errors="replace")
+            except Exception:  # noqa: BLE001 — union is additive; a failure keeps the caller's baseline
+                pass
+            _ok_re, _d_re = _reelab(_reelab_orig, lean_source, target_name, ztare_proofs_root)
             detail["canonical_reelaboration"] = {"ok": _ok_re, "detail": _d_re}
             if not _ok_re:
                 flags.append("context_hijack_confirmed")

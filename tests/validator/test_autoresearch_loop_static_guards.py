@@ -7,6 +7,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 AUTORESEARCH_LOOP = REPO_ROOT / "src" / "ztare" / "validator" / "autoresearch_loop.py"
 TEST_THESIS = REPO_ROOT / "src" / "ztare" / "validator" / "test_thesis.py"
+REPAIR_PREFLIGHT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "repair_preflight.py"
+CANDIDATE_PREFLIGHT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "candidate_preflight.py"
+WORLDMODEL_CONTEXT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "worldmodel_prompt_context.py"
+WORLDMODEL_PAYLOAD = REPO_ROOT / "src" / "ztare" / "validator" / "worldmodel_typed_payload.py"
+STRATEGY_DECISION_POLICY = REPO_ROOT / "src" / "ztare" / "research_director" / "strategy_decision_policy.py"
 GENERATE_COMMITTEE = REPO_ROOT / "src" / "ztare" / "validator" / "generate_committee.py"
 MAKEFILE = REPO_ROOT / "Makefile"
 
@@ -152,6 +157,29 @@ def test_r1_retry_prompt_receives_same_iteration_error_history() -> None:
     assert append_pos < format_pos < retry_call_pos
 
 
+def test_workbench_action_receipt_triggers_new_synthesis_turn_not_stale_validation() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    receipt_pos = source.index("if _r1_receipt_only:")
+    retry_prompt_pos = source.index("_retry_prompt = format_r1_retry_skeleton(", receipt_pos)
+    retry_call_pos = source.index("new_content = safe_mutate(", retry_prompt_pos)
+    receipt_branch = source[receipt_pos:retry_prompt_pos]
+
+    assert "_auto_carry_leaf_workbench_receipts(" not in receipt_branch
+    assert "re-running validation without another mutator call" not in source
+    assert receipt_pos < retry_prompt_pos < retry_call_pos
+
+
+def test_strategy_decision_policy_imports_optional_kernels_through_single_door() -> None:
+    source = STRATEGY_DECISION_POLICY.read_text(encoding="utf-8")
+
+    assert "import_optional_kernel_module" in source
+    assert "sys.path" not in source
+    assert "ZTARE_COGNITIVE_FIRM_SRC" not in source
+    assert "Path(__file__)" not in source
+    assert "importlib.import_module" not in source
+
+
 def test_single_mutator_route_avoids_parallel_wrapper_until_rubric_triggers() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
 
@@ -163,6 +191,187 @@ def test_single_mutator_route_avoids_parallel_wrapper_until_rubric_triggers() ->
     direct_single_pos = source.index('new_content = _single_mutate("")', policy_pos)
     dispatch_pos = source.index("dispatch_mutator_blitz(BlitzDispatchInputs(", policy_pos)
     assert direct_single_pos < dispatch_pos
+
+
+def test_worldmodel_bounded_discriminator_prompt_uses_transition_contract() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "is_worldmodel_submission_contract" in source
+    branch_pos = source.index("_worldmodel_contract = worldmodel_typed_payload_contract")
+    worldmodel_pos = source.index("CRITICAL OUTPUT REQUIREMENT (THE EXECUTABLE TRANSITION LAW)", branch_pos)
+    numeric_pos = source.index("choose one accepted numeric declaration", branch_pos)
+    assert worldmodel_pos < numeric_pos
+
+    worldmodel_block = source[worldmodel_pos:numeric_pos]
+    assert "WORLD_MODEL_SPEC, PROGRAM, or step(grid, action, t)" in worldmodel_block
+    assert "PARAMETRIC_FORM, LAGRANGIAN, MODEL_PARAMS" in worldmodel_block
+    assert "assertion-only suites" in worldmodel_block
+    assert "deterministic replay over visible transitions plus held-out rollout" in worldmodel_block
+
+
+def test_mutator_document_context_quarantines_stale_root_artifacts_when_candidate_memory_exists() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    context_source = WORLDMODEL_CONTEXT.read_text(encoding="utf-8")
+
+    assert "deterministic_patch_base_document_context" in source
+    assert "def deterministic_patch_base_document_context(" in context_source
+    assert "candidate_memory.json" in context_source
+    assert "ztare-candidate-memory-v1" in context_source
+    assert "admissible_candidate_memory_records(" in context_source
+    assert "require_submission_source=True" in context_source
+    assert "ROOT ARTIFACTS QUARANTINED" in context_source
+    assert "Root prose omitted from mutation context" in context_source
+    assert "`## Deterministic Candidate Memory` patch base" in context_source
+    assert "root_prose_matches_patch_base" in context_source
+    assert "root_test_model_matches_patch_base" in context_source
+    assert "or anchor in current_test_model" not in context_source
+    assert "return None\n    root_code_matches_patch_base" not in context_source
+
+    import_pos = source.index("deterministic_patch_base_document_context")
+    call_pos = source.index("authority_document_context = deterministic_patch_base_document_context(", import_pos)
+    default_pos = source.index("default_document_context =", call_pos)
+    normal_doc_pos = source.index("document_context = default_document_context", default_pos)
+    assert import_pos < call_pos < default_pos < normal_doc_pos
+
+
+def test_patch_base_regression_preflight_is_in_r1_retry_path() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    candidate_preflight_source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
+    repair_preflight_source = REPAIR_PREFLIGHT.read_text(encoding="utf-8")
+
+    assert "run_candidate_preflights(" in source
+    assert "CandidatePreflightRequest(" in source
+    assert "patch_base_regression_retry_message" in candidate_preflight_source
+    assert "PATCH_BASE_IMPROVEMENT_PRECHECK" in repair_preflight_source
+    preflight_pos = source.index("run_candidate_preflights(")
+    retry_pos = source.index("format_r1_retry_skeleton", preflight_pos)
+    pre_judge_pos = source.index("run_pre_judge_gate_harness", retry_pos)
+    assert preflight_pos < retry_pos < pre_judge_pos
+
+
+def test_leaf_workbench_preflight_uses_substrate_injected_markers() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    preflight_source = REPAIR_PREFLIGHT.read_text(encoding="utf-8")
+    candidate_preflight_source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
+
+    assert "leaf_workbench_retry_message" in candidate_preflight_source
+    assert "WORLD_MODEL_LEAF_WORKBENCH_FACT_MARKERS" in candidate_preflight_source
+    assert "is_worldmodel_contract=is_worldmodel_submission_contract(rubric_data)" in source
+    assert "fact_markers" in preflight_source
+    assert "mandatory patch base" not in preflight_source
+    assert "inspect_worldmodel_" not in preflight_source
+
+    preflight_pos = source.index("run_candidate_preflights(")
+    retry_pos = source.index("format_r1_retry_skeleton", preflight_pos)
+    preflight_block = source[preflight_pos:retry_pos]
+    assert "_pre_judge_probe_test_model.py" not in preflight_block
+
+
+def test_mutator_briefing_routes_candidate_memory_visibility_to_machinery_cards() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "candidate_memory.json" in source
+    assert "from ztare.worldmodel.machinery_contradictions import detect_and_card as _detect_machinery" in source
+    assert "candidate_memory_records=memory_records" in source
+    assert "prompt_text=_briefing_block" in source
+
+    render_pos = source.index("_briefing_render = render_default_briefing_context")
+    detector_pos = source.index("candidate_memory_records=memory_records", render_pos)
+    context_pos = source.index("mutator_briefing_context = _briefing_block", detector_pos)
+    assert render_pos < detector_pos < context_pos
+
+
+def test_strategy_card_receipts_are_prompted_outside_python_blocks() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    context_source = WORLDMODEL_CONTEXT.read_text(encoding="utf-8")
+    candidate_preflight_source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
+
+    assert "strategy_card_obligation_prompt(PROJECT_DIR)" in source
+    assert "Place the `STRATEGY_CARD_DISCHARGE:` line in markdown outside the Python" in context_source
+    assert "Never put this receipt inside a string literal, comment," in context_source
+    assert "strategy_card_retry_message" in candidate_preflight_source
+    assert "Worldmodel typed payload contract" in source
+
+
+def test_worldmodel_mutator_uses_typed_payload_contract() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    payload_source = WORLDMODEL_PAYLOAD.read_text(encoding="utf-8")
+
+    assert "worldmodel_typed_payload_contract = is_worldmodel_submission_contract" in source
+    assert "worldmodel_typed_payload_contract_prompt()" in source
+    assert "WORLDMODEL TYPED PAYLOAD CONTRACT" in payload_source
+    assert "`control_receipts`: list" in payload_source
+    assert "`test_model_py`: string" in payload_source
+    assert "WORLD_MODEL_SPEC` means a literal catalog spec with non-empty `actions`" in payload_source
+    assert "_parse_worldmodel_payload_with_retry" in source
+    assert "render_worldmodel_typed_payload(payload_obj)" in source
+    assert "Worldmodel typed payload contract reject" in source
+    assert "validate_worldmodel_carrier_source(python_code)" in source
+
+
+def test_worldmodel_contract_skips_bounded_discriminator_suite_validation() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "is_worldmodel_contract = is_worldmodel_submission_contract(rubric_data)" in source
+    assert "Worldmodel submission missing executable transition carrier" in source
+    assert (
+        "python_code is not None\n"
+        "        and not is_worldmodel_contract\n"
+        "        and (falsification_mode or \"numerical_proof\")"
+    ) in source
+
+
+def test_leaf_workbench_capability_proposals_sync_before_missing_carrier_reject() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    sync_pos = source.index("candidate_thesis_pre_carrier")
+    reject_pos = source.index("Worldmodel submission missing executable transition carrier")
+    assert sync_pos < reject_pos
+
+
+def test_blocked_strategy_card_defers_patch_base_precheck() -> None:
+    source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
+
+    assert "strategy_card_retry_message" in source
+    assert "patch_base_regression_retry_message" in source
+    strategy_pos = source.index("strategy_card_retry_message")
+    patch_pos = source.index("patch_base_regression_retry_message", strategy_pos)
+    assert strategy_pos < patch_pos
+
+
+def test_strategy_card_preflight_uses_executable_carrier_identity() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    candidate_preflight_source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
+
+    assert "_executable_candidate_source = _ensure_canonical_model_aliases(python_code or \"\")" in source
+    assert "_receipt_candidate_source" not in source
+    assert "executable_candidate_source=_executable_candidate_source" in source
+    assert "never the surrounding" in candidate_preflight_source
+    call_pos = candidate_preflight_source.index("strategy_card_retry_message(")
+    call_block = candidate_preflight_source[call_pos: candidate_preflight_source.index(")", call_pos) + 1]
+    assert "candidate_source=candidate_source" in call_block
+
+
+def test_test_thesis_uses_deterministic_gate_payload_for_pre_judge_projects() -> None:
+    source = TEST_THESIS.read_text(encoding="utf-8")
+
+    assert "def run_project_local_deterministic_gate_harness(" in source
+    helper_pos = source.index("def run_project_local_deterministic_gate_harness(")
+    pre_call_pos = source.index(
+        "pre_prose_deterministic_gate = run_project_local_deterministic_gate_harness(",
+        helper_pos,
+    )
+    attacker_pos = source.index("if pre_prose_deterministic_gate and pre_prose_deterministic_gate[\"candidate_failed\"]:", pre_call_pos)
+    dynamic_attacker_pos = source.index("elif args.dynamic and os.path.exists(DYNAMIC_RUBRIC_PATH):", attacker_pos)
+    level3_reuse_pos = source.index("if pre_prose_deterministic_gate is not None:", dynamic_attacker_pos)
+
+    assert helper_pos < pre_call_pos < attacker_pos < dynamic_attacker_pos < level3_reuse_pos
+    helper_block = source[helper_pos:pre_call_pos]
+    assert "--emit-deterministic-gates" in helper_block
+    assert "Candidate failed the project-local" in helper_block
+    assert "deterministic gate harness did not" in helper_block
+    assert '"test_suite_status": "fail_assert"' in helper_block
+    assert '"test_suite_status": "fail_other"' not in helper_block
 
 
 def test_make_autoresearch_loop_disables_model_fallback_by_default() -> None:
@@ -225,6 +434,47 @@ def test_baseline_eval_materializes_eval_history_before_iteration_loop() -> None
     assert "LATEST_EVAL_RESULTS_PATH" in baseline_block
 
 
+def test_baseline_eval_uses_pre_judge_gate_before_test_thesis() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    baseline_cmd_pos = source.index("baseline_test_cmd = list(test_cmd)")
+    gate_call_pos = source.index(
+        "baseline_pre_judge_gate_result = run_pre_judge_gate_harness(",
+        baseline_cmd_pos,
+    )
+    skip_pos = source.index(
+        "baseline_test_cmd = [sys.executable, \"-c\", \"pass\"]",
+        gate_call_pos,
+    )
+    run_pos = source.index("subprocess.run(baseline_test_cmd, check=True)", skip_pos)
+    load_pos = source.index('context_label="baseline latest_eval_results.json"', run_pos)
+
+    assert baseline_cmd_pos < gate_call_pos < skip_pos < run_pos < load_pos
+    gate_block = source[gate_call_pos:run_pos]
+    assert "latest_eval_results_path=LATEST_EVAL_RESULTS_PATH" in gate_block
+    assert 'candidate_path=f"{PROJECT_DIR}/test_model.py"' in gate_block
+
+
+def test_baseline_eval_cache_binds_to_gate_footprint_before_skip() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    import_pos = source.index("evaluation_cache_key as _evaluation_cache_key")
+    key_pos = source.index("baseline_eval_cache_key = _evaluation_cache_key(", import_pos)
+    load_pos = source.index("_cached_baseline_eval = _load_cached_evaluation(", key_pos)
+    write_pos = source.index("Path(LATEST_EVAL_RESULTS_PATH).write_text(", load_pos)
+    skip_pos = source.index("baseline_test_cmd = [sys.executable, \"-c\", \"pass\"]", write_pos)
+    store_pos = source.index("_store_cached_evaluation(", skip_pos)
+
+    assert import_pos < key_pos < load_pos < write_pos < skip_pos < store_pos
+    cache_block = source[key_pos:load_pos]
+    assert "gate_payload=baseline_pre_judge_gate_result.payload" in cache_block
+    assert "rubric_path=MAIN_RUBRIC_PATH" in cache_block
+    assert "WORKING_PATH" in cache_block
+    assert "EVIDENCE_PATH" in cache_block
+    assert "PROJECT_CHARTER_PATH" in cache_block
+    assert "strategy_experiments.jsonl" in cache_block
+
+
 def test_eval_history_writer_carries_artifact_refs_and_reports_errors() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
 
@@ -254,6 +504,39 @@ def test_judge_safe_generate_routes_through_dispatch_model_before_api_call() -> 
     dispatch_pos = source.index("result = dispatch_model(", safe_generate_start)
     api_call_pos = source.index("response = RUNTIME.call_text(", safe_generate_start)
     assert dispatch_pos < api_call_pos
+
+
+def test_project_local_deterministic_gate_failure_short_circuits_prose_judge() -> None:
+    source = TEST_THESIS.read_text(encoding="utf-8")
+
+    assert "def deterministic_gate_failure_evaluation(" in source
+    assert '"deterministic_gate_short_circuit": True' in source
+    assert '"judge_skipped": True' in source
+    assert "project-local deterministic gate failed" in source
+    assert "Pre-prose deterministic gate failed; skipping attacker critique." in source
+    assert "Prose attacker skipped: project-local deterministic gates already" in source
+
+    fail_flag_pos = source.index(
+        "_project_local_deterministic_gate_failed = bool("
+    )
+    short_circuit_pos = source.index(
+        "if args.deterministic_score_gates and _project_local_deterministic_gate_failed:",
+        fail_flag_pos,
+    )
+    synthetic_eval_pos = source.index(
+        "evaluation = deterministic_gate_failure_evaluation(",
+        short_circuit_pos,
+    )
+    judge_call_pos = source.index(
+        "evaluation = run_meta_judge(",
+        short_circuit_pos,
+    )
+    level3_append_pos = source.index(
+        "### LEVEL 3 QUANTITATIVE UNIT TEST RESULTS:",
+        fail_flag_pos,
+    )
+
+    assert fail_flag_pos < level3_append_pos < short_circuit_pos < synthetic_eval_pos < judge_call_pos
 
 
 def test_test_thesis_does_not_materialize_projects_symlink_shim() -> None:

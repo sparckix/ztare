@@ -95,7 +95,11 @@ def main(argv: list[str] | None = None) -> int:
         payload = {"ok": False, "error": f"document not found: {args.doc}"}
         print(json.dumps(payload) if args.json else payload["error"])
         return 2
-    result = draft_project(doc.read_text(encoding="utf-8", errors="replace"), args.model)
+    from ztare.workspace.document_ingest import extract_document_path
+    extraction = extract_document_path(doc)
+    result = draft_project(extraction["text"], args.model)
+    result["document"] = {k: extraction[k] for k in
+                          ("filename", "sha256", "bytes", "chars", "extraction_method", "truncated")}
     if args.json:
         print(json.dumps(result))
         return 0

@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -49,8 +50,10 @@ class SubstrateCritiqueBriefingProvider(BriefingProvider):
         path = ctx.workspace_dir / "substrate_critique.json"
         try:
             d = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return ""
+        except Exception as exc:
+            # applies() already confirmed the file exists → reaching here on
+            # read/parse failure means the artifact is corrupt/unreadable.
+            return section_unavailable("SUBSTRATE CRITIQUE", exc)
 
         lines: list[str] = []
         lines.append("## Substrate Critique (GP-167)")

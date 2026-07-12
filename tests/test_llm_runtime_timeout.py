@@ -7,6 +7,8 @@ from ztare.common.llm_runtime import (
     LLMRuntimeError,
     LLMTextResponse,
     LLMUsage,
+    subscription_model_route,
+    validate_subscription_model_cli,
 )
 
 
@@ -25,6 +27,39 @@ class _FakeChatCompletions:
         return object()
 
 
+def test_subscription_model_route_keeps_fable_on_claude() -> None:
+    assert subscription_model_route("fable", requested_runtime="codex") == (
+        "claude",
+        "claude-fable-5",
+    )
+    assert subscription_model_route(
+        "claude-fable-5", requested_runtime="codex"
+    ) == ("claude", "claude-fable-5")
+    assert subscription_model_route("gpt5.5", requested_runtime="claude") == (
+        "codex",
+        "gpt-5.5",
+    )
+    assert subscription_model_route("sol", requested_runtime="claude") == (
+        "codex",
+        "gpt-5.6-sol",
+    )
+    assert subscription_model_route("terra", requested_runtime="claude") == (
+        "codex",
+        "gpt-5.6-terra",
+    )
+    assert subscription_model_route("luna", requested_runtime="claude") == (
+        "codex",
+        "gpt-5.6-luna",
+    )
+
+
+@pytest.mark.parametrize("model", ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"])
+def test_gpt56_subscription_models_require_a_compatible_codex_cli(model) -> None:
+    with pytest.raises(ValueError, match="requires codex CLI"):
+        validate_subscription_model_cli("codex", model, "OpenAI Codex v0.128.0")
+    validate_subscription_model_cli("codex", model, "OpenAI Codex v0.144.0")
+
+
 class _FakeChatClient:
     def __init__(self) -> None:
         self._completions = _FakeChatCompletions()
@@ -39,6 +74,9 @@ def test_llm_runtime_timeout_does_not_wait_for_provider_thread(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("ZTARE_DISABLE_MODEL_FALLBACK", "1")
+    # Disable subscription fallback so the test stays fast (timing assertion below).
+    # The subscription path would spawn a real codex CLI subprocess.
+    monkeypatch.setenv("ZTARE_DISABLE_SUBSCRIPTION_FALLBACK", "1")
     runtime = HangingRuntime()
 
     started = time.monotonic()
@@ -81,6 +119,23 @@ def test_chat_completion_providers_receive_call_timeout(
     assert client.kwargs["model"] == model_id
     assert client.kwargs["timeout"] == 7
     assert client.kwargs["response_format"] == {"type": "json_object"}
+
+
+def test_openai_api_receives_normalized_reasoning_effort() -> None:
+    runtime = LLMRuntime()
+    client = _FakeChatClient()
+    runtime._openai_client = client  # noqa: SLF001
+
+    runtime._call_once(
+        "reason deeply",
+        "gpt-5.5",
+        config={"reasoning_effort": "high"},
+        max_tokens=512,
+        timeout_seconds=7,
+    )
+
+    assert client.kwargs["reasoning_effort"] == "high"
+    assert client.kwargs["max_completion_tokens"] == 512
 
 
 def test_kimi_k26_default_text_call_disables_thinking_for_visible_output() -> None:
@@ -160,7 +215,13 @@ class _FallbackRuntime(LLMRuntime):
         )
 
 
-def test_billing_error_continues_to_configured_fallback() -> None:
+def test_billing_error_continues_to_configured_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Cross-provider API fallback is OFF by default (operator directive 2026-07-10).
+    # With it enabled, the old kimi→gpt-4.1 chain still works for callers that opt in.
+    monkeypatch.setenv("ZTARE_ALLOW_CROSS_PROVIDER_FALLBACK", "1")
+    monkeypatch.setenv("ZTARE_DISABLE_SUBSCRIPTION_FALLBACK", "1")
     runtime = _FallbackRuntime(
         _StatusError("Your credit balance is too low to access this API.", 400)
     )

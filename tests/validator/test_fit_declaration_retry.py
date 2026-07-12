@@ -99,14 +99,11 @@ def test_malformed_block_retry_recovers():
         mutator_callable=mutator,
     )
     assert out.fired is True
-    # NOTE: parse_fit_declaration finds the FIRST block in order. After
-    # splicing, the malformed block is still first, so parse still fails.
-    # This is expected: the validator's job is to give one retry; if the
-    # mutator's original malformed block still gets parsed first, the
-    # iteration proceeds to the missing-declaration fallback path. Verify
-    # the reason string reflects the malformed state.
-    assert not out.recovered
-    assert "malformed" in out.reason or "retry-malformed" in out.reason
+    assert out.recovered is True
+    parsed = parse_fit_declaration(out.spliced_content)
+    assert parsed is not None
+    assert parsed.parameter_names == ["a", "b"]
+    assert out.spliced_content.count("```fit_declaration") == 1
 
 
 # --- drought: broken JSON (ValueError on primary) ---

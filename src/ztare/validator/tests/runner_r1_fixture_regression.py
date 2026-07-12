@@ -61,7 +61,10 @@ def build_runner_r1_fixture_cases() -> list[RunnerR1FixtureCase]:
         ),
         RunnerR1FixtureCase(
             case_id="undeclared_harness_touch",
-            description="A mutator that declares thesis-only scope but edits the harness should be flagged.",
+            description=(
+                "A mutator that declares thesis-only scope but edits the harness: "
+                "kernel normalizes by upgrading scope to TEST_HARNESS (no strike consumed)."
+            ),
             declaration=MutationDeclaration(
                 scope_delta=MutationScopeDelta.THESIS_ONLY,
                 claim_delta_type=ClaimDeltaType.REFRAMING,
@@ -71,11 +74,15 @@ def build_runner_r1_fixture_cases() -> list[RunnerR1FixtureCase]:
             changed_paths=("projects/sample/thesis.md", "projects/sample/test_model.py"),
             before_text="Bounded local parser.",
             after_text="Bounded local parser with clearer wording.",
-            expected_mismatch=MutationMismatchCode.UNDECLARED_ARTIFACT_BREADTH,
+            # envelope-normalize: scope upgraded THESIS_ONLY→TEST_HARNESS; derived_by=kernel
+            expected_mismatch=MutationMismatchCode.CLEAN,
         ),
         RunnerR1FixtureCase(
             case_id="invalid_primitive_key",
-            description="A primitive declaration outside the approved index should be rejected.",
+            description=(
+                "A primitive declaration outside the approved index: "
+                "kernel drops the key with a mismatch note and proceeds (no strike consumed)."
+            ),
             declaration=MutationDeclaration(
                 scope_delta=MutationScopeDelta.TEST_HARNESS,
                 claim_delta_type=ClaimDeltaType.REFRAMING,
@@ -85,7 +92,8 @@ def build_runner_r1_fixture_cases() -> list[RunnerR1FixtureCase]:
             changed_paths=("projects/sample/test_model.py",),
             before_text="Bounded local parser.",
             after_text="Bounded local parser with one extra check.",
-            expected_mismatch=MutationMismatchCode.INVALID_PRIMITIVE_DECLARATION,
+            # envelope-normalize: invalid primitive key dropped; derived_by=kernel
+            expected_mismatch=MutationMismatchCode.CLEAN,
         ),
         RunnerR1FixtureCase(
             case_id="claim_delta_scope_conflict",
@@ -193,6 +201,17 @@ def _selftest_parse_thesis_control_mode() -> None:
         }
     )
     assert explicit.thesis_control_mode == ThesisControlMode.TRANSFER_MECHANISM
+
+    scalar_artifact = parse_mutation_declaration(
+        {
+            "scope_delta": "EVIDENCE_BOUNDARY",
+            "claim_delta_type": "NARROWING",
+            "thesis_control_mode": "NARROW_EVIDENCE_BOUNDARY",
+            "primitive_invoked": None,
+            "touched_artifacts": "runner_runtime",
+        }
+    )
+    assert scalar_artifact.touched_artifacts == (MutationArtifact.RUNNER_RUNTIME,)
 
     mismatch = evaluate_mutation_declaration(
         explicit,

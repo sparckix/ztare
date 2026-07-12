@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 
+from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -23,20 +24,29 @@ class FitTelemetryProvider(BriefingProvider):
     name = "fit_telemetry"
     priority = 200  # critical — this is the fit-side ground truth
 
+    def _path(self, ctx: BriefingContext):
+        return (ctx.workspace_dir or ctx.project_dir / "workspace") / "fit_features_result.json"
+
     def _load(self, ctx: BriefingContext) -> dict:
-        path = (ctx.workspace_dir or ctx.project_dir / "workspace") / "fit_features_result.json"
+        # Swallows only the ABSENT case → {} (legit "not applicable").
+        # Corrupt/unreadable files propagate so fragment() can banner.
+        path = self._path(ctx)
         if not path.exists():
             return {}
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
 
     def applies(self, ctx: BriefingContext) -> bool:
+        # Present-but-corrupt still applies so fragment() renders a banner
+        # rather than the section vanishing before fragment() is reached.
+        if self._path(ctx).exists():
+            return True
         return bool(self._load(ctx))
 
     def fragment(self, ctx: BriefingContext) -> str:
-        d = self._load(ctx)
+        try:
+            d = self._load(ctx)
+        except Exception as exc:
+            return section_unavailable("FIT TELEMETRY", exc)
         if not d:
             return ""
         if d.get("success"):

@@ -19,15 +19,48 @@ ColdLLM (150).
 """
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
-from ztare.orchestrator.submission_path_helpers import requires_i_model_submission
+from ztare.orchestrator.submission_path_helpers import (
+    requires_i_model_submission,
+    submission_contract_kind,
+)
 
 
 def _declared_rubric_mode(rubric: dict) -> str:
     """Return the explicit primary rubric mode, if the rubric declares one."""
     return str(rubric.get("rubric_mode", "") or "").strip().lower()
+
+
+def _rubric_with_project_defaults(ctx: BriefingContext) -> dict:
+    """Return caller rubric overlaid on the project rubric, when available.
+
+    Some diagnostics render a briefing with only local display knobs in
+    ``ctx.rubric``.  The substrate contract still belongs to
+    ``rubrics/<project>.json``; without hydrating from that file, those
+    diagnostic renders fall back to the legacy scalar ``I_model`` contract.
+    Explicit caller fields win, so tests and focused tools can still override.
+    """
+    caller = dict(ctx.rubric or {})
+    project_dir = Path(ctx.project_dir) if ctx.project_dir is not None else None
+    slug = project_dir.name if project_dir is not None else ""
+    if not slug:
+        return caller
+    for base in [Path.cwd(), *(project_dir.parents if project_dir is not None else [])]:
+        candidate = base / "rubrics" / f"{slug}.json"
+        if not candidate.exists():
+            continue
+        try:
+            loaded = json.loads(candidate.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(loaded, dict):
+            merged = dict(loaded)
+            merged.update(caller)
+            return merged
+    return caller
 
 
 class ContractRulesProvider(BriefingProvider):
@@ -86,7 +119,7 @@ class ContractRulesProvider(BriefingProvider):
         # mutator already saw the full prose form on iter 1; this is
         # the hard-rule recap.
         if ctx.iter_index and ctx.iter_index >= 2:
-            rubric = ctx.rubric or {}
+            rubric = _rubric_with_project_defaults(ctx)
             theorem_packet = self._theorem_packet_fragment(rubric, compact=True)
             if theorem_packet:
                 return theorem_packet
@@ -105,12 +138,22 @@ class ContractRulesProvider(BriefingProvider):
                         except Exception:
                             continue
             require_i_model = requires_i_model_submission(rubric)
+            contract_kind = submission_contract_kind(rubric)
             rubric_mode = _declared_rubric_mode(rubric)
             mode_label = rubric_mode or "legacy_unspecified"
             denylist_str = (
                 ", ".join(f"`{t}`" for t in denylist_terms) if denylist_terms else "(none)"
             )
-            if require_i_model:
+            if contract_kind == "worldmodel":
+                contract_body = (
+                    "  contract_class     : worldmodel\n"
+                    "  required_carrier   : one of WORLD_MODEL_SPEC | PROGRAM | step(grid, action, t)\n"
+                    "  imports            : stdlib only. NO numpy/scipy/pandas/pint/sympy, no IO/network.\n"
+                    "  banned_numeric     : no PARAMETRIC_FORM/LAGRANGIAN/MODEL_PARAMS/PARAMETER_NAMES/INIT_RANGE\n"
+                    "  arbiter            : deterministic replay + held-out rollout; prose/assertions are advisory only\n"
+                    "  preferred          : WORLD_MODEL_SPEC using catalog rules; fallback to step only for uncatalogued mechanics\n"
+                )
+            elif require_i_model:
                 contract_body = (
                     "  required_signature : def I_model(features|d, params=None) -> float  [required=True]\n"
                     "  imports            : stdlib only — math, re, itertools, collections. NO numpy/scipy/pandas/pint/sympy.\n"
@@ -150,7 +193,7 @@ class ContractRulesProvider(BriefingProvider):
             )
 
         # Iter 1: schema-form rendering of the full contract.
-        rubric = ctx.rubric or {}
+        rubric = _rubric_with_project_defaults(ctx)
         theorem_packet = self._theorem_packet_fragment(rubric, compact=False)
         if theorem_packet:
             return theorem_packet
@@ -171,6 +214,7 @@ class ContractRulesProvider(BriefingProvider):
                         continue
 
         require_i_model = requires_i_model_submission(rubric)
+        contract_kind = submission_contract_kind(rubric)
         rubric_mode = _declared_rubric_mode(rubric)
         is_qualitative = (
             not bool(rubric.get("enable_fit_primitive", True))
@@ -205,7 +249,13 @@ class ContractRulesProvider(BriefingProvider):
         lines.append("### test_model.py contract")
         lines.append("")
         lines.append("```")
-        if require_i_model:
+        if contract_kind == "worldmodel":
+            lines.append("CONTRACT:    executable world model")
+            lines.append("REQUIRED:    one of WORLD_MODEL_SPEC | PROGRAM | step(grid, action, t)")
+            lines.append("PREFERRED:   WORLD_MODEL_SPEC using catalog rules; fallback to step only for uncatalogued mechanics")
+            lines.append("ARBITER:     deterministic replay + held-out rollout; prose/assertions are advisory only")
+            lines.append("BANNED:      PARAMETRIC_FORM, LAGRANGIAN, MODEL_PARAMS, PARAMETER_NAMES, INIT_RANGE")
+        elif require_i_model:
             lines.append("REQUIRED:    def I_model(features|d, params=None) → float")
         else:
             lines.append("REQUIRED:    none (qualitative substrate)")
@@ -246,7 +296,11 @@ class ContractRulesProvider(BriefingProvider):
             lines.append("")
 
         # Section 4 — mode reminder (one-liner)
-        if is_qualitative:
+        if contract_kind == "worldmodel":
+            lines.append("### Mode: worldmodel replay")
+            lines.append("The deliverable is the executable transition law; the gates, not the prose, decide.")
+            lines.append("")
+        elif is_qualitative:
             mode_label = "kepler" if rubric_mode == "kepler" else "qualitative (legacy unspecified)"
             lines.append(f"### Mode: {mode_label}")
             lines.append("Thesis prose is the deliverable. test_model.py can be a stub.")
