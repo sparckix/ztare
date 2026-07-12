@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 7.0,
     "artifact_hash": "3f07c6b3083d6a70437130e206c9b1c96fa34d919c09165112d8a0fed0687d19",
-    "artifact_path": "analytics/public/leanmill/results/v1941_scope_clean_signature_repair_execution.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1941_scope_clean_signature_repair_execution.json",
     "compile_status": "partial_compiled_candidates",
     "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
     "error_type": "none_scope_clean_pull_forward_passed",

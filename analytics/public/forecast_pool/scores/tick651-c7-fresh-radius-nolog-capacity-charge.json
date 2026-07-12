@@ -1,0 +1,146 @@
+{
+  "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "run another generic CV/C7 local-gain tick",
+      "counterfactual_action": "split the route-side no-log/fresh-radius charge from magnitude beta gain",
+      "externality_hypotheses": {
+        "effort_prior": "discount forecast effort overestimation seen in reflexive insights",
+        "failure_mode_preconditioning": "guard against endpoint q<=5/2, r_Q^2-only charge, descendant reuse, and CF-alignment smuggling"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "positive_decision_boundary",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "effort_prior_calibration",
+        "gp233_next_lever_update"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "apparatus_catalog_stale_mm_ops_fixed"
+      ],
+      "new_next_action": "Retire capacity-only promotion; prove descendant-exclusive fresh-radius invoice theorem or split excess-drop witness route, while separately pursuing magnitude-side beta gain.",
+      "old_next_action": "Try to promote capacity/no-log budget into radius charge.",
+      "preconditioner_effect": "Kept tick on capacity-only promotion guard; avoided CF alignment, r_Q^2 mass, and generic De Giorgi restatement.",
+      "preconditioner_source": "codex_rd + codex_forecaster failure-mode priors",
+      "realized_failure_mode_ids": [
+        "capacity_symbol_only_no_radius_map",
+        "endpoint_or_rq2_recurrence"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.16425,
+  "mean_log_score": -0.5195117486282261,
+  "outcome": {
+    "actual_cost_agent_minutes": 82.0,
+    "artifact_hash": "0cbbbc1365a57d6083e40d1187992c342a6ccc334ff523f6f981d336d28fa386",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "codex_forecaster"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "lean_pass",
+    "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+    "counterfactual_value_bucket": "positive_decision_boundary",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "effort_prior_calibration",
+      "gp233_next_lever_update"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T17:02:34Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick651-c7-fresh-radius-nolog-capacity-charge/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [
+      "apparatus_catalog_stale_mm_ops_fixed"
+    ],
+    "new_next_action": "Retire capacity-only promotion; prove descendant-exclusive fresh-radius invoice theorem or split excess-drop witness route, while separately pursuing magnitude-side beta gain.",
+    "old_next_action": "Try to promote capacity/no-log budget into radius charge.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Kept tick on capacity-only promotion guard; avoided CF alignment, r_Q^2 mass, and generic De Giorgi restatement.",
+    "preconditioner_source": "codex_rd + codex_forecaster failure-mode priors",
+    "realized_failure_mode_ids": [
+      "capacity_symbol_only_no_radius_map",
+      "endpoint_or_rq2_recurrence"
+    ],
+    "resolution_note": "TICK651 succeeded on its stated boundary target: capacity/no-log bookkeeping alone does not produce RadiusChargingBadScaleMeasure; the extra required object is a descendant-exclusive fresh-radius invoice, with split excess-drop witness the clean current route. No millennium-problem claim; broader CV/C7 remains open via the magnitude-side beta gain or a fresh-radius payment theorem.",
+    "resolved_at": "2026-05-19T17:53:12Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T17:53:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 82.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": -30.0,
+      "domain": "ns_track_b_cf_global_extension_c7_radius_charge",
+      "expected_cost_agent_minutes": 52.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T16:57:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T17:02:34Z",
+        "resolved_at": "2026-05-19T17:53:12Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 82.0,
+      "agent_id": "codex_rd",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "ns_track_b_cv_c7",
+      "expected_cost_agent_minutes": 85.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.55,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T16:57:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T16:58:09Z",
+        "resolved_at": "2026-05-19T17:53:12Z"
+      }
+    }
+  ]
+}

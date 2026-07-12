@@ -16,6 +16,7 @@ directions and in an Obsidian vault as well as on GitHub.
 | Gaming behavior catalog | `docs/gaming_behavior_catalog.md`, `docs/concepts/gaming_behavior_catalog_map.md` | public / audit-linked | Skimmable catalog of LLM self-certification and specification-gaming behaviors, with catch patterns, evidence tiers, registry linkage, and hardening protocol. |
 | ZTARE architecture | `docs/concepts/architecture.md`, `docs/concepts/leanmill_architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Current map of in-loop validation, out-of-loop research operations, LeanMill station workflow, reflexive intelligence, and the project workflow. |
 | Capabilities surface | `docs/concepts/capabilities.md` | canonical / public | Reviewer-oriented capability inventory: first-run commands, gaming-catalog audit, evaluator-hardening review artifacts, autoresearch routing, project intake, primitive health, LeanMill governance, and claim/evidence registers, each linked to implementation or evidence. |
+| Graded reasoning | `docs/concepts/graded_reasoning.md` | expository / public | The argument-graph reasoning stack: the warrant ladder, the warrant-filtration strength profile, the override lattice, and Shapley/wager attribution over a governed claim graph. |
 | System position and module map | `docs/concepts/system_position_and_module_map.md` | canonical / public | How ZTARE positions itself as a socio-technical research system, how related systems such as AI Co-Mathematician and LeanMill fit as orientation points, and how the validator, proof-search, GNN, forecast, workbench, org-runtime, and claim layers compose. |
 | ZTARE use cases | `docs/guides/ztare_use_cases.md` | public / practical | Profession-level use cases for ZTARE as a reasoning compiler: diligence, legal review, science, strategy, product, policy, security, investigations, and formal fragments. |
 | Proof/governance/residual loop | `docs/concepts/closure_claim_governance.md` | canonical / public | Human-facing map of Proof Execution, Governance Gate, and Residual Compiler, plus the closure-claim governance contract. |
@@ -136,7 +137,8 @@ tenant notification provider as part of the generic kernel.
 
 **Sub-folders**
 
-- [`concepts/`](concepts/) - 36 file(s)
+- [`analysis/`](analysis/) - 1 file(s)
+- [`concepts/`](concepts/) - 43 file(s)
 - [`evidence_atlas/`](evidence_atlas/) - 17 file(s)
 - [`guides/`](guides/) - 15 file(s)
 - [`landings/`](landings/) - 2 file(s)
@@ -149,5 +151,5 @@ tenant notification provider as part of the generic kernel.
 - [Public Claim Register](public_claim_register.md) - Public claim register for the ZTARE campaigns: what survived, what did not, and where the evidence lives.
 - [A 70-Day Sprint, Six Architectural Phases](sprint_70day_journey.md) - Build narrative covering 70 days of work on ZTARE across six architectural phases, including failures and reflexive self-audit.
 
-<sub>5 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>6 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

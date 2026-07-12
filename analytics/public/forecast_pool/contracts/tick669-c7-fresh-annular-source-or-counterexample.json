@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick669-c7-fresh-annular-source-or-counterexample.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick669-c7-fresh-annular-source-or-counterexample.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick669-c7-fresh-annular-source-or-counterexample",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick669-c7-fresh-annular-source-or-counterexample.json",
+    "score": "analytics/public/forecast_pool/scores/tick669-c7-fresh-annular-source-or-counterexample.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 240.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick669-c7-fresh-annular-source-or-counterexample",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-06-06T19:32:24Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_millennium_hunt",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-06-07",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve TRUE iff the tick produces either a workbench-backed and formal-surface-ready same-source fresh-annular anti-laundering/source-realization receipt, or a minimal obstruction/counterexample proving current source objects cannot supply it; resolve FALSE if it only renames C5/strict-margin, adds labels, or produces conditional consumers without same-source payment.",
+  "question": "Can TICK669 either pay the C7 same-source fresh-annular anti-laundering/source-realization receipt from current separated-source objects, or produce the minimal counterexample showing those objects cannot supply one numerical field without rebilling?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.50",
+  "task_type": "ns_millennium_hunt",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

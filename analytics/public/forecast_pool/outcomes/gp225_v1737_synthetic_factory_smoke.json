@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 7.13,
   "artifact_hash": "6ed86177446badf49b43d1c8e75cc7016a913a9e3292cce6db48f27128f84e87",
-  "artifact_path": "analytics/public/leanmill/results/v1737_synthetic_factory_smoke_packet.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1737_synthetic_factory_smoke_packet.json",
   "compile_status": "not_applicable_schema_artifact",
   "contract_id": "gp225_v1737_synthetic_factory_smoke",
   "error_type": "none",

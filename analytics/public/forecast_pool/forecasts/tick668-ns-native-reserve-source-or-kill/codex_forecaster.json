@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick668-ns-native-reserve-source-or-kill",
+  "contract_question": "Can TICK668 find an NS-native source for reserve endpoint nonnegativity plus finite same-lineage recharge prefix budget beneath FreshAnnularPredictableReserveDropSource, or prove that the reserve lane is killed by recharge/nested-reuse from current source objects?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bridge_not_available_from_event_prefix": 0.28,
+    "positive_bridge_found": 0.16,
+    "recharge_prefix_unbounded": 0.22,
+    "reserve_nonnegativity_not_forced": 0.18,
+    "same_event_reuse_countermodel": 0.16
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T22:47:24Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.56,
+  "p_regression": 0.1,
+  "p_success": 0.41,
+  "rationale_short": "Tick667 already killed the qualitative reservoir, so this is now a narrower source-vs-countermodel lift. I price success below even odds because the main risk is still the absence of an NS-native bridge from event-prefix data to both numerical fields, with recharge-prefix unboundedness the next failure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "bridge_not_available_from_event_prefix",
+    "recharge_prefix_unbounded",
+    "reserve_nonnegativity_not_forced",
+    "same_event_reuse_countermodel"
+  ]
+}

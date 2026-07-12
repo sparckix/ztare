@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 17.0,
   "artifact_hash": "2886139155b24cd2be09e531d58d3620f9984093fb34c08cb974eeaa1d3aaa22",
-  "artifact_path": "analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2053_charfun_dual_normalization_source_safety_audit.json",
   "changed_by_forecast_ids": [
     "Noether2",
     "Turing2"
@@ -25,7 +25,7 @@
   "new_next_action": "generate separate one-row replay packet after source-safety audit",
   "old_next_action": "proceed directly from source hinge to replay",
   "preconditioner_effect": "Converted normalization-obligation-only templates into an explicit source-safety audit before replay.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
   "realized_failure_mode_ids": [],
   "resolution_note": "v20.53 passed: verified four normalizers and two bridge preconditions as source-safe or before-target inputs; blocked target rw-list as evidence; no replay/training; GNN remains blocked.",
   "resolved_at": "2026-05-14T18:00:22Z",

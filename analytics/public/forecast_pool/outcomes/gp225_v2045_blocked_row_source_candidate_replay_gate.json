@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 8.0,
   "artifact_hash": "e0f29a3433af490cdb57cf1d08f05d46a6daf73a44edfe49527d78c60dca3cb4",
-  "artifact_path": "analytics/public/leanmill/results/v2045_blocked_row_source_candidate_replay_market_abort.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2045_blocked_row_source_candidate_replay_market_abort.json",
   "changed_by_forecast_ids": [
     "Church",
     "Curry"

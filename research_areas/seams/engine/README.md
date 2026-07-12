@@ -11,7 +11,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [`diagnostics/`](diagnostics/) - 8 file(s)
 - [`discovery/`](discovery/) - 5 file(s)
 - [`grammar/`](grammar/) - 13 file(s)
-- [`lean/`](lean/) - 8 file(s)
+- [`lean/`](lean/) - 9 file(s)
 - [`meta/`](meta/) - 14 file(s)
 - [`mutator/`](mutator/) - 10 file(s)
 - [`ns/`](ns/) - 3 file(s)

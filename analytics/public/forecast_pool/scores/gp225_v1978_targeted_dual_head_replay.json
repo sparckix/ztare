@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 8.0,
     "artifact_hash": "ca563e5c0c39806f4d829ee6076678543b936142501b701dce0b5d6ae9068255",
-    "artifact_path": "analytics/public/leanmill/results/v1978_targeted_dual_head_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1978_targeted_dual_head_replay.json",
     "compile_status": "replay_completed_no_dual_head_wins",
     "contract_id": "gp225_v1978_targeted_dual_head_replay",
     "error_type": null,

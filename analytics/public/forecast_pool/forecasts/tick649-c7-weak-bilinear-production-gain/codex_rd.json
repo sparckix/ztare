@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": "Open the membrane and run PATTERN-011 with one in-thread production-gain lane plus independent no-log/radius/deanchor adversarial lanes; success means actionable classification, not proof of regularity.",
+  "agent_id": "codex:RD",
+  "contract_id": "tick649-c7-weak-bilinear-production-gain",
+  "contract_question": "Will TICK649 produce an actionable proof-route or no-go classification for the C7 weak-bilinear high-level production gain controlling (A_visc)_+ on high-vorticity level sets, including the no-log-pileup or radius-charge promotion obligation, without CF alignment or degree-0/parabolic-slaved recurrence?",
+  "domain": "ns_trackb_c7",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apparatus_close_friction": 0.15,
+    "cf_alignment_smuggling": 0.25,
+    "degree0_recurrence": 0.35,
+    "local_gain_no_route_promotion": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T14:09:53Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.3,
+  "p_success": 0.62,
+  "rationale_short": "TICK648 already exposed the exact source term and estimate surface, so an actionable classification is plausible; true beta>0/q>5/2 remains unlikely because the source sits at endpoint/CF recurrence and route promotion is separate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "attack FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice; do not recycle split-excess radius-charge story",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+  "contract_question": "Can the CV/C7 residual-fresh same-ledger bridge produce a compile-checked same-tree fresh-radius invoice, or a sharper derived obstruction, from ResidualFreshExcessForcesFreshEnstrophy plus BadNodeResidualOrInheritedDichotomy through FreshFrequencyEventSameTreeLock, with pressure tails localized on punctured fresh regions and no descendant rebilling?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 105.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_dependency_restatement": 0.14,
+    "inherited_badness_rebilling_survives": 0.18,
+    "lean_surface_too_weak": 0.14,
+    "pressure_tail_localization_not_proved": 0.22,
+    "same_tree_invoice_requires_new_side_condition": 0.32
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "same_tree_audit_bridge"
+  ],
+  "forecasted_at": "2026-05-19T19:39:23Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.79,
+  "p_regression": 0.08,
+  "p_success": 0.5,
+  "rationale_short": "TICK652 already isolated the missing same-tree invoice side condition; tick653 is better viewed as a direct same-ledger bridge or sharper obstruction search, but the Lean surface still needs either a displayed same-tree invoice or a compact no-go theorem before the bridge is retired.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_tree_invoice_requires_new_side_condition",
+    "pressure_tail_localization_not_proved",
+    "inherited_badness_rebilling_survives",
+    "artifact_dependency_restatement",
+    "lean_surface_too_weak"
+  ]
+}

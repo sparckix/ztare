@@ -6,7 +6,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 18.0,
     "artifact_hash": "82e45b677bae3dfd41cefbcdf5675268ba7c64d98842c709e990f35ea5dfbda9",
-    "artifact_path": "analytics/public/leanmill/results/v2086_union_training_readiness_after_two_heldout_strict_rows.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2086_union_training_readiness_after_two_heldout_strict_rows.json",
     "compile_status": "gate_passed",
     "contract_id": "gp225_v2086_union_training_readiness_after_two_heldout_strict_rows",
     "decision_changed_bool": true,

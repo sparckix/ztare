@@ -192,11 +192,11 @@ def preflight_blueprint(
         ),
         "complete_census_available": True,
         "model_generation": (
-            {"mode": "deterministic_derived_transform"}
+            {"mode": "deterministic_pointwise_functor_image"}
             if image is not None else dict(generation)
         ),
         "census_completion_policy": (
-            "complete_relative_to_frozen_source_transform"
+            "complete_relative_to_frozen_source_functor"
             if image is not None
             else "materialization_requires_final_solver_unsat"
             if generation["mode"] == _SMT_EXACT

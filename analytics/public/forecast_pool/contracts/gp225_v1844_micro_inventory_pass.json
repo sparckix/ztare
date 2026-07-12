@@ -20,7 +20,7 @@
   "horizon": "single v18.44 saved-artifact script run",
   "information_value": 0.5,
   "layer": "micro",
-  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json metrics.",
+  "objective_resolver": "Resolve from analytics/public/gnn/lemma_relevance/v1844_proof_delta_label_source_inventory.json metrics.",
   "question": "Will v18.44, using saved artifacts only, pass the proof-delta label source inventory gate: >=50 natural/replayable before-action-after or prefix-state rows, >=20 rows not saturated by deterministic/BM25/action-sweep baselines, and zero unquarantined false accepts?",
   "risk_penalty": 0.4,
   "success_threshold": "natural_or_replayable_rows>=50 AND before_action_after_or_prefix_rows>=50 AND unsaturated_or_not_deterministically_absorbed_rows>=20 AND unquarantined_false_accepts=0 AND training_now=false AND gnn_blocked=true",

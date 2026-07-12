@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick663-same-tree-pressure-duhamel-carrier-lock",
+  "contract_question": "Will TICK663 produce a discriminating same-tree pressure-Duhamel carrier-lock result for the CV/C7 route?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "endpoint_recurrence": 0.22,
+    "only_formal_restatement": 0.16,
+    "pressure_leakage_recurrence": 0.28,
+    "same_tree_rebilling": 0.34
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T12:46:38Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.44,
+  "rationale_short": "RD bet: same-tree pressure-Duhamel lock is the right lane, but strict carrier/invoice construction risk is high; success includes a sharp exclusion that changes the next lever.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

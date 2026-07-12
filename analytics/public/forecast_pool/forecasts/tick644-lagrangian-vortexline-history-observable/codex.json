@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick644-lagrangian-vortexline-history-observable",
+  "contract_question": "Can a material/Lagrangian vortex-line deformation-history observable (non-spectral, positive-cone, multiplicative-over-nesting; e.g. a Constantin-Iyer stochastic-Lagrangian deformation functional) be CONSTRUCTED that controls limsup_t norm-omega-Linf for 3D NSE by SUPPLYING the missing pointwise active-scale via trajectory time-integration \u2014 outside the now-excluded local Eulerian (omega,S)-polynomial class and NOT a forbidden spectral-gap/Oseledets object?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 240.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T02:19:36Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.03,
+  "rationale_short": "CODEX independent verdict (Codex CLI subscription, local read-only run; transcribed \u2014 VPS workspace-write bwrap netns denied; codex authored this p, auditable, not laundered): det-one cocycle collapses multiplicative material scalars into excluded spectral/Lyapunov data; stochastic corrections reintroduce the pointwise active-scale obstruction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

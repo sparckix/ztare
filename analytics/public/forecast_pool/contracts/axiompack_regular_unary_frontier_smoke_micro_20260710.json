@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/axiompack_regular_unary_frontier_smoke_micro_20260710.json",
+    "contract": "analytics/public/forecast_pool/contracts/axiompack_regular_unary_frontier_smoke_micro_20260710.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/axiompack_regular_unary_frontier_smoke_micro_20260710",
+    "outcome": "analytics/public/forecast_pool/outcomes/axiompack_regular_unary_frontier_smoke_micro_20260710.json",
+    "score": "analytics/public/forecast_pool/scores/axiompack_regular_unary_frontier_smoke_micro_20260710.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 20.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "GP-251_regular_unary_viability_receipt_13ce25d7",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "axiompack_regular_unary_frontier_smoke_micro_20260710",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-07-10T23:38:58Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1481,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "leanmill_axiompack_science",
+    "score": 0.1481,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1481,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1481,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "gp225_typed_feedback",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.027,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-07-11T00:10:00Z",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve from the immutable LeanMill campaign run, boundary completion, and reject-all receipts.",
+  "question": "Will the regular-unary AxiomPack smoke return a receipted residual finalist with logical singleton ablation and a boundary result, or a valid receipted null?",
+  "risk_penalty": 1.0,
+  "success_threshold": "Success iff the run returns either a positive-residual exact-two finalist with two replayed singleton countermodels plus a concrete SMT or governed Lean outcome, or a schema-valid receipted no-candidate result.",
+  "task_type": "leanmill_axiompack_science",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

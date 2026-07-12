@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 34.0,
   "artifact_hash": "9732e8f0ccaab9b9183c1dd291ae4554c95425ce6a4fc6f09c3d3fe5ed539713",
-  "artifact_path": "scripts/public/control/forecast/pool.py",
+  "artifact_path": "scripts/public/control/forecast_pool.py",
   "changed_by_forecast_ids": [
     "codex_rd",
     "codex_skeptic"

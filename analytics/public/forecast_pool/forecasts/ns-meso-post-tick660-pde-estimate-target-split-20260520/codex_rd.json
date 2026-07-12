@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "select_A_cv_nonlocal_degiorgi_vorticity_truncation_estimate_if_the_tick_goal_is_limited_to_formulating_and_killing_or_refining_the_stretching_absorption_inequality",
+  "agent_id": "codex_rd",
+  "contract_id": "ns-meso-post-tick660-pde-estimate-target-split-20260520",
+  "contract_question": "Which exact PDE estimate target should the next NS tick open after TICK660: (A) a CV/nonlocal-De-Giorgi critical vorticity-truncation estimate that neutralizes the 3D vortex-stretching term without CF alignment, (B) the pressure-complement/harmonic-collar single-spend estimate already isolated by TICK656-657, or (C) the local L3A FreshPacketDuhamelIncidenceLiftFromAuditEligibility bridge? The contract scores TRUE only if it selects one target and states a falsifiable kill condition precise enough for a membrane tick.",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_selection_hedges_across_routes": 0.15,
+    "cv_target_too_global_without_truncation_inequality": 0.25,
+    "kill_condition_not_sharp_enough": 0.18749999999999997,
+    "l3a_lift_remains_interface_not_pde_estimate": 0.19999999999999998,
+    "pressure_target_repeats_harmonic_collar_known_negative": 0.2125
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "decision_use_candidate",
+    "frontier_pde_bias",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T03:20:13Z",
+  "p_dependency_issue": 0.49,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.13,
+  "p_success": 0.61,
+  "rationale_short": "The benchmark says scale is not PDE substance. A is the only route aimed directly at DeGiorgi-grade PDE math, but it must be stated as a concrete vorticity-truncation/stretching absorption estimate with a kill condition, not as a broad CV slogan.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "cv_target_too_global_without_truncation_inequality",
+    "pressure_target_repeats_harmonic_collar_known_negative",
+    "l3a_lift_remains_interface_not_pde_estimate",
+    "kill_condition_not_sharp_enough",
+    "candidate_selection_hedges_across_routes"
+  ]
+}

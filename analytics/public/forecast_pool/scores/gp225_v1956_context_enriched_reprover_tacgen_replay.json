@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 30.0,
     "artifact_hash": "6731d38b7f30b8b07f24433964341d4392b2b57946ffb8f08407eb5bb76ca49a",
-    "artifact_path": "analytics/public/leanmill/results/v1956_context_enriched_replay_resolution_packet.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1956_context_enriched_replay_resolution_packet.json",
     "compile_status": "replay_completed_duplicate_strict_only",
     "contract_id": "gp225_v1956_context_enriched_reprover_tacgen_replay",
     "error_type": "duplicate_strict_no_additional_label",

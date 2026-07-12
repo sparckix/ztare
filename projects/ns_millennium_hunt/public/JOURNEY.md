@@ -4,15 +4,6 @@ _Public synthesis. Anti-laundering vigilance per session catch ledger:
 this document deliberately demotes inflated language; "scaffold sorry-free
 modulo named axioms" is not "Clay closure." See §6 for honest residual._
 
-**2026-05-28 public status checkpoint.** This journey is historical, so this
-paragraph is the current measured proof posture. The live corpus is best
-described as a residual-characterization and route-demotion atlas, not a clean
-proof corpus: 445 direct `ns*.lean` files, 254,086 raw Lean lines, 8,810 atlas
-graph declarations, 1,974 closed theorem rows, 568 exclusion theorem rows, 878
-open obligation rows, 365 stripped `axiom` rows, 382 stripped `opaque` rows, 27
-stripped `sorry` rows, and 0 stripped `admit` rows. Those numbers do not imply
-a Clay proof; they make the remaining proof debt visible.
-
 ## §1 — TL;DR
 
 Over roughly six weeks of sustained substrate work and one extended

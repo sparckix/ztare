@@ -1,0 +1,45 @@
+{
+  "actual_cost_agent_minutes": 70.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick667-reserve-nonnegativity-recharge-prefix",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "target_sharpened",
+    "countermodel_profile_added",
+    "vps_lean_parity_green"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T22:04:10Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick667-reserve-nonnegativity-recharge-prefix/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "reserve_nonnegativity_not_forced",
+    "recharge_prefix_not_forced"
+  ],
+  "resolution_note": "Success as boundary-sharpening: the tick settled the current reservoir-to-predictable-source question negatively. The qualitative lineage reservoir lacks both reserve endpoint nonnegativity and a numerical recharge-prefix budget; compile-checked toy profiles witness both failures, and the residual manifest names the corrected next lever.",
+  "resolved_at": "2026-05-20T22:13:45Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

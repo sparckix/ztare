@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 19.0,
   "artifact_hash": "2bdc0a6c33aca491f6e3f0dbbd2d571c2fbeda10d45a7cfd02b611aec7379d4c",
-  "artifact_path": "analytics/public/leanmill/results/v2040_heldout_dual_head_delta_gate_packet.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2040_heldout_dual_head_delta_gate_packet.json",
   "changed_by_forecast_ids": [
     "Bayes",
     "Shannon"
@@ -24,7 +24,7 @@
   "new_next_action": "GP-230-priced bounded heldout dual-head delta replay or static abort",
   "old_next_action": "direct replay or training from ofScalars auxiliary signal",
   "preconditioner_effect": "blocked single-theorem ofScalars signal from acting as benchmark or training evidence",
-  "preconditioner_source": "analytics/public/leanmill/results/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
   "realized_failure_mode_ids": [],
   "resolution_note": "v20.40 emitted the no-replay heldout dual-head delta packet: excluded current_scale_0224/ofScalars_add, selected 5 heldout rows, defined baseline and auxiliary-conditioned top2 arms with 10 actions each, separated strict/solver/auxiliary/harmful deltas, replay=false, training=false, GNN blocked=true.",
   "resolved_at": "2026-05-14T17:10:00Z",

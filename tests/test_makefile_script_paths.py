@@ -87,6 +87,15 @@ def test_experiment_loop_passes_autoresearch_llm_budget() -> None:
     assert "AUTORESEARCH_LLM_RETRIES=$(AUTORESEARCH_LLM_RETRIES)" in makefile
 
 
+def test_subscription_codex_workers_inherit_declared_model_and_effort_budget() -> None:
+    makefile = (REPO / "Makefile").read_text(encoding="utf-8")
+    assert "AGENT_CODEX_MODEL ?= $(MUTATOR_MODEL)" in makefile
+    assert "AGENT_CODEX_REASONING_EFFORT ?= low" in makefile
+    assert "ZTARE_CODEX_AGENT_MODEL=$(AGENT_CODEX_MODEL)" in makefile
+    assert "ZTARE_CODEX_AGENT_REASONING_EFFORT=$(AGENT_CODEX_REASONING_EFFORT)" not in makefile
+    assert "$(PYTHON) -m src.ztare.common.env_launch $(AGENT_DISPATCH_ENV)" in makefile
+
+
 def test_experiment_loop_propagates_intake_boundary_to_loop() -> None:
     makefile = (REPO / "Makefile").read_text(encoding="utf-8")
     assert "INTAKE ?= $(PACKET)" in makefile

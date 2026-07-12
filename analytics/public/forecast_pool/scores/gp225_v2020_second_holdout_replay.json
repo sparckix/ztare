@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 8.0,
     "artifact_hash": "79060ca5ff60985b6d64eac4c7ad085a70f6b829d5981cbabe830e5e2bace772",
-    "artifact_path": "analytics/public/leanmill/results/v2020_second_holdout_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2020_second_holdout_replay.json",
     "compile_status": "replay_completed_second_holdout_two_strict_wins",
     "contract_id": "gp225_v2020_second_holdout_replay",
     "error_type": null,

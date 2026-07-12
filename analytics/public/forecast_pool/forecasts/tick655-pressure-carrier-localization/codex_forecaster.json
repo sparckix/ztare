@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Attack the same-tree pressure bridge directly; if only coarse carrier compatibility appears, stop at that obstruction.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick655-pressure-carrier-localization",
+  "contract_question": "Will TICK655 prove or sharply refute ResidualFreshPressureTailLocalizedToPuncturedInvoiceCarrier: pressureRecoveryCarrier at residualFreshAuditEventIndex equals the residual fresh punctured region, without CF alignment, degree-0 endpoint bookkeeping, or parabolic scalar reuse?",
+  "domain": "ns_c7_invoice",
+  "expected_cost_agent_minutes": 108.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "coarse_lock_only_or_relabel": 0.25,
+    "event_tent_not_fresh_region": 0.33,
+    "formal_surface_no_estimate": 0.19,
+    "pressure_bridge_unproved": 0.23
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration"
+  ],
+  "forecasted_at": "2026-05-19T21:13:32Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.67,
+  "p_regression": 0.08,
+  "p_success": 0.46,
+  "rationale_short": "Lean exposes the pressure-recovery carrier surface, but the residual-region equality is still unproved and likely needs a bridge lemma or a typed obstruction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pressure_bridge_unproved",
+    "event_tent_not_fresh_region",
+    "formal_surface_no_estimate",
+    "coarse_lock_only_or_relabel"
+  ]
+}

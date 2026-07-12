@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick663-meso-same-tree-pressure-duhamel-lock.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick663-meso-same-tree-pressure-duhamel-lock.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick663-meso-same-tree-pressure-duhamel-lock",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick663-meso-same-tree-pressure-duhamel-lock.json",
+    "score": "analytics/public/forecast_pool/scores/tick663-meso-same-tree-pressure-duhamel-lock.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick663-meso-same-tree-pressure-duhamel-lock",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-05-20T12:44:16Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_strategy_meso",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0645,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20T23:59:00Z",
+  "information_value": 6.0,
+  "layer": "meso",
+  "objective_resolver": "Resolved true if the next NS micro tick opens on the same-tree fresh-frequency pressure-Duhamel carrier lock or same-tree invoice route and records a decision-use row before start_tick; false if it routes to local A_visc endpoint carrier or another lane.",
+  "question": "Should TICK663 route to FreshFrequencyPressureDuhamelSameCarrierLock / same-tree fresh-radius invoice rather than continue the local A_visc endpoint carrier lane?",
+  "risk_penalty": 1.0,
+  "success_threshold": "true iff the opened TICK663 goal targets the same-tree pressure-Duhamel/fresh-frequency invoice lane and cites this meso contract as routing evidence",
+  "task_type": "ns_strategy_meso",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

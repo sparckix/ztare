@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "run_tick660_on_fresh_packet_selection_to_duhamel_incidence_coherence_if_independent_forecast_not_negative",
+  "agent_id": "codex_rd",
+  "contract_id": "tick660-fresh-packet-duhamel-coherence",
+  "contract_question": "Will TICK660 produce a substantive decision on FreshPacketSelectionToDuhamelIncidenceCoherence: whether pre-beta fresh-packet selection can be coherently turned into the Duhamel event ledger and selected bad-center section-incidence source needed for BadCenterEventPriceDropDuhamelIncidenceSource, without shell-only reserve, post-hoc section choice, pressure leakage, fanout rebilling, CF alignment, degree-0 bookkeeping, or parabolic scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 130.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_section_identity_missing": 0.19753086419753085,
+    "coherence_bridge_too_global": 0.2222222222222222,
+    "duhamel_event_source_only_shell_reserve": 0.12345679012345678,
+    "fanout_no_log_gate_moves_upstream": 0.13580246913580246,
+    "post_hoc_section_choice_or_beta_rebilling": 0.17283950617283952,
+    "pressure_complement_gate_moves_upstream": 0.14814814814814814
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "source_leg_route",
+    "amnesia_prevention",
+    "decision_use_candidate"
+  ],
+  "forecasted_at": "2026-05-20T02:41:19Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.1,
+  "p_success": 0.52,
+  "rationale_short": "TICK659 reduced the source leg to this coherence bridge. Macro/meso scratch says continue L3A provisionally and target this bridge alone, while treating pressure complement and no-log fanout as kill gates.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "coherence_bridge_too_global",
+    "bad_center_section_identity_missing",
+    "post_hoc_section_choice_or_beta_rebilling",
+    "pressure_complement_gate_moves_upstream",
+    "fanout_no_log_gate_moves_upstream",
+    "duhamel_event_source_only_shell_reserve"
+  ]
+}

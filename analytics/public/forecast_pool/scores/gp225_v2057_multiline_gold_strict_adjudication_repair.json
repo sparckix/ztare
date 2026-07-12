@@ -37,7 +37,7 @@
       "new_next_action": "refresh manifest with one repaired strict charFunDual row while keeping training blocked",
       "old_next_action": "leave charFunDual as auxiliary-only compile signal",
       "preconditioner_effect": "Identified multiline gold capture gap and forced target proof lines to be adjudication-only, not generation evidence.",
-      "preconditioner_source": "analytics/public/leanmill/results/v2056_charfun_dual_replay_strict_adjudication_reducer.json"
+      "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2056_charfun_dual_replay_strict_adjudication_reducer.json"
     }
   },
   "forecast_history_count": 2,
@@ -46,7 +46,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 15.0,
     "artifact_hash": "bbde568968d1a58cd4e7cb3714af50fa81d99488e5611b34cc7151a5c59897c8",
-    "artifact_path": "analytics/public/leanmill/results/v2057_multiline_gold_strict_adjudication_repair.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2057_multiline_gold_strict_adjudication_repair.json",
     "changed_by_forecast_ids": [
       "Hopper2",
       "Gauss2"
@@ -70,7 +70,7 @@
     "new_next_action": "refresh manifest with one repaired strict charFunDual row while keeping training blocked",
     "old_next_action": "leave charFunDual as auxiliary-only compile signal",
     "preconditioner_effect": "Identified multiline gold capture gap and forced target proof lines to be adjudication-only, not generation evidence.",
-    "preconditioner_source": "analytics/public/leanmill/results/v2056_charfun_dual_replay_strict_adjudication_reducer.json",
+    "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2056_charfun_dual_replay_strict_adjudication_reducer.json",
     "realized_failure_mode_ids": [],
     "resolution_note": "v20.57 repaired strict adjudication by using the full target proof only as gold adjudication evidence, not candidate generation evidence. Re-run result: 2/2 candidates compiled, 2 strict candidate actions, 1 strict target row, 0 auxiliary pull-forwards, 0 harmful mismatches, replay=true, training=false, GNN blocked=true.",
     "resolved_at": "2026-05-14T18:12:40Z",

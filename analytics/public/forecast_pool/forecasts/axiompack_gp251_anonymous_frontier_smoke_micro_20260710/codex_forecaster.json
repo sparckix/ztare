@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_forecaster",
+  "contract_id": "axiompack_gp251_anonymous_frontier_smoke_micro_20260710",
+  "contract_question": "Will the anonymous navigator freeze at least one independent noncollapsed synergistic two-law presentation and produce a selected boundary query with a larger-carrier countermodel or premise-attributed conditional proof?",
+  "domain": "formal_mathematics",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "boundary_inconclusive": 0.34,
+    "budget_exhaustion": 0.16,
+    "navigator_interface_bottleneck": 0.23,
+    "premise_independent_proof": 0.19,
+    "runtime_or_toolchain": 0.08
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "boundary-routing"
+  ],
+  "forecasted_at": "2026-07-10T16:54:51Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.41,
+  "p_regression": 0.12,
+  "p_success": 0.46,
+  "rationale_short": "The contract is narrow but still asks for two coupled deliverables: a noncollapsed two-law presentation and a decisive boundary query with either a larger-carrier countermodel or a premise-attributed conditional proof. That is plausible within a same-tick micro window, but the weakest node is whether the navigator can convert partial structure into a selected boundary result without stalling at an inconclusive frontier.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "boundary_inconclusive",
+    "navigator_interface_bottleneck",
+    "premise_independent_proof",
+    "budget_exhaustion",
+    "runtime_or_toolchain"
+  ]
+}

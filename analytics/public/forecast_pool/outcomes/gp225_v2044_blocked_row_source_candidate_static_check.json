@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 29.0,
   "artifact_hash": "05c1329317d9ec3713542e90a884f75f5635bcca691d3ab49f01e95023e6db0b",
-  "artifact_path": "analytics/public/leanmill/results/v2044_blocked_row_source_candidate_packet_static_check.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2044_blocked_row_source_candidate_packet_static_check.json",
   "changed_by_forecast_ids": [
     "Knuth",
     "Noether2"
@@ -24,7 +24,7 @@
   "new_next_action": "GP-230-price bounded replay of static-passed source candidates",
   "old_next_action": "source contracts only",
   "preconditioner_effect": "converted source contracts into candidate content and caught one static source-hinge mismatch before replay",
-  "preconditioner_source": "analytics/public/leanmill/results/v2043_blocked_row_content_source_discovery_packet.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2043_blocked_row_content_source_discovery_packet.json",
   "realized_failure_mode_ids": [
     "source_hinge_missing"
   ],

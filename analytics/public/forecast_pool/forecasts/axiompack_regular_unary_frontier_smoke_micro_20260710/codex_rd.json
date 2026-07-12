@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "contract_id": "axiompack_regular_unary_frontier_smoke_micro_20260710",
+  "contract_question": "Will the regular-unary AxiomPack smoke return a receipted residual finalist with logical singleton ablation and a boundary result, or a valid receipted null?",
+  "domain": "leanmill_axiompack",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "boundary_budget_exhaustion": 0.4166666666666667,
+    "context_build_timeout": 0.33333333333333337,
+    "navigator_schema_failure": 0.25
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-07-10T23:39:09Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.76,
+  "rationale_short": "The provider-free gate found 47 canonical models and all portable-kernel regressions pass; main risks are context time, low-effort navigation, and boundary exhaustion.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

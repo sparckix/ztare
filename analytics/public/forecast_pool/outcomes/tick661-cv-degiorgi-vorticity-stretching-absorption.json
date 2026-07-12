@@ -1,0 +1,42 @@
+{
+  "actual_cost_agent_minutes": 170,
+  "artifact_hash": "7472089805a3c4c3d120af72e66cff3aab28fee8830f1cd7d3f4c8ade8bd09e1",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_trackb_de_giorgi_vorticity_attack.lean",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "pass",
+  "contract_id": "tick661-cv-degiorgi-vorticity-stretching-absorption",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "compile_checked_interface",
+    "amnesia_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "compile-checked concrete vorticity/stretching carrier plus CV/nonlocal-DeGiorgi A_visc surplus candidate and scalar-only exclusion boundary",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T03:26:09Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick661-cv-degiorgi-vorticity-stretching-absorption/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "attempt or kill LocalizedViscousAlignmentSurplusLevelSetGain for A_visc surplus plus far-field tail with pressure/commutator reserve paid separately",
+  "old_next_action": "generic CV/nonlocal-DeGiorgi stretching absorption target",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Pressure/commutator reserve is a separate field in the candidate surface; scalar-only audit excludes the route unless anisotropic non-scalar depletion is supplied.",
+  "preconditioner_source": "market top failure: pressure_collar_or_commutator_leakage_dominates; adversarial lane: scalar De Giorgi recurrence and unpaid reserve",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Success under the pre-registered predicate: produced a compile-checked interface/adapter identifying exact PDE hypotheses and a candidate inequality, plus a named obstruction for scalar-only recurrence. Result is not a regularity proof.",
+  "resolved_at": "2026-05-20T03:45:34Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

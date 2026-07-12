@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 24.0,
   "artifact_hash": "9b13c0c5ed8cffce4df9bc192b302fb3215ee7e481fe6141b10fd3915a777429",
-  "artifact_path": "analytics/public/leanmill/results/v2043_blocked_row_content_source_discovery_packet.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2043_blocked_row_content_source_discovery_packet.json",
   "changed_by_forecast_ids": [
     "Hilbert",
     "Lovasz"
@@ -24,7 +24,7 @@
   "new_next_action": "generate small candidate packet from source contracts, then static-check before GP-230 replay",
   "old_next_action": "blocked-row router without candidate-content contracts",
   "preconditioner_effect": "forced row-level content-changing source contracts after rank-policy abort",
-  "preconditioner_source": "analytics/public/leanmill/results/v2042_public_adapter_content_source_router.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2042_public_adapter_content_source_router.json",
   "realized_failure_mode_ids": [],
   "resolution_note": "v20.43 emitted the blocked-row content source-discovery packet: 5 source rows, each with non-timeout candidate family, future templates, forbidden prior patterns, no candidate generation, no replay, no training, GNN blocked=true.",
   "resolved_at": "2026-05-14T17:22:28Z",

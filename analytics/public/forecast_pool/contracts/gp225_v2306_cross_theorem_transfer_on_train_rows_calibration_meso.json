@@ -88,7 +88,7 @@
   "horizon": "2026-05-15T06:00:00Z",
   "information_value": 0.7,
   "layer": "meso",
-  "objective_resolver": "analytics/public/leanmill/results/v23_06_cross_theorem_transfer_on_train_rows_audit.json:metrics.target_equivalent_positives_total >= 1 AND metrics.false_positives_total == 0",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v23_06_cross_theorem_transfer_on_train_rows_audit.json:metrics.target_equivalent_positives_total >= 1 AND metrics.false_positives_total == 0",
   "question": "Will cross-theorem transfer (gold tactics from 14 other train rows applied as candidates on each of the 15 canonical train rows under strict source!=target row/theorem and direct-gold-token leakage exclusion) recover AT LEAST 1 target-equivalent positive (under GPT-5.5 review contract: target_equivalent_closure OR target_equivalent_transition) across the 15 train rows? Threshold: at least 1 row \u00d7 1 distinct witness signature.",
   "risk_penalty": 1.0,
   "success_threshold": "metrics.target_equivalent_positives_total >= 1 AND metrics.false_positives_total == 0",

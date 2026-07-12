@@ -72,6 +72,16 @@ Two extractors mine the failure record between iterations. The [structural const
 
 We call the whole arrangement a cognitive gym ([code](../../src/ztare/common/cognitive_gym.py), [essay](../../docs/concepts/cognitive_gym.md)): each deterministic layer removes a failure mode the model cannot self-correct, which frees it to recognize structure across a large search space.
 
+## One governance form at every level
+
+The separation of concerns above captures one instance of a pattern the whole apparatus shares. At every organizational layer, an agentic worker proposes; a deterministic mechanism disposes. The governed object varies by layer. The governance form holds constant.
+
+Four layers carry the pattern. The autoresearch loop: a sealed mutator proposes a candidate model, and the gate battery with judge panel disposes. The grammar extension path: a sealed solver proposes a new primitive for the hypothesis language, and a planted-synthetic acceptance test paired with a strict-improvement gate disposes. LeanMill: a solver leaf proposes a formal proof, and the Lean kernel disposes. The taxonomy growth pass: a harvest agent proposes a candidate tell category, and the judge panel disposes.
+
+Mechanism is shared where the underlying form is shared: one proposal-card contract, one worker-sealing policy, one MDL engine, one dispatch runtime serve all four. Each layer gets the instrument its iteration requires: the full autoresearch loop where judgment must accumulate across many candidates, a validate-and-adopt leg where a single acceptance test is mechanical. The architecture is fractal deliberately, the recursive application of one control structure at every scale, which is what the M-form thesis describes.
+
+The same form now recurses to the machinery itself. The kernel's own rules and patches go through a proposal-card contract, a hash-attested disposition surface, and an `adopt_machinery_patch` cycle against a frozen test suite before any kernel change lands. The concrete surfaces are documented in [capabilities.md §2](../../docs/concepts/capabilities.md#machinery-governance).
+
 ## Naming rules for the grammar
 
 Overfitting the grammar to the domain is worse than overfitting parameters to data, because a contaminated grammar corrupts every later run on that substrate. A named law or parameter injected into the grammar (`DOSE_SCALED`, `ka`, `Michaelis-Menten`) lets the model stop reasoning from evidence and start retrieving training-weight knowledge about the name. That is ground-truth leakage relocated one layer up, from the hint into the grammar specification.

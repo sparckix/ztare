@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex:RD",
+  "contract_id": "tick648-cv-stretching-critical-estimate",
+  "contract_question": "Tick648: Does the Caffarelli-Vasseur nonlocal De Giorgi level-set mechanism, after isolation of drift versus stretching, contain a non-Constantin-Fefferman scale-exponent gain that controls the 3D Navier-Stokes vortex-stretching/C7 source, or does every candidate bound reduce to CF_global_extension at critical scaling?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "CV_source_estimate_only_energy_level": 0.24,
+    "apparatus_or_codex_wake_delay": 0.12,
+    "overclaim_or_scope_laundering_detected": 0.18,
+    "recurs_to_CF_alignment_or_C7_without_new_gain": 0.36,
+    "unclassified_math_dead_end": 0.1
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T13:27:06Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.57,
+  "rationale_short": "Success is priced as decisive characterization, not positive solution. The CV target is allowed by the handoff, but prior tick635/636 power-counting makes non-CF gain unlikely; useful negative remains success if exact.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

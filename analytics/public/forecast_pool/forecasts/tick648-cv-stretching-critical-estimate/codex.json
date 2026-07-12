@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick648-cv-stretching-critical-estimate",
+  "contract_question": "Tick648: Does the Caffarelli-Vasseur nonlocal De Giorgi level-set mechanism, after isolation of drift versus stretching, contain a non-Constantin-Fefferman scale-exponent gain that controls the 3D Navier-Stokes vortex-stretching/C7 source, or does every candidate bound reduce to CF_global_extension at critical scaling?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "drifts_into_known_recurrence_or_alignment_smuggling": 0.2,
+    "gets_local_beta_gt_0_gain_but_cannot_bridge_radius_charge": 0.3,
+    "stops_at_q_5_over_2_endpoint_without_precise_cf_c7_reduction": 0.5
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T13:43:04Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.84,
+  "rationale_short": "Local read-only Codex CLI fallback after VPS warm wake was pre-fix claimed; Codex authored p_success=0.84. Rationale: current surface isolates LocalizedProductionLevelSetGain beta>0 and formal packet pins q=5/2 threshold plus no-go guards for Leray/CKN/transport-only routes; main risk is stalling at local gain without smallest surviving target.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

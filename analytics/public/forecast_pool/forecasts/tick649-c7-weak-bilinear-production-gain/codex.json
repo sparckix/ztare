@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": "Use the production-defect/capacity object; retire the route if it only yields local beta>0 or q>5/2 without no-log-pileup or radius-charge promotion.",
+  "agent_id": "codex",
+  "contract_id": "tick649-c7-weak-bilinear-production-gain",
+  "contract_question": "Will TICK649 produce an actionable proof-route or no-go classification for the C7 weak-bilinear high-level production gain controlling (A_visc)_+ on high-vorticity level sets, including the no-log-pileup or radius-charge promotion obligation, without CF alignment or degree-0/parabolic-slaved recurrence?",
+  "domain": "ns_trackb_c7",
+  "expected_cost_agent_minutes": 110.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cf_alignment_smuggling_or_aliasing": 0.24,
+    "endpoint_q_beta_or_notation_gap": 0.2,
+    "local_gain_without_radius_charge_bridge": 0.38,
+    "packaging_or_guard_expression_gap": 0.18
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T14:28:23Z",
+  "p_dependency_issue": 0.33,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.18,
+  "p_success": 0.79,
+  "rationale_short": "The current log already isolates the exact C7 source term, the production-defect/capacity target, and the guard against CF aliasing or q/beta endpoint drift; the main risk is stalling at local gain without a radius-charge/no-log bridge.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

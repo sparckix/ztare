@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "test-membrane-e2e-1779139971",
+  "contract_question": "E2E membrane plumbing self-test F-TEST-MEMBRANE-E2E-1779139971 (throwaway, retire after)",
+  "domain": "membrane_selftest",
+  "expected_cost_agent_minutes": null,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-18T21:32:51Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.9,
+  "rationale_short": "plumbing self-test",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

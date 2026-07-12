@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 45.0,
   "artifact_hash": null,
-  "artifact_path": "analytics/public/leanmill/results/v27_02_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v27_02_audit.json",
   "changed_by_forecast_ids": [],
   "compile_status": null,
   "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",

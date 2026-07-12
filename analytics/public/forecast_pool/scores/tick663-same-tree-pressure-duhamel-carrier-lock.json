@@ -1,0 +1,121 @@
+{
+  "contract_id": "tick663-same-tree-pressure-duhamel-carrier-lock",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+      "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate."
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "tooling_fix"
+      ],
+      "realized_failure_mode_ids": [
+        "same_tree_rebilling",
+        "carrier_lock_only_or_relabel"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.28685000000000005,
+  "mean_log_score": -0.7671652199736475,
+  "outcome": {
+    "actual_cost_agent_minutes": 145.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick663-same-tree-pressure-duhamel-carrier-lock",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "tooling_fix"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T12:47:41Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick663-same-tree-pressure-duhamel-carrier-lock/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "same_tree_rebilling",
+      "carrier_lock_only_or_relabel"
+    ],
+    "resolution_note": "Resolved true: TICK663 produced a compile-checked Lean boundary and workbench artifact that changes the next NS lever. Same-tree pressure-Duhamel lock alone was excluded as a parent invoice carrier; the next lever is the same-ledger Duhamel lower-envelope source inside ResidualFreshAuditDuhamelSectionIdentity.",
+    "resolved_at": "2026-05-20T14:02:06Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T14:02:28Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 145.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": -30.0,
+      "domain": "ns_c7_invoice",
+      "expected_cost_agent_minutes": 115.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.55,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T12:46:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T12:47:41Z",
+        "resolved_at": "2026-05-20T14:02:06Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 145.0,
+      "agent_id": "codex_rd",
+      "brier": 0.31360000000000005,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 150.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.8209805520698302,
+      "p_success": 0.44,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T12:46:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T12:46:38Z",
+        "resolved_at": "2026-05-20T14:02:06Z"
+      }
+    }
+  ]
+}

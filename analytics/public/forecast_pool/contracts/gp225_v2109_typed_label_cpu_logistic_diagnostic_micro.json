@@ -87,7 +87,7 @@
   "horizon": "2026-05-15T03:30:00Z",
   "information_value": 0.3,
   "layer": "micro",
-  "objective_resolver": "analytics/public/leanmill/results/v2109_typed_label_cpu_logistic_diagnostic.json:metrics.cpu_logistic_top1_rate > metrics.candidate_rank_baseline_top1_rate AND metrics.witness_equality_smuggled_into_canonical_strict_training_table == false",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v2109_typed_label_cpu_logistic_diagnostic.json:metrics.cpu_logistic_top1_rate > metrics.candidate_rank_baseline_top1_rate AND metrics.witness_equality_smuggled_into_canonical_strict_training_table == false",
   "question": "On the typed-label heldout eval union (canonical compile-backed strict rows + current_scale_0164 with witness-equality positives + v20.96 hard negatives), does the tiny CPU logistic top1_rate strictly exceed the candidate-rank baseline top1_rate? Resolves true only on strict majority and no harmful smuggling of witness-equality labels into the canonical training table.",
   "risk_penalty": 0.5,
   "success_threshold": "cpu_logistic_top1_rate > candidate_rank_baseline_top1_rate",

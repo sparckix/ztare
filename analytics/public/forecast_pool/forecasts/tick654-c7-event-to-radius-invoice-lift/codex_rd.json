@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Proceed with pencil-first invoice law audit, then swarm adversarial lanes before Lean.",
+  "agent_id": "codex:RD",
+  "contract_id": "tick654-c7-event-to-radius-invoice-lift",
+  "contract_question": "Will TICK654 produce a compile-checked event-to-radius invoice lift or a sharper obstruction for SameLedgerFreshEventCarriesRadiusInvoice, without CF alignment, degree-0 endpoint bookkeeping, or parabolic-slaved scalar reuse?",
+  "domain": "ns_route1_family",
+  "expected_cost_agent_minutes": 105.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_weight_not_radius_payment": 0.2,
+    "formal_surface_no_quantity_path": 0.15,
+    "inherited_badness_rebilling_survives": 0.27,
+    "pressure_tail_localization_assumed": 0.38
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_budget"
+  ],
+  "forecasted_at": "2026-05-19T20:40:15Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.43,
+  "p_regression": 0.08,
+  "p_success": 0.61,
+  "rationale_short": "TICK653 isolated the lift cleanly; construction odds are low, but a sharper compiled boundary is likely if pressure localization and inherited nonchargeability are separated before Lean.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pressure_tail_localization_assumed",
+    "inherited_badness_rebilling_survives"
+  ]
+}

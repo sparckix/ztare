@@ -81,7 +81,7 @@
   "horizon": "this_v1945_tick",
   "information_value": 1.5,
   "layer": "micro",
-  "objective_resolver": "Resolve true from analytics/public/leanmill/results/v1945_typed_feedback_replay.json if attempted_rows>=8, compiled_candidate_rows>=2, harmful_compiled_mismatch_rows=0, teacher_oracle_candidates_excluded_from_primary=true, target_proof_lines_used_for_candidate_generation=false, and post_target_same_file_declarations_used_for_primary=false; false otherwise.",
+  "objective_resolver": "Resolve true from analytics/public/gnn/lemma_relevance/v1945_typed_feedback_replay.json if attempted_rows>=8, compiled_candidate_rows>=2, harmful_compiled_mismatch_rows=0, teacher_oracle_candidates_excluded_from_primary=true, target_proof_lines_used_for_candidate_generation=false, and post_target_same_file_declarations_used_for_primary=false; false otherwise.",
   "question": "v19.45 typed-feedback replay reaches attempted_rows>=8, compiled_candidate_rows>=2, harmful_compiled_mismatch_rows=0, and no teacher/oracle primary inputs",
   "risk_penalty": 1.0,
   "success_threshold": "attempted_rows>=8 compiled_candidate_rows>=2 harmful=0 clean_source=true",

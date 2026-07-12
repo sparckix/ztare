@@ -1,0 +1,128 @@
+{
+  "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "rerun capacity/split-excess promotion or generic CV De Giorgi wording",
+      "counterfactual_action": "perform graph-conditioned residual-fresh same-ledger invoice bridge test with pressure-tail/inherited-badness kill conditions"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": false,
+      "externality_tags": [
+        "useful_negative",
+        "proof_surface_boundary"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "preconditioner_effect": "Focused on event-to-radius invoice lift rather than beta or capacity relabel.",
+      "preconditioner_source": "aggregate_forecast_and_swarm",
+      "realized_failure_mode_ids": [
+        "same_tree_invoice_requires_new_side_condition",
+        "pressure_tail_localization_assumed_not_proved",
+        "inherited_badness_rebilling_survives"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.2218,
+  "mean_log_score": -0.6364828379064437,
+  "outcome": {
+    "actual_cost_agent_minutes": 95.0,
+    "artifact_hash": "500d47cdc72ebf3ca20e2125f8ffcf1cddd187b8fbb5dffacd12caf7875db644",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": false,
+    "error_type": "none",
+    "externality_tags": [
+      "useful_negative",
+      "proof_surface_boundary"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T19:39:23Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick653-residual-fresh-same-ledger-invoice-bridge/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Focused on event-to-radius invoice lift rather than beta or capacity relabel.",
+    "preconditioner_source": "aggregate_forecast_and_swarm",
+    "realized_failure_mode_ids": [
+      "same_tree_invoice_requires_new_side_condition",
+      "pressure_tail_localization_assumed_not_proved",
+      "inherited_badness_rebilling_survives"
+    ],
+    "resolution_note": "Compile-checked sharper boundary: same-ledger residual audit plus same-tree fresh-frequency lock requires SameLedgerFreshEventCarriesRadiusInvoice; no invoice construction.",
+    "resolved_at": "2026-05-19T20:18:57Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T20:20:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 95.0,
+      "agent_id": "codex:RD",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "ns_trackb",
+      "expected_cost_agent_minutes": 100.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.52,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T19:36:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T19:37:00Z",
+        "resolved_at": "2026-05-19T20:18:57Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 95.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.25,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_trackb",
+      "expected_cost_agent_minutes": 105.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.5,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.6931471805599453,
+      "p_success": 0.5,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T19:36:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T19:39:23Z",
+        "resolved_at": "2026-05-19T20:18:57Z"
+      }
+    }
+  ]
+}

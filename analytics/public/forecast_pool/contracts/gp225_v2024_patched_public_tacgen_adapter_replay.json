@@ -81,7 +81,7 @@
   "horizon": "one bounded local replay over cached public tacgen candidates",
   "information_value": 0.45,
   "layer": "micro",
-  "objective_resolver": "Success iff analytics/public/leanmill/results/v2024_patched_public_tacgen_adapter_replay.json exists from the patched v1953 bridge over v2024_patched_public_tacgen_adapter_packet.json and reports new_strict_same_target_rows >= 1, every strict row has candidate_action_compiles=true, harmful_compiled_mismatch_actions == 0, training_now=false, and gnn_blocked=true.",
+  "objective_resolver": "Success iff analytics/public/gnn/lemma_relevance/v2024_patched_public_tacgen_adapter_replay.json exists from the patched v1953 bridge over v2024_patched_public_tacgen_adapter_packet.json and reports new_strict_same_target_rows >= 1, every strict row has candidate_action_compiles=true, harmful_compiled_mismatch_actions == 0, training_now=false, and gnn_blocked=true.",
   "question": "Will the patched public tacgen adapter replay over cached v1952 candidates produce at least one compile-backed strict same-target GP-225 row with zero harmful compiled mismatches while keeping training false and GNN blocked?",
   "risk_penalty": 0.12,
   "success_threshold": "fresh_replay_json_exists,new_strict_same_target_rows>=1,strict_rows_compile_backed,harmful_compiled_mismatch_actions==0,training_now_false,gnn_blocked_true",

@@ -1,0 +1,20 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "gemini",
+  "agent_id": "gemini-lite:api_forecaster",
+  "contract_id": "meso-ns-reserve-drop-two-fields-20260520",
+  "contract_question": "Can the next NS tick prove or refute the two numerical fields isolated by TICK666: reserve nonnegativity and recharge-prefix budget for FreshAnnularPredictableReserveDropSource, from the indexed single-spend carrier or lineage reservoir, without same-packet rebilling?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-06-11T19:03:30Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.02,
+  "rationale_short": "Highly technical jargon implies extreme implementation complexity and architectural improbability.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

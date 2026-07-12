@@ -1,0 +1,1726 @@
+{
+  "hand_tooled_risk": true,
+  "interpretation": "cached harness validation only; spend a live leaf budget for discovery claims",
+  "mode": "cached",
+  "model": "codex",
+  "n": 8,
+  "next_domain_to_stress": "quasigroups_and_loops",
+  "ok": true,
+  "pass_fail_criteria": {
+    "agent_blueprint_lint": true,
+    "proof_credit_quarantined": true,
+    "second_domain_probe_ok": true,
+    "stress_ok": true,
+    "usefulness_ok": true
+  },
+  "primary": {
+    "agent_blueprint_lint": {
+      "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 5,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "missing_fields": [],
+      "ok": true,
+      "required_receipts": [
+        "nontriviality",
+        "consistency_smoke",
+        "model_or_example",
+        "strength_comparison",
+        "separation_or_interpretation",
+        "downstream_yield"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+      "violations": []
+    },
+    "agent_blueprint_trial": {
+      "blueprint": {
+        "candidate_axiom_templates": [
+          {
+            "family": "priority_join",
+            "kill_condition": "diamond or pentagon countermodel breaks the proxy law",
+            "name": "separation_lattice_uncrossed_join",
+            "statement": "a separation-lattice join law preserves uncrossed priority comparisons"
+          },
+          {
+            "family": "order",
+            "kill_condition": "branching distributive models separate totality from uncrossedness",
+            "name": "priority_totality_boundary",
+            "statement": "priority totality may be needed only on boundary-comparable elements"
+          },
+          {
+            "family": "lattice",
+            "kill_condition": "M3 survives modularity and refutes distributivity",
+            "name": "distributive_vs_modular_separator",
+            "statement": "distributivity should be separated from modularity before proof replay"
+          },
+          {
+            "family": "priority_join",
+            "kill_condition": "N5 refutes the monotone join law",
+            "name": "uncrossed_monotone_join_candidate",
+            "statement": "joining with a higher-priority element is monotone for uncrossed comparisons"
+          }
+        ],
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "current_theory": "bounded finite posets/lattices with explicit priority relation",
+        "domain": "finite_lattice_order_priority_structures",
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "forbidden_shortcuts": [
+          "Do not add the target uncrossed theorem as an axiom.",
+          "Do not let a surviving candidate grant proof credit.",
+          "Do not run downstream yield before finite-model stress receipts."
+        ],
+        "name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "nl_statement": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+        "provenance": [
+          "leanmill_axiom_pack_v1_pilot",
+          "agent_authored_blueprint_trial",
+          "cached_agent_authored_fixture"
+        ],
+        "residuals": [
+          "priority comparisons re-derived under order duality",
+          "uncrossedness proof search depends on local monotone-join facts",
+          "distributive vs modular hypotheses are not separated early"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint.v1",
+        "semantic_intent": "Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.",
+        "target_structure_family": "finite lattices with priority preorder and join operation"
+      },
+      "lint": {
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "ok": true,
+      "proof_credit_eligible": false,
+      "receipt_candidate_count": 4,
+      "receipt_model": "cached-agent-fixture",
+      "receipt_status": "ok",
+      "schema": "leanmill.axiom_pack_agent_blueprint_trial.v1",
+      "theorem_campaign_admissible": false,
+      "trial_source": "cached_agent_authored_fixture"
+    },
+    "base_blueprint": {
+      "candidate_axiom_templates": [
+        {
+          "family": "order",
+          "name": "total_priority_order",
+          "statement": "priority is total and antisymmetric on the finite carrier"
+        },
+        {
+          "family": "lattice",
+          "name": "distributive_priority_lattice",
+          "statement": "meet and join distribute on priority-relevant elements"
+        },
+        {
+          "family": "lattice",
+          "name": "modular_priority_lattice",
+          "statement": "the carrier is modular, separating a weaker lattice hypothesis"
+        },
+        {
+          "family": "priority_join",
+          "name": "uncrossed_monotone_join",
+          "statement": "joining with a higher-priority element preserves uncrossed comparisons"
+        }
+      ],
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 5,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "current_theory": "bounded finite posets/lattices with explicit priority relation",
+      "domain": "finite_lattice_order_priority_structures",
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "forbidden_shortcuts": [
+        "Do not add the target uncrossed theorem as an axiom.",
+        "Do not let a surviving candidate grant proof credit.",
+        "Do not run downstream yield before finite-model stress receipts."
+      ],
+      "name": "priority_uncrossed_order_axiom_pack",
+      "nl_statement": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+      "provenance": [
+        "leanmill_axiom_pack_v1_pilot"
+      ],
+      "residuals": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint.v1",
+      "semantic_intent": "Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.",
+      "target_structure_family": "finite lattices with priority preorder and join operation"
+    },
+    "domain": "finite_lattice_order_priority_structures",
+    "generation": {
+      "blueprint_lint": {
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "candidate_count": 4,
+      "isomorphism_receipt_attached": true,
+      "move_card": {
+        "action": "run_structural_isomorphism_conjecture",
+        "allowed_outputs": [
+          "candidate_axiom_template",
+          "structural_correspondence",
+          "kill_condition"
+        ],
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "canonical_engine": "ztare.research_director.research_isomorphism",
+        "default_args": {
+          "debug": true,
+          "json": true,
+          "left_seam": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+          "model": "codex",
+          "n": 3,
+          "right_seam": "small finite-model and countermodel stress for candidate axioms"
+        },
+        "disallowed_outputs": [
+          "proof_credit",
+          "substrate_mutation",
+          "theorem_campaign_consumption"
+        ],
+        "mode": "conjecture",
+        "promotion_rule": "output is provenance only until AxiomPack lint, cheap filters, and separate ratification pass",
+        "schema": "leanmill.agent_move_card.structural_isomorphism.v1",
+        "tool": "python -m ztare.leanmill.agent_tools isomorphism"
+      },
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "schema": "leanmill.axiom_pack_candidate_generation.v1"
+    },
+    "isomorphism_receipt": {
+      "can_mutate_substrate": false,
+      "canonical_engine": "ztare.research_director.research_isomorphism",
+      "mode": "conjecture",
+      "model": "cached-agent-fixture",
+      "proof_credit_eligible": false,
+      "result": {
+        "candidate_axiom_templates": [
+          {
+            "family": "priority_join",
+            "kill_condition": "diamond or pentagon countermodel breaks the proxy law",
+            "name": "separation_lattice_uncrossed_join",
+            "statement": "a separation-lattice join law preserves uncrossed priority comparisons"
+          },
+          {
+            "family": "order",
+            "kill_condition": "branching distributive models separate totality from uncrossedness",
+            "name": "priority_totality_boundary",
+            "statement": "priority totality may be needed only on boundary-comparable elements"
+          },
+          {
+            "family": "lattice",
+            "kill_condition": "M3 survives modularity and refutes distributivity",
+            "name": "distributive_vs_modular_separator",
+            "statement": "distributivity should be separated from modularity before proof replay"
+          },
+          {
+            "family": "priority_join",
+            "kill_condition": "N5 refutes the monotone join law",
+            "name": "uncrossed_monotone_join_candidate",
+            "statement": "joining with a higher-priority element is monotone for uncrossed comparisons"
+          }
+        ],
+        "candidate_count": 4,
+        "note": "Cached receipt exercises the agent-authored surface; it is not evidence of new mathematics."
+      },
+      "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+      "status": "ok",
+      "trial_source": "cached_agent_authored_fixture"
+    },
+    "ok": true,
+    "pack": {
+      "candidate_axioms": [
+        {
+          "family": "priority_join",
+          "kill_condition": "diamond or pentagon countermodel breaks the proxy law",
+          "name": "separation_lattice_uncrossed_join",
+          "proof_credit_eligible": false,
+          "statement": "a separation-lattice join law preserves uncrossed priority comparisons",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "order",
+          "kill_condition": "branching distributive models separate totality from uncrossedness",
+          "name": "priority_totality_boundary",
+          "proof_credit_eligible": false,
+          "statement": "priority totality may be needed only on boundary-comparable elements",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "lattice",
+          "kill_condition": "M3 survives modularity and refutes distributivity",
+          "name": "distributive_vs_modular_separator",
+          "proof_credit_eligible": false,
+          "statement": "distributivity should be separated from modularity before proof replay",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "priority_join",
+          "kill_condition": "N5 refutes the monotone join law",
+          "name": "uncrossed_monotone_join_candidate",
+          "proof_credit_eligible": false,
+          "statement": "joining with a higher-priority element is monotone for uncrossed comparisons",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "domain": "finite_lattice_order_priority_structures",
+      "downstream_residuals": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "extends_theory": "bounded finite posets/lattices with explicit priority relation",
+      "intended_unlocks": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "provenance": [
+        "leanmill_axiom_pack_v1_pilot",
+        "agent_authored_blueprint_trial",
+        "cached_agent_authored_fixture",
+        "structural_isomorphism_move_card"
+      ],
+      "schema": "leanmill.axiom_pack.v1",
+      "stress_receipts": [
+        {
+          "cheap_filter_wallclock_s": 3.2e-05,
+          "dimension": "nontriviality",
+          "filter_budget_k": 4,
+          "models": [
+            "chain3",
+            "boolean_square",
+            "diamond_m3",
+            "pentagon_n5"
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.2e-05,
+          "dimension": "consistency_smoke",
+          "filter_budget_k": 4,
+          "per_axiom": [
+            {
+              "axiom": "separation_lattice_uncrossed_join",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "priority_totality_boundary",
+              "classified_as": "total_priority_order",
+              "countermodel": "boolean_square",
+              "countermodel_size": 4,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "boundary_branching_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "distributive_vs_modular_separator",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "uncrossed_monotone_join_candidate",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.2e-05,
+          "dimension": "model_or_example",
+          "examples": [
+            {
+              "carrier_size": 3,
+              "countermodel_stratum": "interior_chain",
+              "name": "chain3"
+            },
+            {
+              "carrier_size": 4,
+              "countermodel_stratum": "boundary_branching_distributive",
+              "name": "boolean_square"
+            },
+            {
+              "carrier_size": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "name": "diamond_m3"
+            },
+            {
+              "carrier_size": 5,
+              "countermodel_stratum": "countermodel_nonmodular",
+              "name": "pentagon_n5"
+            }
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.2e-05,
+          "dimension": "strength_comparison",
+          "edges": [
+            [
+              "total_priority_order",
+              "uncrossed_monotone_join",
+              "incomparable_in_branching_models"
+            ],
+            [
+              "distributive_priority_lattice",
+              "modular_priority_lattice",
+              "strict_implication_on_M3"
+            ],
+            [
+              "uncrossed_monotone_join",
+              "distributive_priority_lattice",
+              "not_equivalent_by_static_policy"
+            ]
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.2e-05,
+          "countermodel_strata": [
+            {
+              "axiom": "separation_lattice_uncrossed_join",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "priority_totality_boundary",
+              "classified_as": "total_priority_order",
+              "countermodel": "boolean_square",
+              "countermodel_size": 4,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "boundary_branching_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "distributive_vs_modular_separator",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "uncrossed_monotone_join_candidate",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "dimension": "separation_or_interpretation",
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "can_feed_solver": false,
+          "cap": 3,
+          "dimension": "downstream_yield",
+          "dry_run": true,
+          "note": "bounded read-model replay; it cannot close, mutate, or credit a theorem campaign",
+          "proof_credit_eligible": false,
+          "residual_hits": [
+            {
+              "candidate_term_overlap": [
+                "priority"
+              ],
+              "residual": "priority comparisons re-derived under order duality"
+            },
+            {
+              "candidate_term_overlap": [],
+              "residual": "uncrossedness proof search depends on local monotone-join facts"
+            },
+            {
+              "candidate_term_overlap": [
+                "distributive",
+                "modular"
+              ],
+              "residual": "distributive vs modular hypotheses are not separated early"
+            }
+          ],
+          "sampled_residuals": [
+            "priority comparisons re-derived under order duality",
+            "uncrossedness proof search depends on local monotone-join facts",
+            "distributive vs modular hypotheses are not separated early"
+          ],
+          "schema": "leanmill.axiom_pack_downstream_yield_replay.v1",
+          "status": "shadow_replay_only",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "theorem_campaign_admissible": false
+    },
+    "stress": {
+      "compute_route": {
+        "cheap_filter_observability_fields": [
+          "countermodel_size",
+          "countermodel_size_bound",
+          "countermodel_stratum",
+          "uses_partial_or_undefined_value",
+          "filter_budget_k",
+          "cheap_filter_wallclock_s"
+        ],
+        "cheap_filter_ok": true,
+        "cheap_filter_prune_target": 0.95,
+        "isomorphism_followups": {
+          "design_implications": [
+            "record countermodel strata instead of a bare killed/survived bit",
+            "treat downstream-yield replay as a sampled expensive audit, not the universal first filter",
+            "keep proposer learning from survivor packs behind an explicit Goodhart A/B membrane"
+          ],
+          "followups": [
+            {
+              "cheap_stage_only": false,
+              "claim": "boundary-size countermodel kills may be enriched for axioms true in the target semantics",
+              "expensive_stage": "forced downstream-yield replay on a sampled killed stratum",
+              "instrumentation": [
+                "countermodel_size",
+                "countermodel_size_bound",
+                "countermodel_stratum"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "boundary_countermodel_forced_replay"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "larger small-model bounds can reduce validated yield per compute after a domain-specific optimum",
+              "expensive_stage": "frozen-candidate yield replay across k settings",
+              "instrumentation": [
+                "filter_budget_k",
+                "survivor_count",
+                "validated_yield",
+                "compute_s"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "filter_budget_yield_sweep"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "conditioning the proposer on its own survivors can raise cheap pass rate while lowering target yield",
+              "expensive_stage": "A/B replay with proposer-survivor feedback enabled only in the breach arm",
+              "instrumentation": [
+                "cheap_pass_rate",
+                "yield_per_survivor",
+                "schema_diversity"
+              ],
+              "mother_structure": "goodhart_firewall",
+              "name": "membrane_breach_goodhart_ab"
+            }
+          ],
+          "schema": "leanmill.axiom_pack_isomorphism_followups.v1",
+          "source": "research_isomorphism --mode conjecture over AxiomPack lane vs CEGIS/spec-mining"
+        },
+        "missing_cheap_receipts": [],
+        "missing_expensive_receipts": [],
+        "note": "downstream-yield replay is the expensive stage and must not run for candidates killed by cheap receipts",
+        "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "route": "run_downstream_yield",
+        "schema": "leanmill.axiom_pack_compute_route.v1",
+        "yield_test_admissible": true,
+        "yield_test_completed": true
+      },
+      "domain": "finite_lattice_order_priority_structures",
+      "group_theory_plan": null,
+      "missing_fields": [],
+      "missing_stress_receipts": [],
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "schema": "leanmill.axiom_pack_stress.v1",
+      "stress_receipt_dimensions": [
+        "consistency_smoke",
+        "downstream_yield",
+        "model_or_example",
+        "nontriviality",
+        "separation_or_interpretation",
+        "strength_comparison"
+      ],
+      "theorem_campaign_admissible": false,
+      "theorem_consumption_gate": {
+        "allowed": false,
+        "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "promotion_status": "quarantined",
+        "proof_credit_eligible": false,
+        "reason": "unpromoted_or_missing_separate_ratification_receipt",
+        "schema": "leanmill.axiom_pack_theorem_consumption_gate.v1",
+        "theorem_campaign_admissible": false
+      }
+    },
+    "usefulness_score": {
+      "criteria": [
+        {
+          "evidence": [
+            "chain3",
+            "boolean_square",
+            "diamond_m3",
+            "pentagon_n5"
+          ],
+          "name": "nontriviality",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "axiom": "separation_lattice_uncrossed_join",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "priority_totality_boundary",
+              "classified_as": "total_priority_order",
+              "countermodel": "boolean_square",
+              "countermodel_size": 4,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "boundary_branching_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "distributive_vs_modular_separator",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "uncrossed_monotone_join_candidate",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "name": "countermodel_separation",
+          "pass": true
+        },
+        {
+          "evidence": [
+            [
+              "total_priority_order",
+              "uncrossed_monotone_join",
+              "incomparable_in_branching_models"
+            ],
+            [
+              "distributive_priority_lattice",
+              "modular_priority_lattice",
+              "strict_implication_on_M3"
+            ],
+            [
+              "uncrossed_monotone_join",
+              "distributive_priority_lattice",
+              "not_equivalent_by_static_policy"
+            ]
+          ],
+          "name": "strength_relation_learned",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "candidate_term_overlap": [
+                "priority"
+              ],
+              "residual": "priority comparisons re-derived under order duality"
+            },
+            {
+              "candidate_term_overlap": [
+                "distributive",
+                "modular"
+              ],
+              "residual": "distributive vs modular hypotheses are not separated early"
+            }
+          ],
+          "name": "residual_overlap",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "candidate_count": 4,
+            "non_generic_count": 4,
+            "rows": [
+              {
+                "domain_token_count": 12,
+                "domain_tokens": [
+                  "breaks",
+                  "comparisons",
+                  "countermodel",
+                  "diamond",
+                  "join",
+                  "lattice",
+                  "pentagon",
+                  "preserves"
+                ],
+                "name": "separation_lattice_uncrossed_join"
+              },
+              {
+                "domain_token_count": 16,
+                "domain_tokens": [
+                  "be",
+                  "boundary",
+                  "branching",
+                  "comparable",
+                  "distributive",
+                  "elements",
+                  "from",
+                  "may"
+                ],
+                "name": "priority_totality_boundary"
+              },
+              {
+                "domain_token_count": 17,
+                "domain_tokens": [
+                  "be",
+                  "before",
+                  "distributive",
+                  "distributivity",
+                  "from",
+                  "lattice",
+                  "m3",
+                  "modular"
+                ],
+                "name": "distributive_vs_modular_separator"
+              },
+              {
+                "domain_token_count": 11,
+                "domain_tokens": [
+                  "candidate",
+                  "comparisons",
+                  "element",
+                  "higher",
+                  "join",
+                  "joining",
+                  "monotone",
+                  "n5"
+                ],
+                "name": "uncrossed_monotone_join_candidate"
+              }
+            ]
+          },
+          "name": "novelty_vs_generic_templates",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "downstream_can_feed_solver": false,
+            "pack_proof_credit_eligible": false,
+            "theorem_campaign_gate_allowed": false
+          },
+          "name": "no_proof_credit_leakage",
+          "pass": true
+        }
+      ],
+      "domain": "finite_lattice_order_priority_structures",
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "passed": 6,
+      "schema": "leanmill.axiom_pack_usefulness_score.v1",
+      "score": 1.0,
+      "total": 6
+    }
+  },
+  "proof_credit_eligible": false,
+  "schema": "leanmill.axiom_pack_discovery_eval.v1",
+  "second_domain_eval": {
+    "agent_blueprint_lint": {
+      "blueprint_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 7,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "missing_fields": [],
+      "ok": true,
+      "required_receipts": [
+        "nontriviality",
+        "consistency_smoke",
+        "model_or_example",
+        "strength_comparison",
+        "separation_or_interpretation",
+        "downstream_yield"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+      "violations": []
+    },
+    "agent_blueprint_trial": {
+      "blueprint": {
+        "candidate_axiom_templates": [
+          {
+            "family": "inverse_semigroup",
+            "kill_condition": "bad inverse magma refutes the law",
+            "name": "partial_inverse_transport_law",
+            "statement": "local inverse behavior should satisfy x * inv x * x = x"
+          },
+          {
+            "family": "group_collapse",
+            "kill_condition": "partial bijection model refutes shared global identity",
+            "name": "avoid_global_group_inverse_collapse",
+            "statement": "global group inverse should be treated as a stronger collapse axiom"
+          },
+          {
+            "family": "idempotent_semilattice",
+            "kill_condition": "noncommuting idempotent band refutes it",
+            "name": "idempotent_commutation_surface",
+            "statement": "commuting idempotents form the semilattice-like surface to stress"
+          },
+          {
+            "family": "partial_domain",
+            "kill_condition": "noncommuting idempotent band refutes the monotone surface",
+            "name": "domain_idempotent_monotone_surface",
+            "statement": "domain idempotents should be monotone under partial composition"
+          }
+        ],
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 7,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "current_theory": "finite magmas with named inverse operation and idempotent predicates",
+        "domain": "inverse_semigroup_partial_symmetry_structures",
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "forbidden_shortcuts": [
+          "Do not assert that every partial symmetry has a shared global identity.",
+          "Do not treat small-model survival as proof credit.",
+          "Do not run downstream yield before inverse/partial countermodel stress."
+        ],
+        "name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "nl_statement": "Find compact axioms for partial symmetries where local inverse behavior is useful without collapsing the structure to a group.",
+        "provenance": [
+          "leanmill_axiom_pack_v2_second_domain",
+          "agent_authored_blueprint_trial",
+          "cached_agent_authored_fixture"
+        ],
+        "residuals": [
+          "global inverse assumptions overfit partial-transition domains",
+          "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments",
+          "domain idempotent behavior is confused with group identity behavior"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint.v1",
+        "semantic_intent": "Stress AxiomPack outside order/lattice examples by separating partial transformations, idempotents, and global inverse assumptions.",
+        "target_structure_family": "finite partial symmetry structures with multiplication and inverse operation"
+      },
+      "lint": {
+        "blueprint_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 7,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "ok": true,
+      "proof_credit_eligible": false,
+      "receipt_candidate_count": 4,
+      "receipt_model": "cached-agent-fixture",
+      "receipt_status": "ok",
+      "schema": "leanmill.axiom_pack_agent_blueprint_trial.v1",
+      "theorem_campaign_admissible": false,
+      "trial_source": "cached_agent_authored_fixture"
+    },
+    "base_blueprint": {
+      "candidate_axiom_templates": [
+        {
+          "family": "inverse_semigroup",
+          "name": "partial_inverse_law",
+          "statement": "for every x, x * inv x * x = x"
+        },
+        {
+          "family": "group_collapse",
+          "name": "global_group_inverse",
+          "statement": "there is a shared e such that x * inv x = e and inv x * x = e for every x"
+        },
+        {
+          "family": "idempotent_semilattice",
+          "name": "idempotent_commute",
+          "statement": "idempotent elements commute under multiplication"
+        },
+        {
+          "family": "partial_domain",
+          "name": "domain_idempotent_monotone",
+          "statement": "x * inv x behaves like a domain idempotent under composition"
+        }
+      ],
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 7,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "current_theory": "finite magmas with named inverse operation and idempotent predicates",
+      "domain": "inverse_semigroup_partial_symmetry_structures",
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "forbidden_shortcuts": [
+        "Do not assert that every partial symmetry has a shared global identity.",
+        "Do not treat small-model survival as proof credit.",
+        "Do not run downstream yield before inverse/partial countermodel stress."
+      ],
+      "name": "inverse_semigroup_partial_symmetry_axiom_pack",
+      "nl_statement": "Find compact axioms for partial symmetries where local inverse behavior is useful without collapsing the structure to a group.",
+      "provenance": [
+        "leanmill_axiom_pack_v2_second_domain"
+      ],
+      "residuals": [
+        "global inverse assumptions overfit partial-transition domains",
+        "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments",
+        "domain idempotent behavior is confused with group identity behavior"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint.v1",
+      "semantic_intent": "Stress AxiomPack outside order/lattice examples by separating partial transformations, idempotents, and global inverse assumptions.",
+      "target_structure_family": "finite partial symmetry structures with multiplication and inverse operation"
+    },
+    "domain": "inverse_semigroup_partial_symmetry_structures",
+    "generation": {
+      "blueprint_lint": {
+        "blueprint_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 7,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "candidate_count": 4,
+      "isomorphism_receipt_attached": true,
+      "move_card": {
+        "action": "run_structural_isomorphism_conjecture",
+        "allowed_outputs": [
+          "candidate_axiom_template",
+          "structural_correspondence",
+          "kill_condition"
+        ],
+        "blueprint_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "canonical_engine": "ztare.research_director.research_isomorphism",
+        "default_args": {
+          "debug": true,
+          "json": true,
+          "left_seam": "Find compact axioms for partial symmetries where local inverse behavior is useful without collapsing the structure to a group.",
+          "model": "codex",
+          "n": 3,
+          "right_seam": "small finite-model and countermodel stress for candidate axioms"
+        },
+        "disallowed_outputs": [
+          "proof_credit",
+          "substrate_mutation",
+          "theorem_campaign_consumption"
+        ],
+        "mode": "conjecture",
+        "promotion_rule": "output is provenance only until AxiomPack lint, cheap filters, and separate ratification pass",
+        "schema": "leanmill.agent_move_card.structural_isomorphism.v1",
+        "tool": "python -m ztare.leanmill.agent_tools isomorphism"
+      },
+      "ok": true,
+      "pack_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+      "schema": "leanmill.axiom_pack_candidate_generation.v1"
+    },
+    "isomorphism_receipt": {
+      "can_mutate_substrate": false,
+      "canonical_engine": "ztare.research_director.research_isomorphism",
+      "mode": "conjecture",
+      "model": "cached-agent-fixture",
+      "proof_credit_eligible": false,
+      "result": {
+        "candidate_axiom_templates": [
+          {
+            "family": "inverse_semigroup",
+            "kill_condition": "bad inverse magma refutes the law",
+            "name": "partial_inverse_transport_law",
+            "statement": "local inverse behavior should satisfy x * inv x * x = x"
+          },
+          {
+            "family": "group_collapse",
+            "kill_condition": "partial bijection model refutes shared global identity",
+            "name": "avoid_global_group_inverse_collapse",
+            "statement": "global group inverse should be treated as a stronger collapse axiom"
+          },
+          {
+            "family": "idempotent_semilattice",
+            "kill_condition": "noncommuting idempotent band refutes it",
+            "name": "idempotent_commutation_surface",
+            "statement": "commuting idempotents form the semilattice-like surface to stress"
+          },
+          {
+            "family": "partial_domain",
+            "kill_condition": "noncommuting idempotent band refutes the monotone surface",
+            "name": "domain_idempotent_monotone_surface",
+            "statement": "domain idempotents should be monotone under partial composition"
+          }
+        ],
+        "candidate_count": 4,
+        "note": "Cached second-domain receipt checks that the loop is not priority-only."
+      },
+      "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+      "status": "ok",
+      "trial_source": "cached_agent_authored_fixture"
+    },
+    "ok": true,
+    "pack": {
+      "candidate_axioms": [
+        {
+          "family": "inverse_semigroup",
+          "kill_condition": "bad inverse magma refutes the law",
+          "name": "partial_inverse_transport_law",
+          "proof_credit_eligible": false,
+          "statement": "local inverse behavior should satisfy x * inv x * x = x",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "group_collapse",
+          "kill_condition": "partial bijection model refutes shared global identity",
+          "name": "avoid_global_group_inverse_collapse",
+          "proof_credit_eligible": false,
+          "statement": "global group inverse should be treated as a stronger collapse axiom",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "idempotent_semilattice",
+          "kill_condition": "noncommuting idempotent band refutes it",
+          "name": "idempotent_commutation_surface",
+          "proof_credit_eligible": false,
+          "statement": "commuting idempotents form the semilattice-like surface to stress",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "partial_domain",
+          "kill_condition": "noncommuting idempotent band refutes the monotone surface",
+          "name": "domain_idempotent_monotone_surface",
+          "proof_credit_eligible": false,
+          "statement": "domain idempotents should be monotone under partial composition",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "domain": "inverse_semigroup_partial_symmetry_structures",
+      "downstream_residuals": [
+        "global inverse assumptions overfit partial-transition domains",
+        "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments",
+        "domain idempotent behavior is confused with group identity behavior"
+      ],
+      "extends_theory": "finite magmas with named inverse operation and idempotent predicates",
+      "intended_unlocks": [
+        "global inverse assumptions overfit partial-transition domains",
+        "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments",
+        "domain idempotent behavior is confused with group identity behavior"
+      ],
+      "name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "provenance": [
+        "leanmill_axiom_pack_v2_second_domain",
+        "agent_authored_blueprint_trial",
+        "cached_agent_authored_fixture",
+        "structural_isomorphism_move_card"
+      ],
+      "schema": "leanmill.axiom_pack.v1",
+      "stress_receipts": [
+        {
+          "cheap_filter_wallclock_s": 2.6e-05,
+          "dimension": "nontriviality",
+          "filter_budget_k": 4,
+          "models": [
+            "cyclic_group2",
+            "partial_bijection_two_point",
+            "noncommuting_idempotent_band",
+            "bad_inverse_magma"
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 2.6e-05,
+          "dimension": "consistency_smoke",
+          "filter_budget_k": 4,
+          "per_axiom": [
+            {
+              "axiom": "partial_inverse_transport_law",
+              "classified_as": "partial_inverse_law",
+              "countermodel": "bad_inverse_magma",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "inverse_law_countermodel",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "cyclic_group2",
+                "partial_bijection_two_point",
+                "noncommuting_idempotent_band"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "avoid_global_group_inverse_collapse",
+              "classified_as": "global_group_inverse",
+              "countermodel": "partial_bijection_two_point",
+              "countermodel_size": 7,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "partial_symmetry_not_group",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "cyclic_group2"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": true
+            },
+            {
+              "axiom": "idempotent_commutation_surface",
+              "classified_as": "idempotent_commute",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "cyclic_group2",
+                "partial_bijection_two_point"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "domain_idempotent_monotone_surface",
+              "classified_as": "domain_idempotent_monotone",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "cyclic_group2",
+                "partial_bijection_two_point"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 2.6e-05,
+          "dimension": "model_or_example",
+          "examples": [
+            {
+              "carrier_size": 2,
+              "countermodel_stratum": "group_control",
+              "name": "cyclic_group2",
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "carrier_size": 7,
+              "countermodel_stratum": "partial_symmetry_not_group",
+              "name": "partial_bijection_two_point",
+              "uses_partial_or_undefined_value": true
+            },
+            {
+              "carrier_size": 3,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "name": "noncommuting_idempotent_band",
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "carrier_size": 3,
+              "countermodel_stratum": "inverse_law_countermodel",
+              "name": "bad_inverse_magma",
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 2.6e-05,
+          "dimension": "strength_comparison",
+          "edges": [
+            [
+              "partial_inverse_law",
+              "global_group_inverse",
+              "strictly_weaker_by_partial_bijection_two_point"
+            ],
+            [
+              "idempotent_commute",
+              "partial_inverse_law",
+              "independent_by_noncommuting_idempotent_band"
+            ],
+            [
+              "domain_idempotent_monotone",
+              "global_group_inverse",
+              "not_equivalent_by_partial_symmetry_model"
+            ]
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 2.6e-05,
+          "countermodel_strata": [
+            {
+              "axiom": "partial_inverse_transport_law",
+              "classified_as": "partial_inverse_law",
+              "countermodel": "bad_inverse_magma",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "inverse_law_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "avoid_global_group_inverse_collapse",
+              "classified_as": "global_group_inverse",
+              "countermodel": "partial_bijection_two_point",
+              "countermodel_size": 7,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "partial_symmetry_not_group",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": true
+            },
+            {
+              "axiom": "idempotent_commutation_surface",
+              "classified_as": "idempotent_commute",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "domain_idempotent_monotone_surface",
+              "classified_as": "domain_idempotent_monotone",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "dimension": "separation_or_interpretation",
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "can_feed_solver": false,
+          "cap": 3,
+          "dimension": "downstream_yield",
+          "dry_run": true,
+          "note": "bounded read-model replay; it cannot close, mutate, or credit a theorem campaign",
+          "proof_credit_eligible": false,
+          "residual_hits": [
+            {
+              "candidate_term_overlap": [
+                "global",
+                "inverse"
+              ],
+              "residual": "global inverse assumptions overfit partial-transition domains"
+            },
+            {
+              "candidate_term_overlap": [
+                "commutation",
+                "idempotent"
+              ],
+              "residual": "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments"
+            },
+            {
+              "candidate_term_overlap": [
+                "domain",
+                "group",
+                "idempotent"
+              ],
+              "residual": "domain idempotent behavior is confused with group identity behavior"
+            }
+          ],
+          "sampled_residuals": [
+            "global inverse assumptions overfit partial-transition domains",
+            "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments",
+            "domain idempotent behavior is confused with group identity behavior"
+          ],
+          "schema": "leanmill.axiom_pack_downstream_yield_replay.v1",
+          "status": "shadow_replay_only",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "theorem_campaign_admissible": false
+    },
+    "stress": {
+      "compute_route": {
+        "cheap_filter_observability_fields": [
+          "countermodel_size",
+          "countermodel_size_bound",
+          "countermodel_stratum",
+          "uses_partial_or_undefined_value",
+          "filter_budget_k",
+          "cheap_filter_wallclock_s"
+        ],
+        "cheap_filter_ok": true,
+        "cheap_filter_prune_target": 0.95,
+        "isomorphism_followups": {
+          "design_implications": [
+            "record countermodel strata instead of a bare killed/survived bit",
+            "treat downstream-yield replay as a sampled expensive audit, not the universal first filter",
+            "keep proposer learning from survivor packs behind an explicit Goodhart A/B membrane"
+          ],
+          "followups": [
+            {
+              "cheap_stage_only": false,
+              "claim": "boundary-size countermodel kills may be enriched for axioms true in the target semantics",
+              "expensive_stage": "forced downstream-yield replay on a sampled killed stratum",
+              "instrumentation": [
+                "countermodel_size",
+                "countermodel_size_bound",
+                "countermodel_stratum"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "boundary_countermodel_forced_replay"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "larger small-model bounds can reduce validated yield per compute after a domain-specific optimum",
+              "expensive_stage": "frozen-candidate yield replay across k settings",
+              "instrumentation": [
+                "filter_budget_k",
+                "survivor_count",
+                "validated_yield",
+                "compute_s"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "filter_budget_yield_sweep"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "conditioning the proposer on its own survivors can raise cheap pass rate while lowering target yield",
+              "expensive_stage": "A/B replay with proposer-survivor feedback enabled only in the breach arm",
+              "instrumentation": [
+                "cheap_pass_rate",
+                "yield_per_survivor",
+                "schema_diversity"
+              ],
+              "mother_structure": "goodhart_firewall",
+              "name": "membrane_breach_goodhart_ab"
+            }
+          ],
+          "schema": "leanmill.axiom_pack_isomorphism_followups.v1",
+          "source": "research_isomorphism --mode conjecture over AxiomPack lane vs CEGIS/spec-mining"
+        },
+        "missing_cheap_receipts": [],
+        "missing_expensive_receipts": [],
+        "note": "downstream-yield replay is the expensive stage and must not run for candidates killed by cheap receipts",
+        "pack_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "route": "run_downstream_yield",
+        "schema": "leanmill.axiom_pack_compute_route.v1",
+        "yield_test_admissible": true,
+        "yield_test_completed": true
+      },
+      "domain": "inverse_semigroup_partial_symmetry_structures",
+      "group_theory_plan": null,
+      "missing_fields": [],
+      "missing_stress_receipts": [],
+      "ok": true,
+      "pack_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "schema": "leanmill.axiom_pack_stress.v1",
+      "stress_receipt_dimensions": [
+        "consistency_smoke",
+        "downstream_yield",
+        "model_or_example",
+        "nontriviality",
+        "separation_or_interpretation",
+        "strength_comparison"
+      ],
+      "theorem_campaign_admissible": false,
+      "theorem_consumption_gate": {
+        "allowed": false,
+        "pack_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+        "promotion_status": "quarantined",
+        "proof_credit_eligible": false,
+        "reason": "unpromoted_or_missing_separate_ratification_receipt",
+        "schema": "leanmill.axiom_pack_theorem_consumption_gate.v1",
+        "theorem_campaign_admissible": false
+      }
+    },
+    "usefulness_score": {
+      "criteria": [
+        {
+          "evidence": [
+            "cyclic_group2",
+            "partial_bijection_two_point",
+            "noncommuting_idempotent_band",
+            "bad_inverse_magma"
+          ],
+          "name": "nontriviality",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "axiom": "partial_inverse_transport_law",
+              "classified_as": "partial_inverse_law",
+              "countermodel": "bad_inverse_magma",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "inverse_law_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "avoid_global_group_inverse_collapse",
+              "classified_as": "global_group_inverse",
+              "countermodel": "partial_bijection_two_point",
+              "countermodel_size": 7,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "partial_symmetry_not_group",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": true
+            },
+            {
+              "axiom": "idempotent_commutation_surface",
+              "classified_as": "idempotent_commute",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "domain_idempotent_monotone_surface",
+              "classified_as": "domain_idempotent_monotone",
+              "countermodel": "noncommuting_idempotent_band",
+              "countermodel_size": 3,
+              "countermodel_size_bound": 7,
+              "countermodel_stratum": "idempotent_commutation_countermodel",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "name": "countermodel_separation",
+          "pass": true
+        },
+        {
+          "evidence": [
+            [
+              "partial_inverse_law",
+              "global_group_inverse",
+              "strictly_weaker_by_partial_bijection_two_point"
+            ],
+            [
+              "idempotent_commute",
+              "partial_inverse_law",
+              "independent_by_noncommuting_idempotent_band"
+            ],
+            [
+              "domain_idempotent_monotone",
+              "global_group_inverse",
+              "not_equivalent_by_partial_symmetry_model"
+            ]
+          ],
+          "name": "strength_relation_learned",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "candidate_term_overlap": [
+                "global",
+                "inverse"
+              ],
+              "residual": "global inverse assumptions overfit partial-transition domains"
+            },
+            {
+              "candidate_term_overlap": [
+                "commutation",
+                "idempotent"
+              ],
+              "residual": "idempotent commutation is repeatedly rediscovered in partial-symmetry arguments"
+            },
+            {
+              "candidate_term_overlap": [
+                "domain",
+                "group",
+                "idempotent"
+              ],
+              "residual": "domain idempotent behavior is confused with group identity behavior"
+            }
+          ],
+          "name": "residual_overlap",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "candidate_count": 4,
+            "non_generic_count": 4,
+            "rows": [
+              {
+                "domain_token_count": 12,
+                "domain_tokens": [
+                  "bad",
+                  "behavior",
+                  "inv",
+                  "local",
+                  "magma",
+                  "partial",
+                  "refutes",
+                  "satisfy"
+                ],
+                "name": "partial_inverse_transport_law"
+              },
+              {
+                "domain_token_count": 13,
+                "domain_tokens": [
+                  "avoid",
+                  "be",
+                  "bijection",
+                  "collapse",
+                  "global",
+                  "group",
+                  "model",
+                  "partial"
+                ],
+                "name": "avoid_global_group_inverse_collapse"
+              },
+              {
+                "domain_token_count": 13,
+                "domain_tokens": [
+                  "band",
+                  "commutation",
+                  "commuting",
+                  "form",
+                  "idempotent",
+                  "idempotents",
+                  "it",
+                  "like"
+                ],
+                "name": "idempotent_commutation_surface"
+              },
+              {
+                "domain_token_count": 12,
+                "domain_tokens": [
+                  "band",
+                  "be",
+                  "composition",
+                  "domain",
+                  "idempotent",
+                  "idempotents",
+                  "monotone",
+                  "noncommuting"
+                ],
+                "name": "domain_idempotent_monotone_surface"
+              }
+            ]
+          },
+          "name": "novelty_vs_generic_templates",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "downstream_can_feed_solver": false,
+            "pack_proof_credit_eligible": false,
+            "theorem_campaign_gate_allowed": false
+          },
+          "name": "no_proof_credit_leakage",
+          "pass": true
+        }
+      ],
+      "domain": "inverse_semigroup_partial_symmetry_structures",
+      "ok": true,
+      "pack_name": "inverse_semigroup_partial_symmetry_axiom_pack_agent_trial",
+      "passed": 6,
+      "schema": "leanmill.axiom_pack_usefulness_score.v1",
+      "score": 1.0,
+      "total": 6
+    }
+  },
+  "theorem_campaign_admissible": false
+}

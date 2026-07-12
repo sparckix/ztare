@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick662-localized-avisc-surplus-levelset-gain.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick662-localized-avisc-surplus-levelset-gain.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick662-localized-avisc-surplus-levelset-gain",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick662-localized-avisc-surplus-levelset-gain.json",
+    "score": "analytics/public/forecast_pool/scores/tick662-localized-avisc-surplus-levelset-gain.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 150.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick662-localized-avisc-surplus-levelset-gain",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-05-20T04:16:25Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_millennium_hunt",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "single NS tick",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Success iff the tick produces a pencil preflighted PDE inequality or named obstruction for the A_visc local surplus and tail estimate, runs the deterministic workbench or falsifier precheck, and either adds a compile checked formal interface or records why the estimate collapses into a forbidden recurrence.",
+  "question": "TICK662 characterize the impossibility or construction of LocalizedViscousAlignmentSurplusLevelSetGain for the CV nonlocal DeGiorgi general 3D vorticity route. Can the positive surplus A_visc equals xi dot S xi minus nu grad xi squared on high vorticity level sets be bounded by local anisotropic dissipation plus beta positive measure decay and a q greater than 2 far field Biot Savart tail, with pressure commutator reserve paid separately, without CF alignment, helical symmetry, BKM input, scalar DeGiorgiDecayRate, pressure collar leakage, or parabolic slaving.",
+  "risk_penalty": 1.0,
+  "success_threshold": "Pencil artifact plus workbench or falsifier result plus compile checked interface or named obstruction. No scalar DeGiorgi, CF, helical, BKM, pressure smuggling, or parabolic rate slaved shortcut.",
+  "task_type": "ns_millennium_hunt",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

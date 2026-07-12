@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Choose the route with the cleaner kill conditions and explicit next tick target; do not hedge by restating both options.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-route-selection-post-tick657-20260520",
+  "contract_question": "Will the post-TICK657 meso scratch analysis select a higher-yield next NS tick route with explicit target, kill conditions, and amnesia/graph support: either pressure-side QuadraticHarmonicModeFiniteReserveInterface or L3A/CV FreshFrequencyEventSameTreeLock production side?",
+  "domain": "gp225_route_selection_meso",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "graph_or_amnesia_support_missing": 0.26,
+    "l3a_route_selected_without_kill_conditions": 0.1,
+    "pressure_side_overfit_from_tick657_residual": 0.14,
+    "production_side_route_selected_without_rejected_route_argument": 0.06,
+    "two_option_restatement_without_explicit_route": 0.44
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration"
+  ],
+  "forecasted_at": "2026-05-20T01:26:33Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.07,
+  "p_success": 0.65,
+  "rationale_short": "No prior codex row for this contract. The selected gp225 route-selection prior makes a decisive route choice more likely than not, but the main risk is a two-option restatement or a target without usable kill conditions. No probability DAG was supplied, so this is priced from the contract spec, calibration family, and surfaced residual claims rather than a decomposed graph.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "two_option_restatement_without_explicit_route",
+    "graph_or_amnesia_support_missing",
+    "pressure_side_overfit_from_tick657_residual",
+    "l3a_route_selected_without_kill_conditions",
+    "production_side_route_selected_without_rejected_route_argument"
+  ]
+}

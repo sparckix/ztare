@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Attack the fresh-annular source theorem directly; keep same-region reuse and Markov aggregation as explicit kill gates.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-fresh-annular-source-after-tick664-20260520",
+  "contract_question": "Across the next NS meso lane, can the hunt construct or sharply exclude a same-carrier fresh-annular source for FreshAnnularChargePrefixBudgetSource from same-tree/fresh-packet PDE data without local-domination or Markov-aggregation laundering?",
+  "domain": "ns_fresh_annular_source_meso",
+  "expected_cost_agent_minutes": 240.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "no_annular_injection_from_existing_primitives": 0.24,
+    "pressure_or_carrier_mismatch": 0.17,
+    "same_packet_rebilling_survives": 0.25,
+    "tooling_or_module_delay": 0.16,
+    "workbench_or_semantic_receipt_without_pde_source": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "dag-void-discipline",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T18:41:28Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.63,
+  "p_regression": 0.08,
+  "p_success": 0.56,
+  "rationale_short": "No DAG was supplied. The contract is still open, and the consumer is now isolated; the remaining uncertainty is whether same-tree/fresh-packet PDE data can actually source a same-carrier fresh-annular injection/reserve drop rather than collapse into same-region reuse or Markov aggregation. The missing observables are a checked PDE source receipt and a sharp negative case that separates source from local-domination style reuse.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "no_annular_injection_from_existing_primitives",
+    "same_packet_rebilling_survives",
+    "pressure_or_carrier_mismatch",
+    "workbench_or_semantic_receipt_without_pde_source",
+    "tooling_or_module_delay"
+  ]
+}

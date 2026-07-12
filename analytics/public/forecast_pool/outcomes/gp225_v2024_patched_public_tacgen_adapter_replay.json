@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 6.0,
   "artifact_hash": "29e789fb5bce7fd599e7633e9a884ed067f0745f7747dc0447236cd5f01d34be",
-  "artifact_path": "analytics/public/leanmill/results/v2025_patched_public_tacgen_replay_market_gate.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2025_patched_public_tacgen_replay_market_gate.json",
   "compile_status": "no_replay_market_gated",
   "contract_id": "gp225_v2024_patched_public_tacgen_adapter_replay",
   "error_type": null,

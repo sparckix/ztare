@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick646-essl3-leafB-inherited-nogoodparent-ckn",
+  "contract_question": "Discharge OR sharply characterize the impossibility of the uniform rescaled Caffarelli-Kohn-Nirenberg bound for the leaf-B INHERITED (no-good-parent, first-crossing-bound-fails) subbranch of the ESS-L3 Type-I commutator-only branch \u2014 the single honest open residual after tick568 closed the first-crossing subbranch and tick567 closed leaf-A via KRZ2017 \u2014 at the CRITICAL scale-invariant L3 scaling (structurally distinct from the exhausted supercritical homogeneity-0/DSS wall; NOT re-deriving the closed leafA/first-crossing).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T03:50:12Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.15,
+  "rationale_short": "Narrow SCAFFOLDED named residual (leafA closed KRZ2017, first-crossing closed tick568; only inherited/no-good-parent subbranch open) at CRITICAL L3 scaling \u2014 structurally outside the exhausted supercritical homogeneity-0/DSS wall, raising P above the ~0.06 CF route. BUT tick568 flagged the inherited no-good-parent subbranch an UNINHABITED structure (possibly the real obstruction itself) \u2014 genuine hardness. Honest moderate: scaffolding+critical-distinct up, uninhabited-subbranch-flagged-hard down.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

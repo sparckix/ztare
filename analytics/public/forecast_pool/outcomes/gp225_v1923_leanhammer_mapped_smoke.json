@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 9.0,
   "artifact_hash": "2ec2c3793e32567f8cd2bdd7b689ebacd0c1dfc99efe2162266c28e9f344e32c",
-  "artifact_path": "analytics/public/leanmill/results/v1924_leanhammer_local_decl_smoke.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1924_leanhammer_local_decl_smoke.json",
   "compile_status": "incompatible_toolchain_headers",
   "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
   "error_type": "leanhammer_mathlib_toolchain_mismatch",

@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "contract_id": "axiompack_gp251_anonymous_frontier_smoke_micro_20260710",
+  "contract_question": "Will the anonymous navigator freeze at least one independent noncollapsed synergistic two-law presentation and produce a selected boundary query with a larger-carrier countermodel or premise-attributed conditional proof?",
+  "domain": "formal_mathematics",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "boundary_inconclusive": 0.3,
+    "budget_exhaustion": 0.15,
+    "navigator_interface_bottleneck": 0.25,
+    "premise_independent_proof": 0.2,
+    "runtime_or_toolchain": 0.1
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-07-10T16:53:53Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.68,
+  "rationale_short": "Exact cartography already contains eligible structure; uncertainty is whether the cold navigator uses the workbench correctly and leaves enough budget for a decisive boundary receipt.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

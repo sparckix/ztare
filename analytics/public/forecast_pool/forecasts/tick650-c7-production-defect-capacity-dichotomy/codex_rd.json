@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": "Proceed membrane-first with PATTERN-011 swarm; success is actionable classification, not proving regularity.",
+  "agent_id": "codex_rd",
+  "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+  "contract_question": "TICK650 NS Track B: characterize whether a nu-coupled C7ProductionDefectMeasure / VorticityCapacityNoReuseBudget + CapacityOrExistingChannelDichotomy can supply both local high-level production gain and radius/no-reuse charge without Constantin-Fefferman alignment, and if not identify the exact obstruction that retires this CV branch without claiming a millennium-problem result.",
+  "domain": "ns_track_b",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apparatus_close_issue": 0.15,
+    "artifact_only_no_classification": 0.1,
+    "cf_alignment_smuggled": 0.15,
+    "endpoint_recurrence": 0.35,
+    "radius_charge_missing": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T15:38:27Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.12,
+  "p_success": 0.57,
+  "rationale_short": "TICK649 isolated the middle object; probability is above even because a precise retire-or-survive classification is reachable, but low for positive construction because both local beta and no-log radius charge are binding.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

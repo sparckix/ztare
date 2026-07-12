@@ -8,7 +8,7 @@ description: "Epistemic supervision principles: the rules the gates enforce and 
 
 > Provenance (2026-04-18): Derivative of papers 1-4 and the agent failure registry. The papers are authoritative. This document is a reader-facing extraction. When a paper changes or a new principle is elevated from the postmortem registry, update this file in the same session and update the sync date below.
 >
-> Current version: v0.3 (last synced 2026-05-18). Principles P1-P16 are live.
+> Current version: v0.4 (last synced 2026-07-10). Principles P1-P20 are live.
 
 Use this page when a model output can change what happens next: a score, a
 route, a promotion, a report, or a public claim. This page gives working rules
@@ -435,6 +435,93 @@ the whole program follows directly: a supervision system is ready when
 its largest remaining failure mode is exactly P16, and is not ready
 because every mechanical check is green.
 
+### P17. The ideal-observer probe as a diagnostic instrument.
+
+*Rule.* To distinguish an information deficit from a capability or affordance gap, bind a conductor to exactly the evidence, affordances, and admissibility rules available to the governed worker, then attempt the same task. The probe's outcomes factorize failure: if the ideal observer also fails, the interface owes more evidence (an information-limited failure). If the ideal observer succeeds where the worker failed, the gap is locatable in affordance, salience, or capability by diffing the two traces. If the ideal observer violates a rule it was unaware of, the probe just discovered an undocumented constraint. The binding must be genuine: any oracle access taken during the probe must be recorded and asterisked, or the bound is fake and the diagnosis is uninformative.
+
+*Why.* An ungoverned diagnostic is a free read of the answer; it proves nothing about what the worker's interface actually supports. The binding discipline is what makes failure factorization legible.
+
+*Evidence.* The GP-250 investigation cycle applies this discipline directly: a conductor assembles the same evidence packet the leaf worker receives, attempts spec abduction under the same admissibility contract, and classifies residuals by which probe outcome they correspond to. Lineage: psychophysics' ideal-observer analysis, bisimulation (Milner), and HCI's cognitive walkthrough converge on the same structure — bind to the agent's information state, run the task, classify the gap.
+
+*How to apply.* Before adjusting a worker's capability, run the probe. If the probe succeeds, the problem is in the worker's affordances or salience — change the interface, not the model. If the probe fails, the problem is upstream in the evidence the interface provides. Record oracle accesses; if you need them to succeed, the interface still owes that access to the worker.
+
+### P18. Pre-registered adjudication of model-generated conjectures.
+
+*Rule.* Before reading a model-generated conjecture, the reviewer seals their own answer to the same question (content-addressed, with a timestamp receipt). Only then is the conjecture read and classified against one of three verdict classes: novel-and-load-bearing, correct-but-already-known, or coinage (a label without content). A conjecture engine that returns an honest null — naming the question as open rather than confabulating an answer — beats one that always produces an answer.
+
+*Why.* Without pre-registration, every conjecture is post-hoc. The reviewer's sense of novelty is contaminated by having just read the claim; the conjecture gets credit for articulating what the reviewer could already see. Pre-registration separates the reviewer's prior from the conjecture's contribution.
+
+*Evidence.* The same structure that governs theorem-candidate admission in the decision-support kernel: no LLM-minted warrant earns a tier above *unchecked* without a deterministic door. Conjecture outputs enter the disposition queue; they are not adopted directly. This is the ZTARE implementation of the principle that P1 and P4 require.
+
+*How to apply.* Write your own answer before reading the model's output. Record the hash of your answer before opening the conjecture. After reading, classify against the three verdict classes. If the conjecture is novel-and-load-bearing, it enters the disposition queue for independent verification — not direct adoption. Treat an honest null as positive signal about calibration, not as failure.
+
+### P19. Order-independence as a master property.
+
+*Rule.* Knowledge accumulation (clause pruning), evidence merging, and promotion decisions must be arrival-order-invariant: the same set of evidence items, processed in any order, must produce the same verdict. Confluence is the property; order-dependence is a latent bug class. One audit family — testing whether processing the same evidence in permuted arrival orders yields identical results — exercises all surfaces that might violate it.
+
+*Why.* An order-dependent system is a system whose conclusions depend on which facts arrive first rather than on the facts themselves. That is a hidden bias source and a reproducibility failure. It also makes the system gameable: which evidence the worker reviews first becomes a lever for manipulating the conclusion.
+
+*Evidence.* `tests/test_order_independence.py` is the live regression surface for this property in the ZTARE kernel. The spec-nogood ledger, promotion decisions, and warrant-tier assignments are all required to satisfy confluence: two runs of abduction over the same episode log, regardless of transition presentation order, must return the same spec family.
+
+*How to apply.* When adding a new accumulation, merge, or promotion surface, ask: does the result depend on the arrival order of its inputs? If yes, the surface violates the master property. Fix at the source — in the accumulation function itself — not by controlling input order downstream. Run the order-independence audit suite over any new surface before it enters production.
+
+### P20. Identity versus property — enforce the equivalence class, not a proxy.
+
+*Rule.* Any rule that governs membership or offense must be stated in terms of the equivalence class that constitutes the offense or the job, never in terms of a surface property that happens to correlate with it. A rule that cannot state its quotient — the partition on which the constraint is defined — is a proxy, and every proxy is simultaneously too strong (blocking members of the class that lack the surface cue) and too weak (admitting non-members that carry the surface cue).
+
+*Why.* Surface properties are cheaper to measure than the underlying class, which is why they get used. The enforcement cost of this convenience is systematic error in both directions. P1 and P2 describe what happens when that error is exploitable: a generator searches the surface property, not the equivalence class, and a stronger model finds that path faster.
+
+*Evidence.* The worldmodel substrate enforces this directly: object roles (`moves_under_actions`, `monotone_depleting`, `never_changes`, etc.) are behavioral classes defined over transition statistics, not game-specific color or position labels. The ARC adapter lower names to adapter-local coordinates only as a final rendering step; the kernel contract routes on capability ids, authority class, and gate status, not substrate folklore. The same discipline governs `when_dest` and the other guards: they are relational predicates over the abstract state, not hard-coded cell coordinates.
+
+*How to apply.* Before writing a rule, ask: what is the equivalence class I am trying to enforce? State the quotient explicitly. Then ask: is the predicate I am writing a faithful test of membership in that class, or a surface proxy? If it is a proxy, name both the gap and the upgrade path. When the check is cheap to write only as a proxy, mark it with an explicit scope ceiling (`# ponytail: proxy for X; closes only when Y`).
+
+---
+
+## Objection: does deterministic governance suppress lateral innovation?
+
+A standing objection to a fail-closed floor is that it must punish the bold,
+thin-evidence bet: the lateral idea whose payoff is real but whose support is
+not yet in hand. The objection mistakes the target. The enemy of a bold bet is
+not the neutral verdict *not yet shown*. **BLOCKED is not REFUTED**: the grounded
+verdict already separates "no evidence binds this yet" (a workflow state) from
+"an accepted node contradicts this" (a dead claim). What the floor refuses is
+**laundering** — a hunch dressed as a proven fact — which is a different act from
+holding the hunch.
+
+The `wager` (`src/ztare/scenarios/wager.py`) is the constructive form of that
+separation. A wager is a protected bet on a BLOCKED claim that keeps the bet's
+standing without changing its verdict: the claim stays BLOCKED, and the wager is
+a separate, ranked, expiring object that names the real experiment which would
+settle it. It is admitted only if the kernel — simulating each declared outcome
+by `recompile` — confirms at least one outcome would move the decision, and it is
+ranked by prior-free information yield, not by the size of the declared payoff.
+The bold bet is kept alive and made legible (here is what it turns on, here is
+the cheapest test that settles it); it is simply not entered into the record as
+settled while it is not. A passed deadline auto-expires it back to the ordinary
+backlog, and extending a deadline requires a fresh evidence/feasibility receipt,
+so a bet cannot roll forward forever as a standing exemption.
+
+The verdict's crispness has a second cost, independent of the bold-bet case above: on a
+research substrate, almost nothing is ever fully settled, so nearly every live claim map
+reads the same **BLOCKED** whether it is well-evidenced-but-contested or has no support
+at all. A crisp verdict cannot say which. `strength_profile`
+(`src/ztare/scenarios/strength.py`) is the constructive answer for that cost: a
+deterministic, prior-free graded strength per claim, computed by running a gradual
+argumentation semantics over four nested warrant strata — kernel-certificate-only,
++re-executable, +verbatim-quote, +proposed-unchecked — so "nothing is ever settled"
+becomes a **profile that moves** (which tier the support survives at) instead of one
+frozen word. This does not soften BLOCKED into a fact; a `REFUTED` or `NONCONVERGENT`
+override still takes precedence over any number, and the verdict itself is unchanged.
+It gives the reader the same distinction the wager gives the bold bet: not a different
+verdict, a legible account of what the verdict currently rests on.
+
+This is the anti-conformist reading of the whole floor: the gates grade
+**grounding, not consensus**. A claim is not blocked for being unusual,
+contrarian, or against the field — only for lacking a binding a reviewer could
+replay. What the system verifies is whether you can back what you assert, not
+whether the field agrees with it. Protecting exploration and refusing laundering
+are the same discipline stated twice.
+
 ---
 
 ## Open questions
@@ -455,3 +542,6 @@ The following questions are explicitly open. A clean answer to any of them would
 - *v0.1.1 (2026-04-11)*: cold adversarial review applied. Principles unchanged: P1, P2, P4-P12. Principle changed: P3 Evidence paragraph narrowed to reflect §5.7's own N=1 scope (the fourth instance is context-isolated, not substrate-independent). Review artifact on file.
 - *v0.2 (2026-04-17)*: added P13 (enforcement completeness across execution branches) and P14 (downstream symptom chasing as root-cause discipline failure), both elevated from [GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) postmortem. Added "Procedure: Applying postmortem lessons to future iterations" section with pre-run checklist and post-failure update protocol. Evidence: agent failure registry Failure 15, Patterns 12-13.
 - *v0.3 (2026-05-18)*: added Part IV, P15 (a gate over agent-authored work converges to a treadmill, not soundness; three point-fixes ⇒ the surface is the bug; Evaluator-Stress-Test before trust) and P16 (the formal↔informal faithfulness gap is irreducible by any in-loop mechanism; schema-complete/insight-empty is the true residual; readiness criterion = remaining failure mode is exactly P16). Extracted from the commit-membrane self-hardening effort; corroborated against concurrent arXiv work (2507.05619, 2605.02964, 2604.19459, 2510.15981, 2510.01346). Cross-referenced from Pattern 14 prior-art.
+- *v0.3.1 (2026-07-09)*: added the "Objection: does deterministic governance suppress lateral innovation?" section, answering the exploration-suppression objection via the shipped `wager` mechanism (`src/ztare/scenarios/wager.py`): BLOCKED ≠ REFUTED, the floor refuses laundering not lateral bets, and the gates grade grounding rather than consensus. No numbered principle added; P1-P16 unchanged.
+- *v0.3.2 (2026-07-09)*: added a paragraph to the same objection section on the crisp verdict's second cost (nearly every live map reads BLOCKED alike, contested or unsupported) and its answer, the shipped `strength_profile` warrant-filtration graded strength (`src/ztare/scenarios/strength.py`): a profile that moves rather than a frozen word, with REFUTED/NONCONVERGENT still overriding any number. No numbered principle added; P1-P16 unchanged.
+- *v0.4 (2026-07-10)*: added Part IV continuation, P17-P20 (ideal-observer probe, pre-registered conjecture adjudication, order-independence as a master property, identity vs property). Elevated from GP-250 investigation discipline, the decision-support kernel's admission contract, the spec-nogood confluence requirement (anchored to `tests/test_order_independence.py`), and the worldmodel substrate's behavioral-role contract. P1-P16 and the objection section unchanged.

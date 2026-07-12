@@ -74,6 +74,7 @@ artifact, or saved review file. The glossary owns the exact distinction.
   - [Forecast pool and prediction market](#forecast-pool-and-prediction-market)
   - [Gaming behavior catalog and runtime guard](#gaming-behavior-catalog-and-runtime-guard)
   - [Reflexive primitives (the workbench measures itself)](#reflexive-primitives-the-workbench-measures-itself)
+  - [Machinery governance](#machinery-governance)
   - [Research-yield decomposition](#research-yield-decomposition)
   - [Action intelligence and operations surface](#action-intelligence-and-operations-surface)
   - [Audit-integrity chain manifests](#audit-integrity-chain-manifests)
@@ -806,6 +807,201 @@ tree in this repo is the ZTARE tenant overlay. See
 [`org/README.md`](../../org/README.md) and
 [`organizational_primitives.md`](organizational_primitives.md).
 
+### Scenarios: the composable use-case layer
+
+A **Scenario** (`scenarios/<name>.yaml`) binds the governance kernel to a use-case without forking core code:
+it declares which rubric drives the judge, run config, an optional Cage gate-package, and the typed capability
+plug-ins to use. The filesystem is the registry (a new scenario is a dropped file); binding happens once,
+engine-side (`src/ztare/scenarios/resolver.py`), with precedence explicit-flag > scenario > default. Capability
+plug-ins satisfy structural `Protocol`s — **EvidenceProvider**, **Renderer**, **Solver**
+(`src/ztare/scenarios/protocols.py`) — and self-register via `@capability(kind, name)`
+(`src/ztare/scenarios/registry.py`); a mis-shaped plug-in fails loud at registration. A scenario's Renderer
+emits artifacts into a per-scenario workspace home (`workspace/<run>/scenarios/<name>/`) — outputs, kept
+separate from the charter (the pre-registered input). This is what lets the same claim-hardening kernel produce
+domain deliverables (a governed spec / decision-memo / risk-register), not just a score. Afforded via the
+`ztare scenario` CLI verb (list / show / validate / new / run / surface / annotate / reingest) and the workbench
+`GET /api/scenarios` picker. First scenario: `product-manager`. See [`scenarios.md`](scenarios.md).
+
+The product domain ships a template family (`providers/pm_templates.py`: product_spec, risk_register, prd,
+launch_readiness, adr, rice — `adr` uniquely surfaces the governed `rejected` node; `rice` composes the governed
+*inputs* to a score, never fabricated numbers) and a rubric library (`launch_readiness`, `prioritization`,
+`strategy_review` — dropped JSON, no kernel change). Two kernel additions extend the governed-artifact layer:
+**`assemble_verdict`** names the **decision hinge** by *counterfactual sensitivity* (toggle each assumption holds-vs-fails, rank by how far the verdict swings — not graph degree), with ties + a coverage score, so a
+verdict reports which claim the decision rests on; and **`annotate`** is the *inverse* firewall — a document in,
+the same document back with each sentence tagged by its claim lifecycle (BACKED / CONTRADICTED /
+UNTESTED / INERT) against the governed map. Because a document is *input*, annotation never "fails": the
+headline is a load-bearing-assumption count, and the same call upgrades UNTESTED → BACKED as evidence
+lands. `annotate` and `reingest_gate` share one `align()` door (a document sentence ↔ a governed element).
+Workbench surface: the "Annotate a doc" view over `POST /api/scenario-{surface,annotate,reingest}` (all
+deterministic; the LLM only proposes spans, the kernel gates them).
+
+**Dynamic plugin install.** Plugins install without editing core: scenarios + rubrics are data (created/edited
+from the workbench **Projects → Plugins** manager or `ztare scenario new`, live immediately — the filesystem is
+the registry); capability plugins are `@capability` `.py` files dropped into a plugin dir
+(`$ZTARE_SCENARIO_PLUGINS` / `plugins/scenarios/`) and discovered on reload (`registry.reload()`). A `decision_brief`
+Renderer plugin lays out the PM-facing decision flow from the governed data (presentation is the renderer's job,
+not a kernel template). Consumption status: the rubric + renderer drive the whole run; `evidence_sources` are
+consumed at the loop's evidence intake (a non-default `EvidenceProvider` like `structured_files` augments the
+disk evidence, guarded); `gate_package` wraps the Cage factory (live seam, empty registry in v1); a `Solver` is
+resolved for scenario/goal-type dispatch (no auto-solve step in the claim-hardening loop). Afforded via
+`ztare scenario plugins` and `GET /api/plugins` / `POST /api/plugin-install`.
+
+### Argument kernel (grounded verdict + minimal cores + warrants + test agenda + recompile)
+
+The verdict over the governed graph is an **assumption-based truth maintenance system**
+(`src/ztare/scenarios/argument_kernel.py`), built on classical theory — reused, not reinvented: the verdict is
+**grounded (least-fixpoint) acceptance** over an assumption-based argumentation framework (Reiter & de Kleer,
+AAAI-1987; Dung 1995; Bondarenko–Dung–Kowalski–Toni 1997); the decision hinges are **minimal cores** (ATMS
+minimal environments / prime implicants) — which subsume the old single-toggle sensitivity *and* catch
+jointly-pivotal assumption-sets it could not see; the "what to test next" **test agenda** is query-by-committee
+active learning over the existing `information_yield_pricing` primitive (deterministic entropy, no priors);
+edges carry **Toulmin warrants** typed by *re-executable checkability* — `W0` kernel certificate (a LeanMill
+proof / `axiom_authority`), `W1` re-executable computation (recomputes from bound data; the gp-ansatz / fit
+gates), `W2` verbatim quote binding, `W3` proposed-unchecked (an LLM edge, admitted but marked) — with the
+verdict **monotone in warrant strength** (a conclusion is never more trusted than its weakest load-bearing
+warrant). Also: a humane **`verdict_reason`** — a one-line, actionable reading of the status that separates
+"BLOCKED because nothing is bound yet" (a workflow step, not a failure) from "BLOCKED because a tension is open,"
+so the next action is obvious rather than a cryptic status; **dominators** (which claim sits on every
+evidence→verdict path); and **incremental recompile** (`recompile`) — snapshot a decision baseline, recompute
+against new evidence, and diff which claims flipped and whether the decision went stale. This is the domain-neutral lift of the discipline the formal substrate already
+runs (`leanmill/theory_ir`, `formalization_admission`, `axiom_authority`, `axiom_yield`). Afforded via
+`ztare scenario agenda | baseline | recompile` and the workbench "Decision freshness" surface. The strictly
+determinism-preserving parts (no LLM, verbatim-not-semantic, all semantics at edge-admission) are ours; the
+theory is classical and the LLM-argumentation application is a parallel-discovery frontier (Argumentative
+LLMs / QBAF; Graph-of-Verification; Compliance-by-Construction Argument Graphs).
+
+### Wager (a protected, verdict-preserving bet on a BLOCKED claim)
+
+A **wager** (`src/ztare/scenarios/wager.py`) is a protected, thin-evidence *bet* on a claim the decision cannot
+yet grade — a **BLOCKED** claim. The grounded verdict is symmetric in payoff: a bold bet with large asymmetric
+upside grades identically to a thin-evidence dead end (both BLOCKED). A wager gives the bet dignity **without
+laundering it into a fact**: the claim stays BLOCKED (a wager is *not* a fourth verdict — that would be an
+idea-parking exemption), and the wager is a separate, ranked, expiring object that names the experiment which
+would settle it. The uncompromising part is the **typed outcome→edit contract**: the author declares the test's
+outcomes, and each outcome maps to typed edits that touch **evidence and warrants only** (`add_evidence` /
+`support` / `attack` / `set_warrant`), each naming the exact node or edge it changes. No edit can set a verdict —
+there is no such field — so `recompile` alone derives it. The kernel **simulates every declared outcome** by
+`recompile` and records which move the decision: the human names the test, the kernel verifies the payoff-flip.
+**flip is an admissibility gate, not the ranking signal** (so nobody games it): a wager is admissible iff its
+outcomes are attested exhaustive, every edit is valid (fail-closed), and at least one outcome flips the decision.
+Admissible wagers rank by `identification_bits` — a **prior-free** Shannon info-yield over the pre-baseline
+minimal cores (junk authored after registration cannot pump it) — then by declared cost. The line that keeps it
+clean: *bits and flips are computed* (deterministic functions of the graph); *dollars and odds are declared*
+(shown, never aggregated into the score). Anti-laundering teeth: no simulated flip ⇒ not a wager; a passed
+deadline **auto-expires** the wager back to the ordinary BLOCKED backlog; extending a deadline **requires a fresh
+evidence/feasibility receipt**. Every building block is classical — value-of-information / experiment design,
+optimism-under-uncertainty (UCB), Popperian falsifiability-as-information, the argument kernel's ATMS minimal
+cores and counterfactual recompilation, Toulmin warrants; none is new theory. The plausibly-novel piece is the
+*combination*: **prior-free experiment ranking over deterministically-recompiled warrant graphs, with a
+verdict-preserving, anti-laundering wager lifecycle** — a claim we believe but have **not** yet verified against
+the literature. A lightweight prior-art sweep found the neighborhood crowded (value-of-information over
+argumentation; argumentative-LLM claim verification; counterfactual explanation in argumentation; prior-free
+Blackwell informativeness) but no exact precedent for the full combination. Afforded via
+`ztare scenario wager <list|add|sim|expire>` (`--json`) and the workbench **Bets** tab — a decision-language form
+("if this result → supports / contradicts the claim") that assembles the typed edit contract under the hood.
+
+### Graded argument strength (warrant-filtration QBAF)
+
+The grounded verdict (`SUPPORTED` / `BLOCKED` / `REFUTED`) is crisp, and on a research
+substrate almost nothing is ever fully settled — so nearly every live map reads
+`BLOCKED`, conflating "grounded but still contested" with "ungrounded." Verified case:
+`ai_capex` (a thesis backed by 9 sources, with 11 open challenges) and three theses with
+no support at all all read the same crisp `BLOCKED`. `src/ztare/scenarios/strength.py`
+adds a deterministic, prior-free **graded strength** per claim over the same bipolar
+argument graph, computed by a gradual argumentation semantics: the **Quadratic Energy
+Model** (Potyka, KR 2018), a damped forward-Euler iteration. QEM was chosen over
+DF-QuAD (acyclic-only; ZTARE's maps have `CONTRADICTS` 2-cycles) and the h-categoriser
+(attack-only; the graph is bipolar, support and attack both).
+
+The moat-preserving design choice is **warrant filtration, not cardinal weights**.
+Mapping the Toulmin warrant classes `W0..W3` to numbers (0.7, 0.4, …) would smuggle a
+prior — why 0.7? Instead the semantics runs four times over nested strata: stratum *k*
+keeps only edges at least as checkable as tier *k* (`k=0` keeps `W0` only; `k=3` keeps
+all). The output is a **strength profile** `(s0, s1, s2, s3)` — the thesis's strength if
+you trust only kernel certificates, then +re-executable computation, then +verbatim
+quotes, then +proposed-unchecked edges — built entirely from the warrant partial order,
+with zero free parameters. `(0, 0, 0.97, 0.97)` reads as "a castle of quotes: well
+supported, but nothing kernel-hard." Base scores are prior-free too: leaf evidence
+scores 1, every internal claim/thesis/finding scores 0, so an unsupported open challenge
+starts at strength 0 and cannot drag down a well-evidenced thesis — a challenge only
+bites once it is itself evidence-backed. Support is also **collapsed per provenance
+source** (max within a source, sum across sources) before aggregation, so fifty
+redundant quotes from one source cannot saturate a stratum the way independent
+corroboration does.
+
+A crisp verdict can still override the number through an **override lattice**: `REFUTED`
+(a surviving `W0`/`W1` attack on the thesis) beats `NONCONVERGENT`, which beats
+`UNSUPPORTED` (no support at any tier), which beats `CONTESTED` (show the profile — the
+status of essentially every live research map). Arithmetic never launders a kernel-grade
+refutation into "strength 0.12."
+
+The kernel also names **what the decision rests on**: `shapley_support` runs exact
+removal-Shapley over the evidence sources — the characteristic function is thesis
+strength given only that subset of sources present — so each source's contribution sums
+exactly to the thesis strength (Shapley efficiency). On `ai_capex` it names the H100
+price, the TDP figure, the AWS p5 price, and the SOFR rate as the load-bearing sources.
+Exact up to 13 sources (2^n); past that it reports the source set and the most-connected
+sources rather than fabricate a partial Shapley value. `shapley_support` is implemented
+and selftested but not yet wired to a CLI or workbench surface — the comment in
+`argument_kernel.py` marks it for the brief/"rests-on" surface. The cheaper `strength_profile`
+call (a few fixed-point solves on a small graph) already rides the hot path: `argument_analysis`'s
+JSON bundle carries a `strength` block (`profile`, `status`, `converged`), so
+`ztare scenario agenda --project <slug>` and any consumer of that bundle gets the graded
+read for free, additively, alongside the existing verdict/cores/warrants/agenda.
+
+**Is it grounded? Does it work?**
+
+Determinism is unconditional: the QEM update is Lipschitz, so the iteration's trajectory
+is unique and bit-reproducible. Convergence to a unique fixed point is *proven* for
+acyclic argumentation graphs in the gradual-semantics literature. For cyclic graphs — and
+ZTARE's maps have `CONTRADICTS` 2-cycles — no universal convergence theorem exists in
+this literature for any bipolar weighted semantics. That is a real limitation, not a
+detail to paper over: the kernel surfaces `NONCONVERGENT` as an honest first-class state
+when the iteration hits its cap, rather than emit a number reached by an unproven
+process. Cycle resistance, separately, *is* a theorem: QEM's squashing function
+`h(x) = max(0,x)² / (1+max(0,x)²)` satisfies `h(x) < x` on `(0,1]`, so a pure support
+cycle with internal base weight 0 has 0 as its only fixed point — no self-lifting
+bootstrap through the cycle. The filtration itself is the standard leximax-as-limit-of-weights
+/ System-Z / preferred-subtheories stratification, applied to a bipolar QBAF, which is
+why it needs no chosen numbers. Shapley attribution satisfies efficiency (contributions
+sum to the total), symmetry, and the dummy property (Yin, Potyka & Toni, *Argument
+Attribution Explanations*).
+
+Empirically, the module's selftest covers: a 2-cycle between evidence-backed claims
+converging under damping; an unsupported challenge failing to drag down a supported
+thesis; a `REFUTED` override surviving on top of a nonzero raw score; and per-source
+collapse (two supports from one source count once; two independent sources add up). On
+real maps it activates and discriminates where the crisp verdict does not: `ai_capex`
+reads `CONTESTED` at `[0, 0, 0.97, 0.97]` against three unsupported theses at
+`[0, 0, 0, 0]`, all four of which the crisp verdict alone reports as the same `BLOCKED`.
+
+Every building block here is classical, and several are direct prior art to cite rather
+than claim: Shapley over a Quadratic Energy Model (Yin, Potyka & Toni, IJCAI 2024 — over
+edges rather than sources; and the impact-measures line, AAMAS 2025); LLM outputs →
+bipolar argumentation framework → gradual semantics (the ArgLLMs line, 2024); lexicographic
+refinement over ordered strata (preferred subtheories / System-Z, Brewka 1989; stratified
+labelings, Thimm & Kern-Isberner 2013); ordinal certainty levels instead of cardinal
+weights (possibilistic argumentation). A reviewer-grade prior-art pass found no published
+work doing the specific synthesis — a *continuous* gradual semantics (QEM) with cardinal
+edge weights replaced by an external epistemic-*checkability* ordering of the edges, re-run
+over nested strata and kept as an *uncollapsed* lexicographic profile. That synthesis is the
+defensible novel core: a specific assembly no prior work combines, not a new primitive (the
+nested-strata-to-profile skeleton is itself old). Present it as an assembly with its lineage
+named — pitched that way it holds under review; pitched as inventing stratified argument
+strength it does not.
+
+### Gate metrology (measuring discrimination against a formal oracle)
+
+`src/ztare/scenarios/metrology.py` measures whether the deterministic gates actually **discriminate** — catch
+laundered/unsound arguments, pass sound ones — against labeled ground truth: a seed corpus (sound cases + one
+per laundering family: orphan / paraphrase-drift / unlicensed-relation / bullet / qualifier-drop / unsupported),
+a confusion matrix + precision / recall / MCC / Youden's J, and a per-gate positive-control battery (the seed
+doubles as the "run the gold control" invariant). The genuinely novel piece is the **`formal_oracle_label`
+hook**: for the formal substrate, ground-truth BACKED/CONTRADICTED comes from a **LeanMill kernel** (autoformalize
+→ kernel-verify) — measuring soft-gate discrimination against a proof kernel, which nothing else in the
+"AI research governance" space can do. Env-gated (`ZTARE_METROLOGY_LIVE_ORACLE=1`) so the selftest never fires a
+live proof search.
+
 ---
 
 ## 2. Operating discipline (workbench-wide)
@@ -943,6 +1139,16 @@ nearest existing surface, nearest confuser, typed receipt, deterministic
 validator, ex-post usage criterion, non-claim, and stop criterion. The contract
 builder lives in
 [`src/ztare/research_director/learning_promotion_contract.py`](../../src/ztare/research_director/learning_promotion_contract.py).
+
+### Machinery governance
+
+The machinery of the kernel is itself a governed object, extending the recursion one level past models and hypothesis language. The substrate-agnostic pieces live in `src/ztare/common/`.
+
+The proposal-card contract carries a `certifier_touched` flag. Cards where the flag is set require conductor disposition before adoption. `MACHINERY_RULES.md` at the repo root records six rules, each instantiating a primitive from the cognitive-firm draft §3 Table 1; the file sha is the version. `attest()` writes a hash receipt at every machinery disposition covering the card sha, rules sha, suite summary, and principal. Institutional independence and liability remain unbuilt by design, not omission.
+
+`adopt_machinery_patch` follows a backup-apply-test-restore cycle against the frozen test suite. A certifier denylist blocks known bad patches. Only tighten-only changes auto-adopt; others require explicit ratification. An exogenous clock caps machinery proposal cards at three per run, then escalation. Certifier-touched proposals never auto-adopt regardless of content.
+
+The three contradiction detectors are the current substrate instance. `excusal_hides_physics` flags classifier excusals that live play diverges on. `absorb_diverge_spiral` catches identification that absorbs evidence while play instantly re-diverges. The visible/holdout split detector surfaces disagreement between the selection arbiter and the holdout. The detector shapes are substrate-agnostic; current implementations read worldmodel artifacts. Any substrate with excusals, rounds, and holdouts can instantiate them.
 
 ### Research-yield decomposition
 

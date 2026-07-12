@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "run graph-conditioned invoice bridge; stop if only restating TICK652 boundary",
+  "agent_id": "codex:RD",
+  "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+  "contract_question": "Can the CV/C7 residual-fresh same-ledger bridge produce a compile-checked same-tree fresh-radius invoice, or a sharper derived obstruction, from ResidualFreshExcessForcesFreshEnstrophy plus BadNodeResidualOrInheritedDichotomy through FreshFrequencyEventSameTreeLock, with pressure tails localized on punctured fresh regions and no descendant rebilling?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_dependency_restatement": 0.18,
+    "cf_alignment_or_degree_zero_recurrence": 0.12,
+    "fresh_frequency_beta_square_not_radius_invoice": 0.18,
+    "inherited_badness_rebilling_survives": 0.24,
+    "pressure_tail_localization_assumed_not_proved": 0.28
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_discount_after_reflexive_insights",
+    "cv_c7_invoice_bridge"
+  ],
+  "forecasted_at": "2026-05-19T19:37:00Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.08,
+  "p_success": 0.56,
+  "rationale_short": "Bet is on useful bounded information, not a full positive construction: residual-fresh same-ledger bridge is sharply localized but pressure-tail localization and inherited rebilling are likely to block construction. Success requires compile-checked new bridge or sharper obstruction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pressure_tail_localization_assumed_not_proved",
+    "inherited_badness_rebilling_survives",
+    "artifact_dependency_restatement"
+  ]
+}

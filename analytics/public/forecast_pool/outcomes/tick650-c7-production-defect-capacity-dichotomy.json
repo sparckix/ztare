@@ -1,0 +1,52 @@
+{
+  "actual_cost_agent_minutes": 155.0,
+  "artifact_hash": "d1e4e417efc5f07442f8589e399b9a580c81343285521e28bf0298aa00c326cf",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "codex_forecaster"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "lean_surface_compiled_local",
+  "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+  "counterfactual_value_bucket": "positive_surface_narrowing",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "ns_track_b",
+    "cv_c7",
+    "two_output_bridge"
+  ],
+  "failure_mode_preconditioner_used": false,
+  "goal_delta": 0,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-19T16:18:38Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick650-c7-production-defect-capacity-dichotomy/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "endpoint_q_5_2",
+    "r_Q2_relabel",
+    "cf_alignment_smuggling"
+  ],
+  "new_next_action": "split into magnitude-side beta-gain estimate and no-log/fresh-radius capacity-charge estimate; retire only the current promotion shortcut",
+  "old_next_action": "build one merged C7 production-defect/capacity object",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "endpoint_recurrence",
+    "radius_charge_missing"
+  ],
+  "resolution_note": "TICK650 characterized the C7 production-defect/capacity bridge as a two-output target and killed current route promotion from either local gain or capacity alone; no millennium-problem result claimed.",
+  "resolved_at": "2026-05-19T16:23:53Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519",
+  "contract_question": "MECHANISM SELECTION (meso, pre-tick, post cold-recursive-seed). The universal homogeneity-0 wall (every degree-0 Biot-Savart/Riesz Eulerian object scale-conjugation-trivial at the self-similar/DSS limit; scaling-level-agnostic; defends all 5 Clay-equivalent axes) requires a genuinely NON-degree-0 mechanism. Cold de-anchored seed killed Carleman-forward (delta-washout to nu) and relative-entropy (reference scale-covariant); two survivors: (D) scale-RENORMALIZED Gevrey analyticity-radius r\u0303_a lower bound as a Liouville obstruction (non-degree-0, non-cocycle, non-CZ, not a-priori nu-forced; open sub-lemma: r\u0303_a has a scaling-invariant strictly-positive lower bound \u21d2 a DSS/backward-self-similar profile cannot have r\u0303_a\u21920; kill-risk: Grujic-Kukavica radius shrinks at nu-rate, renormalization is the crux); (B) reconnection-controlled vortex-line ropelength/tube-radius tau lower bound (dimensionful, outside CZ algebra; open sub-lemma: quantitative anti-reconnection lower bound on tau under viscous evolution; kill-risk: tau\u21920 at strain rate restoring degree-0). Question: which mechanism, taken as the next arc, yields strictly more non-collapsing genuine progress on a 3D-NSE Clay-equivalent axis (a basin-confirmed-new structural reduction OR sharp obstruction that does NOT collapse to homogeneity-0/nu-washout), surviving one cold adversary? Resolves by the selected mechanism arc outcome.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 360.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T04:06:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.14,
+  "rationale_short": "Select D (renormalized-Gevrey-radius Liouville): the ONLY survivor that is genuinely non-degree-0 (analyticity radius set by nonlinearity-vs-dissipation balance, NOT a Riesz/CZ object, NOT a cocycle) \u2014 meets the necessary condition every killed class failed, so REAL headroom unlike them. p modest (~cold 0.16): the renormalization-survives-step (whether r\u0303_a beats the Grujic-Kukavica nu-rate shrinkage) is exactly the crux-class that collapsed prior candidates; but D is structurally distinct, basin-must-be-anchored-checked, and a scaling-invariant renorm-r\u0303_a lower bound genuinely excludes DSS profiles if it holds. B (ropelength) kept as fallback (p~0.09, anti-reconnection bound may be false).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

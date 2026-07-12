@@ -92,7 +92,7 @@
   "horizon": "2026-05-14",
   "information_value": 0.18,
   "layer": "micro",
-  "objective_resolver": "Artifact analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json has status passed, corrected theorem family charFunDual, target variable L, at least two corrected candidate templates, old charFun_map_eq/t candidate forbidden, replay_run=false, training_now=false, gnn_blocked=true.",
+  "objective_resolver": "Artifact analytics/public/gnn/lemma_relevance/v2048_charfun_dual_source_contract_correction.json has status passed, corrected theorem family charFunDual, target variable L, at least two corrected candidate templates, old charFun_map_eq/t candidate forbidden, replay_run=false, training_now=false, gnn_blocked=true.",
   "question": "Will v20.48 produce a source-safe charFunDual/L correction packet for current_scale_0329 after the v20.47 historic target-shape audit, with no replay/training and the old charFun_map_eq/t canary forbidden?",
   "risk_penalty": 0.04,
   "success_threshold": "corrected charFunDual source contract and candidates emitted with old canary forbidden",

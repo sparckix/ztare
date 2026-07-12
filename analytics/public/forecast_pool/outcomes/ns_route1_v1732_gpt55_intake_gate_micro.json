@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 6.0,
   "artifact_hash": "b3aba3ddb6b8796f7593ec83e9381fcb0c1a44d840c086e927fe485a8b92765d",
-  "artifact_path": "analytics/public/leanmill/results/v1732_ns_route1_gpt55_intake_gate.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1732_ns_route1_gpt55_intake_gate.json",
   "compile_status": "passed",
   "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
   "error_type": null,

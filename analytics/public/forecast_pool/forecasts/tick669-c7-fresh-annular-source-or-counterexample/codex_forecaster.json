@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick669-c7-fresh-annular-source-or-counterexample",
+  "contract_question": "Can TICK669 either pay the C7 same-source fresh-annular anti-laundering/source-realization receipt from current separated-source objects, or produce the minimal counterexample showing those objects cannot supply one numerical field without rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 180.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "conditional_consumer_without_same_source_payment": 0.18,
+    "hidden_same_packet_rebilling": 0.24,
+    "labels_only_c5_strict_margin_rename": 0.2,
+    "minimal_counterexample_not_formal_surface_ready": 0.2,
+    "workbench_pass_without_receipt_or_obstruction": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-06-06T19:34:51Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.24,
+  "rationale_short": "TICK668 already exposed the void around same-source payment; this contract is narrower, but success still hinges on either a formal-surface-ready same-source receipt or a genuinely minimal obstruction/counterexample. I price it below even odds because the main risk is still that the work only renames C5/strict-margin or produces a conditional consumer without paying one numerical field.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "labels_only_c5_strict_margin_rename",
+    "conditional_consumer_without_same_source_payment",
+    "hidden_same_packet_rebilling",
+    "minimal_counterexample_not_formal_surface_ready",
+    "workbench_pass_without_receipt_or_obstruction"
+  ]
+}

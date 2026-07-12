@@ -20,7 +20,7 @@
   "horizon": "through v19.08 replay closure or earlier static-blocker",
   "information_value": 0.8,
   "layer": "micro",
-  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1908_parallel_replay_bundle.json metrics.",
+  "objective_resolver": "Resolve from analytics/public/gnn/lemma_relevance/v1908_parallel_replay_bundle.json metrics.",
   "question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
   "risk_penalty": 0.8,
   "success_threshold": "both_lanes_completed=true AND pde_functional.clean_replay_rows>=90 AND non_pde.clean_replay_rows>=90 AND selected_true_false_accepts_total=0 AND all_post_quarantine_false_accepts_total=0 AND at_least_one_lane_density>=0.50 AND at_least_one_lane_source_packets>=3 AND at_least_one_lane_top_areas>=8 AND at_least_one_lane_action_families>=4 AND training_now=false AND gnn_blocked=true",

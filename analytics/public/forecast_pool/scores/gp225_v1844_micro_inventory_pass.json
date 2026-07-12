@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 0.2,
     "artifact_hash": "2154765506fa7650fed2288a769486aafb232a1ae50952ebccfc41eb84bf6966",
-    "artifact_path": "analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1844_proof_delta_label_source_inventory.json",
     "compile_status": "pass",
     "contract_id": "gp225_v1844_micro_inventory_pass",
     "error_type": "none",

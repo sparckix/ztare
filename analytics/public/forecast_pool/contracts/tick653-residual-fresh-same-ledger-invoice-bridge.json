@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick653-residual-fresh-same-ledger-invoice-bridge.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick653-residual-fresh-same-ledger-invoice-bridge.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick653-residual-fresh-same-ledger-invoice-bridge",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick653-residual-fresh-same-ledger-invoice-bridge.json",
+    "score": "analytics/public/forecast_pool/scores/tick653-residual-fresh-same-ledger-invoice-bridge.json"
+  },
+  "baseline_action": "rerun capacity/split-excess promotion or generic CV De Giorgi wording",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_same_family_defect_generation_source_8b_pointwise_energy",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_same_family_defect_generation_source_8b_pointwise_energy' is an EXACT match of surfaced id 'selected_projected_same_family_defect_generation_source_8b_pointwise_energy' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "perform graph-conditioned residual-fresh same-ledger invoice bridge test with pressure-tail/inherited-badness kill conditions",
+  "created_at": "2026-05-19T19:36:29Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_trackb",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 10,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 140,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 7,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this_tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "codex RD + independent adversarial pass: TRUE iff the tick produces a compile-checked Lean surface that either constructs a non-vacuous C7SameTreeFreshRadiusInvoice / same-ledger audit-event bridge, or proves a sharper derived obstruction that retires this bridge beyond TICK652; FALSE for artifact dependency restatement, pressure-tail localization assumption, inherited-badness rebilling, beta-square-as-radius relabel, CF alignment, or degree-0/Riesz recurrence.",
+  "question": "Can the CV/C7 residual-fresh same-ledger bridge produce a compile-checked same-tree fresh-radius invoice, or a sharper derived obstruction, from ResidualFreshExcessForcesFreshEnstrophy plus BadNodeResidualOrInheritedDichotomy through FreshFrequencyEventSameTreeLock, with pressure tails localized on punctured fresh regions and no descendant rebilling?",
+  "risk_penalty": 1.0,
+  "success_threshold": "binary: compile_checked_new_bridge_or_sharper_obstruction=1; rehash/restatement/unproved pressure-tail localization/rebilling=0",
+  "task_type": "ns_trackb",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

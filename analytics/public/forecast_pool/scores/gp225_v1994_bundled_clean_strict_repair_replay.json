@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 8.0,
     "artifact_hash": "a8447623d48c5901865af72114664275c3446f6aac53efd7359d7dd4661dee75",
-    "artifact_path": "analytics/public/leanmill/results/v1994_bundled_clean_strict_repair_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1994_bundled_clean_strict_repair_replay.json",
     "compile_status": "replay_completed_one_clean_strict_win",
     "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
     "error_type": null,

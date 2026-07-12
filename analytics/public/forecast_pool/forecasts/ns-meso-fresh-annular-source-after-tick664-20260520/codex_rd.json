@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns-meso-fresh-annular-source-after-tick664-20260520",
+  "contract_question": "Across the next NS meso lane, can the hunt construct or sharply exclude a same-carrier fresh-annular source for FreshAnnularChargePrefixBudgetSource from same-tree/fresh-packet PDE data without local-domination or Markov-aggregation laundering?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 360.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "no_annular_injection_from_existing_primitives": 0.24,
+    "pressure_or_carrier_mismatch": 0.18,
+    "same_packet_rebilling_survives": 0.28,
+    "tooling_or_module_delay": 0.12,
+    "workbench_or_semantic_receipt_without_pde_source": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T18:39:48Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.58,
+  "rationale_short": "The lane is framed as construct-or-sharply-exclude rather than positive construction only. TICK664 supplied the exact consumer and several hard negatives; the remaining uncertainty is whether same-tree/fresh-packet PDE data can source fresh annular charge without same-packet rebilling.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

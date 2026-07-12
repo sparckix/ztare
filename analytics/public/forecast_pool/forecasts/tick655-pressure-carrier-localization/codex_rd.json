@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "run",
+  "agent_id": "codex:RD",
+  "contract_id": "tick655-pressure-carrier-localization",
+  "contract_question": "Will TICK655 prove or sharply refute ResidualFreshPressureTailLocalizedToPuncturedInvoiceCarrier: pressureRecoveryCarrier at residualFreshAuditEventIndex equals the residual fresh punctured region, without CF alignment, degree-0 endpoint bookkeeping, or parabolic scalar reuse?",
+  "domain": "ns_c7_pressure_localization",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_tent_not_fresh_region": 0.27,
+    "formal_surface_no_estimate": 0.17,
+    "nonlocal_pressure_harmonic_escape": 0.23,
+    "pressure_prop_relabel": 0.33
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "pressure_lane_first"
+  ],
+  "forecasted_at": "2026-05-19T21:12:10Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.49,
+  "rationale_short": "TICK654 made pressure-carrier localization the narrowest first blocker. p_success below even because current Lean has pressureRecoveryCarrier=eventTent but no eventTent=freshRegion source yet.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pressure_prop_relabel",
+    "event_tent_not_fresh_region",
+    "nonlocal_pressure_harmonic_escape",
+    "formal_surface_no_estimate"
+  ]
+}

@@ -88,7 +88,7 @@
   "horizon": "2026-05-15T05:00:00Z",
   "information_value": 0.6,
   "layer": "meso",
-  "objective_resolver": "analytics/public/leanmill/results/v24_00_deterministic_cascade_canonical_train_audit.json:metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v24_00_deterministic_cascade_canonical_train_audit.json:metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
   "question": "Will pure-tactic decision-procedure cascade (simp/aesop/omega/linarith/ring/norm_num/decide/field_simp/rfl/tauto/polyrith/nlinarith) close (target_equivalent_closure under GPT-5.5 review contract) AT LEAST 1 of the 15 canonical train rows where positives demonstrably exist (a non-zero deterministic floor)? Threshold: at least 1 row \u00d7 1 distinct witness signature, 0 false positives.",
   "risk_penalty": 0.5,
   "success_threshold": "metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",

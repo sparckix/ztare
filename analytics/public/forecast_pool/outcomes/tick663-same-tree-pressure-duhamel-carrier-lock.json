@@ -1,0 +1,44 @@
+{
+  "actual_cost_agent_minutes": 145.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick663-same-tree-pressure-duhamel-carrier-lock",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "tooling_fix"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T12:47:41Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick663-same-tree-pressure-duhamel-carrier-lock/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "same_tree_rebilling",
+    "carrier_lock_only_or_relabel"
+  ],
+  "resolution_note": "Resolved true: TICK663 produced a compile-checked Lean boundary and workbench artifact that changes the next NS lever. Same-tree pressure-Duhamel lock alone was excluded as a parent invoice carrier; the next lever is the same-ledger Duhamel lower-envelope source inside ResidualFreshAuditDuhamelSectionIdentity.",
+  "resolved_at": "2026-05-20T14:02:06Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

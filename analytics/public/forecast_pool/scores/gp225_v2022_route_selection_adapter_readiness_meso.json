@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 20.0,
     "artifact_hash": "de8cbf70829b694e7d6bb33a9afc5e8be5ffb4fabd1c09b7046d925403145c6b",
-    "artifact_path": "analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2022_route_selection_adapter_readiness.json",
     "compile_status": "py_compile_passed",
     "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
     "error_type": null,

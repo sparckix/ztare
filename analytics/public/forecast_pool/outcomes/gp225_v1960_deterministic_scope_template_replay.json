@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "9c49c476d8025a50ad2592a3590b755c4e2fedc62d41541fe7977b745a79f6dc",
-  "artifact_path": "analytics/public/leanmill/results/v1960_deterministic_scope_template_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1960_deterministic_scope_template_replay.json",
   "compile_status": "target_state_label_no_full_closure",
   "contract_id": "gp225_v1960_deterministic_scope_template_replay",
   "error_type": null,

@@ -81,7 +81,7 @@
   "horizon": "2026-05-13T23:59:00Z",
   "information_value": 0.8,
   "layer": "micro",
-  "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1935_context_enriched_repair_execution.py and resolve from analytics/public/leanmill/results/v1935_context_enriched_repair_execution.json metrics.",
+  "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1935_context_enriched_repair_execution.py and resolve from analytics/public/gnn/lemma_relevance/v1935_context_enriched_repair_execution.json metrics.",
   "question": "Will v19.35 context-enriched Lean repair execution improve beyond v19.33 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, while excluding teacher/oracle candidates from primary evidence?",
   "risk_penalty": 1.0,
   "success_threshold": "attempted_rows>=5 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND teacher_oracle_candidates_excluded_from_primary=true AND training_now=false AND gnn_blocked=true",

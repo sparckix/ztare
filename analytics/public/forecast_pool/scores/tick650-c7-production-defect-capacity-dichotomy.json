@@ -1,0 +1,144 @@
+{
+  "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue C7/CV production-defect branch without membrane",
+      "counterfactual_action": "membrane-first TICK650 with PATTERN-011 swarm and one in-thread depth lane"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "positive_surface_narrowing",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_track_b",
+        "cv_c7",
+        "two_output_bridge"
+      ],
+      "failure_mode_preconditioner_used": false,
+      "negative_externality_tags": [
+        "endpoint_q_5_2",
+        "r_Q2_relabel",
+        "cf_alignment_smuggling"
+      ],
+      "new_next_action": "split into magnitude-side beta-gain estimate and no-log/fresh-radius capacity-charge estimate; retire only the current promotion shortcut",
+      "old_next_action": "build one merged C7 production-defect/capacity object",
+      "realized_failure_mode_ids": [
+        "endpoint_recurrence",
+        "radius_charge_missing"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.4205000000000001,
+  "mean_log_score": -1.111425062487596,
+  "outcome": {
+    "actual_cost_agent_minutes": 155.0,
+    "artifact_hash": "d1e4e417efc5f07442f8589e399b9a580c81343285521e28bf0298aa00c326cf",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "codex_forecaster"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "lean_surface_compiled_local",
+    "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+    "counterfactual_value_bucket": "positive_surface_narrowing",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "ns_track_b",
+      "cv_c7",
+      "two_output_bridge"
+    ],
+    "failure_mode_preconditioner_used": false,
+    "goal_delta": 0,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T16:18:38Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick650-c7-production-defect-capacity-dichotomy/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [
+      "endpoint_q_5_2",
+      "r_Q2_relabel",
+      "cf_alignment_smuggling"
+    ],
+    "new_next_action": "split into magnitude-side beta-gain estimate and no-log/fresh-radius capacity-charge estimate; retire only the current promotion shortcut",
+    "old_next_action": "build one merged C7 production-defect/capacity object",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "endpoint_recurrence",
+      "radius_charge_missing"
+    ],
+    "resolution_note": "TICK650 characterized the C7 production-defect/capacity bridge as a two-output target and killed current route promotion from either local gain or capacity alone; no millennium-problem result claimed.",
+    "resolved_at": "2026-05-19T16:23:53Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:24:10Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 155.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.6561000000000001,
+      "cost_error_agent_minutes": -15.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 140.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.62,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.6607312068216509,
+      "p_success": 0.19,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T15:38:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T16:18:38Z",
+        "resolved_at": "2026-05-19T16:23:53Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 155.0,
+      "agent_id": "codex_rd",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": -5.0,
+      "domain": "ns_track_b",
+      "expected_cost_agent_minutes": 150.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T15:38:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T15:38:27Z",
+        "resolved_at": "2026-05-19T16:23:53Z"
+      }
+    }
+  ]
+}

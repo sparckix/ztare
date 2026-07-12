@@ -1,0 +1,48 @@
+{
+  "actual_cost_agent_minutes": 16,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "ns-meso-post-tick658-source-leg-selection-20260520",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "decision_use_recorded",
+    "route_selection",
+    "failure_mode_preconditioning"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "Meso route selection chose the Duhamel same-tree independent event-budget/source leg as the next descent, with pressure-complement and fanout/no-log retained as kill gates.",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T02:12:56Z",
+      "path": "analytics/public/forecast_pool/forecasts/ns-meso-post-tick658-source-leg-selection-20260520/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "Open TICK659 on Duhamel same-tree independent event-budget/source leg.",
+  "old_next_action": "Open broad IndependentFreshPacketSourceForNonflatBadCenter tick or lead with pressure/fanout locks.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Prevented reopening pressure/fanout lead routes; selected Duhamel source first and kept pressure/fanout as kill gates.",
+  "preconditioner_source": "meso aggregate and independent forecast",
+  "realized_failure_mode_ids": [
+    "duhamel_source_still_scaffold",
+    "bad_center_carrier_identification_missing"
+  ],
+  "resolution_note": "The contract succeeded: aggregate p_success 0.705 with run_now recommendation; independent forecast agreed source-first; decision-use row du_817283704802 recorded.",
+  "resolved_at": "2026-05-20T02:14:35Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,141 @@
+{
+  "contract_id": "tick652-c7-split-excess-fresh-radius-invoice",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not run another route-1/self-tax centrality tick",
+      "counterfactual_action": "attack the split-excess fresh-radius invoice theorem directly",
+      "externality_hypotheses": {
+        "effort_prior": "forecast system says discount overestimated effort but maintain close discipline",
+        "failure_mode_preconditioning": "avoid artifact-dependency-as-proof and route-1 centrality rehash"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex:RD",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "preconditioned_failure_mode",
+        "apparatus_graph_sink_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Prove or refute FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice.",
+      "old_next_action": "Promote split-excess witness directly to quantity-level radius invoice.",
+      "preconditioner_effect": "Market top failure modes matched the outcome and constrained the proof target to same-tree invoice / anti-rebilling rather than capacity promotion.",
+      "preconditioner_source": "forecast_aggregate_and_swarm",
+      "realized_failure_mode_ids": [
+        "fresh_invoice_requires_new_side_condition",
+        "artifact_dependency_not_inequality",
+        "rebilling_log_pileup_countermodel"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.33065,
+  "mean_log_score": -0.855735318999626,
+  "outcome": {
+    "actual_cost_agent_minutes": 135.0,
+    "artifact_hash": "aac3b7989aa838a1911389d6449787d48bf716b285fe8c858730e9a5fce027a0",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+    "changed_by_forecast_ids": [
+      "codex:RD",
+      "codex_forecaster"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "compiled_local_and_vps",
+    "contract_id": "tick652-c7-split-excess-fresh-radius-invoice",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "useful_negative_missing_same_tree_invoice_side_condition",
+    "externality_tags": [
+      "preconditioned_failure_mode",
+      "apparatus_graph_sink_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T18:31:05Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick652-c7-split-excess-fresh-radius-invoice/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Prove or refute FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice.",
+    "old_next_action": "Promote split-excess witness directly to quantity-level radius invoice.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Market top failure modes matched the outcome and constrained the proof target to same-tree invoice / anti-rebilling rather than capacity promotion.",
+    "preconditioner_source": "forecast_aggregate_and_swarm",
+    "realized_failure_mode_ids": [
+      "fresh_invoice_requires_new_side_condition",
+      "artifact_dependency_not_inequality",
+      "rebilling_log_pileup_countermodel"
+    ],
+    "resolution_note": "Construction not obtained: split-excess projects to abstract radius charge, but displayed same-tree one-use fresh invoice remains a new side condition; next lever shifts to FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice.",
+    "resolved_at": "2026-05-19T18:53:55Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T18:56:25Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 135.0,
+      "agent_id": "codex:RD",
+      "brier": 0.3364,
+      "cost_error_agent_minutes": -15.0,
+      "domain": "ns_c7_invoice",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.82,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.867500567704723,
+      "p_success": 0.58,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T18:29:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T18:29:32Z",
+        "resolved_at": "2026-05-19T18:53:55Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 135.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.32489999999999997,
+      "cost_error_agent_minutes": -45.0,
+      "domain": "ns_c7_invoice",
+      "expected_cost_agent_minutes": 90.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.76,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.8439700702945289,
+      "p_success": 0.57,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T18:29:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T18:31:05Z",
+        "resolved_at": "2026-05-19T18:53:55Z"
+      }
+    }
+  ]
+}

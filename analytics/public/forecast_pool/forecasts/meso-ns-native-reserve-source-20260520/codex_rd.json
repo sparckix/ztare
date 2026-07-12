@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "meso-ns-native-reserve-source-20260520",
+  "contract_question": "Can the next NS reserve-source pass find an NS-native source of endpoint reserve nonnegativity plus finite same-lineage recharge prefix budget, or should the predictable reserve-drop lane be killed by the recharge/nested-reuse countermodel?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 180.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "both_fields_sourced": 0.18,
+    "nested_reuse_kills_lane": 0.16,
+    "positive_source_not_found": 0.26,
+    "recharge_prefix_unbounded": 0.22,
+    "reserve_nonnegativity_needs_new_source": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:36:43Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.39,
+  "rationale_short": "Meso bet: moderate for a decisive kill, lower for a positive source. TICK667 shows the qualitative reservoir is insufficient; the next pass needs either a genuinely NS-native positivity/recharge budget or a sharper lane-ending countermodel.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

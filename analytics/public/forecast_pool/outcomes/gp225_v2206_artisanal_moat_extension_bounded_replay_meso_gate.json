@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 5.0,
   "artifact_hash": "014bd5d0b7477aa34d32f369a24bbc1927ee139705c7a9bbda392018032ca6e1",
-  "artifact_path": "analytics/public/leanmill/results/v22_06_artisanal_moat_extension_bounded_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v22_06_artisanal_moat_extension_bounded_replay.json",
   "changed_by_forecast_ids": [],
   "compile_status": "8_candidates_replayed_0_compile_6_witness_equality_strict_positives_2_hard_negatives_0_harmful",
   "contract_id": "gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate",

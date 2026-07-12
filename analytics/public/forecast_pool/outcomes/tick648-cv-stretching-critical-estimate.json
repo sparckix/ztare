@@ -1,0 +1,29 @@
+{
+  "actual_cost_agent_minutes": 100.0,
+  "artifact_hash": "7e3fadbd21b89f1daaf4f7055085c0fb3ade7fc007f2892ca9f1d59248df375d",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/tick648_cv_stretching_critical_estimate.md",
+  "changed_by_forecast_ids": [],
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick648-cv-stretching-critical-estimate",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "C7 weak-bilinear high-level production gain for (A_visc)_+ with beta>0, no CF direction alignment, plus no-log-pileup/radius-charge bridge; separate de-anchored cold pass for the 0-degree recurrence.",
+  "old_next_action": "Generic CV nonlocal De Giorgi attack on the 3D stretching obstruction.",
+  "ordering_override_no_codex": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "stops_at_q_5_over_2_endpoint_without_precise_cf_c7_reduction"
+  ],
+  "resolution_note": "SUCCESS on contract predicate (codex p=0.84): CV level-set identity cancels div-free transport and isolates vortex-stretching production int_{q>k}(A_visc)_+ q(q-k)_+. Existing formal estimate surface pins the surviving target to LocalizedProductionLevelSetGain beta>0, ProductionReverseHolderAboveThreshold q>5/2, or WeakBilinearDeGiorgiProductionNorm beta>0. Leray, CKN restriction, drift cancellation, CZ interpolation, SQG order-0 analogy, and xi-dissipation alone do not supply it. Next lever is the C7 weak-bilinear high-level production gain plus no-log-pileup/radius-charge bridge. No millennium-problem result claim. PATTERN-014 de-anchored follow-up warranted but not overridden inside tick because predispatch diversity refused it.",
+  "resolved_at": "2026-05-19T13:43:43Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

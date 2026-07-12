@@ -81,7 +81,7 @@
   "horizon": "2026-05-14T00:30:00Z",
   "information_value": 0.9,
   "layer": "micro",
-  "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1937_source_indexed_repair_execution.py and resolve from analytics/public/leanmill/results/v1937_source_indexed_repair_execution.json metrics.",
+  "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1937_source_indexed_repair_execution.py and resolve from analytics/public/gnn/lemma_relevance/v1937_source_indexed_repair_execution.json metrics.",
   "question": "Will v19.37 source-indexed primary repair execution improve beyond v19.35 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using non-target mined local declaration packets and excluding teacher/oracle candidates from primary evidence?",
   "risk_penalty": 1.0,
   "success_threshold": "attempted_rows>=5 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND target_proof_lines_used_for_candidate_generation=false AND teacher_oracle_candidates_excluded_from_primary=true AND training_now=false AND gnn_blocked=true",

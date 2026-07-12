@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 5.0,
   "artifact_hash": "470be73266ae8f12bbabfb554fe8141d008e0a7fc042c7c031d122f351572064",
-  "artifact_path": "analytics/public/leanmill/results/v23_06_cross_theorem_transfer_on_train_rows_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v23_06_cross_theorem_transfer_on_train_rows_audit.json",
   "changed_by_forecast_ids": [],
   "compile_status": "0_of_90_compiled_0_target_equivalent_positives_paradigm_dead",
   "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",

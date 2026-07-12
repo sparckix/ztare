@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick649-c7-weak-bilinear-production-gain.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick649-c7-weak-bilinear-production-gain.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick649-c7-weak-bilinear-production-gain",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick649-c7-weak-bilinear-production-gain.json",
+    "score": "analytics/public/forecast_pool/scores/tick649-c7-weak-bilinear-production-gain.json"
+  },
+  "baseline_action": "Do not launch another CV tick; keep TICK648 as the terminal CV surface.",
+  "budget_agent_minutes": 150.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick649-c7-weak-bilinear-production-gain",
+  "cost_penalty": 3.0,
+  "counterfactual_action": "Run PATTERN-011 swarm on production-gain, no-log-pileup, radius-charge, and de-anchored obstruction lanes; consolidate into one artifact.",
+  "created_at": "2026-05-19T14:09:39Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0513,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "hard_mathematical_residual",
+    "score": 0.0513,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0513,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0513,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.0417,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0417,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0286,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0286,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may rediscover the 0-degree recurrence under coefficient language"
+    ],
+    "positive": [
+      "narrows C7 to a formalizable PDE estimate or retires CV branch"
+    ]
+  },
+  "horizon": "2026-05-19",
+  "information_value": 9.0,
+  "layer": "micro",
+  "objective_resolver": "Artifact must name the exact candidate estimate, classify proof-route/no-go/missing-hypothesis, pass amnesia and structural-language pretick, and identify the guard that retires the route if beta>0 or q>5/2 cannot be obtained without CF alignment.",
+  "question": "Will TICK649 produce an actionable proof-route or no-go classification for the C7 weak-bilinear high-level production gain controlling (A_visc)_+ on high-vorticity level sets, including the no-log-pileup or radius-charge promotion obligation, without CF alignment or degree-0/parabolic-slaved recurrence?",
+  "risk_penalty": 6.0,
+  "success_threshold": "actionable classification with explicit C7 estimate surface and route-promotion obligation",
+  "task_type": "hard_mathematical_residual",
+  "value_if_success": 8.0,
+  "void_conditions": "Void if it claims a millennium-problem result, assumes CF_global_extension, reuses degree-0 Biot-Savart/Riesz/paraproduct control, or only proves finite production without beta>0/q>5/2."
+}

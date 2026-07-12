@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 1.11,
     "artifact_hash": "1341bf205d8376d0b20c6cf787671d2e5f999cae0309aa2f87e4adf122c1e448",
-    "artifact_path": "analytics/public/leanmill/results/v1872_next_remaining_witness_backfill_runner.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1872_next_remaining_witness_backfill_runner.json",
     "compile_status": "ran_6_rows_success_clean_harvest",
     "contract_id": "gp225_v1872_next_remaining_witness_pilot",
     "error_type": null,

@@ -20,7 +20,7 @@
   "horizon": "through v19.13 static router closure",
   "information_value": 0.6,
   "layer": "meso",
-  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1913_parallel_track_router.json metrics.",
+  "objective_resolver": "Resolve from analytics/public/gnn/lemma_relevance/v1913_parallel_track_router.json metrics.",
   "question": "Will v19.13 convert the v19.12 external benchmark packet into three concrete parallel next-track specs (external adapters, density generator, repair-loop canary), each with success thresholds, effort estimates, GP-233 block, and no GNN/training launch?",
   "risk_penalty": 0.3,
   "success_threshold": "tracks_count=3 AND ready_tracks>=3 AND has_external_adapter_track=true AND has_density_generator_track=true AND has_repair_loop_track=true AND all_tracks_have_thresholds=true AND all_tracks_have_effort_estimates=true AND training_now=false AND gnn_blocked=true",

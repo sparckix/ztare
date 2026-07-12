@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick668-ns-native-reserve-source-or-kill",
+  "contract_question": "Can TICK668 find an NS-native source for reserve endpoint nonnegativity plus finite same-lineage recharge prefix budget beneath FreshAnnularPredictableReserveDropSource, or prove that the reserve lane is killed by recharge/nested-reuse from current source objects?",
+  "domain": "research_tick",
+  "expected_cost_agent_minutes": 180.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bridge_not_available_from_event_prefix": 0.26,
+    "positive_bridge_found": 0.2,
+    "recharge_prefix_unbounded": 0.2,
+    "reserve_nonnegativity_not_forced": 0.18,
+    "same_event_reuse_countermodel": 0.16
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:46:04Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.41,
+  "rationale_short": "After graph-basin de-anchor, success means either a bridge from FreshFrequencyPrefixDomination/FreshFrequencyEventSameTreeLock to the numerical reserve fields, or a compile-checked separation showing event-prefix domination is weaker than reserve nonnegativity plus finite recharge prefix.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

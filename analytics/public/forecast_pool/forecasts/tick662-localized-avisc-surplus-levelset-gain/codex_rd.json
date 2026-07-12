@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick662-localized-avisc-surplus-levelset-gain",
+  "contract_question": "TICK662 characterize the impossibility or construction of LocalizedViscousAlignmentSurplusLevelSetGain for the CV nonlocal DeGiorgi general 3D vorticity route. Can the positive surplus A_visc equals xi dot S xi minus nu grad xi squared on high vorticity level sets be bounded by local anisotropic dissipation plus beta positive measure decay and a q greater than 2 far field Biot Savart tail, with pressure commutator reserve paid separately, without CF alignment, helical symmetry, BKM input, scalar DeGiorgiDecayRate, pressure collar leakage, or parabolic slaving.",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 135.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "avisc_surplus_collapses_to_cf": 0.28,
+    "formalization_only_without_pde_content": 0.1,
+    "pressure_reserve_smuggling": 0.24,
+    "scalar_degiorgi_recurrence": 0.18,
+    "tail_or_commutator_not_scale_separated": 0.2
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T04:16:38Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.52,
+  "rationale_short": "Bet: useful boundary or interface is more likely than exact PDE construction. Main risk is the A_visc surplus splits into CF direction coherence or an unpaid pressure reserve rather than beta positive level set gain.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

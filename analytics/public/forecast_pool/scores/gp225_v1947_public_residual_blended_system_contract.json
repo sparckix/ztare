@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 12.0,
     "artifact_hash": "7ea995ff45873a7991e6628d96fab66993bb6a5ad54bcd37c36445c1da3c7531",
-    "artifact_path": "analytics/public/leanmill/results/v1947_public_residual_blended_system_contract.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1947_public_residual_blended_system_contract.json",
     "compile_status": "static_contract_passed",
     "contract_id": "gp225_v1947_public_residual_blended_system_contract",
     "error_type": null,

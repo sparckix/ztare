@@ -91,7 +91,7 @@
   "horizon": "one deterministic no-replay repaired candidate packet over v20.34 seed rows",
   "information_value": 0.55,
   "layer": "micro",
-  "objective_resolver": "Success iff analytics/public/leanmill/results/v2035_filtered_source_aligned_repair_candidates.json exists and reports repair_rows >= 4, candidate_actions >= 8, blocked_rows_preserved >= 5, replay_run=false, candidate_generation_run=false or deterministic_static_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, training_now=false, and gnn_blocked=true.",
+  "objective_resolver": "Success iff analytics/public/gnn/lemma_relevance/v2035_filtered_source_aligned_repair_candidates.json exists and reports repair_rows >= 4, candidate_actions >= 8, blocked_rows_preserved >= 5, replay_run=false, candidate_generation_run=false or deterministic_static_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, training_now=false, and gnn_blocked=true.",
   "question": "Will v20.35 build a source-aligned repaired candidate packet from the six v20.34 repair seed rows without replay, training, or source-policy leakage?",
   "risk_penalty": 0.1,
   "success_threshold": "repair_rows>=4,candidate_actions>=8,source_policy_clean,no_replay,no_training,gnn_blocked_true,blocked_rows_preserved",

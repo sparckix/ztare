@@ -91,7 +91,7 @@
   "horizon": "one local cached candidate generation over v20.29 corrected queue",
   "information_value": 0.55,
   "layer": "micro",
-  "objective_resolver": "Success iff analytics/public/leanmill/results/v2030_corrected_scope_reprover_candidates.json exists and reports candidate_rows >= 8, total_candidates >= 48, model_load_or_generation_failed=false, model_inference_run=true, local_files_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, replay_run=false, training_now=false, gnn_blocked=true, and excluded_contaminated_row_ids includes current_scale_0256/current_scale_0298.",
+  "objective_resolver": "Success iff analytics/public/gnn/lemma_relevance/v2030_corrected_scope_reprover_candidates.json exists and reports candidate_rows >= 8, total_candidates >= 48, model_load_or_generation_failed=false, model_inference_run=true, local_files_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, replay_run=false, training_now=false, gnn_blocked=true, and excluded_contaminated_row_ids includes current_scale_0256/current_scale_0298.",
   "question": "Will corrected all-scope non-strict GP-225 queue generation produce a clean local ReProver context-enriched candidate packet?",
   "risk_penalty": 0.1,
   "success_threshold": "candidate_json_exists,candidate_rows>=8,total_candidates>=48,local_generation_succeeds,source_policy_clean,no_replay,no_training,gnn_blocked_true,contaminated_rows_excluded",

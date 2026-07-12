@@ -6,7 +6,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 31.0,
     "artifact_hash": "73e657ebb39ca1bcad9b35779f41da8f8d1a318691dc147860f881ac4bd97b18",
-    "artifact_path": "analytics/public/leanmill/results/v2099_non_target_signature_hydrated_new_heldout_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2099_non_target_signature_hydrated_new_heldout_replay.json",
     "compile_status": "replay_failed_with_auxiliary_pull_forward",
     "contract_id": "gp225_v2099_non_target_signature_hydrated_new_heldout_replay_meso_gate",
     "decision_changed_bool": true,

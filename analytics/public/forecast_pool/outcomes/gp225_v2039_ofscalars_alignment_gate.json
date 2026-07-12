@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 17.0,
   "artifact_hash": "4e9c059fd24c5666dded0f3709f50e88f15eec64e813e3f263a3d77fd62e7490",
-  "artifact_path": "analytics/public/leanmill/results/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
   "changed_by_forecast_ids": [
     "Noether",
     "Turing"
@@ -24,7 +24,7 @@
   "new_next_action": "heldout dual-head delta gate before any training promotion",
   "old_next_action": "another replay or untyped pull-forward promotion",
   "preconditioner_effect": "separated candidate closed state from gold open target state before policy promotion",
-  "preconditioner_source": "analytics/public/leanmill/results/v2038_repair_replay_alignment_reducer.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2038_repair_replay_alignment_reducer.json",
   "realized_failure_mode_ids": [],
   "resolution_note": "v20.39 emitted the no-replay target-alignment gate: 2 compiled actions classified, 0 strict target rows, 1 solver-closure row, 1 auxiliary pull-forward row, 0 harmful rows, replay=false, training=false, GNN blocked=true.",
   "resolved_at": "2026-05-14T17:04:46Z",

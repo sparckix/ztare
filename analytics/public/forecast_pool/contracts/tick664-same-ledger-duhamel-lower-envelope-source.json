@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick664-same-ledger-duhamel-lower-envelope-source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick664-same-ledger-duhamel-lower-envelope-source.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick664-same-ledger-duhamel-lower-envelope-source",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick664-same-ledger-duhamel-lower-envelope-source.json",
+    "score": "analytics/public/forecast_pool/scores/tick664-same-ledger-duhamel-lower-envelope-source.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 180.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-05-20T14:37:56Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0526,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_pde_estimate",
+    "score": 0.5,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 140,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20T23:59:00Z",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Resolved true if TICK664 produces either a compile-checked Lean boundary/construction or a written pencil/workbench artifact that precisely constructs or excludes the same-ledger Duhamel lower-envelope source, including event kernel, positive kernel comparison, integrated reserve charge, pressure complement, and no-descendant rebilling; false if it only restates same-tree incidence, section identity, or prefix event price.",
+  "question": "Can a selected residual-fresh event carry a same-ledger Duhamel/Bernstein positive-kernel lower envelope whose integrated reserve pays the CV/C7 local production deficit while preserving pressure complement separation and no-descendant rebilling?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.50",
+  "task_type": "ns_pde_estimate",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

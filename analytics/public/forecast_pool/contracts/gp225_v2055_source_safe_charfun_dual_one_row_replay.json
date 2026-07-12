@@ -92,7 +92,7 @@
   "horizon": "2026-05-14T23:59:00Z",
   "information_value": 0.42,
   "layer": "micro",
-  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json exists, replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, harmful_compiled_mismatch_actions=0, training_now=false, gnn_blocked=true. Resolve false if replay runs but compiled_candidate_actions=0 or harmful_compiled_mismatch_actions>0. Void only if replay cannot launch for infrastructure reasons.",
+  "objective_resolver": "Resolve true iff analytics/public/gnn/lemma_relevance/v2055_source_safe_charfun_dual_one_row_replay.json exists, replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, harmful_compiled_mismatch_actions=0, training_now=false, gnn_blocked=true. Resolve false if replay runs but compiled_candidate_actions=0 or harmful_compiled_mismatch_actions>0. Void only if replay cannot launch for infrastructure reasons.",
   "question": "Will v20.55 replay the v20.54 source-safe charFunDual one-row packet and produce at least one compiled candidate with zero harmful mismatches?",
   "risk_penalty": 0.1,
   "success_threshold": "1.0",

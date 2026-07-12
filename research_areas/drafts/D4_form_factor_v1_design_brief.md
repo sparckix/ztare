@@ -2,6 +2,49 @@
 
 **Status:** v1.2 refresh, derived from `research_areas/private/seams/interfaces/D4_distribution_form_factor_seam.md` (converged 2026-04-11) and updated against the 2026-06 project-intake, source-check, autoresearch-trace, loop-admission, graph/forecast read-model, and review-artifact surfaces. This is a designer-facing input document, not a kernel spec. It is written to be handed to a UI/UX designer for wireframing and design-system work.
 
+**2026-06-29 refresh against the shipped product.** Read this brief as
+**forensic-primary**: the v1 surface is the claim-auditing workbench, and the
+earlier didactic/teaching second product is collapsed out (the brief's own §13
+gave permission; take it). The §9.9 "7-step first slice" is a historical
+falsifiable cut, not the current scope — judge each surface by per-job coherence,
+not brief-match.
+
+The ZTARE Projects lane was rebuilt **outside-in** (LeanMill keeps its own lane).
+The information architecture is no longer the kernel pipeline; it is the
+researcher's investigation flow, named in the user's words:
+
+> Overview · My claim · Evidence · Test it · Open points · Verdict · History
+
+Every screen serves one job — "is my claim trustworthy, where is it weak, and what
+would change my mind?" — for anyone with a consequential question (PE analyst,
+operator, researcher), not a kernel operator. The voice is plain and conversational
+("Can you trust this report?", "Almost there — a couple of things to check", "What
+would change your mind?"); kernel nouns (intake, preflight, loop admission, support
+contract, falsifier, runtime risk) are off the surface. The visual language is flat,
+not skeuomorphic: no fake-table stat grids, no heavy tinted callout cards; section
+headers are lean strips and the working panel is the hero. CLI / model / governance
+detail sits behind one "Prefer the terminal?" disclosure per surface. The §8 object
+model still holds — these are the same kernel objects — but the UI now names them
+outside-in. The earlier "Mantine warm-indigo / progressive-disclosure" pass is
+superseded by this rebuild.
+
+A first principle the early passes missed: **the UI must teach its own method as you
+use it.** A user only trusts "your claim is weak here" if they understand how the
+system reached that — so the surface is a teacher, not just a tool. It is not enough
+to rename kernel nouns to plain ones and tuck the rest away; every concept that
+reaches the user (claim, evidence, source claim graph, probability model, verdict,
+what-would-change-your-mind) carries a plain "what this is" affordance, each surface
+opens with a one-line "what this is for", and tucked-away details *explain* themselves
+(plain subheads, on-demand term definitions) rather than dump kernel artifacts. The
+per-panel recipe is therefore: (1) lead with the human answer, (2) one primary action,
+(3) the single thing that matters, (4) details that are tucked away **and taught**,
+(5) plain words, flat, no nested cards. The teaching layer ships as a glossary +
+`Term` affordance (dotted-underline, plain definition) in the design system.
+
+Remaining design work is applying that recipe to every panel internal (Evidence, Open
+points, Overview, My claim, History — Test it and Verdict are the worked examples),
+not a new frame.
+
 **Audience:** UI/UX designer (external or internal). Assumes no ZTARE background but does assume familiarity with product design for technical review tools.
 
 **What this brief is not:** an implementation spec, a code architecture document, or a feature list. It is a frame for design work — what surfaces exist, who uses them, what jobs they do, and what visual/interaction language must hold across them.
@@ -378,6 +421,38 @@ Current implementation baseline:
 - Startup may fall back to the static snapshot when the API is absent. Once the
   API is present, project-specific refresh failures must stay visible instead
   of silently swapping in stale static data.
+
+### 9.10 Reconciliation: controller surfaces → shipped outside-in sections (2026-06-29)
+
+§9.1–§9.8 above describe the controller in the kernel's terms (what each screen must
+read or launch). That contract still holds at the data layer — but it is **not** the
+user-facing IA. The shipped ZTARE-Projects lane maps the kernel surfaces onto the
+researcher's investigation flow, named in plain words; this table reconciles the two so
+the brief is internally consistent:
+
+| §9 controller surface (kernel) | Shipped section (outside-in) | Lead question on the surface |
+| --- | --- | --- |
+| 9.1 Project browser | **Projects** picker + per-project **Overview** | "Where does this claim stand, and what's next?" |
+| 9.2 Claim & intake inspector | **My claim** | "What am I claiming, and what would change my mind?" |
+| 9.3 Source & evidence state | **Evidence** | "What backs my claim, and what's missing?" |
+| 9.4 Trace / kernel-entry console + 9.5 Preflight/bounded-run | **Test it** | "Is my claim ready to test? Run it." |
+| 9.6 Run history & verdict | **Verdict** (+ Test it → Results) | "Can I trust this, where is it weak?" |
+| (review of each part) | **Open points** | "What still needs my attention, with what backs it?" |
+| 9.7 Export + receipts | **Verdict → save the report file**, **History** | "Give me the trail." |
+
+Resolution of the open design questions:
+- The §9 kernel nouns (intake, preflight, loop admission, support contract, falsifier,
+  runtime risk, source claim graph, probability model) are **off the surface**; where a
+  concept must appear it carries a `Term` "what's this?" affordance from the glossary.
+- §11 questions are answered by the shipped design: the mode switch is the product-rail
+  (ZTARE Projects vs LeanMill, no didactic mode shipped per §13); the single most
+  important on-screen object per surface is the **lead answer** the recipe forces; the
+  expert/default split is "the method working" (default) vs "tuning/terminal" (one
+  "Prefer the terminal?" disclosure). §10 trust posture holds unchanged — every visible
+  row still opens its file/receipt, just behind plain words.
+
+This brief is now reconciled against the shipped product; treat §9.1–§9.8 as the
+data-layer contract and §9.10 + the §5 refresh note as the user-facing truth.
 
 ## 10. Trust posture
 

@@ -79,15 +79,89 @@ def split(rows: "list[dict]", eval_frac: float) -> "tuple[list, list]":
     return tr, ev
 
 
+def _is_generic(target: str) -> bool:
+    """A generically AUTO-NAMED decomposition sub-lemma (`lemma`, `lemma7`, `goal2`, `aux3`, `step1`…) — a real
+    kernel-verified proof, but its NAME carries no semantic content, so as a pass@k EVAL item it measures nothing
+    (there is no domain to prove). Kept in TRAIN (real signal); excluded from EVAL eligibility. Also prevents the
+    `_family` digit-strip from collapsing 28 independent `lemmaN` into one bogus 28-member 'family'."""
+    import re as _re
+    return bool(_re.match(r"^(lemma|goal|claim|step|aux|sub|h|thm|prop|fact)_?\d*$", (target or "").strip(), _re.I))
+
+
+def _family(target: str) -> str:
+    """Theorem FAMILY key: strip sibling/version suffixes so `iso_lemma1`, `iso_lemma3`, `foo_conj2`, `bar_v4`
+    collapse to one family. Holding out whole families (not siblings) is what kills the memorization inflation
+    the first pass@k run had (design step 2)."""
+    import re as _re
+    t = _re.sub(r"(_conj\d+|_v\d+|_rung[A-Z]\d*|_case\d+)$", "", target or "")
+    t = _re.sub(r"\d+$", "", t)
+    return _re.sub(r"^iso_", "", t)
+
+
+def content_family_map(rows: "list[dict]") -> "dict[str, str]":
+    """Backfill a CONTENT family for every prover target from the domain vocabulary in its probe (the custom
+    `def`s), NOT its name — so generic auto-named decomposition sub-lemmas (`iso_lemma1/2/3`, `lemmaN`) group with
+    the REAL theory they belong to (waterfall `AbsolutePriority`, median `IsMedian`, …) instead of collapsing into
+    one bogus 'lemma' family. Union-find: two targets share a family iff their probes share a custom def
+    (transitively) ⇒ connected component = the domain/theory. A target with NO custom defs (pure-Mathlib) is its own
+    family. This keeps all 96 verified proofs (no filtering — improve data quality, don't discard) with an honest,
+    leak-free holdout (whole theories held out together, never a sibling split across train/eval)."""
+    import re as _re
+    fam: "dict[str, str]" = {}
+    for r in rows:
+        if r.get("task") != "prove" or not r.get("target"):
+            continue
+        ds = sorted(set(_re.findall(r"(?m)^\s*def\s+([A-Za-z_]\w*)", r.get("probe") or "")))
+        # EXACT def-set = the theory's vocabulary signature. Same signature ⇒ same theory ⇒ one family (a theorem
+        # + its same-vocab decomposition sub-lemmas). Different signatures ⇒ different families — NO transitive
+        # chaining (a single shared helper def must not merge two theories). Pure-Mathlib (no custom def) ⇒ its own.
+        fam[r["target"]] = ("def:" + "|".join(ds)) if ds else ("solo:" + r["target"])
+    return fam
+
+
+def split_family_holdout(rows: "list[dict]", min_eval: int = 30) -> "tuple[list, list]":
+    """Design step 2: hold out whole theorem FAMILIES (by CONTENT — content_family_map, not name) for the prover
+    eval so pass@k measures proving UNSEEN theories. Accumulate families (deterministic hash order, no RNG) until
+    the eval `prove` set reaches `min_eval` (the ≥30 floor) while keeping the rest for training. ALL 96 proofs are
+    kept — generic-named sub-lemmas are backfilled to their real domain, never discarded. Eval = held-out
+    families' `prove` rows; train = every task's rows for the remaining families (formalize/faithfulness carry no
+    target ⇒ stay in train; the PROVER pass@k headline is leak-free)."""
+    import hashlib
+    fam = content_family_map(rows)
+    members: "dict[str, list]" = {}
+    for r in rows:
+        if r.get("task") == "prove" and r.get("target") in fam:
+            members.setdefault(fam[r["target"]], []).append(r)
+    fams = sorted(members, key=lambda f: hashlib.sha1(str(f).encode()).hexdigest())
+    holdout, n = set(), 0
+    for f in fams:
+        if n >= min_eval:
+            break
+        holdout.add(f)
+        n += len(members[f])
+    _held = lambda r: r.get("task") == "prove" and fam.get(r.get("target")) in holdout  # noqa: E731
+    ev = [r for r in rows if _held(r)]
+    tr = [r for r in rows if not _held(r)]
+    return tr, ev
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--corpus", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--eval-frac", type=float, default=0.15)
+    ap.add_argument("--holdout-eval-min", type=int, default=0,
+                    help="design step 2: hold out whole theorem families until the PROVER eval reaches this many "
+                         "proofs (≥30 recommended; 0 ⇒ the legacy random per-task eval-frac split)")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     rows = build(a.corpus)
-    tr, ev = split(rows, a.eval_frac)
+    if a.holdout_eval_min:
+        tr, ev = split_family_holdout(rows, a.holdout_eval_min)
+        # eval rows already carry prompt/probe/gold_proof/target — the exact shape sample_vllm.py + passk_score.py read
+        (a.out / "holdout_eval.json").write_text(json.dumps(ev, ensure_ascii=False), encoding="utf-8")
+    else:
+        tr, ev = split(rows, a.eval_frac)
     (a.out / "sft_train.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in tr), encoding="utf-8")
     (a.out / "sft_eval.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in ev), encoding="utf-8")
     from collections import Counter

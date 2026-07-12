@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "meso-ns-reserve-drop-two-fields-20260520",
+  "contract_question": "Can the next NS tick prove or refute the two numerical fields isolated by TICK666: reserve nonnegativity and recharge-prefix budget for FreshAnnularPredictableReserveDropSource, from the indexed single-spend carrier or lineage reservoir, without same-packet rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "nested_reuse_countermodel": 0.18,
+    "only_target_renaming": 0.12,
+    "recharge_prefix_unbounded": 0.22,
+    "reserve_nonnegativity_not_derivable": 0.22,
+    "two_fields_derived": 0.26
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:01:33Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.43,
+  "rationale_short": "Meso bet: plausible target-sharpening, less plausible full derivation. The exact numerical fields are now known; the main risk is that qualitative lineage monotonicity does not force nonnegative reserve or bounded recharge errors without an extra PDE source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

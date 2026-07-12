@@ -36,7 +36,7 @@
       "new_next_action": "price corrected charFunDual/L canary replay or verify helper source-safety",
       "old_next_action": "price v20.46 charFun_map_eq/t canary replay",
       "preconditioner_effect": "Prevented replay pricing against the stale non-dual canary and forced target-shape correction first.",
-      "preconditioner_source": "analytics/public/leanmill/results/v2047_historic_target_shape_audit_for_charfun_canary.json",
+      "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2047_historic_target_shape_audit_for_charfun_canary.json",
       "realized_failure_mode_ids": [
         "corrected_template_still_semantic_not_compile",
         "historic_names_not_source_safe"
@@ -49,7 +49,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 18.0,
     "artifact_hash": "ece757cfb8e2b8af988bde4abbcc3a4bb394e379b57e1f08561c2fb5e1bb84a4",
-    "artifact_path": "analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2048_charfun_dual_source_contract_correction.json",
     "changed_by_forecast_ids": [
       "Shannon",
       "Hopper"
@@ -72,7 +72,7 @@
     "new_next_action": "price corrected charFunDual/L canary replay or verify helper source-safety",
     "old_next_action": "price v20.46 charFun_map_eq/t canary replay",
     "preconditioner_effect": "Prevented replay pricing against the stale non-dual canary and forced target-shape correction first.",
-    "preconditioner_source": "analytics/public/leanmill/results/v2047_historic_target_shape_audit_for_charfun_canary.json",
+    "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2047_historic_target_shape_audit_for_charfun_canary.json",
     "realized_failure_mode_ids": [
       "corrected_template_still_semantic_not_compile",
       "historic_names_not_source_safe"

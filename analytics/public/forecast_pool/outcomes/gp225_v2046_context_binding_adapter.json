@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 21.0,
   "artifact_hash": "a0da4041fddd81febfcde7bd2edb93b807dfb1f6bc9312de909c2df7a965f02e",
-  "artifact_path": "analytics/public/leanmill/results/v2046_context_binding_adapter_for_source_candidates.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2046_context_binding_adapter_for_source_candidates.json",
   "changed_by_forecast_ids": [
     "Noether",
     "Turing"
@@ -24,7 +24,7 @@
   "new_next_action": "price only a one-row charFunDual_map_eq canary and build binder wrappers for high-risk rows",
   "old_next_action": "run or price full replay of all ten v20.44 candidates",
   "preconditioner_effect": "Converted negative full-replay market into a static context-binding split before replay.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2045_blocked_row_source_candidate_replay_market_abort.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2045_blocked_row_source_candidate_replay_market_abort.json",
   "realized_failure_mode_ids": [
     "source_hinge_binding_too_shallow",
     "candidate_context_not_available"

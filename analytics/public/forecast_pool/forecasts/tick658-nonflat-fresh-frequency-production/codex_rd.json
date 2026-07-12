@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Do pencil-first analysis of fresh packet creation before Lean; require packet source independent of target beta-radius sum, same pressure/Duhamel carrier, and bounded fanout/no-log reuse.",
+  "agent_id": "codex_rd",
+  "contract_id": "tick658-nonflat-fresh-frequency-production",
+  "contract_question": "Will TICK658 produce a substantive decision on whether NonflatNonInheritedBadCenterForcesFreshFrequencyPacket can be upgraded from Prop scaffold into a natural L3A/CV fresh-frequency production estimate feeding FreshPacketGainPaysNonflatBeta and FreshFrequencyEventSameTreeLock?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_estimate_with_kill_conditions": 0.14,
+    "circular_packet_selection_from_beta_sum": 0.28,
+    "endpoint_ckn_mass_restatement": 0.24,
+    "fanout_no_log_reuse_failure": 0.16,
+    "pressure_same_carrier_unproved": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "frontier_math",
+    "gowers_first",
+    "anti_recurrence"
+  ],
+  "forecasted_at": "2026-05-20T01:30:54Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.12,
+  "p_success": 0.46,
+  "rationale_short": "The route is graph-supported and precise, but actual PDE content is hard: proving a fresh comparable-frequency packet from nonflat non-inherited badness risks circular selection from the beta target or endpoint CKN mass restatement. Success as a decision tick is below even but not remote.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "circular_packet_selection_from_beta_sum",
+    "endpoint_ckn_mass_restatement",
+    "pressure_same_carrier_unproved",
+    "fanout_no_log_reuse_failure",
+    "candidate_estimate_with_kill_conditions"
+  ]
+}

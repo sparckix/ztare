@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 9.0,
     "artifact_hash": "765e7dd8ce99c215444a1d00bf2027a4f5b0acf9a2fd1b579b2224a513bbe290",
-    "artifact_path": "analytics/public/leanmill/results/v2014_internal_holdout_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2014_internal_holdout_replay.json",
     "compile_status": "replay_completed_internal_holdout_strict_win",
     "contract_id": "gp225_v2014_internal_holdout_replay",
     "error_type": null,

@@ -92,7 +92,7 @@
   "horizon": "2026-05-14T23:59:00Z",
   "information_value": 0.35,
   "layer": "meso",
-  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json has status passed, strict rows=14, repaired charFunDual counted, older quarantines preserved, training_now=false, gnn_blocked=true, and next action is heldout/broader union accounting rather than immediate model training.",
+  "objective_resolver": "Resolve true iff analytics/public/gnn/lemma_relevance/v2059_union_training_readiness_gate_after_charfun_strict.json has status passed, strict rows=14, repaired charFunDual counted, older quarantines preserved, training_now=false, gnn_blocked=true, and next action is heldout/broader union accounting rather than immediate model training.",
   "question": "Will v20.59 produce a union training-readiness gate after the repaired charFunDual strict row that preserves the 14-row manifest update but keeps GNN/cross-encoder training blocked with a concrete next gate?",
   "risk_penalty": 0.08,
   "success_threshold": "1.0",

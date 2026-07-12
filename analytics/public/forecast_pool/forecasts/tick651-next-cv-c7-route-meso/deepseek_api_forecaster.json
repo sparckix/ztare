@@ -1,0 +1,20 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "deepseek",
+  "agent_id": "deepseek:api_forecaster",
+  "contract_id": "tick651-next-cv-c7-route-meso",
+  "contract_question": "Over the next three NS/CV ticks, does prioritizing the descendant-exclusive fresh-radius invoice / split excess-drop route produce more formal frontier progress than returning first to the magnitude-side beta-gain route?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-06-11T19:03:36Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.45,
+  "rationale_short": "Low base rate; jargon obscures clear advantage; slight negative skew.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

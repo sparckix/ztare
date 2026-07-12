@@ -1,0 +1,123 @@
+{
+  "contract_id": "tick667-reserve-nonnegativity-recharge-prefix",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+      "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate."
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "externality_tags": [
+        "target_sharpened",
+        "countermodel_profile_added",
+        "vps_lean_parity_green"
+      ],
+      "realized_failure_mode_ids": [
+        "reserve_nonnegativity_not_forced",
+        "recharge_prefix_not_forced"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.2605,
+  "mean_log_score": -0.7141835687708993,
+  "outcome": {
+    "actual_cost_agent_minutes": 70.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick667-reserve-nonnegativity-recharge-prefix",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [
+      "target_sharpened",
+      "countermodel_profile_added",
+      "vps_lean_parity_green"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T22:04:10Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick667-reserve-nonnegativity-recharge-prefix/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "reserve_nonnegativity_not_forced",
+      "recharge_prefix_not_forced"
+    ],
+    "resolution_note": "Success as boundary-sharpening: the tick settled the current reservoir-to-predictable-source question negatively. The qualitative lineage reservoir lacks both reserve endpoint nonnegativity and a numerical recharge-prefix budget; compile-checked toy profiles witness both failures, and the residual manifest names the corrected next lever.",
+    "resolved_at": "2026-05-20T22:13:45Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T22:13:53Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 70.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.24009999999999998,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 84.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.6733445532637656,
+      "p_success": 0.51,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T22:02:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T22:04:10Z",
+        "resolved_at": "2026-05-20T22:13:45Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 70.0,
+      "agent_id": "codex_rd",
+      "brier": 0.28090000000000004,
+      "cost_error_agent_minutes": 80.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 150.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.42,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.7550225842780328,
+      "p_success": 0.47,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T22:02:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T22:02:26Z",
+        "resolved_at": "2026-05-20T22:13:45Z"
+      }
+    }
+  ]
+}

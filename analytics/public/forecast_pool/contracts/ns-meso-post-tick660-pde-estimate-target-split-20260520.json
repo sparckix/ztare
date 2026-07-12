@@ -1,0 +1,100 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns-meso-post-tick660-pde-estimate-target-split-20260520.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns-meso-post-tick660-pde-estimate-target-split-20260520.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns-meso-post-tick660-pde-estimate-target-split-20260520",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns-meso-post-tick660-pde-estimate-target-split-20260520.json",
+    "score": "analytics/public/forecast_pool/scores/ns-meso-post-tick660-pde-estimate-target-split-20260520.json"
+  },
+  "baseline_action": "Open a broad CV/nonlocal-De-Giorgi tick or continue the latest L3A lift without target selection.",
+  "budget_agent_minutes": 55.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "ns-meso-post-tick660-pde-estimate-target-split-20260520",
+  "cost_penalty": 0.35,
+  "counterfactual_action": "Select one exact PDE estimate target and kill condition before opening the new membrane tick.",
+  "created_at": "2026-05-20T03:20:12Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.5217,
+    "expected_cost_agent_minutes_prior": 35.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route_selection",
+    "score": 0.5217,
+    "selected_domain": "gp225_route_selection_meso",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.5217,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.5217,
+        "score_rows": 2,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.48,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.48,
+        "score_rows": 4,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.3333,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2778,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2778,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "decision_use": "The route choice should become a decision-use row consumed by the new tick.",
+    "effort_calibration": "The selected target should be sized as a membrane tick, not a full PDE program.",
+    "failure_mode_preconditioning": "Target selection should prevent DeGiorgi analogy laundering and L3A local-optimum recurrence."
+  },
+  "horizon": "immediately before opening the next full NS research tick after TICK660",
+  "information_value": 125.0,
+  "layer": "meso",
+  "objective_resolver": "Score TRUE if a decision-use row selects exactly one of A/B/C, names the concrete estimate in repo vocabulary, records why the other two are deferred, and states a kill condition that would stop the lane before another local interface loop.",
+  "question": "Which exact PDE estimate target should the next NS tick open after TICK660: (A) a CV/nonlocal-De-Giorgi critical vorticity-truncation estimate that neutralizes the 3D vortex-stretching term without CF alignment, (B) the pressure-complement/harmonic-collar single-spend estimate already isolated by TICK656-657, or (C) the local L3A FreshPacketDuhamelIncidenceLiftFromAuditEligibility bridge? The contract scores TRUE only if it selects one target and states a falsifiable kill condition precise enough for a membrane tick.",
+  "risk_penalty": 0.3,
+  "success_threshold": "decision-use row recorded; one concrete PDE estimate target selected; rival routes deferred with reasons; kill condition named",
+  "task_type": "ns_route_selection",
+  "value_if_success": 130.0,
+  "void_conditions": "void only if post-TICK660 meso route contract or TICK660 residual manifest entry is unavailable on the VPS"
+}

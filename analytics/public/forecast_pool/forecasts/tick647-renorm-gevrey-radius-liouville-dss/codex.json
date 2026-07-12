@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick647-renorm-gevrey-radius-liouville-dss",
+  "contract_question": "Characterize the impossibility of, or establish, a scaling-INVARIANT strictly-positive lower bound on the self-similarly-RENORMALIZED Gevrey space-analyticity radius r\u0303_a of 3D NSE \u2014 a genuinely NON-degree-0 invariant (set by the nonlinearity-vs-dissipation balance, NOT a Riesz/CZ Eulerian operator, NOT a matrix cocycle, NOT a-priori the nu-viscous length) \u2014 sufficient to exclude DSS / backward-self-similar blow-up profiles (a Liouville-type obstruction to the strict-margin/CF atom). Crux: does the renormalized r\u0303_a beat the Grujic-Kukavica nu-rate shrinkage, i.e. survive the renormalization step, OR collapse to nu-washout/degree-0? Consult adjacency ns_trackb_costin_tanveer_borel (different analyticity approach; do NOT re-derive).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T04:25:19Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.02,
+  "rationale_short": "CODEX independent (CLI subscription, local read-only, provenance): the proposed lower bound is vacuous \u2014 parabolic scaling makes rho_tilde constant for DSS profiles AND all blowup-necessary solutions; cannot exclude the target class without reintroducing ESS assumptions.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

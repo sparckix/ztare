@@ -69,7 +69,8 @@ def main() -> int:
         ("scoring-guide", f"/api/scoring-guide?project={p}", "ok"),
         ("run-config", f"/api/run-config?project={p}", "ok"),
         ("score-trajectory", f"/api/score-trajectory?project={p}", "ok"),
-        ("report-contract", f"/api/report-contract?project={p}", "ok"),
+        # A blocked report is a valid read-model response; endpoint health is the typed schema, not ok=true.
+        ("report-contract", f"/api/report-contract?project={p}", "schema"),
         ("eval-results facet=inverter", f"/api/eval-results?project={p}&facet=inverter", "ok"),
         ("eval-results facet=charter-drift", f"/api/eval-results?project={p}&facet=charter-drift", "ok"),
         ("eval-results facet=meta-audit", f"/api/eval-results?project={p}&facet=meta-audit", "ok"),
@@ -81,6 +82,19 @@ def main() -> int:
     print("== existing project — LeanMill reads ==")
     d = _get(base, f"/api/leanmill?project={p}")
     ok("leanmill state", bool(d.get("schema")), d.get("error", ""))
+    lean_files = ((d.get("formalizations") or {}).get("lean_files") or [])
+    if lean_files:
+        ratify = _post(base, "/api/leanmill/ratify", {
+            "source_file": lean_files[0].get("path"), "target_name": "", "confirmed": False,
+        })
+        ok(
+            "leanmill ratify preview",
+            ratify.get("status") == "needs_confirmation"
+            and (ratify.get("job") or {}).get("action") == "proof_audit",
+            ratify.get("error", ""),
+        )
+    else:
+        print("  skip leanmill ratify preview :: no indexed Lean file")
 
     print("== new-user write/launch previews (confirmed=false) ==")
     # NOTE: /api/project-create writes even at confirmed=false (unlike every other write endpoint).

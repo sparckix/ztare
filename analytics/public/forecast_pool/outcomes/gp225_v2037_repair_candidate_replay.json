@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 22.0,
   "artifact_hash": "74eedf6ef5ee3712805843d51a79fd4e0ff4d31db4430a2065584782432dddc3",
-  "artifact_path": "analytics/public/leanmill/results/v2037_repair_candidate_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2037_repair_candidate_replay.json",
   "changed_by_forecast_ids": [
     "gp230_chandrasekhar_gp225_v2037",
     "gp230_mill_gp225_v2037"

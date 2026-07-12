@@ -41,7 +41,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 18.0,
     "artifact_hash": "df39418b6542da64aaf3e0f292992002f7dd061244b0d62da5217f2a85967e2d",
-    "artifact_path": "analytics/public/leanmill/results/v2035_filtered_source_aligned_repair_candidates.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2035_filtered_source_aligned_repair_candidates.json",
     "changed_by_forecast_ids": [
       "gp230_hypatia_gp225_v2035",
       "gp230_descartes_gp225_v2035"

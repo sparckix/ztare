@@ -17,6 +17,8 @@ Optimize for **information yield per experiment**, not score improvement. Read `
 
 Read `ztare_product_philosophy.md` and `treatise_principles_of_epistemic_verification.md` to know what we're building. **"Invert, always invert. Compress, always compress."** If something not mechanized has potential to be, propose mechanization. **If something sounds too good to be true, it's a tautology, kill it early.**
 
+**Identity before property; category before attribute.** Before extending an interface or repairing a failure, name the object's governing identity: its job, owner, lifecycle/epoch, authority, and equality or compatibility relation. Locate the existing category and state transition that own it. Properties and checks may validate that identity; fields, flags, schema branches, and special cases may not substitute for it. When identity changes, create or route to the corresponding object/state rather than mutating the prior one across its boundary. Reuse belongs at the invariant-owning layer; substrate vocabulary stays in inputs, profiles, or adapters. Tests should assert identity boundaries and forbidden cross-boundary carry, not merely attribute presence.
+
 ## 0a. Three-tier recording, where findings land
 
 | Tier | File | When to write | What goes here |

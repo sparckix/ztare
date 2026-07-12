@@ -1,0 +1,46 @@
+{
+  "actual_cost_agent_minutes": 125.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick662-localized-avisc-surplus-levelset-gain",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T04:18:15Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick662-localized-avisc-surplus-levelset-gain/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "no_positive_construction"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "avisc_surplus_collapses_to_cf",
+    "tail_or_commutator_not_scale_separated",
+    "formalization_only_without_pde_content"
+  ],
+  "resolution_note": "TICK662 produced an honest boundary, not a construction: endpoint betaLocal<=0 or betaTail<=0 blocks the candidate; pressure/tail/transport and grad-xi single-spend constraints were encoded; toy audits show sign positivity is not beta gain. Lean and VPS parity build passed.",
+  "resolved_at": "2026-05-20T04:33:56Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

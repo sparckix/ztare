@@ -1,0 +1,37 @@
+{
+  "action_change_recommendation": "select_one_next_tick_route_with_bias_toward_concrete_cv_nonlocal_degiorgi_stretching_estimate_unless_it_cannot_be_named_sharply",
+  "agent_id": "codex_rd",
+  "contract_id": "ns-meso-post-tick660-degiorgi-grade-pde-route-20260520",
+  "contract_question": "After TICK660 and the external formalization benchmark, should the next NS tick pivot from local L3A interface refinement to a concrete DeGiorgi-grade PDE estimate lane, specifically a named CV/nonlocal-De-Giorgi critical estimate that tries to neutralize 3D vortex stretching without CF alignment, rather than continuing FreshPacketDuhamelIncidenceLiftFromAuditEligibility or doing atlas/formalization cleanup?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "degiorgi_analogy_misaligned_with_3d_vortex_stretching": 0.22499999999999998,
+    "formalization_cleanup_mistaken_for_pde_progress": 0.1625,
+    "l3a_local_optimum_recurrence": 0.19999999999999998,
+    "pde_target_too_broad_or_not_named": 0.27499999999999997,
+    "pressure_collar_and_fanout_dependencies_split_target": 0.13749999999999998
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "decision_use_candidate",
+    "effort_calibration",
+    "amnesia_prevention",
+    "frontier_pde_bias"
+  ],
+  "forecasted_at": "2026-05-20T03:16:57Z",
+  "p_dependency_issue": 0.57,
+  "p_needs_new_lemma": 0.91,
+  "p_regression": 0.16,
+  "p_success": 0.58,
+  "rationale_short": "TICK660 says local L3A coherence needs a lift, but the benchmark says scale is not PDE substance. The next decision should price a pivot to a named CV/nonlocal-De-Giorgi estimate against the latest L3A obstruction and cleanup-only work.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pde_target_too_broad_or_not_named",
+    "degiorgi_analogy_misaligned_with_3d_vortex_stretching",
+    "l3a_local_optimum_recurrence",
+    "formalization_cleanup_mistaken_for_pde_progress",
+    "pressure_collar_and_fanout_dependencies_split_target"
+  ]
+}

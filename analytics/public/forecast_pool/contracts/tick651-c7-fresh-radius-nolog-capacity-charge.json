@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick651-c7-fresh-radius-nolog-capacity-charge.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick651-c7-fresh-radius-nolog-capacity-charge.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick651-c7-fresh-radius-nolog-capacity-charge",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick651-c7-fresh-radius-nolog-capacity-charge.json",
+    "score": "analytics/public/forecast_pool/scores/tick651-c7-fresh-radius-nolog-capacity-charge.json"
+  },
+  "baseline_action": "run another generic CV/C7 local-gain tick",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "split the route-side no-log/fresh-radius charge from magnitude beta gain",
+  "created_at": "2026-05-19T16:57:54Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_track_b_cf_global_extension_c7_radius_charge",
+    "score": 0.1,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 10,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0909,
+        "score_rows": 2,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 140,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 7,
+        "token_jaccard": 0.0833
+      },
+      {
+        "char_trigram_jaccard": 0.0154,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0714,
+        "score_rows": 4,
+        "token_jaccard": 0.0714
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "effort_prior": "discount forecast effort overestimation seen in reflexive insights",
+    "failure_mode_preconditioning": "guard against endpoint q<=5/2, r_Q^2-only charge, descendant reuse, and CF-alignment smuggling"
+  },
+  "horizon": "2026-05-19T23:59:00Z",
+  "information_value": 1.5,
+  "layer": "micro",
+  "objective_resolver": "RD verifies a compiled formal surface plus research log and residual manifest entry, then resolves the contract by whether the tick produced either a non-CF no-log/fresh-radius map to RadiusChargingBadScaleMeasure or an exact obstruction retiring capacity-only promotion.",
+  "question": "Characterize the impossibility boundary for converting a C7 ground-state/vorticity-capacity no-log fresh-radius budget into RadiusChargingBadScaleMeasure for the CV branch without Constantin-Fefferman alignment; if the boundary is not absolute, isolate the exact extra hypothesis needed and the guard that retires capacity-only promotion.",
+  "risk_penalty": 1.0,
+  "success_threshold": "Success if the tick produces a concrete formal surface and dated substrate-memory entry that either supplies the no-log/fresh-radius map from C7 capacity to RadiusChargingBadScaleMeasure without CF alignment, or refutes capacity-only route promotion with the exact failed map and next lever. Generic capacity prose, endpoint q<=5/2, r_Q^2-only charge, or CF alignment counts false.",
+  "task_type": "ns_track_b_cf_global_extension_c7_radius_charge",
+  "value_if_success": 2.0,
+  "void_conditions": "infra failure, missing independent forecast, missing formal artifact, or membrane store unavailable"
+}

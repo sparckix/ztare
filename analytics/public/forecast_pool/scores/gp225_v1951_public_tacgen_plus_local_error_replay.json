@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 44.0,
     "artifact_hash": "c2658caca57be7f088cb6c6fc1739a2632fdce7be4e55201cb54003e43167be5",
-    "artifact_path": "analytics/public/leanmill/results/v1953_reprover_candidate_replay_bridge.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1953_reprover_candidate_replay_bridge.json",
     "compile_status": "public_tacgen_strict_target_state_passed_no_compiled_closures",
     "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
     "error_type": "none",

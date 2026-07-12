@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 0.92,
     "artifact_hash": "9ac08d223b9f83e1adb59ce39ab860fa4a687dcb0e3ac6b0c1d295393938dfc0",
-    "artifact_path": "analytics/public/leanmill/results/v1874_remaining_8_witness_backfill_runner.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1874_remaining_8_witness_backfill_runner.json",
     "compile_status": "gnn_blocked_static_prefilter_sentinel",
     "contract_id": "gp225_v1874_remaining_8_witness_backfill",
     "error_type": null,

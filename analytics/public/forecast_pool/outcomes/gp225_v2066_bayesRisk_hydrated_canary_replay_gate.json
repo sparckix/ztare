@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 26.0,
   "artifact_hash": "7a7c03818d32bb63fa833ae8437a8efbd6c3bb3c9f9a61e2c14c35e30a64398f",
-  "artifact_path": "analytics/public/leanmill/results/v2066_bayesRisk_hydrated_canary_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2066_bayesRisk_hydrated_canary_replay.json",
   "changed_by_forecast_ids": [
     "Dijkstra3",
     "McCarthy3"
@@ -25,7 +25,7 @@
   "new_next_action": "build step-index-aware finite-bound patch before replay",
   "old_next_action": "promote hydrated bayesRisk canary if compile signal appears",
   "preconditioner_effect": "Hydration removed synthetic tokens but did not account for replay insertion point.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2065_public_union_hydrated_top_row_patch.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2065_public_union_hydrated_top_row_patch.json",
   "realized_failure_mode_ids": [
     "finite_bound_simp_needs_extra_instances",
     "bayesRisk_le_mul_argument_shape_mismatch"

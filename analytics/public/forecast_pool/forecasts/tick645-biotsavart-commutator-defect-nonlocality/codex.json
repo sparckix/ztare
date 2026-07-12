@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick645-biotsavart-commutator-defect-nonlocality",
+  "contract_question": "Characterize the impossibility of, or exhibit, a positive-cone nesting-multiplicative LOWER bound on the Biot-Savart commutator defect integral-of-norm [R-tensor-R, omega-dot-grad]omega that supplies a strictly-positive log-active-scale term controlling limsup_t norm-omega-Linf for 3D NSE, NOT a coboundary under parabolic rescaling and NOT factoring through a signed/disjoint form \u2014 the surviving nonlocality next-lever outside the EXCLUDED local-polynomial and Lagrangian-cocycle classes.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 5.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T03:31:42Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.02,
+  "rationale_short": "CODEX independent (Codex CLI subscription, local read-only, transcribed/provenance): scale-homogeneous Riesz symbol \u21d2 proposed lower-bound mechanism telescopes to bounded endpoint data; only log is the circular BKM/BCD log, not a new positive-cone obstruction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

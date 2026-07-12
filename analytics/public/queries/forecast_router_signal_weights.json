@@ -2,24 +2,24 @@
   "move_prior": {
     "default_weight": 1.0,
     "domains": {
-      "lean": 0.3733
+      "lean": 0.3216
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.3133,
-        "score_rows": 120
+        "mean_brier": 0.3392,
+        "score_rows": 1085
       }
     }
   },
   "proof_cache": {
     "default_weight": 1.0,
     "domains": {
-      "lean": 0.9992
+      "lean": 0.8556
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.0004,
-        "score_rows": 2
+        "mean_brier": 0.0722,
+        "score_rows": 321
       }
     }
   },
@@ -30,8 +30,8 @@
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.9604,
-        "score_rows": 1
+        "mean_brier": 0.83,
+        "score_rows": 81
       }
     }
   }

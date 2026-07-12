@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Split route-side no-log/fresh-radius charge from local beta-gain; do not rerun generic CV De Giorgi.",
+  "agent_id": "codex_rd",
+  "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+  "contract_question": "Characterize the impossibility boundary for converting a C7 ground-state/vorticity-capacity no-log fresh-radius budget into RadiusChargingBadScaleMeasure for the CV branch without Constantin-Fefferman alignment; if the boundary is not absolute, isolate the exact extra hypothesis needed and the guard that retires capacity-only promotion.",
+  "domain": "ns_track_b_cv_c7",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "capacity_symbol_only_no_radius_map": 0.25,
+    "cf_alignment_smuggled": 0.15,
+    "endpoint_or_rq2_recurrence": 0.3,
+    "formal_surface_too_schematic": 0.2,
+    "membrane_or_forecast_ordering_issue": 0.1
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_discounted"
+  ],
+  "forecasted_at": "2026-05-19T16:58:09Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "TICK650 already split the bridge; route-side charge is formalizable either as a positive no-log map or an exact guard. Hard part is avoiding r_Q^2-only and CF-alignment recurrence.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "endpoint_or_rq2_recurrence",
+    "capacity_symbol_only_no_radius_map",
+    "cf_alignment_smuggled"
+  ]
+}

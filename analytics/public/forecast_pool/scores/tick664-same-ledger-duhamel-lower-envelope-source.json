@@ -1,0 +1,130 @@
+{
+  "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+      "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate."
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "residual_normal_form_recall",
+        "tool_improvement"
+      ],
+      "negative_externality_tags": [
+        "close_lifecycle_overhead"
+      ],
+      "realized_failure_mode_ids": [
+        "kernel_lower_envelope_fails",
+        "same_tree_rebilling",
+        "endpoint_slaving"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.3497,
+  "mean_log_score": -0.8963799847808193,
+  "outcome": {
+    "actual_cost_agent_minutes": 225.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "residual_normal_form_recall",
+      "tool_improvement"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T14:52:48Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick664-same-ledger-duhamel-lower-envelope-source/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [
+      "close_lifecycle_overhead"
+    ],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "kernel_lower_envelope_fails",
+      "same_tree_rebilling",
+      "endpoint_slaving"
+    ],
+    "resolution_note": "Resolved true under the contract resolver: TICK664 produced kernel-checked boundary artifacts plus workbench and residual-manifest receipts that exclude lower-envelope/local/same-region reuse as a carrier source, sharpen the endpoint/positive-tail obstruction, and isolate the fresh-annular prefix-budget consumer as the next source theorem. It did not construct the missing PDE source.",
+    "resolved_at": "2026-05-20T18:27:51Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T18:28:02Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 225.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.30250000000000005,
+      "cost_error_agent_minutes": -105.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.68,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7985076962177716,
+      "p_success": 0.45,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T14:37:56Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T14:52:48Z",
+        "resolved_at": "2026-05-20T18:27:51Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 225.0,
+      "agent_id": "codex_rd",
+      "brier": 0.39690000000000003,
+      "cost_error_agent_minutes": -45.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 180.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.9942522733438669,
+      "p_success": 0.37,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T14:37:56Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T14:51:45Z",
+        "resolved_at": "2026-05-20T18:27:51Z"
+      }
+    }
+  ]
+}

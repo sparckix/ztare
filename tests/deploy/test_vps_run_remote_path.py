@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -45,11 +46,38 @@ def test_remote_path_expr_leaves_remote_home_expansion() -> None:
     assert "/venv/bin" in expr
 
 
+def test_remote_exports_declare_host_process_boundary() -> None:
+    mod = load_module()
+
+    exports = mod.remote_exports()
+
+    assert "ZTARE_CODEX_NESTED_SANDBOX=0" in exports
+
+
 def test_remote_path_rejects_shell_metacharacters() -> None:
     mod = load_module()
 
     with pytest.raises(SystemExit):
         mod.remote_path_entries("/usr/bin:$(touch /tmp/bad)")
+
+
+def test_vps_transport_reuses_a_scoped_ssh_control_socket(tmp_path, monkeypatch) -> None:
+    mod = load_module()
+    key = tmp_path / "key"
+    key.write_text("test", encoding="utf-8")
+    monkeypatch.setattr(mod, "VPS", "test-host")
+    monkeypatch.setattr(mod, "KEY", key)
+
+    ssh = mod.ssh_base()
+    scp = mod.scp_base()
+
+    assert "ControlMaster=auto" in ssh and "ControlPersist=300" in ssh
+    assert "ControlMaster=auto" in scp and "ControlPersist=300" in scp
+    expected_prefix = f"ControlPath=/tmp/ztare-vps-{os.getuid()}-{os.getpid()}-"
+    assert any(value.startswith(expected_prefix) for value in ssh)
+    assert next(value for value in ssh if value.startswith("ControlPath=")) == next(
+        value for value in scp if value.startswith("ControlPath=")
+    )
 
 
 def test_structural_residual_target_rejects_unregistered_source_id(
@@ -83,6 +111,167 @@ math_substrate:
     mod.validate_structural_residual_target(
         "math_substrate", "target-a-alias"
     )
+
+
+def test_campaign_input_paths_follow_declared_blueprint_and_context(
+    tmp_path, monkeypatch
+) -> None:
+    mod = load_module()
+    monkeypatch.setattr(mod, "LOCAL_REPO", tmp_path)
+    campaign_dir = tmp_path / "research_areas/pre_registrations/campaign_a"
+    campaign_dir.mkdir(parents=True)
+    campaign = campaign_dir / "campaign.md"
+    campaign.write_text(
+        """---
+schema: leanmill.campaign.v1
+lane: axiompack
+typed_blueprint: typed_blueprint.json
+frozen_context_ref:
+  path: research_areas/pre_registrations/campaign_a/context.json
+---
+Explore.
+""",
+        encoding="utf-8",
+    )
+
+    paths = mod._campaign_input_paths(
+        "research_areas/pre_registrations/campaign_a/campaign.md"
+    )
+
+    assert paths == [
+        "research_areas/pre_registrations/campaign_a/campaign.md",
+        "research_areas/pre_registrations/campaign_a/typed_blueprint.json",
+        "research_areas/pre_registrations/campaign_a/context.json",
+    ]
+
+
+def test_leanmill_preflight_syncs_declared_inputs_then_uses_remote_cli(
+    monkeypatch
+) -> None:
+    mod = load_module()
+    declared = ["campaign.md", "typed.json", "context.json"]
+    synced = []
+    remote = []
+    monkeypatch.setattr(mod, "_campaign_input_paths", lambda _path: declared)
+    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(mod, "remote_cmd", remote.append)
+
+    mod.action_leanmill_preflight(["campaign.md"])
+
+    assert synced == declared
+    assert remote == [[
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "preflight",
+        "campaign.md",
+    ]]
+
+
+def test_detached_campaign_uses_user_systemd_without_waiting_for_child(
+    monkeypatch, capsys
+) -> None:
+    mod = load_module()
+    synced = []
+    remote_scripts = []
+    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(mod, "remote_cmd", lambda _argv: "")
+    monkeypatch.setattr(
+        mod,
+        "remote_shell",
+        lambda script, **_kwargs: remote_scripts.append(script) or "",
+    )
+    monkeypatch.setattr(mod, "REMOTE_REPO", "/home/ztare/repo")
+    monkeypatch.setattr(
+        mod,
+        "_campaign_input_paths",
+        lambda _path: ["campaign.md", "typed.json"],
+    )
+    monkeypatch.setattr(
+        mod, "_campaign_metadata", lambda _path: {"typed_blueprint": "typed.json"}
+    )
+
+    mod.action_leanmill_campaign(
+        ["campaign.md", "/tmp/axiompack-smoke", "--detach"]
+    )
+
+    assert synced == ["campaign.md", "typed.json"]
+    assert len(remote_scripts) == 1
+    script = remote_scripts[0]
+    assert "systemd-run --user" in script
+    assert "--collect" in script
+    assert "--working-directory=/home/ztare/repo" in script
+    assert "setsid" not in script
+    assert json.loads(capsys.readouterr().out)["status"] == "launched"
+
+
+def test_nl_axiompack_campaign_launches_without_provider_free_preflight(
+    monkeypatch,
+) -> None:
+    mod = load_module()
+    remote = []
+    monkeypatch.setattr(mod, "sync_one_allowlisted", lambda _path: None)
+    monkeypatch.setattr(mod, "remote_cmd", remote.append)
+    monkeypatch.setattr(mod, "remote_shell", lambda *_args, **_kwargs: "")
+    monkeypatch.setattr(mod, "_campaign_input_paths", lambda _path: ["campaign.md"])
+    monkeypatch.setattr(mod, "_campaign_metadata", lambda _path: {})
+
+    mod.action_leanmill_campaign(
+        ["campaign.md", "/tmp/axiompack-nl", "--detach"]
+    )
+
+    assert remote == []
+
+
+def test_codex_upgrade_uses_user_local_prefix_and_rechecks_version(monkeypatch) -> None:
+    mod = load_module()
+    calls = []
+    monkeypatch.setattr(mod, "REMOTE_REPO", "/home/ztare/repo")
+    monkeypatch.setattr(mod, "remote_cmd", lambda argv: calls.append(argv))
+
+    mod.action_codex_upgrade(["0.144.0"])
+
+    assert calls == [
+        [
+            "npm",
+            "install",
+            "--global",
+            "--prefix",
+            "/home/ztare/.local",
+            "@openai/codex@0.144.0",
+        ],
+        ["codex", "--version"],
+    ]
+
+
+def test_leanmill_source_fetch_is_generic_digest_pinned_and_bounded(monkeypatch) -> None:
+    mod = load_module()
+    calls = []
+
+    def remote(argv, **kwargs):
+        calls.append((argv, kwargs))
+        if argv[0] == "sha256sum":
+            return "a" * 64 + "  snapshot.part\n"
+        return ""
+
+    monkeypatch.setattr(mod, "remote_cmd", remote)
+    mod.action_leanmill_source_fetch(
+        [
+            "https://example.org/reference.json",
+            "a" * 64,
+            "/tmp/leanmill_source_snapshots/reference.json",
+        ]
+    )
+    assert [row[0][0] for row in calls] == ["mkdir", "curl", "sha256sum", "mv"]
+
+    with pytest.raises(SystemExit):
+        mod.action_leanmill_source_fetch(
+            [
+                "https://example.org/reference.json",
+                "a" * 64,
+                "/tmp/outside/reference.json",
+            ]
+        )
 
 
 def test_local_close_payload_lint_normalizes_date_and_rejects_unsynced_repo_ref(

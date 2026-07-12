@@ -3,18 +3,20 @@
   "lane": "solver_lane",
   "mode": "dag_search",
   "provider": "claude_opus",
-  "generated_at": "2026-07-01T21:39:35.900337+00:00",
+  "generated_at": "2026-07-12T08:15:16.134899+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "claude_opus",
   "results": [
     {
-      "name": "adhoc::no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
-      "target_name": "no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
+      "name": "adhoc::count4_monotone",
+      "target_name": "count4_monotone",
       "kind": "c_pool_no_template",
       "mode": "dag_search",
       "outcome": "exact_gap",
       "compile_ok": false,
       "exit_code": 1,
+      "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
+      "stop_reason": "stalled_no_progress",
       "proof_text": "",
       "provider": "governed_dag_search",
       "providers_tried": [
@@ -28,23 +30,68 @@
           "agent_kind": "native_hammer_cascade"
         },
         {
-          "provider": "claude_opus_warm",
+          "provider": "codex",
           "outcome": "failed_compile",
           "compile_ok": false,
           "mnc_passed": false,
           "node_id": "n0_root",
           "move": "claude_warm",
           "agent_kind": "warm_agent"
+        },
+        {
+          "provider": "conjecture_lemma",
+          "outcome": "advanced",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "conjecture_lemma",
+          "agent_kind": "conjecture"
+        },
+        {
+          "provider": "native_hammer",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n1_sub_goal_1",
+          "move": "native_hammer",
+          "agent_kind": "native_hammer_cascade"
+        },
+        {
+          "provider": "codex",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n1_sub_goal_1",
+          "move": "claude_warm",
+          "agent_kind": "warm_agent"
+        },
+        {
+          "provider": "conjecture_lemma",
+          "outcome": "advanced",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n1_sub_goal_1",
+          "move": "conjecture_lemma",
+          "agent_kind": "conjecture"
+        },
+        {
+          "provider": "native_hammer",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n2_sub_goal_2",
+          "move": "native_hammer",
+          "agent_kind": "native_hammer_cascade"
         }
       ],
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1782941775,
-        "row_id": "adhoc::no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
-        "target_theorem_name": "no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
-        "source_file": "ztare_proofs/.solver_scratch/AdHoc_no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource.lean",
+        "generated_at_epoch": 1783844099,
+        "row_id": "adhoc::count4_monotone",
+        "target_theorem_name": "count4_monotone",
+        "source_file": "ztare_proofs/.solver_scratch/notes_worldmodel_auto_blueprint_0711T2348/AdHoc_count4_monotone_294e3cd7bf.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": "Prove that an adaptive positive-part A_visc source-selection confuser blocks C7AViscMarkedSourceVarianceReceipt on the same separated source.",
+        "goal_excerpt": "(g : Grid) (a t : Nat) :\n    countColor (specStep g a t) 4 \u2264 countColor g 4",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -74,46 +121,46 @@
         "evidence_basis": "local_default",
         "rd_primitive_hits": [
           {
-            "id": "QUADRATIC-QUOTIENT-DESCENT-GATE",
-            "kind": "gate",
-            "score": 800.4,
-            "why": "matched positive, source, selection, blocks, block; bucket pde_ns_lean; impact 4",
-            "description": "Quadratic quotient-descent gate: checks that a selected quadratic functional descends through a source quotient only after a pre-payoff selector, source-kernel square-term control, polarized cross-term control, and expli"
+            "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+            "kind": "pattern",
+            "score": 154.25,
+            "why": "matched nat; bucket sympy_cas; impact 5; graph_bonus 1.75",
+            "description": "Independent CAS verification of LLM-proposed inequalities."
           },
           {
-            "id": "NONADAPTIVE-SOURCE-SELECTION-GATE",
-            "kind": "gate",
-            "score": 796.4,
-            "why": "matched adaptive, source, selection, blocks, block; bucket pde_ns_lean; impact 4",
-            "description": "Pre-payoff source/extractor selection gate: checks that a reinterpreted source object, extractor or selection rule, source family, owner/carrier binding, index map, and timing receipt are fixed before payoff and independ"
+            "id": "ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE",
+            "kind": "anti-pattern",
+            "score": 147.75,
+            "why": "impact 5; graph_bonus 2.25",
+            "description": "Pattern-1 rabbit-hole at debate granularity (catch ledger refs C-2026-05-08-05, -25)."
           },
           {
-            "id": "QUOTIENT-MINIMAL-CARRIER-PAYMENT-GATE",
-            "kind": "gate",
-            "score": 790.4,
-            "why": "matched adaptive, positive, source, selection, confuser; bucket pde_ns_lean; impact 4",
-            "description": "Quotient-minimal carrier payment gate: checks that an infimum/minimal norm over same-source representatives is not spent on representative-level selected production unless a pre-payoff selector, target-independent repres"
+            "id": "META-JUDGE-SCHEMA",
+            "kind": "validator",
+            "score": 136.2,
+            "why": "impact 2",
+            "description": "Meta-judge schema (validates judge output)."
           },
           {
-            "id": "FINITE-PREFIX-SELECTION-GATE",
-            "kind": "gate",
-            "score": 783.65,
-            "why": "matched source, selection, blocks, block; bucket pde_ns_lean; impact 4; graph_bonus 1.25",
-            "description": "Exact finite-prefix selector: checks whether a same-source prefix inequality can produce a boundary>=interface event and, when an interface_floor is declared, a floor-paying witness; blocks proxy-family, zero-interface s"
+            "id": "RUN-RECEIPT-STRENGTH-AUDIT-FROM-FIELDS",
+            "kind": "primitive",
+            "score": 129.1,
+            "why": "bucket pde_ns_lean; impact 1",
+            "description": "Run the general receipt-strength audit over extracted carrier fields."
           },
           {
-            "id": "METRIC-COVERING-SELECTION-GATE",
-            "kind": "gate",
-            "score": 776.4,
-            "why": "matched source, selection, confuser; bucket pde_ns_lean; impact 4",
-            "description": "Covering-selection receipt gate: checks metric/quasi-metric, source family, scale/radius, uniform doubling or Besicovitch constant, engulfing/eccentricity control, pre-payoff selection rule, coverage or paid omissions, s"
+            "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+            "kind": "pattern",
+            "score": 127.9,
+            "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5",
+            "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure."
           },
           {
-            "id": "PDE-ESTIMATE-CRAFT-OPS",
-            "kind": "op",
-            "score": 776.15,
-            "why": "matched adaptive, source, selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75",
-            "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin"
+            "id": "LEAN-PROOF-GATE",
+            "kind": "gate",
+            "score": 127.65,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.25",
+            "description": "Verifies Lean proof compiles with no axioms/sorries (GP-211) AND runs the v33 Tier-0 anti-laundering organs (vacuity / gold-name / single-exact / indirect-leakage / currency) \u2014 flips gate_passed=False on a CONFIRMED fals"
           }
         ],
         "action_program": [
@@ -164,10 +211,12 @@
         "root_status": "exact_gap",
         "root_resolution": "exact_gap",
         "closed_or_exact_gap": true,
-        "moves_made": 2,
-        "wallclock_s": 180.107,
+        "moves_made": 7,
+        "wallclock_s": 10.817,
         "levers": {
-          "n0_root": "escalate_noncommutative(diagnostic): node n0_root deferred having tried ONLY commutative/direct moves ['native_hammer', 'claude_warm'] \u2014 invent/decompose not reached. (Diagnostic only: tested invent \u226f strong-direct; flags the failure mode, not a guaranteed lever \u2014 escalate to a stronger prover/human.)"
+          "n0_root": "exact_gap: node n0_root deferred at marginal P(close) below threshold after the non-commutative core was tried; emit as the exact remaining obligation for a future lever (stronger prover slot / human)",
+          "n1_sub_goal_1": "exact_gap: node n1_sub_goal_1 deferred at marginal P(close) below threshold after the non-commutative core was tried; emit as the exact remaining obligation for a future lever (stronger prover slot / human)",
+          "n2_sub_goal_2": "escalate_noncommutative(diagnostic): node n2_sub_goal_2 deferred having tried ONLY commutative/direct moves ['native_hammer'] \u2014 invent/decompose not reached. (Diagnostic only: tested invent \u226f strong-direct; flags the failure mode, not a guaranteed lever \u2014 escalate to a stronger prover/human.)"
         },
         "move_attribution": [
           {
@@ -180,9 +229,10 @@
             "falsifier": false,
             "rung": false,
             "residual": null,
-            "progress": 0.02,
+            "progress": 0.2,
             "goals_remaining": 0,
-            "error_class": "parse_error",
+            "error_class": "tactic_failed",
+            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
             "wallclock_s": 0.0
           },
           {
@@ -198,9 +248,97 @@
             "progress": 0.0,
             "goals_remaining": 0,
             "error_class": "other_error",
-            "wallclock_s": 179.73
+            "tail": "is run (last: uses_sorry; agent's own gap: specStep_shape_no_new_four \u2014 the shape-preservation + no-new-4 contract for `specStep`; the ONLY node of this DAG mentioning `specStep`, hence the only one not derivable from the opaque signature (see) \u2014 strategy change required (decompose/conjecture/defer)",
+            "wallclock_s": 0.0
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "conjecture_lemma",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": "conjectured_lemma_pending",
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "tail": "compiled \u2014 goal follows from the conjectured lemma (load-bearing)",
+            "wallclock_s": 5.41
+          },
+          {
+            "node_id": "n1_sub_goal_1",
+            "node_kind": "sub_goal",
+            "move": "native_hammer",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": null,
+            "progress": 0.2,
+            "goals_remaining": 0,
+            "error_class": "tactic_failed",
+            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
+            "wallclock_s": 0.0
+          },
+          {
+            "node_id": "n1_sub_goal_1",
+            "node_kind": "sub_goal",
+            "move": "claude_warm",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": null,
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "tail": "is run (last: uses_sorry; agent's own gap: specStep_shape_no_new_four \u2014 the shape-preservation + no-new-4 contract for `specStep`; the ONLY node of this DAG mentioning `specStep`, hence the only one not derivable from the opaque signature (see) \u2014 strategy change required (decompose/conjecture/defer)",
+            "wallclock_s": 0.0
+          },
+          {
+            "node_id": "n1_sub_goal_1",
+            "node_kind": "sub_goal",
+            "move": "conjecture_lemma",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": "conjectured_lemma_pending",
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "tail": "compiled \u2014 goal follows from the conjectured lemma (load-bearing)",
+            "wallclock_s": 5.34
+          },
+          {
+            "node_id": "n2_sub_goal_2",
+            "node_kind": "sub_goal",
+            "move": "native_hammer",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": null,
+            "progress": 0.2,
+            "goals_remaining": 0,
+            "error_class": "tactic_failed",
+            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
+            "wallclock_s": 0.0
           }
         ],
+        "terminal_signal": {
+          "node_id": "n2_sub_goal_2",
+          "move": "native_hammer",
+          "error_class": "tactic_failed",
+          "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
+          "stop_reason": "stalled_no_progress"
+        },
         "trace": [
           {
             "event": "move_failed",
@@ -213,8 +351,41 @@
             "move": "claude_warm"
           },
           {
+            "event": "conjectured_sub_lemma",
+            "node_id": "n0_root",
+            "move": "conjecture_lemma",
+            "new_node_id": "n1_sub_goal_1",
+            "lever": "conjecture: proposed sub-lemma \u2192 n1_sub_goal_1",
+            "sub_goal_preview": "theorem conj_count4_monotone :\n    \u2200 (g : Grid) (a t color : Nat),\n      color \u2209"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n1_sub_goal_1",
+            "move": "native_hammer"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n1_sub_goal_1",
+            "move": "claude_warm"
+          },
+          {
+            "event": "conjectured_sub_lemma",
+            "node_id": "n1_sub_goal_1",
+            "move": "conjecture_lemma",
+            "new_node_id": "n2_sub_goal_2",
+            "lever": "conjecture: proposed sub-lemma \u2192 n2_sub_goal_2",
+            "sub_goal_preview": "theorem conj_count4_monotone :\n    \u2200 (g : Grid) (a t color : Nat),\n      color \u2209"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n2_sub_goal_2",
+            "move": "native_hammer"
+          },
+          {
             "event": "stop",
-            "reason": "wallclock_budget_exhausted"
+            "reason": "stalled_no_progress",
+            "moves_without_progress": 6,
+            "moves_made": 7
           }
         ]
       },

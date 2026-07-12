@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns-macro-post-tick659-frontier-allocation-20260520.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns-macro-post-tick659-frontier-allocation-20260520.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns-macro-post-tick659-frontier-allocation-20260520",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns-macro-post-tick659-frontier-allocation-20260520.json",
+    "score": "analytics/public/forecast_pool/scores/ns-macro-post-tick659-frontier-allocation-20260520.json"
+  },
+  "baseline_action": "Proceed directly to another local fresh-packet tick without pricing whether this is only a local optimum.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "ns-macro-post-tick659-frontier-allocation-20260520",
+  "cost_penalty": 0.35,
+  "counterfactual_action": "Use macro pricing to decide whether to stay on the L3A coherence chain or de-anchor to a different NS program.",
+  "created_at": "2026-05-20T02:34:30Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_frontier_allocation",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0444,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "effort_calibration": "If L3A remains best, the next tick should have a narrow target and explicit de-anchor kill condition; otherwise it should redirect before another local loop.",
+    "failure_mode_preconditioning": "Macro pricing should prevent confusing a local source-leg narrowing with global frontier progress."
+  },
+  "horizon": "before opening the next full NS research tick after TICK659",
+  "information_value": 120.0,
+  "layer": "macro",
+  "objective_resolver": "Score TRUE if the macro orientation produces a decision-use row that selects a concrete next macro lane, explains why the chosen lane is not the old 0-degree recurrence basin, and names the kill condition that would force de-anchoring.",
+  "question": "After TICK659, should the NS program allocate the next macro cycle to the L3A fresh-packet/Duhamel-incidence coherence chain (FreshPacketSelectionToDuhamelIncidenceCoherence -> BadCenterEventPriceDropDuhamelIncidenceSource -> IndependentFreshPacketSourceForNonflatBadCenter), rather than de-anchoring immediately to a different NS program such as CV nonlocal De Giorgi, pressure-complement first, or fanout-only accounting?",
+  "risk_penalty": 0.25,
+  "success_threshold": "decision-use row recorded; next macro lane selected; kill condition and non-amnesia check named",
+  "task_type": "ns_frontier_allocation",
+  "value_if_success": 120.0,
+  "void_conditions": "void only if TICK659 close or synced Lean artifacts are unavailable on the VPS"
+}

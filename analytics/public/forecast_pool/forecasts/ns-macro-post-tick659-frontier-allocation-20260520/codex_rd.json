@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "price_macro_then_open_micro_only_if_l3a_coherence_survives_deanchor_kill_condition",
+  "agent_id": "codex_rd",
+  "contract_id": "ns-macro-post-tick659-frontier-allocation-20260520",
+  "contract_question": "After TICK659, should the NS program allocate the next macro cycle to the L3A fresh-packet/Duhamel-incidence coherence chain (FreshPacketSelectionToDuhamelIncidenceCoherence -> BadCenterEventPriceDropDuhamelIncidenceSource -> IndependentFreshPacketSourceForNonflatBadCenter), rather than de-anchoring immediately to a different NS program such as CV nonlocal De Giorgi, pressure-complement first, or fanout-only accounting?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "coherence_target_restates_old_same_tree_lock": 0.20512820512820512,
+    "cv_deanchor_too_broad_to_be_actionable": 0.21794871794871795,
+    "graph_signal_stale_or_router_overfit": 0.12820512820512822,
+    "l3a_local_optimum_not_global_frontier": 0.28205128205128205,
+    "pressure_or_fanout_gate_dominates_first": 0.16666666666666666
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "decision_use_candidate",
+    "amnesia_prevention",
+    "effort_calibration"
+  ],
+  "forecasted_at": "2026-05-20T02:34:31Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.1,
+  "p_success": 0.62,
+  "rationale_short": "TICK659 produced a sharper object, but not a frontier breach. Macro pricing is needed to check whether L3A coherence is still the best capital allocation or just a local optimum.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "l3a_local_optimum_not_global_frontier",
+    "cv_deanchor_too_broad_to_be_actionable",
+    "coherence_target_restates_old_same_tree_lock",
+    "pressure_or_fanout_gate_dominates_first",
+    "graph_signal_stale_or_router_overfit"
+  ]
+}

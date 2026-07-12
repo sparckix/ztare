@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 2.38,
   "artifact_hash": "2fda3274cce58f317bc86e38b04a4054cec92c104d8ababaa6a0de47b1902859",
-  "artifact_path": "analytics/public/leanmill/results/v1752_guarded_probe_selected_shard.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1752_guarded_probe_selected_shard.json",
   "compile_status": "fail_gate",
   "contract_id": "gp225_v1752_guarded_probe_micro_batch",
   "error_type": "source_slice_prefix_context_and_tactic_match_gap",

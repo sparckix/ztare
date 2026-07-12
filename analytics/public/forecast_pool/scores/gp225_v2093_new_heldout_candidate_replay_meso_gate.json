@@ -6,7 +6,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 22.0,
     "artifact_hash": "59454c47bda565f8353bc4cbb82d85858efc136fd48ef502114e3ff210310e8d",
-    "artifact_path": "analytics/public/leanmill/results/v2093_new_heldout_candidate_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2093_new_heldout_candidate_replay.json",
     "compile_status": "replay_failed_clean",
     "contract_id": "gp225_v2093_new_heldout_candidate_replay_meso_gate",
     "decision_changed_bool": true,

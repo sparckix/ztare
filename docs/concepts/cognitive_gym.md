@@ -80,6 +80,19 @@ Separation does the work: a proposal worker can suggest a path, but cannot fit t
 | Grammar ceiling | The current form library cannot express the target. | The result is labeled a ceiling or next-extension finding. |
 | Self-graded progress | The same model proposes, excuses, and promotes its own answer. | Proposal, check, and review stay separate. |
 
+## Protected exploration: the wager
+
+A blocked proposal is not a rejected one. When the evidence does not yet bind a
+claim, its state is *blocked*, not *refuted* — and a blocked claim can still be
+worth betting on. A **wager** is the move that keeps a bold, thin-evidence idea
+alive without letting it grade itself as settled. The claim's status does not
+change; the wager is a separate, ranked, expiring object that names the real
+experiment that would move the decision. The kernel simulates each declared
+outcome and admits the wager only if some outcome would actually flip the
+verdict, then ranks admissible wagers by how much the test would tell you — a
+prior-free information yield, not the size of the declared payoff. A lateral bet
+gets standing and a place in the queue; it does not get to skip the stack.
+
 ## Why short runs can still matter
 
 Short runs are not impressive by themselves. They matter only when the search

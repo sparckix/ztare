@@ -20,22 +20,6 @@
         "buckets": [
           "cognitive_reframe"
         ],
-        "description": "Read-only audit for whether stagnant autoresearch runs left evidence of breadth controls such as pivots, parallel blitzes, or primitive-class rotation.",
-        "id": "HILL-CLIMB-BEHAVIOR-AUDIT",
-        "impact_factor_expost": 3.0,
-        "kind": "primitive",
-        "last_used": "2026-06-13",
-        "matched_terms": [
-          "stagnation"
-        ],
-        "path": "src/ztare/reports/hill_climb_behavior_audit.py",
-        "score": 774.3,
-        "why": "matched stagnation; bucket cognitive_reframe; impact 3"
-      },
-      {
-        "buckets": [
-          "cognitive_reframe"
-        ],
         "description": "The shared strange-loop orchestrator. Construct with a domain (Steps 1 & 3) and a query",
         "id": "ISOMORPHISMLOOP",
         "impact_factor_expost": 3.0,
@@ -45,6 +29,22 @@
         "path": "src/ztare/common/constraint_isomorphism.py",
         "score": 773.3,
         "why": "bucket cognitive_reframe; impact 3"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "Read-only audit for whether stagnant autoresearch runs left evidence of breadth controls such as pivots, parallel blitzes, or primitive-class rotation.",
+        "id": "HILL-CLIMB-BEHAVIOR-AUDIT",
+        "impact_factor_expost": 3.0,
+        "kind": "primitive",
+        "last_used": "2026-06-13",
+        "matched_terms": [
+          "stagnation"
+        ],
+        "path": "src/ztare/reports/hill_climb_behavior_audit.py",
+        "score": 772.8,
+        "why": "matched stagnation; bucket cognitive_reframe; impact 3"
       },
       {
         "buckets": [
@@ -304,7 +304,7 @@
           "injection"
         ],
         "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
-        "score": 941.65,
+        "score": 940.15,
         "why": "matched ns_track_b, pde_estimate, pde estimate, harmonic_analysis, source_selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
       },
       {
@@ -364,7 +364,7 @@
           "same_carrier"
         ],
         "path": "src/ztare/gates/moment_ratio_surplus_gate.py",
-        "score": 888.15,
+        "score": 886.65,
         "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
       }
     ],
@@ -522,16 +522,49 @@
   "ok": true,
   "parent_nodes": [
     {
+      "child_count": 132,
+      "example_ids": [
+        "SAME-CARRIER-PACKING-GATE",
+        "NONADAPTIVE-SOURCE-SELECTION-GATE",
+        "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "EVENT-FAMILY-BINDING-GATE",
+        "LEAN-PROOF-GATE",
+        "NO-REBILLING-FRESHNESS-GATE",
+        "PDE-ANALYTIC-SUBSTANCE-GATE",
+        "METRIC-COVERING-SELECTION-GATE"
+      ],
+      "family_id": "evidence_governance_gate",
+      "family_label": "Evidence Governance Gate",
+      "matched_terms": [
+        "stagnation",
+        "source_selection",
+        "nonadaptive",
+        "same_carrier",
+        "packing",
+        "gate compression"
+      ],
+      "purpose": "Deterministic gates, validators, audits, and claim/admission controls.",
+      "scope": "catalog",
+      "source_categories": [
+        "control-script",
+        "gate",
+        "substrate-project",
+        "validation/scoring",
+        "validator",
+        "validator-script"
+      ]
+    },
+    {
       "child_count": 38,
       "example_ids": [
-        "ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE",
-        "ANTI-PATTERN-002-CITATION-LAUNDERING",
-        "ANTI-PATTERN-003-VOCABULARY-SMUGGLING",
-        "ANTI-PATTERN-004-SORRY-OBLIGATION-LAUNDERING",
-        "ANTI-PATTERN-005-NARRATIVE-INFLATION",
-        "ANTI-PATTERN-006-CHARITY-GRADE-INFLATION",
-        "ANTI-PATTERN-007-CRITERION-SELECTION-RIGGING",
-        "ANTI-PATTERN-008-CROSS-AGENT-MONOCULTURE"
+        "PATTERN-022-BUNDLE-DISCRIMINATOR-STACK",
+        "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+        "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+        "PATTERN-002-DARWIN-IDEA-KILLER",
+        "META-PATTERN-022-GOWERS-FIRST-WITH-CONTENT-LAYER-COMPOSITION",
+        "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
+        "META-PATTERN-024-RECURSIVE-FIXED-POINT-CONVERGENCE",
+        "PATTERN-008-THREE-LEG-VERIFICATION"
       ],
       "family_id": "pattern_memory",
       "family_label": "Pattern Memory",
@@ -555,48 +588,16 @@
       ]
     },
     {
-      "child_count": 113,
+      "child_count": 216,
       "example_ids": [
-        "ANSATZ-SURVIVOR-GATE",
-        "APPLY-EVIDENCE-GAP-SCORE-CAPS",
-        "APPLY-LATENT-MOTION-VETO",
-        "ASYMPTOTIC-CLAIM-DISCIPLINE",
-        "ASYMPTOTICCLAIMCONTRACT",
-        "AUTORESEARCH-LOOP",
-        "AUXILIARY-OBJECT-DECLARATION-GATE",
-        "BOUND-CHAIN-CONSISTENCY-GATE"
-      ],
-      "family_id": "evidence_governance_gate",
-      "family_label": "Evidence Governance Gate",
-      "matched_terms": [
-        "stagnation",
-        "source_selection",
-        "nonadaptive",
-        "same_carrier",
-        "packing"
-      ],
-      "purpose": "Deterministic gates, validators, audits, and claim/admission controls.",
-      "scope": "catalog",
-      "source_categories": [
-        "control-script",
-        "gate",
-        "substrate-project",
-        "validation/scoring",
-        "validator",
-        "validator-script"
-      ]
-    },
-    {
-      "child_count": 203,
-      "example_ids": [
-        "APN-SEMANTIC-NEIGHBOURS",
-        "APPEND-EXPLORED-PRIMITIVE-CLASS",
-        "ATLAS-FRESHNESS-STATUS",
-        "ATTACH-META-ARC-RECOMMENDATIONS",
-        "BUILD-BASIN-DIAGNOSTICS",
-        "BUILD-EXTERNAL-REFERENCE-SURFACE",
-        "BUILD-HOSTILE-PACKET-SUITE",
-        "BUILD-INVENTORY"
+        "PDE-ESTIMATE-CRAFT-OPS",
+        "RUN-NONADAPTIVE-SOURCE-SELECTION-CHECKS",
+        "RUN-SAME-CARRIER-PACKING-CHECKS",
+        "GENERATE-PDE-ESTIMATE-SKELETONS",
+        "NS-L3A-CONCENTRATION-WORKMAP",
+        "PDE-CURRENCY-LEDGER",
+        "RUN-INCIDENCE-DERIVED-FINITE-INJECTION-CHECKS",
+        "BUILD-PDE-EXECUTION-CONTRACT"
       ],
       "family_id": "research_move_operator",
       "family_label": "Research Move Operator",
@@ -613,16 +614,16 @@
       ]
     },
     {
-      "child_count": 283,
+      "child_count": 339,
       "example_ids": [
-        "ABDUCE-SEED",
-        "ABDUCTION-ADVANCES",
-        "ABDUCTIONGOAL",
-        "ACTIVE-PROOF-CHECKER-NAME",
-        "ADJACENCY-SCORES",
-        "AGENTIC-LEAF-SOLVER",
-        "AGENTVOTEFORECASTER",
-        "AGGREGATE"
+        "BUILD-INJECTION-TACTIC",
+        "EXOGENOUS-MOVE-TELEMETRY",
+        "LEAN-BODY-TO-SYMPY",
+        "SUBSTRATE-LIVENESS",
+        "BUILD-ABLATION-LAYERS",
+        "CLAIM-OF",
+        "LEANFALSIFIER",
+        "RENDER"
       ],
       "family_id": "proof_formalization_worker",
       "family_label": "Proof Formalization Worker",
@@ -643,14 +644,14 @@
     {
       "child_count": 123,
       "example_ids": [
-        "ADMISSIBLE-PRIMITIVES",
+        "LAGRANGIAN-DERIVATION",
+        "RESET-STAGNATION-ON-HOLDOUT-PASS",
+        "RESIDUAL-DIAGNOSTICS-STAGNATION-K",
         "ANALOGY-PRIMITIVE",
-        "ANALOGYRESPONSE",
+        "COLD-LLM-ERDOS-SEED",
+        "COMPRESSION-REPORT",
         "ANALYZE-RESIDUAL",
-        "ATTEST-VISIBLE-MRE",
-        "BERRY-KEATING-GENERATOR",
-        "BF-BIC-PAIRED-T",
-        "BH-FDR"
+        "SHOULD-ENGAGE"
       ],
       "family_id": "model_fit_structure_probe",
       "family_label": "Model Fit Structure Probe",
@@ -668,16 +669,16 @@
       ]
     },
     {
-      "child_count": 33,
+      "child_count": 77,
       "example_ids": [
-        "APPARATUS-CERTIFICATE",
         "BUNDLE-RUN-SOLVER-GOVERNANCE-HARNESS",
         "BUNDLE-VERIFY-REUSABLE-PATH-A-VERIFIER",
-        "CANONICAL-GRAPH-KIND-SPECS",
-        "CATCH-GRAPH-EDGE-ADVISORY",
-        "CONFIRM-INSTANCES",
-        "CONSTRAINTFINGERPRINT",
-        "DEFAULT-LLM-QUERY"
+        "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+        "GP225-AUDIT",
+        "SOLVE-EXISTENTIAL",
+        "PROJECT-WORKBENCH-STATE",
+        "RESIDUAL-TO-LEVER",
+        "ALL-PDE-GATE-ENTRIES"
       ],
       "family_id": "infrastructure_utility",
       "family_label": "Infrastructure Utility",
@@ -689,20 +690,21 @@
       "source_categories": [
         "common-infra",
         "control-script",
-        "export/judgment"
+        "export/judgment",
+        "other"
       ]
     },
     {
-      "child_count": 23,
+      "child_count": 24,
       "example_ids": [
-        "ANALOGY-CANDIDATES-PROVIDER",
-        "ASYMPTOTE-DEVIATION-PROVIDER",
+        "LAGRANGIAN-WORKED-EXAMPLE-PROVIDER",
+        "VARIATIONAL-PROMOTION-FLOOR-PROVIDER",
+        "FORCED-REFRAME-PROVIDER",
+        "FRAMER-RECOMMENDATION-PROVIDER",
         "COLD-LLM-SEED-PROVIDER",
         "COLD-SHOT-SEED-PROVIDER",
-        "CONTAMINATION-DEFENSE-PROVIDER",
-        "CONTRACT-RULES-PROVIDER",
-        "DATA-DIAGNOSTICS-PROVIDER",
-        "EMBEDDING-HISTORY-PROVIDER"
+        "EMBEDDING-HISTORY-PROVIDER",
+        "ITER-TRAJECTORY-PROVIDER"
       ],
       "family_id": "orchestration_briefing_provider",
       "family_label": "Orchestration Briefing Provider",
@@ -716,16 +718,16 @@
       ]
     },
     {
-      "child_count": 41,
+      "child_count": 44,
       "example_ids": [
+        "MINE-REFERENCE-GRAPH",
+        "HILL-CLIMB-BEHAVIOR-AUDIT",
+        "MINE-CLIMB-TRIGGERS",
+        "PROJECT-WORKBENCH-SERVER",
         "AGGREGATE-TASTE",
         "AUTORESEARCH-KERNEL-HEALTH",
-        "BLITZ-SURVIVAL-REPORT",
-        "BUILD-CONSEQUENTIAL-ARTIFACTS",
-        "BUILD-CONTEXT-PRIMER",
-        "CROSS-SOURCE-DIVERGENCE-AUDIT",
-        "DETECT-INFLECTIONS",
-        "HILL-CLIMB-BEHAVIOR-AUDIT"
+        "BUILD-FORECAST-CAPABILITY-AUDIT",
+        "COMPRESSION-PROGRESS-REPLAY"
       ],
       "family_id": "mining_operations_intelligence",
       "family_label": "Mining Operations Intelligence",
@@ -733,6 +735,7 @@
       "purpose": "Mining, dashboard, reflexive telemetry, ROI, and operations-intelligence capabilities.",
       "scope": "catalog",
       "source_categories": [
+        "control-script",
         "other",
         "report"
       ]
@@ -740,9 +743,9 @@
     {
       "child_count": 5,
       "example_ids": [
-        "CAS-ATOM8-VERIFICATION",
-        "CAS-W6-VERIFICATION",
         "NS-GRAPH-TICK-PRECHECK",
+        "CAS-W6-VERIFICATION",
+        "CAS-ATOM8-VERIFICATION",
         "NS-RESIDUAL-VOID-AUDIT",
         "NS-ROUTE1-RESIDUAL-MANIFEST-O1-DECISION-SURFACE"
       ],
@@ -1030,7 +1033,7 @@
         "injection"
       ],
       "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
-      "score": 941.65,
+      "score": 940.15,
       "why": "matched ns_track_b, pde_estimate, pde estimate, harmonic_analysis, source_selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
     },
     {
@@ -1090,8 +1093,27 @@
         "same_carrier"
       ],
       "path": "src/ztare/gates/moment_ratio_surplus_gate.py",
-      "score": 888.15,
+      "score": 886.65,
       "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Analytic-substance gate for PDE estimate receipts: distinguishes quantitative PDE work from source-contract plumbing by requiring an analytic object, target estimate, inequality, norm or quantity, scale/localization, der",
+      "id": "PDE-ANALYTIC-SUBSTANCE-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-07-02",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "pde estimate",
+        "nonadaptive"
+      ],
+      "path": "src/ztare/gates/pde_analytic_substance_gate.py",
+      "score": 886.4,
+      "why": "matched ns_track_b, pde_estimate, pde estimate, nonadaptive; bucket pde_ns_lean; impact 4"
     },
     {
       "buckets": [
@@ -1108,7 +1130,7 @@
         "same_carrier"
       ],
       "path": "src/ztare/gates/bounded_ratio_support_gate.py",
-      "score": 887.15,
+      "score": 885.65,
       "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
     },
     {
@@ -1130,7 +1152,7 @@
         "injection"
       ],
       "path": "src/ztare/gates/same_carrier_packing_gate.py",
-      "score": 886.9,
+      "score": 885.4,
       "why": "matched ns_track_b, pde_estimate, same_carrier, fresh_capacity, no_reuse; bucket pde_ns_lean; impact 4"
     },
     {
@@ -1168,7 +1190,7 @@
         "packing"
       ],
       "path": "src/ztare/gates/metric_covering_selection_gate.py",
-      "score": 870.9,
+      "score": 869.4,
       "why": "matched ns_track_b, pde_estimate, same_carrier, packing; bucket pde_ns_lean; impact 4"
     },
     {
@@ -1186,7 +1208,7 @@
         "same_carrier"
       ],
       "path": "src/ztare/gates/positive_variation_bridge_gate.py",
-      "score": 869.9,
+      "score": 868.4,
       "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4"
     },
     {
@@ -1203,7 +1225,7 @@
         "pde_estimate"
       ],
       "path": "src/ztare/gates/quadratic_quotient_descent_gate.py",
-      "score": 867.9,
+      "score": 866.4,
       "why": "matched ns_track_b, pde_estimate; bucket pde_ns_lean; impact 4"
     },
     {
@@ -1222,29 +1244,10 @@
         "same carrier"
       ],
       "path": "src/ztare/gates/event_family_binding_gate.py",
-      "score": 865.9,
+      "score": 864.4,
       "why": "matched ns_track_b, pde_estimate, same_carrier, same carrier; bucket pde_ns_lean; impact 4"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean"
-      ],
-      "description": "Pre-payoff source/extractor selection gate: checks that a reinterpreted source object, extractor or selection rule, source family, owner/carrier binding, index map, and timing receipt are fixed before payoff and independ",
-      "id": "NONADAPTIVE-SOURCE-SELECTION-GATE",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-24",
-      "matched_terms": [
-        "ns_track_b",
-        "pde_estimate",
-        "source_selection",
-        "nonadaptive"
-      ],
-      "path": "src/ztare/gates/nonadaptive_source_selection_gate.py",
-      "score": 865.9,
-      "why": "matched ns_track_b, pde_estimate, source_selection, nonadaptive; bucket pde_ns_lean; impact 4"
     }
   ],
-  "total_index_rows": 862,
+  "total_index_rows": 998,
   "warnings": []
 }

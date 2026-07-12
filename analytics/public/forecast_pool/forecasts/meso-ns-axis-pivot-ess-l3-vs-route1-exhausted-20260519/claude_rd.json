@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "meso-ns-axis-pivot-ess-l3-vs-route1-exhausted-20260519",
+  "contract_question": "STRATEGIC PIVOT (meso, pre-tick): BKM/CF route-1 reduction is self-similar-exhausted (6 classes converge on the degree-0/DSS wall; formally encoded ns_tick645_homogeneity0_obstruction; tick597 corroborates arithmetic side; CF_global_extension maximally defended). Among the 5 Clay-equivalent axioms, ESS-L3 (Escauriaza-Seregin-Sverak L3-endpoint) is structurally DISTINCT \u2014 it controls the CRITICAL (scale-invariant) L3 norm, not the SUPERCRITICAL ||omega||_Linf, so the homogeneity-0 no-new-active-scale obstruction (a supercritical-control wall) need NOT transfer \u2014 AND has 0 prior ns_*.lean attempts (genuine headroom) vs BKM 57 files. Question: does pivoting RD effort to the ESS-L3 critical-endpoint axis yield strictly more genuine closure-relevant progress (a non-vacuous, basin-confirmed-new structural reduction or sharp obstruction at the CRITICAL scaling) than continuing BKM/CF route-1 reduction (predicted recurrence) over the next tick arc?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 300.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T03:46:45Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.18,
+  "rationale_short": "ESS-L3 is structurally DISTINCT (critical scale-invariant L3 norm, not supercritical ||omega||_Linf) so the homogeneity-0 no-new-active-scale wall \u2014 a SUPERCRITICAL-control obstruction \u2014 need not transfer; 0 prior ns_*.lean attempts = genuine headroom vs BKM 57 files. Raises P materially above the ~0.06-0.08 exhausted CF route. BUT still Clay-equivalent (unconditional ESS-L3 IS Clay) and the DSS/discretely-self-similar concentration limit (Seregin-type) could still bite the critical norm \u2014 real collapse risk. Honest moderate-low: distinct-structure + headroom up, deep-wall + DSS-transfer-risk down.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

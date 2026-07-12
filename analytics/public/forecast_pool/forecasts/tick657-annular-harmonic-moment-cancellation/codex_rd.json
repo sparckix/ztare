@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Do pencil-first harmonic moment analysis before adding Lean; require a fixed admissible test class and explicit quadratic-mode charge/cancellation or retire the quotient.",
+  "agent_id": "codex_rd",
+  "contract_id": "tick657-annular-harmonic-moment-cancellation",
+  "contract_question": "Will TICK657 produce a substantive decision on whether AnnularHarmonicMomentCancellation is a natural pressure-collar quotient theorem rather than a post-hoc artificial test class: either a candidate estimate with admissible test class, quadratic-mode cancellation/charge, and no-log/radius interface, or a named obstruction retiring the lane?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 135.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "degree_zero_harmonic_rebilling": 0.21,
+    "natural_quotient_candidate": 0.12,
+    "no_log_radius_interface_unisolated": 0.16,
+    "posthoc_test_class_rewrite": 0.27,
+    "quadratic_mode_uncancelled": 0.24
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "frontier_math",
+    "gowers_first"
+  ],
+  "forecasted_at": "2026-05-20T01:10:43Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.1,
+  "p_success": 0.56,
+  "rationale_short": "Decision target is easier than proving a positive estimate, but the pressure collar can easily degenerate into post-hoc test selection or degree-zero harmonic rebilling. Success requires a fixed test class plus no-log/radius interface or a named obstruction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "posthoc_test_class_rewrite",
+    "quadratic_mode_uncancelled",
+    "degree_zero_harmonic_rebilling",
+    "no_log_radius_interface_unisolated",
+    "natural_quotient_candidate"
+  ]
+}

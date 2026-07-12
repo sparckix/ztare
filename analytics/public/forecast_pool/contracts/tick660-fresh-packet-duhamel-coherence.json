@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick660-fresh-packet-duhamel-coherence.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick660-fresh-packet-duhamel-coherence.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick660-fresh-packet-duhamel-coherence",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick660-fresh-packet-duhamel-coherence.json",
+    "score": "analytics/public/forecast_pool/scores/tick660-fresh-packet-duhamel-coherence.json"
+  },
+  "baseline_action": "Open a broad Duhamel source or same-tree lock tick that bundles coherence, pressure, and fanout.",
+  "budget_agent_minutes": 140.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick660-fresh-packet-duhamel-coherence",
+  "cost_penalty": 0.35,
+  "counterfactual_action": "TICK660 attacks FreshPacketSelectionToDuhamelIncidenceCoherence alone, using pressure complement and no-log fanout only as kill gates.",
+  "created_at": "2026-05-20T02:41:18Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0526,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_pde_estimate",
+    "score": 0.5,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 140,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "effort_calibration": "The target is narrower than TICK659 but may require a genuinely new global section-identity lemma.",
+    "failure_mode_preconditioning": "Pre-naming global-coherence, bad-center section identity, pressure, and fanout failures should prevent a broad source theorem from laundering shell/process reserve."
+  },
+  "horizon": "TICK660 close",
+  "information_value": 125.0,
+  "layer": "micro",
+  "objective_resolver": "Score TRUE if TICK660 produces either a concrete compile-checked interface/adapter with explicit remaining PDE hypotheses for the coherence bridge, or a named obstruction showing why the bridge cannot supply the independent fresh-packet source without one of the listed kill-gate failures.",
+  "question": "Will TICK660 produce a substantive decision on FreshPacketSelectionToDuhamelIncidenceCoherence: whether pre-beta fresh-packet selection can be coherently turned into the Duhamel event ledger and selected bad-center section-incidence source needed for BadCenterEventPriceDropDuhamelIncidenceSource, without shell-only reserve, post-hoc section choice, pressure leakage, fanout rebilling, CF alignment, degree-0 bookkeeping, or parabolic scalar reuse?",
+  "risk_penalty": 0.25,
+  "success_threshold": "compile-checked Lean surface plus ns_residual_manifest update and forecast resolution",
+  "task_type": "ns_pde_estimate",
+  "value_if_success": 105.0,
+  "void_conditions": "void only if TICK659 artifacts, macro/meso decision-use rows, or synced Lean artifacts are unavailable on the VPS"
+}

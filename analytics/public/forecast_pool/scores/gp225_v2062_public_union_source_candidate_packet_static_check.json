@@ -38,7 +38,7 @@
       "new_next_action": "price bounded canary replay with replay blockers as preconditions",
       "old_next_action": "reuse v20.44 loose candidate packet or stop at queue",
       "preconditioner_effect": "Excluded solved charFun row and constrained v20.62 to unsolved source-content rows.",
-      "preconditioner_source": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json"
+      "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2061_public_union_next_source_discovery_queue.json"
     }
   },
   "forecast_history_count": 2,
@@ -47,7 +47,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 19.0,
     "artifact_hash": "04b8d8a2caba94285eebd39b0bf46ebe07e08279bc113c3fc87c299556dd6e2a",
-    "artifact_path": "analytics/public/leanmill/results/v2062_public_union_source_candidate_packet_static_check.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2062_public_union_source_candidate_packet_static_check.json",
     "changed_by_forecast_ids": [
       "Noether3",
       "Hilbert3"
@@ -71,7 +71,7 @@
     "new_next_action": "price bounded canary replay with replay blockers as preconditions",
     "old_next_action": "reuse v20.44 loose candidate packet or stop at queue",
     "preconditioner_effect": "Excluded solved charFun row and constrained v20.62 to unsolved source-content rows.",
-    "preconditioner_source": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+    "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2061_public_union_next_source_discovery_queue.json",
     "realized_failure_mode_ids": [],
     "resolution_note": "v20.62 passed: four unsolved v20.61 rows, eight candidate actions, eight strict static-passed actions, three replay blockers recorded, no replay/training, GNN blocked.",
     "resolved_at": "2026-05-14T18:37:53Z",

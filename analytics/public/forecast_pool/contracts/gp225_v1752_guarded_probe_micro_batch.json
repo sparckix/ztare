@@ -20,7 +20,7 @@
   "horizon": "one bounded v17.52 guarded Lean probe batch",
   "information_value": 0.4,
   "layer": "micro",
-  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1752_*.json metrics: success iff target_guarded_labels>=8, action_unique_or_closure_contribution_rows>=5, true_false_accepts=0, training_ready_rows=0, and actual_cost_agent_minutes<=25.",
+  "objective_resolver": "Resolve from analytics/public/gnn/lemma_relevance/v1752_*.json metrics: success iff target_guarded_labels>=8, action_unique_or_closure_contribution_rows>=5, true_false_accepts=0, training_ready_rows=0, and actual_cost_agent_minutes<=25.",
   "question": "Will v17.52 guarded replay/probe batch over v17.51 selected public SLT rows produce at least 8 executable target-guarded labels, at least 5 action-unique or closure-contribution candidate rows, and zero true false accepts within 25 wall minutes?",
   "risk_penalty": 0.5,
   "success_threshold": "target_guarded_labels>=8 AND action_unique_or_closure_contribution_rows>=5 AND true_false_accepts=0 AND training_ready_rows=0 AND actual_cost_agent_minutes<=25",

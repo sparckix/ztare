@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "78de85f6dc9a7eb3c987faee670a0fd4f8d1ce29b46ff7eb3f17b6468f0088d5",
-  "artifact_path": "analytics/public/leanmill/results/v1710_bm25_action_sweep_baseline.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1710_bm25_action_sweep_baseline.json",
   "compile_status": "pass",
   "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
   "error_type": "none",

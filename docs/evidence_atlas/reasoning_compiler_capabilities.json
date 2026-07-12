@@ -99,7 +99,7 @@
       "output_object": "Grammar-legal fit candidate, fail-closed primitive escape, fitted parameters, gate verdict, or vocabulary-reachability finding.",
       "falsifier": "A candidate using forbidden math functions can pass as if it obeyed `eml_only` or `math_exp_only`, or a restricted grammar is blamed before a reachability probe shows the target is outside the grammar.",
       "workbench_requirement": "Run results must show the declared grammar, fitted form, complexity signal, and any grammar escape or reachability failure as inspectable artifacts.",
-      "user_visible_proof": "Open Run / Results and the file viewer for the fit artifact; a forbidden primitive must appear as a failed check, not as a valid score improvement.",
+      "user_visible_proof": "Open Run / Ready to run and the file viewer for the fit artifact; a forbidden primitive must appear as a failed check, not as a valid score improvement.",
       "current_boundary": "Implemented for selected local grammars and Planck/OEIS-style rubrics; not a general theorem that one primitive set fits all domains.",
       "research_anchor_ids": [
         "expression_grammar_compression",
@@ -120,7 +120,7 @@
         "ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json",
         "./venv/bin/python research_areas/probes/gp059_eml_expressibility_check.py"
       ],
-      "workbench_surface": "Run / Ready to run; Run / Results; file viewer"
+      "workbench_surface": "Run / Ready to run; file viewer"
     },
     {
       "id": "run_result_compiler",
@@ -131,7 +131,7 @@
       "output_object": "Verdict, demotion or support issue, run history, derived constraints, and suggested next check.",
       "falsifier": "A run result is shown as progress without before/after state, score boundary, weak point, or backing artifact.",
       "workbench_requirement": "Run history must show latest score, best score, weak point, run count, backing artifact, and the next check selected by the project state.",
-      "user_visible_proof": "Open Run / Results; the score and weak point must match the append-only run history or trace output, not only a stale latest-result overlay.",
+      "user_visible_proof": "Open Run / Ready to run; the score and weak point must match the append-only run history or trace output, not only a stale latest-result overlay.",
       "current_boundary": "Run history and replay are implemented; serious-project before/after narratives remain a v1.1 hardening target.",
       "research_anchor_ids": [
         "durable_feedback_memory",
@@ -152,7 +152,7 @@
         "ztare autoresearch carrier-replay --project <project> --json",
         "ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json"
       ],
-      "workbench_surface": "Run / Results; Project / Overview; saved project file"
+      "workbench_surface": "Run / Ready to run; Project / Overview; saved project file"
     },
     {
       "id": "compression_progress_compiler",
@@ -163,7 +163,7 @@
       "output_object": "Advisory continue/watch/narrow-or-pivot signal, shorter-explanation profile, effort summary, and backing fit or telemetry files.",
       "falsifier": "A score-improving route is shown as progress even when description length stays flat and no backing complexity profile is available.",
       "workbench_requirement": "Run results must label compression progress as advisory, show the recent complexity profile, and keep it next to score and effort rather than replacing them.",
-      "user_visible_proof": "Open Run / Results for a project with BIC/MDL-style telemetry; the visible advice must match `compression_progress_replay.py --project <project> --json`.",
+      "user_visible_proof": "Open Run / Ready to run for a project with BIC/MDL-style telemetry; the visible advice must match `compression_progress_replay.py --project <project> --json`.",
       "current_boundary": "Advisory only. It is surfaced in run history and replay, but it does not control run admission or pivot decisions by itself.",
       "research_anchor_ids": [
         "compression_progress",
@@ -183,7 +183,7 @@
         "./venv/bin/python scripts/public/control/compression_progress_replay.py --project <project> --json",
         "./venv/bin/python scripts/public/control/compression_progress_replay.py --scan-projects --json"
       ],
-      "workbench_surface": "Run / Results; Project / Overview; file viewer"
+      "workbench_surface": "Run / Ready to run; Project / Overview; file viewer"
     },
     {
       "id": "report_support_compiler",
@@ -343,8 +343,8 @@
       "check_or_transform": "Architecture-index validation, rendered index lookup, graph lookup, primitive recall, architecture-map drift check, and workbench route/action contract inspection.",
       "output_object": "Owned module, consumer list, relevant primitive, stale-map warning, affected workbench action, and the next file or check to inspect.",
       "falsifier": "A code change can alter a project-facing route, primitive, or read model without the repo naming the owner, consumer, stale map, or validation command that should catch it.",
-      "workbench_requirement": "Help and future repository-memory views must answer who owns this capability, what consumes it, what will break if it changes, and which existing primitive should be reused first.",
-      "user_visible_proof": "Open Run / Help and inspect the capability map; structural questions must point to the architecture index, graph, primitive recall, route contract, or map validator rather than vague doc prose.",
+      "workbench_requirement": "Future repository-memory views must answer who owns this capability, what consumes it, what will break if it changes, and which existing primitive should be reused first.",
+      "user_visible_proof": "Run `python scripts/public/control/render_architecture_index.py --grep <term>`; structural questions must point to the architecture index, graph, primitive recall, route contract, or map validator rather than vague doc prose.",
       "current_boundary": "The repository already has architecture indexes, maps, graph edges, primitive recall, and validators; v1.1 still needs one unified query surface over them.",
       "research_anchor_ids": [
         "structural_code_memory",
@@ -371,7 +371,7 @@
         "python -m ztare.research_director.primitive_amnesia \"<task description>\"",
         "python scripts/public/validators/validate_autoresearch_arch_map.py ex-post"
       ],
-      "workbench_surface": "Run / Help; Kernel/read-model backlog"
+      "workbench_surface": "Kernel/read-model backlog"
     }
   ]
 }

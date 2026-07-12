@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Attack the coherence bridge directly; keep shell-only reserve, post-hoc section choice, pressure leakage, fanout rebilling, CF alignment, degree-0 bookkeeping, and parabolic scalar reuse as explicit kill gates.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick660-fresh-packet-duhamel-coherence",
+  "contract_question": "Will TICK660 produce a substantive decision on FreshPacketSelectionToDuhamelIncidenceCoherence: whether pre-beta fresh-packet selection can be coherently turned into the Duhamel event ledger and selected bad-center section-incidence source needed for BadCenterEventPriceDropDuhamelIncidenceSource, without shell-only reserve, post-hoc section choice, pressure leakage, fanout rebilling, CF alignment, degree-0 bookkeeping, or parabolic scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cf_alignment_or_degree0_bookkeeping": 0.19,
+    "fanout_rebilling": 0.16,
+    "parabolic_scalar_reuse": 0.17,
+    "pressure_leakage": 0.21,
+    "shell_only_reserve_or_posthoc_section_choice": 0.27
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "frontier_math",
+    "pde_estimate_workbench"
+  ],
+  "forecasted_at": "2026-05-20T02:42:41Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.75,
+  "p_regression": 0.08,
+  "p_success": 0.55,
+  "rationale_short": "No prior codex row exists. The nearest calibration prior points to ns_route1_pde, but this bridge still likely needs a fresh section-identity lemma and can fail by collapsing into shell-only reserve or post-hoc section choice before a Lean surface stabilizes. No probability DAG was supplied, so this is a nearest-neighbor prior rather than a decomposed chain.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "shell_only_reserve_or_posthoc_section_choice",
+    "pressure_leakage",
+    "fanout_rebilling",
+    "cf_alignment_or_degree0_bookkeeping",
+    "parabolic_scalar_reuse"
+  ]
+}

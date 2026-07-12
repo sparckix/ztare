@@ -26,13 +26,14 @@ A rubric that is structurally incoherent, e.g., claims a hidden-holdout gate but
 
 ## 2. Rubric flavors
 
-Every rubric fits ONE of three flavors. Pick one before writing:
+Every rubric fits ONE of these flavors. Pick one before writing:
 
 | Flavor | When to use | Characterized by |
 |---|---|---|
 | **Quantitative-discovery (blind GT)** | You have a ground-truth function and want the mutator to recover it blind. Phase B / Phase C per [GP-096](../../research_areas/seams/mission/discovery/GP-096_science_programme_decomposition_seam.md). | `fit_score_mode: "continuous_rmse"` or `"discrete_exact"`; `holdout_hard_gate: true`; `gate_harness.py` present; `evidence_holdout.txt` present. |
 | **Quantitative-calibration (known GT, open)** | You have a GT and want to measure apparatus performance without hidden holdout. Instrument shakedown. | `fit_score_mode: "continuous_l2"` (default) or `"continuous_rmse"`; `holdout_hard_gate: false`; gates mostly default. |
 | **Qualitative-thesis (no GT)** | Exploratory, thesis-driven, no numerical curve to fit. [GP-131](../../research_areas/seams/mission/discovery/GP-131_work_discovery_loop_seam.md) / [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) / ztare_on_ztare class. | `disable_evidence_fit_gate: true` + reason; `disable_uniqueness_gap_gate: true` + reason; `fit_score_mode: "none"`; `holdout_hard_gate: false`; `enable_fit_primitive: false`. |
+| **Worldmodel / interactive environment** | You have state/action transition evidence and want the mutator or deterministic miner to submit an executable transition law. ARC-AGI-3 / GP-250 class. | `substrate_class: "interactive_environment"` or `fit_expression_grammar: "grid_dsl"`; `fit_score_mode: "discrete_exact"`; `require_i_model_in_submission: false`; project-local `gate_harness.py`; carrier is `WORLD_MODEL_SPEC`, `PROGRAM`, or `step(grid, action, t)`. |
 
 If you don't know which flavor you're writing, you are writing a broken rubric.
 
@@ -64,6 +65,7 @@ If you don't know which flavor you're writing, you are writing a broken rubric.
 | `farther_tail_contract` | object |, | Contract the thesis must satisfy in the farther tail. |
 | `holdout_hard_gate` | bool | `false` | Enables the hidden-holdout hard gate, requires `gate_harness.py` + `evidence_holdout.txt`. |
 | `holdout_budget` | int | `0` | Budget for holdout evaluations. |
+| `stop_on_gate_pass` | bool | `false` | Opt-in early stop: end the loop the moment a champion clears the deterministic hard gate (the holdout gate ran and did not fire, and the score is non-zero). Default off — governance runs the full `ITERS` budget and keeps falsifying above the gate floor. Turn on only for **exploit/harness** use cases that need a *gate-passing* model rather than maximal judge rigor — e.g. an interactive-substrate play loop where `ITERS` is a budget and each cycle should stop as soon as a valid model exists. The stop is a real success FLOOR (a gate pass), never a judge-score threshold, so it cannot be gamed into stopping on an unvalidated model. Requires `holdout_hard_gate: true` to be meaningful (else no hard gate runs and the flag is inert). The `--stop_on_gate_pass` CLI flag is an ad-hoc override with the same effect. |
 | `composition_stagnation_threshold` | positive int | omit | Overrides the pivot-heuristic stagnation threshold for this project. When omitted, Newton-mode rubrics use 2 (pivot early), legacy/Kepler rubrics use 3. Set this only when a specific project needs more patience than its mode's default (e.g., a qualitative Newton substrate where score-0 streaks are expected). The override applies to both the pivot and emergency thresholds (emergency = pivot + 1). |
 
 `fit_score_mode = "none"` is REQUIRED for qualitative rubrics. Anything else causes `global_evidence_fit` + `global_extrapolation_gap` gates to run against `test_model.py`, which will hard-fail and zero the score for any thesis-driven (non-numeric) project.
@@ -101,6 +103,24 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | `require_i_model_in_submission` | bool | inferred, legacy default `true` | Set `false` for qualitative/assertion-suite substrates. If omitted, the runner infers `false` for theorem-packet rubrics and for fully declared qualitative bounded-discriminator rubrics with fitting disabled, holdout disabled, and qualitative gate opt-outs present. |
 | `epistemic_alignment` | object |, | M-form alignment audit configuration ([GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md)). |
 | `cold_residual_successor_mode` | bool | `false` | Enables [GP-045](../../research_areas/seams/substrates/corrector/GP-045_cold_residual_01_pre_registration.md)-style cold-residual treatment. |
+
+### 6.1 Worldmodel / interactive-environment contract
+
+Interactive worldmodel substrates, such as ARC-AGI-3, are not scalar
+`I_model` submissions and not qualitative assertion suites. Their submitted
+artifact is an executable transition carrier:
+
+- declare `substrate_class: "interactive_environment"` or
+  `fit_expression_grammar: "grid_dsl"` or `fit_score_mode: "discrete_exact"`;
+- set `require_i_model_in_submission: false`;
+- provide a project-local `gate_harness.py` that evaluates one of
+  `WORLD_MODEL_SPEC`, `PROGRAM`, or `step(grid, action, t)`;
+- keep replay/holdout gates as the candidate authority.
+
+Prompt renderers may be called with sparse UI rubrics, but the substrate
+contract must be hydrated from `rubrics/<slug>.json` before displaying
+submission instructions. A worldmodel project must never be prompted to write a
+scalar `I_model` merely because a diagnostic renderer omitted rubric fields.
 
 ---
 

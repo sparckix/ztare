@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 24.0,
   "artifact_hash": "07a46a58fed4f32eb8ec5566daa1f58900c2be797bfdab6f31f487997a4fed1d",
-  "artifact_path": "analytics/public/leanmill/results/v1945_typed_feedback_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1945_typed_feedback_replay.json",
   "compile_status": "passed_gate_after_action_string_indent_repair",
   "contract_id": "gp225_v1945_typed_feedback_replay",
   "error_type": null,

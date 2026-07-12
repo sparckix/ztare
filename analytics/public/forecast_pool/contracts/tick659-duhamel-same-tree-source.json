@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick659-duhamel-same-tree-source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick659-duhamel-same-tree-source.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick659-duhamel-same-tree-source",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick659-duhamel-same-tree-source.json",
+    "score": "analytics/public/forecast_pool/scores/tick659-duhamel-same-tree-source.json"
+  },
+  "baseline_action": "Attempt the broad IndependentFreshPacketSourceForNonflatBadCenter bundle or pressure/fanout lead routes.",
+  "budget_agent_minutes": 130.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick659-duhamel-same-tree-source",
+  "cost_penalty": 0.35,
+  "counterfactual_action": "TICK659 descends on the Duhamel same-tree independent event-budget/source leg selected by the meso contract.",
+  "created_at": "2026-05-20T02:15:28Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0526,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_pde_estimate",
+    "score": 0.5,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 140,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "effort_calibration": "The existing constructors should reduce work, but the PDE content may still collapse to missing bad-center carrier identification.",
+    "failure_mode_preconditioning": "Pre-naming shell-only reserve, carrier mismatch, pressure leakage, and fanout rebilling should prevent source-leg overclaiming."
+  },
+  "horizon": "TICK659 close",
+  "information_value": 115.0,
+  "layer": "micro",
+  "objective_resolver": "Score TRUE if TICK659 produces either a concrete compile-checked candidate interface/adapter with explicit remaining PDE hypotheses, or a named obstruction showing the Duhamel same-tree source leg cannot supply the independent fresh-packet source without one of the listed kill-gate failures.",
+  "question": "Will TICK659 produce a substantive decision on whether BadCenterEventPriceDropDuhamelIncidenceSource and DuhamelSameTreeIndependentEventBudgetCandidate can supply the independent source leg needed by IndependentFreshPacketSourceForNonflatBadCenter, without shell-only reserve, bad-center carrier mismatch, pressure leakage, or fanout rebilling?",
+  "risk_penalty": 0.25,
+  "success_threshold": "compile-checked Lean surface plus ns_residual_manifest update and forecast resolution",
+  "task_type": "ns_pde_estimate",
+  "value_if_success": 95.0,
+  "void_conditions": "void only if the VPS lacks the TICK658 artifacts or the micro tick is retired before work begins"
+}

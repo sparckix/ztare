@@ -1,0 +1,141 @@
+{
+  "contract_id": "tick654-c7-event-to-radius-invoice-lift",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop at TICK653 event-to-radius boundary",
+      "counterfactual_action": "Attack the event-to-radius invoice lift with pencil-first PATTERN-025 plus PATTERN-011 swarm"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "branch_split",
+        "compile_checked_boundary"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Attack ResidualFreshPressureTailLocalizedToPuncturedInvoiceCarrier first, then inherited-parent nonchargeability and beta-to-radius payment before any full invoice assembly.",
+      "old_next_action": "Attack generic SameLedgerFreshEventCarriesRadiusInvoice.",
+      "preconditioner_effect": "Split the lift into pressure-carrier, inherited-nonchargeability, and beta-to-radius sublemmas before Lean formalization.",
+      "preconditioner_source": "GP-230 aggregate and TICK654 PATTERN-011 swarm",
+      "realized_failure_mode_ids": [
+        "pressure_tail_localization_assumed",
+        "inherited_badness_rebilling_survives",
+        "event_weight_not_radius_payment",
+        "formal_surface_no_quantity_path"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.17285,
+  "mean_log_score": -0.5370574085338611,
+  "outcome": {
+    "actual_cost_agent_minutes": 115,
+    "artifact_hash": "31075523712256368246efdff0740c8d16b724b707c26fa1731f1b1288de9911",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "codex_forecaster"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick654-c7-event-to-radius-invoice-lift",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "compiled_boundary",
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "branch_split",
+      "compile_checked_boundary"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T20:41:49Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick654-c7-event-to-radius-invoice-lift/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Attack ResidualFreshPressureTailLocalizedToPuncturedInvoiceCarrier first, then inherited-parent nonchargeability and beta-to-radius payment before any full invoice assembly.",
+    "old_next_action": "Attack generic SameLedgerFreshEventCarriesRadiusInvoice.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Split the lift into pressure-carrier, inherited-nonchargeability, and beta-to-radius sublemmas before Lean formalization.",
+    "preconditioner_source": "GP-230 aggregate and TICK654 PATTERN-011 swarm",
+    "realized_failure_mode_ids": [
+      "pressure_tail_localization_assumed",
+      "inherited_badness_rebilling_survives",
+      "event_weight_not_radius_payment",
+      "formal_surface_no_quantity_path"
+    ],
+    "resolution_note": "TICK654 produced a compile-checked sharper boundary: event-to-radius lift reduces to SameTreeCarlesonInvoiceEmbedding, with pressure-carrier localization, inherited-parent nonchargeability, and beta-to-radius payment isolated as lower blockers; no full invoice construction was claimed.",
+    "resolved_at": "2026-05-19T20:57:25Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T20:57:33Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 115,
+      "agent_id": "codex:RD",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": -10.0,
+      "domain": "ns_route1_family",
+      "expected_cost_agent_minutes": 105.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 1.0,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T20:40:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T20:40:15Z",
+        "resolved_at": "2026-05-19T20:57:25Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 115,
+      "agent_id": "codex_forecaster",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": -15.0,
+      "domain": "ns_c7_invoice",
+      "expected_cost_agent_minutes": 100.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.18,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T20:40:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T20:41:49Z",
+        "resolved_at": "2026-05-19T20:57:25Z"
+      }
+    }
+  ]
+}

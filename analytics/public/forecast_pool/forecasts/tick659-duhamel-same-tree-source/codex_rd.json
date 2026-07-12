@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "run_tick659_source_leg_with_pressure_and_fanout_as_kill_gates",
+  "agent_id": "codex_rd",
+  "contract_id": "tick659-duhamel-same-tree-source",
+  "contract_question": "Will TICK659 produce a substantive decision on whether BadCenterEventPriceDropDuhamelIncidenceSource and DuhamelSameTreeIndependentEventBudgetCandidate can supply the independent source leg needed by IndependentFreshPacketSourceForNonflatBadCenter, without shell-only reserve, bad-center carrier mismatch, pressure leakage, or fanout rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_carrier_identification_missing": 0.23529411764705882,
+    "fanout_rebilling_unproved": 0.16176470588235292,
+    "pressure_same_reserve_unproved": 0.19117647058823528,
+    "shell_only_reserve_not_bad_center_budget": 0.2647058823529411,
+    "source_leg_restates_existing_adapter": 0.14705882352941177
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "source_leg_route",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T02:15:28Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.1,
+  "p_success": 0.54,
+  "rationale_short": "Meso route selection priced source-first positively. TICK658 says packet creation needs an independent source; existing Duhamel same-tree constructors look closest, but may collapse to shell-only reserve or missing bad-center carrier identification.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "shell_only_reserve_not_bad_center_budget",
+    "bad_center_carrier_identification_missing",
+    "pressure_same_reserve_unproved",
+    "fanout_rebilling_unproved",
+    "source_leg_restates_existing_adapter"
+  ]
+}

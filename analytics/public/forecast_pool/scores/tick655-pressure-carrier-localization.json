@@ -1,0 +1,137 @@
+{
+  "contract_id": "tick655-pressure-carrier-localization",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop at TICK654 lower embedding boundary",
+      "counterfactual_action": "Attack the pressure-carrier localization sublemma first"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioned",
+        "pressure_lane_sharpened"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Attack complement dual-test pressure localization on eventTent minus freshRegion.",
+      "old_next_action": "Try to prove pressureRecoveryCarrier equals residual fresh region.",
+      "preconditioner_effect": "Prevented pressureRecoveryCarrier=freshRegion from being accepted; redirected to complement dual-test localization.",
+      "preconditioner_source": "TICK654 lower embedding boundary and forecast failure modes",
+      "realized_failure_mode_ids": [
+        "event_tent_not_fresh_region",
+        "nonlocal_pressure_harmonic_escape",
+        "pressure_bridge_unproved"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.27585000000000004,
+  "mean_log_score": -0.7449393386882306,
+  "outcome": {
+    "actual_cost_agent_minutes": 85,
+    "artifact_hash": "1fedcee44788bae7512ecb4a4bd3cea6c96c8696561b69fb10cc3fe1b1ef218f",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick655-pressure-carrier-localization",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioned",
+      "pressure_lane_sharpened"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "literal pressure carrier equality was too strong; complement dual-test localization isolated as the next pressure-side target",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T21:13:32Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick655-pressure-carrier-localization/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Attack complement dual-test pressure localization on eventTent minus freshRegion.",
+    "old_next_action": "Try to prove pressureRecoveryCarrier equals residual fresh region.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Prevented pressureRecoveryCarrier=freshRegion from being accepted; redirected to complement dual-test localization.",
+    "preconditioner_source": "TICK654 lower embedding boundary and forecast failure modes",
+    "realized_failure_mode_ids": [
+      "event_tent_not_fresh_region",
+      "nonlocal_pressure_harmonic_escape",
+      "pressure_bridge_unproved"
+    ],
+    "resolution_note": "Success under the objective resolver: TICK655 added a compiling route artifact and residual-manifest update that sharply refuted literal carrier equality as too strong, isolating ResidualFreshPressureComplementDualTestLocalization as the next target.",
+    "resolved_at": "2026-05-20T00:08:45Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T00:08:54Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 85,
+      "agent_id": "codex:RD",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": 35.0,
+      "domain": "ns_c7_pressure_localization",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.5,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T21:11:16Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T21:12:10Z",
+        "resolved_at": "2026-05-20T00:08:45Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 85,
+      "agent_id": "codex_forecaster",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "ns_c7_invoice",
+      "expected_cost_agent_minutes": 108.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.56,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T21:11:16Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T21:13:32Z",
+        "resolved_at": "2026-05-20T00:08:45Z"
+      }
+    }
+  ]
+}

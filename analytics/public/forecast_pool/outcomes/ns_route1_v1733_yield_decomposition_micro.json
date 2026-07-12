@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 5.0,
   "artifact_hash": "6aa5f3bee95dde60aa3658b329be84579e9966aa78f62cbb817e4a2b9e847f76",
-  "artifact_path": "analytics/public/leanmill/results/v1733_ns_route1_gp233_yield_decomposition.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1733_ns_route1_gp233_yield_decomposition.json",
   "compile_status": "passed",
   "contract_id": "ns_route1_v1733_yield_decomposition_micro",
   "error_type": null,

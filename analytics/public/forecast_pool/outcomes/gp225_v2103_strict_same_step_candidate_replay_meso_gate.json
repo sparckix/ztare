@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 22.0,
   "artifact_hash": "4ea1b9951a3072ef44fbb3cf1fc2fc67bf39816f2a8165f0d471f42e998eda7f",
-  "artifact_path": "analytics/public/leanmill/results/v2104_strict_same_step_bounded_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2104_strict_same_step_bounded_replay.json",
   "changed_by_forecast_ids": [],
   "compile_status": "all_4_candidates_failed_compile_with_unsolved_goals_matching_gold_intermediate_signature",
   "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",

@@ -54,8 +54,12 @@ Source = "https://github.com/sparckix/ztare"
 
 [project.scripts]
 ztare = "ztare.cli:main"
+leanmill = "ztare.leanmill.cli:main"
 ztare-calibration-stats = "ztare.forecasting.calibration_stats:main"
 ztare-calibration-db = "ztare.forecasting.calibration_db:main"
+
+[tool.pytest.ini_options]
+markers = ["slow: real end-to-end member run (~250s); skipped in fast CI"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

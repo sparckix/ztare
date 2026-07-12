@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "run_tick661_with_parallel_pde_lanes_on_one_vorticity_truncation_stretching_absorption_target",
+  "agent_id": "codex_rd",
+  "contract_id": "tick661-cv-degiorgi-vorticity-stretching-absorption",
+  "contract_question": "Will TICK661 produce a substantive decision on the concrete CV/nonlocal-DeGiorgi critical vorticity-truncation stretching absorption target: can the 3D vortex-stretching contribution in the high-vorticity truncation energy be neutralized without Constantin-Fefferman alignment, helical symmetry, prior BKM/L-infinity control, or parabolic-rate-slaved scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 155.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cv_nonlocal_mechanism_not_available_for_3d_vorticity": 0.18888888888888888,
+    "helical_or_swirl_special_structure_laundered": 0.13333333333333333,
+    "parabolic_slaved_scalar_reuse": 0.11111111111111112,
+    "pressure_collar_or_commutator_leakage_dominates": 0.14444444444444446,
+    "stretching_absorption_reduces_to_CF_alignment": 0.22222222222222224,
+    "truncation_energy_requires_prior_BKM_or_Linfty": 0.19999999999999998
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "frontier_pde_bias",
+    "parallel_work_required",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T03:25:09Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.93,
+  "p_regression": 0.18,
+  "p_success": 0.5,
+  "rationale_short": "Post-TICK660 benchmark says scale is not PDE substance. The next tick must test whether the CV/nonlocal-DeGiorgi idea can be sharpened to a concrete vorticity-truncation stretching absorption estimate, or whether it collapses into known CF/helical/BKM walls.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "stretching_absorption_reduces_to_CF_alignment",
+    "truncation_energy_requires_prior_BKM_or_Linfty",
+    "cv_nonlocal_mechanism_not_available_for_3d_vorticity",
+    "pressure_collar_or_commutator_leakage_dominates",
+    "helical_or_swirl_special_structure_laundered",
+    "parabolic_slaved_scalar_reuse"
+  ]
+}

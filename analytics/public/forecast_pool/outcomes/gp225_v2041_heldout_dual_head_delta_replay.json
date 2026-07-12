@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 9.0,
   "artifact_hash": "f443b4aaea76becf4784367828b99bbf924172883b6a29f10acb1aaaccb5476c",
-  "artifact_path": "analytics/public/leanmill/results/v2041_heldout_dual_head_delta_replay_market_abort.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2041_heldout_dual_head_delta_replay_market_abort.json",
   "changed_by_forecast_ids": [
     "Popper",
     "Lakatos"

@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Split the bridge into the two separate obligations already isolated in tick649/tick650: a positive-production defect estimate and a no-log radius-charge theorem; treat any route that collapses to q<=5/2 or classical r_Q^2 charge as a retire signal.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+  "contract_question": "TICK650 NS Track B: characterize whether a nu-coupled C7ProductionDefectMeasure / VorticityCapacityNoReuseBudget + CapacityOrExistingChannelDichotomy can supply both local high-level production gain and radius/no-reuse charge without Constantin-Fefferman alignment, and if not identify the exact obstruction that retires this CV branch without claiming a millennium-problem result.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 140.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apparatus_close_issue": 0.1,
+    "artifact_only_no_classification": 0.11,
+    "cf_alignment_smuggled": 0.17,
+    "endpoint_recurrence": 0.34,
+    "radius_charge_missing": 0.28
+  },
+  "forecast_externality_tags": [
+    "ns_track_b",
+    "hard_mathematical_residual",
+    "pde_estimate_workbench",
+    "no_log_pileup"
+  ],
+  "forecasted_at": "2026-05-19T16:18:38Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.1,
+  "p_success": 0.19,
+  "rationale_short": "Tick649/tick650 already isolate the exact two-field bridge and retire the cheap shortcuts; the remaining open path is mathematically specific but still thin on local workmap support, so success here is more likely as a sharp negative classification than a new positive mechanism.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick657-annular-harmonic-moment-cancellation.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick657-annular-harmonic-moment-cancellation.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick657-annular-harmonic-moment-cancellation",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick657-annular-harmonic-moment-cancellation.json",
+    "score": "analytics/public/forecast_pool/scores/tick657-annular-harmonic-moment-cancellation.json"
+  },
+  "baseline_action": "Continue route-1 pressure collar residual without testing harmonic moment quotient naturality.",
+  "budget_agent_minutes": 150.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick657-annular-harmonic-moment-cancellation",
+  "cost_penalty": 0.3,
+  "counterfactual_action": "Run Gowers-first harmonic moment analysis, graph/amnesia traversal, workbench prefilter, then Lean only for the resulting surface.",
+  "created_at": "2026-05-20T01:08:31Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.037,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_frontier_pde_estimate",
+    "score": 0.4,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "effort_calibration": "Harmonic-moment pencil work should be cheaper than a full swarm if it kills the quotient early.",
+    "failure_mode_preconditioning": "Pre-naming post-hoc test-class tuning and degree-zero harmonic rebilling should reduce recurrence of the same pressure-CZ basin."
+  },
+  "horizon": "2026-05-20T06:00:00Z",
+  "information_value": 0.82,
+  "layer": "micro",
+  "objective_resolver": "Success iff tick consolidation records pencil-first harmonic moment analysis plus graph/amnesia traversal and PDE workbench prefilter, producing either a coherent candidate with kill conditions/Lean surface or a named obstruction; failure iff it only renames gauge fixing/CZ endpoint bounds or produces no discriminating estimate.",
+  "question": "Will TICK657 produce a substantive decision on whether AnnularHarmonicMomentCancellation is a natural pressure-collar quotient theorem rather than a post-hoc artificial test class: either a candidate estimate with admissible test class, quadratic-mode cancellation/charge, and no-log/radius interface, or a named obstruction retiring the lane?",
+  "risk_penalty": 0.22,
+  "success_threshold": "binary substantive estimate decision recorded in NS residual manifest/log and, if useful, compiled Lean surface",
+  "task_type": "ns_frontier_pde_estimate",
+  "value_if_success": 0.72,
+  "void_conditions": "Void only for membrane/store failure before research starts; ordinary negative mathematical result is scoreable."
+}

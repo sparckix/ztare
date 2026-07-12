@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 95.0,
   "artifact_hash": null,
-  "artifact_path": "analytics/public/leanmill/results/v29_leanhammer_RatK_carleson_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v29_leanhammer_RatK_carleson_audit.json",
   "changed_by_forecast_ids": [],
   "compile_status": null,
   "contract_id": "gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso",

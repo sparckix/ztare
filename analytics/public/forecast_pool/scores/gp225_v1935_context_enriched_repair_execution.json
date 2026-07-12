@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 8.0,
     "artifact_hash": "ae1c6d28491411bdc1ce0ab3f34e608395beed3be2b19e902055568318072175",
-    "artifact_path": "analytics/public/leanmill/results/v1935_context_enriched_repair_execution.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1935_context_enriched_repair_execution.json",
     "compile_status": "partial_compiled_candidates",
     "contract_id": "gp225_v1935_context_enriched_repair_execution",
     "error_type": "context_templates_insufficient_without_named_local_lemma_mining",

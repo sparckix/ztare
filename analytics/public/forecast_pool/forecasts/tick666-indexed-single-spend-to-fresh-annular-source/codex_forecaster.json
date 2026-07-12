@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick666-indexed-single-spend-to-fresh-annular-source",
+  "contract_question": "Can ResidualFreshAuditIndexedSingleSpendCarrier be upgraded into FreshAnnularChargeSeparatedSourceFromIndexedCarrier with explicit activeTail, freshCharge, payment constant, rootBudget, pointwise lower payment, prefix budget, section identity, and reserve partition; or is the missing datum precisely a numerical fresh annular schedule beyond qualitative single-spend separation?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 96.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_compiles_but_not_minimal_source": 0.16,
+    "numerical_fresh_annular_schedule_missing": 0.34,
+    "same_packet_rebilling_or_cf_alignment_recurrence": 0.18,
+    "section_identity_or_prefix_budget_mismatch": 0.15,
+    "workbench_pass_without_constructive_negative": 0.17
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T20:29:26Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.49,
+  "rationale_short": "Adjacent fresh-annular source rows price the lane just below even odds. The contract is narrower than the nearby source-or-rebilling kill because a workbench-backed honest negative still counts, but the dominant uncertainty remains whether the indexed carrier already encodes the needed numerical fresh-annular schedule. No DAG was supplied, so hidden coupling and stale observables are still unpriced.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "numerical_fresh_annular_schedule_missing",
+    "same_packet_rebilling_or_cf_alignment_recurrence",
+    "adapter_compiles_but_not_minimal_source",
+    "section_identity_or_prefix_budget_mismatch",
+    "workbench_pass_without_constructive_negative"
+  ]
+}

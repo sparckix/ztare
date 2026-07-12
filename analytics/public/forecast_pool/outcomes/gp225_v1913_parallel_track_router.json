@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 5.0,
   "artifact_hash": "5d7cbbb35819be01fe72eb007dea8d5c94cf1fdca957b44b493a797329be17af",
-  "artifact_path": "analytics/public/leanmill/results/v1913_parallel_track_router.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1913_parallel_track_router.json",
   "compile_status": null,
   "contract_id": "gp225_v1913_parallel_track_router",
   "error_type": null,

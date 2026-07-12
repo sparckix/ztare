@@ -1,0 +1,20 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "gemini",
+  "agent_id": "gemini-lite:api_forecaster",
+  "contract_id": "macro-ns-clay-closure-reserve-source-20260520",
+  "contract_question": "Can the current NS reserve-source program produce an actually Clay-adjacent route by deriving a scale-fresh critical radius debit from predictable reserve-drop data, without recurring to CF_global_extension, same-packet rebilling, or parabolic-slaved scalar criteria?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-06-11T19:03:27Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.02,
+  "rationale_short": "Technical constraints and prohibited methods make this operation theoretically non-viable.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

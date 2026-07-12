@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Attack the high-vorticity truncation estimate directly; if the route collapses into CF alignment, helical/swirl structure, prior BKM/L-infinity input, pressure-collar leakage, or parabolic slaving, stop at the named obstruction instead of widening the target.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick661-cv-degiorgi-vorticity-stretching-absorption",
+  "contract_question": "Will TICK661 produce a substantive decision on the concrete CV/nonlocal-DeGiorgi critical vorticity-truncation stretching absorption target: can the 3D vortex-stretching contribution in the high-vorticity truncation energy be neutralized without Constantin-Fefferman alignment, helical symmetry, prior BKM/L-infinity control, or parabolic-rate-slaved scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 152.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "collapse_into_CF_alignment": 0.24,
+    "helical_or_swirl_special_structure_laundered": 0.11,
+    "parabolic_slaved_scalar_reuse": 0.12,
+    "pressure_collar_or_commutator_leakage_dominates": 0.16,
+    "prior_BKM_or_Linfty_input_needed": 0.18,
+    "wrapper_only_surface_without_estimate": 0.19
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "parallel_work_required",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T03:26:09Z",
+  "p_dependency_issue": 0.57,
+  "p_needs_new_lemma": 0.9,
+  "p_regression": 0.11,
+  "p_success": 0.49,
+  "rationale_short": "I price this as a near-even chance of producing a substantive Lean-facing decision: the target is concrete, but the strongest residuals still look like CF/BKM/parabolic-slaving collapse or a wrapper-only surface that never changes the next lever.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "collapse_into_CF_alignment",
+    "helical_or_swirl_special_structure_laundered",
+    "prior_BKM_or_Linfty_input_needed",
+    "pressure_collar_or_commutator_leakage_dominates",
+    "parabolic_slaved_scalar_reuse",
+    "wrapper_only_surface_without_estimate"
+  ]
+}

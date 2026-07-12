@@ -1,0 +1,147 @@
+{
+  "contract_id": "tick660-fresh-packet-duhamel-coherence",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Open a broad Duhamel source or same-tree lock tick that bundles coherence, pressure, and fanout.",
+      "counterfactual_action": "TICK660 attacks FreshPacketSelectionToDuhamelIncidenceCoherence alone, using pressure complement and no-log fanout only as kill gates.",
+      "externality_hypotheses": {
+        "effort_calibration": "The target is narrower than TICK659 but may require a genuinely new global section-identity lemma.",
+        "failure_mode_preconditioning": "Pre-naming global-coherence, bad-center section identity, pressure, and fanout failures should prevent a broad source theorem from laundering shell/process reserve."
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "decision_use_recorded",
+        "failure_mode_preconditioning",
+        "formalization_benchmark_refreshed",
+        "amnesia_prevention"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Prove or refute FreshPacketDuhamelIncidenceLiftFromAuditEligibility; if it cannot supply selected bad-center section identity and same-carrier scale-drop coherence, de-anchor the L3A coherence lane.",
+      "old_next_action": "Treat FreshPacketSelectionToDuhamelIncidenceCoherence as the next constructive bridge.",
+      "preconditioner_effect": "Kept the tick on the bad-center section identity discriminant and forced the external benchmark before close.",
+      "preconditioner_source": "macro and meso scratch contracts plus TICK660 forecast aggregate with decision-use rows du_35bb9b1d3fe1 and du_e1d23772c0b6",
+      "realized_failure_mode_ids": [
+        "shell_only_reserve_or_posthoc_section_choice",
+        "coherence_bridge_too_global",
+        "same_event_stream_recurrence",
+        "benchmark_overclaim_risk"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.21644999999999998,
+  "mean_log_score": -0.6258817340811422,
+  "outcome": {
+    "actual_cost_agent_minutes": 140,
+    "artifact_hash": "30b69442cf02909d98f5cfd9b0c48a987d1238f29a2a910e0383aefbd8981a9a",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick660-fresh-packet-duhamel-coherence",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "decision_use_recorded",
+      "failure_mode_preconditioning",
+      "formalization_benchmark_refreshed",
+      "amnesia_prevention"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "Produced a compile-checked Duhamel-incidence lift interface and recurrence boundary. The coherence bridge is additive only if old audit-eligibility data is lifted into concrete Duhamel section incidence; otherwise it returns to the 2026-05-14 same-event-stream residual. Also refreshed the formalization benchmark and atlas posture.",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T02:42:41Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick660-fresh-packet-duhamel-coherence/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Prove or refute FreshPacketDuhamelIncidenceLiftFromAuditEligibility; if it cannot supply selected bad-center section identity and same-carrier scale-drop coherence, de-anchor the L3A coherence lane.",
+    "old_next_action": "Treat FreshPacketSelectionToDuhamelIncidenceCoherence as the next constructive bridge.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Kept the tick on the bad-center section identity discriminant and forced the external benchmark before close.",
+    "preconditioner_source": "macro and meso scratch contracts plus TICK660 forecast aggregate with decision-use rows du_35bb9b1d3fe1 and du_e1d23772c0b6",
+    "realized_failure_mode_ids": [
+      "shell_only_reserve_or_posthoc_section_choice",
+      "coherence_bridge_too_global",
+      "same_event_stream_recurrence",
+      "benchmark_overclaim_risk"
+    ],
+    "resolution_note": "TICK660 met the either/or criterion by adding FreshPacketDuhamelIncidenceLiftFromAuditEligibility, a conditional coherence constructor, and FreshPacketDuhamelCoherenceRecurrenceBoundary. It did not construct the missing PDE estimate; it identified the exact lift needed and prevented relabeling old audit eligibility as a Duhamel source.",
+    "resolved_at": "2026-05-20T03:05:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T03:05:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 140,
+      "agent_id": "codex_forecaster",
+      "brier": 0.20249999999999996,
+      "cost_error_agent_minutes": -80.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 60.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.27,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5978370007556204,
+      "p_success": 0.55,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T02:41:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T02:42:41Z",
+        "resolved_at": "2026-05-20T03:05:35Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 140,
+      "agent_id": "codex_rd",
+      "brier": 0.2304,
+      "cost_error_agent_minutes": -10.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 130.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.222222,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.6539264674066639,
+      "p_success": 0.52,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T02:41:18Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T02:41:19Z",
+        "resolved_at": "2026-05-20T03:05:35Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "actual_cost_agent_minutes": 95,
+  "artifact_hash": "a44fac40b5817390a6bc207f35d61e856714c92a9176e1642aa75c7a88c1ce55",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "pass",
+  "contract_id": "tick659-duhamel-same-tree-source",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "decision_use_recorded",
+    "failure_mode_preconditioning",
+    "source_leg_route",
+    "amnesia_prevention"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "Produced a compile-checked carrier-identification criterion, shell-only obstruction, and fresh-packet-selection-to-Duhamel-incidence coherence bridge. The source leg is a valid target only after global coherence ties Duhamel sections to the normalized-excess bad-center tree.",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T02:16:45Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick659-duhamel-same-tree-source/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "Prove or falsify FreshPacketSelectionToDuhamelIncidenceCoherence; pressure-complement and no-log fanout remain separate kill gates.",
+  "old_next_action": "Work the full IndependentFreshPacketSourceForNonflatBadCenter source bundle.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Narrowed the work from a broad independent-source bundle to the shell-only-reserve versus bad-center-budget discriminant.",
+  "preconditioner_source": "meso and micro forecast aggregates with decision-use rows du_817283704802 and du_ae5531026344",
+  "realized_failure_mode_ids": [
+    "shell_only_reserve_not_bad_center_budget",
+    "bad_center_carrier_identification_missing",
+    "pressure_same_reserve_unproved",
+    "fanout_rebilling_unproved"
+  ],
+  "resolution_note": "TICK659 succeeded under its either/or criterion by isolating the source-leg obstruction and next target. Event-side budget is available, but the source must satisfy FreshPacketSelectionToDuhamelIncidenceCoherence before it can feed IndependentFreshPacketSourceForNonflatBadCenter.",
+  "resolved_at": "2026-05-20T02:26:42Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

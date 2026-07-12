@@ -1,12 +1,12 @@
 {
-  "n_rows_total": 1119,
+  "n_rows_total": 1123,
   "n_rows_resolved": 625,
-  "n_rows_unresolved": 486,
+  "n_rows_unresolved": 490,
   "n_rows_brier_scored": 17,
   "n_rows_brier_skipped": 0,
   "tier_distribution": {
     "tier_1": 404,
-    "tier_2": 250,
+    "tier_2": 254,
     "tier_3": 0,
     "untagged": 460
   },

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 4.5,
   "artifact_hash": "728831443bb782c057d5e02262b640ac92bb7bc72abfc7fde76051dbe03c078b",
-  "artifact_path": "analytics/public/leanmill/results/v1731_ns_route1_tail_visibility_receipt_miner.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1731_ns_route1_tail_visibility_receipt_miner.json",
   "compile_status": "passed",
   "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
   "error_type": "none",

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 21.0,
   "artifact_hash": "c34cda731c0c17cb302c855c26a67e98291592c0f7b5d226616e58ebb23b480b",
-  "artifact_path": "analytics/public/leanmill/results/v2072_parallel_training_delta_triage.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2072_parallel_training_delta_triage.json",
   "changed_by_forecast_ids": [],
   "compile_status": "py_compile_passed",
   "contract_id": "gp225_v2072_parallel_training_delta_triage",
@@ -19,7 +19,7 @@
   "new_next_action": "parallel v2073 label inventory freeze, v2074 heldout candidate-content discovery, and v2075 null training baseline spec",
   "old_next_action": "single serial source-discovery continuation",
   "preconditioner_effect": "v20.71 established 0/5 post-bayesRisk replayable heldout arms, so v20.72 could parallelize closure without starting training.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2071_post_bayesRisk_union_heldout_delta_packet.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2071_post_bayesRisk_union_heldout_delta_packet.json",
   "realized_failure_mode_ids": [
     "heldout_content_delta_still_blocked"
   ],

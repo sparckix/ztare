@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 7.0,
   "artifact_hash": "4ac78754e010b7793173f9d2c496d18d2f81f9f688733af8fcfc72895dc18340",
-  "artifact_path": "analytics/public/leanmill/results/v1990_clean_strict_two_row_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1990_clean_strict_two_row_replay.json",
   "compile_status": "replay_completed_no_clean_strict_wins",
   "contract_id": "gp225_v1990_clean_strict_two_row_replay",
   "error_type": null,

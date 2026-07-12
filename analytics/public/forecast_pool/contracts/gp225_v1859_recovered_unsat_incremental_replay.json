@@ -20,7 +20,7 @@
   "horizon": "2026-05-13T18:00:00Z",
   "information_value": 0.8,
   "layer": "micro",
-  "objective_resolver": "analytics/public/leanmill/results/v1859_recovered_unsat_incremental_replay_verifier.json metrics: recovered_rows_attempted=5, new_gold_transition_compiled_rows>=3, new_residual_or_closure_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v1859_recovered_unsat_incremental_replay_verifier.json metrics: recovered_rows_attempted=5, new_gold_transition_compiled_rows>=3, new_residual_or_closure_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
   "question": "Will v18.59 compile-check at least 3 of 5 recovered baseline-unsaturated public-trace rows as clean residual/closure labels with zero audited false accepts?",
   "risk_penalty": 0.1,
   "success_threshold": "new_gold_transition_compiled_rows>=3 AND new_residual_or_closure_rows>=3 AND audited_true_false_accepts=0",

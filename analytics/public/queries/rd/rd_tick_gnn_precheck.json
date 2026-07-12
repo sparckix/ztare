@@ -2974,52 +2974,52 @@
       {
         "id": "PDE-ESTIMATE-CRAFT-OPS",
         "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
-        "score": 668.65
+        "score": 940.15
       },
       {
         "id": "NS-GRAPH-TICK-PRECHECK",
-        "path": "src/ztare/research_director/ns_graph_tick.py",
-        "score": 234.4
+        "path": "projects/ns_millennium_hunt/scripts/ns_graph_tick.py",
+        "score": 906.9
       },
       {
-        "id": "PDE-CURRENCY-LEDGER",
-        "path": "src/ztare/research_director/pde_currency_ledger.py",
-        "score": 197.9
+        "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+        "path": "org/patterns/gowers_first_formalize_second.md",
+        "score": 889.4
+      },
+      {
+        "id": "MOMENT-RATIO-SURPLUS-GATE",
+        "path": "src/ztare/gates/moment_ratio_surplus_gate.py",
+        "score": 886.65
+      },
+      {
+        "id": "PDE-ANALYTIC-SUBSTANCE-GATE",
+        "path": "src/ztare/gates/pde_analytic_substance_gate.py",
+        "score": 886.4
+      },
+      {
+        "id": "BOUNDED-RATIO-SUPPORT-GATE",
+        "path": "src/ztare/gates/bounded_ratio_support_gate.py",
+        "score": 885.65
+      },
+      {
+        "id": "SAME-CARRIER-PACKING-GATE",
+        "path": "src/ztare/gates/same_carrier_packing_gate.py",
+        "score": 885.4
       },
       {
         "id": "NS-L3A-CONCENTRATION-WORKMAP",
         "path": "src/ztare/research_director/ns_l3a_workmap.py",
-        "score": 171.9
+        "score": 884.4
       },
       {
-        "id": "BUNDLE-RUN-PATH-A-B-HARNESS",
-        "path": "scripts/public/control/bundle_run.py",
-        "score": 126.9
+        "id": "METRIC-COVERING-SELECTION-GATE",
+        "path": "src/ztare/gates/metric_covering_selection_gate.py",
+        "score": 869.4
       },
       {
-        "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
-        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 125.9
-      },
-      {
-        "id": "RUN-SINGLE-SPEND-AUDIT",
-        "path": "src/ztare/research_director/pde_estimate_workbench.py",
-        "score": 118.1
-      },
-      {
-        "id": "SINGLE-SPEND-FIELDS-FROM-CONTEXT",
-        "path": "src/ztare/research_director/pde_estimate_workbench.py",
-        "score": 118.1
-      },
-      {
-        "id": "COGNITIVE-GYM-HOOKS",
-        "path": "src/ztare/research_director/cognitive_gym_hooks.py",
-        "score": 117.7
-      },
-      {
-        "id": "RUN-OWNER-PREIMAGE-PREFIX-AUDIT",
-        "path": "src/ztare/research_director/pde_estimate_workbench.py",
-        "score": 117.1
+        "id": "POSITIVE-VARIATION-BRIDGE-GATE",
+        "path": "src/ztare/gates/positive_variation_bridge_gate.py",
+        "score": 868.4
       }
     ]
   },

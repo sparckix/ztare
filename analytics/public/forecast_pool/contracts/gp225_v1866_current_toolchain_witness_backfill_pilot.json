@@ -20,7 +20,7 @@
   "horizon": "2026-05-13T20:00:00Z",
   "information_value": 0.85,
   "layer": "micro",
-  "objective_resolver": "analytics/public/leanmill/results/v1866_current_toolchain_witness_backfill_pilot.json metrics: attempted_rows=6, gold_witness_driver_compiled_rows>=4, closure_or_target_witness_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v1866_current_toolchain_witness_backfill_pilot.json metrics: attempted_rows=6, gold_witness_driver_compiled_rows>=4, closure_or_target_witness_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
   "question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
   "risk_penalty": 0.12,
   "success_threshold": "gold_witness_driver_compiled_rows>=4 AND closure_or_target_witness_rows>=3 AND audited_true_false_accepts=0",

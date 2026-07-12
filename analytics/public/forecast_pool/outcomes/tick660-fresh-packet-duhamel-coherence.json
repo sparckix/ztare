@@ -1,0 +1,51 @@
+{
+  "actual_cost_agent_minutes": 140,
+  "artifact_hash": "30b69442cf02909d98f5cfd9b0c48a987d1238f29a2a910e0383aefbd8981a9a",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "pass",
+  "contract_id": "tick660-fresh-packet-duhamel-coherence",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "decision_use_recorded",
+    "failure_mode_preconditioning",
+    "formalization_benchmark_refreshed",
+    "amnesia_prevention"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "Produced a compile-checked Duhamel-incidence lift interface and recurrence boundary. The coherence bridge is additive only if old audit-eligibility data is lifted into concrete Duhamel section incidence; otherwise it returns to the 2026-05-14 same-event-stream residual. Also refreshed the formalization benchmark and atlas posture.",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T02:42:41Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick660-fresh-packet-duhamel-coherence/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "Prove or refute FreshPacketDuhamelIncidenceLiftFromAuditEligibility; if it cannot supply selected bad-center section identity and same-carrier scale-drop coherence, de-anchor the L3A coherence lane.",
+  "old_next_action": "Treat FreshPacketSelectionToDuhamelIncidenceCoherence as the next constructive bridge.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Kept the tick on the bad-center section identity discriminant and forced the external benchmark before close.",
+  "preconditioner_source": "macro and meso scratch contracts plus TICK660 forecast aggregate with decision-use rows du_35bb9b1d3fe1 and du_e1d23772c0b6",
+  "realized_failure_mode_ids": [
+    "shell_only_reserve_or_posthoc_section_choice",
+    "coherence_bridge_too_global",
+    "same_event_stream_recurrence",
+    "benchmark_overclaim_risk"
+  ],
+  "resolution_note": "TICK660 met the either/or criterion by adding FreshPacketDuhamelIncidenceLiftFromAuditEligibility, a conditional coherence constructor, and FreshPacketDuhamelCoherenceRecurrenceBoundary. It did not construct the missing PDE estimate; it identified the exact lift needed and prevented relabeling old audit eligibility as a Duhamel source.",
+  "resolved_at": "2026-05-20T03:05:35Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

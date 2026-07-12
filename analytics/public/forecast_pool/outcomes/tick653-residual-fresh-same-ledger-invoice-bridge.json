@@ -1,0 +1,45 @@
+{
+  "actual_cost_agent_minutes": 95.0,
+  "artifact_hash": "500d47cdc72ebf3ca20e2125f8ffcf1cddd187b8fbb5dffacd12caf7875db644",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "pass",
+  "contract_id": "tick653-residual-fresh-same-ledger-invoice-bridge",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": false,
+  "error_type": "none",
+  "externality_tags": [
+    "useful_negative",
+    "proof_surface_boundary"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-19T19:39:23Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick653-residual-fresh-same-ledger-invoice-bridge/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Focused on event-to-radius invoice lift rather than beta or capacity relabel.",
+  "preconditioner_source": "aggregate_forecast_and_swarm",
+  "realized_failure_mode_ids": [
+    "same_tree_invoice_requires_new_side_condition",
+    "pressure_tail_localization_assumed_not_proved",
+    "inherited_badness_rebilling_survives"
+  ],
+  "resolution_note": "Compile-checked sharper boundary: same-ledger residual audit plus same-tree fresh-frequency lock requires SameLedgerFreshEventCarriesRadiusInvoice; no invoice construction.",
+  "resolved_at": "2026-05-19T20:18:57Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -3,18 +3,18 @@
   "base": {
     "prove": 1.3402,
     "formalize": 0.5715,
-    "faithfulness": 3.9319,
+    "faithfulness": 4.0202,
     "faithfulness_acc": 0.0
   },
   "finetuned": {
-    "prove": 0.438,
-    "formalize": 0.1522,
-    "faithfulness": 0.1725,
-    "faithfulness_acc": 0.906
+    "prove": 0.4043,
+    "formalize": 0.149,
+    "faithfulness": 0.244,
+    "faithfulness_acc": 0.844
   },
   "nll_delta_lower_is_better": {
-    "prove": -0.9022,
-    "formalize": -0.4193
+    "prove": -0.9359,
+    "formalize": -0.4225
   },
   "nll_verdict": "LIFT"
 }

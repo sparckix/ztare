@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick647-renorm-gevrey-radius-liouville-dss.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick647-renorm-gevrey-radius-liouville-dss.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick647-renorm-gevrey-radius-liouville-dss",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick647-renorm-gevrey-radius-liouville-dss.json",
+    "score": "analytics/public/forecast_pool/scores/tick647-renorm-gevrey-radius-liouville-dss.json"
+  },
+  "baseline_action": "re-run a degree-0 reduction/axis-pivot (provably treadmill \u2014 universal homogeneity-0 wall)",
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_coherence_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_coherence_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_coherence_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick647-renorm-gevrey-radius-liouville-dss",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "establish OR sharply characterize the renormalized-r\u0303_a scaling-invariant lower bound vs DSS profiles (the cold-seeded, meso-selected non-degree-0 mechanism D)",
+  "created_at": "2026-05-19T04:09:02Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_trackb",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 10,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 140,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 7,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this_tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "codex_cold_adversary+MetaDarwin: TRUE iff a non-vacuous basin-confirmed-NEW result \u2014 either a renormalized-r\u0303_a scaling-invariant strictly-positive lower bound excluding DSS profiles, OR a sharp characterization of the exact obstruction to it \u2014 that does NOT collapse to nu-washout/degree-0/homogeneity-0 and survives one cold adversary; else FALSE",
+  "question": "Characterize the impossibility of, or establish, a scaling-INVARIANT strictly-positive lower bound on the self-similarly-RENORMALIZED Gevrey space-analyticity radius r\u0303_a of 3D NSE \u2014 a genuinely NON-degree-0 invariant (set by the nonlinearity-vs-dissipation balance, NOT a Riesz/CZ Eulerian operator, NOT a matrix cocycle, NOT a-priori the nu-viscous length) \u2014 sufficient to exclude DSS / backward-self-similar blow-up profiles (a Liouville-type obstruction to the strict-margin/CF atom). Crux: does the renormalized r\u0303_a beat the Grujic-Kukavica nu-rate shrinkage, i.e. survive the renormalization step, OR collapse to nu-washout/degree-0? Consult adjacency ns_trackb_costin_tanveer_borel (different analyticity approach; do NOT re-derive).",
+  "risk_penalty": 1.0,
+  "success_threshold": "binary: renorm_gevrey_radius_liouville_new_noncollapsing_result_surviving_cold_adversary=1; nu-washout/degree-0-collapse/vacuity/relabel/recurrence=0",
+  "task_type": "ns_trackb",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

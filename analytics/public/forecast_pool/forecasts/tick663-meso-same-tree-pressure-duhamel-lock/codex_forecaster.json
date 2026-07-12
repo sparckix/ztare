@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick663-meso-same-tree-pressure-duhamel-lock",
+  "contract_question": "Should TICK663 route to FreshFrequencyPressureDuhamelSameCarrierLock / same-tree fresh-radius invoice rather than continue the local A_visc endpoint carrier lane?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apparatus_route_mismatch": 0.11,
+    "endpoint_recurrence": 0.23,
+    "pressure_leakage_recurrence": 0.29,
+    "same_tree_rebilling": 0.37
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T12:45:30Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.56,
+  "p_regression": 0.09,
+  "p_success": 0.7,
+  "rationale_short": "Same-tree pressure-Duhamel / fresh-frequency routing is structurally favored by the obligation graph and route diagnostics, but the top-level bet still depends on the actual next goal text and a pre-start decision-use row the DAG does not observe.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick665-fresh-annular-source-or-rebilling-kill",
+  "contract_question": "Can TICK665 determine whether existing same-tree, fresh-packet, and Duhamel-section primitives source the FreshAnnularChargePrefixBudgetSource, either by constructing a fresh-annular injection/reserve-drop adapter or by producing a same-packet rebilling countermodel?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fresh_annular_adapter_fails_residual_normal_form": 0.22,
+    "pressure_or_carrier_mismatch": 0.18,
+    "same_packet_rebilling_survives": 0.33,
+    "semantic_or_workbench_only_without_pde_source": 0.17,
+    "tooling_delay": 0.1
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T18:44:13Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.09,
+  "p_success": 0.49,
+  "rationale_short": "Adjacent NS source-discovery ticks already isolate same-tree/fresh-packet/Duhamel primitives, but this contract still needs a checked fresh-annular adapter or a sharp same-packet rebilling exclusion with a residual-normal-form receipt; the top-level success remains slightly below even odds because the missing negative case is not yet priced out.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_packet_rebilling_survives",
+    "fresh_annular_adapter_fails_residual_normal_form",
+    "pressure_or_carrier_mismatch",
+    "semantic_or_workbench_only_without_pde_source",
+    "tooling_delay"
+  ]
+}

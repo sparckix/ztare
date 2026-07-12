@@ -81,7 +81,7 @@
   "horizon": "2026-05-14T15:00:00Z",
   "information_value": 8.0,
   "layer": "meso",
-  "objective_resolver": "Resolve from analytics/public/leanmill/results/v2020_second_holdout_replay.json metrics: success iff new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, source-policy flags clean, training_now == false, gnn_blocked == true.",
+  "objective_resolver": "Resolve from analytics/public/gnn/lemma_relevance/v2020_second_holdout_replay.json metrics: success iff new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, source-policy flags clean, training_now == false, gnn_blocked == true.",
   "question": "Will v20.20 second internal randomized holdout replay produce at least one fresh primary strict row with zero harmful mismatches and clean source-policy flags?",
   "risk_penalty": 2.0,
   "success_threshold": ">=1 fresh strict row, harm 0, source-policy clean",

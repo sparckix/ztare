@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 27.0,
   "artifact_hash": "4eb63ff6d94b2052201317ea19e102a5c749ed8c57153b38ef95627af17daadc",
-  "artifact_path": "analytics/public/leanmill/results/v2031_corrected_scope_reprover_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2031_corrected_scope_reprover_replay.json",
   "changed_by_forecast_ids": [
     "gp230_erdos_gp225_v2031",
     "gp230_maxwell_gp225_v2031"

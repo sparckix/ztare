@@ -34,10 +34,10 @@ REQUIRED_ARRAY_FIELDS = (
 )
 
 WORKBENCH_SURFACES: dict[str, set[str]] = {
-    "ZTARE Projects": {"Current project", "Projects", "Connect project", "Files", "Settings"},
+    "ZTARE Projects": {"Current project", "Projects", "Connect project", "Files", "Plugins", "Settings"},
     "Project": {"Overview", "Charter", "Thesis", "Evidence summary"},
     "Files": {"Prepare files", "Project brief", "Add file", "Edit file"},
-    "Run": {"Ready to run", "Check readiness", "Start run", "Results", "Fix warnings", "Help"},
+    "Run": {"Ready to run", "Scoring guide", "Run settings", "Check readiness", "Start run", "Fix warnings"},
     "LeanMill": {"Start", "Draft target", "Proof files", "History"},
     "Review": {"Things to review", "Save review", "Save next step", "Saved history"},
     "Report": {"Report readiness", "Report inputs", "Project file"},

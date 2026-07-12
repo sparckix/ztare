@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "061ae645477238bb0a1d184468f7bd254b2ef565ff7a0821d2515f68f112a058",
-  "artifact_path": "analytics/public/leanmill/results/v2042_public_adapter_content_source_router.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2042_public_adapter_content_source_router.json",
   "changed_by_forecast_ids": [
     "Fisher",
     "Kolmogorov"
@@ -24,7 +24,7 @@
   "new_next_action": "blocked-row content source discovery plus external schema mapping prerequisite",
   "old_next_action": "rank-policy replay or generic external adapter execution",
   "preconditioner_effect": "prevented rank-policy replay churn and forced candidate-content source routing",
-  "preconditioner_source": "analytics/public/leanmill/results/v2041_heldout_dual_head_delta_replay_market_abort.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2041_heldout_dual_head_delta_replay_market_abort.json",
   "realized_failure_mode_ids": [],
   "resolution_note": "v20.42 emitted the content-source router: consumed v2034/v2041/v1918/v1921, recorded rank-policy replay abort, recorded external exact coverage 0.0 as schema-mapping blocker, selected 5 blocked rows for content-changing source discovery, replay=false, training=false, GNN blocked=true.",
   "resolved_at": "2026-05-14T17:18:40Z",

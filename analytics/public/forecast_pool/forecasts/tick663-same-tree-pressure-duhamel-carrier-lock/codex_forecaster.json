@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick663-same-tree-pressure-duhamel-carrier-lock",
+  "contract_question": "Will TICK663 produce a discriminating same-tree pressure-Duhamel carrier-lock result for the CV/C7 route?",
+  "domain": "ns_c7_invoice",
+  "expected_cost_agent_minutes": 115.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_lock_only_or_relabel": 0.24,
+    "endpoint_recurrence": 0.18,
+    "pressure_localization_fails": 0.27,
+    "same_tree_rebilling": 0.31
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration"
+  ],
+  "forecasted_at": "2026-05-20T12:47:41Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.08,
+  "p_success": 0.49,
+  "rationale_short": "No prior codex forecast exists. I price this below the meso routing bet because the micro success criterion requires a discriminating artifact, not just the route choice; nearby C7 rows are mid-0.4s to mid-0.5s, and the dominant risks are same-tree relabeling, pressure localization failing, or an endpoint recurrence that never shifts the next lever.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_tree_rebilling",
+    "pressure_localization_fails",
+    "carrier_lock_only_or_relabel",
+    "endpoint_recurrence"
+  ]
+}

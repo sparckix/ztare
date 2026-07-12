@@ -1,0 +1,48 @@
+{
+  "actual_cost_agent_minutes": 225.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "residual_normal_form_recall",
+    "tool_improvement"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T14:52:48Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick664-same-ledger-duhamel-lower-envelope-source/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "close_lifecycle_overhead"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "kernel_lower_envelope_fails",
+    "same_tree_rebilling",
+    "endpoint_slaving"
+  ],
+  "resolution_note": "Resolved true under the contract resolver: TICK664 produced kernel-checked boundary artifacts plus workbench and residual-manifest receipts that exclude lower-envelope/local/same-region reuse as a carrier source, sharpen the endpoint/positive-tail obstruction, and isolate the fresh-annular prefix-budget consumer as the next source theorem. It did not construct the missing PDE source.",
+  "resolved_at": "2026-05-20T18:27:51Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

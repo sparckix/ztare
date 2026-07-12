@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick667-reserve-nonnegativity-recharge-prefix",
+  "contract_question": "Can this tick prove or refute the numerical predictable-reserve source isolated by TICK666: derive reserve nonnegativity and recharge-prefix budget for FreshAnnularPredictableReserveDropSource from the indexed single-spend carrier or lineage reservoir, or construct the minimal nested-reuse/recharge-error countermodel?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "both_fields_derived": 0.2,
+    "nested_reuse_countermodel": 0.18,
+    "only_one_field_settled": 0.2,
+    "recharge_prefix_not_forced": 0.2,
+    "reserve_nonnegativity_not_forced": 0.22
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:02:26Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.47,
+  "rationale_short": "Tick bet: medium. TICK666 gives exact fields and Lean interfaces; I expect either a sharp countermodel or one derived field. Full two-field derivation is less likely without a new PDE source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

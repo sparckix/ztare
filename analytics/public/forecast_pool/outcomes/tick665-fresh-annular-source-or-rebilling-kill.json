@@ -1,0 +1,46 @@
+{
+  "actual_cost_agent_minutes": 70.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick665-fresh-annular-source-or-rebilling-kill",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "residual_normal_form_refinement",
+    "workbench_depth_gate"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T18:44:13Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick665-fresh-annular-source-or-rebilling-kill/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "same_packet_rebilling_survives",
+    "existing_primitives_do_not_source_annular_charge",
+    "semantic_or_workbench_only_without_pde_source"
+  ],
+  "resolution_note": "Produced bounded-overlap rebilling countermodel and narrowed source target to separated indexed fresh-annular extraction; compiler artifact and workbench receipts pass.",
+  "resolved_at": "2026-05-20T19:07:55Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

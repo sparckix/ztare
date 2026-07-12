@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "run focused split-excess fresh-radius invoice tick; do not follow route-1 centrality",
+  "agent_id": "codex:RD",
+  "contract_id": "tick652-c7-split-excess-fresh-radius-invoice",
+  "contract_question": "Can the CV/C7 split-excess surface be converted into a quantity-level fresh-radius invoice theorem paying c*r_Q per selected bad descendant without CF alignment, degree-0/Riesz bookkeeping, or descendant rebilling?",
+  "domain": "ns_c7_invoice",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_dependency_not_inequality": 0.3,
+    "cf_alignment_smuggled": 0.1,
+    "fresh_invoice_requires_new_side_condition": 0.34,
+    "lean_surface_too_weak": 0.08,
+    "rebilling_log_pileup_countermodel": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_discounted"
+  ],
+  "forecasted_at": "2026-05-19T18:29:32Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "Graph pass shows no quantity path from capacity/excess/freshEnergy to radiusCharge; artifact graph isolates split-excess invoice lane. I expect useful bounded result more often than constructive invoice.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "artifact_dependency_not_inequality",
+    "fresh_invoice_requires_new_side_condition",
+    "rebilling_log_pileup_countermodel"
+  ]
+}

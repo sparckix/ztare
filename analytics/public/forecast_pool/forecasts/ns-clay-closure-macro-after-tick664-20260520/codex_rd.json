@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns-clay-closure-macro-after-tick664-20260520",
+  "contract_question": "Will the NS millennium hunt produce a daemon-stamped, independently auditable Clay-level regularity result by 2026-05-27, rather than a conditional obstruction, source-boundary result, or apparatus-only capability result?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 720.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "external_audit_rejects_scope": 0.1,
+    "five_axiom_void_or_known_criterion_gap": 0.2,
+    "fresh_annular_source_uninhabited": 0.32,
+    "pressure_or_carrier_mismatch": 0.16,
+    "same_packet_rebilling_or_no_reuse_failure": 0.22
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T18:37:43Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.04,
+  "rationale_short": "Current corpus is producing useful boundary and source-theorem isolation, but a full Clay-level regularity result within this horizon would require a new inhabited PDE source theorem plus independent audit; tick664 moved the live lever forward without supplying that source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

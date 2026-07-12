@@ -22,12 +22,12 @@
   "horizon": "this_v2007_tick",
   "information_value": 1.8,
   "layer": "micro",
-  "objective_resolver": "Resolve true from analytics/public/leanmill/results/v2007_high_yield_next3_replay.json if new_strict_same_target_rows>=1, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true; false otherwise.",
+  "objective_resolver": "Resolve true from analytics/public/gnn/lemma_relevance/v2007_high_yield_next3_replay.json if new_strict_same_target_rows>=1, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true; false otherwise.",
   "question": "v20.07 high-yield next-3 replay adds >=1 fresh primary strict row with harm=0 and clean source policy",
   "risk_penalty": 1.0,
   "resolution_predicate": {
     "success_bool": "new_strict_same_target_rows >= 1 and harmful_compiled_mismatch_actions == 0 and source-policy flags clean and training_now == false and gnn_blocked == true",
-    "artifact_path": "analytics/public/leanmill/results/v2007_high_yield_next3_replay.json"
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2007_high_yield_next3_replay.json"
   },
   "success_threshold": "new_strict_same_target_rows>=1 harmful=0 clean_source=true training_now=false gnn_blocked=true",
   "task_type": "gp225_repair_micro",

@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 12.0,
     "artifact_hash": "96fa3d425f0dbf20318d1eeb963491c230e13542da63ad627e43b7bbb6689f70",
-    "artifact_path": "analytics/public/leanmill/results/v1931_executable_repair_canary.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1931_executable_repair_canary.json",
     "compile_status": "repair_canary_ran_strict_gate_failed",
     "contract_id": "gp225_v1920_executable_repair_canary_gate",
     "error_type": "strict_false_accept_guard_failed_with_overclosure_signal",

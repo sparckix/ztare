@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "35c708216c21fe0e34467979b8372e4b03700f59642c27481a715e4284de7718",
-  "artifact_path": "analytics/public/leanmill/results/v2089_heldout_hard_negative_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2089_heldout_hard_negative_replay.json",
   "compile_status": "replay_passed",
   "contract_id": "gp225_v2089_heldout_hard_negative_replay_meso_gate",
   "decision_changed_bool": true,

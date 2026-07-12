@@ -1,0 +1,123 @@
+{
+  "contract_id": "tick666-indexed-single-spend-to-fresh-annular-source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+      "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate."
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "externality_tags": [
+        "target_sharpened",
+        "semantic_polarity_bug_fixed",
+        "vps_lean_parity_green"
+      ],
+      "realized_failure_mode_ids": [
+        "numerical_fresh_annular_schedule_missing",
+        "qualitative_single_spend_not_numeric"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.27585000000000004,
+  "mean_log_score": -0.7449393386882306,
+  "outcome": {
+    "actual_cost_agent_minutes": 78.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick666-indexed-single-spend-to-fresh-annular-source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [
+      "target_sharpened",
+      "semantic_polarity_bug_fixed",
+      "vps_lean_parity_green"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T20:29:26Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick666-indexed-single-spend-to-fresh-annular-source/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "numerical_fresh_annular_schedule_missing",
+      "qualitative_single_spend_not_numeric"
+    ],
+    "resolution_note": "Success: produced compile-checked adapter and workbench-backed boundary. Minimal missing numerical source narrowed to predictable reserve-drop data: reserve nonnegativity plus recharge-prefix budget; no millennium-problem claim.",
+    "resolved_at": "2026-05-20T21:45:30Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T21:45:57Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 78.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": 18.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 96.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T20:27:51Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T20:29:26Z",
+        "resolved_at": "2026-05-20T21:45:30Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 78.0,
+      "agent_id": "codex_rd",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 27.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 105.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T20:27:51Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T20:28:09Z",
+        "resolved_at": "2026-05-20T21:45:30Z"
+      }
+    }
+  ]
+}

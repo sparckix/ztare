@@ -1,0 +1,128 @@
+{
+  "contract_id": "tick661-cv-degiorgi-vorticity-stretching-absorption",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue local L3A FreshPacketDuhamelIncidenceLiftFromAuditEligibility interface refinement or open a broad CV slogan tick.",
+      "counterfactual_action": "TICK661 attacks one concrete CV/nonlocal-DeGiorgi vorticity-truncation stretching absorption target, with pressure-complement and L3A lift deferred unless they arise as explicit obstructions.",
+      "externality_hypotheses": {
+        "effort_calibration": "A true PDE target requires heavier pencil and parallel work than an interface tick.",
+        "failure_mode_preconditioning": "Pre-naming CF/helical/BKM/parabolic-slaving collapse should prevent DeGiorgi analogy laundering.",
+        "parallel_work": "The tick should dispatch independent lanes for estimate construction, counterexample/kill, and formalization/workbench fit."
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": false,
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "compile_checked_interface",
+        "amnesia_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "attempt or kill LocalizedViscousAlignmentSurplusLevelSetGain for A_visc surplus plus far-field tail with pressure/commutator reserve paid separately",
+      "old_next_action": "generic CV/nonlocal-DeGiorgi stretching absorption target",
+      "preconditioner_effect": "Pressure/commutator reserve is a separate field in the candidate surface; scalar-only audit excludes the route unless anisotropic non-scalar depletion is supplied.",
+      "preconditioner_source": "market top failure: pressure_collar_or_commutator_leakage_dominates; adversarial lane: scalar De Giorgi recurrence and unpaid reserve"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.25505,
+  "mean_log_score": -0.703248534218705,
+  "outcome": {
+    "actual_cost_agent_minutes": 170,
+    "artifact_hash": "7472089805a3c4c3d120af72e66cff3aab28fee8830f1cd7d3f4c8ade8bd09e1",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_trackb_de_giorgi_vorticity_attack.lean",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick661-cv-degiorgi-vorticity-stretching-absorption",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": false,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "compile_checked_interface",
+      "amnesia_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "compile-checked concrete vorticity/stretching carrier plus CV/nonlocal-DeGiorgi A_visc surplus candidate and scalar-only exclusion boundary",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T03:26:09Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick661-cv-degiorgi-vorticity-stretching-absorption/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "attempt or kill LocalizedViscousAlignmentSurplusLevelSetGain for A_visc surplus plus far-field tail with pressure/commutator reserve paid separately",
+    "old_next_action": "generic CV/nonlocal-DeGiorgi stretching absorption target",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Pressure/commutator reserve is a separate field in the candidate surface; scalar-only audit excludes the route unless anisotropic non-scalar depletion is supplied.",
+    "preconditioner_source": "market top failure: pressure_collar_or_commutator_leakage_dominates; adversarial lane: scalar De Giorgi recurrence and unpaid reserve",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Success under the pre-registered predicate: produced a compile-checked interface/adapter identifying exact PDE hypotheses and a candidate inequality, plus a named obstruction for scalar-only recurrence. Result is not a regularity proof.",
+    "resolved_at": "2026-05-20T03:45:34Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T03:45:57Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 170,
+      "agent_id": "codex_forecaster",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": -18.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 152.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T03:25:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T03:26:09Z",
+        "resolved_at": "2026-05-20T03:45:34Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 170,
+      "agent_id": "codex_rd",
+      "brier": 0.25,
+      "cost_error_agent_minutes": -15.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 155.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.6931471805599453,
+      "p_success": 0.5,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T03:25:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T03:25:09Z",
+        "resolved_at": "2026-05-20T03:45:34Z"
+      }
+    }
+  ]
+}

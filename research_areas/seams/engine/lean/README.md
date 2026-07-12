@@ -16,6 +16,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [GP-225 — GNN Lemma-Relevance Ranker (lineage seam)](GP-225_gnn_lemma_relevance_ranker_seam.md)
 - [GP-225 LeanMill vNext Station Factory Seam](GP-225_leanmill_vnext_station_factory_seam.md)
 - [GP-246 — Governed DAG Proof-Search (ex-ante typed contract + best-first + deferral)](GP-246_governed_dag_proof_search_seam.md)
+- [GP-251 — AxiomPack Frontier Exploration Inlet Seam](GP-251_axiompack_frontier_exploration_inlet_seam.md)
 
-<sub>0 sub-folder(s), 8 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 9 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

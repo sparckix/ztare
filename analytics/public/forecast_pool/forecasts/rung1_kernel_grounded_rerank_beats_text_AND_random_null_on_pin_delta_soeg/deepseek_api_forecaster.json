@@ -1,0 +1,20 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "deepseek",
+  "agent_id": "deepseek:api_forecaster",
+  "contract_id": "rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg",
+  "contract_question": "On the scaled Rung-1 (T2P pin_delta + controls, STRONG statement-BM25 pools, dedicated/quiet sandbox), does B7 (kernel-grounded rerank + governance) beat the STRONGER of B0(text-BM25) and B5(random NULL) by >=5pp closed_or_exact_gap@budget OR <=0.8x probes-to-verdict, AND 0 false-ratify, with all closures replaying?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-06-11T19:03:33Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "Complex constraints, high bar, low base rate for such stringent criteria.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,51 @@
+{
+  "actual_cost_agent_minutes": 48,
+  "artifact_hash": "d367202c440d9159106b06076d407cb5540f097d93af83561593e4f5d4a12f36",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "pass",
+  "contract_id": "tick657-annular-harmonic-moment-cancellation",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioned",
+    "paired_swarm_helped",
+    "gowers_first_helped"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "standalone harmonic-moment quotient retired unless strengthened to fixed-test projector plus explicit defect/reserve interface",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T01:09:59Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick657-annular-harmonic-moment-cancellation/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "workbench_thin_zone_no_mathlib_shelf"
+  ],
+  "new_next_action": "Retire standalone AnnularHarmonicMomentCancellation unless strengthened to fixed geometry-defined collar projector plus trace-free second-moment defect or per-node independent harmonic reserve; otherwise return to L3A/CV production side.",
+  "old_next_action": "Try to prove or refute AnnularHarmonicMomentCancellation as a natural collar quotient theorem.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Prevented accepting a modulo-harmonic-gauge positive; forced fixed-test naturality and explicit reserve requirements.",
+  "preconditioner_source": "TICK645 homogeneity-0 recurrence audit, TICK656 harmonic-collar rebilling result, and TICK657 forecast failure-mode priors",
+  "realized_failure_mode_ids": [
+    "degree_zero_harmonic_rebilling",
+    "posthoc_test_class_rewrite",
+    "quadratic_mode_uncancelled"
+  ],
+  "resolution_note": "Success under the objective resolver: TICK657 recorded pencil-first harmonic moment analysis, graph/amnesia traversal, workbench prefilter, paired swarm consolidation, and compiled Lean surfaces. The result is a substantive negative decision: AnnularHarmonicMomentCancellation is not natural in its current modulo-harmonic-gauge form; the narrowed replacement is a fixed geometric collar projector with visible trace-free second-moment defect or per-node independent harmonic reserve.",
+  "resolved_at": "2026-05-20T01:19:15Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

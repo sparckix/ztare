@@ -1,0 +1,30 @@
+{
+  "actual_cost_agent_minutes": 120.0,
+  "artifact_hash": null,
+  "artifact_path": "projects/ns_millennium_hunt/research-output/2026-05-19-ns-research-log.md",
+  "changed_by_forecast_ids": [
+    "codex:RD",
+    "codex"
+  ],
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick649-c7-weak-bilinear-production-gain",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "Build or refute C7ProductionDefectMeasure / VorticityCapacityNoReuseBudget plus CapacityOrExistingChannelDichotomy as the middle object between local gain and radius charge.",
+  "old_next_action": "Attack local beta/q>5/2 C7 high-level production gain plus no-log bridge.",
+  "ordering_override_no_codex": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Produced actionable C7 classification: coefficient reverse-Holder route killed from current ingredients; local-gain-only promotion is insufficient; next lever is a nu-coupled production-defect/vorticity-capacity object supplying both local gain and radius-charge/no-reuse accounting.",
+  "resolved_at": "2026-05-19T14:48:32Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

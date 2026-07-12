@@ -1,0 +1,45 @@
+{
+  "actual_cost_agent_minutes": 78.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick666-indexed-single-spend-to-fresh-annular-source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [
+    "target_sharpened",
+    "semantic_polarity_bug_fixed",
+    "vps_lean_parity_green"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T20:29:26Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick666-indexed-single-spend-to-fresh-annular-source/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "numerical_fresh_annular_schedule_missing",
+    "qualitative_single_spend_not_numeric"
+  ],
+  "resolution_note": "Success: produced compile-checked adapter and workbench-backed boundary. Minimal missing numerical source narrowed to predictable reserve-drop data: reserve nonnegativity plus recharge-prefix budget; no millennium-problem claim.",
+  "resolved_at": "2026-05-20T21:45:30Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

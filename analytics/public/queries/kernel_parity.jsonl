@@ -87,3 +87,11 @@
 {"target": "mathd_algebra_182", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
 {"target": "cost_eq_statePriceWeighted_payoff", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
 {"target": "cost_eq_statePriceWeighted_payoff", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_lemma2", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_lemma2", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_lemma2_grid_count_le_of_row_count_le", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": false, "confirmed": ["vacuity_suspect"]}, "kernel_blocked": true}
+{"target": "balanced_journal_conservation_zero_endpoint_and_separate_sharpness", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": false, "confirmed": ["vacuity_suspect"]}, "kernel_blocked": true}
+{"target": "observationalEquivalence_passiveLowerBound", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_lemma1_row_map_count_le", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_lemma1_row_map_count_le", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}

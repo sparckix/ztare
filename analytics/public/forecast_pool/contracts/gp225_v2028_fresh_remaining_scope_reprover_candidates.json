@@ -91,7 +91,7 @@
   "horizon": "one local cached candidate-generation run over remaining scope holdout rows",
   "information_value": 0.5,
   "layer": "micro",
-  "objective_resolver": "Success iff analytics/public/leanmill/results/v2028_fresh_remaining_scope_reprover_candidates.json exists and reports candidate_rows >= 8, total_candidates >= 48, model_load_or_generation_failed=false, local_files_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, replay_run=false, training_now=false, and gnn_blocked=true.",
+  "objective_resolver": "Success iff analytics/public/gnn/lemma_relevance/v2028_fresh_remaining_scope_reprover_candidates.json exists and reports candidate_rows >= 8, total_candidates >= 48, model_load_or_generation_failed=false, local_files_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, replay_run=false, training_now=false, and gnn_blocked=true.",
   "question": "Will local cached ReProver context-enriched generation on remaining GP-225 scope-holdout rows produce a clean fresh candidate packet without replay/training?",
   "risk_penalty": 0.12,
   "success_threshold": "fresh_candidate_json_exists,candidate_rows>=8,total_candidates>=48,local_files_only_true,forbidden_fields_false,no_replay,no_training,gnn_blocked_true",

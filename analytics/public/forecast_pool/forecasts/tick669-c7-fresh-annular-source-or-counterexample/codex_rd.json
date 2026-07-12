@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "contract_id": "tick669-c7-fresh-annular-source-or-counterexample",
+  "contract_question": "Can TICK669 either pay the C7 same-source fresh-annular anti-laundering/source-realization receipt from current separated-source objects, or produce the minimal counterexample showing those objects cannot supply one numerical field without rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 240.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "conditional_consumer_without_source_payment": 0.3,
+    "formal_surface_too_weak": 0.1,
+    "label_laundering": 0.25,
+    "pde_workbench_returns_only_route_label": 0.15,
+    "strict_margin_relabel": 0.2
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-06-06T19:33:08Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.22,
+  "rationale_short": "Hard but sharply targeted: success only if same-source payer or minimal obstruction is produced; prior TICK668 compressed labels and showed the exact void.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

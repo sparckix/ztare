@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 20.0,
   "artifact_hash": "044ec2e44038eae6f72c60cf27e2d92ea930aa1459242ed7b4feb1645d4e05a1",
-  "artifact_path": "analytics/public/leanmill/results/v2030_corrected_scope_reprover_candidates.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2030_corrected_scope_reprover_candidates.json",
   "changed_by_forecast_ids": [
     "gp230_lovelace_gp225_v2030",
     "gp230_parfit_gp225_v2030"

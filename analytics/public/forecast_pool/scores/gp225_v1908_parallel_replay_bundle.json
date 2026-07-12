@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 30.0,
     "artifact_hash": null,
-    "artifact_path": "analytics/public/leanmill/results/v1908_parallel_replay_bundle.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1908_parallel_replay_bundle.json",
     "compile_status": "replay_bundle_failed_density_breadth_gate",
     "contract_id": "gp225_v1908_parallel_replay_bundle",
     "error_type": null,

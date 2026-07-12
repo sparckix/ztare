@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+  "contract_question": "Can a selected residual-fresh event carry a same-ledger Duhamel/Bernstein positive-kernel lower envelope whose integrated reserve pays the CV/C7 local production deficit while preserving pressure complement separation and no-descendant rebilling?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "endpoint_slaving": 0.16,
+    "kernel_lower_envelope_fails": 0.3,
+    "pressure_complement_leakage": 0.22,
+    "same_tree_rebilling": 0.22,
+    "tooling_or_lean_delay": 0.1
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T14:52:48Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.71,
+  "p_regression": 0.08,
+  "p_success": 0.45,
+  "rationale_short": "Selected domain is ns_route1_pde. This is slightly harder than the sibling carrier-lock bet because the lower-envelope source still has to clear pressure-complement and no-descendant rebilling checks, and there is no DAG or prior outcome here to price a missing negative case away.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "kernel_lower_envelope_fails",
+    "pressure_complement_leakage",
+    "same_tree_rebilling",
+    "endpoint_slaving",
+    "tooling_or_lean_delay"
+  ]
+}

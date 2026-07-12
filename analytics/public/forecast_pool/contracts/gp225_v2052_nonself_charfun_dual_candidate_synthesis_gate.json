@@ -92,7 +92,7 @@
   "horizon": "2026-05-14",
   "information_value": 0.24,
   "layer": "micro",
-  "objective_resolver": "Artifact analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json has status passed, forbidden target-proof copy checks true, candidate_generation_run true, replay_run false, training_now false, gnn_blocked true, and decision separates replay-ready templates from normalization-obligation-only templates.",
+  "objective_resolver": "Artifact analytics/public/gnn/lemma_relevance/v2052_nonself_charfun_dual_candidate_synthesis_gate.json has status passed, forbidden target-proof copy checks true, candidate_generation_run true, replay_run false, training_now false, gnn_blocked true, and decision separates replay-ready templates from normalization-obligation-only templates.",
   "question": "Will v20.52 synthesize a source-safe charFunDual candidate gate from v20.51 that avoids copying target proof lines and correctly decides replay-ready vs normalization-obligation-only?",
   "risk_penalty": 0.05,
   "success_threshold": "source-safe synthesis gate passes without leakage and without replay",

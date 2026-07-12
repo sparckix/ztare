@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 16.0,
   "artifact_hash": "7f6104fa70bfa2711ba4994e4daeef90fea8ee4fe5a854825f2cdf34ba2a7ec6",
-  "artifact_path": "analytics/public/leanmill/results/v2071_post_bayesRisk_union_heldout_delta_packet.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2071_post_bayesRisk_union_heldout_delta_packet.json",
   "changed_by_forecast_ids": [],
   "compile_status": "py_compile_passed",
   "contract_id": "gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
@@ -19,7 +19,7 @@
   "new_next_action": "parallelize label-inventory, heldout candidate-content delta, and null-training-baseline gates; keep GNN blocked",
   "old_next_action": "start or discuss GNN training after 15 strict rows",
   "preconditioner_effect": "v20.70 forced heldout-policy evidence before training, preventing row-count Goodharting.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
   "realized_failure_mode_ids": [
     "no_replayable_policy_delta"
   ],

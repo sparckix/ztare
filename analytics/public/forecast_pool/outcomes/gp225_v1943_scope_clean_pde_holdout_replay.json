@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 12.0,
   "artifact_hash": "abd5d523c55f2a0b25149cacdecddbb8936634278bf3c9242179194f24b5ea31",
-  "artifact_path": "analytics/public/leanmill/results/v1943_scope_clean_pde_holdout_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1943_scope_clean_pde_holdout_replay.json",
   "compile_status": "no_compiled_candidates",
   "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
   "error_type": "generic_scope_templates_no_compile_on_pde_holdout",

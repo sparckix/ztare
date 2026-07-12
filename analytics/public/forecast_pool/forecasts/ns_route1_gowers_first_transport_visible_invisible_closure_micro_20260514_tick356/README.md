@@ -1,0 +1,17 @@
+# ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356
+
+_Folder index. Prose may be added above the auto-index block._
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+
+## Index
+
+**Documents**
+
+- [codex_rd_pre.json](codex_rd_pre.json)
+- [codex_skeptic_pre.json](codex_skeptic_pre.json)
+- [hooke_pde_tick356.json](hooke_pde_tick356.json)
+- [rawls_skeptic_tick356.json](rawls_skeptic_tick356.json)
+
+<sub>0 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

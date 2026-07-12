@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Run the paired PDE swarm and keep candidate vs obstruction split explicit; stop if the only path depends on CF alignment, degree-0 Riesz bookkeeping, or parabolic scalar reuse.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick656-c7-cv-pressure-vorticity-capacity",
+  "contract_question": "Will TICK656 produce a substantive frontier-facing C7/CV pressure-vorticity estimate decision: either a dimensionally coherent candidate for ResidualFreshPressureComplementDualTestLocalization with beta/no-log/radius-charge mechanism, or a named PDE obstruction retiring it, without CF alignment, degree-0 Riesz bookkeeping, or parabolic-rate-slaved scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 126.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_not_dimensionally_coherent": 0.19,
+    "cf_alignment_smuggled": 0.17,
+    "only_partial_obstruction_no_retirement": 0.18,
+    "paired_swarm_nonconvergent": 0.23,
+    "scalar_route_rehash_or_gate_restatement": 0.23
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "frontier_math",
+    "pde_estimate_workbench"
+  ],
+  "forecasted_at": "2026-05-19T23:52:45Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.67,
+  "p_regression": 0.09,
+  "p_success": 0.57,
+  "rationale_short": "Open contract, no prior codex row, and the nearby C7/CV workbench suggests a better-than-even chance of reaching either a coherent candidate estimate or a named obstruction, but the main failure mode is a scalar-route restatement that never produces a discriminating PDE decision.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "scalar_route_rehash_or_gate_restatement",
+    "candidate_not_dimensionally_coherent",
+    "only_partial_obstruction_no_retirement",
+    "cf_alignment_smuggled",
+    "paired_swarm_nonconvergent"
+  ]
+}

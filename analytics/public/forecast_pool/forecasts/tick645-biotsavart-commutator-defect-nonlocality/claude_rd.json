@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick645-biotsavart-commutator-defect-nonlocality",
+  "contract_question": "Characterize the impossibility of, or exhibit, a positive-cone nesting-multiplicative LOWER bound on the Biot-Savart commutator defect integral-of-norm [R-tensor-R, omega-dot-grad]omega that supplies a strictly-positive log-active-scale term controlling limsup_t norm-omega-Linf for 3D NSE, NOT a coboundary under parabolic rescaling and NOT factoring through a signed/disjoint form \u2014 the surviving nonlocality next-lever outside the EXCLUDED local-polynomial and Lagrangian-cocycle classes.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T03:18:04Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.08,
+  "rationale_short": "Lane B is the ONE vector TICK644 cold-adversary (Lane D) explicitly routed to as most-promising (commutator tail is not a multiplicative-ergodic coboundary; carries a log-Lipschitz/modulus-of-continuity active scale the excluded local-polynomial+Lagrangian classes lack). Still the route+sibling+eigenframe+cocycle-invariant strict-margin Clay atom \u2014 honest LOW; most-likely = sharp characterization that the commutator defect is a coboundary at exact self-similarity OR factors through a signed/disjoint form; small residual p the log-active-scale lower bound genuinely lands.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick-bkm-faithful-encoding-judge-validate-20260518",
+  "contract_question": "Judge-validate the Stage-4..6 converged BKM_global_extension faithful encoding (finite-window same-family approximation bound to the global solution): Ico interval + ContDiffAt-top antecedent = exactly BKM 1984; bkm_1984_window_continuation + global_from_windowed_smoothness honestly-cited deep axioms (neither mislabeled); FiniteWindowSmoothSolution sol-bound (no vacuity); strictly conditional on the OPEN GlobalBKMIntegralFiniteFaithful. Genuinely faithful/non-vacuous/non-circular/NOT-a-closure per the out-of-loop judge?",
+  "domain": "ns_route1_bkm",
+  "expected_cost_agent_minutes": null,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-18T23:34:08Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.6,
+  "rationale_short": "Arc converged Stage-4..6 (compiles green, 3-lane consolidated: B sound, C fixed, A forward; no remaining identified residual). p=0.6 not higher: the judge is a fresh independent adversary and THIS arc has a track record of each stage exposing the next residual \u2014 calibrated against that base rate, not overconfident.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

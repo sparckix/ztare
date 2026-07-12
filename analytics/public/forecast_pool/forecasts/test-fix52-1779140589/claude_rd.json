@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "test-fix52-1779140589",
+  "contract_question": "fix52 e2e self-test (throwaway)",
+  "domain": "selftest",
+  "expected_cost_agent_minutes": null,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-18T21:43:10Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.9,
+  "rationale_short": "fix52 plumbing test",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -95,10 +95,17 @@ def _check_rubric(rubric: dict[str, Any], rubric_path: Path, project_slug: str) 
     info: list[str] = []
 
     # 1. Required scalar fields
-    if not rubric.get("persona"):
-        errors.append(_err("persona missing or empty (rubric_specification.md §3)"))
-    else:
+    personas = rubric.get("personas")
+    if isinstance(personas, dict) and any(
+        isinstance(v, str) and v.strip() for v in personas.values()
+    ):
+        info.append(_ok("personas dict present (role-conditional)"))
+    elif rubric.get("persona"):
         info.append(_ok("persona present"))
+    else:
+        errors.append(
+            _err("persona (or personas dict) missing or empty (rubric_specification.md §3)")
+        )
 
     if not rubric.get("dimensions"):
         errors.append(_err("dimensions list missing or empty (rubric_specification.md §3)"))

@@ -1,0 +1,144 @@
+{
+  "contract_id": "tick656-c7-cv-pressure-vorticity-capacity",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue route-local Lean/formalization growth",
+      "counterfactual_action": "pencil-first paired expert swarm on C7/CV pressure-vorticity estimate"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioned",
+        "paired_swarm_helped",
+        "graph_refreshed"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "workbench_target_context_index_missing"
+      ],
+      "new_next_action": "Retire standalone pressure-CZ complement localization; attack AnnularHarmonicMomentCancellation or C7SingleSpendDualLedgerBridge, while separately requiring p>5/2 for local CV production gain.",
+      "old_next_action": "Try to prove or refute ResidualFreshPressureComplementDualTestLocalization directly.",
+      "preconditioner_effect": "Prevented a pressure-nonlocality positive from being accepted; forced the annular harmonic collar mode and single-spend accounting replacement.",
+      "preconditioner_source": "TICK645 homogeneity-0 recurrence audit, TICK655 complement-dual-test surface, and forecast failure-mode priors",
+      "realized_failure_mode_ids": [
+        "harmonic_collar_rebilling",
+        "endpoint_degree_zero_pressure_reuse",
+        "single_spend_ledger_required"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.19824999999999998,
+  "mean_log_score": -0.5891525287886792,
+  "outcome": {
+    "actual_cost_agent_minutes": 110,
+    "artifact_hash": "1fedcee44788bae7512ecb4a4bd3cea6c96c8696561b69fb10cc3fe1b1ef218f",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick656-c7-cv-pressure-vorticity-capacity",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioned",
+      "paired_swarm_helped",
+      "graph_refreshed"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "standalone pressure-complement lane retired; next lever is annular harmonic moment cancellation or C7 single-spend dual ledger",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-19T23:52:45Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick656-c7-cv-pressure-vorticity-capacity/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [
+      "workbench_target_context_index_missing"
+    ],
+    "new_next_action": "Retire standalone pressure-CZ complement localization; attack AnnularHarmonicMomentCancellation or C7SingleSpendDualLedgerBridge, while separately requiring p>5/2 for local CV production gain.",
+    "old_next_action": "Try to prove or refute ResidualFreshPressureComplementDualTestLocalization directly.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Prevented a pressure-nonlocality positive from being accepted; forced the annular harmonic collar mode and single-spend accounting replacement.",
+    "preconditioner_source": "TICK645 homogeneity-0 recurrence audit, TICK655 complement-dual-test surface, and forecast failure-mode priors",
+    "realized_failure_mode_ids": [
+      "harmonic_collar_rebilling",
+      "endpoint_degree_zero_pressure_reuse",
+      "single_spend_ledger_required"
+    ],
+    "resolution_note": "Success under the objective resolver: TICK656 recorded pencil-first paired-swarm PDE analysis in the NS research log and residual manifest, added a typed route surface, and retired the standalone pressure-CZ complement target via the named annular harmonic-collar rebilling obstruction. This is not a millennium-problem result; it is a discriminating obstruction plus conditional replacement surface.",
+    "resolved_at": "2026-05-20T00:07:26Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T00:07:33Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 110,
+      "agent_id": "codex:RD",
+      "brier": 0.21159999999999995,
+      "cost_error_agent_minutes": 100.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 210.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.616186139423817,
+      "p_success": 0.54,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T23:48:59Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T23:49:14Z",
+        "resolved_at": "2026-05-20T00:07:26Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 110,
+      "agent_id": "codex_forecaster",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 126.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-19T23:48:59Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-19T23:52:45Z",
+        "resolved_at": "2026-05-20T00:07:26Z"
+      }
+    }
+  ]
+}

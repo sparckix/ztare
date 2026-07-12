@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex_forecaster",
+  "contract_id": "axiompack_regular_unary_frontier_smoke_micro_20260710",
+  "contract_question": "Will the regular-unary AxiomPack smoke return a receipted residual finalist with logical singleton ablation and a boundary result, or a valid receipted null?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "boundary_budget_exhaustion": 0.39,
+    "context_build_timeout": 0.29,
+    "navigator_schema_failure": 0.21,
+    "toolchain_or_receipt_mismatch": 0.11
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-07-10T23:39:47Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.12,
+  "p_success": 0.68,
+  "rationale_short": "Open micro contract with no aggregate, outcome, or score yet. The structure is narrow enough that a valid receipted null is plausible, but the success threshold still requires either a positive-residual finalist with singleton ablations and boundary evidence or a schema-valid no-candidate receipt. Main weakness is boundary/receipt completion under a short horizon; dependency risk is moderate because the objective relies on the immutable campaign run and reject-all receipts rather than a single proof step.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "boundary_budget_exhaustion",
+    "context_build_timeout",
+    "navigator_schema_failure",
+    "toolchain_or_receipt_mismatch"
+  ]
+}

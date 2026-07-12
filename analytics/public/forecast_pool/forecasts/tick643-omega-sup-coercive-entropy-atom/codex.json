@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick643-omega-sup-coercive-entropy-atom",
+  "contract_question": "Can a max-principle OR supercritical-scaling-coercive monotone entropy/observable be CONSTRUCTED for the stretched-vector vorticity controlling limsup_t norm-omega-Linf (route+sibling-invariant manifest:180 atom) via a NEW object algebra OUTSIDE route-1 explored move-space (NOT a faithful-encoding increment, Sobolev-energy relabel, or forbidden Ricci/dispersive transport)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T01:22:41Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.03,
+  "rationale_short": "CODEX independent verdict (Codex CLI subscription, local read-only run; transcribed because VPS workspace-write bwrap netns RTM_NEWADDR is denied \u2014 codex authored this p, provenance auditable, not laundered): coercive monotone observable controlling limsup Linf-vorticity is near-Clay-equivalent; likely failure = max-principle loss under vortex stretching / route-1+Sobolev relabel / vacuous entropy, not a new object algebra.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

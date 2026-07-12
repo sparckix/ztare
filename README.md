@@ -1,17 +1,29 @@
 <div align="center">
 
-# ZTARE
+<pre>
+███████╗████████╗ █████╗ ██████╗ ███████╗
+╚══███╔╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝
+  ███╔╝    ██║   ███████║██████╔╝█████╗
+ ███╔╝     ██║   ██╔══██║██╔══██╗██╔══╝
+███████╗   ██║   ██║  ██║██║  ██║███████╗
+╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+</pre>
 
-**Decide what you can stand behind.**
+### Decide what you can stand behind.
+
+_A local-first engine that pressure-tests the claim inside any document — and hands back a **governed decision**, not a vibe._
 
 [![public-smoke](https://github.com/sparckix/ztare/actions/workflows/public-smoke.yml/badge.svg)](https://github.com/sparckix/ztare/actions/workflows/public-smoke.yml)
 [![release](https://img.shields.io/github/v/release/sparckix/ztare)](https://github.com/sparckix/ztare/releases)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Bring a project folder, report, source pack, model output, proof note, dataset, or repo.
-ZTARE pressure-tests the claim inside it and shows you the audit trail.
+`Deterministic gates` · `Governed artifacts` · `Proposer ≠ grader` · `Local-first` · `Point it at any use-case`
 
-![The ZTARE Project Workbench: the left rail walks one project from charter and thesis through evidence, pressure-test, and verdict; the panel lists connected projects with a readiness score on each.](docs/images/workbench.png)
+Bring a project folder, report, PRD, model output, proof note, dataset, or repo. Paste a document and get it
+back with **every claim tagged against governed evidence** — backed, contradicted, or an untested assumption —
+then a decision brief that says what the call hinges on.
+
+![The ZTARE Project Workbench, Verdict view: "Can I trust this report?" — a likelihood-to-hold score, how many claims are directly sourced vs synthesized vs unsupported, an adversarial "how could this break" step, and every unsourced claim linked to where to verify it. The left rail walks one project from charter and thesis through evidence and pressure-test to this verdict.](docs/images/workbench.png)
 
 </div>
 
@@ -91,9 +103,35 @@ Find the full command surface, including the guarded model-backed entry, in the 
 | Project brief and evidence readiness | release path | Source typing, evidence binding, claim support, and run readiness before model spend. |
 | Report readiness | release path | Stops stale or unsupported reports from being promoted. |
 | LeanMill | active frontier | Governed Lean proof search. Come to it after the main path. |
+| Scenarios & plugins | release path | Point the same kernel at any use-case (product, finance, security, research) with a dropped YAML — governed deliverables, an annotated-document round-trip, and drop-in capability plugins. |
 | Reflexive layer | advisory | Mines forecasts, actions, catches, and experiment records; surfaces stale ledgers and dead instruments. |
 
 Terminology is layered: **workbench** is the user-facing product, **kernel** the trusted checks and contracts, **engine** a runnable subsystem. The [glossary](docs/concepts/glossary.md#core-concepts) is the reference.
+
+## Point it at any use-case — Scenarios & plugins
+
+The kernel is domain-neutral. A **Scenario** (`scenarios/<name>.yaml`) binds it to a use-case — a rubric, run
+config, which capability plugins to use, which governed artifacts to emit — without forking core code. Create a
+scenario or a rubric from the workbench (**Projects → Plugins**) or the CLI, and it is live immediately;
+capability plugins (evidence sources, renderers, solvers) drop in as a `.py` and go live on reload.
+
+- **Annotated round-trip** — paste a document (a PRD, a proposal); get it back with every sentence tagged
+  against the project's governed evidence: **backed**, **contradicted**, an **untested assumption**, or nothing
+  surfaced. A document is input, so it never "fails" — the headline is how many assumptions it rests on.
+- **Governed artifacts** — a run emits a decision memo / spec / ADR / decision brief through a **provenance
+  firewall**: every element must trace verbatim to a hardened claim, every connective to a governed edge.
+  Nothing ungoverned ships. The decision brief ranks what the call hinges on by *counterfactual sensitivity*.
+- **Safe AI polish** — the re-ingest gate promotes an AI-edited deliverable only if every sentence still traces
+  to the governed graph, so a polish step can't launder in an unsupported claim.
+
+```bash
+ztare scenario list                        # installed use-case bundles
+ztare scenario annotate my_prd.md --project acme   # the annotated round-trip
+ztare scenario brief --project acme        # the decision brief (hinges + audit drawer)
+ztare scenario plugins                     # everything installed (scenarios / rubrics / capabilities)
+```
+
+See the [scenarios concept doc](docs/concepts/scenarios.md).
 
 ## Design invariants
 

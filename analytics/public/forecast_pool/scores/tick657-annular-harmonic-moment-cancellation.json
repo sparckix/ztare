@@ -1,0 +1,148 @@
+{
+  "contract_id": "tick657-annular-harmonic-moment-cancellation",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue route-1 pressure collar residual without testing harmonic moment quotient naturality.",
+      "counterfactual_action": "Run Gowers-first harmonic moment analysis, graph/amnesia traversal, workbench prefilter, then Lean only for the resulting surface.",
+      "externality_hypotheses": {
+        "effort_calibration": "Harmonic-moment pencil work should be cheaper than a full swarm if it kills the quotient early.",
+        "failure_mode_preconditioning": "Pre-naming post-hoc test-class tuning and degree-zero harmonic rebilling should reduce recurrence of the same pressure-CZ basin."
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioned",
+        "paired_swarm_helped",
+        "gowers_first_helped"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "workbench_thin_zone_no_mathlib_shelf"
+      ],
+      "new_next_action": "Retire standalone AnnularHarmonicMomentCancellation unless strengthened to fixed geometry-defined collar projector plus trace-free second-moment defect or per-node independent harmonic reserve; otherwise return to L3A/CV production side.",
+      "old_next_action": "Try to prove or refute AnnularHarmonicMomentCancellation as a natural collar quotient theorem.",
+      "preconditioner_effect": "Prevented accepting a modulo-harmonic-gauge positive; forced fixed-test naturality and explicit reserve requirements.",
+      "preconditioner_source": "TICK645 homogeneity-0 recurrence audit, TICK656 harmonic-collar rebilling result, and TICK657 forecast failure-mode priors",
+      "realized_failure_mode_ids": [
+        "degree_zero_harmonic_rebilling",
+        "posthoc_test_class_rewrite",
+        "quadratic_mode_uncancelled"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.20725,
+  "mean_log_score": -0.6073483838444558,
+  "outcome": {
+    "actual_cost_agent_minutes": 48,
+    "artifact_hash": "d367202c440d9159106b06076d407cb5540f097d93af83561593e4f5d4a12f36",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick657-annular-harmonic-moment-cancellation",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioned",
+      "paired_swarm_helped",
+      "gowers_first_helped"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "standalone harmonic-moment quotient retired unless strengthened to fixed-test projector plus explicit defect/reserve interface",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T01:09:59Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick657-annular-harmonic-moment-cancellation/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [
+      "workbench_thin_zone_no_mathlib_shelf"
+    ],
+    "new_next_action": "Retire standalone AnnularHarmonicMomentCancellation unless strengthened to fixed geometry-defined collar projector plus trace-free second-moment defect or per-node independent harmonic reserve; otherwise return to L3A/CV production side.",
+    "old_next_action": "Try to prove or refute AnnularHarmonicMomentCancellation as a natural collar quotient theorem.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Prevented accepting a modulo-harmonic-gauge positive; forced fixed-test naturality and explicit reserve requirements.",
+    "preconditioner_source": "TICK645 homogeneity-0 recurrence audit, TICK656 harmonic-collar rebilling result, and TICK657 forecast failure-mode priors",
+    "realized_failure_mode_ids": [
+      "degree_zero_harmonic_rebilling",
+      "posthoc_test_class_rewrite",
+      "quadratic_mode_uncancelled"
+    ],
+    "resolution_note": "Success under the objective resolver: TICK657 recorded pencil-first harmonic moment analysis, graph/amnesia traversal, workbench prefilter, paired swarm consolidation, and compiled Lean surfaces. The result is a substantive negative decision: AnnularHarmonicMomentCancellation is not natural in its current modulo-harmonic-gauge form; the narrowed replacement is a fixed geometric collar projector with visible trace-free second-moment defect or per-node independent harmonic reserve.",
+    "resolved_at": "2026-05-20T01:19:15Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T01:19:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 48,
+      "agent_id": "codex_forecaster",
+      "brier": 0.22089999999999999,
+      "cost_error_agent_minutes": 72.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.25,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.6348782724359695,
+      "p_success": 0.53,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T01:08:31Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T01:09:59Z",
+        "resolved_at": "2026-05-20T01:19:15Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 48,
+      "agent_id": "codex_rd",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 87.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 135.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.72,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T01:08:31Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T01:10:43Z",
+        "resolved_at": "2026-05-20T01:19:15Z"
+      }
+    }
+  ]
+}

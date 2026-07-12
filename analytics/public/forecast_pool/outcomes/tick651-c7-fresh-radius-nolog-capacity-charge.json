@@ -1,0 +1,50 @@
+{
+  "actual_cost_agent_minutes": 82.0,
+  "artifact_hash": "0cbbbc1365a57d6083e40d1187992c342a6ccc334ff523f6f981d336d28fa386",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "codex_forecaster"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "lean_pass",
+  "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+  "counterfactual_value_bucket": "positive_decision_boundary",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "gp233_next_lever_update"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-19T17:02:34Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick651-c7-fresh-radius-nolog-capacity-charge/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "apparatus_catalog_stale_mm_ops_fixed"
+  ],
+  "new_next_action": "Retire capacity-only promotion; prove descendant-exclusive fresh-radius invoice theorem or split excess-drop witness route, while separately pursuing magnitude-side beta gain.",
+  "old_next_action": "Try to promote capacity/no-log budget into radius charge.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Kept tick on capacity-only promotion guard; avoided CF alignment, r_Q^2 mass, and generic De Giorgi restatement.",
+  "preconditioner_source": "codex_rd + codex_forecaster failure-mode priors",
+  "realized_failure_mode_ids": [
+    "capacity_symbol_only_no_radius_map",
+    "endpoint_or_rq2_recurrence"
+  ],
+  "resolution_note": "TICK651 succeeded on its stated boundary target: capacity/no-log bookkeeping alone does not produce RadiusChargingBadScaleMeasure; the extra required object is a descendant-exclusive fresh-radius invoice, with split excess-drop witness the clean current route. No millennium-problem claim; broader CV/C7 remains open via the magnitude-side beta gain or a fresh-radius payment theorem.",
+  "resolved_at": "2026-05-19T17:53:12Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

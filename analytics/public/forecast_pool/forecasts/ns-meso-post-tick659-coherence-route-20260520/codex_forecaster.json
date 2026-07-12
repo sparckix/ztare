@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "target_freshpacketselection_to_duhamelincidencecoherence_directly; keep_pressure_complement_and_no_log_fanout_as_kill_gates",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-post-tick659-coherence-route-20260520",
+  "contract_question": "Should the next NS descent target FreshPacketSelectionToDuhamelIncidenceCoherence directly, with pressure complement and no-log fanout as explicit kill gates, rather than trying to prove BadCenterEventPriceDropDuhamelIncidenceSource, pressure same-reserve, or FreshFrequencyEventSameTreeLock in one jump?",
+  "domain": "gp225_route_selection_meso",
+  "expected_cost_agent_minutes": 37.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_section_identity_missing": 0.2,
+    "coherence_bridge_too_global": 0.29,
+    "duhamel_event_source_only_shell_reserve": 0.15,
+    "fanout_no_log_gate_moves_upstream": 0.17,
+    "pressure_complement_gate_moves_upstream": 0.19
+  },
+  "forecast_externality_tags": [
+    "decision_use_candidate",
+    "failure_mode_preconditioning",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T02:37:05Z",
+  "p_dependency_issue": 0.37,
+  "p_needs_new_lemma": 0.75,
+  "p_regression": 0.07,
+  "p_success": 0.64,
+  "rationale_short": "TICK659 points to a single bridge; the residual uncertainty is whether pressure and no-log fanout remain downstream kill gates or slide upstream, and the contract does not supply a negative case that resolves that coupling.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "coherence_bridge_too_global",
+    "bad_center_section_identity_missing",
+    "pressure_complement_gate_moves_upstream",
+    "fanout_no_log_gate_moves_upstream",
+    "duhamel_event_source_only_shell_reserve"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "open_next_tick_on_coherence_bridge_if_macro_contract_does_not_deanchor",
+  "agent_id": "codex_rd",
+  "contract_id": "ns-meso-post-tick659-coherence-route-20260520",
+  "contract_question": "Should the next NS descent target FreshPacketSelectionToDuhamelIncidenceCoherence directly, with pressure complement and no-log fanout as explicit kill gates, rather than trying to prove BadCenterEventPriceDropDuhamelIncidenceSource, pressure same-reserve, or FreshFrequencyEventSameTreeLock in one jump?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_section_identity_missing": 0.23376623376623376,
+    "coherence_bridge_too_global": 0.25974025974025977,
+    "duhamel_event_source_only_shell_reserve": 0.15584415584415584,
+    "fanout_no_log_gate_moves_upstream": 0.16883116883116883,
+    "pressure_complement_gate_moves_upstream": 0.18181818181818182
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "decision_use_candidate",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T02:34:32Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.08,
+  "p_success": 0.66,
+  "rationale_short": "TICK659 reduced the source leg to a global bridge from pre-beta packet selection to Duhamel/incidence source. The next meso decision should test that bridge alone rather than bundling pressure and fanout.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "coherence_bridge_too_global",
+    "bad_center_section_identity_missing",
+    "pressure_complement_gate_moves_upstream",
+    "fanout_no_log_gate_moves_upstream",
+    "duhamel_event_source_only_shell_reserve"
+  ]
+}

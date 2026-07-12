@@ -1,0 +1,49 @@
+{
+  "actual_cost_agent_minutes": 165.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick668-ns-native-reserve-source-or-kill",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "target_sharpening",
+    "recurrence_compression"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": null,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T22:47:24Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick668-ns-native-reserve-source-or-kill/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "no_bridge_or_countermodel_compiled"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "compressed recurring routes into same-source payer residual",
+  "preconditioner_source": "TICK668 recursive lanes and NS residual manifest",
+  "realized_failure_mode_ids": [
+    "bridge_not_available_from_event_prefix",
+    "recharge_prefix_unbounded",
+    "reserve_nonnegativity_not_forced",
+    "same_event_reuse_countermodel",
+    "same_source_fresh_annular_source_unpaid"
+  ],
+  "resolution_note": "No NS-native reserve endpoint source or minimal countermodel was compiled inside TICK668. The long recursive record compresses to target-sharpening: event-prefix domination and related consumer adapters still do not supply the same-source fresh-annular anti-laundering/source-realization payer; the live residual is narrower.",
+  "resolved_at": "2026-06-06T15:36:38Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

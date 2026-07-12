@@ -1,0 +1,145 @@
+{
+  "contract_id": "tick658-nonflat-fresh-frequency-production",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue pressure-reserve residual or open a broad L3A tick without a precise packet-production target.",
+      "counterfactual_action": "Run Gowers-first analysis on NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as the precise fresh-frequency packet-production target before formalization.",
+      "externality_hypotheses": {
+        "effort_calibration": "The existing L3A scaffold should reduce search cost, but real PDE content remains hard.",
+        "failure_mode_preconditioning": "Pre-naming circular packet selection, endpoint CKN mass reuse, and pressure-carrier relabeling should prevent another fresh-frequency scaffold restatement."
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "decision_use_recorded",
+        "failure_mode_preconditioning",
+        "amnesia_prevention"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Prove or falsify IndependentFreshPacketSourceForNonflatBadCenter before any renewed prefix-domination assembly.",
+      "old_next_action": "Attempt full FreshFrequencyEventSameTreeLock bundle.",
+      "preconditioner_effect": "Focused the tick on the independent fresh-packet source branch and treated pressure/no-log as kill gates instead of attempting the full same-tree lock bundle.",
+      "preconditioner_source": "forecast aggregate and decision-use split recommendation",
+      "realized_failure_mode_ids": [
+        "missing_independent_fresh_packet_source",
+        "circular_packet_selection_from_beta_sum",
+        "endpoint_ckn_mass_restatement",
+        "same_carrier_pressure_booking_not_independent"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.21800000000000003,
+  "mean_log_score": -0.627282295220998,
+  "outcome": {
+    "actual_cost_agent_minutes": 70,
+    "artifact_hash": "602f0b0b2f8dfb09108459724e32db2274856cbd03a1c8efec35a7378609791e",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick658-nonflat-fresh-frequency-production",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "decision_use_recorded",
+      "failure_mode_preconditioning",
+      "amnesia_prevention"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "Produced named obstruction and formal source-audit surface: beta-only nonflat badness cannot create a fresh packet without independent Duhamel/Bernstein source plus pressure/no-log gates.",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T01:31:38Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick658-nonflat-fresh-frequency-production/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Prove or falsify IndependentFreshPacketSourceForNonflatBadCenter before any renewed prefix-domination assembly.",
+    "old_next_action": "Attempt full FreshFrequencyEventSameTreeLock bundle.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Focused the tick on the independent fresh-packet source branch and treated pressure/no-log as kill gates instead of attempting the full same-tree lock bundle.",
+    "preconditioner_source": "forecast aggregate and decision-use split recommendation",
+    "realized_failure_mode_ids": [
+      "missing_independent_fresh_packet_source",
+      "circular_packet_selection_from_beta_sum",
+      "endpoint_ckn_mass_restatement",
+      "same_carrier_pressure_booking_not_independent"
+    ],
+    "resolution_note": "TICK658 succeeded under its either/or criterion by producing a named obstruction and compile-checked source-audit surface. The strong beta-only packet-forcing reading is demoted; the next lever is IndependentFreshPacketSourceForNonflatBadCenter.",
+    "resolved_at": "2026-05-20T01:44:27Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T01:44:40Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 70,
+      "agent_id": "codex_forecaster",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": -20.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 50.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T01:30:32Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T01:31:38Z",
+        "resolved_at": "2026-05-20T01:44:27Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 70,
+      "agent_id": "codex_rd",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 80.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 150.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.52,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T01:30:32Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T01:30:54Z",
+        "resolved_at": "2026-05-20T01:44:27Z"
+      }
+    }
+  ]
+}

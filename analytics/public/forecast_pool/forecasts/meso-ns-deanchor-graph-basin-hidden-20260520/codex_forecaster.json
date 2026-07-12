@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Pivot the next tick out of route-1 rehashes and into an explicit out-of-route-1 target; the basin already shows the old Track-B/self-tax/pressure plumbing as an attractor, so the useful move is to make that exclusion operational.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "meso-ns-deanchor-graph-basin-hidden-20260520",
+  "contract_question": "Eigenquestion: de-anchor and reframe the current NS scope. What is hidden in plain sight about what the corpus and graph basin say, and what do they not say? Forecasters must use the NS graph basin artifacts (`projects/ns_millennium_hunt/workspace/queries/ns_trackb_constraint_basin_graph.json`, `projects/ns_millennium_hunt/workspace/queries/ns_graph_unified_intelligence.jsonl`, and residual manifest) rather than free-association.",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "alias_structure_collapses_to_known_wall": 0.2,
+    "generic_analogy_without_new_next_tick_target": 0.14,
+    "graph_basin_rehash_attractor": 0.32,
+    "missing_edge_structure_not_isolated": 0.24,
+    "stale_or_overfit_evidence": 0.1
+  },
+  "forecast_externality_tags": [
+    "graph-basin-grounded",
+    "route1-exhaustion",
+    "missing-edge-audit",
+    "next-tick-targeting"
+  ],
+  "forecasted_at": "2026-05-20T22:43:07Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.05,
+  "p_success": 0.67,
+  "rationale_short": "The residual manifest and basin outputs already point to a reframe: old Track-B/self-tax/pressure plumbing dominates centrality, while route-1 is repeatedly characterized as terminal or alias-equivalent to CF_global_extension. The pass succeeds if it turns that into an explicit next-target shift with neighborhood or missing-edge evidence; it fails if it merely restates the known wall or generic NS analogies.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

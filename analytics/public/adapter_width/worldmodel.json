@@ -1,0 +1,461 @@
+{
+  "substrate": "worldmodel",
+  "latest": {
+    "substrate": "worldmodel",
+    "timestamp": "2026-07-11T16:40:31.160263+00:00",
+    "fields": {
+      "variables": {
+        "status": "abduced_candidate",
+        "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+        "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+        "validated_by": null,
+        "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+      },
+      "actions": {
+        "status": "given",
+        "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": null
+      },
+      "success_signal": {
+        "status": "given",
+        "supplied_by": "ARC-AGI-3 adapter level/score field",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": null
+      },
+      "reset_semantics": {
+        "status": "given",
+        "supplied_by": "ARC-AGI-3 adapter reset call",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+      },
+      "time_structure": {
+        "status": "given",
+        "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": null
+      },
+      "observability": {
+        "status": "given",
+        "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": "Full observability assumed; partial-observability not tested."
+      },
+      "verification_oracle": {
+        "status": "given",
+        "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+        "abduced_by": null,
+        "validated_by": null,
+        "note": null
+      }
+    },
+    "width": 6,
+    "total": 7
+  },
+  "history": [
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:27:58.121487+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:27:58.158302+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:28:02.132276+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:28:52.738749+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:28:52.773673+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:40:31.124229+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    },
+    {
+      "substrate": "worldmodel",
+      "timestamp": "2026-07-11T16:40:31.160263+00:00",
+      "fields": {
+        "variables": {
+          "status": "abduced_candidate",
+          "supplied_by": "ArcAgi3Adapter grid + hand-authored roles/regions",
+          "abduced_by": "causal_compiler v1 (projects/arc3_ls20_gov/workspace/causal_objects.jsonl)",
+          "validated_by": null,
+          "note": "causal_objects.jsonl exists at run-time: causal_compiler v1 has produced variable candidates. Status upgraded from 'given' to 'abduced_candidate'. Remains abduced_candidate until a validation receipt is registered."
+        },
+        "actions": {
+          "status": "given",
+          "supplied_by": "ArcAgi3Adapter \u2014 4 discrete actions (up/down/left/right)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "success_signal": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter level/score field",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "reset_semantics": {
+          "status": "given",
+          "supplied_by": "ARC-AGI-3 adapter reset call",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Reset-invariance is UNTESTED (cold-review finding 6): episode boundary is a causal identity only after reset-invariance tests confirm the physics resets cleanly rather than carrying hidden state across lives."
+        },
+        "time_structure": {
+          "status": "given",
+          "supplied_by": "t integer from adapter; lawful_time declared in kernel",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        },
+        "observability": {
+          "status": "given",
+          "supplied_by": "full-grid assumption (ArcAgi3Adapter grid observation)",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": "Full observability assumed; partial-observability not tested."
+        },
+        "verification_oracle": {
+          "status": "given",
+          "supplied_by": "replay/holdout gates hand-designed in governed_verification.py",
+          "abduced_by": null,
+          "validated_by": null,
+          "note": null
+        }
+      },
+      "width": 6,
+      "total": 7
+    }
+  ]
+}

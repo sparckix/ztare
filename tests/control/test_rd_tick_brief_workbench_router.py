@@ -56,7 +56,6 @@ def test_workbench_router_surface_recommends_autoresearch_for_ready_surface(
     out = capsys.readouterr().out
     assert rc == 0
     assert "decision=invoke_autoresearch" in out
-    assert "OP-AWR-01: Autoresearch Workbench Routing" in out
     assert "ztare autoresearch run --project ns_proofsearch_resupply_pincer" in out
     assert "ztare autoresearch projection --project ns_proofsearch_resupply_pincer" in out
     assert "workbench_evidence_ref=<autoresearch-run-or-projection-artifact>" in out

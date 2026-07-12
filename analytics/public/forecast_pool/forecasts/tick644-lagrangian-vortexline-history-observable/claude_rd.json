@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick644-lagrangian-vortexline-history-observable",
+  "contract_question": "Can a material/Lagrangian vortex-line deformation-history observable (non-spectral, positive-cone, multiplicative-over-nesting; e.g. a Constantin-Iyer stochastic-Lagrangian deformation functional) be CONSTRUCTED that controls limsup_t norm-omega-Linf for 3D NSE by SUPPLYING the missing pointwise active-scale via trajectory time-integration \u2014 outside the now-excluded local Eulerian (omega,S)-polynomial class and NOT a forbidden spectral-gap/Oseledets object?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 110.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T02:03:11Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.07,
+  "rationale_short": "Genuinely-new class (Lagrangian/material deformation-history, NOT the EXCLUDED local Eulerian polynomial class) so slightly above tick643 0.06; but still the route+sibling+eigenframe-invariant strict-margin atom and the forbidden-spectral-collapse (Birkhoff/Oseledets) trap is severe. Honest LOW: most-likely outcome = sharp characterization of WHY the Lagrangian-history observable collapses to a forbidden spectral object OR re-introduces the pointwise obstruction; small residual p a genuine non-spectral multiplicative-over-nesting object lands.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

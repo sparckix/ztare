@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "ed8df63628f0ff84baef65a545cd1686d239b0697b0f9b39a8ca7d19a018154d",
-  "artifact_path": "analytics/public/leanmill/results/v1969_candidate_backed_top2_replay_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1969_candidate_backed_top2_replay_audit.json",
   "compile_status": "bounded_top2_replay_completed",
   "contract_id": "gp225_v1968_candidate_backed_bundled_replay",
   "error_type": null,

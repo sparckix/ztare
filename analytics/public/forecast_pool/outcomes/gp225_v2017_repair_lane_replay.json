@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 6.0,
   "artifact_hash": "9341c47d7a9139325bb6d4abb8bcaf98861da93e22616e7cb591d5af7d6f0b14",
-  "artifact_path": "analytics/public/leanmill/results/v2017_repair_lane_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2017_repair_lane_replay.json",
   "compile_status": "replay_failed_no_compiled_candidates",
   "contract_id": "gp225_v2017_repair_lane_replay",
   "error_type": "no_strict_row",

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 15.0,
   "artifact_hash": "7464cba5403a25bb9ad46885b5ffc4933620d307c91d5471e6c434ae6743b4a5",
-  "artifact_path": "analytics/public/leanmill/results/v1930_namespace_aware_wrapper_trace.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1930_namespace_aware_wrapper_trace.json",
   "compile_status": "namespace_wrapper_build_passed_trace_blocked",
   "contract_id": "gp225_v1929_benchmark_detour_vs_residual_generation_meso",
   "error_type": "leandojo_extractdata_lean_4_30_api_incompatibility",

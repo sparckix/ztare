@@ -81,7 +81,7 @@
   "horizon": "this_v1947_tick",
   "information_value": 2.0,
   "layer": "meso",
-  "objective_resolver": "Resolve true if analytics/public/leanmill/results/v1947_public_residual_blended_system_contract.json exists with public_residual_blended_contract_passed=true, define_our_system_as_blend=true, credit_public_components=true, train_gnn_now=false, claim_better_overall_now=false, and run_v1948_same_sample_blended_benchmark_next=true.",
+  "objective_resolver": "Resolve true if analytics/public/gnn/lemma_relevance/v1947_public_residual_blended_system_contract.json exists with public_residual_blended_contract_passed=true, define_our_system_as_blend=true, credit_public_components=true, train_gnn_now=false, claim_better_overall_now=false, and run_v1948_same_sample_blended_benchmark_next=true.",
   "question": "v19.47 defines an offline public+GP-225 blended system contract with public credit, provenance-weighted training tiers, and next same-sample benchmark gate without overclaiming",
   "risk_penalty": 1.0,
   "success_threshold": "public_residual_blended_contract_passed true with no training/no superiority claim",

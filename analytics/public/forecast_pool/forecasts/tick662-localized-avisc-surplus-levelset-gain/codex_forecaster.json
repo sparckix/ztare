@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "attack_local_surplus_and_tail_split_directly; keep_pressure_reserve_separate; if_the_beta_gain_fails_name_the_obstruction_cleanly",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick662-localized-avisc-surplus-levelset-gain",
+  "contract_question": "TICK662 characterize the impossibility or construction of LocalizedViscousAlignmentSurplusLevelSetGain for the CV nonlocal DeGiorgi general 3D vorticity route. Can the positive surplus A_visc equals xi dot S xi minus nu grad xi squared on high vorticity level sets be bounded by local anisotropic dissipation plus beta positive measure decay and a q greater than 2 far field Biot Savart tail, with pressure commutator reserve paid separately, without CF alignment, helical symmetry, BKM input, scalar DeGiorgiDecayRate, pressure collar leakage, or parabolic slaving.",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 130.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "avisc_surplus_collapses_to_cf": 0.3,
+    "formalization_only_without_pde_content": 0.1,
+    "pressure_reserve_smuggling": 0.24,
+    "scalar_degiorgi_recurrence": 0.18,
+    "tail_or_commutator_not_scale_separated": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration"
+  ],
+  "forecasted_at": "2026-05-20T04:18:15Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.11,
+  "p_success": 0.49,
+  "rationale_short": "Localized A_visc gain is the right target, but the odds still lean toward a clean obstruction or interface boundary because CF collapse, unpaid pressure reserve, or a non-scale-separated tail remain the likeliest blockers.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "avisc_surplus_collapses_to_cf",
+    "pressure_reserve_smuggling",
+    "tail_or_commutator_not_scale_separated",
+    "scalar_degiorgi_recurrence",
+    "formalization_only_without_pde_content"
+  ]
+}

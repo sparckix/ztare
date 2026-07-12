@@ -1,0 +1,50 @@
+{
+  "actual_cost_agent_minutes": 18,
+  "artifact_hash": "ef647b4bfe0906ea01d5c4badebb3e5739bb027ceeda74fd9b1f15582b892175",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "ns-meso-route-selection-post-tick657-20260520",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "decision_use_recorded",
+    "failure_mode_preconditioned",
+    "route_selection"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": "selected L3A/CV fresh-frequency production side before opening the next micro tick",
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-20T01:26:33Z",
+      "path": "analytics/public/forecast_pool/forecasts/ns-meso-route-selection-post-tick657-20260520/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [
+    "aggregate_ev_formula_defer_for_scratch_step"
+  ],
+  "new_next_action": "Open next micro tick on L3A/CV fresh-frequency production: NonflatNonInheritedBadCenterForcesFreshFrequencyPacket -> FreshPacketGainPaysNonflatBeta -> FreshFrequencyEventSameTreeLock.",
+  "old_next_action": "Open next micro tick from pressure-collar momentum or keep pressure-reserve and L3A options unresolved.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Prevented a two-option hedge and forced explicit L3A/CV route selection with pressure-reserve rejection condition.",
+  "preconditioner_source": "TICK657 residue, ns_graph_tick_precheck targeted L3A output, codex_forecaster and codex_rd meso forecasts",
+  "realized_failure_mode_ids": [
+    "pressure_side_overfit_from_tick657_residual",
+    "l3a_route_selected_without_kill_conditions"
+  ],
+  "resolution_note": "Success: meso scratch analysis selected a concrete next route before tick ceremony. It rejected pressure-reserve continuation absent an independent no-log per-node harmonic reserve and selected the L3A/CV fresh-frequency production chain NonflatNonInheritedBadCenterForcesFreshFrequencyPacket -> FreshPacketGainPaysNonflatBeta -> FreshFrequencyEventSameTreeLock, with graph/amnesia support and kill conditions recorded in the NS residual manifest and research log.",
+  "resolved_at": "2026-05-20T01:29:57Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

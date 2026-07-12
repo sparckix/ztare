@@ -81,7 +81,7 @@
   "horizon": "one bounded no-replay route-selection artifact",
   "information_value": 0.5,
   "layer": "meso",
-  "objective_resolver": "Success iff analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json/.md exist, consume LATEST_META_SOLVER_CONSUMPTION_MANIFEST v20.21, cite public/blended benchmark state, choose one next executable bridge with thresholds, run no Lean replay/training, include research_yield_decomposition, and set gnn_blocked=true.",
+  "objective_resolver": "Success iff analytics/public/gnn/lemma_relevance/v2022_route_selection_adapter_readiness.json/.md exist, consume LATEST_META_SOLVER_CONSUMPTION_MANIFEST v20.21, cite public/blended benchmark state, choose one next executable bridge with thresholds, run no Lean replay/training, include research_yield_decomposition, and set gnn_blocked=true.",
   "question": "Will v20.22 produce a no-replay GP-225 route-selection/adapter-readiness artifact that consumes v20.21, cites public/union benchmark state, selects the next executable bridge, includes GP-233 decomposition, and keeps GNN blocked?",
   "risk_penalty": 0.15,
   "success_threshold": "json_md_exist,uses_v2021_latest_manifest,cites_public_union_benchmark_state,names_next_executable_bridge_with_thresholds,no_replay,no_training,research_yield_decomposition_present,gnn_blocked_true",

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 8.0,
   "artifact_hash": "3d265f246a827bdd1bb565c1e1d1d4f542aa8aa2d3e4f6febc885e952a281afa",
-  "artifact_path": "analytics/public/leanmill/results/v2004_high_yield_top3_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2004_high_yield_top3_replay.json",
   "compile_status": "replay_completed_one_high_yield_strict_win",
   "contract_id": "gp225_v2004_high_yield_top3_replay",
   "error_type": null,

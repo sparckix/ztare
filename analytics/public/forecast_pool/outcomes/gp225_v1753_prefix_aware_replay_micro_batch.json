@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 2.58,
   "artifact_hash": "7ef699640e43695adda12e97ecaeca64491b7eb369862af55d1114d6348a8830",
-  "artifact_path": "analytics/public/leanmill/results/v1753_prefix_aware_guarded_probe.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1753_prefix_aware_guarded_probe.json",
   "compile_status": "fail_gate",
   "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
   "error_type": "prefix_replay_improved_but_nested_tactic_and_guard_gaps_remain",

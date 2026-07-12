@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 19.0,
     "artifact_hash": "34f9298d977bfe177d2a9c7272d2032908fd7e3f391e0306f5cefdad6ff73873",
-    "artifact_path": "analytics/public/leanmill/results/v1919_external_baseline_bootstrap.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1919_external_baseline_bootstrap.json",
     "compile_status": null,
     "contract_id": "gp225_v1919_external_baseline_bootstrap",
     "error_type": null,

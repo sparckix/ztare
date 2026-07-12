@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 15.0,
   "artifact_hash": "1d9702c8977c4240da28329244f4ca6d76a773d2e5fdb6fd29e213f445ed13bf",
-  "artifact_path": "analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2055_source_safe_charfun_dual_one_row_replay.json",
   "changed_by_forecast_ids": [
     "Curry3",
     "Euclid2"
@@ -25,7 +25,7 @@
   "new_next_action": "repair strict adjudication for multiline gold target before any label promotion",
   "old_next_action": "keep charFunDual at static packet stage",
   "preconditioner_effect": "Limited replay to source-safe one-row packet with target-copy guards.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
   "realized_failure_mode_ids": [
     "gold_multiline_capture_incomplete"
   ],

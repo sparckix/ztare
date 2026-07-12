@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "macro-ns-clay-closure-reserve-source-20260520",
+  "contract_question": "Can the current NS reserve-source program produce an actually Clay-adjacent route by deriving a scale-fresh critical radius debit from predictable reserve-drop data, without recurring to CF_global_extension, same-packet rebilling, or parabolic-slaved scalar criteria?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 480.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "actual_derivation_found": 0.1,
+    "conditional_source_axiom_only": 0.16,
+    "recurs_to_cf_global_extension": 0.22,
+    "reserve_source_not_ns_derivable": 0.34,
+    "same_packet_rebilling_countermodel": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:01:06Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.18,
+  "rationale_short": "Macro bet: low but nonzero. TICK666 turned broad state-pricing language into a precise reserve-drop source boundary, but Clay adjacency still requires deriving reserve nonnegativity and recharge-prefix budget from NS hypotheses rather than assuming them.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

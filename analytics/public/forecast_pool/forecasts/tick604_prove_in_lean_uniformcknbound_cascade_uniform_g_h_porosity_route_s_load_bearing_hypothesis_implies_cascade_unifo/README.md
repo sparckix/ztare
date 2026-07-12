@@ -1,0 +1,15 @@
+# tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo
+
+_Folder index. Prose may be added above the auto-index block._
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+
+## Index
+
+**Documents**
+
+- [claude_rd.json](claude_rd.json)
+- [codex.json](codex.json)
+
+<sub>0 sub-folder(s), 2 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

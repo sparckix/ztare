@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 18.0,
   "artifact_hash": "082d974ef87b80cd3e0ce6420b34344de1a2f72a6d6cefce86dbf9b831bc1300",
-  "artifact_path": "analytics/public/leanmill/results/v1949_replay_backed_bridge_test.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1949_replay_backed_bridge_test.json",
   "compile_status": "clean_failed_strict_with_pull_forward",
   "contract_id": "gp225_v1949_replay_backed_bridge_test",
   "error_type": "no_new_strict_same_target_row",

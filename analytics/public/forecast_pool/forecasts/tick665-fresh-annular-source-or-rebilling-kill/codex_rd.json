@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick665-fresh-annular-source-or-rebilling-kill",
+  "contract_question": "Can TICK665 determine whether existing same-tree, fresh-packet, and Duhamel-section primitives source the FreshAnnularChargePrefixBudgetSource, either by constructing a fresh-annular injection/reserve-drop adapter or by producing a same-packet rebilling countermodel?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 180.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "existing_primitives_do_not_source_annular_charge": 0.25,
+    "pressure_or_carrier_mismatch": 0.18,
+    "same_packet_rebilling_survives": 0.3,
+    "semantic_or_workbench_only_without_pde_source": 0.17,
+    "tooling_delay": 0.1
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T18:43:11Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.54,
+  "rationale_short": "This is a bounded construct-or-kill micro tick. TICK664 already supplied the algebraic consumer and same-region hard negatives; the next test is whether existing same-tree/fresh-packet primitives source genuine fresh charge or whether same-packet rebilling survives.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

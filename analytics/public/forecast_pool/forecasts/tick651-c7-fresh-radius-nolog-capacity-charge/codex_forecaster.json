@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Price this as a narrow negative-result guard tick: specialize the existing radius-squared obstruction into an explicit no-log/fresh-radius capacity-only impossibility surface, and name the exact extra hypothesis/payment theorem required for promotion to RadiusChargingBadScaleMeasure.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick651-c7-fresh-radius-nolog-capacity-charge",
+  "contract_question": "Characterize the impossibility boundary for converting a C7 ground-state/vorticity-capacity no-log fresh-radius budget into RadiusChargingBadScaleMeasure for the CV branch without Constantin-Fefferman alignment; if the boundary is not absolute, isolate the exact extra hypothesis needed and the guard that retires capacity-only promotion.",
+  "domain": "ns_track_b_cf_global_extension_c7_radius_charge",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cf_alignment_or_endpoint_q52_smuggling": 0.1,
+    "contract_or_evidence_path_staleness": 0.12,
+    "exact_extra_hypothesis_not_isolated": 0.21,
+    "formal_surface_compiles_but_close_artifacts_incomplete": 0.14,
+    "guard_too_generic_not_tick651_specific": 0.24,
+    "restate_tick650_without_new_failed_map": 0.19
+  },
+  "forecast_externality_tags": [
+    "ns-track-b",
+    "c7",
+    "radius-charge",
+    "negative-result-guard",
+    "gp-233"
+  ],
+  "forecasted_at": "2026-05-19T17:02:34Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.07,
+  "p_success": 0.61,
+  "rationale_short": "Transcribed from local read-only Codex fallback after VPS warm-consumer previewed only. Tick649 and Tick650 killed local-gain-only and capacity-only promotion; Lean already has the obstruction shape that classical or unnormalized mass/capacity telescopes only to r_Q^2 unless a separate fresh-radius theorem is added. Risk is generic restatement rather than tick651-specific failed map.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "guard_too_generic_not_tick651_specific",
+    "exact_extra_hypothesis_not_isolated",
+    "restate_tick650_without_new_failed_map"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Keep candidate-vs-obstruction split explicit; do not let the lane collapse into gauge/CZ restatement or a post-hoc test-class rephrase.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick657-annular-harmonic-moment-cancellation",
+  "contract_question": "Will TICK657 produce a substantive decision on whether AnnularHarmonicMomentCancellation is a natural pressure-collar quotient theorem rather than a post-hoc artificial test class: either a candidate estimate with admissible test class, quadratic-mode cancellation/charge, and no-log/radius interface, or a named obstruction retiring the lane?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "graph_amnesia_or_prefilter_stall": 0.18,
+    "named_obstruction_without_lane_retirement": 0.18,
+    "no_log_radius_interface_unisolated": 0.18,
+    "posthoc_test_class_rewrite": 0.25,
+    "quadratic_mode_cancellation_or_charge_unresolved": 0.21
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "frontier_math",
+    "pde_estimate_workbench"
+  ],
+  "forecasted_at": "2026-05-20T01:09:59Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.08,
+  "p_success": 0.53,
+  "rationale_short": "No prior codex row. Nearest ns_millennium_hunt calibration makes a substantive decision slightly more likely than not, but the main risk is a post-hoc test-class rephrase that never separates admissible cancellation from existing gauge/CZ endpoints. No DAG was supplied, so this is a nearest-neighbor prior rather than a decomposed chain.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "posthoc_test_class_rewrite",
+    "quadratic_mode_cancellation_or_charge_unresolved",
+    "no_log_radius_interface_unisolated",
+    "named_obstruction_without_lane_retirement",
+    "graph_amnesia_or_prefilter_stall"
+  ]
+}

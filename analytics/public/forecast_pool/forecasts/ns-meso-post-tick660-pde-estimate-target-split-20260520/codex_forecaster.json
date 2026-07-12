@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "select A: the CV/nonlocal-De-Giorgi critical vorticity-truncation estimate; defer B as the already-isolated pressure-collar line and C as the local bridge lane",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-post-tick660-pde-estimate-target-split-20260520",
+  "contract_question": "Which exact PDE estimate target should the next NS tick open after TICK660: (A) a CV/nonlocal-De-Giorgi critical vorticity-truncation estimate that neutralizes the 3D vortex-stretching term without CF alignment, (B) the pressure-complement/harmonic-collar single-spend estimate already isolated by TICK656-657, or (C) the local L3A FreshPacketDuhamelIncidenceLiftFromAuditEligibility bridge? The contract scores TRUE only if it selects one target and states a falsifiable kill condition precise enough for a membrane tick.",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 58.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_selection_hedges_across_routes": 0.24,
+    "kill_condition_not_sharp_enough": 0.2,
+    "l3a_lift_remains_interface_not_pde_progress": 0.16,
+    "pde_target_too_broad_or_not_named": 0.28,
+    "pressure_target_repeats_harmonic_collar_known_negative": 0.12
+  },
+  "forecast_externality_tags": [
+    "decision_use_candidate",
+    "failure_mode_preconditioning",
+    "frontier_pde_bias",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T03:22:12Z",
+  "p_dependency_issue": 0.47,
+  "p_needs_new_lemma": 0.86,
+  "p_regression": 0.12,
+  "p_success": 0.61,
+  "rationale_short": "A is the only option that cleanly names a next PDE estimate target; B repeats the already-isolated pressure-collar lane, and C is a bridge theorem that should stay subordinate unless A cannot be sharply stated.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "candidate_selection_hedges_across_routes",
+    "pde_target_too_broad_or_not_named",
+    "kill_condition_not_sharp_enough",
+    "l3a_lift_remains_interface_not_pde_progress",
+    "pressure_target_repeats_harmonic_collar_known_negative"
+  ]
+}

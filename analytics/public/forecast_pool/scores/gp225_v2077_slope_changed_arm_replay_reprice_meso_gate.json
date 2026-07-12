@@ -19,7 +19,7 @@
       "new_next_action": "promote one heldout strict row into manifest refresh and re-evaluate GNN distance",
       "old_next_action": "stop after context hydration",
       "preconditioner_effect": "v20.76 hydration made the method-syntax variant compile while isolating the rw variant hy-shape failure.",
-      "preconditioner_source": "analytics/public/leanmill/results/v2076_slope_changed_arm_context_hydration_reducer.json",
+      "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2076_slope_changed_arm_context_hydration_reducer.json",
       "realized_failure_mode_ids": [
         "rw_variant_hy_shape_fails"
       ]
@@ -31,7 +31,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 26.0,
     "artifact_hash": "fb34c3cc2e23aebf100a7f79f0a37b5ae57ad53830f444ac737b0da52cc15a50",
-    "artifact_path": "analytics/public/leanmill/results/v2077_slope_changed_arm_replay.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2077_slope_changed_arm_replay.json",
     "changed_by_forecast_ids": [],
     "compile_status": "replay_passed",
     "contract_id": "gp225_v2077_slope_changed_arm_replay_reprice_meso_gate",
@@ -49,7 +49,7 @@
     "new_next_action": "promote one heldout strict row into manifest refresh and re-evaluate GNN distance",
     "old_next_action": "stop after context hydration",
     "preconditioner_effect": "v20.76 hydration made the method-syntax variant compile while isolating the rw variant hy-shape failure.",
-    "preconditioner_source": "analytics/public/leanmill/results/v2076_slope_changed_arm_context_hydration_reducer.json",
+    "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2076_slope_changed_arm_context_hydration_reducer.json",
     "realized_failure_mode_ids": [
       "rw_variant_hy_shape_fails"
     ],

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 30.0,
   "artifact_hash": null,
-  "artifact_path": "analytics/public/leanmill/results/v24_00_deterministic_cascade_canonical_train_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v24_00_deterministic_cascade_canonical_train_audit.json",
   "changed_by_forecast_ids": [],
   "compile_status": null,
   "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",

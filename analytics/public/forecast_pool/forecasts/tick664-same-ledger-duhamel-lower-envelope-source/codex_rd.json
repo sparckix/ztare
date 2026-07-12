@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick664-same-ledger-duhamel-lower-envelope-source",
+  "contract_question": "Can a selected residual-fresh event carry a same-ledger Duhamel/Bernstein positive-kernel lower envelope whose integrated reserve pays the CV/C7 local production deficit while preserving pressure complement separation and no-descendant rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 180.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "endpoint_slaving": 0.12,
+    "kernel_lower_envelope_fails": 0.3,
+    "pressure_complement_leakage": 0.2,
+    "same_tree_rebilling": 0.18,
+    "tooling_or_lean_delay": 0.2
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T14:51:45Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.37,
+  "rationale_short": "TICK663 isolated the missing source, but positive-kernel lower-envelope payment must survive pressure complement and no-reuse checks; expected failure is kernel/reserve mismatch rather than same-tree bookkeeping.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

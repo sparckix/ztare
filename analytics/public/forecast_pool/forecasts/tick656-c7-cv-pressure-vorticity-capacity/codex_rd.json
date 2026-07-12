@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "run paired PDE swarm; do pencil-first estimate analysis before any Lean edit",
+  "agent_id": "codex:RD",
+  "contract_id": "tick656-c7-cv-pressure-vorticity-capacity",
+  "contract_question": "Will TICK656 produce a substantive frontier-facing C7/CV pressure-vorticity estimate decision: either a dimensionally coherent candidate for ResidualFreshPressureComplementDualTestLocalization with beta/no-log/radius-charge mechanism, or a named PDE obstruction retiring it, without CF alignment, degree-0 Riesz bookkeeping, or parabolic-rate-slaved scalar reuse?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 210.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fm_no_radius_charge": 0.2,
+    "fm_pressure_escape": 0.24,
+    "fm_scalar_rehash": 0.22,
+    "fm_swarm_nonconvergent": 0.16,
+    "fm_true_positive_candidate": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_discount",
+    "frontier_math"
+  ],
+  "forecasted_at": "2026-05-19T23:49:14Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.65,
+  "p_regression": 0.18,
+  "p_success": 0.54,
+  "rationale_short": "Success includes either a coherent candidate estimate or an honest named obstruction. Prior ticks make positive closure unlikely, but paired cold lanes should produce a discriminating frontier-facing decision more often than not.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "degree0_rehash",
+    "CF_alignment_smuggled",
+    "no_log_pileup_missing",
+    "harmonic_collar_escape"
+  ]
+}

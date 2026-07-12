@@ -294,6 +294,10 @@ backend abstractions:
 | Apply a saved project-check review | `ztare forensic-workbench apply-review --project <project> --project-check <project_check_slug> --from <review.json>` |
 | Refresh the local project data | `make forensic-workbench-data WORKBENCH_PROJECT=<project>` |
 | Check the live project path | `make forensic-workbench-state WORKBENCH_PROJECT=<project>` |
+| List installed scenarios (use-case bundles) | `ztare scenario list` / `GET /api/scenarios` |
+| Annotate a pasted document against the governed map | `ztare scenario annotate <doc> --project <project>` / `POST /api/scenario-annotate` |
+| Surface a document's load-bearing assumptions | `ztare scenario surface <doc> --project <project>` / `POST /api/scenario-surface` |
+| Re-gate AI-polished prose before it ships | `ztare scenario reingest <doc> --project <project>` / `POST /api/scenario-reingest` |
 
 The product coverage target is the normal project job, scoped short of the full
 autoresearch command set. The Project Workbench should cover:
@@ -342,6 +346,24 @@ issue or selected issue. Payloads may still expose `project_check_label` and
 UI must render these outputs as evidence-backed state. It must not infer a
 ready state from prose or hide an unsafe launch behind a green label.
 An incomplete intake disables launch and names the missing evidence.
+
+### Scenario surfaces (the "Check a draft" modal)
+
+Thesis opens a focused **Check a draft** modal (`forensic-workbench/src/sections/scenariopanel.jsx`)
+for the annotated round-trip. It is an in-context action rather than a workspace page: paste a document
+(a PRD, a proposal), get the same document back with every
+sentence tagged against the project's governed map — **backed** (aligns to a supported governed claim),
+**contradicted** (aligns to a falsified/contradicted one), **surfaced-untested** (a load-bearing assumption,
+in the queue, no evidence yet), or **no claim surfaced** (rendered quiet, never as "ungoverned rhetoric" — the
+assumption-surfacer has false negatives, so an unmatched sentence is *unknown*, not *bad*). A document is input,
+so the view never shows a pass/fail — the headline is a load-bearing-assumption count, which is triage. The same
+panel carries the **re-check** box (the re-ingest gate): paste an AI-polished deliverable and every sentence is
+re-checked against the governed map before it may wear the stamp, catching an edit that silently inserts an
+unsupported claim. The document stays in reading order; selecting a highlighted passage opens its status,
+matched project element, and next move in an inspector. An all-unmatched result is reported as no match, never
+as a clean result. A run's `scenario` select on the run console drives which use-case bundle a launch uses.
+All annotate/reingest calls are deterministic (no model spend); surfacing uses an LLM only to propose spans that
+the kernel then gates. Detail: [scenarios.md](scenarios.md).
 
 ## Boundaries
 
@@ -1099,7 +1121,10 @@ Any Project Workbench release candidate must pass these checks:
 15. The Start run path proves the two-step boundary: readiness can be checked and
     inspected without model spend; a bounded run first returns a no-write
     preview showing effective model settings and output paths; only a confirmed
-    request can start the model-backed run.
+    request can start the model-backed run. Confirmed long runs may return a
+    persisted provider-neutral job receipt (queued/running/succeeded/failed/
+    canceled/interrupted) with bounded log tails; the browser can leave and
+    recover the run from `/api/job` without treating a live request as the job.
 16. Workbench navigation is deep-linkable by workspace and section, and browser
     Back/Forward restores the visible task. The clean first-start route supports
     `day0=1`, and `start=files` opens the project-create upload path rather
@@ -1112,7 +1137,14 @@ Any Project Workbench release candidate must pass these checks:
     files carry a `ztare-project-object-contract-v1` audit showing whether the
     live project object is coherent, plus a compact first failed check when it
     is not.
-19. Supervisor, multi-role, multi-user, hosted, billing, and background-agent
-   controls are absent.
+19. Supervisor, multi-role, multi-user, hosted, billing, and autonomous
+   background-agent controls are absent. A background job receipt is execution
+   durability, not an autonomous operator.
+20. Scenario selection is deep-linkable with `scenario=<name>`. A scenario may
+    contribute a panel only to an approved host slot; it cannot add global
+    navigation. Missing or duplicate panel refs are diagnosed in Plugins.
+21. Every modal locks background scroll, contains keyboard focus, closes the
+    topmost dialog on Escape, restores its trigger on close, and renders through
+    a body portal when it originates inside a contributed panel.
 
 The Project Workbench can grow incrementally. It may not be opaque.

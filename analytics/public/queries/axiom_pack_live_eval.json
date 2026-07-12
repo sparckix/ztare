@@ -1,0 +1,966 @@
+{
+  "hand_tooled_risk": false,
+  "interpretation": "live agent proposals still require separate finite-model and promotion receipts",
+  "mode": "live",
+  "model": "codex",
+  "n": 8,
+  "next_domain_to_stress": "inverse_semigroups",
+  "ok": true,
+  "pass_fail_criteria": {
+    "agent_blueprint_lint": true,
+    "proof_credit_quarantined": true,
+    "second_domain_probe_ok": null,
+    "stress_ok": true,
+    "usefulness_ok": true
+  },
+  "primary": {
+    "agent_blueprint_lint": {
+      "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 5,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "missing_fields": [],
+      "ok": true,
+      "required_receipts": [
+        "nontriviality",
+        "consistency_smoke",
+        "model_or_example",
+        "strength_comparison",
+        "separation_or_interpretation",
+        "downstream_yield"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+      "violations": []
+    },
+    "agent_blueprint_trial": {
+      "blueprint": {
+        "candidate_axiom_templates": [
+          {
+            "family": "isomorphism_conjecture",
+            "kill_condition": "must survive domain cheap filters before replay",
+            "name": "join_sealed_priority_filtration_1",
+            "statement": "There exists a minimal filtration index k such that all uncrossedness failures appear first at rank k+1 and never earlier, when joins are taken over k-generated priority ideals."
+          },
+          {
+            "family": "isomorphism_conjecture",
+            "kill_condition": "must survive domain cheap filters before replay",
+            "name": "duality_stable_closure_schema_2",
+            "statement": "Any proof of uncrossedness that survives order duality must factor through a closure operator that is idempotent on join-generated priority cones."
+          },
+          {
+            "family": "isomorphism_conjecture",
+            "kill_condition": "must survive domain cheap filters before replay",
+            "name": "minimal_separator_hypergraph_3",
+            "statement": "The minimal set of join facts needed to prevent crossings forms a hyperedge antichain, not a chain, even in finite distributive cases."
+          }
+        ],
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "current_theory": "bounded finite posets/lattices with explicit priority relation",
+        "domain": "finite_lattice_order_priority_structures",
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "forbidden_shortcuts": [
+          "Do not add the target uncrossed theorem as an axiom.",
+          "Do not let a surviving candidate grant proof credit.",
+          "Do not run downstream yield before finite-model stress receipts."
+        ],
+        "name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "nl_statement": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+        "provenance": [
+          "leanmill_axiom_pack_v1_pilot",
+          "agent_authored_blueprint_trial",
+          "live_agent_isomorphism"
+        ],
+        "residuals": [
+          "priority comparisons re-derived under order duality",
+          "uncrossedness proof search depends on local monotone-join facts",
+          "distributive vs modular hypotheses are not separated early"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint.v1",
+        "semantic_intent": "Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.",
+        "target_structure_family": "finite lattices with priority preorder and join operation"
+      },
+      "lint": {
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "ok": true,
+      "proof_credit_eligible": false,
+      "receipt_candidate_count": 3,
+      "receipt_model": "codex",
+      "receipt_status": "ok",
+      "schema": "leanmill.axiom_pack_agent_blueprint_trial.v1",
+      "theorem_campaign_admissible": false,
+      "trial_source": "live_agent_isomorphism"
+    },
+    "base_blueprint": {
+      "candidate_axiom_templates": [
+        {
+          "family": "order",
+          "name": "total_priority_order",
+          "statement": "priority is total and antisymmetric on the finite carrier"
+        },
+        {
+          "family": "lattice",
+          "name": "distributive_priority_lattice",
+          "statement": "meet and join distribute on priority-relevant elements"
+        },
+        {
+          "family": "lattice",
+          "name": "modular_priority_lattice",
+          "statement": "the carrier is modular, separating a weaker lattice hypothesis"
+        },
+        {
+          "family": "priority_join",
+          "name": "uncrossed_monotone_join",
+          "statement": "joining with a higher-priority element preserves uncrossed comparisons"
+        }
+      ],
+      "cheap_filter_policy": {
+        "filter_budget_k": 4,
+        "max_finite_carrier_size": 5,
+        "prune_before_downstream_yield": true,
+        "require_countermodel_strata": true
+      },
+      "current_theory": "bounded finite posets/lattices with explicit priority relation",
+      "domain": "finite_lattice_order_priority_structures",
+      "downstream_yield_policy": {
+        "max_replayed_residuals": 3,
+        "mode": "shadow_replay",
+        "proof_credit_eligible": false,
+        "theorem_campaign_admissible": false
+      },
+      "forbidden_shortcuts": [
+        "Do not add the target uncrossed theorem as an axiom.",
+        "Do not let a surviving candidate grant proof credit.",
+        "Do not run downstream yield before finite-model stress receipts."
+      ],
+      "name": "priority_uncrossed_order_axiom_pack",
+      "nl_statement": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+      "provenance": [
+        "leanmill_axiom_pack_v1_pilot"
+      ],
+      "residuals": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "schema": "leanmill.axiom_pack_blueprint.v1",
+      "semantic_intent": "Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.",
+      "target_structure_family": "finite lattices with priority preorder and join operation"
+    },
+    "domain": "finite_lattice_order_priority_structures",
+    "generation": {
+      "blueprint_lint": {
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "cheap_filter_policy": {
+          "filter_budget_k": 4,
+          "max_finite_carrier_size": 5,
+          "prune_before_downstream_yield": true,
+          "require_countermodel_strata": true
+        },
+        "downstream_yield_policy": {
+          "max_replayed_residuals": 3,
+          "mode": "shadow_replay",
+          "proof_credit_eligible": false,
+          "theorem_campaign_admissible": false
+        },
+        "missing_fields": [],
+        "ok": true,
+        "required_receipts": [
+          "nontriviality",
+          "consistency_smoke",
+          "model_or_example",
+          "strength_comparison",
+          "separation_or_interpretation",
+          "downstream_yield"
+        ],
+        "schema": "leanmill.axiom_pack_blueprint_lint.v1",
+        "violations": []
+      },
+      "candidate_count": 3,
+      "isomorphism_receipt_attached": true,
+      "move_card": {
+        "action": "run_structural_isomorphism_conjecture",
+        "allowed_outputs": [
+          "candidate_axiom_template",
+          "structural_correspondence",
+          "kill_condition"
+        ],
+        "blueprint_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "canonical_engine": "ztare.research_director.research_isomorphism",
+        "default_args": {
+          "debug": true,
+          "json": true,
+          "left_seam": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+          "model": "codex",
+          "n": 3,
+          "right_seam": "small finite-model and countermodel stress for candidate axioms"
+        },
+        "disallowed_outputs": [
+          "proof_credit",
+          "substrate_mutation",
+          "theorem_campaign_consumption"
+        ],
+        "mode": "conjecture",
+        "promotion_rule": "output is provenance only until AxiomPack lint, cheap filters, and separate ratification pass",
+        "schema": "leanmill.agent_move_card.structural_isomorphism.v1",
+        "tool": "python -m ztare.leanmill.agent_tools isomorphism"
+      },
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "schema": "leanmill.axiom_pack_candidate_generation.v1"
+    },
+    "isomorphism_receipt": {
+      "can_mutate_substrate": false,
+      "canonical_engine": "ztare.research_director.research_isomorphism",
+      "mode": "conjecture",
+      "model": "codex",
+      "proof_credit_eligible": false,
+      "result": {
+        "candidate_count": 3,
+        "candidates": [
+          {
+            "mother_structure": "Join-Sealed Priority Filtration",
+            "prediction_cards": [
+              {
+                "expected_observation": "The first crossing rank stabilizes under dualization and is invariant under adding join-irrelevant elements below rank k.",
+                "gate": "If a rank-1 crossing witness cannot be delayed by any join-sealed filtration, the mother-structure claim is too coarse.",
+                "horizon": "3 finite lattice families or 2 weeks of proof-search traces, whichever comes first.",
+                "intervention": "Restrict the proof search to k-generated ideals and compare the first failure rank across joins and order duals.",
+                "measurement": "For each finite test lattice, compute the smallest rank where a crossing pair appears after all monotone joins over generated ideals up to size k.",
+                "novelty_reason": "Local monotone-join facts alone do not force a rank-stability claim for first failure across dualization.",
+                "prediction": "There exists a minimal filtration index k such that all uncrossedness failures appear first at rank k+1 and never earlier, when joins are taken over k-generated priority ideals.",
+                "receipt": "One explicit counterexample lattice with the witness pair, join table, and rank annotation.",
+                "refuter": "A finite priority-lattice example where uncrossedness fails at rank 1 but is repaired only by a non-join operation.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "Exactly one local join-absorption pattern blocks all crossings; modularity without that pattern does not.",
+                "gate": "If the proposed separator does not isolate one join-absorption pattern, the correspondence collapses.",
+                "horizon": "5 proof branches or 1 week of automated lemma search.",
+                "intervention": "Swap the absorption axiom in the candidate proof skeleton and record whether the crossing witness can still be eliminated.",
+                "measurement": "Check whether uncrossedness survives after replacing one join-absorption step with its weaker modular analogue.",
+                "novelty_reason": "Neither side\u2019s local theory alone forces a single-axiom separator between modular and distributive behavior.",
+                "prediction": "A minimal axiom set for uncrossedness will separate distributive from modular hypotheses by one specific join-absorption test rather than by the usual global lattice law.",
+                "receipt": "Two lattices, one modular-non-distributive and one distributive, with identical separator outputs but different crossing outcomes.",
+                "refuter": "A modular non-distributive finite lattice where the candidate separator does not distinguish crossing behavior from the distributive case.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "Templates split into at least two strata with distinct first-failure join-depths, and the same split mirrors the left-side rank threshold.",
+                "gate": "If strength edges do not produce distinct first-failure strata, the template family is not separated enough.",
+                "horizon": "10 countermodel attempts or 1 week.",
+                "intervention": "Generate finite countermodels while increasing only the join-depth bound, holding all other template clauses fixed.",
+                "measurement": "For each template, record the smallest finite model size and join-depth that falsifies it.",
+                "novelty_reason": "A standard finite-model stress test does not by itself predict a shared rank threshold with priority-join uncrossedness.",
+                "prediction": "For a named axiom template family, countermodels will stratify by the least join-depth at which the template fails, and that depth will match the left-side crossing rank.",
+                "receipt": "A model certificate with template labels, failed clauses, and minimality witness.",
+                "refuter": "A finite countermodel that falsifies two supposedly adjacent axiom templates at the same minimal size and depth.",
+                "side": "right"
+              },
+              {
+                "expected_observation": "At least one diamond edge pattern remains stable under clause perturbation and corresponds to a left-side distributive-vs-modular separator.",
+                "gate": "If the strength graph collapses to a single obstruction type, the diamond separator prediction fails.",
+                "horizon": "4 template perturbations or 2 weeks.",
+                "intervention": "Perturb one template clause at a time and re-run finite countermodel search to see whether the diamond persists.",
+                "measurement": "Construct the implication graph of templates and note the smallest countermodel for each edge.",
+                "novelty_reason": "Local model checking alone does not force a diamond strength geometry linked to an uncrossedness separator.",
+                "prediction": "Strength edges between axiom templates will form a non-chain with one diamond-shaped separator: two incomparable weakenings fail in different countermodel strata but share the same kill condition at the next stronger template.",
+                "receipt": "A perturbation log showing identical failure witnesses across all tested template variants.",
+                "refuter": "A countermodel search where every perturbation of the template family yields the same kill condition.",
+                "side": "right"
+              }
+            ],
+            "specificity": 1.0
+          },
+          {
+            "mother_structure": "Duality-Stable Closure Schema",
+            "prediction_cards": [
+              {
+                "expected_observation": "The operator is needed exactly where order duality otherwise breaks the argument.",
+                "gate": "If duality changes the threshold value, the shared closure schema is wrong.",
+                "horizon": "2 proof-search iterations or 1 day of symbolic rewriting.",
+                "intervention": "Introduce a synthetic closure operator and test whether the crossing elimination step depends on it.",
+                "measurement": "Inspect whether the proof search can be rewritten with an explicit closure operator satisfying idempotence on generated cones.",
+                "novelty_reason": "The local lattice facts do not force the appearance of a duality-stable closure operator.",
+                "prediction": "Any proof of uncrossedness that survives order duality must factor through a closure operator that is idempotent on join-generated priority cones.",
+                "receipt": "Paired primal and dual examples with threshold comparison and witness traces.",
+                "refuter": "A dualized finite example where the uncrossedness threshold changes without any change in the join-generated filtration.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "The threshold index is unchanged, while the witness orientation reverses.",
+                "gate": "If the argument cannot be localized to an idempotent closure, the schema is too rigid.",
+                "horizon": "3 finite examples or 1 week.",
+                "intervention": "Dualize the order while keeping the join-based filtration fixed.",
+                "measurement": "Run the same finite test suite on the dual order and compare the first threshold where crossings appear or disappear.",
+                "novelty_reason": "A dual-stable threshold is not implied by either side\u2019s local theory alone.",
+                "prediction": "If one swaps to the order dual, the same minimal axioms will still determine the uncrossedness threshold, but with the closure direction reversed and no change in the threshold value.",
+                "receipt": "A local proof audit marking the non-idempotent step and its dependency chain.",
+                "refuter": "A proof fragment showing uncrossedness depends on a non-closure, non-idempotent step that cannot be localized.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "At least one subclass has exact dual obstruction symmetry and one does not.",
+                "gate": "If syntax changes alter the strength graph, the closure schema lacks invariance.",
+                "horizon": "8 models or 2 weeks.",
+                "intervention": "Generate the dual countermodel and compare its obstruction signature to the original.",
+                "measurement": "For each finite template, check whether the smallest countermodel survives dualization as the same obstruction type.",
+                "novelty_reason": "Finite-model stress alone does not predict a closure-preserving symmetry classification.",
+                "prediction": "Template families will split into closure-preserving and non-closure-preserving subclasses, and only the former will admit symmetric dual countermodels.",
+                "receipt": "Two equivalent encodings with different first-failure clauses and countermodel certificates.",
+                "refuter": "A template family whose minimal countermodel changes obstruction type under mere re-encoding.",
+                "side": "right"
+              },
+              {
+                "expected_observation": "The edge direction and first-failure clause remain unchanged under re-encoding.",
+                "gate": "If self-duality does not correlate with closure preservation, the correspondence fails.",
+                "horizon": "4 equivalent encodings or 1 week.",
+                "intervention": "Use two equivalent presentations and ask whether the first-failure clause remains the same.",
+                "measurement": "Re-encode the same axiom template in two syntactically different forms and compare the resulting strength graph.",
+                "novelty_reason": "Presentation invariance of strength edges is a new constraint not forced by ordinary model search.",
+                "prediction": "The first failed closure clause will determine a canonical strength edge direction that is invariant under swapping the presentation of axioms.",
+                "receipt": "A self-dual model certificate plus a report of the violated closure clause.",
+                "refuter": "A family in which every countermodel is self-dual but the axiom templates are not closure-preserving.",
+                "side": "right"
+              }
+            ],
+            "specificity": 1.0
+          },
+          {
+            "mother_structure": "Minimal Separator Hypergraph",
+            "prediction_cards": [
+              {
+                "expected_observation": "At least two incomparable minimal separator sets occur.",
+                "gate": "If minimal separators collapse to one universal fact, the hypergraph claim is overfit.",
+                "horizon": "6 test lattices or 2 weeks.",
+                "intervention": "Search over finite lattices for minimal separator sets under varying priority preorders.",
+                "measurement": "Enumerate all minimal join fact sets that eliminate crossings and test whether any contains another.",
+                "novelty_reason": "The local theory may show separability, but not antichain structure of minimal separators.",
+                "prediction": "The minimal set of join facts needed to prevent crossings forms a hyperedge antichain, not a chain, even in finite distributive cases.",
+                "receipt": "A complete join-fact enumeration with the unique universal separator marked.",
+                "refuter": "A finite lattice where a single join fact always suffices to block all crossings, so no antichain separator exists.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "Orientation changes witness minimality without changing the underlying separator hyperedge.",
+                "gate": "If dual witnesses do not share the same separator support, the correspondence fails.",
+                "horizon": "4 finite examples or 1 week.",
+                "intervention": "Compute witness families in both orientations and compare their minimal supports.",
+                "measurement": "Count minimal crossing witnesses before and after dualization and check whether they collapse to the same separator hyperedge.",
+                "novelty_reason": "This cross-orientation separator reuse is not forced by the local join arguments.",
+                "prediction": "A single separator hyperedge will correspond to a family of order-dual witnesses, and each witness will be minimal only in one orientation.",
+                "receipt": "Primal/dual witness sets with support signatures and mismatch annotation.",
+                "refuter": "An orientation pair with different underlying separator hyperedges.",
+                "side": "left"
+              },
+              {
+                "expected_observation": "At least one non-nested minimal cut pair survives all small clause perturbations.",
+                "gate": "If every minimal countermodel cut is nested, the separator hypergraph is too weak.",
+                "horizon": "5 templates or 2 weeks.",
+                "intervention": "Add or remove one clause from a template and recompute the cut poset.",
+                "measurement": "Build the cut poset from countermodels and check whether the minimal cuts form an antichain.",
+                "novelty_reason": "Finite-model stress typically reports failures, not cut-antichain geometry.",
+                "prediction": "Axiom templates will produce a separator hypergraph whose minimal cuts are not nested; the nesting failure will identify the weakest viable template family.",
+                "receipt": "A cut-poset certificate showing chain structure across all tested templates.",
+                "refuter": "A template family whose cut poset is always a chain.",
+                "side": "right"
+              },
+              {
+                "expected_observation": "Robust edges are exactly those with strict separator containment.",
+                "gate": "If implication is not tracked by strict support containment, the mother structure does not explain the edge.",
+                "horizon": "8 edge checks or 2 weeks.",
+                "intervention": "Perturb one axiom clause and test whether support containment remains strict.",
+                "measurement": "For each robust implication edge, compare the underlying minimal countermodel supports.",
+                "novelty_reason": "Logical implication and separator containment need not coincide absent the shared mother structure.",
+                "prediction": "Every strength edge that survives perturbation will correspond to strict containment of separator hyperedges, not merely to logical implication.",
+                "receipt": "Two template certificates with identical supports but different implication status.",
+                "refuter": "An implication edge that holds despite equal separator supports on both sides.",
+                "side": "right"
+              }
+            ],
+            "specificity": 1.0
+          }
+        ],
+        "dispatch_receipt": {
+          "command": [
+            "codex",
+            "exec",
+            "--skip-git-repo-check",
+            "--model",
+            "gpt-5.4-mini",
+            "--cd",
+            "/Users/daalami/figs_activist_loop",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "-c",
+            "model_reasoning_effort=low",
+            "<prompt>"
+          ],
+          "exception_message": "",
+          "exception_type": "",
+          "model": null,
+          "provider": "codex",
+          "recovery_note": null,
+          "returncode": 0,
+          "stderr_chars": 19700,
+          "stderr_head": "Reading additional input from stdin...\nOpenAI Codex v0.142.5\n--------\nworkdir: /Users/daalami/figs_activist_loop\nmodel: gpt-5.4-mini\nprovider: openai\napproval: never\nsandbox: danger-full-access\nreasoning effort: low\nreasoning summaries: none\nsession id: 019f487a-3d8b-7a13-ae15-ae6427ccac03\n--------\nuser\nYou are given TWO abstract structural fingerprints from separate research seams. Do not retrieve a known theorem that solves either side. Instead, propose up to 8 conjectural correspondences: each says both fingerprints are lowerings of one shared mother structure. The proposal is useful only if it produces novel, falsifiable predictions on BOTH sides that neither side's local theory alone would force.\n\nLEFT CONSTRAINT CLASS: Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.\nLEFT ABSTRACT FORM: Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without a",
+          "stdout_chars": 17078,
+          "transport": "subscription_cli"
+        },
+        "mode": "conjecture",
+        "model": null,
+        "n": 8,
+        "parse_status": "parsed",
+        "prompt_len": 2291,
+        "provider": "codex",
+        "raw_candidate_count": 3,
+        "rejected": [],
+        "rejected_count": 0,
+        "text_head": "[\n  {\n    \"mother_structure\": \"Join-Sealed Priority Filtration\",\n    \"lowerings\": {\n      \"left\": {\n        \"target_structure_family\": \"a finite join-semilattice equipped with a priority preorder and a filtration index\",\n        \"residuals\": \"uncrossed matching becomes a statement that join-generated escalations never create inverted priority pairs across the filtration\",\n        \"finite lattices with priority preorder and join operation\": \"the mother object is a finite lattice whose joins act a",
+        "text_len": 17078
+      },
+      "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+      "status": "ok",
+      "trial_source": "live_agent_isomorphism"
+    },
+    "ok": true,
+    "pack": {
+      "candidate_axioms": [
+        {
+          "family": "isomorphism_conjecture",
+          "kill_condition": "must survive domain cheap filters before replay",
+          "name": "join_sealed_priority_filtration_1",
+          "proof_credit_eligible": false,
+          "statement": "There exists a minimal filtration index k such that all uncrossedness failures appear first at rank k+1 and never earlier, when joins are taken over k-generated priority ideals.",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "isomorphism_conjecture",
+          "kill_condition": "must survive domain cheap filters before replay",
+          "name": "duality_stable_closure_schema_2",
+          "proof_credit_eligible": false,
+          "statement": "Any proof of uncrossedness that survives order duality must factor through a closure operator that is idempotent on join-generated priority cones.",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        },
+        {
+          "family": "isomorphism_conjecture",
+          "kill_condition": "must survive domain cheap filters before replay",
+          "name": "minimal_separator_hypergraph_3",
+          "proof_credit_eligible": false,
+          "statement": "The minimal set of join facts needed to prevent crossings forms a hyperedge antichain, not a chain, even in finite distributive cases.",
+          "status": "candidate",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "domain": "finite_lattice_order_priority_structures",
+      "downstream_residuals": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "extends_theory": "bounded finite posets/lattices with explicit priority relation",
+      "intended_unlocks": [
+        "priority comparisons re-derived under order duality",
+        "uncrossedness proof search depends on local monotone-join facts",
+        "distributive vs modular hypotheses are not separated early"
+      ],
+      "name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "provenance": [
+        "leanmill_axiom_pack_v1_pilot",
+        "agent_authored_blueprint_trial",
+        "live_agent_isomorphism",
+        "structural_isomorphism_move_card"
+      ],
+      "schema": "leanmill.axiom_pack.v1",
+      "stress_receipts": [
+        {
+          "cheap_filter_wallclock_s": 3.1e-05,
+          "dimension": "nontriviality",
+          "filter_budget_k": 4,
+          "models": [
+            "chain3",
+            "boolean_square",
+            "diamond_m3",
+            "pentagon_n5"
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.1e-05,
+          "dimension": "consistency_smoke",
+          "filter_budget_k": 4,
+          "per_axiom": [
+            {
+              "axiom": "join_sealed_priority_filtration_1",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "duality_stable_closure_schema_2",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "minimal_separator_hypergraph_3",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "holds_in": [
+                "chain3",
+                "boolean_square"
+              ],
+              "survives_some_model": true,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.1e-05,
+          "dimension": "model_or_example",
+          "examples": [
+            {
+              "carrier_size": 3,
+              "countermodel_stratum": "interior_chain",
+              "name": "chain3"
+            },
+            {
+              "carrier_size": 4,
+              "countermodel_stratum": "boundary_branching_distributive",
+              "name": "boolean_square"
+            },
+            {
+              "carrier_size": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "name": "diamond_m3"
+            },
+            {
+              "carrier_size": 5,
+              "countermodel_stratum": "countermodel_nonmodular",
+              "name": "pentagon_n5"
+            }
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.1e-05,
+          "dimension": "strength_comparison",
+          "edges": [
+            [
+              "total_priority_order",
+              "uncrossed_monotone_join",
+              "incomparable_in_branching_models"
+            ],
+            [
+              "distributive_priority_lattice",
+              "modular_priority_lattice",
+              "strict_implication_on_M3"
+            ],
+            [
+              "uncrossed_monotone_join",
+              "distributive_priority_lattice",
+              "not_equivalent_by_static_policy"
+            ]
+          ],
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "cheap_filter_wallclock_s": 3.1e-05,
+          "countermodel_strata": [
+            {
+              "axiom": "join_sealed_priority_filtration_1",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "duality_stable_closure_schema_2",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "minimal_separator_hypergraph_3",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "dimension": "separation_or_interpretation",
+          "filter_budget_k": 4,
+          "status": "pass"
+        },
+        {
+          "can_feed_solver": false,
+          "cap": 3,
+          "dimension": "downstream_yield",
+          "dry_run": true,
+          "note": "bounded read-model replay; it cannot close, mutate, or credit a theorem campaign",
+          "proof_credit_eligible": false,
+          "residual_hits": [
+            {
+              "candidate_term_overlap": [
+                "duality",
+                "priority"
+              ],
+              "residual": "priority comparisons re-derived under order duality"
+            },
+            {
+              "candidate_term_overlap": [],
+              "residual": "uncrossedness proof search depends on local monotone-join facts"
+            },
+            {
+              "candidate_term_overlap": [],
+              "residual": "distributive vs modular hypotheses are not separated early"
+            }
+          ],
+          "sampled_residuals": [
+            "priority comparisons re-derived under order duality",
+            "uncrossedness proof search depends on local monotone-join facts",
+            "distributive vs modular hypotheses are not separated early"
+          ],
+          "schema": "leanmill.axiom_pack_downstream_yield_replay.v1",
+          "status": "shadow_replay_only",
+          "theorem_campaign_admissible": false
+        }
+      ],
+      "theorem_campaign_admissible": false
+    },
+    "stress": {
+      "compute_route": {
+        "cheap_filter_observability_fields": [
+          "countermodel_size",
+          "countermodel_size_bound",
+          "countermodel_stratum",
+          "uses_partial_or_undefined_value",
+          "filter_budget_k",
+          "cheap_filter_wallclock_s"
+        ],
+        "cheap_filter_ok": true,
+        "cheap_filter_prune_target": 0.95,
+        "isomorphism_followups": {
+          "design_implications": [
+            "record countermodel strata instead of a bare killed/survived bit",
+            "treat downstream-yield replay as a sampled expensive audit, not the universal first filter",
+            "keep proposer learning from survivor packs behind an explicit Goodhart A/B membrane"
+          ],
+          "followups": [
+            {
+              "cheap_stage_only": false,
+              "claim": "boundary-size countermodel kills may be enriched for axioms true in the target semantics",
+              "expensive_stage": "forced downstream-yield replay on a sampled killed stratum",
+              "instrumentation": [
+                "countermodel_size",
+                "countermodel_size_bound",
+                "countermodel_stratum"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "boundary_countermodel_forced_replay"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "larger small-model bounds can reduce validated yield per compute after a domain-specific optimum",
+              "expensive_stage": "frozen-candidate yield replay across k settings",
+              "instrumentation": [
+                "filter_budget_k",
+                "survivor_count",
+                "validated_yield",
+                "compute_s"
+              ],
+              "mother_structure": "dual_semantics_screening_funnel",
+              "name": "filter_budget_yield_sweep"
+            },
+            {
+              "cheap_stage_only": false,
+              "claim": "conditioning the proposer on its own survivors can raise cheap pass rate while lowering target yield",
+              "expensive_stage": "A/B replay with proposer-survivor feedback enabled only in the breach arm",
+              "instrumentation": [
+                "cheap_pass_rate",
+                "yield_per_survivor",
+                "schema_diversity"
+              ],
+              "mother_structure": "goodhart_firewall",
+              "name": "membrane_breach_goodhart_ab"
+            }
+          ],
+          "schema": "leanmill.axiom_pack_isomorphism_followups.v1",
+          "source": "research_isomorphism --mode conjecture over AxiomPack lane vs CEGIS/spec-mining"
+        },
+        "missing_cheap_receipts": [],
+        "missing_expensive_receipts": [],
+        "note": "downstream-yield replay is the expensive stage and must not run for candidates killed by cheap receipts",
+        "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "route": "run_downstream_yield",
+        "schema": "leanmill.axiom_pack_compute_route.v1",
+        "yield_test_admissible": true,
+        "yield_test_completed": true
+      },
+      "domain": "finite_lattice_order_priority_structures",
+      "group_theory_plan": null,
+      "missing_fields": [],
+      "missing_stress_receipts": [],
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "promotion_status": "quarantined",
+      "proof_credit_eligible": false,
+      "schema": "leanmill.axiom_pack_stress.v1",
+      "stress_receipt_dimensions": [
+        "consistency_smoke",
+        "downstream_yield",
+        "model_or_example",
+        "nontriviality",
+        "separation_or_interpretation",
+        "strength_comparison"
+      ],
+      "theorem_campaign_admissible": false,
+      "theorem_consumption_gate": {
+        "allowed": false,
+        "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+        "promotion_status": "quarantined",
+        "proof_credit_eligible": false,
+        "reason": "unpromoted_or_missing_separate_ratification_receipt",
+        "schema": "leanmill.axiom_pack_theorem_consumption_gate.v1",
+        "theorem_campaign_admissible": false
+      }
+    },
+    "usefulness_score": {
+      "criteria": [
+        {
+          "evidence": [
+            "chain3",
+            "boolean_square",
+            "diamond_m3",
+            "pentagon_n5"
+          ],
+          "name": "nontriviality",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "axiom": "join_sealed_priority_filtration_1",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "duality_stable_closure_schema_2",
+              "classified_as": "uncrossed_monotone_join",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            },
+            {
+              "axiom": "minimal_separator_hypergraph_3",
+              "classified_as": "distributive_priority_lattice",
+              "countermodel": "diamond_m3",
+              "countermodel_size": 5,
+              "countermodel_size_bound": 5,
+              "countermodel_stratum": "countermodel_modular_not_distributive",
+              "filter_budget_k": 4,
+              "uses_partial_or_undefined_value": false
+            }
+          ],
+          "name": "countermodel_separation",
+          "pass": true
+        },
+        {
+          "evidence": [
+            [
+              "total_priority_order",
+              "uncrossed_monotone_join",
+              "incomparable_in_branching_models"
+            ],
+            [
+              "distributive_priority_lattice",
+              "modular_priority_lattice",
+              "strict_implication_on_M3"
+            ],
+            [
+              "uncrossed_monotone_join",
+              "distributive_priority_lattice",
+              "not_equivalent_by_static_policy"
+            ]
+          ],
+          "name": "strength_relation_learned",
+          "pass": true
+        },
+        {
+          "evidence": [
+            {
+              "candidate_term_overlap": [
+                "duality",
+                "priority"
+              ],
+              "residual": "priority comparisons re-derived under order duality"
+            }
+          ],
+          "name": "residual_overlap",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "candidate_count": 3,
+            "non_generic_count": 3,
+            "rows": [
+              {
+                "domain_token_count": 37,
+                "domain_tokens": [
+                  "1",
+                  "all",
+                  "appear",
+                  "are",
+                  "at",
+                  "before",
+                  "cheap",
+                  "conjecture"
+                ],
+                "name": "join_sealed_priority_filtration_1"
+              },
+              {
+                "domain_token_count": 27,
+                "domain_tokens": [
+                  "2",
+                  "any",
+                  "before",
+                  "cheap",
+                  "cones",
+                  "conjecture",
+                  "domain",
+                  "duality"
+                ],
+                "name": "duality_stable_closure_schema_2"
+              },
+              {
+                "domain_token_count": 28,
+                "domain_tokens": [
+                  "3",
+                  "antichain",
+                  "before",
+                  "cases",
+                  "chain",
+                  "cheap",
+                  "conjecture",
+                  "crossings"
+                ],
+                "name": "minimal_separator_hypergraph_3"
+              }
+            ]
+          },
+          "name": "novelty_vs_generic_templates",
+          "pass": true
+        },
+        {
+          "evidence": {
+            "downstream_can_feed_solver": false,
+            "pack_proof_credit_eligible": false,
+            "theorem_campaign_gate_allowed": false
+          },
+          "name": "no_proof_credit_leakage",
+          "pass": true
+        }
+      ],
+      "domain": "finite_lattice_order_priority_structures",
+      "ok": true,
+      "pack_name": "priority_uncrossed_order_axiom_pack_agent_trial",
+      "passed": 6,
+      "schema": "leanmill.axiom_pack_usefulness_score.v1",
+      "score": 1.0,
+      "total": 6
+    }
+  },
+  "proof_credit_eligible": false,
+  "schema": "leanmill.axiom_pack_discovery_eval.v1",
+  "second_domain_eval": null,
+  "theorem_campaign_admissible": false
+}

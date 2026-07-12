@@ -20,7 +20,7 @@
   "horizon": "2026-05-13",
   "information_value": 7.0,
   "layer": "micro",
-  "objective_resolver": "analytics/public/leanmill/results/v1872_next_remaining_witness_backfill_runner.json metrics: rows_attempted=6, clean_target_labels>=4, static_prefilter_not_run_rows=0, true_false_accept_rows<=2, training_now=false, gnn_blocked=true",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v1872_next_remaining_witness_backfill_runner.json metrics: rows_attempted=6, clean_target_labels>=4, static_prefilter_not_run_rows=0, true_false_accept_rows<=2, training_now=false, gnn_blocked=true",
   "question": "Will the v18.72 explicit-manifest runner over the v18.71 six-row non-ambiguous pilot attempt all 6 rows, produce at least 4 clean closure/target witnesses, have at most 2 quarantined accepted-decoy ambiguity rows, and keep training/GNN blocked?",
   "risk_penalty": 2.0,
   "success_threshold": "rows_attempted==6 AND clean_target_labels>=4 AND static_prefilter_not_run_rows==0 AND true_false_accepts<=2 AND training_now==false AND gnn_blocked==true",

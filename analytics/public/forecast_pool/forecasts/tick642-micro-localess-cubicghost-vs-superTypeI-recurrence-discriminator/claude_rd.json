@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+  "contract_question": "CONSUMES selected_projected_compactness_measure_valued_source (the cubic ghost mu3=w*-lim|u_n|^3 IS a compactness measure-valued defect). DISCRIMINATOR (not a proof claim): Is LocalESSCubicGhostExclusion \u2014 critical-L3 cubic concentration with vanishing L2/stress/pressure/route/beta/alphaI channels cannot arise in suitable-weak NS \u2014 structurally DISTINCT from the already-logged super-Type-I asymptotic cascade / G2 budget pincer (ns_residual_manifest.md:44; tick602 Case-2 M-unbounded routing), i.e. the concentration-compactness/local-ESS extraction yields a BOUNDED critical-L3 ancient profile so ESS-rigidity applies = genuine progress (LIVE) \u2014 OR does the extraction give UNBOUNDED local L3 = exactly the ESS-hard branch = the Nth recurrence of the super-Type-I/G2 atom in concentration-compactness vocabulary (RECURRENCE)? Resolve LIVE iff the boundedness of the extracted ancient profile is established as structurally NEW (not assumed); RECURRENCE if it reduces to the existing super-Type-I pincer / G2 budget gap.",
+  "domain": "ns_route1",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-18T20:52:02Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.85,
+  "p_regression": 0.05,
+  "p_success": 0.28,
+  "rationale_short": "RD honest PRE-work prior, base-rate-corrected vs documented solver-optimism: p(LIVE)=0.28. LOW because (1) manifest:44 logs super-Type-I/G2 cascade + tick602 Case-2 routes M-unbounded to the EXISTING super-Type-I pincer; (2) msg2 \u00a79 concedes sub-Clay ONLY IF concentration-compactness yields a BOUNDED ancient L3 profile = the un-established hard core; (3) ~15+ prior reframes collapsed to the atom (low LIVE base rate). Upside: L2->alphaI vs L3->local-ESS integrability-level separation IS a structurally different decomposition than G2-budget; genuine progress iff ancient-profile boundedness is establishable via local-ESS rigidity.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -92,7 +92,7 @@
   "horizon": "2026-05-14T23:59:00Z",
   "information_value": 0.34,
   "layer": "micro",
-  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json has status passed, verifies integral_map, variance_map, integral_complex_ofReal, Function.comp_def as imported/non-target normalizers, records target proof copy blocked, replay_run=false, training_now=false, gnn_blocked=true.",
+  "objective_resolver": "Resolve true iff analytics/public/gnn/lemma_relevance/v2053_charfun_dual_normalization_source_safety_audit.json has status passed, verifies integral_map, variance_map, integral_complex_ofReal, Function.comp_def as imported/non-target normalizers, records target proof copy blocked, replay_run=false, training_now=false, gnn_blocked=true.",
   "question": "Will v20.53 verify the charFunDual normalization lemmas as source-safe non-target inputs for a future one-row replay, without copying the target proof line or running training?",
   "risk_penalty": 0.08,
   "success_threshold": "1.0",

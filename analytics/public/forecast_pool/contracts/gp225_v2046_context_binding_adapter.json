@@ -92,7 +92,7 @@
   "horizon": "2026-05-14",
   "information_value": 0.24,
   "layer": "micro",
-  "objective_resolver": "Artifact analytics/public/leanmill/results/v2046_context_binding_adapter_for_source_candidates.json has status passed, 10/10 candidates classified, at least one canary_eligible_static_only candidate, replay_run=false, training_now=false, gnn_blocked=true.",
+  "objective_resolver": "Artifact analytics/public/gnn/lemma_relevance/v2046_context_binding_adapter_for_source_candidates.json has status passed, 10/10 candidates classified, at least one canary_eligible_static_only candidate, replay_run=false, training_now=false, gnn_blocked=true.",
   "question": "If we build v20.46 context-binding/source-hinge adapter for the v20.44 blocked-row source candidates, will it classify all 10 candidates and surface at least one no-replay canary-eligible candidate while keeping replay/training blocked?",
   "risk_penalty": 0.05,
   "success_threshold": "all candidates classified and static-only canary set nonempty",

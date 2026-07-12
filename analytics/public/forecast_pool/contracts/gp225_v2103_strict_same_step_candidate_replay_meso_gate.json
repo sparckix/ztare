@@ -88,7 +88,7 @@
   "horizon": "2026-05-15T03:00:00Z",
   "information_value": 0.5,
   "layer": "meso",
-  "objective_resolver": "analytics/public/leanmill/results/v2104_strict_same_step_bounded_replay.json:metrics.new_strict_same_target_rows >= 1 AND metrics.harmful_compiled_mismatch_actions == 0 AND metrics.replay_executed == true AND metrics.training_now == false",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v2104_strict_same_step_bounded_replay.json:metrics.new_strict_same_target_rows >= 1 AND metrics.harmful_compiled_mismatch_actions == 0 AND metrics.replay_executed == true AND metrics.training_now == false",
   "question": "Can bounded replay of v21.02 add at least one strict same-step heldout label on current_scale_0164 matching the gold intermediate open state, with zero harmful mismatches, no leakage, and no training?",
   "risk_penalty": 1.0,
   "success_threshold": "metrics.new_strict_same_target_rows >= 1 AND metrics.harmful_compiled_mismatch_actions == 0",

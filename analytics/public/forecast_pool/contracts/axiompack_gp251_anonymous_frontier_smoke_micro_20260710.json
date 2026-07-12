@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/axiompack_gp251_anonymous_frontier_smoke_micro_20260710.json",
+    "contract": "analytics/public/forecast_pool/contracts/axiompack_gp251_anonymous_frontier_smoke_micro_20260710.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/axiompack_gp251_anonymous_frontier_smoke_micro_20260710",
+    "outcome": "analytics/public/forecast_pool/outcomes/axiompack_gp251_anonymous_frontier_smoke_micro_20260710.json",
+    "score": "analytics/public/forecast_pool/scores/axiompack_gp251_anonymous_frontier_smoke_micro_20260710.json"
+  },
+  "baseline_action": "Execute the named RD tick with membrane-first lifecycle, pencil-first work, and bounded parity checks.",
+  "budget_agent_minutes": 20.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "GP-251 exact-context navigator and governed finite/Lean boundary",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "axiompack_gp251_anonymous_frontier_smoke_micro_20260710",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Do not execute the tick; either de-anchor or choose a smaller residual if the forecasted failure modes dominate.",
+  "created_at": "2026-07-10T16:51:30Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1707,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "axiompack_frontier_discovery",
+    "score": 0.1707,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1707,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.1707,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0455,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.0455,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "gp225_typed_feedback",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.0256,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0256,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0244,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0244,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "same_tick",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Hetzner campaign attempt navigation and boundary completion receipts",
+  "question": "Will the anonymous navigator freeze at least one independent noncollapsed synergistic two-law presentation and produce a selected boundary query with a larger-carrier countermodel or premise-attributed conditional proof?",
+  "risk_penalty": 1.0,
+  "success_threshold": "at least one valid finalist and at least one decisive selected boundary result",
+  "task_type": "axiompack_frontier_discovery",
+  "value_if_success": 8.0,
+  "void_conditions": "VPS membrane unavailable, resolver unavailable, or contract artifact missing."
+}

@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 28.0,
   "artifact_hash": "8307606a90077185ef47c3881f13bd29e7adad255964b95bb8cba8a990dea551",
-  "artifact_path": "scripts/public/control/forecast/pool.py",
+  "artifact_path": "scripts/public/control/forecast_pool.py",
   "changed_by_forecast_ids": [
     "codex_market_architect",
     "codex_infra_skeptic"

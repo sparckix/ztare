@@ -37,7 +37,7 @@
       "new_next_action": "generate source-safe candidates for unsolved queued rows",
       "old_next_action": "continue old source queue including solved charFun row",
       "preconditioner_effect": "Routed away from no-policy-delta heldout replay to source-content queue.",
-      "preconditioner_source": "analytics/public/leanmill/results/v2060_post_charfun_union_heldout_delta_packet.json"
+      "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2060_post_charfun_union_heldout_delta_packet.json"
     }
   },
   "forecast_history_count": 2,
@@ -46,7 +46,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 14.0,
     "artifact_hash": "18a1c2b9ab04e0c28f4b2bc49b0656dbe0786085c57e74245d40a806cc5e021d",
-    "artifact_path": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v2061_public_union_next_source_discovery_queue.json",
     "changed_by_forecast_ids": [
       "Boole2",
       "Pascal2"
@@ -70,7 +70,7 @@
     "new_next_action": "generate source-safe candidates for unsolved queued rows",
     "old_next_action": "continue old source queue including solved charFun row",
     "preconditioner_effect": "Routed away from no-policy-delta heldout replay to source-content queue.",
-    "preconditioner_source": "analytics/public/leanmill/results/v2060_post_charfun_union_heldout_delta_packet.json",
+    "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2060_post_charfun_union_heldout_delta_packet.json",
     "realized_failure_mode_ids": [],
     "resolution_note": "v20.61 passed: excluded solved charFun row, queued four unsolved source-contract rows with explicit priorities, named v20.62 candidate static-check, no replay/training, GNN blocked.",
     "resolved_at": "2026-05-14T18:33:29Z",

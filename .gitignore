@@ -702,3 +702,6 @@ projects/ai_capex/workspace/*
 !projects/glp1_adoption_economics/glp1_adoption_economics_intake.json
 !projects/fermi_paradox_discriminator/fermi_paradox_discriminator_intake.json
 !projects/oeis_a001156/oeis_a001156_intake.json
+
+# warrant-filtration paper working notes (Fable review, roadmap, draft twin) — private
+/warrant-filtration/

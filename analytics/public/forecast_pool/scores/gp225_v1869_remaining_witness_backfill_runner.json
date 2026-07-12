@@ -5,7 +5,7 @@
   "outcome": {
     "actual_cost_agent_minutes": 1.08,
     "artifact_hash": "0969bca8e7ad730de3ccc82560551d060553cc5983d22085b7b576d38686bede",
-    "artifact_path": "analytics/public/leanmill/results/v1869_current_toolchain_remaining_witness_backfill_runner.json",
+    "artifact_path": "analytics/public/gnn/lemma_relevance/v1869_current_toolchain_remaining_witness_backfill_runner.json",
     "compile_status": "ran_8_rows_threshold_failed_true_false_accepts",
     "contract_id": "gp225_v1869_remaining_witness_backfill_runner",
     "error_type": "true_false_accepts_gate_failed",

@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "meso-ns-deanchor-graph-basin-hidden-20260520",
+  "contract_question": "Eigenquestion: de-anchor and reframe the current NS scope. What is hidden in plain sight about what the corpus and graph basin say, and what do they not say? Forecasters must use the NS graph basin artifacts (`projects/ns_millennium_hunt/workspace/queries/ns_trackb_constraint_basin_graph.json`, `projects/ns_millennium_hunt/workspace/queries/ns_graph_unified_intelligence.jsonl`, and residual manifest) rather than free-association.",
+  "domain": "research_tick",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "false_pivot_from_visual_salience": 0.12,
+    "generic_deanchor_without_evidence": 0.2,
+    "graph_confirms_existing_target_without_new_info": 0.3,
+    "graph_stale_or_missing_alias_edges": 0.22,
+    "reserve_alias_recurrence": 0.16
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T22:43:48Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.58,
+  "rationale_short": "RD prior before execution: graph basin should cheaply reveal whether reserve-drop is a live missing-edge or another alias of the positive scale-fresh carrier recurrence; main risk is generic deanchor language without graph evidence.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

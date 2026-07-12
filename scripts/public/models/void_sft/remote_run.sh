@@ -8,7 +8,7 @@ MODEL="${2:-deepseek-ai/DeepSeek-Prover-V1.5-Base}"
 DATA="${3:-/tmp/void_sft}"
 KEY="${KEY:-$HOME/.ssh/id_ed25519}"
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-O="-i $KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+O="-i $KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=30 -o ServerAliveCountMax=120"
 SSH="ssh $O ubuntu@$IP"
 SCP="scp $O"
 

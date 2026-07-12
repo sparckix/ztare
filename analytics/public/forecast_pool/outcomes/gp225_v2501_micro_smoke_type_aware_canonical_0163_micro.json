@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 12.0,
   "artifact_hash": null,
-  "artifact_path": "analytics/public/leanmill/results/v25_01_micro_smoke_type_aware_canonical_0163_audit.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v25_01_micro_smoke_type_aware_canonical_0163_audit.json",
   "changed_by_forecast_ids": [],
   "compile_status": null,
   "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",

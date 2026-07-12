@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "target the Duhamel source leg first; use pressure and fanout as kill gates, not lead surfaces",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-post-tick658-source-leg-selection-20260520",
+  "contract_question": "Will the next NS descent produce more decision value if it targets the Duhamel same-tree independent event-budget/source leg (DuhamelSameTreeIndependentEventBudgetCandidate -> IndependentSameTreeEventBudgetWitness -> IndependentFreshPacketSourceForNonflatBadCenter) rather than pressure-complement or fanout-only legs?",
+  "domain": "gp225_route_selection_meso",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_carrier_identification_missing": 0.26,
+    "duhamel_source_still_scaffold": 0.32,
+    "fanout_no_log_is_prior_blocker": 0.14,
+    "graph_candidate_stale_or_router_overfit": 0.1,
+    "pressure_complement_is_prior_blocker": 0.18
+  },
+  "forecast_externality_tags": [
+    "decision_use_candidate",
+    "failure_mode_preconditioning",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T02:12:56Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.31,
+  "p_regression": 0.07,
+  "p_success": 0.72,
+  "rationale_short": "The local route-selection graph and residual manifest both point at Duhamel same-tree budget/source selection as the highest-yield next narrow target. Pressure-complement and fanout-only routes remain useful as kill gates, but they look like blockers, not the first surface to price. No probability DAG was supplied; the route graph is advisory and does not prove execution timing, lemma sufficiency, or that the next tick will actually land the decision-use row.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "duhamel_source_still_scaffold",
+    "bad_center_carrier_identification_missing",
+    "pressure_complement_is_prior_blocker",
+    "fanout_no_log_is_prior_blocker",
+    "graph_candidate_stale_or_router_overfit"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick650-c7-production-defect-capacity-dichotomy.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick650-c7-production-defect-capacity-dichotomy.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick650-c7-production-defect-capacity-dichotomy",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick650-c7-production-defect-capacity-dichotomy.json",
+    "score": "analytics/public/forecast_pool/scores/tick650-c7-production-defect-capacity-dichotomy.json"
+  },
+  "baseline_action": "continue C7/CV production-defect branch without membrane",
+  "budget_agent_minutes": 180.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_cross_defect_observable_liminf_source' is an EXACT match of surfaced id 'selected_projected_cross_defect_observable_liminf_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick650-c7-production-defect-capacity-dichotomy",
+  "cost_penalty": 0.03,
+  "counterfactual_action": "membrane-first TICK650 with PATTERN-011 swarm and one in-thread depth lane",
+  "created_at": "2026-05-19T15:38:08Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0513,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "hard_mathematical_residual",
+    "score": 0.0513,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0513,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0513,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.0417,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0417,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0286,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0286,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-19",
+  "information_value": 4.0,
+  "layer": "micro",
+  "objective_resolver": "success iff the tick produces a written artifact plus typed theorem-surface classification that either (A) defines a non-recurrent production-defect/capacity object with explicit local-gain and radius-charge obligations not reducible to degree-0/parabolic-slaved/CF-alignment inputs, or (B) proves the proposed object collapses to endpoint q<=5/2, classical r_Q^2 charge, CF alignment, or an already-forbidden recurrence, with next lever or retirement stated.",
+  "question": "TICK650 NS Track B: characterize whether a nu-coupled C7ProductionDefectMeasure / VorticityCapacityNoReuseBudget + CapacityOrExistingChannelDichotomy can supply both local high-level production gain and radius/no-reuse charge without Constantin-Fefferman alignment, and if not identify the exact obstruction that retires this CV branch without claiming a millennium-problem result.",
+  "risk_penalty": 0.25,
+  "success_threshold": "binary: actionable classification with pde_estimate_workbench artifact and swarm consolidation",
+  "task_type": "hard_mathematical_residual",
+  "value_if_success": 3.0,
+  "void_conditions": "VPS membrane unavailable, contract/start artifact missing, or no substantive in-tick mathematical artifact produced"
+}

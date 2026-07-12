@@ -92,7 +92,7 @@
   "horizon": "2026-05-14T23:59:00Z",
   "information_value": 0.3,
   "layer": "micro",
-  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json has status passed, exactly one row current_scale_0329, at least one candidate, zero forbidden post-target helper hits, full target rw-list not emitted, consumes v20.53, replay_run=false, training_now=false, gnn_blocked=true.",
+  "objective_resolver": "Resolve true iff analytics/public/gnn/lemma_relevance/v2054_source_safe_charfun_dual_one_row_replay_packet.json has status passed, exactly one row current_scale_0329, at least one candidate, zero forbidden post-target helper hits, full target rw-list not emitted, consumes v20.53, replay_run=false, training_now=false, gnn_blocked=true.",
   "question": "Will v20.54 generate a one-row source-safe charFunDual replay packet that passes leakage checks, uses audited normalizers, and remains replay-ready only through a separately priced bridge run?",
   "risk_penalty": 0.08,
   "success_threshold": "1.0",

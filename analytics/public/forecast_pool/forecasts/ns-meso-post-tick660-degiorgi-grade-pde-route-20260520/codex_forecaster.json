@@ -1,0 +1,37 @@
+{
+  "action_change_recommendation": "prefer_named_cv_nonlocal_degiorgi_estimate_over_l3a_cleanup_unless_the_target_cannot_be_sharply_stated",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-meso-post-tick660-degiorgi-grade-pde-route-20260520",
+  "contract_question": "After TICK660 and the external formalization benchmark, should the next NS tick pivot from local L3A interface refinement to a concrete DeGiorgi-grade PDE estimate lane, specifically a named CV/nonlocal-De-Giorgi critical estimate that tries to neutralize 3D vortex stretching without CF alignment, rather than continuing FreshPacketDuhamelIncidenceLiftFromAuditEligibility or doing atlas/formalization cleanup?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 58.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "degiorgi_analogy_misaligned_with_3d_vortex_stretching": 0.23,
+    "formalization_cleanup_mistaken_for_pde_progress": 0.17,
+    "l3a_local_optimum_recurrence": 0.19,
+    "pde_target_too_broad_or_not_named": 0.28,
+    "pressure_collar_and_fanout_dependencies_split_target": 0.13
+  },
+  "forecast_externality_tags": [
+    "decision_use_candidate",
+    "failure_mode_preconditioning",
+    "effort_calibration",
+    "amnesia_prevention",
+    "frontier_pde_bias"
+  ],
+  "forecasted_at": "2026-05-20T03:17:50Z",
+  "p_dependency_issue": 0.49,
+  "p_needs_new_lemma": 0.87,
+  "p_regression": 0.14,
+  "p_success": 0.57,
+  "rationale_short": "TICK660 plus the external benchmark raise the odds of a route break from local L3A cleanup to a named PDE target, but the main failure is still under-specification: the estimate can drift into analogy, cleanup, or broad-vs-narrow target confusion.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pde_target_too_broad_or_not_named",
+    "degiorgi_analogy_misaligned_with_3d_vortex_stretching",
+    "l3a_local_optimum_recurrence",
+    "formalization_cleanup_mistaken_for_pde_progress",
+    "pressure_collar_and_fanout_dependencies_split_target"
+  ]
+}

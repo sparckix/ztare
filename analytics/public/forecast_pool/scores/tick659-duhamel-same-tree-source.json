@@ -1,0 +1,147 @@
+{
+  "contract_id": "tick659-duhamel-same-tree-source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Attempt the broad IndependentFreshPacketSourceForNonflatBadCenter bundle or pressure/fanout lead routes.",
+      "counterfactual_action": "TICK659 descends on the Duhamel same-tree independent event-budget/source leg selected by the meso contract.",
+      "externality_hypotheses": {
+        "effort_calibration": "The existing constructors should reduce work, but the PDE content may still collapse to missing bad-center carrier identification.",
+        "failure_mode_preconditioning": "Pre-naming shell-only reserve, carrier mismatch, pressure leakage, and fanout rebilling should prevent source-leg overclaiming."
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "decision_use_recorded",
+        "failure_mode_preconditioning",
+        "source_leg_route",
+        "amnesia_prevention"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Prove or falsify FreshPacketSelectionToDuhamelIncidenceCoherence; pressure-complement and no-log fanout remain separate kill gates.",
+      "old_next_action": "Work the full IndependentFreshPacketSourceForNonflatBadCenter source bundle.",
+      "preconditioner_effect": "Narrowed the work from a broad independent-source bundle to the shell-only-reserve versus bad-center-budget discriminant.",
+      "preconditioner_source": "meso and micro forecast aggregates with decision-use rows du_817283704802 and du_ae5531026344",
+      "realized_failure_mode_ids": [
+        "shell_only_reserve_not_bad_center_budget",
+        "bad_center_carrier_identification_missing",
+        "pressure_same_reserve_unproved",
+        "fanout_rebilling_unproved"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.20704999999999996,
+  "mean_log_score": -0.6070115700897187,
+  "outcome": {
+    "actual_cost_agent_minutes": 95,
+    "artifact_hash": "a44fac40b5817390a6bc207f35d61e856714c92a9176e1642aa75c7a88c1ce55",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "pass",
+    "contract_id": "tick659-duhamel-same-tree-source",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "decision_use_recorded",
+      "failure_mode_preconditioning",
+      "source_leg_route",
+      "amnesia_prevention"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": "Produced a compile-checked carrier-identification criterion, shell-only obstruction, and fresh-packet-selection-to-Duhamel-incidence coherence bridge. The source leg is a valid target only after global coherence ties Duhamel sections to the normalized-excess bad-center tree.",
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex_forecaster",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-20T02:16:45Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick659-duhamel-same-tree-source/codex_forecaster.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "Prove or falsify FreshPacketSelectionToDuhamelIncidenceCoherence; pressure-complement and no-log fanout remain separate kill gates.",
+    "old_next_action": "Work the full IndependentFreshPacketSourceForNonflatBadCenter source bundle.",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "Narrowed the work from a broad independent-source bundle to the shell-only-reserve versus bad-center-budget discriminant.",
+    "preconditioner_source": "meso and micro forecast aggregates with decision-use rows du_817283704802 and du_ae5531026344",
+    "realized_failure_mode_ids": [
+      "shell_only_reserve_not_bad_center_budget",
+      "bad_center_carrier_identification_missing",
+      "pressure_same_reserve_unproved",
+      "fanout_rebilling_unproved"
+    ],
+    "resolution_note": "TICK659 succeeded under its either/or criterion by isolating the source-leg obstruction and next target. Event-side budget is available, but the source must satisfy FreshPacketSelectionToDuhamelIncidenceCoherence before it can feed IndependentFreshPacketSourceForNonflatBadCenter.",
+    "resolved_at": "2026-05-20T02:26:42Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T02:26:49Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 95,
+      "agent_id": "codex_forecaster",
+      "brier": 0.20249999999999996,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 118.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.85,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5978370007556204,
+      "p_success": 0.55,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T02:15:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T02:16:45Z",
+        "resolved_at": "2026-05-20T02:26:42Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 95,
+      "agent_id": "codex_rd",
+      "brier": 0.21159999999999995,
+      "cost_error_agent_minutes": 25.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.852941,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.616186139423817,
+      "p_success": 0.54,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T02:15:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T02:15:28Z",
+        "resolved_at": "2026-05-20T02:26:42Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick646-essl3-leafB-inherited-nogoodparent-ckn",
+  "contract_question": "Discharge OR sharply characterize the impossibility of the uniform rescaled Caffarelli-Kohn-Nirenberg bound for the leaf-B INHERITED (no-good-parent, first-crossing-bound-fails) subbranch of the ESS-L3 Type-I commutator-only branch \u2014 the single honest open residual after tick568 closed the first-crossing subbranch and tick567 closed leaf-A via KRZ2017 \u2014 at the CRITICAL scale-invariant L3 scaling (structurally distinct from the exhausted supercritical homogeneity-0/DSS wall; NOT re-deriving the closed leafA/first-crossing).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-19T03:56:11Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.08,
+  "rationale_short": "CODEX independent (CLI subscription, local read-only, provenance): the formal homogeneity-0 obstruction kills the only claimed \u03b4-gain mechanism; discharge unlikely without a genuinely-new non-scaling commutator input.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

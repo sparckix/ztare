@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 5.0,
   "artifact_hash": "adb345707fad6139a7410efdcb5780aae985fb5cd0ebf71cfaba08c3008f0c71",
-  "artifact_path": "analytics/public/leanmill/results/v1933_codex_blind_repair_sandbox.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v1933_codex_blind_repair_sandbox.json",
   "compile_status": "codex_blind_repair_ran_threshold_failed",
   "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
   "error_type": "strict_or_pull_forward_rows_below_2",

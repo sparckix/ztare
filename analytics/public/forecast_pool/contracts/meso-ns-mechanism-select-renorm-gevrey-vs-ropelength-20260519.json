@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519.json",
+    "contract": "analytics/public/forecast_pool/contracts/meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519",
+    "outcome": "analytics/public/forecast_pool/outcomes/meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519.json",
+    "score": "analytics/public/forecast_pool/scores/meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519.json"
+  },
+  "baseline_action": "re-run a degree-0 reduction/axis-pivot swarm (provably treadmill \u2014 universal wall)",
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_relaxed_price_binding_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_relaxed_price_binding_source' is an EXACT match of surfaced id 'selected_projected_relaxed_price_binding_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "meso-ns-mechanism-select-renorm-gevrey-vs-ropelength-20260519",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "commit the arc to mechanism D (renorm-Gevrey Liouville) \u2014 the cold-highest-EV non-degree-0 object",
+  "created_at": "2026-05-19T04:06:09Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_trackb_strategic",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this_arc",
+  "information_value": 0.0,
+  "layer": "meso",
+  "objective_resolver": "codex_cold_adversary+MetaDarwin: TRUE iff the selected mechanism arc yields a non-vacuous basin-confirmed-NEW structural result NOT collapsing to homogeneity-0/nu-washout, surviving one cold adversary; else FALSE",
+  "question": "MECHANISM SELECTION (meso, pre-tick, post cold-recursive-seed). The universal homogeneity-0 wall (every degree-0 Biot-Savart/Riesz Eulerian object scale-conjugation-trivial at the self-similar/DSS limit; scaling-level-agnostic; defends all 5 Clay-equivalent axes) requires a genuinely NON-degree-0 mechanism. Cold de-anchored seed killed Carleman-forward (delta-washout to nu) and relative-entropy (reference scale-covariant); two survivors: (D) scale-RENORMALIZED Gevrey analyticity-radius r\u0303_a lower bound as a Liouville obstruction (non-degree-0, non-cocycle, non-CZ, not a-priori nu-forced; open sub-lemma: r\u0303_a has a scaling-invariant strictly-positive lower bound \u21d2 a DSS/backward-self-similar profile cannot have r\u0303_a\u21920; kill-risk: Grujic-Kukavica radius shrinks at nu-rate, renormalization is the crux); (B) reconnection-controlled vortex-line ropelength/tube-radius tau lower bound (dimensionful, outside CZ algebra; open sub-lemma: quantitative anti-reconnection lower bound on tau under viscous evolution; kill-risk: tau\u21920 at strain rate restoring degree-0). Question: which mechanism, taken as the next arc, yields strictly more non-collapsing genuine progress on a 3D-NSE Clay-equivalent axis (a basin-confirmed-new structural reduction OR sharp obstruction that does NOT collapse to homogeneity-0/nu-washout), surviving one cold adversary? Resolves by the selected mechanism arc outcome.",
+  "risk_penalty": 1.0,
+  "success_threshold": "binary: selected_mechanism_yields_new_noncollapsing_result=1; collapse/vacuity/relabel/nu-washout=0",
+  "task_type": "ns_trackb_strategic",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

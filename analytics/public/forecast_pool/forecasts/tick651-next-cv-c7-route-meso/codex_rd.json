@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Run one fresh-radius invoice/split excess-drop tick before returning to magnitude-side beta gain, unless the next precheck finds the invoice route already killed.",
+  "agent_id": "codex_rd",
+  "contract_id": "tick651-next-cv-c7-route-meso",
+  "contract_question": "Over the next three NS/CV ticks, does prioritizing the descendant-exclusive fresh-radius invoice / split excess-drop route produce more formal frontier progress than returning first to the magnitude-side beta-gain route?",
+  "domain": "ns_track_b_cv_c7_route_allocation",
+  "expected_cost_agent_minutes": 210.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apparatus_close_overhead": 0.08,
+    "beta_gain_route_beats_invoice_route": 0.24,
+    "capacity_only_rehash_returns": 0.16,
+    "formal_surface_too_schematic": 0.18,
+    "fresh_invoice_requires_unavailable_pointwise_drop": 0.34
+  },
+  "forecast_externality_tags": [
+    "route_allocation",
+    "failure_mode_preconditioning",
+    "anti_rehash"
+  ],
+  "forecasted_at": "2026-05-19T17:54:54Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.09,
+  "p_success": 0.54,
+  "rationale_short": "TICK651 converted the capacity-only route into a precise OP-style object requirement. The route is risky but now has a clearer theorem target than generic beta gain; one bounded tick is priced as slightly favored.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "fresh_invoice_requires_unavailable_pointwise_drop",
+    "beta_gain_route_beats_invoice_route",
+    "capacity_only_rehash_returns"
+  ]
+}

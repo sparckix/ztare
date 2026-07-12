@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 31.0,
   "artifact_hash": "fdf5c8fbfab75e1d960ec74d84d1d7a549b02b41767b7cbd9a0cc9817ba41c28",
-  "artifact_path": "analytics/public/leanmill/results/v2084_blind_remaining_heldout_replay.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2084_blind_remaining_heldout_replay.json",
   "changed_by_forecast_ids": [],
   "compile_status": "replay_passed",
   "contract_id": "gp225_v2084_blind_remaining_heldout_replay_meso_gate",
@@ -19,7 +19,7 @@
   "new_next_action": "manifest refresh to add current_scale_0036 and re-evaluate baseline/model gate",
   "old_next_action": "replay gate only, no strict promotion yet",
   "preconditioner_effect": "v20.83 blind signature synthesis produced a map_direction changed arm that replayed strict while dist_map_map_zero_lt exposed a metric-rewrite shape gap.",
-  "preconditioner_source": "analytics/public/leanmill/results/v2083_blind_remaining_heldout_signature_synthesis.json",
+  "preconditioner_source": "analytics/public/gnn/lemma_relevance/v2083_blind_remaining_heldout_signature_synthesis.json",
   "realized_failure_mode_ids": [
     "dist_lt_shape_or_dist_comm_orientation_mismatch"
   ],

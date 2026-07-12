@@ -23,8 +23,8 @@
   "layer": "micro",
   "objective_resolver": "Conditional on v1992 and v1993 clean strict repair candidate packets existing at replay time, run a bundled strict replay over both packets with the clean source-policy gates used by v1990. Success if the replay verifies at least one fresh primary strict target-state row, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true. Solver-only, auxiliary-only, known prior wins, or rows using target proof lines/gold tactic text do not satisfy this contract.",
   "packet_prerequisites": [
-    "analytics/public/leanmill/results/v1992_*candidate*packet*.json or equivalent v1992 candidate packet",
-    "analytics/public/leanmill/results/v1993_*candidate*packet*.json or equivalent v1993 candidate packet"
+    "analytics/public/gnn/lemma_relevance/v1992_*candidate*packet*.json or equivalent v1992 candidate packet",
+    "analytics/public/gnn/lemma_relevance/v1993_*candidate*packet*.json or equivalent v1993 candidate packet"
   ],
   "question": "Conditional on v1992 and v1993 candidate packets existing, will v19.94 bundled clean strict repair replay add at least one fresh primary strict row, with harm zero, source-policy clean, no training, and GNN still blocked?",
   "risk_penalty": 2.5,

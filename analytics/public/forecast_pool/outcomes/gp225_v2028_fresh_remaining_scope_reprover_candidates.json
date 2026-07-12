@@ -1,7 +1,7 @@
 {
   "actual_cost_agent_minutes": 9.0,
   "artifact_hash": "88115aeeb17dc248d32a0af580f151e3ddb5addba2124bcdf5ccd1c061914c04",
-  "artifact_path": "analytics/public/leanmill/results/v2028_remaining_scope_queue_market_gate.json",
+  "artifact_path": "analytics/public/gnn/lemma_relevance/v2028_remaining_scope_queue_market_gate.json",
   "changed_by_forecast_ids": [
     "gp230_galileo_gp225_v2028",
     "gp230_aquinas_gp225_v2028"

@@ -20,7 +20,7 @@
   "horizon": "2026-05-13",
   "information_value": 8.0,
   "layer": "micro",
-  "objective_resolver": "analytics/public/leanmill/results/v1869_current_toolchain_remaining_witness_backfill_runner.json metrics: rows_attempted=8, clean_target_labels>=4, true_false_accepts=0, static_prefilter_not_run_rows=0, training_now=false, gnn_blocked=true",
+  "objective_resolver": "analytics/public/gnn/lemma_relevance/v1869_current_toolchain_remaining_witness_backfill_runner.json metrics: rows_attempted=8, clean_target_labels>=4, true_false_accepts=0, static_prefilter_not_run_rows=0, training_now=false, gnn_blocked=true",
   "question": "Will the v18.69 explicit-manifest adaptation of the v18.01 target-state witness runner backfill clean closure/target witnesses for at least 4 of the 8 v18.68 selected remaining hard-residual rows, with zero true false accepts and no training?",
   "risk_penalty": 2.0,
   "success_threshold": "rows_attempted==8 AND clean_target_labels>=4 AND true_false_accepts==0 AND static_prefilter_not_run_rows==0 AND training_now==false AND gnn_blocked==true",

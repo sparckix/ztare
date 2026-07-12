@@ -8195,6 +8195,164 @@ def test_pde_execution_consumes_same_carrier_packing_gate(tmp_path: Path) -> Non
     assert "Same-Carrier Packing" in pack_path.with_suffix(".md").read_text()
 
 
+def test_pde_execution_consumes_theorem_applicability_matcher(tmp_path: Path) -> None:
+    out = REPO / "tmp" / f"theorem_applicability_pack_{tmp_path.name}"
+    if out.exists():
+        shutil.rmtree(out)
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--target",
+            "localized Riesz pressure-tail reserve",
+            "--field",
+            "pressure_tail_reserve",
+            "--mode",
+            "pde-execution",
+            "--target-currency",
+            "same_fresh_annular_pressure_tail_reserve",
+            "--candidate-inequality",
+            "projected_target <= preprojection_payment + tail_reserve",
+            "--theorem-applicability-json",
+            json.dumps({
+                "label": "riesz_l1_profile_partial",
+                "theorem": "annular_bandlimited_riesz_l1_psd_trace_payment",
+                "available": {
+                    "tracefree_variation_pointwise_same_carrier_payment": True,
+                    "selected_target_uses_annular_bandlimited_output_packet": True,
+                    "annular_bandlimit_fixed_before_payoff": True,
+                    "output_packet_support_same_annular_carrier": True,
+                    "raw_unlocalized_Riesz_measure_target": True,
+                    "CZ_measure_L1_variation_unpaid": True,
+                },
+            }),
+            "--out-dir",
+            str(out),
+        ],
+        cwd=REPO,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert "theorem_applicability_checks: 1" in result.stdout
+    pack_path = next(out.glob("*/pack.json"))
+    pack = json.loads(pack_path.read_text())
+    check = pack["theorem_applicability_checks"][0]["result"]
+    assert check["verdict"] == "NO_MATCH"
+    assert "raw_unlocalized_Riesz_measure_target" in check["rejected_substitutes"]
+    assert "annular_projected_packet_identified_with_nonadaptive_event_stream" in check["missing_fields"]
+    md = pack_path.with_suffix(".md").read_text()
+    assert "Theorem Applicability" in md
+    assert "riesz_l1_profile_partial" in md
+
+
+def test_pde_execution_attaches_formal_surface_map(tmp_path: Path) -> None:
+    out = REPO / "tmp" / f"formal_surface_map_pack_{tmp_path.name}"
+    if out.exists():
+        shutil.rmtree(out)
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--target",
+            "PDE formal surface inventory",
+            "--field",
+            "surface_status",
+            "--mode",
+            "pde-execution",
+            "--pde-formal-surface-json",
+            json.dumps({
+                "records": [
+                    {
+                        "primitive_id": "sobolev_weak_solution",
+                        "status": "lean_statement_only",
+                        "statement": "theorem sobolev_weak_solution : True := by trivial",
+                        "lean_file": "PDE/SobolevWeakSolution.lean",
+                    },
+                    {
+                        "primitive_id": "annular_riesz_l1",
+                        "status": "lean_proof_complete",
+                        "lean_decl": "annular_riesz_l1",
+                    },
+                ],
+                "required_primitives": [
+                    "sobolev_weak_solution",
+                    "caccioppoli_energy",
+                ],
+            }),
+            "--out-dir",
+            str(out),
+        ],
+        cwd=REPO,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert "pde_execution_contract: True" in result.stdout
+    pack_path = next(out.glob("*/pack.json"))
+    pack = json.loads(pack_path.read_text())
+    surface_map = pack["pde_formal_surface_map"]
+    assert surface_map["schema"] == "pde-formal-surface-map-v1"
+    assert surface_map["missing_required_primitives"] == ["caccioppoli_energy"]
+    assert surface_map["incomplete_records"] == ["annular_riesz_l1"]
+    assert (
+        "proof_artifact_or_compile_success"
+        in surface_map["records"][1]["missing_evidence"]
+    )
+    md = pack_path.with_suffix(".md").read_text()
+    assert "PDE Formal Surface Map" in md
+    assert "inventory_only_no_proof_credit" in md
+
+
+def test_pde_execution_attaches_knowledge_context_without_semantic_defaults(
+    tmp_path: Path,
+) -> None:
+    out = REPO / "tmp" / f"knowledge_context_pack_{tmp_path.name}"
+    if out.exists():
+        shutil.rmtree(out)
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--target",
+            "annular Riesz PSD trace payment",
+            "--field",
+            "knowledge_context",
+            "--mode",
+            "pde-execution",
+            "--pde-knowledge-context",
+            "--pde-knowledge-query",
+            "annular bandlimited Riesz L1 PSD trace payment",
+            "--pde-knowledge-available-json",
+            json.dumps({"annular_bandlimit_fixed_before_payoff": True}),
+            "--out-dir",
+            str(out),
+        ],
+        cwd=REPO,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert "pde_execution_contract: True" in result.stdout
+    pack_path = next(out.glob("*/pack.json"))
+    pack = json.loads(pack_path.read_text())
+    context = pack["pde_knowledge_context"]
+    assert context["schema"] == "pde-knowledge-context-v1"
+    assert context["formal_feedback"] is None
+    assert context["theorem_profile_cards"]
+    assert context["leanmill_memory"]["proof_cache"]["enabled"] is False
+    assert any(
+        "TheoremRetrievalLeaf" in item
+        for item in context["recommended_leaf_sequence"]
+    )
+    md = pack_path.with_suffix(".md").read_text()
+    assert "PDE Knowledge Context" in md
+    assert "LeanMill proof-cache hit" in md
+
+
 
 def test_pde_execution_consumes_metric_covering_selection_gate(tmp_path: Path) -> None:
     out = REPO / "tmp" / f"metric_covering_selection_pack_{tmp_path.name}"
@@ -9335,4 +9493,3 @@ def test_stopping_tree_decrement_reserve_refill_confuser_gate_matches() -> None:
     assert match["concludes"][
         "ChannelSeparatedStoppingTreeDecrementReserveSource_excluded"
     ] is True
-

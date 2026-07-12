@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "tick666-indexed-single-spend-to-fresh-annular-source",
+  "contract_question": "Can ResidualFreshAuditIndexedSingleSpendCarrier be upgraded into FreshAnnularChargeSeparatedSourceFromIndexedCarrier with explicit activeTail, freshCharge, payment constant, rootBudget, pointwise lower payment, prefix budget, section identity, and reserve partition; or is the missing datum precisely a numerical fresh annular schedule beyond qualitative single-spend separation?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 105.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_same_packet_rebilling": 0.18,
+    "pde_source_requires_new_primitive": 0.16,
+    "qualitative_single_spend_not_numeric": 0.34,
+    "section_identity_not_tied_to_budget": 0.14,
+    "workbench_pass_without_constructive_source": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning"
+  ],
+  "forecasted_at": "2026-05-20T20:28:09Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.46,
+  "rationale_short": "TICK665 produced a clean target contract but also showed that qualitative separation is insufficient without activeTail/freshCharge/payment data. I expect either a small adapter if the indexed carrier already encodes enough numerical structure, or a useful negative identifying the missing source field; risk is high because fresh annular schedules may require a new PDE primitive rather than an adapter.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

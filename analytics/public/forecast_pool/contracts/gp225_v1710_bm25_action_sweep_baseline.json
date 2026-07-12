@@ -20,7 +20,7 @@
   "horizon": "next local GP-225 baseline audit",
   "information_value": 0.5,
   "layer": "macro",
-  "objective_resolver": "artifact analytics/public/leanmill/results/v1710_bm25_action_sweep_baseline.json exists; success if metrics.baseline_closed_rows>=20 or metrics.gp225_mean_failed / max(metrics.baseline_mean_failed,0.001) <= 2.0; void on script failure before producing metrics",
+  "objective_resolver": "artifact analytics/public/gnn/lemma_relevance/v1710_bm25_action_sweep_baseline.json exists; success if metrics.baseline_closed_rows>=20 or metrics.gp225_mean_failed / max(metrics.baseline_mean_failed,0.001) <= 2.0; void on script failure before producing metrics",
   "question": "Will v17.10 show that a strong BM25/accessibility + deterministic action-sweep baseline closes at least 20/23 natural replay rows or comes within 2x of GP-225 mean failed probes, keeping GNN blocked?",
   "risk_penalty": 1.0,
   "success_threshold": "baseline_closed_rows >= 20 OR gp225_vs_baseline_mean_failed_ratio <= 2.0",

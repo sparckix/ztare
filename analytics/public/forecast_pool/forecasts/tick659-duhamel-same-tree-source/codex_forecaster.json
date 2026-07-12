@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "target the Duhamel same-tree source leg first; use pressure and fanout as kill gates, not lead surfaces",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick659-duhamel-same-tree-source",
+  "contract_question": "Will TICK659 produce a substantive decision on whether BadCenterEventPriceDropDuhamelIncidenceSource and DuhamelSameTreeIndependentEventBudgetCandidate can supply the independent source leg needed by IndependentFreshPacketSourceForNonflatBadCenter, without shell-only reserve, bad-center carrier mismatch, pressure leakage, or fanout rebilling?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 118.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bad_center_carrier_identification_missing": 0.24,
+    "fanout_rebilling_unproved": 0.15,
+    "pressure_same_reserve_unproved": 0.18,
+    "shell_only_reserve_not_bad_center_budget": 0.28,
+    "source_leg_restates_existing_adapter": 0.15
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "source_leg_route",
+    "amnesia_prevention"
+  ],
+  "forecasted_at": "2026-05-20T02:16:45Z",
+  "p_dependency_issue": 0.41,
+  "p_needs_new_lemma": 0.75,
+  "p_regression": 0.09,
+  "p_success": 0.55,
+  "rationale_short": "No prior codex forecast exists. Priced from the contract text and nearby ns_millennium_hunt / ns_route1_pde calibration, not from a DAG. The contract snapshot does not price execution timing, hidden coupling, or the negative case where the lane only restates the existing adapter or stalls before a compile-checked Lean surface.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "shell_only_reserve_not_bad_center_budget",
+    "bad_center_carrier_identification_missing",
+    "pressure_same_reserve_unproved",
+    "fanout_rebilling_unproved",
+    "source_leg_restates_existing_adapter"
+  ]
+}

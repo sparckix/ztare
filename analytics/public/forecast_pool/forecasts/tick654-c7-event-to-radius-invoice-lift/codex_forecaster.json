@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Attack the event-to-radius lift directly as a same-tree invoice-identification test; if pressure localization or one-use accounting fails, stop at the named obstruction rather than widening to CF, endpoint, or scalar reuse.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "tick654-c7-event-to-radius-invoice-lift",
+  "contract_question": "Will TICK654 produce a compile-checked event-to-radius invoice lift or a sharper obstruction for SameLedgerFreshEventCarriesRadiusInvoice, without CF alignment, degree-0 endpoint bookkeeping, or parabolic-slaved scalar reuse?",
+  "domain": "ns_c7_invoice",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compile_surface_without_next_lever_shift": 0.14,
+    "endpoint_bookkeeping_or_scalar_reuse_smuggled": 0.16,
+    "inherited_badness_rebilling_survives": 0.18,
+    "pressure_tail_localization_unproven": 0.28,
+    "same_ledger_restatement_without_new_lift": 0.24
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "effort_prior_calibration",
+    "gp233_next_lever_update"
+  ],
+  "forecasted_at": "2026-05-19T20:41:49Z",
+  "p_dependency_issue": 0.33,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.08,
+  "p_success": 0.56,
+  "rationale_short": "Tick653 already isolated the missing same-tree bridge; this one looks slightly more likely to yield either a compact event-to-radius lift or a named obstruction, but the main risks are unproved pressure localization, descendant rebilling, and a restatement that never changes the next lever.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "pressure_tail_localization_unproven",
+    "same_ledger_restatement_without_new_lift",
+    "inherited_badness_rebilling_survives",
+    "endpoint_bookkeeping_or_scalar_reuse_smuggled",
+    "compile_surface_without_next_lever_shift"
+  ]
+}

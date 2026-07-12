@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Stay on the L3A fresh-packet/Duhamel-incidence coherence chain as the next macro lane; de-anchor only if the kill condition shows the lane is just the old recurrence basin or fails the non-amnesia check.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns-macro-post-tick659-frontier-allocation-20260520",
+  "contract_question": "After TICK659, should the NS program allocate the next macro cycle to the L3A fresh-packet/Duhamel-incidence coherence chain (FreshPacketSelectionToDuhamelIncidenceCoherence -> BadCenterEventPriceDropDuhamelIncidenceSource -> IndependentFreshPacketSourceForNonflatBadCenter), rather than de-anchoring immediately to a different NS program such as CV nonlocal De Giorgi, pressure-complement first, or fanout-only accounting?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "decision_use_row_stays_hedged_or_dual_track": 0.24,
+    "graph_signal_stale_or_router_overfit": 0.16,
+    "kill_condition_or_non_amnesia_not_named": 0.2,
+    "l3a_local_optimum_not_global_frontier": 0.28,
+    "pressure_or_fanout_gate_dominates_first": 0.12
+  },
+  "forecast_externality_tags": [
+    "decision_use_candidate",
+    "failure_mode_preconditioning",
+    "amnesia_prevention",
+    "effort_calibration"
+  ],
+  "forecasted_at": "2026-05-20T02:35:56Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.67,
+  "p_regression": 0.09,
+  "p_success": 0.63,
+  "rationale_short": "TICK659 sharpened the object, but this contract is still about whether L3A is the best capital allocation or just a local optimum. The main risk is a decision-use row that names a lane without a clean kill condition, non-amnesia check, or explicit rejection of the old basin. No DAG was supplied, so this is priced from the contract text plus nearby NS routing priors.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "l3a_local_optimum_not_global_frontier",
+    "decision_use_row_stays_hedged_or_dual_track",
+    "kill_condition_or_non_amnesia_not_named",
+    "graph_signal_stale_or_router_overfit",
+    "pressure_or_fanout_gate_dominates_first"
+  ]
+}

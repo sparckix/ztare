@@ -257,6 +257,26 @@ Two rules keep this lifecycle sane:
 - A dashboard or trace is not authority. It is a read model over files, ledgers,
   saved records, and signed store entries.
 
+Control lifecycles that cross agent/kernel boundaries should be represented as
+typed state charts in `ztare.common.control_state_machine`, then projected into
+prompts, markdown specs, receipts, and workbench surfaces from the same source.
+Adapters may define their own states, events, and context payloads, but not their
+own lifecycle dialect. A worker can propose a lifecycle/tool change as a typed
+proposal against that chart; adoption still goes through parser checks,
+regression checks, and the relevant deterministic gates. This keeps
+self-improvement on mutable instruments and routing contracts, while checker and
+evaluation authority remain outside the proposal itself.
+
+Boundary-repair charts may name the ledgers they touch, but only as read-model
+pointers to existing contracts. For example, the sealed Boundary-CEGAR chart
+projects counterexample-open, observation-requested, candidate-pending-gate,
+and capability-proposal-pending states over the existing carrier contract,
+leaf-workbench capability proposal contract, Strategy Office `tool_synthesis`
+cards, operator proposal cards, and strategy experiment cards. It does not
+create a second proposal taxonomy. Missing instruments route through
+`LEAF_WORKBENCH_CAPABILITY_PROPOSAL` and then `tool_synthesis`; object-level
+hypotheses still move through candidate carriers and replay/holdout gates.
+
 ---
 
 ## Repository topology
@@ -611,6 +631,32 @@ itself: D4 is the human project surface; RD utilities are route/tool support
 for agents and advanced users; the in-loop validator is the stricter checking
 lane when a claim or report needs support.
 
+### World-model boundary (interactive substrates)
+
+The world-model kernel (`src/ztare/worldmodel/`) extends the validator to
+substrates where evidence is earned by acting in an environment rather than
+given up front ([GP-250](../../research_areas/seams/substrates/arc/GP-250_arc_agi_3_interactive_program_synthesis_seam.md)).
+An environment is treated as an open conjecture about a transition law:
+episodes are the search, and a ratified transition program is the closure. The
+subsystem supplies a typed seed grammar and evaluator for transition programs
+(`grid_dsl`), an append-only episode log that is the only surface downstream
+code reads (`episode_log`), a deterministic guarded-fragment synthesis pass
+that plays the role Stage 1 template compression plays for curve fitting
+(`synthesis`, with `grammar_ceiling` as the typed event that engages the
+mutator), replay-consistency and rollout-depth gates (`gates`), and an
+expected-information-gain action policy with typed fallbacks (`policy`).
+Sealed synthetic fixtures live at `src/ztare/substrates/arc_synthetic/`; the
+pre-registered offline check is `scripts/public/control/worldmodel_p0_check.py`.
+Loop wiring follows the project shape: episode logs as `raw/` sources, an
+`interactive_environment` substrate class routing the new gates through the
+dispatcher, and evidence acquisition as a stagnation-pivot target. The seam
+records validation status; as of 2026-07-02 the synthesis core passes its
+recovery pre-registration, the composite-yield policy passes the high-arity
+efficiency pre-registration (BC-1''), the dispatcher gates and briefing
+provider are registered, and a fixture project traverses the full read chain
+to `ready_for_first_in_loop_run`. Running the loop itself on this substrate
+class awaits the loop decomposition.
+
 ### LeanMill boundary
 
 LeanMill (`src/ztare/leanmill/`) has its own architecture document and is a
@@ -636,6 +682,43 @@ See:
 - [ztare_research_company_architecture.md](ztare_research_company_architecture.md)
 - [org_runtime_quickstart.md](../guides/org_runtime_quickstart.md)
 - [org/README.md](../../org/README.md)
+
+---
+
+### Scenario and governed-artifact boundary
+
+A **Scenario** (`src/ztare/scenarios/`) points the same claim-hardening kernel at a use-case without forking
+core code — a dropped `scenarios/<name>.yaml` binds a rubric, run-config, and typed capability plug-ins
+(`EvidenceProvider` / `Renderer` / `Solver` Protocols). The kernel/plugin line is enforced by a rot test: if
+deleting a plugin directory changes kernel code, the plugin has leaked. The kernel owns domain-neutral
+operations on governed elements; plugins own domain nouns (PM templates, connectors, rubrics).
+
+Plugins install **dynamically**: scenarios + rubrics are data (created/edited from the workbench's
+Projects → Plugins manager or the CLI, live immediately — the filesystem is the registry); capability plugins
+are `@capability`-decorated `.py` files dropped into a plugin directory (`$ZTARE_SCENARIO_PLUGINS` /
+`plugins/scenarios/`) and discovered on reload (`scenarios/registry.py`). A scenario's declared `rubric` +
+`renderer` drive the whole run; its `evidence_sources` are **consumed** at the loop's evidence intake (a
+non-default `EvidenceProvider` augments the disk evidence, guarded) and its `gate_package` wraps the Cage
+factory (`build_cage_factory`, a safe pass-through until a scenario gate is registered). A `Solver` is resolved
+and reachable for a scenario/goal-type handler to dispatch — the base claim-hardening loop has no auto-solve
+step.
+
+The output half is the **governed-artifact layer** (`scenarios/artifacts.py`), a post-run boundary bound to
+Layer 1 (the run's governed final state) with one machine-checkable invariant, the **provenance firewall**:
+every element of a produced deliverable must trace verbatim (normalized-equal, never an LLM "semantically
+equivalent" judge) to a hardened claim / bound evidence / falsifier / finding, and every relational connective
+must be licensed by a governed edge — so a deliverable is a *rendering* of the governed argument graph, not free
+prose. Three directions cross this boundary, all deterministic:
+
+- **forward** (`produce_scenario_artifacts`) — governed graph → templated deliverable; an untemplated or
+  unbacked slot is an accounted stub, never fabricated content.
+- **inverse** (`annotate`) — a document in → the same document back, each sentence tagged by its claim lifecycle
+  against the governed map. A document is input, so it never "fails"; the output is triage, not a verdict.
+- **re-entry** (`reingest_gate`) — downstream AI-polished prose re-gated sentence-by-sentence before it may wear
+  the stamp. `annotate` and `reingest_gate` share one `align()` door.
+
+The LLM appears only as a *proposer* (surfacing candidate spans, choosing template order); it is never in the
+gate. Detail lives in [scenarios.md](scenarios.md); this overview only records the integration boundary.
 
 ---
 
