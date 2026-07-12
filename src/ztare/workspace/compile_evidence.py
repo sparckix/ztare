@@ -27,6 +27,9 @@ TEXT_EXTENSIONS = {
     ".markdown",
     ".txt",
     ".json",
+    # JSONL is line-delimited JSON text; interactive-environment episode logs
+    # (GP-250) enter the source surface as raw/episodes/*.jsonl.
+    ".jsonl",
     ".csv",
     ".tsv",
     ".yaml",

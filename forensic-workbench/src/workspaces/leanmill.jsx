@@ -1,23 +1,20 @@
 import React from "react";
+import { ArrowRight, CheckCircle2, FileCode2, RefreshCw, ShieldCheck, Sigma } from "lucide-react";
 import {
   Accordion,
   Alert,
-  Anchor,
   Badge,
   Box,
   Button,
   Card,
   Code,
-  Divider,
   Group,
   NativeSelect,
-  Paper,
   SimpleGrid,
   Stack,
   Text,
   Textarea,
   TextInput,
-  Title
 } from "./leanmill-ui.jsx";
 import { displayMessage, displayText, isPreviewableRepoPath } from "../design-system.js";
 
@@ -147,6 +144,20 @@ export function LeanMillPanel({
   const outcomeByTarget = {};
   [...typedRows, ...solverRows].forEach((r) => { if (r && r.target) outcomeByTarget[r.target] = r; });
   const jobVerdict = (row) => {
+    const audit = row.audit_receipt;
+    if (audit && audit.status === "unreadable") return { label: "Audit unreadable", tone: "red" };
+    if (audit && audit.status === "pending") {
+      const jobStatus = String(row.status || "").toLowerCase();
+      return ["failed", "completed", "interrupted"].includes(jobStatus)
+        ? { label: "Audit receipt missing", tone: "red" }
+        : { label: "Audit running", tone: "gray" };
+    }
+    if (audit && audit.compile && audit.compile.ok === true && audit.axioms && audit.axioms.allowlist_ok === true) {
+      return audit.closure && audit.closure.status === "pass"
+        ? { label: "Audit passed", tone: "green" }
+        : { label: "Audit needs review", tone: "blue" };
+    }
+    if (audit && audit.status && audit.status !== "missing_path") return { label: "Audit failed", tone: "red" };
     const o = row.target_name ? outcomeByTarget[row.target_name] : null;
     if (o) return leanProofVerdict(o);
     if (String(row.status || "").toLowerCase() === "started") return { label: "Running", tone: "gray" };
@@ -154,12 +165,46 @@ export function LeanMillPanel({
     return { label: displayText(row.status || "started"), tone: "gray" };
   };
 
+  const AuditReceipt = ({ receipt }) => {
+    if (!receipt) return null;
+    if (receipt.status === "pending") {
+      return <Text c="dimmed" fz="xs" mt={4}>The audit is still writing its receipt.</Text>;
+    }
+    if (receipt.status === "unreadable") {
+      return <Text c="red" fz="xs" mt={4}>The audit receipt could not be read: {displayText(receipt.error || "unknown error")}</Text>;
+    }
+    const compileOk = receipt.compile && receipt.compile.ok === true;
+    const axiomsOk = receipt.axioms && receipt.axioms.allowlist_ok === true;
+    const closureStatus = receipt.closure && receipt.closure.status;
+    const closureOk = closureStatus === "pass";
+    const stage = (label, ok, detail) => (
+      <span className="lm-audit-stage" key={label}>
+        <Badge size="sm" variant="light" color={ok ? "teal" : "red"}>{ok ? "passed" : "review"}</Badge>
+        <span>{label}</span>
+        {detail ? <small>{detail}</small> : null}
+      </span>
+    );
+    return (
+      <div className="lm-audit-receipt" aria-label="Proof audit receipt">
+        <div className="lm-audit-stages">
+          {stage("Compile", compileOk, compileOk ? "Lean accepted" : "not accepted")}
+          {stage("Axiom policy", axiomsOk, axiomsOk ? "allowlist clear" : "needs review")}
+          {stage("Closure controls", closureOk, closureOk ? "no L3 blocker" : String(closureStatus || "unknown").replace(/_/g, " "))}
+        </div>
+        <Group gap="xs" mt={6}>
+          <PathButton path={receipt.path} label="Open audit receipt" />
+          <Text c="dimmed" fz="xs">Audit evidence only — proof credit still requires governed review.</Text>
+        </Group>
+      </div>
+    );
+  };
+
   const openPreview = (path) => {
     if (path && onPreview && isPreviewableRepoPath(path)) onPreview({ type: "file", value: path });
   };
   const PathButton = ({ path, label = "Open" }) =>
     path && isPreviewableRepoPath(path) ? (
-      <Button size="compact-sm" variant="light" onClick={() => openPreview(path)} title={`Preview ${path}`}>
+      <Button className="lm-path-button" size="compact-sm" variant="light" onClick={() => openPreview(path)} title={`Preview ${path}`}>
         {label}
       </Button>
     ) : null;
@@ -191,24 +236,24 @@ export function LeanMillPanel({
     );
 
   const Metrics = ({ items }) => (
-    <SimpleGrid cols={{ base: 2, sm: items.length > 3 ? 4 : items.length }} spacing="sm">
+    <div className="lm-metrics">
       {items.map((item) => (
-        <Paper key={item.label} withBorder p="sm" radius="sm">
-          <Text c="dimmed" fz="xs" tt="uppercase" style={{ letterSpacing: "0.05em" }}>
+        <div key={item.label} className="lm-metric">
+          <span className="lm-metric-label">
             {item.label}
-          </Text>
+          </span>
           {item.code ? (
-            <Code fz="xs" block mt={4}>
+            <Code fz="xs" block>
               {item.value}
             </Code>
           ) : (
-            <Text fw={650} fz="lg">
+            <strong className="lm-metric-value">
               {item.value}
-            </Text>
+            </strong>
           )}
-        </Paper>
+        </div>
       ))}
-    </SimpleGrid>
+    </div>
   );
 
   // ---- Start / overview ------------------------------------------------------
@@ -217,30 +262,35 @@ export function LeanMillPanel({
   // substrates alike (anything reducible to a Lean target).
   const leanFileCount = formalizations.lean_file_count || leanFiles.length || 0;
   const outcomeCount = (solverLane.result_count || 0) + (typedExits.count || 0);
+  const verifiedCount = (payload.closure_certificates || {}).recent_count || 0;
   const nextLeanMillJobs = [
     {
       id: "formalize",
       title: "Formalize & solve",
-      state: "from your notes",
-      body: "Turn a statement — a theorem, a spec, an invariant — into a Lean target and let the solver prove it. The common path.",
-      action: "Start",
-      view: "Run a proof"
+      state: savedTargets.length ? `${savedTargets.length} saved target${savedTargets.length === 1 ? "" : "s"}` : "start with a statement",
+      body: "Turn a theorem, specification, or invariant into a Lean target, then search for a checked proof.",
+      action: savedTargets.length ? "Continue" : "Draft target",
+      view: savedTargets.length ? "Run a proof" : "Draft target",
+      icon: Sigma,
+      primary: true,
     },
     {
       id: "fix",
       title: "Fix a failing proof",
-      state: leanFileCount ? `${leanFileCount} Lean file${leanFileCount === 1 ? "" : "s"} on hand` : "drop a .lean",
-      body: "Have a Lean file that won't compile, or still carries a sorry? Point the solver at it and it works the gap directly.",
-      action: "Open",
-      view: "Run a proof"
+      state: leanFileCount ? `${leanFileCount} Lean file${leanFileCount === 1 ? "" : "s"} indexed` : "no Lean file indexed",
+      body: "Select a named declaration in an indexed Lean file and work the remaining proof gap directly.",
+      action: leanFileCount ? "Choose target" : "Review files",
+      view: leanFileCount ? "Run a proof" : "Proof files",
+      icon: FileCode2,
     },
     {
       id: "ratify",
-      title: "Ratify a proof",
-      state: outcomeCount ? `${outcomeCount} checked` : "kernel L1·L2·L3",
-      body: "Kernel-check a finished proof — compile, axiom allowlist, and anti-laundering gates. Proof, not “looks right”. The thing an LLM can't tell you.",
-      action: "See what's verified",
-      view: "Proof status"
+      title: "Ratify a finished proof",
+      state: verifiedCount ? `${verifiedCount} verified` : "compile · axioms · closure",
+      body: "Audit a Lean file through compilation, the axiom allowlist, and closure checks before relying on it.",
+      action: leanFileCount ? "Run audit" : "Review status",
+      view: leanFileCount ? "Run a proof" : "Proof status",
+      icon: ShieldCheck,
     }
   ];
 
@@ -253,32 +303,35 @@ export function LeanMillPanel({
               {message}
             </Text>
           ) : null}
-          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md" mt="xs">
+          <div className="lm-proof-state" aria-label="LeanMill proof state">
+            <div><FileCode2 size={16} aria-hidden="true" /><span>Lean files</span><strong>{leanFileCount}</strong></div>
+            <div><Sigma size={16} aria-hidden="true" /><span>Outcomes</span><strong>{outcomeCount}</strong></div>
+            <div><CheckCircle2 size={16} aria-hidden="true" /><span>Verified</span><strong>{verifiedCount}</strong></div>
+            <div className={run.active ? "is-active" : ""}><span className="lm-worker-dot" aria-hidden="true" /><span>Workers</span><strong>{run.active ? run.worker_count : run.connected_worker_count ? `${run.connected_worker_count} idle` : "idle"}</strong></div>
+          </div>
+          <div className="lm-job-list">
             {nextLeanMillJobs.map((job) => (
-              <Card key={job.id} withBorder padding="md" style={{ display: "flex", flexDirection: "column", height: "100%", gap: 12 }}>
-                <Box>
-                  <Badge size="sm" variant="light" mb={6}>
-                    {job.state}
-                  </Badge>
-                  <Title order={4}>{job.title}</Title>
-                  <Text c="dimmed" fz="sm" mt={4} style={{ minHeight: "4.7em" }}>
-                    {job.body}
-                  </Text>
-                </Box>
-                <Button
-                  variant="default"
-                  fullWidth
-                  style={{ marginTop: "auto" }}
-                  onClick={() => onNavigateWorkspace && onNavigateWorkspace("leanmill", job.view)}
-                >
-                  {job.action}
-                </Button>
-              </Card>
+              <button
+                key={job.id}
+                type="button"
+                className={`lm-job${job.primary ? " is-primary" : ""}`}
+                onClick={() => onNavigateWorkspace && onNavigateWorkspace("leanmill", job.view)}
+              >
+                <span className="lm-job-icon"><job.icon size={19} aria-hidden="true" /></span>
+                <span className="lm-job-copy">
+                  <span className="lm-job-title">{job.title}</span>
+                  <span className="lm-job-body">{job.body}</span>
+                </span>
+                <span className="lm-job-action">
+                  <span className="lm-job-state">{job.state}</span>
+                  <span>{job.action}<ArrowRight size={15} aria-hidden="true" /></span>
+                </span>
+              </button>
             ))}
-          </SimpleGrid>
+          </div>
           <Group>
             <Button variant="default" onClick={onRefresh} disabled={!liveMode}>
-              Refresh LeanMill
+              <RefreshCw size={15} aria-hidden="true" /> Refresh
             </Button>
           </Group>
         </Stack>
@@ -444,7 +497,7 @@ export function LeanMillPanel({
         <SectionCard title="Recent saved targets">
           <Stack gap="xs">
             {targetHistoryRows.map((row) => (
-              <Paper key={`${row.applied_at}-${row.slug}`} withBorder p="sm" radius="sm">
+              <div key={`${row.applied_at}-${row.slug}`} className="lm-history-row">
                 <Group justify="space-between">
                   <Text fw={550} fz="sm">
                     {row.title || row.slug || "saved target"}
@@ -454,7 +507,7 @@ export function LeanMillPanel({
                   </Badge>
                 </Group>
                 <Code fz="xs">{row.target_path || row.blueprint_path || ""}</Code>
-              </Paper>
+              </div>
             ))}
           </Stack>
         </SectionCard>
@@ -541,6 +594,43 @@ export function LeanMillPanel({
         </Group>
       </SectionCard>
 
+      <SectionCard
+        eyebrow="Kernel audit"
+        title="Ratify a finished Lean proof"
+        description="Check the selected file through compilation, the axiom allowlist, and closure controls. The audit records a receipt; it does not grant proof credit by itself."
+      >
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+          <NativeSelect
+            label="Lean file"
+            value={launchDraft.source_file || ""}
+            disabled={!liveMode || actionRunning}
+            onChange={(e) => setLaunchField("source_file", e.currentTarget.value)}
+            data={[{ value: "", label: "Choose Lean file" }, ...leanFileOptions.map((p) => ({ value: p, label: p }))]}
+          />
+          <TextInput
+            label="Declaration (optional)"
+            description="Leave blank to audit declarations across the file."
+            placeholder="my_theorem"
+            value={launchDraft.target_name || ""}
+            disabled={!liveMode || actionRunning}
+            onChange={(e) => setLaunchField("target_name", e.currentTarget.value)}
+          />
+        </SimpleGrid>
+        <div className="lm-audit-stages" aria-label="Ratification checks">
+          <span><strong>1</strong> Compile</span>
+          <span><strong>2</strong> Axiom allowlist</span>
+          <span><strong>3</strong> Closure controls</span>
+        </div>
+        <Group>
+          <Button variant="default" disabled={!liveMode || actionRunning || !launchDraft.source_file} onClick={() => onPreviewAction && onPreviewAction("ratify", false)}>
+            {actionRunning ? "Working" : "Preview audit"}
+          </Button>
+          <Button color="indigo" className={actionRunning ? "is-busy" : undefined} disabled={!liveMode || actionRunning || !launchDraft.source_file} onClick={() => onStartAction && onStartAction("ratify", true)}>
+            <ShieldCheck size={15} aria-hidden="true" /> {actionRunning ? "Starting" : "Run audit"}
+          </Button>
+        </Group>
+      </SectionCard>
+
       {actionJob ? (
         <SectionCard eyebrow={displayText(actionEvent.status || actionJob.status || "job")} title={actionEvent.accepted ? "Attempt started" : "Attempt preview"}>
           <Text c="dimmed" fz="sm">
@@ -571,7 +661,7 @@ export function LeanMillPanel({
         {areaRows.length ? (
           <Stack gap="xs">
             {areaRows.map((area) => (
-              <Paper key={area.project} withBorder p="sm" radius="sm">
+              <div key={area.project} className="lm-area-row">
                 <Group justify="space-between" wrap="nowrap" align="center">
                   <Box style={{ minWidth: 0 }}>
                     <Text fw={600} fz="sm">
@@ -588,7 +678,7 @@ export function LeanMillPanel({
                   </Box>
                   {(area.targets || []).length ? <PathButton path={area.targets[0]} label="Open target" /> : null}
                 </Group>
-              </Paper>
+              </div>
             ))}
           </Stack>
         ) : (
@@ -710,7 +800,7 @@ export function LeanMillPanel({
             {jobRows.map((row) => {
               const v = jobVerdict(row);
               return (
-                <Paper key={row.job_path || `${row.created_at}-${row.action}`} withBorder p="sm" radius="sm">
+                <div key={row.job_path || `${row.created_at}-${row.action}`} className="lm-job-row">
                   <Group justify="space-between">
                     <Text fw={550} fz="sm">
                       {row.target_name || row.label || displayText(row.action || "attempt")}
@@ -722,11 +812,12 @@ export function LeanMillPanel({
                   {v.gap ? (
                     <Text c="dimmed" fz="xs" mt={4}>{v.gap}</Text>
                   ) : null}
+                  <AuditReceipt receipt={row.audit_receipt} />
                   <Group gap="xs" mt={6}>
                     <PathButton path={row.result_path} label="Open result" />
                     <PathButton path={row.stdout_path} label="Open log" />
                   </Group>
-                </Paper>
+                </div>
               );
             })}
           </Stack>

@@ -6,7 +6,7 @@ import React from "react";
 const h = React.createElement;
 
 const SP = { none: 0, xs: 6, sm: 10, md: 16, lg: 24, xl: 32 };
-const RAD = { xs: 6, sm: 8, md: 12, lg: 16 };
+const RAD = { xs: 4, sm: 6, md: 8, lg: 8 };
 // Map the shim's t-shirt sizes onto the workbench type-scale tokens (not raw px) so LeanMill shares the
 // exact rhythm of the redesigned sections. sm/xs/md land within 1px of the old values (low risk).
 const FZ = { xs: "var(--fs-label)", sm: "var(--fs-meta)", md: "var(--fs-body)", lg: "var(--fs-subhead)", xl: "var(--fs-title)" };
@@ -22,6 +22,12 @@ function mstyle(p) {
   if (p.mr != null) s.marginRight = sp(p.mr);
   if (p.my != null) { s.marginTop = sp(p.my); s.marginBottom = sp(p.my); }
   if (p.m != null) s.margin = sp(p.m);
+  if (p.pt != null) s.paddingTop = sp(p.pt);
+  if (p.pb != null) s.paddingBottom = sp(p.pb);
+  if (p.pl != null) s.paddingLeft = sp(p.pl);
+  if (p.pr != null) s.paddingRight = sp(p.pr);
+  if (p.px != null) { s.paddingLeft = sp(p.px); s.paddingRight = sp(p.px); }
+  if (p.py != null) { s.paddingTop = sp(p.py); s.paddingBottom = sp(p.py); }
   if (p.w != null) s.width = typeof p.w === "number" ? p.w : p.w;
   if (p.h != null) s.height = typeof p.h === "number" ? p.h : p.h;  // so h="100%" fills the card → space-between bottom-aligns buttons
   return s;
@@ -57,33 +63,41 @@ export function SimpleGrid({ children, cols = 1, spacing = "md", className, styl
   }, children);
 }
 
-export function Button({ children, variant, onClick, disabled, leftSection, fullWidth, type = "button", size, className, component, href, title, ...p }) {
+export function Button({ children, variant, onClick, disabled, loading, leftSection, fullWidth, type = "button", size, className, component, href, title, ...p }) {
   // no variant → primary (filled); "default" → outline chip; "light"/"subtle" → ghost.
   const tier = variant === "light" || variant === "subtle" ? "chip ghost" : variant === "default" || variant === "outline" ? "chip" : "chip primary";
-  const cls = [tier, fullWidth ? "lm-btn-full" : "", className || ""].filter(Boolean).join(" ");
+  const cls = [tier, fullWidth ? "lm-btn-full" : "", loading ? "is-busy" : "", className || ""].filter(Boolean).join(" ");
   const inner = [leftSection ? h("span", { key: "ls", className: "lm-btn-icon" }, leftSection) : null, children];
   if (component === "a" || href) {
     return h("a", { className: cls, href, onClick, title, style: mstyle(p) }, inner);
   }
-  return h("button", { type, className: cls, onClick, disabled, title, style: mstyle(p) }, inner);
+  return h("button", { type, className: cls, onClick, disabled: disabled || loading, title, style: mstyle(p) }, inner);
 }
 
-function Field({ label, description, error, children, ...p }) {
+function Field({ label, description, error, required, children, ...p }) {
   return h("label", { className: "lm-field", style: mstyle(p) },
-    label ? h("span", { className: "lm-field-label" }, label) : null,
+    label ? h("span", { className: "lm-field-label" }, label, required ? h("span", { className: "lm-required", "aria-hidden": "true" }, " *") : null) : null,
     children,
     description ? h("span", { className: "lm-field-desc" }, description) : null,
     error ? h("span", { className: "lm-field-error" }, error) : null);
 }
 
-export function TextInput({ label, description, error, value, onChange, placeholder, disabled, type = "text", className, ...p }) {
-  return h(Field, { label, description, error, ...p },
-    h("input", { className: `lm-input ${className || ""}`, type, value: value == null ? "" : value, onChange, placeholder, disabled }));
+export function TextInput({ label, description, error, value, onChange, placeholder, disabled, type = "text", className, withAsterisk, rightSection, rightSectionWidth, ...p }) {
+  const input = h("input", { className: `lm-input ${className || ""}`, type, value: value == null ? "" : value, onChange, placeholder, disabled, required: withAsterisk || undefined });
+  return h(Field, { label, description, error, required: withAsterisk, ...p },
+    rightSection
+      ? h("div", { className: "lm-input-shell" }, input,
+          h("div", { className: "lm-input-right", style: rightSectionWidth ? { width: rightSectionWidth } : undefined }, rightSection))
+      : input);
 }
 
-export function Textarea({ label, description, error, value, onChange, placeholder, disabled, minRows = 3, autosize, className, ...p }) {
-  return h(Field, { label, description, error, ...p },
-    h("textarea", { className: `lm-input lm-textarea ${className || ""}`, value: value == null ? "" : value, onChange, placeholder, disabled, rows: minRows }));
+export function Textarea({ label, description, error, value, onChange, placeholder, disabled, minRows = 3, autosize, className, withAsterisk, ...p }) {
+  return h(Field, { label, description, error, required: withAsterisk, ...p },
+    h("textarea", { className: `lm-input lm-textarea ${className || ""}`, value: value == null ? "" : value, onChange, placeholder, disabled, required: withAsterisk || undefined, rows: minRows }));
+}
+
+export function Collapse({ children, in: open, className, ...p }) {
+  return open ? h("div", { className, style: mstyle(p) }, children) : null;
 }
 
 export function NativeSelect({ label, description, value, onChange, data, disabled, className, ...p }) {
@@ -115,7 +129,7 @@ export function Text({ children, c, fw, fz, size, tt, span, ta, className, style
   const f = fz || size;
   if (f != null) st.fontSize = typeof f === "number" ? f : (FZ[f] || "var(--fs-body)");
   if (tt) st.textTransform = tt;
-  if (tt === "uppercase") st.letterSpacing = "0.04em";
+  if (tt === "uppercase") st.letterSpacing = 0;
   if (ta) st.textAlign = ta;
   return h(span ? "span" : "p", { className: className ? `lm-text ${className}` : "lm-text", style: st, title }, children);
 }

@@ -1,0 +1,51 @@
+{
+  "rubric_id": "arc_e06_directional",
+  "description": "Interactive-environment substrate (GP-250): transition-program identification on sealed synthetic grid e06.",
+  "substrate_class": "interactive_environment",
+  "fit_expression_grammar": "grid_dsl",
+  "farther_tail_region": null,
+  "fit_score_mode": "discrete_exact",
+  "fit_required_vars": ["s", "a", "t"],
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "rubric_mode": "calibration",
+  "enable_fit_primitive": false,
+  "require_i_model_in_submission": false,
+  "falsification_mode": "bounded_discriminator",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is an episode log of grid transitions, not (x, y) numeric pairs; exact-match scoring runs in gate_harness.py against the typed episode JSONLs (visible replay + hidden-holdout full-depth rollout), which is the discrete_exact contract for this substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival transition laws are separated by counterfactual probe signatures and MDL within the committee, not by math-form keywords.",
+  "persona": "Adversarial reviewer of transition programs: assumes every candidate memorizes until replay and held-out rollout prove otherwise; hunts unwitnessed contexts, absorbing states, and guard-family ambiguity; refuses identification claims from committees larger than one.",
+  "dimensions": [
+    {
+      "name": "replay_consistency",
+      "weight": 40,
+      "description": "exact reproduction of every logged transition (worldmodel_replay gate)"
+    },
+    {
+      "name": "rollout_depth",
+      "weight": 40,
+      "description": "held-out episode predicted to required depth (worldmodel_rollout gate)"
+    },
+    {
+      "name": "description_length",
+      "weight": 20,
+      "description": "MDL-preferred survivor among behaviorally distinct committee members"
+    }
+  ],
+  "criteria": {
+    "replay_consistency": {
+      "weight": 40,
+      "description": "exact reproduction of every logged transition (worldmodel_replay gate)"
+    },
+    "rollout_depth": {
+      "weight": 40,
+      "description": "held-out episode predicted to required depth (worldmodel_rollout gate)"
+    },
+    "description_length": {
+      "weight": 20,
+      "description": "MDL-preferred survivor among behaviorally distinct committee members"
+    }
+  }
+}

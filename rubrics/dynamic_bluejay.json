@@ -1,0 +1,20 @@
+{
+  "committee": [
+    {
+      "role": "Attacker",
+      "persona": "Mathematical Solvency Auditor",
+      "focus_area": "CRUX VARIABLES table and Python falsification suite: verify that acceptance rate <30% and guardrail defect cost > incremental revenue are jointly falsifiable given sparse, censored, and non-i.i.d. observation windows; challenge whether the 10\u201320 service MVP over two quarters provides sufficient statistical power to reject the null."
+    },
+    {
+      "role": "Attacker",
+      "persona": "Long-Tail Adoption Realist",
+      "focus_area": "Assumption that long-tail teams without pricing analysts will prioritize and action decision-ready opportunity cards over existing ad-hoc workflows, given E8 (unknown decision latency) and E9 (no cost model for false positives) \u2014 friction of trust, approval chains, and competing engineering distractions are unmodeled."
+    },
+    {
+      "role": "Attacker",
+      "persona": "Revenue Attribution Skeptic",
+      "focus_area": "Assumption that durable incremental revenue can be isolated from confounding factors (seasonality, competitor moves, product changes, promotion timing) in a 2-quarter window without a control group or matched-cohort design, especially given E6 (promotion ROI not measured) and E7 (churn correlation unestablished)."
+    }
+  ],
+  "worker_dispatch_receipts": []
+}

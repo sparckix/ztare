@@ -1,0 +1,28 @@
+# Self-audit scenario — the SECOND scenario, and the proof that the kernel is substrate-agnostic.
+# Where product-manager governs prose-over-sources, this governs prose-over-CODE: claims a doc (a README, an
+# architecture note) makes ABOUT the codebase, each bound to a verbatim source excerpt via the (deterministic)
+# evidence-binding gate. It compounds: every doc claim it hardens becomes a regression-tested invariant —
+# "ZTARE's docs, verified by ZTARE against ZTARE's source."
+#   python -m src.ztare.validator.autoresearch_loop --scenario self-audit --project <slug>
+name: self-audit
+description: >
+  Governs claims a document makes about a codebase against the code itself. Each claim binds to a verbatim
+  source excerpt (evidence-binding, deterministic); the loop hardens the correspondence; the deliverable is a
+  governed audit memo where every asserted behavior traces to the file it lives in. Same firewall, a code
+  substrate — the proof that the kernel is domain-neutral (N=2 is the proof).
+
+rubric: self_audit
+iters: 8
+dynamic: true
+
+gate_package: []
+
+# Governed OUTPUT: an audit memo composed verbatim from the hardened claims + their source-excerpt evidence.
+deliverables:
+  - decision_memo
+
+goal_type: ""
+solvers: []
+evidence_sources:
+  - local_files          # source files ARE the evidence here (excerpts bound by hash)
+renderer: markdown

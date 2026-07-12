@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
-from ztare.leanmill.workbench_actions import latest_jobs, start_action
+from ztare.leanmill.workbench_actions import latest_jobs, repo_env, start_action
 from ztare.leanmill.workbench_target import (
     TARGET_HISTORY_SCHEMA,
     list_project_leanmill_areas,
@@ -15,6 +17,9 @@ from ztare.leanmill.workbench_target import (
 
 
 LEANMILL_STATE_SCHEMA = "ztare-forensic-workbench-leanmill-state-v1"
+CAMPAIGNS_SCHEMA = "ztare-forensic-workbench-leanmill-campaigns-v1"
+CAMPAIGN_DETAIL_SCHEMA = "ztare-forensic-workbench-leanmill-campaign-detail-v1"
+JOURNAL_TAIL_LIMIT = 20
 
 
 def repo_rel(path: Path, *, storage: Any) -> str:
@@ -120,6 +125,451 @@ def ratify_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict
     """Kernel-ratify a finished proof (L1 compile + L2 axiom-allowlist + L3 anti-laundering) as a background
     job — proofs are slow, so it never blocks. Wiring only; the `proof_audit` action lives in the kernel."""
     return start_action("proof_audit", request, repo=repo, storage=storage)
+
+
+def axiompack_campaign_root() -> Path:
+    # ponytail: hardcoded to match `ztare.leanmill.cli`'s own `--output-root` default exactly, so a
+    # workbench-triggered run and this list endpoint always agree without new config to keep in sync.
+    # Upgrade to an env override if a second campaign root is ever needed.
+    return Path("/tmp/axiompack_campaigns")
+
+
+def resolve_campaign_dir(dir_param: Any) -> Path:
+    """Validate a campaign `dir` request field: must resolve under the campaign root (no path
+    traversal) and must already exist. Shared by every per-campaign action below."""
+    raw = str(dir_param or "").strip()
+    if not raw:
+        raise ValueError("dir is required")
+    directory = Path(raw).resolve()
+    root = axiompack_campaign_root().resolve()
+    if directory != root and root not in directory.parents:
+        raise ValueError("dir must be a campaign attempt directory under the campaign root")
+    if not directory.is_dir():
+        raise ValueError(f"campaign attempt directory not found: {directory}")
+    return directory
+
+
+def campaigns_list_payload() -> dict[str, Any]:
+    """List AxiomPack frontier-campaign attempt dirs under the shared campaign root, each with its
+    `frontier_campaign_status` headline. Pure directory scan + the existing read-model per attempt —
+    no state of our own (GP-251 M6)."""
+    from ztare.leanmill.common import read_json
+    from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
+
+    root = axiompack_campaign_root()
+    rows: list[dict[str, Any]] = []
+    if root.is_dir():
+        attempt_dirs = sorted(
+            (path for path in root.iterdir() if path.is_dir()),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        for directory in attempt_dirs:
+            manifest = read_json(directory / "campaign_manifest.json", {})
+            if isinstance(manifest, dict) and manifest.get("lane") == "formalize":
+                continue  # formalize-lane campaigns already show under Proof status
+            if not (directory / "run.json").exists() and not (directory / "budget.json").exists():
+                continue  # not a campaign attempt directory
+            try:
+                status = frontier_campaign_status(directory)
+            except Exception as exc:  # noqa: BLE001 — one unreadable attempt shouldn't blank the list
+                rows.append({"attempt_dir": str(directory), "status": "unreadable", "error": str(exc)})
+                continue
+            rows.append(
+                {
+                    "attempt_dir": status["attempt_dir"],
+                    "campaign_id": status.get("campaign_id"),
+                    "status": status.get("status"),
+                    "budget": status.get("budget") or {},
+                    # Keep the list a useful cold-safe progress read model. These
+                    # are already projected by frontier_campaign_status; exposing
+                    # them here avoids a detail request just to draw a live row.
+                    "run": status.get("run") or {},
+                    "boundary_completion": status.get("boundary_completion") or {},
+                    "adapter_forge_completion": status.get("adapter_forge_completion") or {},
+                    "attempt_lease": status.get("attempt_lease") or {},
+                }
+            )
+    return {
+        "schema": CAMPAIGNS_SCHEMA,
+        "ok": True,
+        "root": str(root),
+        "count": len(rows),
+        "campaigns": rows,
+    }
+
+
+def journal_tail_payload(directory: Path, *, limit: int = JOURNAL_TAIL_LIMIT) -> dict[str, Any]:
+    """Read-model over the campaign journal (§12): the last `limit` events, via the existing
+    `TheoryCampaignJournal` reader — never re-parsed by hand."""
+    from ztare.leanmill.theory_campaign_journal import TheoryCampaignJournal
+
+    path = directory / "events.jsonl"
+    events = TheoryCampaignJournal(path).replay() if path.exists() else ()
+    tail = events[-limit:]
+    return {
+        "path": str(path),
+        "total_count": len(events),
+        "events": [event.to_json() for event in tail],
+    }
+
+
+def campaign_detail_payload(dir_param: Any) -> dict[str, Any]:
+    """Full read-model for one campaign attempt: status + budget, the cold-safe inspection view, the raw
+    budget caps (for a usage meter), and the journal tail. Every field is read straight off disk through
+    the existing frontier_campaign_actions functions or a direct file read — nothing computed here."""
+    from ztare.leanmill.common import read_json
+    from ztare.leanmill.frontier_campaign_actions import (
+        frontier_campaign_status,
+        inspect_frontier_campaign,
+    )
+
+    directory = resolve_campaign_dir(dir_param)
+    status = frontier_campaign_status(directory)
+    try:
+        inspection = inspect_frontier_campaign(directory)
+    except ValueError:
+        inspection = None  # budget ledger not written yet (very early campaign)
+    budget_row = read_json(directory / "budget.json", {})
+    return {
+        "schema": CAMPAIGN_DETAIL_SCHEMA,
+        "ok": True,
+        "attempt_dir": str(directory),
+        "status": status,
+        "budget_caps": {
+            "wall_clock_s": budget_row.get("wall_clock_s"),
+            "hard_caps": budget_row.get("hard_caps") or {},
+        }
+        if budget_row
+        else None,
+        "inspection": inspection,
+        "journal": journal_tail_payload(directory),
+    }
+
+
+def campaign_preflight_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict[str, Any]:
+    """Shell `ztare leanmill preflight <blueprint>` — validates a campaign contract with zero provider
+    dispatch. Creates no attempt dir; nothing to poll afterward."""
+    blueprint_raw = str(request.get("blueprint") or "").strip()
+    if not blueprint_raw:
+        raise ValueError("blueprint is required")
+    blueprint_path = storage.resolve(blueprint_raw)
+    if not blueprint_path.exists() or not blueprint_path.is_file():
+        raise ValueError(f"blueprint not found: {storage.rel(blueprint_path)}")
+    completed = subprocess.run(
+        [sys.executable, "-m", "ztare.leanmill.cli", "preflight", storage.rel(blueprint_path)],
+        cwd=str(repo),
+        env=repo_env(repo),
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return {"ok": False, "error": (completed.stderr or completed.stdout or "preflight failed").strip()}
+    try:
+        parsed = json.loads((completed.stdout or "").strip().splitlines()[-1])
+    except (json.JSONDecodeError, IndexError) as exc:
+        return {"ok": False, "error": f"preflight produced no JSON: {exc}", "stdout": completed.stdout}
+    return {"ok": True, **parsed}
+
+
+def campaign_run_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict[str, Any]:
+    """Trigger the existing `ztare leanmill campaign` orchestration as a background job — the SAME
+    async-job door `autoformalize-notes`/`solve-adhoc`/`ratify` already use. The heavy run lives entirely
+    in that CLI process; this only starts and tracks it."""
+    return start_action("campaign_run", request, repo=repo, storage=storage)
+
+
+# ── Axiom-discovery blueprint authoring — author the lane:axiompack blueprint IN the workbench (no path typing).
+#    A blueprint is a plain Markdown file (leanmill.campaign.v1 frontmatter + a prose research direction); these
+#    payloads list/read/write it under the blueprints dir. The heavy work is still the CLI preflight/campaign —
+#    this only edits the input file, no campaign state of its own.
+DISCOVERY_BLUEPRINT_SCHEMA = "ztare-forensic-workbench-leanmill-blueprints-v1"
+
+# Starting scaffold for a NEW axiom-discovery blueprint. Frontmatter is the shared control envelope with
+# lane: axiompack; the body is the mathematical research direction. This alone is NOT a runnable campaign:
+# source_mode: structure_first also requires a typed_blueprint.json (the formula grammar + model/observation
+# strata AxiomPack searches over) saved next to this file and referenced by the `typed_blueprint:` field below
+# — see research_areas/pre_registrations/axiompack_gp251_smoke_20260710/{campaign.md,typed_blueprint.json} for
+# a worked example. Preflight is the validator: it will report "requires a structure-first typed blueprint"
+# until that file exists and is wired in. Generated fields (frozen_context_ref) are omitted — the compiler
+# produces them.
+DISCOVERY_BLUEPRINT_TEMPLATE = """---
+schema: leanmill.campaign.v1
+lane: axiompack
+profile: smoke_20m
+source_mode: structure_first
+created_by: user
+typed_blueprint: typed_blueprint.json  # REQUIRED: author this file alongside the saved blueprint; Preflight fails without it
+budget:
+  wall_clock: 20m
+  provider_calls: 16
+  agent_turns: 16
+stop:
+  max_finalists: 8
+  low_yield_patience: 3
+  coverage_target: "0.9"
+runtime:
+  transport: subscription_agent_runtime
+  profile: smoke
+---
+
+# Two-law theories over one binary operation
+
+Explore the anonymous landscape of two-law theories for a single total binary
+operation. Seek small, independent axiom pairs whose conjunction forces
+consequences that neither law produces alone. Freeze the finalists and their
+boundary questions before revealing any established theory names or literature —
+that cold discipline is what makes this a discovery and not a lookup.
+
+- Region: one set with one total binary operation (no assumed identity, inverse, or commutativity).
+- Phenomenon: pairs of equational laws that jointly force new structure.
+- Examples in scope: associativity + a fixed-point law; medial + idempotent.
+- Out of scope: importing named textbook axiom lists, or any literature lookup before the finalist freeze.
+
+Edit this region to your own, then Preflight (validates the contract, zero provider calls) and Run.
+"""
+
+
+def _blueprints_dir(repo: Path) -> Path:
+    return repo / "ztare_proofs" / "leanmill-formalizations" / "blueprints"
+
+
+def _blueprint_lane(text: str) -> str:
+    """Sniff the declared lane from a blueprint's frontmatter (cheap, first ~40 lines)."""
+    for line in text.splitlines()[:40]:
+        s = line.strip()
+        if s.startswith("lane:"):
+            return s.split(":", 1)[1].strip() or "unknown"
+    return "unknown"
+
+
+def blueprint_list_payload(*, repo: Path, storage: Any) -> dict[str, Any]:
+    """List saved blueprints (*.md) under the blueprints dir, each annotated with its declared lane, so the
+    author can pick one to edit/launch instead of typing a path. Read-only. Ships the new-blueprint template."""
+    directory = _blueprints_dir(repo)
+    rows: "list[dict[str, Any]]" = []
+    if directory.exists():
+        for path in sorted(directory.glob("*.md")):
+            try:
+                lane = _blueprint_lane(storage.read_text(path))
+            except Exception:  # noqa: BLE001
+                lane = "unknown"
+            rows.append({"path": storage.rel(path), "name": path.name, "lane": lane})
+    return {"schema": DISCOVERY_BLUEPRINT_SCHEMA, "ok": True,
+            "dir": storage.rel(directory), "blueprints": rows, "template": DISCOVERY_BLUEPRINT_TEMPLATE}
+
+
+def blueprint_read_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict[str, Any]:
+    """Read one saved blueprint's Markdown for editing. Read-only; confined to the blueprints dir."""
+    rel = str(request.get("path") or "").strip()
+    if not rel:
+        raise ValueError("path is required")
+    path = storage.resolve(rel)
+    directory = _blueprints_dir(repo).resolve()
+    if directory not in path.resolve().parents:
+        raise ValueError("blueprint path must live under the blueprints dir")
+    if not path.exists() or not path.is_file():
+        raise ValueError(f"blueprint not found: {storage.rel(path)}")
+    text = storage.read_text(path)
+    return {"ok": True, "path": storage.rel(path), "name": path.name, "text": text, "lane": _blueprint_lane(text)}
+
+
+def _blueprint_slug(name: str, *, default: str = "campaign") -> str:
+    import re
+
+    slug = re.sub(r"\.md$", "", name)
+    slug = re.sub(r"[^A-Za-z0-9_-]+", "_", slug).strip("_")
+    return slug or default
+
+
+def blueprint_save_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict[str, Any]:
+    """Write an authored blueprint's Markdown to blueprints/<slug>.md. Confined to the blueprints dir (slug is
+    sanitized — no traversal); returns the rel path so Preflight/Run can target it. No provider calls."""
+    name = str(request.get("name") or "").strip()
+    text = request.get("text")
+    if not name:
+        raise ValueError("name is required")
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("text is required")
+    saved = _blueprints_dir(repo) / f"{_blueprint_slug(name)}.md"
+    storage.write_text(saved, text)
+    return {"ok": True, "saved": True, "path": storage.rel(saved), "name": saved.name, "lane": _blueprint_lane(text)}
+
+
+def blueprint_draft_payload(request: dict[str, Any], *, repo: Path, storage: Any) -> dict[str, Any]:
+    """Draft a lane:axiompack blueprint FROM A PLAIN-LANGUAGE DIRECTION — the NL-first door onto
+    `ztare.leanmill.cli draft`, which shells the real explore_axiom_space compiler/reviewer role pair
+    (frontier_agent_role + compile_frontier_blueprint) with zero navigation, then writes a
+    structure_first blueprint + typed_blueprint.json sidecar Preflight/Run can replay deterministically.
+    Runs as a BACKGROUND job (the compile makes live provider calls, so it must not block the request) —
+    same job shape and spawn mechanics `campaign_run_payload` gets from `start_action`, reused directly
+    here (`_base_job`/`write_job`/`append_history`/`action_write_boundary` are already action-agnostic)
+    because `start_action`'s `build_job` dispatch is a closed registry of existing action names and
+    registering a new one there is outside this door's file scope."""
+    import subprocess
+    import sys
+
+    from ztare.leanmill.workbench_actions import (
+        ACTION_SCHEMA,
+        _base_job,
+        action_write_boundary,
+        append_history,
+        repo_env,
+        utc_now,
+        write_job,
+    )
+
+    direction = str(request.get("direction") or "").strip()
+    if not direction:
+        raise ValueError("direction is required")
+    profile = str(request.get("profile") or "smoke_20m").strip() or "smoke_20m"
+    out_path = _blueprints_dir(repo) / f"{_blueprint_slug(str(request.get('name') or 'my_discovery'))}.md"
+
+    job = _base_job("blueprint_draft", request, repo=repo, storage=storage)
+    job.update(
+        {
+            "label": "Draft an axiom-discovery blueprint from a description",
+            "direction": direction,
+            "blueprint_path": storage.rel(out_path),
+            "timeout_s": 300,
+            "command": [
+                sys.executable, "-m", "ztare.leanmill.cli", "draft", direction,
+                "--out", storage.rel(out_path), "--profile", profile,
+            ],
+        }
+    )
+    confirmed = request.get("confirmed") is True
+    job["requires_confirmation"] = not confirmed
+    if not confirmed:
+        return {
+            "schema": ACTION_SCHEMA,
+            "ok": True,
+            "status": "needs_confirmation",
+            "accepted": False,
+            "requires_confirmation": True,
+            "job": job,
+            "write_boundary": action_write_boundary(job, repo=repo, storage=storage),
+        }
+    job["status"] = "starting"
+    write_job(job, storage=storage)
+    runner_cmd = [sys.executable, "-m", "ztare.leanmill.workbench_actions", "run-job", job["paths"]["job"]]
+    process = subprocess.Popen(
+        runner_cmd,
+        cwd=str(repo),
+        env=repo_env(repo),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    job["status"] = "running"
+    job["started_at"] = utc_now()
+    job["pid"] = process.pid
+    job["runner_command"] = runner_cmd
+    write_job(job, storage=storage)
+    history = append_history(job, repo=repo, storage=storage)
+    return {
+        "schema": ACTION_SCHEMA,
+        "ok": True,
+        "status": "started",
+        "accepted": True,
+        "requires_confirmation": False,
+        "job": job,
+        "history": history,
+        "write_boundary": action_write_boundary(job, repo=repo, storage=storage),
+    }
+
+
+def campaign_verify_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_runner import execute_frontier_campaign_verification
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    lean_root = str(request.get("lean_root") or "").strip() or None
+    result = execute_frontier_campaign_verification(
+        directory, with_lean=bool(request.get("with_lean")), lean_root=lean_root
+    )
+    return {"ok": True, **result}
+
+
+def campaign_replay_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_actions import replay_frontier_campaign
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    result = replay_frontier_campaign(directory)
+    return {"ok": True, **result}
+
+
+def campaign_stop_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_actions import request_frontier_campaign_stop
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    authority_ref = str(request.get("authority_ref") or "").strip()
+    if not authority_ref:
+        raise ValueError("authority_ref is required to request a campaign stop")
+    result = request_frontier_campaign_stop(directory, authority_ref=authority_ref)
+    return {"ok": True, **result}
+
+
+def campaign_retire_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_actions import retire_frontier_campaign
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    result = retire_frontier_campaign(
+        directory,
+        authority_ref=str(request.get("authority_ref") or "").strip(),
+        reason=str(request.get("reason") or "").strip(),
+    )
+    return {"ok": True, **result}
+
+
+# ponytail: recheck/interpret/resume all run their frontier-runner call SYNCHRONOUSLY, in-process, inside
+# the request handler (matching campaign-verify's existing behavior) — Lean recompilation and the literature
+# review model call both block until done. Acceptable for a local single-user workbench; make it a background
+# job (the autoformalize-notes/campaign-run door) later if a run turns out to be slow enough to want polling.
+def campaign_resume_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
+    from ztare.leanmill.frontier_campaign_runner import resume_frontier_campaign_navigation
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    resume_frontier_campaign_navigation(directory)
+    return {"ok": True, **frontier_campaign_status(directory)}
+
+
+def campaign_recover_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
+    from ztare.leanmill.frontier_campaign_runner import materialize_frontier_navigation_from_journal
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    materialize_frontier_navigation_from_journal(directory)
+    return {"ok": True, **frontier_campaign_status(directory)}
+
+
+def campaign_recheck_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_runner import recheck_frontier_boundary_governance
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    lean_root = str(request.get("lean_root") or "").strip()
+    if not lean_root:
+        raise ValueError("lean_root is required for a governance recheck")
+    timeout_s = int(request.get("timeout_s") or 180)
+    result = recheck_frontier_boundary_governance(directory, lean_root=lean_root, timeout_s=timeout_s)
+    return {"ok": True, **result}
+
+
+def campaign_interpret_payload(request: dict[str, Any]) -> dict[str, Any]:
+    from ztare.leanmill.frontier_campaign_runner import run_post_freeze_literature_review
+
+    directory = resolve_campaign_dir(request.get("dir"))
+    model = str(request.get("model") or "").strip() or "gpt-5.5"
+    reasoning_effort = str(request.get("reasoning_effort") or "").strip() or "medium"
+    result = run_post_freeze_literature_review(
+        directory,
+        model=model,
+        reasoning_effort=reasoning_effort,
+        retry_inconclusive=bool(request.get("retry_inconclusive")),
+    )
+    return {"ok": True, **result}
 
 
 def state_payload(*, repo: Path, storage: Any) -> dict[str, Any]:
@@ -458,6 +908,58 @@ def typed_exits_payload(
 
 def jobs_payload(recent_jobs: list[dict[str, Any]], *, repo: Path, storage: Any) -> dict[str, Any]:
     root = workbench_root(repo)
+
+    def audit_receipt(row: dict[str, Any]) -> dict[str, Any] | None:
+        """Project the existing proof-audit receipt without inventing proof credit.
+
+        The job is provider-neutral, but a ratification job has a domain artifact
+        with three independent checks. Keep that detail behind a small read-model
+        so the Workbench can show compile, axiom policy, and L3 closure separately.
+        """
+        if str(row.get("action") or "") != "proof_audit":
+            return None
+        expected = str(row.get("expected_artifact") or "").strip()
+        if not expected:
+            return {"status": "missing_path"}
+        try:
+            # The CLI read-only shim intentionally exposes only `read_text`/`rel`.
+            # Keep the richer provider path first, with a bounded local fallback
+            # for that shim rather than importing server storage into the CLI.
+            if hasattr(storage, "is_file"):
+                present = storage.is_file(expected)
+                text = storage.read_text(expected) if present else ""
+            else:
+                candidate = Path(expected)
+                candidate = candidate if candidate.is_absolute() else repo / candidate
+                present = candidate.is_file()
+                text = candidate.read_text(encoding="utf-8") if present else ""
+            if not present:
+                return {"status": "pending", "path": expected}
+            payload = json.loads(text)
+        except Exception as exc:  # noqa: BLE001 — an unreadable receipt is visible, never a pass
+            return {"status": "unreadable", "path": expected, "error": f"{type(exc).__name__}: {exc}"}
+        if not isinstance(payload, dict):
+            return {"status": "unreadable", "path": expected, "error": "receipt is not an object"}
+        compile_payload = payload.get("compile") if isinstance(payload.get("compile"), dict) else {}
+        policy_payload = payload.get("kernel_axiom_policy") if isinstance(payload.get("kernel_axiom_policy"), dict) else {}
+        l3_payload = payload.get("l3_audit") if isinstance(payload.get("l3_audit"), dict) else {}
+        return {
+            "status": str(payload.get("status") or "unknown"),
+            "path": expected,
+            "target_sha256": str(payload.get("target_sha256") or ""),
+            "generated_at_epoch": payload.get("generated_at_epoch"),
+            "compile": {"ok": compile_payload.get("ok")},
+            "axioms": {"allowlist_ok": policy_payload.get("allowlist_ok")},
+            "closure": {
+                "status": str(l3_payload.get("status") or "unknown"),
+                "confirmed_blockers": len(l3_payload.get("confirmed_blockers") or []),
+                "review_flags": len(l3_payload.get("review_flags") or []),
+            },
+            # This is intentionally prominent in the payload: an audit is evidence,
+            # not a governed proof-credit decision.
+            "credit_boundary": str(payload.get("credit_boundary") or ""),
+        }
+
     return {
         "history_path": repo_rel(root / "leanmill_action_history.jsonl", storage=storage),
         "latest_path": repo_rel(root / "latest_leanmill_action.json", storage=storage),
@@ -469,6 +971,7 @@ def jobs_payload(recent_jobs: list[dict[str, Any]], *, repo: Path, storage: Any)
                 "status": str(row.get("status") or ""),
                 "created_at": str(row.get("created_at") or ""),
                 "started_at": str(row.get("started_at") or ""),
+                "finished_at": str(row.get("finished_at") or ""),
                 "target_name": str(row.get("target_name") or ""),
                 "notes_path": str(row.get("notes_path") or ""),
                 "source_file": str(row.get("source_file") or ""),
@@ -476,6 +979,7 @@ def jobs_payload(recent_jobs: list[dict[str, Any]], *, repo: Path, storage: Any)
                 "result_path": str((row.get("paths") or {}).get("result") or row.get("result_path") or ""),
                 "stdout_path": str((row.get("paths") or {}).get("stdout") or ""),
                 "stderr_path": str((row.get("paths") or {}).get("stderr") or ""),
+                "audit_receipt": audit_receipt(row),
             }
             for row in recent_jobs
             if isinstance(row, dict)

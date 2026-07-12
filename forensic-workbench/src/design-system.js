@@ -289,8 +289,8 @@ export function Term({ term, children }) {
 export function statusMeaning(status) {
   const s = String(status || "").toLowerCase();
   if (!s || /loading|unknown|not loaded|^—$|none/.test(s)) return { label: "loading…", tone: "neutral" };
-  if (/block|missing|fail|invalid|unbound|error|stale_or_invalid|not ready/.test(s)) return { label: "not ready", tone: "bad" };
-  if (/attention|weak|needs|partial|stale|pending|gap|degrading|support|advisory|review/.test(s)) return { label: "needs a look", tone: "warn" };
+  if (/refut|contradict|reject|\bfail(?:ed|ure)?\b|invalid|\berror\b/.test(s)) return { label: "does not hold", tone: "bad" };
+  if (/block|missing|unbound|not ready|attention|weak|needs|partial|stale|pending|gap|degrading|support|advisory|review/.test(s)) return { label: "needs a look", tone: "warn" };
   if (/ready|fresh|\bok\b|connected|current|done|accepted|strong|solid|complete|pass/.test(s)) return { label: "ready", tone: "ok" };
   return { label: displayText(status), tone: "neutral" };
 }
@@ -432,10 +432,10 @@ export function WriteBoundary({ writeLabel, readLabel, liveMode }) {
 
 // A titled subsection: a real subhead + an optional lead, hairline-separated with generous rhythm.
 // THE anti-wall-of-text primitive — wrap each part of a section in one of these.
-export function Block({ title, lead, actions, tone, className, children }) {
+export function Block({ id, title, lead, actions, tone, className, children }) {
   return h(
     "section",
-    { className: `ds-block ${tone || ""} ${className || ""}`.trim() },
+    { id, className: `ds-block ${tone || ""} ${className || ""}`.trim() },
     title || actions
       ? h(
           "div",
@@ -447,6 +447,34 @@ export function Block({ title, lead, actions, tone, className, children }) {
     lead ? h("p", { className: "ds-block-lead" }, lead) : null,
     children
   );
+}
+
+// Scenario panels are the plugin contract at the visual layer. Plugins supply
+// nouns and composition; these primitives supply the spacing, responsive grid,
+// callout, list, and action affordances from the shared token system.
+export function ScenarioSurface({ tone = "soft", className, children }) {
+  return h("div", { className: `scenario-surface ${tone} ${className || ""}`.trim() }, children);
+}
+
+export function ScenarioGrid({ className, children }) {
+  return h("div", { className: `scenario-grid ${className || ""}`.trim() }, children);
+}
+
+export function ScenarioColumn({ eyebrow, title, description, actions, className, children }) {
+  return h("div", { className: `scenario-column ${className || ""}`.trim() },
+    eyebrow ? h("span", { className: "eyebrow" }, eyebrow) : null,
+    title ? h("strong", { className: "scenario-column-title" }, title) : null,
+    description ? h("small", { className: "scenario-column-description" }, description) : null,
+    children,
+    actions ? h("div", { className: "scenario-column-actions" }, actions) : null);
+}
+
+export function ScenarioList({ className, children }) {
+  return h("ul", { className: `scenario-list ${className || ""}`.trim() }, children);
+}
+
+export function ScenarioListItem({ className, children }) {
+  return h("li", { className: `scenario-list-item ${className || ""}`.trim() }, children);
 }
 
 // A bordered card — the container for a discrete finding/item (a red-team attempt, a claim, a gap).
@@ -473,6 +501,28 @@ export function MetaRow({ label, tone, children }) {
     label ? h("span", { className: `ds-tag ${tone || "neutral"}` }, label) : null,
     h("span", { className: "ds-row-value" }, children)
   );
+}
+
+// A labeled fact row: plain label left (--subtle), value right (--ink, tabular) — Mercury's account-row
+// pattern. For any label→value set that isn't a status/tag (use MetaRow for those).
+export function FactRow({ label, children }) {
+  return h(
+    "div",
+    { className: "ds-fact" },
+    h("span", { className: "ds-fact-label" }, label),
+    h("span", { className: "ds-fact-value" }, children)
+  );
+}
+
+// A single coloured status WORD (never a pill — brief law 2). tone: ok | warn | danger | neutral.
+export function StatusLine({ tone, children }) {
+  return h("strong", { className: `ds-status ds-status-${tone || "neutral"}` }, children);
+}
+
+// One calm sentence + one primary action. The ONE empty-state primitive — replaces every bespoke
+// wall-of-zeros / "nothing here" renderer with a single guard every section can reuse.
+export function EmptyState({ text, action }) {
+  return h("div", { className: "ds-empty" }, h("p", null, text), action || null);
 }
 
 // A lead sentence + body split — for long statements that should read as a titled card, not a wall.

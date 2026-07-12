@@ -8,8 +8,8 @@ zero model cost. CLI is master; the workbench Ask box just renders the answer.
 Graph shape (from research_graph.build_research_graph):
   nodes: [{id, type, label, detail, status, weight}]  types: thesis|claim|evidence|candidate|tension|gap|
                                                               constraint|branch|falsifier|rejected
-  edges: [{from, to, relation}]  relations: SUPPORTS|DERIVES|CHALLENGES|CONTRADICTS|CONSTRAINS|TESTS|
-                                            FALSIFIES|RULED_OUT
+  edges: [{from, to, relation}]  relations: REPORTS|SUPPORTS|DERIVES|CHALLENGES|CONTRADICTS|
+                                            CONSTRAINS|TESTS|FALSIFIES|RULED_OUT
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ _RELATION_KEYWORDS: list[tuple[str, list[str]]] = [
     ("CONTRADICTS", ["contradic", "conflict", "inconsisten"]),
     ("CHALLENGES", ["challeng", "tension", "undercut", "threaten", "weaken", "push back", "cut against", "argue against"]),
     ("SUPPORTS", ["support", "backs ", "back it", "backed by", "evidence for", "holds up", "in favou", "in favor", "props up", "vouch"]),
+    ("REPORTS", ["reported by", "reports", "source for", "come from", "comes from", "provenance", "where did"]),
     ("DERIVES", ["rest on", "rests on", "depend", "rely", "relies", "build on", "built on", "derive", "follow from", "hinge", "lean on"]),
     ("TESTS", ["test", "discriminat", "would settle", "distinguish", "probe", "check whether", "decide between", "pin down"]),
     ("CONSTRAINS", ["constrain", "limit", "bound ", "bounds", "restrict", "governs", "rule out the"]),
@@ -53,7 +54,7 @@ def _norm(text: Any) -> str:
     return re.sub(r"[^a-z0-9 ]+", " ", str(text or "").lower()).strip()
 
 
-def _node_view(nodes: dict[str, dict], node_id: str, relation: str = "") -> dict[str, Any]:
+def _node_view(nodes: dict[str, dict], node_id: str, relation: str = "", warrant: str = "") -> dict[str, Any]:
     n = nodes.get(node_id, {})
     return {
         "id": node_id,
@@ -62,6 +63,7 @@ def _node_view(nodes: dict[str, dict], node_id: str, relation: str = "") -> dict
         "detail": n.get("detail"),
         "status": n.get("status"),
         "relation": relation,
+        "warrant": warrant,
     }
 
 
@@ -99,7 +101,9 @@ def query_graph(carrier: dict[str, Any], question: str) -> dict[str, Any]:
         if best_score >= 2:  # require a genuine overlap before anchoring on a specific node
             anchor_id = best_id
     if anchor_id is None:
-        anchor_id = "thesis" if "thesis" in nodes else (next(iter(nodes)) if nodes else None)
+        anchor_id = next((nid for nid, node in nodes.items() if node.get("type") == "thesis"), None)
+        if anchor_id is None:
+            anchor_id = next(iter(nodes), None)
 
     type_intent = next((t for t, kws in _TYPE_KEYWORDS if any(k in q for k in kws)), None)
 
@@ -113,10 +117,10 @@ def query_graph(carrier: dict[str, Any], question: str) -> dict[str, Any]:
                 continue
             if e.get("to") == anchor_id and str(e.get("from")) in nodes and e["from"] not in seen:
                 seen.add(e["from"])
-                results.append(_node_view(nodes, e["from"], e["relation"]))
+                results.append(_node_view(nodes, e["from"], e["relation"], e.get("warrant", "")))
             elif e.get("from") == anchor_id and str(e.get("to")) in nodes and e["to"] not in seen:
                 seen.add(e["to"])
-                results.append(_node_view(nodes, e["to"], e["relation"]))
+                results.append(_node_view(nodes, e["to"], e["relation"], e.get("warrant", "")))
         interpreted = f"{'/'.join(relations)} → {nodes.get(anchor_id, {}).get('label', anchor_id)}"
     elif type_intent:
         for nid, n in nodes.items():
@@ -128,10 +132,10 @@ def query_graph(carrier: dict[str, Any], question: str) -> dict[str, Any]:
         for e in edges:
             if e.get("to") == anchor_id and str(e.get("from")) in nodes and e["from"] not in seen:
                 seen.add(e["from"])
-                results.append(_node_view(nodes, e["from"], e.get("relation", "")))
+                results.append(_node_view(nodes, e["from"], e.get("relation", ""), e.get("warrant", "")))
             elif e.get("from") == anchor_id and str(e.get("to")) in nodes and e["to"] not in seen:
                 seen.add(e["to"])
-                results.append(_node_view(nodes, e["to"], e.get("relation", "")))
+                results.append(_node_view(nodes, e["to"], e.get("relation", ""), e.get("warrant", "")))
         interpreted = f"everything connected to “{nodes.get(anchor_id, {}).get('label', anchor_id)}”"
 
     return {
@@ -180,14 +184,18 @@ def _selfcheck() -> None:
         "nodes": [
             {"id": "thesis", "type": "thesis", "label": "Rates cut in 2026"},
             {"id": "claim:s002", "type": "claim", "label": "Inflation falls below 3%"},
+            {"id": "fact:f002", "type": "claim", "label": "Survey reports lower inflation expectations"},
             {"id": "falsifier:1", "type": "falsifier", "label": "CPI reaccelerates two quarters running"},
             {"id": "src:1", "type": "evidence", "label": "FOMC minutes"},
+            {"id": "src:2", "type": "evidence", "label": "Staff forecast"},
             {"id": "tension:1", "type": "tension", "label": "Labor market still tight"},
         ],
         "edges": [
             {"from": "claim:s002", "to": "thesis", "relation": "DERIVES"},
+            {"from": "src:1", "to": "fact:f002", "relation": "REPORTS", "warrant": "W2"},
+            {"from": "fact:f002", "to": "thesis", "relation": "SUPPORTS", "warrant": "W3"},
             {"from": "falsifier:1", "to": "thesis", "relation": "FALSIFIES"},
-            {"from": "src:1", "to": "thesis", "relation": "SUPPORTS"},
+            {"from": "src:2", "to": "thesis", "relation": "SUPPORTS"},
             {"from": "tension:1", "to": "thesis", "relation": "CHALLENGES"},
         ],
     }
@@ -195,11 +203,17 @@ def _selfcheck() -> None:
     assert a["relations"] == ["FALSIFIES"] and a["anchor"] == "thesis", a
     assert [r["label"] for r in a["results"]] == ["CPI reaccelerates two quarters running"], a
     b = query_graph(carrier, "what supports the thesis?")
-    assert [r["label"] for r in b["results"]] == ["FOMC minutes"], b
+    assert {r["label"] for r in b["results"]} == {
+        "Staff forecast", "Survey reports lower inflation expectations",
+    }, b
     c = query_graph(carrier, "what rests on s002?")  # anchor by id token, DERIVES direction
     assert c["anchor"] == "claim:s002", c
     d = query_graph(carrier, "what are the open tensions?")
     assert [r["label"] for r in d["results"]] == ["Labor market still tight"], d
+    e = query_graph(carrier, "where did f002 come from?")
+    assert e["relations"] == ["REPORTS"] and [r["id"] for r in e["results"]] == ["src:1"], e
+    f = query_graph(carrier, "what supports the thesis?")
+    assert "src:1" not in [r["id"] for r in f["results"]], f
     print("research_graph_query selfcheck: OK")
 
 

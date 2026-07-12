@@ -27,7 +27,7 @@ function Meter({ value, total }) {
 // works: raw files in raw/ are the INPUT; compiling turns them into the typed, provenance-tracked,
 // replayable evidence the loop reads (evidence.txt + compiled_evidence_packet.json). So this is a
 // pipeline (add → compile → inspect), not two equal paths. Pure view; everything via `view`.
-export function Evidence({ view, onPreview, onCompile, onAddFile, onOpenGaps, onFetchGap, fetchRunning }) {
+export function Evidence({ view, onPreview, onCompile, onAddFile, onAddCitedSource, onOpenGaps, onFetchGap, fetchRunning }) {
   const v = view || {};
   const backing = v.backing || {};
   const compile = v.compile || {};
@@ -40,17 +40,36 @@ export function Evidence({ view, onPreview, onCompile, onAddFile, onOpenGaps, on
     "section",
     { className: "evidence", "aria-label": "Evidence" },
 
-    // 1. Backing — the "where is it thin" answer.
-    h("div", { className: "evidence-backing" },
-      backing.total
-        ? h("div", { className: "evidence-backing-row" },
-            h(Meter, { value: backing.strong, total: backing.total }),
-            h("span", null, `${backing.strong} of ${backing.total} thesis points have a source`),
-            backing.thin
-              ? h("button", { type: "button", className: "thesis-more-link", onClick: () => onOpenGaps && onOpenGaps() },
-                  `${backing.thin} thin → close a gap`)
-              : h("span", { className: "evidence-backing-ok" }, "every point is backed"))
-        : h("p", { className: "evidence-muted" }, "Backing not summarized yet — compile your evidence to check it.")),
+    // 1. Two properties, never one misleading "backed" count: source mapping says a file is traceable;
+    // admitted decision support says the claim-to-source inference has passed the governed gate.
+    h("div", { className: "evidence-standing", "aria-label": "Evidence standing" },
+      h("section", null,
+        h("span", { className: "eyebrow" }, "Source coverage"),
+        backing.total
+          ? h(React.Fragment, null,
+              h("div", { className: "evidence-standing-value" },
+                h("strong", null, `${backing.strong} / ${backing.total}`),
+                h("span", null, "mapped to a project source")),
+              h(Meter, { value: backing.strong, total: backing.total }),
+              h("p", null, backing.thin
+                ? `${backing.thin} extracted claim${backing.thin === 1 ? " has" : "s have"} no source mapping yet.`
+                : "Every extracted claim has a source reference. This does not verify the inference."))
+          : h("p", null, "Compile evidence to measure source coverage.")),
+      h("section", { className: backing.decisionTotal && backing.decisionAdmitted < backing.decisionTotal ? "needs-verification" : "" },
+        h("span", { className: "eyebrow" }, "Decision support"),
+        backing.decisionTotal
+          ? h(React.Fragment, null,
+              h("div", { className: "evidence-standing-value" },
+                h("strong", null, `${backing.decisionAdmitted} / ${backing.decisionTotal}`),
+                h("span", null, "claims with admitted support")),
+              h(Meter, { value: backing.decisionAdmitted, total: backing.decisionTotal }),
+              h("p", null, backing.decisionAdmitted === backing.decisionTotal
+                ? "Every governed decision claim has a checked support path."
+                : "Highlight source text and verify which claim it can support."),
+              backing.decisionAdmitted < backing.decisionTotal && onAddCitedSource
+                ? h("button", { type: "button", className: "text-link", onClick: () => onAddCitedSource() }, "Verify claim support →")
+                : null)
+          : h("p", null, "Run or build the governed map to measure decision support."))),
 
     // 2. Compile pipeline — the central concept, explained.
     h(Block, { className: `evidence-compile ${compile.fresh ? "fresh" : "stale"}`, title: "Compiled evidence",
@@ -60,6 +79,9 @@ export function Evidence({ view, onPreview, onCompile, onAddFile, onOpenGaps, on
         "Your files in ", h("code", null, v.rawDir || "raw/"), " are the input. ",
         "Compiling turns them into the typed, provenance-tracked evidence the loop actually reads",
         compile.fresh ? " — and it's current." : ". The loop won't see your latest files until you compile."),
+      compile.reason
+        ? h("p", { className: "evidence-health warn" }, displayMessage(compile.reason))
+        : null,
       // Source health — a changed-on-disk source means the loop is scoring an old version of it.
       health.stale
         ? h("p", { className: "evidence-health warn" },
@@ -78,9 +100,13 @@ export function Evidence({ view, onPreview, onCompile, onAddFile, onOpenGaps, on
     // 3. Your files — grouped by type, each with size + provenance, click to read.
     h(Block, { className: "evidence-files", title: "Your files",
       actions: h("span", { className: "evidence-files-count" },
-        `${v.fileCount || 0} file${v.fileCount === 1 ? "" : "s"}`,
-        v.untypedCount ? ` · ${v.untypedCount} untyped` : "",
-        v.invalidCount ? ` · ${v.invalidCount} with an invalid type` : "") },
+        v.fileState === "loading"
+          ? "loading"
+          : v.fileState === "error"
+            ? "unavailable"
+            : `${v.fileCount || 0} file${v.fileCount === 1 ? "" : "s"}`,
+        v.fileState === "ready" && v.untypedCount ? ` · ${v.untypedCount} untyped` : "",
+        v.fileState === "ready" && v.invalidCount ? ` · ${v.invalidCount} with an invalid type` : "") },
       groups.length
         ? groups.map((g) =>
             h("div", { className: "evidence-file-group", key: g.type },
@@ -95,12 +121,20 @@ export function Evidence({ view, onPreview, onCompile, onAddFile, onOpenGaps, on
                       f.provenance ? h("span", { className: "evidence-file-prov", title: `sha256 ${f.provenance}` }, ` · ${f.provenance.slice(0, 7)}`) : null,
                       f.stale ? h("span", { className: "evidence-file-warn" }, " · changed since compiled") : null,
                       f.invalid ? h("span", { className: "evidence-file-warn" }, " · invalid type") : null))))))
-        : h("p", { className: "evidence-muted" }, "No files yet. Add what backs your thesis.")),
+        : h("p", { className: "evidence-muted" },
+            v.fileState === "loading"
+              ? "Loading project files…"
+              : v.fileState === "error"
+                ? displayMessage(v.fileMessage || "Project files could not be loaded.")
+                : "No files yet. Add what backs your thesis.")),
 
-    // 4. Add.
+    // 4. Evidence work. Files join the project; a verified passage can carry a specific claim.
     h("div", { className: "evidence-add" },
       h("button", { type: "button", className: "chip primary", disabled: !onAddFile, onClick: () => onAddFile && onAddFile() }, "Add a file"),
-      h("span", { className: "evidence-muted" }, "Drop a file in, then compile to make it count.")),
+      onAddCitedSource
+        ? h("button", { type: "button", className: "chip", onClick: () => onAddCitedSource() }, "Verify claim support")
+        : null,
+      h("span", { className: "evidence-muted" }, "Add files to the project, then compile them. To make the decision rely on a source, highlight the exact passage and verify the claim it supports.")),
 
     // Missing evidence — what the run couldn't find. The kernel marks which gaps can be FETCHED from the
     // web; for those, one click runs the evidence agent (search → source → compile into typed evidence).

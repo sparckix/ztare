@@ -19,8 +19,9 @@ from __future__ import annotations
 
 from typing import Any
 
-# Edges that flow toward the conclusion/target (vs. challenge/rule-out edges).
-SUPPORT_RELATIONS = frozenset({"SUPPORTS", "DERIVES", "TESTS", "CONSTRAINS"})
+# Only these relations carry positive inferential force. TESTS names an experiment, CONSTRAINS limits a
+# claim, and REPORTS records provenance; counting them as support rewards graph density rather than backing.
+SUPPORT_RELATIONS = frozenset({"SUPPORTS", "DERIVES"})
 ATTACK_RELATIONS = frozenset({"CHALLENGES", "FALSIFIES"})
 
 
@@ -418,20 +419,24 @@ def analyze(carrier: dict[str, Any], *, target: str | None = None) -> dict[str, 
     cyc = cycle(carrier)
     if cyc:
         out["circular"] = [c for c in (ref(i) for i in cyc) if c]
-    # QBAF argument strength (DF-QuAD): the thesis's strength after the debate, and the claim the
-    # debate most CHANGES from its bare probability (attacked-down or supported-up).
-    strength = gradual_strength(carrier)
-    if target and target in strength:
-        out["argument_strength"] = round(strength[target], 4)
-    shifted = [
-        (nid, strength[nid] - (float(n["weight"]) if isinstance(n.get("weight"), (int, float)) else 0.5))
-        for nid, n in by_id.items()
-        if n.get("type") in ("claim", "candidate") and isinstance(n.get("weight"), (int, float))
-    ]
-    shifted = [s for s in shifted if abs(s[1]) >= 0.08]
-    if shifted:
-        nid, delta = max(shifted, key=lambda s: abs(s[1]))
-        out["debate_shift"] = ref(nid, delta=round(delta, 3), direction="weakened" if delta < 0 else "reinforced")
+    # The generic DF-QuAD read remains available for other carrier kinds. A source-claim map has the
+    # warrant-filtered QEM analysis in scenarios.strength; emitting both creates incompatible answers to
+    # "how strong is this?" and lets model-authored probabilities act as backing.
+    strength: dict[str, float] = {}
+    if carrier.get("graph_kind") != "source_claim_graph":
+        strength = gradual_strength(carrier)
+        if target and target in strength:
+            out["argument_strength"] = round(strength[target], 4)
+        shifted = [
+            (nid, strength[nid] - (float(n["weight"]) if isinstance(n.get("weight"), (int, float)) else 0.5))
+            for nid, n in by_id.items()
+            if n.get("type") in ("claim", "candidate") and isinstance(n.get("weight"), (int, float))
+        ]
+        shifted = [s for s in shifted if abs(s[1]) >= 0.08]
+        if shifted:
+            nid, delta = max(shifted, key=lambda s: abs(s[1]))
+            out["debate_shift"] = ref(nid, delta=round(delta, 3),
+                                        direction="weakened" if delta < 0 else "reinforced")
     # Most-vital support edge: the single link whose failure disconnects the most support from the target.
     # Distinct from `essential` (a necessary NODE) — this names the necessary EDGE to defend or attack.
     if target:
@@ -456,7 +461,7 @@ def analyze(carrier: dict[str, Any], *, target: str | None = None) -> dict[str, 
     if sk["skeleton"]:
         out["skeleton"] = {"max_core": sk["max_core"], "nodes": sk["skeleton"][:8]}
     # Controversy: how balanced support vs attack mass is at the thesis (a coin-flip vs one-sided).
-    if target:
+    if target and carrier.get("graph_kind") != "source_claim_graph":
         pol = polarization(carrier, target)
         if pol:
             out["polarization"] = pol

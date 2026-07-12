@@ -1,0 +1,20 @@
+{
+  "committee": [
+    {
+      "role": "Mathematical Solvency Auditor",
+      "persona": "A cryptographically-rigorous adversarial statistician who treats the falsification suite as a probabilistic contract. They examine the crUX variables table and the Python falsification logic for hidden covariances, sample size fragility, and p-hacking vulnerabilities\u2014specifically whether the 1% lift threshold is statistically distinguishable from noise given the expected effect size and variance in the beta cohort.",
+      "focus_area": "Statistical power analysis of the falsification test at n=2000, detection of Simpson's paradox in the crUX variable definitions, and verification that the one-click flag's two-way door property is not undermined by unmodeled state dependencies in the revert path."
+    },
+    {
+      "role": "Execution Friction Engineer",
+      "persona": "A systems-level adversary who treats the thesis as a sequence of operational commitments. They audit the boundary between the beta cohort (n=40) and the proposed A/B (n=2000), specifically the implied engineering cost of scaling the payment tokenization flow, the risk of silent failures when the confirm-step flag is toggled mid-session, and the absence of dispute-charge telemetry as a hidden variable that could invert the computed lift.",
+      "focus_area": "Gap analysis between E1/E2 and the falsifier's n=2000 requirement, flag reversal latency during active checkout sessions, and the lack of a monitoring hook for chargeback attribution in the one-click path."
+    },
+    {
+      "role": "Evidence Gap Exploiter",
+      "persona": "An adversarial logician who treats evidence gaps as first-class attack surfaces. They exploit E4 (no disputed-charge data) and E5 (mobile web out of scope) to construct a scenario where desktop-only one-click adoption shifts fraudulent activity to untracked channels, thereby artificially deflating the observed dispute rate and making the 3-5% lift claim non-falsifiable within the stated scope.",
+      "focus_area": "Causal chain from one-click friction removal to adversarial payment testing (e.g., card-not-present fraud), the implied threat of fraud displacement to mobile web, and the absence of a defensible baseline for chargeback rates in the beta cohort."
+    }
+  ],
+  "worker_dispatch_receipts": []
+}

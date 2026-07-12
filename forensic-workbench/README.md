@@ -137,6 +137,23 @@ entries that can open immediately. `all_project_folders` is the rich browser
 inventory for every folder under `projects/`; the older `project_folders` field
 is a compact compatibility list with the same projects and `openable` status.
 
+## Scenario and Plugin Surfaces
+
+The sidebar is a stable JTBD map. Scenarios compose rubric, run, evidence,
+renderer, solver, recheck, gate, deliverable, and optional panel capabilities;
+they do not add navigation items.
+
+The Plugins screen creates or edits scenario/rubric data and reloads Python
+capability plugins. Frontend panels are authored modules under
+`src/scenario-panels/` and are discovered during the Vite build. A scenario
+selects one with `workbench_panels: [results:<panel-id>]`. The panel author owns
+the UI and any bounded API route it needs. Use the shared `ModalPortal` and
+`useModalBehavior` helpers for dialogs rather than rendering a fixed overlay
+inside a host panel.
+
+Scenario selection is stored in the `scenario` URL parameter, so Results links
+survive refresh and browser Back/Forward navigation.
+
 ## Live Data
 
 The browser does not scan the repository directly. It asks the local API for

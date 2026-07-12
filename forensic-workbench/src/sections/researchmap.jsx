@@ -4,16 +4,49 @@ import { GraphView } from "./graphview.jsx";
 
 const h = React.createElement;
 
-// Graph-algorithmic structural reads (kernel-computed, no LLM) — insight the eye can't get from a node
-// cloud: what the most rests on, the weakest link, the most-attacked claim, assertions with no evidence.
-function StructuralReads({ insights, onFocus }) {
+// Decision standing + next pass from core `decision_state` (via scenario strength) — not a second verdict.
+// Terrain vocabulary is presentation only over existing carriers (insights + decision_state); no new kernel type.
+const STANDING_TONE = { SUPPORTED: "ok", BLOCKED: "warn", REFUTED: "danger" };
+
+function StructuralReads({ insights, onFocus, decisionState }) {
   const ins = insights || {};
+  const ds = decisionState || {};
   const rows = [];
   // li props: click a read to select+pan to that node on the graph (when it maps to a single node).
   const mk = (key, id) => id && onFocus
-    ? { key, className: "rmap-read rmap-read-clickable", role: "button", tabIndex: 0,
-        onClick: () => onFocus(id), title: "Show on the map" }
-    : { key, className: "rmap-read" };
+    ? { key, "data-read-key": key, className: "rmap-read rmap-read-clickable", role: "button", tabIndex: 0,
+        onClick: () => onFocus(id),
+        onKeyDown: (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onFocus(id);
+          }
+        },
+        title: "Show on the map" }
+    : { key, "data-read-key": key, className: "rmap-read" };
+  // Standing + next pass lead: operator question "where am I / what do I do next?"
+  if (ds.status) {
+    rows.push(h("li", mk("st", (ds.hinge && ds.hinge.id) || "thesis"),
+      h("div", null,
+        h(Tag, { tone: STANDING_TONE[ds.status] || "neutral" }, "standing"),
+        h("span", { className: "rmap-read-label" }, displayMessage(ds.headline || ds.status))),
+      h("p", { className: "rmap-read-why" },
+        displayMessage(ds.reason || "Based on evidence that has been checked and admitted — not a model score."))));
+  }
+  if (ds.next_test && (ds.next_test.id || ds.next_test.text)) {
+    rows.push(h("li", mk("np", ds.next_test.id),
+      h("div", null,
+        h(Tag, { tone: "accent" }, "next pass"),
+        h("span", { className: "rmap-read-label" }, displayMessage(ds.next_test.text || ds.next_test.id))),
+      h("p", { className: "rmap-read-why" },
+        ds.next_test.flips_alone
+          ? "Settling this alone can flip the verdict — the highest-leverage open test."
+          : `The best next test for changing the current decision${ds.next_test.in_cores ? ` · it reaches ${ds.next_test.in_cores} smallest unresolved ${ds.next_test.in_cores === 1 ? "dependency" : "dependencies"}` : ""}.`)));
+  }
+  // Elevation = structural necessity (dominators / essential).
+  if (ins.essential && ins.essential.length) rows.push(h("li", mk("es", ins.essential[0].id),
+    h("div", null, h(Tag, { tone: "accent" }, "ridge"), h("span", { className: "rmap-read-label" }, ins.essential.map((e) => displayMessage(e.label)).join(" · "))),
+    h("p", { className: "rmap-read-why", title: "Graph-theory term: a dominator node" }, "Every support-path to the thesis runs through this — structural elevation, not a score.")));
   if (ins.linchpin) rows.push(h("li", mk("lb", ins.linchpin.id),
     h("div", null, h(Tag, { tone: "accent" }, "linchpin"), h("span", { className: "rmap-read-label" }, displayMessage(ins.linchpin.label))),
     h("p", { className: "rmap-read-why" }, `Supports ${ins.linchpin.supports} other nodes — the most rests on this one.`)));
@@ -21,21 +54,18 @@ function StructuralReads({ insights, onFocus }) {
     h("div", null, h(Tag, { tone: "danger" }, "weakest link"), h("span", { className: "rmap-read-label" }, displayMessage(ins.weakest_link.label))),
     h("p", { className: "rmap-read-why" }, `The lowest-probability claim in the spine (${Math.round((ins.weakest_link.probability || 0) * 100)}%) — settle this first.`)));
   if (ins.most_contested) rows.push(h("li", mk("mc", ins.most_contested.id),
-    h("div", null, h(Tag, { tone: "warn" }, "most contested"), h("span", { className: "rmap-read-label" }, displayMessage(ins.most_contested.label))),
-    h("p", { className: "rmap-read-why" }, `${ins.most_contested.challenges} challenges/falsifiers aim at it.`)));
+    h("div", null, h(Tag, { tone: "warn" }, "valley"), h("span", { className: "rmap-read-label" }, displayMessage(ins.most_contested.label))),
+    h("p", { className: "rmap-read-why" }, `${ins.most_contested.challenges} challenges/falsifiers aim at it — contested low ground.`)));
   if (Array.isArray(ins.unsupported) && ins.unsupported.length) rows.push(h("li", mk("un", ins.unsupported[0].id),
     h("div", null, h(Tag, null, "no evidence"), h("span", { className: "rmap-read-label" }, `${ins.unsupported.length} assertion${ins.unsupported.length === 1 ? "" : "s"} with no source`)),
     h("p", { className: "rmap-read-why" }, ins.unsupported.map((u) => displayMessage(u.label)).join(" · "))));
   if (Array.isArray(ins.circular) && ins.circular.length) rows.push(h("li", mk("ci", ins.circular[0].id),
     h("div", null, h(Tag, { tone: "danger" }, "circular"), h("span", { className: "rmap-read-label" }, "Circular reasoning")),
     h("p", { className: "rmap-read-why" }, ins.circular.map((c) => displayMessage(c.label)).join(" → "))));
-  if (ins.essential && ins.essential.length) rows.push(h("li", mk("es", ins.essential[0].id),
-    h("div", null, h(Tag, { tone: "accent" }, "essential"), h("span", { className: "rmap-read-label" }, ins.essential.map((e) => displayMessage(e.label)).join(" · "))),
-    h("p", { className: "rmap-read-why" }, "Every support-path to the thesis runs through this — a structural single point of failure (dominator).")));
   if (typeof ins.argument_strength === "number") rows.push(h("li", mk("as", "thesis"),
     h("div", null, h(Tag, { tone: ins.argument_strength >= 0.6 ? "ok" : "warn" }, "argument strength"),
       h("span", { className: "rmap-read-label" }, `${Math.round(ins.argument_strength * 100)}% after the debate nets out`)),
-    h("p", { className: "rmap-read-why" }, "The thesis's strength once every support and attack propagates (bipolar argumentation / DF-QuAD) — not its bare probability.")));
+    h("p", { className: "rmap-read-why", title: "Computed via bipolar argumentation / DF-QuAD" }, "The thesis's strength once every support and attack propagates — not its bare probability.")));
   if (ins.debate_shift) rows.push(h("li", mk("ds", ins.debate_shift.id),
     h("div", null, h(Tag, { tone: ins.debate_shift.direction === "weakened" ? "danger" : "ok" }, ins.debate_shift.direction),
       h("span", { className: "rmap-read-label" }, displayMessage(ins.debate_shift.label))),
@@ -69,8 +99,20 @@ function StructuralReads({ insights, onFocus }) {
       h("span", { className: "rmap-read-label" }, ins.defeated.map((d) => displayMessage(d.label)).join(" · "))),
     h("p", { className: "rmap-read-why" }, "A falsifier landed on this and nothing rebuts it — under the strict reading it doesn't stand. Answer the falsifier or drop the claim.")));
   if (!rows.length) return null;
-  return h(Block, { title: "Structural reads", lead: "What the graph's shape says — computed, not eyeballed." },
-    h("ul", { className: "rmap-reads" }, rows));
+  // A terrain read is a compass, not a dump of every graph calculation. Keep the standing, the next test,
+  // and the most consequential structural condition in view; the rest remains one disclosure away.
+  const primaryOrder = ["st", "np", "df", "ci", "cl", "wl", "mc", "un", "cs", "pol", "es", "lb", "fr", "as", "ds"];
+  const byKey = new Map(rows.map((row) => [row && row.props && row.props["data-read-key"], row]));
+  const primary = primaryOrder.map((key) => byKey.get(key)).filter(Boolean).slice(0, 3);
+  const primarySet = new Set(primary.map((row) => row.props["data-read-key"]));
+  const secondary = rows.filter((row) => !primarySet.has(row && row.props && row.props["data-read-key"]));
+  return h(Block, { title: "Decision terrain", lead: "Where the decision stands, what would move it, and the shape most worth inspecting." },
+    h("ul", { className: "rmap-reads" }, primary),
+    secondary.length
+      ? h("details", { className: "rmap-reads-more" },
+          h("summary", null, `${secondary.length} more structural read${secondary.length === 1 ? "" : "s"}`),
+          h("ul", { className: "rmap-reads" }, secondary))
+      : null);
 }
 
 // Isomorphism (advisory) — "what is this like, and what does that predict?" Asks the loop to deanchor
@@ -114,6 +156,78 @@ function WhatIsThisLike({ onIsomorphism, isomorphism }) {
       st.running ? "Searching other fields…" : rx ? "Find another analogy →" : "Find an analogy →"));
 }
 
+function MapTime({ project, liveMode, freshness, onSnapshot, onCompare }) {
+  const f = freshness || {};
+  const result = f.result || {};
+  const compare = result && result.ok && Object.prototype.hasOwnProperty.call(result, "decision_stale") ? result : null;
+  const [reference, setReference] = React.useState({ loading: true, exists: false });
+  React.useEffect(() => {
+    if (!project || !liveMode) {
+      setReference({ loading: false, exists: false });
+      return undefined;
+    }
+    let cancelled = false;
+    setReference({ loading: true, exists: false });
+    fetch(`/api/scenario-baseline-status?project=${encodeURIComponent(project)}`, { headers: { Accept: "application/json" } })
+      .then((response) => response.json())
+      .then((payload) => { if (!cancelled) setReference({ loading: false, ...payload }); })
+      .catch(() => { if (!cancelled) setReference({ loading: false, exists: false }); });
+    return () => { cancelled = true; };
+  }, [project, liveMode]);
+  if (!project || !liveMode) return null;
+  const saveReference = async () => {
+    const saved = await Promise.resolve(onSnapshot && onSnapshot());
+    if (saved && saved.ok) setReference((previous) => ({ ...previous, loading: false, exists: true, verdict: saved.verdict || "" }));
+  };
+  const hasReference = Boolean(reference.exists || result.snapshotted);
+  const graphDelta = (compare && compare.graph_delta) || {};
+  const deltaGroups = compare ? [
+    { key: "added", label: "Added", rows: graphDelta.nodes_added || [], render: (row) => displayMessage(row.text) },
+    { key: "removed", label: "Removed", rows: graphDelta.nodes_removed || [], render: (row) => displayMessage(row.text) },
+    { key: "changed", label: "Reworded", rows: graphDelta.nodes_changed || [], render: (row) => displayMessage(row.after) },
+    { key: "links-added", label: "New connections", rows: graphDelta.edges_added || [], render: (row) => `${displayMessage(row.from_text)} ${displayText(row.relation)} ${displayMessage(row.to_text)}` },
+    { key: "links-removed", label: "Removed connections", rows: graphDelta.edges_removed || [], render: (row) => `${displayMessage(row.from_text)} ${displayText(row.relation)} ${displayMessage(row.to_text)}` },
+  ].filter((group) => group.rows.length) : [];
+  const deltaCount = Object.values(graphDelta.counts || {}).reduce((total, count) => total + Number(count || 0), 0);
+  return h("section", { className: "rmap-time", "aria-label": "Map time" },
+    h("div", { className: "rmap-time-head" },
+      h("div", null,
+        h("span", { className: "eyebrow" }, "Decision change"),
+        h("strong", null, "Save a reference, then check what changed")),
+      h("div", { className: "rmap-time-actions" },
+        h("button", { type: "button", className: hasReference ? "chip ghost" : "chip primary", disabled: f.running || reference.loading,
+          onClick: saveReference }, f.running ? "Saving…" : hasReference ? "Replace reference" : "Save current reference"),
+        hasReference ? h("button", { type: "button", className: "chip", disabled: f.running, onClick: onCompare }, "Check for changes") : null)),
+    h("p", { className: "rmap-time-copy" }, hasReference
+      ? "A saved decision reference is available. Check the current map against it after evidence or assumptions change."
+      : "Save today's decision state first. Later, this will show exactly which claims and next tests changed."),
+    f.running ? h("p", { className: "muted" }, "Checking the current decision…") : null,
+    f.error ? h("p", { className: "rmap-iso-error" }, displayMessage(f.error)) : null,
+    f.result && f.result.snapshotted
+      ? h("p", { className: "muted" }, "Reference saved. Check for changes after the next admitted update.")
+      : null,
+    compare
+      ? h("div", { className: `rmap-time-result ${compare.decision_stale ? "is-stale" : "is-held"}` },
+          h("strong", null, compare.decision_stale ? "The standing changed" : "The standing held"),
+          h("span", null, `${displayMessage(compare.was)} → ${displayMessage(compare.now)}`),
+          compare.flipped && compare.flipped.length
+            ? h("span", null, `${compare.flipped.length} claim${compare.flipped.length === 1 ? "" : "s"} flipped`)
+            : h("span", null, "No claims flipped"),
+          compare.to_test && compare.to_test.length
+            ? h("p", null, h("b", null, "Next to test: "), displayMessage(compare.to_test[0].text || compare.to_test[0].assumption))
+            : null,
+          deltaGroups.length
+            ? h("details", { className: "rmap-time-diff", open: Boolean(compare.decision_stale) },
+                h("summary", null, h("span", null, "Argument changes"), h("strong", null, `${deltaCount} change${deltaCount === 1 ? "" : "s"}`)),
+                h("div", { className: "rmap-time-diff-groups" },
+                  deltaGroups.map((group) => h("section", { key: group.key },
+                    h("span", { className: "eyebrow" }, `${group.label} · ${group.rows.length}`),
+                    h("ul", null, group.rows.slice(0, 6).map((row, index) => h("li", { key: row.id || `${row.from}:${row.relation}:${row.to}:${index}` }, group.render(row)))))))
+              )
+            : null)
+      : null);
+}
+
 // One group of the program's live structure — a labelled list of points (tensions / to-test / support).
 function Group({ label, hint, items, tone }) {
   if (!items || !items.length) return null;
@@ -128,7 +242,11 @@ function Group({ label, hint, items, tone }) {
 // Research map — the program's live structure: what's contested, what's left to test, what holds it up.
 // The kernel's generic scaffold graph (Orientation/Synthesis/Handoffs) is dropped as noise; this shows
 // the three things a researcher actually steers by. Pure view.
-export function ResearchMap({ view, onOpenDetail, onIsomorphism, isomorphism }) {
+export function ResearchMap({
+  view, onOpenDetail, onIsomorphism, isomorphism,
+  project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, onGraphRefresh,
+  freshness, onSnapshotBaseline, onRecompile,
+}) {
   const v = view || {};
   // A read clicked in Structural reads focuses that node on the graph below (select + pan). One-shot: the
   // graph clears it via onFocusHandled so the same read can be clicked again.
@@ -143,22 +261,29 @@ export function ResearchMap({ view, onOpenDetail, onIsomorphism, isomorphism }) 
   }
 
   return h("section", { className: "rmap", "aria-label": "Research map" },
-    // Insights FIRST — the kernel-computed structural reads are the actionable layer (what to settle next,
-    // what carries the most, what has no evidence). The graph below is for exploring; this is for deciding.
-    h(StructuralReads, { insights: v.graphInsights, onFocus: setFocusId }),
-
-    // The traversable graph — the run's reasoning DAG (sub-claims → the conclusion), reused from the
-    // eval report. Click a node to see how likely it is and what would settle it; drag/zoom to explore.
+    // The GRAPH FIRST — the map is what the operator opened this screen to see; the stack of structural-read
+    // text used to push it below the fold (operator: "a lot of wall of text before getting to the map"). The
+    // computed reads move directly BELOW it — one glance away, not a wall in front.
     Array.isArray(v.graphNodes) && v.graphNodes.length
       ? h("div", { className: "rmap-graph-block" },
           h("div", { className: "rmap-group-head" },
-            h("span", { className: "eyebrow" }, "The shape of the argument"),
-            h("span", { className: "rmap-group-hint" }, "evidence on the left builds up to the thesis on the right; edges coloured by what they do — click a read above to jump to it, or a node to trace it")),
+            h("span", { className: "eyebrow" }, "The shape of the argument")),
           h(GraphView, {
-            nodes: v.graphNodes, edges: v.graphEdges, truncated: v.graphTruncated,
+            nodes: v.graphNodes, edges: v.graphEdges, truncated: v.graphTruncated, argument: v.graphArgument,
             focusId, onFocusHandled: () => setFocusId(null),
+            project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, onRefresh: onGraphRefresh,
+            onOpenDetail,
           }))
       : null,
+
+    // Core carriers only: research-graph insights + decision_state (from scenario strength). No plugin nouns.
+    h(StructuralReads, {
+      insights: v.graphInsights,
+      onFocus: setFocusId,
+      decisionState: (decision && decision.result && decision.result.decision_state) || null,
+    }),
+
+    h(MapTime, { project, liveMode, freshness, onSnapshot: onSnapshotBaseline, onCompare: onRecompile }),
 
     // "What is this like?" — the cross-field analogy (advisory). Map is its home (the trio: eigenquestion
     // in Thesis, isomorphism here, forecast in the Ask box).

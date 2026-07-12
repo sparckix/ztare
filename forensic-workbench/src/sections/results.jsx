@@ -1,5 +1,6 @@
 import React from "react";
-import { displayMessage, displayText, Block, Tag } from "../design-system.js";
+import { displayMessage, displayText, Block } from "../design-system.js";
+import { compiledDecisionState } from "./decisionpanel.jsx";
 
 const h = React.createElement;
 
@@ -7,36 +8,31 @@ const h = React.createElement;
 // ~1-in-5 chance it fails, so it reads amber, not green.
 function probTone(p) { return p >= 0.85 ? "ok" : p >= 0.6 ? "warn" : "danger"; }
 
-// The kernel's probability DAG (probability_dag) as a Confidence readout: the outcome probability,
-// then each sub-claim with a probability bar + the signal that would move it. The lowest is the weakest
-// link — where one counterexample would do the most damage. This is the loop's own forecast, surfaced.
-function ConfidenceBlock(dag) {
-  const outcome = dag && dag.outcome;
-  const nodes = Array.isArray(dag && dag.nodes) ? dag.nodes.filter((n) => n && typeof n.probability === "number") : [];
-  if (!outcome || typeof outcome.probability !== "number") return null;
-  const pct = Math.round(outcome.probability * 100);
-  const weakest = nodes.length ? nodes.reduce((a, b) => (b.probability < a.probability ? b : a)) : null;
-  return h(Block, { title: "How confident is the loop?",
-    lead: "The loop's probability the thesis holds, decomposed into the sub-claims it rests on — the lowest is the weakest link." },
-    h("div", { className: "conf-outcome" },
-      h("div", { className: `conf-big tone-${probTone(outcome.probability)}` },
-        h("span", { className: "conf-big-num" }, `${pct}%`),
-        h("span", { className: "conf-big-cap" }, "likely to hold")),
-      h("p", { className: "conf-outcome-label" }, displayMessage(outcome.label || "the thesis holds"))),
-    nodes.length
-      ? h("ul", { className: "conf-nodes" },
-          nodes.map((n, i) => {
-            const np = Math.round(n.probability * 100);
-            const isWeak = weakest && n.id === weakest.id;
-            return h("li", { key: n.id || i, className: "conf-node" },
-              h("div", { className: "conf-node-head" },
-                h("span", { className: "conf-node-pct" }, `${np}%`),
-                h("span", { className: "conf-node-label" }, displayMessage(n.label || `claim ${i + 1}`)),
-                isWeak ? h(Tag, { tone: "danger" }, "weakest link") : null),
-              h("div", { className: "conf-bar" }, h("div", { className: `conf-bar-fill tone-${probTone(n.probability)}`, style: { width: `${Math.max(3, np)}%` } })),
-              n.watch_signal ? h("p", { className: "conf-node-signal" }, h(Tag, { tone: "neutral" }, "watch"), h("span", null, displayMessage(n.watch_signal))) : null);
-          }))
-      : null);
+// Order the sub-claims the way the kernel actually reasoned over them: walk the DAG's own edges DOWN from
+// the outcome (edge.to === "outcome" = feeds the conclusion directly; edge.to === some other node id =
+// feeds that node, one level deeper) instead of a flat min-sorted list. A child indents one level under
+// the claim it feeds — the shape on screen matches the shape of the argument.
+function orderByDag(nodes, edges) {
+  const byId = {};
+  nodes.forEach((n) => { byId[n.id] = n; });
+  const feedersOf = {};
+  edges.forEach((e) => { if (byId[e.from]) (feedersOf[e.to] = feedersOf[e.to] || []).push(e); });
+  const rows = [];
+  const seen = new Set();
+  const walk = (parentId, depth) => {
+    const kids = (feedersOf[parentId] || [])
+      .filter((e) => !seen.has(e.from))
+      .sort((a, b) => (byId[b.from].probability || 0) - (byId[a.from].probability || 0));
+    kids.forEach((e) => {
+      seen.add(e.from);
+      rows.push({ node: byId[e.from], depth, weight: e.weight, feedsId: parentId });
+      walk(e.from, depth + 1);
+    });
+  };
+  walk("outcome", 0);
+  // A node the outcome's own edges never reach still has to show up — never silently drop a real row.
+  nodes.forEach((n) => { if (!seen.has(n.id)) rows.push({ node: n, depth: 0, weight: null, feedsId: null }); });
+  return rows;
 }
 
 function scoreModeLabel(mode) {
@@ -45,16 +41,55 @@ function scoreModeLabel(mode) {
   if (m.includes("rubric") || m.includes("regime")) return "scored against the rubric";
   return mode ? displayMessage(mode) : "";
 }
-function scorePhrase(score) {
-  if (score === null || score === undefined) return "";
-  if (score >= 80) return "Held up well";
-  if (score >= 60) return "Mostly held up";
-  if (score >= 40) return "Shaky";
-  return "Didn't hold up";
-}
 function scoreBand(score) {
   if (score === null || score === undefined) return "mid";
   return score >= 80 ? "high" : score >= 60 ? "mid" : "low";
+}
+
+// A probability is a read on one statement, not a contribution that adds into the conclusion. The old
+// ranked bars lost the edge structure and invited exactly that wrong interpretation. Keep the conclusion
+// visible, then walk the real DAG beneath it so the operator can see which premise feeds which statement.
+function ArgumentPath({ dag, onOpenDetail }) {
+  const outcome = dag && dag.outcome;
+  const nodes = Array.isArray(dag && dag.nodes) ? dag.nodes.filter((n) => n && typeof n.probability === "number") : [];
+  const edges = Array.isArray(dag && dag.edges) ? dag.edges : [];
+  if (!outcome || typeof outcome.probability !== "number" || !nodes.length) return null;
+  const byId = {};
+  nodes.forEach((node) => { byId[node.id] = node; });
+  const rows = orderByDag(nodes, edges);
+  const pct = Math.round(outcome.probability * 100);
+  return h(Block, { title: "Model forecast from this run",
+    lead: "An uncalibrated model estimate over the run's claims. It is diagnostic context, not the decision posture." },
+    h("div", { className: "conf-outcome" },
+      h("div", { className: `conf-big tone-${probTone(outcome.probability)}` },
+        h("span", { className: "conf-big-num" }, `${pct}%`),
+        h("span", { className: "conf-big-cap" }, "model estimate")),
+      h("div", { className: "conf-outcome-copy" },
+        h("p", { className: "conf-outcome-label" }, displayMessage(outcome.label || "the thesis holds")),
+        h("p", { className: "conf-provenance" }, "Model-authored and not yet calibrated against outcomes."))),
+    h("div", { className: "finding-argument-path" },
+      h("span", { className: "finding-argument-tree-title" }, "Premises in this argument"),
+      h("p", { className: "finding-argument-guide" }, "Each percentage is the model's confidence in that statement; the numbers do not add up to the conclusion."),
+      h("ol", { className: "finding-argument-tree" },
+      rows.map((row, index) => {
+        const node = row.node;
+        const parent = row.feedsId === "outcome"
+          ? "the conclusion"
+          : displayMessage((byId[row.feedsId] && byId[row.feedsId].label) || "the claim above");
+        const groupStart = row.depth === 0 && (index === 0 || rows[index - 1].depth !== 0);
+        return h(React.Fragment, { key: node.id || index },
+          groupStart ? h("li", { className: "finding-argument-tree-label" }, "Direct premises") : null,
+          h("li", { className: `finding-argument-row tone-${probTone(node.probability)}`,
+            style: { "--argument-depth": row.depth } },
+            h("div", { className: "finding-argument-row-copy" },
+              row.depth > 0 ? h("span", { className: "finding-argument-relation" }, `Premise for ${parent}`) : null,
+              h("p", null, displayMessage(node.label || `claim ${index + 1}`))),
+            h("span", { className: "finding-argument-confidence", title: "Model confidence in this statement, not its contribution to the conclusion" },
+              `${Math.round(node.probability * 100)}%`)));
+      }))),
+    onOpenDetail
+      ? h("button", { type: "button", className: "chip ghost", onClick: () => onOpenDetail("overview", "Research map") }, "See how these claims connect")
+      : null);
 }
 
 
@@ -96,8 +131,14 @@ function Sparkline({ series, band }) {
 
 // "What the run found" — the run's epistemic payload as a findings report (Hex/Linear-grounded):
 // a result hero, the weakest point highlighted, then findings as cards with real hierarchy.
-export function RunFindings({ view, onOpenDetail }) {
+export function RunFindings({ view, decision, onOpenDetail }) {
   const v = view || {};
+  if (v.loading) {
+    return h("section", { className: "findings", "aria-label": "What the run found", "aria-busy": "true" },
+      h("div", { className: "section-loading" },
+        h("span", { className: "runconsole-spinner", "aria-hidden": "true" }),
+        h("span", null, "Loading run findings…")));
+  }
   if (!v.hasRun) {
     return h("section", { className: "findings", "aria-label": "What the run found" },
       h("div", { className: "findings-blank" },
@@ -109,23 +150,35 @@ export function RunFindings({ view, onOpenDetail }) {
   const logic = v.logicGaps || [];
   const friction = v.frictionPoints || [];
   const band = scoreBand(v.score);
+  const compiled = compiledDecisionState(decision);
 
   return h(
     "section",
-    { className: "findings", "aria-label": "What the run found" },
+    { id: "run-findings", className: "findings", "aria-label": "What the run found" },
+
+    compiled
+      ? h("div", { id: "run-standing", className: `findings-decision tone-${compiled.status.toLowerCase()}` },
+          h("span", null, "Current decision"),
+          h("strong", null, compiled.headline),
+          h("p", null, displayMessage(compiled.reason)))
+      : null,
+
+    // The job after a run is to understand the weakest point, not admire a rubric-relative score.
+    v.weakestPoint
+      ? h(Card, { id: "run-weakest", label: "Weakest point", tone: "warn", className: "finding-weakest" },
+          h("p", null, displayMessage(v.weakestPoint)))
+      : null,
 
     // Result hero (Mercury big-number + Hex chart): the champion score, how the thesis evolved
     // (sparkline over the run's iterations), and how it was scored.
-    h("div", { className: `findings-hero band-${band}` },
+    h("div", { id: "run-score", className: `findings-hero band-${band}` },
       h("div", { className: "findings-hero-score" },
         h("span", { className: "findings-hero-num" }, String(v.score)),
         h("span", { className: "findings-hero-out" }, "/100")),
       h("div", { className: "findings-hero-copy" },
-        h("strong", null, scorePhrase(v.score)),
+        h("strong", null, "Run observation"),
         h("span", null,
-          trust.mode ? scoreModeLabel(trust.mode) : "scored",
-          dag.outcome && typeof dag.outcome.probability === "number"
-            ? ` · likely outcome ${Math.round(dag.outcome.probability * 100)}%` : "")),
+          trust.mode ? scoreModeLabel(trust.mode) : "scored against the current guide")),
       v.series && v.series.length > 1
         ? h("div", { className: "findings-hero-evolve" },
             h(Sparkline, { series: v.series, band }),
@@ -145,13 +198,13 @@ export function RunFindings({ view, onOpenDetail }) {
       const nodes = Array.isArray(dag.nodes) ? dag.nodes.filter((n) => n && typeof n.probability === "number") : [];
       const weakest = nodes.length ? Math.round(Math.min(...nodes.map((n) => n.probability)) * 100) : null;
       const blocks = [
-        weakest !== null ? { label: "Weakest link", value: `${weakest}%`, tone: weakest < 60 ? "danger" : weakest < 85 ? "warn" : "ok", anchor: "find-confidence" } : null,
-        nodes.length ? { label: "Sub-claims", value: String(nodes.length), anchor: "find-confidence" } : null,
+        weakest !== null ? { label: "Weakest link", value: `${weakest}%`, tone: weakest < 60 ? "danger" : weakest < 85 ? "warn" : "ok", anchor: "run-argument-path" } : null,
+        nodes.length ? { label: "Sub-claims", value: String(nodes.length), anchor: "run-argument-path" } : null,
         { label: "Logic gaps", value: String(logic.length), tone: logic.length ? "warn" : "ok", anchor: logic.length ? "find-logic" : null },
         { label: "Evaluator friction", value: String(friction.length), tone: friction.length ? "warn" : "", anchor: friction.length ? "find-friction" : null },
       ].filter(Boolean);
       return blocks.length
-        ? h("div", { className: "findings-metrics" },
+        ? h("div", { id: "run-metrics", className: "findings-metrics" },
             blocks.map((b, i) => {
               const cls = `findings-metric ${b.tone ? "tone-" + b.tone : ""} ${b.anchor ? "linked" : ""}`;
               const label = h("span", { className: "findings-metric-label" }, b.label);
@@ -163,19 +216,9 @@ export function RunFindings({ view, onOpenDetail }) {
         : null;
     })(),
 
-    // The single most important finding, highlighted.
-    v.weakestPoint
-      ? h(Card, { label: "⚠ Weakest point", tone: "warn", className: "finding-weakest" },
-          h("p", null, displayMessage(v.weakestPoint)))
-      : null,
-
-    // The loop's probabilistic forecast — confidence the thesis holds, by sub-claim. Anchored so the
-    // "Weakest link" / "Sub-claims" metrics jump here.
-    (() => { const cb = ConfidenceBlock(dag); return cb ? h("div", { id: "find-confidence" }, cb) : null; })(),
-
     // Logic gaps + friction side by side (Hex two-up).
     (logic.length || friction.length)
-      ? h("div", { className: "findings-grid" },
+      ? h("div", { id: "run-gaps", className: "findings-grid" },
           logic.length ? h(Card, { id: "find-logic", label: `Logic gaps · ${logic.length}` }, bulletList(logic)) : null,
           friction.length ? h(Card, { id: "find-friction", label: `Friction with the evaluator · ${friction.length}` }, bulletList(friction)) : null)
       : null,
@@ -223,32 +266,7 @@ export function RunFindings({ view, onOpenDetail }) {
           h("small", null, "Code-computed checks (no model judgement): does it explain more than it costs, hold at the extremes, use the same rule across cases."))
       : null,
 
-    // Why it concluded what it did — the reasoning steps the evaluator weighed, most-likely first.
-    // A ranked list (full text, no clipping), not a cramped node-graph. Leads with the conclusion.
-    dag.outcome
-      ? h("section", { className: "finding-card finding-reason" },
-          h("span", { className: "finding-card-label" }, "Why it concluded this"),
-          h("p", { className: "finding-reason-outcome" },
-            displayMessage(dag.outcome.label || "Most likely conclusion"),
-            typeof dag.outcome.probability === "number"
-              ? h("span", { className: "finding-reason-pct" }, `${Math.round(dag.outcome.probability * 100)}% likely`) : null),
-          Array.isArray(dag.nodes) && dag.nodes.length
-            ? h("ul", { className: "finding-reason-list" },
-                dag.nodes
-                  .slice()
-                  .sort((a, b) => (Number(b.probability) || 0) - (Number(a.probability) || 0))
-                  .map((n, i) => {
-                    const p = typeof n.probability === "number" ? n.probability : null;
-                    return h("li", { key: i, className: "finding-reason-step" },
-                      h("p", null, displayMessage(n.label || "")),
-                      p !== null
-                        ? h("div", { className: "finding-reason-meter" },
-                            h("span", { className: "finding-reason-bar", style: { width: `${Math.round(p * 100)}%` } }),
-                            h("em", null, `${Math.round(p * 100)}%`))
-                        : null);
-                  }))
-            : null)
-      : null,
+    h("div", { id: "run-argument-path" }, h(ArgumentPath, { dag, onOpenDetail })),
 
     // Did the answer drift off the mandate? (charter drift — plain line, links to Charter.)
     v.charterDrift
@@ -262,7 +280,7 @@ export function RunFindings({ view, onOpenDetail }) {
 
     // What would prove this wrong — lead each with the plain worry; tuck the technical experiment.
     v.inverter
-      ? h("section", { className: "finding-card finding-falsify" },
+      ? h("section", { id: "run-falsification", className: "finding-card finding-falsify" },
           h("span", { className: "finding-card-label" }, "What would prove this wrong"),
           h("p", { className: "finding-falsify-intro" },
             "Concrete ways someone could try to break the thesis.",

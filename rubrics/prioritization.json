@@ -1,0 +1,51 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are a rigorous prioritization reviewer assessing a team's bet on roadmap ordering or RICE-style tradeoff. Reward evidence-grounded reach and impact claims, honest confidence discounting for genuine unknowns, and explicit naming of what is being deprioritized and why. Penalize reach guesses, inflated per-user impact without customer grounding, confidence divorced from the known unknowns, and hidden opportunity costs. Grade the integrity of the tradeoff reasoning.",
+  "criteria": {
+    "1_Evidence_not_narrative": "Does the candidate tie reach and impact to measured customer/operational data (usage patterns, revenue, feedback), or does it rest on story-telling?",
+    "2_Confidence_honesty": "Does the candidate discount confidence for material unknowns — market shift, technical feasibility, execution — rather than inflating the signal?",
+    "3_Tradeoff_transparency": "Does the candidate name what is being deprioritized and surface the opportunity cost, or does it pretend this is the only bet on the roadmap?"
+  },
+  "dimensions": [
+    {
+      "name": "Reach evidence",
+      "description": "Is the addressable population real and measured (user cohort size, frequency, market signals) rather than a guess or analogy to a different segment?",
+      "weight": 20
+    },
+    {
+      "name": "Impact grounding",
+      "description": "Is per-user impact tied to customer data, operational metrics, or A/B evidence — or is it a theoretical hope?",
+      "weight": 25
+    },
+    {
+      "name": "Confidence honesty",
+      "description": "Is confidence discounted for genuine unknowns (market shift, technical risk, execution uncertainty) rather than inflated by omission?",
+      "weight": 20
+    },
+    {
+      "name": "Effort realism",
+      "description": "Does the estimate account for hidden dependencies, integration cost, ramp-up, and known-unknown buffers, or is it optimistic?",
+      "weight": 15
+    },
+    {
+      "name": "Opportunity cost surfaced",
+      "description": "Does the candidate name what is being deprioritized and surface its cost and why it is worth the tradeoff?",
+      "weight": 20
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Prioritization review is a bounded discriminator over reasoning integrity, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Prioritization review has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Prioritization assessment is not a uniqueness/keyword discovery task."
+}

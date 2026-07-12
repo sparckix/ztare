@@ -125,6 +125,110 @@ Rules:
 - do not leave high-rigor kernel work in chat-only routing once the boundary
   object is stable
 
+## 0a2. New in this release: the governed decision flow
+
+Alongside the autoresearch loop, this release adds a governed *decision* flow for holding a project's argument accountable to its evidence:
+
+```text
+scenario run -> governed research map -> argument kernel (grounded verdict + minimal cores + warrants + cheapest-next-test agenda)
+  -> bind evidence / annotate / reingest a deliverable -> recompile -> watch the strength move (and how reliably that warrant tier has held)
+  -> (optional) let the autoresearch loop take its next experiment from the agenda, feeding results back as warranted evidence
+```
+
+The argument kernel is a *view* of the same research map the workbench Map already draws (one source of truth, not a second graph). It emits a grounded verdict (SUPPORTED / BLOCKED / REFUTED), the minimal cores (the assumption-sets the decision turns on), a warrant per edge (how re-executably checkable that support is), and a cheapest-next-test agenda. See `docs/concepts/capabilities.md` for the argument-kernel and metrology sections. The formal-grounding path below is the strongest warrant in that ladder.
+
+The Workbench calls an admitted agenda item a **decision test** (the stable kernel type is `wager`). Its job is to
+make one blocked uncertainty executable: name the claim, describe the observation, list at least two plausible
+outcomes (including an inconclusive branch when appropriate), and declare effort/deadline. The kernel simulates
+every outcome and persists the test only when the edits are valid and at least one outcome changes the compiled
+standing. Recording an outcome is a separate preview-then-apply action; the resulting decision delta and
+fingerprint refresh the map. This is not a confidence score or a fourth verdict, and it never changes the claim
+without governed evidence.
+
+Does this change your day-to-day workflow? Mostly no. The core loop (`raw -> workspace -> evidence -> validator -> synthesis`) is unchanged. What this release adds is a tighter feedback surface *around* a governed decision: one new action — bind a source to a claim and recompile — plus two read surfaces you did not have before (the strength trajectory that moves as you recompile, and the warrant-tier reliability that reports how often that grade of backing has held when re-checked). Letting the agenda steer the loop's next experiment is opt-in and off by default; flip it on only when you want the loop to prioritise the kernel's cheapest-next-test over its own mutation.
+
+## 0a3. Workbench scenarios and plugin surfaces
+
+The Workbench keeps one stable navigation spine. A scenario can change how a
+run is judged and which contextual tools appear, but it cannot add a sidebar
+destination. This keeps a project navigable when many domain bundles are
+installed.
+
+A scenario may compose:
+
+- a rubric and run defaults;
+- evidence, renderer, solver, and recheck capabilities;
+- deterministic gate packages;
+- governed deliverables; and
+- optional Workbench panels in declared host slots.
+
+The current panel host is `results`. A manifest opts into a panel by reference,
+for example:
+
+```yaml
+workbench_panels:
+  - results:governed-rice
+```
+
+The panel implementation belongs to the plugin author. Put it under
+`forensic-workbench/src/scenario-panels/<panel-id>.jsx`, export a default React
+component, and export metadata with the same id and host:
+
+```jsx
+export const scenarioPanel = {
+  id: "governed-rice",
+  host: "results",
+  label: "Governed RICE",
+  description: "Prioritization with evidence-derived confidence.",
+};
+
+export default function GovernedRicePanel({ project, liveMode }) {
+  // Read and write through bounded Workbench API routes.
+}
+```
+
+Vite discovers these modules at build time. Adding or changing a frontend panel
+therefore requires a frontend rebuild. Scenario and rubric data can be reloaded
+at runtime; Python capability files can be dropped into
+`plugins/scenarios/` or a directory named by `ZTARE_SCENARIO_PLUGINS`, then
+reloaded from the Plugins screen. These are separate lifecycles.
+
+Panels receive a host context and own their domain-specific interaction. They
+must not mutate global navigation. Dialogs should use the shared
+`ModalPortal` and `useModalBehavior` helpers so layering, Escape, focus
+containment, trigger restoration, and background scroll behave consistently.
+The maintainer supports this extension contract, not bespoke domain panels.
+The shipped product-manager bundle is an example of the contract rather than a
+special branch in Workbench chrome.
+
+### One-shot scenario documents
+
+A scenario can also declare a document design without adding Python or CSS:
+
+```yaml
+deliverables:
+  - decision_memo
+  - tradeoff_register
+deliverable_specs:
+  - name: tradeoff_register
+    label: Trade-off register
+    audience: Decision team
+    sections:
+      - label: Decision
+        kinds: [thesis, claim]
+      - label: Trade-offs
+        kinds: [tension, constraint, gap]
+      - label: Revisit if
+        kinds: [falsifier]
+```
+
+The section recipe selects exact governed nodes and edge-licensed relations; it cannot create facts. The
+Plugins editor can create and edit these designs, and the same scenario contract is resolved by the CLI, API,
+Verdict, and full-set producer. The default output is a readable governed **source draft**. `presentation_brief`
+may guide a future editorial renderer, but model-polished prose remains Draft until it passes the re-ingest gate
+against the same decision state. Verdict is the one home for compose/status/regenerate; Results panels may show a
+scenario interpretation or link there, but should not duplicate the deliverable list.
+
 ## 0b. Two audiences
 
 This repo now serves two distinct readers. If you can identify which one you are, you can skip most of the document.
@@ -1507,3 +1611,43 @@ This organization of labor does not replace ZTARE or replicate the old V4 harden
 If semantic truth judgment, novelty scoring, or open-ended epistemic attack gets
 pushed into supervisor `C`, that would be a bad duplicate of ZTARE. The current
 intent is organization of labor, not a second claim-auditing system.
+
+## 16. Formal grounding — the oracle path (opt-in)
+
+Most projects never need this, but it anchors the whole trust story. When a claim is precise enough to be **decidable** — a math statement, or an operational rule like an access-control or AML/sanctions predicate — ZTARE can turn it into a machine-checked verdict instead of a human eyeballing "does this look right?". Nothing in this path uses an LLM as a *judge*: the LLM only *proposes*, and deterministic checks *decide*.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant NL as Claim (natural language)
+    participant AF as Autoformalizer (LLM proposes a formal statement)
+    participant FW as Faithfulness firewall (deterministic, no LLM, fail-closed)
+    participant SV as LeanMill solver (LLM searches for a proof)
+    participant K as Lean kernel (checks the proof)
+    participant C as Consumer (metrology label / argument-kernel warrant)
+
+    NL->>AF: "For every n, n + 0 = n"  (math, or a decidable operational rule)
+    AF->>FW: candidate formal statement  (forall n, n + 0 = n)
+    Note over FW: instance battery — the predicate must `decide` correctly on labelled cases<br/>+ provable-equivalence — forall x, ref <-> cand over the finite domain
+    alt not faithful (laundered: and->or, dropped clause, moved boundary)
+        FW-->>C: REJECT, label = None  (never a fabricated label)
+    else faithful
+        FW->>SV: admitted formal target
+        SV->>K: proof term
+        alt kernel closes (sorries = 0, axioms audited)
+            K-->>C: label = True  (kernel-verified)
+        else refuted as stated
+            K-->>C: label = False  (target_false_as_stated)
+        else open / budget exhausted
+            K-->>C: label = None  (inconclusive, not a verdict)
+        end
+    end
+    Note over C: metrology: True/False is GROUND TRUTH for measuring how well the<br/>deterministic soft gates catch a laundered rendering (an MCC number).<br/>argument kernel: a kernel-verified claim earns the top warrant rung (W0).
+```
+
+What it buys you:
+
+- **A ground-truth label for metrology.** The kernel's True/False is what the fast deterministic soft-gates are measured against — how well they catch a *laundered* rendering (a dropped clause, a moved `>=`->`>` boundary). That is the honest number behind "the gates work," not an assertion.
+- **The top warrant rung (W0).** In the argument kernel's warrant ladder (W0 kernel-certificate -> W1 re-executable -> W2 verbatim-quote -> W3 proposed-unchecked), a kernel-verified claim is the only thing that earns W0. Everything else is admitted but marked weaker.
+
+When it fires: **opt-in only** (`ZTARE_METROLOGY_LIVE_ORACLE=1`). Importing the code never launches a proof search, because a live search dispatches an LLM and the metrology layer is deterministic by charter. It is not wired into any live loop — it is a deliberate, out-of-band run. Source: `src/ztare/scenarios/metrology.py` (`formal_oracle_label`) and the faithfulness firewall in `src/ztare/leanmill/solver/autoformalize.py`.

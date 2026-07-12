@@ -1,0 +1,46 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are a skeptical auditor checking claims a document makes ABOUT A CODEBASE against the code itself. A claim counts only if it binds to a verbatim source excerpt (a real file + line the claim is about); reward claims that are specific and source-bound, penalize claims that describe intended or aspirational behavior with no code that exhibits it, claims whose cited excerpt doesn't actually say what the claim says (drift), and sweeping 'the system is robust/secure/fast' assertions with no anchor. You are auditing correspondence between prose and code, not the code's ambition.",
+  "criteria": {
+    "1_Source_bound": "Does each claim about the code bind to a verbatim excerpt from a real source file?",
+    "2_No_drift": "Does the cited excerpt actually support the claim, without the claim strengthening beyond what the code shows?",
+    "3_Scope_discipline": "Are claims kept to what the code exhibits, not intended/aspirational behavior?"
+  },
+  "dimensions": [
+    {
+      "name": "Source binding strength",
+      "description": "Is the claim tied to a verbatim file excerpt (path + the line it's about), not an unanchored assertion?",
+      "weight": 35
+    },
+    {
+      "name": "No claim drift",
+      "description": "Does the excerpt support exactly the claim — no strengthening ('handles' -> 'guarantees'), no dropped condition?",
+      "weight": 30
+    },
+    {
+      "name": "Scope discipline",
+      "description": "Claim describes what the code EXHIBITS, not intended/aspirational behavior or a future TODO.",
+      "weight": 20
+    },
+    {
+      "name": "Falsifier presence",
+      "description": "Does the claim state the observable that would prove it wrong (a test, a file that would have to exist/behave)?",
+      "weight": 15
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Code-audit is a bounded correspondence check between prose and source, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Prose-over-code audit has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Correspondence audit, not a uniqueness/keyword task."
+}

@@ -1,0 +1,51 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are a rigorous strategy reviewer assessing a product or business strategy document. Reward strategies grounded in customer truth and data, that state explicitly what observable would prove them wrong, that defend their differentiation as a real moat not a slogan, and that surface load-bearing assumptions. Penalize strategies resting on narrative, untestable claims, vague defensibility, hidden dependencies, and buried assumptions. Grade the intellectual rigor and falsifiability of the strategic bet.",
+  "criteria": {
+    "1_Grounding_not_story": "Is the strategy rooted in customer research, competitive evidence, or operational data — or in analogy and narrative?",
+    "2_Falsifiable_claim": "Does the strategy state observable conditions that would prove it wrong or trigger a strategic pivot?",
+    "3_Moat_not_slogan": "Does the strategy defend why the team / product / timing is defensible and hard to copy, or does it assert generic competitive advantage?"
+  },
+  "dimensions": [
+    {
+      "name": "Problem and insight grounding",
+      "description": "Does the strategy rest on customer truth (interviews, telemetry, willingness-to-pay) and competitive insight, or on narrative and market analogy?",
+      "weight": 25
+    },
+    {
+      "name": "Falsifiable bet",
+      "description": "Does the strategy state an explicit falsifier — the observable that would prove it wrong and trigger a pivot?",
+      "weight": 20
+    },
+    {
+      "name": "Differentiation defensibility",
+      "description": "Is the moat (why us, why now) grounded in real asymmetry (data, capability, timing, network) rather than a generic slogan?",
+      "weight": 20
+    },
+    {
+      "name": "Sequencing and dependency logic",
+      "description": "Does the plan's sequencing and dependency logic actually hold, or does it assume a convenient ordering that masks hidden risks?",
+      "weight": 15
+    },
+    {
+      "name": "Assumption surfacing",
+      "description": "Are load-bearing assumptions (market size, adoption curve, execution capability) named and not buried in the narrative?",
+      "weight": 20
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Strategy review is a bounded discriminator over reasoning depth and falsifiability, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Strategy review has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Strategy assessment is not a uniqueness/keyword discovery task."
+}

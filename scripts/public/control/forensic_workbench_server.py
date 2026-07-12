@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import math
@@ -11,6 +13,7 @@ import os
 import re
 import subprocess
 import shlex
+import sys
 import tempfile
 import time
 from datetime import datetime, timezone
@@ -18,6 +21,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import parse_qs, urlparse
+
+# The workbench is routinely launched as a script (Makefile/live helper), where
+# Python otherwise prefers an installed `ztare` distribution over this checkout.
+# Put the checkout's source tree first before importing any kernel module.
+_WORKBENCH_REPO = Path(__file__).resolve().parents[3]
+for _path in (str(_WORKBENCH_REPO), str(_WORKBENCH_REPO / "src")):
+    if _path in sys.path:
+        sys.path.remove(_path)
+    sys.path.insert(0, _path)
 
 import forensic_workbench_snapshot as snapshot
 import forensic_workbench_review as review
@@ -33,6 +45,7 @@ from ztare.workspace import scoring_guide as scoring_guide_core
 from ztare.workspace import source_actions as source_actions_core
 from ztare.workspace import source_files as source_files_core
 from ztare.workspace import workbench_settings as settings_core
+from ztare.scenarios import loader as scenarios_loader
 from ztare.workspace import workbench_contracts as workbench_contracts_core
 from ztare.workspace.server_payloads import leanmill as leanmill_payloads
 from ztare.common.storage import FileStorage
@@ -98,10 +111,10 @@ WORKBENCH_ENV_PATH = settings_core.WORKBENCH_ENV_PATH
 ACTION_INTELLIGENCE_STATE_DIR = Path("analytics/public/action_intelligence/state")
 SERVER_PYTHON = str(snapshot.REPO / "venv" / "bin" / "python") if (snapshot.REPO / "venv" / "bin" / "python").exists() else snapshot.PYTHON
 WORKBENCH_UI_SECTIONS = {
-    "projects": {"Current project", "Projects", "Connect project", "Files", "Settings"},
-    "overview": {"Overview", "Charter", "Thesis", "Evidence summary", "Research map"},
+    "projects": {"Current project", "Projects", "Connect project", "Files", "Settings", "Plugins"},
+    "overview": {"Overview", "Charter", "Thesis", "Assumptions", "Evidence summary", "Research map"},
     "sources": {"Prepare files", "Project brief", "Add file", "Edit file"},
-    "run": {"Ready to run", "Check readiness", "Start run", "Results", "Fix warnings", "Help"},
+    "run": {"Ready to run", "Scoring guide", "Run settings", "Check readiness", "Start run", "Fix warnings"},
     "leanmill": {"Start", "Draft target", "Proof files", "Proof status"},
     "review": {"Things to review", "Save review", "Save next step", "Saved history"},
     "save": {"Report readiness", "Report inputs", "Project file"},
@@ -168,6 +181,8 @@ INTAKE_LIST_FIELDS = project_brief_core.INTAKE_LIST_FIELDS
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 SOURCE_IMPORT_FILENAME_RE = source_files_core.SOURCE_IMPORT_FILENAME_RE
 SOURCE_IMPORT_TYPES = source_files_core.SOURCE_IMPORT_TYPES
+DOCUMENT_IMPORT_FILENAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(?:md|txt|csv|tsv|json|log|pdf|docx|pptx|xlsx)$", re.I)
+MAX_JSON_BODY_BYTES = 16 * 1024 * 1024
 SOURCE_ARTIFACT_KINDS = source_files_core.SOURCE_ARTIFACT_KINDS
 LOCAL_DEV_ORIGIN_RE = re.compile(r"^http://(127\.0\.0\.1|localhost):51(7[3-9]|8[0-9])$")
 model_option = settings_core.model_option
@@ -183,6 +198,7 @@ WRITE_POST_ENDPOINTS = {
     "/api/row-action",
     "/api/preflight",
     "/api/run",
+    "/api/job-cancel",
     "/api/settings",
     "/api/run-config",
     "/api/scoring-guide",
@@ -203,10 +219,23 @@ WRITE_POST_ENDPOINTS = {
     "/api/research-map",
     "/api/leanmill/target",
     "/api/leanmill/blueprint",
+    "/api/leanmill/blueprint-save",
+    "/api/leanmill/blueprint-draft",
     "/api/leanmill/scaffold",
     "/api/leanmill/autoformalize-notes",
     "/api/leanmill/solve-adhoc",
     "/api/leanmill/ratify",
+    "/api/leanmill/campaign-run",
+    "/api/leanmill/campaign-verify",
+    "/api/leanmill/campaign-replay",
+    "/api/leanmill/campaign-stop",
+    "/api/leanmill/campaign-retire",
+    "/api/leanmill/campaign-resume",
+    "/api/leanmill/campaign-recover",
+    "/api/leanmill/campaign-recheck",
+    "/api/leanmill/campaign-interpret",
+    "/api/scenario-reingest-promote",
+    "/api/scenario-deliverable-editorial",
 }
 SOURCE_ACTIONS = source_actions_core.SOURCE_ACTIONS
 
@@ -731,7 +760,15 @@ def project_display_label(project: Any) -> str:
     }
     for raw, rendered in replacements.items():
         text = re.sub(rf"\b{raw}\b", rendered, text, flags=re.IGNORECASE)
-    return text[:1].upper() + text[1:]
+    acronyms = {
+        "ai": "AI", "api": "API", "arc": "ARC", "aws": "AWS", "eu": "EU", "gpu": "GPU",
+        "hbr": "HBR", "llm": "LLM", "ns": "NS", "pde": "PDE", "roi": "ROI",
+        "capex": "CapEx",
+    }
+    words = [acronyms.get(word.lower(), word) for word in text.split()]
+    if words and words[0].lower() not in acronyms:
+        words[0] = words[0][:1].upper() + words[0][1:]
+    return " ".join(words)
 
 
 def project_charter_rel(project: str) -> str:
@@ -1996,9 +2033,9 @@ PROJECT_FILE_GROUP_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "label": "Evidence",
         "roles": ("evidence", "evidence_gap"),
         "help": "The compiled view of what the source files support, weaken, or leave missing.",
-        "action_workspace": "run",
-        "action_subsection": "Results",
-        "action_label": "Open evidence work",
+        "action_workspace": "sources",
+        "action_subsection": "Prepare files",
+        "action_label": "Open evidence",
     },
     {
         "id": "run",
@@ -2006,8 +2043,8 @@ PROJECT_FILE_GROUP_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "roles": ("run",),
         "help": "Scores, run output, learned constraints, and the next check suggested by a run.",
         "action_workspace": "run",
-        "action_subsection": "Results",
-        "action_label": "Open run results",
+        "action_subsection": "Ready to run",
+        "action_label": "Open pressure-test",
     },
     {
         "id": "report",
@@ -2050,8 +2087,8 @@ PROJECT_FILE_GROUP_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "label": "Assumptions",
         "roles": ("axiom",),
         "help": "Run-learned assumptions and constraints that should be inspected before reuse.",
-        "action_workspace": "run",
-        "action_subsection": "Results",
+        "action_workspace": "overview",
+        "action_subsection": "Assumptions",
         "action_label": "Open assumptions",
     },
     {
@@ -2692,6 +2729,928 @@ def capability_display_label(row: dict[str, Any]) -> str:
     return re.sub(r"\s+compiler$", "", label, flags=re.IGNORECASE) or "Project test"
 
 
+def scenario_surface_payload(project: str) -> dict[str, Any]:
+    """Surface a project's assumptions by COMPOSING its compiled evidence packet (the compiler's
+    candidate_claims_to_test) + the deterministic span-anchor gate — read-only, no LLM (the compiler already
+    ran). The intake view of the round-trip. Returns anchored claims (each a thesis to test)."""
+    from ztare.common.paths import PROJECTS_DIR
+    from ztare.scenarios.surfacing import claims_from_packet, surface_assumptions
+
+    root = PROJECTS_DIR / project
+    packets = list(root.glob("**/compiled_evidence_packet.json")) + list(root.glob("*_packet.json"))
+    if not packets:
+        return {"ok": False, "claims": [], "error": f"no compiled evidence packet for '{project}' — compile evidence first"}
+    try:
+        packet = json.loads(packets[0].read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "claims": [], "error": f"unreadable packet: {type(exc).__name__}"}
+    doc = ""
+    for name in ("thesis.md", "current_iteration.md", "evidence.txt"):
+        candidate = root / name
+        if candidate.is_file():
+            doc += candidate.read_text(encoding="utf-8", errors="replace") + "\n"
+    result = surface_assumptions(doc, lambda _d: claims_from_packet(packet))
+    return {"ok": True, "dropped": len(result.rejected),
+            "claims": [{"text": c.text, "span": c.span} for c in result.anchored]}
+
+
+def scenario_reingest_payload(project: str, doc: str) -> dict[str, Any]:
+    """Re-gate an AI-polished deliverable against a project's governed research map — every prose sentence must
+    align to a governed element or it is flagged UNGOVERNED (fail-closed, no LLM judge). The workbench's
+    forged-edit catch. Read-only: computes, writes nothing."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map, open_reingest_session
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "governed": False, "elements": 0, "ungoverned": [],
+                "error": f"no governed research map for '{project}' — run the project first"}
+    session = open_reingest_session(project, doc or "", governed)
+    return {"ok": True, "governed": session.promotable, "elements": len(governed.elements),
+            "base_hash": session.base_hash, "promotable": session.promotable,
+            "traced_claims": session.diff.traced_claims,
+            "dropped_claims": session.diff.dropped_claims,
+            "ungoverned": session.diff.ungoverned}
+
+
+def scenario_reingest_promote_payload(project: str, doc: str, base_hash: str,
+                                      source_path: str = "") -> dict[str, Any]:
+    """Promote a trace-clean rendering without laundering it into the graph.
+
+    The client must present the base hash returned by ``scenario_reingest_payload``.  A changed governed
+    state refuses the write, and the strict sentence gate is recomputed server-side immediately before the
+    artifact and audit receipt are written.
+    """
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map, open_reingest_session, promote_reingest
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "promoted": False,
+                "error": f"no governed research map for '{project}' -- run it first"}
+    session = open_reingest_session(project, doc or "", governed)
+    if not base_hash or base_hash != session.base_hash:
+        return {"ok": False, "promoted": False, "stale": True,
+                "error": "the checked decision changed; check this copy again before promoting"}
+    source_name = Path(str(source_path or "")).stem or "edited_copy"
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", source_name).strip("._-") or "edited_copy"
+    out_dir = REPO_ROOT / "projects" / project / "workspace" / "deliverables"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{safe_name}.current.md"
+    result = promote_reingest(session, doc or "", governed, str(out_path),
+                              at=datetime.now(timezone.utc).isoformat())
+    result["ok"] = bool(result.get("promoted"))
+    if result.get("path"):
+        result["path"] = display_path(result["path"])
+        result["receipt_path"] = display_path(out_path.with_suffix(".reingest.json"))
+    return result
+
+
+def scenario_annotate_payload(project: str, doc: str, model: str = "") -> dict[str, Any]:
+    """The annotated round-trip (a document-annotation view): a pasted document → each sentence tagged with its claim
+    LIFECYCLE (backed / contradicted / surfaced-untested / inert) against the project's governed map. A doc is
+    INPUT — it never 'fails'; the headline is the load-bearing-assumption COUNT. Spans come from the doc via the
+    live proposer when `model` is set, else read-only by composing the project's compiled packet claims (gated
+    against this doc). Deterministic annotate; surfacing degrades to []-spans if no LLM/packet."""
+    from ztare.common.paths import PROJECTS_DIR, REPO_ROOT
+    from ztare.scenarios.artifacts import (
+        ANNOTATION_STATUSES,
+        GovernedState,
+        annotate,
+        governed_state_from_research_map,
+        render_annotated,
+    )
+    from ztare.scenarios.surfacing import claims_from_packet, surface_assumptions
+
+    if not (doc or "").strip():
+        return {"ok": False, "error": "empty document"}
+    governed = governed_state_from_research_map(project, REPO_ROOT) if project else GovernedState()
+
+    proposer = None
+    surfaced_from = "none"
+    if model:  # LIVE: surface THIS document's own assumptions (the honest front-door for a fresh doc)
+        from ztare.scenarios.providers.llm_proposer import llm_proposer
+        proposer = lambda d: llm_proposer(d, model=model)  # noqa: E731 — live intake
+        surfaced_from = f"live:{model}"
+    elif project:  # read-only: compose the project's compiled packet, gated against THIS doc
+        root = PROJECTS_DIR / project
+        packets = list(root.glob("**/compiled_evidence_packet.json")) + list(root.glob("*_packet.json"))
+        if packets:
+            try:
+                packet = json.loads(packets[0].read_text(encoding="utf-8"))
+                proposer = lambda _d: claims_from_packet(packet)  # noqa: E731
+                surfaced_from = "packet"
+            except Exception:  # noqa: BLE001 — unreadable packet ⇒ annotate against the map only
+                proposer = None
+
+    spans: list[str] = []
+    dropped = 0
+    if proposer is not None:
+        try:
+            surfaced = surface_assumptions(doc, proposer)
+            spans, dropped = [c.span for c in surfaced.anchored], len(surfaced.rejected)
+        except Exception as exc:  # noqa: BLE001 — surfacing best-effort; annotate still runs on the governed map
+            spans, dropped = [], 0
+            surfaced_from = f"error:{type(exc).__name__}"
+
+    anns = annotate(doc, governed, surfaced_spans=spans)
+    counts = {s: sum(1 for a in anns if a.status == s) for s in ANNOTATION_STATUSES}
+    # Honest note: don't let read-only compose masquerade as fresh-document analysis (the overpromise).
+    note = ""
+    if surfaced_from == "packet" and not spans:
+        note = ("surfaced from the project's compiled evidence, which didn't match this document — "
+                "pass a model to surface THIS document's own assumptions")
+    elif surfaced_from == "none":
+        note = "no model and no compiled packet — annotated against the governed map only (no per-document surfacing)"
+    return {
+        "ok": True,
+        "elements": len(governed.elements),
+        "pre_run": not governed.elements,
+        "surfaced_from": surfaced_from,
+        "note": note,
+        "dropped": dropped,
+        "counts": counts,
+        "annotations": [{"sentence": a.sentence, "status": a.status, "element_id": a.element_id} for a in anns],
+        "rendered": render_annotated("pasted-document", anns),
+    }
+
+
+def scenarios_payload() -> dict[str, Any]:
+    """Read-only scenario index for the workbench picker: name + description + resolved rubric / evidence /
+    renderer per scenario. Best-effort per row — a broken manifest is flagged, never breaks the endpoint."""
+    rows: list[dict[str, Any]] = []
+    for name in scenarios_loader.list_scenarios():
+        try:
+            sc = scenarios_loader.load_scenario(name)
+            rows.append({
+                "name": sc.name or name,
+                "description": (sc.description or "").strip(),
+                "rubric": sc.rubric,
+                "evidence_sources": list(sc.evidence_sources),
+                "renderer": sc.renderer,
+                "rechecks": list(sc.rechecks),
+                "workbench_panels": list(sc.workbench_panels),
+                "deliverables": list(sc.deliverables),
+                "deliverable_specs": [spec.model_dump(mode="json") for spec in sc.deliverable_specs],
+            })
+        except Exception as exc:  # noqa: BLE001 — one broken manifest must not blank the picker
+            rows.append({"name": name, "description": "", "invalid": f"{type(exc).__name__}: {exc}"})
+    return {"scenarios": rows}
+
+
+def _safe_plugin_name(name: str) -> str:
+    """Sanitize a plugin name to a bare slug — whitespace→dash, drop anything else (no path traversal; this
+    writes a file)."""
+    import re as _re
+    slug = _re.sub(r"\s+", "-", str(name or "").strip().lower())
+    return _re.sub(r"[^a-z0-9_-]", "", slug)[:64]
+
+
+def _decision_baseline_path(project: str):
+    from ztare.common.paths import PROJECTS_DIR
+    return PROJECTS_DIR / project / "workspace" / "decision_baseline.json"
+
+
+def scenario_baseline_status_payload(project: str) -> dict[str, Any]:
+    """Read the saved comparison reference without writing a new one."""
+    path = _decision_baseline_path(project)
+    if not path.is_file():
+        return {"ok": True, "project": project, "exists": False}
+    verdict = ""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        verdict = str(((payload.get("verdict") or {}).get("status") or ""))
+    except Exception:  # noqa: BLE001 - an unreadable reference is surfaced, never used for a diff.
+        return {"ok": False, "project": project, "exists": True, "error": "saved reference is unreadable"}
+    return {"ok": True, "project": project, "exists": True, "verdict": verdict,
+            "saved_at": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()}
+
+
+def scenario_baseline_payload(project: str) -> dict[str, Any]:
+    """Snapshot the project's governed state as a DECISION BASELINE (the frozen argument at decision time) so it
+    can be recompiled against later. Read-of-map + write-of-snapshot; no LLM."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import assemble_verdict, governed_state_from_research_map, serialize_governed
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed research map for '{project}' — run it first"}
+    path = _decision_baseline_path(project)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    v = assemble_verdict(governed)
+    path.write_text(json.dumps(serialize_governed(governed, verdict=v), indent=2), encoding="utf-8")
+    return {"ok": True, "verdict": v.status, "path": str(path), "elements": len(governed.elements)}
+
+
+def scenario_recompile_payload(project: str) -> dict[str, Any]:
+    """The stale-decision diff (incremental recompile): recompile the CURRENT governed map against the stored
+    baseline — did the decision go stale, which claims flipped, what to test next. Deterministic, no LLM."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.adapters import governed_state_from_serialized
+    from ztare.scenarios.argument_kernel import recompile
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+
+    path = _decision_baseline_path(project)
+    if not path.is_file():
+        return {"ok": False, "error": "no decision baseline yet — snapshot one first"}
+    try:
+        old = governed_state_from_serialized(json.loads(path.read_text(encoding="utf-8")))
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"unreadable baseline: {type(exc).__name__}"}
+    new = governed_state_from_research_map(project, REPO_ROOT)
+    rc = recompile(old, new)
+    text_of = {e.id: e.text for e in new.elements}
+    text_of.update({e.id: e.text for e in old.elements if e.id not in text_of})
+    old_nodes = {element.id: element for element in old.elements}
+    new_nodes = {element.id: element for element in new.elements}
+    added_ids = new_nodes.keys() - old_nodes.keys()
+    removed_ids = old_nodes.keys() - new_nodes.keys()
+    shared_ids = old_nodes.keys() & new_nodes.keys()
+    old_edges = {(edge.src, edge.kind, edge.dst, edge.warrant) for edge in old.edges}
+    new_edges = {(edge.src, edge.kind, edge.dst, edge.warrant) for edge in new.edges}
+
+    def node_row(element) -> dict[str, Any]:
+        return {"id": element.id, "kind": element.kind, "text": element.text}
+
+    def edge_row(edge: tuple[str, str, str, str]) -> dict[str, Any]:
+        src, relation, dst, warrant = edge
+        return {"from": src, "from_text": text_of.get(src, src), "relation": relation,
+                "to": dst, "to_text": text_of.get(dst, dst), "warrant": warrant}
+
+    changed_nodes = [
+        {"id": node_id, "kind": new_nodes[node_id].kind,
+         "before": old_nodes[node_id].text, "after": new_nodes[node_id].text}
+        for node_id in sorted(shared_ids)
+        if old_nodes[node_id].text != new_nodes[node_id].text or old_nodes[node_id].kind != new_nodes[node_id].kind
+    ]
+    graph_delta = {
+        "counts": {
+            "nodes_added": len(added_ids), "nodes_removed": len(removed_ids),
+            "nodes_changed": len(changed_nodes), "edges_added": len(new_edges - old_edges),
+            "edges_removed": len(old_edges - new_edges),
+        },
+        "nodes_added": [node_row(new_nodes[node_id]) for node_id in sorted(added_ids)[:25]],
+        "nodes_removed": [node_row(old_nodes[node_id]) for node_id in sorted(removed_ids)[:25]],
+        "nodes_changed": changed_nodes[:25],
+        "edges_added": [edge_row(edge) for edge in sorted(new_edges - old_edges)[:25]],
+        "edges_removed": [edge_row(edge) for edge in sorted(old_edges - new_edges)[:25]],
+    }
+    return {
+        "ok": True, "was": rc["was"], "now": rc["now"], "decision_stale": rc["decision_stale"],
+        "flipped": [{**f, "text": text_of.get(f["id"], f["id"])} for f in rc["flipped"]],
+        "to_test": [{"assumption": r["assumption"], "text": text_of.get(r["assumption"], r["assumption"])}
+                    for r in rc["agenda"] if r.get("flips_alone") or r.get("in_cores")][:5],
+        "graph_delta": graph_delta,
+    }
+
+
+def scenario_recheck_payload(project: str, now: str = "", half_life_days: "int | None" = None) -> dict[str, Any]:
+    """Re-earn / demote / expire the project's re-executable (W1) warrants by re-running each bound recheck
+    capability (e.g. a covenant recompute). Writes the recheck-owned overlay slice; returns the receipts + the
+    fresh strength status/profile so the panel can show the profile MOVE. Deterministic, no LLM. Parity with
+    `ztare scenario recheck`."""
+    from datetime import date
+
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.strength import strength_profile
+    from ztare.scenarios.warrant_recheck import recheck_project
+
+    now = now or date.today().isoformat()
+    before = strength_profile(governed_state_from_research_map(project, REPO_ROOT))
+    result = recheck_project(project, REPO_ROOT, now=now, half_life_days=half_life_days)
+    after = strength_profile(governed_state_from_research_map(project, REPO_ROOT))
+    return {"ok": True, "project": project, "now": now, "receipts": result.get("receipts", []),
+            "before": {"status": before.get("status"), "profile": before.get("profile")},
+            "after": {"status": after.get("status"), "profile": after.get("profile")}}
+
+
+def scenario_rice_payload(request: dict[str, Any]) -> dict[str, Any]:
+    """Governed RICE — Reach x Impact x Confidence / Effort where Confidence is READ from backing strength, never
+    typed, and each row names its weakest-backed factor. POST `{items:[{project,label,reach,impact,effort}]}` for
+    a portfolio (each item its own decision; Confidence = its thesis strength), or `{project: slug}` to rank the
+    claims inside one decision. Deterministic, no LLM. Parity with `ztare scenario rice`."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.rice import load_rice_inputs, portfolio_rice, rice_scores
+
+    items = request.get("items")
+    if isinstance(items, list) and items:
+        return {"ok": True, "mode": "portfolio", "rows": portfolio_rice(items, REPO_ROOT)}
+    project = str(request.get("project") or "")
+    if not project:
+        return {"ok": False, "error": "provide items[] (a portfolio) or a project slug"}
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
+    inputs = load_rice_inputs(project, REPO_ROOT)
+    return {"ok": True, "mode": "single", "project": project,
+            "rows": rice_scores(governed, inputs), "inputs": inputs,
+            "evidence": [{"id": element.id, "text": element.text}
+                         for element in governed.of_kind("evidence")]}
+
+
+def scenario_rice_update_payload(request: dict[str, Any]) -> dict[str, Any]:
+    """Persist bounded PM prioritization inputs; warrants are recomputed from the governed graph on read."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.rice import save_rice_inputs
+
+    project = str(request.get("project") or "").strip()
+    claim_id = str(request.get("claim_id") or "").strip()
+    factors = request.get("factors") if isinstance(request.get("factors"), dict) else {}
+    if not project or not claim_id:
+        return {"ok": False, "error": "choose a project and initiative"}
+    try:
+        saved = save_rice_inputs(project, REPO_ROOT, claim_id, factors)
+    except (OSError, ValueError) as exc:
+        return {"ok": False, "refused": True, "error": str(exc)}
+    payload = scenario_rice_payload({"project": project})
+    payload["saved"] = {"claim_id": claim_id, "factors": saved}
+    return payload
+
+
+def scenario_next_agenda_payload(project: str) -> dict[str, Any]:
+    """The unified 'what to test next' agenda (implicit + declared + loop, Pareto frontier). Parity with the CLI
+    `scenario agenda` next-test list. Deterministic, no LLM."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.agenda import project_agenda
+
+    return {"ok": True, "project": project, "agenda": project_agenda(project, REPO_ROOT)}
+
+
+def _required_deliverables_path(project: str):
+    from ztare.common.paths import REPO_ROOT  # module has no global REPO_ROOT; every fn imports it locally
+    return REPO_ROOT / "projects" / project / "workspace" / "required_deliverables.json"
+
+
+def _declared_deliverables(project: str, declared: "list[str] | None") -> "list[str]":
+    """The required-deliverable set: explicit `declared`, else the project's workspace/required_deliverables.json,
+    else the default decision_memo. This is where a user's ADDED required deliverable is remembered per project."""
+    if declared:
+        return [str(d) for d in declared]
+    # ONE source of truth (Fable's B4): the kernel resolver unions the scenario deliverables + the project's
+    # required_deliverables.json (default decision_memo), so the panel, the run-start pin, and the completeness
+    # firewall never diverge on "what must this project produce".
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.production import resolve_declared_set
+    return resolve_declared_set(project, repo_root=REPO_ROOT)
+
+
+def _scenario_deliverable_specs(name: str) -> tuple[list[str], list[Any]]:
+    """Resolve optional scenario metadata for the UI/composer without changing kernel state."""
+    name = str(name or "").strip()
+    if not name:
+        return [], []
+    from ztare.scenarios.production import scenario_contract
+    return scenario_contract(name)
+
+
+def scenario_deliverables_payload(project: str, declared: "list[str] | None" = None,
+                                  scenario: str = "") -> dict[str, Any]:
+    """The compose-vs-loop deliverable gap map: for each REQUIRED deliverable, can it be composed from the
+    current governed state now, or does it need the loop / a template? Read-only, no LLM. (See
+    `production.deliverable_gaps`.) A user adds a required deliverable via /api/scenario-deliverable-add."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.production import deliverable_binding_status, deliverable_gaps
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
+    scenario_names, specs = _scenario_deliverable_specs(scenario)
+    names = _declared_deliverables(project, declared or scenario_names)
+    result = deliverable_gaps(governed, names, specs=specs)
+    out_dir = str(REPO_ROOT / "projects" / project / "workspace" / "deliverables")
+    binding = deliverable_binding_status(governed, names, out_dir)
+    for row in result["deliverables"]:
+        row.update(binding["bindings"].get(row["name"], {}))
+    result["decision"] = binding["decision"]
+    return {"ok": True, "project": project, **result}
+
+
+def scenario_deliverable_add_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
+    """Add a required deliverable to a project (the 'add a required deliverable to an existing project' action);
+    persists to workspace/required_deliverables.json and returns the fresh gap map so the user sees immediately
+    whether it composes now or needs the loop."""
+    name = str(name or "").strip()
+    if not name:
+        return {"ok": False, "error": "deliverable name required"}
+    scenario_names, _ = _scenario_deliverable_specs(scenario)
+    current = _declared_deliverables(project, scenario_names)
+    if name not in current:
+        current.append(name)
+        p = _required_deliverables_path(project)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(current, indent=2), encoding="utf-8")
+    return scenario_deliverables_payload(project, current, scenario)
+
+
+def scenario_deliverable_generate_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
+    """Generate ONE required deliverable WITH PERMISSION: compose it from the governed state now if it composes
+    (no loop, never fabricated), else report that it needs the loop / a template. Writes only a composable,
+    firewall-passing artifact to workspace/deliverables/. Never ships ungoverned prose."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.production import deliverable_gaps, produce_scenario_artifacts
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
+    _, specs = _scenario_deliverable_specs(scenario)
+    row = next((r for r in deliverable_gaps(governed, [name], specs=specs)["deliverables"]), None)
+    if not row or row["status"] != "composable":
+        return {"ok": False, "project": project, "name": name, "generated": False,
+                "status": row["status"] if row else "unknown", "action": row["action"] if row else ""}
+    out_dir = str(REPO_ROOT / "projects" / project / "workspace" / "deliverables")
+    report = produce_scenario_artifacts(declared=[name], governed=governed, out_dir=out_dir, specs=specs)
+    return {"ok": True, "project": project, "name": name, "generated": name in report.get("written", []),
+            "path": f"{out_dir}/{name}.md", "verdict": report.get("verdict")}
+
+
+def scenario_deliverable_editorial_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
+    """Shape one governed source packet for its recipient without allowing model-authored claims."""
+    from ztare.common.llm_runtime import LLMRuntime, pick_model_for_tier, resolve_model_id
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.editorial import create_editorial_draft
+    from ztare.scenarios.firewall import provenance_firewall
+    from ztare.scenarios.production import build_scenario_deliverable
+    from ztare.workspace.report_actions import report_model
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
+    _, specs = _scenario_deliverable_specs(scenario)
+    deliverable = build_scenario_deliverable(name, governed, specs=specs)
+    if deliverable.stub_reason:
+        return {"ok": False, "error": deliverable.stub_reason}
+    firewall = provenance_firewall([deliverable], governed, [name])
+    if not firewall.ok:
+        return {"ok": False, "error": "source packet failed the provenance firewall",
+                "violations": firewall.violations}
+    configured = report_model(root=REPO_ROOT)
+    model_id = resolve_model_id(configured) if configured else pick_model_for_tier("balanced")
+    if not model_id:
+        return {"ok": False, "error": "no report model is configured"}
+
+    def call(prompt: str) -> str:
+        response = LLMRuntime().call_text(prompt, model_id=model_id, timeout_seconds=120,
+                                          retries=0, fallback_model_ids=())
+        return str(getattr(response, "text", "") or "")
+
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", name).strip("._-") or "document"
+    out_path = REPO_ROOT / "projects" / project / "workspace" / "deliverables" / f"{safe_name}.editorial-draft.md"
+    try:
+        result = create_editorial_draft(deliverable, governed, call=call, out_path=out_path)
+    except Exception as exc:  # noqa: BLE001 - model output is refused, never partially written.
+        return {"ok": False, "error": f"audience shaping refused: {type(exc).__name__}: {exc}"}
+    result.update({"project": project, "name": name, "model": model_id,
+                   "path": display_path(result["path"]),
+                   "receipt_path": display_path(result["receipt_path"])})
+    return result
+
+
+def scenario_agenda_payload(project: str) -> dict[str, Any]:
+    """The argument-kernel analysis for a project's governed map — grounded verdict, minimal cores, dominators,
+    warrant ceiling, and the test agenda. Workbench parity with `ztare scenario agenda`."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.argument_kernel import argument_analysis
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
+    a = argument_analysis(governed)
+    a["ok"] = True
+    a["text_of"] = {e.id: e.text for e in governed.elements}
+    return a
+
+
+def scenario_preview_payload(name: str) -> dict[str, Any]:
+    """The authoring mirror: what a scenario BINDS (rubric, run config, gate package, capabilities) plus its
+    rubric EFFECT (judge dimensions + persona) — the same wiring a real run honors, surfaced before a run so an
+    author can see the effect first. Thin wrapper over the resolver's pure `scenario_effect`; no LLM, no run."""
+    from ztare.scenarios.resolver import scenario_effect
+
+    try:
+        payload = scenario_effect(name)
+    except Exception as exc:  # noqa: BLE001 — an unknown/broken scenario name surfaces as an error, not a 500
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    payload["ok"] = True
+    return payload
+
+
+def scenario_attribution_payload(project: str) -> dict[str, Any]:
+    """The authoring mirror's other half: what scenario/rubric actually drove a project's PAST run and its
+    score trend — read straight off existing run artifacts, nothing recomputed or fabricated. Thin wrapper over
+    the pure `scenario_attribution`."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.attribution import scenario_attribution
+
+    try:
+        payload = scenario_attribution(project, REPO_ROOT)
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    payload["ok"] = True
+    return payload
+
+
+def scenario_provenance_payload(project: str) -> dict[str, Any]:
+    """The anti-cherry-pick teeth, surfaced: per currently-declared deliverable, whether it was PRE-REGISTERED
+    (pinned at a run-start, with the earliest run) or ADDED LATER — a COMPUTED fact off the append-only receipt,
+    never self-reported — plus the input-contract drift (charter changed / deliverables added since the last pin)."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.contract_receipts import contract_drift, deliverable_provenance
+    from ztare.scenarios.production import resolve_declared_set
+
+    try:
+        declared = resolve_declared_set(project, repo_root=REPO_ROOT)
+        return {"ok": True, "project": project,
+                "provenance": deliverable_provenance(project, declared, REPO_ROOT),
+                "drift": contract_drift(project, REPO_ROOT)}
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+
+
+def scenario_map_query_payload(project: str, question: str) -> dict[str, Any]:
+    """No-LLM natural-language query over the research map's SPO triples (PRD §7.6): maps the question's keywords
+    to the graph's relation vocabulary + an anchor node and traverses the edges — deterministic, zero model cost.
+    Thin wrapper over `research_graph_query.query_graph` on the built carrier. Surfaces the CLI (`ztare research
+    map-query`) into the workbench Ask box the spec described but never wired."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.reports.research_graph import build_research_graph
+    from ztare.reports.research_graph_query import query_graph
+
+    if not str(question or "").strip():
+        return {"ok": False, "error": "ask a question about the map"}
+    try:
+        carrier = build_research_graph(project, REPO_ROOT)
+        return query_graph(carrier, question)
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+
+
+def scenario_produce_all_payload(project: str, scenario: str = "") -> dict[str, Any]:
+    """Produce the FULL declared set at once so the set-completeness firewall actually FIRES (the per-deliverable
+    generate button passes a singleton and can never catch a silent drop). The declared set is the PINNED set when
+    a run-start receipt exists, else the current resolved set. Never fabricates — a deliverable that can't compose
+    is written as an accounted stub."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.production import produce_all_declared
+
+    try:
+        report = produce_all_declared(project, repo_root=REPO_ROOT, scenario=scenario)
+        return {"ok": report.get("ok", True), **report}
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+
+
+def charter_lint_payload(project: str) -> dict[str, Any]:
+    """What the KERNEL parses out of this project's charter — the machine contracts the loop enforces (forecast
+    type, anchor proxies, asymptotic claim) — and what did NOT parse. An IDE-lint over the prose blob (Fable's
+    C-as-lint): the charter stays free prose; this shows what actually lands, without a form fighting the loop's
+    own writes to the charter."""
+    from ztare.common.paths import PROJECTS_DIR
+    from ztare.validator.core.charter_parsing import (
+        extract_anchor_proxies_from_charter,
+        extract_asymptotic_claim_contract_from_charter,
+        extract_forecast_type_from_charter,
+    )
+
+    charter = PROJECTS_DIR / project / "project_charter.md"
+    if not charter.is_file():
+        return {"ok": True, "project": project, "has_charter": False, "contracts": []}
+    text = charter.read_text(encoding="utf-8")
+    forecast = extract_forecast_type_from_charter(text)
+    proxies = extract_anchor_proxies_from_charter(text)
+    asymptotic = extract_asymptotic_claim_contract_from_charter(text)
+    asy_claim = getattr(asymptotic, "asymptotic_claim", None)
+    asy_tail = getattr(asymptotic, "farther_tail_contract", None)
+    contracts = [
+        {"name": "Forecast type", "parsed": bool(forecast),
+         "value": forecast or "(not declared — defaults apply)",
+         "enforces": "whether bounded-tilt vs point-% claims are in bounds"},
+        {"name": "Anchor proxies", "parsed": bool(proxies),
+         "value": ", ".join(proxies) if proxies else "(none — no mathematical drift detection)",
+         "enforces": "drift detection against these proxies"},
+        {"name": "Asymptotic claim", "parsed": bool(asy_claim or asy_tail),
+         "value": (f"asymptotic_claim={asy_claim}, farther_tail={asy_tail}" if (asy_claim or asy_tail)
+                   else "(not declared)"),
+         "enforces": "the asymptotic-behavior contract the scorer checks"},
+    ]
+    return {"ok": True, "project": project, "has_charter": True, "contracts": contracts}
+
+
+def scenario_strength_payload(project: str) -> dict[str, Any]:
+    """The graded DECISION read — strength profile + status, what it rests on (Shapley), independent
+    corroboration per warrant tier, hard cruxes, and the challenge queue by drag. Workbench parity with
+    `ztare scenario strength`. CLI-first (never a direct kernel-file read), mirroring `research_graph_payload`."""
+    command = [
+        SERVER_PYTHON, "-m", "src.ztare.cli", "scenario", "strength",
+        "--project", project, "--json", "--snapshot",  # deduped write → the history sparkline's strength lane moves
+    ]
+    try:
+        proc = snapshot.run(command, timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "project": project, "error": str(exc)[:300]}
+    stdout = (proc.stdout or "").strip()
+    if stdout:
+        try:
+            return json.loads(stdout)
+        except Exception:  # noqa: BLE001
+            pass
+    return {"ok": False, "project": project, "error": (proc.stderr or "scenario strength CLI returned no JSON")[:300]}
+
+
+def scenario_bind_payload(request: dict[str, Any]) -> dict[str, Any]:
+    """Bind an excerpt from an indexed project source to a claim. Source bytes are loaded and hashed server-side;
+    a caller cannot certify text it supplied in the same request. Exact claim text earns W2. A quote that merely
+    appears relevant is preserved as W3 until an inference admission checks that connective. No LLM."""
+    import hashlib
+
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.adapters import append_governed_overlay, governed_state_from_research_map
+    from ztare.scenarios.decision_state import compile_decision_state, diff_decision_states
+    from ztare.scenarios.evidence_binding import bind_evidence
+    from ztare.scenarios.governed_types import normalize
+
+    project = str(request.get("project") or "").strip()
+    source_path = str(request.get("source_path") or request.get("relative_path") or "").strip()
+    excerpt = str(request.get("excerpt") or "")
+    target = str(request.get("target") or request.get("claim_ref") or "").strip()
+    if not (project and source_path and excerpt.strip() and target):
+        return {"ok": False, "error": "choose a project source, quote its exact words, and choose a target claim"}
+    try:
+        source = source_file_payload(project=project, relative_path=source_path)
+    except Exception as exc:  # noqa: BLE001 — path validation failures are a normal refused admission
+        return {"ok": False, "refused": True, "error": f"source is not an indexed project file: {exc}"}
+    if source.get("source_type") != "source_evidence":
+        return {"ok": False, "refused": True,
+                "error": "that file is not typed as source evidence; classify it before citing it"}
+    content = str(source.get("body") or "")
+    source_id = str(source.get("source_path") or source_path)
+    source_file = raw_source_path(project, source_path)
+    source_sha256 = hashlib.sha256(source_file.read_bytes()).hexdigest()
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    target_element = governed.by_id(target)
+    if target_element is None or target_element.kind not in {"claim", "thesis"}:
+        return {"ok": False, "error": f"target claim {target!r} is not in the governed map"}
+    binding = bind_evidence(source_id, content, excerpt, fetched_at=str(request.get("fetched_at") or ""))
+    if binding is None:
+        return {"ok": False, "refused": True,
+                "error": "the excerpt does not appear verbatim in the source — a citation that drifted from its source is refused (fail-closed)"}
+    ev_id = "ev.bound." + hashlib.sha256(f"{source_id}|{binding.excerpt}|{target}".encode()).hexdigest()[:10]
+    direct_claim_quote = normalize(target_element.text) in normalize(binding.excerpt)
+    inference_warrant = "W2" if direct_claim_quote else "W3"
+    element = {"id": ev_id, "kind": "evidence", "text": binding.excerpt,
+               "provenance": "sourced", "source_id": source_id, "source_path": source_id,
+               "source_sha256": source_sha256, "content_sha256": binding.content_sha256}
+    edge = {"src": ev_id, "kind": "SUPPORTS", "dst": target, "warrant": inference_warrant,
+            "source_warrant": "W2",
+            "admission": "exact_claim_quote" if direct_claim_quote else "user_targeted_quote"}
+    decision_before = compile_decision_state(governed).to_payload()
+    append_governed_overlay(project, REPO_ROOT, [element], [edge])
+    governed_after = governed_state_from_research_map(project, REPO_ROOT)
+    decision_after = compile_decision_state(governed_after).to_payload()
+    decision_delta = diff_decision_states(decision_before, decision_after)
+    return {"ok": True,
+            "bound": {"evidence_id": ev_id, "source_id": source_id, "source_path": source_id,
+                      "source_sha256": source_sha256,
+                      "excerpt": binding.excerpt, "target": target,
+                      "source_tier": "cited", "inference_tier": "cited" if direct_claim_quote else "unchecked"},
+            "decision_before": decision_before, "decision_after": decision_after,
+            "decision_delta": decision_delta,
+            # Compatibility fields for older clients; new callers should consume the typed decision payloads.
+            "strength_before": decision_before["strength"]["profile"],
+            "strength_after": decision_after["strength"]["profile"],
+            "status_before": decision_before["status"], "status_after": decision_after["status"]}
+
+
+def scenario_wagers_payload(project: str) -> dict[str, Any]:
+    """The project's WAGERS — protected thin-evidence bets on a BLOCKED claim, ranked by what would settle the
+    decision (info-yield, then cost). Also returns the BLOCKED claims (candidates for a new wager) and any
+    inadmissible bets with the reason. Workbench parity with `ztare scenario wager list`. Read-only, no LLM."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.agenda import unified_agenda
+    from ztare.scenarios.argument_kernel import claim_status
+    from ztare.scenarios.argument_kernel import verdict as _verdict
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.wager import load_wagers, simulate, wager_from_payload
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
+    wagers = [wager_from_payload(p) for p in load_wagers(project)]
+    wmap = {w.id: w for w in wagers}
+    # ranked through the ONE unified agenda (same gate + lenses as every candidate — no separate rankers).
+    rows = [r for r in unified_agenda(governed, declared=wagers) if r["source"] != "implicit"]
+    for r in rows:
+        w = wmap.get(r["id"])
+        r["claim_text"] = governed.by_id(r["claim_ref"]).text if governed.by_id(r["claim_ref"]) else ""
+        r["deadline"], r["lifecycle"] = (w.deadline, w.lifecycle) if w else ("", "")
+        # backward-compatible aliases the existing wager panel reads (alongside the new bits/on_frontier/severity)
+        r["identification_bits"] = r["bits"]
+        r["declared_cost"] = w.declared_cost if w else 0
+        r["stakes"] = w.stakes if w else ""
+        r["outcomes"] = simulate(governed, w).get("outcomes", []) if w else []
+    adm_ids = {r["id"] for r in rows}
+    inadmissible = [{"id": w.id, "reason": simulate(governed, w)["reason"]} for w in wagers if w.id not in adm_ids]
+    blocked = [{"id": c.id, "text": c.text} for c in (governed.of_kind("thesis") + governed.of_kind("claim"))
+               if claim_status(governed, c.id) != "BACKED"]
+    return {"ok": True, "project": project, "verdict": _verdict(governed), "wagers": rows,
+            "inadmissible": inadmissible, "blocked_claims": blocked}
+
+
+def scenario_wager_register_payload(project: str, wager: dict[str, Any]) -> dict[str, Any]:
+    """Register a wager (declared JSON from the workbench form). The kernel simulates every outcome; a wager is
+    persisted ONLY if admissible (a real test that moves the decision). Returns the receipt either way."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.artifacts import governed_state_from_research_map
+    from ztare.scenarios.wager import load_wagers, save_wagers, simulate, to_payload, wager_from_payload
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
+    try:
+        w = wager_from_payload(wager or {})
+    except Exception as exc:  # noqa: BLE001 — a malformed spec is a bad-request, not a crash
+        return {"ok": False, "error": f"malformed wager: {type(exc).__name__}"}
+    r = simulate(governed, w)
+    if r["admissible"]:
+        save_wagers(project, [p for p in load_wagers(project) if p.get("id") != w.id] + [to_payload(w)])
+    return {"ok": True, "registered": bool(r["admissible"]), "receipt": r}
+
+
+def scenario_wager_expire_payload(project: str, now: str = "") -> dict[str, Any]:
+    """Sweep: any open wager past its deadline auto-expires to the ordinary BLOCKED backlog (anti-laundering)."""
+    from datetime import date
+
+    from ztare.scenarios.wager import expire_if_due, load_wagers, save_wagers, to_payload, wager_from_payload
+
+    now = now or date.today().isoformat()
+    expired, out = 0, []
+    for p in load_wagers(project):
+        w = expire_if_due(wager_from_payload(p), now)
+        if w.lifecycle == "expired" and p.get("lifecycle") != "expired":
+            expired += 1
+        out.append(to_payload(w))
+    save_wagers(project, out)
+    return {"ok": True, "expired": expired, "now": now}
+
+
+def scenario_wager_execute_payload(request: dict[str, Any]) -> dict[str, Any]:
+    """Preview or execute one declared wager outcome. Writes require an explicit confirmed=true boundary."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios.wager import execute_project_outcome, preview_project_outcome
+
+    project = str(request.get("project") or "").strip()
+    wager_id = str(request.get("wager_id") or request.get("id") or "").strip()
+    outcome_id = str(request.get("outcome_id") or request.get("outcome") or "").strip()
+    if not (project and wager_id and outcome_id):
+        return {"ok": False, "error": "choose a project, wager, and observed outcome"}
+    try:
+        if not bool(request.get("confirmed", False)):
+            return preview_project_outcome(project, wager_id, outcome_id, REPO_ROOT)
+        return execute_project_outcome(project, wager_id, outcome_id, REPO_ROOT)
+    except ValueError as exc:
+        return {"ok": False, "refused": True, "error": str(exc)}
+
+
+def scenario_brief_payload(project: str) -> dict[str, Any]:
+    """The governed decision brief (markdown) via the decision_brief Renderer. Parity with `ztare scenario brief`."""
+    from ztare.common.paths import REPO_ROOT
+    from ztare.scenarios import registry
+    from ztare.scenarios.artifacts import assemble_verdict, governed_state_from_research_map, serialize_governed
+
+    governed = governed_state_from_research_map(project, REPO_ROOT)
+    if not governed.elements:
+        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
+    renderer = registry.get("renderer", "decision_brief")
+    if renderer is None:
+        return {"ok": False, "error": "decision_brief renderer not registered"}
+    text = renderer.render(serialize_governed(governed, verdict=assemble_verdict(governed))).text
+    return {"ok": True, "brief": text}
+
+
+def plugins_payload() -> dict[str, Any]:
+    """Everything installed across the three plugin kinds — SCENARIOS (yaml), RUBRICS (json), CAPABILITIES
+    (@capability code incl. plugin dirs). The workbench plugin manager reads this; install/reload update it."""
+    from ztare.common.paths import RUBRICS_DIR
+    from ztare.scenarios import registry
+
+    scenario_rows = scenarios_payload()["scenarios"]
+    return {
+        "scenarios": [r.get("name") for r in scenario_rows],
+        # The installed view needs purpose and contribution counts immediately.
+        # Keep this in the index payload instead of issuing one request per row.
+        "scenario_details": {str(r.get("name") or ""): r for r in scenario_rows if r.get("name")},
+        "rubrics": sorted(p.stem for p in RUBRICS_DIR.glob("*.json")),
+        "capabilities": registry.installed(),
+        "capability_details": registry.descriptors(),
+        "plugin_errors": registry.diagnostics().get("load_errors", []),
+        "plugin_dirs": registry.plugin_dirs(),
+    }
+
+
+def install_plugin_payload(kind: str, name: str, spec: "dict[str, Any]", *, overwrite: bool = False) -> dict[str, Any]:
+    """Install a DATA plugin from the UI — a scenario (yaml) or a rubric (json) — validated then written to its
+    filesystem registry, then discovery reloaded so it's live. Local-first: the name is slug-sanitized (no path
+    traversal) and the content is validated before write. Code plugins are NOT installed via web form (arbitrary
+    code) — they drop into a plugin dir + reload."""
+    from ztare.common.paths import RUBRICS_DIR, SCENARIOS_DIR
+    from ztare.scenarios import registry
+    from ztare.scenarios.config import ScenarioConfig
+
+    slug = _safe_plugin_name(name)
+    if not slug:
+        return {"ok": False, "error": "invalid name (need [a-z0-9_-])"}
+    try:
+        if kind == "scenario":
+            import yaml
+            body = {
+                "name": slug,
+                "description": str(spec.get("description") or "").strip(),
+                "rubric": _safe_plugin_name(spec.get("rubric") or slug),
+                "iters": int(spec.get("iters") or 8),
+                "dynamic": bool(spec.get("dynamic", True)),
+                "mutator_model": str(spec.get("mutator_model") or ""),
+                "judge_model": str(spec.get("judge_model") or ""),
+                "gate_package": list(spec.get("gate_package") or []),
+                "goal_type": str(spec.get("goal_type") or ""),
+                "solvers": list(spec.get("solvers") or []),
+                "evidence_sources": list(spec.get("evidence_sources") or ["local_files"]),
+                "renderer": str(spec.get("renderer") or "markdown"),
+                "rechecks": list(spec.get("rechecks") or []),
+                "workbench_panels": list(spec.get("workbench_panels") or []),
+                "deliverables": list(spec.get("deliverables") or []),
+                "deliverable_specs": list(spec.get("deliverable_specs") or []),
+            }
+            path = SCENARIOS_DIR / f"{slug}.yaml"
+            if path.exists() and not overwrite:
+                return {"ok": False, "conflict": True,
+                        "error": f"scenario '{slug}' already exists; open it from Installed to edit"}
+            ScenarioConfig(**body)  # validate before touching the installed manifest
+            SCENARIOS_DIR.mkdir(parents=True, exist_ok=True)
+            staged = path.with_name(f".{path.name}.tmp")
+            staged.write_text(yaml.safe_dump(body, sort_keys=False), encoding="utf-8")
+            staged.replace(path)
+        elif kind == "rubric":
+            dims = spec.get("dimensions") or []
+            total = sum(int(d.get("weight", 0)) for d in dims if isinstance(d, dict))
+            if not dims or total != 100:
+                return {"ok": False, "error": f"rubric needs dimensions whose weights sum to 100 (got {total})"}
+            payload = dict(spec)
+            payload.setdefault("rubric_mode", "calibration")
+            path = RUBRICS_DIR / f"{slug}.json"
+            if path.exists() and not overwrite:
+                return {"ok": False, "conflict": True,
+                        "error": f"rubric '{slug}' already exists; open it from Installed to edit"}
+            RUBRICS_DIR.mkdir(parents=True, exist_ok=True)
+            staged = path.with_name(f".{path.name}.tmp")
+            staged.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+            staged.replace(path)
+        else:
+            return {"ok": False, "error": f"unknown plugin kind '{kind}' (scenario | rubric)"}
+    except Exception as exc:  # noqa: BLE001 — a bad spec surfaces as an error, not a stack trace
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    registry.reload()
+    return {"ok": True, "kind": kind, "name": slug, "path": str(path), "installed": plugins_payload()}
+
+
+def plugin_detail_payload(kind: str, name: str) -> dict[str, Any]:
+    """The current spec of an installed DATA plugin (scenario / rubric) — so the UI can open it in an edit modal
+    pre-filled, then save back via /api/plugin-install (which overwrites). Read-only."""
+    from ztare.common.paths import RUBRICS_DIR, SCENARIOS_DIR
+
+    slug = _safe_plugin_name(name)
+    try:
+        if kind == "scenario":
+            from ztare.scenarios.config import ScenarioConfig
+            sc = ScenarioConfig.load(SCENARIOS_DIR / f"{slug}.yaml")
+            spec = {"description": sc.description, "rubric": sc.rubric, "iters": sc.iters,
+                    "dynamic": sc.dynamic, "mutator_model": sc.mutator_model, "judge_model": sc.judge_model,
+                    "gate_package": list(sc.gate_package), "goal_type": sc.goal_type,
+                    "solvers": list(sc.solvers),
+                    "evidence_sources": list(sc.evidence_sources), "renderer": sc.renderer,
+                    "rechecks": list(sc.rechecks), "workbench_panels": list(sc.workbench_panels),
+                    "deliverables": list(sc.deliverables),
+                    "deliverable_specs": [item.model_dump(mode="json") for item in sc.deliverable_specs]}
+        elif kind == "rubric":
+            spec = json.loads((RUBRICS_DIR / f"{slug}.json").read_text(encoding="utf-8"))
+        else:
+            return {"ok": False, "error": f"unknown plugin kind '{kind}'"}
+    except Exception as exc:  # noqa: BLE001 — a missing/unreadable plugin surfaces as an error
+        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    return {"ok": True, "kind": kind, "name": slug, "spec": spec}
+
+
+def plugins_reload_payload() -> dict[str, Any]:
+    """Re-run capability discovery (pick up a just-dropped code plugin) and return the fresh installed set."""
+    from ztare.scenarios import registry
+    registry.reload()
+    return {"ok": True, "installed": plugins_payload()}
+
+
 def reasoning_capability_payload() -> dict[str, Any]:
     map_path = capability_audit.DEFAULT_MAP
     anchors_path = capability_audit.DEFAULT_RESEARCH_ANCHORS
@@ -3052,7 +4011,11 @@ def project_index_payload() -> dict[str, Any]:
             ready_entry["workspace_exists"] = bool(folder.get("workspace_exists"))
             ready_entry["source_type_map_exists"] = bool(folder.get("source_type_map_exists"))
             ready_entry["root_source_file_count"] = safe_int(folder.get("root_source_file_count"))
-        elif folder.get("has_project_files"):
+        elif folder.get("has_project_files") and not folder.get("hidden_by_default"):
+            # PERF: skip the ~4KB recovery-actions block for hidden background/_bench folders (746 of ~950) —
+            # they're not shown by default and never recovered from the picker, and it dominated the payload
+            # (13.4MB → ~2MB). The UI handles a missing recovery_actions (treats it as []); a hidden folder that
+            # is un-hidden re-fetches its recovery draft via /api/project-recovery-draft on demand.
             project_dir = str(folder.get("project_dir") or f"projects/{project}")
             recovery_write_paths = [
                 project_dir,
@@ -3767,12 +4730,28 @@ def server_status_payload() -> dict[str, Any]:
         "GET /api/evidence-support",
         "GET /api/evidence-gaps",
         "GET /api/leanmill",
+        "GET /api/leanmill/campaigns",
+        "GET /api/leanmill/campaign",
+        "GET /api/leanmill/blueprints",
+        "GET /api/leanmill/blueprint-read",
         "GET /api/file",
         "POST /api/leanmill/target",
         "POST /api/leanmill/blueprint",
+        "POST /api/leanmill/blueprint-save",
+        "POST /api/leanmill/blueprint-draft",
         "POST /api/leanmill/autoformalize-notes",
         "POST /api/leanmill/solve-adhoc",
         "POST /api/leanmill/ratify",
+        "POST /api/leanmill/campaign-preflight",
+        "POST /api/leanmill/campaign-run",
+        "POST /api/leanmill/campaign-verify",
+        "POST /api/leanmill/campaign-replay",
+        "POST /api/leanmill/campaign-stop",
+        "POST /api/leanmill/campaign-retire",
+        "POST /api/leanmill/campaign-resume",
+        "POST /api/leanmill/campaign-recover",
+        "POST /api/leanmill/campaign-recheck",
+        "POST /api/leanmill/campaign-interpret",
         "POST /api/charter",
         "POST /api/project-create",
         "POST /api/source-import",
@@ -5219,16 +6198,16 @@ def report_allowed_action_destination(command: str, *, label: str = "") -> tuple
             return "run", "Check readiness", "Check readiness"
         return "run", "Start run", "Start run"
     if len(parts) >= 3 and parts[:3] == ["ztare", "autoresearch", "projection"]:
-        return "run", "Results", "Open results"
+        return "run", "Ready to run", "Open pressure-test"
     if len(parts) >= 3 and parts[:3] == ["ztare", "autoresearch", "health"]:
         return "run", "Fix warnings", "Open warnings"
     if len(parts) >= 2 and parts[0] in {"python", "python3", SERVER_PYTHON} and str(parts[-1]).endswith("/test_model.py"):
-        return "run", "Results", "Run project test"
+        return "run", "Ready to run", "Run project test"
     label_text = str(label or "").lower()
     if "preflight" in label_text:
         return "run", "Check readiness", "Open readiness check"
     if "projection" in label_text or "loop results" in label_text or "run history" in label_text:
-        return "run", "Results", "Open results"
+        return "run", "Ready to run", "Open pressure-test"
     if "evidence health" in label_text or "claim-support" in label_text or "stale artifact" in label_text:
         return "run", "Fix warnings", "Open warnings"
     if "validation run" in label_text or "in-loop validation" in label_text or "parameter-space test" in label_text:
@@ -5912,6 +6891,32 @@ def apply_charter_edit(*, project: str, text: str, rubric: str | None = None, in
     }
 
 
+_SNAPSHOT_CACHE: "dict[tuple, tuple[float, dict]]" = {}  # (project,rubric,intake,renderer) -> (content_mtime, payload)
+
+
+def _project_content_mtime(project: str) -> float:
+    """Newest mtime across the project's files — the snapshot cache key. ANY project-local change (research map,
+    evidence, a governed_overlay bind, a saved review) bumps it and invalidates the cache. Skips __pycache__/.git;
+    O(files) stat calls (~ms) vs the ~9s rebuild it saves. ponytail: mtime-keyed is coarse but correct for
+    project-local edits; global-state changes would need a manual Refresh (rare)."""
+    root = snapshot.REPO / "projects" / project
+    if not root.is_dir():
+        return 0.0
+    latest = 0.0
+    for p in root.rglob("*"):
+        # skip the build's OWN derived output (synthesis/*) — else every build bumps the key and the cache never
+        # hits; INPUT files (research map, evidence, thesis, workspace/governed_overlay from a bind) still count.
+        if "__pycache__" in p.parts or ".git" in p.parts or "synthesis" in p.parts:
+            continue
+        try:
+            m = p.stat().st_mtime
+        except OSError:
+            continue
+        if m > latest:
+            latest = m
+    return latest
+
+
 def snapshot_payload_for_project(
     *,
     project: str,
@@ -5923,6 +6928,13 @@ def snapshot_payload_for_project(
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
     renderer = renderer or snapshot.DEFAULT_RENDERER
+    # Cache the ~9s snapshot per project, keyed on the newest project-file mtime — a repeat load of an unchanged
+    # project is instant; any project-local edit (incl. a bind writing governed_overlay.json) invalidates it.
+    _cache_key = (project, rubric, intake, renderer)
+    _mtime = _project_content_mtime(project)
+    _cached = _SNAPSHOT_CACHE.get(_cache_key)
+    if _cached is not None and _cached[0] == _mtime:
+        return _cached[1]
     output_path = snapshot.REPO / snapshot.DEFAULT_OUT
     (
         _html,
@@ -5956,6 +6968,7 @@ def snapshot_payload_for_project(
     )
     payload["ok"] = True
     payload["served_from"] = "local_api"
+    _SNAPSHOT_CACHE[_cache_key] = (_mtime, payload)
     return payload
 
 
@@ -7537,10 +8550,39 @@ def research_graph_payload(project: str) -> dict[str, Any]:
     stdout = (proc.stdout or "").strip()
     if stdout:
         try:
-            return json.loads(stdout)
+            carrier = json.loads(stdout)
+            _attach_argument_overlay(carrier)  # decision overlay on the topology the Map already draws
+            return carrier
         except Exception:  # noqa: BLE001
             pass
     return {"ok": False, "project": project, "error": (proc.stderr or "research-graph CLI returned no JSON")[:300]}
+
+
+def _attach_argument_overlay(carrier: dict[str, Any]) -> None:
+    """Overlay the argument kernel's analysis onto the research-graph carrier IN PLACE: the verdict + humane
+    reason at top level, and each node's grounded lifecycle / minimal-core membership / load-bearing hinge —
+    so the Map renders the DECISION, not just the typed topology. Best-effort: the map already IS the argument
+    graph (one source of truth), and any overlay failure leaves the plain graph untouched (never blanks it)."""
+    if not isinstance(carrier, dict) or not carrier.get("ok"):
+        return
+    try:
+        from ztare.scenarios.adapters import argument_overlay
+        overlay = argument_overlay(carrier)
+    except Exception:  # noqa: BLE001 — overlay is additive; a bad map must never break the graph payload
+        return
+    if not overlay:
+        return
+    carrier["argument"] = {k: overlay[k] for k in
+                           ("verdict", "reason", "warrant_ceiling", "cores", "hinge", "strength_status",
+                            "thesis_profile", "node_provenance")
+                           if k in overlay}
+    per_node = overlay.get("nodes") or {}
+    for node in carrier.get("nodes") or []:
+        role = per_node.get(str(node.get("id")))
+        if role:
+            node["grounded"], node["in_core"], node["hinge"] = role["grounded"], role["in_core"], role["hinge"]
+            if "profile" in role:  # the geological strata (s0 bedrock … s3 snow) the Map renders per node
+                node["profile"] = role["profile"]
 
 
 def export_obsidian_payload(project: str) -> dict[str, Any]:
@@ -7596,8 +8638,8 @@ def blocked_run_next_action(trace: dict[str, Any]) -> dict[str, str]:
     local_step = label
     if blocker_id == "out_of_loop_evidence_recovery":
         label = "Fetch or justify evidence gaps"
-        workspace = "run"
-        subsection = "Results"
+        workspace = "sources"
+        subsection = "Prepare files"
         local_step = "Open evidence gaps"
     elif blocker_id == "evidence_prepare":
         label = "Prepare evidence"
@@ -7688,6 +8730,7 @@ def bounded_run_payload_for_project(
     rubric: str | None = None,
     intake: str | None = None,
     renderer: str | None = None,
+    scenario: str | None = None,
     confirmed: bool = False,
 ) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
@@ -7701,6 +8744,19 @@ def bounded_run_payload_for_project(
         str(kernel.get("run_command") or plan.get("recommended_first_command") or ""),
         project,
     )
+    # A picked --scenario supplies the rubric + run bundle: strip the kernel's default --rubric and add
+    # --scenario, so the scenario's rubric/config drive the run (matches the CLI precedence). display_command
+    # is both shown and executed (below), so this threads the picker end-to-end. Cosmetic-safe: never raises.
+    if scenario:
+        try:
+            _sp = shlex.split(display_command)
+            if _sp[:3] == ["ztare", "autoresearch", "run"]:
+                _sp = set_cli_option(_sp, "--rubric", "")
+                if "--scenario" not in _sp:
+                    _sp = _sp[:3] + ["--scenario", scenario] + _sp[3:]
+                display_command = " ".join(shlex.quote(part) for part in _sp)
+        except Exception:  # noqa: BLE001 — never break the run payload over command assembly
+            pass
     plan_status = str(plan.get("status") or "")
     can_run = plan_status == "ready_for_bounded_run" and bool(kernel.get("can_enter_kernel"))
     run_paths = bounded_run_write_paths(project) if can_run else []
@@ -7804,6 +8860,55 @@ def bounded_run_payload_for_project(
     except Exception as exc:  # noqa: BLE001 - run output should still be inspectable.
         payload["snapshot_error"] = display_text(exc)
     return payload
+
+
+def _workbench_jobs_root() -> Path:
+    return snapshot.REPO / ".workbench" / "jobs"
+
+
+def bounded_run_job_payload(*, project: str, rubric: str | None = None, intake: str | None = None,
+                            renderer: str | None = None, scenario: str | None = None) -> dict[str, Any]:
+    """Launch the already-previewed kernel command behind the shared durable job contract."""
+    from ztare.workspace.jobs import launch_job
+
+    preview = bounded_run_payload_for_project(
+        project=project, rubric=rubric, intake=intake, renderer=renderer, scenario=scenario, confirmed=False,
+    )
+    if not preview.get("can_run"):
+        return preview
+    command = ztare_run_command_from_display(str(preview.get("command") or ""))
+    job = launch_job(
+        root=_workbench_jobs_root(), command=command, cwd=snapshot.REPO, env=load_workbench_env(),
+        kind="autoresearch_run", project=project, label="Project run",
+        context={"rubric": rubric or project, "intake": intake or "", "renderer": renderer or "",
+                 "scenario": scenario or "", "write_boundary": preview.get("confirmed_write_boundary") or {}},
+    )
+    return {**preview, "ok": True, "accepted": True, "status": "queued", "job": job,
+            "writes": True, "write_boundary": preview.get("confirmed_write_boundary") or {}}
+
+
+def workbench_job_payload(job_id: str) -> dict[str, Any]:
+    from ztare.workspace.jobs import read_job
+
+    try:
+        return {"ok": True, "job": read_job(_workbench_jobs_root(), job_id)}
+    except (OSError, ValueError) as exc:
+        return {"ok": False, "error": f"unknown job: {display_text(exc)}"}
+
+
+def workbench_job_cancel_payload(job_id: str) -> dict[str, Any]:
+    from ztare.workspace.jobs import cancel_job
+
+    try:
+        return {"ok": True, "job": cancel_job(_workbench_jobs_root(), job_id)}
+    except (OSError, ValueError) as exc:
+        return {"ok": False, "error": f"unknown job: {display_text(exc)}"}
+
+
+def workbench_jobs_payload(project: str = "") -> dict[str, Any]:
+    from ztare.workspace.jobs import list_jobs
+
+    return {"ok": True, "jobs": list_jobs(_workbench_jobs_root(), project=project)}
 
 
 def file_sha256_for_display_path(value: Any) -> str:
@@ -7968,7 +9073,7 @@ def evidence_fetch_command_from_context(context: dict[str, str], *, target: str 
         command.extend(["--model", context["model"]])
     if context["auto_compile"] != "1":
         command.append("--no-auto-compile")
-    # A single-gap fetch (one-click from the Results surface) overrides the severity batch:
+    # A single-gap fetch from the Evidence surface overrides the severity batch:
     # the user already picked this gap, so fetch it whatever its severity.
     if (target or "").strip():
         command.extend(["--target", target.strip(), "--max-fetches", "1"])
@@ -7996,7 +9101,11 @@ def evidence_fetch_payload_for_project(
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
-    project_intake_path(project, intake, allow_examples=True)
+    try:  # a bare/scenario project has no intake — fetch still works: it reads workspace gaps or a --target, and fetch_evidence bootstraps raw/
+        project_intake_path(project, intake, allow_examples=True)
+        intake_present = True
+    except FileNotFoundError:
+        intake_present = False
     project_root = snapshot.REPO / "projects" / project
     workspace = project_root / "workspace"
     command, command_display, context = evidence_fetch_command(project, rubric, target=target)
@@ -8024,6 +9133,7 @@ def evidence_fetch_payload_for_project(
         "project": project,
         "rubric": rubric,
         "intake": intake,
+        "intake_present": intake_present,
         "label": "Fetch evidence",
         "command": command_display,
         "settings": context,
@@ -8143,8 +9253,11 @@ def evidence_gap_list_payload_for_project(
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
-    if intake:
-        project_intake_path(project, intake, allow_examples=True)
+    if intake:  # soft: evidence gaps live in the workspace store, not the intake — list them even with no intake file
+        try:
+            project_intake_path(project, intake, allow_examples=True)
+        except FileNotFoundError:
+            pass
     command = [
         SERVER_PYTHON,
         "-m",
@@ -8397,7 +9510,7 @@ def unique_values(values: list[str]) -> list[str]:
     return result
 
 
-def uploaded_source_rows_for_project(value: Any, *, limit: int = 20) -> list[dict[str, str]]:
+def uploaded_source_rows_for_project(value: Any, *, limit: int = 20) -> list[dict[str, Any]]:
     if value in (None, ""):
         return []
     if not isinstance(value, list):
@@ -8407,11 +9520,30 @@ def uploaded_source_rows_for_project(value: Any, *, limit: int = 20) -> list[dic
         if not isinstance(item, dict):
             raise ValueError(f"uploaded source {index} must be an object")
         filename = str(item.get("filename") or "").strip()
-        if not SOURCE_IMPORT_FILENAME_RE.fullmatch(filename):
-            raise ValueError(f"uploaded source {index} filename must be a flat .md or .txt name")
         source_type = str(item.get("source_type") or "source_evidence").strip()
         if source_type not in SOURCE_IMPORT_TYPES:
             raise ValueError(f"uploaded source {index} source_type must be one of: {', '.join(sorted(SOURCE_IMPORT_TYPES))}")
+        original_base64 = str(item.get("original_base64") or "").strip()
+        if original_base64:
+            original_filename = str(item.get("original_filename") or filename).strip()
+            if not DOCUMENT_IMPORT_FILENAME_RE.fullmatch(original_filename):
+                raise ValueError(f"uploaded source {index} has an unsupported or nested document filename")
+            try:
+                original_bytes = base64.b64decode(original_base64, validate=True)
+            except (binascii.Error, ValueError) as exc:
+                raise ValueError(f"uploaded source {index} is not valid base64") from exc
+            from ztare.workspace.document_ingest import extract_document_bytes
+            extraction = extract_document_bytes(original_filename, original_bytes)
+            filename = extraction["extracted_filename"]
+            body = extraction["text"]
+            rows.append({"filename": filename, "source_type": source_type, "body": body,
+                         "original_filename": original_filename, "original_bytes": original_bytes,
+                         "original_sha256": extraction["sha256"],
+                         "extraction_method": extraction["extraction_method"],
+                         "extraction_truncated": extraction["truncated"]})
+            continue
+        if not SOURCE_IMPORT_FILENAME_RE.fullmatch(filename):
+            raise ValueError(f"uploaded source {index} filename must be a flat .md or .txt name")
         body = str(item.get("body") or "")
         if not body.strip():
             raise ValueError(f"uploaded source {index} body is required")
@@ -8419,7 +9551,7 @@ def uploaded_source_rows_for_project(value: Any, *, limit: int = 20) -> list[dic
     return rows
 
 
-def stage_uploaded_source_rows(project: str, rows: list[dict[str, str]]) -> tuple[list[str], list[str], list[str]]:
+def stage_uploaded_source_rows(project: str, rows: list[dict[str, Any]]) -> tuple[list[str], list[str], list[str]]:
     if not rows:
         return [], [], []
     project_root = snapshot.REPO / "projects" / project
@@ -8435,7 +9567,25 @@ def stage_uploaded_source_rows(project: str, rows: list[dict[str, str]]) -> tupl
         filename = raw_recovery_filename(raw_dir, raw_dir / row["filename"])
         target = raw_dir / filename
         body = row["body"].rstrip()
-        source_text = "---\n" f"source_type: {source_type}\n" "---\n\n" f"{body}\n"
+        metadata_lines = [f"source_type: {source_type}"]
+        original_bytes = row.get("original_bytes")
+        if isinstance(original_bytes, bytes):
+            attachments = project_root / "attachments"
+            WORKBENCH_STORE.ensure_dir(attachments)
+            original_name = raw_recovery_filename(attachments, attachments / str(row["original_filename"]))
+            original_target = attachments / original_name
+            if original_target.exists() and hashlib.sha256(WORKBENCH_STORE.read_bytes(original_target)).hexdigest() != row["original_sha256"]:
+                raise ValueError(f"uploaded document would overwrite a different attachment: {repo_rel(original_target)}")
+            if not original_target.exists():
+                WORKBENCH_STORE.write_bytes(original_target, original_bytes)
+                write_paths.append(repo_rel(original_target))
+            metadata_lines.extend([
+                f"original_attachment: {repo_rel(original_target)}",
+                f"original_sha256: {row['original_sha256']}",
+                f"extraction_method: {row['extraction_method']}",
+                f"extraction_truncated: {str(bool(row.get('extraction_truncated'))).lower()}",
+            ])
+        source_text = "---\n" + "\n".join(metadata_lines) + "\n---\n\n" + f"{body}\n"
         if target.exists():
             existing_type, existing_body = split_source_frontmatter(
                 WORKBENCH_STORE.read_text(target),
@@ -8998,7 +10148,7 @@ def compression_progress_payload_for_project(
             area="run",
             detail=summary,
             workspace="run",
-            subsection="Results",
+            subsection="Ready to run",
             primary_label="Save next step",
             source=source_refs[-1] if source_refs else repo_rel(workspace),
             rule="Compression-progress is advisory. It does not block a run unless combined with source, evidence, or readiness blockers.",
@@ -9122,7 +10272,7 @@ def information_yield_payload_for_project(project: str) -> dict[str, Any]:
             area="run",
             detail=summary,
             workspace="run",
-            subsection="Results",
+            subsection="Ready to run",
             primary_label="Save next step",
             source=source,
             rule="Truth-yield is advisory until saved as a project review or next step.",
@@ -9335,7 +10485,7 @@ def workflow_ui_destination(step_id: str, status: str) -> dict[str, str]:
     if step_id == "preflight":
         return {"workspace": "run", "subsection": "Check readiness"}
     if step_id == "project_run":
-        return {"workspace": "run", "subsection": "Results" if status == "done" else "Start run"}
+        return {"workspace": "run", "subsection": "Ready to run" if status == "done" else "Start run"}
     if step_id == "review_report":
         return {
             "workspace": "review" if status == "ready" else "save",
@@ -11228,7 +12378,7 @@ def _project_actions(
                 area="checks",
                 detail=str(scoring_guide_readiness.get("summary") or "Scoring guide needs review before a run."),
                 workspace="run",
-                subsection="Ready to run",
+                subsection="Scoring guide",
                 primary_label="Open scoring guide",
                 source=scoring_guide_path,
                 rule="Full runs require a current scoring guide with usable dimensions before launch.",
@@ -11268,8 +12418,8 @@ def _project_actions(
                 label="Fetch or justify evidence gaps",
                 area="evidence",
                 detail=str(evidence_gap_recovery.get("summary") or "Active evidence gaps need fetch or justification."),
-                workspace="run",
-                subsection="Results",
+                workspace="sources",
+                subsection="Prepare files",
                 primary_label="Review gaps",
                 source=str(evidence_gap_recovery.get("file") or ""),
                 rule="Active evidence gaps must be fetched or hash-justified before the project can claim stronger evidence support.",
@@ -12172,7 +13322,7 @@ def workflow_payload_for_project(
         prepare_detail = str(evidence_gap_recovery.get("summary") or "Active evidence gaps need fetch or justification.")
         prepare_step_status = "needs_attention"
         prepare_local_action = "Fetch or justify evidence gaps"
-        prepare_destination = {"workspace": "run", "subsection": "Results"}
+        prepare_destination = {"workspace": "sources", "subsection": "Prepare files"}
         prepare_route = "GET /api/evidence-gaps -> POST /api/evidence-fetch or POST /api/evidence-gap-justify"
         prepare_write_boundary = write_boundary_payload(
             writes_project_files=bool(gap_write_paths),
@@ -12495,6 +13645,26 @@ def project_draft_payload(*, text: str, confirmed: bool = False) -> dict[str, An
     return data
 
 
+def document_extract_payload(request: dict[str, Any]) -> dict[str, Any]:
+    """Read-only extraction preview for browser uploads. Project creation re-extracts the submitted original
+    bytes, so this response is a preview rather than a trust boundary."""
+    filename = str(request.get("filename") or "").strip()
+    encoded = str(request.get("content_base64") or "").strip()
+    if not filename or not encoded:
+        return {"ok": False, "error": "filename and document bytes are required"}
+    if not DOCUMENT_IMPORT_FILENAME_RE.fullmatch(filename):
+        return {"ok": False, "error": "unsupported or nested document filename"}
+    try:
+        data = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError):
+        return {"ok": False, "error": "document bytes are not valid base64"}
+    try:
+        from ztare.workspace.document_ingest import extract_document_bytes
+        return extract_document_bytes(filename, data)
+    except Exception as exc:  # noqa: BLE001 — extraction failures are returned as a typed preview result
+        return {"ok": False, "error": str(exc)[:300]}
+
+
 def falsify_claim_payload(*, project: str, claim: str, confirmed: bool = False) -> dict[str, Any]:
     """Advisory: run the adversarial inverter against ONE claim (ztare research falsify) — one model call,
     returns 2-4 concrete falsification tests each with a pre-committed fail criterion. Fast single-claim
@@ -12811,6 +13981,8 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0:
             raise ValueError("request body is empty")
+        if length > MAX_JSON_BODY_BYTES:
+            raise ValueError(f"request body exceeds {MAX_JSON_BODY_BYTES // (1024 * 1024)} MB")
         body = self.rfile.read(length)
         payload = json.loads(body.decode("utf-8"))
         if not isinstance(payload, dict):
@@ -12833,6 +14005,48 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/capabilities":
                 self.send_json(reasoning_capability_payload())
+                return
+            if parsed.path == "/api/scenarios":
+                self.send_json(scenarios_payload())
+                return
+            if parsed.path == "/api/plugins":
+                self.send_json(plugins_payload())
+                return
+            if parsed.path == "/api/scenario-agenda":
+                self.send_json(scenario_agenda_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-strength":
+                self.send_json(scenario_strength_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-baseline-status":
+                self.send_json(scenario_baseline_status_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-brief":
+                self.send_json(scenario_brief_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-wagers":
+                self.send_json(scenario_wagers_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-preview":
+                self.send_json(scenario_preview_payload(first_param(parse_qs(parsed.query), "name", "")))
+                return
+            if parsed.path == "/api/scenario-attribution":
+                self.send_json(scenario_attribution_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-provenance":
+                self.send_json(scenario_provenance_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/charter-lint":
+                self.send_json(charter_lint_payload(first_param(parse_qs(parsed.query), "project", "")))
+                return
+            if parsed.path == "/api/scenario-map-query":
+                params = parse_qs(parsed.query)
+                self.send_json(scenario_map_query_payload(first_param(params, "project", ""), first_param(params, "q", "")))
+                return
+            if parsed.path == "/api/plugin":
+                params = parse_qs(parsed.query)
+                self.send_json(plugin_detail_payload(
+                    first_param(params, "kind", ""), first_param(params, "name", "")))
                 return
             if parsed.path == "/api/principles":
                 params = parse_qs(parsed.query)
@@ -13008,6 +14222,29 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/leanmill":
                 self.send_json(leanmill_state_via_cli())
                 return
+            if parsed.path == "/api/jobs":
+                params = parse_qs(parsed.query)
+                self.send_json(workbench_jobs_payload(first_param(params, "project", "")))
+                return
+            if parsed.path == "/api/job":
+                params = parse_qs(parsed.query)
+                self.send_json(workbench_job_payload(first_param(params, "id", "")))
+                return
+            if parsed.path == "/api/leanmill/campaigns":
+                self.send_json(leanmill_payloads.campaigns_list_payload())
+                return
+            if parsed.path == "/api/leanmill/campaign":
+                params = parse_qs(parsed.query)
+                self.send_json(leanmill_payloads.campaign_detail_payload(first_param(params, "dir", "")))
+                return
+            if parsed.path == "/api/leanmill/blueprints":
+                self.send_json(leanmill_payloads.blueprint_list_payload(repo=snapshot.REPO, storage=WORKBENCH_STORE))
+                return
+            if parsed.path == "/api/leanmill/blueprint-read":
+                params = parse_qs(parsed.query)
+                request = {"path": first_param(params, "path", "")}
+                self.send_json(leanmill_payloads.blueprint_read_payload(request, repo=snapshot.REPO, storage=WORKBENCH_STORE))
+                return
             static_path = static_workbench_path(parsed.path)
             if static_path is not None:
                 self.send_static_file(static_path)
@@ -13050,6 +14287,15 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 status = 200 if response.get("accepted") or response.get("status") == "needs_confirmation" else 400
                 self.send_json(response, status=status)
                 return
+            if parsed.path == "/api/leanmill/blueprint-save":
+                response = leanmill_payloads.blueprint_save_payload(self.read_json_body(), repo=snapshot.REPO, storage=WORKBENCH_STORE)
+                self.send_json(response, status=200 if response.get("saved") else 400)
+                return
+            if parsed.path == "/api/leanmill/blueprint-draft":
+                response = leanmill_payloads.blueprint_draft_payload(self.read_json_body(), repo=snapshot.REPO, storage=WORKBENCH_STORE)
+                status = 200 if response.get("accepted") or response.get("status") == "needs_confirmation" else 400
+                self.send_json(response, status=status)
+                return
             if parsed.path == "/api/leanmill/scaffold":
                 try:
                     response = leanmill_payloads.scaffold_payload(self.read_json_body(), repo=snapshot.REPO, storage=WORKBENCH_STORE)
@@ -13077,6 +14323,39 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     response = {"ok": False, "accepted": False, "error": display_text(exc)}
                     status = 400
                 self.send_json(response, status=status)
+                return
+            if parsed.path == "/api/leanmill/campaign-preflight":
+                response = leanmill_payloads.campaign_preflight_payload(self.read_json_body(), repo=snapshot.REPO, storage=WORKBENCH_STORE)
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/leanmill/campaign-run":
+                response = leanmill_payloads.campaign_run_payload(self.read_json_body(), repo=snapshot.REPO, storage=WORKBENCH_STORE)
+                status = 200 if response.get("accepted") or response.get("status") == "needs_confirmation" else 400
+                self.send_json(response, status=status)
+                return
+            if parsed.path == "/api/leanmill/campaign-verify":
+                self.send_json(leanmill_payloads.campaign_verify_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-replay":
+                self.send_json(leanmill_payloads.campaign_replay_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-stop":
+                self.send_json(leanmill_payloads.campaign_stop_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-retire":
+                self.send_json(leanmill_payloads.campaign_retire_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-resume":
+                self.send_json(leanmill_payloads.campaign_resume_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-recover":
+                self.send_json(leanmill_payloads.campaign_recover_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-recheck":
+                self.send_json(leanmill_payloads.campaign_recheck_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/leanmill/campaign-interpret":
+                self.send_json(leanmill_payloads.campaign_interpret_payload(self.read_json_body()))
                 return
             if parsed.path == "/api/review":
                 self.send_json(review_payload_from_request(self.read_json_body()))
@@ -13172,22 +14451,130 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 )
                 self.send_json(response, status=200 if response.get("returncode") == 0 else 400)
                 return
+            if parsed.path == "/api/scenario-surface":
+                request = self.read_json_body()
+                self.send_json(scenario_surface_payload(str(request.get("project") or "")))
+                return
+            if parsed.path == "/api/scenario-reingest":
+                request = self.read_json_body()
+                self.send_json(scenario_reingest_payload(
+                    str(request.get("project") or ""), str(request.get("doc") or "")))
+                return
+            if parsed.path == "/api/scenario-reingest-promote":
+                request = self.read_json_body()
+                response = scenario_reingest_promote_payload(
+                    str(request.get("project") or ""), str(request.get("doc") or ""),
+                    str(request.get("base_hash") or ""), str(request.get("source_path") or ""))
+                self.send_json(response, status=200 if response.get("ok") else 409 if response.get("stale") else 400)
+                return
+            if parsed.path == "/api/scenario-annotate":
+                request = self.read_json_body()
+                self.send_json(scenario_annotate_payload(
+                    str(request.get("project") or ""), str(request.get("doc") or ""),
+                    str(request.get("model") or "")))
+                return
+            if parsed.path == "/api/plugin-install":
+                request = self.read_json_body()
+                response = install_plugin_payload(
+                    str(request.get("kind") or ""), str(request.get("name") or ""),
+                    request.get("spec") if isinstance(request.get("spec"), dict) else {},
+                    overwrite=bool(request.get("overwrite", False)),
+                )
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/plugins-reload":
+                self.send_json(plugins_reload_payload())
+                return
+            if parsed.path == "/api/scenario-baseline":
+                request = self.read_json_body()
+                self.send_json(scenario_baseline_payload(str(request.get("project") or "")))
+                return
+            if parsed.path == "/api/scenario-wager-register":
+                request = self.read_json_body()
+                response = scenario_wager_register_payload(
+                    str(request.get("project") or ""),
+                    request.get("wager") if isinstance(request.get("wager"), dict) else {})
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/scenario-wager-expire":
+                request = self.read_json_body()
+                self.send_json(scenario_wager_expire_payload(
+                    str(request.get("project") or ""), str(request.get("now") or "")))
+                return
+            if parsed.path == "/api/scenario-wager-execute":
+                response = scenario_wager_execute_payload(self.read_json_body())
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/scenario-recompile":
+                request = self.read_json_body()
+                self.send_json(scenario_recompile_payload(str(request.get("project") or "")))
+                return
+            if parsed.path == "/api/scenario-recheck":
+                request = self.read_json_body()
+                hl = request.get("half_life_days")
+                self.send_json(scenario_recheck_payload(
+                    str(request.get("project") or ""), str(request.get("now") or ""),
+                    int(hl) if isinstance(hl, (int, str)) and str(hl).lstrip("-").isdigit() else None))
+                return
+            if parsed.path == "/api/scenario-rice":
+                self.send_json(scenario_rice_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/scenario-rice-inputs":
+                response = scenario_rice_update_payload(self.read_json_body())
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/scenario-bind":
+                self.send_json(scenario_bind_payload(self.read_json_body()))
+                return
+            if parsed.path == "/api/scenario-next-agenda":
+                self.send_json(scenario_next_agenda_payload(str(self.read_json_body().get("project") or "")))
+                return
+            if parsed.path == "/api/scenario-deliverables":
+                req = self.read_json_body()
+                self.send_json(scenario_deliverables_payload(str(req.get("project") or ""), req.get("declared"),
+                                                             str(req.get("scenario") or "")))
+                return
+            if parsed.path == "/api/scenario-deliverable-add":
+                req = self.read_json_body()
+                self.send_json(scenario_deliverable_add_payload(str(req.get("project") or ""), str(req.get("name") or ""),
+                                                                str(req.get("scenario") or "")))
+                return
+            if parsed.path == "/api/scenario-deliverable-generate":
+                req = self.read_json_body()
+                self.send_json(scenario_deliverable_generate_payload(str(req.get("project") or ""), str(req.get("name") or ""),
+                                                                      str(req.get("scenario") or "")))
+                return
+            if parsed.path == "/api/scenario-deliverable-editorial":
+                req = self.read_json_body()
+                response = scenario_deliverable_editorial_payload(
+                    str(req.get("project") or ""), str(req.get("name") or ""), str(req.get("scenario") or ""))
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/scenario-produce-all":
+                req = self.read_json_body()
+                self.send_json(scenario_produce_all_payload(str(req.get("project") or ""), str(req.get("scenario") or "")))
+                return
             if parsed.path == "/api/run":
                 request = self.read_json_body()
                 project = str(request.get("project") or "")
                 rubric = str(request.get("rubric") or "") or None
                 intake = str(request.get("intake") or "") or None
                 renderer = str(request.get("renderer") or "") or None
+                scenario = str(request.get("scenario") or "") or None
                 confirmed = request.get("confirmed") is True
-                response = bounded_run_payload_for_project(
-                    project=project,
-                    rubric=rubric,
-                    intake=intake,
-                    renderer=renderer,
-                    confirmed=confirmed,
-                )
+                response = (bounded_run_job_payload(
+                    project=project, rubric=rubric, intake=intake, renderer=renderer, scenario=scenario,
+                ) if confirmed and request.get("background") is True else bounded_run_payload_for_project(
+                    project=project, rubric=rubric, intake=intake, renderer=renderer,
+                    scenario=scenario, confirmed=confirmed,
+                ))
                 status = 200 if (not confirmed or response.get("accepted")) else 400
                 self.send_json(response, status=status)
+                return
+            if parsed.path == "/api/job-cancel":
+                request = self.read_json_body()
+                response = workbench_job_cancel_payload(str(request.get("id") or ""))
+                self.send_json(response, status=200 if response.get("ok") else 400)
                 return
             if parsed.path == "/api/source-action":
                 request = self.read_json_body()
@@ -13249,6 +14636,10 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     text=str(request.get("text") or request.get("document") or ""),
                     confirmed=request.get("confirmed") is True,
                 )
+                self.send_json(response, status=200 if response.get("ok") else 400)
+                return
+            if parsed.path == "/api/document-extract":
+                response = document_extract_payload(self.read_json_body())
                 self.send_json(response, status=200 if response.get("ok") else 400)
                 return
             if parsed.path == "/api/falsify-claim":

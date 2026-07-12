@@ -81,9 +81,10 @@ def test_project_display_label_uses_visible_project_language() -> None:
     module = load_server_module()
 
     assert module.project_display_label("riemann_operator_search") == "Riemann system search"
-    assert module.project_display_label("ns_defect_packet_certificate") == "Ns defect project brief certificate"
-    assert module.project_display_label("hbr_case_method_roi_proxy") == "Hbr project method roi proxy"
-    assert module.project_display_label("eu_union_load_bearing_pillars") == "Eu union key pillars"
+    assert module.project_display_label("ns_defect_packet_certificate") == "NS defect project brief certificate"
+    assert module.project_display_label("hbr_case_method_roi_proxy") == "HBR project method ROI proxy"
+    assert module.project_display_label("eu_union_load_bearing_pillars") == "EU union key pillars"
+    assert module.project_display_label("ai_capex") == "AI CapEx"
 
 
 def test_health_payload_adds_plain_evidence_labels(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -2117,8 +2118,8 @@ def test_bounded_run_preview_names_first_recovery_step(monkeypatch: pytest.Monke
         "label": "Fetch or justify evidence gaps",
         "detail": "Project is not ready for a run. First: Fetch or justify evidence gaps.",
         "command": "make evidence-fetch PROJECT=demo SEVERITY=degrading",
-        "workspace": "run",
-        "subsection": "Results",
+        "workspace": "sources",
+        "subsection": "Prepare files",
         "local_step": "Open evidence gaps",
     }
     assert payload["error"] == payload["next_action"]["detail"]
@@ -2789,6 +2790,15 @@ def test_workbench_settings_save_feed_source_action_commands(tmp_path: Path, mon
 def test_evidence_fetch_preview_and_confirm_write_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    command_context = module.workbench_command_context
+    monkeypatch.setattr(
+        module,
+        "workbench_command_context",
+        lambda project, rubric=None: {
+            **command_context(project, rubric),
+            "evidence_search_backend": "auto",
+        },
+    )
     project_root = tmp_path / "projects" / "demo"
     workspace = project_root / "workspace"
     workspace.mkdir(parents=True)
@@ -5272,13 +5282,16 @@ def test_workflow_promotes_active_evidence_gap_before_report_review(
     assert payload["next_step"]["label"] == "Fetch or justify evidence gaps"
     assert payload["project_state"]["next_action"]["label"] == "Fetch or justify evidence gaps"
     assert payload["summary"]["next_step_local_step"] == "Fetch or justify evidence gaps"
-    assert steps_by_id["prepare_files"]["ui_destination"] == {"workspace": "run", "subsection": "Results"}
+    assert steps_by_id["prepare_files"]["ui_destination"] == {
+        "workspace": "sources",
+        "subsection": "Prepare files",
+    }
     action_ids = {row["id"] for row in payload["project_state"]["actions"]}
     assert "prepare_evidence" not in action_ids
     assert "recover_evidence_gaps" in action_ids
     actions_by_id = {row["id"]: row for row in payload["project_state"]["actions"]}
-    assert actions_by_id["recover_evidence_gaps"]["workspace"] == "run"
-    assert actions_by_id["recover_evidence_gaps"]["subsection"] == "Results"
+    assert actions_by_id["recover_evidence_gaps"]["workspace"] == "sources"
+    assert actions_by_id["recover_evidence_gaps"]["subsection"] == "Prepare files"
     assert steps_by_id["review_report"]["status"] == "needs_attention"
     assert payload["project_object_contract"]["ok"] is True
 
@@ -5288,6 +5301,15 @@ def test_workflow_payload_holds_recovered_project_on_evidence_prep(
 ) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    command_context = module.workbench_command_context
+    monkeypatch.setattr(
+        module,
+        "workbench_command_context",
+        lambda project, rubric=None: {
+            **command_context(project, rubric),
+            "evidence_search_backend": "auto",
+        },
+    )
     monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
     monkeypatch.setattr(module, "intake_payload_for_project", lambda *_args, **_kwargs: {
         "editable_fields": {
@@ -6559,3 +6581,107 @@ def test_apply_review_file_rejects_row_mismatch(tmp_path: Path) -> None:
                 latest=str(tmp_path / "latest.json"),
             )
         )
+
+
+def test_citation_binding_uses_indexed_source_and_demotes_when_source_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_server_module()
+    project_dir = tmp_path / "projects" / "demo"
+    raw_dir = project_dir / "raw"
+    raw_dir.mkdir(parents=True)
+    source_path = raw_dir / "interviews.md"
+    source_body = "Customers will adopt it. Nine customers asked for the workflow."
+    source_path.write_text(source_body, encoding="utf-8")
+    (project_dir / "latest_eval_results.json").write_text(json.dumps({
+        "probability_dag": {
+            "outcome": {"label": "Launch the product", "probability": 0.8},
+            "nodes": [{"id": "demand", "label": "Customers will adopt it", "probability": 0.7}],
+        }
+    }), encoding="utf-8")
+
+    import ztare.common.paths as paths
+    monkeypatch.setattr(paths, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(module, "source_file_payload", lambda **_kwargs: {
+        "source_type": "source_evidence",
+        "source_path": "projects/demo/raw/interviews.md",
+        "body": source_body,
+    })
+    monkeypatch.setattr(module, "raw_source_path", lambda *_args: source_path)
+
+    exact = module.scenario_bind_payload({
+        "project": "demo",
+        "source_path": "interviews.md",
+        "excerpt": "Customers will adopt it.",
+        "target": "claim:demand",
+    })
+    assert exact["ok"] is True
+    assert exact["bound"]["source_tier"] == "cited"
+    assert exact["bound"]["inference_tier"] == "cited"
+    assert exact["decision_before"]["schema"] == "ztare-decision-state-v1"
+    assert exact["decision_after"]["schema"] == "ztare-decision-state-v1"
+    assert exact["decision_delta"]["schema"] == "ztare-decision-delta-v1"
+
+    relevant = module.scenario_bind_payload({
+        "project": "demo",
+        "source_path": "interviews.md",
+        "excerpt": "Nine customers asked for the workflow.",
+        "target": "claim:demand",
+    })
+    assert relevant["ok"] is True
+    assert relevant["bound"]["source_tier"] == "cited"
+    assert relevant["bound"]["inference_tier"] == "unchecked"
+    assert isinstance(relevant["decision_delta"]["decision_changed"], bool)
+
+    overlay = json.loads((project_dir / "workspace" / "governed_overlay.json").read_text(encoding="utf-8"))
+    assert len(overlay["elements"]) == 2 and len(overlay["edges"]) == 2
+    assert {edge["warrant"] for edge in overlay["edges"]} == {"W2", "W3"}
+
+    from ztare.reports.research_graph import build_research_graph
+    current = build_research_graph("demo", tmp_path)
+    exact_edge = next(edge for edge in current["edges"] if edge.get("admission") == "exact_claim_quote")
+    assert exact_edge["warrant"] == "W2" and exact_edge["admission_status"] == "current"
+
+    source_path.write_text(source_body + " Changed.", encoding="utf-8")
+    stale = build_research_graph("demo", tmp_path)
+    exact_edge = next(edge for edge in stale["edges"] if edge.get("admission") == "exact_claim_quote")
+    assert exact_edge["warrant"] == "W3" and exact_edge["admission_status"] == "stale_source"
+
+
+def test_document_upload_extracts_and_stages_original_with_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import base64
+    import io
+    import zipfile
+
+    module = load_server_module()
+    raw = io.BytesIO()
+    with zipfile.ZipFile(raw, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "word/document.xml",
+            '<w:document xmlns:w="urn:w"><w:body><w:p><w:r><w:t>Approve the launch.</w:t>'
+            '</w:r></w:p></w:body></w:document>',
+        )
+    encoded = base64.b64encode(raw.getvalue()).decode("ascii")
+    preview = module.document_extract_payload({"filename": "launch.docx", "content_base64": encoded})
+    assert preview["ok"] and preview["text"] == "Approve the launch."
+
+    rows = module.uploaded_source_rows_for_project([{
+        "filename": preview["extracted_filename"],
+        "original_filename": "launch.docx",
+        "original_base64": encoded,
+        "source_type": "source_evidence",
+        "body": preview["text"],
+    }])
+    assert rows[0]["filename"] == "launch.extracted.md"
+    assert rows[0]["original_sha256"] == preview["sha256"]
+
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    source_refs, evidence_refs, writes = module.stage_uploaded_source_rows("demo", rows)
+    assert source_refs == []
+    assert evidence_refs == ["projects/demo/raw/launch.extracted.md"]
+    assert "projects/demo/attachments/launch.docx" in writes
+    extracted = (tmp_path / "projects/demo/raw/launch.extracted.md").read_text(encoding="utf-8")
+    assert "original_sha256:" in extracted and "extraction_method: docx-xml" in extracted
+    assert "Approve the launch." in extracted

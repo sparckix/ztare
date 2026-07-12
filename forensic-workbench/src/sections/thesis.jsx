@@ -1,7 +1,17 @@
 import React from "react";
-import { Teach, displayMessage } from "../design-system.js";
+import { Teach, displayMessage, EmptyState } from "../design-system.js";
+import { compiledDecisionState } from "./decisionpanel.jsx";
 
 const h = React.createElement;
+const CLAIM_CANVAS_LIMIT = 900;
+
+function claimExcerpt(text) {
+  const raw = String(text || "").trim();
+  if (raw.length <= CLAIM_CANVAS_LIMIT) return { text: raw, truncated: false };
+  const boundary = raw.lastIndexOf(" ", CLAIM_CANVAS_LIMIT);
+  const end = boundary > CLAIM_CANVAS_LIMIT * 0.65 ? boundary : CLAIM_CANVAS_LIMIT;
+  return { text: `${raw.slice(0, end).trimEnd()}…`, truncated: true };
+}
 
 // "What would change my mind" reads best scannable. The text is usually one sentence of the form
 // "Reject or demote the claim if A, if B, if C" or a "; "-separated list. Split into a lead + one
@@ -38,7 +48,7 @@ function SummaryCard({ label, headline, fact, child, linkText, onClick, tone }) 
 
 // The Thesis screen — the project landing. Score is the headline (how the thesis held up when
 // attacked); verdict + backing are secondary. L1 doc + rail. Pure view: everything via `view`.
-export function Thesis({ view, onOpenDetail, onOpenModal, onPreview, onEigenquestion, eigenquestion }) {
+export function Thesis({ view, decision, onOpenDetail, onOpenModal, onPreview, onEigenquestion, eigenquestion }) {
   const v = view || {};
   const eq = eigenquestion || {};
   const eqText = (eq.result && eq.result.eigenquestion) || "";
@@ -50,19 +60,26 @@ export function Thesis({ view, onOpenDetail, onOpenModal, onPreview, onEigenques
   const backing = v.backing || {};
   const assumptions = v.assumptions || {};
   const verdict = v.verdict || {};
+  const compiled = compiledDecisionState(decision);
   const hasRun = v.score !== null && v.score !== undefined;
+  const hasClaim = Boolean(v.claim);
+  const claimRead = claimExcerpt(v.claim);
 
   // Header answers the eigenquestion "can I rely on it" — so the VERDICT leads, not the score. The
   // score is rubric-relative (partial), shown only as a caveated chip in the substatus line.
   // Use the CLI-derived tone (rely=high/green, verify_inference=mid/amber, do_not_rely=low/red) — NOT
   // `warn`, which is true for everything but "rely" and wrongly reddened the usable "verify" tier.
-  const verdictTone = verdict.tone || "mid";
-  const headline = hasRun ? (verdict.phrase || "Scored — not yet assessed") : "Not yet pressure-tested";
+  const verdictTone = (compiled && ({ SUPPORTED: "high", BLOCKED: "mid", REFUTED: "low" }[compiled.status]))
+    || verdict.tone || "mid";
+  const headline = (compiled && compiled.headline)
+    || (hasRun ? (verdict.phrase || "Decision not compiled yet") : "Not yet pressure-tested");
+  const decisionReason = (compiled && compiled.reason)
+    || verdict.why || (hasRun ? "" : "pressure-test the thesis to assess it");
   const scoreChip = hasRun
     ? h("span", {
         className: `thesis-score-chip band-${v.scoreBand || "mid"}`,
         title: "The latest run's score (0–100), measured against the current rubric. It's a partial, rubric-relative signal — under autoevolve the rubric changes across runs, so don't read it as a verdict. See Pressure-test for the full trajectory.",
-      }, `scored ${v.score}`)
+      }, `run score ${v.score}`)
     : null;
   const header = h(
     "div",
@@ -83,23 +100,43 @@ export function Thesis({ view, onOpenDetail, onOpenModal, onPreview, onEigenques
         scoreChip,
         // The WHY behind the verdict — the real per-claim backing mix (directly sourced vs inference
         // vs unsupported), computed by the CLI. This is the affordance "Almost there" never gave.
-        h("span", null, verdict.why || (hasRun ? "" : "pressure-test the thesis to assess it"))
+        h("span", null, decisionReason)
       )
     ),
     h(
       "div",
       { className: "thesis-actions" },
-      h("button", { type: "button", className: "chip primary", onClick: () => go("run", "Start run") }, "Pressure-test"),
+      h("button", { type: "button", className: `chip ${hasClaim ? "primary" : ""}`.trim(), onClick: () => go("run", "Start run") }, "Pressure-test"),
       h("button", { type: "button", className: "chip", onClick: () => go("sources", "Add file") }, "Add evidence"),
-      h("button", { type: "button", className: "chip", onClick: () => go("review", "Save review") }, "Record decision")
+      hasClaim
+        ? h("button", { type: "button", className: "chip", onClick: () => peek("overview", "Annotate a doc") }, "Check a draft")
+        : null
     )
   );
 
   const main = h(
     "div",
     { className: "thesis-main" },
+    !hasClaim
+      ? h(
+          "div",
+          { className: "thesis-empty" },
+          h(EmptyState, {
+            text: "No thesis is recorded for this project yet.",
+            action: h("button", { type: "button", className: "chip primary", onClick: () => go("sources", "Project brief") }, "Define the thesis"),
+          })
+        )
+      : null,
     v.claim
-      ? h("blockquote", { className: "thesis-claim" }, h(Teach, { text: displayMessage(v.claim) }))
+      ? h(React.Fragment, null,
+          h("blockquote", { className: "thesis-claim" }, h(Teach, { text: displayMessage(claimRead.text) })),
+          claimRead.truncated
+            ? h("div", { className: "thesis-claim-expand" },
+                h("span", null, "Showing the opening of a longer thesis."),
+                v.claimFile && onPreview
+                  ? h("button", { type: "button", className: "text-link", onClick: () => onPreview({ type: "file", value: v.claimFile }) }, "Open full thesis")
+                  : h("button", { type: "button", className: "text-link", onClick: () => go("sources", "Project brief") }, "Open project brief"))
+            : null)
       : h("p", { className: "thesis-claim is-empty" },
           "No thesis recorded yet. State what you're arguing in your project brief."),
     v.claimWarning ? h("p", { className: "thesis-warning" }, displayMessage(v.claimWarning)) : null,
@@ -125,8 +162,8 @@ export function Thesis({ view, onOpenDetail, onOpenModal, onPreview, onEigenques
         ? h("div", null,
             h("p", { className: "thesis-weakest" }, displayMessage(v.weakestPoint)),
             v.weakSpotsMore
-              ? h("button", { type: "button", className: "thesis-more-link", onClick: () => go("run", "Results") },
-                  `${v.weakSpotsMore} more weak spot${v.weakSpotsMore === 1 ? "" : "s"} from the run →`)
+              ? h("button", { type: "button", className: "thesis-more-link", onClick: () => go("run", "Ready to run") },
+                  `${v.weakSpotsMore} more weak spot${v.weakSpotsMore === 1 ? "" : "s"} from the latest run →`)
               : null)
         : h("button", { type: "button", className: "thesis-empty-cta", onClick: () => go("run", "Start run") },
             hasRun ? "No weak point recorded this run." : "Pressure-test the thesis to find its weakest point →")

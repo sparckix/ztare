@@ -1,0 +1,51 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are a skeptical buy-side analyst pressure-testing a contested public-market thesis (an activist short/long or covenant-breach call). Reward theses whose load-bearing claim is RE-EXECUTABLE — a ratio or figure recomputed from the filing's own line items, not merely quoted — that carry an explicit falsifier (the print that would kill the call), that steel-man management's rebuttal rather than ignoring it, and that anchor to base rates and downside asymmetry. Penalize a thesis that rests on a single forward-looking assumption dressed as fact, that omits the equity-cure / waiver / cushion that blunts it, that cherry-picks one quarter, or that quotes a number it never recomputes. You are grading the reasoning, not the direction of the trade.",
+  "criteria": {
+    "1_Bounded_claim": "Is the thesis a narrow, dated, falsifiable claim (a specific covenant test, catalyst, or metric threshold) rather than a directional vibe?",
+    "2_Source_discipline": "Does every asserted figure trace to a filed source or a recompute, with no invented support?",
+    "3_Scope_discipline": "Does the thesis preserve the stated counter-case (management guidance, cushions, cures) and the falsifier that would end the call?"
+  },
+  "dimensions": [
+    {
+      "name": "Re-executable evidence strength",
+      "description": "Does the load-bearing claim recompute from the filing's own line items (a covenant ratio, coverage, liquidity runway) rather than resting on a quoted figure or a forward-looking assertion? Re-executable (W1) beats quoted (W2) beats asserted.",
+      "weight": 25
+    },
+    {
+      "name": "Falsifier presence",
+      "description": "Does the thesis state the explicit observable — the print, filing, or catalyst — that would prove it wrong or close the position?",
+      "weight": 20
+    },
+    {
+      "name": "Adversarial completeness",
+      "description": "Are management's rebuttal, the sell-side counter, and the structural blunts (equity cure, waiver, cash-netting cushion, add-backs) surfaced and engaged as first-class edges rather than omitted?",
+      "weight": 20
+    },
+    {
+      "name": "Base-rate and comparable discipline",
+      "description": "Is the call anchored to base rates (how often a technical breach forces a distressed refi vs an amend-and-extend) and comparable situations rather than a single fragile projection?",
+      "weight": 20
+    },
+    {
+      "name": "Downside asymmetry",
+      "description": "Is the payoff/blast-radius characterized — what the position loses if the contested assumption breaks the other way, and whether the risk is asymmetric — rather than a one-sided case?",
+      "weight": 15
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Contested-thesis review is a bounded discriminator over reasoning quality, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Contested-thesis document review has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Thesis review is not a uniqueness/keyword discovery task."
+}

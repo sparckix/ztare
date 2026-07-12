@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import "@mantine/core/styles.css";  // the create-project form uses raw Mantine components; without this it renders styleless
-import "./styles.css";              // loaded AFTER Mantine so the workbench's design system wins any conflict
+import "./styles.css";
 import {
   GUIDANCE_LABELS, sourceBasename, linesFromText, uniqueLines, parseJsonLikeText,
   guidanceLabel, guidanceText, projectKeyFromPreviewPath, jsonLineRecordsFromPreview,
@@ -33,6 +32,18 @@ import {
   emptyLeanMillActionDraft,
   emptyLeanMillBlueprintDraft
 } from "./workspaces/leanmill.jsx";
+import {
+  TextInput as MTextInput,
+  Textarea as MTextarea,
+  Button as MButton,
+  Stack as MStack,
+  Group as MGroup,
+  Box as MBox,
+  Text as MText,
+  Title as MTitle,
+  Collapse as MCollapse,
+  Anchor as MAnchor,
+} from "./workspaces/leanmill-ui.jsx";
 import { DayZeroStartPanel } from "./workspaces/start.jsx";
 import { Thesis } from "./sections/thesis.jsx";
 import { Assumptions } from "./sections/assumptions.jsx";
@@ -45,13 +56,20 @@ import { ScoringGuide } from "./sections/scoringguide.jsx";
 import { Charter } from "./sections/charter.jsx";
 import { History } from "./sections/history.jsx";
 import { RunConsole } from "./sections/runconsole.jsx";
+import { RunHome } from "./sections/runhome.jsx";
+import { ScenarioPanel } from "./sections/scenariopanel.jsx";
+import { RegisterBetForm, ExecuteWagerForm } from "./sections/wagerpanel.jsx";
+import { BindEvidenceForm } from "./sections/decisionpanel.jsx";
+import { LeanMillCampaignsPanel } from "./sections/leanmillcampaigns.jsx";
+import { PluginManager } from "./sections/pluginmanager.jsx";
+import { JobShelf } from "./sections/jobshelf.jsx";
 import { marked } from "marked";
 import markedKatex from "marked-katex-extension";
 import "katex/dist/katex.min.css";
 import {
   ScrollText, Target, FolderOpen, Zap, Workflow, ListChecks, Gavel, Clock,
-  LayoutGrid, FunctionSquare, Settings as SettingsIcon, FileText, Beaker, Network,
-  Upload as IconUpload,
+  LayoutGrid, FunctionSquare, Settings as SettingsIcon, Puzzle, FileText, Beaker, Network,
+  Upload as IconUpload, Rocket, Play, Activity, ArrowLeft, ArrowRight, X,
 } from "lucide-react";
 import DOMPurify from "dompurify";
 
@@ -61,7 +79,10 @@ const NAV_ICON = {
   "Charter": ScrollText, "Thesis": Target, "Evidence": FolderOpen,
   "Pressure-test the thesis": Zap, "Map": Network, "Open points": ListChecks,
   "Verdict": Gavel, "History": Clock, "ZTARE Projects": LayoutGrid,
-  "LeanMill": FunctionSquare, "Settings": SettingsIcon,
+  "LeanMill": FunctionSquare, "Activity": Activity, "Plugins": Puzzle, "Settings": SettingsIcon,
+  // LeanMill submenu — same wayfinding treatment the project subnav already gets
+  "Start": Rocket, "Draft target": Target, "Run a proof": Play,
+  "Proof files": FileText, "Proof status": Activity, "Axiom discovery": Beaker,
   // home-link aliases — same destinations, plainer labels
   "My claim": Target, "Test it": Zap,
 };
@@ -88,21 +109,68 @@ import {
   workspaceDirForProject,
   writePathsFromItems
 } from "./lib/write-paths.js";
-import { MantineProvider, TextInput as MTextInput, Textarea as MTextarea, Button as MButton, Stack as MStack, Group as MGroup, Box as MBox, Text as MText, Title as MTitle, Collapse as MCollapse, Anchor as MAnchor } from "@mantine/core";
-import { workbenchTheme } from "./theme.js";
+import { useModalBehavior } from "./modal-behavior.js";
 
 const h = React.createElement;
-let modalBodyLockCount = 0;
 
-function lockModalBody() {
-  modalBodyLockCount += 1;
-  document.body.classList.add("modal-open");
-  return () => {
-    modalBodyLockCount = Math.max(0, modalBodyLockCount - 1);
-    if (!modalBodyLockCount) document.body.classList.remove("modal-open");
-  };
+const SCENARIO_PANEL_MODULES = import.meta.glob("./scenario-panels/*.jsx", { eager: true });
+const SCENARIO_PANEL_HOSTS = new Set(["results"]);
+const SCENARIO_PANEL_CONTRACT = "plugin_contribution_contract_v1";
+const SCENARIO_PANEL_ACTION_MODES = new Set(["read", "write", "navigate"]);
+
+function discoverScenarioPanels(modules) {
+  const registry = {};
+  const catalog = [];
+  const diagnostics = [];
+  Object.entries(modules || {}).sort(([left], [right]) => left.localeCompare(right)).forEach(([source, mod]) => {
+    const metadata = (mod && mod.scenarioPanel) || {};
+    const id = String(metadata.id || "").trim();
+    const host = String(metadata.host || "").trim();
+    const Component = mod && mod.default;
+    const contract = metadata.contract && typeof metadata.contract === "object" ? metadata.contract : {};
+    const carriers = Array.isArray(contract.carriers) ? contract.carriers.map((value) => String(value || "").trim()).filter(Boolean) : [];
+    const actions = Array.isArray(contract.actions) ? contract.actions : [];
+    const contractValid = contract.schema === SCENARIO_PANEL_CONTRACT
+      && carriers.length > 0
+      && actions.every((action) => action && /^[a-z0-9][a-z0-9-]*$/.test(String(action.id || ""))
+        && SCENARIO_PANEL_ACTION_MODES.has(String(action.mode || "")));
+    const ref = `${host}:${id}`;
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(id) || !SCENARIO_PANEL_HOSTS.has(host) || typeof Component !== "function" || !contractValid) {
+      diagnostics.push({ source, error: contractValid
+        ? "panel needs a default React component, a kebab-case id, and a supported host"
+        : `panel needs ${SCENARIO_PANEL_CONTRACT}, at least one carrier, and typed read/write/navigate actions` });
+      return;
+    }
+    if (registry[ref]) {
+      diagnostics.push({ source, error: `duplicate panel ref ${ref}` });
+      return;
+    }
+    const entry = {
+      ref, id, host, source,
+      label: String(metadata.label || id),
+      description: String(metadata.description || ""),
+      contract: { schema: contract.schema, carriers, actions },
+      Component,
+    };
+    registry[ref] = entry;
+    catalog.push({ ref, id, host, source, label: entry.label, description: entry.description, contract: entry.contract });
+  });
+  return { registry, catalog, diagnostics };
 }
 
+const SCENARIO_PANEL_DISCOVERY = discoverScenarioPanels(SCENARIO_PANEL_MODULES);
+
+function contributedScenarioPanels(scenarios, selectedScenario, host, props) {
+  const scenario = (scenarios || []).find((row) => row && row.name === selectedScenario);
+  return ((scenario && scenario.workbench_panels) || [])
+    .map((panelRef) => {
+      const entry = SCENARIO_PANEL_DISCOVERY.registry[String(panelRef || "")];
+      return entry && entry.host === host
+        ? h(entry.Component, { key: `scenario-panel-${entry.ref}`, scenarioConfig: scenario, ...props })
+        : null;
+    })
+    .filter(Boolean);
+}
 class WorkbenchErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -126,12 +194,12 @@ class WorkbenchErrorBoundary extends React.Component {
 }
 
 const WORKSPACE_SECTIONS = [
-  { id: "projects", label: "ZTARE Projects", summary: "Open a project, connect a folder, or create a new project", subnav: ["Projects", "Current project", "Connect project", "Files", "Settings"] },
-  { id: "overview", label: "Thesis", summary: "What you're arguing, what would change your mind, where it's weakest, and how it held up", subnav: ["Thesis", "Assumptions", "Charter", "Evidence summary", "Research map"] },
+  { id: "projects", label: "ZTARE Projects", summary: "Open a project, connect a folder, or create a new project", subnav: ["Projects", "Current project", "Connect project", "Files", "Activity", "Plugins", "Settings"] },
+  { id: "overview", label: "Thesis", summary: "What you're arguing, what would change your mind, where it's weakest, and how it held up", subnav: ["Thesis", "Assumptions", "Charter", "Research map"] },
   { id: "sources", label: "Evidence", summary: "What backs your thesis, what's missing, and add more", subnav: ["Prepare files", "Project brief"] },
-  { id: "run", label: "Pressure-test the thesis", summary: "Run the loop that attacks your thesis to find its strongest, best-defended version", subnav: ["Ready to run", "Scoring guide", "Run settings", "Check readiness", "Results", "Fix warnings"] },
-  { id: "leanmill", label: "LeanMill", summary: "Formalize & solve, fix a failing proof, or kernel-ratify a finished one", subnav: ["Start", "Draft target", "Run a proof", "Proof files", "Proof status"] },
-  { id: "review", label: "Open points", summary: "Loose ends to look at, with your notes on each", subnav: ["Things to review", "Save review", "Save next step", "Saved history"] },
+  { id: "run", label: "Pressure-test the thesis", summary: "Run the loop that attacks your thesis to find its strongest, best-defended version", subnav: ["Ready to run", "Scoring guide", "Run settings", "Check readiness", "Fix warnings"] },
+  { id: "leanmill", label: "LeanMill", summary: "Formalize & solve, fix a failing proof, or kernel-ratify a finished one", subnav: ["Start", "Draft target", "Run a proof", "Proof status", "Proof files", "Axiom discovery"] },
+  { id: "review", label: "Open points", summary: "Loose ends to look at, with your notes on each", subnav: ["Things to review", "Save next step", "Saved history"] },
   { id: "save", label: "Verdict", summary: "Whether you can trust this, what's weak, and what to fix", subnav: ["Report readiness", "Report inputs", "Project file"] }
 ];
 
@@ -149,13 +217,14 @@ const WORKSPACE_DETAIL_COPY = {
     title: "Assumptions",
     body: "The constraints this thesis is committed to — derived by the loop, provisional until they survive repeated pressure-testing."
   },
+  "overview:Annotate a doc": {
+    eyebrow: "Draft review",
+    title: "Check a draft",
+    body: "See which passages are backed, contradicted, or still assumptions. This check is read-only."
+  },
   "overview:Charter": {
     title: "Charter",
     body: "The mandate this project serves. Your thesis is the answer that has to keep serving it."
-  },
-  "overview:Evidence summary": {
-    title: "Evidence",
-    body: "Which of your files back the thesis, and what's still missing."
   },
   "overview:Research map": {
     title: "Research map",
@@ -177,6 +246,10 @@ const WORKSPACE_DETAIL_COPY = {
     title: "Add a file",
     body: "Add a file from your computer and line it up for the project."
   },
+  "sources:Add cited source": {
+    title: "Verify claim support",
+    body: "Choose a project source, highlight its exact words, and identify the claim they support. The source match and inference are checked before the decision can rely on the link."
+  },
   "sources:Edit file": {
     title: "Edit a file",
     body: "Open and revise a file you've already added."
@@ -184,6 +257,14 @@ const WORKSPACE_DETAIL_COPY = {
   "projects:Settings": {
     title: "Workbench Settings",
     body: "Choose the model and evidence-fetch defaults used by local workbench actions."
+  },
+  "projects:Plugins": {
+    title: "Plugins",
+    body: "Adapt the same research loop to a domain without changing the core record. A scenario sets a review stance, optional contextual view, and reusable handoffs; a scoring guide sets the review bar. Document designs shape checked drafts for a recipient."
+  },
+  "projects:Activity": {
+    title: "Background activity",
+    body: "See long research, proof, and discovery work in one place, then return to the lane that owns it."
   },
   "run:Ready to run": {
     title: "Pressure-test the thesis",
@@ -200,10 +281,6 @@ const WORKSPACE_DETAIL_COPY = {
   "run:Start run": {
     title: "Start the test",
     body: "Run the analysis once the readiness check passes."
-  },
-  "run:Results": {
-    title: "Results",
-    body: "How your thesis held up, where it's weak, and what evidence is thin."
   },
   "run:Fix warnings": {
     title: "Warnings",
@@ -229,6 +306,10 @@ const WORKSPACE_DETAIL_COPY = {
     title: "Proof Status",
     body: "See what LeanMill tried, what passed, what failed, and which files support the status."
   },
+  "leanmill:Axiom discovery": {
+    title: "Axiom discovery",
+    body: "AxiomPack explores an axiom space from a research direction you describe — it maps the frontier and surfaces candidate theory (explore_axiom_space), rather than proving a target you state. Author a discovery blueprint (a Markdown region description with lane: axiompack), then launch and watch its budget, boundary checks, finalists, and stop reason."
+  },
   "save:Report readiness": {
     title: "Can I trust this report?",
     body: "See whether the report matches current project files, and what must be fixed first."
@@ -243,11 +324,12 @@ const WORKSPACE_DETAIL_COPY = {
   },
   "review:Things to review": {
     title: "Open points",
-    body: "The parts of your thesis — pick one to see what backs it and note where it stands."
+    body: "Unresolved questions, adversarial challenges, and the tests that would settle them."
   },
   "review:Save review": {
-    title: "Save where this point stands",
-    body: "Mark the point you picked as looked at, set aside for now, or still holding back the verdict."
+    eyebrow: "Open points",
+    title: "Review this project check",
+    body: "Record whether this specific check is cleared, deferred, or still blocking. This does not decide the thesis."
   },
   "review:Save next step": {
     title: "Save the next step",
@@ -256,6 +338,16 @@ const WORKSPACE_DETAIL_COPY = {
   "review:Saved history": {
     title: "History",
     body: "How this investigation has evolved — every run, what it concluded, and the decisions and evidence changes along the way."
+  },
+  "review:Define a decision test": {
+    eyebrow: "Open points",
+    title: "Define a decision test",
+    body: "Name the uncertainty, list what you could observe, and say how each result would change the standing. The kernel previews every result and admits the test only if one is decision-changing."
+  },
+  "review:Record a test outcome": {
+    eyebrow: "Open points",
+    title: "Record the test outcome",
+    body: "First preview the counterfactual: how this result would change the decision without writing anything. Record it only after you have observed that result."
   },
   "projects:Current project": {
     title: "Where this stands",
@@ -292,9 +384,7 @@ const WORKSPACE_SUBSECTION_ALIASES = {
     Overview: "Thesis",
     Diagnosis: "Thesis",
     "My claim": "Thesis",
-    Claim: "Thesis",
-    Evidence: "Evidence summary",
-    "Evidence map": "Evidence summary"
+    Claim: "Thesis"
   },
   sources: {
     Intake: "Project brief",
@@ -311,6 +401,7 @@ const WORKSPACE_SUBSECTION_ALIASES = {
     Plan: "Ready to run",
     "Can it run?": "Ready to run",
     "Start run": "Ready to run",
+    Results: "Ready to run",
     Advisories: "Fix warnings",
     "Suggested fixes": "Fix warnings"
   },
@@ -318,7 +409,7 @@ const WORKSPACE_SUBSECTION_ALIASES = {
     "Review points": "Things to review",
     "Project checks": "Things to review",
     "Open issues": "Things to review",
-    Review: "Save review",
+    Review: "Things to review",
     "Next step": "Save next step",
     Receipts: "Saved history"
   },
@@ -339,9 +430,9 @@ const WORKSPACE_SUBSECTION_ALIASES = {
 };
 
 const REVIEW_ACTIONS = [
-  { id: "reviewed", label: "Mark reviewed" },
+  { id: "reviewed", label: "Cleared" },
   { id: "deferred", label: "Defer" },
-  { id: "blocked", label: "Hold for support" }
+  { id: "blocked", label: "Still blocking" }
 ];
 
 const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
@@ -388,7 +479,8 @@ const SOURCE_TYPE_HELP = {
 
 const PROJECT_SLUG_RE = /^[A-Za-z0-9_.-]+$/;
 const SOURCE_IMPORT_FILENAME_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(md|txt)$/;
-const SOURCE_UPLOAD_MAX_BYTES = 512 * 1024;
+const DOCUMENT_IMPORT_FILENAME_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(md|txt|csv|tsv|json|log|pdf|docx|pptx|xlsx)$/i;
+const SOURCE_UPLOAD_MAX_BYTES = 8 * 1024 * 1024;
 
 function emptySourceImportDraft() {
   return { filename: "", source_type: "source_evidence", artifact_kind: "project_note", created_by: "", body: "", evidence_gap: null };
@@ -509,7 +601,11 @@ function firstSentence(value) {
 function titleFromSlug(value) {
   const text = compactWhitespace(String(value || "").replace(/[_-]+/g, " ").replace(/\bdemo\b/gi, ""));
   if (!text) return "Local project";
-  return text.replace(/\b\w/g, (char) => char.toUpperCase());
+  const acronyms = {
+    ai: "AI", api: "API", arc: "ARC", aws: "AWS", capex: "CapEx", eu: "EU", gpu: "GPU",
+    hbr: "HBR", llm: "LLM", ns: "NS", pde: "PDE", roi: "ROI", ztare: "ZTARE",
+  };
+  return text.split(" ").map((word) => acronyms[word.toLowerCase()] || `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}`).join(" ");
 }
 
 function projectFolderSuggestion(...values) {
@@ -1019,8 +1115,7 @@ function uniqueBackingFiles(items) {
       if (!item.path || seen.has(item.path)) return false;
       seen.add(item.path);
       return true;
-    })
-    .sort(projectInventorySort);
+    });
 }
 
 function buildReviewFile(snapshot, row, reviewState) {
@@ -2919,28 +3014,14 @@ function PendingEditsStrip({ items, onOpenDetail }) {
 
 function UnsavedChangesDialog({ prompt, onCancel, onDiscard }) {
   const discardButtonRef = useRef(null);
-  useEffect(() => {
-    if (!prompt) return undefined;
-    const previousActive = document.activeElement;
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") onCancel();
-    };
-    const unlockBody = lockModalBody();
-    window.addEventListener("keydown", closeOnEscape);
-    window.requestAnimationFrame(() => discardButtonRef.current && discardButtonRef.current.focus());
-    return () => {
-      unlockBody();
-      window.removeEventListener("keydown", closeOnEscape);
-      if (previousActive && typeof previousActive.focus === "function") previousActive.focus();
-    };
-  }, [onCancel, prompt]);
+  const dialogRef = useModalBehavior({ open: Boolean(prompt), onClose: onCancel, initialFocusRef: discardButtonRef });
   if (!prompt) return null;
   return h(
     "div",
     { className: "modal-backdrop", role: "presentation", onMouseDown: (event) => event.target === event.currentTarget && onCancel() },
     h(
       "section",
-      { className: "discard-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Unsaved edits" },
+      { ref: dialogRef, tabIndex: -1, className: "discard-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Unsaved edits" },
       h(
         "header",
         { className: "discard-dialog-head" },
@@ -2979,9 +3060,10 @@ function ModalNavControls({ canGoBack = false, canGoForward = false, onBack, onF
         className: "modal-nav-button",
         disabled: !canGoBack,
         onClick: canGoBack && onBack ? onBack : undefined,
+        "aria-label": "Go back",
         title: canGoBack ? "Go back (Alt+Left)" : "Nothing to go back to"
       },
-      "Back"
+      h(ArrowLeft, { size: 15, "aria-hidden": "true" })
     ),
     h(
       "button",
@@ -2990,9 +3072,10 @@ function ModalNavControls({ canGoBack = false, canGoForward = false, onBack, onF
         className: "modal-nav-button",
         disabled: !canGoForward,
         onClick: canGoForward && onForward ? onForward : undefined,
+        "aria-label": "Go forward",
         title: canGoForward ? "Go forward (Alt+Right)" : "Nothing to go forward to"
       },
-      "Forward"
+      h(ArrowRight, { size: 15, "aria-hidden": "true" })
     )
   );
 }
@@ -3034,28 +3117,14 @@ function ProjectRunConfirmDialog({ prompt, onCancel, onConfirm }) {
   const disabledTitle =
     (prompt && prompt.disabledTitle) ||
     "Files that may change must load before this run can start";
-  useEffect(() => {
-    if (!prompt) return undefined;
-    const previousActive = document.activeElement;
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") onCancel();
-    };
-    const unlockBody = lockModalBody();
-    window.addEventListener("keydown", closeOnEscape);
-    window.requestAnimationFrame(() => cancelButtonRef.current && cancelButtonRef.current.focus());
-    return () => {
-      unlockBody();
-      window.removeEventListener("keydown", closeOnEscape);
-      if (previousActive && typeof previousActive.focus === "function") previousActive.focus();
-    };
-  }, [onCancel, prompt]);
+  const dialogRef = useModalBehavior({ open: Boolean(prompt), onClose: onCancel, initialFocusRef: cancelButtonRef });
   if (!prompt) return null;
   return h(
     "div",
     { className: "modal-backdrop", role: "presentation", onMouseDown: (event) => event.target === event.currentTarget && onCancel() },
     h(
       "section",
-      { className: "case-run-dialog", role: "dialog", "aria-modal": "true", "aria-label": ariaLabel },
+      { ref: dialogRef, tabIndex: -1, className: "case-run-dialog", role: "dialog", "aria-modal": "true", "aria-label": ariaLabel },
       h(
         "header",
         { className: "case-run-dialog-head" },
@@ -3160,32 +3229,20 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
   const [sourceType, setSourceType] = useState(initialSourceType || "source_evidence");
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState("");
-  useEffect(() => {
-    if (!open) return undefined;
-    const previousActive = document.activeElement;
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") onClose();
-    };
-    const unlockBody = lockModalBody();
-    window.addEventListener("keydown", closeOnEscape);
-    window.requestAnimationFrame(() => closeButtonRef.current && closeButtonRef.current.focus());
-    return () => {
-      unlockBody();
-      window.removeEventListener("keydown", closeOnEscape);
-      if (previousActive && typeof previousActive.focus === "function") previousActive.focus();
-    };
-  }, [open, onClose]);
+  const [extracting, setExtracting] = useState(false);
+  const dialogRef = useModalBehavior({ open, onClose, initialFocusRef: closeButtonRef });
   useEffect(() => {
     if (!open) return;
     setDragActive(false);
     setSourceType(initialSourceType || "source_evidence");
     setSelectedFile(null);
     setMessage("");
+    setExtracting(false);
   }, [open, initialSourceType]);
   if (!open) return null;
   const createMode = mode === "create_project";
   const introCopy = createMode
-    ? "Drop a Markdown or text file. The app stages it below; creating the project writes it to raw/."
+    ? "Drop a memo, paper, deck, spreadsheet, Markdown, or text file. The original stays attached; its text projection becomes the source the loop can inspect."
     : "Drop a Markdown or text file. The app fills the Add file draft; Save file writes it to the project.";
   const waitingCopy = createMode
     ? "The file stays in the browser until you create the project."
@@ -3194,14 +3251,51 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
     const file = files && files[0];
     if (!file) return;
     const filename = sourceBasename(file.name || "");
-    if (!SOURCE_IMPORT_FILENAME_RE.test(filename)) {
+    const validPattern = createMode ? DOCUMENT_IMPORT_FILENAME_RE : SOURCE_IMPORT_FILENAME_RE;
+    if (!validPattern.test(filename)) {
       setSelectedFile(null);
-      setMessage("Use a flat .md or .txt filename with letters, numbers, dot, dash, or underscore.");
+      setMessage(createMode
+        ? "Use a flat PDF, DOCX, PPTX, XLSX, Markdown, text, CSV, TSV, JSON, or log filename."
+        : "Use a flat .md or .txt filename with letters, numbers, dot, dash, or underscore.");
       return;
     }
     if (file.size > SOURCE_UPLOAD_MAX_BYTES) {
       setSelectedFile(null);
-      setMessage(`File is too large for browser import. Limit: ${Math.round(SOURCE_UPLOAD_MAX_BYTES / 1024)} KB.`);
+      setMessage(`File is too large for browser import. Limit: ${Math.round(SOURCE_UPLOAD_MAX_BYTES / (1024 * 1024))} MB.`);
+      return;
+    }
+    const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase();
+    if (createMode && ![".md", ".txt"].includes(extension)) {
+      setExtracting(true);
+      setSelectedFile(null);
+      setMessage(`Reading ${filename}…`);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const encoded = String(reader.result || "").split(",").pop() || "";
+        fetch("/api/document-extract", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename, content_base64: encoded }),
+        })
+          .then((response) => jsonResponseOrError(response, "document extraction failed"))
+          .then((payload) => {
+            setSelectedFile({
+              filename: payload.extracted_filename,
+              original_filename: filename,
+              original_base64: encoded,
+              original_sha256: payload.sha256,
+              extraction_method: payload.extraction_method,
+              extraction_truncated: !!payload.truncated,
+              source_type: sourceType,
+              body: payload.text,
+              bytes: file.size,
+            });
+            setMessage(`Extracted ${Number(payload.chars || 0).toLocaleString()} characters from ${filename}${payload.truncated ? " (preview capped)" : ""}.`);
+          })
+          .catch((error) => { setSelectedFile(null); setMessage(String(error.message || error)); })
+          .finally(() => setExtracting(false));
+      };
+      reader.onerror = () => { setExtracting(false); setMessage("Could not read this file in the browser."); };
+      reader.readAsDataURL(file);
       return;
     }
     const reader = new FileReader();
@@ -3232,10 +3326,10 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
     { className: "modal-backdrop", role: "presentation", onMouseDown: (event) => event.target === event.currentTarget && onClose() },
     h(
       "section",
-      { className: "modal-shell source-upload-modal", role: "dialog", "aria-modal": "true", "aria-label": "Upload project file" },
+      { ref: dialogRef, tabIndex: -1, className: "modal-shell source-upload-modal", role: "dialog", "aria-modal": "true", "aria-label": "Upload project file" },
       h(
         "header",
-        { className: "modal-head" },
+        { className: "modal-head detail-modal-head" },
         h(
           "div",
           null,
@@ -3247,7 +3341,14 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
           "div",
           { className: "modal-header-actions" },
           h(ModalNavControls, { label: "Dialog history" }),
-          h("button", { type: "button", ref: closeButtonRef, className: "modal-close", onClick: onClose, "aria-label": "Close upload" }, "Close")
+          h("button", {
+            type: "button",
+            ref: closeButtonRef,
+            className: "icon-button detail-modal-close",
+            onClick: onClose,
+            "aria-label": "Close upload",
+            title: "Close",
+          }, h(X, { size: 17, "aria-hidden": "true" }))
         )
       ),
       h(
@@ -3275,18 +3376,23 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
               handleFiles(event.dataTransfer && event.dataTransfer.files);
             }
           },
-          h("strong", null, selectedFile ? selectedFile.filename : "Drop .md or .txt here"),
-          h("p", null, selectedFile ? `${selectedFile.bytes} bytes loaded` : waitingCopy),
+          h("strong", null, selectedFile ? (selectedFile.original_filename || selectedFile.filename)
+            : createMode ? "Drop a document here" : "Drop .md or .txt here"),
+          h("p", null, selectedFile
+            ? `${selectedFile.bytes.toLocaleString()} bytes · ${selectedFile.filename}${selectedFile.extraction_method ? ` · ${selectedFile.extraction_method}` : ""}`
+            : waitingCopy),
           h("input", {
             ref: fileInputRef,
             type: "file",
-            accept: ".md,.txt,text/markdown,text/plain",
+            accept: createMode ? ".pdf,.docx,.pptx,.xlsx,.md,.txt,.csv,.tsv,.json,.log" : ".md,.txt,text/markdown,text/plain",
+            disabled: extracting,
             onChange: (event) => handleFiles(event.target.files)
           }),
           h(
             "button",
-            { type: "button", className: "copy-button", onClick: () => fileInputRef.current && fileInputRef.current.click() },
-            "Choose file"
+            { type: "button", className: "copy-button", disabled: extracting,
+              onClick: () => fileInputRef.current && fileInputRef.current.click() },
+            extracting ? "Extracting…" : "Choose file"
           )
         ),
         h(
@@ -3313,7 +3419,8 @@ function SourceFileDropModal({ open, initialSourceType = "source_evidence", mode
           "div",
           { className: "source-upload-actions" },
           h("button", { type: "button", className: "copy-button", onClick: onClose }, "Cancel"),
-          h("button", { type: "button", className: "snapshot-link", disabled: !selectedFile, onClick: applyFile }, "Use this file")
+          h("button", { type: "button", className: "snapshot-link", disabled: !selectedFile || extracting, onClick: applyFile },
+            createMode ? "Use document" : "Use this file")
         )
       )
     )
@@ -4156,6 +4263,7 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
     );
   }
   const activeKey = selectedProjectKey || projectEntryKey(snapshot);
+  const activeProjectName = String(activeKey || "").split("::")[0] || String((snapshot && snapshot.project) || "");
   const normalizedQuery = projectQuery.trim().toLowerCase();
   const entriesByProject = new Map(projects.map((project) => [project.project, project]));
   const inventoryRows = (projectFolders || [])
@@ -4189,7 +4297,12 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
       if (inventoryFilter === "needs_intake_with_files") return !row.openable && row.has_project_files;
       return true;
     })
-    .sort(projectInventorySort);
+    .sort((a, b) => {
+      const aIsCurrent = projectEntryKey(a) === activeKey || String(a.project || "") === activeProjectName;
+      const bIsCurrent = projectEntryKey(b) === activeKey || String(b.project || "") === activeProjectName;
+      if (aIsCurrent !== bIsCurrent) return aIsCurrent ? -1 : 1;
+      return projectInventorySort(a, b);
+    });
   const readyCount = (projectFolders || []).filter((folder) => entriesByProject.has(folder.project)).length;
   const needsIntakeWithFilesCount = (projectFolders || []).filter((folder) => !entriesByProject.has(folder.project) && folderHasProjectMaterial(folder)).length;
   const setupCopy =
@@ -4343,12 +4456,14 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
         ].filter(Boolean).length;
         return h(
           "article",
-          { key: project.project, className: `project-tile ${active ? "active" : ""} ${openable ? "" : "pending"}` },
+          { key: project.project, className: `project-tile ${active ? "active" : ""} ${openable ? "" : "pending"}`,
+            "aria-current": active ? "page" : undefined },
           h(
             "div",
             { className: "project-tile-main" },
             h("div", { className: "project-tile-title" },
               h("strong", null, project.display_label || titleFromSlug(project.project || "Local project")),
+              active ? h("span", { className: "project-tile-current" }, "Current") : null,
               // Research standing at a glance — a stress-tested claim with a confidence, not just a folder.
               project.standing && project.standing.tested
                 ? h("span", { className: `project-tile-standing tier-${project.standing.tier}`,
@@ -4545,14 +4660,14 @@ function projectWorkflowSteps({ snapshot, traceContext, reportContext, runHistor
       state: runDone ? "Scored" : planStatus === "ready_for_bounded_run" ? "Ready" : "Waiting",
       detail: runDone ? "Recent run history is available." : planStatus === "ready_for_bounded_run" ? "Review files that may change before starting." : "The readiness check must accept the project first.",
       tone: runDone || planStatus === "ready_for_bounded_run" ? "ready" : "neutral",
-      onClick: () => onOpenDetail && onOpenDetail("run", runDone ? "Results" : "Ready to run")
+      onClick: () => onOpenDetail && onOpenDetail("run", "Ready to run")
     },
     {
       label: "Review report",
       state: reportReady ? reviewDone ? "Reviewed" : "Ready" : "Needs work",
-      detail: reportReady ? "Report looks ready; record a review if needed." : reportRow ? itemDetail(reportRow) : "Check report readiness before relying on it.",
+      detail: reportReady ? "The report is ready for a final support check." : reportRow ? itemDetail(reportRow) : "Check report readiness before relying on it.",
       tone: reportReady ? "ready" : "attention",
-      onClick: () => onOpenDetail && onOpenDetail(reportReady && !reviewDone ? "review" : "save", reportReady && !reviewDone ? "Save review" : "Report readiness")
+      onClick: () => onOpenDetail && onOpenDetail("save", "Report readiness")
     },
     {
       label: "Save project",
@@ -4573,12 +4688,12 @@ function workflowStepDestination(step) {
   if (id === "open_project") return ["projects", "Projects"];
   if (id === "prepare_files") return ["sources", step.status === "ready" ? "Project brief" : "Prepare files"];
   if (id === "preflight") return ["run", "Check readiness"];
-  if (id === "project_run") return ["run", step.status === "done" ? "Results" : "Ready to run"];
+  if (id === "project_run") return ["run", "Ready to run"];
   if (id === "review_report") {
     const label = String((step && step.label) || "").toLowerCase();
-    if (label.includes("run check")) return ["run", "Results"];
+    if (label.includes("run check")) return ["run", "Ready to run"];
     if (label.includes("next report action")) return ["save", "Report readiness"];
-    return [step.status === "ready" ? "review" : "save", step.status === "ready" ? "Save review" : "Report readiness"];
+    return ["save", "Report readiness"];
   }
   if (id === "save_project") return ["save", "Project file"];
   return ["overview", "Overview"];
@@ -4667,213 +4782,6 @@ function serverWorkflowSteps(workflowContext, onOpenDetail) {
   });
 }
 
-
-
-
-
-function ProjectEvidenceMap({ claimSupport, thesisSupport, evidenceState, onOpenDetail, onPreview }) {
-  const liveSupport = claimSupport && typeof claimSupport === "object" ? claimSupport : {};
-  const compactSupport = thesisSupport && typeof thesisSupport === "object" ? thesisSupport : {};
-  const support = Array.isArray(liveSupport.rows) && liveSupport.rows.length ? liveSupport : compactSupport;
-  const compactRows = [
-    ...((Array.isArray(compactSupport.supported_points) ? compactSupport.supported_points : []) || []),
-    ...((Array.isArray(compactSupport.weak_or_open_points) ? compactSupport.weak_or_open_points : []) || [])
-  ];
-  const claimCards = Array.isArray(support.claim_cards) && support.claim_cards.length
-    ? support.claim_cards.filter(Boolean)
-    : Array.isArray(compactSupport.claim_cards) && compactSupport.claim_cards.length
-      ? compactSupport.claim_cards.filter(Boolean)
-      : [];
-  const rows = claimCards.length ? claimCards : Array.isArray(support.rows) ? support.rows.filter(Boolean) : compactRows.filter(Boolean);
-  const sources = Array.isArray(support.source_context) ? support.source_context.filter(Boolean) : [];
-  const statusCounts = support.status_counts && typeof support.status_counts === "object" ? support.status_counts : {};
-  const activeGapCount = Number((evidenceState && evidenceState.gap_count) || 0);
-  const supportRows = rows.filter((row) => row.kind === "supported" || !/weak|missing|unsourced|blocked/i.test(`${row.support_status || row.status || ""} ${row.issue || ""}`));
-  const weakRows = rows.filter((row) => row.kind === "weak_or_open" || /weak|missing|unsourced|blocked/i.test(`${row.support_status || row.status || ""} ${row.issue || ""}`));
-  const shownSupport = supportRows.slice(0, 4);
-  const shownWeak = weakRows.slice(0, 3);
-  const normalizeSourcePath = (path) => {
-    const value = String(path || "").trim();
-    if (!value) return "";
-    if (value.includes("/")) return value;
-    if (support.project) return `projects/${support.project}/raw/${value}`;
-    return value;
-  };
-  const sourcePathsFor = (row) => {
-    const paths = [];
-    const sourceIds = Array.isArray(row && row.source_ids)
-      ? row.source_ids.filter(Boolean)
-      : row && row.source_id
-        ? [row.source_id]
-        : [];
-    sourceIds.forEach((sourceId) => {
-      const source = sources.find((item) => item && item.source_id === sourceId);
-      if (source && source.path) paths.push(source.path);
-      if (source && source.relative_raw_path) paths.push(normalizeSourcePath(source.relative_raw_path));
-    });
-    (Array.isArray(row && row.source_paths) ? row.source_paths : []).forEach((path) => paths.push(normalizeSourcePath(path)));
-    return Array.from(new Set(paths.filter(Boolean))).slice(0, 4);
-  };
-  const supportCountText = [
-    support.claim_count ? `${support.claim_count} support notes` : "",
-    statusCounts.direct_source_support ? `${statusCounts.direct_source_support} direct` : "",
-    statusCounts.synthesized_across_sources ? `${statusCounts.synthesized_across_sources} cross-source` : "",
-  ].filter(Boolean).join(" / ");
-  const supportFacts = [
-    ["Supported", String(support.supported_count || supportRows.length || compactSupport.supported_count || 0)],
-    ["Open", String(support.weak_or_open_count || weakRows.length || compactSupport.weak_or_open_count || activeGapCount || 0)],
-    ["Sources", String(support.source_count || sources.length || compactSupport.source_count || 0)]
-  ];
-  const evidencePath = support.evidence_support_file_path || support.evidence_file_path || support.packet_path || "";
-  const sourceIndexPath = support.source_index_path || "";
-  const emptyText = support.status
-    ? "No support notes are loaded for this project."
-    : "Start the local server to load thesis support from project files.";
-  return h(
-    "section",
-    { className: "project-evidence-map", "aria-label": "Thesis evidence map" },
-    h(
-      "div",
-      { className: "project-evidence-map-head" },
-      h("span", { className: "eyebrow" }, "What supports the thesis"),
-      h("strong", null, support.display_status || displayText(support.status || "not loaded")),
-      h("small", null, supportCountText || emptyText),
-      h(
-        "div",
-        { className: "project-evidence-map-actions" },
-        h(
-          "button",
-          {
-            type: "button",
-            className: "copy-button",
-            onClick: () => onOpenDetail && onOpenDetail("run", "Results")
-          },
-          activeGapCount ? "Review evidence gap" : "Open support"
-        ),
-        evidencePath
-          ? h(
-              "button",
-              {
-                type: "button",
-                className: "copy-button",
-                onClick: () => onPreview && onPreview({ type: "file", value: evidencePath })
-              },
-              "Preview evidence"
-            )
-          : null,
-        sourceIndexPath
-          ? h(
-              "button",
-              {
-                type: "button",
-                className: "copy-button",
-                onClick: () => onPreview && onPreview({ type: "file", value: sourceIndexPath })
-              },
-              "Preview file index"
-            )
-          : null
-      )
-    ),
-    h(
-      "div",
-      { className: "project-evidence-map-facts", "aria-label": "Evidence summary" },
-      supportFacts.map(([label, value]) => h("div", { key: label }, h("span", null, label), h("strong", null, value)))
-    ),
-    h(
-      "div",
-      { className: "project-evidence-map-grid" },
-      h(
-        "div",
-        { className: "project-evidence-map-lane" },
-        h("span", null, "Supported claim cards"),
-        shownSupport.length
-          ? shownSupport.map((row) => {
-              const sourcePaths = sourcePathsFor(row);
-              return h(
-                "article",
-                { key: row.card_id || row.claim_id || row.claim, className: "ready" },
-                h("strong", null, shortText(row.claim || row.claim_id || "Supported claim", 150)),
-                h("small", null, displayText(row.issue || row.evidence_level || row.support_status || row.status || "supported")),
-                sourcePaths.length
-                  ? h(
-                      "div",
-                      { className: "project-evidence-source-list" },
-                      sourcePaths.map((sourcePath) =>
-                        h(
-                          "button",
-                          {
-                            key: sourcePath,
-                            type: "button",
-                            className: "inline-path-button",
-                            onClick: () => onPreview && onPreview({ type: "file", value: sourcePath })
-                          },
-                          sourcePath
-                        )
-                      )
-                    )
-                  : h("small", null, "No source file path attached.")
-              );
-            })
-          : h("p", null, emptyText)
-      ),
-      h(
-        "div",
-        { className: "project-evidence-map-lane" },
-        h("span", null, activeGapCount || shownWeak.length ? "Weak or open support" : "No weak support loaded"),
-        activeGapCount
-          ? h(
-              "article",
-              { className: "attention" },
-              h("strong", null, `${activeGapCount} active evidence gap${activeGapCount === 1 ? "" : "s"}`),
-              h("small", null, displayMessage((evidenceState && evidenceState.gap_summary) || "Fetch or justify the active evidence gap.")),
-              evidenceState && evidenceState.gap_file
-                ? h(
-                    "button",
-                    {
-                      type: "button",
-                      className: "inline-path-button",
-                      onClick: () => onPreview && onPreview({ type: "file", value: evidenceState.gap_file })
-                    },
-                    evidenceState.gap_file
-                  )
-                : null
-            )
-          : null,
-        shownWeak.length
-          ? shownWeak.map((row) =>
-              h(
-                "article",
-                { key: row.card_id || row.claim_id || row.claim, className: "attention" },
-                h("strong", null, shortText(row.claim || row.claim_id || "Open claim", 150)),
-                h("small", null, displayMessage(row.issue || row.next_action || row.support_status || row.status || "Needs stronger support")),
-                sourcePathsFor(row).length
-                  ? h(
-                      "div",
-                      { className: "project-evidence-source-list" },
-                      sourcePathsFor(row).map((sourcePath) =>
-                        h(
-                          "button",
-                          {
-                            key: sourcePath,
-                            type: "button",
-                            className: "inline-path-button",
-                            onClick: () => onPreview && onPreview({ type: "file", value: sourcePath })
-                          },
-                          sourcePath
-                        )
-                      )
-                    )
-                  : null
-              )
-            )
-          : !activeGapCount
-            ? h("p", null, "No weak or unsourced support notes are loaded.")
-            : null
-      )
-    )
-  );
-}
-
 function ProjectFileInventoryPanel({ inventory, liveMode, onPreview, onOpenDetail }) {
   const [activeGroup, setActiveGroup] = useState("all");
   const files = inventory && Array.isArray(inventory.items) ? inventory.items.filter(Boolean) : [];
@@ -4917,14 +4825,14 @@ function ProjectFileInventoryPanel({ inventory, liveMode, onPreview, onOpenDetai
       label: "Evidence summary",
       roles: ["evidence", "evidence_gap"],
       help: "The compiled view of what the original files support, weaken, or leave missing.",
-      action: ["run", "Results", "Open evidence work"]
+      action: ["run", "Ready to run", "Open evidence work"]
     },
     {
       id: "run",
       label: "Runs & lessons",
       roles: ["run"],
       help: "Scores, run output, learned constraints, and the next check suggested by a run.",
-      action: ["run", "Results", "Open run results"]
+      action: ["run", "Ready to run", "Open run findings"]
     },
     {
       id: "report",
@@ -4952,7 +4860,7 @@ function ProjectFileInventoryPanel({ inventory, liveMode, onPreview, onOpenDetai
       label: "Assumptions",
       roles: ["axiom"],
       help: "Run-learned assumptions and constraints that should be inspected before reuse.",
-      action: ["run", "Results", "Open assumptions"]
+      action: ["run", "Ready to run", "Open assumptions"]
     }
   ];
   const backendGroups = inventory && Array.isArray(inventory.file_groups) ? inventory.file_groups : [];
@@ -5155,8 +5063,8 @@ function projectActionDestination(action) {
     run_report_allowed_check: ["run", "Check readiness"],
     repair_report_support: ["save", "Report readiness"],
     rerun_report_support: ["save", "Report inputs"],
-    save_report_review: ["review", "Save review"],
-    recover_evidence_gaps: ["run", "Results"],
+    save_report_review: ["review", "Things to review"],
+    recover_evidence_gaps: ["run", "Ready to run"],
     prepare_evidence: ["sources", "Prepare files"],
     fix_scoring_guide: ["run", "Ready to run"],
     source_health_1: ["run", "Fix warnings"],
@@ -5430,7 +5338,7 @@ function projectObjectFailureDetail(contract, fallback) {
   return detail || label || fallback;
 }
 
-function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContext, reportContext, receiptHistory, claimSupport, sourceList, pendingEditorItems, liveMode, onOpenDetail, onInspectItem, onPreview, onDraftFormalTarget, onSaveResearchMap }) {
+function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContext, reportContext, receiptHistory, claimSupport, sourceList, pendingEditorItems, liveMode, activeRunStatus, backgroundJob, decision, onOpenDetail, onInspectItem, onPreview, onDraftFormalTarget, onSaveResearchMap }) {
   const rows = (snapshot && snapshot.rows) || [];
   const projectState = (workflowContext && workflowContext.project_state) || {};
   const claimRow = rowByLabel(rows, "Bounded claim");
@@ -5603,7 +5511,7 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       detail: axiomDetail,
       tone: axiomState === "recorded" ? "ready" : "neutral",
       action: "Open results",
-      onClick: () => onOpenDetail && onOpenDetail("run", "Results")
+      onClick: () => onOpenDetail && onOpenDetail("run", "Ready to run")
     },
     {
       label: "Run readiness",
@@ -5619,7 +5527,7 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       detail: runDetail,
       tone: runRow && runRow.kind === "attention" ? "attention" : "neutral",
       action: "Open results",
-      onClick: () => onOpenDetail && onOpenDetail("run", "Results")
+      onClick: () => onOpenDetail && onOpenDetail("run", "Ready to run")
     },
     {
       label: "Report",
@@ -5716,10 +5624,10 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
     },
     {
       label: "5",
-      title: "Save review",
-      detail: "Save the review, next step, and project file.",
-      action: "Review",
-      onClick: () => onOpenDetail && onOpenDetail("review", "Save review")
+      title: "Review open points",
+      detail: "Resolve open checks, save the next step, and leave a clear handoff.",
+      action: "Open points",
+      onClick: () => onOpenDetail && onOpenDetail("review", "Things to review")
     }
   ];
   const noReviewText = "No review saved yet.";
@@ -5766,7 +5674,31 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
     overview: { title: "Sharpen your thesis", cta: "My claim \u2192", to: ["overview", "Thesis"] }
   };
   const homeNext = HOME_NEXT[admissionWorkspace] || HOME_NEXT.run;
-  const homeStandsWarn = /attention|block|weak|missing|support|needs|stale|invalid|not ready/i.test(`${reportState} ${admissionState}`);
+  const decisionState = (decision && decision.result && decision.result.decision_state) || {};
+  const hasDecisionState = Boolean(decisionState.status || decisionState.headline);
+  const decisionBlocked = String(decisionState.status || "").toUpperCase() !== "SUPPORTED";
+  const standingHeadline = hasDecisionState ? decisionState.headline || displayText(decisionState.status) : displayText(reportState);
+  const standingReason = hasDecisionState
+    ? decisionState.reason || "Open the verdict to inspect the checked support and remaining hinge."
+    : reportDetail;
+  const decisiveTest = decisionState.next_test || {};
+  const decisiveMove = decisiveTest.text || homeNext.title;
+  const decisiveMoveDetail = decisiveTest.text
+    ? decisiveTest.flips_alone
+      ? "Settling this alone can change the current decision."
+      : decisiveTest.in_cores
+        ? `This reaches ${decisiveTest.in_cores} smallest unresolved ${decisiveTest.in_cores === 1 ? "dependency" : "dependencies"}.`
+        : "This is the highest-leverage unresolved test in the current decision state."
+    : "The project workflow selected this as the next useful step."
+  const activeWork = activeRunStatus && activeRunStatus.active
+    ? activeRunStatus.job_status === "queued"
+      ? "Pressure-test queued"
+      : activeRunStatus.iteration_budget
+        ? `Pressure-test running · round ${activeRunStatus.iteration || 0} of ${activeRunStatus.iteration_budget}`
+        : `Pressure-test running · round ${activeRunStatus.iteration || activeRunStatus.iteration_count || 0}`
+    : backgroundJob && ["queued", "running"].includes(backgroundJob.status)
+      ? backgroundJob.status === "running" ? "Project run in progress" : "Project run queued"
+      : "";
   return h(
     "section",
     { className: "project-home", "aria-label": "Project home" },
@@ -5777,24 +5709,54 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       h(MText, { c: "dimmed", mt: 6 }, thesisText),
       changeText
         ? h(MText, { c: "dimmed", fz: "sm", mt: 4 }, h(Term, { term: "what would change your mind" }, "What would change your mind"), `: ${changeText}`)
-        : null,
-      h(
-        MGroup,
-        { gap: "xs", mt: "md", align: "center" },
-        h(MText, { fz: "sm", c: "dimmed" }, "Where it stands:"),
-        h(StatusDot, { status: reportState })
-      )
+        : null
     ),
     h(
       "div",
-      { className: "home-next" },
-      h("span", { className: "eyebrow" }, "Do next"),
-      h("strong", null, homeNext.title),
+      { className: `home-return${decisionBlocked ? " is-blocked" : ""}`, "aria-label": "Pick up where you left off" },
       h(
-        "button",
-        { type: "button", className: "copy-button primary", onClick: () => onOpenDetail && onOpenDetail(homeNext.to[0], homeNext.to[1]) },
-        homeNext.cta
-      )
+        "section",
+        { className: "home-return-standing" },
+        h("div", { className: "home-return-label" },
+          h("span", { className: "eyebrow" }, "Current decision"),
+          h(StatusDot, { status: decisionState.status || reportState })),
+        h("strong", null, standingHeadline),
+        h("p", null, displayMessage(standingReason)),
+        h("button", { type: "button", className: "chip ghost", onClick: () => onOpenDetail && onOpenDetail("save", "Report readiness") }, "Open verdict")
+      ),
+      h(
+        "section",
+        { className: "home-return-move" },
+        h("span", { className: "eyebrow" }, decisiveTest.text ? "Next decisive test" : "Do next"),
+        h("strong", null, displayMessage(decisiveMove)),
+        h("p", null, decisiveMoveDetail),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "copy-button primary",
+            onClick: () => onOpenDetail && onOpenDetail(
+              decisiveTest.text ? "review" : homeNext.to[0],
+              decisiveTest.text ? "Things to review" : homeNext.to[1]
+            )
+          },
+          decisiveTest.text ? "Open decision tests" : homeNext.cta
+        )
+      ),
+      activeWork || receiptCount || runScore !== "none"
+        ? h("div", { className: "home-return-context" },
+            activeWork
+              ? h("span", { className: "home-return-live" }, h("i", { "aria-hidden": "true" }), activeWork)
+              : null,
+            receiptCount
+              ? h("span", null, h("b", null, "Latest saved move: "), shortText(recentWorkBody, 150))
+              : null,
+            runScore !== "none"
+              ? h("span", { className: "home-return-run-score" },
+                  h("b", null, `Latest run ${runScore}/100`),
+                  " · evaluates the draft, not evidence readiness")
+              : null)
+        : null
     ),
     h(
       "nav",
@@ -5811,7 +5773,6 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
           h("span", null, label))
       )
     ),
-    receiptCount ? h("p", { className: "home-saved" }, `Last saved: ${latestNextStepText.length > 84 ? `${latestNextStepText.slice(0, 84).trim()}…` : latestNextStepText}`) : null,
     h(
       "details",
       { className: "create-disclosure" },
@@ -5824,6 +5785,7 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
 function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, projects, projectFolders, projectCreateContract, startIntent = "", onCreate, onPreview, onNavigateWorkspace, onDraft, projectDraft, filePreview, filePreviewMessage }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadIntent, setUploadIntent] = useState("material");
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [docText, setDocText] = useState("");
   const pd = projectDraft || {};
@@ -5831,7 +5793,7 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
   useEffect(() => {
     if (!liveMode || !startIntent || handledStartIntentRef.current === startIntent) return;
     handledStartIntentRef.current = startIntent;
-    if (startIntent === "files") setUploadModalOpen(true);
+    if (startIntent === "files") { setUploadIntent("material"); setUploadModalOpen(true); }
   }, [liveMode, startIntent]);
   const project = String(draft.project || "").trim();
   const suggestedProject = projectFolderSuggestion(draft.task, draft.bounded_claim, draft.notes);
@@ -5946,7 +5908,12 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
   const draftEvidenceLines = uniqueTextLines(draft.evidence_refs_text);
   const draftCaveatLines = uniqueTextLines(draft.non_claims_text);
   const uploadedSources = Array.isArray(draft.uploaded_sources) ? draft.uploaded_sources.filter(Boolean) : [];
-  const uploadedSourcePaths = uploadedSources.map((file) => `projects/${previewProject || "<project>"}/raw/${file.filename || "<file>"}`);
+  const uploadedPrimaryPaths = uploadedSources.map((file) =>
+    `projects/${previewProject || "<project>"}/raw/${file.filename || "<file>"}`);
+  const uploadedSourcePaths = uploadedSources.flatMap((file, index) => [
+    uploadedPrimaryPaths[index],
+    file.original_filename ? `projects/${previewProject || "<project>"}/attachments/${file.original_filename}` : null,
+  ].filter(Boolean));
   const pendingCreatePathValuesWithUploads = uniqueLines([...pendingCreatePathValues, ...uploadedSourcePaths.filter((path) => !path.includes("<"))]);
   const addIntakeWritePaths = uniqueLines([...baseAddIntakeWritePaths, ...uploadedSourcePaths.filter((path) => !path.includes("<"))]);
   const uploadedInvalidCount = uploadedSources.filter((file) => !SOURCE_IMPORT_FILENAME_RE.test(String(file.filename || "")) || !String(file.body || "").trim()).length;
@@ -6049,7 +6016,14 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
     const nextFile = {
       filename: file.filename || "",
       source_type: file.source_type || "source_evidence",
-      body: file.body || ""
+      body: file.body || "",
+      ...(file.original_filename ? {
+        original_filename: file.original_filename,
+        original_base64: file.original_base64 || "",
+        original_sha256: file.original_sha256 || "",
+        extraction_method: file.extraction_method || "",
+        extraction_truncated: !!file.extraction_truncated,
+      } : {}),
     };
     const existingIndex = uploadedSources.findIndex((item) => item.filename === nextFile.filename);
     const next = existingIndex >= 0
@@ -6126,7 +6100,7 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
                 h(
                   "div",
                   { className: "project-create-uploaded-actions" },
-                  h("code", null, uploadedSourcePaths[index] || ""),
+                  h("code", null, uploadedPrimaryPaths[index] || ""),
                   h(
                     "button",
                     { type: "button", className: "copy-button", onClick: () => removeUploadedProjectFile(index) },
@@ -6163,7 +6137,12 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
             MBox,
             { className: "create-draft" },
             h(MText, { fw: 600, fz: "sm", mb: 2 }, "Start from a document"),
-            h(MText, { c: "dimmed", fz: "xs", mb: 8 }, "Have a memo, paper, or brief? Paste it and the workbench drafts the question, a testable thesis, and the falsifier into the fields below — you refine, you don't start blank."),
+            h(MText, { c: "dimmed", fz: "xs", mb: 8 }, "Choose a memo, paper, deck, or spreadsheet. The workbench extracts it, stages the source, and drafts the question, a testable thesis, and the falsifier below."),
+            h(MButton, {
+              variant: "light", leftSection: h(IconUpload, { size: 16 }), disabled: !!pd.running || !liveMode,
+              onClick: () => { setUploadIntent("draft"); setUploadModalOpen(true); },
+            }, "Choose a document"),
+            h(MText, { c: "dimmed", fz: "xs", my: 8 }, "Or paste text"),
             h(MTextarea, {
               autosize: true, minRows: 3, maxRows: 9, disabled: pd.running,
               placeholder: "Paste your memo / paper / brief here…",
@@ -6203,8 +6182,9 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
         h(
           MGroup,
           { gap: "sm", align: "center" },
-          h(MButton, { variant: "light", disabled: !liveMode, leftSection: h(IconUpload, { size: 16 }), onClick: () => setUploadModalOpen(true) }, "Upload files"),
-          h(MText, { c: "dimmed", fz: "xs" }, uploadedSources.length ? `${uploadedSources.length} file${uploadedSources.length === 1 ? "" : "s"} staged` : "Drop Markdown or text files — no need to type paths.")
+          h(MButton, { variant: "light", disabled: !liveMode, leftSection: h(IconUpload, { size: 16 }),
+            onClick: () => { setUploadIntent("material"); setUploadModalOpen(true); } }, "Add material"),
+          h(MText, { c: "dimmed", fz: "xs" }, uploadedSources.length ? `${uploadedSources.length} file${uploadedSources.length === 1 ? "" : "s"} staged` : "Add another source without redrafting the mandate.")
         )
       ),
       h(
@@ -6430,7 +6410,13 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
       initialSourceType: "source_evidence",
       mode: "create_project",
       onClose: () => setUploadModalOpen(false),
-      onUseFile: addUploadedProjectFile
+      onUseFile: (file) => {
+        addUploadedProjectFile(file);
+        if (uploadIntent === "draft" && file && file.body) {
+          setDocText(file.body);
+          if (onDraft) onDraft(file.body);
+        }
+      }
     })
   );
 }
@@ -6524,9 +6510,9 @@ function editableProjectFileTarget(filePreview, snapshot) {
   if (evidenceFiles.includes(path)) {
     return {
       kind: "evidence",
-      label: "Open evidence summary",
-      workspace: "overview",
-      subsection: "Evidence summary",
+      label: "Open evidence",
+      workspace: "sources",
+      subsection: "Prepare files",
       readOnlyBoundary: "Opening the evidence map writes no files. Evidence prep, fetch, and gap-justification actions keep their own write boundaries."
     };
   }
@@ -6582,7 +6568,7 @@ function editableProjectFileTarget(filePreview, snapshot) {
       kind: "evidence_gap",
       label: "Handle evidence gap",
       workspace: "run",
-      subsection: "Results",
+      subsection: "Ready to run",
       readOnlyBoundary: "Opening evidence-gap actions writes no files. Fetching evidence or saving a justification shows its write boundary before confirmation."
     };
   }
@@ -6598,7 +6584,7 @@ function editableProjectFileTarget(filePreview, snapshot) {
       kind: "run_result",
       label: "Open run results",
       workspace: "run",
-      subsection: "Results",
+      subsection: "Ready to run",
       readOnlyBoundary: "Opening run results writes no files. Follow-up evidence fetches, reviews, or next steps use their own write boundaries."
     };
   }
@@ -7635,13 +7621,13 @@ function ScoreSparkline({ iterations }) {
   const pts = (iterations || []).filter((it) => typeof it.score === "number");
   if (pts.length < 2) return null;
   const w = 320;
-  const h = 64;
+  const height = 64;
   const stepX = pts.length > 1 ? w / (pts.length - 1) : w;
-  const yOf = (score) => h - 5 - (Math.max(0, Math.min(100, score)) / 100) * (h - 10);
+  const yOf = (score) => height - 5 - (Math.max(0, Math.min(100, score)) / 100) * (height - 10);
   const line = pts.map((it, i) => `${(i * stepX).toFixed(1)},${yOf(it.score).toFixed(1)}`).join(" ");
   return h(
     "svg",
-    { className: "score-spark", width: "100%", height: h, viewBox: `0 0 ${w} ${h}`, preserveAspectRatio: "none", role: "img", "aria-label": "Score per round" },
+    { className: "score-spark", width: "100%", height, viewBox: `0 0 ${w} ${height}`, preserveAspectRatio: "none", role: "img", "aria-label": "Score per round" },
     // 85 is the auto-evolve threshold — above it the rubric can toughen.
     h("line", { x1: 0, y1: yOf(85), x2: w, y2: yOf(85), stroke: "#dcdce4", strokeWidth: 1, strokeDasharray: "4 4" }),
     h("polyline", { points: line, fill: "none", stroke: "#4263eb", strokeWidth: 2, strokeLinejoin: "round" }),
@@ -7808,7 +7794,7 @@ function RunHistoryPanel({ runHistory, message, liveMode, onPreview, onUseAction
   const weakest = latest.weakest_point || summary.latest_weakest_point || "";
   return h(
     "section",
-    { className: "run-history-panel", "aria-label": "Results" },
+    { className: "run-history-panel", "aria-label": "Run history" },
     h(
       "div",
       { className: "run-history-summary" },
@@ -9319,7 +9305,7 @@ function buildAssumptionsView(evalResults) {
 
 // View-model for the Evidence screen (sections/evidence.jsx). Data via /api/sources (files) +
 // claim-support (backing) + snapshot Evidence-readiness (compile freshness) + evidence gaps.
-function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sourceActionRunning, evalResults) {
+function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sourceActionRunning, evalResults, sourceListMessage, decision) {
   const sources = Array.isArray(sourceList && sourceList.sources) ? sourceList.sources.filter(Boolean) : [];
   // Source health: does each COMPILED source still match the file on disk? A mismatch silently
   // invalidates every claim bound to it — the cheapest-fix soundness signal (claim_support.source_context,
@@ -9350,9 +9336,27 @@ function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sou
 
   const rows = (snapshot && snapshot.rows) || [];
   const evidenceRow = rows.find((r) => r.label === "Evidence readiness");
+  const evidenceDetail = String((evidenceRow && (evidenceRow.display_detail || evidenceRow.detail)) || "").toLowerCase();
+  let compileReason = "";
+  if (evidenceRow && evidenceRow.kind !== "ready") {
+    if (evidenceDetail.includes("replay: stale") || evidenceDetail.includes("replay: invalid")) {
+      compileReason = "The files and evidence links are current, but the replay manifest is stale or invalid. Recompile to restore a reproducible chain.";
+    } else if (evidenceDetail.includes("file index: stale") || evidenceDetail.includes("file index: invalid")) {
+      compileReason = "The source-file index is stale or invalid. Recompile before the loop uses these files.";
+    } else if (evidenceDetail.includes("evidence connection: stale") || evidenceDetail.includes("evidence connection: invalid")) {
+      compileReason = "The evidence links no longer match the current source files. Recompile before relying on the scored chain.";
+    } else if (evidenceDetail) {
+      compileReason = displayMessage((evidenceRow && (evidenceRow.display_detail || evidenceRow.detail)) || "");
+    }
+  }
   const project = snapshot && snapshot.project;
   const total = Number((claimSupport && claimSupport.claim_count) || 0);
   const thin = Number((claimSupport && claimSupport.weak_or_unsourced_count) || 0);
+  const decisionState = (decision && decision.result && decision.result.decision_state) || {};
+  const decisionClaims = Number((decisionState.counts && decisionState.counts.claims) || 0);
+  const admittedDecisionClaims = decisionClaims
+    ? Math.max(0, Math.min(decisionClaims, Math.round(Number(decisionState.coverage || 0) * decisionClaims)))
+    : 0;
   const gapCount = Number(
     (evidenceGaps && (evidenceGaps.active_evidence_gap_count ?? (evidenceGaps.evidence_gaps || []).length)) || 0
   );
@@ -9388,14 +9392,26 @@ function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sou
   return {
     fileGroups,
     fileCount: sources.length,
+    fileState: sourceList
+      ? "ready"
+      : (/unavailable|offline snapshot/i.test(String(sourceListMessage || "")) ? "error" : "loading"),
+    fileMessage: String(sourceListMessage || ""),
     untypedCount: Number((sourceList && sourceList.untyped_source_count) || 0),
     invalidCount: Number((sourceList && sourceList.invalid_source_type_count) || 0),
     rawDir: (sourceList && sourceList.raw_dir) || (project ? `projects/${project}/raw` : "raw/"),
-    backing: { total, thin, strong: total > 0 ? Math.max(0, total - thin) : 0 },
+    backing: {
+      total,
+      thin,
+      strong: total > 0 ? Math.max(0, total - thin) : 0,
+      decisionTotal: decisionClaims,
+      decisionAdmitted: admittedDecisionClaims,
+      decisionStatus: String(decisionState.status || ""),
+    },
     sourceHealth,
     compile: {
       fresh: Boolean(evidenceRow && evidenceRow.kind === "ready"),
       running: Boolean(sourceActionRunning),
+      reason: compileReason,
     },
     compiledFile: project ? `projects/${project}/compiled_evidence_packet.json` : "",
     gaps,
@@ -9703,6 +9719,7 @@ function buildMapView(researchMap, researchGraph) {
     hasContent: Boolean(tensions.length || toTest.length || support.length || graphNodes.length),
     graphNodes, graphEdges,
     graphTruncated: (rg && rg.truncated) || null,
+    graphArgument: (rg && rg.argument) || null,  // verdict/reason/cores/hinge overlay (optional, additive)
     // Graph-algorithmic structural reads (kernel-computed): linchpin source, weakest link,
     // most-contested claim, unsupported assertions, circular reasoning.
     graphInsights: (rg && rg.insights) || null,
@@ -9808,6 +9825,7 @@ function buildOpenPointsView(evalResults) {
       autoTestable: Boolean(t.auto_testable),
     }));
   return {
+    loading: evalResults == null,
     hasRun: Boolean(evalOk),
     redTeam,
     // Holes in the REASONING (distinct from open_questions, which are missing-data gaps).
@@ -9817,7 +9835,7 @@ function buildOpenPointsView(evalResults) {
   };
 }
 
-// View-model for the Harden run console (sections/runconsole.jsx). Effective run config comes from the
+// View-model for the Pressure-test run console (sections/runconsole.jsx). Effective run config comes from the
 // CLI's /api/run-config (per-project overrides on global defaults); readiness + live status from trace
 // + run-status telemetry. Grounded — no assumptions about defaults the kernel doesn't give us.
 // Translate the kernel's information-yield decision (will another run learn anything?) into a humane
@@ -9852,10 +9870,16 @@ function buildRunConsoleView(runConfig, runConfigOverrides, runStatus, traceCont
   const status = rs.active
     ? {
         active: true,
-        iteration: rs.iteration || rs.iteration_count || 1,
+        iteration: Number.isFinite(Number(rs.iteration)) ? Math.max(0, Number(rs.iteration)) : (Number(rs.iteration_count) || 0),
         budget: rs.iteration_budget || null,
         score: typeof rs.latest_score === "number" ? rs.latest_score : null,
         mutator: rs.mutator_model || "",
+        judge: rs.judge_model || "",
+        jobStatus: rs.job_status || "",
+        progressSource: rs.progress_source || "",
+        heartbeatStale: Boolean(rs.heartbeat_stale),
+        lastUpdateAgeSeconds: Number.isFinite(Number(rs.last_update_age_seconds)) ? Number(rs.last_update_age_seconds) : null,
+        jobId: rs.job_id || "",
       }
     : { active: false };
 
@@ -9873,6 +9897,13 @@ function buildRunConsoleView(runConfig, runConfigOverrides, runStatus, traceCont
   };
 }
 
+function runAgeText(value) {
+  const age = Number(value);
+  if (!Number.isFinite(age) || age < 0) return "just now";
+  if (age < 60) return `${Math.max(1, Math.round(age))}s ago`;
+  return `${Math.floor(age / 60)}m ago`;
+}
+
 // View-model for "What the run found" (sections/results.jsx) — the run's epistemic payload from the
 // eval-results CLI. Surfaces the powerful run-generated outputs that were invisible in the old UI.
 function buildRunFindingsView(evalResults, scoreTrajectory) {
@@ -9886,6 +9917,7 @@ function buildRunFindingsView(evalResults, scoreTrajectory) {
     ? lastRun.iterations.map((it) => it.score).filter((s) => typeof s === "number")
     : [];
   return {
+    loading: evalResults == null,
     hasRun: Boolean(evalOk),
     score: evalOk ? evalResults.score : null,
     series,
@@ -9996,6 +10028,7 @@ function buildThesisView(snapshot, claimSupport, evalResults) {
       warn: verdictV.warn,
     },
     claim: (claimRow && (claimRow.detail || claimRow.display_detail)) || "",
+    claimFile: (claimRow && (claimRow.file || claimRow.source)) || (snapshot && snapshot.project ? `projects/${snapshot.project}/thesis.md` : ""),
     claimWarning: (claimRow && claimRow.warning) || "",
     falsifierText: (falsifierRow && falsifierRow.detail) || "",
     weakestPoint: (evalOk && String(evalResults.weakest_point || "").trim()) || "",
@@ -10030,6 +10063,8 @@ function Sidebar({
   const productNavItems = [
     { id: "research", label: "ZTARE Projects", workspace: "projects", subsection: "Projects", icon: "projects" },
     { id: "leanmill", label: "LeanMill", workspace: "leanmill", subsection: "Overview", icon: "leanmill" },
+    { id: "activity", label: "Activity", workspace: "projects", subsection: "Activity", icon: "activity" },
+    { id: "plugins", label: "Plugins", workspace: "projects", subsection: "Plugins", icon: "plugins" },
     { id: "settings", label: "Settings", workspace: "projects", subsection: "Settings", icon: "settings" }
   ];
   const day0TaskItems = [
@@ -10074,9 +10109,16 @@ function Sidebar({
             className: (
               item.id === "leanmill"
                 ? leanMillActive
+                : item.id === "activity"
+                  ? activeWorkspace === "projects" && activeSubsection === "Activity"
+                : item.id === "plugins"
+                  ? activeWorkspace === "projects" && activeSubsection === "Plugins"
                 : item.id === "settings"
                   ? activeWorkspace === "projects" && activeSubsection === "Settings"
-                  : !leanMillActive && !(activeWorkspace === "projects" && activeSubsection === "Settings")
+                  : !leanMillActive
+                    && !(activeWorkspace === "projects" && activeSubsection === "Settings")
+                    && !(activeWorkspace === "projects" && activeSubsection === "Activity")
+                    && !(activeWorkspace === "projects" && activeSubsection === "Plugins")
             ) ? "active" : "",
             onClick: () => {
               if (onNavigateWorkspace) onNavigateWorkspace(item.workspace, item.subsection);
@@ -10101,7 +10143,7 @@ function Sidebar({
         { className: "side-subnav-list" },
         sideSubnavItems.map((item) => {
           const active = activeWorkspace === item.workspace && activeSubsection === item.subsection;
-          return h(
+          const button = h(
             "button",
             {
               key: `${item.workspace}:${item.subsection}:${item.label}`,
@@ -10121,6 +10163,15 @@ function Sidebar({
             navIcon(item.label),
             h("strong", null, item.label)
           );
+          // Split the LeanMill submenu into two clusters: everyday "prove a statement" work above,
+          // axiom discovery below (AxiomPack explore_axiom_space — a different job from proving a stated target).
+          if (leanMillActive && item.label === "Axiom discovery") {
+            return [
+              h("div", { key: `${item.label}-group`, className: "side-subnav-group-label" }, "Discovery"),
+              button
+            ];
+          }
+          return button;
         })
       )
     )
@@ -10417,16 +10468,25 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
 
   return h(
     "section",
-    { className: "save-flow", "aria-label": "Save review" },
+    { className: "save-flow", "aria-label": "Review project check" },
     h(
       "div",
-      { className: "save-flow-head" },
-      h("h2", null, row ? `Where does "${itemLabel(row)}" stand?` : "Pick a point first"),
-      h("p", null, row ? "Mark it reviewed, set it aside, or flag it as holding the report \u2014 and note why." : "Choose a point from Open points first.")
+      { className: "save-flow-context" },
+      h("span", { className: "eyebrow" }, "Project check"),
+      h(
+        "div",
+        { className: "save-flow-context-head" },
+        h("h3", null, row ? itemLabel(row) : "Choose a check first"),
+        row ? h(StatusDot, { status: row.kind || row.status, label: itemStatus(row) }) : null
+      ),
+      h("p", null, row
+        ? itemDetail(row)
+        : "Open this form from the specific check you reviewed so the saved receipt has the right target."),
+      row ? h("small", null, "This receipt applies only to this check.") : null
     ),
     h(
       "div",
-      { className: "save-flow-choices", role: "group", "aria-label": "Where it stands" },
+      { className: "save-flow-choices", role: "group", "aria-label": "Check disposition" },
       REVIEW_ACTIONS.map((action) =>
         h(
           "button",
@@ -10446,7 +10506,7 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
       value: reviewState.note || "",
       onChange: updateNote,
       disabled: !row,
-      placeholder: "Why \u2014 what you checked, what you\u2019re waiting on\u2026",
+      placeholder: "What did you verify? What remains unresolved?",
       "aria-label": "Review note"
     }),
     h(
@@ -10461,18 +10521,7 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
           onClick: () => liveReady && applyReviewLive(rowKey, reviewPayload),
           disabled: !liveReady
         },
-        "Save review"
-      ),
-      h(
-        "button",
-        {
-          className: "copy-button",
-          type: "button",
-          title: reviewReady ? "Download the review file" : "Choose where it stands first",
-          onClick: () => downloadText(reviewFilename, reviewFile),
-          disabled: !reviewReady
-        },
-        "Download"
+        "Save check review"
       )
     ),
     h(
@@ -10483,7 +10532,18 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
         "div",
         { className: "create-disclosure-body" },
         pendingPathPreview("Files that may change", pendingReviewPaths, "Pick a point to preview the saved files.", liveReady),
-        command ? h("code", { className: "trace-command-line" }, command) : null
+        command ? h("code", { className: "trace-command-line" }, command) : null,
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            title: reviewReady ? "Download the review file" : "Choose a disposition first",
+            onClick: () => downloadText(reviewFilename, reviewFile),
+            disabled: !reviewReady
+          },
+          "Download review file"
+        )
       )
     )
   );
@@ -10818,22 +10878,12 @@ function FileViewerModal({ filePreview, message, open, onClose, onPreview, editT
   useEffect(() => {
     setViewerMode("read");
   }, [previewPathKey]);
-  useEffect(() => {
-    if (!open) return undefined;
-    const previousActive = document.activeElement;
-    const closeOnEscape = (event) => {
-      if (handleModalHistoryKey(event, navRef.current)) return;
-      if (event.key === "Escape") onClose();
-    };
-    const unlockBody = lockModalBody();
-    window.addEventListener("keydown", closeOnEscape);
-    window.requestAnimationFrame(() => closeButtonRef.current && closeButtonRef.current.focus());
-    return () => {
-      unlockBody();
-      window.removeEventListener("keydown", closeOnEscape);
-      if (previousActive && typeof previousActive.focus === "function") previousActive.focus();
-    };
-  }, [open, onClose]);
+  const dialogRef = useModalBehavior({
+    open,
+    onClose,
+    initialFocusRef: closeButtonRef,
+    onKeyDown: (event) => handleModalHistoryKey(event, navRef.current),
+  });
   if (!open) return null;
   const path = filePreview && filePreview.path ? filePreview.path : "";
   const kind = filePreview ? filePreviewKindLabel(filePreview) : path ? fileRoleLabel(path) : "Preview";
@@ -10857,7 +10907,7 @@ function FileViewerModal({ filePreview, message, open, onClose, onPreview, editT
     { className: "modal-backdrop file-viewer-backdrop", role: "presentation", onMouseDown: (event) => event.target === event.currentTarget && onClose() },
     h(
       "section",
-      { className: "file-viewer-modal", role: "dialog", "aria-modal": "true", "aria-label": title },
+      { ref: dialogRef, tabIndex: -1, className: "file-viewer-modal", role: "dialog", "aria-modal": "true", "aria-label": title },
       h(
         "header",
         { className: "file-viewer-head" },
@@ -10982,13 +11032,14 @@ function readWorkbenchRouteFromUrl() {
     const start = ["files", "thesis", "folder"].includes(requestedStart) ? requestedStart : "";
     const [workspace, subsection] = normalizeWorkspaceTarget(requestedWorkspace, requestedSubsection);
     const project = String(params.get("project") || "").trim();
-    return { workspace, subsection, day0, start, project };
+    const scenario = String(params.get("scenario") || "").trim();
+    return { workspace, subsection, day0, start, project, scenario };
   } catch (_err) {
-    return { workspace: "projects", subsection: "Current project", day0: false, start: "", project: "" };
+    return { workspace: "projects", subsection: "Current project", day0: false, start: "", project: "", scenario: "" };
   }
 }
 
-function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", replace = false }) {
+function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", scenario, replace = false }) {
   try {
     const [nextWorkspace, nextSubsection] = normalizeWorkspaceTarget(workspace, subsection);
     const url = new URL(window.location.href);
@@ -11004,6 +11055,10 @@ function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", repl
       url.searchParams.set("start", start);
     } else {
       url.searchParams.delete("start");
+    }
+    if (scenario !== undefined) {
+      if (scenario) url.searchParams.set("scenario", scenario);
+      else url.searchParams.delete("scenario");
     }
     const nextUrl = url.toString();
     if (nextUrl === window.location.href) return;
@@ -11036,32 +11091,29 @@ function ModalShell({ detail, modalKey, onClose, modalNav }) {
   useEffect(() => {
     navRef.current = nav;
   }, [nav]);
-  useEffect(() => {
-    if (!detail || !modalKey) return undefined;
-    const previousActive = document.activeElement;
-    const closeOnEscape = (event) => {
-      if (handleModalHistoryKey(event, navRef.current)) return;
-      if (event.key === "Escape") onClose();
-    };
-    const unlockBody = lockModalBody();
-    window.addEventListener("keydown", closeOnEscape);
-    window.requestAnimationFrame(() => closeButtonRef.current && closeButtonRef.current.focus());
-    return () => {
-      unlockBody();
-      window.removeEventListener("keydown", closeOnEscape);
-      if (previousActive && typeof previousActive.focus === "function") previousActive.focus();
-    };
-  }, [detail, modalKey, onClose]);
+  const dialogRef = useModalBehavior({
+    open: Boolean(detail && modalKey),
+    onClose,
+    initialFocusRef: closeButtonRef,
+    onKeyDown: (event) => handleModalHistoryKey(event, navRef.current),
+  });
   if (!detail) return null;
+  const shellClass = [
+    "modal-shell",
+    modalKey === detailKey("overview", "Annotate a doc") ? "draft-check-modal" : "",
+    modalKey === detailKey("review", "Save review") ? "check-review-modal" : "",
+    modalKey === detailKey("review", "Record a test outcome") ? "wager-execute-modal" : "",
+    modalKey === detailKey("review", "Define a decision test") ? "register-bet-modal" : "",
+  ].filter(Boolean).join(" ");
   return h(
     "div",
     { className: "modal-backdrop", role: "presentation", onMouseDown: (event) => event.target === event.currentTarget && onClose() },
     h(
       "section",
-      { className: "modal-shell", role: "dialog", "aria-modal": "true", "aria-label": detail.title },
+      { ref: dialogRef, tabIndex: -1, className: shellClass, role: "dialog", "aria-modal": "true", "aria-label": detail.title },
       h(
         "header",
-        { className: "modal-head" },
+        { className: "modal-head detail-modal-head" },
         h(
           "div",
           null,
@@ -11073,7 +11125,14 @@ function ModalShell({ detail, modalKey, onClose, modalNav }) {
           "div",
           { className: "modal-header-actions" },
           h(ModalNavControls, { ...nav, label: "Detail modal history" }),
-          h("button", { type: "button", ref: closeButtonRef, className: "modal-close", onClick: onClose, "aria-label": "Close details" }, "Close")
+          h("button", {
+            type: "button",
+            ref: closeButtonRef,
+            className: "icon-button detail-modal-close",
+            onClick: onClose,
+            "aria-label": "Close details",
+            title: "Close",
+          }, h(X, { size: 17, "aria-hidden": "true" }))
         )
       ),
       h("div", { className: "modal-body" }, detail.panels)
@@ -11145,8 +11204,8 @@ function WorkspacePageHeader({ activeSection, activeSubnav, snapshot, counts, ac
       ? { label: "Prepare files", workspace: "sources", subsection: "Prepare files" }
       : activeSection.id === "run"
         ? { label: "Check readiness", workspace: "run", subsection: "Check readiness" }
-        : activeSection.id === "review"
-          ? { label: "Open reviews", workspace: "review", subsection: "Save review" }
+      : activeSection.id === "review"
+          ? { label: "Open points", workspace: "review", subsection: "Things to review" }
           : activeSection.id === "save"
             ? { label: "Check report", workspace: "save", subsection: "Report readiness" }
             : null;
@@ -11239,6 +11298,63 @@ function App() {
   const [error, setError] = useState("");
   const [modeMessage, setModeMessage] = useState("");
   const [runStatus, setRunStatus] = useState(null);
+  const [backgroundJob, setBackgroundJob] = useState(null);
+  const [backgroundJobs, setBackgroundJobs] = useState([]);
+  // Installed scenarios (use-case bundles) for the run-console picker. Read-only; loaded once on mount.
+  const [scenarios, setScenarios] = useState([]);
+  const [selectedScenario, setSelectedScenario] = useState(initialRoute.scenario);
+  const refreshScenarioIndex = () => fetch("/api/scenarios", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : { scenarios: [] }))
+      .then((p) => setScenarios((p && p.scenarios) || []))
+      .catch(() => setScenarios([]));
+  useEffect(() => { refreshScenarioIndex(); }, []);  // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!scenarios.length || !selectedScenario) return;
+    if (!scenarios.some((scenario) => scenario && scenario.name === selectedScenario)) setSelectedScenario("");
+  }, [scenarios, selectedScenario]);
+  useEffect(() => {
+    fetch("/api/plugins", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : null)).then((p) => p && setPluginsData(p)).catch(() => {});
+  }, []);
+  // Install/save a data plugin (scenario / rubric) from the UI → written + validated + live; refresh the list.
+  // Returns the payload so the edit modal can close on success.
+  const installPluginLive = (kind, name, spec, overwrite = false) => {
+    if (!liveMode) return Promise.resolve({ ok: false, error: "not in live mode" });
+    setPluginBusy(true); setPluginMsg("");
+    return fetch("/api/plugin-install", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, name, spec, overwrite }),
+    })
+      .then((r) => r.json())
+      .then((p) => {
+        setPluginBusy(false);
+        if (p.ok) {
+          setPluginsData(p.installed);
+          refreshScenarioIndex();
+          setPluginMsg(`✓ saved ${kind} '${p.name}' — live now`);
+        }
+        else { setPluginMsg(`✗ ${p.error || "install failed"}`); }
+        return p;
+      })
+      .catch((err) => { setPluginBusy(false); setPluginMsg(`✗ ${String(err.message || err)}`); return { ok: false }; });
+  };
+  // Fetch an installed plugin's current spec (for the edit modal).
+  const fetchPluginDetail = (kind, name) =>
+    fetch(`/api/plugin?kind=${encodeURIComponent(kind)}&name=${encodeURIComponent(name)}`,
+      { headers: { Accept: "application/json" } })
+      .then((r) => r.json()).catch((err) => ({ ok: false, error: String(err.message || err) }));
+  const reloadPluginsLive = () => {
+    setPluginBusy(true); setPluginMsg("");
+    fetch("/api/plugins-reload", { method: "POST", headers: { Accept: "application/json" } })
+      .then((r) => r.json())
+      .then((p) => {
+        setPluginBusy(false);
+        if (p.installed) setPluginsData(p.installed);
+        refreshScenarioIndex();
+        setPluginMsg("✓ reloaded code plugins");
+      })
+      .catch((err) => { setPluginBusy(false); setPluginMsg(`✗ ${String(err.message || err)}`); });
+  };
   const [traceContext, setTraceContext] = useState(null);
   const [traceMessage, setTraceMessage] = useState("");
   const [workflowContext, setWorkflowContext] = useState(null);
@@ -11286,6 +11402,18 @@ function App() {
   const [reportSupportRunning, setReportSupportRunning] = useState(false);
   const [forecastScratch, setForecastScratch] = useState(null);
   const [eigenquestion, setEigenquestion] = useState(null);
+  const [annotateDoc, setAnnotateDoc] = useState(null);
+  const [reingestDoc, setReingestDoc] = useState(null);
+  const [reingestPromotion, setReingestPromotion] = useState(null);
+  const [pluginsData, setPluginsData] = useState(null);
+  const [pluginBusy, setPluginBusy] = useState(false);
+  const [pluginMsg, setPluginMsg] = useState("");
+  const [freshness, setFreshness] = useState(null);
+  const [wagers, setWagers] = useState(null);
+  const [agenda, setAgenda] = useState(null);
+  const [wagerPrefill, setWagerPrefill] = useState(null);
+  const [wagerExecution, setWagerExecution] = useState(null);
+  const [decision, setDecision] = useState(null);
   const [isomorphism, setIsomorphism] = useState(null);
   const [rubricReview, setRubricReview] = useState(null);
   const [falsify, setFalsify] = useState(null);
@@ -11326,6 +11454,7 @@ function App() {
   const [leanMillActionEvent, setLeanMillActionEvent] = useState(null);
   const [leanMillActionMessage, setLeanMillActionMessage] = useState("");
   const [leanMillActionRunning, setLeanMillActionRunning] = useState(false);
+  const leanMillDraftProjectRef = useRef("");
   const [sourceEditDraft, setSourceEditDraft] = useState(emptySourceEditDraft());
   const [sourceEditMessage, setSourceEditMessage] = useState("");
   const [sourceEditEvent, setSourceEditEvent] = useState(null);
@@ -11336,6 +11465,7 @@ function App() {
       setScoreTrajectory(null);
       return undefined;
     }
+    setScoreTrajectory(null);
     let active = true;
     fetch(endpointUrl("/api/score-trajectory", { project: scoreTrajectoryProject }), { headers: { Accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
@@ -11347,10 +11477,27 @@ function App() {
       active = false;
     };
   }, [liveMode, scoreTrajectoryProject]);
+  useEffect(() => {
+    const project = String(scoreTrajectoryProject || "").trim();
+    const previousProject = leanMillDraftProjectRef.current;
+    if (!project || project === previousProject) return;
+    setLeanMillBlueprintDraft((current) => {
+      const draft = current || emptyLeanMillBlueprintDraft();
+      const currentProject = String(draft.project || "").trim();
+      return !currentProject || currentProject === previousProject ? { ...draft, project } : draft;
+    });
+    setLeanMillActionDraft((current) => {
+      const draft = current || emptyLeanMillActionDraft();
+      const currentProject = String(draft.project || "").trim();
+      return !currentProject || currentProject === previousProject ? { ...draft, project } : draft;
+    });
+    leanMillDraftProjectRef.current = project;
+  }, [scoreTrajectoryProject]);
   // Keep run-history (recent_runs → per-run weakest_point + gates) loaded alongside the trajectory, so
-  // History/Results show the run narrative even when the page boots static then flips live.
+  // History and the Pressure-test home show the run narrative even when the page boots static then flips live.
   useEffect(() => {
     if (!liveMode || !scoreTrajectoryProject) return undefined;
+    setRunHistoryContext(null);
     let active = true;
     fetch(endpointUrl("/api/run-history", { project: scoreTrajectoryProject, limit: 8 }), { headers: { Accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
@@ -11358,11 +11505,19 @@ function App() {
       .catch(() => {});
     return () => { active = false; };
   }, [liveMode, scoreTrajectoryProject]);
+  // Keep the decision-strength trajectory loaded alongside run-history, so History's sparkline renders
+  // even if the Decision tab was never opened this session.
+  useEffect(() => {
+    if (!liveMode || !scoreTrajectoryProject) return undefined;
+    loadDecisionLive();
+    return undefined;
+  }, [liveMode, scoreTrajectoryProject]);
   useEffect(() => {
     if (!liveMode || !scoreTrajectoryProject) {
       setEvalResults(null);
       return undefined;
     }
+    setEvalResults(null);
     let active = true;
     fetch(endpointUrl("/api/eval-results", { project: scoreTrajectoryProject }), { headers: { Accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
@@ -11379,6 +11534,7 @@ function App() {
       setResearchMapData(null);
       return undefined;
     }
+    setResearchMapData(null);
     let active = true;
     fetch(endpointUrl("/api/research-map", { project: scoreTrajectoryProject }), { headers: { Accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
@@ -11391,21 +11547,34 @@ function App() {
     };
   }, [liveMode, scoreTrajectoryProject]);
   // The research-landscape graph projection (aggregated over the project's artifacts via the CLI).
+  const fetchResearchGraphLive = (project) => {
+    if (!liveMode || !project) return Promise.resolve(null);
+    return fetch(endpointUrl("/api/research-graph", { project }), { headers: { Accept: "application/json" } })
+      .then((response) => (response.ok ? response.json() : null))
+      .catch(() => null);
+  };
   useEffect(() => {
     if (!liveMode || !scoreTrajectoryProject) { setResearchGraph(null); return undefined; }
+    setResearchGraph(null);
     let active = true;
-    fetch(endpointUrl("/api/research-graph", { project: scoreTrajectoryProject }), { headers: { Accept: "application/json" } })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((payload) => { if (active && payload && payload.ok && Array.isArray(payload.nodes)) setResearchGraph(payload); })
-      .catch(() => {});
+    fetchResearchGraphLive(scoreTrajectoryProject).then((payload) => {
+      if (active && payload && payload.ok && Array.isArray(payload.nodes)) setResearchGraph(payload);
+    });
     return () => { active = false; };
   }, [liveMode, scoreTrajectoryProject]);
+  // Manual re-pull for the map's "Refresh" action — same fetch, no mount-guard (the caller is a live click).
+  const refreshResearchGraphLive = () => fetchResearchGraphLive(scoreTrajectoryProject).then((payload) => {
+    if (payload && payload.ok && Array.isArray(payload.nodes)) setResearchGraph(payload);
+    return payload;
+  });
   useEffect(() => {
     if (!liveMode || !scoreTrajectoryProject) {
       setRunConfig(null);
       setRunConfigOverrides({});
       return undefined;
     }
+    setRunConfig(null);
+    setRunConfigOverrides({});
     let active = true;
     fetch(endpointUrl("/api/run-config", { project: scoreTrajectoryProject }), { headers: { Accept: "application/json" } })
       .then((response) => (response.ok ? response.json() : null))
@@ -11428,12 +11597,25 @@ function App() {
       setRunStatus(null);
       return undefined;
     }
+    setRunStatus(null);
+    setBackgroundJob(null);
+    setBackgroundJobs([]);
     let active = true;
     const poll = () => {
       fetch(endpointUrl("/api/run-status", { project: runStatusProject }), { headers: { Accept: "application/json" }, __wbSilent: true })
         .then((response) => (response.ok ? response.json() : null))
         .then((payload) => {
           if (active && payload) setRunStatus(payload);
+        })
+        .catch(() => {});
+      fetch(`/api/jobs?project=${encodeURIComponent(runStatusProject)}`, { headers: { Accept: "application/json" }, __wbSilent: true })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((payload) => {
+          if (!active || !payload) return;
+          const jobs = Array.isArray(payload.jobs) ? payload.jobs : [];
+          setBackgroundJobs(jobs);
+          const row = jobs.find((item) => ["queued", "running"].includes(item.status));
+          setBackgroundJob(row || null);
         })
         .catch(() => {});
     };
@@ -11445,6 +11627,11 @@ function App() {
       clearInterval(id);
     };
   }, [liveMode, runStatusProject]);
+  const cancelBackgroundJob = () => {
+    if (!backgroundJob || !backgroundJob.id) return;
+    fetch("/api/job-cancel", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: backgroundJob.id }) }).then(() => setBackgroundJob(null)).catch(() => {});
+  };
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
@@ -11466,6 +11653,7 @@ function App() {
   const [filePreview, setFilePreview] = useState(null);
   const [filePreviewMessage, setFilePreviewMessage] = useState("");
   const [filePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [draftSeed, setDraftSeed] = useState(null);
   // When the editor/detail modal is opened FROM the file viewer, remember the file so the modal's
   // Back can return to the viewer (the two modals are separate history stacks).
   const [editorReturnPath, setEditorReturnPath] = useState("");
@@ -11491,6 +11679,7 @@ function App() {
       setProjectStartIntent(route.start);
       setActiveWorkspace(route.workspace);
       setActiveSubsection(route.subsection);
+      setSelectedScenario(route.scenario);
       setActiveModalKey("");
     };
     window.addEventListener("popstate", restoreRoute);
@@ -11499,10 +11688,27 @@ function App() {
       subsection: activeSubsection,
       day0: day0Mode,
       start: projectStartIntent,
+      scenario: selectedScenario,
       replace: true
     });
     return () => window.removeEventListener("popstate", restoreRoute);
   }, []);
+
+  useEffect(() => {
+    syncWorkbenchRouteToUrl({
+      workspace: activeWorkspace,
+      subsection: activeSubsection,
+      day0: day0Mode,
+      start: projectStartIntent,
+      scenario: selectedScenario,
+      replace: true,
+    });
+  }, [selectedScenario]);  // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeWorkspace, activeSubsection, day0Mode, projectStartIntent]);
 
   const defaultSnapshotLabel = (rows) => {
     const firstAttention = rows.find((row) => row.kind === "attention");
@@ -11551,6 +11757,14 @@ function App() {
     setSourceActionPrompt(null);
     setRunHistoryContext(null);
     setRunHistoryMessage("");
+    setScoreTrajectory(null);
+    setEvalResults(null);
+    setResearchMapData(null);
+    setResearchGraph(null);
+    setRunConfig(null);
+    setRunConfigOverrides({});
+    setRunConfigMessage("");
+    setRunStatus(null);
     setClaimSupportContext(null);
     setClaimSupportMessage("");
     setEvidenceGapContext(null);
@@ -11588,6 +11802,23 @@ function App() {
     setReceiptHistoryMessage("");
     setFilePreview(null);
     setFilePreviewMessage("");
+    // These reads are keyed to the selected project. Keeping the prior project's values visible while the
+    // next snapshot loads creates a false decision, agenda, or forecast for the new project.
+    setForecastScratch(null);
+    setEigenquestion(null);
+    setAnnotateDoc(null);
+    setReingestDoc(null);
+    setReingestPromotion(null);
+    setFreshness(null);
+    setWagers(null);
+    setAgenda(null);
+    setWagerPrefill(null);
+    setWagerExecution(null);
+    setDecision(null);
+    setIsomorphism(null);
+    setRubricReview(null);
+    setFalsify(null);
+    setObsidianExport(null);
   };
 
   const refreshResult = (label, ok, error = "") => ({ label, ok, error: error ? String(error) : "" });
@@ -11727,7 +11958,7 @@ function App() {
       .finally(() => setRunConfigSaving(false));
   };
 
-  // Set iterations from the Harden run console — persists the RUN_ITERS override (CLI-backed) inline.
+  // Set iterations from the Pressure-test console — persists the RUN_ITERS override (CLI-backed) inline.
   const setRunIters = (value) => {
     const n = Math.max(1, Math.min(50, parseInt(value, 10) || 0));
     if (!n) return;
@@ -12107,6 +12338,29 @@ function App() {
       });
   };
 
+  // Long LeanMill actions write their authoritative result after the launch
+  // response. Poll only while the launched job is still live, then let the
+  // receipt row become the durable status surface (no provider-specific UI).
+  useEffect(() => {
+    if (!liveMode || !(leanMillActionEvent && leanMillActionEvent.accepted)) return undefined;
+    const jobPath = String((((leanMillActionEvent || {}).job || {}).paths || {}).job || "");
+    if (!jobPath) return undefined;
+    const rows = (((leanMillContext || {}).jobs || {}).recent || []);
+    const current = rows.find((row) => row && row.job_path === jobPath);
+    if (current && !["running", "starting", "preview"].includes(String(current.status || "").toLowerCase())) {
+      return undefined;
+    }
+    const started = Date.now();
+    const timer = window.setInterval(() => {
+      if (Date.now() - started > 15 * 60 * 1000) {
+        window.clearInterval(timer);
+        return;
+      }
+      loadLeanMillContext();
+    }, 2200);
+    return () => window.clearInterval(timer);
+  }, [liveMode, leanMillActionEvent, leanMillContext]);
+
   const leanMillBlueprintRequest = (confirmed) => {
     const draft = leanMillBlueprintDraft || emptyLeanMillBlueprintDraft();
     const payload = {
@@ -12250,9 +12504,14 @@ function App() {
   const submitLeanMillAction = (action, confirmed) => {
     if (!liveMode || leanMillActionRunning) return;
     setLeanMillActionRunning(true);
-    const label = action === "autoformalize" ? "the proof from your notes" : "the proof for this Lean target";
+    const actionConfig = action === "autoformalize"
+      ? { route: "/api/leanmill/autoformalize-notes", label: "the proof from your notes", kind: "leanmill_autoformalize_notes" }
+      : action === "ratify"
+      ? { route: "/api/leanmill/ratify", label: "the kernel audit", kind: "leanmill_ratify" }
+      : { route: "/api/leanmill/solve-adhoc", label: "the proof for this Lean target", kind: "leanmill_solve_adhoc" };
+    const { route, label, kind } = actionConfig;
     setLeanMillActionMessage(confirmed ? `Starting ${label}.` : `Previewing ${label}.`);
-    fetch(action === "autoformalize" ? "/api/leanmill/autoformalize-notes" : "/api/leanmill/solve-adhoc", {
+    fetch(route, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -12281,7 +12540,7 @@ function App() {
         );
         if (payload.accepted) {
           setWriteReceiptEvent({
-            kind: action === "autoformalize" ? "leanmill_autoformalize_notes" : "leanmill_solve_adhoc",
+            kind,
             label,
             row: "LeanMill",
             result: payload,
@@ -12292,7 +12551,7 @@ function App() {
       })
       .catch((err) => {
         if (err.payload) setLeanMillActionEvent(err.payload);
-        const failedWrite = refusedWriteEvent(action === "autoformalize" ? "leanmill_autoformalize_notes" : "leanmill_solve_adhoc", label, err);
+        const failedWrite = refusedWriteEvent(kind, label, err);
         if (failedWrite) setWriteReceiptEvent(failedWrite);
         setLeanMillActionMessage(`${String(err.message || err)} No job started.`);
       })
@@ -12561,13 +12820,13 @@ function App() {
       })
       .catch(() => {});
 
-    loadServerStatus()
-      .then(() => {
-        loadWorkbenchSettings();
-        loadCapabilityContext();
-        loadPrincipleContext();
-        return fetch("/api/projects", { headers: { Accept: "application/json" } });
-      })
+    // Broad status diagnostics can be slower than the project index. Keep health as a background read so a
+    // cached snapshot never wins the race and leaves the selected project looking unopened during warm-up.
+    loadServerStatus().catch(() => null);
+    loadWorkbenchSettings();
+    loadCapabilityContext();
+    loadPrincipleContext();
+    fetch("/api/projects", { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`project index fetch failed: ${response.status}`);
         return response.json();
@@ -12579,7 +12838,10 @@ function App() {
         setProjects(projectRows);
         setLiveMode(true);
         loadLeanMillContext();
-        const preferred = projectRows.find((row) => row.project === payload.default_project) || projectRows[0];
+        const preferred = initialRoute.project
+          ? (projectRows.find((row) => row.project === initialRoute.project)
+            || { project: initialRoute.project, rubric: initialRoute.project })
+          : (projectRows.find((row) => row.project === payload.default_project) || projectRows[0]);
         setSelectedProjectKey(projectEntryKey(preferred));
         return loadSnapshot(preferred, true, { allowStaticFallback: true, background: true });
       })
@@ -12599,16 +12861,6 @@ function App() {
       );
     });
   };
-
-  // Deep-link support: `?project=<slug>` opens that project once on load (also lets `?section=Verdict`
-  // land on a real section instead of the picker). One-shot, guarded so it never re-fires.
-  const autoOpenedProjectRef = React.useRef(false);
-  React.useEffect(() => {
-    if (autoOpenedProjectRef.current) return;
-    if (!initialRoute.project || !liveMode || !projects.length) return;
-    autoOpenedProjectRef.current = true;
-    if (!snapshot || snapshot.project !== initialRoute.project) openProject(initialRoute.project);
-  }, [liveMode, projects, snapshot]);
 
   const refreshCurrentProject = () => {
     if (!snapshot || !liveMode) return;
@@ -12657,6 +12909,7 @@ function App() {
         project: params.project,
         rubric: params.rubric,
         intake: params.intake,
+        scenario: selectedScenario || undefined,
         renderer: "decision_brief",
         confirmed: false
       })
@@ -12703,6 +12956,7 @@ function App() {
         project: params.project,
         rubric: params.rubric,
         intake: params.intake,
+        scenario: selectedScenario || undefined,
         renderer: "decision_brief",
         confirmed: false
       })
@@ -12867,6 +13121,165 @@ function App() {
       .then((response) => jsonResponseOrError(response, "eigenquestion failed"))
       .then((payload) => setEigenquestion({ running: false, result: payload }))
       .catch((err) => setEigenquestion({ running: false, error: String(err.message || err) }));
+  };
+
+  // Annotated round-trip — a pasted doc → each sentence's claim lifecycle against the governed map. Read-only
+  // by default (composes the project's compiled packet); no model call unless one is passed.
+  const annotateDocLive = (docText, useModel) => {
+    if (!liveMode || !docText || !docText.trim()) return;
+    const params = liveProjectParams();
+    setAnnotateDoc({ running: true });
+    fetch("/api/scenario-annotate", {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      // A cheap model surfaces the pasted doc's OWN assumptions; without it, annotation reuses the project's
+      // compiled evidence (fine for a project doc, misleading for a fresh unrelated one).
+      body: JSON.stringify({ project: params.project, doc: docText, model: useModel ? "deepseek" : undefined }),
+    })
+      .then((response) => jsonResponseOrError(response, "annotate failed"))
+      .then((payload) => setAnnotateDoc({ running: false, result: payload }))
+      .catch((err) => setAnnotateDoc({ running: false, error: String(err.message || err) }));
+  };
+
+  // Decision baseline snapshot + stale-decision recompile — deterministic, no model call.
+  const snapshotBaselineLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    setFreshness({ running: true });
+    return fetch("/api/scenario-baseline", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project }),
+    })
+      .then((r) => jsonResponseOrError(r, "baseline failed"))
+      .then((p) => { setFreshness({ running: false, result: { ok: true, snapshotted: p.ok, snap: p } }); return p; })
+      .catch((err) => { setFreshness({ running: false, error: String(err.message || err) }); return null; });
+  };
+  const recompileDecisionLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    setFreshness({ running: true });
+    return fetch("/api/scenario-recompile", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project }),
+    })
+      .then((r) => jsonResponseOrError(r, "recompile failed"))
+      .then((p) => { setFreshness({ running: false, result: p }); return p; })
+      .catch((err) => { setFreshness({ running: false, error: String(err.message || err) }); return null; });
+  };
+
+  // Wagers — protected thin-evidence bets on a blocked claim; the kernel simulates each outcome and ranks by
+  // what would settle the decision. Deterministic, no model call. Fetches return the promise so the panel can
+  // show the register receipt; the list state (`wagers`) is refreshed after any mutation.
+  const loadWagersLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    setWagers({ running: true });
+    return fetch(`/api/scenario-wagers?project=${encodeURIComponent(params.project)}`, { headers: { Accept: "application/json" } })
+      .then((r) => jsonResponseOrError(r, "wagers failed"))
+      .then((p) => { setWagers({ running: false, result: p }); return p; })
+      .catch((err) => { setWagers({ running: false, error: String(err.message || err) }); return null; });
+  };
+  const registerWagerLive = (wager) => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    return fetch("/api/scenario-wager-register", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project, wager }),
+    }).then((r) => jsonResponseOrError(r, "register failed"))
+      .then((res) => { loadWagersLive(); return res; })
+      .catch((err) => ({ ok: false, error: String(err.message || err) }));
+  };
+  const expireWagersLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    return fetch("/api/scenario-wager-expire", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project }),
+    }).then((r) => jsonResponseOrError(r, "expire failed"))
+      .then((res) => { loadWagersLive(); return res; })
+      .catch((err) => ({ ok: false, error: String(err.message || err) }));
+  };
+  const wagerOutcomeLive = (wagerId, outcomeId, confirmed = false) => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    return fetch("/api/scenario-wager-execute", {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project, wager_id: wagerId, outcome_id: outcomeId, confirmed }),
+    }).then((response) => jsonResponseOrError(response, confirmed ? "outcome execution failed" : "outcome preview failed"))
+      .then(async (result) => {
+        if (confirmed && result && result.ok) {
+          await Promise.all([loadWagersLive(), loadAgendaLive(), loadDecisionLive(), refreshResearchGraphLive()]);
+        }
+        return result;
+      })
+      .catch((err) => ({ ok: false, error: String(err.message || err) }));
+  };
+
+  // The unified "what to test next" agenda — implicit (untested assumptions) + declared bets + loop-proposed
+  // discriminators, ranked once through one admission gate with the Pareto frontier marked. This is the ONE
+  // ranked worklist Open points shows (PRD §4.2a) instead of a second bets-only list. Deterministic, no model call.
+  const loadAgendaLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    setAgenda({ running: true });
+    return fetch("/api/scenario-next-agenda", {
+      method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project }),
+    })
+      .then((r) => jsonResponseOrError(r, "agenda failed"))
+      .then((p) => { setAgenda({ running: false, result: p }); return p; })
+      .catch((err) => { setAgenda({ running: false, error: String(err.message || err) }); return null; });
+  };
+
+  // Map "Refresh" — re-pulls everything the node glass box depends on (the graph itself, what it rests
+  // on, and the cheapest open test), so a recompile shows up as one restrained flash on the map (graphview.jsx).
+  const refreshMapLive = () => Promise.all([refreshResearchGraphLive(), loadDecisionLive(), loadAgendaLive()]);
+
+  // Decision — the graded decision read (strength profile, what it rests on, corroboration, cruxes, challenge
+  // queue). Deterministic, no model call; parity with `ztare scenario strength`.
+  const loadDecisionLive = () => {
+    if (!liveMode) return Promise.resolve(null);
+    const params = liveProjectParams();
+    setDecision({ running: true });
+    return fetch(`/api/scenario-strength?project=${encodeURIComponent(params.project)}`, { headers: { Accept: "application/json" } })
+      .then((r) => jsonResponseOrError(r, "decision strength failed"))
+      .then((p) => { setDecision({ running: false, result: p }); return p; })
+      .catch((err) => { setDecision({ running: false, error: String(err.message || err) }); return null; });
+  };
+
+  // Re-ingest gate — a polished/AI-edited deliverable, re-checked sentence-by-sentence against the governed
+  // map (the forged-edit catch). Deterministic, no model call.
+  const reingestDocLive = (polishedText) => {
+    if (!liveMode || !polishedText || !polishedText.trim()) return;
+    const params = liveProjectParams();
+    setReingestDoc({ running: true });
+    setReingestPromotion(null);
+    fetch("/api/scenario-reingest", {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project, doc: polishedText }),
+    })
+      .then((response) => jsonResponseOrError(response, "re-check failed"))
+      .then((payload) => setReingestDoc({ running: false, result: payload }))
+      .catch((err) => setReingestDoc({ running: false, error: String(err.message || err) }));
+  };
+
+  const promoteReingestLive = (polishedText, baseHash, sourcePath) => {
+    if (!liveMode || !polishedText || !baseHash) return;
+    const params = liveProjectParams();
+    setReingestPromotion({ running: true });
+    fetch("/api/scenario-reingest-promote", {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ project: params.project, doc: polishedText, base_hash: baseHash, source_path: sourcePath || "" }),
+    })
+      .then((response) => response.json().then((payload) => {
+        if (!response.ok) throw new Error(payload.error || "promotion refused");
+        return payload;
+      }))
+      .then((payload) => setReingestPromotion({ running: false, result: payload }))
+      .catch((err) => setReingestPromotion({ running: false, error: String(err.message || err) }));
   };
 
   // Isomorphism (advisory) — "what is this like, and what does that predict?" Surfaces a cross-field
@@ -13543,7 +13956,7 @@ function App() {
   const reviewRow = (label) => {
     if (!label) return;
     setSelectedLabel(label);
-    navigateWorkspace("review", "Save review");
+    openModal("review", "Save review");
   };
   const actionRow = (label) => {
     if (!label) return;
@@ -13842,6 +14255,7 @@ function App() {
         project: params.project,
         rubric: params.rubric,
         intake: params.intake,
+        scenario: selectedScenario || undefined,
         renderer: "decision_brief",
         confirmed: false
       })
@@ -13896,6 +14310,21 @@ function App() {
     }
   };
 
+  const waitForWorkbenchJob = async (job) => {
+    let current = job;
+    while (current && !["succeeded", "failed", "canceled", "interrupted"].includes(current.status)) {
+      setBoundedRunMessage(current.status === "running" ? "Project run in progress. You can leave this page." : "Project run queued.");
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch(`/api/job?id=${encodeURIComponent(current.id)}`, {
+        headers: { Accept: "application/json" }, __wbSilent: true,
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Could not read project-run status.");
+      current = payload.job;
+    }
+    return current;
+  };
+
   const runBoundedLive = () => {
     if (!snapshot || !liveMode || boundedRunRunning || !projectRunPrompt) return;
     const params = projectRunPrompt;
@@ -13914,7 +14343,8 @@ function App() {
         rubric: params.rubric,
         intake: params.intake,
         renderer: "decision_brief",
-        confirmed: true
+        confirmed: true,
+        background: true
       })
     })
       .then((response) =>
@@ -13927,7 +14357,21 @@ function App() {
           return payload;
         })
       )
-      .then((payload) => {
+      .then(async (payload) => {
+        if (payload.job) {
+          setBoundedRunEvent(payload);
+          const job = await waitForWorkbenchJob(payload.job);
+          const succeeded = job.status === "succeeded";
+          const completed = {
+            ...payload, job, accepted: succeeded, ok: succeeded, returncode: job.returncode,
+            stdout_tail: job.stdout_tail || "", stderr_tail: job.stderr_tail || "",
+          };
+          setBoundedRunEvent(completed);
+          setBoundedRunMessage(succeeded ? "Project run finished. Refreshing the project." : `Project run ${job.status}; inspect its output.`);
+          if (succeeded) await loadSnapshot(params, true, { preserveSelection: true });
+          if (!succeeded) throw Object.assign(new Error(job.stderr_tail || job.stdout_tail || "Project run failed."), { payload: completed });
+          return;
+        }
         if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Run readiness", preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         if (payload.run_history) setRunHistoryContext(payload.run_history);
@@ -14360,6 +14804,26 @@ function App() {
         setFilePreviewMessage(String(err.message || err));
       });
   };
+  const openSourcePacketForTrace = (path) => {
+    const entry = filePreviewEntryFromItem({ type: "file", value: path });
+    const previewPath = entry && entry.value;
+    const project = (liveProjectParams() || {}).project;
+    if (!liveMode || !project || !previewPath) return;
+    const token = Date.now();
+    setDraftSeed({ project, path: previewPath, token, loading: true });
+    navigateWorkspace("overview", "Annotate a doc");
+    fetch(endpointUrl("/api/file", { path: previewPath }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`checked draft could not be opened: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "checked draft could not be opened");
+        if (payload.truncated) throw new Error("checked draft is too large to load safely into the editor");
+        setDraftSeed({ project, path: previewPath, text: String(payload.text || ""), token });
+      })
+      .catch((error) => setDraftSeed({ project, path: previewPath, error: String(error.message || error), token }));
+  };
   const navigateFilePreviewHistory = (offset) => {
     const nextIndex = filePreviewHistoryIndex + offset;
     const entry = filePreviewHistory[nextIndex];
@@ -14379,13 +14843,19 @@ function App() {
 
   const selectedHiddenByFilter = Boolean(selectedRow && !filteredRows.some((row) => row.label === selectedRow.label));
   const actionContracts = (serverStatus && serverStatus.api && serverStatus.api.action_contracts) || {};
+  // The claim/thesis nodes valid as a bind target — same research-graph carrier the Map already loads
+  // (fetched app-wide whenever a project is open), so the "Add cited source" select shows real claims.
+  const bindClaimOptions = (researchGraph && Array.isArray(researchGraph.nodes) ? researchGraph.nodes : [])
+    .filter((n) => n && (n.type === "claim" || n.type === "thesis"))
+    .map((n) => ({ id: n.id, label: n.label || n.id }));
   const sourceReadinessPanel = h(Evidence, {
     key: "evidence",
-    view: buildEvidenceView(sourceListContext, claimSupportContext, snapshot, evidenceGapContext, sourceActionRunning, evalResults),
+    view: buildEvidenceView(sourceListContext, claimSupportContext, snapshot, evidenceGapContext, sourceActionRunning, evalResults, sourceListMessage, decision),
     onPreview: loadFilePreview,
     onCompile: () => runSourceActionLive("evidence_prepare"),
     onAddFile: () => openModal("sources", "Add file"),
-    onOpenGaps: () => navigateWorkspace("run", "Results"),
+    onAddCitedSource: () => openModal("sources", "Add cited source"),
+    onOpenGaps: () => navigateWorkspace("run", "Ready to run"),
     onFetchGap: (target) => requestEvidenceFetchLive(target || ""),
     fetchRunning: evidenceFetchRunning,
   });
@@ -14428,7 +14898,7 @@ function App() {
         onPreview: loadFilePreview,
         onAddToIntake: addImportedSourceToIntakeDraft,
         onOpenIntake: () => openDetail("sources", "Project brief"),
-        onOpenEvidenceGap: () => openDetail("run", "Results")
+        onOpenEvidenceGap: () => openDetail("run", "Ready to run")
       });
   const rawSourcePanel = h(RawSourceManagerPanel, {
         key: "raw-source",
@@ -14498,14 +14968,6 @@ function App() {
         liveMode,
         nextStepContract: actionContracts.next_step || {},
         applyRowActionLive
-      });
-  const projectEvidenceMapPanel = h(ProjectEvidenceMap, {
-        key: "project-evidence-map",
-        claimSupport: claimSupportContext,
-        thesisSupport: activeProjectState.thesis_support,
-        evidenceState: activeProjectState.evidence || {},
-        onOpenDetail: openDetail,
-        onPreview: loadFilePreview
       });
   const projectCreatePanel = h(ProjectCreatePanel, {
         key: "create",
@@ -14767,10 +15229,24 @@ function App() {
   const workspacePanels = {
     overview: {
       Thesis: [
-        h(Thesis, { key: "thesis", view: buildThesisView(snapshot, claimSupportContext, evalResults), onOpenDetail: navigateWorkspace, onOpenModal: openModal, onPreview: loadFilePreview, onEigenquestion: runEigenquestionLive, eigenquestion })
+        h(Thesis, { key: "thesis", view: buildThesisView(snapshot, claimSupportContext, evalResults), decision, onOpenDetail: navigateWorkspace, onOpenModal: openModal, onPreview: loadFilePreview, onEigenquestion: runEigenquestionLive, eigenquestion })
       ],
       Assumptions: [
         h(Assumptions, { key: "assumptions", view: buildAssumptionsView(evalResults), onOpenDetail: navigateWorkspace })
+      ],
+      "Annotate a doc": [
+        h(ScenarioPanel, {
+          key: "scenario-panel",
+          project: (liveProjectParams() || {}).project,
+          liveMode,
+          annotate: annotateDoc,
+          reingest: reingestDoc,
+          promotion: reingestPromotion,
+          draftSeed,
+          onAnnotate: annotateDocLive,
+          onReingest: reingestDocLive,
+          onPromote: promoteReingestLive,
+        }),
       ],
       Charter: [
         h(Charter, {
@@ -14782,10 +15258,10 @@ function App() {
           changed: charterChanged(charterDraft),
           onSave: saveCharterDraft,
           onReload: refreshCurrentCharter,
-          onPreview: loadFilePreview
+          onPreview: loadFilePreview,
+          onOpenDetail: navigateWorkspace
         })
       ],
-      "Evidence summary": [projectEvidenceMapPanel, sourceReadinessPanel],
       "Research map": [
         h(ResearchMap, {
           key: "research-map",
@@ -14793,7 +15269,12 @@ function App() {
           onPreview: loadFilePreview,
           onOpenDetail: navigateWorkspace,
           onIsomorphism: runIsomorphismLive,
-          isomorphism: isomorphism
+          isomorphism: isomorphism,
+          project: (liveProjectParams() || {}).project, liveMode,
+          decision, onDecisionRefresh: loadDecisionLive,
+          agenda, onAgendaRefresh: loadAgendaLive,
+          onGraphRefresh: refreshMapLive,
+          freshness, onSnapshotBaseline: snapshotBaselineLive, onRecompile: recompileDecisionLive
         })
       ]
     },
@@ -14801,10 +15282,15 @@ function App() {
       "Prepare files": [sourceReadinessPanel],
       "Project brief": [intakePanel],
       "Add file": [sourceImportPanel],
+      "Add cited source": [
+        h(BindEvidenceForm, { key: "bind-evidence", project: (liveProjectParams() || {}).project, liveMode,
+          claims: bindClaimOptions, sources: (sourceListContext && sourceListContext.sources) || [],
+          onBound: refreshMapLive, onPreview: loadFilePreview })
+      ],
       "Edit file": [rawSourcePanel]
     },
     run: {
-      // Harden's JTBD (PRD §7.2): view the last run, then launch the loop again for N rounds. The
+      // Pressure-test's JTBD (PRD §7.2): view the last run, then launch the loop again for N rounds. The
       // run console LEADS — set rounds + launch + live progress — then the findings from the last run.
       // The cost-preview/confirm + readiness checks tuck behind disclosures (not the primary surface).
       "Ready to run": (() => {
@@ -14812,21 +15298,47 @@ function App() {
           key: "run-console",
           view: buildRunConsoleView(runConfig, runConfigOverrides, runStatus, traceContext, runHistoryContext),
           liveMode, running: boundedRunRunning, previewing: boundedRunPreviewing, message: boundedRunMessage,
+          scenarios, selectedScenario, onScenario: setSelectedScenario,
           onIters: setRunIters, onLaunch: requestBoundedRunLive,
           onResolve: () => navigateWorkspace("run", "Check readiness"),
           onOpenSettings: () => navigateWorkspace("run", "Run settings"),
           onOpenScoring: () => navigateWorkspace("run", "Scoring guide"),
         });
-        // The "Run N rounds →" button previews the cost then opens the confirm MODAL
-        // (ProjectRunConfirmDialog) — the button-and-modal the run-again flow should be.
-        const out = [console];
+        // The "Run N rounds →" button previews the cost then opens the confirm MODAL.
+        // One reading rail keeps the console and long post-run findings in the same workflow.
+        let findings;
+        let panels = [];
+        let anchors = [{ id: "run-console", label: "Pressure-test" }];
         if (evalResults && evalResults.ok) {
-          out.push(h(RunFindings, { key: "run-findings-landing", view: buildRunFindingsView(evalResults, scoreTrajectory), onOpenDetail: navigateWorkspace }));
+          const findingsView = buildRunFindingsView(evalResults, scoreTrajectory);
+          const decisionState = decision && decision.result && decision.result.decision_state;
+          findings = h(RunFindings, { key: "run-findings-landing", view: findingsView, decision, onOpenDetail: navigateWorkspace });
+          anchors = [
+            ...anchors,
+            { id: "run-findings", label: "What the run found" },
+            decisionState && { id: "run-standing", label: "Current decision" },
+            findingsView.weakestPoint && { id: "run-weakest", label: "Weakest point" },
+            { id: "run-score", label: "Run observation" },
+            Array.isArray(findingsView.dag && findingsView.dag.nodes) && findingsView.dag.nodes.length && { id: "run-argument-path", label: "Argument path" },
+            (findingsView.logicGaps || []).length || (findingsView.frictionPoints || []).length ? { id: "run-gaps", label: "Reasoning gaps" } : null,
+            findingsView.inverter && { id: "run-falsification", label: "What could falsify it" },
+          ].filter(Boolean);
+          panels = contributedScenarioPanels(scenarios, selectedScenario, "results", {
+              project: (liveProjectParams() || {}).project, liveMode,
+              decision,
+              agenda,
+              onDecisionRefresh: loadDecisionLive,
+              onAgendaRefresh: loadAgendaLive,
+              onOpenDetail: navigateWorkspace,
+            });
         } else {
           // No run yet — readiness console so the user can get the project launch-ready.
-          out.push(h(TraceConsolePanel, { key: "trace", traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview, onOpenDetail: openDetail }));
+          findings = h("div", { id: "run-readiness" }, h(TraceConsolePanel, {
+            key: "trace", traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview, onOpenDetail: openDetail
+          }));
+          anchors.push({ id: "run-readiness", label: "Readiness" });
         }
-        return out;
+        return [h(RunHome, { key: "run-home", console, findings, panels, anchors })];
       })(),
       "Scoring guide": [
         h(ScoringGuide, { key: "scoring-humane", view: buildScoringView(scoringGuideContext), onToggleGate: toggleScoringGate, saving: scoringGuideSaving, onReviewRubric: liveMode ? runRubricReviewLive : null, rubricReview }),
@@ -14834,29 +15346,6 @@ function App() {
       ],
       "Run settings": [h(RunConfigPanel, { key: "run-config", runConfig, overrides: runConfigOverrides, setOverrides: setRunConfigOverrides, message: runConfigMessage, saving: runConfigSaving, liveMode, onSave: saveRunConfig, onRefresh: loadRunConfig })],
       "Check readiness": [h(PreflightRunPanel, { key: "preflight", traceContext, event: preflightEvent, message: preflightMessage, running: preflightRunning, liveMode, preflightContract: actionContracts.preflight || {}, onRun: runPreflightLive })],
-      Results: (() => {
-        const activeGapCount = Number(
-          (evidenceGapContext && (evidenceGapContext.active_evidence_gap_count ?? (evidenceGapContext.evidence_gaps || []).length)) || 0
-        );
-        const constraintCount = Array.isArray(activeProjectState.axioms && activeProjectState.axioms.derived_constraints)
-          ? activeProjectState.axioms.derived_constraints.filter(Boolean).length
-          : 0;
-        const openParts = [];
-        if (activeGapCount) openParts.push(`${activeGapCount} evidence gap${activeGapCount === 1 ? "" : "s"} to close`);
-        if (constraintCount) openParts.push(`${constraintCount} constraint${constraintCount === 1 ? "" : "s"} learned`);
-        const detailTitle = openParts.length
-          ? openParts.join(" · ")
-          : "Evidence gaps and run-learned assumptions";
-        return [
-          h(RunFindings, { key: "run-findings", view: buildRunFindingsView(evalResults, scoreTrajectory), onOpenDetail: navigateWorkspace }),
-          h(ScoreTrajectoryPanel, { key: "score-trajectory", trajectory: scoreTrajectory, liveMode }),
-          h(RunHistoryPanel, { key: "run-history", runHistory: runHistoryContext, message: runHistoryMessage, liveMode, onPreview: loadFilePreview, onUseActionNote: useActionNote }),
-          h(MoreDetail, { key: "results-detail", title: detailTitle, defaultOpen: openParts.length > 0 }, [
-            h(ProjectAxiomPanel, { key: "axioms", axiomsState: activeProjectState.axioms, onPreview: loadFilePreview }),
-            h(EvidenceSupportPanel, { key: "evidence-support", claimSupport: claimSupportContext, message: claimSupportMessage, evidenceGaps: evidenceGapContext, evidenceGapMessage, evidenceGapDraft, setEvidenceGapDraft, evidenceGapRunning, evidenceGapEvent, evidenceFetchRunning, evidenceFetchEvent, liveMode, onPreview: loadFilePreview, onJustify: justifyEvidenceGapLive, onFetch: requestEvidenceFetchLive, onRefresh: refreshEvidenceSupportLive, onPrepareSource: prepareEvidenceGapSourceDraft })
-          ])
-        ];
-      })(),
       "Fix warnings": [
         h(HealthActionsPanel, { key: "health", healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview, onUseActionNote: useHealthActionNote }),
         h(MoreDetail, { key: "warning-detail", title: "Command reference" }, h(CommandRail, { key: "command-rail", snapshot, selectedRow }))
@@ -14867,13 +15356,14 @@ function App() {
       "Draft target": leanMillView("Draft target", "leanmill-draft-target"),
       "Run a proof": leanMillView("Run a proof", "leanmill-run-a-proof"),
       "Proof files": leanMillView("Proof files", "leanmill-proof-files"),
-      "Proof status": leanMillView("Proof status", "leanmill-proof-status")
+      "Proof status": leanMillView("Proof status", "leanmill-proof-status"),
+      "Axiom discovery": [h(LeanMillCampaignsPanel, { key: "leanmill-campaigns", liveMode })]
     },
     save: {
       // The BlockerPanel "Review points" just re-stated the active issue the verdict panel already
       // shows — a confusing duplicate, removed. The verdict panel is the single source here.
       "Report readiness": [
-        h(Verdict, { key: "verdict", view: buildVerdictView(snapshot, reportPanelContext, claimSupportContext, evalResults), onOpenReport: () => navigateWorkspace("save", "Report inputs"), onMakeCard: buildClaimCardLive, onPreview: loadFilePreview, onOpenDetail: navigateWorkspace, onForecast: runForecastScratchLive, forecast: forecastScratch, onExportObsidian: liveMode ? runObsidianExportLive : null, obsidianExport: obsidianExport, onFalsify: liveMode ? runFalsifyLive : null, falsify: falsify })
+        h(Verdict, { key: "verdict", view: buildVerdictView(snapshot, reportPanelContext, claimSupportContext, evalResults), onOpenReport: () => navigateWorkspace("save", "Report inputs"), onMakeCard: buildClaimCardLive, onPreview: loadFilePreview, onOpenDetail: navigateWorkspace, onForecast: runForecastScratchLive, forecast: forecastScratch, onExportObsidian: liveMode ? runObsidianExportLive : null, obsidianExport: obsidianExport, onFalsify: liveMode ? runFalsifyLive : null, falsify: falsify, project: (liveProjectParams() || {}).project, liveMode, decision, scenario: selectedScenario, onDecisionRefresh: loadDecisionLive, onCheckDraft: openSourcePacketForTrace })
       ],
       "Report inputs": [
         h(ReportContractPanel, { key: "report", reportContext: reportPanelContext, message: reportContractMessage, running: reportSupportRunning, liveMode, onPreview: loadFilePreview, onRefresh: refreshReportSupportLive, onRerun: requestReportSupportRefreshLive, onRefreshInputs: requestReportSynthesisRefreshLive, onBuildClaimCard: buildClaimCardLive, onRunProjectTest: runProjectTestLive, onOpenDetail: openDetail, onUseActionNote: useActionNote }),
@@ -14882,11 +15372,53 @@ function App() {
       "Project file": [projectFilePanel]
     },
     review: {
-      "Things to review": [h(OpenPoints, { key: "open-points", view: buildOpenPointsView(evalResults), onOpenDetail: navigateWorkspace, onAddEvidence: () => openModal("sources", "Add file"), onForecast: runForecastScratchLive, forecast: forecastScratch })],
+      "Things to review": [h(OpenPoints, {
+        key: "open-points",
+        view: buildOpenPointsView(evalResults),
+        onOpenDetail: navigateWorkspace,
+        onAddEvidence: () => openModal("sources", "Add file"),
+        onForecast: runForecastScratchLive,
+        forecast: forecastScratch,
+        project: (liveProjectParams() || {}).project,
+        liveMode,
+        wagers,
+        onWagersRefresh: loadWagersLive,
+        onExpire: expireWagersLive,
+        agenda,
+        onAgendaRefresh: loadAgendaLive,
+        decision,
+        onDecisionRefresh: loadDecisionLive,
+        onOpenModal: openModal,
+        projectChecks: (snapshot.rows || [])
+          .filter((row) => row.kind === "attention")
+          .map((row) => ({ id: row.label, label: itemLabel(row), detail: itemDetail(row) })),
+        onReviewCheck: (label) => {
+          if (label) setSelectedLabel(label);
+          openModal("review", "Save review");
+        },
+        onPrefillWager: (row) => {
+          setWagerPrefill({ key: `${row.id}:${Date.now()}`, claim_ref: row.claim_ref, test: row.test,
+            outcomes: row.outcome_specs || [] });
+          openModal("review", "Define a decision test");
+        },
+        onNewWager: () => setWagerPrefill(null),
+        onExecuteWager: (wager) => {
+          setWagerExecution(wager);
+          openModal("review", "Record a test outcome");
+        },
+      })],
+      "Define a decision test": [
+        h(RegisterBetForm, { key: "register-bet", project: (liveProjectParams() || {}).project, liveMode, wagers, onRefresh: loadWagersLive, onRegister: registerWagerLive, onAgendaRefresh: loadAgendaLive, prefill: wagerPrefill })
+      ],
+      "Record a test outcome": [
+        h(ExecuteWagerForm, { key: "execute-wager", project: (liveProjectParams() || {}).project, liveMode,
+          wager: wagerExecution, onPreview: (wagerId, outcomeId) => wagerOutcomeLive(wagerId, outcomeId, false),
+          onExecute: (wagerId, outcomeId) => wagerOutcomeLive(wagerId, outcomeId, true) })
+      ],
       "Save review": [reviewMessage ? h("div", { className: "review-message", key: "review-message" }, reviewMessage) : null, reviewWorkspacePanel],
       "Save next step": [rowActionPanel],
       "Saved history": [
-        h(History, { key: "history", view: buildHistoryView(receiptHistory, scoreTrajectory, runHistoryContext, runHistoryContext && runHistoryContext.compression_progress), liveMode, onPreview: loadFilePreview })
+        h(History, { key: "history", view: buildHistoryView(receiptHistory, scoreTrajectory, runHistoryContext, runHistoryContext && runHistoryContext.compression_progress), liveMode, onPreview: loadFilePreview, trajectory: (decision && decision.result && decision.result.trajectory) || null, jobs: backgroundJobs })
       ]
     },
     projects: {
@@ -14923,6 +15455,9 @@ function App() {
           h(ProjectContextPanel, { key: "context", projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview })
         ])
       ],
+      Activity: [
+        h(JobShelf, { key: "job-shelf", liveMode, projectJobs: backgroundJobs, onOpenDetail: navigateWorkspace })
+      ],
       Settings: [
         h(WorkbenchSettingsPanel, {
           key: "settings",
@@ -14935,6 +15470,19 @@ function App() {
           settingsContract: actionContracts.settings || {},
           onSave: saveWorkbenchSettings,
           onRefresh: loadWorkbenchSettings
+        })
+      ],
+      Plugins: [
+        h(PluginManager, {
+          key: "plugin-manager",
+          installed: pluginsData,
+          busy: pluginBusy,
+          message: pluginMsg,
+          onInstall: installPluginLive,
+          onReload: reloadPluginsLive,
+          onFetchDetail: fetchPluginDetail,
+          panelCatalog: SCENARIO_PANEL_DISCOVERY.catalog,
+          panelDiagnostics: SCENARIO_PANEL_DISCOVERY.diagnostics,
         })
       ]
     }
@@ -14951,7 +15499,7 @@ function App() {
           detailKey(workspaceId, subsection),
           {
             ...copy,
-            eyebrow: `${section.label} / ${subsection}`,
+            eyebrow: copy.eyebrow || `${section.label} / ${subsection}`,
             panels
           }
         ];
@@ -14983,7 +15531,7 @@ function App() {
   };
   const openReviewItem = (label) => {
     if (label) setSelectedLabel(label);
-    openDetail("review", "Save review");
+    openModal("review", "Save review");
   };
   const openInspectItem = (label) => {
     if (label) setSelectedLabel(label);
@@ -15014,6 +15562,9 @@ function App() {
     sourceList: sourceListContext,
     pendingEditorItems,
     liveMode,
+    activeRunStatus: runStatus,
+    backgroundJob,
+    decision,
     onOpenDetail: openDetail,
     onInspectItem: openInspectItem,
     onPreview: loadFilePreview,
@@ -15024,7 +15575,9 @@ function App() {
   const leanMillWorkspace = activeWorkspace === "leanmill";
   const projectsHome = !day0Mode && projectsWorkspace && activeSubnav === "Current project";
   const topbarClaimRow = rowByLabel((snapshot && snapshot.rows) || [], "Bounded claim");
-  const topbarTitle = leanMillWorkspace ? "LeanMill — machine-checked proofs" : day0Mode ? "Start a project" : humanProjectTitle(snapshot, topbarClaimRow);
+  // Axiom discovery (AxiomPack) is a different job from everyday proof work — don't reuse the "machine-checked proofs" header there.
+  const leanMillDiscovery = leanMillWorkspace && activeSubnav === "Axiom discovery";
+  const topbarTitle = leanMillDiscovery ? "Axiom discovery" : leanMillWorkspace ? "LeanMill — machine-checked proofs" : day0Mode ? "Start a project" : humanProjectTitle(snapshot, topbarClaimRow);
   return h(
     "main",
     { className: `app-shell ${day0Mode ? "day-zero" : ""}${loadBarActive ? " is-loading" : ""}` },
@@ -15065,7 +15618,9 @@ function App() {
           h("span", { className: "eyebrow" }, leanMillWorkspace ? "LeanMill" : "Project Workbench"),
           h("h1", null, topbarTitle),
           leanMillWorkspace
-            ? h("p", { className: "topbar-day-zero" }, "Formalize and solve a statement, rescue a failing proof, or kernel-ratify a finished one — for math and non-math targets alike.")
+            ? h("p", { className: "topbar-day-zero" }, leanMillDiscovery
+                ? "AxiomPack explores an axiom space from a research direction — mapping the frontier and surfacing candidate theory, a different job from proving a stated target."
+                : "Formalize and solve a statement, rescue a failing proof, or kernel-ratify a finished one — for math and non-math targets alike.")
             : day0Mode
             ? h("p", { className: "topbar-day-zero" }, "Create a project from a question, raw files, or an existing folder. The full project list is hidden until you ask for it.")
             : h(ProjectIdentity, { snapshot })
@@ -15136,9 +15691,11 @@ function App() {
               h(
                 "strong",
                 null,
-                runStatus.iteration_budget
-                  ? `Pressure-testing the thesis — iteration ${runStatus.iteration} of ${runStatus.iteration_budget}`
-                  : `Pressure-testing the thesis — iteration ${runStatus.iteration || runStatus.iteration_count || 1}`
+                runStatus.job_status === "queued"
+                  ? "Pressure-test queued"
+                  : runStatus.iteration_budget
+                    ? `Pressure-testing the thesis — iteration ${runStatus.iteration || 0} of ${runStatus.iteration_budget}`
+                    : `Pressure-testing the thesis — iteration ${runStatus.iteration || runStatus.iteration_count || 0}`
               ),
               h(
                 "small",
@@ -15146,18 +15703,37 @@ function App() {
                 [
                   (typeof runStatus.latest_score === "number") ? `best so far ${runStatus.latest_score}` : "",
                   runStatus.mutator_model ? `mutator ${displayText(runStatus.mutator_model)}` : "",
-                  runStatus.judge_model ? `judge ${displayText(runStatus.judge_model)}` : ""
+                  runStatus.judge_model ? `judge ${displayText(runStatus.judge_model)}` : "",
+                  runStatus.heartbeat_stale
+                    ? "model call is taking longer than the last heartbeat"
+                    : runStatus.last_update_age_seconds !== null && runStatus.last_update_age_seconds !== undefined
+                      ? `last receipt ${runAgeText(runStatus.last_update_age_seconds)}`
+                      : "durable job is live"
                 ].filter(Boolean).join(" · ")
               )
-            )
+            ),
+            h("div", { className: "run-progress-meter", role: "progressbar", "aria-valuemin": 0, "aria-valuemax": runStatus.iteration_budget || undefined, "aria-valuenow": runStatus.iteration_budget ? (runStatus.iteration || 0) : undefined, "aria-label": "Run progress" },
+              h("span", { style: { width: runStatus.iteration_budget ? `${Math.min(100, Math.round(((runStatus.iteration || 0) / runStatus.iteration_budget) * 100))}%` : "38%" } }))
           )
         : null,
-      modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
-      actionMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "offline"}` }, actionMessage) : null,
+      backgroundJob && !(runStatus && runStatus.job_id && runStatus.job_id === backgroundJob.id)
+        ? h(
+            "div",
+            { className: "run-progress-banner background-job-banner", "aria-label": "Background job in progress" },
+            h("span", { className: "run-progress-dot", "aria-hidden": "true" }),
+            h("div", { className: "run-progress-copy" },
+              h("strong", null, backgroundJob.status === "running" ? "Project run in progress" : "Project run queued"),
+              h("small", null, "This run is saved to the project job history and will continue if you leave this page.")),
+            h("button", { type: "button", className: "chip ghost", onClick: cancelBackgroundJob }, "Cancel")
+          )
+        : null,
+      modeMessage ? h("div", { key: modeMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
+      actionMessage ? h("div", { key: actionMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, actionMessage) : null,
       h(PendingEditsStrip, { items: pendingEditorItems, onOpenDetail: openDetail }),
       h(
         "section",
-        { className: `workspace-view ${activeWorkspace}${loadingSnapshot ? " is-loading" : ""}`, "aria-label": "Active project area", "aria-busy": loadingSnapshot ? "true" : undefined },
+        { key: `${activeWorkspace}:${activeSubnav}:${(snapshot && snapshot.project) || "none"}`,
+          className: `workspace-view ${activeWorkspace}${loadingSnapshot ? " is-loading" : ""}`, "aria-label": "Active project area", "aria-busy": loadingSnapshot ? "true" : undefined },
         projectsHome ? projectHomeSummary : null,
         projectsHome
           ? h(MoreDetail, { title: "Switch project" }, projectSwitchPanel)
@@ -15216,14 +15792,5 @@ function App() {
 }
 
 createRoot(document.getElementById("root")).render(
-  h(
-    MantineProvider,
-    { theme: workbenchTheme, forceColorScheme: "light" },
-    h(WorkbenchErrorBoundary, null, h(App))
-  )
+  h(WorkbenchErrorBoundary, null, h(App))
 );
-
-
-
-
-

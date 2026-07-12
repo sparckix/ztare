@@ -1,0 +1,65 @@
+{
+  "rubric_id": "arc3_tu93_gov",
+  "description": "Interactive-environment substrate (GP-250): transition-program identification on a live external grid environment; grammar growth via EXTENSIONS_SRC carriage.",
+  "substrate_class": "interactive_environment",
+  "fit_expression_grammar": "grid_dsl",
+  "farther_tail_region": null,
+  "fit_score_mode": "discrete_exact",
+  "fit_required_vars": [
+    "s",
+    "a",
+    "t"
+  ],
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "rubric_mode": "calibration",
+  "enable_fit_primitive": false,
+  "require_i_model_in_submission": false,
+  "falsification_mode": "bounded_discriminator",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is an episode log of grid transitions, not (x, y) numeric pairs; exact-match scoring runs in gate_harness.py against the typed episode JSONLs (visible replay + hidden-holdout full-depth rollout), which is the discrete_exact contract for this substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival transition laws are separated by counterfactual probe signatures and MDL within the committee, not by math-form keywords.",
+  "dimensions": [
+    {
+      "name": "replay_consistency",
+      "weight": 40,
+      "description": "exact reproduction of every logged transition (worldmodel_replay gate)"
+    },
+    {
+      "name": "rollout_depth",
+      "weight": 40,
+      "description": "held-out episode predicted to required depth (worldmodel_rollout gate)"
+    },
+    {
+      "name": "description_length",
+      "weight": 20,
+      "description": "MDL-preferred survivor among behaviorally distinct committee members"
+    }
+  ],
+  "criteria": {
+    "replay_consistency": {
+      "weight": 40,
+      "description": "exact reproduction of every logged transition (worldmodel_replay gate)"
+    },
+    "rollout_depth": {
+      "weight": 40,
+      "description": "held-out episode predicted to required depth (worldmodel_rollout gate)"
+    },
+    "description_length": {
+      "weight": 20,
+      "description": "MDL-preferred survivor among behaviorally distinct committee members"
+    }
+  },
+  "parallel_mutator_k": 1,
+  "parallel_mutator_force": false,
+  "parallel_mutator_force_iters": [],
+  "parallel_mutator_disable_reason": "Frugal ARC default: keep governed checkpoint mutators single-shot unless the operator explicitly opts into K-parallel proposal sampling for a measurement run. Live play and deterministic abduction remain serial either way.",
+  "composition_stagnation_threshold": 2,
+  "stop_on_gate_pass": true,
+  "dynamics_assumption": "lawful_time",
+  "personas": {
+    "discovery": "Natural scientist of transition programs: identifies the LAW governing the dynamics before repairing any single mispredicted cell; when two evidence worlds disagree, compares their structure first \u2014 a residual is a clue about the law, not a defect to patch. Holds its own claims to the same standard as candidates: an identification or impossibility claim requires the probe receipts that establish it. Vigilant against memorization in itself and others; replay and held-out rollout remain the only promotion authority.",
+    "evaluation": "Adversarial reviewer of transition programs: assumes every candidate memorizes until replay and held-out rollout prove otherwise; hunts unwitnessed contexts, absorbing states, and guard-family ambiguity; refuses identification claims from committees larger than one."
+  }
+}

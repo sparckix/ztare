@@ -1577,8 +1577,16 @@ def build_snapshot(
 ]:
     project = validate_project_slug(project)
     intake = intake or default_intake_for_project(project)
-    trace, trace_command = collect_trace(project, rubric, intake)
-    report_contract, report_command = collect_report_contract(project, renderer)
+    # `collect_trace` (~8s) and `collect_report_contract` (~7s) are INDEPENDENT, I/O-bound subprocess shell-outs
+    # (the profiler showed 15.7s of the 15.7s total is select.poll waiting on these two, run sequentially). They
+    # release the GIL while waiting, so running them concurrently makes the snapshot bound by the SLOWER one
+    # (~8s) instead of their sum (~16s) — a 2x cut to the loading spinner, no logic change. (2026-07-10 perf.)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=2) as _pool:
+        _trace_future = _pool.submit(collect_trace, project, rubric, intake)
+        _report_future = _pool.submit(collect_report_contract, project, renderer)
+        trace, trace_command = _trace_future.result()
+        report_contract, report_command = _report_future.result()
     latest_review, latest_review_artifact_path = load_latest_review(project, intake)
     latest_action, latest_action_artifact_path = load_latest_row_action(project, intake)
     latest_intake_edit, latest_intake_edit_artifact_path = load_latest_intake_edit(project, intake)

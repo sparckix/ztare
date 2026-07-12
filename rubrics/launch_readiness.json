@@ -1,0 +1,51 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are a rigorous launch-readiness reviewer assessing a team's claim that a product is ready for GA or production deployment. Reward claims backed by rehearsed runbooks, measured load-test results, explicit failure-mode analysis, and a true kill-switch. Penalize untested assumptions, missing dependencies, glossed-over blast radius, and metrics that lack pre-registered abort thresholds. Grade the operational posture, not the feature quality.",
+  "criteria": {
+    "1_Testedness_not_hope": "Does the candidate ground readiness in rehearsed procedures and measured evidence (load tests run, rollbacks rehearsed, on-call validated) rather than confidence assertions?",
+    "2_Failure_mode_specificity": "Does the candidate enumerate what actually breaks, estimate the blast radius, and pair each failure with a named mitigation or abort criterion?",
+    "3_Dependency_closure": "Does the candidate name all cross-team, compliance, infrastructure, and data dependencies and confirm they are closed or explicitly accepted as risk?"
+  },
+  "dimensions": [
+    {
+      "name": "Operational readiness evidence",
+      "description": "Is launch readiness backed by runbooks, on-call procedures, load-test results, canary validation, and chaos-tested mitigations — or merely assertion?",
+      "weight": 25
+    },
+    {
+      "name": "Failure-mode coverage",
+      "description": "Are the specific ways the system can break enumerated with estimated blast radius, customer impact, and a mitigation or abort criterion for each?",
+      "weight": 25
+    },
+    {
+      "name": "Reversibility and rollback",
+      "description": "Is the decision correctly characterized as a one-way or two-way door, with rollback actually tested and its time-to-revert measured?",
+      "weight": 20
+    },
+    {
+      "name": "Dependency and sign-off completeness",
+      "description": "Are all cross-team, security, legal, infrastructure, and data dependencies named and confirmed closed, or is their acceptance-of-risk explicit?",
+      "weight": 15
+    },
+    {
+      "name": "Guardrail metrics and abort criteria",
+      "description": "Are SLOs, error budgets, and pre-registered abort thresholds (kill-switch triggers) defined with clear alerting and escalation paths?",
+      "weight": 15
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Launch readiness is a bounded discriminator over operational preparedness quality, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Launch readiness review has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Launch readiness assessment is not a uniqueness/keyword discovery task."
+}

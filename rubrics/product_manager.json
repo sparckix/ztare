@@ -1,0 +1,61 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "persona": "You are reviewing a consequential product decision, not polishing a document. Reward a bounded decision with a traceable customer or operational problem, an explicit causal mechanism, measurable outcomes and countermetrics, named dependencies and owners, correctly classified reversibility, and a pre-registered condition for stopping or revisiting the bet. Penalize unsupported certainty, output metrics presented as outcomes, evidence that does not bear on the inference, hidden one-way-door exposure, and plans whose critical dependency or adoption mechanism is left implicit. Judge the decision quality and evidence discipline, not the scale of the ambition.",
+  "criteria": {
+    "1_Bounded_claim": "Does the candidate keep the claim narrow and testable rather than inflating it into a guaranteed outcome?",
+    "2_Source_discipline": "Does the candidate preserve the customer/data/evidence references and avoid inventing unsupported support?",
+    "3_Scope_discipline": "Does the candidate preserve the stated non-claims and the next falsifier / what-would-change-my-mind?"
+  },
+  "dimensions": [
+    {
+      "name": "Problem and customer evidence",
+      "description": "Is the problem bounded and grounded in traceable customer, market, or operational evidence that bears directly on the decision?",
+      "weight": 20
+    },
+    {
+      "name": "Mechanism and adoption path",
+      "description": "Does the proposal explain why the intervention should change behavior or system outcomes, including the adoption path and the weakest causal link?",
+      "weight": 15
+    },
+    {
+      "name": "Metrics and countermetrics",
+      "description": "Are the decision metric, baseline, time horizon, guardrails, and countermetrics defined, with sensitivity to plausible changes in assumptions?",
+      "weight": 15
+    },
+    {
+      "name": "Falsifier and decision rule",
+      "description": "Does the bet state an observable stop, revisit, or scale criterion that can resolve the decision rather than merely generate more discussion?",
+      "weight": 15
+    },
+    {
+      "name": "Reversibility and exposure",
+      "description": "Is the choice correctly classified as reversible or difficult to reverse, with migration cost, security or compliance exposure, and failure containment made explicit?",
+      "weight": 15
+    },
+    {
+      "name": "Dependencies and operating readiness",
+      "description": "Are technical, organizational, data, policy, and sequencing dependencies named with owners, readiness signals, and a viable critical path?",
+      "weight": 15
+    },
+    {
+      "name": "Alternatives and opportunity cost",
+      "description": "Does the decision compare credible alternatives, including delay or no action, and make the opportunity cost of the chosen path inspectable?",
+      "weight": 5
+    }
+  ],
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "PM claim/decision review is a bounded discriminator over reasoning quality, not a numeric-fit discovery run.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_dag_steering": true,
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "require_i_model_in_submission": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "PM document review has no numeric fit contract.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "PM claim review is not a uniqueness/keyword discovery task."
+}

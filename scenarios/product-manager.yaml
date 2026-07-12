@@ -1,0 +1,104 @@
+# Product-Manager scenario — the reference example "plug" (PM is JUST an example; the kernel is domain-neutral).
+# A Scenario binds the reasoning kernel to a use-case. Run it with:
+#   python -m src.ztare.validator.autoresearch_loop --scenario product-manager --project <your_project>
+#   (or)  ztare autoresearch run --scenario product-manager --project <your_project>
+# Explicit CLI flags always override these values.
+name: product-manager
+description: >
+  Compiles product bets, PRDs, launch decisions, and architecture choices into evidence-linked claims with
+  explicit mechanisms, countermetrics, dependencies, reversibility, falsifiers, and decision criteria.
+
+# ── WIRED + honored today
+rubric: product_manager   # -> rubrics/product_manager.json
+iters: 8
+dynamic: true
+
+# ── WIRED mechanism (opt-in): PM's lever is the rubric, so no fit-Cage gates. Fit/analysis scenarios populate
+#    this; see scenarios/README.md for how a gate-package becomes real behavioral change (not dead config).
+gate_package: []
+
+# ── Governed OUTPUT contract: deliverables composed post-run from the HARDENED governed state, through the
+#    provenance firewall (nothing ungoverned ships). decision_memo is the built-in template; a PM spec /
+#    risk-register are added the same way (slots = governed refs, filled verbatim).
+deliverables:
+  - decision_memo
+  - prd
+  - launch_readiness
+  - risk_register
+  - adr
+  - rice
+  # PM plugin extensions (2026-07-11): compose core claim/evidence graph into persona deliverables.
+  # Claim cards remain core; leadership_packet is composition only. roadmap_backing / bet_registry are
+  # deliverable *views* — they do not add sidebar items or change research-map semantics.
+  - leadership_packet
+  - roadmap_backing
+  - bet_registry
+  - tradeoff_register
+
+# PM's handoffs exercise the same editable declarative path available to every
+# scenario author. A design selects recorded material into a reading order; it
+# cannot invent facts, relations, or a second decision record. The Workbench's
+# Documents action edits these designs directly without CSS or Python.
+deliverable_specs:
+  - name: leadership_packet
+    label: Leadership brief
+    audience: Executive decision review
+    description: The current call, its backing, and the smallest move that could change it.
+    presentation_brief: Lead with the decision and its confidence boundary. Keep the main read to the decision, essential claims, and at most two highest-leverage vulnerabilities; move remaining evidence, gaps, and falsifiers into the supporting record.
+    sections:
+      - label: Decision and claims
+        kinds: [thesis, claim]
+      - label: Backing
+        kinds: [evidence]
+      - label: What could change the call
+        kinds: [falsifier, tension, gap]
+  - name: roadmap_backing
+    label: Roadmap with backing
+    audience: Product and engineering planning
+    description: Claims, dependencies, and evidence that should drive sequencing.
+    presentation_brief: Make the decision boundary and sequencing triggers easy to scan; do not turn open gaps into commitments.
+    sections:
+      - label: Product thesis
+        kinds: [thesis, claim]
+      - label: Evidence and constraints
+        kinds: [evidence, constraint]
+      - label: Risks and revisit triggers
+        kinds: [tension, gap, falsifier]
+  - name: bet_registry
+    label: Decision-test register
+    audience: Operating review
+    description: Open decision tests, their evidence, and the conditions that would settle them.
+    presentation_brief: Present each test with its evidence and explicit settlement condition; keep uncertain items visibly unresolved.
+    sections:
+      - label: Decision tests
+        kinds: [thesis, claim]
+      - label: Backing
+        kinds: [evidence]
+      - label: Settlement conditions
+        kinds: [falsifier, gap, tension]
+  - name: tradeoff_register
+    label: Trade-off register
+    audience: Decision team
+    description: A compact view of tensions, constraints, and the claims they put pressure on.
+    presentation_brief: Keep the trade-off visible as a decision aid, not a generic risk list; pair each tension with the governed claim or evidence it touches.
+    sections:
+      - label: Decision under review
+        kinds: [thesis, claim]
+      - label: Trade-offs and constraints
+        kinds: [tension, constraint, gap]
+      - label: Evidence in the balance
+        kinds: [evidence]
+      - label: Revisit if
+        kinds: [falsifier]
+
+# ── DECLARED extension surface — resolved to typed capability plug-ins by the resolver (scenarios.registry).
+goal_type: ""
+solvers: []
+evidence_sources:
+  - local_files
+  - structured_files     # CSV / JSONL / text evidence, including telemetry and ticket exports
+renderer: markdown       # a typed Renderer; workbench / obsidian / pdf are future plug-ins
+rechecks: []             # add telemetry / metric recomputes here when a project has one
+workbench_panels:
+  - results:governed-rice
+  - results:pm-decision-kit

@@ -20,6 +20,8 @@ const ROUTES = [
   "/?workspace=projects&section=Connect%20project&day0=1&start=folder",
   "/?workspace=projects&section=Connect%20project&day0=1&start=thesis",
   `/?workspace=overview&section=Thesis${P}`,
+  `/?workspace=overview&section=Research%20map${P}`,
+  `/?workspace=overview&section=Annotate%20a%20doc${P}`,
   `/?workspace=sources&section=Prepare%20files${P}`,
   `/?workspace=run&section=Results${P}`,
   `/?workspace=review&section=Things%20to%20review${P}`,
@@ -30,6 +32,8 @@ const ROUTES = [
   "/?workspace=leanmill&section=Proof%20files",
   "/?workspace=leanmill&section=Proof%20status",
   "/?workspace=projects&section=Settings",
+  "/?workspace=projects&section=Activity",
+  "/?workspace=projects&section=Plugins",
 ];
 
 let failures = 0;

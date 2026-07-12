@@ -1,0 +1,35 @@
+# Activist / contested-public-market scenario — the THIRD scenario, and the first CONTESTED one with real
+# adversaries and re-executable (W1) evidence. Where product-manager governs prose-over-sources and self-audit
+# governs prose-over-code, this governs a CONTESTED THESIS over public filings: an activist short/long thesis
+# whose load-bearing claim is a COVENANT computation that recomputes from the 10-Q (W1), pushed back on by
+# management guidance and sell-side notes (real CONTRADICTS/CHALLENGES edges). It is the scenario that exercises
+# graded strength hardest — the verdict is CONTESTED, not settled, and the profile shows WHERE it is hard
+# (re-executable math) vs soft (a forward-looking opinion). Run it with:
+#   ztare autoresearch run --scenario activist-short --project <slug>
+name: activist-short
+description: >
+  Governs a contested public-market thesis (an activist short/long or covenant-breach call) against the issuer's
+  own filings. The load-bearing claim binds to a re-executable computation — a covenant ratio recomputed from
+  the 10-Q line items (W1), not merely quoted (W2) — and is pressure-tested against management guidance and
+  sell-side rebuttals as first-class adversarial edges. The honored lever is the rubric (covenant/evidence
+  discipline, adversarial completeness, base-rate anchoring, downside asymmetry); the verdict is graded
+  (CONTESTED), and the strength profile localizes the disagreement to the exact stratum where it lives.
+
+# ── WIRED + honored today
+rubric: activist_short   # -> rubrics/activist_short.json
+iters: 8
+dynamic: true
+
+# ── WIRED mechanism (opt-in): the lever is the rubric, so no fit-Cage gates.
+gate_package: []
+
+# ── Governed OUTPUT contract: an investment memo composed verbatim from the hardened governed state (every
+#    asserted number traces to a filed source or a recompute receipt).
+deliverables:
+  - decision_memo
+
+goal_type: ""
+solvers: []
+evidence_sources:
+  - local_files          # filings / transcripts as local evidence; EDGAR / transcript feeds are future plug-ins
+renderer: markdown

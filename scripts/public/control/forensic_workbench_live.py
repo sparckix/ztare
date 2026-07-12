@@ -18,6 +18,14 @@ DEFAULT_API_URL = "http://127.0.0.1:8765"
 DEFAULT_APP_URL = "http://127.0.0.1:5174"
 
 
+def checkout_pythonpath(existing: str = "") -> str:
+    """Prefer this checkout's source tree when the live server imports ZTARE."""
+    parts = [str(REPO / "src"), str(REPO)]
+    if existing:
+        parts.append(existing)
+    return os.pathsep.join(parts)
+
+
 def terminate(proc: subprocess.Popen[object]) -> None:
     if proc.poll() is not None:
         return
@@ -92,7 +100,9 @@ def run_live(args: argparse.Namespace) -> int:
         if api_ready(args.api_url, timeout=min(3.0, max(0.5, args.api_startup_timeout / 3))):
             print("  Reusing already-running API.", flush=True)
         else:
-            api_proc = subprocess.Popen(api_cmd, cwd=REPO)
+            api_env = os.environ.copy()
+            api_env["PYTHONPATH"] = checkout_pythonpath(api_env.get("PYTHONPATH", ""))
+            api_proc = subprocess.Popen(api_cmd, cwd=REPO, env=api_env)
             if not wait_for_api(
                 args.api_url,
                 api_proc,
