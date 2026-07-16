@@ -624,6 +624,17 @@ PUBLIC_FIRST_RUN_MAKE_RE = re.compile(
     r"(?=[^\n]*PROJECT=(?:<project>|<slug>|my_project|demo_claims)\b)"
     r"(?=[^\n]*RUBRIC=(?:<rubric>|<slug>|rubrics/my_project\.json|demo_claims)\b)"
 )
+
+
+def documented_module_exists(module: str) -> bool:
+    """Check a documented module path without importing its parent package."""
+    if module == "ztare" or module.startswith("ztare."):
+        path = (REPO / "src").joinpath(*module.split("."))
+        return path.with_suffix(".py").is_file() or (path / "__init__.py").is_file()
+    try:
+        return importlib.util.find_spec(module) is not None
+    except (ImportError, ModuleNotFoundError):
+        return False
 PUBLIC_AUTORESEARCH_RUN_RE = re.compile(r"^ztare\s+autoresearch\s+run\b")
 PUBLIC_SUBSTRATE_COMMAND_RE = re.compile(r"ztare\s+substrate\b")
 
@@ -1675,7 +1686,7 @@ def check_public_command_examples() -> dict[str, object]:
                     stale_project_front_door.append(f"{rel}:{line_no}: {line.strip()}")
         modules.update(DOCUMENTED_MODULE_RE.findall(text))
     missing_modules = sorted(
-        module for module in modules if importlib.util.find_spec(module) is None
+        module for module in modules if not documented_module_exists(module)
     )
     if stale:
         fail("; ".join(stale))

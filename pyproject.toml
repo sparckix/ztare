@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ztare"
-version = "1.2.2"
+version = "1.2.3"
 description = "ZTARE: zero-trust workbench for generating, stress-testing, and auditing research and project claims"
 readme = "README.md"
 requires-python = ">=3.11"

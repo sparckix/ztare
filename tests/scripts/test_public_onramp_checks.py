@@ -39,6 +39,23 @@ def test_public_adversarial_smoke_run_timeout_is_bounded() -> None:
     assert "command timed out after 1s" in proc.stderr
 
 
+def test_documented_module_check_does_not_import_local_parent_packages(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = load_script_module(
+        "public_adversarial_smoke_module_lookup",
+        "scripts/public/control/public_adversarial_smoke.py",
+    )
+
+    def unexpected_find_spec(name: str):
+        pytest.fail(f"local module lookup imported through find_spec: {name}")
+
+    monkeypatch.setattr(module.importlib.util, "find_spec", unexpected_find_spec)
+
+    assert module.documented_module_exists("ztare.scenarios.resolver") is True
+    assert module.documented_module_exists("ztare.scenarios.missing_example") is False
+
+
 def test_scope_boundary_audit_classifies_bounded_and_unbounded_claims() -> None:
     module = load_script_module(
         "scope_boundary_audit",

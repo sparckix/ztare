@@ -13,6 +13,13 @@ it is intentionally not backfilled here entry-by-entry.
 
 No unreleased changes.
 
+## [1.2.3] - 2026-07-16
+
+### Fixed
+- Public command-example validation now checks repository module paths without
+  importing their parent packages, so optional scenario dependencies do not
+  enter the provider-free first-run path.
+
 ## [1.2.2] - 2026-07-16
 
 ### Fixed
@@ -166,7 +173,8 @@ product — it improves research rigor; it does not guarantee truth.
   verification) and solver telemetry / return-shape defects surfaced by cold
   review.
 
-[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/sparckix/ztare/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/sparckix/ztare/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/sparckix/ztare/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sparckix/ztare/compare/v1.1.0...v1.2.0
