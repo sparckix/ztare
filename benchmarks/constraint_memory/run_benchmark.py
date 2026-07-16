@@ -10,10 +10,6 @@ import sys
 import time
 from pathlib import Path
 
-from google import genai
-import anthropic
-from openai import OpenAI
-
 ROOT = Path(__file__).resolve().parents[2]
 BENCH_ROOT = Path(__file__).resolve().parent
 SPECIMENS_ROOT = BENCH_ROOT / 'specimens'
@@ -94,15 +90,36 @@ def _get_model_client(model_key):
     model_id = _MODEL_MAP[model_key]
     if model_key == 'gemini':
         if _gemini_client is None:
+            try:
+                from google import genai
+            except ImportError as exc:
+                raise RuntimeError(
+                    "Gemini model access requires the optional 'google' dependency; "
+                    "install it with `pip install 'ztare[google]'`."
+                ) from exc
             _gemini_client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
         return model_id, _gemini_client
     if model_key in {'claude', 'claude-opus'}:
         if _anthropic_client is None:
+            try:
+                import anthropic
+            except ImportError as exc:
+                raise RuntimeError(
+                    "Claude model access requires the optional 'anthropic' dependency; "
+                    "install it with `pip install 'ztare[anthropic]'`."
+                ) from exc
             _anthropic_client = anthropic.Anthropic(
                 api_key=os.environ.get('ANTHROPIC_API_KEY')
             )
         return model_id, _anthropic_client
     if _openai_client is None:
+        try:
+            from openai import OpenAI
+        except ImportError as exc:
+            raise RuntimeError(
+                "OpenAI model access requires the optional 'openai' dependency; "
+                "install it with `pip install 'ztare[openai]'`."
+            ) from exc
         _openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
     return model_id, _openai_client
 

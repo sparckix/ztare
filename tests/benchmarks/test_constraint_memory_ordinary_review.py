@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -14,6 +15,36 @@ SPEC = importlib.util.spec_from_file_location("constraint_memory_run_benchmark",
 assert SPEC and SPEC.loader
 runner = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(runner)
+
+
+def test_prompt_export_runs_without_optional_provider_packages(tmp_path: Path) -> None:
+    """The offline export path must work with only the Python standard library."""
+    packet_dir = tmp_path / "packet"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-S",
+            str(RUNNER_PATH),
+            "--suite",
+            "main",
+            "--conditions",
+            "D_ordinary_review",
+            "--specimen",
+            "t2_ai_inference",
+            "--ordinary-review-export-prompts",
+            str(packet_dir),
+        ],
+        cwd=RUNNER_PATH.parents[2],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["ok"] is True
+    assert payload["specimen_count"] == 1
+    assert (packet_dir / "ordinary_review_prompt_manifest.json").exists()
 
 
 def prompt_hash_for(specimen: dict, contract: dict) -> str:

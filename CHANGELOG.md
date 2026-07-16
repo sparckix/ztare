@@ -13,6 +13,15 @@ it is intentionally not backfilled here entry-by-entry.
 
 No unreleased changes.
 
+## [1.2.1] - 2026-07-16
+
+### Fixed
+- The provider-free constraint-memory export path now defers Google, Anthropic,
+  and OpenAI SDK imports until a corresponding model is selected, restoring the
+  clean base-install first-run check.
+- A standard-library-only regression test now exercises the offline prompt
+  export without access to optional site packages.
+
 ## [1.2.0] - 2026-07-16
 
 This release deepens the Project Workbench, advances AxiomPack from a compact
@@ -149,7 +158,8 @@ product — it improves research rigor; it does not guarantee truth.
   verification) and solver telemetry / return-shape defects surfaced by cold
   review.
 
-[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/sparckix/ztare/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sparckix/ztare/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sparckix/ztare/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sparckix/ztare/compare/v0.2.0...v1.0.0
