@@ -207,11 +207,6 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
         except work_queue.QueueLeaseLost as exc:
             lease_status = "ownership_lost"
             lease_error = str(exc)
-    ledger = ExplorationBudgetLedger(
-        directory / "budget.events.jsonl",
-        manifest.budget,
-        attempt_id=attempt_id,
-    )
     # The formalization attempt owns its execution identity.  A caller may
     # name a campaign family, but reusing that name as a run tag would merge
     # retries' attempts, timings, and terminal diagnostics.
@@ -221,26 +216,42 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
 
     def before_dispatch(runtime_name, _command):
         nonlocal dispatch_index
+        from ztare.common.subscription_agent_runtime import (
+            current_subscription_dispatch_agent_id,
+        )
+
         if theory_lease is not None and theory_lease.lost:
             raise work_queue.QueueLeaseLost(
                 "formalization theory-head lease was lost before dispatch"
             )
+        agent_id = current_subscription_dispatch_agent_id()
+        if agent_id.endswith("__autoformalize_statement"):
+            job, phase = "formalizer", "compilation"
+        elif "__autoformalize_" in agent_id:
+            job, phase = "faithfulness_reviewer", "navigation"
+        else:
+            job, phase = "lean_solver", "boundary"
         dispatch_index += 1
         return ledger.reserve(
-            f"formalize:{dispatch_index}:{runtime_name}",
-            "compilation",
+            f"formalize:{job}:{dispatch_index}:{runtime_name}",
+            phase,
             {"provider_calls": 1, "agent_turns": 1},
         )
 
     def after_dispatch(reservation):
         ledger.commit(reservation)
 
-    from ztare.leanmill.solver.autoformalize_notes import main as _run
+    from ztare.leanmill.solver.autoformalize_notes import LEAN_ROOT_DEFAULT, main as _run
 
     lease_blocked = lease_status in {"blocked_by_theory_owner", "ownership_lost"}
     returncode = 75 if lease_blocked else 1
     error = ""
     status = lease_status if lease_blocked else "running"
+    ledger = ExplorationBudgetLedger(
+        directory / "budget.events.jsonl",
+        manifest.budget,
+        attempt_id=attempt_id,
+    )
     try:
         if not lease_blocked:
             with subscription_dispatch_budget_scope(
@@ -254,6 +265,7 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
         status = "failed"
         raise
     finally:
+        elapsed_ms = ledger.freeze_wall_clock(reason="formalization_campaign_exit")
         state = ledger.state()
         theory_after = (
             _theory_file_receipt(manifest.body)
@@ -290,6 +302,7 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
         )
         diagnostics = {}
         phase_timing = {}
+        observability = {}
         try:
             from ztare.leanmill.run_diagnostics import summarize_run
             diagnostics = summarize_run(run_tag=attempt_id)
@@ -313,6 +326,18 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
             write_json_atomic(directory / "phase_timing.json", phase_timing)
         except Exception:  # phase timing is likewise advisory
             phase_timing = {}
+        try:
+            from ztare.leanmill.run_observability import build_observability_bundle
+            observability = build_observability_bundle(
+                run_tag=attempt_id,
+                lean_root=LEAN_ROOT_DEFAULT,
+                formalization_result_path=Path(manifest.source_path).with_suffix(
+                    ".autoformalize_result.json"
+                ),
+            )
+            write_json_atomic(directory / "observability.json", observability)
+        except Exception:  # joined observability is a read model, never a completion blocker
+            observability = {}
         if theory_lease is not None:
             try:
                 theory_lease.release()
@@ -336,9 +361,12 @@ def _run_formalization_campaign(manifest, args: argparse.Namespace) -> int:
                     "path": str(theory_path) if theory_path is not None else "",
                 },
                 "budget_digest": manifest.budget.digest,
+                "elapsed_ms": elapsed_ms,
                 "usage": state["usage"],
                 "diagnostics_path": "diagnostics.json" if diagnostics else "",
                 "phase_timing_path": "phase_timing.json" if phase_timing else "",
+                "observability_path": "observability.json" if observability else "",
+                "operator_readout": observability.get("operator_readout", {}),
                 "theory_result_path": "theory_result.json",
             },
         )
@@ -520,8 +548,11 @@ def cmd_campaign(args: argparse.Namespace) -> int:
             return int(_run([str(bp)]))
         return _run_formalization_campaign(manifest, args)
     from ztare.leanmill.common import read_json
+    from ztare.leanmill.frontier_campaign_runner import (
+        drive_frontier_campaign,
+        run_frontier_campaign_definition,
+    )
     from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
-    from ztare.leanmill.frontier_campaign_runner import run_frontier_campaign_definition
 
     typed_path = manifest.typed_blueprint_path
     typed = read_json(typed_path, None) if typed_path is not None else None
@@ -534,6 +565,8 @@ def cmd_campaign(args: argparse.Namespace) -> int:
         typed_draft=typed,
         campaign_manifest=manifest.to_json(),
     )
+    if bool(getattr(args, "continuous", False)):
+        directory = drive_frontier_campaign(directory, model=args.model)
     print(json.dumps(frontier_campaign_status(directory), sort_keys=True))
     return 0
 
@@ -624,11 +657,33 @@ def cmd_preflight(args: argparse.Namespace) -> int:
             config.model,
             subscription_cli_versions[config.runtime]["version"],
         )
-    context = (
-        _context_from_snapshot(blueprint, definition.frozen_context_ref)
-        if definition.frozen_context_ref is not None
-        else _context_from_blueprint(blueprint)
-    )
+    try:
+        context = (
+            _context_from_snapshot(blueprint, definition.frozen_context_ref)
+            if definition.frozen_context_ref is not None
+            else _context_from_blueprint(blueprint)
+        )
+    except Exception as exc:
+        failure_receipt = getattr(exc, "failure_receipt", None)
+        if not callable(failure_receipt):
+            raise
+        core = {
+            "schema": "leanmill.campaign_preflight.v1",
+            "status": "incomplete_context",
+            "provider_calls": 0,
+            "campaign_id": manifest.campaign_id,
+            "lane": manifest.lane,
+            "definition_id": definition.definition_id,
+            "blueprint_id": blueprint.blueprint_id,
+            "context_failure": failure_receipt(),
+            "source_sha256": manifest.source_sha256,
+            "budget_digest": budget_contract.digest,
+            "allocation_policy": budget_contract.allocation_policy,
+            "runtime_resolution": runtime_resolution,
+            "subscription_cli_versions": subscription_cli_versions,
+        }
+        print(json.dumps({**core, "receipt_sha256": content_hash(core)}, sort_keys=True))
+        return 2
     predecessor_input = _load_predecessor_synthesis_input(
         definition, repo=Path.cwd()
     )
@@ -697,12 +752,39 @@ def _formalization_campaign_view(directory: Path) -> dict | None:
     phase_timing = read_json(directory / "phase_timing.json", {})
     theory_delta = read_json(directory / "theory_result.json", {})
     budget = ExplorationBudget.from_json(read_json(directory / "budget.json", {}))
-    ledger = ExplorationBudgetLedger(
-        directory / "budget.events.jsonl",
-        budget,
-        attempt_id=directory.name,
+    ledger_path = directory / "budget.events.jsonl"
+    ledger_started = False
+    if ledger_path.is_file():
+        for line in ledger_path.read_text(errors="ignore").splitlines():
+            try:
+                ledger_started = json.loads(line).get("event_type") == "budget_started"
+            except (AttributeError, json.JSONDecodeError):
+                continue
+            break
+    ledger = (
+        ExplorationBudgetLedger(ledger_path, budget, attempt_id=directory.name)
+        if ledger_started
+        else None
     )
-    state = ledger.state()
+    state = ledger.state() if ledger is not None else {"usage": {}}
+    terminal = isinstance(completion, dict)
+    if terminal:
+        recorded_elapsed = completion.get("elapsed_ms")
+        if recorded_elapsed is None and ledger is not None:
+            # Legacy terminal attempts predate the freeze receipt.  A status
+            # read must remain a projection, so bind their elapsed time to the
+            # already-written completion artifact rather than charging idle
+            # wall time or repairing the ledger from this read path.
+            recorded_elapsed = max(
+                0,
+                directory.joinpath("completion.json").stat().st_mtime_ns // 1_000_000
+                - ledger.started_at_ms,
+            )
+        elapsed_ms = int(recorded_elapsed) if recorded_elapsed is not None else None
+        soft_stop_reason = None
+    else:
+        elapsed_ms = ledger.elapsed_ms() if ledger is not None else None
+        soft_stop_reason = ledger.soft_stop_reason() if ledger is not None else None
     return {
         "schema": "leanmill.campaign_status.v1",
         "lane": "formalize",
@@ -717,9 +799,9 @@ def _formalization_campaign_view(directory: Path) -> dict | None:
         "source_path": manifest.get("source_path"),
         "budget": {
             "budget_digest": budget.digest,
-            "elapsed_ms": ledger.elapsed_ms(),
+            "elapsed_ms": elapsed_ms,
             "usage": {key: value for key, value in state["usage"].items() if value},
-            "soft_stop_reason": ledger.soft_stop_reason(),
+            "soft_stop_reason": soft_stop_reason,
         },
         "completion": completion,
         "diagnostics": diagnostics if isinstance(diagnostics, dict) else {},
@@ -778,10 +860,27 @@ def cmd_replay(args: argparse.Namespace) -> int:
 def cmd_resume(args: argparse.Namespace) -> int:
     from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
     from ztare.leanmill.frontier_campaign_runner import (
+        drive_frontier_campaign,
         resume_frontier_campaign_navigation,
     )
 
-    directory = resume_frontier_campaign_navigation(args.attempt_dir)
+    directory = (
+        drive_frontier_campaign(
+            args.attempt_dir,
+            model=str(getattr(args, "model", "") or ""),
+            lean_root=(getattr(args, "lean_root", "") or None),
+            workbench_authority_ref=str(
+                getattr(args, "authority_ref", "") or ""
+            ),
+        )
+        if bool(getattr(args, "continuous", False))
+        else resume_frontier_campaign_navigation(
+            args.attempt_dir,
+            workbench_authority_ref=str(
+                getattr(args, "authority_ref", "") or ""
+            ),
+        )
+    )
     print(json.dumps(frontier_campaign_status(directory), sort_keys=True))
     return 0
 
@@ -809,14 +908,21 @@ def cmd_recover(args: argparse.Namespace) -> int:
 
 
 def cmd_recheck(args: argparse.Namespace) -> int:
+    from ztare.leanmill.common import read_json
     from ztare.leanmill.frontier_campaign_runner import (
         recheck_frontier_boundary_governance,
     )
 
+    proof_candidates = None
+    if args.proof_file:
+        proof_candidates = read_json(args.proof_file, None)
+        if not isinstance(proof_candidates, dict):
+            raise ValueError("boundary proof file must be a JSON object keyed by target formula ID")
     result = recheck_frontier_boundary_governance(
         args.attempt_dir,
         lean_root=args.lean_root,
         timeout_s=args.timeout_s,
+        proof_candidates=proof_candidates,
     )
     print(json.dumps(result, sort_keys=True))
     return 0
@@ -850,6 +956,41 @@ def cmd_adapter_forge(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_advance_language(args: argparse.Namespace) -> int:
+    from ztare.leanmill.frontier_campaign_runner import (
+        advance_frontier_language_expansion,
+        execute_frontier_adapter_forge,
+        resume_frontier_campaign_navigation,
+    )
+
+    result = advance_frontier_language_expansion(
+        args.attempt_dir,
+        forge_fn=lambda path, _attempt_lease: execute_frontier_adapter_forge(
+            path,
+            model=args.model,
+            reasoning_effort=args.reasoning_effort,
+            _attempt_lease=_attempt_lease,
+        ),
+        resume_fn=resume_frontier_campaign_navigation,
+    )
+    print(json.dumps(result, sort_keys=True))
+    return 0
+
+
+def cmd_compound_sieve(args: argparse.Namespace) -> int:
+    from ztare.leanmill.frontier_campaign_runner import (
+        execute_frontier_compound_sieve,
+    )
+
+    result = execute_frontier_compound_sieve(
+        args.attempt_dir,
+        max_queries=args.max_queries,
+        stratum_index=args.stratum_index,
+    )
+    print(json.dumps(result, sort_keys=True))
+    return 0
+
+
 def cmd_extend_budget(args: argparse.Namespace) -> int:
     from ztare.leanmill.common import read_json
     from ztare.leanmill.exploration_budget import (
@@ -876,6 +1017,13 @@ def cmd_extend_budget(args: argparse.Namespace) -> int:
             "agent_turns": args.agent_turns,
             "workbench_actions": args.workbench_actions,
             "adapter_forge_attempts": args.adapter_forge_attempts,
+            "boundary_queries": args.boundary_queries,
+            "smt_calls": args.smt_calls,
+            "smt_millis": args.smt_millis,
+            "formal_peer_attempts": args.formal_peer_attempts,
+            "formal_peer_millis": args.formal_peer_millis,
+            "lean_attempts": args.lean_attempts,
+            "lean_millis": args.lean_millis,
         }.items()
         if int(value or 0)
     }
@@ -944,6 +1092,10 @@ def main(argv: "list[str] | None" = None) -> int:
                    help="leaf model, e.g. claude-fable-5 — makes it the first leaf (claude runtime), codex the failover")
     p.add_argument("--output-root", default="/tmp/axiompack_campaigns",
                    help="AxiomPack attempt root (ignored by formalization campaigns)")
+    p.add_argument(
+        "--continuous", action="store_true",
+        help="drive resumable AxiomPack waves until terminal or no-progress state",
+    )
     p.set_defaults(func=cmd_campaign)
     p = sub.add_parser("preflight", help="Validate a campaign without provider dispatch.")
     p.add_argument("blueprint")
@@ -963,8 +1115,25 @@ def main(argv: "list[str] | None" = None) -> int:
     p = sub.add_parser("replay", help="Replay a frozen AxiomPack campaign without provider calls.")
     p.add_argument("attempt_dir")
     p.set_defaults(func=cmd_replay)
-    p = sub.add_parser("resume", help="Continue an interrupted AxiomPack navigator from durable calls.")
+    p = sub.add_parser(
+        "resume",
+        help=(
+            "Continue an interrupted AxiomPack campaign from durable calls; "
+            "--continuous drives every registered lifecycle transition."
+        ),
+    )
     p.add_argument("attempt_dir")
+    p.add_argument("--continuous", action="store_true")
+    p.add_argument("--model", default="")
+    p.add_argument("--lean-root", default="")
+    p.add_argument(
+        "--authority-ref",
+        default="",
+        help=(
+            "authority for an explicitly reviewed frozen-workbench successor; "
+            "unused when the packet replays exactly"
+        ),
+    )
     p.set_defaults(func=cmd_resume)
     p = sub.add_parser(
         "continue-epoch",
@@ -979,6 +1148,7 @@ def main(argv: "list[str] | None" = None) -> int:
     p.add_argument("attempt_dir")
     p.add_argument("--lean-root", required=True)
     p.add_argument("--timeout-s", type=int, default=180)
+    p.add_argument("--proof-file")
     p.set_defaults(func=cmd_recheck)
     p = sub.add_parser("interpret", help="Run a post-freeze, source-backed AxiomPack literature review.")
     p.add_argument("attempt_dir")
@@ -1000,6 +1170,24 @@ def main(argv: "list[str] | None" = None) -> int:
     )
     p.set_defaults(func=cmd_adapter_forge)
     p = sub.add_parser(
+        "advance-language",
+        help="Advance a typed AxiomPack language request through review and resume.",
+    )
+    p.add_argument("attempt_dir")
+    p.add_argument("--model", default="gpt-5.5")
+    p.add_argument(
+        "--reasoning-effort", choices=("low", "medium", "high", "ultra"), default="medium"
+    )
+    p.set_defaults(func=cmd_advance_language)
+    p = sub.add_parser(
+        "compound-sieve",
+        help="Apply larger-model witnesses across the compound implication frontier.",
+    )
+    p.add_argument("attempt_dir")
+    p.add_argument("--max-queries", type=int, default=0)
+    p.add_argument("--stratum-index", type=int, default=0)
+    p.set_defaults(func=cmd_compound_sieve)
+    p = sub.add_parser(
         "extend-budget",
         help="Add an explicit, authority-receipted campaign budget extension.",
     )
@@ -1014,6 +1202,13 @@ def main(argv: "list[str] | None" = None) -> int:
     p.add_argument("--agent-turns", type=int, default=0)
     p.add_argument("--workbench-actions", type=int, default=0)
     p.add_argument("--adapter-forge-attempts", type=int, default=0)
+    p.add_argument("--boundary-queries", type=int, default=0)
+    p.add_argument("--smt-calls", type=int, default=0)
+    p.add_argument("--smt-millis", type=int, default=0)
+    p.add_argument("--formal-peer-attempts", type=int, default=0)
+    p.add_argument("--formal-peer-millis", type=int, default=0)
+    p.add_argument("--lean-attempts", type=int, default=0)
+    p.add_argument("--lean-millis", type=int, default=0)
     p.add_argument("--authority-ref", required=True)
     p.add_argument("--reason", required=True)
     p.set_defaults(func=cmd_extend_budget)

@@ -34,6 +34,12 @@ from ztare.leanmill.theory_ir import (
 CERTIFICATE_SCHEMA = "leanmill.finite_model_certificate.v1"
 THEORY_SUITE_SCHEMA = "leanmill.theory_semantic_suite.v1"
 EVALUATOR_VERSION = "leanmill.finite_model.enumerative.v1"
+SINGLE_OPERATION_EQUIVALENCE_SCHEMA = (
+    "leanmill.single_operation_equivalence_receipt.v1"
+)
+SINGLE_OPERATION_EQUIVALENCE_EVALUATOR = (
+    "leanmill.single_operation_equivalence.bounded_terms.v1"
+)
 
 SAT = "SAT"
 NO_MODEL_WITHIN_BOUND = "NO_MODEL_WITHIN_BOUND"
@@ -44,6 +50,13 @@ NO_COUNTERMODEL_WITHIN_BOUND = "NO_COUNTERMODEL_WITHIN_BOUND"
 NOT_EQUIVALENT = "NOT_EQUIVALENT"
 EQUIVALENT_WITHIN_BOUND = "EQUIVALENT_WITHIN_BOUND"
 UNKNOWN = "UNKNOWN"
+
+EXACT_ISOMORPHISM = "exact_isomorphism"
+OPERATION_COORDINATE_EQUIVALENT = "operation_coordinate_equivalent"
+PARASTROPHE_EQUIVALENT = "parastrophe_equivalent"
+ONE_WAY_TERM_REDUCT = "one_way_term_reduct"
+MUTUAL_TERM_EQUIVALENT = "mutual_term_equivalent"
+UNMATCHED = "unmatched"
 
 CERTIFIED_WITH_WITNESSES = "CERTIFIED_WITH_WITNESSES"
 SAT_WITHOUT_COMPLETE_INDEPENDENCE_WITNESSES = (
@@ -409,6 +422,363 @@ def canonicalize_finite_model(
     if best is None:
         raise RuntimeError("finite model canonicalization produced no representative")
     return best
+
+
+FINITE_OPERATION_EQUIVALENCE_SCHEMA = (
+    "leanmill.finite_single_operation_equivalence.v1"
+)
+
+
+def _single_operation_profile(
+    signature: TheorySignature,
+    model: FiniteModel,
+) -> tuple[str, str, int, int, tuple[int, ...]]:
+    """Return ``(sort, operation, size, arity, table)`` for the bounded lane."""
+
+    validate_model(signature, model)
+    if (
+        len(signature.sorts) != 1
+        or len(signature.operations) != 1
+        or signature.relations
+    ):
+        raise ValueError(
+            "finite operation equivalence requires one sort, one operation, and no relations"
+        )
+    sort = signature.sorts[0].name
+    operation = signature.operations[0]
+    if (
+        operation.result_sort != sort
+        or not operation.arg_sorts
+        or set(operation.arg_sorts) != {sort}
+    ):
+        raise ValueError(
+            "finite operation equivalence requires a positive-arity homogeneous operation"
+        )
+    return (
+        sort,
+        operation.name,
+        model.sort_size_map[sort],
+        len(operation.arg_sorts),
+        model.operation_map[operation.name],
+    )
+
+
+def _input_permuted_operation_table(
+    table: tuple[int, ...],
+    *,
+    carrier_size: int,
+    arity: int,
+    permutation: Sequence[int],
+) -> tuple[int, ...]:
+    return tuple(
+        table[
+            _table_index(
+                tuple(arguments[index] for index in permutation),
+                (carrier_size,) * arity,
+            )
+        ]
+        for arguments in product(range(carrier_size), repeat=arity)
+    )
+
+
+def _graph_permuted_operation_table(
+    table: tuple[int, ...],
+    *,
+    carrier_size: int,
+    arity: int,
+    permutation: Sequence[int],
+) -> tuple[int, ...] | None:
+    """Permute the graph coordinates, returning ``None`` when it is not a function."""
+
+    rows: dict[tuple[int, ...], int] = {}
+    for arguments in product(range(carrier_size), repeat=arity):
+        output = table[_table_index(arguments, (carrier_size,) * arity)]
+        graph_row = (*arguments, output)
+        transformed = tuple(graph_row[index] for index in permutation)
+        new_arguments = transformed[:-1]
+        new_output = transformed[-1]
+        prior = rows.get(new_arguments)
+        if prior is not None and prior != new_output:
+            return None
+        rows[new_arguments] = new_output
+    domain = tuple(product(range(carrier_size), repeat=arity))
+    if any(arguments not in rows for arguments in domain):
+        return None
+    return tuple(rows[arguments] for arguments in domain)
+
+
+def _bounded_term_operations(
+    operation_table: tuple[int, ...],
+    *,
+    operation_name: str,
+    carrier_size: int,
+    arity: int,
+    max_depth: int,
+    max_compositions: int,
+) -> tuple[dict[tuple[int, ...], Term], int]:
+    """Enumerate distinct ``arity``-variable term functions through ``max_depth``."""
+
+    inputs = tuple(product(range(carrier_size), repeat=arity))
+    terms: dict[tuple[int, ...], Term] = {
+        tuple(arguments[index] for arguments in inputs): Term.var(f"x{index}")
+        for index in range(arity)
+    }
+    attempted = 0
+    for _depth in range(1, max_depth + 1):
+        prior = tuple(terms.items())
+        possible = len(prior) ** arity
+        if attempted + possible > max_compositions:
+            raise ValueError(
+                "bounded term-operation enumeration exceeds the composition cap"
+            )
+        additions: dict[tuple[int, ...], Term] = {}
+        for selected in product(prior, repeat=arity):
+            attempted += 1
+            child_tables = tuple(row[0] for row in selected)
+            result = tuple(
+                operation_table[
+                    _table_index(
+                        tuple(table[index] for table in child_tables),
+                        (carrier_size,) * arity,
+                    )
+                ]
+                for index in range(len(inputs))
+            )
+            if result not in terms and result not in additions:
+                additions[result] = Term.app(
+                    operation_name, *(row[1] for row in selected)
+                )
+        if not additions:
+            break
+        terms.update(additions)
+    return terms, attempted
+
+
+def classify_single_operation_equivalence(
+    signature: TheorySignature,
+    candidate_model: FiniteModel,
+    reference_model: FiniteModel,
+    *,
+    max_term_depth: int = 2,
+    max_term_compositions: int = 100_000,
+    max_relabelings: int = 720,
+    max_coordinate_checks: int = 100_000,
+) -> dict[str, Any]:
+    """Classify two finite operations under a bounded executable relation ladder.
+
+    The strongest returned scope is one displayed finite algebra pair.  Even a
+    mutual term certificate says nothing by itself about equivalence of the
+    surrounding theories or varieties.
+    """
+
+    if type(max_term_depth) is not int or max_term_depth < 0:
+        raise ValueError("max_term_depth must be a nonnegative integer")
+    if type(max_term_compositions) is not int or max_term_compositions < 1:
+        raise ValueError("max_term_compositions must be positive")
+    if type(max_relabelings) is not int or max_relabelings < 1:
+        raise ValueError("max_relabelings must be positive")
+    if type(max_coordinate_checks) is not int or max_coordinate_checks < 1:
+        raise ValueError("max_coordinate_checks must be positive")
+    candidate = _single_operation_profile(signature, candidate_model)
+    reference = _single_operation_profile(signature, reference_model)
+    sort, operation_name, carrier_size, arity, candidate_table = candidate
+    if candidate[:4] != reference[:4]:
+        raise ValueError("finite operation equivalence profiles do not match")
+    reference_table = reference[4]
+    relabeling_count = factorial(carrier_size)
+    base = {
+        "schema": FINITE_OPERATION_EQUIVALENCE_SCHEMA,
+        "scope": "finite_witness_only",
+        "claim_boundary": (
+            "one finite algebra pair; no theory, variety, or universal-source equivalence"
+        ),
+        "signature_sha256": signature.content_hash,
+        "candidate_model_sha256": candidate_model.content_hash(signature),
+        "reference_model_sha256": reference_model.content_hash(signature),
+        "carrier_size": carrier_size,
+        "operation_arity": arity,
+        "exhaustive_input_count": carrier_size ** arity,
+        "max_term_depth": max_term_depth,
+        "max_term_compositions": max_term_compositions,
+        "max_coordinate_checks": max_coordinate_checks,
+        "relabeling_count": relabeling_count,
+    }
+
+    def finish(
+        relation: str,
+        *,
+        status: str = "completed",
+        carrier_permutation: Sequence[int] | None = None,
+        graph_coordinate_permutation: Sequence[int] | None = None,
+        candidate_from_reference_term: Term | None = None,
+        reference_from_candidate_term: Term | None = None,
+        term_direction: str | None = None,
+        attempted_compositions: int = 0,
+        reason: str | None = None,
+    ) -> dict[str, Any]:
+        core = {
+            **base,
+            "status": status,
+            "relation": relation,
+            "carrier_permutation": (
+                list(carrier_permutation) if carrier_permutation is not None else None
+            ),
+            "graph_coordinate_permutation": (
+                list(graph_coordinate_permutation)
+                if graph_coordinate_permutation is not None
+                else None
+            ),
+            "candidate_from_reference_term": (
+                candidate_from_reference_term.to_json()
+                if candidate_from_reference_term is not None
+                else None
+            ),
+            "reference_from_candidate_term": (
+                reference_from_candidate_term.to_json()
+                if reference_from_candidate_term is not None
+                else None
+            ),
+            "term_direction": term_direction,
+            "attempted_compositions": attempted_compositions,
+            "reason": reason,
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
+    if relabeling_count > max_relabelings:
+        return finish(
+            "unavailable_bounds",
+            status="unavailable",
+            reason="carrier relabeling count exceeds the declared cap",
+        )
+
+    relabeled_references: list[tuple[tuple[int, ...], tuple[int, ...]]] = []
+    for carrier_permutation in permutations(range(carrier_size)):
+        relabeled = relabel_finite_model(
+            signature,
+            reference_model,
+            {sort: carrier_permutation},
+        )
+        relabeled_table = relabeled.operation_map[operation_name]
+        relabeled_references.append((carrier_permutation, relabeled_table))
+        if candidate_table == relabeled_table:
+            return finish(
+                "exact_isomorphism",
+                carrier_permutation=carrier_permutation,
+                graph_coordinate_permutation=tuple(range(arity + 1)),
+            )
+
+    if relabeling_count * factorial(arity) > max_coordinate_checks:
+        return finish(
+            "unavailable_bounds",
+            status="unavailable",
+            reason="input-coordinate comparison exceeds the declared cap",
+        )
+    for carrier_permutation, relabeled_table in relabeled_references:
+        for coordinate_permutation in permutations(range(arity)):
+            if coordinate_permutation == tuple(range(arity)):
+                continue
+            transformed = _input_permuted_operation_table(
+                relabeled_table,
+                carrier_size=carrier_size,
+                arity=arity,
+                permutation=coordinate_permutation,
+            )
+            if transformed == candidate_table:
+                return finish(
+                    "operation_coordinate_equivalent",
+                    carrier_permutation=carrier_permutation,
+                    graph_coordinate_permutation=(*coordinate_permutation, arity),
+                )
+
+    if relabeling_count * factorial(arity + 1) > max_coordinate_checks:
+        return finish(
+            "unavailable_bounds",
+            status="unavailable",
+            reason="graph-coordinate comparison exceeds the declared cap",
+        )
+    for carrier_permutation, relabeled_table in relabeled_references:
+        for graph_permutation in permutations(range(arity + 1)):
+            if graph_permutation[-1] == arity:
+                continue
+            transformed = _graph_permuted_operation_table(
+                relabeled_table,
+                carrier_size=carrier_size,
+                arity=arity,
+                permutation=graph_permutation,
+            )
+            if transformed == candidate_table:
+                return finish(
+                    "parastrophe_equivalent",
+                    carrier_permutation=carrier_permutation,
+                    graph_coordinate_permutation=graph_permutation,
+                )
+
+    try:
+        candidate_terms, candidate_attempted = _bounded_term_operations(
+            candidate_table,
+            operation_name=operation_name,
+            carrier_size=carrier_size,
+            arity=arity,
+            max_depth=max_term_depth,
+            max_compositions=max_term_compositions,
+        )
+        one_way_match: tuple[
+            tuple[int, ...], Term | None, Term | None, int
+        ] | None = None
+        for carrier_permutation, relabeled_table in relabeled_references:
+            reference_terms, reference_attempted = _bounded_term_operations(
+                relabeled_table,
+                operation_name=operation_name,
+                carrier_size=carrier_size,
+                arity=arity,
+                max_depth=max_term_depth,
+                max_compositions=max_term_compositions,
+            )
+            candidate_from_reference = reference_terms.get(candidate_table)
+            reference_from_candidate = candidate_terms.get(relabeled_table)
+            attempted = candidate_attempted + reference_attempted
+            if candidate_from_reference and reference_from_candidate:
+                return finish(
+                    "mutual_term_equivalent",
+                    carrier_permutation=carrier_permutation,
+                    candidate_from_reference_term=candidate_from_reference,
+                    reference_from_candidate_term=reference_from_candidate,
+                    attempted_compositions=attempted,
+                )
+            if candidate_from_reference or reference_from_candidate:
+                if one_way_match is None:
+                    one_way_match = (
+                        carrier_permutation,
+                        candidate_from_reference,
+                        reference_from_candidate,
+                        attempted,
+                    )
+        if one_way_match is not None:
+            (
+                carrier_permutation,
+                candidate_from_reference,
+                reference_from_candidate,
+                attempted,
+            ) = one_way_match
+            return finish(
+                "one_way_term_reduct",
+                carrier_permutation=carrier_permutation,
+                candidate_from_reference_term=candidate_from_reference,
+                reference_from_candidate_term=reference_from_candidate,
+                term_direction=(
+                    "candidate_from_reference"
+                    if candidate_from_reference is not None
+                    else "reference_from_candidate"
+                ),
+                attempted_compositions=attempted,
+            )
+    except ValueError as exc:
+        return finish(
+            "unavailable_bounds",
+            status="unavailable",
+            reason=str(exc),
+        )
+    return finish("unmatched")
 
 
 def evaluate_axiom(
@@ -1415,6 +1785,7 @@ __all__ = [
     "COUNTERMODEL",
     "EQUIVALENT_WITHIN_BOUND",
     "EVALUATOR_VERSION",
+    "FINITE_OPERATION_EQUIVALENCE_SCHEMA",
     "INDEPENDENCE_WITNESS",
     "NO_COUNTERMODEL_WITHIN_BOUND",
     "NO_CANDIDATE_AXIOMS",
@@ -1430,6 +1801,7 @@ __all__ = [
     "SemanticCheckReceipt",
     "TheorySemanticSuiteReceipt",
     "canonicalize_finite_model",
+    "classify_single_operation_equivalence",
     "certify_axiom_independence",
     "certify_equivalence",
     "certify_implication",

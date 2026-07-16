@@ -1,0 +1,445 @@
+{
+  "adapter_config": {
+    "model_generation": {
+      "max_canonical_models_per_stratum": 1146,
+      "mode": "smt_exact",
+      "timeout_ms_per_stratum": 900000
+    }
+  },
+  "adapter_id": "generic_fol_finite.v1",
+  "authority_refs": [
+    "brief:55b38cdc818074d8aaaaae4cfa67ebd9b4eeda4521a6f52be085d3ca577f270d"
+  ],
+  "base_axioms": [
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x0",
+            "sort": "S0"
+          },
+          {
+            "name": "y0",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "args": [
+              {
+                "kind": "var",
+                "name": "x0"
+              },
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x0"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "y0"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op1"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op0"
+          },
+          "right": {
+            "kind": "var",
+            "name": "y0"
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "op0_op1_left_inverse"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x1",
+            "sort": "S0"
+          },
+          {
+            "name": "y1",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "args": [
+              {
+                "kind": "var",
+                "name": "x1"
+              },
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x1"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "y1"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op1"
+          },
+          "right": {
+            "kind": "var",
+            "name": "y1"
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "op1_op0_right_inverse"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x2",
+            "sort": "S0"
+          },
+          {
+            "name": "y2",
+            "sort": "S0"
+          },
+          {
+            "name": "z2",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "args": [
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x2"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "y2"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              },
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x2"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "z2"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op0"
+          },
+          "right": {
+            "args": [
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "y2"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "x2"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              },
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "y2"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "z2"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op0"
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "left_translation_cycle_equivariance"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x3",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "args": [
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x3"
+                  },
+                  {
+                    "kind": "var",
+                    "name": "x3"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op0"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op2"
+          },
+          "right": {
+            "kind": "var",
+            "name": "x3"
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "diagonal_inverse"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x4",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "eq",
+          "left": {
+            "args": [
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x4"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op2"
+              },
+              {
+                "args": [
+                  {
+                    "kind": "var",
+                    "name": "x4"
+                  }
+                ],
+                "kind": "app",
+                "symbol": "op2"
+              }
+            ],
+            "kind": "app",
+            "symbol": "op0"
+          },
+          "right": {
+            "kind": "var",
+            "name": "x4"
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "inverse_diagonal_recovery"
+    }
+  ],
+  "base_theory_status": "typed_resolved",
+  "codec_versions": {
+    "adapter_config": "leanmill.adapter_config.v1",
+    "base_axiom": "leanmill.axiom_formula.v1",
+    "formula_grammar": "leanmill.universal_equation_grammar.v1",
+    "primitive_semantics": "leanmill.primitive_semantics.v1",
+    "signature": "leanmill.theory_signature.v1",
+    "stop_rule": "leanmill.scientific_stop_rule.v1",
+    "verification_plan": "leanmill.verification_plan.v1"
+  },
+  "collapse_controls": [],
+  "deanchoring_policy": {
+    "intent": "cold_after_signature_compilation"
+  },
+  "eigenquestion": "Does a nontrivial coprime-length cycle in some left translation force decomposability of the finite cycle-set structure, or can the executable definitional expansion support a checked indecomposable counterexample or a sharper invariant/representation that advances the unrestricted implication?",
+  "formula_grammar": {
+    "equation_side_quotient": true,
+    "exclude_nonvariable_reflexive": true,
+    "max_formulas": 1000,
+    "max_total_operation_order": 2,
+    "max_variables_per_sort": 3,
+    "schema": "leanmill.universal_equation_grammar.v1",
+    "variable_renaming_quotient": true
+  },
+  "mode": "anonymous_signature_census",
+  "model_or_observation_strata": [
+    {
+      "sort_sizes": {
+        "S0": 2
+      }
+    },
+    {
+      "sort_sizes": {
+        "S0": 3
+      }
+    },
+    {
+      "sort_sizes": {
+        "S0": 4
+      }
+    },
+    {
+      "sort_sizes": {
+        "S0": 5
+      }
+    }
+  ],
+  "navigator_contract": {
+    "adapter_id": "generic_fol_finite.v1",
+    "host_isolated_lineages": 4,
+    "presentation_size": {
+      "maximum": 5,
+      "minimum": 1
+    },
+    "selection_mode": "theory_program"
+  },
+  "pack_arity": 5,
+  "primitive_semantics": {
+    "operation_bindings": {
+      "op0": {
+        "observation": "primary binary operation; finite-table carrier action used to enumerate left translations and cycle structure"
+      },
+      "op1": {
+        "observation": "rowwise inverse binary operation; executable witness for solving op0(x,_) on the right"
+      },
+      "op2": {
+        "observation": "inverse of the diagonal map; executable recovery operation for diagonal nondegeneracy"
+      }
+    },
+    "relation_bindings": {}
+  },
+  "query_budget": {
+    "boundary_queries": 72,
+    "context_models": 1000000,
+    "formal_peer_attempts": 36,
+    "lean_attempts": 36,
+    "provider_calls": 144,
+    "smt_calls": 72,
+    "truth_cells": 500000000,
+    "workbench_actions": 576
+  },
+  "sealed_evidence_manifest_digest": "sha256:8fe86efbe1beda934f3a9311670199dc8ddee15182fc6004e3389b0e2699d2a8",
+  "signature": {
+    "name": "finite_cycle_set_coprime_decomposability_campaign",
+    "operations": [
+      {
+        "arg_sorts": [
+          "S0",
+          "S0"
+        ],
+        "name": "op0",
+        "result_sort": "S0"
+      },
+      {
+        "arg_sorts": [
+          "S0",
+          "S0"
+        ],
+        "name": "op1",
+        "result_sort": "S0"
+      },
+      {
+        "arg_sorts": [
+          "S0"
+        ],
+        "name": "op2",
+        "result_sort": "S0"
+      }
+    ],
+    "relations": [],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "S0"
+      }
+    ]
+  },
+  "stop_rule": {
+    "executable_condition": {
+      "kind": "late_lineage_objective_review"
+    },
+    "user_instruction": "Seek either a fully checked indecomposable counterexample or a compact invariant/representation that advances the unrestricted implication. Bounded no-counterexample output is not a theorem."
+  },
+  "verification_plan": {
+    "checks": [
+      "validate the five executable laws on each sampled finite table",
+      "search small carriers first, then expand heldout strata under the same typed signature",
+      "test whether any discovered coprime left-translation cycle correlates with decomposability only through the executable axioms and registered adapter semantics",
+      "require a checked witness or a sharpened invariant before treating any negative result as campaign progress"
+    ],
+    "heldout_strata": [
+      {
+        "sort_sizes": {
+          "S0": 6
+        }
+      },
+      {
+        "sort_sizes": {
+          "S0": 7
+        }
+      },
+      {
+        "sort_sizes": {
+          "S0": 8
+        }
+      },
+      {
+        "sort_sizes": {
+          "S0": 9
+        }
+      }
+    ],
+    "strategy": "smt_exact_finite_table_search_with_small-order_sweep_and_invariant_extraction"
+  },
+  "visible_evidence_manifest": {
+    "brief_id": "brief:55b38cdc818074d8aaaaae4cfa67ebd9b4eeda4521a6f52be085d3ca577f270d",
+    "evidence_refs": [],
+    "forbidden_shortcuts": [],
+    "schema": "leanmill.frontier_visible_evidence_manifest.v1",
+    "source_mode": "human_directed"
+  }
+}

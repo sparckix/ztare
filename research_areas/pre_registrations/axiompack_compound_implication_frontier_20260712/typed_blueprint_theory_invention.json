@@ -1,0 +1,80 @@
+{
+  "mode": "anonymous_signature_census",
+  "eigenquestion": "Which invented coordinates or anonymous compound theories expose structure absent from the initial chart and make consequential predictions that survive cross-order or formal verification?",
+  "signature": {
+    "schema": "leanmill.theory_signature.v1",
+    "name": "AnonymousMagma",
+    "sorts": [{"name": "S0"}],
+    "operations": [{"name": "op0", "arg_sorts": ["S0", "S0"], "result_sort": "S0"}],
+    "relations": []
+  },
+  "primitive_semantics": {
+    "operation_bindings": {"op0": "total finite binary operation table"},
+    "relation_bindings": {}
+  },
+  "base_axioms": [],
+  "base_theory_status": "explicit_empty",
+  "adapter_id": "magma_equational.v1",
+  "adapter_config": {"max_total_operation_order": 3},
+  "formula_grammar": {
+    "schema": "leanmill.magma_law_universe.v1",
+    "max_total_operation_order": 3,
+    "variable_renaming_quotient": true,
+    "equation_side_quotient": true
+  },
+  "model_or_observation_strata": [{"carrier_size": 2}, {"carrier_size": 3}],
+  "pack_arity": 4,
+  "collapse_controls": [],
+  "visible_evidence_manifest": {"interpretation_labels": []},
+  "sealed_evidence_manifest_digest": "sha256:8094461e9862242091e96f713dc6b2f8347bf4062e48072e5c79cbc9c52dd279",
+  "deanchoring_policy": {"cold_after_signature_compilation": true},
+  "navigator_contract": {
+    "adapter_id": "axiompack",
+    "selection_mode": "theory_program",
+    "presentation_size": {"minimum": 2, "maximum": 4},
+    "topology_presentation_size": 2,
+    "host_isolated_lineages": 2
+  },
+  "query_budget": {
+    "navigator_rounds": 16,
+    "max_finalists": 6,
+    "max_ranked_queries": 12,
+    "boundary_queries": 6,
+    "larger_model_queries": 12,
+    "conditional_lean_queries": 2
+  },
+  "stop_rule": {
+    "user_instruction": "Stop only when late independent review finds a representation or theory program that changes what can be derived or tested beyond the initial chart and is worth cross-order or formal verification; otherwise evolve the theory language or return an unresolved receipt. Catalog selection alone does not satisfy this condition.",
+    "executable_condition": {"kind": "late_lineage_objective_review"},
+    "freeze_after_finalists": 6,
+    "freeze_before_interpretation": true
+  },
+  "verification_plan": {
+    "larger_carriers": [4, 5],
+    "conditional_lean": true,
+    "post_freeze_interpretation": true,
+    "single_premise_oracle": {
+      "source_ref": "https://teorth.github.io/equational_theories/implications/",
+      "node_catalog_path": "/tmp/leanmill_source_snapshots/equations.txt",
+      "node_catalog_sha256": "e30e1a6735011ff36fdb228d37b232eb7cda9d4a836cbbefc69c07e6871c8010",
+      "relation_path": "/tmp/leanmill_source_snapshots/graph.json",
+      "relation_sha256": "9b6a7858e2922d00a090f8a96c2edc5f93523a785c8c60eae020ab00c0716751",
+      "node_count": 4694,
+      "status_names": [
+        "explicit_conjecture_false",
+        "explicit_conjecture_true",
+        "explicit_proof_false",
+        "explicit_proof_true",
+        "implicit_conjecture_false",
+        "implicit_conjecture_true",
+        "implicit_proof_false",
+        "implicit_proof_true",
+        "unknown"
+      ],
+      "proved_true_codes": [3, 7],
+      "proved_false_codes": [2, 6]
+    }
+  },
+  "codec_versions": {"formula": "magma-postfix-v1", "model": "finite-table-v1"},
+  "authority_refs": ["deterministic-census", "campaign-signer"]
+}

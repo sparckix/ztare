@@ -22,6 +22,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--mode", choices=["cascade", "dag_search"], default="dag_search")
     parser.add_argument("--substrate", default=None, help="Optional Lake project directory.")
     parser.add_argument("--notes", default=None, help="Optional notes file to guide decomposition.")
+    parser.add_argument(
+        "--ratify-existing-target",
+        action="store_true",
+        help=(
+            "Extract the target's existing proof and send it directly through "
+            "governance with derivation fallback disabled."
+        ),
+    )
     parser.add_argument("--json", action="store_true", help="Print JSON. Accepted for symmetry; output is JSON.")
     return parser
 
@@ -31,6 +39,13 @@ def main(argv: list[str] | None = None) -> int:
     source_text = Path(args.source_file).read_text(encoding="utf-8")
     notes = Path(args.notes).read_text(encoding="utf-8") if args.notes else None
     substrate = Path(args.substrate) if args.substrate else None
+    preverified_proof = None
+    if args.ratify_existing_target:
+        from ztare.leanmill.lean_source import open_decl_for_ratification
+
+        source_text, preverified_proof = open_decl_for_ratification(
+            source_text, args.target
+        )
     result = solve_adhoc_governed(
         args.target,
         source_text,
@@ -40,6 +55,11 @@ def main(argv: list[str] | None = None) -> int:
         mode=args.mode,
         substrate=substrate,
         notes=notes,
+        preverified_proof=preverified_proof,
+        preverified_provider=(
+            "existing_artifact" if preverified_proof is not None else None
+        ),
+        preverified_only=preverified_proof is not None,
     )
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     return 0

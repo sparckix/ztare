@@ -1,7 +1,7 @@
 """One human-authored campaign envelope for every LeanMill lane."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 import re
 from typing import Any, Mapping
@@ -48,6 +48,8 @@ _AXIOMPACK_ROLES = {
     "lineage_synthesizer",
     "adapter_forge",
     "adapter_reviewer",
+    "formalizer",
+    "faithfulness_reviewer",
     "lean_solver",
     "post_freeze_interpreter",
 }
@@ -257,13 +259,20 @@ def load_campaign_manifest(
         {
             "schema": USER_BUDGET_SCHEMA,
             "preset": profile,
-            "allocation_policy": (
-                "global_cap" if lane == "formalize" else "roll_forward_protected_future"
-            ),
+            "allocation_policy": "roll_forward_protected_future",
             "budget": metadata.get("budget"),
             "stop": metadata.get("stop") or {},
         }
     )
+    if lane == "formalize":
+        # Formalization has no AdapterForge job.  Removing that unreachable
+        # allocation lets statement/review work roll forward while the
+        # existing policy still protects the declared Lean boundary slice.
+        hard_caps = dict(budget.hard_caps)
+        phase_caps = {phase: dict(caps) for phase, caps in budget.phase_caps.items()}
+        hard_caps["adapter_forge_attempts"] = 0
+        phase_caps["expansion"]["adapter_forge_attempts"] = 0
+        budget = replace(budget, hard_caps=hard_caps, phase_caps=phase_caps)
     return LeanMillCampaignManifest(
         source_path=source,
         source_sha256=content_hash({"source": text}),

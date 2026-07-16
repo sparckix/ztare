@@ -186,12 +186,11 @@ class MoveResult(BaseModel):
     """The per-move result dict — `r0 = primary_result(solve())`. READ-ONLY typed accessor: encodes the
     `r0.get("outcome") == "closed"` test ONCE (it is duplicated 8× and each re-derivation can drift). Does NOT
     re-emit a dict (no lossy round-trip / no write-back) — construct it at a read site, ask `.is_closed`."""
-    model_config = ConfigDict(extra="allow")   # keep proof_text / transcript / failure_class / meta untouched
+    model_config = ConfigDict(extra="allow")   # keep transcript / failure_class / meta untouched
     outcome: str = ""
     proof_text: str = ""
-    failure_class: str = ""
 
-    @field_validator("outcome", "proof_text", "failure_class", mode="before")
+    @field_validator("outcome", "proof_text", mode="before")
     @classmethod
     def _none_to_empty(cls, v):
         return "" if v is None else v
@@ -303,6 +302,7 @@ class SolveResult(BaseModel):
     closure_certificate: Optional[str] = None
     closure_lean: Optional[str] = None
     statement_false_verified: bool = False
+    control_verdict: Any = None
     env_parity_retracted: bool = False
     governance: Any = None
 
@@ -321,7 +321,10 @@ class SolveResult(BaseModel):
         return primary_result(self.as_dict())
 
     def as_dict(self) -> dict[str, Any]:
-        return dict(self.model_dump(exclude_none=False))
+        payload = dict(self.model_dump(exclude_none=False))
+        if self.control_verdict is None:
+            payload.pop("control_verdict", None)
+        return payload
 
 
 def primary_result(res: dict, *, warn_missing: bool = True) -> dict:
@@ -395,6 +398,9 @@ def _selftest() -> int:
        MoveResult.from_dict({"outcome": None}).is_closed is False)
     ok("MoveResult keeps extra keys (extra=allow)",
        MoveResult.from_dict({"outcome": "closed", "transcript": "t"}).model_dump().get("transcript") == "t")
+    _failure = {"class": "apparatus", "error_class": "other_error", "reason": "probe"}
+    ok("MoveResult preserves typed failure classifications",
+       MoveResult.from_dict({"failure_class": _failure}).model_dump().get("failure_class") == _failure)
 
     # GovernanceVerdict: integrity_verified mirrors `not gov.get("integrity_unverified")`
     for g in [{"integrity_unverified": True}, {"integrity_unverified": False}, {}, None,

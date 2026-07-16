@@ -46,6 +46,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Optional
 
+from ztare.leanmill.exploration_budget import BudgetExceeded
 from ztare.leanmill.solver import prompts          # canonical prompt home (#49): backtranslate / judge / def-judge templates
 
 # Phase-timing seam (shared common.telemetry, read by factory_intelligence): time the FORMALIZE phase so
@@ -661,6 +662,9 @@ def faithfulness_gate(nl: str, lean_statement: str, *,
             back_nl = backtranslate_fn(stmt) or ""
             checks["round_trip_faithful"] = bool(_visible(back_nl)) and _is_true(judge_fn(nl, back_nl))
         except Exception as e:
+            if isinstance(e, BudgetExceeded):
+                checks["budget_exhausted"] = True
+                return FaithfulnessVerdict(False, "BUDGET_EXHAUSTED", checks)
             return FaithfulnessVerdict(False, f"round-trip errored ⇒ NOT admitted (fail-closed): {repr(e)[:80]}", checks)
     if not checks["round_trip_faithful"]:
         # DISCLOSED-STRENGTHENING OVERRIDE (refute-and-correct, 2026-06-23) — a SIBLING of the `prior_confirmed`
@@ -813,6 +817,9 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
             with _phase_timer("formalize"):   # cycle/lead-time telemetry: the NL→Lean dispatch (the dominant cost)
                 return (formalize_fn((ctx.get("nl") or "") + (ctx.get("hint") or "")) or "").strip()
         except Exception as e:  # noqa: BLE001
+            if isinstance(e, BudgetExceeded):
+                from ztare.leanmill.solver.agentic_leaf import BUDGET_EXHAUSTED_DISPATCH
+                return BUDGET_EXHAUSTED_DISPATCH
             return ""
 
     def _verify(stmt):
@@ -825,7 +832,11 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
                                  prior_confirmed_fn=prior_confirmed_fn)
 
     def _refine_ctx(stmt, verdict, ctx):
-        if not (stmt or "").strip() or _execution_stop_verdict(stmt) is not None:
+        if (
+            not (stmt or "").strip()
+            or _execution_stop_verdict(stmt) is not None
+            or str(getattr(verdict, "reason", "")) == "BUDGET_EXHAUSTED"
+        ):
             return None                      # empty generation ⇒ nothing to repair from ⇒ stop
         cerr = ""
         if compile_diagnose_fn is not None and (getattr(verdict, "checks", {}) or {}).get("compiles") is False:
@@ -850,7 +861,13 @@ def reference_fingerprint(lean_statement: str) -> dict:
     return statement_fingerprint(lean_statement)   # SINGLE DOOR (anti-sibling) — targets the theorem
 
 
-def _cli_text(prompt: str, *, runtime: str, timeout_s: int) -> str:
+def _cli_text(
+    prompt: str,
+    *,
+    runtime: str,
+    timeout_s: int,
+    agent_tag: str = "faithfulness",
+) -> str:
     """One round-trip completion via the SUBSCRIPTION CLI (codex/claude) — the SAME dispatch the solver uses
     (`agentic_leaf.default_dispatch`), NOT the metered API. Strips the CLI banner/transcript noise to the answer
     text. Returns '' on any failure ⇒ the caller falls back to the API (never a dead-instrument hard fail)."""
@@ -858,7 +875,13 @@ def _cli_text(prompt: str, *, runtime: str, timeout_s: int) -> str:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
         import os as _os
         _repo = _os.environ.get("ZTARE_LEANMILL_LEAN_ROOT") or _os.getcwd()
-        raw = default_dispatch(prompt, runtime=runtime, repo=_repo, timeout=int(timeout_s)) or ""
+        raw = default_dispatch(
+            prompt,
+            runtime=runtime,
+            repo=_repo,
+            timeout=int(timeout_s),
+            agent_tag=agent_tag,
+        ) or ""
         # the CLI echoes the PROMPT + prints the answer (often twice) + a token count. Strip the banner
         # (_CLI_NOISE), the prompt echo (lines that appear verbatim in `prompt`), pure-number/token-count lines,
         # then de-dup consecutive repeats — leaving the actual answer (a one-sentence back-translation or a judge
@@ -875,8 +898,104 @@ def _cli_text(prompt: str, *, runtime: str, timeout_s: int) -> str:
                 continue
             out.append(s)
         return "\n".join(out).strip()
-    except Exception:  # noqa: BLE001 — CLI unavailable ⇒ '' ⇒ API fallback
+    except Exception as exc:  # noqa: BLE001 — CLI unavailable ⇒ '' ⇒ API fallback
+        if isinstance(exc, BudgetExceeded):
+            raise
         return ""
+
+
+def _roundtrip_cli_text(
+    prompt: str,
+    *,
+    runtime: str,
+    timeout_s: int,
+    label: str,
+) -> str:
+    """Dispatch a reviewer CLI under its own frozen model/effort settings."""
+
+    from contextlib import contextmanager
+
+    @contextmanager
+    def reviewer_config():
+        model = os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_AGENT_MODEL", "").strip()
+        effort = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_AGENT_REASONING_EFFORT", ""
+        ).strip()
+        bindings: dict[str, str] = {}
+        if runtime == "codex":
+            if model:
+                bindings["ZTARE_CODEX_AGENT_MODEL"] = model
+            if effort:
+                bindings["ZTARE_CODEX_AGENT_REASONING_EFFORT"] = effort
+        elif runtime == "claude":
+            if model:
+                bindings["ZTARE_CLAUDE_AGENT_MODEL"] = model
+            if effort:
+                bindings["ZTARE_CLAUDE_EFFORT"] = effort
+        prior = {key: os.environ.get(key) for key in bindings}
+        os.environ.update(bindings)
+        try:
+            yield
+        finally:
+            for key, value in prior.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                        os.environ[key] = value
+
+    @contextmanager
+    def reviewer_dispatch_identity():
+        from ztare.common.subscription_agent_runtime import (
+            subscription_dispatch_provenance_active,
+            subscription_dispatch_role_scope,
+        )
+
+        if not subscription_dispatch_provenance_active():
+            yield
+            return
+        agent_id = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_AGENT_ID", ""
+        ).strip()
+        model = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_AGENT_MODEL", ""
+        ).strip()
+        effort = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_AGENT_REASONING_EFFORT", ""
+        ).strip()
+        config_sha256 = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_CONFIG_SHA256", ""
+        ).strip()
+        run_tag = os.environ.get(
+            "ZTARE_LEANMILL_ROUNDTRIP_RUN_TAG", ""
+        ).strip()
+        with subscription_dispatch_role_scope(
+            role="faithfulness_reviewer",
+            agent_id=agent_id,
+            run_tag=run_tag,
+            runtime=runtime,
+            model=model,
+            reasoning_effort=effort,
+            config_sha256=config_sha256,
+            record_empty_attempt=True,
+        ):
+            yield
+
+    effective_timeout_s = int(timeout_s)
+    reviewer_timeout = os.environ.get(
+        "ZTARE_LEANMILL_ROUNDTRIP_TIMEOUT_S", ""
+    ).strip()
+    if reviewer_timeout:
+        effective_timeout_s = min(effective_timeout_s, int(reviewer_timeout))
+    if effective_timeout_s < 1:
+        raise ValueError("round-trip reviewer timeout must be positive")
+
+    with reviewer_config(), reviewer_dispatch_identity():
+        return _cli_text(
+            prompt,
+            runtime=runtime,
+            timeout_s=effective_timeout_s,
+            agent_tag=label,
+        )
 
 
 def _api_text(prompt: str, *, model: "Optional[str]" = None, label: str, timeout_s: int = 120) -> str:
@@ -888,7 +1007,12 @@ def _api_text(prompt: str, *, model: "Optional[str]" = None, label: str, timeout
     formalize. `model=None` ⇒ the configured round-trip model."""
     model = model or _roundtrip_model()
     if (model or "").startswith(("codex", "claude")):        # subscription CLI family ⇒ the solver's dispatch
-        _t = _cli_text(prompt, runtime=model, timeout_s=timeout_s)
+        _t = _roundtrip_cli_text(
+            prompt,
+            runtime=model,
+            timeout_s=timeout_s,
+            label=label,
+        )
         if _t.strip():
             return _t
         if os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_API_FALLBACK", "1") == "0":
@@ -906,7 +1030,9 @@ def _api_text(prompt: str, *, model: "Optional[str]" = None, label: str, timeout
         resp = LLMRuntime().call_text(prompt, model_id=model, fallback_model_ids=_roundtrip_fallback(),
                                       max_tokens=2000, request_label=label, timeout_seconds=timeout_s)
         return getattr(resp, "text", "") or ""
-    except Exception:
+    except Exception as exc:
+        if isinstance(exc, BudgetExceeded):
+            raise
         return ""
 
 
@@ -1000,6 +1126,7 @@ def _observe_formalize(nl: str, mode: str, raw: str, extracted: str, provider: s
         from datetime import datetime, timezone   # this whole writer throw on json.dumps and the bare except
         from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT   # swallow it ⇒ a created-but-EMPTY obs file
         rec = {"ts": datetime.now(timezone.utc).isoformat(), "mode": mode, "provider": provider,
+               "run_tag": _os.environ.get("ZTARE_SOLVER_RUN_TAG", ""),
                "nl": (nl or "")[:200],
                "raw_len": len(raw or ""), "extracted_empty": not (extracted or "").strip(),
                "raw_tail": (raw or "")[-1500:], "extracted": (extracted or "")[:400]}
@@ -1026,7 +1153,11 @@ def _observe_roundtrip(kind: str, **fields) -> None:
         import json                                   # LOCAL imports (module has no top-level json/datetime) —
         from datetime import datetime, timezone       # else this best-effort writer NameErrors + silently no-ops
         from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
-        rec = {"ts": datetime.now(timezone.utc).isoformat(), "kind": kind}
+        rec = {
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "kind": kind,
+            "run_tag": _os.environ.get("ZTARE_SOLVER_RUN_TAG", ""),
+        }
         for k, v in fields.items():
             rec[k] = (v[:1500] if isinstance(v, str) else v)
         p = _OUT / "faithfulness_roundtrip_observations.jsonl"
@@ -1166,7 +1297,13 @@ def formalize_interactive(nl: str, *, lean_root, timeout_s: int = 360, context: 
     prompt = (_FORMALIZE_INTERACTIVE_PROMPT.format(probe_ref=str(probe), leancheck_cmd=leancheck, search_cmd=search)
               + ctx_block + (nl or ""))
     try:
-        raw = default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or ""
+        raw = default_dispatch(
+            prompt,
+            runtime=runtime,
+            repo=repo,
+            timeout=timeout_s,
+            agent_tag="autoformalize_statement",
+        ) or ""
     except Exception:  # noqa: BLE001
         raw = ""
     # EXTRACT the statement via the CANONICAL parsers (#49 / #80), NOT ad-hoc regex. Order by RELIABILITY:
@@ -1275,7 +1412,13 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", time
         _observe_formalize(nl, mode, api_raw, extracted, provider=(runtime or "api"))
         return extracted
     try:
-        raw = default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or ""
+        raw = default_dispatch(
+            prompt,
+            runtime=runtime,
+            repo=repo,
+            timeout=timeout_s,
+            agent_tag="autoformalize_statement",
+        ) or ""
         from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH
         # PROVIDER B (fallback) — the subscription lane came back DEAD (all providers down ⇒ INADMISSIBLE) or
         # EMPTY (the close's 240s timeouts returned ''). Recover via the API-activated provider (env-selected,
@@ -1454,7 +1597,9 @@ def default_directional_judge(orig_nl: str, back_nl: str, *, model: "Optional[st
                                    votes=list(tel["live_votes"].values()), raw_verdicts=tel["raw"],
                                    faithful=faithful, model=f"panel:{tel['method']}")
                 return faithful
-        except Exception:  # noqa: BLE001 — panel error ⇒ fall back to the single-model judge, never crash
+        except Exception as exc:  # noqa: BLE001 — panel error ⇒ fall back to the single-model judge
+            if isinstance(exc, BudgetExceeded):
+                raise
             pass
     prompt = prompts.DIRECTIONAL_JUDGE_PROMPT.format(orig_nl=orig_nl, back_nl=back_nl)
     n = 3
@@ -1464,8 +1609,15 @@ def default_directional_judge(orig_nl: str, back_nl: str, *, model: "Optional[st
         n = 3
     raws: "list[str]" = []
     votes: "list[bool]" = []
-    for _ in range(n):
-        raw = (_api_text(prompt, model=model, label="autoformalize_judge") or "").strip()
+    for sample in range(n):
+        raw = (
+            _api_text(
+                prompt,
+                model=model,
+                label=f"autoformalize_judge_{sample}",
+            )
+            or ""
+        ).strip()
         raws.append(raw)
         # AUDIT #1 verdict-collapse fix (2026-07-05): count ONLY a LIVE (non-empty) sample. An empty raw means the
         # judge dispatch was UNAVAILABLE (quota/outage) — that is NOT a 'not-equivalent' NO vote, and counting it
@@ -2157,6 +2309,17 @@ def _solve_refutation(sv) -> str:
     the refutation text (witness/counterexample/reason), or "" if not refuted."""
     if not isinstance(sv, dict):
         return ""
+    control_verdict = sv.get("control_verdict")
+    if isinstance(control_verdict, dict):
+        try:
+            from ztare.leanmill.control_plane import Verdict, VerdictKind
+
+            typed = Verdict.from_json(control_verdict)
+            if typed.kind is VerdictKind.REFUTED:
+                source = typed.kernel_refutation_source()
+                return (typed.detail or source)[:600] if source else ""
+        except (TypeError, ValueError):
+            return ""
     r0 = (sv.get("results") or [{}])[0] if (sv.get("results")) else {}
     if (r0.get("outcome") or "") == "falsified":
         return (r0.get("falsifier") or r0.get("notes") or "kernel-checked ¬G (falsify move)")[:600]

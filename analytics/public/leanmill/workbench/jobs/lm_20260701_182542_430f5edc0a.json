@@ -1,7 +1,7 @@
 {
   "action": "autoformalize_notes",
   "command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "src.ztare.cli",
     "leanmill",
@@ -26,7 +26,7 @@
   "result_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a_result.json",
   "returncode": 0,
   "runner_command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "ztare.leanmill.workbench_actions",
     "run-job",

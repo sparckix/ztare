@@ -900,16 +900,27 @@ class ExplorationBudgetLedger:
         return elapsed
 
     def recover_interrupted_wall_clock(self) -> int:
-        """Freeze a legacy/interrupted run at its last durable budget event."""
+        """Freeze an interrupted active interval at its last durable event."""
 
         rows = self._rows()
-        if any(
-            row.get("event_type") in {"wall_clock_frozen", "wall_clock_resumed"}
-            for row in rows
-        ):
-            return self.elapsed_ms()
+        wall_event = next(
+            (
+                row
+                for row in reversed(rows)
+                if row.get("event_type")
+                in {"wall_clock_frozen", "wall_clock_resumed"}
+            ),
+            None,
+        )
+        if wall_event is not None and wall_event["event_type"] == "wall_clock_frozen":
+            return int(wall_event["elapsed_ms"])
         last_at_ms = int(rows[-1]["at_ms"]) if rows else self.started_at_ms
-        elapsed = max(0, last_at_ms - self.started_at_ms)
+        elapsed = (
+            int(wall_event["elapsed_before_resume_ms"])
+            + max(0, last_at_ms - int(wall_event["at_ms"]))
+            if wall_event is not None
+            else max(0, last_at_ms - self.started_at_ms)
+        )
         self._append(
             "wall_clock_frozen",
             budget_digest=self.budget.digest,
@@ -918,6 +929,21 @@ class ExplorationBudgetLedger:
             reason="interrupted_runner_recovery",
         )
         return elapsed
+
+    def recover_interrupted_reservations(self) -> int:
+        """Conservatively charge reservations orphaned by a prior runner."""
+
+        outstanding = tuple(self.state()["reservations"].values())
+        for row in outstanding:
+            self._append(
+                "reservation_committed",
+                budget_digest=self.budget.digest,
+                attempt_id=self.attempt_id,
+                reservation_id=str(row["reservation_id"]),
+                actual_resources=dict(row.get("resources") or {}),
+                recovery_reason="interrupted_runner_conservative_charge",
+            )
+        return len(outstanding)
 
     def resume_wall_clock(self) -> int:
         """Resume charging from the last frozen active-runtime total."""

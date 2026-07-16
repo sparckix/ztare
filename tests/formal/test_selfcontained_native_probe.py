@@ -53,6 +53,55 @@ def test_sorry_probe_is_byte_identical_path():
     assert ls.compile_stub(sp, "t").rstrip().endswith(":= by")
 
 
+def test_tactic_probe_owns_a_narrow_prelude_and_preserves_explicit_imports():
+    stub = (
+        "import Mathlib\n"
+        "import Mathlib.Data.Nat.Prime.Basic\n"
+        "theorem t : True := by"
+    )
+    out = ls.assemble_tactic_probe(stub, "trivial")
+    assert "import Mathlib\n" not in out
+    assert out.count("import Mathlib.Tactic") == 1
+    assert "import Mathlib.Data.Nat.Prime.Basic" in out
+    assert out.rstrip().endswith("trivial")
+
+
+def test_tactic_probe_balances_scopes_at_an_exact_multidecl_boundary():
+    src = (
+        "import Mathlib.Tactic\n"
+        "namespace Outer.Inner\n"
+        "section Work\n"
+        "theorem first : True := by sorry\n"
+        "theorem later : False := by sorry\n"
+        "end Work\n"
+        "end Outer.Inner\n"
+    )
+    stub = ls.compile_stub(src, "Outer.Inner.first")
+    out = ls.assemble_tactic_probe(stub, "trivial")
+    assert "theorem first" in out
+    assert "theorem later" not in out
+    assert out.rstrip().endswith("end Outer.Inner")
+    assert "\nend Work\nend Outer.Inner\n" in out
+
+
+def test_later_target_drops_only_unreferenced_open_siblings():
+    independent = (
+        "theorem old_gap : True := by sorry\n"
+        "theorem target (n : Nat) : n = n := by sorry\n"
+    )
+    assert "old_gap" not in ls.compile_stub(independent, "target")
+
+    referenced = (
+        "theorem needed_gap : True := by sorry\n"
+        "theorem target (_h : needed_gap = needed_gap) : True := by sorry\n"
+    )
+    # A referenced open declaration remains visible, so the no-sorry checker
+    # rejects rather than laundering it as context.
+    kept = ls.compile_stub(referenced, "target")
+    assert "theorem needed_gap" in kept
+    assert ls.has_sorry(kept)
+
+
 if __name__ == "__main__":
     for _n, _f in list(globals().items()):
         if _n.startswith("test_") and callable(_f):

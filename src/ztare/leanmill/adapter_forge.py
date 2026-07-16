@@ -4,13 +4,23 @@ from __future__ import annotations
 from dataclasses import dataclass
 import importlib.util
 import json
+import math
 from pathlib import Path
 import shutil
 from typing import TYPE_CHECKING, Any, Callable, Mapping
 
+from ztare.common.artifact_refs import canonical_sha256_ref
 from ztare.leanmill.theory_ir import content_hash
+from ztare.common.information_yield_pricing import (
+    identification_bits,
+    partition_by_prediction,
+)
 from ztare.leanmill import prompts
 from ztare.leanmill.common import read_json, write_json_atomic
+from ztare.leanmill.generative_representation import (
+    CANDIDATE_SCHEMA as GENERATIVE_REPRESENTATION_INTERFACE,
+    validate_materialized_generative_candidate,
+)
 
 if TYPE_CHECKING:
     from ztare.leanmill.exploration_budget import ExplorationBudgetLedger
@@ -128,13 +138,16 @@ def adapter_forge_output_schema() -> dict[str, Any]:
                     "capability_source": {"type": "string", "minLength": 1},
                     "interface": {
                         "type": "string",
-                        "const": "leanmill.object_coordinates.v1",
+                        "enum": [
+                            "leanmill.object_coordinates.v1",
+                            GENERATIVE_REPRESENTATION_INTERFACE,
+                        ],
                     },
                     "request_id": {"type": "string", "minLength": 1},
                     "observable_paths": {
                         "type": "array",
                         "items": {"type": "string", "minLength": 1},
-                        "minItems": 1,
+                        "minItems": 0,
                         "maxItems": 4,
                     },
                 },
@@ -190,14 +203,14 @@ def stage_adapter_forge_workspace(
     return workspace
 
 
-def host_coordinate_conformance(
+def host_capability_conformance(
     proposal: Mapping[str, Any],
     gap: AdapterGap,
     *,
     workspace: str | Path,
     output_path: str | Path,
 ) -> dict[str, Any]:
-    """Execute a staged coordinate capability; the host measures its semantic delta."""
+    """Validate one staged theory-language capability at its declared interface."""
 
     root = Path(workspace).resolve()
     manifest = proposal.get("manifest")
@@ -206,13 +219,61 @@ def host_coordinate_conformance(
     request = gap.primitive_semantics_contract.get("theory_language_request")
     if not isinstance(request, Mapping):
         raise ValueError("capability gap lacks its theory-language request")
-    if (
-        manifest.get("interface") != "leanmill.object_coordinates.v1"
-        or manifest.get("request_id") != request.get("request_id")
-    ):
+    binding = gap.primitive_semantics_contract.get("evidence_binding")
+    if isinstance(binding, Mapping):
+        binding_core = {
+            key: value for key, value in binding.items() if key != "receipt_sha256"
+        }
+        if (
+            binding.get("schema") not in {
+                "leanmill.workbench_evidence_binding.v1",
+                "leanmill.governed_trace_evidence_binding.v1",
+            }
+            or binding.get("receipt_sha256") != content_hash(binding_core)
+        ):
+            raise ValueError("capability evidence binding digest mismatch")
+        fixture_ids = {str(row) for row in binding.get("receipt_ids") or ()}
+        contrast_pairs = {
+            tuple(sorted(str(value) for value in row))
+            for row in binding.get("contrast_object_pairs") or ()
+            if isinstance(row, list) and len(row) == 2
+        }
+    else:
+        fixtures = gap.primitive_semantics_contract.get("evidence_fixtures")
+        if not isinstance(fixtures, list):
+            raise ValueError("capability gap lacks a resolved evidence binding")
+        fixture_ids: set[str] = set()
+        contrast_pairs: set[tuple[str, str]] = set()
+        for fixture in fixtures:
+            if not isinstance(fixture, Mapping):
+                raise ValueError("capability evidence fixture must be a receipt")
+            receipt_id = str(fixture.get("receipt_id") or "")
+            core = {key: value for key, value in fixture.items() if key != "receipt_id"}
+            if receipt_id != "sha256:" + content_hash(core):
+                raise ValueError("capability evidence fixture digest mismatch")
+            fixture_ids.add(receipt_id)
+            summary = fixture.get("output_summary")
+            contrast = (
+                summary.get("contrast_truth_values")
+                if isinstance(summary, Mapping)
+                and summary.get("separates_contrast") is False
+                else None
+            )
+            if isinstance(contrast, Mapping) and len(contrast) == 2:
+                contrast_pairs.add(tuple(sorted(str(row) for row in contrast)))
+    if fixture_ids != {str(row) for row in request.get("evidence_refs") or ()}:
+        raise ValueError("capability evidence fixtures do not bind the request")
+    interface = str(manifest.get("interface") or "")
+    if interface not in {
+        "leanmill.object_coordinates.v1",
+        GENERATIVE_REPRESENTATION_INTERFACE,
+    } or manifest.get("request_id") != request.get("request_id"):
         raise ValueError("capability manifest does not bind the frozen request")
     observable_paths = tuple(str(row) for row in manifest.get("observable_paths") or ())
-    if not 1 <= len(observable_paths) <= 4 or len(set(observable_paths)) != len(observable_paths):
+    if (
+        interface == "leanmill.object_coordinates.v1"
+        and not 1 <= len(observable_paths) <= 4
+    ) or len(observable_paths) > 4 or len(set(observable_paths)) != len(observable_paths):
         raise ValueError("capability manifest requires one to four observable paths")
 
     def staged_path(value: Any) -> Path:
@@ -228,6 +289,24 @@ def host_coordinate_conformance(
     source = candidate if candidate in sources else sources[0] if len(sources) == 1 else None
     if source is None or source not in sources or not tests:
         raise ValueError("capability source and checks must be staged and declared")
+    if interface == GENERATIVE_REPRESENTATION_INTERFACE:
+        from ztare.leanmill.finite_theory_context import load_formal_theory_context
+
+        context = load_formal_theory_context(root / "formal_context.json")
+        candidate = json.loads(source.read_text(encoding="utf-8"))
+        if not isinstance(candidate, Mapping):
+            raise ValueError("generative representation source must be one JSON object")
+        if (
+            candidate.get("request_id") != request.get("request_id")
+            or candidate.get("gap_id") != gap.gap_id
+        ):
+            raise ValueError("generative representation crossed its Forge request")
+        conformance = validate_materialized_generative_candidate(candidate, context)
+        write_json_atomic(
+            Path(output_path).with_name("theory_language_generative_candidate.json"),
+            dict(candidate),
+        )
+        return conformance
     spec = importlib.util.spec_from_file_location(
         "leanmill_quarantined_capability", source
     )
@@ -283,9 +362,11 @@ def host_coordinate_conformance(
         if (
             not isinstance(image_models, Mapping)
             or not image_models
-            or not set(image_models) <= set(context.object_ids)
+            or set(image_models) != set(context.object_ids)
         ):
-            raise ValueError("capability functor image has invalid source coverage")
+            raise ValueError(
+                "capability functor image must cover every frozen source object exactly"
+            )
         for row in image_models.values():
             validate_model(signature, FiniteModel.from_json(row))
         image_core = {
@@ -320,6 +401,23 @@ def host_coordinate_conformance(
         object_id: json.dumps(observable(first[object_id]), separators=(",", ":"))
         for object_id in context.object_ids
     }
+    coordinate_cells = partition_by_prediction(
+        context.object_ids, lambda object_id: canonical[object_id]
+    )
+    coordinate_class_count = len(coordinate_cells)
+    if coordinate_class_count == len(context.object_ids):
+        raise ValueError("capability observable is injective on the frozen objects")
+    observable_bits = identification_bits(
+        coordinate_cells, len(context.object_ids)
+    )
+    source_bits = math.log2(len(context.object_ids))
+    if any(
+        left not in canonical
+        or right not in canonical
+        or canonical[left] == canonical[right]
+        for left, right in contrast_pairs
+    ):
+        raise ValueError("capability fails a frozen contrast pair")
     classes: dict[tuple[bool, ...], list[str]] = {}
     for index, object_id in enumerate(context.object_ids):
         profile = tuple(bool(row.truth_bits & (1 << index)) for row in context.formula_profiles)
@@ -378,6 +476,16 @@ def host_coordinate_conformance(
         "object_count": len(context.object_ids),
         "split_indistinguishability_class_count": split_classes,
         "separated_indistinguishable_pair_count": split_pairs,
+        "required_contrast_pair_count": len(contrast_pairs),
+        "separated_required_contrast_pair_count": len(contrast_pairs),
+        "coordinate_class_count": coordinate_class_count,
+        "coordinate_class_ratio": round(
+            coordinate_class_count / len(context.object_ids), 8
+        ),
+        "observable_identity_bits": round(observable_bits, 8),
+        "source_identity_bits": round(source_bits, 8),
+        "retained_identity_fraction": round(observable_bits / source_bits, 8),
+        "compression_bits": round(source_bits - observable_bits, 8),
         "coordinate_receipt_sha256": payload["receipt_sha256"],
         "observable_paths": list(observable_paths),
         "functor_image_receipt_sha256": (
@@ -398,6 +506,10 @@ def host_coordinate_conformance(
     return {**core, "receipt_sha256": content_hash(core)}
 
 
+# Compatibility door for callers predating the generative data interface.
+host_coordinate_conformance = host_capability_conformance
+
+
 def run_adapter_forge(
     gap: AdapterGap,
     *,
@@ -406,6 +518,43 @@ def run_adapter_forge(
     independent_review_fn: Callable[[Mapping[str, Any]], Mapping[str, Any]],
     budget_ledger: "ExplorationBudgetLedger | None" = None,
 ) -> dict[str, Any]:
+    def bind_review_evidence(
+        review: Any, host_receipt: Mapping[str, Any]
+    ) -> dict[str, Any]:
+        if not isinstance(review, Mapping) or type(review.get("accepted")) is not bool:
+            raise ValueError("AdapterForge independent review is malformed")
+        cited = set()
+        for row in review.get("evidence_refs") or ():
+            try:
+                cited.add(canonical_sha256_ref(row))
+            except ValueError:
+                continue
+        root = canonical_sha256_ref(host_receipt.get("receipt_sha256"))
+        descendants = {
+            canonical_sha256_ref(value)
+            for key, value in host_receipt.items()
+            if str(key).endswith("receipt_sha256") and isinstance(value, str) and value
+        }
+        admissible = {root} if review["accepted"] is True else descendants
+        matched = sorted(cited.intersection(admissible))
+        if not root or not matched:
+            raise ValueError(
+                "AdapterForge review cites no admissible host receipt "
+                f"(accepted={review['accepted']}, cited={sorted(cited)}, "
+                f"admissible={sorted(admissible)})"
+            )
+        core = {
+            "schema": "leanmill.review_evidence_binding.v1",
+            "policy": (
+                "current_host_envelope"
+                if review["accepted"] is True
+                else "current_host_receipt_graph"
+            ),
+            "host_receipt": root,
+            "matched_refs": matched,
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
     def provider_calls(fn: Any) -> int | None:
         role = getattr(fn, "call_role", fn)
         value = getattr(role, "provider_call_count", None)
@@ -446,11 +595,60 @@ def run_adapter_forge(
         raise ValueError("AdapterForge proposal lacks code/test/manifest receipts")
     if proposal.get("registry_mutation"):
         raise ValueError("AdapterForge may not mutate the live registry")
-    conformance = host_conformance_fn(proposal, gap)
-    if not isinstance(conformance, Mapping) or conformance.get("ok") is not True:
-        raise ValueError("AdapterForge host conformance failed")
+    try:
+        conformance = host_conformance_fn(proposal, gap)
+    except ValueError as exc:
+        rejection_core = {
+            "schema": "leanmill.adapter_forge_host_rejection.v1",
+            "gap_id": gap.gap_id,
+            "proposal_digest": content_hash(dict(proposal)),
+            "ok": False,
+            "error_type": type(exc).__name__,
+            "reason": str(exc)[:512],
+            "authority": "deterministic_host_conformance",
+            "claim_boundary": (
+                "the quarantined proposal failed host conformance and grants no "
+                "capability, registry, exactness, or campaign authority"
+            ),
+        }
+        conformance = {
+            **rejection_core,
+            "receipt_sha256": content_hash(rejection_core),
+        }
+    if not isinstance(conformance, Mapping):
+        raise TypeError("AdapterForge host conformance returned no receipt")
+    if conformance.get("ok") is not True:
+        rejection = dict(conformance)
+        rejection_core = {
+            key: value for key, value in rejection.items() if key != "receipt_sha256"
+        }
+        if rejection.get("receipt_sha256") != content_hash(rejection_core):
+            raise ValueError("AdapterForge host rejection is not content-bound")
+        skipped_review = {
+            "schema": "leanmill.adapter_forge_review_skipped.v1",
+            "accepted": False,
+            "rationale": "host conformance rejected the proposal before review",
+            "host_rejection_receipt_sha256": str(rejection["receipt_sha256"]),
+            "authority": "host_lifecycle",
+        }
+        core = {
+            "schema": "leanmill.adapter_forge_quarantine_receipt.v1",
+            "gap_id": gap.gap_id,
+            "proposed_adapter_id": gap.proposed_adapter_id,
+            "proposal_digest": content_hash(dict(proposal)),
+            "host_conformance": rejection,
+            "independent_review": skipped_review,
+            "review_evidence_binding": None,
+            "status": "quarantined_capability_rejected",
+            "live_registry_mutated": False,
+            "exactness_authority_granted": False,
+            "next_step": "return_rejection_to_theory_search",
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
     review_reservation = None
-    if budget_ledger is not None:
+    if budget_ledger is not None and not getattr(
+        independent_review_fn, "recovered_review", False
+    ):
         review_reservation = budget_ledger.reserve(
             f"adapter_forge:{gap.gap_id}:review",
             "expansion",
@@ -473,8 +671,12 @@ def run_adapter_forge(
                 review_reservation,
                 {"provider_calls": used, "agent_turns": used},
             )
-    if not isinstance(review, Mapping) or review.get("accepted") is not True:
-        raise ValueError("AdapterForge independent semantic review failed")
+    review_binding = bind_review_evidence(review, conformance)
+    accepted = review["accepted"] is True
+    campaign_local_image = bool(
+        conformance.get("functor_image_receipt_sha256")
+        or conformance.get("candidate_receipt_sha256")
+    )
     core = {
         "schema": "leanmill.adapter_forge_quarantine_receipt.v1",
         "gap_id": gap.gap_id,
@@ -482,10 +684,21 @@ def run_adapter_forge(
         "proposal_digest": content_hash(dict(proposal)),
         "host_conformance": dict(conformance),
         "independent_review": dict(review),
-        "status": "quarantined_registry_proposal",
+        "review_evidence_binding": review_binding,
+        "status": (
+            "quarantined_registry_proposal"
+            if accepted
+            else "quarantined_capability_rejected"
+        ),
         "live_registry_mutated": False,
         "exactness_authority_granted": False,
-        "next_step": "code_review_and_registry_authority_then_new_blueprint_attempt",
+        "next_step": (
+            "compile_campaign_local_functor_image_successor"
+            if accepted and campaign_local_image
+            else "code_review_and_registry_authority_then_new_blueprint_attempt"
+            if accepted
+            else "return_rejection_to_theory_search"
+        ),
     }
     return {**core, "receipt_sha256": content_hash(core)}
 
@@ -519,6 +732,7 @@ def execute_adapter_forge_attempt(
     )
     gap = AdapterGap.from_json(gap_row)
     ledger.recover_interrupted_wall_clock()
+    ledger.recover_interrupted_reservations()
     ledger.resume_wall_clock()
     try:
         receipt = run_adapter_forge(
@@ -533,10 +747,24 @@ def execute_adapter_forge_attempt(
     write_json_atomic(directory / "adapter_forge_receipt.json", receipt)
     core = {
         "schema": "leanmill.adapter_forge_completion.v1",
-        "status": "quarantined_adapter_proposal_requires_authority_and_new_attempt",
+        "status": (
+            "reviewed_campaign_local_functor_image_available"
+            if receipt["status"] == "quarantined_registry_proposal"
+            and receipt.get("next_step")
+            == "compile_campaign_local_functor_image_successor"
+            else "quarantined_adapter_proposal_requires_authority_and_new_attempt"
+            if receipt["status"] == "quarantined_registry_proposal"
+            else "adapter_proposal_rejected_return_to_search"
+        ),
         "attempt_dir": str(directory),
         "gap_id": gap.gap_id,
         "quarantine_receipt": receipt,
+        "reason": str(
+            (receipt.get("independent_review") or {}).get("rationale")
+            or receipt.get("status")
+            or ""
+        ),
+        "evidence_refs": [str(receipt["receipt_sha256"])],
         "provider_calls": int(ledger.state()["usage"]["provider_calls"])
         + int(run_row.get("preparation_provider_calls", 0)),
     }
@@ -548,6 +776,7 @@ def execute_adapter_forge_attempt(
 __all__ = [
     "AdapterGap", "AdapterGapRequired", "adapter_forge_output_schema",
     "adapter_review_output_schema", "execute_adapter_forge_attempt",
-    "host_coordinate_conformance", "render_adapter_forge_prompt",
+    "host_capability_conformance", "host_coordinate_conformance",
+    "render_adapter_forge_prompt",
     "run_adapter_forge", "stage_adapter_forge_workspace",
 ]

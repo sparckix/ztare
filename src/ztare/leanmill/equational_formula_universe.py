@@ -309,7 +309,11 @@ def enumerate_universal_equations(
                         )
                         if len(canonical) > max_formulas:
                             raise ValueError(
-                                "generic equational formula universe exceeds max_formulas"
+                                "generic equational formula universe exceeds max_formulas="
+                                f"{max_formulas} at max_total_operation_order={max_order}; "
+                                "max_formulas is a fail-closed safety cap, not truncation: "
+                                "raise it to contain the complete band or lower "
+                                "max_total_operation_order"
                             )
 
     rows: list[EquationalFormula] = []

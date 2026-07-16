@@ -1,0 +1,59 @@
+{
+  "dispatch_budget": {
+    "by_runtime": {
+      "codex": 1,
+      "default": 39
+    },
+    "count": 40,
+    "near_cap_count": 0,
+    "observed_wall_total_s": 838.37,
+    "requested_timeout_total_s": 12840.0,
+    "utilization_mean": 0.059,
+    "utilization_p95": 0.37
+  },
+  "phases": {
+    "campaign": {
+      "count": 1,
+      "max_s": 0.0,
+      "mean_s": 0.0,
+      "p50_s": 0.0,
+      "p95_s": 0.0,
+      "total_s": 0.0
+    },
+    "consolidate": {
+      "count": 1,
+      "max_s": 0.0,
+      "mean_s": 0.0,
+      "p50_s": 0.0,
+      "p95_s": 0.0,
+      "total_s": 0.0
+    },
+    "formalize": {
+      "count": 28,
+      "max_s": 277.03,
+      "mean_s": 29.752,
+      "p50_s": 0.006,
+      "p95_s": 212.825,
+      "total_s": 833.05
+    },
+    "leaf.dispatch": {
+      "count": 40,
+      "max_s": 277.004,
+      "mean_s": 20.959,
+      "p50_s": 0.001,
+      "p95_s": 134.144,
+      "total_s": 838.37
+    }
+  },
+  "runs": {
+    "formalize-a207e0b355d54e80ab1e5f47d97628e9": {
+      "event_count": 70,
+      "lead_time_s": 934.5,
+      "span_end": "2026-07-11T22:49:09.929858+00:00",
+      "span_start": "2026-07-11T22:33:35.431994+00:00",
+      "total_wall_s": 1671.42
+    }
+  },
+  "total_events": 70,
+  "total_wall_s": 1671.42
+}

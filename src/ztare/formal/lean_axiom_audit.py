@@ -47,6 +47,16 @@ def parse_axioms(raw_output: str) -> list[str]:
     )
 
 
+def axiom_output_recognized(raw_output: str) -> bool:
+    """Whether Lean emitted one complete, understood axiom verdict."""
+
+    lowered = raw_output.lower()
+    return (
+        any(pattern in lowered for pattern in NO_AXIOM_PATTERNS)
+        or AXIOM_LIST_PATTERN.search(raw_output) is not None
+    )
+
+
 def _lean_source(module: str, declaration: str) -> str:
     return f"import {module}\n\n#print axioms {declaration}\n"
 
@@ -79,10 +89,17 @@ def audit_declaration(lake_dir: Path, module: str, declaration: str,
                 raw_output=f"axiom_audit_timeout: `lake env lean` exceeded {budget}s (fail-closed)",
             )
     raw_output = "\n".join(part for part in (proc.stdout, proc.stderr) if part)
+    recognized = axiom_output_recognized(raw_output)
     return AxiomAuditRow(
         declaration=declaration,
-        returncode=proc.returncode,
-        axioms=parse_axioms(raw_output),
+        # Unparsed output is not evidence for the empty axiom set.  Preserve a
+        # nonzero receipt so every existing `returncode == 0` consumer refuses
+        # it without having to reinterpret an ambiguous empty list.
+        returncode=(proc.returncode if recognized else 2),
+        axioms=(
+            parse_axioms(raw_output)
+            if recognized else ["__axiom_audit_unrecognized__"]
+        ),
         raw_output=raw_output.strip(),
     )
 
@@ -134,6 +151,9 @@ def self_test() -> None:
     ]
     assert parse_axioms("declaration does not depend on any axioms") == []
     assert parse_axioms("unexpected output") == []
+    assert axiom_output_recognized("declaration does not depend on any axioms")
+    assert axiom_output_recognized("'foo' depends on axioms: [propext]")
+    assert not axiom_output_recognized("unexpected output")
 
 
 def main() -> int:

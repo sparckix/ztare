@@ -77,6 +77,167 @@ def _prop_hypotheses(block: str) -> "list[tuple[str, str]]":
     return out
 
 
+def conclusion_discrimination_control(
+    lean_source: str,
+    target_name: str,
+    lean_root: Path,
+    *,
+    timeout_s: int = 90,
+) -> dict[str, Any]:
+    """Run one calibrated, source-aware matched conclusion control.
+
+    The positive and negative probes share the exact inherited declaration
+    context, target identity, binders, and proof body.  The only semantic edit
+    is ``C`` to ``¬ C`` in the target conclusion.  A control passes only when
+    the positive probe compiles and the negative probe does not.  Tool errors,
+    parser uncertainty, and a malformed source prefix are typed abstentions.
+
+    This is also the implementation used by the post-close margin battery;
+    ratification and advisory reporting therefore cannot drift into two
+    different notions of conclusion discrimination.
+    """
+
+    import hashlib
+
+    from ztare.gates.v33_preflight_risk_detector import _compile_probe
+    from ztare.leanmill import lean_source as _ls
+
+    source = lean_source or ""
+    identity = _ls.resolve_theorem_target(source, target_name)
+    if identity is None:
+        return {
+            "kind": "source_aware_conclusion_perturbation",
+            "status": "inconclusive",
+            "passed": None,
+            "discriminating": False,
+            "reason": "target identity is absent or ambiguous",
+        }
+    work_item = _ls.source_through_target(source, target_name)
+    work_identity = _ls.resolve_theorem_target(work_item, target_name)
+    if (
+        work_identity is None
+        or work_identity.qualified_name != identity.qualified_name
+    ):
+        return {
+            "kind": "source_aware_conclusion_perturbation",
+            "status": "inconclusive",
+            "passed": None,
+            "discriminating": False,
+            "reason": "target identity did not survive context fencing",
+        }
+    signature = _ls.extract_signature(work_item, target_name)
+    colon = _ls.top_level_colon(signature) if signature else -1
+    block = work_item[work_identity.decl_start:work_identity.decl_end]
+    _head, assigned = _ls.split_at_proof(block)
+    proof_assignment = assigned[2:] if assigned.startswith(":=") else ""
+    if colon < 0 or not proof_assignment.strip():
+        return {
+            "kind": "source_aware_conclusion_perturbation",
+            "status": "inconclusive",
+            "passed": None,
+            "discriminating": False,
+            "reason": "canonical parser could not split target signature/proof",
+        }
+    binders = signature[:colon].strip()
+    conclusion = signature[colon + 1:].strip()
+    if not conclusion:
+        return {
+            "kind": "source_aware_conclusion_perturbation",
+            "status": "inconclusive",
+            "passed": None,
+            "discriminating": False,
+            "reason": "target conclusion is empty",
+        }
+
+    declaration_prefix = work_item[
+        work_identity.decl_start:work_identity.name_end
+    ]
+    perturbed_signature = (
+        f" {binders} : ¬ ({conclusion})" if binders else f" : ¬ ({conclusion})"
+    )
+    negative_block = (
+        declaration_prefix
+        + perturbed_signature
+        + " :="
+        + proof_assignment
+    ).rstrip()
+    if block.endswith("\n"):
+        negative_block += "\n"
+    negative_work_item = (
+        work_item[:work_identity.decl_start]
+        + negative_block
+        + work_item[work_identity.decl_end:]
+    )
+    positive_probe = _ls.close_open_scopes(work_item)
+    negative_probe = _ls.close_open_scopes(negative_work_item)
+
+    # The builder itself is calibrated before its negative is interpreted.
+    # Without this positive leg, a namespace/parser/tool failure would be
+    # indistinguishable from conclusion sensitivity.
+    positive_compiled = _compile_probe(
+        positive_probe, lean_root, "MoS_discrimination_positive", timeout_s
+    )
+    evidence = {
+        "kind": "source_aware_conclusion_perturbation",
+        "target_identity": identity.qualified_name,
+        "target_signature_sha256": hashlib.sha256(
+            signature.encode("utf-8")
+        ).hexdigest(),
+        "positive_probe_sha256": hashlib.sha256(
+            positive_probe.encode("utf-8")
+        ).hexdigest(),
+        "negative_probe_sha256": hashlib.sha256(
+            negative_probe.encode("utf-8")
+        ).hexdigest(),
+        "positive_compiled": positive_compiled,
+        "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+    }
+    if positive_compiled is not True:
+        return {
+            **evidence,
+            "status": "inconclusive",
+            "passed": None,
+            "discriminating": False,
+            "reason": "positive control did not compile",
+        }
+
+    negative_compiled = _compile_probe(
+        negative_probe, lean_root, "MoS_discrimination", timeout_s
+    )
+    evidence["negative_compiled"] = negative_compiled
+    if negative_compiled is False:
+        return {
+            **evidence,
+            "status": "pass",
+            "passed": True,
+            "discriminating": True,
+            "differential": "confirmed",
+            "interpretation": (
+                "positive source compiles and the same proof does not close "
+                "the negated conclusion"
+            ),
+        }
+    if negative_compiled is True:
+        return {
+            **evidence,
+            "status": "fail",
+            "passed": False,
+            "discriminating": False,
+            "differential": "zero",
+            "interpretation": (
+                "the same proof closes both the target and its negated "
+                "conclusion in the same inherited context"
+            ),
+        }
+    return {
+        **evidence,
+        "status": "inconclusive",
+        "passed": None,
+        "discriminating": False,
+        "reason": "negative control timed out or the compiler was unavailable",
+    }
+
+
 def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path | None" = None,
                            *, timeout_s: int = 90, deep: bool = True,
                            original_source: "str | None" = None) -> dict:
@@ -149,35 +310,18 @@ def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path 
         _record(rep, "conclusion_discrimination", "inconclusive", {"note": "deep/lake not run"})
     else:
         try:
-            from ztare.leanmill import lean_source as _ls
-            from ztare.leanmill.solver.conjecture import _top_level_colon
-            from ztare.gates.v33_preflight_risk_detector import _compile_probe as _cp_disc
-            sig = _ls.extract_signature(lean_source, target_name) or ""
-            j = _top_level_colon(sig) if sig else -1
-            body = _ls.split_at_proof(block)[1][2:] if block else ""   # proof body, binder-safe ([2:] drops `:=`)
-            if j < 0 or not body.strip():
-                _record(rep, "conclusion_discrimination", "inconclusive",
-                        {"note": "could not split signature/body via canonical parsers"})
+            control = conclusion_discrimination_control(
+                lean_source,
+                target_name,
+                lean_root,
+                timeout_s=timeout_s,
+            )
+            if control.get("status") == "pass":
+                _record(rep, "conclusion_discrimination", "strengthen", control)
+            elif control.get("status") == "fail":
+                _record(rep, "conclusion_discrimination", "weaken", control)
             else:
-                binders, concl = sig[:j].strip(), sig[j + 1:].strip()
-                neg_block = (f"theorem {target_name}_negdisc {binders} : ¬ ({concl}) :={body}"
-                             if binders else f"theorem {target_name}_negdisc : ¬ ({concl}) :={body}")
-                neg_src = lean_source.replace(block, neg_block, 1)
-                r = _cp_disc(neg_src, lean_root, "MoS_discrimination", timeout_s)
-                if r is True:
-                    _record(rep, "conclusion_discrimination", "weaken",
-                            {"differential": "zero",
-                             "interpretation": "the SAME proof body closes the NEGATED conclusion in the "
-                                               "same context ⇒ hypotheses contradictory (vacuous context) "
-                                               "or conclusion-independent automation — laundering-shaped"})
-                elif r is False:
-                    _record(rep, "conclusion_discrimination", "strengthen",
-                            {"differential": "confirmed",
-                             "interpretation": "negated conclusion does NOT close — the proof is "
-                                               "conclusion-specific (the discriminating differential)"})
-                else:
-                    _record(rep, "conclusion_discrimination", "inconclusive",
-                            {"note": "perturbed compile timed out / errored — never block on inconclusive"})
+                _record(rep, "conclusion_discrimination", "inconclusive", control)
         except Exception as e:  # noqa: BLE001 — a measuring leg must never break the battery
             _record(rep, "conclusion_discrimination", "inconclusive", {"error": repr(e)[:140]})
 

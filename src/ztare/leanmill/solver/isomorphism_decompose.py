@@ -915,10 +915,12 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
             # (the v7 iso_lemma1 case: a bare ∀ that omitted the denominator-unit hypothesis). Record it so
             # route_and_solve can RE-PLAN with the agent's correction (it never closes, so the chain can't
             # ratify — re-decomposition is the only sound way to progress). Distinct from an honest open rung.
-            if r.get("statement_false_verified") and r.get("statement_false"):
+            from ztare.leanmill.solver.autoformalize import _solve_refutation
+            refutation = _solve_refutation(r)
+            if refutation:
                 out.append({"name": lname, "outcome": "statement_false_confirmed"})
                 false_rungs.append({"name": lname, "lemma": lemma.strip()[:600],
-                                    "claim": str(r.get("statement_false") or "")[:400],
+                                    "claim": refutation[:400],
                                     "feedback": str(r.get("statement_false_feedback") or "")[:600]})
                 continue
             out.append({"name": lname, "outcome": outcome})

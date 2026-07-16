@@ -1,0 +1,23 @@
+{
+  "attempt_id": "formalize-9a9e7cd6553845dbb4c0af56ca571b0d",
+  "budget_digest": "budget:1907433bb2bdda2fff56e4ed1985a897089cb3fde8bbe9f5fd0335a5ab6be597",
+  "campaign_id": "leanmill-campaign:482550e8b9f535ac6c68529850ad884e35813f46a60dfde63071fa4f59276194",
+  "returncode": 0,
+  "schema": "leanmill.formalization_campaign_completion.v1",
+  "usage": {
+    "adapter_forge_attempts": 0,
+    "agent_turns": 4,
+    "boundary_queries": 0,
+    "context_models": 0,
+    "input_tokens": 0,
+    "lean_attempts": 0,
+    "lean_millis": 0,
+    "metered_usd_micros": 0,
+    "output_tokens": 0,
+    "provider_calls": 4,
+    "smt_calls": 0,
+    "smt_millis": 0,
+    "truth_cells": 0,
+    "workbench_actions": 0
+  }
+}

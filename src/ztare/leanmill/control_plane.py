@@ -18,7 +18,7 @@ from enum import Enum
 import hashlib
 from pathlib import Path
 import re
-from typing import Any
+from typing import Any, Mapping
 
 
 def _norm_ws(text: str) -> str:
@@ -107,6 +107,17 @@ class StatementId:
             obj.pop("closed_prop_norm", None)
         return obj
 
+    @classmethod
+    def from_json(cls, value: Mapping[str, Any]) -> "StatementId":
+        return cls(
+            target_name=str(value.get("target_name") or ""),
+            target_source_hash=str(value.get("target_source_hash") or ""),
+            closed_prop_hash=str(value.get("closed_prop_hash") or ""),
+            nl_exact_hash=str(value.get("nl_exact_hash") or ""),
+            substrate_fingerprint=str(value.get("substrate_fingerprint") or ""),
+            closed_prop_norm=str(value.get("closed_prop_norm") or ""),
+        )
+
 
 class VerdictKind(str, Enum):
     CLOSED = "closed"
@@ -133,6 +144,30 @@ class Verdict:
             "detail": self.detail,
             "artifacts": dict(self.artifacts),
         }
+
+    @classmethod
+    def from_json(cls, value: Mapping[str, Any]) -> "Verdict":
+        statement_id = value.get("statement_id")
+        if not isinstance(statement_id, Mapping):
+            raise ValueError("verdict requires statement identity")
+        artifacts = value.get("artifacts")
+        if artifacts is not None and not isinstance(artifacts, Mapping):
+            raise ValueError("verdict artifacts must be an object")
+        return cls(
+            kind=VerdictKind(str(value.get("kind") or "")),
+            statement_id=StatementId.from_json(statement_id),
+            provenance=str(value.get("provenance") or ""),
+            detail=str(value.get("detail") or ""),
+            artifacts={str(key): str(item) for key, item in dict(artifacts or {}).items()},
+        )
+
+    def kernel_refutation_source(self) -> str:
+        """Return content-bound Lean bytes only for a typed refutation verdict."""
+        if self.kind is not VerdictKind.REFUTED:
+            return ""
+        source = str(self.artifacts.get("lean_source") or "")
+        digest = str(self.artifacts.get("lean_source_sha256") or "")
+        return source if source and digest == _sha256_text(source) else ""
 
 
 class CacheAuthority(str, Enum):

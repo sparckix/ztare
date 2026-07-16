@@ -6,7 +6,11 @@ from typing import Any, Mapping
 
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
 from ztare.leanmill.common import read_json, write_json_atomic
-from ztare.leanmill.exploration_budget import ExplorationBudget, ExplorationBudgetLedger
+from ztare.leanmill.exploration_budget import (
+    RESOURCE_KINDS,
+    ExplorationBudget,
+    ExplorationBudgetLedger,
+)
 from ztare.leanmill.frontier_blueprint import (
     FrontierTheoryBlueprint,
     frontier_objective_contract,
@@ -18,6 +22,9 @@ from ztare.leanmill.frontier_campaign_runner import (
     frontier_attempt_lease,
 )
 from ztare.leanmill.theory_ir import content_hash
+
+
+FRONTIER_CAMPAIGN_REPLAY_SCHEMA = "leanmill.frontier_campaign_replay.v5"
 from ztare.leanmill.theory_language import TheoryLanguageExpansionRequest
 from ztare.leanmill.theory_program import TheoryProgram
 
@@ -42,6 +49,29 @@ def _interpretations(directory: Path) -> list[dict[str, Any]]:
         row for row in (read_json(path, None) for path in paths)
         if isinstance(row, dict) and row
     ]
+
+
+def _solver_runs(directory: Path) -> list[dict[str, Any]]:
+    rows = []
+    for path in sorted((directory / "solver_runs").glob("*.json")):
+        row = read_json(path, None)
+        if not isinstance(row, Mapping):
+            continue
+        diagnostics = row.get("diagnostics") or {}
+        timing = row.get("phase_timing") or {}
+        rows.append({
+            "task_id": str(row.get("task_id") or ""),
+            "run_tag": str(row.get("run_tag") or ""),
+            "status": str(row.get("status") or ""),
+            "governed_status": str(row.get("governed_status") or ""),
+            "solver_attempts": int(diagnostics.get("total", 0) or 0),
+            "ratified_attempts": int(diagnostics.get("ratified", 0) or 0),
+            "diagnostic_headline": str(diagnostics.get("headline") or ""),
+            "phase_events": int(timing.get("total_events", 0) or 0),
+            "phase_wall_s": float(timing.get("total_wall_s", 0.0) or 0.0),
+            "error": str(row.get("error") or row.get("observability_error") or ""),
+        })
+    return rows
 
 
 def _context_epoch(run: Mapping[str, Any]) -> int:
@@ -113,6 +143,15 @@ def _budget_status(directory: Path) -> dict[str, Any]:
         budget,
         attempt_id=directory.name,
     )
+    objective_active = False
+    blueprint_row = read_json(directory / "blueprint.json", {})
+    if blueprint_row:
+        try:
+            objective_active = frontier_objective_contract(
+                FrontierTheoryBlueprint.from_json(blueprint_row)
+            ) is not None
+        except (KeyError, TypeError, ValueError):
+            pass
     state = ledger.state()
     reservations = sorted(
         state["reservations"].values(),
@@ -121,6 +160,14 @@ def _budget_status(directory: Path) -> dict[str, Any]:
             str(value.get("reservation_id") or ""),
         ),
     )
+    remaining = {
+        phase: {
+            resource: ledger.remaining_capacity(phase, resource)
+            for resource in sorted(RESOURCE_KINDS)
+            if ledger.remaining_capacity(phase, resource)
+        }
+        for phase in ("navigation", "expansion", "boundary", "interpretation")
+    }
     return {
         "budget_digest": budget.digest,
         "elapsed_ms": ledger.elapsed_ms(),
@@ -145,7 +192,11 @@ def _budget_status(directory: Path) -> dict[str, Any]:
             }
             for row in reservations
         ],
-        "soft_stop_reason": ledger.soft_stop_reason(),
+        "soft_stop_reason": ledger.soft_stop_reason(
+            allow_coverage_target=not objective_active
+        ),
+        "coverage_stop_active": not objective_active,
+        "remaining": {phase: values for phase, values in remaining.items() if values},
     }
 
 
@@ -157,20 +208,77 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
     interpretation_rows = _interpretations(directory)
     interpretation = interpretation_rows[-1] if interpretation_rows else {}
     forge = read_json(directory / "adapter_forge_completion.json", {})
+    forge_conformance = read_json(
+        directory / "adapter_forge_host_conformance.json", {}
+    )
+    sieve_paths = sorted(
+        directory.glob("compound_implication_sieve_completion.stratum-*.json")
+    )
+    sieve = read_json(sieve_paths[-1], {}) if sieve_paths else {}
     retirement = read_json(directory / "retirement.json", {})
+    replay = read_json(directory / "replay.json", {})
+    closure_gate = read_json(directory / "campaign_closure_gate.json", {})
     campaign_manifest = read_json(directory / "campaign_manifest.json", {})
     budget_state = _budget_status(directory)
     lease_state = attempt_lease_status(directory)
+    workbench_authorization = read_json(
+        directory / "campaign_workbench_successor_authorization_required.json",
+        {},
+    )
+    workbench_transitions = sorted(
+        directory.glob("campaign_workbench_successor.*.json")
+    )
+    workbench_transition = (
+        read_json(workbench_transitions[-1], {}) if workbench_transitions else {}
+    )
+    run_status = str(run.get("status") or "missing")
     status = (
-        "retired" if retirement
-        else str(boundary.get("status") or "boundary_complete") if boundary
-        else str(forge.get("status") or "adapter_forge_complete") if forge
+        "retired"
+        if retirement
         else "running"
         if budget_state.get("outstanding_reservation_count", 0)
         or lease_state.get("active")
-        else str(run.get("status") or "missing")
+        else str(boundary.get("status") or "boundary_complete")
+        if boundary
+        and run_status
+        in {
+            "frontier_candidates_frozen_awaiting_boundary_approval",
+            "frontier_no_candidate",
+        }
+        else str(forge.get("status") or "adapter_forge_complete")
+        if forge and run_status == "blocked_adapter_gap"
+        else "workbench_successor_authority_required"
+        if workbench_authorization
+        else run_status
     )
     navigation = run.get("navigation") or {}
+    finalist_summaries = [
+        _project(
+            row,
+            (
+                "node_id", "theory_program_id", "formula_ids",
+                "boundary_target_ids", "selection_receipt_id",
+            ),
+        )
+        for row in navigation.get("finalists") or ()
+        if isinstance(row, Mapping)
+    ]
+    objective_survivor_summaries = [
+        _project(
+            row,
+            (
+                "node_id", "theory_program_id", "formula_ids",
+                "boundary_target_ids", "selection_receipt_id",
+            ),
+        )
+        for row in navigation.get("objective_survivors") or ()
+        if isinstance(row, Mapping)
+    ]
+    wave_image = (
+        navigation.get("search_wave_image_receipt")
+        or navigation.get("search_wave_image_preview")
+        or {}
+    )
     run_summary = _project(
         run,
         (
@@ -178,6 +286,16 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
             "packet_digest", "context_summary",
         ),
         finalist_count=len(navigation.get("finalists") or ()),
+        finalists=finalist_summaries,
+        objective_survivor_count=len(objective_survivor_summaries),
+        objective_survivors=objective_survivor_summaries,
+        pending_leaf_decision=_project(
+            navigation.get("pending_leaf_decision") or {},
+            ("reason", "receipt_id", "receipt_sha256"),
+        ),
+        last_trace_decision=str(
+            ((navigation.get("trace") or [{}])[-1] or {}).get("decision") or ""
+        ),
         provider_calls=run.get("provider_calls", 0),
     )
     boundary_result = boundary.get("boundary_result") or {}
@@ -203,8 +321,30 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
         "attempt_dir": str(directory),
         "campaign_id": campaign_manifest.get("campaign_id"),
         "run": run_summary,
+        "search_wave_image": _project(
+            wave_image,
+            (
+                "growth_kind", "search_wave", "new_raw_count",
+                "new_image_count", "receipt_sha256",
+            ),
+        ),
         "boundary_completion": boundary_summary,
         "adapter_forge_completion": forge_summary,
+        "adapter_forge_conformance": _project(
+            forge_conformance,
+            (
+                "receipt_sha256", "coordinate_receipt_sha256",
+                "coordinate_class_count", "retained_identity_fraction",
+                "compression_bits",
+            ),
+        ),
+        "compound_implication_sieve": _project(
+            sieve,
+            (
+                "status", "sieve_receipt", "candidate_count",
+                "eliminated_count", "survivor_count", "queries_used",
+            ),
+        ),
         "post_freeze_interpretation": _project(
             interpretation,
             ("status", "model", "reasoning_effort", "receipt_sha256"),
@@ -213,9 +353,42 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
                 (interpretation.get("review") or {}).get("novelty_assessment")
             ),
         ),
+        "solver_runs": _solver_runs(directory),
+        "cold_replay": _project(
+            replay,
+            ("schema", "ok", "receipt_sha256", "provider_calls"),
+            budget_stop_ok=(replay.get("budget_stop_check") or {}).get("ok"),
+            retained_evidence_check_count=(
+                replay.get("budget_stop_check") or {}
+            ).get("retained_evidence_check_count"),
+        ),
+        "campaign_closure_gate": _project(
+            closure_gate,
+            (
+                "ready",
+                "missing_lineage_disposition_ids",
+                "unadjudicated_generalization_residual_ids",
+                "receipt_sha256",
+            ),
+        ),
         "retirement": retirement or None,
         "budget": dict(budget_state),
         "attempt_lease": lease_state,
+        "workbench_successor": _project(
+            workbench_transition or workbench_authorization,
+            (
+                "status",
+                "source_packet_digest",
+                "target_packet_digest",
+                "authority_ref",
+                "receipt_sha256",
+                "next_route",
+            ),
+            policy_id=(
+                (workbench_transition or workbench_authorization).get("policy")
+                or {}
+            ).get("policy_id"),
+        ),
     }
 
 
@@ -241,6 +414,20 @@ def inspect_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         "context_summary": run.get("context_summary"),
         "navigation": run.get("navigation"),
         "boundary": read_json(directory / "boundary_result.json", None),
+        "theory_task_discharge": read_json(
+            directory / "theory_task_discharge.json", None
+        ),
+        "theory_task_discharge_consumption": read_json(
+            directory / "theory_task_discharge_consumption.json", None
+        ),
+        "adapter_forge_conformance": _project(
+            read_json(directory / "adapter_forge_host_conformance.json", {}),
+            (
+                "receipt_sha256", "coordinate_receipt_sha256",
+                "coordinate_class_count", "retained_identity_fraction",
+                "compression_bits",
+            ),
+        ),
         "boundary_governance_recheck": read_json(
             directory / "boundary_governance_recheck.json", None
         ),
@@ -265,12 +452,16 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
     if isinstance(existing, dict) and existing:
         if (
             _receipt_is_content_bound(existing)
+            and existing.get("schema") == FRONTIER_CAMPAIGN_REPLAY_SCHEMA
             and existing.get("run_digest") == run.get("run_digest")
             and existing.get("context_hash") == run.get("context_hash")
             and int(existing.get("context_epoch", -1)) == context_epoch
             and (
                 run.get("status") != "frontier_objective_unmet"
                 or isinstance(existing.get("objective_unmet_check"), Mapping)
+                or isinstance(
+                    existing.get("language_compilation_feedback_check"), Mapping
+                )
             )
         ):
             return existing
@@ -432,12 +623,18 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         stop = run.get("budget_stop_receipt")
         if not isinstance(stop, Mapping):
             stop = read_json(directory / "budget_stop_receipt.json", None)
+        objective = frontier_objective_contract(blueprint)
+        retained_evidence_checks = [*rows, *rejection_checks]
+        retained_evidence_ok = bool(
+            all(row.get("ok") is True for row in retained_evidence_checks)
+            if isinstance(objective, Mapping)
+            else not retained_evidence_checks
+        )
         stop_ok = bool(
             _receipt_is_content_bound(stop)
             and stop.get("context_hash") == context.context_hash
             and stop.get("budget_digest") == run.get("budget_digest")
-            and not rows
-            and not rejection_checks
+            and retained_evidence_ok
         )
         budget_stop_check = {
             "ok": stop_ok,
@@ -445,10 +642,27 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
             "receipt_sha256": (
                 stop.get("receipt_sha256") if isinstance(stop, Mapping) else None
             ),
+            "outer_objective_active": isinstance(objective, Mapping),
+            "retained_evidence_check_count": len(retained_evidence_checks),
         }
         ok = ok and stop_ok
+    language_feedback_row = navigation.get("language_compilation_feedback")
+    if not isinstance(language_feedback_row, Mapping):
+        language_feedback_row = next(
+            (
+                row
+                for row in reversed(navigation.get("objective_review_history") or ())
+                if isinstance(row, Mapping)
+                and row.get("schema")
+                == "leanmill.theory_language_compilation_feedback.v1"
+            ),
+            None,
+        )
     objective_unmet_check = None
-    if run.get("status") == "frontier_objective_unmet":
+    if (
+        run.get("status") == "frontier_objective_unmet"
+        and not isinstance(language_feedback_row, Mapping)
+    ):
         objective = frontier_objective_contract(blueprint)
         history = navigation.get("objective_review_history") or ()
         history_ok = bool(
@@ -459,8 +673,26 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
                 and _receipt_is_content_bound(row)
                 and row.get("route") == "continue_search"
                 and row.get("context_hash") == context.context_hash
-                and int(row.get("context_epoch", -1)) == context_epoch
-                and row.get("objective_contract") == objective
+                and (
+                    int(row.get("context_epoch", -1)) == context_epoch
+                    or (
+                        row.get("schema")
+                        == "leanmill.boundary_search_feedback.v1"
+                        and row.get("context_epoch") is None
+                        and bool(row.get("source_run_digest"))
+                        and bool(row.get("boundary_result_sha256"))
+                    )
+                )
+                and (
+                    row.get("objective_contract") == objective
+                    or (
+                        row.get("schema")
+                        == "leanmill.boundary_search_feedback.v1"
+                        and row.get("objective_contract") is None
+                        and bool(row.get("source_run_digest"))
+                        and bool(row.get("boundary_result_sha256"))
+                    )
+                )
                 for row in history
             )
         )
@@ -485,6 +717,36 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
             ),
         }
         ok = ok and objective_ok
+    language_feedback_check = None
+    if isinstance(language_feedback_row, Mapping):
+        artifact = read_json(
+            directory / "theory_language_compilation_feedback.json", None
+        )
+        request_ids: set[str] = set()
+        for path in directory.glob("theory_language_expansion_request.epoch-*.json"):
+            request_row = read_json(path, None)
+            if not isinstance(request_row, Mapping):
+                continue
+            request_ids.add(
+                TheoryLanguageExpansionRequest.from_json(request_row).request_id
+            )
+        feedback_ok = bool(
+            artifact == dict(language_feedback_row)
+            and _receipt_is_content_bound(language_feedback_row)
+            and language_feedback_row.get("context_hash") == context.context_hash
+            and language_feedback_row.get("request_id") in request_ids
+            and language_feedback_row.get("outcome") in {"rejected", "unavailable"}
+            and str(language_feedback_row.get("reason") or "").strip()
+            and language_feedback_row.get("route") == "continue_search"
+            and language_feedback_row.get("repeat_requires_new_evidence") is True
+        )
+        language_feedback_check = {
+            "ok": feedback_ok,
+            "request_id": language_feedback_row.get("request_id"),
+            "outcome": language_feedback_row.get("outcome"),
+            "receipt_sha256": language_feedback_row.get("receipt_sha256"),
+        }
+        ok = ok and feedback_ok
     language_request_check = None
     language_request_row = navigation.get("language_expansion_request")
     if isinstance(language_request_row, Mapping):
@@ -545,11 +807,12 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         or rejection_checks
         or budget_stop_check
         or objective_unmet_check
+        or language_feedback_check
         or language_request_check
         or isolated_language_request_check
     )
     core = {
-        "schema": "leanmill.frontier_campaign_replay.v3",
+        "schema": FRONTIER_CAMPAIGN_REPLAY_SCHEMA,
         "ok": ok and has_replayable_outcome,
         "run_digest": run.get("run_digest"),
         "context_hash": context.context_hash,
@@ -558,6 +821,7 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         "rejection_checks": rejection_checks,
         "budget_stop_check": budget_stop_check,
         "objective_unmet_check": objective_unmet_check,
+        "language_compilation_feedback_check": language_feedback_check,
         "language_expansion_request_check": language_request_check,
         "isolated_language_requests_check": isolated_language_request_check,
         "provider_calls": 0,

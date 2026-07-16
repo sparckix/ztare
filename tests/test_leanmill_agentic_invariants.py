@@ -47,7 +47,7 @@ def test_refutation_reuse_requires_current_statement():
         "  exact False.elim (by contradiction)\n"
     )
     matching_probe = (
-        "theorem capstone_counterexample : "
+        "theorem witness : "
         "¬ (∀ (fullList : Nat → List Nat) (hComplete : ∀ m w, w ∈ fullList m), ∀ m w, m = m) := by\n"
         "  intro h\n"
         "  exact False.elim (by contradiction)\n"
@@ -348,7 +348,8 @@ def test_falsify_gate_emits_typed_verdict_telemetry():
     gate_src = inspect.getsource(adjudicate_statement_false_verdict)
     verify_src = inspect.getsource(verify_statement_false_claim)
     assert "emit_verdict" in gate_src
-    assert "VerdictKind.REFUTED if verdict[0] else VerdictKind.UNVERIFIED" in gate_src
+    assert "_remember_refutation" in gate_src
+    assert "VerdictKind.UNVERIFIED" in gate_src
     assert "verify_statement_false_claim" in verify_src
     assert "adjudicate_statement_false_verdict" in verify_src
 
@@ -371,6 +372,10 @@ def test_statement_false_adjudicator_records_memo_and_typed_verdict(tmp_path, mo
     assert detail == "unit-confirmed"
     assert kept == block
     assert conjecture.confirmed_refutation("target_false_route", "", goal) == block
+    typed = conjecture.confirmed_refutation_verdict("target_false_route", "", goal)
+    assert typed is not None
+    assert typed["kind"] == "refuted"
+    assert typed["artifacts"]["lean_source"] == block
     rows = iter_verdict_rows(out, run_tag="run-falsify", target_name="target_false_route")
     assert len(rows) == 1
     assert rows[0]["verdict"]["kind"] == "refuted"
@@ -1404,6 +1409,27 @@ def test_solve_adhoc_exposes_preverified_proof_governance_path():
     from ztare.leanmill.solver.solver_core import solve_adhoc
     sig = inspect.signature(solve_adhoc)
     assert "preverified_proof" in sig.parameters, "solve_adhoc must expose a public preverified_proof param"
+    assert "preverified_only" in sig.parameters, "ratification-only must be able to forbid derivation fallback"
+
+    # The ratification lifecycle must bypass both the forecast router and DAG move search even when the CLI's
+    # ordinary default is dag_search.  These are executable source-shape guards around the two dispatch seams;
+    # the end-to-end kernel ratification test exercises the resulting governance route.
+    src = inspect.getsource(solve_adhoc)
+    assert '_execution_mode = "cascade" if preverified_only else mode' in src
+    solve_src = inspect.getsource(__import__(
+        "ztare.leanmill.solver.solver_core", fromlist=["solve"]
+    ).solve)
+    assert '_ratification_only_batch = bool(rows) and all(' in solve_src
+    assert 'if not _ratification_only_batch:' in solve_src
+    assert 'if r.get("_preverified_only")' in solve_src
+    assert '_pv_raw' in solve_src
+    assert 'if preverified_only:' in src
+    assert 'res["ratification_only"] = True' in src
+    governed_src = inspect.getsource(__import__(
+        "ztare.leanmill.solver.solver_core", fromlist=["solve_adhoc_governed"]
+    ).solve_adhoc_governed)
+    assert 'if kw.get("preverified_only"):' in governed_src
+    assert 'max_gov_retries = 0' in governed_src
 
 
 def test_robust_probe_name_single_sourced_no_drift():

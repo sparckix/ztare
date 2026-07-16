@@ -2,7 +2,7 @@
 
 ## Status
 
-Active implementation spec · updated 2026-07-11.
+Active implementation spec · updated 2026-07-12.
 
 The portable semantic and verification kernel is implemented. The initial
 compact-pack profile, formula epochs, boundary attribution, interpretation,
@@ -21,6 +21,27 @@ boundary executor. The remaining scientific bar is a
 consequential campaign that compounds at least two authored coordinates and
 lifts a discriminating prediction beyond the seed chart. M6 remains a later
 Workbench projection.
+
+The adaptive representation/search join is now active. Late synthesis receives
+a receipt-bound portfolio built from semantic wave-image growth and the shared
+residual-information coordinates. It chooses a typed continuation mode rather
+than receiving a host-selected winner; that mode enters the next isolated wave,
+whose first consequence is receipted as followed, diversified, leaf-revised,
+or unconsumed. This closes the prior descriptive-only edge from information/QD
+measurement to search behavior without turning finite geometry into the
+campaign controller.
+
+The first adaptive compositional campaign exercised that join on the exact
+23-model size-four context. Two admitted leaf-authored coordinates increased
+the panel from 210 to 212 formulas and from 10 to 12 semantic profiles. The
+strongest tested composition was premise-sensitive but had zero residual yield
+beyond the declared cheap baseline. Late synthesis therefore selected another
+current-context wave; its contrast diagnostic executed, and the dependent
+GPT-5.5 turn timed out before returning a typed formula. The campaign retired
+unresolved with no finalist and no novelty claim. This exposed one lifecycle
+gap: a leaf transport failure could unwind before materializing the trace.
+Navigator calls now close that outcome with a typed failure receipt, preserve
+all prior action receipts, and feed them into the adaptive consequence record.
 
 The size-five prototype preflight passed provider-free on 2026-07-11 with
 `88` canonical models and `11` semantic profiles. The executable compositional
@@ -164,6 +185,13 @@ The leaf chooses representations, hypotheses, theory size, experiments,
 lineage strategy, and when to request a language change. The host owns typing,
 deterministic lowering, context/lineage identity, exact or declared sampled
 evaluation, counterexample replay, budgets, and formal verification.
+
+Interaction is a durable role-local loop rather than a sequence of unrelated
+completions. A lineage keeps one subscription session across search waves;
+lineages and attempts never share sessions. Each host action returns a typed
+receipt into that session. A budget edge can stop the next turn but cannot
+erase the preceding completed decision, and recovery binds any synthesis only
+to the exact frozen input digest it reviewed.
 
 `compact_axiom_pack` remains an explicit selection profile for questions about
 small jointly necessary bases. `theory_program` is the default for new frontier
@@ -492,6 +520,28 @@ This is a first-class branch of `explore_axiom_space`, surfaced as
 `blocked_adapter_gap` until the adapter is independently admitted. Human
 implementation remains an override, not the default architecture.
 
+Theory-language continuation has one compiler-first state machine. Navigation
+only freezes the typed request against its exact source context and epoch. The
+continuation tries registered adapter capabilities before AdapterForge and
+consumes a closed outcome algebra: `compiled` admits a successor epoch,
+`rejected` returns content-bound feedback to search, and `unavailable` creates
+the typed gap. A reviewed campaign-local finite-model functor must map every
+source object exactly and cannot mutate the global registry. Its image context
+is exact relative to the frozen source only; fixed-size target-model generation
+is withheld until a separately reviewed generative/roundtrip semantics exists.
+That semantics is a content-addressed materialization of the shared
+`AbstractionFunctor` relation plus generated model pairs, not a substrate family
+in the host. AdapterForge stages the data; LeanMill imports no generated Python.
+Admission binds the frozen request/context, checks exact source coverage,
+raw→alpha→gamma roundtrip up to declared sortwise isomorphism, every raw base
+law, canonical generated abstract models, and an independent review of the
+exact host receipt. A witnessed countermodel may enter larger-model search, but
+batch exhaustion returns `unknown`; generator completeness remains a separate
+mathematical proof obligation. A fitted alpha image or unreviewed materialized
+relation returns a typed unavailable outcome.
+Direct and forged compilation, CLI continuous mode, Workbench callers, and the
+named VPS launcher all use this state machine.
+
 ### 8.2 Executable abstraction inlet
 
 A user may bring a Rust enumerator, functional constraint program, SMT
@@ -656,6 +706,15 @@ transport remains `advisory_pending_destination_replay` until its typed
 morphism and destination discriminator pass. If no familiar concept is found,
 the status is `mechanically_characterized_unmapped`; the system does not invent
 a name or interpretation.
+
+For an outer objective that remains open, a grounded mechanism continues into
+search. The host projects only its domain-stripped constraint, premise roles,
+verifier references, and claim boundary into a fresh search wave; source matches
+and literature labels stay outside the navigator view. The navigator then chooses
+an existing-coordinate experiment, authors a typed formula, requests a reviewed
+theory-language successor, or stops. The projection grants none of those moves
+admission authority. A producer/first-fire route receipt binds the interpretation
+SHA and source context before the next wave may consume it.
 
 ## 11. Navigator workbench
 
@@ -938,6 +997,15 @@ The soft rule also freezes `max_finalists`, a low-yield patience count, and any
 coverage/diversity target. It may stop early on target attainment or repeated
 low-yield actions. It cannot authorize an action beyond a hard ceiling.
 
+For agentic theory programs, marginal yield is classified over a shared
+pointwise image rather than lexical novelty. Per search wave, the host records
+the new conjecture identities and their structural residual/ablation outcome
+carriers. New conjectures with no new outcome carrier are `alpha_blind`; no new
+conjectures are `exhausted`; a new outcome carrier is `expanding`. The receipt
+is visible to late synthesis but grants no routing authority. In particular,
+the host cannot manufacture a richer grammar: an `alpha_blind` successor must
+be authored by a leaf as a theory-language/functor request or end unresolved.
+
 Every terminal path emits a `BudgetStopReceipt` distinguishing at least:
 
 - `target_reached`;
@@ -1040,6 +1108,12 @@ Attempts are immutable and resumable:
 - stdout, stderr, and structured output bytes are fsynced before parsing;
 - a stochastic redraw requires a new attempt directory;
 - batch preflight precedes paid per-row review.
+
+An explicit budget extension is not a stochastic redraw. It appends authority,
+reason, and additional caps to the same ledger, preserves cumulative usage and
+search-wave images, and resumes the pending edge in the same attempt. Exhaustion
+at run N therefore remains evidence at run N+1; additional budget cannot reset
+the stopping state or mint a rejection.
 
 Campaign accounting distinguishes transport attempts from provider inference.
 Known local CLI rejections before inference consume no provider-call or agent-
@@ -1446,6 +1520,13 @@ Implemented kernel surfaces:
   Theory IR and cannot add theory strength;
 - theory-language changes are proposal-only requests for a new reviewed
   blueprint or adapter capability;
+- one compiler-first continuation consumes every language request as compiled,
+  rejected, or unavailable; total campaign-local functor images may create a
+  successor epoch without granting global registry or larger-model authority;
+- reviewed, content-addressed alpha/gamma materializations may add fixed
+  abstract search batches only after source roundtrip, raw-law replay,
+  canonicality, and independent-review receipts; alpha-only images cannot claim
+  extrapolation, and batch exhaustion cannot claim a finite-size theorem;
 - a `TheoryProgram` binds campaign, lineage, context epoch, hypotheses,
   predictions, and the host selection receipt;
 - host-isolated lineages receive the same frozen context without sibling traces,
@@ -1475,13 +1556,32 @@ profiles and residual evidence into synthesis, scopes coverage stops to
 navigation, and returns refuted/vacuous programs to counterexample-guided
 search. Prediction receipts also include leave-one-premise-out witnesses.
 
-The next frozen campaign is
+The compound-dependency workbench now projects exact minimal presentations and
+joint-only consequences from the incidence chart; the 410-formula control has
+1,687 such dependency rows. A subscription probe used this projection and
+surfaced the next identity boundary: `forall …, p and q` is a product of two
+prediction coordinates. The host now receipts that normal form, identifies
+consecutive same-kind quantifier groups through an additive logical-coordinate
+hash, and lowers an executable product into its existing atom IDs before any
+boundary spend. Historical formula IDs remain unchanged. In the probe, both
+atoms passed exact seed support and leave-one-premise-out checks, then failed on
+host-replayed size-four countermodels; the two implication no-goods persist for
+successor attempts. Outcome: useful representation/search feedback, no
+frontier theorem.
+
+The first frozen compound campaign is
 `research_areas/pre_registrations/axiompack_compound_implication_frontier_20260712/campaign.md`.
 It targets the Equational Theories Project's deferred compound-implication
 frontier with the existing magma adapter and exact context. Its discriminator
 is an irreducible two-to-four-premise prediction supported in the seed chart,
 refuted after every premise ablation, absent from the single-premise baseline,
 and tested on larger carriers.
+
+The normalized successor is
+`campaign_observation_algebra_successor.md` in the same directory. It retains
+the frozen scientific stop instruction, uses GPT-5.5 medium through the shared
+subscription runtime, and consumes the witnessed no-good ledger rather than
+repeating the two killed implications.
 
 ### M6 — Workbench product projection
 
@@ -1727,6 +1827,19 @@ Build completion requires:
     compared only after freeze; the comparison has no union-theory authority.
 16. deterministic navigation cannot silently substitute compact-pack selection
     for a theory-program campaign.
+17. blueprint compilation and independent review preserve an invention or
+    evolving-language direction in the eigenquestion; the initial grammar may
+    orient search but cannot become the campaign identity by compilation drift.
+18. leaf-visible trace projection obeys its policy byte ceiling even for one
+    deeply nested receipt; complete receipts remain durable, and boundary/sieve
+    feedback survives budget stops and resume waves.
+19. mixed boundary outcomes preserve every prediction status, including live
+    siblings of a refuted target, and subscription dispatch reads the same
+    receipted extended wall-clock cap as ledger admission.
+20. a language request reaches one compiler-first continuation door; direct and
+    AdapterForge-assisted compilation admit the same successor shape, rejection
+    returns replayable search feedback, unavailability alone opens a gap, and a
+    functor-image successor cannot claim held-out fixed-size semantics.
 
 Scientific claims remain separate. The first campaign may yield a positive,
 negative, or partial mathematical result; apparatus completion does not imply

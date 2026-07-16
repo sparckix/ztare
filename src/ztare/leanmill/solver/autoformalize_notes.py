@@ -40,8 +40,9 @@ from __future__ import annotations
 import json
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Mapping, Optional
 
 REPO = Path(__file__).resolve().parents[4]
 LEAN_ROOT_DEFAULT = (REPO / "ztare_proofs").resolve()
@@ -420,6 +421,78 @@ def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | N
     return AttackRecord.from_firewall_result(r, nl=nl).model_dump()
 
 
+@dataclass(frozen=True)
+class FormalSourceWorkItem:
+    """An already-posed Lean target; proof search must preserve these exact source bytes."""
+
+    target_name: str
+    source_text: str
+    target_block: str
+
+
+def _formal_work_item_key(statement: str) -> str:
+    return " ".join((statement or "").split())
+
+
+def _attack_formal_source(
+    item: FormalSourceWorkItem,
+    *,
+    lean_root: Path,
+    timeout_s: int,
+    notes: "str | None" = None,
+    solve_fn: "Optional[Callable[..., dict]]" = None,
+) -> dict:
+    """Route a typed Lean target directly through the governed proof entry."""
+
+    from ztare.leanmill.contracts.kernel import MoveResult, primary_result
+    if solve_fn is None:
+        from ztare.leanmill.solver.solver_core import solve_adhoc
+        solve_fn = solve_adhoc
+    try:
+        solved = solve_fn(
+            item.target_name,
+            item.source_text,
+            "",
+            substrate=lean_root,
+            mode="dag_search",
+            timeout_s=timeout_s,
+            notes=notes,
+        )
+    except Exception as exc:
+        from ztare.leanmill.exploration_budget import BudgetExceeded
+        if not isinstance(exc, BudgetExceeded):
+            raise
+        return {
+            "nl": item.target_block,
+            "lean_statement": item.target_block,
+            "target_theorem_name": item.target_name,
+            "faithful": True,
+            "outcome": "budget_exhausted",
+            "solved": False,
+            "faithfulness_reason": f"BUDGET_EXHAUSTED: {exc}",
+            "faithfulness_checks": {"formal_source_identity": True},
+            "budget_killed": True,
+        }
+    primary = primary_result(solved)
+    outcome = str(primary.get("outcome") or "open")
+    from ztare.leanmill.solver.autoformalize import _planner_subdag
+    return {
+        "nl": item.target_block,
+        "lean_statement": item.target_block,
+        "target_theorem_name": item.target_name,
+        "faithful": True,
+        "outcome": f"admitted_and_{outcome}",
+        "solved": MoveResult.from_dict(primary).is_closed,
+        "faithfulness_reason": "typed formal source; natural-language admission is not applicable",
+        "faithfulness_checks": {"formal_source_identity": True},
+        "decomposition": _planner_subdag(solved),
+        "failure_class": primary.get("failure_class"),
+        "budget_killed": bool(primary.get("budget_killed", False)),
+        "governance": solved.get("governance"),
+        "closure_certificate": solved.get("closure_certificate"),
+    }
+
+
 def _is_execution_stop(record: object) -> bool:
     """Identify a host/provider stop, which is neither a math negative nor an empty answer."""
     if not isinstance(record, dict):
@@ -633,6 +706,7 @@ def _auto_promote_blockers(res: dict, theory_rel: "Optional[str]") -> "list[str]
 def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = None,
                              lemma_timeout_s: "Optional[int]" = None, target_timeout_s: "Optional[int]" = None,
                              attack_fn: Optional[Callable[..., dict]] = None,
+                             formal_work_items: "Optional[Mapping[str, FormalSourceWorkItem]]" = None,
                              notes_path: Optional[Path] = None,
                              on_progress: Optional[Callable[[str], None]] = None) -> dict:
     """Blueprint-decomposition loop: parse notes → prove each lemma through the firewall+kernel → accumulate
@@ -644,6 +718,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     lean_root = Path(lean_root) if lean_root is not None else LEAN_ROOT_DEFAULT
     _attack_injected = attack_fn is not None      # captured BEFORE the default: an injected attack_fn marks a
     attack_fn = attack_fn or _default_attack      # hermetic/self-test caller, which the door guard must not nag
+    formal_work_items = formal_work_items or {}
     log = on_progress or (lambda m: print(m, flush=True))
     # GENEROUS whole-attack wallclocks from the central factory (NOT hardcoded 400/600 — those guillotined a
     # codex run that had an audit-passing DAG ready). The planner draws from these (no arbitrary sub-cap);
@@ -668,6 +743,19 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
 
     def _wall_exceeded() -> bool:
         return _deadline is not None and _time_w.monotonic() >= _deadline
+
+    def _attack(statement: str, *, timeout_s: int, notes: "str | None" = None,
+                shelf_prelude: str = "") -> dict:
+        item = formal_work_items.get(_formal_work_item_key(statement))
+        if item is not None:
+            log(f"[notes] typed formal work item -> governed solve: {item.target_name}")
+            return _attack_formal_source(
+                item, lean_root=lean_root, timeout_s=timeout_s, notes=notes,
+            )
+        return attack_fn(
+            statement, lean_root=lean_root, timeout_s=timeout_s, notes=notes,
+            shelf_prelude=shelf_prelude,
+        )
     try:                                          # record the in-force time budgets up front (observability:
         from ztare.common.timeouts import budgets_report   # a stalled run's banner shows which budget governed)
         log(f"[budgets] {budgets_report()}")
@@ -787,7 +875,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
         except Exception:  # noqa: BLE001 — the health gate is best-effort; never break the campaign
             pass
         # the WHOLE blueprint is the planner context for each lemma (the surrounding lemmas are scaffold)
-        rec = attack_fn(lem, lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
+        rec = _attack(lem, timeout_s=lemma_timeout_s, notes=notes_text)
         out["lemmas"].append(rec)
         _log_formalize_attempt(_campaign_id, i, rec, "first_pass")   # FIX #2 (per-attempt observability)
         if rec.get("solved"):
@@ -848,7 +936,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                 if _wall_exceeded():
                     log("[notes] skip-and-return: wall reached — stopping retries (earned rungs written back)")
                     break
-                rec2 = attack_fn(lemmas[i], lean_root=lean_root, timeout_s=lemma_timeout_s, notes=_shelf_notes)
+                rec2 = _attack(lemmas[i], timeout_s=lemma_timeout_s, notes=_shelf_notes)
                 _log_formalize_attempt(_campaign_id, i, rec2, "retry")   # FIX #2 (per-attempt observability)
                 if _is_execution_stop(rec2):
                     out["execution_stop"] = str(
@@ -941,7 +1029,7 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                 for i in _open_sc:
                     if _wall_exceeded():
                         break
-                    rec_sc = attack_fn(lemmas[i], lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
+                    rec_sc = _attack(lemmas[i], timeout_s=lemma_timeout_s, notes=notes_text)
                     if _is_execution_stop(rec_sc):
                         out["execution_stop"] = str(
                             rec_sc.get("outcome") or rec_sc.get("faithfulness_reason") or "execution_stop"
@@ -988,8 +1076,8 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
         log(f"[notes] TARGET: {target!r}"
             + (f" (shelf in scope: {target_shelf_prelude.count('theorem ') + target_shelf_prelude.count('lemma ')} proven lemmas citable)"
                if target_shelf_prelude.strip() else ""))
-        out["target"] = (attack_fn(target, lean_root=lean_root, timeout_s=target_timeout_s, notes=target_notes,
-                                   shelf_prelude=target_shelf_prelude)
+        out["target"] = (_attack(target, timeout_s=target_timeout_s, notes=target_notes,
+                                 shelf_prelude=target_shelf_prelude)
                          if target else None)
     # RESOLVE target_theorem_name (2026-07-02 RCA — the P0-sidecar + auto-promote at RATIFICATION silently SKIPPED).
     # Both ratification-time automations key on `out["target"]["target_theorem_name"]` to locate `closures/<name>.lean`
@@ -2375,6 +2463,7 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     # API statement becomes a first-class lemma work item; the file's content rides the notes so every
     # downstream formalize/solve sees the campaign substrate. Receipt → the work-items ledger.
     _theory_rel = parse_theory_file(_notes_text)
+    _formal_work_items: "dict[str, FormalSourceWorkItem]" = {}
     _manifest_path = _write_run_manifest(notes_path, theory_rel=_theory_rel or "")
     if _manifest_path is not None:
         print(f"[notes] run manifest → {_manifest_path.relative_to(LEAN_ROOT_DEFAULT)}", flush=True)
@@ -2521,7 +2610,10 @@ def main(argv: "Optional[list[str]]" = None) -> int:
             # if absent). A theory-first blueprint with no `## Lemmas` anchor previously DROPPED them — the
             # theory got built but its crux lemmas were never attacked. These are ALREADY formal Lean (no NL
             # round-trip), so attacking them sidesteps the target's formalization firewall entirely.
-            _sorried = list(_tc.get("sorried_statements", []))
+            # The compiled theory is the authority for the open set.  A consolidation
+            # report is telemetry; routing work from it instead would let a stale or
+            # reformatted string fall back into the natural-language lane.
+            _sorried: "list[str]" = []
             # COMPLETE THE OPEN-SET FROM THE SUBSTRATE (Goldilocks: report the kernel FACT of what's open; do not
             # rely on a consolidation-round diff). 2026-07-05 restOrder_preserves ORPHAN fix + operator "why
             # targeting logic at all / are we goldilocks": consolidation extracts work-items only from decls IT
@@ -2534,10 +2626,15 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                 from ztare.leanmill.solver.statement_integrity import decl_blocks as _dbk
                 from ztare.leanmill.lean_source import (strip_comments as _sc2, has_sorry as _hs2,
                                                         split_at_proof as _sap2)
-                _seen = {" ".join(s.split()) for s in _sorried}
+                _seen: "set[str]" = set()
                 for _n, _blk in _dbk(_theory_src):
                     if _n and _hs2(_sap2(_sc2(_blk))[1]):       # OWN proof body still carries a literal sorry ⇒ OPEN
                         _stmt = " ".join(_sc2(_blk).split())
+                        _formal_work_items[_formal_work_item_key(_stmt)] = FormalSourceWorkItem(
+                            target_name=_n,
+                            source_text=_theory_src,
+                            target_block=_stmt,
+                        )
                         if _stmt not in _seen:
                             _sorried.append(_stmt); _seen.add(_stmt)
                             print(f"[notes] re-queued ORPHANED open substrate leaf: {_n}", flush=True)
@@ -2545,7 +2642,11 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                 print(f"[notes] open-leaf re-queue skipped: {repr(_e)[:100]}", flush=True)
             if _sorried:
                 _notes_text = _insert_lemmas_section(_notes_text, _sorried)
-    res = autoformalize_from_notes(_notes_text, notes_path=notes_path)  # notes_path ⇒ incremental write-back (timeout-safe)
+    res = autoformalize_from_notes(
+        _notes_text,
+        notes_path=notes_path,
+        formal_work_items=_formal_work_items,
+    )  # notes_path ⇒ incremental write-back (timeout-safe)
     res["instrument_standards"] = _std   # traceability: this run's closures carry their instrument certificate
     # v3 RCA: surface kernel closures from the WHOLE recursion tree (the cert ledger), not just the
     # top-level lemma outcomes — depth≥2 rungs were silently lost to the compounding loop.

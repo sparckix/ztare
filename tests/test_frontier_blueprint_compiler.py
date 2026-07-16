@@ -67,6 +67,114 @@ def test_structure_first_compiles_without_model_call_and_cold_view_hides_names()
     assert "AnonymousMagma" not in str(cold)
 
 
+def test_blueprint_container_types_fail_with_field_name():
+    brief = FrontierExplorationBrief("Explore typed structure.", source_mode="structure_first")
+    draft = _draft()
+    draft["verification_plan"] = [{"kind": "lean"}]
+    with pytest.raises(ValueError, match="verification_plan must be an object"):
+        compile_structure_first_blueprint(brief, draft)
+
+
+def test_blueprint_canonicalizes_holdout_strata_to_executable_key():
+    brief = FrontierExplorationBrief(
+        "Explore typed structure.", source_mode="structure_first"
+    )
+    draft = _draft()
+    draft["verification_plan"] = {
+        "holdout_strata": [{"sort_sizes": {"S0": 3}}]
+    }
+
+    blueprint = compile_structure_first_blueprint(brief, draft)
+
+    assert "holdout_strata" not in blueprint.verification_plan
+    assert blueprint.verification_plan["heldout_strata"] == [
+        {"sort_sizes": {"S0": 3}}
+    ]
+
+
+def test_blueprint_rejects_conflicting_holdout_spellings():
+    brief = FrontierExplorationBrief(
+        "Explore typed structure.", source_mode="structure_first"
+    )
+    draft = _draft()
+    draft["verification_plan"] = {
+        "holdout_strata": [{"sort_sizes": {"S0": 3}}],
+        "heldout_strata": [{"sort_sizes": {"S0": 4}}],
+    }
+
+    with pytest.raises(ValueError, match="holdout and heldout strata disagree"):
+        compile_structure_first_blueprint(brief, draft)
+
+
+def test_blueprint_objective_requires_instruction_and_condition_together():
+    brief = FrontierExplorationBrief("Explore typed structure.", source_mode="structure_first")
+    draft = _draft()
+    draft["stop_rule"] = {
+        "user_instruction": "",
+        "executable_condition": {"kind": "late_lineage_objective_review"},
+    }
+    with pytest.raises(ValueError, match="requires both nonempty"):
+        compile_structure_first_blueprint(brief, draft)
+
+
+def test_nl_compiler_canonicalizes_nested_stop_instruction():
+    brief = FrontierExplorationBrief(
+        "Explore and stop for a persistent law.", source_mode="human_directed"
+    )
+    draft = _draft()
+    instruction = "Stop for a persistent law."
+    draft["stop_rule"] = {
+        "executable_condition": {
+            "kind": "late_lineage_objective_review",
+            "user_instruction": instruction,
+        }
+    }
+    blueprint = compile_frontier_blueprint(
+        brief,
+        draft_fn=lambda _brief: draft,
+        semantic_review_fn=lambda _payload: {
+            "accepted": True,
+            "candidate_law_leakage": False,
+            "substrate_constraints_executable": True,
+            "rationale": "The condition preserves the requested stopping sentence.",
+            "evidence_refs": [brief.brief_id],
+        },
+        compiler_ref="a",
+        reviewer_ref="b",
+    )
+    assert blueprint.stop_rule == {
+        "user_instruction": instruction,
+        "executable_condition": {"kind": "late_lineage_objective_review"},
+    }
+
+
+def test_base_axioms_are_parsed_before_semantic_review():
+    brief = FrontierExplorationBrief("Explore typed structure.", source_mode="structure_first")
+    draft = _draft()
+    draft["base_axioms"] = ({
+        "schema": "leanmill.axiom_formula.v1",
+        "formula": "forall x, x = x",
+    },)
+    draft["base_theory_status"] = "typed_resolved"
+    with pytest.raises(ValueError, match="axiom formula"):
+        compile_structure_first_blueprint(brief, draft)
+
+
+def test_duplicate_base_semantics_fail_before_review():
+    brief = FrontierExplorationBrief("Explore typed structure.", source_mode="structure_first")
+    draft = _draft()
+    x = Term.var("x")
+    axiom = AxiomFormula(
+        "first_copy",
+        Formula.forall((Binder("x", "B"),), Formula.eq(x, x)),
+    )
+    duplicate = AxiomFormula("second_copy", axiom.formula)
+    draft["base_axioms"] = (axiom.to_json(), duplicate.to_json())
+    draft["base_theory_status"] = "typed_resolved"
+    with pytest.raises(ValueError, match="duplicate semantic formulas"):
+        compile_structure_first_blueprint(brief, draft)
+
+
 def test_cold_view_exposes_base_equations_without_theory_names():
     brief = FrontierExplorationBrief(
         direction="Explore an anonymous binary operation with a frozen base law.",
@@ -194,6 +302,9 @@ def test_nl_compiler_and_reviewer_are_injected_separate_roles():
     brief = FrontierExplorationBrief(
         direction="Explore small anonymous compositional laws.",
         source_mode="human_directed",
+        resource_envelope={
+            "budget_contract": {"hard_caps": {"context_models": 120}},
+        },
     )
     blueprint = compile_frontier_blueprint(
         brief,
@@ -201,6 +312,7 @@ def test_nl_compiler_and_reviewer_are_injected_separate_roles():
         semantic_review_fn=lambda _payload: {
             "accepted": True,
             "candidate_law_leakage": False,
+            "substrate_constraints_executable": True,
             "rationale": "The typed signature preserves the requested compositional surface.",
             "evidence_refs": [brief.brief_id],
         },
@@ -209,6 +321,117 @@ def test_nl_compiler_and_reviewer_are_injected_separate_roles():
     )
     assert blueprint.compiler_receipt["compiler_ref"] == "compiler-agent-a"
     assert blueprint.semantic_review_receipt["reviewer_ref"] == "reviewer-agent-b"
+    assert blueprint.authority_refs == (brief.brief_id,)
+    assert blueprint.visible_evidence_manifest["brief_id"] == brief.brief_id
+
+
+def test_nl_compiler_repairs_candidate_width_before_semantic_review():
+    brief = FrontierExplorationBrief(
+        direction="Explore small anonymous compositional laws.",
+        source_mode="human_directed",
+        resource_envelope={
+            "budget_contract": {"hard_caps": {"context_models": 120}},
+        },
+    )
+    invalid = _draft()
+    invalid["pack_arity"] = 2
+    invalid["navigator_contract"] = {
+        **invalid["navigator_contract"],
+        "presentation_size": {"minimum": 1, "maximum": 4},
+    }
+    fixed = {
+        **invalid,
+        "navigator_contract": {
+            **invalid["navigator_contract"],
+            "presentation_size": {"minimum": 1, "maximum": 2},
+        },
+    }
+    compiler_inputs = []
+    review_inputs = []
+
+    def compile_call(payload):
+        compiler_inputs.append(payload)
+        if len(compiler_inputs) == 1:
+            return invalid
+        assert "within pack_arity" in payload["compiler_feedback"]["error"]
+        assert payload["prior_draft"] == invalid
+        return fixed
+
+    blueprint = compile_frontier_blueprint(
+        brief,
+        draft_fn=compile_call,
+        semantic_review_fn=lambda payload: review_inputs.append(payload) or {
+            "accepted": True,
+            "candidate_law_leakage": False,
+            "substrate_constraints_executable": True,
+            "rationale": "The repaired search width stays inside the compiled pack arity.",
+            "evidence_refs": [brief.brief_id],
+        },
+        compiler_ref="compiler-agent-a",
+        reviewer_ref="reviewer-agent-b",
+    )
+
+    assert len(compiler_inputs) == 2
+    assert len(review_inputs) == 1
+    assert blueprint.navigator_contract["presentation_size"] == {
+        "minimum": 1,
+        "maximum": 2,
+    }
+
+
+def test_nl_compiler_context_cap_is_host_budget_owned(monkeypatch):
+    brief = FrontierExplorationBrief(
+        direction="Explore a finite first-order surface.",
+        source_mode="human_directed",
+        resource_envelope={
+            "budget_contract": {"hard_caps": {"context_models": 120}},
+        },
+    )
+    draft = _draft()
+    draft["adapter_config"] = {
+        "model_generation": {
+            "mode": "smt_exact",
+            "max_canonical_models_per_stratum": 2,
+            "timeout_ms_per_stratum": 10_000,
+        }
+    }
+    draft["navigator_contract"] = {
+        **draft["navigator_contract"],
+        "topology_presentation_size": {"minimum": 1, "maximum": 3},
+    }
+    monkeypatch.setattr(
+        "ztare.leanmill.frontier_blueprint_compiler._executable_preflight",
+        lambda _brief, row: {
+            "ok": True,
+            "authority_role": "test-preflight",
+            "adapter_preflight": {
+                "context_model_budget_upper_bound": (
+                    row["adapter_config"]["model_generation"]
+                    ["max_canonical_models_per_stratum"] * 6
+                ),
+            },
+        },
+    )
+    blueprint = compile_frontier_blueprint(
+        brief,
+        draft_fn=lambda _brief: draft,
+        semantic_review_fn=lambda _payload: {
+            "accepted": True,
+            "candidate_law_leakage": False,
+            "substrate_constraints_executable": True,
+            "rationale": "The executable surface matches the brief.",
+            "evidence_refs": [brief.brief_id],
+        },
+        compiler_ref="a",
+        reviewer_ref="b",
+    )
+    assert (
+        blueprint.adapter_config["model_generation"][
+            "max_canonical_models_per_stratum"
+        ]
+        == 20
+    )
+    assert "topology_presentation_size" not in blueprint.navigator_contract
 
 
 def test_cold_compiler_rejects_candidate_law_leakage_and_same_role_review():
@@ -259,11 +482,7 @@ def test_delegated_nl_stop_must_be_preserved_lowered_and_reviewed():
     lowered = _draft()
     lowered["stop_rule"] = {
         "user_instruction": instruction,
-        "executable_condition": {
-            "kind": "distinct_survivor_count",
-            "minimum": 3,
-            "required_carrier_size": 5,
-        },
+        "executable_condition": {"kind": "late_lineage_objective_review"},
     }
     with pytest.raises(ValueError, match="approve"):
         compile_frontier_blueprint(
@@ -272,6 +491,7 @@ def test_delegated_nl_stop_must_be_preserved_lowered_and_reviewed():
             semantic_review_fn=lambda _payload: {
                 "accepted": True,
                 "candidate_law_leakage": False,
+                "substrate_constraints_executable": True,
                 "rationale": "lowering is plausible",
                 "evidence_refs": [brief.brief_id],
                 "stop_rule_aligned": False,
@@ -285,6 +505,7 @@ def test_delegated_nl_stop_must_be_preserved_lowered_and_reviewed():
         semantic_review_fn=lambda _payload: {
             "accepted": True,
             "candidate_law_leakage": False,
+            "substrate_constraints_executable": True,
             "rationale": "the stop condition is receipt-observable",
             "evidence_refs": [brief.brief_id],
             "stop_rule_aligned": True,

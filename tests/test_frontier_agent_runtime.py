@@ -58,6 +58,102 @@ def test_subscription_json_role_persists_and_replays_without_second_call(tmp_pat
     assert replay_role.provider_call_count == 0
 
 
+def test_subscription_json_role_replays_against_frozen_schema(tmp_path, monkeypatch):
+    calls = []
+    historical_schema = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["formula_id"],
+        "properties": {"formula_id": {"type": "string"}},
+    }
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        Path(kwargs["output_last_message_path"]).write_text(
+            '{"formula_id":"formula:short"}', encoding="utf-8"
+        )
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(
+                ["agent"], 0, stdout="transcript", stderr=""
+            )
+        )
+
+    monkeypatch.setattr(
+        "ztare.leanmill.frontier_agent_runtime.run_subscription_agent_with_recovery",
+        fake_run,
+    )
+    calls_dir = tmp_path / "calls"
+    first = SubscriptionJSONRole(
+        role="navigator",
+        agent_id="navigator-a",
+        repo=tmp_path,
+        artifact_dir=calls_dir,
+        output_schema=historical_schema,
+    )
+    assert first("prompt")["formula_id"] == "formula:short"
+
+    stricter_schema = {
+        **historical_schema,
+        "properties": {
+            "formula_id": {
+                "type": "string",
+                "pattern": r"^formula:[0-9a-f]{64}$",
+            }
+        },
+    }
+    replay = SubscriptionJSONRole(
+        role="navigator",
+        agent_id="navigator-a",
+        repo=tmp_path,
+        artifact_dir=calls_dir,
+        output_schema=stricter_schema,
+    )
+
+    assert replay("prompt")["formula_id"] == "formula:short"
+    assert len(calls) == 1
+    assert replay.calls[0]["output_schema_digest"] == content_hash(historical_schema)
+
+
+def test_subscription_json_role_resumes_one_stable_lineage_session_across_waves(
+    tmp_path, monkeypatch
+):
+    calls = []
+
+    def fake_run(**kwargs):
+        calls.append(kwargs)
+        Path(kwargs["output_last_message_path"]).write_text(
+            '{"accepted":true}', encoding="utf-8"
+        )
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(
+                ["agent"], 0, stdout='{"accepted":true}', stderr=""
+            ),
+            final_session_state={
+                "session_id": "session-1",
+                "started_at_epoch": 1_788_000_000,
+                "tick_count": len(calls),
+            },
+        )
+
+    monkeypatch.setattr(
+        "ztare.leanmill.frontier_agent_runtime.run_subscription_agent_with_recovery",
+        fake_run,
+    )
+    for wave in (1, 2):
+        role = SubscriptionJSONRole(
+            role="navigator",
+            agent_id=f"axiompack-navigator-lineage-000.wave-{wave:03d}",
+            repo=tmp_path,
+            artifact_dir=tmp_path / "calls" / f"navigator.lineage-000.wave-{wave:03d}",
+            config=FrontierAgentConfig(),
+        )
+        assert role(f"wave {wave}")["accepted"] is True
+
+    assert calls[0]["session_state"]["is_new"] is True
+    assert calls[1]["session_state"]["session_id"] == "session-1"
+    assert calls[1]["session_state"]["is_new"] is False
+
+
 def test_subscription_json_role_replays_frozen_prompt_identity(tmp_path, monkeypatch):
     calls = []
 
@@ -105,6 +201,8 @@ def test_subscription_json_role_replays_frozen_prompt_identity(tmp_path, monkeyp
         "The 'gpt-5.6-sol' model requires a newer version of Codex.",
         "The 'fable' model is not supported with ChatGPT accounts.",
         "Selected model is at capacity. Try again later.",
+        "invalid_request_error: invalid_value for reasoning.effort; "
+        "supported values include xhigh",
     ],
 )
 def test_pre_inference_cli_rejections_do_not_consume_provider_budget(stderr):
@@ -261,6 +359,11 @@ def test_frontier_role_routes_fable_alias_to_claude(tmp_path):
             "The 'gpt-5.6-sol' model requires a newer version of Codex.",
             "codex_cli_upgrade_required",
         ),
+        (
+            "invalid_request_error: invalid_value for reasoning.effort; "
+            "supported values include xhigh",
+            "unsupported_reasoning_effort",
+        ),
     ],
 )
 def test_retryable_transport_failure_advances_immutable_call_index(
@@ -303,6 +406,57 @@ def test_retryable_transport_failure_advances_immutable_call_index(
     assert (calls_dir / "001.call.json").is_file()
     assert role.calls[0]["retryable_transport_failure"] == reason
     assert role.call_count == 1
+
+
+def test_retryable_failed_prompt_can_advance_after_runtime_policy_correction(
+    tmp_path, monkeypatch
+):
+    calls_dir = tmp_path / "calls"
+    calls_dir.mkdir()
+    old_prompt = "old frozen prompt"
+    (calls_dir / "000.call.json").write_text(
+        json.dumps({
+            "prompt_digest": content_hash({"prompt": old_prompt}),
+            "returncode": 1,
+            "provider_call_charge": 0,
+        }),
+        encoding="utf-8",
+    )
+    (calls_dir / "000.prompt.txt").write_text(old_prompt, encoding="utf-8")
+    (calls_dir / "000.stdout.txt").write_text("", encoding="utf-8")
+    (calls_dir / "000.stderr.txt").write_text(
+        "invalid_request_error: invalid_value for reasoning.effort; "
+        "supported values include xhigh",
+        encoding="utf-8",
+    )
+
+    def fake_run(**kwargs):
+        Path(kwargs["output_last_message_path"]).write_text(
+            '{"accepted":true}', encoding="utf-8"
+        )
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(
+                ["agent"], 0, stdout="transcript", stderr=""
+            )
+        )
+
+    monkeypatch.setattr(
+        "ztare.leanmill.frontier_agent_runtime.run_subscription_agent_with_recovery",
+        fake_run,
+    )
+    role = SubscriptionJSONRole(
+        role="reviewer",
+        agent_id="reviewer-b",
+        repo=tmp_path,
+        artifact_dir=calls_dir,
+        config=FrontierAgentConfig(),
+    )
+
+    assert role.call_with_compatible_prompts("corrected prompt", ())["accepted"]
+    assert (calls_dir / "001.prompt.txt").read_text() == "corrected prompt"
+    assert role.calls[0]["retryable_transport_failure"] == (
+        "unsupported_reasoning_effort"
+    )
 
 
 def test_frontier_json_parser_returns_enclosing_decision_not_nested_inputs():

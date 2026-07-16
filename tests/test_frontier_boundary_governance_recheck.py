@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from ztare.leanmill.common import write_json_atomic
 from ztare.leanmill.finite_model_census import enumerate_magma_model_universe
 from ztare.leanmill.finite_theory_context import (
@@ -18,8 +20,9 @@ from ztare.leanmill.magma_law_universe import (
 from ztare.leanmill.theory_ir import content_hash
 
 
-def test_saved_boundary_proof_is_rechecked_without_an_agent_call(
-    tmp_path, monkeypatch
+@pytest.mark.parametrize("saved_in_boundary", [True, False])
+def test_boundary_proof_is_rechecked_without_an_agent_call(
+    tmp_path, monkeypatch, saved_in_boundary
 ) -> None:
     signature = anonymous_magma_signature()
     laws = magma_laws_through_order(1)
@@ -41,7 +44,7 @@ def test_saved_boundary_proof_is_rechecked_without_an_agent_call(
         "schema": "leanmill.governed_consequence_attempt.v1",
         "task_id": task.task_id,
         "status": "rejected_banned_axiom",
-        "proof_text": "```lean\nexact True.intro\n```",
+        "proof_text": "```lean\nexact True.intro\n```" if saved_in_boundary else "",
         "solver_result_digest": "saved-solver-result",
         "attribution": None,
         "work_receipt": {},
@@ -84,12 +87,20 @@ def test_saved_boundary_proof_is_rechecked_without_an_agent_call(
     result = recheck_frontier_boundary_governance(
         attempt,
         lean_root=lean_root,
+        proof_candidates=(
+            None
+            if saved_in_boundary
+            else {target.formula_id: "```lean\nexact True.intro\n```"}
+        ),
     )
 
     assert result["provider_calls"] == 0
     assert result["proved_attributed_count"] == 1
     assert result["query_rechecks"][0]["recheck"]["status"] == "proved_attributed"
     assert result["query_rechecks"][0]["recheck"]["proof_text"] == "exact True.intro"
+    assert result["query_rechecks"][0]["proof_source"] == (
+        "boundary_result" if saved_in_boundary else "explicit_recovery_candidate"
+    )
 
     monkeypatch.setattr(
         compiler,

@@ -1,8 +1,8 @@
 # GP-251 — AxiomPack Frontier Exploration Inlet Seam
 
-> **Seam metadata** · `seam_id:` GP-251 · `track:` engine/lean ·
-> `status:` ACTIVE (theory-program and isolated-lineage kernel implemented; consequential campaign pending) · `opened:` 2026-07-09 ·
-> `owner:` user + LeanMill engine
+> **Seam metadata** · `seam_id:` GP-251 · `track:` engine/lean · `status:` ACTIVE (theory-program and isolated-lineage kernel implemented; consequential campaign pending) · `last_updated:` 2026-07-09
+>
+> Opened 2026-07-09 · Owner: user + LeanMill engine
 
 Canonical spec:
 `research_areas/specs/active/engine/lean/GP-251_axiompack_frontier_exploration_inlet_spec.md`.

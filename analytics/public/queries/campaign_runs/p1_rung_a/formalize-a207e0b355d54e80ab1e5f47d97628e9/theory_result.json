@@ -1,0 +1,16 @@
+{
+  "after": {
+    "bytes": 6243,
+    "declared_path": "P1_n1_rungA_theory.lean",
+    "exists": true,
+    "sha256": "51c525fdae6685953b20d25b54c82b5483772d20f29e1cc26dd0d6a2fb16a4dc"
+  },
+  "before": {
+    "bytes": 7236,
+    "declared_path": "P1_n1_rungA_theory.lean",
+    "exists": true,
+    "sha256": "66d9374b9fc86fc7f2c59691042eee8d42e724510c24266eed629817c671ee16"
+  },
+  "changed": true,
+  "schema": "leanmill.formalization_theory_delta.v1"
+}

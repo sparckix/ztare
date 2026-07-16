@@ -63,6 +63,14 @@ def test_formula_codec_handles_relations_connectives_and_local_quantifiers():
     assert existential.kind == "exists"
     assert existential.formulas[0].kind == "and"
 
+    equality = decode_postfix_formula(
+        signature,
+        name="equality_alias",
+        variable_sorts={"x": "S"},
+        tokens=("x", "x", "="),
+    )
+    assert equality.formula.formulas[0].kind == "eq"
+
 
 def test_formula_codec_rejects_term_formula_kind_confusion():
     signature = anonymous_magma_signature()

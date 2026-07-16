@@ -1,0 +1,376 @@
+{
+  "adapter_config": {
+    "model_generation": {
+      "max_canonical_models_per_stratum": 25000,
+      "mode": "smt_exact",
+      "timeout_ms_per_stratum": 30000
+    }
+  },
+  "adapter_id": "generic_fol_finite.v1",
+  "authority_refs": [
+    "brief:8a98e582ef2a1161dedda1ba4df9b9e5612be0f236a9435e0378c6c6b52d9de0"
+  ],
+  "base_axioms": [
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "a",
+            "sort": "S0"
+          },
+          {
+            "name": "b",
+            "sort": "S0"
+          },
+          {
+            "name": "c",
+            "sort": "S0"
+          },
+          {
+            "name": "c2",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c2"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "c"
+            },
+            "right": {
+              "kind": "var",
+              "name": "c2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord_recover_1",
+      "schema": "leanmill.axiom_formula.v1"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "a",
+            "sort": "S0"
+          },
+          {
+            "name": "a2",
+            "sort": "S0"
+          },
+          {
+            "name": "b",
+            "sort": "S0"
+          },
+          {
+            "name": "c",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a2"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "a"
+            },
+            "right": {
+              "kind": "var",
+              "name": "a2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord_recover_2",
+      "schema": "leanmill.axiom_formula.v1"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "a",
+            "sort": "S0"
+          },
+          {
+            "name": "a2",
+            "sort": "S0"
+          },
+          {
+            "name": "b",
+            "sort": "S0"
+          },
+          {
+            "name": "c",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "a2"
+                },
+                {
+                  "kind": "var",
+                  "name": "b"
+                },
+                {
+                  "kind": "var",
+                  "name": "c"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "a"
+            },
+            "right": {
+              "kind": "var",
+              "name": "a2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord_recover_3",
+      "schema": "leanmill.axiom_formula.v1"
+    }
+  ],
+  "base_theory_status": "typed_resolved",
+  "codec_versions": {
+    "axiom_formula": "leanmill.axiom_formula.v1",
+    "equation_grammar": "leanmill.universal_equation_grammar.v1",
+    "exploration_budget": "leanmill.exploration_budget.v1",
+    "frontier_exploration_brief": "leanmill.frontier_exploration_brief.v1",
+    "scientific_stop_rule": "leanmill.scientific_stop_rule.v1",
+    "theory_signature": "leanmill.theory_signature.v1"
+  },
+  "collapse_controls": [],
+  "deanchoring_policy": {
+    "deanchor_only_when": "a nontrivial agent-origin law or compact basis changes what can be derived or tested beyond the initial chart",
+    "intent": "cold_after_signature_compilation",
+    "retain_anonymous_surface": true,
+    "search_identity": "anonymous_ternary_quasigroup_extensionality"
+  },
+  "eigenquestion": "Which extensional laws, if any, are forced by finite ternary coordinate recoverability across the initial and held-out strata?",
+  "formula_grammar": {
+    "equation_side_quotient": true,
+    "exclude_nonvariable_reflexive": true,
+    "max_formulas": 1000,
+    "max_total_operation_order": 2,
+    "max_variables_per_sort": 3,
+    "schema": "leanmill.universal_equation_grammar.v1",
+    "variable_renaming_quotient": true
+  },
+  "mode": "anonymous_signature_census",
+  "model_or_observation_strata": [
+    {
+      "sort_sizes": {
+        "S0": 3
+      }
+    }
+  ],
+  "navigator_contract": {
+    "adapter_id": "generic_fol_finite.v1",
+    "host_isolated_lineages": 2,
+    "presentation_size": {
+      "maximum": 3,
+      "minimum": 1
+    },
+    "selection_mode": "theory_program",
+    "topology_presentation_size": 3
+  },
+  "pack_arity": 3,
+  "primitive_semantics": {
+    "operation_bindings": {
+      "op0": {
+        "observation_role": "anonymous_ternary_operation",
+        "recovery_requirement": "each coordinate is uniquely recoverable from the other two and the value"
+      }
+    },
+    "relation_bindings": {}
+  },
+  "query_budget": {
+    "boundary_queries": 2,
+    "context_models": 25000,
+    "formal_peer_attempts": 1,
+    "lean_attempts": 1,
+    "provider_calls": 8,
+    "smt_calls": 2,
+    "truth_cells": 10000000
+  },
+  "sealed_evidence_manifest_digest": "sha256:8a587b54bb7df8aad72a61be00ff9a3e61a3b1992c6b9bc64f4ec00e82fa24a3",
+  "signature": {
+    "name": "anonymous_ternary_quasigroup",
+    "operations": [
+      {
+        "arg_sorts": [
+          "S0",
+          "S0",
+          "S0"
+        ],
+        "name": "op0",
+        "result_sort": "S0"
+      }
+    ],
+    "relations": [],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "S0"
+      }
+    ]
+  },
+  "stop_rule": {
+    "executable_condition": {
+      "kind": "late_lineage_objective_review"
+    },
+    "user_instruction": "Stop only for a nontrivial agent-origin law or compact basis that changes what can be derived or tested beyond the initial chart, with premise necessity, cross-order persistence, and unrestricted verification."
+  },
+  "verification_plan": {
+    "checks": [
+      "Search for order-4 and order-5 Latin-cube structures satisfying the coordinate-recovery axioms.",
+      "Compare any derived equations, quotients, or candidate basis fragments against the anonymous ternary recovery chart.",
+      "Run formal verification in Lean on any surviving compact basis or agent-origin law.",
+      "Reject presentations that fail cross-order persistence or premise necessity."
+    ],
+    "evidence_standard": "unrestricted_verification",
+    "formal_systems": [
+      "smt",
+      "lean"
+    ],
+    "heldout_sizes": [
+      4,
+      5
+    ],
+    "heldout_strata": [
+      {
+        "sort_sizes": {
+          "S0": 4
+        }
+      },
+      {
+        "sort_sizes": {
+          "S0": 5
+        }
+      }
+    ]
+  },
+  "visible_evidence_manifest": {
+    "brief_id": "brief:8a98e582ef2a1161dedda1ba4df9b9e5612be0f236a9435e0378c6c6b52d9de0",
+    "evidence_refs": [],
+    "forbidden_shortcuts": [],
+    "schema": "leanmill.frontier_visible_evidence_manifest.v1",
+    "source_mode": "human_directed"
+  }
+}

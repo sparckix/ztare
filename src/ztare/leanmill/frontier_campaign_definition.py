@@ -28,8 +28,11 @@ _RUNTIME_ROLES = frozenset(
         "lineage_synthesizer",
         "adapter_forge",
         "adapter_reviewer",
+        "formalizer",
+        "faithfulness_reviewer",
         "lean_solver",
         "post_freeze_interpreter",
+        "external_science_reviewer",
     }
 )
 

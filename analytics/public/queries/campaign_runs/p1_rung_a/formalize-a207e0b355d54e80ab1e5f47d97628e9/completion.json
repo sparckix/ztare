@@ -1,0 +1,31 @@
+{
+  "attempt_id": "formalize-a207e0b355d54e80ab1e5f47d97628e9",
+  "budget_digest": "budget:8ec49cb433dfe221e154d45d88186ad1dcfb7e3ee8cd54a495146c4de5bf11ec",
+  "campaign_id": "leanmill-campaign:b338995b52a5d67f395ed2a57b0f4b2dee1b71a084d0133bc893940fb92c05cf",
+  "diagnostics_path": "diagnostics.json",
+  "error": "",
+  "phase_timing_path": "phase_timing.json",
+  "requested_run_tag": "",
+  "returncode": 0,
+  "schema": "leanmill.formalization_campaign_completion.v1",
+  "solver_run_tag": "formalize-a207e0b355d54e80ab1e5f47d97628e9",
+  "theory_result_path": "theory_result.json",
+  "usage": {
+    "adapter_forge_attempts": 0,
+    "agent_turns": 8,
+    "boundary_queries": 0,
+    "context_models": 0,
+    "formal_peer_attempts": 0,
+    "formal_peer_millis": 0,
+    "input_tokens": 0,
+    "lean_attempts": 0,
+    "lean_millis": 0,
+    "metered_usd_micros": 0,
+    "output_tokens": 0,
+    "provider_calls": 8,
+    "smt_calls": 0,
+    "smt_millis": 0,
+    "truth_cells": 0,
+    "workbench_actions": 0
+  }
+}

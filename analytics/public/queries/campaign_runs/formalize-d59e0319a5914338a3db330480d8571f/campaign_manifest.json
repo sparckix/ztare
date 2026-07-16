@@ -1,0 +1,174 @@
+{
+  "body_sha256": "1d3544d9f7499bcb5dddaeafe89f0c8314055dff53d65b584ad9577e66b6649e",
+  "budget": {
+    "allocation_policy": "global_cap",
+    "budget_digest": "budget:1907433bb2bdda2fff56e4ed1985a897089cb3fde8bbe9f5fd0335a5ab6be597",
+    "hard_caps": {
+      "adapter_forge_attempts": 1,
+      "agent_turns": 4,
+      "boundary_queries": 2,
+      "context_models": 25000,
+      "input_tokens": 100000,
+      "lean_attempts": 1,
+      "lean_millis": 600000,
+      "metered_usd_micros": 0,
+      "output_tokens": 40000,
+      "provider_calls": 4,
+      "smt_calls": 2,
+      "smt_millis": 600000,
+      "truth_cells": 10000000,
+      "workbench_actions": 16
+    },
+    "phase_caps": {
+      "boundary": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 1,
+        "boundary_queries": 2,
+        "context_models": 0,
+        "input_tokens": 21428,
+        "lean_attempts": 1,
+        "lean_millis": 600000,
+        "metered_usd_micros": 0,
+        "output_tokens": 8571,
+        "provider_calls": 1,
+        "smt_calls": 2,
+        "smt_millis": 600000,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "compilation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 1,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "input_tokens": 21429,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 8572,
+        "provider_calls": 1,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "context": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 0,
+        "boundary_queries": 0,
+        "context_models": 25000,
+        "input_tokens": 0,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 0,
+        "provider_calls": 0,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 10000000,
+        "workbench_actions": 0
+      },
+      "expansion": {
+        "adapter_forge_attempts": 1,
+        "agent_turns": 1,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "input_tokens": 21429,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 8571,
+        "provider_calls": 1,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "interpretation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 0,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "input_tokens": 7143,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 2857,
+        "provider_calls": 0,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "navigation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 1,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "input_tokens": 28571,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 11429,
+        "provider_calls": 1,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 16
+      }
+    },
+    "preset": "smoke_20m+yaml",
+    "schema": "leanmill.exploration_budget.v1",
+    "stop_rule": {
+      "coverage_target_ppm": 900000,
+      "low_yield_patience": 2,
+      "max_finalists": 8,
+      "min_marginal_information_per_cost_ppm": 50000,
+      "schema": "leanmill.scientific_stop_rule.v1"
+    },
+    "wall_clock_s": 1200
+  },
+  "campaign_id": "leanmill-campaign:3a5aa56d43d5ed73d600ab65672ecd25e8e9a4f4c7cc0c38e3b7493b204cae75",
+  "delegated_stop_instruction": "",
+  "explicit_envelope": true,
+  "lane": "formalize",
+  "metadata": {
+    "budget": {
+      "agent_turns": 4,
+      "metered_api_usd": "0",
+      "provider_calls": 4
+    },
+    "created_by": "daniel_alami_and_codex",
+    "lane": "formalize",
+    "profile": "smoke",
+    "runtime": {
+      "defaults": {
+        "allow_subscription_failover": false,
+        "model": "gpt-5.6-terra",
+        "reasoning_effort": "high",
+        "runtime": "codex"
+      },
+      "profile": "smoke",
+      "role_overrides": {},
+      "transport": "subscription_agent_runtime"
+    },
+    "schema": "leanmill.campaign.v1",
+    "stop": {
+      "low_yield_patience": 2
+    }
+  },
+  "runtime": {
+    "defaults": {
+      "allow_subscription_failover": false,
+      "model": "gpt-5.6-terra",
+      "reasoning_effort": "high",
+      "runtime": "codex"
+    },
+    "profile": "smoke",
+    "role_overrides": {},
+    "transport": "subscription_agent_runtime"
+  },
+  "schema": "leanmill.campaign.v1",
+  "source_path": "external_inputs/4732ba57443f07bbe62386e20e61d61d34719698f0e4078818e6746bb62444aa/independent_audit_miss_probability_blueprint.md",
+  "source_sha256": "aa2006c6150cb23397d2af0bd401999b96cd14cd6567617897afa5117ef9e324"
+}

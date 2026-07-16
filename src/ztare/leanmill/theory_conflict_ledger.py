@@ -216,8 +216,9 @@ class TheoryConflictLedger:
 
     def navigator_rows(self) -> list[dict[str, Any]]:
         """Projection that never exposes sealed witness payloads."""
-        return [
-            {
+        rows: list[dict[str, Any]] = []
+        for key, record in sorted(self._records.items()):
+            row: dict[str, Any] = {
                 "candidate_signature": key,
                 "context_hash": record.context_hash,
                 "witness_ref": record.witness_ref,
@@ -226,8 +227,27 @@ class TheoryConflictLedger:
                     (record.clause.provenance or {}).get("conflict_kind") or ""
                 ),
             }
-            for key, record in sorted(self._records.items())
-        ]
+            # These are the visible coordinates of the blocked candidate, not
+            # witness bytes.  Without them an agent sees an opaque digest and
+            # cannot choose a different implication before the host replays it.
+            if row["conflict_kind"] == "finite_countermodel":
+                premises = record.witness_payload.get("premise_formula_ids")
+                target = record.witness_payload.get("target_formula_id")
+                if isinstance(premises, list) and target:
+                    row["premise_formula_ids"] = [str(value) for value in premises]
+                    row["target_formula_id"] = str(target)
+                receipt = record.witness_payload.get("countermodel_receipt")
+                sizes = receipt.get("sort_sizes") if isinstance(receipt, Mapping) else None
+                if isinstance(sizes, Mapping):
+                    row["countermodel_sort_sizes"] = {
+                        str(key): int(value) for key, value in sizes.items()
+                    }
+            elif row["conflict_kind"] == "zero_residual_presentation":
+                formulas = record.witness_payload.get("formula_ids")
+                if isinstance(formulas, list):
+                    row["formula_ids"] = [str(value) for value in formulas]
+            rows.append(row)
+        return rows
 
 
 def theory_presentation_signature(
@@ -303,10 +323,6 @@ def _formal_context_witness_replay(context: Any) -> WitnessReplay:
         }
         if target_id not in axiom_map or any(row not in axiom_map for row in premises):
             return False
-        if tuple(sorted(str(row) for row in receipt.get("premise_formula_ids") or ())) != premises:
-            return False
-        if str(receipt.get("target_formula_id") or "") != target_id:
-            return False
         receipt_signature = str(receipt.get("signature_sha256") or "")
         if receipt_signature and receipt_signature != context.signature.content_hash:
             return False
@@ -365,7 +381,7 @@ def zero_residual_conflict_receipt(
     witness_ref = str(rejection.get("selection_receipt_id") or "")
     if not witness_ref:
         raise ValueError("zero-residual conflict requires a selection receipt")
-    return {
+    receipt = {
         "candidate_signature": theory_presentation_signature(
             context.signature.content_hash, formula_ids
         ),
@@ -381,6 +397,11 @@ def zero_residual_conflict_receipt(
             + str(residual.get("baseline_ref") or "the named baseline")
         ),
     }
+    if not _formal_context_witness_replay(context)(
+        receipt["witness_payload"], context.context_hash
+    ):
+        raise ValueError("presentation is not zero-residual under host replay")
+    return receipt
 
 
 def finite_countermodel_conflict_receipt(

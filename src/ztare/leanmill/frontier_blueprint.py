@@ -114,6 +114,20 @@ class FrontierTheoryBlueprint:
     schema: str = BLUEPRINT_SCHEMA
 
     def __post_init__(self) -> None:
+        mapping_fields = (
+            "signature", "primitive_semantics", "adapter_config", "formula_grammar",
+            "visible_evidence_manifest", "deanchoring_policy", "navigator_contract",
+            "query_budget", "stop_rule", "verification_plan", "codec_versions",
+            "compiler_receipt", "semantic_review_receipt", "executable_preflight_receipt",
+        )
+        for field in mapping_fields:
+            if not isinstance(getattr(self, field), Mapping):
+                raise ValueError(f"frontier blueprint field {field} must be an object")
+        for field in ("base_axioms", "model_or_observation_strata", "collapse_controls"):
+            if any(not isinstance(row, Mapping) for row in getattr(self, field)):
+                raise ValueError(
+                    f"frontier blueprint field {field} must contain objects"
+                )
         if self.schema != BLUEPRINT_SCHEMA or self.mode not in CAMPAIGN_MODES:
             raise ValueError("unsupported frontier blueprint schema or mode")
         if not self.frozen:
@@ -122,14 +136,7 @@ class FrontierTheoryBlueprint:
             raise ValueError("blueprint must bind a brief and eigenquestion")
         if not self.adapter_id or type(self.pack_arity) is not int or self.pack_arity < 1:
             raise ValueError("blueprint adapter and pack arity are required")
-        _presentation_size_bounds(self.pack_arity, self.navigator_contract)
-        _topology_presentation_size(self.pack_arity, self.navigator_contract)
-        selection_mode = self.navigator_contract.get(
-            "selection_mode", "compact_axiom_pack"
-        )
-        if selection_mode not in NAVIGATOR_SELECTION_MODES:
-            raise ValueError("unsupported navigator selection mode")
-        _host_isolated_lineage_count(self.navigator_contract)
+        validate_navigator_contract(self.pack_arity, self.navigator_contract)
         frontier_objective_contract(self)
         if not self.sealed_evidence_manifest_digest.startswith("sha256:"):
             raise ValueError("sealed evidence must be represented by a digest")
@@ -242,6 +249,26 @@ def _presentation_size_bounds(
     return minimum, maximum
 
 
+def validate_navigator_contract(
+    pack_arity: int,
+    navigator_contract: Mapping[str, Any],
+) -> None:
+    """Validate the candidate-search contract at its invariant-owning layer."""
+
+    if type(pack_arity) is not int or pack_arity < 1:
+        raise ValueError("blueprint pack arity must be positive")
+    if not isinstance(navigator_contract, Mapping):
+        raise ValueError("frontier blueprint navigator_contract must be an object")
+    _presentation_size_bounds(pack_arity, navigator_contract)
+    _topology_presentation_size(pack_arity, navigator_contract)
+    selection_mode = navigator_contract.get(
+        "selection_mode", "compact_axiom_pack"
+    )
+    if selection_mode not in NAVIGATOR_SELECTION_MODES:
+        raise ValueError("unsupported navigator selection mode")
+    _host_isolated_lineage_count(navigator_contract)
+
+
 def presentation_size_bounds(blueprint: FrontierTheoryBlueprint) -> tuple[int, int]:
     """Return the frozen candidate-presentation bounds for this campaign."""
 
@@ -306,7 +333,7 @@ def frontier_objective_contract(
     if not instruction or not isinstance(condition, Mapping):
         raise ValueError("frontier objective requires instruction and executable condition")
     if condition.get("kind") != "late_lineage_objective_review":
-        return None
+        raise ValueError("unsupported frontier objective condition kind")
     if set(condition) != {"kind"}:
         raise ValueError("late lineage objective condition has unknown fields")
     return {
@@ -386,4 +413,5 @@ __all__ = [
     "FrontierExplorationBrief", "FrontierTheoryBlueprint", "cold_navigator_manifest",
     "frontier_objective_contract", "host_isolated_lineage_count", "navigator_selection_mode",
     "presentation_size_bounds", "topology_presentation_size",
+    "validate_navigator_contract",
 ]

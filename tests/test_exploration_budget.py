@@ -323,6 +323,30 @@ def test_interrupted_legacy_clock_recovers_at_last_durable_event(tmp_path):
     assert ledger.recover_interrupted_wall_clock() == 5_000
     assert ledger.elapsed_ms() == 5_000
 
+    ledger.resume_wall_clock()
+    now[0] += 4_000
+    reservation = ledger.reserve("turn:1", "navigation", {"provider_calls": 1})
+    ledger.commit(reservation)
+    now[0] += 60_000
+
+    assert ledger.recover_interrupted_wall_clock() == 9_000
+    assert ledger.elapsed_ms() == 9_000
+
+
+def test_interrupted_reservation_is_conservatively_charged(tmp_path):
+    budget = budget_preset("smoke")
+    ledger = ExplorationBudgetLedger(
+        tmp_path / "interrupted-reservation.events.jsonl",
+        budget,
+        attempt_id="attempt-interrupted-reservation",
+    )
+    ledger.reserve("smt:0", "boundary", {"smt_calls": 1, "smt_millis": 30_000})
+
+    assert ledger.recover_interrupted_reservations() == 1
+    assert ledger.recover_interrupted_reservations() == 0
+    assert ledger.state()["usage"]["smt_calls"] == 1
+    assert ledger.state()["usage"]["smt_millis"] == 30_000
+
 
 def test_repeated_low_yield_and_coverage_have_distinct_stop_reasons(tmp_path):
     mapping = budget_to_user_mapping(budget_preset("quick"))

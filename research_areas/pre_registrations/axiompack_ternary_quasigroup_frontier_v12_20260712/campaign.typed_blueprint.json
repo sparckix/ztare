@@ -1,0 +1,380 @@
+{
+  "adapter_config": {
+    "model_generation": {
+      "max_canonical_models_per_stratum": 4166,
+      "mode": "smt_exact",
+      "timeout_ms_per_stratum": 300000
+    }
+  },
+  "adapter_id": "generic_fol_finite.v1",
+  "authority_refs": [
+    "brief:8a98e582ef2a1161dedda1ba4df9b9e5612be0f236a9435e0378c6c6b52d9de0"
+  ],
+  "base_axioms": [
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x",
+            "sort": "S0"
+          },
+          {
+            "name": "y",
+            "sort": "S0"
+          },
+          {
+            "name": "z",
+            "sort": "S0"
+          },
+          {
+            "name": "x2",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x"
+                },
+                {
+                  "kind": "var",
+                  "name": "y"
+                },
+                {
+                  "kind": "var",
+                  "name": "z"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x2"
+                },
+                {
+                  "kind": "var",
+                  "name": "y"
+                },
+                {
+                  "kind": "var",
+                  "name": "z"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "x"
+            },
+            "right": {
+              "kind": "var",
+              "name": "x2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord1_recoverable",
+      "schema": "leanmill.axiom_formula.v1"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x",
+            "sort": "S0"
+          },
+          {
+            "name": "y",
+            "sort": "S0"
+          },
+          {
+            "name": "z",
+            "sort": "S0"
+          },
+          {
+            "name": "y2",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x"
+                },
+                {
+                  "kind": "var",
+                  "name": "y"
+                },
+                {
+                  "kind": "var",
+                  "name": "z"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x"
+                },
+                {
+                  "kind": "var",
+                  "name": "y2"
+                },
+                {
+                  "kind": "var",
+                  "name": "z"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "y"
+            },
+            "right": {
+              "kind": "var",
+              "name": "y2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord2_recoverable",
+      "schema": "leanmill.axiom_formula.v1"
+    },
+    {
+      "formula": {
+        "binders": [
+          {
+            "name": "x",
+            "sort": "S0"
+          },
+          {
+            "name": "y",
+            "sort": "S0"
+          },
+          {
+            "name": "z",
+            "sort": "S0"
+          },
+          {
+            "name": "z2",
+            "sort": "S0"
+          }
+        ],
+        "body": {
+          "kind": "implies",
+          "left": {
+            "kind": "eq",
+            "left": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x"
+                },
+                {
+                  "kind": "var",
+                  "name": "y"
+                },
+                {
+                  "kind": "var",
+                  "name": "z"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            },
+            "right": {
+              "args": [
+                {
+                  "kind": "var",
+                  "name": "x"
+                },
+                {
+                  "kind": "var",
+                  "name": "y"
+                },
+                {
+                  "kind": "var",
+                  "name": "z2"
+                }
+              ],
+              "kind": "app",
+              "symbol": "op0"
+            }
+          },
+          "right": {
+            "kind": "eq",
+            "left": {
+              "kind": "var",
+              "name": "z"
+            },
+            "right": {
+              "kind": "var",
+              "name": "z2"
+            }
+          }
+        },
+        "kind": "forall"
+      },
+      "name": "coord3_recoverable",
+      "schema": "leanmill.axiom_formula.v1"
+    }
+  ],
+  "base_theory_status": "typed_resolved",
+  "codec_versions": {
+    "axiom_formula": "leanmill.axiom_formula.v1",
+    "leanmill": "v1",
+    "signature": "leanmill.theory_signature.v1",
+    "universal_equation_grammar": "leanmill.universal_equation_grammar.v1"
+  },
+  "collapse_controls": [],
+  "deanchoring_policy": {
+    "intent": "cold_after_signature_compilation",
+    "mode": "deanchored",
+    "preserve_search_identity": true
+  },
+  "eigenquestion": "What finite anonymous ternary operations admit coordinate-wise unique recovery, and what derived observables, quotients, and compact basis fragments become necessary to distinguish them across sizes?",
+  "formula_grammar": {
+    "equation_side_quotient": true,
+    "exclude_nonvariable_reflexive": true,
+    "max_formulas": 1000,
+    "max_total_operation_order": 2,
+    "max_variables_per_sort": 4,
+    "schema": "leanmill.universal_equation_grammar.v1",
+    "variable_renaming_quotient": true
+  },
+  "mode": "anonymous_signature_census",
+  "model_or_observation_strata": [
+    {
+      "sort_sizes": {
+        "S0": 3
+      }
+    }
+  ],
+  "navigator_contract": {
+    "adapter_id": "generic_fol_finite.v1",
+    "host_isolated_lineages": 3,
+    "presentation_size": {
+      "maximum": 4,
+      "minimum": 2
+    },
+    "selection_mode": "theory_program"
+  },
+  "pack_arity": 4,
+  "primitive_semantics": {
+    "operation_bindings": {
+      "op0": "observed_total_ternary_operation"
+    },
+    "relation_bindings": {}
+  },
+  "query_budget": {
+    "adapter_forge_attempts": 1,
+    "boundary_queries": 4,
+    "context_models": 25000,
+    "formal_peer_attempts": 1,
+    "formal_peer_millis": 180000,
+    "lean_attempts": 1,
+    "lean_millis": 600000,
+    "max_finalists": 6,
+    "metered_usd_micros": 0,
+    "navigator_rounds": 36,
+    "provider_calls": 44,
+    "smt_calls": 4,
+    "smt_millis": 480000,
+    "truth_cells": 10000000,
+    "workbench_actions": 128
+  },
+  "sealed_evidence_manifest_digest": "sha256:8a587b54bb7df8aad72a61be00ff9a3e61a3b1992c6b9bc64f4ec00e82fa24a3",
+  "signature": {
+    "name": "anonymous_ternary_recoverable_operation",
+    "operations": [
+      {
+        "arg_sorts": [
+          "S0",
+          "S0",
+          "S0"
+        ],
+        "name": "op0",
+        "result_sort": "S0"
+      }
+    ],
+    "relations": [],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "S0"
+      }
+    ]
+  },
+  "stop_rule": {
+    "executable_condition": {
+      "kind": "late_lineage_objective_review"
+    },
+    "user_instruction": "Stop only for a nontrivial agent-origin law or compact basis that changes what can be derived or tested beyond the initial chart, with premise necessity, cross-order persistence, and unrestricted verification."
+  },
+  "verification_plan": {
+    "acceptance_criterion": "A result is accepted only if it yields a nontrivial agent-origin law or compact basis that changes derivability or testability beyond the initial chart.",
+    "formal_system_checks": [
+      "verify the recoverability axioms admit exactly the intended finite structures under the registered solver-exact adapter",
+      "translate any emergent derived equations into LeanMill and check for cross-order persistence",
+      "treat recovered standard quasigroup consequences as calibration only"
+    ],
+    "heldout_strata": [
+      {
+        "checks": [
+          "coordinate_recovery",
+          "derived_operation_synthesis",
+          "counterexample_search",
+          "formal_translation"
+        ],
+        "sort_sizes": {
+          "S0": 4
+        }
+      },
+      {
+        "checks": [
+          "coordinate_recovery",
+          "derived_operation_synthesis",
+          "counterexample_search",
+          "formal_translation"
+        ],
+        "sort_sizes": {
+          "S0": 5
+        }
+      }
+    ]
+  },
+  "visible_evidence_manifest": {
+    "brief_id": "brief:8a98e582ef2a1161dedda1ba4df9b9e5612be0f236a9435e0378c6c6b52d9de0",
+    "evidence_refs": [],
+    "forbidden_shortcuts": [],
+    "schema": "leanmill.frontier_visible_evidence_manifest.v1",
+    "source_mode": "human_directed"
+  }
+}

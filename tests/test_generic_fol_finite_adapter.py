@@ -29,6 +29,7 @@ from ztare.leanmill.finite_theory_context import (
 from ztare.leanmill.formal_verification_provider import generate_keypair
 from ztare.leanmill.frontier_blueprint import FrontierExplorationBrief
 from ztare.leanmill.frontier_campaign import sign_frontier_campaign
+from ztare.leanmill.frontier_boundary import larger_model_strata
 from ztare.leanmill.magma_law_universe import anonymous_magma_signature
 from ztare.leanmill.theory_ir import (
     AxiomFormula,
@@ -62,6 +63,19 @@ def _fixture():
         ),
     )
     return signature, (reflexive, idempotent)
+
+
+def test_heldout_strata_lower_to_executable_countermodel_sizes():
+    signature, _ = _fixture()
+    assert larger_model_strata(
+        signature,
+        {
+            "heldout_strata": [
+                {"sort_sizes": {"S": 4}, "checks": ["counterexample_search"]},
+                {"sort_sizes": {"S": 5}, "checks": ["formal_translation"]},
+            ]
+        },
+    ) == ((("S", 4),), (("S", 5),))
 
 
 def test_generic_adapter_builds_non_magma_context_and_replays(tmp_path):
@@ -131,7 +145,10 @@ def test_smt_census_cap_cannot_be_laundered_as_exact() -> None:
     assert partial.receipt.complete is False
     assert partial.receipt.solver_checks == 2
 
-    with pytest.raises(ValueError, match="model_cap_reached"):
+    with pytest.raises(
+        generic_fol_finite.IncompleteFiniteModelUniverseError,
+        match="model_cap_reached",
+    ) as caught:
         build_model_universe(
             signature,
             strata=({"sort_sizes": {"S": 3}},),
@@ -143,6 +160,13 @@ def test_smt_census_cap_cannot_be_laundered_as_exact() -> None:
                 }
             },
         )
+    failure = caught.value.failure_receipt()
+    assert failure["status"] == "incomplete"
+    assert failure["enumeration_receipt"]["canonical_model_count"] == 1
+    assert failure["enumeration_receipt"]["complete"] is False
+    partial_snapshot = caught.value.partial_snapshot()
+    assert len(partial_snapshot["model_classes"]) == 1
+    assert partial_snapshot["receipt_sha256"]
 
 
 def test_signature_generic_smt_reproduces_small_cycle_structure_counts() -> None:
@@ -294,7 +318,10 @@ def test_non_magma_public_campaign_reuses_snapshot_and_runs_generic_smt(
         "visible_evidence_manifest": {},
         "sealed_evidence_manifest_digest": "sha256:" + "0" * 64,
         "deanchoring_policy": {"cold_after_signature_compilation": True},
-        "navigator_contract": {"adapter_id": "axiompack"},
+        "navigator_contract": {
+            "adapter_id": "axiompack",
+            "selection_mode": "compact_axiom_pack",
+        },
         "query_budget": {
             "max_finalists": 2,
             "max_ranked_queries": 4,

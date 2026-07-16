@@ -1,0 +1,56 @@
+{
+  "schema": "leanmill.axiom_pack_blueprint.v1",
+  "name": "priority_uncrossed_order_axiom_pack",
+  "domain": "finite_lattice_order_priority_structures",
+  "nl_statement": "Find minimal order/lattice axioms under which a priority relation stays uncrossed through monotone joins, without assuming the target theorem as an axiom.",
+  "semantic_intent": "Discover reusable structural compressions for finite priority queues, order duality, and uncrossed matching/order-book arguments.",
+  "target_structure_family": "finite lattices with priority preorder and join operation",
+  "current_theory": "bounded finite posets/lattices with explicit priority relation",
+  "residuals": [
+    "priority comparisons re-derived under order duality",
+    "uncrossedness proof search depends on local monotone-join facts",
+    "distributive vs modular hypotheses are not separated early"
+  ],
+  "forbidden_shortcuts": [
+    "Do not add the target uncrossed theorem as an axiom.",
+    "Do not let a surviving candidate grant proof credit.",
+    "Do not run downstream yield before finite-model stress receipts."
+  ],
+  "candidate_axiom_templates": [
+    {
+      "name": "total_priority_order",
+      "statement": "priority is total and antisymmetric on the finite carrier",
+      "family": "order"
+    },
+    {
+      "name": "distributive_priority_lattice",
+      "statement": "meet and join distribute on priority-relevant elements",
+      "family": "lattice"
+    },
+    {
+      "name": "modular_priority_lattice",
+      "statement": "the carrier is modular, separating a weaker lattice hypothesis",
+      "family": "lattice"
+    },
+    {
+      "name": "uncrossed_monotone_join",
+      "statement": "joining with a higher-priority element preserves uncrossed comparisons",
+      "family": "priority_join"
+    }
+  ],
+  "cheap_filter_policy": {
+    "max_finite_carrier_size": 5,
+    "filter_budget_k": 4,
+    "require_countermodel_strata": true,
+    "prune_before_downstream_yield": true
+  },
+  "downstream_yield_policy": {
+    "mode": "shadow_replay",
+    "max_replayed_residuals": 3,
+    "proof_credit_eligible": false,
+    "theorem_campaign_admissible": false
+  },
+  "provenance": [
+    "leanmill_axiom_pack_v1_pilot"
+  ]
+}

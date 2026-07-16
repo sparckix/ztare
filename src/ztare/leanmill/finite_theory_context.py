@@ -154,11 +154,14 @@ class FormalTheoryContext:
     @property
     def object_identity_policy(self) -> str:
         receipt = dict(self.universe.receipt.to_json())
-        return str(
+        policy = str(
             receipt.get("quotient_policy")
             or receipt.get("isomorphism_policy")
             or ""
         )
+        if policy == "functor_image_then_sortwise_isomorphism.v1":
+            return "sortwise_isomorphism_canonicalization.v1"
+        return policy
 
     @property
     def object_contrast_admissible(self) -> bool:

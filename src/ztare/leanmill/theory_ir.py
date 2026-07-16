@@ -13,7 +13,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+from itertools import permutations, product
 import json
+from math import prod
 import re
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -645,6 +647,128 @@ def _canonicalize_formula(
     }
 
 
+def logical_coordinate_hash(formula: Formula) -> str:
+    """Hash a formula modulo consecutive same-quantifier binder grouping.
+
+    This is an additive frontier-coordinate quotient.  ``semantic_hash`` stays
+    byte-compatible with banked theory artifacts.
+    """
+
+    def normalize(value: Formula) -> Formula:
+        children = tuple(normalize(row) for row in value.formulas)
+        if value.kind in {"forall", "exists"}:
+            binders = list(value.binders)
+            body = children[0]
+            while body.kind == value.kind:
+                binders.extend(body.binders)
+                body = body.formulas[0]
+            constructor = Formula.forall if value.kind == "forall" else Formula.exists
+            return constructor(binders, body)
+        return Formula(
+            kind=value.kind,
+            terms=value.terms,
+            formulas=children,
+            relation=value.relation,
+        )
+
+    normalized = normalize(formula)
+    return content_hash(_canonicalize_formula(normalized, env={}, counter=[0]))
+
+
+def permute_operation_arguments(
+    formula: Formula,
+    argument_permutations: Mapping[str, Sequence[int]],
+) -> Formula:
+    """Apply one declared input-coordinate permutation at every operation call.
+
+    This is a syntactic coordinate change, not an equivalence judgment.  The
+    caller must obtain type-correct maps from
+    :func:`operation_argument_permutation_variants` (or otherwise validate the
+    transformed formula against its signature).
+    """
+
+    normalized = {
+        str(symbol): tuple(int(index) for index in permutation)
+        for symbol, permutation in argument_permutations.items()
+    }
+
+    def transform_term(term: Term) -> Term:
+        if term.kind == "var":
+            return term
+        args = tuple(transform_term(arg) for arg in term.args)
+        permutation = normalized.get(term.name, tuple(range(len(args))))
+        if len(permutation) != len(args) or set(permutation) != set(range(len(args))):
+            raise IRValidationError(
+                f"operation {term.name!r} requires a permutation of {len(args)} inputs"
+            )
+        return Term.app(term.name, *(args[index] for index in permutation))
+
+    return Formula(
+        kind=formula.kind,
+        terms=tuple(transform_term(term) for term in formula.terms),
+        formulas=tuple(
+            permute_operation_arguments(child, normalized)
+            for child in formula.formulas
+        ),
+        binders=formula.binders,
+        relation=formula.relation,
+    )
+
+
+def operation_argument_permutation_variants(
+    signature: TheorySignature,
+    formula: Formula,
+    *,
+    include_identity: bool = False,
+    max_variants: int = 256,
+) -> tuple[tuple[tuple[tuple[str, tuple[int, ...]], ...], Formula], ...]:
+    """Enumerate type-correct global input-coordinate variants of ``formula``.
+
+    A permutation is admissible only when it preserves the declared argument
+    sorts of its operation.  Results retain the operation symbols and change
+    only their input coordinates.  They therefore provide deterministic search
+    queries; they do not assert that a source uses an equivalent presentation.
+    """
+
+    if type(max_variants) is not int or max_variants < 1:
+        raise ValueError("max_variants must be a positive integer")
+    choices: list[tuple[tuple[int, ...], ...]] = []
+    operations = tuple(signature.operations)
+    for operation in operations:
+        admissible = tuple(
+            permutation
+            for permutation in permutations(range(len(operation.arg_sorts)))
+            if tuple(operation.arg_sorts[index] for index in permutation)
+            == operation.arg_sorts
+        )
+        choices.append(admissible or ((),))
+    variant_count = prod(len(rows) for rows in choices) if choices else 1
+    emitted_count = variant_count if include_identity else max(0, variant_count - 1)
+    if emitted_count > max_variants:
+        raise ValueError(
+            "operation-coordinate variant count exceeds the declared cap"
+        )
+    identity = tuple(
+        (operation.name, tuple(range(len(operation.arg_sorts))))
+        for operation in operations
+    )
+    variants = []
+    for selected in product(*choices) if choices else ((),):
+        mapping = tuple(
+            (operation.name, tuple(permutation))
+            for operation, permutation in zip(operations, selected, strict=True)
+        )
+        if not include_identity and mapping == identity:
+            continue
+        transformed = permute_operation_arguments(formula, dict(mapping))
+        validate_axiom(
+            signature,
+            AxiomFormula(name="coordinate_variant", formula=transformed),
+        )
+        variants.append((mapping, transformed))
+    return tuple(variants)
+
+
 def validate_axiom(signature: TheorySignature, axiom: AxiomFormula) -> None:
     """Validate that ``axiom`` is closed and well typed for ``signature``."""
 
@@ -1008,6 +1132,9 @@ __all__ = [
     "anonymous_formula_ir",
     "content_hash",
     "lower_conditional_pack_to_lean",
+    "logical_coordinate_hash",
+    "operation_argument_permutation_variants",
+    "permute_operation_arguments",
     "render_formula_plain",
     "render_formula_to_lean",
     "relative_theory_content_hash",

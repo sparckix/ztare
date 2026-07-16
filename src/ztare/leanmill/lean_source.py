@@ -21,6 +21,8 @@ text (never reconstruct a statement) and carry positive/negative controls. The c
     python -m ztare.leanmill.lean_source --selftest
 """
 from __future__ import annotations
+from bisect import bisect_right
+from dataclasses import dataclass
 import re
 
 _DECL_PREFIX = r"(?:noncomputable\s+|private\s+|protected\s+)*(?:theorem|lemma)\s+"
@@ -61,6 +63,7 @@ DECL_START = re.compile(r"^" + _DECL_MODS + r"(" + "|".join(_DECL_KINDS) + r")\b
 # it would appear). These are COMMANDS, not named decls, so they bound a span but are never themselves banked.
 DECL_TERMINATORS = re.compile(
     r"^(end\b|#|namespace\b|section\b|open\b|variable\b|set_option\b|import\b|mutual\b"
+    r"|include\b|omit\b|universe(?:s)?\b|export\b|local\b"
     r"|notation\b|notation3\b|macro\b|macro_rules\b|syntax\b|declare_syntax_cat\b|elab\b|elab_rules\b"
     r"|infix\b|infixl\b|infixr\b|prefix\b|postfix\b|attribute\b)")
 # `mutual\b` (2026-07-05 OOD-axis-2): a `mutual … end` block is idiomatic in category-theory / recursive-engine
@@ -105,17 +108,56 @@ def preamble_before_target(text: str, target_name: str) -> str:
     Lean with a local regex; callers that reconstruct or verify a target must
     share this boundary with the rest of ``lean_source``.
     """
-    target = (target_name or "").rsplit(".", 1)[-1]
-    if not target:
+    requested = (target_name or "").strip()
+    if not requested:
         return (text or "").rstrip()
+    # Resolve spelling/identity once. The fallback retains the historical last-
+    # basename rule only for an ambiguous stale supersession shelf.
+    identity = resolve_theorem_target(text, requested)
+    if identity is not None:
+        return (text or "")[:identity.decl_start].rstrip()
+    target = requested.rsplit(".", 1)[-1]
     lines = (text or "").splitlines(keepends=True)
-    matches = [(start, end) for name, start, end in decl_spans(text) if name == target]
+    matches = [(start, end) for name, start, end in decl_spans(blank_comments(text or "")) if name == target]
     if not matches:
         return (text or "").rstrip()
     # Assemblers append their target last; choosing the last matching span
     # agrees with `dedup_decl_keep_last` when a stale shelf has a name collision.
     start, _ = matches[-1]
     return "".join(lines[:start]).rstrip()
+
+
+def source_through_target(text: str, target_name: str) -> str:
+    """Return the target's formal work item: inherited source through that declaration.
+
+    Later declarations are not premises of the target and therefore do not
+    belong in its leaf-edit or statement-integrity contract.  If identity
+    resolution fails, retain the complete source so callers fail visibly at
+    their normal target gate instead of silently dropping context.
+    """
+    identity = resolve_theorem_target(text, target_name)
+    return (
+        (text or "")[:identity.decl_end].rstrip()
+        if identity is not None
+        else (text or "").rstrip()
+    )
+
+
+def close_open_scopes(text: str) -> str:
+    """Close namespaces/sections opened by a source prefix.
+
+    A target audit should compile the declaration context that existed when
+    the target was elaborated, without compiling unrelated later declarations.
+    ``source_through_target`` provides that prefix; this helper makes the
+    prefix a standalone module through the same comment-aware scope index used
+    for theorem identity.  Already-balanced sources are returned unchanged.
+    """
+
+    source = text or ""
+    closers = _unclosed_scope_closers(source)
+    if not closers:
+        return source
+    return source.rstrip() + "\n\n" + "\n".join(closers) + "\n"
 
 
 def decl_kind(block: str) -> str:
@@ -254,7 +296,7 @@ def section_variable_lines(text: str) -> "list[str]":
     (byte-parity — no re-declaration, no behaviour change for every prior campaign shape)."""
     seen: "list[str]" = []
     for raw in strip_comments(text or "").splitlines():
-        s = raw.strip()
+        s = " ".join(raw.split())
         if s.split()[:1] == ["variable"] and s not in seen:
             seen.append(s)   # ponytail: single-line `variable` (the substrate norm); a rare multi-line binder would drop its continuation
     # MERGE BY BINDER (2026-07-05, the CLOB `failed to synthesize LT T` substrate-corruption RCA). A section-style
@@ -283,7 +325,7 @@ def section_variable_lines(text: str) -> "list[str]":
     merged: "list[str]" = []
     for binder in order:
         insts = by_binder[binder]
-        merged.append(("variable " + binder + ((" " + " ".join(insts)) if insts else "")).strip())
+        merged.append(" ".join(part for part in ("variable", binder, *insts) if part))
     return merged
 
 
@@ -489,6 +531,222 @@ def _decl_re(name: str) -> re.Pattern:
     return re.compile(_DECL_PREFIX + re.escape(name) + r"\b")
 
 
+def _written_theorem_span(source: str, name: str) -> "tuple[str, int, int, int] | None":
+    """Historical source-spelling lookup used by the legacy extraction API."""
+    src = source or ""
+    requested = (name or "").strip()
+    if not src or not requested:
+        return None
+    scan = blank_comments(src)
+    exact = _decl_re(requested).search(scan)
+    if exact is None:
+        return None
+    next_decl = _TOPLEVEL_DECL.search(scan, exact.end())
+    return (
+        requested,
+        scan.rfind("\n", 0, exact.start()) + 1,
+        exact.end(),
+        next_decl.start() if next_decl is not None else len(src),
+    )
+
+
+_STANDALONE_ATTRIBUTE = re.compile(r"^@\[[^\]]*\]\s*$")
+
+
+def _line_indent(line: str) -> int:
+    prefix = line[: len(line) - len(line.lstrip(" \t"))]
+    return len(prefix.expandtabs(8))
+
+
+def _is_command_boundary(visible: str) -> bool:
+    return bool(
+        DECL_START.match(visible)
+        or DECL_TERMINATORS.match(visible)
+        or _STANDALONE_ATTRIBUTE.match(visible)
+    )
+
+
+def _declaration_end_offset(
+    lines: "list[str]",
+    offsets: "list[int]",
+    *,
+    declaration_line: int,
+    scan_from_line: int,
+    total_length: int,
+) -> int:
+    """Find the next sibling command using Lean's offside boundary."""
+    declaration_indent = _line_indent(lines[declaration_line])
+    for index in range(scan_from_line, len(lines)):
+        line = lines[index]
+        visible = line.lstrip(" \t")
+        if (
+            visible.strip()
+            and _line_indent(line) <= declaration_indent
+            and _is_command_boundary(visible)
+        ):
+            # A doc comment belongs to the following command, and separator
+            # whitespace belongs to neither declaration.  ``lines`` comes
+            # from ``blank_comments``, so walking over blank visible lines
+            # preserves both without another comment parser or offset drift.
+            boundary = index
+            while (
+                boundary > declaration_line + 1
+                and not lines[boundary - 1].strip()
+            ):
+                boundary -= 1
+            return offsets[boundary]
+    return total_length
+
+
+def _scope_index(
+    scan_lines: "list[str]",
+) -> "tuple[list[tuple[str, ...]], list[tuple[str, str, tuple[str, ...]]]]":
+    """Index namespace identity per line and return the final open scopes."""
+    scopes: "list[tuple[str, str, tuple[str, ...]]]" = []
+    namespace_at_line: "list[tuple[str, ...]]" = []
+    active_declaration_indent: "int | None" = None
+    namespace_re = re.compile(r"^namespace\s+([A-Za-z_][\w'.]*)\s*$")
+    section_re = re.compile(r"^section(?:\s+([A-Za-z_][\w']*))?\s*$")
+    end_re = re.compile(r"^end(?:\s+[A-Za-z_][\w'.]*)?\s*$")
+    for line in scan_lines:
+        namespace_at_line.append(tuple(
+            part for kind, _name, parts in scopes
+            if kind == "namespace" for part in parts
+        ))
+        visible = line.lstrip(" \t")
+        indent = _line_indent(line)
+        if active_declaration_indent is not None:
+            if not (
+                visible.strip()
+                and indent <= active_declaration_indent
+                and _is_command_boundary(visible)
+            ):
+                continue
+            active_declaration_indent = None
+        if DECL_START.match(visible):
+            active_declaration_indent = indent
+            continue
+        command = visible.strip()
+        if match := namespace_re.match(command):
+            name = match.group(1)
+            scopes.append(("namespace", name, tuple(name.split("."))))
+        elif match := section_re.match(command):
+            scopes.append(("section", match.group(1) or "", ()))
+        elif command == "mutual":
+            scopes.append(("mutual", "", ()))
+        elif end_re.match(command) and scopes:
+            scopes.pop()
+    return namespace_at_line, scopes
+
+
+@dataclass(frozen=True)
+class ResolvedTheoremIdentity:
+    """One declaration's source spelling, Lean identity, and byte boundary."""
+
+    written_name: str
+    qualified_name: str
+    decl_start: int
+    name_end: int
+    decl_end: int
+
+    @property
+    def span(self) -> "tuple[str, int, int, int]":
+        return (self.written_name, self.decl_start, self.name_end, self.decl_end)
+
+
+def _theorem_identities(source: str) -> "tuple[ResolvedTheoremIdentity, ...]":
+    """Enumerate declarations once, keeping spelling distinct from identity."""
+    src = source or ""
+    if not src:
+        return ()
+    scan = blank_comments(src)
+    scan_lines = scan.splitlines(keepends=True)
+    offsets: list[int] = []
+    cursor = 0
+    for line in scan_lines:
+        offsets.append(cursor)
+        cursor += len(line)
+
+    # Track scopes only at command indentation. A proof-local `set_option` or
+    # term-level `end` is not a namespace command. `mutual` owns its own `end`.
+    namespace_at_line, _ = _scope_index(scan_lines)
+
+    candidates: "list[ResolvedTheoremIdentity]" = []
+    theorem_command = re.compile(
+        r"(?m)^(?P<indent>[ \t]*)"
+        + _DECL_MODS
+        + r"(?P<kind>theorem|lemma)\b\s+(?P<name>[A-Za-z_][\w'.]*)"
+    )
+    for match in theorem_command.finditer(scan):
+        written = match.group("name")
+        start_line = bisect_right(offsets, match.start()) - 1
+        parts = namespace_at_line[start_line]
+        if written.startswith("_root_."):
+            qualified = written[len("_root_."):]
+        else:
+            qualified = ".".join((*parts, *written.split(".")))
+        name_line = bisect_right(offsets, match.end("name") - 1) - 1
+        end = _declaration_end_offset(
+            scan_lines,
+            offsets,
+            declaration_line=start_line,
+            scan_from_line=name_line + 1,
+            total_length=len(src),
+        )
+        candidates.append(ResolvedTheoremIdentity(
+            written_name=written,
+            qualified_name=qualified,
+            decl_start=offsets[start_line],
+            name_end=match.end("name"),
+            decl_end=end,
+        ))
+    return tuple(candidates)
+
+
+def resolve_theorem_target(
+    source: str, selector: str
+) -> "ResolvedTheoremIdentity | None":
+    """Resolve one target selector without conflating spelling and identity.
+
+    A selector may be the exact spelling returned by :func:`theorem_names` or
+    the fully-qualified Lean name carried by a campaign.  If those meanings
+    name different declarations, resolution fails instead of guessing.
+    """
+    raw = (selector or "").strip()
+    if not raw:
+        return None
+    qualified_selector = (
+        raw[len("_root_."):] if raw.startswith("_root_.") else raw
+    )
+    matches = {
+        (row.decl_start, row.name_end, row.decl_end): row
+        for row in _theorem_identities(source)
+        if row.qualified_name == qualified_selector
+        or (not raw.startswith("_root_.") and row.written_name == raw)
+    }
+    return next(iter(matches.values())) if len(matches) == 1 else None
+
+
+def resolved_theorem_span(
+    source: str, name: str
+) -> "tuple[str, int, int, int] | None":
+    """Compatibility projection: written spelling first, then unique identity."""
+    legacy = _written_theorem_span(source, name)
+    if legacy is not None:
+        return legacy
+    resolved = resolve_theorem_target(source, name)
+    return resolved.span if resolved is not None else None
+
+
+def _source_api_theorem_span(
+    source: str, name: str
+) -> "tuple[str, int, int, int] | None":
+    """Preserve written-name APIs, adding qualified identity as a fallback."""
+    return _written_theorem_span(source, name) or (
+        resolved.span if (resolved := resolve_theorem_target(source, name)) else None
+    )
+
+
 def _decl_body(source: str, name: str) -> str | None:
     """The named decl's text from just AFTER `theorem <name>` up to the NEXT top-level decl (or EOF). In a
     multi-decl file this fences the decl so a following lemma's `:=`/`sorry` cannot truncate this one's
@@ -498,12 +756,11 @@ def _decl_body(source: str, name: str) -> str | None:
     (`blank_comments` preserves offsets, so a commented decl becomes spaces and can never match) and slice the
     VERBATIM body from the original — same canonical comment door `def_names`/`section_variable_lines` use."""
     src = source or ""
-    scan = blank_comments(src)
-    m = _decl_re(name).search(scan)
-    if not m:
+    resolved = _source_api_theorem_span(src, name)
+    if resolved is None:
         return None
-    nxt = _TOPLEVEL_DECL.search(scan, m.end())
-    return src[m.end():(nxt.start() if nxt else len(src))]
+    _, _, name_end, decl_end = resolved
+    return src[name_end:decl_end]
 
 
 def theorem_names(source: str) -> list[str]:
@@ -618,6 +875,23 @@ def blank_comments(text: str) -> str:
     return "".join(("\n" if c == "\n" else " ") if x else c for c, x in zip(t, m))
 
 
+def strip_print_axioms_commands(text: str) -> str:
+    """Remove top-level ``#print axioms`` commands, comment-safely.
+
+    This is used when a robust positive-proof probe instead contains a named
+    refutation: the positive target does not exist, and the negative theorem is
+    audited separately. All other source bytes are preserved.
+    """
+
+    source_lines = (text or "").splitlines(keepends=True)
+    visible_lines = blank_comments(text or "").splitlines(keepends=True)
+    return "".join(
+        source
+        for source, visible in zip(source_lines, visible_lines, strict=True)
+        if not re.match(r"^\s*#print\s+axioms\b", visible)
+    )
+
+
 def has_sorry(text: str) -> bool:
     """True if `sorry`/`admit` appears as code (line + NESTED block comments stripped first, so a
     `sorry` mentioned in a comment — even inside a nested comment — does not false-positive)."""
@@ -627,8 +901,8 @@ def has_sorry(text: str) -> bool:
 def _after_name(source: str, name: str) -> str | None:
     if not source or not name:
         return None
-    m = _decl_re(name).search(blank_comments(source))   # COMMENT-SAFE: don't match a commented `-- theorem <name>`
-    return source[m.end():] if m else None
+    resolved = _source_api_theorem_span(source, name)
+    return source[resolved[2]:] if resolved else None
 
 
 def extract_signature(source: str, name: str) -> str:
@@ -652,6 +926,39 @@ def extract_signature(source: str, name: str) -> str:
     return split_at_proof(after)[0].strip()
 
 
+def strip_unreferenced_sorried_decls(
+    text: str, *, keep: "set[str] | frozenset[str]" = frozenset()
+) -> "tuple[str, list[str]]":
+    """Drop open declarations that cannot contribute to this probe.
+
+    A later work item inherits earlier declarations from its source file.  An
+    unrelated earlier ``sorry`` must not poison the native probe, while a
+    referenced open declaration must remain and make the probe fail closed.
+    Reference reachability is conservative and comment-insensitive.
+    """
+    blocks = decl_blocks(text or "")
+    visible = [(name, blank_comments(block)) for name, block in blocks]
+    dead = [
+        name
+        for name, block in blocks
+        if name
+        and name not in keep
+        and has_sorry(block)
+        and not any(
+            other != name and identifier_token_mentions(body, name)
+            for other, body in visible
+        )
+    ]
+    if not dead:
+        return text, []
+    lines = (text or "").splitlines(keepends=True)
+    spans = {name: (start, end) for name, start, end in decl_spans(text or "")}
+    for name in sorted(dead, key=lambda item: spans[item][0], reverse=True):
+        start, end = spans[name]
+        del lines[start:end]
+    return "".join(lines), dead
+
+
 def compile_stub(source: str, name: str) -> str:
     """A COMPILE-valid `... theorem <name> <sig> := by` taken VERBATIM from source (prelude + the
     target statement, proof swapped to `:= by`), with a single leading `import Mathlib` dropped (the
@@ -659,19 +966,20 @@ def compile_stub(source: str, name: str) -> str:
     reconstructed — Lean parses the original text. Assumes the target's proof is the trailing `sorry`
     (the adhoc / PutnamBench shape); returns "" if there is none.
     """
-    if not source or not name or name not in source:
+    if not source or not name:
         return ""
     text = re.sub(r"\A\s*import\s+Mathlib\s*\n+", "", source, count=1)
-    m = _decl_re(name).search(text)
-    if not m:
+    resolved = _source_api_theorem_span(text, name)
+    if resolved is None:
         return ""
+    _, _, name_end, _ = resolved
     body = _decl_body(text, name)   # the TARGET decl only — a later lemma's sorry can't be mis-picked
     if body is None:
         return ""
     si = body.rstrip().rfind("sorry")
     if si >= 0:
         # preamble (defs/aux lemmas BEFORE the target, kept verbatim) + the target statement up to its proof
-        head = (text[:m.end()] + body[:si]).rstrip()
+        head = (text[:name_end] + body[:si]).rstrip()
     else:
         # No trailing `sorry`: a SELF-CONTAINED probe whose agent wrote a REAL/partial proof (a namespace-wrapped
         # gale-Shapley induction, 2026-07-06). Swap that proof for `:= by` so the deterministic cascade retries ON
@@ -681,10 +989,16 @@ def compile_stub(source: str, name: str) -> str:
         ai = top_level_assign(body)
         if ai < 0:
             return ""
-        head = (text[:m.end()] + body[:ai]).rstrip() + " :="
+        head = (text[:name_end] + body[:ai]).rstrip() + " :="
     if head.endswith(":="):
-        return head + " by"
-    if head.endswith(":= by"):
+        head += " by"
+    elif not head.endswith(":= by"):
+        return ""
+    # Earlier unfinished siblings are not premises unless the surviving
+    # prefix names them. Keeping an unrelated `sorry` makes the no-sorry
+    # checker reject every tactic before it reaches this exact target.
+    head, _ = strip_unreferenced_sorried_decls(head, keep={resolved[0]})
+    if head.rstrip().endswith(":= by"):
         return head
     return ""
 
@@ -727,6 +1041,117 @@ def attach_proof(head: str, proof_body: str) -> str:
     if h.endswith(":="):
         return (h + " " + body + "\n") if body_is_by_block else (h + " by\n  " + body + "\n")
     return h + "\n" + body + "\n"
+
+
+def assemble_tactic_probe(head: str, proof_body: str) -> str:
+    """Assemble one cold tactic probe without importing the whole Mathlib barrel.
+
+    ``Mathlib.Tactic`` owns the native cascade's dependency.  The previous
+    assembler injected the all-modules ``import Mathlib`` barrel; one absent,
+    unrelated olean therefore made every native tactic look dead.  Exact barrel
+    imports are narrowed to the tactic prelude, while every explicit source
+    import is preserved.  A source that needs an additional module keeps naming
+    that module; it does not acquire the entire library as hidden probe state.
+
+    ``compile_stub`` intentionally ends at the selected declaration.  When the
+    declaration lives in a namespace/section, append the corresponding closing
+    commands after the proof so the exact-declaration boundary remains a valid
+    Lean file rather than an unterminated prefix.
+    """
+    stub = (head or "").strip()
+    proof = (proof_body or "").strip()
+    if not stub or not proof:
+        return ""
+    source = attach_proof(stub, proof).rstrip()
+    source = re.sub(
+        r"(?m)^(?P<indent>[ \t]*)import[ \t]+Mathlib[ \t]*$",
+        r"\g<indent>import Mathlib.Tactic",
+        source,
+    )
+    imports_tactics = re.search(
+        r"(?m)^\s*import\s+Mathlib\.Tactic\s*$", blank_comments(source)
+    ) is not None
+    if not imports_tactics:
+        source = "import Mathlib.Tactic\n\n" + source
+    closers = _unclosed_scope_closers(stub)
+    if closers:
+        source += "\n" + "\n".join(closers)
+    return source + "\n"
+
+
+def _unclosed_scope_closers(text: str) -> "tuple[str, ...]":
+    """Return Lean ``end`` commands owed by a declaration-prefix probe."""
+    _, scopes = _scope_index(blank_comments(text or "").splitlines())
+    return tuple(
+        f"end {name}" if name else "end"
+        for _kind, name, _parts in reversed(scopes)
+    )
+
+
+def replace_decl_proof(source: str, target_name: str, proof_body: str) -> str:
+    """Replace exactly one named theorem's proof, preserving every sibling.
+
+    The target is resolved by :func:`resolve_theorem_target`, including its
+    namespace identity.  This is the named counterpart to ``swap_sorry`` for
+    theory files with several open declarations.  It deliberately fails
+    closed when the target is absent/ambiguous or has no proof assignment.
+    """
+    src = source or ""
+    identity = resolve_theorem_target(src, target_name)
+    if identity is None or not (proof_body or "").strip():
+        return ""
+    decl_start, decl_end = identity.decl_start, identity.decl_end
+    declaration = src[decl_start:decl_end]
+    assign = top_level_assign(blank_comments(declaration))
+    if assign < 0:
+        return ""
+    replacement = attach_proof(
+        declaration[:assign].rstrip() + " :=", proof_body
+    ).rstrip()
+    # Keep a declaration separator when the original span had one.  The
+    # following bytes (next declaration / namespace terminator) remain exact.
+    if declaration.endswith("\n"):
+        replacement += "\n"
+    return (
+        src[:decl_start]
+        + replacement
+        + src[decl_end:]
+    )
+
+
+def open_decl_for_ratification(
+    source: str, target_name: str
+) -> "tuple[str, str]":
+    """Turn one proved declaration into a governed proof candidate.
+
+    Returns ``(source_with_target_sorry, original_proof_body)``.  Every byte
+    outside the selected declaration's proof is preserved by
+    :func:`replace_decl_proof`; target resolution is namespace-aware and fails
+    closed on absence or ambiguity.  This is the canonical bridge from an
+    already compiled artifact to ``solve_adhoc(..., preverified_only=True)``.
+    """
+
+    identity = resolve_theorem_target(source or "", target_name)
+    if identity is None:
+        raise ValueError("ratification target is absent or ambiguous")
+    block = (source or "")[identity.name_end:identity.decl_end]
+    _signature, assigned = split_at_proof(block)
+    if not assigned.startswith(":="):
+        raise ValueError("ratification target has no proof assignment")
+    proof_body = assigned[2:].strip()
+    if not proof_body:
+        raise ValueError("ratification target has an empty proof")
+    if has_sorry(proof_body):
+        raise ValueError("ratification target proof is already open")
+    opened = replace_decl_proof(source, target_name, "by\n  sorry")
+    opened_identity = resolve_theorem_target(opened, target_name) if opened else None
+    opened_block = (
+        opened[opened_identity.name_end:opened_identity.decl_end]
+        if opened_identity is not None else None
+    )
+    if not opened_block or not has_sorry(opened_block):
+        raise ValueError("ratification target could not be opened exactly")
+    return opened, proof_body
 
 
 def swap_sorry(source: str, proof_body: str) -> str:
@@ -1372,6 +1797,50 @@ def _selftest() -> None:
     assert extract_signature(multi_sorried_aux, "target2").strip() == "(n : Nat) : 0 + n = n", \
         extract_signature(multi_sorried_aux, "target2")
     assert compile_stub(multi_sorried_aux, "target2").rstrip().endswith("0 + n = n := by")
+    # QUALIFIED IDENTITY + NAMED SPLICE: a campaign target is stored as `N.first`, while Lean source writes
+    # `theorem first` inside `namespace N`.  Resolve that exact identity, never a same-basename sibling, and
+    # replace FIRST's proof without touching either later open theorem (the orbit-action false-negative class).
+    namespaced = (
+        "import Mathlib\nnamespace N\n\n"
+        "theorem first : True := by sorry\n\n"
+        "theorem second : True := by sorry\n\n"
+        "theorem third : True := by sorry\n\n"
+        "end N\n"
+    )
+    assert extract_signature(namespaced, "N.first").strip() == ": True"
+    assert compile_stub(namespaced, "N.first").rstrip().endswith("theorem first : True := by")
+    assert extract_signature(namespaced, "Wrong.first") == ""       # basename alone cannot launder identity
+    _ns_preamble = preamble_before_target(namespaced, "N.first")
+    assert "namespace N" in _ns_preamble and "theorem first" not in _ns_preamble
+    assert "theorem second" not in _ns_preamble and "theorem third" not in _ns_preamble
+    _ns_work_item = source_through_target(namespaced, "N.first")
+    assert "theorem first" in _ns_work_item and "theorem second" not in _ns_work_item
+    _first_closed = replace_decl_proof(namespaced, "N.first", "by trivial")
+    assert _first_closed and "theorem first : True := by trivial" in _first_closed
+    assert strip_comments(_first_closed).count("sorry") == 2          # both siblings remain byte-separate/open
+    ambiguous = (
+        "namespace A\ntheorem same : True := by sorry\nend A\n"
+        "namespace B\ntheorem same : True := by sorry\nend B\n"
+    )
+    assert resolved_theorem_span(ambiguous, "same") is not None       # legacy unqualified lookup keeps first-match
+    assert resolved_theorem_span(ambiguous, "A.same") is not None
+    assert resolved_theorem_span(ambiguous, "B.same") is not None
+    indented = "namespace I\n  theorem spaced : True := by trivial\nend I\n"
+    assert extract_signature(indented, "spaced").strip() == ": True"  # legacy indented declaration remains visible
+    assert extract_signature(indented, "I.spaced").strip() == ": True"
+    _identity_edge = (
+        "namespace I\n@[simp]\ntheorem\n  edge : True := by\n"
+        "  set_option pp.universes true in\n    trivial\nend I\n"
+    )
+    _edge = resolve_theorem_target(_identity_edge, "I.edge")
+    assert _edge and _edge.written_name == "edge" and _edge.qualified_name == "I.edge"
+    _edge_closed = replace_decl_proof(_identity_edge, "I.edge", "by trivial")
+    assert _edge_closed and "set_option pp.universes" not in _edge_closed and "end I" in _edge_closed
+    _selector_collision = (
+        "namespace N\ntheorem A.t : True := by trivial\nend N\n"
+        "namespace A\ntheorem t : True := by trivial\nend A\n"
+    )
+    assert resolve_theorem_target(_selector_collision, "A.t") is None
     # redundant_subsumed_instances: the 2026-06-23 iso_lemma1 diamond ([LE α] under [Preorder α])
     _diamond = ("theorem iso_lemma1 {α : Type*} [Add α] [LE α] [Preorder α] [AddLeftMono α] "
                 "[AddRightReflectLE α] {a b c d : α} (h : a + b ≤ c + d) (hd : d ≤ b) : a ≤ c := by sorry")
@@ -1442,6 +1911,14 @@ def _selftest() -> None:
     assert not prop_quantifies_over_membership("s.Nonempty ∧ ∀ ⦃x⦄, x ∈ s → True")                 # guarded
     assert not prop_quantifies_over_membership("∀ x y : X, x ⊓ y = y ⊓ x")                          # no membership
     assert not prop_quantifies_over_membership("-- ∀ x ∈ s, foo\n0")                                # comment-only ∀/∈
+    _audit_probe = (
+        "theorem not_target : ¬ False := by simp\n"
+        "-- #print axioms keep_in_comment\n#print axioms target\n"
+    )
+    _audit_stripped = strip_print_axioms_commands(_audit_probe)
+    assert "#print axioms target" not in _audit_stripped
+    assert "-- #print axioms keep_in_comment" in _audit_stripped
+    assert strip_print_axioms_commands(_audit_stripped) == _audit_stripped
     # SINGLE-DOOR conjunction/iff split guard (2026-07-01 NS-hunt RCA). Metamorphic: OLD shapes must still SPLIT
     # (no regression to filed ∀-fronted / independent conjunctions), NS existential-shared-witness shapes must
     # DEFER (None), and the ∃-INSIDE-a-conjunct case must still split (scoped witness, sound).

@@ -27,6 +27,7 @@ ALLOWED_EVENT_TYPES = frozenset(
         "bounded_closure_computed",
         "countermodel_found",
         "conditional_consequence_proved",
+        "conditional_consequence_refuted",
         "proof_attempt_unresolved",
         "conflict_learned",
         "abstraction_refined",
@@ -37,8 +38,11 @@ ALLOWED_EVENT_TYPES = frozenset(
         "sealed_evaluation_completed",
         "evidence_promoted_to_next_epoch",
         "navigator_action_executed",
+        "navigator_agent_turn_failed",
+        "navigator_candidate_deduplicated",
         "navigator_reject_all",
         "boundary_query_completed",
+        "theory_task_adjudicated",
         "context_epoch_proposed",
     }
 )
@@ -199,7 +203,9 @@ def materialize_campaign_views(events: Iterable[TheoryCampaignEvent]) -> TheoryC
             "sealed_evaluation_completed",
         }:
             target = proofs
-        elif event.event_type in {"countermodel_found", "conflict_learned"}:
+        elif event.event_type in {
+            "countermodel_found", "conditional_consequence_refuted", "conflict_learned"
+        }:
             target = conflicts
         elif event.event_type in {"definition_proposed", "definition_retained"}:
             target = definitions

@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from itertools import permutations, product
 import json
-from math import prod
 import time
 from typing import TYPE_CHECKING, Any, Mapping, Sequence
 
@@ -186,23 +185,42 @@ def _normalize_sort_sizes(
     return sizes
 
 
+class _SMTDeadlineExceeded(TimeoutError):
+    pass
+
+
 class _FiniteSMTEncoding:
     """Shared Z3 lowering for countermodel search and complete enumeration."""
 
-    def __init__(self, signature: TheorySignature, sizes: Mapping[str, int]) -> None:
+    def __init__(
+        self,
+        signature: TheorySignature,
+        sizes: Mapping[str, int],
+        *,
+        deadline: float | None = None,
+    ) -> None:
         import z3
 
         self.z3 = z3
         self.signature = signature
         self.sizes = dict(sizes)
+        self.deadline = deadline
         self.solver = z3.Solver()
+        self.operation_functions: dict[str, Any] = {}
+        self.relation_functions: dict[str, Any] = {}
         self.operation_cells: dict[str, list[Any]] = {}
         self.relation_cells: dict[str, list[Any]] = {}
         for operation in signature.operations:
-            row_count = prod(self.sizes[sort] for sort in operation.arg_sorts)
+            self._ensure_time()
+            function = z3.Function(
+                f"op_{operation.name}",
+                *(z3.IntSort() for _sort in operation.arg_sorts),
+                z3.IntSort(),
+            )
+            rows = product(*(range(self.sizes[sort]) for sort in operation.arg_sorts))
             cells = [
-                z3.Int(f"op_{operation.name}_{index}")
-                for index in range(row_count)
+                function(*(z3.IntVal(value) for value in row))
+                for row in rows
             ]
             self.solver.add(
                 *(
@@ -210,48 +228,49 @@ class _FiniteSMTEncoding:
                     for cell in cells
                 )
             )
+            self.operation_functions[operation.name] = function
             self.operation_cells[operation.name] = cells
         for relation in signature.relations:
-            row_count = prod(self.sizes[sort] for sort in relation.arg_sorts)
+            self._ensure_time()
+            function = z3.Function(
+                f"rel_{relation.name}",
+                *(z3.IntSort() for _sort in relation.arg_sorts),
+                z3.BoolSort(),
+            )
+            rows = product(*(range(self.sizes[sort]) for sort in relation.arg_sorts))
+            self.relation_functions[relation.name] = function
             self.relation_cells[relation.name] = [
-                z3.Bool(f"rel_{relation.name}_{index}")
-                for index in range(row_count)
+                function(*(z3.IntVal(value) for value in row))
+                for row in rows
             ]
+
+    def _ensure_time(self) -> None:
+        if self.deadline is not None and time.monotonic() >= self.deadline:
+            raise _SMTDeadlineExceeded
+
+    def _remaining_ms(self, requested_ms: int) -> int:
+        self._ensure_time()
+        if self.deadline is None:
+            return requested_ms
+        return max(
+            1,
+            min(requested_ms, int((self.deadline - time.monotonic()) * 1_000)),
+        )
 
     @property
     def solver_name(self) -> str:
         return f"z3:{self.z3.get_version_string()}"
 
-    def _table_at(
-        self,
-        cells: Sequence[Any],
-        args: Sequence[Any],
-        arg_sorts: Sequence[str],
-    ) -> Any:
-        if not args:
-            return cells[0]
-        rows = tuple(product(*(range(self.sizes[sort]) for sort in arg_sorts)))
-        value = cells[-1]
-        for index in reversed(range(len(rows) - 1)):
-            condition = self.z3.And(
-                *(
-                    arg == expected
-                    for arg, expected in zip(args, rows[index], strict=True)
-                )
-            )
-            value = self.z3.If(condition, cells[index], value)
-        return value
-
     def _term(self, term: Term, environment: Mapping[str, Any]) -> Any:
+        self._ensure_time()
         if term.kind == "var":
             return environment[term.name]
         operation = self.signature.operation_map[term.name]
         args = tuple(self._term(child, environment) for child in term.args)
-        return self._table_at(
-            self.operation_cells[operation.name], args, operation.arg_sorts
-        )
+        return self.operation_functions[operation.name](*args)
 
     def formula(self, formula: Formula, environment: Mapping[str, Any] | None = None) -> Any:
+        self._ensure_time()
         environment = dict(environment or {})
         kind = formula.kind
         if kind == "true":
@@ -265,9 +284,7 @@ class _FiniteSMTEncoding:
         if kind == "rel":
             relation = self.signature.relation_map[formula.relation or ""]
             args = tuple(self._term(term, environment) for term in formula.terms)
-            return self._table_at(
-                self.relation_cells[relation.name], args, relation.arg_sorts
-            )
+            return self.relation_functions[relation.name](*args)
         if kind == "not":
             return self.z3.Not(self.formula(formula.formulas[0], environment))
         if kind == "and":
@@ -295,6 +312,7 @@ class _FiniteSMTEncoding:
         for values in product(
             *(range(self.sizes[binder.sort]) for binder in formula.binders)
         ):
+            self._ensure_time()
             local = dict(environment)
             local.update(
                 {
@@ -313,10 +331,11 @@ class _FiniteSMTEncoding:
         self.solver.add(*(self.formula(axiom.formula) for axiom in axioms))
 
     def check(self, timeout_ms: int) -> Any:
-        self.solver.set(timeout=timeout_ms)
+        self.solver.set(timeout=self._remaining_ms(timeout_ms))
         return self.solver.check()
 
     def materialize_model(self) -> FiniteModel:
+        self._ensure_time()
         z3_model = self.solver.model()
         model = FiniteModel(
             sort_sizes=tuple(sorted(self.sizes.items())),
@@ -346,6 +365,7 @@ class _FiniteSMTEncoding:
 
     def block_models(self, models: Sequence[FiniteModel]) -> None:
         for model in models:
+            self._ensure_time()
             operation_tables = model.operation_map
             relation_tables = model.relation_map
             differences = [
@@ -419,46 +439,45 @@ def enumerate_finite_models_smt(
     base_axioms = tuple(base_axioms)
     for axiom in base_axioms:
         validate_axiom(signature, axiom)
-    encoding = _FiniteSMTEncoding(signature, sizes)
-    encoding.add_axioms(base_axioms)
     deadline = time.monotonic() + timeout_ms / 1_000
     classes: list[FiniteModelIsomorphismClass] = []
     solver_checks = 0
     status = "unknown"
     reason = ""
-    while True:
-        remaining_ms = int((deadline - time.monotonic()) * 1_000)
-        if remaining_ms < 1:
-            status = "timeout"
-            reason = "enumeration wall-time bound reached before exhaustion"
-            break
-        verdict = encoding.check(remaining_ms)
-        solver_checks += 1
-        if verdict == encoding.z3.unsat:
-            status = "exhausted"
-            reason = "SMT blocking clauses exhausted the fixed size vector"
-            break
-        if verdict == encoding.z3.unknown:
-            status = "unknown"
-            reason = encoding.solver.reason_unknown()
-            break
-        if len(classes) >= max_canonical_models:
-            status = "model_cap_reached"
-            reason = "another model exists beyond the canonical-model cap"
-            break
-        model = encoding.materialize_model()
-        if not all(evaluate_axiom(signature, row, model) for row in base_axioms):
-            raise RuntimeError("SMT enumeration model failed host base-theory replay")
-        if quotient_isomorphisms:
-            canonical, orbit = _isomorphism_class(
-                signature,
-                model,
-                max_relabelings=max_relabelings_per_model,
-            )
-        else:
-            canonical, orbit = model, (model,)
-        encoding.block_models(orbit)
-        classes.append(FiniteModelIsomorphismClass(canonical, len(orbit)))
+    encoding = _FiniteSMTEncoding(signature, sizes, deadline=deadline)
+    try:
+        encoding.add_axioms(base_axioms)
+        while True:
+            verdict = encoding.check(timeout_ms)
+            solver_checks += 1
+            if verdict == encoding.z3.unsat:
+                status = "exhausted"
+                reason = "SMT blocking clauses exhausted the fixed size vector"
+                break
+            if verdict == encoding.z3.unknown:
+                status = "unknown"
+                reason = encoding.solver.reason_unknown()
+                break
+            if len(classes) >= max_canonical_models:
+                status = "model_cap_reached"
+                reason = "another model exists beyond the canonical-model cap"
+                break
+            model = encoding.materialize_model()
+            if not all(evaluate_axiom(signature, row, model) for row in base_axioms):
+                raise RuntimeError("SMT enumeration model failed host base-theory replay")
+            if quotient_isomorphisms:
+                canonical, orbit = _isomorphism_class(
+                    signature,
+                    model,
+                    max_relabelings=max_relabelings_per_model,
+                )
+            else:
+                canonical, orbit = model, (model,)
+            encoding.block_models(orbit)
+            classes.append(FiniteModelIsomorphismClass(canonical, len(orbit)))
+    except _SMTDeadlineExceeded:
+        status = "timeout"
+        reason = "enumeration wall-time bound reached before exhaustion"
     receipt = FiniteModelEnumerationReceipt(
         status=status,
         signature_hash=signature.content_hash,
@@ -506,8 +525,8 @@ def find_finite_countermodel(
     for axiom in (*base_axioms, *premises, target):
         validate_axiom(signature, axiom)
 
-    encoding = _FiniteSMTEncoding(signature, sizes)
-    encoding.add_axioms((*base_axioms, *premises))
+    deadline = time.monotonic() + timeout_ms / 1_000
+    encoding = _FiniteSMTEncoding(signature, sizes, deadline=deadline)
     common = {
         "signature_hash": signature.content_hash,
         "sort_sizes": tuple(sorted(sizes.items())),
@@ -521,7 +540,15 @@ def find_finite_countermodel(
         "solver": encoding.solver_name,
         "timeout_ms": timeout_ms,
     }
-    premise_verdict = encoding.check(timeout_ms)
+    try:
+        encoding.add_axioms((*base_axioms, *premises))
+        premise_verdict = encoding.check(timeout_ms)
+    except _SMTDeadlineExceeded:
+        return FiniteModelSearchReceipt(
+            status="unknown",
+            reason="finite-model operation exceeded its wall-time bound",
+            **common,
+        )
     if premise_verdict == encoding.z3.unknown:
         return FiniteModelSearchReceipt(
             status="unknown",
@@ -534,8 +561,15 @@ def find_finite_countermodel(
             reason="base theory and premises have no model on the fixed size vector",
             **common,
         )
-    encoding.solver.add(encoding.z3.Not(encoding.formula(target.formula)))
-    verdict = encoding.check(timeout_ms)
+    try:
+        encoding.solver.add(encoding.z3.Not(encoding.formula(target.formula)))
+        verdict = encoding.check(timeout_ms)
+    except _SMTDeadlineExceeded:
+        return FiniteModelSearchReceipt(
+            status="unknown",
+            reason="finite-model operation exceeded its wall-time bound",
+            **common,
+        )
     if verdict == encoding.z3.unknown:
         return FiniteModelSearchReceipt(
             status="unknown", reason=encoding.solver.reason_unknown(), **common

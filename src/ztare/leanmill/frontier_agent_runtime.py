@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import time
 from typing import Any, Iterator, Mapping
@@ -15,7 +16,10 @@ from ztare.common.subscription_agent_runtime import (
     CODEX_SANDBOX_VISIBLE_WORKBENCH,
     CODEX_SANDBOX_WEB_RESEARCH,
     SEALED_CLAUDE_DISALLOWED_TOOLS,
+    get_or_create_warm_session,
+    persist_warm_session,
     run_subscription_agent_with_recovery,
+    warm_session_recovery_callbacks,
 )
 from ztare.leanmill import prompts
 from ztare.leanmill.common import read_json, write_json_atomic, write_text_atomic
@@ -60,10 +64,20 @@ def _parse_last_json_object(text: str) -> dict[str, Any]:
 
 
 def _retryable_transport_failure(stderr: str) -> str | None:
-    if "invalid_json_schema" in stderr:
+    lowered = str(stderr).lower()
+    if "invalid_json_schema" in lowered:
         return "invalid_json_schema"
-    if "requires a newer version of Codex" in stderr:
+    if "requires a newer version of codex" in lowered:
         return "codex_cli_upgrade_required"
+    if (
+        "reasoning.effort" in lowered
+        and "invalid_value" in lowered
+    ) or (
+        "invalid value" in lowered
+        and "supported values" in lowered
+        and ("xhigh" in lowered or "reasoning" in lowered)
+    ):
+        return "unsupported_reasoning_effort"
     return None
 
 
@@ -76,6 +90,15 @@ def _provider_call_charge(result: subprocess.CompletedProcess[str]) -> int:
     if (
         "invalid_json_schema" in text
         or "requires a newer version of codex" in text
+        or (
+            "reasoning.effort" in text
+            and "invalid_value" in text
+        )
+        or (
+            "invalid value" in text
+            and "supported values" in text
+            and ("xhigh" in text or "reasoning" in text)
+        )
         or (
             "model" in text
             and "not supported" in text
@@ -134,6 +157,8 @@ class FrontierAgentConfig:
 @contextmanager
 def scoped_frontier_agent_environment(
     config: FrontierAgentConfig,
+    *,
+    solver_run_tag: str = "",
 ) -> Iterator[None]:
     """Apply one campaign role to LeanMill's existing subscription-agent knobs."""
 
@@ -145,6 +170,8 @@ def scoped_frontier_agent_environment(
             "0" if config.allow_subscription_failover else "1"
         ),
     }
+    if solver_run_tag:
+        bindings["ZTARE_SOLVER_RUN_TAG"] = solver_run_tag
     from ztare.common.llm_runtime import subscription_reasoning_effort
 
     native_effort = subscription_reasoning_effort(
@@ -251,10 +278,23 @@ class SubscriptionJSONRole:
                 if has_dedicated_result
                 else stdout
             )
-            self.calls.append({**prior, "replayed": True})
+            result_digest = str(prior.get("result_digest") or "")
+            if result_digest and content_hash({"result": result_text}) != result_digest:
+                raise ValueError("durable frontier role result bytes do not match receipt")
             parsed = _parse_last_json_object(result_text)
             if has_dedicated_result:
-                self._validate_result(parsed)
+                frozen_schema = read_json(schema_path, None)
+                schema_digest = str(prior.get("output_schema_digest") or "")
+                if schema_digest:
+                    if not isinstance(frozen_schema, Mapping):
+                        raise ValueError("durable frontier role schema bytes are missing")
+                    if content_hash(dict(frozen_schema)) != schema_digest:
+                        raise ValueError(
+                            "durable frontier role schema bytes do not match receipt"
+                        )
+                if isinstance(frozen_schema, Mapping):
+                    self._validate_result_against(parsed, frozen_schema)
+            self.calls.append({**prior, "replayed": True})
             return parsed
 
         if result_path.exists():
@@ -268,7 +308,7 @@ class SubscriptionJSONRole:
         timeout_seconds = self.config.timeout_seconds
         if self.budget_ledger is not None:
             remaining_ms = (
-                self.budget_ledger.budget.wall_clock_s * 1_000
+                self.budget_ledger.wall_clock_cap_s() * 1_000
                 - self.budget_ledger.elapsed_ms()
             )
             if remaining_ms <= 0:
@@ -277,14 +317,30 @@ class SubscriptionJSONRole:
                 raise BudgetExceeded("hard_cap_reached:wall_clock_s")
             timeout_seconds = min(timeout_seconds, max(1, remaining_ms // 1_000))
         started = time.monotonic()
+        session_dir = self.artifact_dir.parent / ".sessions"
+        session_agent_id = re.sub(r"\.wave-\d+$", "", self.agent_id)
+        session_state = get_or_create_warm_session(
+            session_dir,
+            runtime=self.config.runtime,
+            agent_id=session_agent_id,
+        )
+        invalidate_session, create_replacement_session = (
+            warm_session_recovery_callbacks(
+                session_dir,
+                runtime=self.config.runtime,
+                agent_id=session_agent_id,
+            )
+        )
         with scoped_frontier_agent_environment(self.config):
             run = run_subscription_agent_with_recovery(
                 runtime=self.config.runtime,
                 prompt=prompt,
                 agent_id=self.agent_id,
                 repo=self.repo,
-                session_state=None,
+                session_state=session_state,
                 timeout_seconds=timeout_seconds,
+                invalidate_session=invalidate_session,
+                create_replacement_session=create_replacement_session,
                 default_codex_model=self.config.model,
                 codex_sandbox=(
                     CODEX_SANDBOX_WEB_RESEARCH
@@ -347,6 +403,13 @@ class SubscriptionJSONRole:
         }
         write_json_atomic(prefix.with_suffix(".call.json"), record)
         self.calls.append(record)
+        if run.result.returncode == 0:
+            persist_warm_session(
+                session_dir,
+                runtime=self.config.runtime,
+                agent_id=session_agent_id,
+                session_state=getattr(run, "final_session_state", None),
+            )
         if run.result.returncode != 0 or not stdout.strip():
             raise RuntimeError(f"frontier {self.role} agent failed: rc={run.result.returncode}")
         if self.config.runtime == "codex" and not result_text.strip():
@@ -410,9 +473,15 @@ class SubscriptionJSONRole:
     def _validate_result(self, value: Mapping[str, Any]) -> None:
         if self.output_schema is None:
             return
+        self._validate_result_against(value, self.output_schema)
+
+    @staticmethod
+    def _validate_result_against(
+        value: Mapping[str, Any], schema: Mapping[str, Any]
+    ) -> None:
         from jsonschema import Draft202012Validator
 
-        Draft202012Validator(dict(self.output_schema)).validate(dict(value))
+        Draft202012Validator(dict(schema)).validate(dict(value))
 
 
 def make_subscription_frontier_compiler_roles(

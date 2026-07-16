@@ -7,26 +7,38 @@ import json
 import pytest
 
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
+from ztare.common.schema_routes import audit_project_schema_routes
 from ztare.common.science_output_policy import INVESTIGATED_STAGNATION_K
 from ztare.leanmill.deterministic_frontier_campaign import select_diverse_theory_nodes
 from ztare.leanmill.finite_model_census import enumerate_magma_model_universe
+from ztare.leanmill.finite_table_model_finder import FiniteModelSearchReceipt
 from ztare.leanmill.finite_theory_context import build_formal_theory_context
 from ztare.leanmill.frontier_blueprint import FrontierExplorationBrief
 from ztare.leanmill.frontier_blueprint_compiler import compile_structure_first_blueprint
 from ztare.leanmill.frontier_boundary import run_frontier_boundaries
+from ztare.leanmill.lean_consequence_bridge import execute_governed_lean_consequence
 from ztare.leanmill.exploration_budget import ExplorationBudgetLedger, budget_preset
 from ztare.leanmill.magma_law_universe import anonymous_magma_signature, magma_laws_through_order
 from ztare.leanmill.theory_campaign_journal import TheoryCampaignJournal
+from ztare.leanmill.theory_conflict_ledger import theory_implication_signature
 from ztare.leanmill.theory_navigator import (
     _prompt_trace_projection,
     prompt_trace_max_bytes,
     run_interactive_theory_navigator,
 )
 from ztare.leanmill.theory_interest import (
+    prediction_coordinate_normal_form,
+    profile_theory_program_predictions,
     theory_program_information_yield,
     theory_residual_information_yield,
 )
-from ztare.leanmill.theory_ir import content_hash
+from ztare.leanmill.theory_ir import (
+    AxiomFormula,
+    Formula,
+    content_hash,
+    logical_coordinate_hash,
+)
+from ztare.leanmill.theory_program import TheoryProgram
 from ztare.leanmill.typed_axiom_proposal import TypedAxiomProposal
 
 
@@ -86,6 +98,97 @@ def test_interactive_navigator_uses_workbench_then_freezes(tmp_path):
     assert result["finalists"][0]["joint_only_consequence_ids"]
     assert result["finalists"][0]["residual_joint_only_consequence_ids"]
     assert result["provider_calls"] == 4
+
+
+def test_repeated_frozen_candidate_is_receipted_and_preserves_finalist(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    chosen = select_diverse_theory_nodes(context, max_finalists=1)[0]
+    pair = next(
+        row
+        for row in chosen.minimal_generators
+        if len(row) == 2 and context.synergy_ids(row)
+    )
+    decisions = iter(
+        [
+            {
+                "decision": "freeze",
+                "formula_ids": list(pair),
+                "rationale": "Freeze the independently supported presentation.",
+            },
+            {
+                "decision": "freeze",
+                "formula_ids": list(pair),
+                "rationale": "Retry the same nomination after a transport boundary.",
+            },
+            {
+                "decision": "finish",
+                "rationale": "The prior frozen candidate already covers this identity.",
+            },
+        ]
+    )
+    journal = TheoryCampaignJournal(tmp_path / "duplicate.events.jsonl")
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        journal,
+        agent_fn=lambda _prompt: next(decisions),
+        attempt_id="attempt-duplicate",
+        campaign_id="campaign-duplicate",
+        max_rounds=3,
+        max_finalists=2,
+    )
+
+    assert len(result["finalists"]) == 1
+    duplicate = next(
+        row for row in result["trace"] if row["decision"] == "candidate_duplicate"
+    )
+    assert duplicate["receipt"]["prior_disposition"] == "frozen"
+    assert duplicate["receipt"]["existing_finalist_node_id"] == (
+        result["finalists"][0]["node_id"]
+    )
+    assert any(
+        event.event_type == "navigator_candidate_deduplicated"
+        for event in journal.replay()
+    )
+
+
+def test_post_boundary_navigation_uses_reserved_expansion_phase(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    ledger = ExplorationBudgetLedger(
+        tmp_path / "budget.events.jsonl",
+        budget_preset("smoke_20m"),
+        attempt_id="attempt-expansion",
+    )
+    navigation_calls = ledger.remaining_capacity("navigation", "provider_calls")
+    navigation_turns = ledger.remaining_capacity("navigation", "agent_turns")
+    reservation = ledger.reserve(
+        "fixture:exhaust-navigation",
+        "navigation",
+        {
+            "provider_calls": navigation_calls,
+            "agent_turns": navigation_turns,
+        },
+    )
+    ledger.commit(reservation)
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "events.jsonl"),
+        agent_fn=lambda _prompt: {
+            "decision": "finish",
+            "rationale": "Stop unresolved after inspecting the boundary feedback.",
+        },
+        attempt_id="attempt-expansion",
+        campaign_id="campaign-expansion",
+        max_rounds=1,
+        budget_ledger=ledger,
+        budget_phase="expansion",
+    )
+
+    assert result["provider_calls"] == 1
+    assert ledger.state()["phase_usage"]["expansion"]["provider_calls"] == 1
 
 
 def test_navigator_ranks_boundary_questions_and_host_preserves_that_choice(tmp_path):
@@ -238,6 +341,255 @@ def test_theory_program_mode_does_not_require_joint_only_pack_synergy(tmp_path):
     assert boundary.query_results[0]["pack_synergy_status"] == (
         "not_claimed_theory_program"
     )
+
+
+def test_unknown_prediction_is_rejected_without_terminating_navigation(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+            "presentation_size": {"minimum": 1, "maximum": 2},
+        },
+    )
+    presentation = (context.formula_ids[0],)
+    target = theory_program_information_yield(
+        context, presentation
+    ).residual_prediction_ids[0]
+    decisions = iter(
+        [
+            {
+                "decision": "freeze",
+                "formula_ids": list(presentation),
+                "boundary_target_ids": ["formula:" + "0" * 64],
+                "rationale": "Nominate a copied prediction identifier.",
+            },
+            {
+                "decision": "freeze",
+                "formula_ids": list(presentation),
+                "boundary_target_ids": [target],
+                "rationale": "Correct the identifier after the host rejection.",
+            },
+            {"decision": "finish", "rationale": "The corrected program is frozen."},
+        ]
+    )
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "unknown-prediction.events.jsonl"),
+        agent_fn=lambda _prompt: next(decisions),
+        attempt_id="attempt-unknown-prediction",
+        campaign_id="campaign-unknown-prediction",
+        max_rounds=3,
+    )
+
+    assert result["finalists"][0]["boundary_target_ids"] == [target]
+    assert any(
+        row.get("decision") == "candidate_input_rejected"
+        for row in result["trace"]
+    )
+
+
+def test_receipted_preview_losslessly_lowers_flattened_theory_program(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+            "presentation_size": {"minimum": 2, "maximum": 2},
+        },
+    )
+    pair, program = next(
+        (row, program)
+        for row in combinations(context.formula_ids, 2)
+        if (program := theory_program_information_yield(context, row)).residual_prediction_ids
+        and context.incidence.extent_bits(row).bit_count() > 0
+    )
+    predictions = list(program.residual_prediction_ids[:1])
+
+    def navigate(*, flattened: bool, journal_name: str):
+        decisions = iter(
+            [
+                {
+                    "decision": "request",
+                    "capability_id": "select_theory_presentation",
+                    "input_refs": {
+                        "formula_ids": list(pair),
+                        "prediction_formula_ids": predictions,
+                    },
+                    "rationale": "Bind the program roles before nomination.",
+                },
+                {
+                    "decision": "freeze",
+                    "formula_ids": list(pair) + predictions if flattened else list(pair),
+                    "boundary_target_ids": None if flattened else predictions,
+                    "rationale": "Nominate the previewed theory program.",
+                },
+                {"decision": "finish", "rationale": "The program is frozen."},
+            ]
+        )
+        return run_interactive_theory_navigator(
+            context,
+            blueprint,
+            TheoryCampaignJournal(tmp_path / journal_name),
+            agent_fn=lambda _prompt: next(decisions),
+            attempt_id="attempt-transport",
+            campaign_id="campaign-transport",
+            max_rounds=4,
+        )["finalists"][0]
+
+    canonical = navigate(flattened=False, journal_name="canonical.events.jsonl")
+    recovered = navigate(flattened=True, journal_name="recovered.events.jsonl")
+
+    assert recovered["theory_program_id"] == canonical["theory_program_id"]
+    assert recovered["formula_ids"] == canonical["formula_ids"] == sorted(pair)
+    assert recovered["boundary_target_ids"] == predictions
+    receipt = recovered["transport_normalization_receipt"]
+    assert receipt["raw_formula_ids"] == list(pair) + predictions
+    assert receipt["presentation_formula_ids"] == list(pair)
+    assert receipt["prediction_formula_ids"] == predictions
+
+
+def test_replayed_countermodel_blocks_the_same_program_prediction(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+            "presentation_size": {"minimum": 2, "maximum": 2},
+        },
+    )
+    pair, target = next(
+        (row, program.residual_prediction_ids[0])
+        for row in combinations(context.formula_ids, 2)
+        if (program := theory_program_information_yield(context, row)).residual_prediction_ids
+        and context.incidence.extent_bits(row).bit_count() > 0
+    )
+    decisions = iter(
+        [
+            {
+                "decision": "freeze",
+                "formula_ids": list(pair),
+                "boundary_target_ids": [target],
+                "rationale": "Try the candidate represented by the recalled implication.",
+            },
+            {"decision": "reject_all", "rationale": "Accept the replayed witness."},
+        ]
+    )
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "replayed.events.jsonl"),
+        agent_fn=lambda _prompt: next(decisions),
+        attempt_id="attempt-replayed",
+        campaign_id="campaign-replayed",
+        max_rounds=2,
+        prior_conflict_rows=(
+            {
+                "candidate_signature": theory_implication_signature(
+                    context.signature.content_hash, pair, target
+                ),
+                "context_hash": context.context_hash,
+                "witness_ref": "countermodel:1",
+                "witness_summary": "replayed finite countermodel",
+                "conflict_kind": "finite_countermodel",
+                "premise_formula_ids": list(pair),
+                "target_formula_id": target,
+            },
+        ),
+    )
+
+    assert result["finalists"] == []
+    rejected = result["reject_all_receipt"]["rejected_candidates"][0]
+    assert rejected["reason"] == (
+        "theory_program_prediction_refuted_by_replayed_countermodel"
+    )
+    assert rejected["rejection_authority"] == "host_witness_replay"
+
+
+def test_boundary_lowers_logical_product_to_existing_coordinates(tmp_path):
+    signature = anonymous_magma_signature()
+    laws = magma_laws_through_order(2)
+    compound = AxiomFormula(
+        "compound_prediction",
+        Formula.conjunction(laws[0].axiom.formula, laws[1].axiom.formula),
+    )
+    context = build_formal_theory_context(
+        signature=signature,
+        formulas=tuple(row.axiom for row in laws) + (compound,),
+        universe=enumerate_magma_model_universe(signature, carrier_sizes=(2,)),
+    )
+    _, blueprint = _context_and_blueprint()
+    target = "formula:" + compound.semantic_hash
+    component_ids = {
+        "formula:" + laws[0].axiom.semantic_hash,
+        "formula:" + laws[1].axiom.semantic_hash,
+    }
+    premise = next(
+        row for row in context.formula_ids
+        if row not in component_ids | {target}
+    )
+    profile = profile_theory_program_predictions(context, (premise,), (target,))
+    coordinate_profile = prediction_coordinate_normal_form(context, (target,))
+    identity = coordinate_profile["predictions"][0]
+    assert identity["status"] == "logical_product_requires_separate_coordinates"
+    assert identity["prediction_atom_count"] == 2
+    assert len({
+        formula_id
+        for atom in identity["prediction_atoms"]
+        for formula_id in atom["existing_formula_ids"]
+    }) == 2
+    grouped = next(
+        row.axiom.formula
+        for row in laws
+        if row.axiom.formula.kind == "forall"
+        and len(row.axiom.formula.binders) >= 2
+    )
+    regrouped = grouped.formulas[0]
+    for binder in reversed(grouped.binders):
+        regrouped = Formula.forall((binder,), regrouped)
+    assert logical_coordinate_hash(grouped) == logical_coordinate_hash(regrouped)
+    program = TheoryProgram(
+        campaign_id="campaign-product",
+        lineage_id="lineage-product",
+        context_hash=context.context_hash,
+        context_epoch=0,
+        presentation_formula_ids=(premise,),
+        prediction_formula_ids=(target,),
+        selection_receipt_id="selection-product",
+    )
+    navigation = {
+        "finalists": [{
+            "candidate_kind": "theory_program",
+            "formula_ids": [premise],
+            "boundary_target_ids": [target],
+            "residual_prediction_formula_ids": [target],
+            "theory_program": program.to_json(),
+            "prediction_profile": profile,
+        }]
+    }
+
+    result = run_frontier_boundaries(
+        context,
+        blueprint,
+        navigation,
+        TheoryCampaignJournal(tmp_path / "product.events.jsonl"),
+        ExplorationBudgetLedger(
+            tmp_path / "product-budget.events.jsonl",
+            budget_preset("smoke_20m"),
+            attempt_id="attempt-product",
+        ),
+        attempt_id="attempt-product",
+        campaign_id="campaign-product",
+    )
+
+    assert result.stop_reason == "campaign_finished"
+    assert {row["target_formula_id"] for row in result.query_results} == component_ids
+    assert all("prediction_normalization" in row for row in result.query_results)
 
 
 def test_seed_counterexample_returns_theory_program_to_search(
@@ -455,6 +807,149 @@ def test_optional_verifier_caps_skip_later_target_without_stopping_campaign(tmp_
     assert result.query_results[0]["formal_consensus"]["status"] == "corroborated"
     assert result.query_results[1]["isabelle"]["status"] == "skipped_budget_exhausted"
     assert result.query_results[1]["lean"]["status"] == "skipped_budget_exhausted"
+
+
+def test_boundary_resume_reuses_exhausted_strata_and_runs_only_missing_work(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    pair, signal = next(
+        (row, signal)
+        for row in combinations(context.formula_ids, 2)
+        if (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
+    )
+    target = signal.residual_consequence_ids[0]
+    blueprint = replace(
+        blueprint,
+        query_budget={**dict(blueprint.query_budget), "larger_model_queries": 1},
+        verification_plan={"larger_carriers": [3, 4], "smt_timeout_ms": 1_000},
+    )
+    prior = FiniteModelSearchReceipt(
+        status="no_countermodel_at_fixed_size",
+        signature_hash=context.signature.content_hash,
+        sort_sizes=((context.signature.sorts[0].name, 3),),
+        base_formula_ids=tuple(row.formula_id for row in context.base_axioms),
+        premise_formula_ids=tuple(sorted(pair)),
+        target_formula_id=target,
+        solver="z3:test",
+        timeout_ms=1_000,
+        reason="exhausted",
+    ).to_json()
+    calls = []
+
+    def finder(_premises, _target, *, sort_sizes, **_kwargs):
+        calls.append(dict(sort_sizes))
+        return FiniteModelSearchReceipt(
+            status="no_countermodel_at_fixed_size",
+            signature_hash=context.signature.content_hash,
+            sort_sizes=tuple(sorted(sort_sizes.items())),
+            base_formula_ids=tuple(row.formula_id for row in context.base_axioms),
+            premise_formula_ids=tuple(sorted(pair)),
+            target_formula_id=target,
+            solver="z3:test",
+            timeout_ms=1_000,
+            reason="exhausted",
+        )
+
+    ledger = ExplorationBudgetLedger(
+        tmp_path / "resume-budget.events.jsonl",
+        budget_preset("smoke_20m"),
+        attempt_id="attempt-resume",
+    )
+    result = run_frontier_boundaries(
+        context,
+        blueprint,
+        {"finalists": [{
+            "formula_ids": list(pair),
+            "residual_joint_only_consequence_ids": [target],
+            "boundary_target_ids": [target],
+        }]},
+        TheoryCampaignJournal(tmp_path / "resume.events.jsonl"),
+        ledger,
+        attempt_id="attempt-resume",
+        campaign_id="campaign-resume",
+        countermodel_fn=finder,
+        prior_query_results=({
+            "premise_formula_ids": list(sorted(pair)),
+            "target_formula_id": target,
+            "countermodel_searches": [prior],
+        },),
+    )
+
+    assert calls == [{context.signature.sorts[0].name: 4}]
+    assert [row["carrier_size"] for row in result.query_results[0]["countermodel_searches"]] == [3, 4]
+    assert ledger.state()["usage"]["boundary_queries"] == 0
+    assert ledger.state()["usage"]["smt_calls"] == 1
+
+
+def test_kernel_refutation_is_consumed_as_search_feedback(tmp_path, monkeypatch):
+    context, blueprint = _context_and_blueprint()
+    pair, signal = next(
+        (row, signal)
+        for row in combinations(context.formula_ids, 2)
+        if (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
+    )
+    target = signal.residual_consequence_ids[0]
+    blueprint = replace(
+        blueprint,
+        verification_plan={"conditional_lean": True, "lean_timeout_ms": 1_000},
+    )
+    refutation = "import Mathlib\n\ntheorem witness : ¬ False := by simp\n"
+    monkeypatch.setenv("ZTARE_LEANMILL_VERDICT_TRACE", "0")
+    from ztare.leanmill.solver import conjecture, solver_core
+
+    monkeypatch.setattr(
+        conjecture,
+        "recover_saved_refutation",
+        lambda *_args, **_kwargs: (True, "saved kernel refutation", refutation),
+    )
+    monkeypatch.setattr(
+        solver_core,
+        "solve_adhoc",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("provider-backed solver should not run")
+        ),
+    )
+
+    def lean_executor(task, *, budget_ledger):
+        return execute_governed_lean_consequence(
+            task,
+            substrate=tmp_path,
+            timeout_s=1,
+            compile_fn=lambda _source: None,
+        ).to_json()
+
+    journal = TheoryCampaignJournal(tmp_path / "workspace" / "events.jsonl")
+    result = run_frontier_boundaries(
+        context,
+        blueprint,
+        {
+            "finalists": [{
+                "formula_ids": list(pair),
+                "residual_joint_only_consequence_ids": [target],
+                "boundary_target_ids": [target],
+            }]
+        },
+        journal,
+        ExplorationBudgetLedger(
+            tmp_path / "refutation-budget.events.jsonl",
+            budget_preset("smoke_20m"),
+            attempt_id="attempt-refutation",
+        ),
+        attempt_id="attempt-refutation",
+        campaign_id="campaign-refutation",
+        lean_executor_fn=lean_executor,
+    )
+
+    assert result.stop_reason == "candidate_refuted_return_to_search"
+    assert len(result.query_results) == 1
+    row = result.query_results[0]
+    assert row["program_prediction_status"] == "refuted_by_kernel"
+    assert row["lean"]["governed_attempt"]["refutation"]["lean_source"] == refutation
+    assert any(
+        event.event_type == "conditional_consequence_refuted"
+        for event in journal.replay()
+    )
+    audit = audit_project_schema_routes(tmp_path)
+    assert audit["halt_required"] is False, audit["errors"]
 
 
 def test_navigator_receives_only_replayed_safe_conflict_projection(tmp_path):
@@ -1355,19 +1850,63 @@ def test_failed_agent_call_before_dispatch_consumes_no_provider_budget(tmp_path)
         def __call__(self, _prompt):
             raise ValueError("durable prompt mismatch before dispatch")
 
-    with pytest.raises(ValueError, match="before dispatch"):
-        run_interactive_theory_navigator(
-            context,
-            blueprint,
-            TheoryCampaignJournal(tmp_path / "failed-call.events.jsonl"),
-            agent_fn=FailingAgent(),
-            attempt_id="attempt-failed-call",
-            campaign_id="campaign-failed-call",
-            budget_ledger=ledger,
-        )
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "failed-call.events.jsonl"),
+        agent_fn=FailingAgent(),
+        attempt_id="attempt-failed-call",
+        campaign_id="campaign-failed-call",
+        budget_ledger=ledger,
+    )
 
+    assert result["agent_turn_failure_receipt"]["error_type"] == "ValueError"
+    assert result["trace"][-1]["decision"] == "agent_turn_failed"
+    assert result["provider_calls"] == 0
     assert ledger.state()["usage"]["provider_calls"] == 0
     assert ledger.state()["usage"]["agent_turns"] == 0
+
+
+def test_agent_timeout_preserves_the_prior_workbench_receipt(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    decisions = iter(
+        [
+            {
+                "decision": "request",
+                "capability_id": "list_theory_nodes",
+                "input_refs": {"offset": 0, "limit": 1},
+                "rationale": "Inspect one exact topology row.",
+            },
+            RuntimeError("frontier navigator agent failed: rc=124"),
+        ]
+    )
+
+    def agent(_prompt):
+        decision = next(decisions)
+        if isinstance(decision, Exception):
+            raise decision
+        return decision
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "timeout.events.jsonl"),
+        agent_fn=agent,
+        attempt_id="attempt-timeout",
+        campaign_id="campaign-timeout",
+        max_rounds=3,
+    )
+
+    assert result["provider_calls"] == 2
+    assert [row["decision"] for row in result["trace"][-2:]] == [
+        "request",
+        "agent_turn_failed",
+    ]
+    assert result["trace"][-2]["receipt"]["receipt_id"]
+    assert result["pending_leaf_decision"]["reason"] == (
+        "agent_turn_failed_before_admissible_decision"
+    )
+    assert "navigation_exhausted_receipt" not in result
 
 
 def test_host_action_at_round_horizon_remains_pending_for_leaf_judgment(tmp_path):

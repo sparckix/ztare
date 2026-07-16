@@ -2,24 +2,24 @@
   "move_prior": {
     "default_weight": 1.0,
     "domains": {
-      "lean": 0.3216
+      "lean": 0.3228
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.3392,
-        "score_rows": 1085
+        "mean_brier": 0.3386,
+        "score_rows": 1091
       }
     }
   },
   "proof_cache": {
     "default_weight": 1.0,
     "domains": {
-      "lean": 0.8556
+      "lean": 0.8552
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.0722,
-        "score_rows": 321
+        "mean_brier": 0.0724,
+        "score_rows": 320
       }
     }
   },

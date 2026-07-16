@@ -2,7 +2,7 @@
   "action": "proof_audit",
   "artifact_path": "ztare_proofs/check.proof_audit_receipt.json",
   "command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "src.ztare.cli",
     "leanmill",

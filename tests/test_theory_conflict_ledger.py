@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from itertools import combinations
 import json
 
 import pytest
 
 from ztare.common.conflict_ledger import ConflictLedger
+from ztare.leanmill.common import read_json
 from ztare.leanmill.exploration_budget import ExplorationBudgetLedger, budget_preset
+from ztare.leanmill.explore_axiom_space import (
+    _freeze_theory_conflict_memory,
+    _learn_navigation_conflicts,
+    _refresh_theory_conflict_memory_after_wave,
+)
 from ztare.leanmill.finite_model_census import enumerate_magma_model_universe
 from ztare.leanmill.finite_table_model_finder import find_finite_countermodel
 from ztare.leanmill.finite_theory_context import build_formal_theory_context
@@ -21,6 +28,7 @@ from ztare.leanmill.theory_conflict_ledger import (
     TheoryConflictLedger,
     open_theory_conflict_ledger,
 )
+from ztare.leanmill.theory_interest import theory_residual_information_yield
 
 
 def test_context_conflict_requires_and_replays_witness():
@@ -133,6 +141,65 @@ def test_corrupt_persistent_conflict_refuses_replay(tmp_path):
         )
 
 
+def test_agent_refusal_becomes_visible_only_after_completed_wave(tmp_path):
+    signature = anonymous_magma_signature()
+    context = build_formal_theory_context(
+        signature=signature,
+        formulas=tuple(row.axiom for row in magma_laws_through_order(2)),
+        universe=enumerate_magma_model_universe(signature, carrier_sizes=(2,)),
+    )
+    formulas = next(
+        row
+        for row in combinations(context.formula_ids, 2)
+        if not (
+            signal := theory_residual_information_yield(context, row)
+        ).residual_consequence_ids
+        and not signal.cheap_baseline_inconclusive_ids
+        and signal.coordinates.identification_bits == 0
+    )
+    directory = tmp_path / "attempt"
+    directory.mkdir()
+    ledger, visible = _freeze_theory_conflict_memory(context, directory, epoch=0)
+    assert visible == ()
+    signal = theory_residual_information_yield(context, formulas)
+    navigation = {
+        "search_wave": 0,
+        "trace": [
+            {
+                "decision": "candidate_rejected",
+                "rejection": {
+                    "reason": "agent_refused_theory_program",
+                    "formula_ids": list(formulas),
+                    "selection_receipt_id": "selection:agent-refusal",
+                    "residual_yield": signal.coordinates.to_json(),
+                },
+            }
+        ],
+    }
+    journal = TheoryCampaignJournal(directory / "events.jsonl")
+
+    assert _learn_navigation_conflicts(
+        context,
+        navigation,
+        ledger,
+        journal,
+        attempt_id="attempt",
+        campaign_id="campaign",
+        epoch=0,
+    ) == 1
+    assert read_json(
+        directory / "theory_conflict_memory.epoch-000.json", {}
+    )["conflict_count"] == 0
+
+    _refresh_theory_conflict_memory_after_wave(
+        context, directory, ledger, epoch=0, search_wave=0
+    )
+    refreshed = read_json(directory / "theory_conflict_memory.epoch-000.json", {})
+    assert refreshed["conflict_count"] == 1
+    assert refreshed["search_wave"] == 1
+    assert len(list(directory.glob("*.before-wave-001.*.json"))) == 1
+
+
 def test_replayed_finite_countermodel_skips_boundary_spend_across_attempts(tmp_path):
     signature = anonymous_magma_signature()
     laws = magma_laws_through_order(1)
@@ -205,6 +272,10 @@ def test_replayed_finite_countermodel_skips_boundary_spend_across_attempts(tmp_p
     )
     assert first.query_results[0]["pack_synergy_status"] == "refuted_by_larger_model"
     assert shared.is_file()
+    visible_conflict = open_theory_conflict_ledger(context, shared).navigator_rows()[0]
+    assert visible_conflict["premise_formula_ids"] == [premise.formula_id]
+    assert visible_conflict["target_formula_id"] == target.formula_id
+    assert "witness_payload" not in visible_conflict
 
     second_budget = ExplorationBudgetLedger(
         tmp_path / "second.budget.jsonl",

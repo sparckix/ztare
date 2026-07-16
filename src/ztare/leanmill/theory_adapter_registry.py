@@ -4,6 +4,11 @@ from __future__ import annotations
 import importlib
 from typing import Any, Mapping
 
+from ztare.common.task_discharge import (
+    TaskDischargeContract,
+    TaskDischargeReceipt,
+    adjudicate_task_discharge,
+)
 
 _ADAPTERS = {
     "generic_fol_finite.v1": "ztare.leanmill.adapters.generic_fol_finite",
@@ -55,6 +60,52 @@ def theory_adapter_capabilities(adapter_id: str) -> tuple[str, ...]:
     return tuple(sorted(capabilities))
 
 
+class _RegisteredTheoryTaskAdjudicator:
+    """Present one reviewed module capability through the common adapter door."""
+
+    def __init__(self, adapter_id: str, kwargs: Mapping[str, Any]) -> None:
+        self.adapter_id = str(adapter_id)
+        self.kwargs = dict(kwargs)
+
+    def adjudicate_task_discharge(
+        self, contract: TaskDischargeContract
+    ) -> TaskDischargeReceipt | Mapping[str, Any]:
+        if "task_discharge_adjudicator" not in theory_adapter_capabilities(
+            self.adapter_id
+        ):
+            reason = "adapter_capability_unavailable"
+        else:
+            try:
+                return materialize_theory_adapter_capability(
+                    self.adapter_id,
+                    "task_discharge_adjudicator",
+                    contract=contract,
+                    **self.kwargs,
+                )
+            except KeyError:
+                reason = "adjudicator_unavailable"
+        return TaskDischargeReceipt(
+            contract_sha256=contract.sha256,
+            adjudicator_id=contract.adjudicator_id,
+            status="unavailable",
+            authority="leanmill.theory_adapter_registry",
+            observed={"reason": reason, "adapter_id": self.adapter_id},
+        )
+
+
+def adjudicate_theory_adapter_task(
+    adapter_id: str,
+    contract: TaskDischargeContract,
+    **kwargs: Any,
+) -> TaskDischargeReceipt:
+    """Resolve a registered theory adjudicator and verify its receipt identity."""
+
+    return adjudicate_task_discharge(
+        _RegisteredTheoryTaskAdjudicator(adapter_id, kwargs),
+        contract,
+    )
+
+
 def load_model_universe(value: Mapping[str, Any]) -> Any:
     adapter_id = str(value.get("adapter_id") or "")
     module = resolve_theory_adapter_module(adapter_id)
@@ -88,7 +139,8 @@ def preflight_theory_adapter(
 
 
 __all__ = [
-    "load_model_universe", "registered_theory_adapter_ids",
+    "adjudicate_theory_adapter_task", "load_model_universe",
+    "registered_theory_adapter_ids",
     "materialize_theory_adapter_capability", "preflight_theory_adapter",
     "resolve_theory_adapter_module", "theory_adapter_capabilities",
 ]

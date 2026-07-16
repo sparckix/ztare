@@ -13,7 +13,8 @@ def test_legacy_blueprint_is_a_formalization_campaign(tmp_path: Path):
     campaign = load_campaign_manifest(path)
     assert campaign.lane == "formalize"
     assert campaign.body.startswith("## Target")
-    assert campaign.budget.allocation_policy == "global_cap"
+    assert campaign.budget.allocation_policy == "roll_forward_protected_future"
+    assert campaign.budget.hard_caps["adapter_forge_attempts"] == 0
     assert campaign.budget.wall_clock_s == 7200
     assert campaign.source_path == path
     assert campaign.explicit_envelope is False

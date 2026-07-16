@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import sys
 from typing import Any, Callable, Mapping, Sequence
 
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
@@ -64,15 +65,28 @@ from ztare.leanmill.theory_conflict_ledger import (
     open_theory_conflict_ledger,
     zero_residual_conflict_receipt,
 )
-from ztare.leanmill.theory_ir import AxiomFormula, TheorySignature, content_hash
-from ztare.leanmill.theory_language import TheoryLanguageExpansionRequest
+from ztare.leanmill.theory_ir import (
+    AxiomFormula,
+    TheorySignature,
+    content_hash,
+    logical_coordinate_hash,
+)
+from ztare.leanmill.theory_language import (
+    TheoryLanguageExpansionRequest,
+    compile_theory_language_expansion,
+)
+from ztare.leanmill.theory_lineage_synthesis import (
+    lineage_request_matches_context,
+)
 from ztare.leanmill.theory_navigator import reject_all_sequence_receipt
+from ztare.leanmill.theory_program import TheoryProgram
 from ztare.leanmill.typed_axiom_proposal import TypedAxiomProposal
 
 
 PacketSigner = Callable[[FrontierCampaignPacket], SignedFrontierCampaign]
 NavigatorFn = Callable[..., Mapping[str, Any]]
 BudgetCompilerFn = Callable[[str], Mapping[str, Any] | str]
+NavigationOwnershipFn = Callable[[Path, int, str], Any]
 
 
 def _freeze_theory_conflict_memory(
@@ -129,7 +143,7 @@ def _learn_navigation_conflicts(
     campaign_id: str,
     epoch: int,
 ) -> int:
-    """Deposit only host-replayed zero-residual presentation failures."""
+    """Deposit every presentation whose zero residual replays on the host."""
 
     existing = {
         (event.subject_ids[0], event.output_refs[0])
@@ -150,13 +164,14 @@ def _learn_navigation_conflicts(
         if not isinstance(trace_row, Mapping) or trace_row.get("decision") != "candidate_rejected":
             continue
         rejection = trace_row.get("rejection")
-        if not isinstance(rejection, Mapping) or rejection.get("reason") not in {
-            "cheap_baseline_exhausts_joint_consequences",
-            "cheap_baseline_exhausts_predictions",
-            "zero_residual_information",
-        }:
+        if not isinstance(rejection, Mapping):
             continue
-        receipt = zero_residual_conflict_receipt(context, rejection)
+        try:
+            receipt = zero_residual_conflict_receipt(context, rejection)
+        except ValueError:
+            # A refusal may be agent-owned, but a no-good is host-owned: only
+            # exact residual replay can turn it into memory.
+            continue
         clause = ledger.learn(receipt)
         witness_ref = str(receipt["witness_ref"])
         if (clause.signature, witness_ref) in existing:
@@ -180,6 +195,41 @@ def _learn_navigation_conflicts(
         existing.add((clause.signature, witness_ref))
         learned += 1
     return learned
+
+
+def _refresh_theory_conflict_memory_after_wave(
+    context: Any,
+    directory: Path,
+    ledger: TheoryConflictLedger,
+    *,
+    epoch: int,
+    search_wave: int,
+) -> None:
+    """Expose completed-wave no-goods without leaking them across siblings."""
+
+    path = directory / f"theory_conflict_memory.epoch-{epoch:03d}.json"
+    prior = read_json(path, None)
+    rows = ledger.navigator_rows()
+    if not isinstance(prior, Mapping) or prior.get("conflicts") == rows:
+        return
+    parent = str(prior.get("snapshot_sha256") or "")
+    archived = directory / (
+        f"theory_conflict_memory.epoch-{epoch:03d}."
+        f"before-wave-{search_wave + 1:03d}.{parent.split(':')[-1][:16]}.json"
+    )
+    if not archived.exists():
+        path.replace(archived)
+    core = {
+        "schema": "leanmill.theory_conflict_memory_snapshot.v1",
+        "context_hash": context.context_hash,
+        "context_epoch": epoch,
+        "search_wave": search_wave + 1,
+        "parent_snapshot_sha256": parent,
+        "conflicts": rows,
+        "conflict_count": len(rows),
+        "authority": "completed_search_wave_host_replay",
+    }
+    write_json_atomic(path, {**core, "snapshot_sha256": content_hash(core)})
 
 
 def compile_campaign_brief(
@@ -620,7 +670,12 @@ def admit_frontier_formula_epoch_batch(
         raise ValueError("frontier formula batch must be nonempty")
     proposals: list[TypedAxiomProposal] = []
     formula_ids: list[str] = []
+    coordinate_hashes: list[str] = []
     evidence_refs: list[str] = []
+    known_coordinate_hashes = {
+        logical_coordinate_hash(row.axiom.formula)
+        for row in context.formula_profiles
+    }
     for expansion in rows:
         if expansion.get("source_context_hash") != context.context_hash:
             raise ValueError("frontier formula expansion targets a stale context")
@@ -642,11 +697,19 @@ def admit_frontier_formula_epoch_batch(
             raise ValueError("frontier formula proposal changed identity after typecheck")
         if formula_id in context.formula_ids:
             raise ValueError("frontier formula expansion repeats an existing formula")
+        coordinate_hash = logical_coordinate_hash(proposal.axiom.formula)
+        if coordinate_hash in known_coordinate_hashes:
+            raise ValueError(
+                "frontier formula expansion repeats an existing logical coordinate"
+            )
         proposals.append(proposal)
         formula_ids.append(formula_id)
+        coordinate_hashes.append(coordinate_hash)
         evidence_refs.append(str(expansion.get("workbench_receipt_id") or ""))
     if len(set(formula_ids)) != len(formula_ids):
         raise ValueError("frontier formula batch repeats a formula identity")
+    if len(set(coordinate_hashes)) != len(coordinate_hashes):
+        raise ValueError("frontier formula batch repeats a logical coordinate")
 
     epoch_proposal = propose_context_epoch(
         journal,
@@ -954,47 +1017,226 @@ def _lineage_synthesis_route(
     return route, expansions
 
 
-def _language_request_transition(
+def _resolve_workbench_evidence_receipts(
+    directory: Path,
+    navigation: Mapping[str, Any],
+    evidence_refs: Sequence[str],
+) -> list[dict[str, Any]]:
+    """Resolve request refs to content-bound receipts in the navigator history.
+
+    A language request may cite both workbench outputs and governed lifecycle
+    evidence surfaced in its trace.  Resolution remains attempt-local and does
+    not grant the cited receipt any authority beyond its recorded schema.
+    """
+
+    wanted = {str(row) for row in evidence_refs}
+    found: dict[str, dict[str, Any]] = {}
+    navigations = [navigation]
+    for path in sorted(directory.glob("run.wave-*.json")):
+        row = read_json(path, {})
+        if isinstance(row, Mapping) and isinstance(row.get("navigation"), Mapping):
+            navigations.append(row["navigation"])
+    for source in navigations:
+        traces = [source.get("trace") or ()]
+        traces.extend(
+            (lineage.get("navigation") or {}).get("trace") or ()
+            for lineage in source.get("lineages") or ()
+            if isinstance(lineage, Mapping)
+        )
+        for trace in traces:
+            for event in trace:
+                receipt = event.get("receipt") if isinstance(event, Mapping) else None
+                if not isinstance(receipt, Mapping):
+                    continue
+                receipt_id = str(receipt.get("receipt_id") or "")
+                receipt_sha = str(receipt.get("receipt_sha256") or "")
+                if receipt_id:
+                    core = {
+                        key: value
+                        for key, value in receipt.items()
+                        if key != "receipt_id"
+                    }
+                    if (
+                        receipt_id in wanted
+                        and receipt_id == "sha256:" + content_hash(core)
+                    ):
+                        found[receipt_id] = dict(receipt)
+                if receipt_sha:
+                    core = {
+                        key: value
+                        for key, value in receipt.items()
+                        if key != "receipt_sha256"
+                    }
+                    if receipt_sha in wanted and receipt_sha == content_hash(core):
+                        found[receipt_sha] = dict(receipt)
+    missing = wanted - set(found)
+    if missing:
+        raise ValueError(
+            "theory-language evidence refs do not resolve to governed trace receipts"
+        )
+    return [found[ref] for ref in evidence_refs]
+
+
+def _workbench_evidence_binding(
+    receipts: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    pairs: set[tuple[str, str]] = set()
+    evidence: list[dict[str, str]] = []
+    for receipt in receipts:
+        receipt_id = str(
+            receipt.get("receipt_id") or receipt.get("receipt_sha256") or ""
+        )
+        if not receipt_id:
+            raise ValueError("governed evidence receipt has no content identity")
+        evidence.append(
+            {
+                "receipt_ref": receipt_id,
+                "schema": str(receipt.get("schema") or ""),
+                "authority": str(receipt.get("authority") or ""),
+            }
+        )
+        summary = receipt.get("output_summary")
+        contrast = (
+            summary.get("contrast_truth_values")
+            if isinstance(summary, Mapping)
+            and summary.get("separates_contrast") is False
+            else None
+        )
+        if isinstance(contrast, Mapping) and len(contrast) == 2:
+            pairs.add(tuple(sorted(str(row) for row in contrast)))
+    core = {
+        "schema": "leanmill.governed_trace_evidence_binding.v1",
+        "receipt_ids": [row["receipt_ref"] for row in evidence],
+        "evidence": evidence,
+        "contrast_object_pairs": [list(row) for row in sorted(pairs)],
+    }
+    return {**core, "receipt_sha256": content_hash(core)}
+
+
+def lower_theory_language_request(
     request: TheoryLanguageExpansionRequest,
     context: Any,
+    blueprint: FrontierTheoryBlueprint,
     *,
     context_epoch: int,
     directory: Path,
-) -> dict[str, Any] | None:
-    """Carry a request only across a receipted formula-only context extension."""
+    navigation: Mapping[str, Any],
+    approved_application: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Compile one language request through registered adapters, then type its gap."""
 
     if (
-        request.source_context_hash == context.context_hash
-        and request.source_epoch == context_epoch
+        request.source_context_hash != context.context_hash
+        or request.source_epoch != context_epoch
     ):
-        return None
-    if not isinstance(context, FormalTheoryContext):
-        raise ValueError("language escalation selected a stale request")
-    source_path = directory / f"formal_context.epoch-{request.source_epoch:03d}.json"
-    if not source_path.is_file():
-        raise ValueError("language escalation source context is unavailable")
-    source = load_formal_theory_context(source_path)
-    if (
-        source.context_hash != request.source_context_hash
-        or source.signature.content_hash != context.signature.content_hash
-        or source.completeness_receipt_digest != context.completeness_receipt_digest
-        or not set(source.formula_ids) <= set(context.formula_ids)
-    ):
-        raise ValueError("language escalation crosses a changed theory substrate")
-    core = {
-        "schema": "leanmill.theory_language_request_transition.v1",
-        "request_id": request.request_id,
-        "source_context_hash": source.context_hash,
-        "source_epoch": request.source_epoch,
-        "target_context_hash": context.context_hash,
-        "target_epoch": context_epoch,
-        "model_universe_receipt_sha256": context.completeness_receipt_digest,
-        "transition": "formula_coordinate_extension_only",
-        "authority": "host_replayed_context_continuity",
+        raise ValueError("theory-language request targets a stale context")
+    binding = _workbench_evidence_binding(
+        _resolve_workbench_evidence_receipts(
+            directory, navigation, request.evidence_refs
+        )
+    )
+    compilation = compile_theory_language_expansion(
+        request,
+        source_context=context,
+        source_adapter_id=blueprint.adapter_id,
+        formula_grammar=blueprint.formula_grammar,
+        approved_application=approved_application,
+    )
+    from ztare.common.schema_routes import append_consequence_event
+
+    append_consequence_event(
+        directory / "workspace",
+        contract_id="theory_language_compilation_outcome_totality.v1",
+        subject_id=request.request_id,
+        outcome=compilation.status,
+        event="produced",
+        evidence_refs=(str(binding["receipt_sha256"]),),
+        idempotent=True,
+    )
+    if compilation.status == "compiled":
+        return {
+            "status": "compiled",
+            "compiler_outcome": "compiled",
+            "request": request,
+            "context": compilation.context,
+            "adapter_id": compilation.adapter_id,
+            "context_transition": compilation.transition,
+            "compiler_attempts": compilation.attempts,
+            "evidence_binding": binding,
+        }
+    if compilation.status == "rejected" or approved_application is not None:
+        return {
+            "status": compilation.status,
+            "compiler_outcome": compilation.status,
+            "request": request,
+            "reason": compilation.reason,
+            "compiler_attempts": compilation.attempts,
+            "evidence_binding": binding,
+        }
+    gap = AdapterGap(
+        brief_digest=blueprint.brief_digest,
+        proposed_adapter_id=blueprint.adapter_id,
+        primitive_semantics_contract={
+            "source_adapter_id": blueprint.adapter_id,
+            "theory_language_request": request.to_json(),
+            "evidence_binding": binding,
+            "compiler_attempts": [dict(row) for row in compilation.attempts],
+        },
+        raw_fixture_refs=request.evidence_refs,
+        required_context_kind=(
+            "exact" if getattr(context, "complete", False) else "sampled"
+        ),
+        required_operations=("lower_theory_language_request", "build_context"),
+        required_receipts=(
+            "determinism",
+            "context_continuity",
+            "semantic_profile_delta",
+            "claim_boundary",
+        ),
+        forbidden_authorities=(
+            "self_certified_exactness",
+            "live_registry_mutation",
+        ),
+        acceptance_tests=(
+            request.discriminating_test,
+            "must_not_trigger: " + request.kill_condition,
+        ),
+        gap_kind="capability_missing",
+        missing_capabilities=("theory_language:" + request.change_kind,),
+    )
+    return {
+        "status": "adapter_gap",
+        "compiler_outcome": "unavailable",
+        "request": request,
+        "adapter_gap": gap,
+        "compiler_attempts": compilation.attempts,
+        "evidence_binding": binding,
     }
-    receipt = {**core, "receipt_sha256": content_hash(core)}
-    write_json_atomic(directory / "theory_language_request_transition.json", receipt)
-    return receipt
+
+
+def consume_theory_language_compilation(
+    directory: Path,
+    lowered: Mapping[str, Any],
+    *,
+    evidence_refs: Sequence[str] = (),
+) -> None:
+    """Receipt the state transition selected for one compiler outcome."""
+
+    request = lowered.get("request")
+    if not isinstance(request, TheoryLanguageExpansionRequest):
+        raise ValueError("language compilation consumption lacks its request")
+    outcome = str(lowered.get("compiler_outcome") or "")
+    from ztare.common.schema_routes import append_consequence_event
+
+    append_consequence_event(
+        directory / "workspace",
+        contract_id="theory_language_compilation_outcome_totality.v1",
+        subject_id=request.request_id,
+        outcome=outcome,
+        event="consumed",
+        evidence_refs=tuple(str(row) for row in evidence_refs),
+        idempotent=True,
+    )
 
 
 def drive_frontier_navigation(
@@ -1020,6 +1262,7 @@ def drive_frontier_navigation(
         raise ValueError("frontier navigator must accept the host budget ledger")
     hashes = list(formula_proposal_hashes)
     objective_review_history: list[dict[str, Any]] = []
+    last_completed_navigation: dict[str, Any] | None = None
     navigation: dict[str, Any]
     pending = dict(pending_navigation) if pending_navigation is not None else None
     while True:
@@ -1029,14 +1272,20 @@ def drive_frontier_navigation(
         setattr(navigator_fn, "epoch", context_epoch)
         setattr(navigator_fn, "prior_conflict_rows", prior_conflicts)
         if pending is None:
-            navigation = dict(
-                navigator_fn(
-                    context,
-                    blueprint,
-                    journal,
-                    budget_ledger=budget_ledger,
+            try:
+                navigation = dict(
+                    navigator_fn(
+                        context,
+                        blueprint,
+                        journal,
+                        budget_ledger=budget_ledger,
+                    )
                 )
-            )
+            except BudgetExceeded:
+                if last_completed_navigation is None:
+                    raise
+                navigation = last_completed_navigation
+                break
         else:
             navigation, pending = pending, None
         _learn_navigation_conflicts(
@@ -1054,9 +1303,85 @@ def drive_frontier_navigation(
             route, expansions = _lineage_synthesis_route(
                 synthesis, context, context_epoch
             )
+            selected_requests = [
+                dict(row)
+                for row in synthesis.get("selected_requests") or ()
+                if isinstance(row, Mapping)
+            ]
+            stale_selected = [
+                row
+                for row in selected_requests
+                if not lineage_request_matches_context(
+                    row,
+                    context_hash=context.context_hash,
+                    context_epoch=context_epoch,
+                )
+            ]
+            if stale_selected:
+                stale_core = {
+                    "schema": "leanmill.stale_lineage_request_feedback.v1",
+                    "context_hash": context.context_hash,
+                    "context_epoch": context_epoch,
+                    "source_synthesis_receipt_sha256": str(
+                        synthesis.get("receipt_sha256") or ""
+                    ),
+                    "request_ids": sorted(
+                        str(row.get("request_id") or "")
+                        for row in stale_selected
+                        if row.get("request_id")
+                    ),
+                    "route": "continue_search",
+                    "continuation_mode": "current_context",
+                    "program_ids": [],
+                    "next_discriminator_request_ids": [],
+                    "next_discriminator": (
+                        "Author a request bound to the active context or continue "
+                        "with current-context evidence."
+                    ),
+                    "kill_condition": (
+                        "Do not admit or compile a request authored for a prior "
+                        "context epoch."
+                    ),
+                    "authority": "host_context_identity_transition",
+                }
+                stale_feedback = {
+                    **stale_core,
+                    "receipt_sha256": content_hash(stale_core),
+                }
+                stale_path = directory / (
+                    "stale_lineage_request_feedback."
+                    f"epoch-{context_epoch:03d}."
+                    f"wave-{int(navigation.get('search_wave', 0)):03d}.json"
+                )
+                prior_stale = read_json(stale_path, None)
+                if isinstance(prior_stale, Mapping):
+                    if dict(prior_stale) != stale_feedback:
+                        raise ValueError("stale request feedback changed identity")
+                else:
+                    write_json_atomic(stale_path, stale_feedback)
+                objective_review_history.append(stale_feedback)
+                last_completed_navigation = {
+                    **navigation,
+                    "lineage_synthesis": stale_feedback,
+                }
+                setattr(navigator_fn, "objective_feedback", stale_feedback)
+                begin_search_wave = getattr(
+                    navigator_fn, "begin_search_wave", None
+                )
+                if callable(begin_search_wave):
+                    begin_search_wave()
+                continue
             if route == "continue_search":
                 objective_review_history.append(dict(synthesis))
+                last_completed_navigation = dict(navigation)
                 setattr(navigator_fn, "objective_feedback", dict(synthesis))
+                _refresh_theory_conflict_memory_after_wave(
+                    context,
+                    directory,
+                    conflicts,
+                    epoch=context_epoch,
+                    search_wave=int(navigation.get("search_wave", 0)),
+                )
                 begin_search_wave = getattr(navigator_fn, "begin_search_wave", None)
                 if callable(begin_search_wave):
                     begin_search_wave()
@@ -1072,49 +1397,12 @@ def drive_frontier_navigation(
                 request = TheoryLanguageExpansionRequest.from_json(
                     selected[0]["request"]
                 )
-                transition = _language_request_transition(
-                    request,
-                    context,
-                    context_epoch=context_epoch,
-                    directory=directory,
+                write_json_atomic(
+                    directory
+                    / f"theory_language_expansion_request.epoch-{context_epoch:03d}.json",
+                    request.to_json(),
                 )
-                gap = AdapterGap(
-                    brief_digest=blueprint.brief_digest,
-                    proposed_adapter_id=blueprint.adapter_id,
-                    primitive_semantics_contract={
-                        "source_adapter_id": blueprint.adapter_id,
-                        "theory_language_request": request.to_json(),
-                        "context_transition_receipt": transition,
-                    },
-                    raw_fixture_refs=request.evidence_refs,
-                    required_context_kind=(
-                        "exact" if getattr(context, "complete", False) else "sampled"
-                    ),
-                    required_operations=(
-                        "lower_theory_language_request",
-                        "build_context",
-                    ),
-                    required_receipts=(
-                        "determinism",
-                        "context_continuity",
-                        "semantic_profile_delta",
-                        "claim_boundary",
-                    ),
-                    forbidden_authorities=(
-                        "self_certified_exactness",
-                        "live_registry_mutation",
-                    ),
-                    acceptance_tests=(
-                        request.discriminating_test,
-                        "must_not_trigger: " + request.kill_condition,
-                    ),
-                    gap_kind="capability_missing",
-                    missing_capabilities=(
-                        "theory_language:" + request.change_kind,
-                    ),
-                )
-                write_json_atomic(directory / "adapter_gap.json", gap.to_json())
-                navigation["adapter_gap"] = gap.to_json()
+                navigation["language_expansion_request"] = request.to_json()
                 break
             if route != "admit_formulas":
                 break
@@ -1155,6 +1443,13 @@ def drive_frontier_navigation(
                 {
                     "decision": "lineage_synthesis_admitted",
                     "synthesis_receipt_sha256": synthesis["receipt_sha256"],
+                    "selected_request_ids": list(
+                        synthesis.get("selected_request_ids") or ()
+                    ),
+                    "next_discriminator": str(
+                        synthesis.get("next_discriminator") or ""
+                    ),
+                    "kill_condition": str(synthesis.get("kill_condition") or ""),
                     "admissions": [dict(row) for row in admissions],
                 }
             ]
@@ -1287,8 +1582,10 @@ def finish_frontier_navigation(
     formula_requests = navigation.get("expansion_proposals")
     language_requests = navigation.get("theory_language_expansion_requests")
     adapter_gap = navigation.get("adapter_gap")
+    language_feedback = navigation.get("language_compilation_feedback")
     has_request = bool(
         isinstance(adapter_gap, Mapping)
+        or isinstance(language_feedback, Mapping)
         or isinstance(navigation.get("language_expansion_request"), Mapping)
         or isinstance(formula_requests, list)
         and formula_requests
@@ -1329,15 +1626,22 @@ def finish_frontier_navigation(
         and (
             isinstance(navigation.get("lineage_synthesis_budget_stop"), Mapping)
             or isinstance(navigation.get("lineage_synthesis_failure"), Mapping)
+            or isinstance(navigation.get("navigation_exhausted_receipt"), Mapping)
         )
     ):
         objective_route = "continue_search"
-    if objective is not None and not leaf_decision_pending and objective_route not in {
+    if (
+        objective is not None
+        and not leaf_decision_pending
+        and not budget_stopped
+        and objective_route not in {
         "proceed_boundary",
         "continue_search",
         "admit_formulas",
         "escalate_language",
-    }:
+        "defer_all",
+        }
+    ):
         raise ValueError("frontier objective lacks a valid late lineage disposition")
     if (
         not navigation.get("finalists")
@@ -1369,18 +1673,26 @@ def finish_frontier_navigation(
     status = (
         "blocked_adapter_gap"
         if isinstance(adapter_gap, Mapping)
+        else "frontier_objective_unmet"
+        if isinstance(language_feedback, Mapping)
         else "frontier_leaf_decision_pending"
         if leaf_decision_pending
+        else "budget_stopped"
+        if budget_stopped
         else "frontier_objective_unmet"
-        if objective is not None and objective_route == "continue_search"
+        if objective is not None and objective_route in {"continue_search", "defer_all"}
         else "frontier_language_expansion_requested"
         if objective is not None and objective_route == "escalate_language"
+        else "frontier_objective_unmet"
+        if (
+            objective is not None
+            and objective_route == "proceed_boundary"
+            and not navigation.get("finalists")
+        )
         else "frontier_candidates_frozen_awaiting_boundary_approval"
         if navigation.get("finalists")
         else "frontier_language_expansion_requested"
         if has_request
-        else "budget_stopped"
-        if budget_stopped
         else "frontier_navigation_exhausted"
         if isinstance(exhausted, Mapping)
         else "frontier_no_candidate"
@@ -1433,6 +1745,7 @@ def explore_axiom_space(
     budget_compiler_fn: BudgetCompilerFn | None = None,
     frozen_context_ref: Mapping[str, str] | None = None,
     campaign_manifest: Mapping[str, Any] | None = None,
+    navigation_ownership_fn: NavigationOwnershipFn | None = None,
 ) -> FrontierExplorationRun:
     """Compile, freeze, construct, and navigate one immutable frontier attempt."""
     directory = Path(attempt_dir)
@@ -1633,8 +1946,20 @@ def explore_axiom_space(
             _context_from_snapshot(blueprint, frozen_context_ref)
             if frozen_context_ref is not None else _context_from_blueprint(blueprint)
         )
-    except Exception:
+    except Exception as exc:
         budget_ledger.commit(context_reservation)
+        failure_receipt = getattr(exc, "failure_receipt", None)
+        if callable(failure_receipt):
+            write_json_atomic(
+                directory / "context_construction_failure.json",
+                failure_receipt(),
+            )
+        partial_snapshot = getattr(exc, "partial_snapshot", None)
+        if callable(partial_snapshot):
+            write_json_atomic(
+                directory / "partial_model_universe.json",
+                partial_snapshot(),
+            )
         raise
     budget_ledger.commit(
         context_reservation,
@@ -1644,6 +1969,10 @@ def explore_axiom_space(
                 if isinstance(context, FormalTheoryContext)
                 and getattr(context.universe.receipt, "generation_policy", "")
                 == "smt_isomorphism_class_enumeration.v1"
+                else len(context.object_ids)
+                if isinstance(context, FormalTheoryContext)
+                and getattr(context.universe.receipt, "generation_policy", "")
+                == "deterministic_pointwise_functor_image.v1"
                 else labeled_model_count
             ),
             "truth_cells": formula_count * len(context.object_ids),
@@ -1684,6 +2013,13 @@ def explore_axiom_space(
         formula_proposal_hashes=formula_proposal_hashes,
         packet_signer=packet_signer,
     )
+    navigation_owner = (
+        navigation_ownership_fn(directory, context_epoch, context.context_hash)
+        if navigation_ownership_fn is not None
+        else None
+    )
+    if navigation_owner is not None:
+        navigation_owner.__enter__()
     journal = TheoryCampaignJournal(directory / "events.jsonl")
     try:
         if navigator_fn is None:
@@ -1768,24 +2104,486 @@ def explore_axiom_space(
             packet = driven.packet
             navigation = dict(driven.navigation)
     except BudgetExceeded as exc:
-        return stopped_run(exc.reason, blueprint=blueprint, context_hash=context.context_hash)
-    usage = budget_ledger.state()["usage"]
-    return finish_frontier_navigation(
-        directory,
-        brief_id=brief.brief_id,
-        blueprint=blueprint,
-        context=context,
-        context_epoch=context_epoch,
-        campaign_id=packet.campaign_id,
-        packet_digest=packet.digest,
-        navigation=navigation,
-        provider_calls=int(usage["provider_calls"]) + preparation_provider_calls,
-        preparation_provider_calls=preparation_provider_calls,
-        budget_digest=budget_contract.digest,
-        formula_proposal_count=len(formula_proposal_hashes),
-        semantically_new_formula_count=semantically_new_formula_count,
-        labeled_object_count=labeled_model_count,
+        result = stopped_run(
+            exc.reason, blueprint=blueprint, context_hash=context.context_hash
+        )
+    else:
+        usage = budget_ledger.state()["usage"]
+        result = finish_frontier_navigation(
+            directory,
+            brief_id=brief.brief_id,
+            blueprint=blueprint,
+            context=context,
+            context_epoch=context_epoch,
+            campaign_id=packet.campaign_id,
+            packet_digest=packet.digest,
+            navigation=navigation,
+            provider_calls=int(usage["provider_calls"])
+            + preparation_provider_calls,
+            preparation_provider_calls=preparation_provider_calls,
+            budget_digest=budget_contract.digest,
+            formula_proposal_count=len(formula_proposal_hashes),
+            semantically_new_formula_count=semantically_new_formula_count,
+            labeled_object_count=labeled_model_count,
+        )
+    finally:
+        if navigation_owner is not None:
+            navigation_owner.__exit__(*sys.exc_info())
+    return result
+
+
+def _boundary_completion_covers(
+    completion: Mapping[str, Any],
+    verification_plan: Mapping[str, Any],
+    navigation: Mapping[str, Any],
+    *,
+    lean_requested: bool,
+    isabelle_requested: bool,
+    theory_task_requested: bool = False,
+) -> bool:
+    boundary = completion.get("boundary_result") or {}
+    boundary_core = {
+        key: value for key, value in boundary.items() if key != "result_sha256"
+    } if isinstance(boundary, Mapping) else {}
+    if (
+        not boundary_core
+        or boundary.get("result_sha256") != content_hash(boundary_core)
+    ):
+        return False
+    stop_reason = str(boundary.get("stop_reason") or "")
+    if stop_reason.startswith("blocked_before_action"):
+        return False
+    rows = boundary.get("query_results") or ()
+    expected_tasks: set[tuple[str, str]] = set()
+    task_only_programs: set[str] = set()
+    for finalist in navigation.get("finalists") or ():
+        if not isinstance(finalist, Mapping) or not isinstance(
+            finalist.get("theory_program"), Mapping
+        ):
+            continue
+        program = TheoryProgram.from_json(finalist["theory_program"])
+        expected_tasks.update(
+            (program.program_id, contract.sha256)
+            for contract in program.task_discharge_contracts
+        )
+        if not program.prediction_formula_ids and program.task_discharge_contracts:
+            task_only_programs.add(program.program_id)
+    if expected_tasks:
+        task_bundle = completion.get("theory_task_discharge")
+        if not isinstance(task_bundle, Mapping):
+            return False
+        task_core = {
+            key: value for key, value in task_bundle.items()
+            if key != "receipt_sha256"
+        }
+        if (
+            task_bundle.get("receipt_sha256") != content_hash(task_core)
+            or task_bundle.get("boundary_result_sha256")
+            != boundary.get("result_sha256")
+        ):
+            return False
+        observed: set[tuple[str, str]] = set()
+        discharged: set[tuple[str, str]] = set()
+        for row in task_bundle.get("rows") or ():
+            if not isinstance(row, Mapping) or row.get("source") != "explicit_task":
+                continue
+            row_core = {
+                key: value for key, value in row.items()
+                if key != "receipt_sha256"
+            }
+            if row.get("receipt_sha256") != content_hash(row_core):
+                return False
+            key = (
+                str(row.get("program_id") or ""),
+                str(row.get("contract_sha256") or ""),
+            )
+            contract_row = row.get("contract")
+            receipt_row = row.get("receipt")
+            if not isinstance(contract_row, Mapping) or not isinstance(
+                receipt_row, Mapping
+            ):
+                return False
+            from ztare.common.task_discharge import bind_task_discharge_receipt
+
+            contract, receipt = bind_task_discharge_receipt(
+                contract_row, receipt_row
+            )
+            if (
+                contract.sha256 != key[1]
+            ):
+                return False
+            observed.add(key)
+            if receipt.status == "discharged":
+                discharged.add(key)
+        if not expected_tasks <= observed:
+            return False
+        # A typed negative attempt is complete boundary evidence too.  It must
+        # be consumed as navigation feedback, not archived and retried as if
+        # the adjudicator never ran.
+    formula_rows = [
+        row
+        for row in rows
+        if isinstance(row, Mapping) and row.get("candidate_kind") != "theory_task"
+    ]
+    if not formula_rows:
+        return bool(expected_tasks) and bool(task_only_programs)
+    failure_statuses = {
+        "refuted_in_seed_context", "refuted_by_replayed_countermodel",
+        "refuted_by_larger_model", "refuted_by_kernel",
+    }
+    expected_vectors = {
+        tuple(sorted((str(key), int(value)) for key, value in sizes.items()))
+        for item in (
+            verification_plan.get("larger_model_strata")
+            or verification_plan.get("heldout_strata")
+            or ()
+        )
+        if isinstance(item, Mapping)
+        and isinstance((sizes := item.get("sort_sizes")), Mapping)
+    }
+    expected_carriers = {
+        int(value) for value in verification_plan.get("larger_carriers") or ()
+    }
+    completed_finite_search_statuses = {
+        "countermodel_found",
+        "no_countermodel_at_fixed_size",
+        "no_premise_model_at_fixed_size",
+        "unknown",
+    }
+
+    def row_sources(row: Mapping[str, Any]) -> set[str]:
+        sources = {str(row.get("target_formula_id") or "")}
+        normalization = row.get("prediction_normalization") or {}
+        for source in normalization.get("source_coordinates") or ():
+            if isinstance(source, Mapping):
+                sources.add(str(source.get("source_prediction_formula_id") or ""))
+        return {value for value in sources if value}
+
+    for finalist in navigation.get("finalists") or ():
+        if not isinstance(finalist, Mapping):
+            continue
+        program_row = finalist.get("theory_program")
+        if isinstance(program_row, Mapping) and not TheoryProgram.from_json(
+            program_row
+        ).prediction_formula_ids:
+            continue
+        premises = tuple(
+            sorted(str(value) for value in finalist.get("formula_ids") or ())
+        )
+        finalist_rows = [
+            row for row in formula_rows
+            if isinstance(row, Mapping)
+            and tuple(str(value) for value in row.get("premise_formula_ids") or ())
+            == premises
+        ]
+        if not finalist_rows:
+            return False
+        if any(
+            str(row.get("program_prediction_status") or "") in failure_statuses
+            for row in finalist_rows
+        ):
+            continue
+        covered_targets = set().union(*(row_sources(row) for row in finalist_rows))
+        expected_targets = {
+            str(value) for value in finalist.get("boundary_target_ids") or ()
+        }
+        if not expected_targets.issubset(covered_targets):
+            return False
+        for row in finalist_rows:
+            terminal_without_search = (
+                str(row.get("program_prediction_status") or "")
+                in failure_statuses | {
+                    "inadmissible_logical_product_coordinate",
+                    "not_tested_query_limit",
+                }
+                or (row.get("logical_premise_ablation") or {}).get("status")
+                in {
+                    "refuted_by_known_single_premise",
+                    "skipped_seed_context_counterexample",
+                    "skipped_replayed_countermodel",
+                    "skipped_inadmissible_prediction_identity",
+                }
+            )
+            if terminal_without_search:
+                continue
+            searches = [
+                receipt for receipt in row.get("countermodel_searches") or ()
+                if isinstance(receipt, Mapping)
+            ]
+            if expected_vectors:
+                covered_vectors = {
+                    tuple(
+                        sorted(
+                            (str(key), int(value))
+                            for key, value in dict(
+                                receipt.get("sort_sizes") or {}
+                            ).items()
+                        )
+                    )
+                    for receipt in searches
+                    if receipt.get("status") in completed_finite_search_statuses
+                }
+                if not expected_vectors.issubset(covered_vectors):
+                    return False
+            if expected_carriers:
+                covered_carriers = {
+                    int(receipt["carrier_size"])
+                    for receipt in searches
+                    if receipt.get("status") in completed_finite_search_statuses
+                    and type(receipt.get("carrier_size")) is int
+                }
+                if not expected_carriers.issubset(covered_carriers):
+                    return False
+            if lean_requested and (row.get("lean") or {}).get("status") in {
+                "not_requested", "task_rendered",
+            }:
+                return False
+            if isabelle_requested and (row.get("isabelle") or {}).get("status") in {
+                "not_requested", "task_rendered",
+            }:
+                return False
+    return True
+
+
+def _prior_boundary_query_results(
+    directory: Path, *, context_hash: str
+) -> tuple[Mapping[str, Any], ...]:
+    """Replay prior boundary work by semantic query identity."""
+
+    paths = {
+        *directory.glob("boundary_attempts/*/boundary_result.json"),
+        *directory.glob("boundary_result.wave-*.json"),
+    }
+    rows: list[Mapping[str, Any]] = []
+    for path in sorted(paths):
+        result = read_json(path, None)
+        if not isinstance(result, Mapping):
+            continue
+        core = {key: value for key, value in result.items() if key != "result_sha256"}
+        if result.get("result_sha256") != content_hash(core):
+            raise ValueError(f"archived boundary result digest mismatch: {path.name}")
+        if result.get("context_hash") != context_hash:
+            continue
+        rows.extend(
+            dict(row) for row in result.get("query_results") or ()
+            if isinstance(row, Mapping)
+        )
+    return tuple(rows)
+
+
+def _recover_partial_boundary_feedback(
+    directory: Path, run: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """Undo the legacy transition that treated a partial boundary as feedback."""
+
+    if run.get("status") != "frontier_objective_unmet":
+        return run
+    for feedback_path in reversed(
+        sorted(directory.glob("boundary_search_feedback.wave-*.json"))
+    ):
+        suffix = feedback_path.name.removeprefix("boundary_search_feedback.")
+        source = read_json(directory / f"run.{suffix}", None)
+        boundary = read_json(directory / f"boundary_result.{suffix}", None)
+        feedback = read_json(feedback_path, None)
+        if not all(
+            isinstance(row, Mapping) for row in (source, boundary, feedback)
+        ):
+            continue
+        source_core = {
+            key: value for key, value in source.items() if key != "run_digest"
+        }
+        boundary_core = {
+            key: value for key, value in boundary.items() if key != "result_sha256"
+        }
+        feedback_core = {
+            key: value for key, value in feedback.items()
+            if key != "receipt_sha256"
+        }
+        if (
+            source.get("run_digest") != content_hash(source_core)
+            or boundary.get("result_sha256") != content_hash(boundary_core)
+            or feedback.get("receipt_sha256") != content_hash(feedback_core)
+            or source.get("status")
+            != "frontier_candidates_frozen_awaiting_boundary_approval"
+            or not str(boundary.get("stop_reason") or "").startswith(
+                "blocked_before_action"
+            )
+            or feedback.get("source_run_digest") != source.get("run_digest")
+        ):
+            continue
+        navigation = dict(source.get("navigation") or {})
+        navigation["objective_review_history"] = list(
+            navigation.get("objective_review_history") or ()
+        ) + [dict(feedback)]
+        expected_core = {
+            **source_core,
+            "status": "frontier_objective_unmet",
+            "navigation": navigation,
+        }
+        expected = {**expected_core, "run_digest": content_hash(expected_core)}
+        if dict(run) != expected:
+            continue
+        write_json_atomic(directory / "run.json", dict(source))
+        receipt_core = {
+            "schema": "leanmill.partial_boundary_feedback_recovery.v1",
+            "source_run_digest": str(source["run_digest"]),
+            "partial_boundary_result": str(boundary["result_sha256"]),
+            "discarded_feedback_receipt": str(feedback["receipt_sha256"]),
+            "authority": "host_outcome_totality_replay",
+        }
+        write_json_atomic(
+            directory / f"partial_boundary_feedback_recovery.{suffix}",
+            {**receipt_core, "receipt_sha256": content_hash(receipt_core)},
+        )
+        return source
+    return run
+
+
+def _archive_incomplete_boundary(directory: Path, completion: Mapping[str, Any]) -> None:
+    digest = str(completion.get("completion_sha256") or content_hash(completion))
+    archive = directory / "boundary_attempts" / digest[:16]
+    for name in (
+        "boundary_result.json",
+        "boundary_completion.json",
+        "budget_stop_receipt.json",
+        "theory_task_discharge.json",
+        "theory_task_discharge_consumption.json",
+    ):
+        path = directory / name
+        row = read_json(path, None)
+        if isinstance(row, Mapping):
+            write_json_atomic(archive / name, dict(row))
+        path.unlink(missing_ok=True)
+
+
+def _adjudicate_theory_program_tasks(
+    directory: Path,
+    *,
+    adapter_id: str,
+    navigation: Mapping[str, Any],
+    boundary_result: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Lower frozen program outputs after the boundary digest becomes immutable."""
+
+    from ztare.common.schema_routes import append_consequence_event
+    from ztare.leanmill.theory_adapter_registry import adjudicate_theory_adapter_task
+    from ztare.leanmill.theory_program import TheoryProgram
+
+    boundary_ref = str(boundary_result.get("result_sha256") or "")
+    boundary_core = {
+        key: value for key, value in boundary_result.items()
+        if key != "result_sha256"
+    }
+    if not boundary_ref or boundary_ref != content_hash(boundary_core):
+        raise ValueError("theory-task adjudication requires an immutable boundary result")
+    path = directory / "theory_task_discharge.json"
+    existing = read_json(path, None)
+    if isinstance(existing, Mapping):
+        core = {key: value for key, value in existing.items() if key != "receipt_sha256"}
+        if existing.get("receipt_sha256") != content_hash(core):
+            raise ValueError("theory-task discharge artifact crossed boundary identity")
+        if existing.get("boundary_result_sha256") == boundary_ref:
+            return dict(existing)
+
+        predecessor_ref = str(existing.get("boundary_result_sha256") or "")
+        predecessor_archives = []
+        for archived_boundary_path in sorted(
+            directory.glob("boundary_attempts/*/boundary_result.json")
+        ):
+            archived_boundary = read_json(archived_boundary_path, None)
+            if not isinstance(archived_boundary, Mapping):
+                continue
+            archived_core = {
+                key: value for key, value in archived_boundary.items()
+                if key != "result_sha256"
+            }
+            if (
+                archived_boundary.get("result_sha256") == predecessor_ref
+                and predecessor_ref == content_hash(archived_core)
+            ):
+                predecessor_archives.append(archived_boundary_path.parent)
+        if len(predecessor_archives) != 1:
+            raise ValueError("theory-task discharge artifact crossed boundary identity")
+        archived_discharge = predecessor_archives[0] / path.name
+        prior_archived = read_json(archived_discharge, None)
+        if isinstance(prior_archived, Mapping):
+            if dict(prior_archived) != dict(existing):
+                raise ValueError("archived theory-task discharge conflicts")
+        else:
+            write_json_atomic(archived_discharge, dict(existing))
+        path.unlink()
+
+    rows: list[dict[str, Any]] = []
+    explicit_by_program: dict[str, list[str]] = {}
+    for finalist in navigation.get("finalists") or ():
+        if not isinstance(finalist, Mapping) or not isinstance(
+            finalist.get("theory_program"), Mapping
+        ):
+            continue
+        program = TheoryProgram.from_json(finalist["theory_program"])
+        explicit = {row.sha256 for row in program.task_discharge_contracts}
+        explicit_by_program[program.program_id] = []
+        for contract in program.executable_task_contracts():
+            receipt = adjudicate_theory_adapter_task(
+                adapter_id,
+                contract,
+                boundary_result=boundary_result,
+            )
+            source = "explicit_task" if contract.sha256 in explicit else "legacy_prediction"
+            row_core = {
+                "schema": "leanmill.theory_task_discharge_row.v1",
+                "program_id": program.program_id,
+                "source": source,
+                "contract": contract.to_dict(),
+                "contract_sha256": contract.sha256,
+                "receipt": receipt.to_dict(),
+            }
+            row = {**row_core, "receipt_sha256": content_hash(row_core)}
+            rows.append(row)
+            if source == "explicit_task":
+                explicit_by_program[program.program_id].append(receipt.status)
+            append_consequence_event(
+                directory,
+                contract_id="theory_program_task_outcome_totality.v1",
+                subject_id=f"{program.program_id}:{contract.sha256}",
+                outcome=receipt.status,
+                event="produced",
+                evidence_refs=(str(row["receipt_sha256"]),),
+            )
+
+    program_outcomes = {}
+    for program_id, statuses in explicit_by_program.items():
+        program_outcomes[program_id] = (
+            "not_declared"
+            if not statuses
+            else "discharged"
+            if all(status == "discharged" for status in statuses)
+            else "unavailable"
+            if any(status == "unavailable" for status in statuses)
+            else "open"
+        )
+    declared = [status for status in program_outcomes.values() if status != "not_declared"]
+    program_status = (
+        "not_declared"
+        if not declared
+        else "discharged"
+        if "discharged" in declared
+        else "unavailable"
+        if all(status == "unavailable" for status in declared)
+        else "open"
     )
+    core = {
+        "schema": "leanmill.theory_task_discharge.v1",
+        "adapter_id": adapter_id,
+        "boundary_result_sha256": boundary_ref,
+        "rows": rows,
+        "program_outcomes": program_outcomes,
+        "explicit_program_status": program_status,
+        "authority": "registered_adapter_receipts_host_aggregation",
+    }
+    result = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(path, result)
+    return result
 
 
 def execute_frontier_boundaries(
@@ -1799,16 +2597,51 @@ def execute_frontier_boundaries(
         [tuple[str, ...], str], Mapping[str, Any]
     ]
     | None = None,
+    theory_task_executor_fn: Callable[..., Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Resume one frozen attempt at the separately approved boundary phase."""
     directory = Path(attempt_dir)
     existing = read_json(directory / "boundary_completion.json", None)
     if isinstance(existing, dict) and existing:
-        return existing
+        prior_blueprint = read_json(directory / "blueprint.json", {})
+        prior_run = read_json(directory / "run.json", {})
+        plan = (
+            prior_blueprint.get("verification_plan")
+            if isinstance(prior_blueprint, Mapping)
+            else {}
+        ) or {}
+        if _boundary_completion_covers(
+            existing,
+            plan,
+            (prior_run.get("navigation") or {})
+            if isinstance(prior_run, Mapping) else {},
+            lean_requested=lean_executor_fn is not None,
+            isabelle_requested=isabelle_executor_fn is not None,
+            theory_task_requested=theory_task_executor_fn is not None,
+        ):
+            if not isinstance(existing.get("theory_task_discharge"), Mapping):
+                blueprint = FrontierTheoryBlueprint.from_json(prior_blueprint)
+                task_discharge = _adjudicate_theory_program_tasks(
+                    directory,
+                    adapter_id=blueprint.adapter_id,
+                    navigation=(prior_run.get("navigation") or {}),
+                    boundary_result=(existing.get("boundary_result") or {}),
+                )
+                core = {
+                    key: value for key, value in existing.items()
+                    if key != "completion_sha256"
+                }
+                core["theory_task_discharge"] = task_discharge
+                existing = {**core, "completion_sha256": content_hash(core)}
+                write_json_atomic(directory / "boundary_completion.json", existing)
+            return existing
+        _archive_incomplete_boundary(directory, existing)
     run_row = read_json(directory / "run.json", None)
     blueprint_row = read_json(directory / "blueprint.json", None)
     campaign_row = read_json(directory / "campaign.json", None)
     budget_row = read_json(directory / "budget.json", None)
+    if isinstance(run_row, Mapping):
+        run_row = _recover_partial_boundary_feedback(directory, run_row)
     if not all(isinstance(row, dict) and row for row in (run_row, blueprint_row, campaign_row, budget_row)):
         raise ValueError("boundary execution requires a completed frozen campaign attempt")
     if run_row.get("status") == "frontier_no_candidate":
@@ -1852,6 +2685,15 @@ def execute_frontier_boundaries(
         context_hash=context.context_hash,
         expected_packet_digest=str(run_row.get("packet_digest") or ""),
     )
+    if lean_executor_fn is not None or isabelle_executor_fn is not None:
+        blueprint = replace(
+            blueprint,
+            verification_plan={
+                **dict(blueprint.verification_plan),
+                "conditional_lean": lean_executor_fn is not None,
+                "conditional_isabelle": isabelle_executor_fn is not None,
+            },
+        )
     navigation = dict(run_row.get("navigation") or {})
     context_epoch = int((run_row.get("context_summary") or {}).get("context_epoch", 0))
     environment = resolve_leaf_workbench_environment(
@@ -1863,6 +2705,15 @@ def execute_frontier_boundaries(
     )
     select = environment["action_handlers"]["select_theory_presentation"]
     for finalist in navigation.get("finalists") or ():
+        finalist_hash = str(finalist.get("context_hash") or "")
+        finalist_epoch = finalist.get("context_epoch")
+        if (
+            finalist_hash
+            and finalist_hash != context.context_hash
+            or type(finalist_epoch) is int
+            and finalist_epoch != context_epoch
+        ):
+            raise ValueError("boundary finalist belongs to another context epoch")
         formulas = [str(row) for row in finalist.get("formula_ids") or ()]
         selection_mode = str(
             finalist.get("candidate_kind") or navigator_selection_mode(blueprint)
@@ -1870,8 +2721,13 @@ def execute_frontier_boundaries(
         nominated_targets = tuple(
             str(row) for row in finalist.get("boundary_target_ids") or ()
         )
+        program = (
+            TheoryProgram.from_json(finalist["theory_program"])
+            if selection_mode == "theory_program"
+            else None
+        )
         selection_inputs = {"formula_ids": formulas}
-        if selection_mode == "theory_program":
+        if selection_mode == "theory_program" and nominated_targets:
             selection_inputs["prediction_formula_ids"] = list(nominated_targets)
         receipt = select(
             ".",
@@ -1916,12 +2772,20 @@ def execute_frontier_boundaries(
         if selection_mode == "theory_program":
             frozen_profile = finalist.get("prediction_profile")
             replayed_profile = summary.get("prediction_profile")
-            invalid = invalid or not nominated_targets or not isinstance(
-                frozen_profile, Mapping
-            ) or not isinstance(replayed_profile, Mapping) or (
-                frozen_profile.get("receipt_sha256")
-                != replayed_profile.get("receipt_sha256")
+            invalid = invalid or not isinstance(program, TheoryProgram) or (
+                nominated_targets != program.prediction_formula_ids
             )
+            if nominated_targets:
+                invalid = invalid or not isinstance(
+                    frozen_profile, Mapping
+                ) or not isinstance(replayed_profile, Mapping) or (
+                    frozen_profile.get("receipt_sha256")
+                    != replayed_profile.get("receipt_sha256")
+                )
+            else:
+                invalid = invalid or not program.task_discharge_contracts or (
+                    frozen_profile is not None or replayed_profile is not None
+                )
         else:
             invalid = invalid or (
                 actual_residual != expected_residual
@@ -1940,10 +2804,19 @@ def execute_frontier_boundaries(
         for row in navigation.get("finalists") or ()
         if isinstance(row, Mapping)
         and isinstance(row.get("theory_program"), Mapping)
+        and TheoryProgram.from_json(row["theory_program"]).prediction_formula_ids
     ]
+    program_lineages = {
+        str(row["theory_program"].get("lineage_id") or "")
+        for row in program_finalists
+    }
     isolation = navigation.get("isolation_receipt")
-    if len(program_finalists) >= 2 and isinstance(isolation, Mapping):
-        from ztare.leanmill.theory_program import TheoryProgram
+    if (
+        len(program_finalists) >= 2
+        and len(program_lineages) == len(program_finalists)
+        and "" not in program_lineages
+        and isinstance(isolation, Mapping)
+    ):
         from ztare.leanmill.theory_program_disagreement_policy import (
             plan_theory_program_disagreement_lifts,
         )
@@ -1983,6 +2856,8 @@ def execute_frontier_boundaries(
             context, directory.parent / "theory_conflicts.jsonl"
         ),
     }
+    if theory_task_executor_fn is not None:
+        kwargs["theory_task_executor_fn"] = theory_task_executor_fn
     if countermodel_fn is not None:
         kwargs["countermodel_fn"] = countermodel_fn
     if single_premise_audit_fn is None:
@@ -2013,6 +2888,9 @@ def execute_frontier_boundaries(
         )
     if single_premise_audit_fn is not None:
         kwargs["single_premise_audit_fn"] = single_premise_audit_fn
+    kwargs["prior_query_results"] = _prior_boundary_query_results(
+        directory, context_hash=context.context_hash
+    )
     campaign_id = str(campaign_row.get("packet", {}).get("campaign_id") or "")
     boundary = run_frontier_boundaries(
         context,
@@ -2026,6 +2904,12 @@ def execute_frontier_boundaries(
     )
     boundary_json = boundary.to_json()
     write_json_atomic(directory / "boundary_result.json", boundary_json)
+    task_discharge = _adjudicate_theory_program_tasks(
+        directory,
+        adapter_id=blueprint.adapter_id,
+        navigation=navigation,
+        boundary_result=boundary_json,
+    )
     stop_reason = (
         budget_ledger.soft_stop_reason(allow_coverage_target=False)
         or boundary.stop_reason
@@ -2046,6 +2930,7 @@ def execute_frontier_boundaries(
         "attempt_dir": str(directory),
         "context_hash": context.context_hash,
         "boundary_result": boundary_json,
+        "theory_task_discharge": task_discharge,
         "budget_stop_receipt": stop_receipt,
         "provider_calls": int(usage["provider_calls"])
         + int(run_row.get("preparation_provider_calls", 0)),
@@ -2058,6 +2943,8 @@ def execute_frontier_boundaries(
 __all__ = [
     "FrontierExplorationRun", "admit_frontier_formula_epoch",
     "admit_frontier_formula_epoch_batch",
-    "compile_campaign_brief", "execute_frontier_boundaries",
-    "explore_axiom_space", "packet_for_frontier_context",
+    "compile_campaign_brief", "consume_theory_language_compilation",
+    "execute_frontier_boundaries",
+    "explore_axiom_space", "lower_theory_language_request",
+    "packet_for_frontier_context",
 ]

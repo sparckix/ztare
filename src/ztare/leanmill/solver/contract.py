@@ -41,6 +41,47 @@ DEFAULT_ANTI_PATTERNS = (
 )
 
 
+def ratification_mnc_contract_projection() -> dict:
+    """Contract text for the carried-artifact matched control.
+
+    The executable verifier lives in ``proof_margin_of_safety``.  This
+    projection is the single source for the contract bytes embedded by both
+    solver builders, so certificates cannot describe the context-stripped
+    search control while executing the source-aware ratification control.
+    """
+
+    return {
+        "mode": "source_aware_conclusion_perturbation",
+        "program_counter_condition": (
+            "the source-aware matched control has status=pass, passed=true, "
+            "and discriminating=true"
+        ),
+        "acceptance_check": (
+            "Using the exact carried posed/closure source, preserve the "
+            "namespace-qualified target identity, inherited declaration "
+            "context, binders, and proof body. The positive target C must "
+            "compile; replacing only C by ¬(C) must fail to compile. Accept "
+            "only status=pass, passed=true, discriminating=true; "
+            "status=inconclusive does not satisfy ratification."
+        ),
+        "reject_or_repair_behavior": {
+            "matched_negative_control_pass": (
+                "PROCEED past this receipt only when the calibrated positive "
+                "compiles and the same proof fails on C → ¬(C)."
+            ),
+            "matched_negative_control_fail": (
+                "REJECT ratification: the same proof closes both C and ¬(C) "
+                "in the inherited context (zero differential)."
+            ),
+            "matched_negative_control_inconclusive": (
+                "REJECT ratification with rejected_mnc_inconclusive; an "
+                "unavailable, malformed, mismatched, or timed-out control "
+                "cannot earn proof credit."
+            ),
+        },
+    }
+
+
 def source_cue_check(row: dict) -> dict:
     """Deterministic pre-execution check: does this row supply the cues a
     kernel-trust prover stack needs to run (file exists, goal parseable,
@@ -79,6 +120,10 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
     target_name = row.get("target_theorem_name") or ""
     goal_excerpt = (row.get("goal") or "").strip()[:480]
     cue_result = source_cue_check(row)
+    ratification_only = bool(row.get("_preverified_only"))
+    ratification_mnc = (
+        ratification_mnc_contract_projection() if ratification_only else None
+    )
     action_program = [
         "layer2_native_hammer_cascade",
         "layer3_warm_agent_iterate",
@@ -140,6 +185,10 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
         "generated_at_epoch": int(time.time()),
         "row_id": row.get("row_id"),
         "target_theorem_name": target_name,
+        "ratification_only": ratification_only,
+        "matched_negative_control_mode": (
+            ratification_mnc["mode"] if ratification_mnc else "context_stripped"
+        ),
         "source_file": row.get("source_file"),
         "scope": "solver_lane_no_positive_family_template",
         "goal_excerpt": goal_excerpt,
@@ -164,8 +213,13 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
         "required_next_action": action_program[0],
         "program_counter_rule": (
             "advance current_action_index only after the current action has emitted "
-            "its receipt; if the receipt is `closed` AND matched_negative_control "
-            "passes, stop (credit_ready_at_solver_layer = true). Otherwise continue "
+            "its receipt; if the receipt is `closed` AND "
+            + (
+                ratification_mnc["program_counter_condition"]
+                if ratification_mnc else
+                "matched_negative_control passes"
+            )
+            + ", stop (credit_ready_at_solver_layer = true). Otherwise continue "
             "to the next action_program step until exhausted or stop_condition fires."
         ),
         "stop_condition": (
@@ -182,7 +236,11 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
             {
                 "name": "matched_negative_control_receipt",
                 "required": True,
-                "acceptance_check": "the same proof_text under bare `import Mathlib` (gold-bearing prelude STRIPPED) FAILS to compile. A negative-control PASS = leakage.",
+                "acceptance_check": (
+                    ratification_mnc["acceptance_check"]
+                    if ratification_mnc else
+                    "the same proof_text under bare `import Mathlib` (gold-bearing prelude STRIPPED) FAILS to compile. A negative-control PASS = leakage."
+                ),
             },
             {
                 "name": "axiom_allowlist_receipt",
@@ -199,7 +257,11 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
         ],
         "reject_or_repair_behavior": {
             "kernel_compile_fail": "advance to next action_program step; if exhausted, mark row failed_compile.",
-            "matched_negative_control_pass": "REJECT closure as leakage/laundering; do not credit.",
+            **(
+                ratification_mnc["reject_or_repair_behavior"]
+                if ratification_mnc else
+                {"matched_negative_control_pass": "REJECT closure as leakage/laundering; do not credit."}
+            ),
             "axiom_outside_allowlist": "REJECT closure.",
             "l3_confirmed_blocker": "REJECT closure; record the specific blocker class.",
             "clean_proceed_condition": "all required_receipts at solver_layer must pass AND downstream_consumer_check must accept.",

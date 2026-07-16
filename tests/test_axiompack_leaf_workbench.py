@@ -19,6 +19,7 @@ from ztare.leanmill.finite_theory_context import build_formal_theory_context
 from ztare.leanmill.adapters.generic_finite_evidence import build_evidence_context
 from ztare.leanmill.magma_law_universe import anonymous_magma_signature, magma_laws_through_order
 from ztare.leanmill.axiompack_leaf_workbench import navigator_decision_output_schema
+from ztare.leanmill.frontier_agent_runtime import _validate_codex_strict_schema
 from ztare.leanmill.theory_interest import DIRECT_EQUATIONAL_BASELINE_REF
 from ztare.leanmill.theory_ir import SortDecl, TheorySignature
 
@@ -93,6 +94,7 @@ def test_static_environment_resolver_supports_worldmodel_and_axiompack():
 def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
     schema = navigator_decision_output_schema()
     assert "uniqueItems" not in json.dumps(schema)
+    _validate_codex_strict_schema(schema)
     validator = Draft202012Validator(schema)
     validator.validate({
         "decision": "request",
@@ -101,6 +103,20 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         "input_refs": {"offset": 0, "limit": 16},
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
+    })
+    validator.validate({
+        "decision": "request",
+        "rationale": "Inspect bounded survivors before judging the representation adequate.",
+        "capability_id": "inspect_presentation_extent",
+        "input_refs": {
+            "formula_ids": ["formula:" + "a" * 64],
+            "offset": 0,
+            "limit": 2,
+        },
+        "formula_ids": None,
+        "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
     validator.validate({
         "decision": "request",
@@ -116,6 +132,7 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         },
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
     validator.validate({
         "decision": "request",
@@ -137,6 +154,7 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         },
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
     validator.validate({
         "decision": "request",
@@ -159,15 +177,26 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         },
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
     validator.validate({
         "decision": "freeze",
         "rationale": "Independent pair with a joint-only consequence.",
         "capability_id": None,
         "input_refs": {},
-        "formula_ids": ["formula:a", "formula:b"],
-        "boundary_target_ids": ["formula:c"],
+        "formula_ids": ["formula:" + "a" * 64, "formula:" + "b" * 64],
+        "boundary_target_ids": ["formula:" + "c" * 64],
+        "task_contract_ids": None,
     })
+    assert list(validator.iter_errors({
+        "decision": "freeze",
+        "rationale": "Malformed formula reference.",
+        "capability_id": None,
+        "input_refs": {},
+        "formula_ids": ["formula:" + "a" * 63],
+        "boundary_target_ids": ["formula:" + "c" * 64],
+        "task_contract_ids": None,
+    }))
     validator.validate({
         "decision": "reject_all",
         "rationale": "The host baseline explains every inspected candidate.",
@@ -175,6 +204,7 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         "input_refs": {},
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
     validator.validate({
         "decision": "request",
@@ -196,6 +226,7 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
         },
         "formula_ids": None,
         "boundary_target_ids": None,
+        "task_contract_ids": None,
     })
 
 
@@ -206,6 +237,17 @@ def test_anonymous_node_navigation_and_presentation_selection():
     inspected = _run(env, "inspect_theory_node", {"node_id": nodes[0].node_id})
     assert inspected["context_hash"] == context.context_hash
     assert "minimal_generators" in inspected["output_summary"]
+
+    dependency_page = _run(
+        env, "list_compound_dependencies", {"offset": 0, "limit": 8}
+    )["output_summary"]
+    assert all(
+        len(row["presentation_formula_ids"]) >= 2
+        and row["joint_only_consequence_count"] > 0
+        for row in dependency_page["dependencies"]
+    )
+    assert dependency_page["total"] >= len(dependency_page["dependencies"])
+    assert "before cheap-baseline" in dependency_page["claim_boundary"]
 
     pair = next(
         row for row in combinations(context.formula_ids, 2)
@@ -219,6 +261,21 @@ def test_anonymous_node_navigation_and_presentation_selection():
     )
     assert "residual_synergy_formula_ids" in synergy["output_summary"]
     assert selected["output_summary"]["node_id"] in {row.node_id for row in nodes}
+
+    extent_formula = max(
+        context.formula_ids,
+        key=lambda formula_id: len(context.incidence.extent_object_ids([formula_id])),
+    )
+    expected_extent = context.incidence.extent_object_ids([extent_formula])
+    extent = _run(
+        env,
+        "inspect_presentation_extent",
+        {"formula_ids": [extent_formula], "offset": 0, "limit": 1},
+    )["output_summary"]
+    assert extent["extent_size"] == len(expected_extent)
+    assert len(extent["objects"]) == min(1, len(expected_extent))
+    assert extent["context_exact"] is True
+    assert "does not certify" in extent["claim_boundary"]
 
 
 def test_topology_overview_width_does_not_cap_candidate_width():
@@ -396,6 +453,16 @@ def test_indistinguishable_object_surface_is_shared_with_evidence_contexts():
         "evidence_record",
         "evidence_record",
     ]
+    extent = _run(
+        env,
+        "inspect_presentation_extent",
+        {"formula_ids": ["h0"], "offset": 0, "limit": 2},
+    )["output_summary"]
+    assert extent["extent_size"] == 2
+    assert [row["object_kind"] for row in extent["objects"]] == [
+        "evidence_record",
+        "evidence_record",
+    ]
 
 
 def test_typed_formula_proposal_escapes_seed_band_without_leaking_signature_names():
@@ -447,6 +514,27 @@ def test_typed_formula_proposal_escapes_seed_band_without_leaking_signature_name
     )["output_summary"]
     assert general["status"] == "proposed_new_formula"
     assert general["codec"] == "leanmill.typed_postfix_formula.v1"
+
+    conjunction = _run(
+        env,
+        "propose_frontier_formula",
+        {
+            "structural_conjecture": "Package two equations as one coordinate.",
+            "axiom_name": "packaged_conjunction",
+            "variables": [
+                {"name": "x0", "sort": "sort_0"},
+                {"name": "x1", "sort": "sort_0"},
+            ],
+            "formula_tokens": [
+                "x0", "x1", "op_0", "x0", "eq",
+                "x1", "x0", "op_0", "x1", "eq", "and",
+            ],
+            "nl_intent": "Treat two predictions as one.",
+            "kill_condition": "The codec normalizes the prediction set.",
+        },
+    )["output_summary"]
+    assert conjunction["status"] == "rejected_invalid_typed_formula"
+    assert "conjunction packaging" in conjunction["error"]
 
     represented = _run(
         env,

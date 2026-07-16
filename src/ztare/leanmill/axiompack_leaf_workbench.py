@@ -35,7 +35,7 @@ from ztare.leanmill.typed_postfix_codec import (
     decode_postfix_formula,
     decode_postfix_term,
 )
-from ztare.leanmill.theory_ir import Binder, content_hash
+from ztare.leanmill.theory_ir import Binder, content_hash, logical_coordinate_hash
 
 
 def _cap(capability_id: str, purpose: str, inputs: Sequence[str], outputs: Sequence[str]) -> LeafWorkbenchCapability:
@@ -52,7 +52,32 @@ def _cap(capability_id: str, purpose: str, inputs: Sequence[str], outputs: Seque
 AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
     capabilities=(
         _cap("list_theory_nodes", "Page through anonymous theory-node topology.", ["offset", "limit"], ["nodes", "total", "next_offset"]),
+        _cap(
+            "list_compound_dependencies",
+            "Page exact bounded minimal presentations with joint-only consequences.",
+            ["offset", "limit"],
+            [
+                "dependencies",
+                "total",
+                "next_offset",
+                "topology_presentation_size",
+                "claim_boundary",
+            ],
+        ),
         _cap("inspect_formula_profiles", "Inspect anonymous typed structure for existing formula IDs.", ["formula_ids"], ["formula_profiles"]),
+        _cap(
+            "inspect_presentation_extent",
+            "Page bounded anonymous objects satisfying a selected presentation.",
+            ["formula_ids", "offset", "limit"],
+            [
+                "extent_size",
+                "objects",
+                "next_offset",
+                "context_exact",
+                "object_identity_policy",
+                "claim_boundary",
+            ],
+        ),
         _cap("inspect_theory_node", "Inspect one anonymous bounded theory node.", ["node_id"], ["extent_size", "closure_size", "minimal_generators"]),
         _cap("compare_theory_nodes", "Compare two anonymous theory extents and closures.", ["left_node_id", "right_node_id"], ["extent_distance", "closure_distance", "separation_model_id"]),
         _cap("show_separation_models", "Return a canonical model separating two presentations.", ["left_formula_ids", "right_formula_ids"], ["model_id", "stratum_id"]),
@@ -89,6 +114,7 @@ AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
                 "status",
                 "formula_id",
                 "formula_identity_new",
+                "coordinate_equivalent_formula_ids",
                 "typed_proposal_sha256",
                 "axiom_sha256",
                 "theory_signature_sha256",
@@ -126,6 +152,43 @@ AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
             ],
         ),
         _cap(
+            "propose_theory_task",
+            "Ask the active adapter to lower an authored scientific task into a stopping contract.",
+            [
+                "formula_ids",
+                "goal",
+                "observable",
+                "adjudicator_capability",
+                "evidence_refs",
+                "kill_condition",
+                "finite_witness_residual",
+            ],
+            [
+                "status",
+                "request_id",
+                "task_request",
+                "task_contract_id",
+                "task_contract_sha256",
+                "task_contract",
+                "missing_capability",
+                "next_route",
+                "claim_boundary",
+            ],
+        ),
+        _cap(
+            "propose_lineage_disposition",
+            "Choose a reviewed terminal disposition for this exact frozen lineage.",
+            ["terminal_state", "reason", "evidence_refs"],
+            [
+                "status",
+                "lineage_id",
+                "terminal_state",
+                "reason_sha256",
+                "evidence_refs",
+                "claim_boundary",
+            ],
+        ),
+        _cap(
             "propose_theory_language_expansion",
             "Receipt a new primitive, observable, quotient, or abstraction as an outbound blueprint request.",
             [
@@ -147,8 +210,84 @@ AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
             ],
         ),
     ),
-    schema="leanmill-axiompack-leaf-workbench-v9",
+    schema="leanmill-axiompack-leaf-workbench-v11",
 )
+
+
+_REVIEWED_AXIOMPACK_WORKBENCH_SUCCESSORS = {
+    (
+        "leanmill-axiompack-leaf-workbench-v9",
+        "46b89dd61e29d18b7b335b52a4b87e87dc332b8893d4c270ff490499b6d814f9",
+    ): {
+        "policy_id": "axiompack-workbench-v9-to-v11",
+        "source_capability_ids": (
+            "list_theory_nodes",
+            "list_compound_dependencies",
+            "inspect_formula_profiles",
+            "inspect_theory_node",
+            "compare_theory_nodes",
+            "show_separation_models",
+            "show_indistinguishable_objects",
+            "propose_frontier_formula",
+            "select_theory_presentation",
+            "propose_theory_language_expansion",
+        ),
+        "target_schema": "leanmill-axiompack-leaf-workbench-v11",
+        "target_fingerprint": "731d3d18470442800df45d9aaa8d316a6a9f08b1681b937d024ec963c8bd7a04",
+        "added_capability_ids": (
+            "inspect_presentation_extent",
+            "propose_theory_task",
+            "propose_lineage_disposition",
+        ),
+    },
+}
+
+
+def reviewed_axiompack_workbench_successor(
+    source: Mapping[str, Any], target: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Admit only an explicitly reviewed frozen-workbench successor.
+
+    The frozen packet stores a contract fingerprint rather than every capability
+    definition, so additive set comparison alone cannot establish compatibility.
+    Each predecessor fingerprint therefore needs a named migration policy.
+    """
+
+    source_key = (
+        str(source.get("schema") or ""),
+        str(source.get("fingerprint") or ""),
+    )
+    policy = _REVIEWED_AXIOMPACK_WORKBENCH_SUCCESSORS.get(source_key)
+    if policy is None:
+        raise ValueError("AxiomPack workbench successor has no reviewed migration policy")
+    source_ids = tuple(str(row) for row in source.get("capability_ids") or ())
+    target_ids = tuple(str(row) for row in target.get("capability_ids") or ())
+    if source_ids != policy["source_capability_ids"]:
+        raise ValueError("AxiomPack workbench predecessor capability set changed")
+    if (
+        target.get("schema") != policy["target_schema"]
+        or target.get("fingerprint") != policy["target_fingerprint"]
+        or target.get("schema") != AXIOMPACK_LEAF_WORKBENCH_CONTRACT.schema
+        or target.get("fingerprint")
+        != AXIOMPACK_LEAF_WORKBENCH_CONTRACT.fingerprint()
+    ):
+        raise ValueError("AxiomPack workbench successor differs from the reviewed target")
+    added = tuple(row for row in target_ids if row not in set(source_ids))
+    if (
+        set(source_ids) - set(target_ids)
+        or added != policy["added_capability_ids"]
+    ):
+        raise ValueError("AxiomPack workbench successor is not the reviewed additive change")
+    return {
+        "schema": "leanmill.axiompack_workbench_successor_policy.v1",
+        "policy_id": policy["policy_id"],
+        "source_schema": source_key[0],
+        "source_fingerprint": source_key[1],
+        "target_schema": str(target["schema"]),
+        "target_fingerprint": str(target["fingerprint"]),
+        "preserved_capability_ids": list(source_ids),
+        "added_capability_ids": list(added),
+    }
 
 
 def navigator_decision_output_schema() -> dict[str, Any]:
@@ -171,6 +310,8 @@ def navigator_decision_output_schema() -> dict[str, Any]:
         return schema
 
     string_array = array(text)
+    formula_id = {"type": "string", "pattern": r"^formula:[0-9a-f]{64}$"}
+    formula_id_array = array(formula_id)
     variables_schema = array(obj({"name": text, "sort": text}), maximum=16)
     token_array = array(text, maximum=256)
     contrast_schema = {
@@ -204,11 +345,28 @@ def navigator_decision_output_schema() -> dict[str, Any]:
                 "limit": {"type": "integer", "minimum": 1, "maximum": 64},
             }
         ),
-        obj({"formula_ids": string_array}),
-        obj({"formula_ids": string_array, "prediction_formula_ids": string_array}),
+        obj({"formula_ids": formula_id_array}),
+        obj(
+            {
+                "formula_ids": formula_id_array,
+                "offset": {"type": "integer", "minimum": 0},
+                "limit": {"type": "integer", "minimum": 1, "maximum": 4},
+            }
+        ),
+        obj(
+            {
+                "formula_ids": formula_id_array,
+                "prediction_formula_ids": formula_id_array,
+            }
+        ),
         obj({"node_id": text}),
         obj({"left_node_id": text, "right_node_id": text}),
-        obj({"left_formula_ids": string_array, "right_formula_ids": string_array}),
+        obj(
+            {
+                "left_formula_ids": formula_id_array,
+                "right_formula_ids": formula_id_array,
+            }
+        ),
         obj({}),
         obj({**formula_common, "lhs_tokens": token_array, "rhs_tokens": token_array}),
         obj({**formula_common, "formula_tokens": token_array}),
@@ -235,13 +393,54 @@ def navigator_decision_output_schema() -> dict[str, Any]:
         ),
         obj(
             {
+                "formula_ids": formula_id_array,
+                "goal": text,
+                "observable": text,
+                "adjudicator_capability": text,
+                "evidence_refs": string_array,
+                "kill_condition": text,
+            }
+        ),
+        obj(
+            {
+                "formula_ids": formula_id_array,
+                "goal": text,
+                "observable": text,
+                "adjudicator_capability": text,
+                "evidence_refs": string_array,
+                "kill_condition": text,
+                "finite_witness_residual": obj(
+                    {
+                        "source_scope": {
+                            "type": "string",
+                            "enum": ["proved_finite_witness"],
+                        },
+                        "witness_id": text,
+                        "claim_id": text,
+                        "evidence_refs": string_array,
+                    }
+                ),
+            }
+        ),
+        obj(
+            {
+                "terminal_state": {
+                    "type": "string",
+                    "enum": ["rejected", "superseded"],
+                },
+                "reason": text,
+                "evidence_refs": string_array,
+            }
+        ),
+        obj(
+            {
                 **formula_common,
                 "formula_tokens": token_array,
                 "definitions": definitions_schema,
             }
         ),
     ]
-    return obj(
+    schema = obj(
         {
             "decision": {
                 "type": "string",
@@ -256,12 +455,32 @@ def navigator_decision_output_schema() -> dict[str, Any]:
             "rationale": text,
             "capability_id": {"type": ["string", "null"]},
             "input_refs": {"anyOf": input_variants},
-            "formula_ids": {"anyOf": [string_array, {"type": "null"}]},
+            "formula_ids": {
+                "description": (
+                    "For freeze/reject_candidate: presentation premises only; "
+                    "never include predictions."
+                ),
+                "anyOf": [formula_id_array, {"type": "null"}],
+            },
             "boundary_target_ids": {
-                "anyOf": [string_array, {"type": "null"}]
+                "description": (
+                    "For freeze/reject_candidate: predicted consequences only; "
+                    "never include presentation premises."
+                ),
+                "anyOf": [formula_id_array, {"type": "null"}]
+            },
+            "task_contract_ids": {
+                "description": (
+                    "For theory-program freeze: optional host-compiled task contracts."
+                ),
+                "anyOf": [
+                    array({"type": "string", "pattern": r"^theory-task:[0-9a-f]{64}$"}),
+                    {"type": "null"},
+                ],
             },
         }
-    ) | {
+    )
+    return schema | {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
     }
 
@@ -444,6 +663,14 @@ def _decode_frontier_formula_move(
             tokens=tokens("formula_tokens"),
             derived_definitions=definitions,
         )
+        body = axiom.formula
+        while body.kind == "forall":
+            body = body.formulas[0]
+        if body.kind == "and":
+            raise ValueError(
+                "universal top-level conjunction must use separate formula "
+                "coordinates; conjunction packaging is not a new prediction identity"
+            )
     else:
         axiom = decode_postfix_equation(
             signature,
@@ -521,6 +748,10 @@ def axiompack_leaf_workbench_action_environment(
     topology_presentation_size: int | None = None,
     context_epoch: int = 0,
     selection_mode: str = "compact_axiom_pack",
+    theory_adapter_id: str = "",
+    theory_adapter_config: Mapping[str, Any] | None = None,
+    campaign_id: str = "",
+    lineage_id: str = "",
 ) -> dict[str, Any]:
     if selection_mode not in {"compact_axiom_pack", "theory_program"}:
         raise ValueError("unsupported workbench selection mode")
@@ -535,9 +766,12 @@ def axiompack_leaf_workbench_action_environment(
         raise ValueError("sampled panels support theory-program navigation only")
     sampled_capabilities = {
         "inspect_formula_profiles",
+        "inspect_presentation_extent",
         "show_separation_models",
         "show_indistinguishable_objects",
         "propose_frontier_formula",
+        "propose_lineage_disposition",
+        "propose_theory_task",
         "select_theory_presentation",
         "propose_theory_language_expansion",
     }
@@ -554,6 +788,7 @@ def axiompack_leaf_workbench_action_environment(
         )
     )
     nodes: dict[str, SemanticTheoryNode] | None = None
+    dependencies: list[dict[str, Any]] | None = None
 
     def topology_nodes() -> dict[str, SemanticTheoryNode]:
         nonlocal nodes
@@ -566,6 +801,41 @@ def axiompack_leaf_workbench_action_environment(
                 )
             }
         return nodes
+
+    def compound_dependencies() -> list[dict[str, Any]]:
+        nonlocal dependencies
+        if dependencies is None:
+            dependencies = []
+            for found in topology_nodes().values():
+                for generator in found.minimal_generators:
+                    if len(generator) < 2:
+                        continue
+                    consequences = context.synergy_ids(generator)
+                    if not consequences:
+                        continue
+                    core = {
+                        "node_id": found.node_id,
+                        "presentation_formula_ids": list(generator),
+                        "joint_only_consequence_ids": list(consequences[:16]),
+                        "joint_only_consequence_count": len(consequences),
+                        "consequences_truncated": len(consequences) > 16,
+                        "extent_size": found.extent_bits.bit_count(),
+                    }
+                    dependencies.append(
+                        {
+                            **core,
+                            "dependency_id": "dependency:" + content_hash(core),
+                        }
+                    )
+            dependencies.sort(
+                key=lambda row: (
+                    -int(row["joint_only_consequence_count"]),
+                    len(row["presentation_formula_ids"]),
+                    -int(row["extent_size"]),
+                    row["dependency_id"],
+                )
+            )
+        return dependencies
 
     def anonymous_formula(formula_id: str) -> dict[str, Any]:
         return dict(context.anonymous_formula_profile(formula_id))
@@ -636,6 +906,37 @@ def axiompack_leaf_workbench_action_environment(
             "next_offset": offset + len(page) if offset + len(page) < len(ordered) else None,
         })
 
+    def list_dependencies(
+        _project: str | Path,
+        req: dict[str, Any],
+        _row: Any,
+        _contract: Any,
+    ) -> dict[str, Any]:
+        inputs = req.get("input_refs") or {}
+        offset = max(0, int(inputs.get("offset", 0)))
+        limit = min(64, max(1, int(inputs.get("limit", 24))))
+        ordered = compound_dependencies()
+        page = ordered[offset:offset + limit]
+        return _receipt(
+            context,
+            "list_compound_dependencies",
+            inputs,
+            {
+                "dependencies": page,
+                "total": len(ordered),
+                "next_offset": (
+                    offset + len(page)
+                    if offset + len(page) < len(ordered)
+                    else None
+                ),
+                "topology_presentation_size": topology_width,
+                "claim_boundary": (
+                    "exact bounded closure dependencies before cheap-baseline, "
+                    "residual-yield, or larger-carrier review"
+                ),
+            },
+        )
+
     def inspect_formulas(_project: str | Path, req: dict[str, Any], _row: Any, _contract: Any) -> dict[str, Any]:
         inputs = req.get("input_refs") or {}
         formula_ids = _ids(inputs.get("formula_ids"), field="formula_ids")
@@ -644,6 +945,45 @@ def axiompack_leaf_workbench_action_environment(
         return _receipt(context, "inspect_formula_profiles", inputs, {
             "formula_profiles": [anonymous_formula(formula_id) for formula_id in formula_ids]
         })
+
+    def inspect_extent(
+        _project: str | Path,
+        req: dict[str, Any],
+        _row: Any,
+        _contract: Any,
+    ) -> dict[str, Any]:
+        inputs = req.get("input_refs") or {}
+        formula_ids = _ids(inputs.get("formula_ids"), field="formula_ids")
+        if len(formula_ids) > max_presentation_size:
+            raise ValueError("extent presentation exceeds the frozen width cap")
+        offset = max(0, int(inputs.get("offset", 0)))
+        limit = min(4, max(1, int(inputs.get("limit", 2))))
+        object_ids = context.incidence.extent_object_ids(formula_ids)
+        page = object_ids[offset:offset + limit]
+        return _receipt(
+            context,
+            "inspect_presentation_extent",
+            inputs,
+            {
+                "extent_size": len(object_ids),
+                "objects": [
+                    dict(context.anonymous_object_profile(object_id))
+                    for object_id in page
+                ],
+                "next_offset": (
+                    offset + len(page)
+                    if offset + len(page) < len(object_ids)
+                    else None
+                ),
+                "context_exact": context.complete,
+                "object_identity_policy": object_identity_policy(),
+                "claim_boundary": (
+                    "displayed objects satisfy the selected formulas only in the current "
+                    "bounded or sampled chart; extent separation does not certify that the "
+                    "formula language compresses structure, generates a representation, or extrapolates"
+                ),
+            },
+        )
 
     def node(node_id: Any) -> SemanticTheoryNode:
         try:
@@ -751,6 +1091,7 @@ def axiompack_leaf_workbench_action_environment(
                 defaults={
                     "formula_id": None,
                     "formula_identity_new": False,
+                    "coordinate_equivalent_formula_ids": [],
                     "typed_proposal_sha256": "",
                     "axiom_sha256": "",
                     "theory_signature_sha256": context.signature.content_hash,
@@ -774,6 +1115,7 @@ def axiompack_leaf_workbench_action_environment(
                 defaults={
                     "formula_id": None,
                     "formula_identity_new": False,
+                    "coordinate_equivalent_formula_ids": [],
                     "typed_proposal_sha256": "",
                     "axiom_sha256": "",
                     "theory_signature_sha256": context.signature.content_hash,
@@ -791,7 +1133,13 @@ def axiompack_leaf_workbench_action_environment(
         except (KeyError, TypeError, ValueError) as exc:
             return rejected(exc)
         formula_id = "formula:" + proposal.axiom.semantic_hash
-        formula_identity_new = formula_id not in context.formula_ids
+        coordinate_hash = logical_coordinate_hash(proposal.axiom.formula)
+        coordinate_equivalent_formula_ids = sorted(
+            row.formula_id
+            for row in getattr(context, "formula_profiles", ())
+            if logical_coordinate_hash(row.axiom.formula) == coordinate_hash
+        )
+        formula_identity_new = not coordinate_equivalent_formula_ids
         contrast_ids_raw = inputs.get("contrast_object_ids")
         contrast_truth_values: dict[str, bool] = {}
         separates_contrast: bool | None = None
@@ -855,6 +1203,7 @@ def axiompack_leaf_workbench_action_environment(
             "status": status,
             "formula_id": formula_id,
             "formula_identity_new": formula_identity_new,
+            "coordinate_equivalent_formula_ids": coordinate_equivalent_formula_ids,
             "typed_proposal_sha256": proposal.content_hash,
             "axiom_sha256": proposal.axiom_sha256,
             "theory_signature_sha256": proposal.theory_signature_sha256,
@@ -1038,14 +1387,213 @@ def axiompack_leaf_workbench_action_environment(
             },
         )
 
+    def propose_theory_task(
+        _project: str | Path,
+        req: dict[str, Any],
+        _row: Any,
+        _contract: Any,
+    ) -> dict[str, Any]:
+        from ztare.common.task_discharge import TaskDischargeContract
+        from ztare.leanmill.theory_adapter_registry import (
+            materialize_theory_adapter_capability,
+            theory_adapter_capabilities,
+        )
+
+        inputs = req.get("input_refs") or {}
+        required = {
+            "formula_ids", "goal", "observable", "adjudicator_capability",
+            "evidence_refs", "kill_condition",
+        }
+        if (
+            not isinstance(inputs, Mapping)
+            or frozenset(inputs) not in {
+                frozenset(required),
+                frozenset(required | {"finite_witness_residual"}),
+            }
+            or not isinstance(inputs.get("evidence_refs"), list)
+        ):
+            raise ValueError("theory-task request fields do not match the typed contract")
+        formulas = _ids(inputs["formula_ids"], field="formula_ids")
+        request_core = {
+            "schema": "leanmill.theory_task_request.v1",
+            "context_hash": context.context_hash,
+            "context_epoch": context_epoch,
+            "presentation_formula_ids": list(formulas),
+            "goal": str(inputs["goal"]),
+            "observable": str(inputs["observable"]),
+            "adjudicator_capability": str(inputs["adjudicator_capability"]),
+            "evidence_refs": [str(row) for row in inputs["evidence_refs"]],
+            "kill_condition": str(inputs["kill_condition"]),
+            "authority": "leaf_request_host_bound",
+        }
+        finite_residual = inputs.get("finite_witness_residual")
+        if finite_residual is not None:
+            residual_fields = {
+                "source_scope", "witness_id", "claim_id", "evidence_refs"
+            }
+            if (
+                not isinstance(finite_residual, Mapping)
+                or set(finite_residual) != residual_fields
+                or finite_residual.get("source_scope") != "proved_finite_witness"
+                or not isinstance(finite_residual.get("evidence_refs"), list)
+                or not finite_residual["evidence_refs"]
+                or any(
+                    not str(finite_residual.get(field) or "").strip()
+                    for field in ("witness_id", "claim_id")
+                )
+            ):
+                raise ValueError("finite-witness residual fields are malformed")
+            request_core["finite_witness_residual"] = {
+                "source_scope": "proved_finite_witness",
+                "witness_id": str(finite_residual["witness_id"]),
+                "claim_id": str(finite_residual["claim_id"]),
+                "evidence_refs": [
+                    str(row) for row in finite_residual["evidence_refs"]
+                ],
+            }
+        if any(
+            not str(request_core[field]).strip()
+            for field in ("goal", "observable", "adjudicator_capability", "kill_condition")
+        ) or not request_core["evidence_refs"]:
+            raise ValueError("theory-task request text and evidence cannot be empty")
+        request = {
+            **request_core,
+            "request_id": "theory-task-request:" + content_hash(request_core),
+        }
+        available = bool(theory_adapter_id) and "theory_task_compiler" in (
+            theory_adapter_capabilities(theory_adapter_id)
+        )
+        if not available:
+            return _receipt(
+                context,
+                "propose_theory_task",
+                inputs,
+                {
+                    "status": "adapter_capability_unavailable",
+                    "request_id": request["request_id"],
+                    "task_request": request,
+                    "task_contract_id": None,
+                    "task_contract_sha256": None,
+                    "task_contract": None,
+                    "missing_capability": "theory_task_compiler",
+                    "next_route": "propose_theory_language_expansion",
+                    "claim_boundary": "task request only; no stopping authority",
+                },
+            )
+        try:
+            lowered = materialize_theory_adapter_capability(
+                theory_adapter_id,
+                "theory_task_compiler",
+                request=request,
+                context=context,
+                adapter_config=dict(theory_adapter_config or {}),
+            )
+        except KeyError:
+            lowered = None
+        if not isinstance(lowered, Mapping):
+            return _receipt(
+                context,
+                "propose_theory_task",
+                inputs,
+                {
+                    "status": "adjudicator_capability_unavailable",
+                    "request_id": request["request_id"],
+                    "task_request": request,
+                    "task_contract_id": None,
+                    "task_contract_sha256": None,
+                    "task_contract": None,
+                    "missing_capability": str(inputs["adjudicator_capability"]),
+                    "next_route": "propose_theory_language_expansion",
+                    "claim_boundary": "task request only; no stopping authority",
+                },
+            )
+        if set(lowered) != {"adjudicator_id", "parameters"} or not isinstance(
+            lowered.get("parameters"), Mapping
+        ):
+            raise ValueError("theory-task compiler returned an invalid lowering")
+        identity = {
+            "adapter_id": theory_adapter_id,
+            "request": request,
+            "lowering": dict(lowered),
+        }
+        contract_row = TaskDischargeContract(
+            contract_id="theory-task:" + content_hash(identity),
+            adjudicator_id=str(lowered["adjudicator_id"]),
+            lifecycle_scope=str(campaign_id),
+            owner=str(lineage_id),
+            parameters=dict(lowered["parameters"]),
+        )
+        return _receipt(
+            context,
+            "propose_theory_task",
+            inputs,
+            {
+                "status": "compiled_theory_task",
+                "request_id": request["request_id"],
+                "task_request": request,
+                "task_contract_id": contract_row.contract_id,
+                "task_contract_sha256": contract_row.sha256,
+                "task_contract": contract_row.to_dict(),
+                "missing_capability": None,
+                "next_route": "freeze_theory_program",
+                "claim_boundary": (
+                    "adapter-lowered stopping contract only; discharge requires its "
+                    "registered adjudicator and independent objective authorization"
+                ),
+            },
+        )
+
+    def propose_lineage_disposition(
+        _project: str | Path,
+        req: dict[str, Any],
+        _row: Any,
+        _contract: Any,
+    ) -> dict[str, Any]:
+        """Receipt the leaf's choice without manufacturing its evidence."""
+
+        inputs = req.get("input_refs") or {}
+        if (
+            not isinstance(inputs, Mapping)
+            or set(inputs) != {"terminal_state", "reason", "evidence_refs"}
+            or inputs.get("terminal_state") not in {"rejected", "superseded"}
+            or not str(inputs.get("reason") or "").strip()
+            or not isinstance(inputs.get("evidence_refs"), list)
+            or not inputs["evidence_refs"]
+            or any(not str(value).strip() for value in inputs["evidence_refs"])
+            or not str(lineage_id).strip()
+        ):
+            raise ValueError("lineage-disposition request is malformed")
+        return _receipt(
+            context,
+            "propose_lineage_disposition",
+            inputs,
+            {
+                "status": "terminal_lineage_disposition_proposed",
+                "lineage_id": str(lineage_id),
+                "terminal_state": str(inputs["terminal_state"]),
+                "reason_sha256": "sha256:" + content_hash(inputs["reason"]),
+                "evidence_refs": [
+                    str(value) for value in inputs["evidence_refs"]
+                ],
+                "claim_boundary": (
+                    "leaf-authored proposal only; campaign lifecycle validates "
+                    "the cited independent receipts before terminal use"
+                ),
+            },
+        )
+
     handlers = {
         "list_theory_nodes": list_nodes,
+        "list_compound_dependencies": list_dependencies,
         "inspect_formula_profiles": inspect_formulas,
+        "inspect_presentation_extent": inspect_extent,
         "inspect_theory_node": inspect,
         "compare_theory_nodes": compare,
         "show_separation_models": separation,
         "show_indistinguishable_objects": indistinguishable,
         "propose_frontier_formula": propose_formula,
+        "propose_lineage_disposition": propose_lineage_disposition,
+        "propose_theory_task": propose_theory_task,
         "select_theory_presentation": select,
         "propose_theory_language_expansion": propose_language_expansion,
     }
@@ -1075,4 +1623,5 @@ __all__ = [
     "decode_frontier_formula_proposal",
     "decode_theory_language_expansion_request",
     "navigator_decision_output_schema",
+    "reviewed_axiompack_workbench_successor",
 ]

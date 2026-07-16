@@ -209,3 +209,37 @@ def test_frontier_attempt_projection_never_creates_a_missing_budget_ledger(tmp_p
 
     assert projected["budget"]["ledger"]["status"] == "missing"
     assert not (attempt / "budget.events.jsonl").exists()
+
+
+def test_formalization_outcome_precedes_missing_solver_rows(tmp_path):
+    result_path = tmp_path / "campaign.autoformalize_result.json"
+    write_json_atomic(
+        result_path,
+        {
+            "target": {
+                "outcome": "rejected_by_firewall",
+                "solved": False,
+                "faithful": False,
+                "lean_statement": "theorem candidate : False := by sorry",
+                "faithfulness_reason": "round-trip did not preserve the claim",
+                "faithfulness_checks": {"round_trip_faithful": False},
+            }
+        },
+    )
+    bundle = build_observability_bundle(
+        attempts_db=tmp_path / "missing-attempts.db",
+        verdicts_path=tmp_path / "verdicts.jsonl",
+        bank_attempts_path=tmp_path / "bank.jsonl",
+        formalize_attempts_path=tmp_path / "formalize.jsonl",
+        notes_trace_path=tmp_path / "notes.jsonl",
+        cot_traces_path=tmp_path / "cot.jsonl",
+        proof_cache_path=tmp_path / "cache.jsonl",
+        no_good_path=tmp_path / "no-good.jsonl",
+        faithfulness_path=tmp_path / "faithfulness.jsonl",
+        decomposition_cache_path=tmp_path / "decomposition.jsonl",
+        axiom_packs_path=tmp_path / "packs.jsonl",
+        formalization_result_path=result_path,
+    )
+    readout = bundle["operator_readout"]
+    assert readout["primary_bottleneck"] == "statement_faithfulness"
+    assert readout["evidence"]["formalization_result"]["has_statement"] is True

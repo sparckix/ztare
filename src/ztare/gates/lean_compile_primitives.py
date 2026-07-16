@@ -278,6 +278,10 @@ def audit_axioms_subset(lean_source: str, target_name: str, lean_path: Path, lea
             rec = run_lake_compile(Path(lean_path), Path(lean_root), timeout_s=timeout_s)
         except Exception:  # noqa: BLE001 — tooling error ⇒ inconclusive (caller fails OPEN)
             return (False, False, [])
+        if rec.get("ok") is not True:
+            # A target line printed before a later elaboration error is not a
+            # completed audit.  Recognition and rc=0 are jointly required.
+            return (False, False, [])
         axioms_by_name = rec.get("axioms") or {}
     if target_name not in axioms_by_name:
         return (False, False, [])   # the directive produced no line for the target ⇒ inconclusive

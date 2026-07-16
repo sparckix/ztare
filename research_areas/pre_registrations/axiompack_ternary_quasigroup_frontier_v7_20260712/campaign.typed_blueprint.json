@@ -1,0 +1,278 @@
+{
+  "adapter_config": {
+    "model_generation": {
+      "max_canonical_models_per_stratum": 64,
+      "mode": "smt_exact",
+      "timeout_ms_per_stratum": 120000
+    }
+  },
+  "adapter_id": "generic_fol_finite.v1",
+  "authority_refs": [
+    "brief:8a98e582ef2a1161dedda1ba4df9b9e5612be0f236a9435e0378c6c6b52d9de0",
+    "campaign-definition:frontier-campaign-definition:d605434364cdabe4395a829cb7d749100c4eb7622b5fcb55f0ed8ff2788d1769",
+    "budget:fd09338fa1c597e9e6ba255daa3dd0af22c41cc021b4f0fb6a29212c8e788163e"
+  ],
+  "base_axioms": [],
+  "base_theory_status": "explicit_empty",
+  "codec_versions": {
+    "adapter_contract": "leanmill.adapter_contract.v1",
+    "formula_grammar": "leanmill.universal_equation_grammar.v1",
+    "leanmill_ir": "leanmill.ir.v1"
+  },
+  "collapse_controls": [],
+  "deanchoring_policy": {
+    "allow_counterexample_revision": true,
+    "allow_derived_operations": true,
+    "forbid_candidate_axiom_lists": true,
+    "forbid_literature_labels": true,
+    "forbid_named_axiom_injection": true,
+    "mode": "cold_after_signature_compilation",
+    "preserve_search_identity": true
+  },
+  "eigenquestion": "What finite anonymous ternary-operation semantics support unique recovery of a missing input in each coordinate, and which derived equations or compact bases persist across held-out finite orders?",
+  "formula_grammar": {
+    "equation_side_quotient": true,
+    "exclude_nonvariable_reflexive": true,
+    "max_formulas": 1000,
+    "max_total_operation_order": 2,
+    "max_variables_per_sort": 3,
+    "schema": "leanmill.universal_equation_grammar.v1",
+    "variable_renaming_quotient": true
+  },
+  "mode": "anonymous_signature_census",
+  "model_or_observation_strata": [
+    {
+      "sort_sizes": {
+        "S0": 1
+      }
+    },
+    {
+      "sort_sizes": {
+        "S0": 2
+      }
+    },
+    {
+      "sort_sizes": {
+        "S0": 3
+      }
+    }
+  ],
+  "navigator_contract": {
+    "adapter_id": "generic_fol_finite.v1",
+    "host_isolated_lineages": 2,
+    "presentation_size": {
+      "maximum": 3,
+      "minimum": 1
+    },
+    "selection_mode": "theory_program",
+    "topology_presentation_size": 3
+  },
+  "pack_arity": 3,
+  "primitive_semantics": {
+    "operation_bindings": {
+      "op0": {
+        "coordinates": [
+          0,
+          1,
+          2
+        ],
+        "kind": "ternary_missing_input_recoverable_operation",
+        "observational_role": "anonymous_total_ternary_operation",
+        "recoverability": "unique_in_each_coordinate"
+      }
+    },
+    "relation_bindings": {}
+  },
+  "query_budget": {
+    "budget_digest": "budget:fd09338fa1c597e9e6ba255daa3dd0af22c41cc021b4f0fb6a29212c8e788163e",
+    "hard_caps": {
+      "adapter_forge_attempts": 1,
+      "agent_turns": 8,
+      "boundary_queries": 2,
+      "context_models": 25000,
+      "formal_peer_attempts": 1,
+      "formal_peer_millis": 180000,
+      "input_tokens": 100000,
+      "lean_attempts": 1,
+      "lean_millis": 600000,
+      "metered_usd_micros": 2000000,
+      "output_tokens": 40000,
+      "provider_calls": 8,
+      "smt_calls": 2,
+      "smt_millis": 600000,
+      "truth_cells": 10000000,
+      "workbench_actions": 16
+    },
+    "phase_caps": {
+      "boundary": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 2,
+        "boundary_queries": 2,
+        "context_models": 0,
+        "formal_peer_attempts": 1,
+        "formal_peer_millis": 180000,
+        "input_tokens": 21428,
+        "lean_attempts": 1,
+        "lean_millis": 600000,
+        "metered_usd_micros": 428571,
+        "output_tokens": 8571,
+        "provider_calls": 2,
+        "smt_calls": 2,
+        "smt_millis": 600000,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "compilation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 2,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "formal_peer_attempts": 0,
+        "formal_peer_millis": 0,
+        "input_tokens": 21429,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 428572,
+        "output_tokens": 8572,
+        "provider_calls": 2,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "context": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 0,
+        "boundary_queries": 0,
+        "context_models": 25000,
+        "formal_peer_attempts": 0,
+        "formal_peer_millis": 0,
+        "input_tokens": 0,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 0,
+        "output_tokens": 0,
+        "provider_calls": 0,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 10000000,
+        "workbench_actions": 0
+      },
+      "expansion": {
+        "adapter_forge_attempts": 1,
+        "agent_turns": 2,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "formal_peer_attempts": 0,
+        "formal_peer_millis": 0,
+        "input_tokens": 21429,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 428571,
+        "output_tokens": 8571,
+        "provider_calls": 2,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "interpretation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 0,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "formal_peer_attempts": 0,
+        "formal_peer_millis": 0,
+        "input_tokens": 7143,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 142857,
+        "output_tokens": 2857,
+        "provider_calls": 0,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 0
+      },
+      "navigation": {
+        "adapter_forge_attempts": 0,
+        "agent_turns": 2,
+        "boundary_queries": 0,
+        "context_models": 0,
+        "formal_peer_attempts": 0,
+        "formal_peer_millis": 0,
+        "input_tokens": 28571,
+        "lean_attempts": 0,
+        "lean_millis": 0,
+        "metered_usd_micros": 571429,
+        "output_tokens": 11429,
+        "provider_calls": 2,
+        "smt_calls": 0,
+        "smt_millis": 0,
+        "truth_cells": 0,
+        "workbench_actions": 16
+      }
+    },
+    "preset": "smoke_20m+yaml",
+    "schema": "leanmill.exploration_budget.v1",
+    "stop_rule": {
+      "coverage_target_ppm": 900000,
+      "low_yield_patience": 3,
+      "max_finalists": 8,
+      "min_marginal_information_per_cost_ppm": 50000
+    },
+    "wall_clock_s": 1200
+  },
+  "sealed_evidence_manifest_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "signature": {
+    "name": "anonymous_ternary_recoverable_operation",
+    "operations": [
+      {
+        "arg_sorts": [
+          "S0",
+          "S0",
+          "S0"
+        ],
+        "name": "op0",
+        "result_sort": "S0"
+      }
+    ],
+    "relations": [],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "S0"
+      }
+    ]
+  },
+  "stop_rule": {
+    "executable_condition": {
+      "kind": "late_lineage_objective_review"
+    },
+    "user_instruction": "Stop only for a nontrivial agent-origin law or compact basis that changes what can be derived or tested beyond the initial chart, with premise necessity, cross-order persistence, and unrestricted verification."
+  },
+  "verification_plan": {
+    "checks": [
+      "recoverability_uniqueness_in_each_coordinate",
+      "cross_order_persistence_of_derived_equations",
+      "compact_basis_stability_against_counterexamples",
+      "formal_system_translation_and_replay",
+      "model_to_observation_consistency"
+    ],
+    "formal_targets": [
+      "translate candidate equations into LeanMill executable formulas",
+      "validate finite semantics against solver exactness",
+      "replay any derived law under isolated lineages"
+    ],
+    "heldout_orders": [
+      4,
+      5
+    ]
+  },
+  "visible_evidence_manifest": {
+    "classification": "anonymous_signature_census",
+    "evidence_refs": [],
+    "notes": "No named axiom systems, literature labels, or candidate laws supplied.",
+    "scope": "finite_ternary_recoverable_operation"
+  }
+}

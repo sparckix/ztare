@@ -2,7 +2,7 @@
   "action": "autoformalize_notes",
   "artifact_path": "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.autoformalize_result.json",
   "command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "src.ztare.cli",
     "leanmill",

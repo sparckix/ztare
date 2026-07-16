@@ -6,18 +6,30 @@ from dataclasses import dataclass
 from threading import RLock
 from typing import Any, Mapping, Sequence
 
-from ztare.leanmill.equational_baseline import direct_equational_consequence_analysis
+from ztare.leanmill.equational_baseline import (
+    bounded_equational_reduction_analysis,
+    direct_equational_consequence_analysis,
+)
 from ztare.leanmill.finite_structure_baseline import STRUCTURAL_BASELINE_REF
 from ztare.leanmill.theory_context import TheoryLandscapeContext
-from ztare.leanmill.theory_ir import AxiomFormula, Formula, Term, content_hash
+from ztare.leanmill.theory_ir import (
+    AxiomFormula,
+    Formula,
+    Term,
+    content_hash,
+    logical_coordinate_hash,
+)
 from ztare.research_signals import ResidualYieldCoordinates, residual_information_yield
 
 
-DIRECT_EQUATIONAL_BASELINE_REF = "leanmill.bidirectional_equational_deduction.v5"
+DIRECT_EQUATIONAL_BASELINE_REF = "leanmill.bidirectional_equational_deduction.v8"
 COMBINED_EQUATIONAL_STRUCTURAL_BASELINE_REF = (
-    "leanmill.bidirectional_equational_plus_finite_structure.v3"
+    "leanmill.bidirectional_equational_plus_finite_structure.v6"
 )
 NO_CHEAP_BASELINE_REF = "leanmill.no_declared_cheap_baseline.v1"
+_TARGETED_BRIDGE_STEPS = 6
+_TARGETED_BRIDGE_STATES = 1_024
+_TARGETED_BRIDGE_LIMIT = 1
 _CACHE_LIMIT = 4096
 _CACHE: OrderedDict[
     tuple[str, tuple[str, ...], str], "TheoryResidualYield"
@@ -126,6 +138,20 @@ def _formula_units(formula: Formula) -> int:
     )
 
 
+def _witness_premise_hashes(witness: Mapping[str, object]) -> set[str]:
+    hashes = {
+        str(witness[key])
+        for key in ("premise_hash", "carrier_premise_hash", "rewrite_premise_hash")
+        if witness.get(key)
+    }
+    hashes.update(
+        str(row.get("premise_hash"))
+        for row in witness.get("steps") or ()
+        if isinstance(row, Mapping) and row.get("premise_hash")
+    )
+    return hashes
+
+
 def _theory_consequence_yield(
     context: TheoryLandscapeContext,
     presentation: Sequence[str],
@@ -183,16 +209,18 @@ def _theory_consequence_yield(
         premises = base_axioms + tuple(
             axiom_map[formula_id] for formula_id in formulas
         )
-        for target_id in joint_only:
-            if target_id in preexplained_structural_ids:
-                continue
-            target = axiom_map.get(target_id)
-            if target is None:
-                continue
-            analysis = direct_equational_consequence_analysis(premises, target)
-            witness = analysis.witness
-            if witness is not None:
-                witnesses[target_id] = witness.to_json()
+        remaining = [
+            target_id
+            for target_id in joint_only
+            if target_id not in preexplained_structural_ids
+            and target_id in axiom_map
+        ]
+        for target_id in remaining:
+            analysis = direct_equational_consequence_analysis(
+                premises, axiom_map[target_id]
+            )
+            if analysis.witness is not None:
+                witnesses[target_id] = analysis.witness.to_json()
             elif (
                 analysis.bounded_search is not None
                 and analysis.bounded_search.status == "state_cap_saturated"
@@ -336,6 +364,117 @@ def theory_program_information_yield(
     )
 
 
+def _prediction_coordinate_identity(
+    context: TheoryLandscapeContext,
+    formula_id: str,
+) -> dict[str, Any]:
+    """Expose lossless product structure without interpreting the substrate."""
+
+    raw = context.anonymous_formula_profile(formula_id).get("formula")
+    if not isinstance(raw, Mapping):
+        return {
+            "prediction_formula_id": formula_id,
+            "status": "opaque_coordinate",
+            "prediction_atom_ids": [formula_id],
+            "prediction_atom_count": 1,
+        }
+    try:
+        formula = Formula.from_json(raw)
+    except (TypeError, ValueError):
+        return {
+            "prediction_formula_id": formula_id,
+            "status": "opaque_coordinate",
+            "prediction_atom_ids": [formula_id],
+            "prediction_atom_count": 1,
+        }
+
+    binder_layers = []
+    body = formula
+    while body.kind == "forall":
+        binder_layers.append(body.binders)
+        body = body.formulas[0]
+    if body.kind != "and":
+        return {
+            "prediction_formula_id": formula_id,
+            "status": "single_coordinate",
+            "prediction_atom_ids": [formula_id],
+            "prediction_atom_count": 1,
+        }
+
+    def conjuncts(value: Formula) -> tuple[Formula, ...]:
+        if value.kind != "and":
+            return (value,)
+        return tuple(
+            atom
+            for child in value.formulas
+            for atom in conjuncts(child)
+        )
+
+    atom_hashes = []
+    for atom in conjuncts(body):
+        for binders in reversed(binder_layers):
+            atom = Formula.forall(binders, atom)
+        atom_hashes.append(logical_coordinate_hash(atom))
+    unique_hashes = sorted(dict.fromkeys(atom_hashes))
+    known_coordinates: dict[str, list[str]] = {}
+    for candidate_id in context.formula_ids:
+        candidate_raw = context.anonymous_formula_profile(candidate_id).get("formula")
+        if not isinstance(candidate_raw, Mapping):
+            continue
+        try:
+            candidate = Formula.from_json(candidate_raw)
+        except (TypeError, ValueError):
+            continue
+        known_coordinates.setdefault(
+            logical_coordinate_hash(candidate), []
+        ).append(candidate_id)
+    atoms = [
+        {
+            "prediction_atom_id": "prediction-atom:" + atom_hash,
+            "existing_formula_ids": sorted(known_coordinates.get(atom_hash, ())),
+        }
+        for atom_hash in unique_hashes
+    ]
+    return {
+        "prediction_formula_id": formula_id,
+        "status": "logical_product_requires_separate_coordinates",
+        "prediction_atom_ids": [row["prediction_atom_id"] for row in atoms],
+        "prediction_atoms": atoms,
+        "prediction_atom_count": len(atoms),
+        "source_atom_multiplicity": len(atom_hashes),
+    }
+
+
+def prediction_coordinate_normal_form(
+    context: TheoryLandscapeContext,
+    prediction_formula_ids: Sequence[str],
+) -> dict[str, Any]:
+    """Receipt the lossless coordinate structure of nominated predictions."""
+
+    predictions = tuple(dict.fromkeys(str(row) for row in prediction_formula_ids))
+    if not predictions or len(predictions) != len(tuple(prediction_formula_ids)):
+        raise ValueError("prediction-coordinate IDs must be nonempty and unique")
+    unknown = set(predictions) - set(context.formula_ids)
+    if unknown:
+        raise ValueError(
+            f"prediction-coordinate normalization contains unknown IDs: {sorted(unknown)}"
+        )
+    core = {
+        "schema": "leanmill.prediction_coordinate_normal_form.v1",
+        "context_hash": context.context_hash,
+        "predictions": [
+            _prediction_coordinate_identity(context, target_id)
+            for target_id in predictions
+        ],
+        "claim_boundary": (
+            "decomposes only first-order top-level conjunction under universal "
+            "quantifiers; every other shape remains one coordinate"
+        ),
+        "authority": "host_logical_normalizer",
+    }
+    return {**core, "receipt_sha256": content_hash(core)}
+
+
 def profile_theory_program_predictions(
     context: TheoryLandscapeContext,
     presentation: Sequence[str],
@@ -374,6 +513,63 @@ def profile_theory_program_predictions(
     inconclusive = (
         set(program_yield.cheap_baseline_inconclusive_ids) if program_yield else set()
     )
+    targeted_cheap: dict[str, Mapping[str, object]] = {}
+    if program_yield is not None:
+        formulas = {
+            str(row.formula_id): row.axiom
+            for row in context.formula_profiles
+            if isinstance(getattr(row, "axiom", None), AxiomFormula)
+        }
+        premises = tuple(context.base_axioms) + tuple(
+            formulas[formula_id] for formula_id in hypotheses
+        )
+        for target_id in predictions:
+            if target_id not in residual:
+                continue
+            bridge_ids = sorted(
+                program_yield.cheap_baseline_consequence_ids,
+                key=lambda formula_id: (
+                    str(
+                        program_yield.cheap_baseline_witnesses[formula_id].get(
+                            "schema", ""
+                        )
+                    ).startswith("leanmill.composed_"),
+                    _formula_units(formulas[formula_id].formula),
+                    formula_id,
+                ),
+            )
+            for bridge_id in bridge_ids[:_TARGETED_BRIDGE_LIMIT]:
+                bridge_witness = program_yield.cheap_baseline_witnesses.get(
+                    bridge_id, {}
+                )
+                if str(bridge_witness.get("schema") or "").startswith(
+                    "leanmill.finite_structure_"
+                ):
+                    continue
+                analysis = bounded_equational_reduction_analysis(
+                    premises + (formulas[bridge_id],),
+                    formulas[target_id],
+                    max_steps=_TARGETED_BRIDGE_STEPS,
+                    max_states_per_side=_TARGETED_BRIDGE_STATES,
+                )
+                if analysis.witness is None:
+                    continue
+                local = analysis.witness.to_json()
+                if formulas[bridge_id].semantic_hash not in _witness_premise_hashes(local):
+                    continue
+                core = {
+                    "schema": "leanmill.targeted_composed_equational_baseline.v1",
+                    "dependency_formula_id": bridge_id,
+                    "dependency_witness_receipt": str(
+                        bridge_witness.get("receipt_sha256") or ""
+                    ),
+                    "local_witness": local,
+                }
+                targeted_cheap[target_id] = {
+                    **core,
+                    "receipt_sha256": content_hash(core),
+                }
+                break
     rows: list[dict[str, Any]] = []
     for target_id in predictions:
         counterexample_id = context.incidence.implication_counterexample_object_id(
@@ -411,9 +607,9 @@ def profile_theory_program_predictions(
             chart_status = "holds_on_observed_context"
         consequence_class = (
             "residual_bounded_consequence"
-            if target_id in residual
+            if target_id in residual and target_id not in targeted_cheap
             else "cheap_baseline_bounded_consequence"
-            if target_id in cheap
+            if target_id in cheap or target_id in targeted_cheap
             else "baseline_inconclusive_bounded_consequence"
             if target_id in inconclusive
             else "not_a_bounded_consequence"
@@ -429,6 +625,7 @@ def profile_theory_program_predictions(
                 "consequence_class": consequence_class,
                 "counterexample_object_id": counterexample_id,
                 "premise_ablation": premise_ablation,
+                "targeted_cheap_baseline_witness": targeted_cheap.get(target_id),
             }
         )
     core = {
@@ -455,6 +652,7 @@ __all__ = [
     "NO_CHEAP_BASELINE_REF",
     "TheoryProgramYield",
     "TheoryResidualYield",
+    "prediction_coordinate_normal_form",
     "profile_theory_program_predictions",
     "theory_program_information_yield",
     "theory_residual_information_yield",

@@ -6,6 +6,7 @@ from functools import partial
 from math import factorial, prod
 from typing import Any, Mapping, Sequence
 
+from ztare.common.task_discharge import TaskDischargeContract, TaskDischargeReceipt
 from ztare.leanmill.finite_model import (
     FiniteModel,
     canonicalize_finite_model,
@@ -14,6 +15,7 @@ from ztare.leanmill.finite_model import (
     iter_finite_models,
 )
 from ztare.leanmill.finite_table_model_finder import (
+    FiniteModelEnumerationResult,
     enumerate_finite_models_smt,
     find_finite_countermodel,
 )
@@ -23,12 +25,65 @@ from ztare.leanmill.equational_formula_universe import (
     equational_formula_universe_receipt,
 )
 from ztare.leanmill.theory_ir import AxiomFormula, TheorySignature, content_hash, validate_axioms
+from ztare.leanmill.theory_program import FORMULA_PREDICTION_ADJUDICATOR
 from ztare.leanmill.finite_model_universe import finite_model_record_weight
 
 
 ADAPTER_ID = "generic_fol_finite.v1"
 _EXHAUSTIVE_TABLES = "exhaustive_tables"
 _SMT_EXACT = "smt_exact"
+
+
+class IncompleteFiniteModelUniverseError(ValueError):
+    """Typed carrier for an exact census that stopped before final UNSAT."""
+
+    def __init__(
+        self,
+        *,
+        stratum_id: str,
+        result: FiniteModelEnumerationResult,
+    ) -> None:
+        self.stratum_id = stratum_id
+        self.result = result
+        receipt = result.receipt
+        super().__init__(
+            "exact SMT census did not exhaust stratum "
+            f"{stratum_id}: {receipt.status}: {receipt.reason}"
+        )
+
+    def failure_receipt(self) -> dict[str, Any]:
+        core = {
+            "schema": "leanmill.incomplete_finite_model_universe.v1",
+            "status": "incomplete",
+            "stratum_id": self.stratum_id,
+            "enumeration_receipt": self.result.receipt.to_json(),
+            "partial_model_class_digest": content_hash(
+                [
+                    {
+                        "model": row.model.to_json(),
+                        "multiplicity": row.multiplicity,
+                    }
+                    for row in self.result.model_classes
+                ]
+            ),
+            "claim_boundary": "no complete finite-universe claim",
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
+    def partial_snapshot(self) -> dict[str, Any]:
+        core = {
+            **self.failure_receipt(),
+            "schema": "leanmill.partial_finite_model_universe.v1",
+            "model_classes": [
+                {
+                    "model": row.model.to_json(),
+                    "multiplicity": row.multiplicity,
+                }
+                for row in self.result.model_classes
+            ],
+        }
+        core.pop("receipt_sha256", None)
+        return {**core, "receipt_sha256": content_hash(core)}
 
 
 def _model_generation_config(adapter_config: Mapping[str, Any]) -> dict[str, Any]:
@@ -71,6 +126,7 @@ def _validate_adapter_config(adapter_config: Mapping[str, Any]) -> None:
         "max_relabelings_per_model",
         "model_generation",
         "functor_image",
+        "generative_representation",
     }
     if unknown:
         raise ValueError(
@@ -101,6 +157,23 @@ def _validate_adapter_config(adapter_config: Mapping[str, Any]) -> None:
             for key in ("source_object_count", "canonical_model_count")
         ):
             raise ValueError("functor_image counts must be positive integers")
+    representation = adapter_config.get("generative_representation")
+    if representation is not None:
+        if image is None:
+            raise ValueError("generative representation requires its source functor image")
+        from ztare.leanmill.generative_representation import (
+            ReviewedGenerativeRepresentation,
+        )
+
+        reviewed = ReviewedGenerativeRepresentation.from_json(representation)
+        if (
+            reviewed.source_context_hash != image["source_context_hash"]
+            or reviewed.abstract_signature.content_hash
+            != TheorySignature.from_json(
+                reviewed.source_application["signature"]
+            ).content_hash
+        ):
+            raise ValueError("generative representation crossed its source image")
 
 
 def _quotient_config(adapter_config: Mapping[str, Any]) -> tuple[bool, int]:
@@ -115,7 +188,176 @@ def build_fixed_size_countermodel_finder(
     *, signature: TheorySignature, adapter_config: Mapping[str, Any]
 ):
     _validate_adapter_config(adapter_config)
+    representation = adapter_config.get("generative_representation")
+    if representation is not None:
+        from ztare.leanmill.generative_representation import (
+            ReviewedGenerativeRepresentation,
+            build_generative_countermodel_finder,
+        )
+
+        reviewed = ReviewedGenerativeRepresentation.from_json(representation)
+        if reviewed.abstract_signature.content_hash != signature.content_hash:
+            raise ValueError("generative countermodel finder crossed signatures")
+        return build_generative_countermodel_finder(reviewed)
     return partial(find_finite_countermodel, signature)
+
+
+def adjudicate_formula_prediction_task(
+    *,
+    contract: TaskDischargeContract,
+    boundary_result: Mapping[str, Any],
+) -> TaskDischargeReceipt:
+    """Consume an existing boundary result; never duplicate boundary search."""
+
+    if contract.adjudicator_id != FORMULA_PREDICTION_ADJUDICATOR:
+        raise KeyError(
+            f"unsupported generic-FOL task adjudicator: {contract.adjudicator_id}"
+        )
+    parameters = dict(contract.parameters)
+    required = {
+        "kind",
+        "program_id",
+        "context_hash",
+        "context_epoch",
+        "presentation_formula_ids",
+        "target_formula_id",
+    }
+    if (
+        set(parameters) != required
+        or parameters.get("kind") != "theory_program_prediction"
+        or not isinstance(parameters.get("presentation_formula_ids"), list)
+        or type(parameters.get("context_epoch")) is not int
+    ):
+        raise ValueError("theory-program prediction task changed identity")
+    premises = tuple(str(row) for row in parameters["presentation_formula_ids"])
+    target = str(parameters["target_formula_id"])
+    if not premises or not target:
+        raise ValueError("theory-program prediction task is incomplete")
+    if boundary_result.get("schema") != "leanmill.frontier_boundary_result.v1":
+        raise ValueError("formula-entailment adjudicator requires a boundary result")
+    result_core = {
+        key: value for key, value in boundary_result.items()
+        if key != "result_sha256"
+    }
+    result_ref = str(boundary_result.get("result_sha256") or "")
+    if not result_ref or result_ref != content_hash(result_core):
+        raise ValueError("frontier boundary result digest mismatch")
+    if str(boundary_result.get("context_hash") or "") != str(
+        parameters["context_hash"]
+    ):
+        raise ValueError("frontier boundary result crossed task context")
+
+    def receipt(
+        status: str, boundary_status: str, *evidence_refs: str
+    ) -> TaskDischargeReceipt:
+        return TaskDischargeReceipt(
+            contract_sha256=contract.sha256,
+            adjudicator_id=contract.adjudicator_id,
+            status=status,
+            authority="leanmill.frontier_boundary",
+            observed={
+                "program_id": str(parameters["program_id"]),
+                "target_formula_id": target,
+                "boundary_status": boundary_status,
+            },
+            evidence_refs=tuple(evidence_refs),
+        )
+
+    rows = boundary_result.get("query_results")
+    if not isinstance(rows, list):
+        raise ValueError("frontier boundary result has malformed query rows")
+    matches = [
+        row
+        for row in rows
+        if isinstance(row, Mapping)
+        and row.get("candidate_kind") == "theory_program"
+        and tuple(str(value) for value in row.get("premise_formula_ids") or ())
+        == premises
+        and str(row.get("target_formula_id") or "") == target
+    ]
+    if len(matches) > 1:
+        raise ValueError("frontier boundary result duplicated a task identity")
+    if not matches:
+        return receipt("unavailable", "not_observed", result_ref)
+
+    row = matches[0]
+    boundary_status = str(row.get("program_prediction_status") or "")
+    evidence_refs = [result_ref]
+    status = "open"
+    if boundary_status == "kernel_verified_attributed":
+        lean = row.get("lean")
+        governed = lean.get("governed_attempt") if isinstance(lean, Mapping) else None
+        if (
+            not isinstance(governed, Mapping)
+            or lean.get("status") != "proved_attributed"
+            or governed.get("schema")
+            != "leanmill.governed_consequence_attempt.v1"
+            or governed.get("status") != "proved_attributed"
+        ):
+            raise ValueError("verified prediction lacks its governed Lean attempt")
+        governed_core = {
+            key: value for key, value in governed.items()
+            if key != "receipt_sha256"
+        }
+        governed_ref = str(governed.get("receipt_sha256") or "")
+        if not governed_ref or governed_ref != content_hash(governed_core):
+            raise ValueError("governed Lean attempt digest mismatch")
+        evidence_refs.insert(0, governed_ref)
+        status = "discharged"
+    elif boundary_status == "inadmissible_logical_product_coordinate":
+        status = "unavailable"
+
+    return receipt(
+        status,
+        boundary_status or "unresolved",
+        *evidence_refs,
+    )
+
+
+def compile_theory_task(
+    *,
+    request: Mapping[str, Any],
+    context: Any,
+    adapter_config: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Lower one registered task kind without interpreting its mathematics."""
+
+    _validate_adapter_config(adapter_config)
+    from ztare.leanmill.formal_task_boundary import (
+        compile_governed_formal_counterexample_task,
+    )
+
+    return compile_governed_formal_counterexample_task(
+        request=request,
+        context=context,
+    )
+
+
+def adjudicate_theory_task(
+    *,
+    contract: TaskDischargeContract,
+    boundary_result: Mapping[str, Any],
+) -> TaskDischargeReceipt:
+    """Dispatch one exact registered task adjudicator for this adapter."""
+
+    if contract.adjudicator_id == FORMULA_PREDICTION_ADJUDICATOR:
+        return adjudicate_formula_prediction_task(
+            contract=contract,
+            boundary_result=boundary_result,
+        )
+    from ztare.leanmill.formal_task_boundary import (
+        GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR,
+        adjudicate_governed_formal_counterexample_task,
+    )
+
+    if contract.adjudicator_id == GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR:
+        return adjudicate_governed_formal_counterexample_task(
+            contract=contract,
+            boundary_result=boundary_result,
+        )
+    raise KeyError(
+        f"unsupported generic-FOL task adjudicator: {contract.adjudicator_id}"
+    )
 
 
 def build_formulas(
@@ -136,7 +378,8 @@ def build_formulas(
         )
     else:
         raise ValueError(
-            "generic finite adapter requires a host-enumerable formula grammar"
+            "generic finite adapter requires formula_grammar.schema="
+            f"{EQUATIONAL_GRAMMAR_SCHEMA!r} or adapter_config.formula_universe"
         )
     validate_axioms(signature, formulas)
     return formulas
@@ -211,6 +454,20 @@ def preflight_blueprint(
     }
     if image is not None:
         result["functor_image"] = dict(image)
+        representation = adapter_config.get("generative_representation")
+        if representation is not None:
+            from ztare.leanmill.generative_representation import (
+                ReviewedGenerativeRepresentation,
+            )
+
+            reviewed = ReviewedGenerativeRepresentation.from_json(representation)
+            result["model_generation"] = {
+                "mode": "reviewed_generative_representation",
+                "reviewed_query_strata": list(reviewed.query_strata),
+            }
+            result["census_completion_policy"] = (
+                "source_image_plus_reviewed_fixed_generation_strata"
+            )
     if formula_grammar.get("schema") == EQUATIONAL_GRAMMAR_SCHEMA:
         result["formula_universe_receipt"] = equational_formula_universe_receipt(
             signature, formula_grammar, formulas=formulas
@@ -372,10 +629,9 @@ def build_model_universe(
             )
             enumeration_receipts.append(enumeration.receipt.to_json())
             if not enumeration.receipt.complete:
-                raise ValueError(
-                    "exact SMT census did not exhaust stratum "
-                    f"{_stratum_id(sizes)}: {enumeration.receipt.status}: "
-                    f"{enumeration.receipt.reason}"
+                raise IncompleteFiniteModelUniverseError(
+                    stratum_id=_stratum_id(sizes),
+                    result=enumeration,
                 )
             model_rows = tuple(
                 (row.model, row.multiplicity) for row in enumeration.model_classes
@@ -543,8 +799,10 @@ def build_context_from_functor_application(
     signature = TheorySignature.from_json(application["signature"])
     source = {row.model_id: row for row in source_context.universe.models}
     rows = application.get("models")
-    if not isinstance(rows, Mapping) or not rows or not set(rows) <= set(source):
-        raise ValueError("finite-model functor image has invalid source coverage")
+    if not isinstance(rows, Mapping) or not rows or set(rows) != set(source):
+        raise ValueError(
+            "finite-model functor image must cover every source object exactly"
+        )
     universe, receipt = build_model_universe_image(
         signature,
         source_models=tuple(
@@ -565,6 +823,80 @@ def build_context_from_functor_application(
     return build_formal_theory_context(
         signature=signature, formulas=formulas, universe=universe
     ), receipt
+
+
+def compile_theory_language_expansion(
+    *,
+    request: Any,
+    source_context: Any,
+    formula_grammar: Mapping[str, Any],
+    approved_application: Mapping[str, Any] | None,
+) -> Mapping[str, Any]:
+    """Compile a reviewed finite-model functor image into a local successor chart."""
+
+    if approved_application is None:
+        return {
+            "status": "unavailable",
+            "reason": "approved_campaign_local_functor_application_required",
+        }
+    grammar = dict(formula_grammar)
+    if grammar.get("schema") != EQUATIONAL_GRAMMAR_SCHEMA:
+        max_order = grammar.get(
+            "max_total_operation_order", grammar.get("max_order")
+        )
+        if type(max_order) is int and "canonical" in str(
+            grammar.get("kind") or ""
+        ).lower():
+            grammar = {
+                "schema": EQUATIONAL_GRAMMAR_SCHEMA,
+                "max_total_operation_order": max_order,
+            }
+    from ztare.leanmill.generative_representation import (
+        unpack_generative_application,
+    )
+
+    try:
+        source_application, representation = unpack_generative_application(
+            approved_application, source_context
+        )
+        context, transition = build_context_from_functor_application(
+            source_context,
+            source_application,
+            formula_grammar=grammar,
+        )
+    except ValueError as exc:
+        return {"status": "rejected", "reason": str(exc)}
+    if not context.formula_ids:
+        return {
+            "status": "rejected",
+            "reason": "successor formula grammar produced no coordinates",
+        }
+    transition_core = {
+        **{
+            key: value
+            for key, value in transition.items()
+            if key != "receipt_sha256"
+        },
+        "successor_formula_grammar": grammar,
+    }
+    if representation is not None:
+        transition_core["generative_representation"] = representation.to_json()
+        transition_core["successor_verification_plan"] = {
+            "heldout_strata": list(representation.query_strata),
+            "successor_claim_boundary": {
+                "model_scope": "reviewed_generated_fixed_strata",
+                "raw_referee": "gamma_replay_of_source_and_generated_models",
+                "mathematical_completeness": "external_generator_proof_obligation",
+            },
+        }
+    return {
+        "status": "compiled",
+        "context": context,
+        "transition": {
+            **transition_core,
+            "receipt_sha256": content_hash(transition_core),
+        },
+    }
 
 
 def load_model_universe(value: Mapping[str, Any]) -> GenericFiniteModelUniverse:
@@ -620,11 +952,18 @@ def load_model_universe(value: Mapping[str, Any]) -> GenericFiniteModelUniverse:
 
 CAPABILITIES = {
     "fixed_size_countermodel_finder": build_fixed_size_countermodel_finder,
+    "theory_task_compiler": compile_theory_task,
+    "task_discharge_adjudicator": adjudicate_theory_task,
+    "theory_language_expansion_compiler": compile_theory_language_expansion,
 }
 
 
 __all__ = [
     "ADAPTER_ID", "CAPABILITIES", "GenericFiniteModelRecord", "GenericFiniteModelUniverse",
-    "GenericFiniteUniverseReceipt", "build_context_from_functor_application", "build_model_universe_image", "build_model_universe", "load_model_universe",
-    "build_fixed_size_countermodel_finder", "build_formulas", "preflight_blueprint",
+    "GenericFiniteUniverseReceipt", "IncompleteFiniteModelUniverseError",
+    "build_context_from_functor_application", "build_model_universe_image", "build_model_universe", "load_model_universe",
+    "adjudicate_formula_prediction_task", "adjudicate_theory_task",
+    "build_fixed_size_countermodel_finder", "compile_theory_task",
+    "compile_theory_language_expansion",
+    "build_formulas", "preflight_blueprint",
 ]

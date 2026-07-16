@@ -1,0 +1,63 @@
+{
+  "authority": "deterministic_campaign_local_boundary",
+  "base_theory": {
+    "cycle_set_identity": "(x*y)*(x*z)=(y*x)*(y*z)",
+    "diagonal_bijective": true,
+    "left_rows_bijective": true
+  },
+  "carrier_size": 6,
+  "claim_boundary": "exact only for order 6 under the displayed finite encoding; UNSAT does not imply the unrestricted Ramírez-Vendramin statement",
+  "matched_controls": {
+    "five_cycle_without_transitivity": {
+      "solver_status": "sat",
+      "table": [
+        [1, 2, 3, 4, 0, 5],
+        [1, 2, 3, 4, 0, 5],
+        [1, 2, 3, 4, 0, 5],
+        [1, 2, 3, 4, 0, 5],
+        [1, 2, 3, 4, 0, 5],
+        [1, 2, 3, 4, 0, 5]
+      ],
+      "verification": {
+        "action_orbits": [[0, 1, 2, 3, 4], [5]],
+        "cycle_law": true,
+        "diagonal_bijective": true,
+        "row_bijective": true,
+        "row_cycle_types": [[5, 1], [5, 1], [5, 1], [5, 1], [5, 1], [5, 1]]
+      }
+    },
+    "transitivity_without_five_cycle": {
+      "solver_status": "sat",
+      "table": [
+        [1, 2, 3, 4, 5, 0],
+        [1, 2, 3, 4, 5, 0],
+        [1, 2, 3, 4, 5, 0],
+        [1, 2, 3, 4, 5, 0],
+        [1, 2, 3, 4, 5, 0],
+        [1, 2, 3, 4, 5, 0]
+      ],
+      "verification": {
+        "action_orbits": [[0, 1, 2, 3, 4, 5]],
+        "cycle_law": true,
+        "diagonal_bijective": true,
+        "row_bijective": true,
+        "row_cycle_types": [[6], [6], [6], [6], [6], [6]]
+      }
+    }
+  },
+  "receipt_sha256": "bdf984ef9713cc3d314c60a1fbe3f29928c31f45fbb32c1f61c7aedb6ceea011",
+  "result": "no_order_6_counterexample",
+  "schema": "leanmill.cycle_set_coprime_size6_boundary.v1",
+  "solver": "z3-4.16.0",
+  "target_predicate": {
+    "coprime_cycle_lengths": [5],
+    "five_cycle_encoding": "full row/fixed-point/cycle disjunction",
+    "indecomposable_encoding": "every nonempty proper carrier subset has a membership-crossing edge under some left translation"
+  },
+  "target_query": {
+    "reason_unknown": "",
+    "smt2_sha256": "aef6751f576f59fba0e6ffb1177eaa1cb19a62b455df9af357c5eedbbea48e43",
+    "solver_status": "unsat"
+  },
+  "timeout_ms": 900000
+}

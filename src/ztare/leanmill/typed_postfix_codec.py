@@ -235,7 +235,7 @@ def decode_postfix_formula(
                 )
             )
             continue
-        if token == "eq":
+        if token in {"eq", "="}:
             left, right = _pop(
                 stack, kind="term", count=2, token=token
             )

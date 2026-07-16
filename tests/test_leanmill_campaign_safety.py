@@ -51,6 +51,96 @@ def test_budget_stop_defers_untouched_notes_without_retries(monkeypatch, tmp_pat
     assert "execution_stop=budget_exhausted" in result["summary"]
 
 
+def test_typed_formal_work_item_bypasses_natural_language_admission(monkeypatch, tmp_path) -> None:
+    import ztare.leanmill.solver.autoformalize_notes as notes
+
+    for name in (
+        "ZTARE_LEANMILL_NOTES_RETRY",
+        "ZTARE_LEANMILL_FALSIFY_ESCALATION",
+        "ZTARE_LEANMILL_SELF_CORRECT_DEFS",
+    ):
+        monkeypatch.setenv(name, "0")
+    statement = "theorem posed (n : Nat) : n = n := by sorry"
+    item = notes.FormalSourceWorkItem(
+        target_name="posed",
+        source_text="import Mathlib\n" + statement + "\n",
+        target_block=statement,
+    )
+    routed: list[str] = []
+
+    def direct(work_item, **_kwargs):
+        routed.append(work_item.target_name)
+        return {
+            "nl": statement,
+            "lean_statement": statement,
+            "faithful": True,
+            "outcome": "admitted_and_closed",
+            "solved": True,
+        }
+
+    monkeypatch.setattr(notes, "_attack_formal_source", direct)
+
+    def prose_attack(*_args, **_kwargs):
+        raise AssertionError("typed Lean source entered the natural-language lane")
+
+    result = notes.autoformalize_from_notes(
+        "## Lemmas\n- " + statement + "\n",
+        lean_root=tmp_path,
+        attack_fn=prose_attack,
+        formal_work_items={notes._formal_work_item_key(statement): item},
+        on_progress=lambda _msg: None,
+    )
+    assert routed == ["posed"]
+    assert result["lemmas"][0]["solved"] is True
+
+
+def test_typed_formal_budget_stop_is_not_an_empty_formalization(tmp_path) -> None:
+    from ztare.leanmill.exploration_budget import BudgetExceeded
+    from ztare.leanmill.solver.autoformalize_notes import (
+        FormalSourceWorkItem,
+        _attack_formal_source,
+    )
+
+    item = FormalSourceWorkItem(
+        target_name="posed",
+        source_text="theorem posed : True := by sorry\n",
+        target_block="theorem posed : True := by sorry",
+    )
+
+    def exhausted(*_args, **_kwargs):
+        raise BudgetExceeded("hard_cap_reached:provider_calls")
+
+    result = _attack_formal_source(
+        item,
+        lean_root=tmp_path,
+        timeout_s=1,
+        solve_fn=exhausted,
+    )
+    assert result["outcome"] == "budget_exhausted"
+    assert result["budget_killed"] is True
+    assert "BUDGET_EXHAUSTED" in result["faithfulness_reason"]
+
+
+def test_roundtrip_budget_stop_is_not_an_unfaithful_verdict() -> None:
+    from ztare.leanmill.exploration_budget import BudgetExceeded
+    from ztare.leanmill.solver.autoformalize import faithfulness_gate
+
+    def exhausted(_statement):
+        raise BudgetExceeded("hard_cap_reached:provider_calls")
+
+    verdict = faithfulness_gate(
+        "A nontrivial claim.",
+        "theorem posed (P : Prop) (h : P) : P := by sorry",
+        compile_fn=lambda _statement: True,
+        triviality_fn=lambda _statement: False,
+        backtranslate_fn=exhausted,
+        judge_fn=lambda _original, _rendered: True,
+    )
+    assert verdict.accepted is False
+    assert verdict.reason == "BUDGET_EXHAUSTED"
+    assert verdict.checks["budget_exhausted"] is True
+
+
 def test_p1_blueprint_admission_rejects_mode_conflict() -> None:
     from pathlib import Path
     from ztare.leanmill.campaign_manifest import (

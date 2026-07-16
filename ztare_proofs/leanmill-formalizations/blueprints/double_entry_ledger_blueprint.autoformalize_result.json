@@ -1,0 +1,420 @@
+{
+  "target_nl": "Consider a finite account universe with signed balances. Starting from any ledger, after any finite sequence of journal entries such that every entry is balanced, the total balance is unchanged. In particular, if the opening ledger has total balance zero, the posted ledger also has total balance zero. This proves that balanced multi-leg journals cannot create single-sided value across any admissible journal sequence. Also surface sharpness: dropping the balanced-entry condition admits a one-leg journal that changes the total balance. This witness should be separate from the main theorem so it cannot be used to weaken the invariant.",
+  "lemmas": [
+    {
+      "solved": "reused_from_bank",
+      "lean_statement": "theorem applyLeg_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (leg : Leg Account) : totalBalance (applyLeg ledger leg) = totalBalance ledger + leg.amount",
+      "outcome": "reused_from_bank",
+      "faithful": true
+    },
+    {
+      "solved": "reused_from_bank",
+      "lean_statement": "theorem applyEntry_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (entry : Entry Account) : totalBalance (applyEntry ledger entry) = totalBalance ledger + entrySum entry",
+      "outcome": "reused_from_bank",
+      "faithful": true
+    },
+    {
+      "solved": "reused_from_bank",
+      "lean_statement": "theorem balanced_entry_preserves_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) {entry : Entry Account} (hentry : BalancedEntry entry) : totalBalance (applyEntry ledger entry) = totalBalance ledger",
+      "outcome": "reused_from_bank",
+      "faithful": true
+    },
+    {
+      "solved": "reused_from_bank",
+      "lean_statement": "theorem balanced_journal_preserves_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) {journal : Journal Account} (hjournal : \u2200 entry \u2208 journal, BalancedEntry entry) : totalBalance (postJournal ledger journal) = totalBalance ledger",
+      "outcome": "reused_from_bank",
+      "faithful": true
+    },
+    {
+      "solved": "reused_from_bank",
+      "lean_statement": "theorem single_leg_unbalanced_changes_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (account : Account) {amount : Int} (hamount : amount \u2260 0) : \u00ac BalancedEntry ([{ account := account, amount := amount }] : Entry Account) \u2227 totalBalance (applyEntry ledger ([{ account := account, amount := amount }] : Entry Account)) \u2260 totalBalance ledger",
+      "outcome": "reused_from_bank",
+      "faithful": true
+    }
+  ],
+  "shelf": [
+    "theorem applyLeg_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (leg : Leg Account) : totalBalance (applyLeg ledger leg) = totalBalance ledger + leg.amount",
+    "theorem applyEntry_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (entry : Entry Account) : totalBalance (applyEntry ledger entry) = totalBalance ledger + entrySum entry",
+    "theorem balanced_entry_preserves_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) {entry : Entry Account} (hentry : BalancedEntry entry) : totalBalance (applyEntry ledger entry) = totalBalance ledger",
+    "theorem balanced_journal_preserves_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) {journal : Journal Account} (hjournal : \u2200 entry \u2208 journal, BalancedEntry entry) : totalBalance (postJournal ledger journal) = totalBalance ledger",
+    "theorem single_leg_unbalanced_changes_total {Account : Type u} [Fintype Account] [DecidableEq Account] (ledger : Ledger Account) (account : Account) {amount : Int} (hamount : amount \u2260 0) : \u00ac BalancedEntry ([{ account := account, amount := amount }] : Entry Account) \u2227 totalBalance (applyEntry ledger ([{ account := account, amount := amount }] : Entry Account)) \u2260 totalBalance ledger"
+  ],
+  "run_started": "2026-07-08T01:46:45.832863+00:00",
+  "distributed": false,
+  "wall_deferred": [],
+  "p0_forecast": {
+    "schema": "leanmill-campaign-p0-forecast-v1",
+    "n_candidates": 5,
+    "domain": "formalization-nonmath",
+    "p_close": [
+      0.282,
+      0.282,
+      0.282,
+      0.282,
+      0.282
+    ],
+    "expected_yield": 1.41,
+    "expected_yield_frac": 0.28,
+    "expected_time_to_closure_s": 17088.7,
+    "expected_cost_s": 10519.5,
+    "hardest_lemma_index": 0,
+    "min_p_close": 0.282,
+    "model": "geometric-expected-attempts \u00d7 domain-mean-time"
+  },
+  "target": {
+    "nl": "Consider a finite account universe with signed balances. Starting from any ledger, after any finite sequence of journal entries such that every entry is balanced, the total balance is unchanged. In particular, if the opening ledger has total balance zero, the posted ledger also has total balance zero. This proves that balanced multi-leg journals cannot create single-sided value across any admissible journal sequence. Also surface sharpness: dropping the balanced-entry condition admits a one-leg journal that changes the total balance. This witness should be separate from the main theorem so it cannot be used to weaken the invariant.",
+    "lean_statement": "universe u\n\nabbrev Ledger (Account : Type u) : Type u :=\n  Account \u2192 Int\n\n/-- One signed amount posted to one account. -/\n\nstructure Leg (Account : Type u) where\n  account : Account\n  amount : Int\n\n/-- One journal entry, represented by its finite list of legs. -/\n\nabbrev Entry (Account : Type u) : Type u :=\n  List (Leg Account)\n\n/-- A finite sequence of journal entries. -/\n\nabbrev Journal (Account : Type u) : Type u :=\n  List (Entry Account)\n\n/-- The signed sum of all leg amounts in an entry. -/\n\ndef entrySum {Account : Type u} (entry : Entry Account) : Int :=\n  (entry.map fun leg \u21a6 leg.amount).sum\n\n/-- An entry is balanced when its signed leg amounts sum to zero. -/\n\ndef BalancedEntry {Account : Type u} (entry : Entry Account) : Prop :=\n  entrySum entry = 0\n\n/-- Apply one leg to a ledger by adding the leg amount at exactly its target account. -/\n\ndef applyLeg {Account : Type u} [DecidableEq Account]\n    (ledger : Ledger Account) (leg : Leg Account) : Ledger Account :=\n  Function.update ledger leg.account (ledger leg.account + leg.amount)\n\n/-- Apply all legs of one entry in submitted order. -/\n\ndef applyEntry {Account : Type u} [DecidableEq Account]\n    (ledger : Ledger Account) (entry : Entry Account) : Ledger Account :=\n  entry.foldl applyLeg ledger\n\n/-- Post a finite journal by applying each entry in submitted order. -/\n\ndef postJournal {Account : Type u} [DecidableEq Account]\n    (ledger : Ledger Account) (journal : Journal Account) : Ledger Account :=\n  journal.foldl applyEntry ledger\n\n/-- Sum all balances over the finite account universe. -/\n\ndef totalBalance {Account : Type u} [Fintype Account] (ledger : Ledger Account) : Int :=\n  Finset.univ.sum ledger\n\ntheorem balanced_journal_conservation_zero_endpoint_and_separate_sharpness\n    {Account : Type u} [Fintype Account] [DecidableEq Account] :\n    (\u2200 (ledger : Ledger Account) {journal : Journal Account},\n      (\u2200 entry \u2208 journal, BalancedEntry entry) \u2192\n        totalBalance (postJournal ledger journal) = totalBalance ledger \u2227\n          (totalBalance ledger = 0 \u2192\n            totalBalance (postJournal ledger journal) = 0)) \u2227\n      (\u2200 (ledger : Ledger Account) (account : Account) {amount : Int},\n        amount \u2260 0 \u2192\n          \u00ac BalancedEntry ([{ account := account, amount := amount }] : Entry Account) \u2227\n            totalBalance\n                (applyEntry ledger ([{ account := account, amount := amount }] : Entry Account)) \u2260\n              totalBalance ledger) := by\n  sorry",
+    "faithful": true,
+    "outcome": "admitted_and_closed",
+    "solved": true,
+    "faithfulness_reason": "faithful: typechecks, non-trivial, (consistent,) round-trip matches the NL intent",
+    "faithfulness_checks": {
+      "compiles": true,
+      "non_trivial": true,
+      "structure_preserved": true,
+      "round_trip_faithful": true
+    },
+    "decomposition": {
+      "audited": true,
+      "lemmas": [
+        "theorem balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj1 : \u2200 {Account : Type u} [Fintype Account] [DecidableEq Account], \u2200 (ledger : Ledger Account) {journal : Journal Account},\n    (\u2200 entry \u2208 journal, BalancedEntry entry) \u2192\n      totalBalance (postJournal ledger journal) = totalBalance ledger \u2227\n        (totalBalance ledger = 0 \u2192 totalBalance (postJournal ledger journal) = 0) := by sorry",
+        "theorem balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2 : \u2200 {Account : Type u} [Fintype Account] [DecidableEq Account], \u2200 (ledger : Ledger Account) (account : Account) {amount : \u2124},\n    amount \u2260 0 \u2192\n      \u00acBalancedEntry [{ account := account, amount := amount }] \u2227\n        totalBalance (applyEntry ledger [{ account := account, amount := amount }]) \u2260 totalBalance ledger := by sorry"
+      ],
+      "chain": "theorem balanced_journal_conservation_zero_endpoint_and_separate_sharpness {Account : Type u} [Fintype Account] [DecidableEq Account] :\n    (\u2200 (ledger : Ledger Account) {journal : Journal Account},\n      (\u2200 entry \u2208 journal, BalancedEntry entry) \u2192\n        totalBalance (postJournal ledger journal) = totalBalance ledger \u2227\n          (totalBalance ledger = 0 \u2192\n            totalBalance (postJournal ledger journal) = 0)) \u2227\n      (\u2200 (ledger : Ledger Account) (account : Account) {amount : Int},\n        amount \u2260 0 \u2192\n          \u00ac BalancedEntry ([{ account := account, amount := amount }] : Entry Account) \u2227\n            totalBalance\n                (applyEntry ledger ([{ account := account, amount := amount }] : Entry Account)) \u2260\n              totalBalance ledger) := by\n  repeat' apply And.intro\n  all_goals solve_by_elim [balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj1, balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2]",
+      "lnames": [
+        "balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj1",
+        "balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2"
+      ],
+      "verdict": {
+        "n_lemmas": 2,
+        "compiles": true,
+        "load_bearing": true,
+        "passed": "sound, non-circular, load-bearing, proves-G decomposition \u2014 spawn the L\u1d62"
+      },
+      "rounds": 0,
+      "iso_source": "deterministic_conjunctive",
+      "raw_tail": "",
+      "notes_used": true,
+      "deterministic_conjunctive": true
+    },
+    "target_theorem_name": "balanced_journal_conservation_zero_endpoint_and_separate_sharpness"
+  },
+  "denotation": {
+    "verdict": "PINNED",
+    "defs": [
+      "Ledger",
+      "Leg",
+      "Entry",
+      "Journal",
+      "entrySum",
+      "BalancedEntry",
+      "applyLeg",
+      "applyEntry",
+      "postJournal",
+      "totalBalance"
+    ],
+    "per_def": {
+      "Ledger": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_Ledger_eq_function",
+          "anchor_applyLeg_eq_function_update",
+          "anchor_applyEntry_eq_list_foldl",
+          "anchor_postJournal_eq_list_foldl",
+          "anchor_totalBalance_eq_univ_sum",
+          "anchor_applyLeg_total",
+          "anchor_applyEntry_total",
+          "anchor_empty_entry_preserves_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "Leg": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_Entry_eq_list",
+          "anchor_applyLeg_eq_function_update",
+          "anchor_applyLeg_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "Entry": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_Entry_eq_list",
+          "anchor_Journal_eq_list",
+          "anchor_entrySum_eq_list_sum",
+          "anchor_BalancedEntry_iff_entrySum_zero",
+          "anchor_applyEntry_eq_list_foldl",
+          "anchor_applyEntry_total",
+          "anchor_empty_entry_balanced",
+          "anchor_empty_entry_preserves_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "Journal": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_Journal_eq_list",
+          "anchor_postJournal_eq_list_foldl"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "entrySum": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_entrySum_eq_list_sum",
+          "anchor_BalancedEntry_iff_entrySum_zero",
+          "anchor_applyEntry_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "BalancedEntry": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_BalancedEntry_iff_entrySum_zero",
+          "anchor_empty_entry_balanced"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "applyLeg": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_applyLeg_eq_function_update",
+          "anchor_applyEntry_eq_list_foldl",
+          "anchor_applyLeg_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "applyEntry": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_applyEntry_eq_list_foldl",
+          "anchor_postJournal_eq_list_foldl",
+          "anchor_applyEntry_total",
+          "anchor_empty_entry_preserves_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "postJournal": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_postJournal_eq_list_foldl"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      },
+      "totalBalance": {
+        "status": "PINNED",
+        "verified_anchors": [
+          "anchor_totalBalance_eq_univ_sum",
+          "anchor_applyLeg_total",
+          "anchor_applyEntry_total",
+          "anchor_empty_entry_preserves_total"
+        ],
+        "pending_anchors": [],
+        "refuted_anchors": [],
+        "composition_anchor": true
+      }
+    },
+    "anchors": [
+      {
+        "name": "anchor_Ledger_eq_function",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_Leg_mk_account",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_Leg_mk_amount",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_Entry_eq_list",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_Journal_eq_list",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_entrySum_eq_list_sum",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_BalancedEntry_iff_entrySum_zero",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_applyLeg_eq_function_update",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_applyEntry_eq_list_foldl",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_postJournal_eq_list_foldl",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_totalBalance_eq_univ_sum",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_applyLeg_total",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_applyEntry_total",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_empty_entry_balanced",
+        "state": "verified"
+      },
+      {
+        "name": "anchor_empty_entry_preserves_total",
+        "state": "verified"
+      }
+    ],
+    "reason": "all 10 built def(s) pinned by a verified external anchor"
+  },
+  "nonvacuity": {
+    "verdict": "NOT_APPLICABLE",
+    "prone_defs": [],
+    "per_def": {},
+    "witnesses": [],
+    "reason": "no vacuously-on-empty set-property defs \u2014 vacuity-faithfulness N/A"
+  },
+  "summary": "5/5 lemmas formalized+closed; shelf=5; target closed",
+  "deep_closures": [
+    {
+      "target": "balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2",
+      "goal_sha": "719e1a95eacc35ba",
+      "statement": "abbrev Ledger (Account : Type u) : Type u",
+      "closure_lean": "ztare_proofs/.solver_scratch/notes_double_entry_ledger_controlplane_final_0708b/closures/balanced_journal_conservation_zero_endpoint_and_separate_sharpness_conj2.lean",
+      "integrity_unverified": false,
+      "fragile": false
+    },
+    {
+      "target": "balanced_journal_conservation_zero_endpoint_and_separate_sharpness",
+      "goal_sha": "713d950f70672c2f",
+      "statement": "theorem balanced_journal_conservation_zero_endpoint_and_separate_sharpness : \u2200 {Account : Type u} [Fintype Account] [DecidableEq Account], (\u2200 (ledger : Ledger Account) {journal : Journal Account}, (\u2200 entry \u2208 journal, BalancedEntry entry) \u2192 totalBalance (postJournal ledger journal) = totalBalance led",
+      "closure_lean": "ztare_proofs/.solver_scratch/notes_double_entry_ledger_controlplane_final_0708b/closures/balanced_journal_conservation_zero_endpoint_and_separate_sharpness.lean",
+      "integrity_unverified": false,
+      "fragile": false
+    }
+  ],
+  "instrument_standards": {
+    "ok": true,
+    "skipped": false,
+    "positive": {
+      "closed": true,
+      "via": "warm-repl"
+    },
+    "negative": {
+      "cheat_rejected": true,
+      "via": "statement_integrity.check"
+    },
+    "detail": "instrument LIVE (positive closed + cheat rejected)"
+  },
+  "rederivation": {
+    "closures": 238,
+    "distinct_rungs": 158,
+    "rederived": 74,
+    "rederivation_rate": 0.311,
+    "worst_offenders": [
+      [
+        "iso_lemma1",
+        10
+      ],
+      [
+        "iso_lemma2",
+        7
+      ],
+      [
+        "putnam_1964_b2",
+        6
+      ],
+      [
+        "singularValues_neg",
+        5
+      ],
+      [
+        "singularValues_smul",
+        4
+      ]
+    ]
+  },
+  "reuse": {
+    "closures": 238,
+    "banked_lemmas": 76,
+    "proofs_citing_a_banked_lemma": 4,
+    "proof_reuse_rate": 0.017,
+    "lemmas_reused": 3,
+    "lemma_reuse_rate": 0.039,
+    "top_reused": [
+      [
+        "iso_lemma1",
+        2
+      ],
+      [
+        "iso_lemma2",
+        1
+      ],
+      [
+        "iso_lemma2_segment",
+        1
+      ]
+    ]
+  },
+  "recent": {
+    "clean_since": "2026-06-24T00:00:00+00:00",
+    "clean_closures": 55,
+    "rederivation_rate": 0.218,
+    "rederived": 12,
+    "proof_reuse_rate": 0.0,
+    "proofs_citing_a_banked_lemma": 0
+  },
+  "training_corpus": {
+    "prover_pairs": 28,
+    "prover_void_novel": 24,
+    "prover_with_cot": 1,
+    "autoformalization_pairs": 85,
+    "falsification_pairs": 1,
+    "faithfulness_discriminator_pairs": 53,
+    "autoformalization_near_dups_dropped": 0,
+    "dedup_near": false,
+    "total_distinct_pairs": 167,
+    "raw_closed_certs": 238,
+    "clean_since": "2026-06-24T00:00:00+00:00",
+    "void_only": false,
+    "out_dir": "analytics/public/leanmill/training_corpus"
+  },
+  "trust_conservation": {
+    "ok": true,
+    "violations": [],
+    "counts": {
+      "ratified_attempts": 2,
+      "closed_certs_in_window": 2
+    }
+  }
+}

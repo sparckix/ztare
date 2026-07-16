@@ -34,17 +34,17 @@ runtime:
   role_overrides:
     navigator:
       runtime: codex
-      model: sol
+      model: gpt-5.5
       reasoning_effort: medium
       timeout_seconds: 1200
     lineage_synthesizer:
       runtime: codex
-      model: sol
+      model: gpt-5.5
       reasoning_effort: medium
       timeout_seconds: 1200
     lean_solver:
       runtime: codex
-      model: sol
+      model: gpt-5.5
       reasoning_effort: medium
       timeout_seconds: 600
       governed_pool: false

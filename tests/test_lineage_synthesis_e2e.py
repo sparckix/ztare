@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
 from ztare.leanmill.axiompack_leaf_workbench import decode_frontier_formula_proposal
 from ztare.leanmill.explore_axiom_space import explore_axiom_space
@@ -29,10 +31,15 @@ def test_late_objective_review_reopens_search_before_boundary(tmp_path):
             "context_hash": context.context_hash,
             "context_epoch": 0,
             "finalists": [
-                {
-                    "node_id": f"node:{len(calls)}",
-                    "theory_program": program,
-                }
+                    {
+                        "node_id": f"node:{len(calls)}",
+                        "theory_program": program,
+                        "prediction_profile": {
+                            "predictions": [
+                                {"chart_status": "holds_on_complete_context"}
+                            ]
+                        },
+                    }
             ],
             "finalist_node_ids": [f"node:{len(calls)}"],
             "expansion_proposals": [],
@@ -130,6 +137,7 @@ def test_late_agent_synthesis_admits_multiple_formulas_then_reopens_navigation(
     tmp_path,
 ):
     epochs = []
+    successor_traces = []
 
     def navigator(context, blueprint, journal, *, budget_ledger):
         epoch = int(getattr(navigator, "epoch", 0))
@@ -178,23 +186,40 @@ def test_late_agent_synthesis_admits_multiple_formulas_then_reopens_navigation(
                 },
             )
             return {**aggregate, "lineage_synthesis": synthesis}
-        return run_interactive_theory_navigator(
-            context,
-            blueprint,
-            journal,
-            agent_fn=lambda _prompt: {
+        successor_traces.append(tuple(getattr(navigator, "initial_trace", ())))
+        calls = 0
+
+        def decide(prompt):
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                return {
+                    "decision": "request",
+                    "capability_id": "inspect_presentation_extent",
+                    "input_refs": {"formula_ids": [], "offset": 0, "limit": 2},
+                    "rationale": "Receipt the surviving alias class before escalation.",
+                }
+            evidence = re.findall(r'"receipt_id":"(sha256:[0-9a-f]{64})"', prompt)
+            assert evidence
+            return {
                 "decision": "request",
                 "capability_id": "propose_theory_language_expansion",
                 "input_refs": {
                     "change_kind": "new_observable",
                     "blind_spot": "The rebuilt formula language still aliases objects.",
                     "proposed_interface": "One executable orbit observable.",
-                    "evidence_refs": [context.object_ids[0]],
+                    "evidence_refs": [evidence[-1]],
                     "discriminating_test": "The observable splits one remaining class.",
                     "kill_condition": "The observable duplicates the rebuilt partition.",
                 },
                 "rationale": "Escalate the remaining representation blind spot.",
-            },
+            }
+
+        return run_interactive_theory_navigator(
+            context,
+            blueprint,
+            journal,
+            agent_fn=decide,
             attempt_id="attempt-lineage-synthesis",
             campaign_id="campaign:" + blueprint.blueprint_id.split(":", 1)[1][:24],
             budget_ledger=budget_ledger,
@@ -228,6 +253,12 @@ def test_late_agent_synthesis_admits_multiple_formulas_then_reopens_navigation(
     )
 
     assert epochs == [(0, 1)]
+    assert successor_traces[0][0]["next_discriminator"] == (
+        "Rebuild and inspect their joint closure."
+    )
+    assert successor_traces[0][0]["kill_condition"] == (
+        "Neither coordinate adds a new finite profile."
+    )
     assert run.status == "frontier_language_expansion_requested"
     assert run.context_summary["context_epoch"] == 1
     assert run.context_summary["agent_proposed_formula_count"] == 2

@@ -24,6 +24,7 @@ from typing import Any
 
 from leanmill_paths import DATA_DIR, FACTORY_POLICY
 from ztare.leanmill.policy import read_policy
+from ztare.leanmill.lean_source import blank_comments, split_at_proof, strip_comments
 
 # Audit primitives consolidated under ztare.gates (canonical location since
 # 2026-05-29 consolidation). The scripts/public/control/v33_*.py files are
@@ -88,8 +89,7 @@ class DeclBlock:
 
 
 def _strip_lean_comments(text: str) -> str:
-    without_blocks = BLOCK_COMMENT_RE.sub("", text)
-    return "\n".join(LINE_COMMENT_RE.sub("", line) for line in without_blocks.splitlines())
+    return strip_comments(text or "")
 
 
 def _policy_allowed_axioms(policy_path: str | Path) -> list[str]:
@@ -123,15 +123,18 @@ def _static_counts(source: str) -> dict[str, int]:
 
 
 def extract_declarations(source: str) -> list[DeclBlock]:
-    matches = list(DECL_START_RE.finditer(source))
+    # Match on the canonical offset-preserving comment view, then slice bytes
+    # from the original.  A prose phrase such as "theorem without ..." inside
+    # a module comment must not become a phantom declaration/L3 finding.
+    visible = blank_comments(source or "")
+    matches = list(DECL_START_RE.finditer(visible))
     decls: list[DeclBlock] = []
     for index, match in enumerate(matches):
         start = match.start()
         end = matches[index + 1].start() if index + 1 < len(matches) else len(source)
         block = source[start:end].strip()
         clean_block = _strip_lean_comments(block).strip()
-        proof_match = PROOF_START_RE.search(clean_block) or ASSIGN_RE.search(clean_block)
-        statement = clean_block[: proof_match.start()].strip() if proof_match else clean_block
+        statement = split_at_proof(clean_block)[0].strip()
         decls.append(
             DeclBlock(
                 name=match.group(1).strip(),

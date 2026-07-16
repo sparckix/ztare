@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 from itertools import combinations
+import re
 
 import pytest
 
@@ -18,6 +19,8 @@ from ztare.leanmill.frontier_campaign_actions import (
     retire_frontier_campaign,
 )
 from ztare.leanmill.explore_axiom_space import (
+    _resolve_workbench_evidence_receipts,
+    _workbench_evidence_binding,
     execute_frontier_boundaries,
     explore_axiom_space,
     freeze_frontier_formula_successor_request,
@@ -75,6 +78,67 @@ def _signer():
     return lambda packet: sign_frontier_campaign(
         packet, private_key_pem=private, signer_ref="campaign-authority"
     )
+
+
+def test_language_evidence_resolves_governed_trace_receipts(tmp_path):
+    workbench_core = {
+        "schema": "leanmill.axiompack_workbench_receipt.v1",
+        "capability_id": "inspect_presentation_extent",
+        "authority": "deterministic_host",
+        "output_summary": {"status": "inspected"},
+    }
+    workbench = {
+        **workbench_core,
+        "receipt_id": "sha256:" + content_hash(workbench_core),
+    }
+    boundary_core = {
+        "schema": "leanmill.boundary_search_feedback.v1",
+        "authority": "host_boundary_outcome_replay",
+        "route": "continue_search",
+    }
+    boundary = {
+        **boundary_core,
+        "receipt_sha256": content_hash(boundary_core),
+    }
+    navigation = {
+        "trace": [
+            {"decision": "request", "receipt": workbench},
+            {"decision": "objective_feedback", "receipt": boundary},
+        ]
+    }
+
+    receipts = _resolve_workbench_evidence_receipts(
+        tmp_path,
+        navigation,
+        [workbench["receipt_id"], boundary["receipt_sha256"]],
+    )
+    binding = _workbench_evidence_binding(receipts)
+
+    assert binding["schema"] == "leanmill.governed_trace_evidence_binding.v1"
+    assert binding["receipt_ids"] == [
+        workbench["receipt_id"],
+        boundary["receipt_sha256"],
+    ]
+    assert [row["schema"] for row in binding["evidence"]] == [
+        workbench["schema"],
+        boundary["schema"],
+    ]
+
+
+def test_language_evidence_rejects_unbound_or_tampered_trace_receipts(tmp_path):
+    core = {
+        "schema": "leanmill.boundary_search_feedback.v1",
+        "authority": "host_boundary_outcome_replay",
+        "route": "continue_search",
+    }
+    tampered = {**core, "receipt_sha256": "0" * 64}
+    navigation = {
+        "trace": [{"decision": "objective_feedback", "receipt": tampered}]
+    }
+    with pytest.raises(ValueError, match="governed trace receipts"):
+        _resolve_workbench_evidence_receipts(
+            tmp_path, navigation, [tampered["receipt_sha256"]]
+        )
 
 
 def test_successor_formula_request_preserves_source_finalist_identity(tmp_path):
@@ -182,26 +246,117 @@ def test_single_public_inlet_builds_and_navigates_structure_first(tmp_path):
     assert replay_frontier_campaign(tmp_path / "attempt-1")["ok"] is True
 
 
+def test_budget_stop_replay_retains_verified_outer_objective_finalists(tmp_path):
+    attempt = tmp_path / "attempt-objective-budget-stop"
+    run = explore_axiom_space(
+        FrontierExplorationBrief(
+            direction="Explore anonymous finite binary-operation theories.",
+            source_mode="structure_first",
+        ),
+        attempt_dir=attempt,
+        typed_draft=_draft(),
+        packet_signer=_signer(),
+    )
+    assert run.navigation and run.navigation["finalists"]
+
+    frozen_run = read_json(attempt / "run.json", {})
+    stop_core = {
+        "schema": "leanmill.exploration_budget_stop.v1",
+        "reason": "blocked_before_action:expansion:provider_calls",
+        "context_hash": frozen_run["context_hash"],
+        "budget_digest": frozen_run["budget_digest"],
+    }
+    stop = {**stop_core, "receipt_sha256": content_hash(stop_core)}
+    run_core = {
+        **{key: value for key, value in frozen_run.items() if key != "run_digest"},
+        "status": "budget_stopped",
+        "budget_stop_receipt": stop,
+    }
+    write_json_atomic(
+        attempt / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    (attempt / "replay.json").unlink(missing_ok=True)
+    ordinary_replay = replay_frontier_campaign(attempt)
+    assert ordinary_replay["ok"] is False
+    assert ordinary_replay["budget_stop_check"]["outer_objective_active"] is False
+
+    blueprint = read_json(attempt / "blueprint.json", {})
+    blueprint.pop("blueprint_id", None)
+    blueprint["stop_rule"] = {
+        **blueprint["stop_rule"],
+        "user_instruction": "Invent a representation beyond the frozen finalists.",
+        "executable_condition": {"kind": "late_lineage_objective_review"},
+    }
+    write_json_atomic(attempt / "blueprint.json", blueprint)
+    (attempt / "replay.json").unlink(missing_ok=True)
+
+    replay = replay_frontier_campaign(attempt)
+
+    assert replay["ok"] is True
+    assert replay["budget_stop_check"] == {
+        "ok": True,
+        "reason": "blocked_before_action:expansion:provider_calls",
+        "receipt_sha256": stop["receipt_sha256"],
+        "outer_objective_active": True,
+        "retained_evidence_check_count": len(run.navigation["finalists"]),
+    }
+    assert all(row["ok"] is True for row in replay["finalist_checks"])
+    closure_gate = {
+        "ready": True,
+        "missing_lineage_disposition_ids": [],
+        "unadjudicated_generalization_residual_ids": [],
+        "receipt_sha256": "closure:fixture",
+    }
+    write_json_atomic(attempt / "campaign_closure_gate.json", closure_gate)
+    status = frontier_campaign_status(attempt)
+    assert status["cold_replay"] == {
+        "schema": "leanmill.frontier_campaign_replay.v5",
+        "ok": True,
+        "receipt_sha256": replay["receipt_sha256"],
+        "provider_calls": 0,
+        "budget_stop_ok": True,
+        "retained_evidence_check_count": len(run.navigation["finalists"]),
+    }
+    assert status["campaign_closure_gate"] == closure_gate
+
+
 def test_public_inlet_surfaces_language_expansion_as_next_campaign_work(tmp_path):
     def navigator(context, blueprint, journal, *, budget_ledger):
         epoch = int(getattr(navigator, "epoch", 0))
-        return run_interactive_theory_navigator(
-            context,
-            blueprint,
-            journal,
-            agent_fn=lambda _prompt: {
+        calls = 0
+
+        def decide(prompt):
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                return {
+                    "decision": "request",
+                    "capability_id": "inspect_presentation_extent",
+                    "input_refs": {"formula_ids": [], "offset": 0, "limit": 2},
+                    "rationale": "Receipt the aliased source objects before changing language.",
+                }
+            evidence = re.findall(r'"receipt_id":"(sha256:[0-9a-f]{64})"', prompt)
+            assert evidence
+            return {
                 "decision": "request",
                 "capability_id": "propose_theory_language_expansion",
                 "input_refs": {
                     "change_kind": "new_relation",
                     "blind_spot": "The frozen operation language aliases a witnessed pair.",
                     "proposed_interface": "A binary relation with executable finite semantics.",
-                    "evidence_refs": [context.object_ids[0]],
+                    "evidence_refs": [evidence[-1]],
                     "discriminating_test": "The relation splits the witnessed object class.",
                     "kill_condition": "The compiled relation fails to split that class.",
                 },
                 "rationale": "Move the language boundary instead of forcing an equation.",
-            },
+            }
+
+        return run_interactive_theory_navigator(
+            context,
+            blueprint,
+            journal,
+            agent_fn=decide,
             attempt_id="attempt-language",
             campaign_id="campaign:" + blueprint.blueprint_id.split(":", 1)[1][:24],
             budget_ledger=budget_ledger,
@@ -633,7 +788,7 @@ def test_continue_epoch_archives_source_identity_before_admission(
         "blocked_before_action:navigation:provider_calls"
     )
     current_replay = replay_frontier_campaign(attempt)
-    assert current_replay["schema"] == "leanmill.frontier_campaign_replay.v3"
+    assert current_replay["schema"] == "leanmill.frontier_campaign_replay.v5"
     assert current_replay["context_hash"] == target.context_hash
     assert current_replay["context_epoch"] == 1
     assert current_replay["budget_stop_check"]["ok"] is True
@@ -750,6 +905,52 @@ def test_complete_context_snapshot_is_reused_without_reenumeration(tmp_path, mon
     )
     assert second.context_hash == first.context_hash
     assert read_json(second_dir / "context_reuse_receipt.json", {})["provider_calls"] == 0
+
+
+def test_context_construction_failure_precedes_navigator_dispatch(
+    tmp_path, monkeypatch
+):
+    inlet = importlib.import_module("ztare.leanmill.explore_axiom_space")
+    dispatched = []
+
+    class IncompleteContext(ValueError):
+        def failure_receipt(self):
+            return {"schema": "test.incomplete_context.v1", "status": "incomplete"}
+
+        def partial_snapshot(self):
+            return {"schema": "test.partial_context.v1", "models": ["partial"]}
+
+    def navigator(_context, _blueprint, _journal, *, budget_ledger):
+        dispatched.append(True)
+        raise AssertionError("navigator dispatched before context admission")
+
+    navigator.accepts_budget_ledger = True
+    monkeypatch.setattr(
+        inlet,
+        "_context_from_blueprint",
+        lambda _blueprint: (_ for _ in ()).throw(
+            IncompleteContext("exact census incomplete")
+        ),
+    )
+
+    with pytest.raises(ValueError, match="exact census incomplete"):
+        explore_axiom_space(
+            FrontierExplorationBrief(
+                direction="Explore.", source_mode="structure_first"
+            ),
+            attempt_dir=tmp_path / "context-failure",
+            typed_draft=_draft(),
+            packet_signer=_signer(),
+            navigator_fn=navigator,
+        )
+
+    assert dispatched == []
+    assert read_json(
+        tmp_path / "context-failure" / "context_construction_failure.json", {}
+    )["status"] == "incomplete"
+    assert read_json(
+        tmp_path / "context-failure" / "partial_model_universe.json", {}
+    )["models"] == ["partial"]
 
 
 def test_unknown_adapter_returns_blocked_gap_through_same_inlet(tmp_path):
@@ -890,6 +1091,7 @@ def test_public_campaign_resumes_through_smt_and_matched_lean_boundary(tmp_path)
             return {
                 "schema": "test.fixed_boundary.v1",
                 "status": self.status,
+                "carrier_size": 3,
                 "receipt_sha256": "sha256:no-countermodel",
             }
 

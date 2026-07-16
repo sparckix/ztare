@@ -482,26 +482,26 @@ def _negated_prop(concl: str) -> str:
     return ""
 
 
-def _refutation_matches_current_goal(refute_source: str, target_name: str, current_gprop: str) -> bool:
-    """A reusable refutation must negate the closed Prop for this exact target signature."""
-    if not (refute_source and target_name and current_gprop):
-        return False
+def _matching_refutation_declaration(refute_source: str, current_gprop: str) -> str:
+    """Return the declaration whose type is exactly the negation of ``current_gprop``."""
+    if not (refute_source and current_gprop):
+        return ""
     try:
-        from ztare.leanmill.lean_source import decl_blocks
+        from ztare.leanmill.lean_source import decl_blocks, decl_kind
         for name, block in decl_blocks(refute_source):
-            if not block.strip():
-                continue
-            lower_name = (name or "").lower()
-            mentions_target = target_name in block
-            refute_named = any(tok in lower_name for tok in ("false", "counterexample", "refut"))
-            if not (mentions_target or refute_named):
+            if not name or decl_kind(block) not in {"theorem", "lemma"}:
                 continue
             neg = _negated_prop(_lemma_conclusion(block))
             if neg and _norm_ws(neg) == _norm_ws(_strip_wrapping_parens(current_gprop)):
-                return True
+                return name
     except Exception:  # noqa: BLE001
-        return False
-    return False
+        return ""
+    return ""
+
+
+def _refutation_matches_current_goal(refute_source: str, target_name: str, current_gprop: str) -> bool:
+    """A reusable refutation must negate the closed Prop for this exact target signature."""
+    return bool(target_name and _matching_refutation_declaration(refute_source, current_gprop))
 
 
 from ztare.leanmill.solver.prompts import FALSIFY_PROMPT as _FALSIFY_PROMPT
@@ -576,11 +576,9 @@ def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: i
     'FALSIFY recovery never fires' bug (CLOB v1/v2, EF1: the FRESH skeptic in `falsify_generate` could not reproduce
     the leaf's complex ULift/list counterexample, so `¬G NOT kernel-confirmed` → the reformulation re-entry never
     fired and the campaign GROUND A FALSE LEMMA forever). The leaf ALREADY proved the target false: a sorry-free
-    `-- STATEMENT-FALSE:` probe carrying a `¬`/`_false`/`counterexample`/`target_false` theorem. Re-compile THAT
-    probe (self-contained → base Mathlib, `reject_sorry=True`): compiles sorry-free ⇒ the agent's ¬G is GENUINE, no
-    re-derivation, fast. SOUND: (a) the probe must RESTATE the TARGET (a decl named `target_name`) so it refutes the
-    ACTUAL statement, not a strawman; (b) the governed reformulation re-gates faithfulness vs the original NL
-    downstream (it can never launder — the design's stated soundness model). ZTARE_LEANMILL_REUSE_AGENT_REFUTATION=0
+    `-- STATEMENT-FALSE:` probe carrying a proved negation. The host appends a theorem whose type is exactly
+    ``¬G`` and whose proof cites the saved declaration; Lean, rather than a name/text heuristic, decides whether
+    the saved theorem refutes this statement. ZTARE_LEANMILL_REUSE_AGENT_REFUTATION=0
     reverts to always-re-derive. Returns (confirmed, detail, refute_block) or (False, why, '')."""
     import os
     if os.environ.get("ZTARE_LEANMILL_REUSE_AGENT_REFUTATION", "1") == "0":
@@ -591,7 +589,7 @@ def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: i
     try:
         import glob as _glob
         from ztare.leanmill.solver.agentic_leaf import probe_dir as _pd, robust_probe_glob as _rpg
-        from ztare.formal.repl_compile import compile_probe_via_repl as _cpv, _strip_prelude_for_repl as _spr
+        from ztare.formal.repl_compile import warm_verify_campaign as _wvc
     except Exception:  # noqa: BLE001 — reuse is best-effort; fall through to the skeptic
         return False, "no probe infra", ""
     try:
@@ -623,16 +621,18 @@ def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: i
             txt = Path(pf).read_text(encoding="utf-8", errors="replace")
         except Exception:  # noqa: BLE001
             continue
-        has_refut = ("STATEMENT-FALSE" in txt) or bool(
-            re.search(r"(?m)^\s*(?:theorem|lemma|example)\s+\w*(?:false|counterexample|refut)\w*", txt, re.I))
-        # RESTATES the target: the agent names its refutation `not_<target>` / `<target>_false` / `target_false`,
-        # so the exact `theorem <target>` decl is often ABSENT — match the target name as a SUBSTRING (it appears in
-        # the negation decl / the restated statement). Sound: the probe must still be a sorry-free REFUTATION
-        # (has_refut) that COMPILES (below), and the reformulation re-gates faithfulness downstream.
-        restates = (target_name in txt)
-        if not (has_refut and restates) or _has_sorry(txt):
+        if _has_sorry(txt):
             continue
-        if not _refutation_matches_current_goal(txt, target_name, current_gprop):
+        from ztare.leanmill import lean_source as _lean_source
+
+        refutation_names = [
+            name
+            for name, block in _lean_source.decl_blocks(txt)
+            if name
+            and _lean_source.decl_kind(block) in {"theorem", "lemma"}
+            and _negated_prop(_lemma_conclusion(block))
+        ]
+        if not refutation_names:
             continue
         # ROOT FIX (2026-07-05, the recurring-ghost class ONCE AND FOR ALL): verify the counterexample against the
         # SUBSTRATE's REAL defs, NOT base Mathlib. A self-contained probe RE-DECLARES the theory (bestBid, Book,
@@ -663,10 +663,62 @@ def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: i
                     continue   # divergence ghost — probe's theory ≠ substrate's; its ¬G refutes a DIFFERENT theory
         except Exception:  # noqa: BLE001 — guard best-effort; a read failure must not suppress a genuine reuse
             pass
-        r = _cpv(_spr(txt), str(lean_root), min(timeout_s, 180), reject_sorry=True, env=None)
-        if r is not None and bool(r[0]):   # compiled sorry-free (base Mathlib) AND non-divergent ⇒ a genuine ¬G
-            return True, f"reused agent's kernel-checked counterexample ({Path(pf).name}): {str(r[1])[:80]}", txt[:1400]
+        # The positive-proof harness appends ``#print axioms <target>``.
+        # A refutation omits that target. Audit a host-owned exact-identity
+        # bridge; only a theorem that Lean can use to prove ``¬G`` survives.
+        refutation_source = _lean_source.strip_print_axioms_commands(txt)
+        bridge_name = "ztare_saved_refutation_bridge"
+        for refutation_name in reversed(refutation_names):
+            bridged_source = (
+                refutation_source.rstrip()
+                + f"\n\ntheorem {bridge_name} : ¬ ({current_gprop}) := by\n"
+                + f"  exact {refutation_name}\n"
+            )
+            r = _wvc(
+                bridged_source,
+                bridge_name,
+                str(lean_root),
+                min(timeout_s, 180),
+                env=None,
+            )
+            if r is None:
+                from tempfile import TemporaryDirectory
+                from ztare.gates.lean_compile_primitives import audit_axioms_subset
+
+                with TemporaryDirectory(prefix="leanmill_saved_refutation_") as directory:
+                    clean, _confirmed_bad, axioms = audit_axioms_subset(
+                        bridged_source,
+                        bridge_name,
+                        Path(directory) / "Probe.lean",
+                        Path(lean_root),
+                        timeout_s=min(timeout_s, 180),
+                    )
+                r = (
+                    clean,
+                    "cold axiom audit: " + (", ".join(axioms) if axioms else "no extra axioms"),
+                )
+            if r is not None and bool(r[0]):
+                return (
+                    True,
+                    f"reused agent's kernel-checked counterexample ({Path(pf).name}): {str(r[1])[:80]}",
+                    bridged_source,
+                )
     return False, "no reusable non-divergent agent refutation probe for this target", ""
+
+
+def recover_saved_refutation(
+    target_name: str,
+    source_text: str,
+    lean_root: "Path",
+    timeout_s: int,
+) -> "tuple[bool, str, str]":
+    """Kernel-recheck a saved exact-statement refutation without dispatching an agent."""
+    return _reverify_agent_refutation(
+        target_name,
+        lean_root,
+        timeout_s,
+        source_text=source_text,
+    )
 
 
 # ── SINGLE-DOOR refutation memo (2026-07-06, gale capstone — operator "single door, do it both"). The leaf can
@@ -678,7 +730,7 @@ def _reverify_agent_refutation(target_name: str, lean_root: "Path", timeout_s: i
 # the run; every consumer reads the SAME memory instead of re-deriving it. Sound: we memoize only what `_gate`
 # already kernel-confirmed AND carrier-ghost-passed (never a bare claim); keyed on the goal so a later
 # STRENGTHENED statement (new goal, same name) never reuses the weak statement's ¬G.
-_CONFIRMED_REFUTATIONS: "dict[tuple, str]" = {}
+_CONFIRMED_REFUTATIONS: "dict[tuple, object]" = {}
 
 
 def _statement_identity(target_name: str, source_text: str, goal: str) -> str:
@@ -714,13 +766,36 @@ def _refutation_key(target_name: str, source_text: str, goal: str) -> "tuple":
             sid.closed_prop_norm, sid.closed_prop_hash)
 
 
-def _remember_refutation(target_name: str, source_text: str, goal: str, block: str) -> None:
+def _remember_refutation(
+    target_name: str,
+    source_text: str,
+    goal: str,
+    block: str,
+    *,
+    provenance: str,
+    detail: str,
+):
     if not (target_name and block):
-        return
+        return None
     try:
-        _CONFIRMED_REFUTATIONS[_refutation_key(target_name, source_text, goal)] = block
+        import hashlib
+        from ztare.leanmill.control_plane import Verdict, VerdictKind
+
+        verdict = Verdict(
+            kind=VerdictKind.REFUTED,
+            statement_id=current_statement_id(target_name, source_text, goal),
+            provenance=provenance,
+            detail=detail,
+            artifacts={
+                "refutation_block_sha256": hashlib.sha256(block.encode("utf-8")).hexdigest(),
+                "lean_source_sha256": hashlib.sha256(block.encode("utf-8")).hexdigest(),
+                "lean_source": block,
+            },
+        )
+        _CONFIRMED_REFUTATIONS[_refutation_key(target_name, source_text, goal)] = verdict
+        return verdict
     except Exception:  # noqa: BLE001 — the memo is an optimization; never break a verdict
-        pass
+        return None
 
 
 def confirmed_refutation(target_name: str, source_text: str, goal: str) -> str:
@@ -731,7 +806,22 @@ def confirmed_refutation(target_name: str, source_text: str, goal: str) -> str:
     import os as _os
     if _os.environ.get("ZTARE_LEANMILL_REFUTATION_MEMO", "1") == "0":
         return ""
-    return _CONFIRMED_REFUTATIONS.get(_refutation_key(target_name, source_text, goal), "")
+    verdict = _CONFIRMED_REFUTATIONS.get(_refutation_key(target_name, source_text, goal))
+    try:
+        return verdict.kernel_refutation_source() if verdict is not None else ""
+    except Exception:  # noqa: BLE001 — compatibility read must fail closed
+        return ""
+
+
+def confirmed_refutation_verdict(
+    target_name: str, source_text: str, goal: str
+) -> "dict | None":
+    """Operational typed verdict for the current statement, if kernel-confirmed."""
+    verdict = _CONFIRMED_REFUTATIONS.get(_refutation_key(target_name, source_text, goal))
+    try:
+        return verdict.to_json() if verdict is not None and verdict.kernel_refutation_source() else None
+    except Exception:  # noqa: BLE001 — invalid memo entries carry no authority
+        return None
 
 
 def adjudicate_statement_false_verdict(target_name: str, source_text: str, goal: str,
@@ -756,19 +846,28 @@ def adjudicate_statement_false_verdict(target_name: str, source_text: str, goal:
                                   f"refutes a DIFFERENT theory, not the committed one (no reformulation)", "")
         except Exception:  # noqa: BLE001 — the guard is best-effort; never suppress a refutation on a read error
             pass
+    verdict_object = None
     if verdict[0] and verdict[2]:
-        _remember_refutation(target_name, source_text, goal, verdict[2])
+        verdict_object = _remember_refutation(
+            target_name,
+            source_text,
+            goal,
+            verdict[2],
+            provenance=provenance,
+            detail=verdict[1],
+        )
     try:
         from ztare.leanmill.control_plane import Verdict, VerdictKind
         from ztare.leanmill.verdict_store import emit_verdict
-        emit_verdict(Verdict(
-            kind=VerdictKind.REFUTED if verdict[0] else VerdictKind.UNVERIFIED,
-            statement_id=current_statement_id(target_name, source_text, goal),
-            provenance=provenance,
-            detail=verdict[1],
-            artifacts={"refutation_block_sha256": __import__("hashlib").sha256(
-                (verdict[2] or "").encode("utf-8")).hexdigest() if verdict[2] else ""},
-        ), extra={"target_name": target_name or "", "has_refutation_block": bool(verdict[2]), **(extra or {})})
+        emit_verdict(
+            verdict_object or Verdict(
+                kind=VerdictKind.UNVERIFIED,
+                statement_id=current_statement_id(target_name, source_text, goal),
+                provenance=provenance,
+                detail=verdict[1],
+            ),
+            extra={"target_name": target_name or "", "has_refutation_block": bool(verdict[2]), **(extra or {})},
+        )
     except Exception:  # noqa: BLE001 — telemetry must never affect the falsify verdict
         pass
     return verdict

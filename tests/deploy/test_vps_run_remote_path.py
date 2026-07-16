@@ -128,6 +128,8 @@ lane: axiompack
 typed_blueprint: typed_blueprint.json
 frozen_context_ref:
   path: research_areas/pre_registrations/campaign_a/context.json
+predecessor_synthesis_ref:
+  path: research_areas/pre_registrations/campaign_a/predecessor.json
 ---
 Explore.
 """,
@@ -142,6 +144,7 @@ Explore.
         "research_areas/pre_registrations/campaign_a/campaign.md",
         "research_areas/pre_registrations/campaign_a/typed_blueprint.json",
         "research_areas/pre_registrations/campaign_a/context.json",
+        "research_areas/pre_registrations/campaign_a/predecessor.json",
     ]
 
 
@@ -173,9 +176,10 @@ def test_detached_campaign_uses_user_systemd_without_waiting_for_child(
 ) -> None:
     mod = load_module()
     synced = []
+    remote = []
     remote_scripts = []
     monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
-    monkeypatch.setattr(mod, "remote_cmd", lambda _argv: "")
+    monkeypatch.setattr(mod, "remote_cmd", remote.append)
     monkeypatch.setattr(
         mod,
         "remote_shell",
@@ -196,6 +200,7 @@ def test_detached_campaign_uses_user_systemd_without_waiting_for_child(
     )
 
     assert synced == ["campaign.md", "typed.json"]
+    assert remote == []
     assert len(remote_scripts) == 1
     script = remote_scripts[0]
     assert "systemd-run --user" in script
@@ -203,6 +208,202 @@ def test_detached_campaign_uses_user_systemd_without_waiting_for_child(
     assert "--working-directory=/home/ztare/repo" in script
     assert "setsid" not in script
     assert json.loads(capsys.readouterr().out)["status"] == "launched"
+
+
+def test_detached_verification_survives_ssh_control_exit(monkeypatch, capsys) -> None:
+    mod = load_module()
+    remote_scripts = []
+    monkeypatch.setattr(
+        mod,
+        "remote_shell",
+        lambda script, **_kwargs: remote_scripts.append(script) or "",
+    )
+
+    mod.action_leanmill_verify([
+        "/tmp/attempt-1", "--with-isabelle", "--detach",
+    ])
+
+    assert len(remote_scripts) == 1
+    assert "systemd-run --user" in remote_scripts[0]
+    assert "ztare.leanmill.cli verify /tmp/attempt-1 --with-isabelle" in remote_scripts[0]
+    launch = json.loads(capsys.readouterr().out)
+    assert launch["schema"] == "leanmill.campaign_verification_launch.v1"
+    assert launch["status"] == "launched"
+
+
+def test_named_resume_drives_continuously_unless_one_step_is_explicit(
+    monkeypatch, capsys
+) -> None:
+    mod = load_module()
+    remote_scripts = []
+    monkeypatch.setattr(
+        mod,
+        "remote_shell",
+        lambda script, **_kwargs: remote_scripts.append(script) or "",
+    )
+
+    mod.action_leanmill_resume(["/tmp/attempt-1", "--detach"])
+
+    assert len(remote_scripts) == 2
+    assert "ztare.leanmill.resume_runtime_preflight" in remote_scripts[0]
+    assert (
+        "ztare.leanmill.cli resume /tmp/attempt-1 --continuous"
+        in remote_scripts[1]
+    )
+    launch = json.loads(capsys.readouterr().out)
+    assert launch["schema"] == "leanmill.campaign_resume_launch.v1"
+
+    calls = []
+    monkeypatch.setattr(mod, "remote_cmd", lambda *_args, **_kwargs: "")
+    monkeypatch.setattr(
+        mod,
+        "_leanmill_attempt_action",
+        lambda action, args: calls.append((action, args)),
+    )
+    mod.action_leanmill_resume(["/tmp/attempt-1", "--one-step"])
+    assert calls == [("resume", ["/tmp/attempt-1"])]
+
+    calls.clear()
+    mod.action_leanmill_resume([
+        "/tmp/attempt-1",
+        "--one-step",
+        "--authority-ref",
+        "user:continue-maximally:test",
+    ])
+    assert calls == [(
+        "resume",
+        [
+            "/tmp/attempt-1",
+            "--authority-ref",
+            "user:continue-maximally:test",
+        ],
+    )]
+
+
+def test_ratify_existing_is_provider_free_named_vps_action(monkeypatch) -> None:
+    mod = load_module()
+    synced: list[str] = []
+    remote: list[list[str]] = []
+    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(mod, "remote_cmd", lambda argv: remote.append(argv) or "")
+
+    mod.action_leanmill_ratify_existing([
+        "ztare_proofs/ZtareProofs/Example.lean",
+        "Example.namespaceTheorem",
+    ])
+
+    assert synced == ["ztare_proofs/ZtareProofs/Example.lean"]
+    assert remote == [[
+        "./venv/bin/python",
+        "scripts/public/control/leanmill/solve_adhoc.py",
+        "--target",
+        "Example.namespaceTheorem",
+        "--source-file",
+        "ztare_proofs/ZtareProofs/Example.lean",
+        "--substrate",
+        "ztare_proofs",
+        "--mode",
+        "cascade",
+        "--ratify-existing-target",
+        "--json",
+    ]]
+    assert "--provider" not in remote[0]
+
+
+def test_leanmill_extend_budget_forwards_formal_boundary_resources(
+    monkeypatch,
+) -> None:
+    mod = load_module()
+    remote: list[list[str]] = []
+    monkeypatch.setattr(mod, "remote_cmd", lambda argv: remote.append(argv) or "")
+
+    mod.action_leanmill_extend_budget([
+        "/tmp/axiompack-attempt",
+        "--phase", "boundary",
+        "--formal-peer-attempts", "2",
+        "--formal-peer-millis", "300000",
+        "--lean-attempts", "4",
+        "--lean-millis", "900000",
+        "--authority-ref", "operator:budget-extension",
+        "--reason", "finish governed task adjudication",
+    ])
+
+    assert remote == [[
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "extend-budget",
+        "/tmp/axiompack-attempt",
+        "--phase", "boundary",
+        "--formal-peer-attempts", "2",
+        "--formal-peer-millis", "300000",
+        "--lean-attempts", "4",
+        "--lean-millis", "900000",
+        "--authority-ref", "operator:budget-extension",
+        "--reason", "finish governed task adjudication",
+    ]]
+
+
+def test_external_science_admission_is_named_budgeted_remote_action(
+    monkeypatch,
+) -> None:
+    mod = load_module()
+    synced: list[str] = []
+    remote: list[list[str]] = []
+    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(mod, "remote_cmd", lambda argv: remote.append(argv) or "")
+
+    mod.action_leanmill_admit_external_science([
+        "/tmp/axiompack-attempt",
+        "ztare_proofs/ZtareProofs/AxiomPackFinalistOneBridge.lean",
+        "AxiomPackFinalistOneBridge.finalistOneGlobalCommutation",
+        "finite-model:example",
+        (
+            "research_areas/pre_registrations/"
+            "axiompack_elementary_tetrahedron_frontier_v1_20260713/"
+            "differential_mode_prior_art_audit.md"
+        ),
+        "theory-lineage:example",
+        "--model",
+        "gpt-5.5",
+        "--reasoning-effort",
+        "ultra",
+    ])
+
+    assert synced == [
+        "ztare_proofs/ZtareProofs/AxiomPackFinalistOneBridge.lean",
+        (
+            "research_areas/pre_registrations/"
+            "axiompack_elementary_tetrahedron_frontier_v1_20260713/"
+            "differential_mode_prior_art_audit.md"
+        ),
+    ]
+    assert remote == [[
+        "./venv/bin/python",
+        "scripts/public/control/leanmill/external_science_recovery.py",
+        "--attempt-dir",
+        "/tmp/axiompack-attempt",
+        "--source-file",
+        "ztare_proofs/ZtareProofs/AxiomPackFinalistOneBridge.lean",
+        "--target",
+        "AxiomPackFinalistOneBridge.finalistOneGlobalCommutation",
+        "--finite-witness-model-id",
+        "finite-model:example",
+        "--literature-audit",
+        (
+            "research_areas/pre_registrations/"
+            "axiompack_elementary_tetrahedron_frontier_v1_20260713/"
+            "differential_mode_prior_art_audit.md"
+        ),
+        "--lineage-id",
+        "theory-lineage:example",
+        "--model",
+        "gpt-5.5",
+        "--reasoning-effort",
+        "ultra",
+        "--repo-root",
+        mod.REMOTE_REPO,
+    ]]
 
 
 def test_nl_axiompack_campaign_launches_without_provider_free_preflight(

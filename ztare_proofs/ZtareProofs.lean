@@ -332,3 +332,9 @@ import ZtareProofs.ns_tick668_pressure_cutoff_carrier_identity
 import ZtareProofs.ns_tick669_projection_tail_persistence_bridge
 import ZtareProofs.ns_c7_surplus_five_frame_bridge
 import ZtareProofs.ns_material_window_channel_decrement_bridge
+
+-- ============================================================================
+-- AxiomPack elementary-tetrahedron / differential-mode comparison
+-- ============================================================================
+import ZtareProofs.AxiomPackDifferentialModeBridge
+import ZtareProofs.AxiomPackT2ReconstructionCounterexample

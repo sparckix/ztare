@@ -30,6 +30,116 @@ def _receipt_refs(value: Any) -> set[str]:
     return refs
 
 
+def _validate_formula_equivalence_metadata(
+    result_packet: Mapping[str, Any],
+    formula_matches: list[dict[str, Any]],
+) -> None:
+    if result_packet.get("schema") != "leanmill.post_freeze_result_packet.v4":
+        return
+    expected = {
+        str(row.get("formula_id") or "")
+        for row in result_packet.get("formulas") or ()
+        if isinstance(row, Mapping)
+    }
+    if {str(row.get("formula_id") or "") for row in formula_matches} != expected:
+        raise ValueError("formula matches do not cover the frozen result formulas")
+    structural = result_packet.get("structural_source_search")
+    variants = {
+        str(row.get("variant_id") or ""): str(row.get("formula_ref") or "")
+        for row in (
+            structural.get("operation_coordinate_variants") or ()
+            if isinstance(structural, Mapping)
+            else ()
+        )
+        if isinstance(row, Mapping)
+    }
+    for row in formula_matches:
+        status = str(row.get("match_status") or "")
+        kind = str(row.get("equivalence_kind") or "")
+        variant_id = row.get("coordinate_variant_id")
+        formula_id = str(row.get("formula_id") or "")
+        if status == "not_found":
+            valid = kind == "none" and variant_id is None
+        elif status == "exact":
+            valid = kind in {"literal", "bound_variable_renaming"} and variant_id is None
+        elif status == "equivalent" and kind == "operation_coordinate_permutation":
+            valid = isinstance(variant_id, str) and variants.get(variant_id) == formula_id
+        else:
+            valid = status == "equivalent" and kind == "other_equivalent" and variant_id is None
+        if not valid:
+            raise ValueError("formula match has an invalid equivalence certificate")
+
+
+def _validated_finite_witness_checks(
+    result_packet: Mapping[str, Any],
+    literature_receipt: Mapping[str, Any],
+    review: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    proposals = {
+        content_hash(dict(row)): dict(row)
+        for row in review.get("finite_witness_matches") or ()
+        if isinstance(row, Mapping)
+    }
+    raw_checks = literature_receipt.get("finite_witness_host_checks") or ()
+    if result_packet.get("schema") == "leanmill.post_freeze_result_packet.v4" and (
+        len(raw_checks) != len(proposals)
+    ):
+        raise ValueError("finite-witness proposals lack deterministic host checks")
+    structural = result_packet.get("structural_source_search")
+    candidate_ids = {
+        str(row.get("candidate_model_id") or "")
+        for row in (
+            structural.get("finite_witnesses") or ()
+            if isinstance(structural, Mapping)
+            else ()
+        )
+        if isinstance(row, Mapping)
+    }
+    checks = []
+    seen: set[str] = set()
+    for raw in raw_checks:
+        if not isinstance(raw, Mapping):
+            raise ValueError("finite-witness host check is malformed")
+        check = dict(raw)
+        core = {key: value for key, value in check.items() if key != "receipt_sha256"}
+        proposal_sha = str(check.get("proposal_sha256") or "")
+        proposal = proposals.get(proposal_sha)
+        equivalence = check.get("equivalence_receipt")
+        if (
+            check.get("receipt_sha256") != content_hash(core)
+            or check.get("packet_sha256") != result_packet.get("packet_sha256")
+            or check.get("context_hash") != result_packet.get("context_hash")
+            or check.get("authority") != "deterministic_host_table_replay"
+            or proposal is None
+            or proposal_sha in seen
+            or check.get("candidate_model_id") not in candidate_ids
+            or check.get("candidate_model_id") != proposal.get("candidate_model_id")
+            or check.get("source_url") != proposal.get("source_url")
+            or check.get("claimed_relation") != proposal.get("claimed_relation")
+        ):
+            raise ValueError("finite-witness host check does not bind its frozen proposal")
+        seen.add(proposal_sha)
+        if isinstance(equivalence, Mapping):
+            equivalence_core = {
+                key: value for key, value in equivalence.items()
+                if key != "receipt_sha256"
+            }
+            if (
+                equivalence.get("receipt_sha256") != content_hash(equivalence_core)
+                or equivalence.get("scope") != "finite_witness_only"
+                or equivalence.get("relation") != check.get("computed_relation")
+            ):
+                raise ValueError("finite-witness equivalence receipt is forged")
+        if check.get("status") == "verified" and (
+            not isinstance(equivalence, Mapping)
+            or equivalence.get("status") != "completed"
+            or equivalence.get("relation") != proposal.get("claimed_relation")
+        ):
+            raise ValueError("verified finite-witness check lacks an executable match")
+        checks.append(check)
+    return checks
+
+
 def interpretation_isomorphism_fingerprint(
     interpretation: Mapping[str, Any],
 ) -> ConstraintFingerprint | None:
@@ -90,6 +200,14 @@ def compose_theory_interpretation(
     review = literature_receipt.get("review")
     if not literature_sha or not isinstance(review, Mapping):
         raise ValueError("interpretation requires a receipted source review")
+    if result_packet.get("schema") == "leanmill.post_freeze_result_packet.v4":
+        literature_core = {
+            key: value
+            for key, value in literature_receipt.items()
+            if key != "receipt_sha256"
+        }
+        if literature_sha != content_hash(literature_core):
+            raise ValueError("post-freeze interpretation receipt digest mismatch")
 
     lean = result_packet.get("unrestricted_lean")
     lean = dict(lean) if isinstance(lean, Mapping) else {}
@@ -118,9 +236,20 @@ def compose_theory_interpretation(
         )
         if isinstance(row, Mapping)
     ]
+    _validate_formula_equivalence_metadata(result_packet, formula_matches)
+    finite_witness_checks = _validated_finite_witness_checks(
+        result_packet, literature_receipt, review
+    )
+    verified_finite_recurrences = [
+        row
+        for row in finite_witness_checks
+        if row.get("status") == "verified"
+        and row.get("computed_relation") != "unmatched"
+    ]
     recorded_components = bool(
         source_rows
         or review.get("recognized_theory_connections")
+        or verified_finite_recurrences
         or any(
             row.get("match_status") in {"exact", "equivalent"}
             for row in formula_matches
@@ -259,6 +388,18 @@ def compose_theory_interpretation(
             "recognized_connections": [
                 str(row) for row in review.get("recognized_theory_connections") or ()
             ],
+            "structural_recurrence": {
+                "status": (
+                    "verified_finite_recurrence"
+                    if verified_finite_recurrences
+                    else "none_verified"
+                ),
+                "checks": finite_witness_checks,
+                "claim_boundary": (
+                    "finite-algebra recurrence only; does not establish theory, "
+                    "variety, implication, or universal-source equivalence"
+                ),
+            },
         },
         "human_gloss": {
             "summary": str(review.get("summary") or "").strip(),

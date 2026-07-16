@@ -2,9 +2,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import product
 from typing import Iterator, Mapping, Sequence
 
 from ztare.leanmill.theory_ir import AxiomFormula, Term, content_hash
+
+
+_GROWTH_POLICY = "root_or_direct_child_with_target_subterms"
+_CLOSED_GROWTH_POLICY = "root_or_direct_child"
+_MAX_FRESH_VARIABLES_PER_REWRITE = 2
+_MAX_INSTANTIATION_TERMS = 16
+_SHALLOW_INSTANTIATION_STEPS = 2
+_SHALLOW_INSTANTIATION_STATES = 256
 
 
 @dataclass(frozen=True)
@@ -58,8 +67,8 @@ class BoundedRewriteReductionWitness:
     max_states_per_side: int
     explored_left_states: int
     explored_right_states: int
-    growth_policy: str = "root_or_direct_child"
-    schema: str = "leanmill.bounded_equational_reduction.v2"
+    growth_policy: str = _GROWTH_POLICY
+    schema: str = "leanmill.bounded_equational_reduction.v3"
 
     def to_json(self) -> dict[str, object]:
         core = {
@@ -85,8 +94,8 @@ class BoundedRewriteSearchReceipt:
     explored_left_states: int
     explored_right_states: int
     saturated_sides: tuple[str, ...]
-    growth_policy: str = "root_or_direct_child"
-    schema: str = "leanmill.bounded_equational_search.v1"
+    growth_policy: str = _GROWTH_POLICY
+    schema: str = "leanmill.bounded_equational_search.v2"
 
     def to_json(self) -> dict[str, object]:
         core = {
@@ -156,6 +165,54 @@ def _instantiate(template: Term, bindings: Mapping[str, Term]) -> Term | None:
     return Term.app(template.name, *args)
 
 
+def _variable_names(term: Term) -> tuple[str, ...]:
+    names: dict[str, None] = {}
+
+    def visit(value: Term) -> None:
+        if value.kind == "var":
+            names.setdefault(value.name, None)
+            return
+        for child in value.args:
+            visit(child)
+
+    visit(term)
+    return tuple(names)
+
+
+def _subterms(*terms: Term) -> tuple[Term, ...]:
+    values: dict[Term, None] = {}
+
+    def visit(value: Term) -> None:
+        values.setdefault(value, None)
+        for child in value.args:
+            visit(child)
+
+    for term in terms:
+        visit(term)
+    return tuple(values)[:_MAX_INSTANTIATION_TERMS]
+
+
+def _instantiate_variants(
+    template: Term,
+    bindings: Mapping[str, Term],
+    instantiation_terms: Sequence[Term],
+) -> Iterator[Term]:
+    """Instantiate variables absent from the matched orientation, within a finite pool."""
+
+    missing = tuple(
+        name for name in _variable_names(template) if name not in bindings
+    )
+    if len(missing) > _MAX_FRESH_VARIABLES_PER_REWRITE:
+        return
+    choices = product(instantiation_terms, repeat=len(missing)) if missing else ((),)
+    for values in choices:
+        completed = dict(bindings)
+        completed.update(zip(missing, values, strict=True))
+        instantiated = _instantiate(template, completed)
+        if instantiated is not None:
+            yield instantiated
+
+
 def _term_json(term: Term) -> dict[str, object]:
     return term.to_json()
 
@@ -204,17 +261,24 @@ def _one_step_rewrites(
     replacement: Term,
     *,
     path: tuple[int, ...] = (),
+    instantiation_terms: Sequence[Term] = (),
 ) -> Iterator[tuple[Term, tuple[int, ...]]]:
     bindings: dict[str, Term] = {}
     if _match(pattern, value, bindings):
-        rewritten = _instantiate(replacement, bindings)
-        if rewritten is not None and rewritten != value:
-            yield rewritten, path
+        for rewritten in _instantiate_variants(
+            replacement, bindings, instantiation_terms
+        ):
+            if rewritten != value:
+                yield rewritten, path
     if value.kind != "app":
         return
     for index, child in enumerate(value.args):
         for rewritten_child, child_path in _one_step_rewrites(
-            child, pattern, replacement, path=path + (index,)
+            child,
+            pattern,
+            replacement,
+            path=path + (index,),
+            instantiation_terms=instantiation_terms,
         ):
             args = list(value.args)
             args[index] = rewritten_child
@@ -276,7 +340,15 @@ def direct_joint_rewrite_witness(
                 ("right_to_left", rule_right, rule_left),
             ):
                 for side_index, side in enumerate((carrier_left, carrier_right)):
-                    for rewritten, path in _one_step_rewrites(side, pattern, replacement):
+                    term_pool = _subterms(
+                        target_left, target_right, carrier_left, carrier_right
+                    )
+                    for rewritten, path in _one_step_rewrites(
+                        side,
+                        pattern,
+                        replacement,
+                        instantiation_terms=term_pool,
+                    ):
                         result_left, result_right = (
                             (rewritten, carrier_right)
                             if side_index == 0
@@ -307,6 +379,7 @@ def bounded_equational_reduction_analysis(
     *,
     max_steps: int = 8,
     max_states_per_side: int = 4_096,
+    instantiate_fresh_variables: bool = True,
 ) -> EquationalConsequenceAnalysis:
     """Join target sides or receipt why the bounded search is inconclusive."""
 
@@ -347,6 +420,11 @@ def bounded_equational_reduction_analysis(
         for value in frontier:
             prefix = paths[value]
             value_units = _term_units(value)
+            term_pool = (
+                _subterms(target_left, target_right, value)
+                if instantiate_fresh_variables
+                else ()
+            )
             for premise, equation in parsed:
                 assert equation is not None
                 rule_left, rule_right, _rule_sorts = equation
@@ -355,7 +433,10 @@ def bounded_equational_reduction_analysis(
                     ("right_to_left", rule_right, rule_left),
                 ):
                     for rewritten, path in _one_step_rewrites(
-                        value, pattern, replacement
+                        value,
+                        pattern,
+                        replacement,
+                        instantiation_terms=term_pool,
                     ):
                         rewritten_units = _term_units(rewritten)
                         if rewritten_units > value_units and len(path) > 1:
@@ -436,6 +517,11 @@ def bounded_equational_reduction_analysis(
         explored_left_states=len(left_paths),
         explored_right_states=len(right_paths),
         saturated_sides=tuple(sorted(saturated_sides)),
+        growth_policy=(
+            _GROWTH_POLICY
+            if instantiate_fresh_variables
+            else _CLOSED_GROWTH_POLICY
+        ),
     )
     if meeting is None:
         return EquationalConsequenceAnalysis(None, search_receipt)
@@ -471,6 +557,11 @@ def bounded_equational_reduction_analysis(
         max_states_per_side=max_states_per_side,
         explored_left_states=len(left_paths),
         explored_right_states=len(right_paths),
+        growth_policy=(
+            _GROWTH_POLICY
+            if instantiate_fresh_variables
+            else _CLOSED_GROWTH_POLICY
+        ),
     )
     return EquationalConsequenceAnalysis(witness, search_receipt)
 
@@ -500,14 +591,30 @@ def direct_equational_consequence_analysis(
 ) -> EquationalConsequenceAnalysis:
     """Return the cheapest witness plus any bounded-search disposition."""
 
-    for premise in premises:
+    # Non-equational background laws constrain the finite model class but are
+    # not rewrite rules.  They must not disable deduction from the equational
+    # fragment that accompanies them.
+    equations = tuple(premise for premise in premises if _equation(premise) is not None)
+    for premise in equations:
         witness = substitution_instance_witness(premise, target)
         if witness is not None:
             return EquationalConsequenceAnalysis(witness)
-    direct = direct_joint_rewrite_witness(premises, target)
+    direct = direct_joint_rewrite_witness(equations, target)
     if direct is not None:
         return EquationalConsequenceAnalysis(direct)
-    return bounded_equational_reduction_analysis(premises, target)
+    shallow = bounded_equational_reduction_analysis(
+        equations,
+        target,
+        max_steps=_SHALLOW_INSTANTIATION_STEPS,
+        max_states_per_side=_SHALLOW_INSTANTIATION_STATES,
+    )
+    if shallow.witness is not None:
+        return shallow
+    return bounded_equational_reduction_analysis(
+        equations,
+        target,
+        instantiate_fresh_variables=False,
+    )
 
 
 def direct_equational_consequence_witness(

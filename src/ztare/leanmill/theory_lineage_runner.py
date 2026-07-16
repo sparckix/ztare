@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from ztare.common.image_set import classify_image_growth
 from ztare.leanmill.frontier_blueprint import (
     FrontierTheoryBlueprint,
     navigator_selection_mode,
@@ -28,20 +29,27 @@ from ztare.leanmill.theory_program import (
 
 
 class _ReplayReservation:
-    def __init__(self, action_id: str) -> None:
+    def __init__(self, action_id: str, phase: str) -> None:
         self.reservation_id = "replayed:" + action_id
         self.action_id = action_id
-        self.phase = "navigation"
+        self.phase = phase
         self.resources: dict[str, int] = {}
 
 
 class _LineageBudgetView:
     """Share hard caps while resetting only a sibling's soft-stop window."""
 
-    def __init__(self, ledger: Any, *, replayed_turns: int = 0) -> None:
+    def __init__(
+        self,
+        ledger: Any,
+        *,
+        replayed_turns: int = 0,
+        active_phase: str = "navigation",
+    ) -> None:
         self._ledger = ledger
         self._replayed_turns = replayed_turns
         self._information_start = len(ledger.state()["information"])
+        self._active_phase = active_phase
         self.budget = ledger.budget
 
     @staticmethod
@@ -54,9 +62,16 @@ class _LineageBudgetView:
         return round_index is not None and round_index < self._replayed_turns
 
     def reserve(self, action_id: str, phase: str, resources: Mapping[str, int]):
+        phase = self._active_phase if phase == "navigation" else phase
         if self._is_replayed_action(action_id):
-            return _ReplayReservation(action_id)
+            return _ReplayReservation(action_id, phase)
         return self._ledger.reserve(action_id, phase, resources)
+
+    def remaining_capacity(self, phase: str, resource: str) -> int:
+        return self._ledger.remaining_capacity(
+            self._active_phase if phase == "navigation" else phase,
+            resource,
+        )
 
     def commit(self, reservation: Any, actual_resources: Mapping[str, int] | None = None) -> None:
         if str(getattr(reservation, "reservation_id", "")).startswith("replayed:"):
@@ -83,7 +98,7 @@ class _LineageBudgetView:
         return getattr(self._ledger, name)
 
 
-def _durable_decision_count(agent: NavigatorAgent) -> int:
+def durable_navigator_turn_count(agent: NavigatorAgent) -> int:
     directory = getattr(agent, "artifact_dir", None)
     if directory is None:
         return 0
@@ -108,6 +123,104 @@ def _agent_identity(agent: NavigatorAgent, index: int) -> str:
         or getattr(agent, "agent_id", None)
         or f"isolated-callable:{index}"
     )
+
+
+def _search_wave_carriers(navigation: Mapping[str, Any]) -> tuple[set[str], set[str]]:
+    """Project conjecture syntax through its host-measured failure geometry."""
+
+    raw: set[str] = set()
+    image: set[str] = set()
+    for lineage in navigation.get("lineages") or ():
+        trace = (lineage.get("navigation") or {}).get("trace") or ()
+        for turn in trace:
+            receipt = turn.get("receipt") if isinstance(turn, Mapping) else None
+            summary = receipt.get("output_summary") if isinstance(receipt, Mapping) else None
+            profile = summary.get("prediction_profile") if isinstance(summary, Mapping) else None
+            if not isinstance(profile, Mapping):
+                continue
+            presentation = tuple(sorted(str(row) for row in profile.get("presentation_formula_ids") or ()))
+            predictions = tuple(sorted(str(row) for row in profile.get("prediction_formula_ids") or ()))
+            raw.add(content_hash({"presentation": presentation, "predictions": predictions}))
+            outcome_rows = set()
+            for prediction in profile.get("predictions") or ():
+                if not isinstance(prediction, Mapping):
+                    continue
+                outcome_rows.add(
+                    content_hash({
+                        "chart_status": str(prediction.get("chart_status") or ""),
+                        "consequence_class": str(prediction.get("consequence_class") or ""),
+                        "ablation": sorted(
+                            str(row.get("status") or "")
+                            for row in prediction.get("premise_ablation") or ()
+                            if isinstance(row, Mapping)
+                        ),
+                    })
+                )
+            program_yield = summary.get("program_yield") or {}
+            coordinates = program_yield.get("coordinates") or {}
+            image.add(
+                content_hash(
+                    {
+                        "prediction_outcomes": sorted(outcome_rows),
+                        "has_residual": bool(program_yield.get("residual_prediction_ids")),
+                        "has_baseline_explanation": bool(
+                            program_yield.get("cheap_baseline_consequence_ids")
+                        ),
+                        "has_identification_yield": float(
+                            coordinates.get("identification_bits") or 0.0
+                        ) > 0.0,
+                    }
+                )
+            )
+    return raw, image
+
+
+def theory_search_wave_image_receipt(
+    navigation: Mapping[str, Any],
+    *,
+    prior_receipts: Sequence[Mapping[str, Any]] = (),
+) -> dict[str, Any]:
+    """Receipt whether a wave expanded syntax, its semantic image, or neither."""
+
+    current_raw, current_image = _search_wave_carriers(navigation)
+    prior_raw = {
+        str(value)
+        for receipt in prior_receipts
+        for value in receipt.get("raw_carriers") or ()
+    }
+    prior_image = {
+        str(value)
+        for receipt in prior_receipts
+        for value in receipt.get("image_carriers") or ()
+    }
+    kind = classify_image_growth(
+        prior_raw=prior_raw,
+        current_raw=current_raw,
+        prior_image=prior_image,
+        current_image=current_image,
+    )
+    core = {
+        "schema": "leanmill.theory_search_wave_image.v1",
+        "context_hash": str(navigation.get("context_hash") or ""),
+        "context_epoch": int(navigation.get("context_epoch", 0)),
+        "search_wave": int(navigation.get("search_wave", 0)),
+        "growth_kind": kind,
+        "raw_carriers": sorted(current_raw),
+        "image_carriers": sorted(current_image),
+        "new_raw_count": len(current_raw - prior_raw),
+        "new_image_count": len(current_image - prior_image),
+        "continuation_semantics": {
+            "expanding": "unchanged-context continuation remains informative",
+            "alpha_blind": "leaf should author a richer abstraction or stop unresolved",
+            "exhausted": "leaf should move region or stop unresolved",
+        }[kind],
+        "authority": "deterministic_host_projection",
+        "claim_boundary": (
+            "classifies growth under the current outcome abstraction only; "
+            "the leaf owns any successor representation or theory language"
+        ),
+    }
+    return {**core, "receipt_sha256": content_hash(core)}
 
 
 def _budget_exhausted_navigation(
@@ -296,6 +409,13 @@ def aggregate_host_isolated_theory_lineages(
         **isolation_core,
         "receipt_sha256": content_hash(isolation_core),
     }
+    finalists_by_node: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        for finalist in row["navigation"].get("finalists") or ():
+            node_id = str(finalist.get("node_id") or "")
+            if not node_id:
+                raise ValueError("host-isolated finalist is missing its semantic node")
+            finalists_by_node.setdefault(node_id, dict(finalist))
     core: dict[str, Any] = {
         "schema": "leanmill.host_isolated_theory_lineages.v1",
         "status": status,
@@ -303,16 +423,8 @@ def aggregate_host_isolated_theory_lineages(
         "context_epoch": epoch,
         "lineage_count": len(rows),
         "lineages": rows,
-        "finalist_node_ids": [
-            str(finalist.get("node_id"))
-            for row in rows
-            for finalist in row["navigation"].get("finalists") or ()
-        ],
-        "finalists": [
-            dict(finalist)
-            for row in rows
-            for finalist in row["navigation"].get("finalists") or ()
-        ],
+        "finalist_node_ids": list(finalists_by_node),
+        "finalists": list(finalists_by_node.values()),
         "theory_program_ids": [program.program_id for program in programs],
         "host_isolated_program_comparisons": comparisons,
         "expansion_proposals": expansions,
@@ -343,6 +455,9 @@ def run_host_isolated_theory_lineages(
     epoch: int = 0,
     prior_conflict_rows: Sequence[Mapping[str, Any]] = (),
     initial_trace: Sequence[Mapping[str, Any]] = (),
+    initial_traces: Sequence[Sequence[Mapping[str, Any]]] | None = None,
+    preserved_lineage_rows: Mapping[int, Mapping[str, Any]] | None = None,
+    budget_phase: str = "navigation",
 ) -> dict[str, Any]:
     """Run sealed traces, then compare their frozen outputs.
 
@@ -353,6 +468,8 @@ def run_host_isolated_theory_lineages(
 
     if navigator_selection_mode(blueprint) != "theory_program":
         raise ValueError("host-isolated lineages require theory_program mode")
+    if budget_phase not in {"navigation", "expansion"}:
+        raise ValueError("lineage budget phase must be navigation or expansion")
     agents = tuple(agent_fns)
     if len(agents) < 2:
         raise ValueError("host-isolated comparison requires at least two lineages")
@@ -363,8 +480,18 @@ def run_host_isolated_theory_lineages(
     )
     if len(rounds_by_lineage) != len(agents):
         raise ValueError("lineage round budgets must match the lineage count")
-    if min(rounds_by_lineage, default=0) < 1 or max_finalists_per_lineage < 1:
-        raise ValueError("lineage budgets must be positive")
+    branch_traces = (
+        tuple(tuple(dict(row) for row in trace) for trace in initial_traces)
+        if initial_traces is not None
+        else (tuple(dict(row) for row in initial_trace),) * len(agents)
+    )
+    if len(branch_traces) != len(agents):
+        raise ValueError("lineage resume traces must match the lineage count")
+    preserved = dict(preserved_lineage_rows or {})
+    if set(preserved) - set(range(len(agents))):
+        raise ValueError("preserved lineage index is outside the campaign")
+    if min(rounds_by_lineage, default=0) < 0 or max_finalists_per_lineage < 1:
+        raise ValueError("lineage budgets must be nonnegative")
     identities = tuple(_agent_identity(agent, index) for index, agent in enumerate(agents))
     explicit_identities = tuple(
         identity for identity in identities if not identity.startswith("isolated-callable:")
@@ -381,50 +508,81 @@ def run_host_isolated_theory_lineages(
             context_epoch=epoch,
             branch=index,
         )
+        if index in preserved:
+            row = dict(preserved[index])
+            if row.get("lineage_id") != lineage_id:
+                raise ValueError("preserved lineage changed identity")
+            navigations.append(row)
+            continue
+        durable_turns = durable_navigator_turn_count(agent)
         lineage_budget = (
             _LineageBudgetView(
                 budget_ledger,
-                replayed_turns=_durable_decision_count(agent),
+                replayed_turns=durable_turns,
+                active_phase=budget_phase,
             )
             if budget_ledger is not None
             else None
         )
-        try:
-            navigation = run_interactive_theory_navigator(
-                context,
-                blueprint,
-                IdempotentReplayJournal(
-                    root / f"lineage-{index:03d}.events.jsonl"
-                ),
-                agent_fn=agent,
-                attempt_id=f"{attempt_id}:lineage:{index}",
-                campaign_id=campaign_id,
-                max_rounds=rounds_by_lineage[index],
-                max_finalists=max_finalists_per_lineage,
-                budget_ledger=lineage_budget,
-                epoch=epoch,
-                lineage_id=lineage_id,
-                prior_conflict_rows=tuple(prior_conflict_rows),
-                initial_trace=tuple(initial_trace),
-            )
-        except BudgetExceeded as exc:
+        available_rounds = max(rounds_by_lineage[index], durable_turns)
+        if available_rounds == 0:
             navigation = _budget_exhausted_navigation(
                 context,
                 lineage_id=lineage_id,
                 epoch=epoch,
-                reason=exc.reason,
-                provider_calls=_durable_decision_count(agent),
+                reason="host_fair_share_has_no_turn_capacity",
+                provider_calls=0,
             )
+        else:
+            try:
+                navigation = run_interactive_theory_navigator(
+                    context,
+                    blueprint,
+                    IdempotentReplayJournal(
+                        root / f"lineage-{index:03d}.events.jsonl"
+                    ),
+                    agent_fn=agent,
+                    attempt_id=f"{attempt_id}:lineage:{index}",
+                    campaign_id=campaign_id,
+                    max_rounds=available_rounds,
+                    max_finalists=max_finalists_per_lineage,
+                    budget_ledger=lineage_budget,
+                    epoch=epoch,
+                    lineage_id=lineage_id,
+                    prior_conflict_rows=tuple(prior_conflict_rows),
+                    initial_trace=branch_traces[index],
+                    budget_phase=budget_phase,
+                )
+            except BudgetExceeded as exc:
+                navigation = _budget_exhausted_navigation(
+                    context,
+                    lineage_id=lineage_id,
+                    epoch=epoch,
+                    reason=exc.reason,
+                    provider_calls=durable_navigator_turn_count(agent),
+                )
         navigations.append(
             {
+                "branch_index": index,
                 "lineage_id": lineage_id,
                 "agent_identity": identities[index],
                 "navigation": navigation,
             }
         )
-    return aggregate_host_isolated_theory_lineages(
+    aggregate = aggregate_host_isolated_theory_lineages(
         context, navigations, epoch=epoch
     )
+    core = {key: value for key, value in aggregate.items() if key != "result_sha256"}
+    core["wave_provider_calls"] = sum(
+        int(row["navigation"].get("provider_calls", 0))
+        for index, row in enumerate(navigations)
+        if index not in preserved
+    )
+    return {**core, "result_sha256": content_hash(core)}
 
 
-__all__ = ["run_host_isolated_theory_lineages"]
+__all__ = [
+    "durable_navigator_turn_count",
+    "run_host_isolated_theory_lineages",
+    "theory_search_wave_image_receipt",
+]

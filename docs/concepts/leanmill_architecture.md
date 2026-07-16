@@ -98,9 +98,18 @@ These are core invariants. Each is restated cleanly here. The dated derivation a
     to bounded tactics rather than broad proof search. These receipts
     consolidate RCA and dashboards; they do not bypass the kernel.
 
-10. Shared infra is serialized and fails gracefully — UNAVAILABLE is never a VERDICT. The warm Lean REPL, the campaign env, and the append-only ledgers (proof-cache, closure-certs, bank-events, cot) are SHARED resources under cross-process/thread concurrency. Two disciplines: (a) *serialize* — a per-resource lock (`repl_compile._robust_repl_check`'s per-project mutex with a **bounded** acquire that degrades to a fallback rather than deadlock; `common.append_jsonl_locked`'s `flock` for large records that exceed the ~4 KB `PIPE_BUF` atomic-append bound, so two workers can't interleave a torn line the reader silently drops); (b) *classify every infra outcome as one of three* — CLEAN, ERROR (a real negative verdict), or UNAVAILABLE (busy / dead / timeout / contended → a `None`/empty/exhausted-retry). An UNAVAILABLE must be RETRIED or DEFERRED, **never collapsed into a substantive `False`/reject at a gate boundary** — collapsing it is the dead-instrument fallacy that throws away completed, correct work (a false `statement_altered`, a false `context_hijack`, a faithful proof rejected because the judge was momentarily down). The verdict-collapse siblings (audited 2026-07-05) route through the retry+fallback discipline; a genuine ERROR still fails closed, so no laundering. Corollary: SQLite stores use WAL + `busy_timeout` (already); JSONL large-record appends use the `flock` door. Warm and cold are not interchangeable verdicts: warm REPL answers "can this loaded campaign environment elaborate/cite now?", while cold `lake env lean <substrate>.lean` answers "does the persisted source file parse and elaborate from byte zero?". Hot proof checks should use warm-first; persisted substrate mutations must pass a cold full-file compile before the write is credited as library growth.
+9b. Theory candidates and Lean statements have different retrieval identities.
+    `ProofCache` and `NoGoodStore` key normalized Lean propositions. AxiomPack
+    programs instead persist in `TheoryCampaignJournal`; the run snapshots are
+    its materialized view. Search-wave membership is an observation, not program
+    identity: a frozen program remains active across waves while its attached
+    boundary evidence survives, and only a replayable failed prediction retires
+    it. This avoids both a parallel cache and the inverse error of dropping a
+    surviving theory merely because the newest wave produced no replacement.
 
-11. Substrate fidelity is ONE predicate, enforced everywhere a self-contained probe is admitted or reused. The substrate `.lean` is the source of truth for the theory. A self-contained probe (a formalized statement, a falsify counterexample, a reuse seed) RE-DECLARES the theory to be checkable in base Mathlib (`env=None` — the load-bearing cure for the universe-poly false-reject; §see design history), and that re-declaration can DRIFT from the substrate along two orthogonal dimensions: a WEAKER carrier order (`[LinearOrder K]` → bare `[LT K][LE K]` = the *carrier ghost* — a partial order cannot compare all elements, so the safety claim is a different, weaker, sometimes-vacuously-true theorem), or a divergent def BODY (`bestBid=head` vs `max` = the *def ghost*). Both are UNFAITHFUL to the theory the probe claims to extend, and admitting one into the store is a laundering vector the downstream semantic reuse (principle 9) would then TRUST. So "does this probe drift from the substrate?" is ONE pure-text predicate — `lean_source.substrate_infidelities` (unions `carrier_order_weakened` + `redeclared_defs_diverge`, each result tagged with its dimension) — and *every* admission/reuse site calls exactly it: the formalize firewall (entry gate), the falsify gate (`conjecture.adjudicate_statement_false_verdict`, used by `verify_statement_false_claim`, reuse-reverify, and strategist falsify/corroborate), and the reuse-store retrieval (`faithfulness_store.reference`/`_semantic_reference`, which excludes a drifted rendering exactly as it excludes a kernel-refuted one). One drift definition, N enforcement sites — never again a per-site subset (the split-check that let a pre-gate weakened statement, still stored as "faithful," get replayed as a reuse seed forever → reject loop, never closes; the 2026-07-05 CLOB reuse-ghost). PREVENTION at the source: the formalize context surfaces the substrate's own `variable` carrier VERBATIM (`prompts.CARRIER_CONTEXT_NOTE` ← `repl_compile.campaign_variables`) so the formalizer preserves `[LinearOrder K]` rather than the gate catching the weakening every run. All pure-text + no-op off-campaign (empty ⇒ byte-parity); the kernel + firewall stay the deterministic boundary, the note is advisory.
+10. Shared infra is serialized and fails gracefully — UNAVAILABLE is never a VERDICT. The warm Lean REPL, the campaign env, and the append-only ledgers (proof-cache, closure-certs, bank-events, cot) are SHARED resources under cross-process/thread concurrency. Two disciplines: (a) *serialize* — a per-resource lock (`repl_compile._robust_repl_check`'s per-project mutex with a **bounded** acquire that degrades to a fallback rather than deadlock; `common.append_jsonl_locked`'s `flock` for large records that exceed the ~4 KB `PIPE_BUF` atomic-append bound, so two workers can't interleave a torn line the reader silently drops); (b) *classify every infra outcome as one of three* — CLEAN, ERROR (a real negative verdict), or UNAVAILABLE (busy / dead / timeout / contended → a `None`/empty/exhausted-retry). An UNAVAILABLE must be RETRIED or DEFERRED, **never collapsed into a substantive `False`/reject at a gate boundary** — collapsing it is the dead-instrument fallacy that throws away completed, correct work (a false `statement_altered`, a false `context_hijack`, a faithful proof rejected because the judge was momentarily down). A campaign-budget exception is likewise a typed stop, never an empty provider response or an unfaithful verdict. Formalizer, back-translator, and judge samples use distinct subscription-session identities, so the independent gate does not inherit the producer's conversation. The verdict-collapse siblings (audited 2026-07-05) route through the retry+fallback discipline; a genuine ERROR still fails closed, so no laundering. Corollary: SQLite stores use WAL + `busy_timeout` (already); JSONL large-record appends use the `flock` door. Warm and cold are not interchangeable verdicts: warm REPL answers "can this loaded campaign environment elaborate/cite now?", while cold `lake env lean <substrate>.lean` answers "does the persisted source file parse and elaborate from byte zero?". Hot proof checks should use warm-first; persisted substrate mutations must pass a cold full-file compile before the write is credited as library growth.
+
+11. Substrate fidelity is ONE predicate, enforced everywhere a self-contained probe is admitted or reused. The substrate `.lean` is the source of truth for the theory. A self-contained probe (a formalized statement, a falsify counterexample, a reuse seed) RE-DECLARES the theory to be checkable in base Mathlib (`env=None` — the critical cure for the universe-poly false-reject; §see design history), and that re-declaration can DRIFT from the substrate along two orthogonal dimensions: a WEAKER carrier order (`[LinearOrder K]` → bare `[LT K][LE K]` = the *carrier ghost* — a partial order cannot compare all elements, so the safety claim is a different, weaker, sometimes-vacuously-true theorem), or a divergent def BODY (`bestBid=head` vs `max` = the *def ghost*). Both are UNFAITHFUL to the theory the probe claims to extend, and admitting one into the store is a laundering vector the downstream semantic reuse (principle 9) would then TRUST. So "does this probe drift from the substrate?" is ONE pure-text predicate — `lean_source.substrate_infidelities` (unions `carrier_order_weakened` + `redeclared_defs_diverge`, each result tagged with its dimension) — and *every* admission/reuse site calls exactly it: the formalize firewall (entry gate), the falsify gate (`conjecture.adjudicate_statement_false_verdict`, used by `verify_statement_false_claim`, reuse-reverify, and strategist falsify/corroborate), and the reuse-store retrieval (`faithfulness_store.reference`/`_semantic_reference`, which excludes a drifted rendering exactly as it excludes a kernel-refuted one). One drift definition, N enforcement sites — never again a per-site subset (the split-check that let a pre-gate weakened statement, still stored as "faithful," get replayed as a reuse seed forever → reject loop, never closes; the 2026-07-05 CLOB reuse-ghost). PREVENTION at the source: the formalize context surfaces the substrate's own `variable` carrier VERBATIM (`prompts.CARRIER_CONTEXT_NOTE` ← `repl_compile.campaign_variables`) so the formalizer preserves `[LinearOrder K]` rather than the gate catching the weakening every run. All pure-text + no-op off-campaign (empty ⇒ byte-parity); the kernel + firewall stay the deterministic boundary, the note is advisory.
 
 ## 3. The soundness model
 
@@ -231,7 +240,7 @@ The safety net that makes hands-off formalization *safe* (so the agent cannot qu
 
 The added-hypothesis frontier is now covered by a dedicated advisory leg, `added_hypothesis_audit` — the explicit-binder sibling of `typeclass_generality_audit`. The two share one shape: a stronger structure narrows the claim while the conclusion round-trips unchanged, so NL↔Lean faithfulness is blind to it. Generality narrowing hides in an *instance* binder (`[LinearOrder]` where the intent allows a partial order); ambition narrowing hides in an *explicit* one (a `(huniq : ∀ y, … → y = x)` uniqueness hypothesis the intent never granted). Each runs the same neurosymbolic split against the broadest available intent (the blueprint, else the per-rung NL): a symbolic extractor pins the assumed structures — `_instance_classes` for the instance binders, `_explicit_hypotheses` for the propositional ones — and a cross-family majority-of-N judge rules whether they exceed what the intent stated. Both are advisory reporters, never gates: a narrower theorem is still true and the kernel rightly closes it; the flag surfaces a suspected silent restriction for the maintainer. `ZTARE_LEANMILL_AMBITION_AUDIT=0` reverts. The residual frontier is only the confidence of that judge, not a missing check.
 
-Prior-confirmed short-circuit (`FaithfulnessStore.confirms()`, 2026-07-03). The variance-prone GATING legs — round-trip (LLM judge) and the load-bearing structural check (fingerprint / kernel-defeq vs a stored reference) — can FALSE-REJECT a genuinely faithful statement on a re-run, because the formalizer is non-deterministic: it renders the same NL slightly differently each time (a different theorem NAME, an ∀-fronted-vs-param-bound surface, a restyled binder). A statement that closed run N then gets `round_trip_faithful=False` or `structure NOT preserved` run N+1 — a flaky gate, not a real fault. The cure is a single door: a statement that matches a CONFIRMED-faithful rendering for this NL (name-agnostically, via the SAME `proof_cache` normalizer the proof-cache keys on — the theorem name is non-deterministic, so an exact-string match silently only fires within a run) skips the variance-prone legs entirely. `confirms()` short-circuits round-trip, structural, AND the opt-in per-def judge — every non-deterministic gating leg; the deterministic legs (compile / triviality / consistency / battery / def-shell) still run, so it can never admit a weaker Prop. The store keeps each confirmed statement WHOLE (no raw-char cap — a def-heavy target whose theorem sat past a 4000-char cut lost its conclusion, defeating both the anchor shown to the re-formalizer and the kernel-defeq reference; the `norm` key is the complete name-agnostic match). NOTE (upgraded 2026-07-05, the RBAC re-formalize-every-run cost): `confirms()` now keys on the α-invariant `normalize_statement_equiv` (recomputed on BOTH sides at match time, so records written with the weaker old name-only normalizer still match) — it collapses the bound-variable restyles the plain normalizer missed, which were silently defeating reuse and paying a full re-formalize + firewall every run. It is still a TEXT normalizer, not the proof-cache's `canonical_type_hash_via_repl` Expr-key (§4.5), so a DEEP structural restyle (∀-fronted vs param-bound) can still miss; the deterministic kernel-defeq-vs-reference remains the robust backstop, and the durable finish is to route `confirms()` through the Expr-hash (needs the REPL context threaded to the call site). SEPARATELY: `confirms()` skips only the variance-prone FIREWALL legs — it does NOT skip the FORMALIZE dispatch; whole re-formalization is avoided by `reference()` (a re-seen NL reuses its stored rendering) and, at the decomposition level, by the `DecompositionCache` (§4.5 limit-(a) cure), which pins the whole DAG so its rungs are cited, not re-formalized.
+Prior-confirmed short-circuit (`FaithfulnessStore.confirms()`, 2026-07-03). The variance-prone GATING legs — round-trip (LLM judge) and the critical structural check (fingerprint / kernel-defeq vs a stored reference) — can FALSE-REJECT a genuinely faithful statement on a re-run, because the formalizer is non-deterministic: it renders the same NL slightly differently each time (a different theorem NAME, an ∀-fronted-vs-param-bound surface, a restyled binder). A statement that closed run N then gets `round_trip_faithful=False` or `structure NOT preserved` run N+1 — a flaky gate, not a real fault. The cure is a single door: a statement that matches a CONFIRMED-faithful rendering for this NL (name-agnostically, via the SAME `proof_cache` normalizer the proof-cache keys on — the theorem name is non-deterministic, so an exact-string match silently only fires within a run) skips the variance-prone legs entirely. `confirms()` short-circuits round-trip, structural, AND the opt-in per-def judge — every non-deterministic gating leg; the deterministic legs (compile / triviality / consistency / battery / def-shell) still run, so it can never admit a weaker Prop. The store keeps each confirmed statement WHOLE (no raw-char cap — a def-heavy target whose theorem sat past a 4000-char cut lost its conclusion, defeating both the anchor shown to the re-formalizer and the kernel-defeq reference; the `norm` key is the complete name-agnostic match). NOTE (upgraded 2026-07-05, the RBAC re-formalize-every-run cost): `confirms()` now keys on the α-invariant `normalize_statement_equiv` (recomputed on BOTH sides at match time, so records written with the weaker old name-only normalizer still match) — it collapses the bound-variable restyles the plain normalizer missed, which were silently defeating reuse and paying a full re-formalize + firewall every run. It is still a TEXT normalizer, not the proof-cache's `canonical_type_hash_via_repl` Expr-key (§4.5), so a DEEP structural restyle (∀-fronted vs param-bound) can still miss; the deterministic kernel-defeq-vs-reference remains the robust backstop, and the durable finish is to route `confirms()` through the Expr-hash (needs the REPL context threaded to the call site). SEPARATELY: `confirms()` skips only the variance-prone FIREWALL legs — it does NOT skip the FORMALIZE dispatch; whole re-formalization is avoided by `reference()` (a re-seen NL reuses its stored rendering) and, at the decomposition level, by the `DecompositionCache` (§4.5 limit-(a) cure), which pins the whole DAG so its rungs are cited, not re-formalized.
 
 Upstream of a campaign, the same authoring discipline (§4.2a) is a deterministic REPORTER — `blueprint_lint`, run at campaign start — so the maintainer sees a definition posed as a lemma, a formalization restriction typed into `## Target`, or a fixed decidable-toy carrier while the blueprint can still be edited, not after the wall is spent. It never blocks (a blueprint fault at worst wastes wall; the kernel still gates every closure). Together the two legs close the loop the older prose only described: the ambition gap is hardened where a proof can slip through it (the added-hypothesis audit) and warned about where it is authored (the linter). The `strategy_in_lemmas` rule (2026-07-04, CLOB) closes the aggregate face the per-bullet rules missed: a `## Lemmas` bullet that carries the proof METHOD ("…at every reachable state: *by induction on the sequence, discharging each step with the per-operation lemmas*") is the whole decomposition typed into the blueprint — a forced split the apparatus never chose, whose forced per-op sub-lemmas were false *as formalized* (the substrate's `bestBid = head` vs the bullet's informal max/sorted reasoning). Be agnostic in NL: state the target claim, let the planner decompose.
 
@@ -281,6 +290,8 @@ The discriminating criterion is campaign-vs-single. All three go through the SAM
 
 *The canonical campaign LAUNCHER is the `leanmill` CLI:* `leanmill campaign <campaign.md>` (`ztare.leanmill.cli`). Markdown without frontmatter preserves the established autoformalization launch byte-for-byte. Optional `leanmill.campaign.v1` YAML frontmatter selects `lane: formalize | axiompack` and freezes the shared profile, hard budget, runtime, and stop policy. The formalization lane still calls `autoformalize_notes.main`, which arms instrument standards, the liveness battery, run-tag attribution, theory consolidation, and the warm substrate. The AxiomPack lane calls `explore_axiom_space`; conditional proof work later enters the same `solve_adhoc` door. Calling `autoformalize_from_notes()` bare skips the campaign arming surface and triggers `_campaign_door_warning` for campaign-shaped uses.
 
+Work is routed by identity, not by where its text happens to appear. A declaration parsed from the campaign theory as an open Lean target is a `FormalSourceWorkItem`: it keeps the exact theory bytes and enters `solve_adhoc` directly. Only natural-language bullets enter the faithfulness firewall. This prevents an already-typed theorem copied into `## Lemmas` from being re-formalized, structurally rejected, and charged as prose. Budget exhaustion on either route remains a typed execution stop. Formalization completion also materializes the existing `run_observability` join beside diagnostics and phase timings, so factory analysis sees formalization, solver, cache, governance, and bank evidence under one run tag.
+
 The same door is available on a Lean node through bounded named actions in
 `deploy/vps_run.sh`: `leanmill-preflight`, `leanmill-campaign`, `leanmill-status`,
 `leanmill-inspect`, `leanmill-verify`, `leanmill-replay`, `leanmill-stop`, and
@@ -301,7 +312,7 @@ attempt output into the deployment surface.
 
     The kernel-confirmed ¬G then drives the governed reformulation re-entry (the agent STRENGTHENS and re-attacks; `autoformalize._solve_refutation` → re-entry; firewall re-gates faithfulness). Goldilocks holds: the DECISION is the agent's (a strategy/move), the kernel only VERIFIES the elected ¬G (the soundness boundary). The same target then ratified DIRECT in 155s (agent → SOLVE_DIRECT, codex closed it axiom-clean) vs gapped at 408s force-decomposed. Soundness is unchanged (this reorders which proving path is tried first; the kernel ratifies regardless).
 
-    Direct-continuation across `codex exec` turns — the affordance, and the determinism it must NOT become (2026-07-03). `codex exec` is ONE turn, and a WELL-DOCUMENTED CLI pattern (openai/codex #10828 "ends turn unexpectedly", #3996 "stops early after printing planned steps", #19309 "exit 0 but stops before executing", #26860 "GPT-5.5 xhigh stops mid-task") is that a high-reasoning model PLANS ("I'll add these helper lemmas next") and the turn ends `rc=0` *before* executing — at ~4% of our wall budget, so it is NEITHER our timeout NOR a give-up. The leaf's one-direct-then-decompose loop then abandoned the agent's in-progress DIRECT proof (observed: a 518-line `iso_lemma1` attempt, 3 compile errors from done, thrown to decompose). Cure: grant the agent its NEXT direct turn via the warm-resume session already in place (`ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS`, default 2) — the sibling of the timeout-retry (that grants more wall-time; this grants more TURNS). GOLDILOCKS LINE (load-bearing): the harness injects NO compiler errors and NO fix-strategy — the agent re-runs its OWN warm-check and fixes its OWN proof; the trigger is the agent's own state (a sorry-FREE non-compiling probe = mid-proof to finish; a `sorry` is its own signal to DECOMPOSE, which owns that path). An earlier version that FED the errors + a "fix these" prompt was REVERTED as determinism-creep (the harness driving the FIX — the same class as the reverted falsify-on-stall). More *turns* is an affordance (like more wall-time, or the warm checker); driving the *content* is determinism.
+    Direct-continuation across `codex exec` turns — the affordance, and the determinism it must NOT become (2026-07-03). `codex exec` is ONE turn, and a WELL-DOCUMENTED CLI pattern (openai/codex #10828 "ends turn unexpectedly", #3996 "stops early after printing planned steps", #19309 "exit 0 but stops before executing", #26860 "GPT-5.5 xhigh stops mid-task") is that a high-reasoning model PLANS ("I'll add these helper lemmas next") and the turn ends `rc=0` *before* executing — at ~4% of our wall budget, so it is NEITHER our timeout NOR a give-up. The leaf's one-direct-then-decompose loop then abandoned the agent's in-progress DIRECT proof (observed: a 518-line `iso_lemma1` attempt, 3 compile errors from done, thrown to decompose). Cure: grant the agent its NEXT direct turn via the warm-resume session already in place (`ZTARE_LEANMILL_DIRECT_CONTINUE_TURNS`, default 2) — the sibling of the timeout-retry (that grants more wall-time; this grants more TURNS). GOLDILOCKS LINE (critical): the harness injects NO compiler errors and NO fix-strategy — the agent re-runs its OWN warm-check and fixes its OWN proof; the trigger is the agent's own state (a sorry-FREE non-compiling probe = mid-proof to finish; a `sorry` is its own signal to DECOMPOSE, which owns that path). An earlier version that FED the errors + a "fix these" prompt was REVERTED as determinism-creep (the harness driving the FIX — the same class as the reverted falsify-on-stall). More *turns* is an affordance (like more wall-time, or the warm checker); driving the *content* is determinism.
 
     REFINEMENT — "a `sorry` = decompose" was too coarse; the DUAL completes the symmetry (2026-07-05, RBAC `postOps` RCA). The rule above conflated two turn-ends that both leave a `sorry`: (a) the agent SPENT its budget and still has a `sorry` (a genuine give-up → decompose), and (b) a PREMATURE turn-end left a `sorry` because the agent PLANNED but ended before executing (a 10-line `iso_postOps_boundary_induction` — a textbook `induction ops` — ended at ~8% of a 270s budget with a bare `sorry`, and was force-decomposed to a 1800s planner grind while the agent had merely planned it; the agent had already, correctly, elected `SOLVE_DIRECT`). So a leaf turn ends THREE ways, each granted the affordance matched to its turn-END *condition* (never the content): **(1) timed out → more wall-time** (`timeout_retried`); **(2) premature → more turns** (the direct-continuation, now fired *even with a `sorry`* when the turn is premature — a real-but-short turn that ended clean under budget: `_is_premature`, `ZTARE_LEANMILL_PREMATURE_FRACTION`/`_FLOOR_S`, the floor excluding a broken 0s call); **(3) genuine give-up → DECOMPOSE** (spent its budget, still `sorry`). (2) is the exact dual of (1) — the agent's under-budget end vs its over-budget end — so only (3) decomposes. Goldilocks holds: the harness reads the agent's own turn-length (an affordance-gate, the same class as `_dispatch_timed_out`) and injects no content; the agent finishes its own proof; the kernel gates. The planner-cap band-aid tried first (hardcode the planner budget so the direct attempt survives) was determinism-creep — a fourth seam — and was rejected in favour of this.
 
@@ -669,6 +680,12 @@ quotient and leaves wider languages to the agent's typed expansion request.
 Prompt transport and navigator trace caps are owned by the shared
 `operations.prompt_transport` factory-policy stanza; large subscription
 prompts use the CLI stdin boundary, while durable host receipts remain complete.
+The leaf receives a consumer-indexed projection rather than the receipt log.
+Projection has a hard byte ceiling and an aggressive last-result fallback; an
+oversized nested receipt cannot bypass the ceiling. Blueprint compilation and
+independent review also preserve the direction's search identity: a request to
+invent coordinates or representation cannot be silently narrowed to selection
+inside the initial formula catalog.
 
 The body remains lane-specific because a theorem blueprint and a research
 direction have different semantics. Their control envelope and CLI are shared.
@@ -713,11 +730,15 @@ runtime:
 ```
 
 The Markdown body then contains only the research direction. Detailed resource
-fields are optional profile overrides. For a frontmatter-enabled formalization
-campaign, the same global call/turn/wall envelope is enforced around the
-existing autoformalize door. Zero metered spend disables API fallback paths.
-Parallel planner/proposer threads inherit the same dispatch scope. Older
-frontmatter-free blueprints retain their prior runtime behavior.
+fields are optional profile overrides. Formalization campaigns reuse the same
+call/turn/wall envelope, but each shared-runtime dispatch carries one logical
+job identity: statement compilation, faithfulness review, or Lean solving.
+The existing roll-forward allocator lets unused earlier capacity flow forward
+while retaining a boundary slice for proof search; upstream review therefore
+cannot consume every provider call before the solver is admitted. Zero metered
+spend disables API fallback paths. Parallel planner/proposer threads inherit
+the same dispatch scope, and frontmatter-free blueprints enter the same policy
+through their default profile.
 
 #### 4.9a Authority sequence
 
@@ -811,16 +832,21 @@ AxiomPack reuses LeanMill rather than forking it:
 | anonymous context and navigation | `theory_context.py`, `finite_theory_context.py`, `evidence_theory_context.py`, `theory_navigator.py` |
 | typed frontier expansion | `typed_axiom_proposal.py`, `typed_postfix_codec.py`, `conservative_definition.py`, `theory_language.py`, `context_epoch.py` |
 | theory-program and lineage identity | `theory_program.py`, `theory_lineage_runner.py` |
+| non-formula program outputs and stopping | `common/task_discharge.py` → adapter `theory_task_compiler` / `task_discharge_adjudicator` → `frontier_campaign_runner.py` |
 | lineage synthesis and disagreement disposition | `theory_lineage_synthesis.py`, `theory_program_disagreement_policy.py` |
+| adaptive representation/search choice | semantic wave image + residual-yield coordinates → typed move portfolio in `theory_lineage_synthesis.py` |
 | signature-driven equation bands | `equational_formula_universe.py` |
 | generic finite isomorphism quotient | `finite_model.py`, `adapters/generic_fol_finite.py` |
+| imported finite classifications | generic model-universe envelope + frozen context snapshot; source project remains provenance, not adapter identity |
 | exact base-constrained finite census | `finite_table_model_finder.py`, selected by `generic_fol_finite.v1` configuration |
-| boundary countermodels and attribution | `frontier_boundary.py`, `lean_consequence_bridge.py` |
+| resumable boundary evidence and attribution | `frontier_boundary.py`, archived boundary results, `lean_consequence_bridge.py` |
 | witnessed theory-search failure memory | `theory_conflict_ledger.py` over `common/conflict_ledger.py` |
 | optional formal-peer proof | typed Theory IR renderer plus existing `solver/sledgehammer.py` transport and Isabelle verifier |
 | source-bound premise ablation | `source_implication_oracle.py`, optional adapter capability |
 | post-freeze interpretation | `frontier_interpretation.py`, native-web subscription role |
+| structural prior-art recurrence | coordinate variants in `theory_ir.py`, finite-operation checks in `finite_model.py`, bound by `frontier_interpretation.py` |
 | evidence-bound key-idea interpretation | `theory_interpretation.py` |
+| post-freeze recurrence continuation | `leanmill.post_freeze_research_disposition.v1` projected and first-fired by `frontier_campaign_runner.py` |
 | residual information pricing | `common/information_yield_pricing.py`, substrate baseline adapters |
 | contrastive language refinement | `common/finite_incidence_context.py`, `axiompack_leaf_workbench.py`, `context_epoch.py`, `frontier_campaign_runner.py` |
 | abstraction/lowering contract | `common/abstraction_functor.py` → `common/theory_substrate_adapter.py` |
@@ -879,6 +905,19 @@ unique hypotheses and propose a union, but the union has no theory authority
 until a fresh context replay validates it. This receipt establishes host
 noninterference, not distinct training priors or statistical independence.
 
+`TheoryProgram.v2` also carries adapter-lowered `TaskDischargeContract`s when a
+consequential experiment is not naturally a formula implication. The leaf
+authors the goal, observable, requested capability, evidence, and kill
+condition through `propose_theory_task`; it cannot name the adjudicator that
+will stop the campaign. The registered adapter compiles the request, the host
+binds the resulting contract to campaign and lineage identity, and the adapter
+later adjudicates it from the immutable boundary artifact. A discharged task
+changes campaign state only when late independent synthesis also binds that
+exact program to the outer objective. `open` continues search;
+`unavailable` requests an adapter/language expansion and is never a scientific
+negative. Formula predictions retain their v1 wire form and lower through the
+same task-discharge outcome algebra at execution time.
+
 The program lifecycle follows the same counterexample-carrying abstraction
 rule used by ARC. Every host action leaves a pending leaf-decision edge until
 the requesting leaf accepts, rejects, or chooses another move; late synthesis
@@ -888,6 +927,33 @@ conflict feedback and cannot freeze as a finalist. Synthesis receives that
 full evidence projection rather than opaque program IDs. Navigation coverage
 may stop search, but it cannot stop verification; phase-local stop rules keep
 candidate discovery distinct from consequential evidence.
+
+Boundary feedback is total over the program's prediction vector. A failed
+prediction carries its replayable witness while nonfailed siblings remain
+visible as live conjectures; refuting one target cannot erase the others. A
+Lean refutation crosses the ordinary solve boundary as the shared typed
+`Verdict`, content-bound to the closed proposition and complete Lean source,
+then becomes campaign conflict evidence. Budget extensions use the same ledger
+cap in admission and subscription dispatch, and objective feedback survives
+budget stops and later resume waves.
+Fixed-size boundary work is also symmetric across outcomes: witnessed
+countermodels enter conflict memory, while exact `no_countermodel_at_fixed_size`
+receipts replay from archived boundary results under the same signature,
+premises, target, and stratum. Cancelled or unknown searches are retried.
+Resumption does not charge a second boundary-query reservation for an already
+started semantic query. Completion is total over frozen finalists: a query
+limit produces an explicit `not_tested_query_limit` diagnostic, and a
+budget-stopped partial vector cannot become objective feedback.
+Formal survival is also feedback when the campaign has an outer objective.
+Finishing the nominated SMT/formal checks does not discharge a representation,
+classification, or construction objective by itself; the complete boundary
+vector returns to the late leaf review, while only witnessed failures update
+conflict memory.
+That return path, including its late lineage synthesis, consumes the campaign's
+reserved `expansion` allowance rather than requiring unused initial-navigation
+or formal-boundary capacity. The same navigator and move cards remain in
+control; the allocator only prevents the first chart search from starving
+representation revision after boundary evidence arrives.
 
 After isolated programs freeze, the host may price their witnessed prediction
 disagreements. It evaluates every nominated target against every frozen
@@ -916,6 +982,61 @@ hypotheses, propose coordinates, freeze a theory program, and receive witnessed
 refutations or observed-panel support. Neither observed support nor a sampled
 presentation is upgraded to an exact implication by the packet, navigator, or
 replay path.
+An external finite-structure classification enters through this same boundary,
+not through a substrate-named Python module. Its canonical tables and
+multiplicities use the generic finite-model envelope, and the resulting context
+snapshot is the reusable campaign cache. Unless the imported artifact binds a
+replayable completeness and quotient receipt, it is admitted as a sampled
+panel; a large collection or a producer's assertion cannot mint exact-closure
+authority.
+
+Representation changes use the shared pointwise-functor category. A forge leaf
+may return a standard `TheorySignature` plus a source-object-to-`FiniteModel`
+application; the host validates every image object, canonicalizes isomorphic
+duplicates, records multiplicities and obstructions, and rebuilds incidence.
+Completeness is relative to the frozen source and declared functor. Such an
+image is never described as the census of every interpretation of its target
+signature. The functor is agent-authored; canonicalization and claim scope are
+host-owned.
+Functor-image universes normalize their downstream object identity to
+`sortwise_isomorphism_canonicalization.v1`; the source functor remains
+provenance, not a weaker identity class. Consequently the same-stratum
+indistinguishable-object contrast card remains available after functor
+application.
+
+Search-wave stopping reuses ARC's raw/image distinction. The raw set is the
+set of conjecture presentations and nominated predictions. Its pointwise image
+is the structural outcome class: seed-chart status, premise-ablation pattern,
+baseline explanation, and presence of residual identification yield. A new raw
+carrier with a flat image is `alpha_blind`; a flat raw set is `exhausted`; a new
+image carrier is `expanding`. This receipt diagnoses the current lens without
+choosing a successor language. The leaf may invent that language, move region,
+or stop unresolved. Budget extension resumes the same attempt and cumulative
+ledger; it cannot erase the preceding image or turn exhaustion into refusal.
+
+Late synthesis consumes that diagnostic through an adaptive move portfolio.
+The host composes the wave-image receipt with each frozen program's residual-
+yield coordinates and exposes lawful route/mode pairs: continue within the
+current context, author a formula coordinate, request a new theory language,
+admit an already frozen coordinate, lift a prediction to the boundary, or stop
+unresolved. Each row names its resource phases, reversibility class, and owed
+receipt. There is no scalar winner: future representations retain option value
+without a fabricated estimate, and the synthesis leaf chooses the move. A
+typed `continuation_mode` carries that choice into the next isolated search
+wave. The host then emits `adaptive_theory_move_consequence.v1`, classifying
+the first consuming wave as followed, diversified, revised by the leaf, or
+unconsumed. Thus information and quality-diversity measurements change the
+next agent-facing affordance while proof, context, and novelty authority remain
+with their existing owners.
+
+Leaf-call failure is part of the same outcome algebra. A timeout, missing final
+object, or invalid leaf transport terminates that lineage with a typed
+`navigator_agent_turn_failure` receipt while retaining every earlier action and
+workbench receipt in the materialized trace. Calls dispatched to a provider
+remain charged; failures before dispatch do not. The adaptive consequence reads
+the retained trace, so a contrast query followed by a provider timeout is
+recorded as an executed diagnostic plus a failed dependent turn, rather than as
+an unconsumed move or a stale prior run.
 
 This frontier proposal is distinct from `formalization_admission.formalize_only`.
 The latter freezes a theorem statement before an ordinary Lean solve; the
@@ -985,6 +1106,8 @@ sequenceDiagram
     opt host-isolated conjectural lineages requested
         A->>A: run sibling traces with no cross-trace candidate bytes
         A->>A: freeze programs, then compare; union remains proposal-only
+        A->>A: quote adaptive move portfolio; synthesis leaf selects route/mode
+        A->>A: next wave receipts follow, diversify, revise, or leave move unconsumed
         A->>A: price explicit hold/refute disagreements
         A->>S: replay prioritized complete theory programs
     end
@@ -1063,6 +1186,12 @@ faithfulness store, no-good store, and family lemma library all activate through
 `solve_adhoc`. Theory-search identity remains separate from normalized Lean
 statement identity.
 
+The positive program view is also durable. `TheoryCampaignJournal` and frozen
+run waves retain program identity and boundary receipts; the active projection
+subtracts only programs with witnessed failed predictions. Thus a later empty
+wave or a terminal-unresolved leaf disposition cannot erase a surviving law
+family, while finite survival still receives no proof or novelty credit.
+
 Proof attribution and logical premise attribution are separate properties.
 Replaying identical proof bytes under full, empty, and leave-one-out packs says
 which premises that proof text uses; it does not exclude a different proof from
@@ -1090,6 +1219,22 @@ whether the result is a catalogued recovery, a likely routine reconstruction,
 a recombination of recorded components whose implication was not located, or
 an unmapped candidate. The latter two remain source-bound dispositions rather
 than novelty certificates.
+Packet v4 also supplies deterministic operation-coordinate variants for every
+displayed formula and a bounded set of small premise-extent witnesses. A
+literature role may propose a primary-source operation table, but the host owns
+the comparison: `finite_model.py` checks carrier isomorphism, input-coordinate
+equivalence, graph parastrophy, and one-way or mutual term definability through
+the declared depth. The resulting receipt is bound to the frozen packet,
+candidate model, cited URL, source table, and exhaustive finite input count.
+This check can identify a recurring finite component missed by literal equation
+search. Its scope remains one finite algebra pair; it cannot classify the
+universal implication as known or establish equivalence of theories or
+varieties.
+The typed review contract binds `premise_roles` to the displayed candidate
+premise IDs exactly; ambient base laws cannot substitute for a candidate
+premise. A provider result that violates this semantic contract is preserved as
+a rejected attempt and materialized as retryable inconclusive evidence instead
+of aborting interpretation.
 
 The same artifact can project the proposed mechanism to the shared
 `ConstraintFingerprint` used by `common/constraint_isomorphism.py` and
@@ -1114,13 +1259,17 @@ deduction baseline and reports the remaining consequence IDs, exact partition
 entropy over the frozen object universe, presentation description units, and
 verification cost. The shared kernel owns only set subtraction and entropy;
 the substrate owns the baseline semantics. Finite equational contexts use
-`leanmill.bidirectional_equational_deduction.v5`: proposed premises are not
+`leanmill.bidirectional_equational_deduction.v8`: proposed premises are not
 counted as consequences, frozen base equations participate in the cheap
 deduction, direct substitution instances are receipted, and target sides meet
 through at most eight replayable rewrites in a state-capped bidirectional term
 graph. Each side is capped at 4,096 terms; contractions and size-preserving
 rewrites remain contextual, while size-increasing rewrites are limited to the
-root or a direct child. Receipts report the cap and explored counts. This reuses
+root or a direct child. Variables introduced only on a rewrite's replacement
+side receive a bounded instantiation pass from target subterms before the
+closed-term fallback. Non-equational base laws constrain the finite-model chart
+but neither enter nor disable the equational rewrite fragment. Receipts report
+the cap, growth policy, and explored counts. This reuses
 intermediate equalities without the old product-state explosion. They also use
 `finite_structure_baseline`: constant operations,
 argument projections, and empty/full relations are anonymous low-complexity
@@ -1146,6 +1295,18 @@ that source rows were hidden; it cannot establish independence from model
 training memory. Post-freeze interpretation records the knowledge relation as
 catalogued recovery, routine reconstruction, discovery candidate, or
 unresolved. Missing retrieval coverage leaves it unresolved.
+
+The July 2026 ternary-quasigroup campaign exercised this boundary on a mixed
+program outcome. One target was kernel-verified while a sibling was refuted by
+a larger model. Governance therefore precedes return-to-search, and the
+feedback receipt carries both dispositions; either branch disappearing is a
+lifecycle failure. The run also showed why exact finite separation is a
+calibration surface rather than a research objective: 11 order-three models
+were already singleton-separated by 680 equations, yet the surviving theorem
+was a two-step rewrite. Successor campaigns must let the leaf change the
+representation and attach value to a held-out construction, classification,
+or obstruction. Replay-checker schema is part of the cached audit identity, so
+a strengthened checker cannot inherit an older `ok` result.
 
 The quality check follows the same agency split as move selection. The host
 first receipts the cheap coordinates: semantic residual, bounded-deduction
@@ -1202,21 +1363,52 @@ second lock key, so a successor transition cannot race the shared ledger.
 idempotency-keyed immutable receipts; they do not mutate the journal or reserve
 budget directly. This keeps recovery within the existing queue, budget store,
 and dashboard.
+Long boundary actions may launch as detached systemd units, so their ownership
+and logs survive an SSH control-channel loss. When a new exclusive owner
+recovers an interrupted attempt, any orphaned reservations are conservatively
+charged at their reserved amount; a crash cannot manufacture fresh budget.
+Each governed Lean boundary also receives an attempt-and-task-scoped solver
+run tag. The campaign status projects its ordinary run diagnostics and phase
+timing from the shared observability stores; the boundary does not create a
+second solver telemetry path.
+Initial navigation acquires this same owner immediately after the signed packet
+and epoch-zero context exist and holds it through `run.json` materialization;
+continuations and boundary actions therefore cannot inherit mutable state from
+an unowned initial phase.
 
-The ACI contract is applied at this boundary as a receipt discipline. A
-model-authored typed move, including a malformed formula or language request,
-returns a deterministic rejection receipt rather than escaping as an internal
-exception; the navigator also normalizes malformed cross-surface identifiers
-(for example a `base_formula:` label supplied where canonical `formula:` IDs
-are required). The navigator may continue without changing the context. If a
-lineage exhausts shared navigation capacity, the host records a
+The ACI contract is applied at this boundary as a receipt discipline. Every
+model-authored typed move or nomination, including a malformed formula,
+language request, or syntactically valid but unknown prediction ID, returns a
+deterministic rejection receipt rather than escaping as an internal exception;
+the navigator also normalizes malformed cross-surface identifiers (for example
+a `base_formula:` label supplied where canonical `formula:` IDs are required).
+The navigator may continue without changing the context. A transport/output
+failure leaves a `pending_leaf_decision` bound to the failed-turn receipt; it is
+retryable and is not scientific exhaustion. Recovered multi-lineage rows carry
+their host `branch_index`, so a missing sibling cannot shift lineage identity.
+If a lineage exhausts shared navigation capacity, the host records a
 `host_isolated_lineage_exhaustion.v1` receipt for that lineage instead of
 silently dropping it. While a detached attempt has an outstanding budget
 reservation or live lease, the status read model reports `running` rather than
 `missing`; durable run materialization remains a separate terminal transition.
+For delegated research objectives, the same status view disables numeric
+coverage stopping just as the navigator does. The blueprint compiler lowers
+the common NL spelling `holdout_strata` to the executable
+`verification_plan.heldout_strata` key before preflight.
 These are lifecycle/read-model guarantees, not evidence for a theory. Prompt
 projections may be bounded for transport, but durable receipts and the complete
 host trace remain unchanged.
+
+Each isolated lineage and the late synthesis role use the shared durable
+subscription session manager. The session key is stable across search waves
+but distinct across lineages and attempts, so the leaf owns a continuing
+probe→receipt→decision scratch context without sibling leakage. Search-wave
+artifacts remain immutable call records; the warm conversation is only the
+interactive execution cache. If the next wave meets a budget edge, the last
+completed synthesis remains the terminal decision. Recovery may reattach a
+frozen synthesis only when its input digest exactly matches the reconstructed
+lineage/request/image state; otherwise it remains prior objective-review
+history.
 
 Post-freeze source review is a separate, receipt-bound phase. A charged
 provider timeout or malformed final message is recorded as
@@ -1248,7 +1440,9 @@ generic finite census quotiented by independent carrier relabelings for each
 sort. Labeled multiplicities remain in the census receipt. The generic
 fixed-size SMT boundary binds the signature and full base/premise/target theory
 and host-replays any model it returns; an unsatisfiable premise pack is distinct
-from a fixed-size search with no countermodel.
+from a fixed-size search with no countermodel. Its deadline covers formula
+lowering, solver checks, and model materialization as one operation; exceeding
+it yields a scoped `unknown` receipt rather than an unbounded lowering process.
 
 The same adapter has two model-generation properties. `exhaustive_tables`
 retains direct iteration for small unconstrained signatures. `smt_exact`
@@ -1260,7 +1454,10 @@ every declared size vector. A model cap, wall bound, or solver `unknown`
 returns an incomplete enumeration receipt and context construction fails; no
 sampled incidence is presented as an exact theory. Preflight budgets the
 declared solver/orbit work bound while separately reporting the much larger raw
-interpretation count. This is a property of the generic adapter, so a new
+interpretation count. Operations are bounded finite functions whose concrete
+applications remain the table cells used by host replay and orbit blocking;
+nested terms therefore do not expand into conditional lookup trees. This is a
+property of the generic adapter, so a new
 finite equational family remains blueprint data rather than a Python module.
 
 Campaign packet v3 binds the full reviewed blueprint identity as well as the
@@ -1398,6 +1595,38 @@ attempted. One bounded zero-boundary-spend discriminator may test the complete
 fix stack; after that, novelty search should change to a semantics-richer
 executable substrate unless an authored formula creates a new post-v5 profile.
 
+That discriminator completed on 2026-07-13. Three isolated Sol-high lineages
+authored quantified first-order coordinates over anonymous structures and
+advanced the immutable context from 210 formulas/11 profiles to 217 formulas/15
+profiles across five epochs. They converged on an exact-two program combining
+existence of an `op0` left identity with a condition that every such identity is
+not right-fixed. The predicted same witness is also an `op1` left identity by
+the frozen left-division law. Size-five/six Z3 found no countermodel; Isabelle
+and Lean proved the implication; empty and leave-one-out Lean replay failed;
+and explicit size-four models refuted both singleton implications. The formal
+result is therefore exact-two synergy.
+
+The knowledge/mechanism disposition is weaker. Bounded review placed the
+signature in the finite latin-rumple/right-cyclic quasigroup neighborhood and
+classified the proof as elementary witness transport plus an obstruction
+already present in the second premise. The review found no exact source, which
+does not supply novelty evidence. This run establishes that dynamic formula
+authorship, context rebuilding, isolated synthesis, and the full formal
+boundary compose. It also closes this tiny anonymous chart as a useful novelty
+target. The next scientific campaign must demand a held-out construction,
+classification, or obstruction change on a semantics-richer executable
+substrate. Finite incidence remains a referee rather than the campaign's
+hypothesis language.
+
+The run exposed two lifecycle boundaries now enforced in the kernel. A context
+epoch clears every transient lineage-resume field, whether the epoch changes
+inside a live driver or across process recovery. Equal semantic nodes emitted
+by independent lineages project as one finalist while the sealed lineage and
+program receipts retain the convergence evidence. Lean-enabled boundary
+verification also performs the provider-free governance reconstruction before
+returning, so post-freeze interpretation cannot open on a partially consumed
+verification outcome.
+
 That substrate is now prepared without a family adapter. A generic equational
 expansion of nondegenerate cycle sets uses one anonymous binary operation, its
 rowwise inverse operation, and the inverse of its diagonal map. Solver
@@ -1492,21 +1721,117 @@ backward-compatible representation refinement: old receipts replay while a new
 prediction frontier is still owed.
 
 The compound-implication successor exercised that lifecycle across an actual
-language change. Formula-only epochs now carry deferred requests forward only
-when the host replays the same signature/model-universe receipt and a monotone
-formula extension; reactivated requests enter late synthesis before fresh
-lineages spend. The selected left-action-profile quotient became a typed
-`AdapterGap`, ran through a staged subscription coding workspace, full-context
-host conformance, and independent review without changing the adapter registry.
+language change. A navigator now freezes a proposal-only
+`TheoryLanguageExpansionRequest` against one exact context hash and epoch; it
+does not compile or carry that request across an epoch. `advance-language` is
+the single continuation door. It first invokes registered compiler
+capabilities, sends `compiled` to a successor epoch, returns `rejected` as
+receipted navigator feedback, and opens `AdapterGap` only for `unavailable`.
+The selected left-action-profile quotient ran through a staged subscription
+coding workspace, full-context host conformance, and independent review without
+changing the adapter registry. An admitted campaign-local functor image must
+cover every source object exactly. Its successor is exact only relative to that
+frozen image; held-out fixed-size generation remains unavailable until a
+reviewed generative/roundtrip semantics supplies the target theory rather than
+only its finite image. The CLI continuous loop and the named VPS
+`leanmill-advance-language` action call this same resumable state machine.
+The active generative seam is the data form of the shared `AbstractionFunctor`
+contract. AdapterForge may emit a content-addressed alpha/gamma relation and
+paired generated models, but LeanMill imports no campaign-generated code. The
+host binds the bytes to the frozen request and context, checks exact source
+coverage, replays raw→alpha→gamma up to sortwise isomorphism, checks every raw
+base law, and then requires an independent review of that exact host receipt.
+Only the reviewed abstract batches reach the fixed-size countermodel finder.
+A witnessed countermodel is usable; failure to find one remains `unknown`
+because finite replay does not certify generator exhaustiveness. Authority
+comes from the staged artifact, host receipt, and review chain rather than a
+caller-supplied label.
+Post-freeze interpretation feeds the same inventor loop when the frozen outer
+objective remains open. LeanMill removes source titles, URLs, model identities,
+and named alignment. `leanmill.post_freeze_research_disposition.v1` carries the
+domain-stripped mechanism when one exists, the content-bound source-review
+disposition under its limited authority, and only receipt-bound relation kind,
+scope, and size from deterministic finite recurrence checks. A mapped result or
+verified finite recurrence withholds terminal outer-objective credit and names a
+typed residual; the finite relation still grants no theory, variety, or
+universal-implication equivalence. The carrier opens a new search wave and
+receipts its first consumption even when no mechanism gloss was emitted. The
+navigator chooses whether that evidence calls for another boundary query, a
+typed formula coordinate, a theory-language/representation request, stronger
+source adjudication, or abandonment. Any formula or representation still enters
+through the existing epoch or `advance-language` admission door. Historical
+mechanism-only receipts retain their v1 replay path.
 On 3,340 frozen models, the request's declared observables—quotient class count
 and descent status—split 131,897 of 756,705 equation-indistinguishable pairs
 (17.43%) across 72 of 191 non-singleton classes. This is a representation
 signal. Raw profiles, tables, witnesses, and model IDs are excluded from its
 interest score; otherwise the coordinate approaches model identity and creates
 a tautological information-yield result. AdapterForge therefore requires one
-to four scalar `observable_paths`, while retaining richer bytes as audit
-witnesses. Quarantine review grants neither registry authority nor a claim
-beyond the frozen context.
+to four scalar `observable_paths` for coordinate proposals, while retaining
+richer bytes as audit witnesses. Quarantine review grants neither registry
+authority nor a claim beyond the frozen context.
+
+The same incidence object now exposes an optional observation-algebra move:
+`list_compound_dependencies` pages minimal presentations together with their
+joint-only consequences. On the 410-formula magma chart this projected 1,687
+exact dependencies, so the leaf could navigate dependency circuits without
+enumerating syntactic tuples. The first subscription probe immediately used
+the card and authored a candidate prediction. It also exposed a logical
+coordinate bug: a universal conjunction had been counted as one prediction.
+
+Prediction products now lower to separately receipted coordinates. Consecutive
+same-kind quantifiers share an additive `logical_coordinate_hash`, leaving all
+banked formula IDs and receipts unchanged. When every conjunct already has a
+formula coordinate, the boundary executor fans the implication out
+losslessly; otherwise the leaf receives a typed request to submit the missing
+coordinates separately. In the first probe both recovered atoms were exact
+two-premise consequences on the size-two/three chart, and both received
+host-replayed size-four countermodels. Those witnesses entered the shared
+theory-conflict ledger. This is apparatus and CEGIS evidence, with no
+mathematical novelty claim.
+
+The 2026-07-12 continuation sharpened the same finding. Lean kernel-checked a
+size-six countermodel to the first compound program; a second independently
+convergent program contained one unresolved prediction and one size-four
+countermodel. Applying the latter table across the compound frontier eliminated
+309 additional candidates at zero new SMT calls (814 of 20,257 eliminated in
+total). The run also exposed search-layer iatrogenesis: navigator prompts had
+reached 120 KB, formula authorship never fired, and boundary/sieve feedback was
+lost across a budget-stopped resume. The prompt projection, feedback lifecycle,
+and extended-budget dispatch now share the corrected boundaries. These results
+map finite mirages and improve the next search; they do not establish a new
+axiom or implication.
+
+A fresh two-lineage run then found the exact compound implication
+`{Eq166, Eq257} => Eq3`: in anonymous notation,
+`x=(y*x)*(x*x)` and `x=((x*x)*y)*x` together force `x=x*x`. Size-four/five
+SMT found no countermodel, Lean proved the implication, and provider-free
+full/empty/leave-one-out replay certified that both premises are necessary.
+The post-freeze source review located all three equations in ETP but no public
+record of the pair implication; it classified the two-step overlap-collapse
+proof as likely elementary or known. This exposed an upstream measurement gap:
+the cheap rewrite baseline could not instantiate a variable occurring only on
+the expanded side of an oriented equation, so it mislabeled the target as
+residual. Baseline v7 now performs a two-step, target-subterm instantiation pass
+before the deeper closed-variable search. Agent-nominated predictions get a
+deeper single-bridge closure check, indexed by that consumer rather than run
+over every chart coordinate. The first pass catches the pair result in under
+one second over the full 410-formula chart; the targeted pass also catches the
+later Eq205/Eq101 corollaries through idempotence. The leaf remains free to use
+or reject cheap consequences as campaign context requires.
+
+The next anonymous ternary-quasigroup campaign produced a stronger compound
+consequence. The recovery premise forces the sandwich term `T(a,b,a)` to equal
+the diagonal observable `d(b)=T(b,b,b)`; the diagonal premise then forces `d`
+to be an involution, so a nested sandwich recovers its middle
+argument. Order-four and order-five SMT found no countermodel, Isabelle checked
+the proof, and governed Lean replay established full/empty/leave-one-out premise
+attribution. A bounded post-freeze review found the ambient multary-quasigroup
+theory but no exact formula or implication. The result is therefore a certified,
+possibly unrecorded elementary lemma, with no novelty claim. It also showed why
+the next controller must price representation-changing moves: fixed-chart
+search was still producing consequences faster than it was inventing theory
+languages.
 
 Campaign preflight and execution call the same `compile_campaign_brief` lowerer.
 The provider-free preflight therefore reports the exact blueprint identity

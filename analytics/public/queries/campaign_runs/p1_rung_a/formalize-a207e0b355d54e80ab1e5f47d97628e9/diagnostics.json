@@ -1,0 +1,29 @@
+{
+  "by_failure_class": {},
+  "by_move_outcome": {},
+  "closed": 0,
+  "dedup_skips": 0,
+  "detail": "No move attempts recorded for this filter \u2014 the run never reached the solver, or the run_tag/window is wrong.",
+  "dispatch_budget": {
+    "by_runtime": {
+      "codex": 1,
+      "default": 39
+    },
+    "count": 40,
+    "near_cap_count": 0,
+    "observed_wall_total_s": 838.37,
+    "requested_timeout_total_s": 12840.0,
+    "utilization_mean": 0.059,
+    "utilization_p95": 0.37
+  },
+  "failures": 0,
+  "filter": "run_tag=formalize-a207e0b355d54e80ab1e5f47d97628e9",
+  "headline": "NO ATTEMPTS",
+  "ratified": 0,
+  "structural_failures": 0,
+  "targets": {},
+  "throughput_per_min": null,
+  "total": 0,
+  "wall_minutes": null,
+  "watch": []
+}

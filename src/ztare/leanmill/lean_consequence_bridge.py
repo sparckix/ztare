@@ -105,6 +105,7 @@ class GovernedLeanConsequenceAttempt:
     solver_result_digest: str
     attribution: Mapping[str, Any] | None
     work_receipt: Mapping[str, Any]
+    refutation: Mapping[str, Any] | None = None
     reason: str = ""
     schema: str = "leanmill.governed_consequence_attempt.v1"
 
@@ -117,6 +118,7 @@ class GovernedLeanConsequenceAttempt:
             "solver_result_digest": self.solver_result_digest,
             "attribution": dict(self.attribution) if self.attribution is not None else None,
             "work_receipt": dict(self.work_receipt),
+            "refutation": dict(self.refutation) if self.refutation is not None else None,
             "reason": self.reason,
         }
         return {**core, "receipt_sha256": content_hash(core)}
@@ -133,7 +135,11 @@ def render_lean_consequence_task(
     lowered = lower_conditional_pack_to_lean(
         signature, tuple(premises), base_axioms=tuple(base_axioms), config=config
     )
-    sort_params = " ".join(f"({row.name} : Type u{i})" for i, row in enumerate(signature.sorts))
+    # This boundary certifies finite/small models. Keeping the quantified
+    # carriers in ``Type`` lets an explicit finite countermodel refute the
+    # generated proposition directly; universe polymorphism belongs to a
+    # later transport theorem, not to finite-theory adjudication.
+    sort_params = " ".join(f"({row.name} : Type)" for row in signature.sorts)
     sort_args = " ".join(row.name for row in signature.sorts)
     nonempty = "".join(f" [Nonempty {row.name}]" for row in signature.sorts)
     signature_class = f"{config.namespace}.{signature.name}Signature"
@@ -336,19 +342,57 @@ def execute_governed_lean_consequence(
     """Solve the full arm through LeanMill, then replay identical proof bytes."""
 
     if solve_fn is None:
-        from ztare.leanmill.solver.solver_core import solve_adhoc
+        from ztare.leanmill.solver.conjecture import (
+            adjudicate_statement_false_verdict,
+            confirmed_refutation_verdict,
+            recover_saved_refutation,
+        )
 
-        solve_fn = solve_adhoc
-    raw = dict(
-        solve_fn(
+        recovered, detail, block = recover_saved_refutation(
             task.target_name,
             task.source_with_hole,
-            "",
-            substrate=Path(substrate),
-            timeout_s=int(timeout_s),
-            notes=notes or "AxiomPack conditional consequence; preserve every local premise.",
+            Path(substrate),
+            int(timeout_s),
         )
-    )
+        if recovered:
+            accepted, detail, block = adjudicate_statement_false_verdict(
+                task.target_name,
+                task.source_with_hole,
+                "",
+                True,
+                detail,
+                block,
+                provenance="lean_consequence.saved_probe_kernel_recheck",
+            )
+            if not accepted:
+                block = ""
+            raw = {
+                "results": [{
+                    "outcome": "falsified" if accepted else "unresolved",
+                    "compile_tail": detail,
+                }],
+                "statement_false_verified": bool(accepted),
+                "statement_false_refutation": block,
+                "control_verdict": confirmed_refutation_verdict(
+                    task.target_name, task.source_with_hole, ""
+                ),
+                "refutation_provenance": "saved_probe_kernel_recheck",
+            }
+        else:
+            from ztare.leanmill.solver.solver_core import solve_adhoc
+
+            solve_fn = solve_adhoc
+    if solve_fn is not None:
+        raw = dict(
+            solve_fn(
+                task.target_name,
+                task.source_with_hole,
+                "",
+                substrate=Path(substrate),
+                timeout_s=int(timeout_s),
+                notes=notes or "AxiomPack conditional consequence; preserve every local premise.",
+            )
+        )
     solve_result = SolveResult.from_dict(raw)
     primary = solve_result.primary()
     outcome = str(primary.get("outcome") or "")
@@ -359,8 +403,32 @@ def execute_governed_lean_consequence(
         and bool(proof)
         and validation.get("credit_ready_at_solver_layer") is True
     )
+    reason = str(
+        primary.get("compile_tail") or primary.get("provider_error_detail") or ""
+    )[-400:]
+    typed_refutation_declared = False
+    typed_refutation_source = ""
+    typed_verdict_json: Mapping[str, Any] | None = None
+    control_verdict = getattr(solve_result, "control_verdict", None)
+    if isinstance(control_verdict, Mapping):
+        typed_verdict_json = control_verdict
+        try:
+            from ztare.leanmill.control_plane import Verdict, VerdictKind, source_fingerprint
+
+            typed_verdict = Verdict.from_json(typed_verdict_json)
+            if typed_verdict.kind is VerdictKind.REFUTED:
+                typed_refutation_declared = True
+                identity = typed_verdict.statement_id
+                if (
+                    identity.target_name == task.target_name
+                    and identity.target_source_hash == source_fingerprint(task.source_with_hole)
+                ):
+                    typed_refutation_source = typed_verdict.kernel_refutation_source()
+                    reason = typed_verdict.detail
+        except (TypeError, ValueError):
+            typed_refutation_declared = True
     attribution: Mapping[str, Any] | None = None
-    reason = str(primary.get("compile_tail") or primary.get("provider_error_detail") or "")[-400:]
+    refutation: Mapping[str, Any] | None = None
     if credited or (outcome == "rejected_banned_axiom" and proof):
         scoped = recheck_governed_lean_consequence(
             task,
@@ -374,8 +442,32 @@ def execute_governed_lean_consequence(
         status, verdict = scoped.status, scoped.work_receipt["verdict"]
         attribution = scoped.attribution
         reason = scoped.reason
-    elif solve_result.statement_false_verified:
-        status, verdict = "refuted_by_kernel", "rejected"
+    elif typed_refutation_declared or solve_result.statement_false_verified:
+        block = typed_refutation_source
+        if not typed_refutation_declared:
+            block = str(
+                raw.get("statement_false_refutation")
+                or primary.get("statement_false_refutation")
+                or ""
+            )
+        if block.strip():
+            refutation_core = {
+                "schema": "leanmill.lean_refutation_certificate.v1",
+                "task_id": task.task_id,
+                "target_name": task.target_name,
+                "source_sha256": content_hash({"lean_source": block}),
+                "lean_source": block,
+                "control_verdict": dict(typed_verdict_json or {}),
+                "authority": "lean_kernel_axiom_audit",
+            }
+            refutation = {
+                **refutation_core,
+                "receipt_sha256": content_hash(refutation_core),
+            }
+            status, verdict = "refuted_by_kernel", "rejected"
+        else:
+            status, verdict = "unavailable", "gap"
+            reason = "kernel refutation lacked replayable certificate bytes"
     elif outcome.startswith("rejected_"):
         status, verdict = "rejected_by_governance", "rejected"
     elif outcome.startswith("inadmissible") or outcome == "skipped_by_circuit_breaker":
@@ -393,6 +485,9 @@ def execute_governed_lean_consequence(
             "attribution_ref": (
                 attribution.get("receipt_sha256") if attribution is not None else None
             ),
+            "refutation_ref": (
+                refutation.get("receipt_sha256") if refutation is not None else None
+            ),
         },
         gap_text="" if verdict == "completed" else (reason or status),
     ).model_dump()
@@ -403,6 +498,7 @@ def execute_governed_lean_consequence(
         solver_result_digest=content_hash(raw),
         attribution=attribution,
         work_receipt=work_receipt,
+        refutation=refutation,
         reason=reason,
     )
 __all__ = [

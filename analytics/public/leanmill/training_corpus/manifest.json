@@ -1,15 +1,15 @@
 {
-  "prover_pairs": 195,
-  "prover_void_novel": 108,
-  "prover_with_cot": 31,
-  "autoformalization_pairs": 226,
-  "falsification_pairs": 19,
-  "faithfulness_discriminator_pairs": 165,
+  "prover_pairs": 197,
+  "prover_void_novel": 110,
+  "prover_with_cot": 32,
+  "autoformalization_pairs": 227,
+  "falsification_pairs": 20,
+  "faithfulness_discriminator_pairs": 166,
   "autoformalization_near_dups_dropped": 0,
   "dedup_near": false,
-  "total_distinct_pairs": 605,
-  "raw_closed_certs": 671,
+  "total_distinct_pairs": 610,
+  "raw_closed_certs": 673,
   "clean_since": "2026-06-24T00:00:00+00:00",
   "void_only": false,
-  "out_dir": "/Users/daalami/figs_activist_loop/analytics/public/leanmill/training_corpus"
+  "out_dir": "analytics/public/leanmill/training_corpus"
 }

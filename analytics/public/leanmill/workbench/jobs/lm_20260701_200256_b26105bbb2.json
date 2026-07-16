@@ -2,7 +2,7 @@
   "action": "proof_audit",
   "audit_timeout_s": 300,
   "command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "src.ztare.cli",
     "leanmill",
@@ -32,7 +32,7 @@
   "result_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2_result.json",
   "returncode": 1,
   "runner_command": [
-    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "venv/bin/python",
     "-m",
     "ztare.leanmill.workbench_actions",
     "run-job",

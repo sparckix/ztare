@@ -29,6 +29,28 @@ DEFAULT_DECOMPOSITION_CACHE = QUERIES / "decomposition_cache.jsonl"
 DEFAULT_AXIOM_PACKS = QUERIES / "axiom_pack_candidates.jsonl"
 
 
+def _summarize_formalization_result(path: str | Path | None) -> dict[str, Any]:
+    if not path:
+        return {}
+    row = _read_json_object(
+        path,
+        warning_key="formalization_result",
+        warnings=[],
+    )
+    target = row.get("target") if isinstance(row.get("target"), dict) else {}
+    if not target:
+        return {}
+    return {
+        "outcome": str(target.get("outcome") or ""),
+        "solved": target.get("solved") is True,
+        "faithful": target.get("faithful"),
+        "reason": str(target.get("faithfulness_reason") or ""),
+        "checks": dict(target.get("faithfulness_checks") or {}),
+        "has_statement": bool(str(target.get("lean_statement") or "").strip()),
+        "target_theorem_name": str(target.get("target_theorem_name") or ""),
+    }
+
+
 def _read_json_object(
     path: str | Path,
     *,
@@ -612,7 +634,10 @@ def _frontier_lineage_projection(
     for row in navigation.get("lineages") or ():
         if isinstance(row, Mapping) and str(row.get("lineage_id") or ""):
             lineage_ids.add(str(row["lineage_id"]))
-    for finalist in navigation.get("finalists") or ():
+    for finalist in (
+        *(navigation.get("finalists") or ()),
+        *(navigation.get("objective_survivors") or ()),
+    ):
         if not isinstance(finalist, Mapping):
             continue
         program = finalist.get("theory_program")
@@ -632,6 +657,9 @@ def _frontier_lineage_projection(
         "lineage_journal_count": journal_count,
         "isolation_receipt_present": bool(isolation),
         "finalist_count": len(navigation.get("finalists") or ()),
+        "objective_survivor_count": len(
+            navigation.get("objective_survivors") or ()
+        ),
     }
 
 
@@ -1371,6 +1399,7 @@ def _operator_readout(
     cache_surfaces: dict[str, Any],
     env_transitions: dict[str, Any],
     proof_flows: dict[str, Any],
+    formalization_result: dict[str, Any],
     warnings: list[str],
 ) -> dict[str, Any]:
     """Small operator-facing triage over the joined ledgers.
@@ -1401,6 +1430,37 @@ def _operator_readout(
         },
         "warnings": warnings,
     }
+    if int(attempts.get("total", 0) or 0) == 0 and formalization_result:
+        outcome = str(formalization_result.get("outcome") or "")
+        reason = str(formalization_result.get("reason") or "")
+        evidence["formalization_result"] = formalization_result
+        if outcome == "budget_exhausted":
+            return {
+                "schema": "leanmill.operator_readout.v1",
+                "status": "budget_stopped",
+                "primary_bottleneck": "formalization_budget_boundary",
+                "why": reason or "the campaign budget stopped statement admission",
+                "next_action": "resume from the retained formal statement under explicit added budget",
+                "evidence": evidence,
+            }
+        if outcome == "inadmissible_provider_dead":
+            return {
+                "schema": "leanmill.operator_readout.v1",
+                "status": "blocked",
+                "primary_bottleneck": "formalization_provider_unavailable",
+                "why": reason or "no live formalization provider returned a candidate",
+                "next_action": "restore the declared provider before spending proof-search budget",
+                "evidence": evidence,
+            }
+        if outcome == "rejected_by_firewall":
+            return {
+                "schema": "leanmill.operator_readout.v1",
+                "status": "blocked",
+                "primary_bottleneck": "statement_faithfulness",
+                "why": reason or "the candidate statement did not pass admission",
+                "next_action": "inspect the retained statement and round-trip receipts before reformulating",
+                "evidence": evidence,
+            }
 
     if int(attempts.get("closed", 0) or 0) or int(attempts.get("ratified", 0) or 0):
         return {
@@ -1494,6 +1554,7 @@ def build_observability_bundle(
     staged_index_path: str | Path | None = None,
     axiom_packs_path: str | Path = DEFAULT_AXIOM_PACKS,
     frontier_attempt_dir: str | Path | None = None,
+    formalization_result_path: str | Path | None = None,
 ) -> dict[str, Any]:
     from ztare.leanmill.run_diagnostics import summarize_run
     from ztare.leanmill.verdict_store import summarize_verdicts
@@ -1524,6 +1585,9 @@ def build_observability_bundle(
     )
     axiom_packs = _summarize_axiom_packs(axiom_packs_path, run_tag)
     frontier_attempt = summarize_frontier_attempt(frontier_attempt_dir)
+    formalization_result = _summarize_formalization_result(
+        formalization_result_path
+    )
     env_transitions = _summarize_env_transitions(
         manifest=manifest,
         typed_verdicts=verdicts,
@@ -1578,6 +1642,7 @@ def build_observability_bundle(
         cache_surfaces=cache_surfaces,
         env_transitions=env_transitions,
         proof_flows=proof_flows,
+        formalization_result=formalization_result,
         warnings=warnings,
     )
     return {
@@ -1598,6 +1663,7 @@ def build_observability_bundle(
             "staged_index_path": str(staged_index_path or ""),
             "axiom_packs_path": str(axiom_packs_path),
             "frontier_attempt_dir": str(frontier_attempt_dir or ""),
+            "formalization_result_path": str(formalization_result_path or ""),
         },
         "manifest": manifest,
         "attempts": {
@@ -1617,6 +1683,7 @@ def build_observability_bundle(
         "cache_surfaces": cache_surfaces,
         "axiom_packs": axiom_packs,
         "frontier_attempt": frontier_attempt,
+        "formalization_result": formalization_result,
         "env_transitions": env_transitions,
         "proof_flows": proof_flows,
         "operator_readout": operator_readout,

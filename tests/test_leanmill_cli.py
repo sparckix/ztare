@@ -10,8 +10,28 @@ import pathlib
 import sys
 import tempfile
 
+import pytest
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 import ztare.leanmill.cli as cli  # noqa: E402
+
+
+def _assert_terminal_budget_is_time_invariant(attempt, monkeypatch):
+    import ztare.leanmill.exploration_budget as budget_module
+
+    ledger_path = attempt / "budget.events.jsonl"
+    rows = [json.loads(line) for line in ledger_path.read_text().splitlines()]
+    assert rows[-1]["event_type"] == "wall_clock_frozen"
+    assert rows[-1]["reason"] == "formalization_campaign_exit"
+    frozen_ms = rows[-1]["elapsed_ms"]
+    before = ledger_path.read_bytes()
+    first = cli._formalization_campaign_view(attempt)["budget"]
+    with monkeypatch.context() as clock:
+        clock.setattr(budget_module.time, "time_ns", lambda: 10**24)
+        second = cli._formalization_campaign_view(attempt)["budget"]
+    assert first == second
+    assert second["elapsed_ms"] == frozen_ms
+    assert ledger_path.read_bytes() == before
 
 
 def test_blueprint_not_found_returns_2_without_launching():
@@ -147,7 +167,16 @@ Explore anonymous finite update theories.
         seen["campaign_manifest"] = campaign_manifest
         return tmp_path / "attempt-1"
 
+    def fake_drive(attempt, *, model, lean_root=None):
+        seen["continuous"] = {
+            "attempt": attempt,
+            "model": model,
+            "lean_root": lean_root,
+        }
+        return attempt
+
     monkeypatch.setattr(runner, "run_frontier_campaign_definition", fake_run)
+    monkeypatch.setattr(runner, "drive_frontier_campaign", fake_drive)
     monkeypatch.setattr(
         actions,
         "frontier_campaign_status",
@@ -158,12 +187,63 @@ Explore anonymous finite update theories.
         str(campaign),
         "--output-root",
         str(tmp_path / "runs"),
+        "--continuous",
     ]) == 0
     assert seen["definition"].direction == "Explore anonymous finite update theories."
     assert seen["definition"].budget.wall_clock_s == 1200
     assert seen["typed_draft"] is None
     assert seen["campaign_manifest"]["lane"] == "axiompack"
+    assert seen["continuous"]["attempt"] == tmp_path / "attempt-1"
     assert '"status": "frontier_candidates_frozen"' in capsys.readouterr().out
+
+
+def test_continuous_resume_enters_the_lifecycle_driver(
+    tmp_path, monkeypatch, capsys
+):
+    import ztare.leanmill.frontier_campaign_actions as actions
+    import ztare.leanmill.frontier_campaign_runner as runner
+
+    seen = {}
+
+    def fake_drive(
+        attempt, *, model, lean_root=None, workbench_authority_ref=""
+    ):
+        seen.update(
+            attempt=attempt,
+            model=model,
+            lean_root=lean_root,
+            workbench_authority_ref=workbench_authority_ref,
+        )
+        return pathlib.Path(attempt)
+
+    monkeypatch.setattr(runner, "drive_frontier_campaign", fake_drive)
+    monkeypatch.setattr(
+        runner,
+        "resume_frontier_campaign_navigation",
+        lambda _attempt: pytest.fail("continuous resume used the one-step door"),
+    )
+    monkeypatch.setattr(
+        actions,
+        "frontier_campaign_status",
+        lambda attempt: {"status": "campaign_complete", "attempt_dir": str(attempt)},
+    )
+
+    assert cli.main([
+        "resume",
+        str(tmp_path / "attempt-1"),
+        "--continuous",
+        "--model",
+        "campaign-model",
+        "--lean-root",
+        str(tmp_path / "lean"),
+    ]) == 0
+    assert seen == {
+        "attempt": str(tmp_path / "attempt-1"),
+        "model": "campaign-model",
+        "lean_root": str(tmp_path / "lean"),
+        "workbench_authority_ref": "",
+    }
+    assert '"status": "campaign_complete"' in capsys.readouterr().out
 
 
 def test_formalization_frontmatter_uses_shared_budget_without_changing_solver_door(
@@ -209,7 +289,7 @@ Prove the target.
     attempts = list((tmp_path / "state").iterdir())
     assert len(attempts) == 1
     budget = json.loads((attempts[0] / "budget.json").read_text(encoding="utf-8"))
-    assert budget["allocation_policy"] == "global_cap"
+    assert budget["allocation_policy"] == "roll_forward_protected_future"
     assert budget["hard_caps"]["provider_calls"] == 2
     completion = json.loads((attempts[0] / "completion.json").read_text(encoding="utf-8"))
     assert completion["solver_run_tag"] == attempts[0].name
@@ -218,7 +298,93 @@ Prove the target.
     assert (attempts[0] / "phase_timing.json").is_file()
     assert (attempts[0] / "theory_input.json").is_file()
     assert (attempts[0] / "theory_result.json").is_file()
+    _assert_terminal_budget_is_time_invariant(attempts[0], monkeypatch)
     assert '"returncode": 0' in capsys.readouterr().out
+
+
+def test_formalization_budget_freezes_when_runner_raises(
+    tmp_path, monkeypatch
+):
+    import ztare.leanmill.solver.autoformalize_notes as notes
+
+    campaign = tmp_path / "formalize-exception.md"
+    campaign.write_text(
+        """---
+schema: leanmill.campaign.v1
+lane: formalize
+profile: smoke
+budget:
+  provider_calls: 2
+  agent_turns: 2
+  metered_api_usd: "0"
+runtime:
+  transport: subscription_agent_runtime
+  profile: smoke
+  defaults: {runtime: codex}
+  role_overrides: {}
+---
+## Target
+Prove the target.
+""",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv(
+        "ZTARE_LEANMILL_CAMPAIGN_STATE_ROOT", str(tmp_path / "state")
+    )
+    monkeypatch.setattr(
+        notes,
+        "main",
+        lambda _argv: (_ for _ in ()).throw(RuntimeError("runner failed")),
+    )
+
+    with pytest.raises(RuntimeError, match="runner failed"):
+        cli.main(["campaign", str(campaign)])
+
+    attempt = next((tmp_path / "state").iterdir())
+    assert json.loads((attempt / "completion.json").read_text())["status"] == "failed"
+    _assert_terminal_budget_is_time_invariant(attempt, monkeypatch)
+
+
+def test_legacy_completed_formalization_status_does_not_rebill_idle_time(
+    tmp_path, monkeypatch
+):
+    import ztare.leanmill.exploration_budget as budget_module
+    from ztare.leanmill.exploration_budget import (
+        ExplorationBudgetLedger,
+        budget_preset,
+    )
+
+    attempt = tmp_path / "formalize-legacy"
+    attempt.mkdir()
+    budget = budget_preset("smoke_20m")
+    (attempt / "campaign_manifest.json").write_text(
+        json.dumps({"lane": "formalize", "campaign_id": "legacy"})
+    )
+    (attempt / "budget.json").write_text(json.dumps(budget.to_json()))
+    ExplorationBudgetLedger(
+        attempt / "budget.events.jsonl",
+        budget,
+        attempt_id=attempt.name,
+        clock_ms=lambda: 1_000,
+    )
+    completion_path = attempt / "completion.json"
+    completion_path.write_text(json.dumps({"status": "completed", "returncode": 0}))
+    os.utime(completion_path, ns=(1_558_000_000, 1_558_000_000))
+    before = (attempt / "budget.events.jsonl").read_bytes()
+
+    with monkeypatch.context() as clock:
+        clock.setattr(budget_module.time, "time_ns", lambda: 1_800_000_000_000)
+        first = cli._formalization_campaign_view(attempt)["budget"]
+        clock.setattr(budget_module.time, "time_ns", lambda: 3_600_000_000_000)
+        second = cli._formalization_campaign_view(attempt)["budget"]
+
+    assert first == second
+    assert second["elapsed_ms"] == 558
+    assert second["soft_stop_reason"] is None
+    assert (attempt / "budget.events.jsonl").read_bytes() == before
+    (attempt / "budget.events.jsonl").unlink()
+    assert cli._formalization_campaign_view(attempt)["budget"]["elapsed_ms"] is None
+    assert not (attempt / "budget.events.jsonl").exists()
 
 
 def test_formalization_theory_head_lease_blocks_competing_attempt(
@@ -291,6 +457,7 @@ T.lean
     assert completion["returncode"] == 75
     assert completion["usage"]["provider_calls"] == 0
     assert called == []
+    _assert_terminal_budget_is_time_invariant(attempt, monkeypatch)
     capsys.readouterr()
 
     cx = work_queue.connect(str(queue_db))
@@ -331,6 +498,44 @@ def test_axiompack_preflight_replays_frozen_context_without_dispatch(capsys):
     assert receipt["context_hash"] == (
         "d22e5a390f117cbcbd4f1972dfb93d88b0e10db2bb5eaef1cf7b59c1f3e87206"
     )
+
+
+def test_axiompack_preflight_returns_typed_incomplete_context(
+    capsys, monkeypatch
+):
+    campaign = pathlib.Path(__file__).resolve().parents[1] / (
+        "research_areas/pre_registrations/"
+        "axiompack_gp251_smoke_20260710/campaign.md"
+    )
+    import ztare.leanmill.explore_axiom_space as inlet
+
+    class IncompleteContext(ValueError):
+        def failure_receipt(self):
+            return {
+                "schema": "leanmill.incomplete_finite_model_universe.v1",
+                "status": "incomplete",
+                "enumeration_receipt": {
+                    "status": "unknown",
+                    "canonical_model_count": 17,
+                },
+            }
+
+    def fail_context(*_args, **_kwargs):
+        raise IncompleteContext("census timed out")
+
+    monkeypatch.setattr(inlet, "_context_from_snapshot", fail_context)
+    monkeypatch.setattr(inlet, "_context_from_blueprint", fail_context)
+
+    assert cli.main(["preflight", str(campaign)]) == 2
+
+    receipt = json.loads(capsys.readouterr().out)
+    assert receipt["status"] == "incomplete_context"
+    assert receipt["provider_calls"] == 0
+    assert receipt["context_failure"]["enumeration_receipt"] == {
+        "status": "unknown",
+        "canonical_model_count": 17,
+    }
+    assert receipt["receipt_sha256"]
 
 
 if __name__ == "__main__":

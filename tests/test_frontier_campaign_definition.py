@@ -73,6 +73,33 @@ def test_campaign_yaml_rejects_stringly_typed_runtime_flags():
         )
 
 
+def test_axiompack_formal_task_roles_are_valid_runtime_overrides():
+    definition = FrontierCampaignDefinition(
+        direction="Adjudicate an agent-authored theory task.",
+        source_mode="human_directed",
+        budget=budget_preset("quick"),
+        runtime={
+            "transport": "subscription_agent_runtime",
+            "profile": "frontier",
+            "role_overrides": {
+                "formalizer": {
+                    "runtime": "codex",
+                    "model": "gpt-5.5",
+                    "reasoning_effort": "high",
+                },
+                "faithfulness_reviewer": {
+                    "runtime": "codex",
+                    "model": "gpt-5.4-mini",
+                    "reasoning_effort": "medium",
+                },
+            },
+        },
+    )
+    assert set(definition.runtime["role_overrides"]) == {
+        "formalizer", "faithfulness_reviewer"
+    }
+
+
 def test_minimal_mathematician_campaign_expands_named_profile():
     loaded = load_frontier_campaign_definition(
         """\

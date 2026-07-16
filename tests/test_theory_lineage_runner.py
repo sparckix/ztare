@@ -8,6 +8,7 @@ from ztare.leanmill.common import write_json_atomic
 from ztare.leanmill.exploration_budget import ExplorationBudgetLedger, budget_preset
 from ztare.leanmill.theory_interest import theory_program_information_yield
 from ztare.leanmill.theory_lineage_runner import run_host_isolated_theory_lineages
+from ztare.leanmill.theory_program import derive_context_lineage_id
 from test_theory_navigator import _context_and_blueprint
 
 
@@ -114,6 +115,80 @@ def test_host_isolated_lineages_compare_only_after_freeze(tmp_path):
     assert all("lineage-" not in str(row) for row in first_trace)
     assert all("lineage-" not in str(row) for row in second_trace)
 
+    converged = run_host_isolated_theory_lineages(
+        context,
+        blueprint,
+        agent_fns=(_freezing_agent(*left), _freezing_agent(*left)),
+        journal_root=tmp_path / "converged-lineages",
+        attempt_id="attempt-converged",
+        campaign_id="campaign-converged",
+        max_rounds=3,
+        max_finalists_per_lineage=1,
+        budget_ledger=ExplorationBudgetLedger(
+            tmp_path / "converged-budget.events.jsonl",
+            budget_preset("smoke_20m"),
+            attempt_id="attempt-converged",
+        ),
+    )
+    assert len(converged["theory_program_ids"]) == 2
+    assert converged["finalist_node_ids"] == [converged["finalists"][0]["node_id"]]
+
+
+def test_resume_preserves_terminal_sibling_without_calling_it(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+        },
+    )
+    campaign_id = "campaign-preserved"
+    attempt_id = "attempt-preserved"
+    preserved = {
+        "lineage_id": derive_context_lineage_id(
+            campaign_id=campaign_id,
+            attempt_id=attempt_id,
+            context_epoch=0,
+            branch=0,
+        ),
+        "agent_identity": "preserved-agent",
+        "navigation": {
+            "context_hash": context.context_hash,
+            "finalists": [],
+            "trace": [{"decision": "reject_all"}],
+            "reject_all_receipt": {"receipt_id": "preserved-rejection"},
+            "provider_calls": 0,
+        },
+    }
+    calls = []
+
+    def must_not_run(_prompt):
+        raise AssertionError("preserved sibling was redispatched")
+
+    def pending_agent(_prompt):
+        calls.append(1)
+        return {
+            "decision": "request",
+            "capability_id": "list_theory_nodes",
+            "input_refs": {"offset": 0, "limit": 1},
+            "rationale": "Inspect one node in this branch only.",
+        }
+
+    result = run_host_isolated_theory_lineages(
+        context,
+        blueprint,
+        agent_fns=(must_not_run, pending_agent),
+        journal_root=tmp_path / "preserved-lineages",
+        attempt_id=attempt_id,
+        campaign_id=campaign_id,
+        max_rounds=(0, 1),
+        preserved_lineage_rows={0: preserved},
+    )
+
+    assert result["lineages"][0] == preserved
+    assert calls == [1]
+
 
 def test_isolated_lineage_replay_does_not_recharge_host_actions(tmp_path):
     context, blueprint = _context_and_blueprint()
@@ -180,8 +255,20 @@ def test_isolated_lineage_replay_does_not_recharge_host_actions(tmp_path):
         max_finalists_per_lineage=1,
         budget_ledger=ledger,
     )
+    replay_at_zero_remaining = run_host_isolated_theory_lineages(
+        context,
+        blueprint,
+        agent_fns=agents(),
+        journal_root=tmp_path / "lineages",
+        attempt_id="attempt-replay",
+        campaign_id="campaign-replay",
+        max_rounds=(0, 0),
+        max_finalists_per_lineage=1,
+        budget_ledger=ledger,
+    )
 
     assert second["theory_program_ids"] == first["theory_program_ids"]
+    assert replay_at_zero_remaining["theory_program_ids"] == first["theory_program_ids"]
     assert ledger.state()["usage"] == usage_after_first
     assert len(ledger.state()["information"]) == information_after_first
 

@@ -1,97 +1,97 @@
 {
   "schema": "leanmill-solver-lane-results-v1",
   "lane": "solver_lane",
-  "mode": "dag_search",
-  "provider": "claude_opus",
-  "generated_at": "2026-07-12T08:15:16.134899+00:00",
+  "mode": "cascade",
+  "provider": "placebo",
+  "generated_at": "2026-07-16T02:56:13.241021+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
-  "prover_cmd": "claude_opus",
+  "prover_cmd": "placebo",
   "results": [
     {
-      "name": "adhoc::count4_monotone",
-      "target_name": "count4_monotone",
+      "name": "adhoc::AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+      "target_name": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
       "kind": "c_pool_no_template",
-      "mode": "dag_search",
-      "outcome": "exact_gap",
-      "compile_ok": false,
-      "exit_code": 1,
-      "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
-      "stop_reason": "stalled_no_progress",
-      "proof_text": "",
-      "provider": "governed_dag_search",
+      "outcome": "closed",
+      "compile_ok": true,
+      "compile_tail": "pre-verified champion (mode-agnostic splice)",
+      "exit_code": 0,
+      "proof_text": "by\n  exact \u27e8finalistOne_is_elementaryTwoSolution,\n    finalistOne_identity_extraction_hypotheses,\n    finalistOne_extracted_t2_groupoid,\n    finalistOne_not_reconstructible_from_extracted_t2_groupoid\u27e9",
+      "provider": "existing_artifact",
       "providers_tried": [
         {
-          "provider": "native_hammer",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "native_hammer",
-          "agent_kind": "native_hammer_cascade"
-        },
-        {
-          "provider": "codex",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "claude_warm",
-          "agent_kind": "warm_agent"
-        },
-        {
-          "provider": "conjecture_lemma",
-          "outcome": "advanced",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "conjecture_lemma",
-          "agent_kind": "conjecture"
-        },
-        {
-          "provider": "native_hammer",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n1_sub_goal_1",
-          "move": "native_hammer",
-          "agent_kind": "native_hammer_cascade"
-        },
-        {
-          "provider": "codex",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n1_sub_goal_1",
-          "move": "claude_warm",
-          "agent_kind": "warm_agent"
-        },
-        {
-          "provider": "conjecture_lemma",
-          "outcome": "advanced",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n1_sub_goal_1",
-          "move": "conjecture_lemma",
-          "agent_kind": "conjecture"
-        },
-        {
-          "provider": "native_hammer",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n2_sub_goal_2",
-          "move": "native_hammer",
-          "agent_kind": "native_hammer_cascade"
+          "provider": "existing_artifact",
+          "outcome": "compiled",
+          "compile_ok": true,
+          "provider_wallclock_s": 9.53,
+          "agent_kind": "preverified_champion",
+          "contract_validation": {
+            "contract_schema": "leanmill-solver-action-contract-v1",
+            "receipts": {
+              "kernel_compile_receipt": {
+                "passed": true,
+                "tail": "pre-verified champion (mode-agnostic splice)"
+              },
+              "matched_negative_control_receipt": {
+                "kind": "source_aware_conclusion_perturbation",
+                "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+                "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+                "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+                "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
+                "positive_compiled": true,
+                "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+                "negative_compiled": false,
+                "status": "pass",
+                "passed": true,
+                "discriminating": true,
+                "differential": "confirmed",
+                "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+                "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
+                "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+                "admitted_under_policy": true,
+                "policy": "require_discriminating_control",
+                "tail": "positive source compiles and the same proof does not close the negated conclusion"
+              },
+              "axiom_allowlist_receipt": {
+                "passed": true,
+                "axioms": [
+                  "Classical.choice",
+                  "Quot.sound",
+                  "propext"
+                ],
+                "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
+              },
+              "l3_anti_pattern_receipt": {
+                "passed": null,
+                "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
+              },
+              "governance_kernel_receipt": {
+                "passed": true,
+                "confirmed": [],
+                "flags": [],
+                "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
+              }
+            },
+            "credit_ready_at_solver_layer": true,
+            "required_receipts_all_passed_at_solver_layer": true,
+            "axiom_tier": "kernel_pure",
+            "positive_axiom_receipt_required": true,
+            "discriminating_mnc_required": true,
+            "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
+          }
         }
       ],
+      "provider_error": "none",
+      "provider_wallclock_s": 51.58,
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1783844099,
-        "row_id": "adhoc::count4_monotone",
-        "target_theorem_name": "count4_monotone",
-        "source_file": "ztare_proofs/.solver_scratch/notes_worldmodel_auto_blueprint_0711T2348/AdHoc_count4_monotone_294e3cd7bf.lean",
+        "generated_at_epoch": 1784170521,
+        "row_id": "adhoc::AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+        "target_theorem_name": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+        "ratification_only": true,
+        "matched_negative_control_mode": "source_aware_conclusion_perturbation",
+        "source_file": "ztare_proofs/.solver_scratch/AdHoc_AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample_5958769871.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": "(g : Grid) (a t : Nat) :\n    countColor (specStep g a t) 4 \u2264 countColor g 4",
+        "goal_excerpt": ":\n    ElementaryTwoSolution finalistOne \u2227\n      (\u2200 c, ExtractionHypotheses finalistOne c (fun x => x)) \u2227\n      (\u2200 c,\n        T2GroupoidLaws\n          (extractedStar finalistOne c)\n          (extractedCircle finalistOne c)\n          (extractedLeft finalistOne c (fun x => x))\n          (extractedRight finalistOne c (fun x => x))) \u2227\n      \u00ac \u2203 (c : Carrier) (brace : Carrier \u2192 Carrier),\n        ExtractionHypotheses finalistOne c brace \u2227\n          \u2200 x y z,\n            finalistOne x",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -121,46 +121,46 @@
         "evidence_basis": "local_default",
         "rd_primitive_hits": [
           {
-            "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
-            "kind": "pattern",
-            "score": 154.25,
-            "why": "matched nat; bucket sympy_cas; impact 5; graph_bonus 1.75",
-            "description": "Independent CAS verification of LLM-proposed inequalities."
-          },
-          {
-            "id": "ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE",
+            "id": "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
             "kind": "anti-pattern",
-            "score": 147.75,
-            "why": "impact 5; graph_bonus 2.25",
-            "description": "Pattern-1 rabbit-hole at debate granularity (catch ledger refs C-2026-05-08-05, -25)."
+            "score": 797.9,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5",
+            "description": "A Lean proof compiles, is sorry-free, axiom-clean (clears GP-211) yet is NOT a novel closure: vacuous / gold-name-verbatim / one-exact? / indirect-leakage / scalar-currency. 5 sub-modes mechanized by the v33 Tier-0 organ"
           },
           {
-            "id": "META-JUDGE-SCHEMA",
-            "kind": "validator",
-            "score": 136.2,
-            "why": "impact 2",
-            "description": "Meta-judge schema (validates judge output)."
-          },
-          {
-            "id": "RUN-RECEIPT-STRENGTH-AUDIT-FROM-FIELDS",
-            "kind": "primitive",
-            "score": 129.1,
-            "why": "bucket pde_ns_lean; impact 1",
-            "description": "Run the general receipt-strength audit over extracted carrier fields."
-          },
-          {
-            "id": "PATTERN-002-DARWIN-IDEA-KILLER",
-            "kind": "pattern",
-            "score": 127.9,
-            "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5",
-            "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure."
-          },
-          {
-            "id": "LEAN-PROOF-GATE",
+            "id": "V33-INDIRECT-LEAKAGE-GATE",
             "kind": "gate",
-            "score": 127.65,
-            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.25",
-            "description": "Verifies Lean proof compiles with no axioms/sorries (GP-211) AND runs the v33 Tier-0 anti-laundering organs (vacuity / gold-name / single-exact / indirect-leakage / currency) \u2014 flips gate_passed=False on a CONFIRMED fals"
+            "score": 786.4,
+            "why": "matched fun; bucket pde_ns_lean, graph_mining; impact 4",
+            "description": "Tier-0 closure-governance organ: flags bare simp/fun_prop/aesop closures where the global @[simp]/@[fun_prop] set silently carries the gold lemma; independent confirm via floor-fails-but-global-closes. Mechanizes AP-013 "
+          },
+          {
+            "id": "RESIDUAL-TO-LEVER",
+            "kind": "primitive",
+            "score": 782.4,
+            "why": "bucket negative_to_object; impact 4",
+            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
+          },
+          {
+            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+            "kind": "primitive",
+            "score": 778.4,
+            "why": "bucket pde_ns_lean, orchestration_compression; impact 4",
+            "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes"
+          },
+          {
+            "id": "V33-SINGLE-LEMMA-EXACT-GATE",
+            "kind": "gate",
+            "score": 778.4,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4",
+            "description": "Tier-0 closure-governance organ: flags one-exact? closures; independent confirm via Lean's own exact? suggester. Mechanizes AP-013 single_lemma_exact sub-mode."
+          },
+          {
+            "id": "DIRECT-EQUATIONAL-DEDUCTION-BASELINE",
+            "kind": "primitive",
+            "score": 774.05,
+            "why": "bucket negative_to_object; impact 3; graph_bonus 1.75",
+            "description": "Receipt direct substitution instances and one contextual equational rewrite before AxiomPack prices residual consequences."
           }
         ],
         "action_program": [
@@ -171,7 +171,7 @@
         ],
         "current_action_index": 0,
         "required_next_action": "layer2_native_hammer_cascade",
-        "program_counter_rule": "advance current_action_index only after the current action has emitted its receipt; if the receipt is `closed` AND matched_negative_control passes, stop (credit_ready_at_solver_layer = true). Otherwise continue to the next action_program step until exhausted or stop_condition fires.",
+        "program_counter_rule": "advance current_action_index only after the current action has emitted its receipt; if the receipt is `closed` AND the source-aware matched control has status=pass, passed=true, and discriminating=true, stop (credit_ready_at_solver_layer = true). Otherwise continue to the next action_program step until exhausted or stop_condition fires.",
         "stop_condition": "stop on first credit_ready_at_solver_layer = true; or when action_program is exhausted (last action's receipt recorded); or when the row exceeds MAX_FAILED_ATTEMPTS_PER_ROW across cycles (cooldown).",
         "required_receipts": [
           {
@@ -182,7 +182,7 @@
           {
             "name": "matched_negative_control_receipt",
             "required": true,
-            "acceptance_check": "the same proof_text under bare `import Mathlib` (gold-bearing prelude STRIPPED) FAILS to compile. A negative-control PASS = the proof was a single-Mathlib-lookup; that is leakage and forces rejection."
+            "acceptance_check": "Using the exact carried posed/closure source, preserve the namespace-qualified target identity, inherited declaration context, binders, and proof body. The positive target C must compile; replacing only C by \u00ac(C) must fail to compile. Accept only status=pass, passed=true, discriminating=true; status=inconclusive does not satisfy ratification."
           },
           {
             "name": "axiom_allowlist_receipt",
@@ -199,7 +199,9 @@
         ],
         "reject_or_repair_behavior": {
           "kernel_compile_fail": "advance to next action_program step; if exhausted, mark row failed_compile and record attempt.",
-          "matched_negative_control_pass": "REJECT closure as leakage/laundering; mark row rejected_negative_control; do not credit.",
+          "matched_negative_control_pass": "PROCEED past this receipt only when the calibrated positive compiles and the same proof fails on C \u2192 \u00ac(C).",
+          "matched_negative_control_fail": "REJECT ratification: the same proof closes both C and \u00ac(C) in the inherited context (zero differential).",
+          "matched_negative_control_inconclusive": "REJECT ratification with rejected_mnc_inconclusive; an unavailable, malformed, mismatched, or timed-out control cannot earn proof credit.",
           "axiom_outside_allowlist": "REJECT closure; mark row rejected_axiom_outside_allowlist.",
           "l3_confirmed_blocker": "REJECT closure; mark row rejected_l3; record the specific blocker class.",
           "clean_proceed_condition": "all required_receipts at solver_layer must pass AND downstream_consumer_check must accept; only then upgrade to unratified_closure_candidate typed exit."
@@ -207,191 +209,98 @@
         "downstream_consumer_check": "leanmill_proof_audit emits a typed receipt that the governance worker consumes; only payloads with all receipts passing become unratified_closure_candidate typed exits.",
         "credit_boundary": "advisory_only_no_factory_credit; the contract names the receipts that must pass before any credit-ready upgrade."
       },
-      "dag_search": {
-        "root_status": "exact_gap",
-        "root_resolution": "exact_gap",
-        "closed_or_exact_gap": true,
-        "moves_made": 7,
-        "wallclock_s": 10.817,
-        "levers": {
-          "n0_root": "exact_gap: node n0_root deferred at marginal P(close) below threshold after the non-commutative core was tried; emit as the exact remaining obligation for a future lever (stronger prover slot / human)",
-          "n1_sub_goal_1": "exact_gap: node n1_sub_goal_1 deferred at marginal P(close) below threshold after the non-commutative core was tried; emit as the exact remaining obligation for a future lever (stronger prover slot / human)",
-          "n2_sub_goal_2": "escalate_noncommutative(diagnostic): node n2_sub_goal_2 deferred having tried ONLY commutative/direct moves ['native_hammer'] \u2014 invent/decompose not reached. (Diagnostic only: tested invent \u226f strong-direct; flags the failure mode, not a guaranteed lever \u2014 escalate to a stronger prover/human.)"
-        },
-        "move_attribution": [
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "native_hammer",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": null,
-            "progress": 0.2,
-            "goals_remaining": 0,
-            "error_class": "tactic_failed",
-            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
-            "wallclock_s": 0.0
+      "contract_validation": {
+        "contract_schema": "leanmill-solver-action-contract-v1",
+        "receipts": {
+          "kernel_compile_receipt": {
+            "passed": true,
+            "tail": "pre-verified champion (mode-agnostic splice)"
           },
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "claude_warm",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": null,
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "tail": "is run (last: uses_sorry; agent's own gap: specStep_shape_no_new_four \u2014 the shape-preservation + no-new-4 contract for `specStep`; the ONLY node of this DAG mentioning `specStep`, hence the only one not derivable from the opaque signature (see) \u2014 strategy change required (decompose/conjecture/defer)",
-            "wallclock_s": 0.0
+          "matched_negative_control_receipt": {
+            "kind": "source_aware_conclusion_perturbation",
+            "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+            "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+            "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+            "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
+            "positive_compiled": true,
+            "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "negative_compiled": false,
+            "status": "pass",
+            "passed": true,
+            "discriminating": true,
+            "differential": "confirmed",
+            "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+            "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
+            "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+            "admitted_under_policy": true,
+            "policy": "require_discriminating_control",
+            "tail": "positive source compiles and the same proof does not close the negated conclusion"
           },
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "conjecture_lemma",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": "conjectured_lemma_pending",
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "tail": "compiled \u2014 goal follows from the conjectured lemma (load-bearing)",
-            "wallclock_s": 5.41
+          "axiom_allowlist_receipt": {
+            "passed": true,
+            "axioms": [
+              "Classical.choice",
+              "Quot.sound",
+              "propext"
+            ],
+            "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
           },
-          {
-            "node_id": "n1_sub_goal_1",
-            "node_kind": "sub_goal",
-            "move": "native_hammer",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": null,
-            "progress": 0.2,
-            "goals_remaining": 0,
-            "error_class": "tactic_failed",
-            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
-            "wallclock_s": 0.0
+          "l3_anti_pattern_receipt": {
+            "passed": null,
+            "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
           },
-          {
-            "node_id": "n1_sub_goal_1",
-            "node_kind": "sub_goal",
-            "move": "claude_warm",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": null,
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "tail": "is run (last: uses_sorry; agent's own gap: specStep_shape_no_new_four \u2014 the shape-preservation + no-new-4 contract for `specStep`; the ONLY node of this DAG mentioning `specStep`, hence the only one not derivable from the opaque signature (see) \u2014 strategy change required (decompose/conjecture/defer)",
-            "wallclock_s": 0.0
-          },
-          {
-            "node_id": "n1_sub_goal_1",
-            "node_kind": "sub_goal",
-            "move": "conjecture_lemma",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": "conjectured_lemma_pending",
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "tail": "compiled \u2014 goal follows from the conjectured lemma (load-bearing)",
-            "wallclock_s": 5.34
-          },
-          {
-            "node_id": "n2_sub_goal_2",
-            "node_kind": "sub_goal",
-            "move": "native_hammer",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "rung": false,
-            "residual": null,
-            "progress": 0.2,
-            "goals_remaining": 0,
-            "error_class": "tactic_failed",
-            "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
-            "wallclock_s": 0.0
+          "governance_kernel_receipt": {
+            "passed": true,
+            "confirmed": [],
+            "flags": [],
+            "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
           }
-        ],
-        "terminal_signal": {
-          "node_id": "n2_sub_goal_2",
-          "move": "native_hammer",
-          "error_class": "tactic_failed",
-          "tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior:  := 200 })] no  repl: L10:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  g : Grid\n  a t : \u2115\n  \u22a2 countColor (specStep g a t) 4 \u2264 countColor g 4",
-          "stop_reason": "stalled_no_progress"
         },
-        "trace": [
-          {
-            "event": "move_failed",
-            "node_id": "n0_root",
-            "move": "native_hammer"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n0_root",
-            "move": "claude_warm"
-          },
-          {
-            "event": "conjectured_sub_lemma",
-            "node_id": "n0_root",
-            "move": "conjecture_lemma",
-            "new_node_id": "n1_sub_goal_1",
-            "lever": "conjecture: proposed sub-lemma \u2192 n1_sub_goal_1",
-            "sub_goal_preview": "theorem conj_count4_monotone :\n    \u2200 (g : Grid) (a t color : Nat),\n      color \u2209"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n1_sub_goal_1",
-            "move": "native_hammer"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n1_sub_goal_1",
-            "move": "claude_warm"
-          },
-          {
-            "event": "conjectured_sub_lemma",
-            "node_id": "n1_sub_goal_1",
-            "move": "conjecture_lemma",
-            "new_node_id": "n2_sub_goal_2",
-            "lever": "conjecture: proposed sub-lemma \u2192 n2_sub_goal_2",
-            "sub_goal_preview": "theorem conj_count4_monotone :\n    \u2200 (g : Grid) (a t color : Nat),\n      color \u2209"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n2_sub_goal_2",
-            "move": "native_hammer"
-          },
-          {
-            "event": "stop",
-            "reason": "stalled_no_progress",
-            "moves_without_progress": 6,
-            "moves_made": 7
-          }
-        ]
+        "credit_ready_at_solver_layer": true,
+        "required_receipts_all_passed_at_solver_layer": true,
+        "axiom_tier": "kernel_pure",
+        "positive_axiom_receipt_required": true,
+        "discriminating_mnc_required": true,
+        "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
       },
       "matched_negative_control": {
-        "kind": "context_stripped",
-        "executed_at": "skipped"
+        "kind": "source_aware_conclusion_perturbation",
+        "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+        "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+        "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+        "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
+        "positive_compiled": true,
+        "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+        "negative_compiled": false,
+        "status": "pass",
+        "passed": true,
+        "discriminating": true,
+        "differential": "confirmed",
+        "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+        "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
+        "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+        "admitted_under_policy": true,
+        "policy": "require_discriminating_control",
+        "tail": "positive source compiles and the same proof does not close the negated conclusion",
+        "executed_at": "solver_layer"
+      },
+      "frontier_triage": {
+        "triage_class": "formalization_bound",
+        "confidence": "low",
+        "attempt": true,
+        "obligation": "Decompose",
+        "gap_type": "AUXILIARY",
+        "rationale": "AUXILIARY gap-type but no construction obligation \u2014 likely an encodable lemma around a test object; attempt, but the gap-type warrants a watchful eye.",
+        "target_strength": "unknown"
+      },
+      "in_repo_reference_check": {
+        "kind": "reachable_solved_references",
+        "executed_at": "solver_layer",
+        "ran": true,
+        "clean": true,
+        "reachable_solved_references": [],
+        "error": null,
+        "note": "advisory: reachable in-repo solved references at closure time; opt-in (ZTARE_CLOSURE_REF_CHECK=1, on for solve_adhoc). Non-empty does NOT reject (premises are legitimate in batch) but flags a capability claim."
       }
     }
   ]

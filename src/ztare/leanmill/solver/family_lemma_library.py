@@ -165,22 +165,8 @@ def strip_dead_sorried_orphans(text: str) -> "tuple[str, list[str]]":
     comment is not a live ref), so a still-cited `sorry` (a genuine OPEN rung) is KEPT. Returns (new_text,
     removed). Span deletion via the canonical `lean_source.decl_spans`; the caller recompiles + reverts if
     removal somehow breaks the env (defense-in-depth — the reference scan is textual)."""
-    from ztare.leanmill.lean_source import has_sorry, blank_comments, decl_spans
-    blocks = decl_blocks(text)
-    blanked = [(n, blank_comments(b)) for n, b in blocks]           # comment-free bodies for the ref scan
-    sorried = [n for n, b in blocks if n and has_sorry(b)]
-    if not sorried:
-        return (text, [])
-    dead = [name for name in sorried
-            if not any(n2 != name and re.search(r"\b" + re.escape(name) + r"\b", b2) for n2, b2 in blanked)]
-    if not dead:
-        return (text, [])
-    span_of = {n: (i, e) for n, i, e in decl_spans(text)}           # canonical spans (same parser as decl_blocks)
-    lines = text.splitlines(keepends=True)
-    for name in sorted(dead, key=lambda n: -span_of[n][0]):          # delete HIGHEST start line first (stable indices)
-        i, end = span_of[name]
-        del lines[i:end]
-    return ("".join(lines), dead)
+    from ztare.leanmill.lean_source import strip_unreferenced_sorried_decls
+    return strip_unreferenced_sorried_decls(text)
 
 
 def bankable_helpers(proof_text: str, context_names: "set[str]",

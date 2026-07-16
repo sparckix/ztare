@@ -4,6 +4,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping, Sequence
 
+from ztare.leanmill.compound_implication_sieve import (
+    CompoundImplication,
+    witness_eliminations,
+)
 from ztare.leanmill.exploration_budget import BudgetExceeded, ExplorationBudgetLedger
 from ztare.leanmill.context_epoch import propose_context_epoch
 from ztare.leanmill.frontier_blueprint import FrontierTheoryBlueprint
@@ -15,7 +19,10 @@ from ztare.leanmill.theory_conflict_ledger import (
     theory_implication_signature,
 )
 from ztare.leanmill.theory_context import TheoryLandscapeContext
-from ztare.leanmill.theory_interest import profile_theory_program_predictions
+from ztare.leanmill.theory_interest import (
+    prediction_coordinate_normal_form,
+    profile_theory_program_predictions,
+)
 from ztare.leanmill.theory_ir import AxiomFormula, TheorySignature, content_hash
 from ztare.leanmill.theory_program import TheoryProgram
 
@@ -28,6 +35,7 @@ RawBoundaryFn = Callable[
 ]
 CountermodelFn = Callable[..., Any]
 SinglePremiseAuditFn = Callable[[tuple[str, ...], str], Mapping[str, Any]]
+TheoryTaskExecutorFn = Callable[..., Mapping[str, Any]]
 
 
 @dataclass(frozen=True)
@@ -82,17 +90,34 @@ def _journal(
     )
 
 
-def _larger_model_strata(
+def larger_model_strata(
     signature: TheorySignature, plan: Mapping[str, Any]
 ) -> tuple[tuple[tuple[str, int], ...], ...]:
     declared = plan.get("larger_model_strata")
+    heldout = plan.get("heldout_strata")
+    if declared is not None and heldout is not None:
+        heldout_sizes = [
+            {"sort_sizes": dict(row.get("sort_sizes") or {})}
+            for row in heldout
+            if isinstance(row, Mapping)
+        ] if isinstance(heldout, list) else None
+        if heldout_sizes != declared:
+            raise ValueError("heldout and larger model strata disagree")
+    if declared is None:
+        declared = heldout
     if declared is not None:
         if not isinstance(declared, list):
-            raise ValueError("larger_model_strata must be a list")
+            raise ValueError("larger/heldout model strata must be a list")
         rows = []
         for row in declared:
-            if not isinstance(row, Mapping) or set(row) != {"sort_sizes"}:
-                raise ValueError("larger model strata require one sort_sizes object")
+            if (
+                not isinstance(row, Mapping)
+                or "sort_sizes" not in row
+                or set(row) - {"sort_sizes", "checks"}
+            ):
+                raise ValueError(
+                    "larger model strata require sort_sizes and optional checks"
+                )
             raw = row["sort_sizes"]
             if not isinstance(raw, Mapping):
                 raise ValueError("larger model sort_sizes must be an object")
@@ -130,22 +155,89 @@ def run_frontier_boundaries(
     countermodel_fn: CountermodelFn | None = None,
     single_premise_audit_fn: SinglePremiseAuditFn | None = None,
     conflict_ledger: TheoryConflictLedger | None = None,
+    prior_query_results: Sequence[Mapping[str, Any]] = (),
+    theory_task_executor_fn: TheoryTaskExecutorFn | None = None,
 ) -> FrontierBoundaryResult:
     """Execute navigator-selected residual predictions under the campaign budget."""
     finalists = tuple(navigation.get("finalists") or ())
-    query_limit = int(
+    declared_query_limit = int(
         blueprint.query_budget.get(
             "larger_model_queries",
             blueprint.query_budget.get("boundary_queries", len(finalists) * 2 or 1),
         )
     )
+    query_limit = declared_query_limit + max(
+        0,
+        budget_ledger.phase_cap("boundary", "boundary_queries")
+        - int(
+            budget_ledger.budget.phase_caps["boundary"]["boundary_queries"]
+        ),
+    )
     plan = dict(blueprint.verification_plan)
+    representation_search = isinstance(
+        blueprint.adapter_config.get("generative_representation"), Mapping
+    )
     results: list[dict[str, Any]] = []
     stop_reason = "campaign_finished"
     seen: set[tuple[tuple[str, ...], str]] = set()
     epoch_evidence_refs: list[str] = []
     epoch_additions: list[dict[str, Any]] = []
     boundary_queries_used = 0
+    seen_task_contracts: set[str] = set()
+    prior_started = {
+        (
+            tuple(str(value) for value in row.get("premise_formula_ids") or ()),
+            str(row.get("target_formula_id") or ""),
+        )
+        for row in prior_query_results
+        if isinstance(row, Mapping)
+    }
+    prior_task_results: dict[str, dict[str, Any]] = {}
+    for prior_row in prior_query_results:
+        if (
+            not isinstance(prior_row, Mapping)
+            or prior_row.get("candidate_kind") != "theory_task"
+            or not prior_row.get("contract_sha256")
+        ):
+            continue
+        contract_ref = str(prior_row["contract_sha256"])
+        if contract_ref in prior_task_results:
+            raise ValueError("archived boundary duplicated a theory-task result")
+        prior_task_results[contract_ref] = dict(prior_row)
+    prior_exhaustions: dict[
+        tuple[tuple[str, ...], str, tuple[tuple[str, int], ...]], dict[str, Any]
+    ] = {}
+    for prior_row in prior_query_results:
+        if not isinstance(prior_row, Mapping):
+            continue
+        prior_premises = tuple(
+            str(value) for value in prior_row.get("premise_formula_ids") or ()
+        )
+        prior_target = str(prior_row.get("target_formula_id") or "")
+        for receipt in prior_row.get("countermodel_searches") or ():
+            if (
+                not isinstance(receipt, Mapping)
+                or receipt.get("schema") != "leanmill.finite_model_search.v1"
+                or receipt.get("status") != "no_countermodel_at_fixed_size"
+            ):
+                continue
+            receipt_core = {
+                key: value for key, value in receipt.items()
+                if key != "receipt_sha256"
+            }
+            if receipt.get("receipt_sha256") != content_hash(receipt_core):
+                raise ValueError("archived fixed-size exhaustion digest mismatch")
+            sizes = tuple(
+                sorted(
+                    (str(key), int(value))
+                    for key, value in dict(receipt.get("sort_sizes") or {}).items()
+                )
+            )
+            key = (prior_premises, prior_target, sizes)
+            saved = prior_exhaustions.get(key)
+            if saved is not None and saved != dict(receipt):
+                raise ValueError("archived fixed-size exhaustion changed identity")
+            prior_exhaustions[key] = dict(receipt)
     context_epoch = max(
         (
             event.epoch
@@ -160,7 +252,7 @@ def run_frontier_boundaries(
         for row in getattr(context, "formula_profiles", ())
         if hasattr(row, "axiom")
     }
-    larger_strata = _larger_model_strata(context.signature, plan)
+    larger_strata = larger_model_strata(context.signature, plan)
     if larger_strata and countermodel_fn is None:
         from ztare.leanmill.theory_adapter_registry import (
             materialize_theory_adapter_capability,
@@ -189,31 +281,97 @@ def run_frontier_boundaries(
             )
         )
         nominated_targets = finalist.get("boundary_target_ids")
+        coordinate_profile: Mapping[str, Any] = {}
+        target_normalizations: dict[str, list[dict[str, Any]]] = {}
         if candidate_kind == "theory_program":
             program = TheoryProgram.from_json(finalist.get("theory_program"))
-            targets = tuple(str(row) for row in nominated_targets or ())
+            source_targets = tuple(str(row) for row in nominated_targets or ())
             if (
-                not targets
-                or len(set(targets)) != len(targets)
-                or targets != program.prediction_formula_ids
+                len(set(source_targets)) != len(source_targets)
+                or source_targets != program.prediction_formula_ids
                 or program.presentation_formula_ids != premises
                 or program.context_hash != context.context_hash
             ):
                 raise ValueError(
                     "theory-program boundary targets must match its frozen predictions"
                 )
-            prediction_profile = profile_theory_program_predictions(
-                context, premises, targets
+            source_prediction_profile = (
+                profile_theory_program_predictions(context, premises, source_targets)
+                if source_targets
+                else None
             )
+            coordinate_profile = (
+                prediction_coordinate_normal_form(context, source_targets)
+                if source_targets
+                else {}
+            )
+            source_identities = {
+                str(row.get("prediction_formula_id") or ""): dict(row)
+                for row in coordinate_profile.get("predictions") or ()
+                if isinstance(row, Mapping)
+            }
             supplied_profile = finalist.get("prediction_profile")
+            if source_targets and not isinstance(supplied_profile, Mapping):
+                raise ValueError("theory-program prediction profile is missing")
             if isinstance(supplied_profile, Mapping) and (
-                supplied_profile.get("receipt_sha256")
-                != prediction_profile["receipt_sha256"]
+                not isinstance(source_prediction_profile, Mapping)
+                or supplied_profile.get("receipt_sha256")
+                != source_prediction_profile["receipt_sha256"]
             ):
                 raise ValueError("theory-program prediction profile no longer replays")
+            executable_targets: list[str] = []
+            prediction_identities: dict[str, dict[str, Any]] = {}
+            for source_target in source_targets:
+                identity = source_identities.get(source_target, {})
+                if identity.get("status") != (
+                    "logical_product_requires_separate_coordinates"
+                ):
+                    executable_targets.append(source_target)
+                    continue
+                atoms = tuple(
+                    row
+                    for row in identity.get("prediction_atoms") or ()
+                    if isinstance(row, Mapping)
+                )
+                if not atoms or any(
+                    not row.get("existing_formula_ids") for row in atoms
+                ):
+                    executable_targets.append(source_target)
+                    prediction_identities[source_target] = identity
+                    continue
+                for atom in atoms:
+                    aliases = sorted(
+                        str(row) for row in atom.get("existing_formula_ids") or ()
+                    )
+                    target = aliases[0]
+                    if target in premises:
+                        continue
+                    executable_targets.append(target)
+                    target_normalizations.setdefault(target, []).append(
+                        {
+                            "source_prediction_formula_id": source_target,
+                            "prediction_atom_id": str(
+                                atom.get("prediction_atom_id") or ""
+                            ),
+                            "coordinate_formula_ids": aliases,
+                        }
+                    )
+            targets = tuple(dict.fromkeys(executable_targets))
+            if not targets:
+                targets = source_targets
+                prediction_identities = source_identities
+            prediction_profile = (
+                profile_theory_program_predictions(context, premises, targets)
+                if targets
+                else None
+            )
             seed_prediction_rows = {
                 str(row["prediction_formula_id"]): dict(row)
-                for row in prediction_profile["predictions"]
+                for row in (
+                    prediction_profile["predictions"]
+                    if isinstance(prediction_profile, Mapping)
+                    else ()
+                )
             }
         elif nominated_targets:
             targets = tuple(str(row) for row in nominated_targets)
@@ -224,20 +382,162 @@ def run_frontier_boundaries(
                     "compact-pack boundary targets must be distinct residual consequences"
                 )
             seed_prediction_rows = {}
+            prediction_identities = {}
         else:
             targets = tuple(sorted(residual_targets))
             seed_prediction_rows = {}
+            prediction_identities = {}
+        task_boundary_stopped = False
+        if candidate_kind == "theory_program":
+            for contract in program.task_discharge_contracts:
+                if contract.sha256 in seen_task_contracts:
+                    continue
+                seen_task_contracts.add(contract.sha256)
+                prior_task = prior_task_results.get(contract.sha256)
+                if prior_task is not None:
+                    from ztare.leanmill.formal_task_boundary import (
+                        validate_formal_task_boundary_result,
+                    )
+
+                    results.append(
+                        validate_formal_task_boundary_result(
+                            contract, prior_task
+                        )
+                    )
+                    continue
+                if theory_task_executor_fn is None:
+                    continue
+                if boundary_queries_used >= query_limit:
+                    break
+                soft_stop = budget_ledger.soft_stop_reason(
+                    allow_coverage_target=False
+                )
+                if soft_stop is not None:
+                    stop_reason = soft_stop
+                    task_boundary_stopped = True
+                    break
+                try:
+                    task_reservation = budget_ledger.reserve(
+                        f"boundary:theory-task:{contract.sha256[:16]}",
+                        "boundary",
+                        {"boundary_queries": 1},
+                    )
+                except BudgetExceeded as exc:
+                    stop_reason = exc.reason
+                    task_boundary_stopped = True
+                    break
+                task_timeout_ms = int(
+                    plan.get("formal_task_timeout_ms", 180_000)
+                )
+                try:
+                    task_work_reservation = budget_ledger.reserve(
+                        f"boundary:theory-task:{contract.sha256[:16]}:formal-work",
+                        "boundary",
+                        {
+                            "formal_peer_attempts": 1,
+                            "formal_peer_millis": task_timeout_ms,
+                            "lean_attempts": 1,
+                            "lean_millis": task_timeout_ms,
+                        },
+                    )
+                except BudgetExceeded as exc:
+                    budget_ledger.release(
+                        task_reservation,
+                        reason="theory_task_formal_work_budget_unavailable",
+                    )
+                    stop_reason = exc.reason
+                    task_boundary_stopped = True
+                    break
+                try:
+                    task_row = dict(
+                        theory_task_executor_fn(
+                            contract,
+                            context=context,
+                            verification_plan=plan,
+                            budget_ledger=budget_ledger,
+                        )
+                    )
+                    from ztare.leanmill.formal_task_boundary import (
+                        validate_formal_task_boundary_result,
+                    )
+
+                    task_row = validate_formal_task_boundary_result(
+                        contract, task_row
+                    )
+                except Exception:
+                    budget_ledger.release(
+                        task_reservation,
+                        reason="theory_task_executor_or_contract_failure",
+                    )
+                    budget_ledger.release(
+                        task_work_reservation,
+                        reason="theory_task_executor_or_contract_failure",
+                    )
+                    raise
+                budget_ledger.commit(task_reservation)
+                budget_ledger.commit(task_work_reservation)
+                boundary_queries_used += 1
+                results.append(task_row)
+                _journal(
+                    journal,
+                    attempt_id=attempt_id,
+                    campaign_id=campaign_id,
+                    epoch=context_epoch,
+                    context_hash=context.context_hash,
+                    event_type="theory_task_adjudicated",
+                    subject_id=contract.contract_id,
+                    input_refs=tuple(
+                        str(value)
+                        for value in contract.parameters.get(
+                            "input_evidence_refs", ()
+                        )
+                    ),
+                    output_ref=str(task_row["receipt_sha256"]),
+                    evidence_status=(
+                        "proved"
+                        if str(task_row.get("status") or "").startswith(
+                            "kernel_verified"
+                        )
+                        else "unresolved"
+                    ),
+                    authority="frontier_boundary_formal_task_join",
+                )
+                budget_ledger.observe_information(
+                    action_id=f"boundary:theory-task:{contract.sha256[:16]}",
+                    marginal_information_per_cost_ppm=1_000_000,
+                    coverage_ppm=min(
+                        1_000_000,
+                        len(results) * 1_000_000 // max(1, query_limit),
+                    ),
+                    evidence_refs=(str(task_row["receipt_sha256"]),),
+                )
+        if task_boundary_stopped:
+            break
         for target_id in targets:
             key = (premises, target_id)
-            if key in seen or boundary_queries_used >= query_limit:
+            if key in seen:
                 continue
             seen.add(key)
-            soft_stop = budget_ledger.soft_stop_reason(
-                allow_coverage_target=False
-            )
-            if soft_stop is not None:
-                stop_reason = soft_stop
-                break
+            if boundary_queries_used >= query_limit:
+                results.append({
+                    "premise_formula_ids": list(premises),
+                    "target_formula_id": target_id,
+                    "candidate_kind": candidate_kind,
+                    "logical_premise_ablation": {
+                        "status": "skipped_query_limit"
+                    },
+                    "pack_synergy_status": "unresolved",
+                    "program_prediction_status": "not_tested_query_limit",
+                    "seed_context_prediction": seed_prediction_rows.get(target_id),
+                    "countermodel_searches": [],
+                    "isabelle": {"status": "skipped_query_limit"},
+                    "lean": {"status": "skipped_query_limit"},
+                    "formal_consensus": {"status": "skipped_query_limit"},
+                })
+                continue
+            query_already_started = key in prior_started
+            if query_already_started:
+                boundary_queries_used += 1
             pack_dependency_candidate = target_id in {
                 str(value)
                 for value in (
@@ -263,6 +563,68 @@ def run_frontier_boundaries(
                 "lean": {"status": "not_requested"},
                 "formal_consensus": {"status": "not_requested"},
             }
+            if target_id in target_normalizations:
+                normalization_core = {
+                    "schema": "leanmill.prediction_product_lowering.v1",
+                    "context_hash": context.context_hash,
+                    "target_formula_id": target_id,
+                    "source_coordinates": target_normalizations[target_id],
+                    "coordinate_normal_form_receipt": str(
+                        coordinate_profile.get("receipt_sha256") or ""
+                    ),
+                    "authority": "host_lossless_logical_lowering",
+                }
+                row["prediction_normalization"] = {
+                    **normalization_core,
+                    "receipt_sha256": content_hash(normalization_core),
+                }
+            coordinate_identity = prediction_identities.get(target_id)
+            if (
+                coordinate_identity is not None
+                and coordinate_identity.get("status")
+                == "logical_product_requires_separate_coordinates"
+            ):
+                row["program_prediction_status"] = (
+                    "inadmissible_logical_product_coordinate"
+                )
+                row["prediction_coordinate_identity"] = coordinate_identity
+                row["logical_premise_ablation"] = {
+                    "status": "skipped_inadmissible_prediction_identity"
+                }
+                row["isabelle"] = {
+                    "status": "skipped_inadmissible_prediction_identity"
+                }
+                row["lean"] = {
+                    "status": "skipped_inadmissible_prediction_identity"
+                }
+                row["formal_consensus"] = {
+                    "status": "skipped_inadmissible_prediction_identity"
+                }
+                identity_ref = str(
+                    coordinate_profile.get("receipt_sha256")
+                    or content_hash(coordinate_identity)
+                )
+                _journal(
+                    journal,
+                    attempt_id=attempt_id,
+                    campaign_id=campaign_id,
+                    epoch=context_epoch,
+                    context_hash=context.context_hash,
+                    event_type="theory_presentation_rejected",
+                    subject_id=target_id,
+                    input_refs=premises,
+                    output_ref=identity_ref,
+                    evidence_status="bounded_exact",
+                    authority="host_logical_normalizer",
+                )
+                results.append(row)
+                continue
+            soft_stop = budget_ledger.soft_stop_reason(
+                allow_coverage_target=False
+            )
+            if soft_stop is not None:
+                stop_reason = soft_stop
+                break
             seed_prediction = seed_prediction_rows.get(target_id)
             if (
                 isinstance(seed_prediction, Mapping)
@@ -409,17 +771,18 @@ def run_frontier_boundaries(
                     )
                     results.append(row)
                     continue
-            try:
-                query_reservation = budget_ledger.reserve(
-                    f"boundary:{target_id}",
-                    "boundary",
-                    {"boundary_queries": 1},
-                )
-            except BudgetExceeded as exc:
-                stop_reason = exc.reason
-                break
-            budget_ledger.commit(query_reservation)
-            boundary_queries_used += 1
+            if not query_already_started:
+                try:
+                    query_reservation = budget_ledger.reserve(
+                        f"boundary:{target_id}",
+                        "boundary",
+                        {"boundary_queries": 1},
+                    )
+                except BudgetExceeded as exc:
+                    stop_reason = exc.reason
+                    break
+                budget_ledger.commit(query_reservation)
+                boundary_queries_used += 1
 
             if blueprint.mode == "evidence_induced":
                 if raw_boundary_fn is None:
@@ -479,16 +842,34 @@ def run_frontier_boundaries(
                 timeout_ms = int(plan.get("smt_timeout_ms", 30_000))
                 for size_vector in larger_strata:
                     sizes = dict(size_vector)
+                    cached_exhaustion = prior_exhaustions.get(
+                        (premises, target_id, tuple(size_vector))
+                    )
+                    if cached_exhaustion is not None:
+                        if (
+                            cached_exhaustion.get("signature_sha256")
+                            != context.signature.content_hash
+                            or tuple(cached_exhaustion.get("premise_formula_ids") or ())
+                            != premises
+                            or cached_exhaustion.get("target_formula_id") != target_id
+                        ):
+                            raise ValueError(
+                                "archived fixed-size exhaustion crossed query identity"
+                            )
+                        row["countermodel_searches"].append(cached_exhaustion)
+                        continue
                     stratum_ref = content_hash({"sort_sizes": sizes})[:16]
-                    try:
-                        smt_reservation = budget_ledger.reserve(
-                            f"boundary:{target_id}:smt:{stratum_ref}",
-                            "boundary",
-                            {"smt_calls": 1, "smt_millis": timeout_ms},
-                        )
-                    except BudgetExceeded as exc:
-                        stop_reason = exc.reason
-                        break
+                    smt_reservation = None
+                    if not representation_search:
+                        try:
+                            smt_reservation = budget_ledger.reserve(
+                                f"boundary:{target_id}:smt:{stratum_ref}",
+                                "boundary",
+                                {"smt_calls": 1, "smt_millis": timeout_ms},
+                            )
+                        except BudgetExceeded as exc:
+                            stop_reason = exc.reason
+                            break
                     try:
                         receipt = countermodel_fn(
                             tuple(axiom_map[item] for item in premises),
@@ -498,62 +879,119 @@ def run_frontier_boundaries(
                             timeout_ms=timeout_ms,
                         )
                     finally:
-                        budget_ledger.commit(smt_reservation)
+                        if smt_reservation is not None:
+                            budget_ledger.commit(smt_reservation)
                     receipt_json = receipt.to_json()
                     row["countermodel_searches"].append(receipt_json)
                     receipt_ref = str(receipt_json["receipt_sha256"])
                     if receipt.status == "countermodel_found":
                         refuted = True
+                        batch_candidates = tuple(
+                            CompoundImplication(
+                                candidate_id=candidate_target,
+                                premise_formula_ids=premises,
+                                target_formula_id=candidate_target,
+                            )
+                            for candidate_target in targets
+                            if candidate_target in axiom_map
+                        )
+                        batch_refuted = witness_eliminations(
+                            context, batch_candidates, receipt.witness
+                        )
+                        if target_id not in batch_refuted:
+                            raise ValueError(
+                                "countermodel witness does not refute its queried target"
+                            )
+                        batch_core = {
+                            "schema": "leanmill.countermodel_batch_replay.v1",
+                            "premise_formula_ids": list(premises),
+                            "source_target_formula_id": target_id,
+                            "tested_target_formula_ids": [
+                                candidate.candidate_id for candidate in batch_candidates
+                            ],
+                            "refuted_target_formula_ids": list(batch_refuted),
+                            "not_refuted_by_this_witness_formula_ids": [
+                                candidate.candidate_id
+                                for candidate in batch_candidates
+                                if candidate.candidate_id not in batch_refuted
+                            ],
+                            "witness_ref": receipt_ref,
+                            "sort_sizes": sizes,
+                            "authority": "finite_countermodel_host_batch_replay",
+                            "claim_boundary": (
+                                "one witnessed finite model; non-refutation by this "
+                                "model is not evidence of implication"
+                            ),
+                        }
+                        row["countermodel_batch_replay"] = {
+                            **batch_core,
+                            "receipt_sha256": content_hash(batch_core),
+                        }
                         if pack_dependency_candidate:
                             row["pack_synergy_status"] = "refuted_by_larger_model"
                         row["program_prediction_status"] = "refuted_by_larger_model"
                         epoch_evidence_refs.append(receipt_ref)
-                        epoch_additions.append(
-                            {
-                                "kind": "finite_countermodel",
-                                "target_formula_id": target_id,
-                                "premise_formula_ids": list(premises),
-                                "sort_sizes": sizes,
-                                "witness_receipt_ref": receipt_ref,
-                            }
-                        )
-                        _journal(
-                            journal,
-                            attempt_id=attempt_id,
-                            campaign_id=campaign_id,
-                            epoch=context_epoch,
-                            context_hash=context.context_hash,
-                            event_type="countermodel_found",
-                            subject_id=target_id,
-                            input_refs=premises,
-                            output_ref=receipt_ref,
-                            evidence_status="witnessed",
-                            authority="finite_smt_plus_host_replay",
-                        )
-                        budget_ledger.observe_information(
-                            action_id=f"boundary:{target_id}:smt:{stratum_ref}",
-                            marginal_information_per_cost_ppm=1_000_000,
-                            coverage_ppm=min(1_000_000, len(results + [row]) * 1_000_000 // max(1, query_limit)),
-                            evidence_refs=(receipt_ref,),
-                        )
-                        if conflict_ledger is not None:
-                            conflict_receipt = finite_countermodel_conflict_receipt(
-                                context, premises, target_id, receipt_json
+                        for batch_target in batch_refuted:
+                            epoch_additions.append(
+                                {
+                                    "kind": "finite_countermodel",
+                                    "target_formula_id": batch_target,
+                                    "premise_formula_ids": list(premises),
+                                    "sort_sizes": sizes,
+                                    "witness_receipt_ref": receipt_ref,
+                                }
                             )
-                            clause = conflict_ledger.learn(conflict_receipt)
                             _journal(
                                 journal,
                                 attempt_id=attempt_id,
                                 campaign_id=campaign_id,
                                 epoch=context_epoch,
                                 context_hash=context.context_hash,
-                                event_type="conflict_learned",
-                                subject_id=clause.signature,
-                                input_refs=(*premises, target_id),
+                                event_type="countermodel_found",
+                                subject_id=batch_target,
+                                input_refs=premises,
                                 output_ref=receipt_ref,
                                 evidence_status="witnessed",
-                                authority="finite_countermodel_host_replay",
+                                authority=(
+                                    "reviewed_representation_plus_raw_replay"
+                                    if representation_search
+                                    else "finite_smt_plus_host_replay"
+                                    if batch_target == target_id
+                                    else "finite_countermodel_host_batch_replay"
+                                ),
                             )
+                        budget_ledger.observe_information(
+                            action_id=(
+                                f"boundary:{target_id}:representation:{stratum_ref}"
+                                if representation_search
+                                else f"boundary:{target_id}:smt:{stratum_ref}"
+                            ),
+                            marginal_information_per_cost_ppm=1_000_000,
+                            coverage_ppm=(
+                                len(batch_refuted) * 1_000_000
+                                // max(1, len(batch_candidates))
+                            ),
+                            evidence_refs=(receipt_ref,),
+                        )
+                        if conflict_ledger is not None:
+                            for batch_target in batch_refuted:
+                                conflict_receipt = finite_countermodel_conflict_receipt(
+                                    context, premises, batch_target, receipt_json
+                                )
+                                clause = conflict_ledger.learn(conflict_receipt)
+                                _journal(
+                                    journal,
+                                    attempt_id=attempt_id,
+                                    campaign_id=campaign_id,
+                                    epoch=context_epoch,
+                                    context_hash=context.context_hash,
+                                    event_type="conflict_learned",
+                                    subject_id=clause.signature,
+                                    input_refs=(*premises, batch_target),
+                                    output_ref=receipt_ref,
+                                    evidence_status="witnessed",
+                                    authority="finite_countermodel_host_replay",
+                                )
                         break
                 if stop_reason.startswith("blocked_before_action"):
                     results.append(row)
@@ -733,12 +1171,23 @@ def run_frontier_boundaries(
                     if governed.get("receipt_sha256") != content_hash(governed_core):
                         raise ValueError("Lean boundary executor receipt digest mismatch")
                     status = str(governed.get("status") or "unresolved")
+                    from ztare.common.schema_routes import append_consequence_event
+
+                    consequence_event = {
+                        "receipts_dir": journal.path.parent,
+                        "contract_id": "lean_consequence_outcome_totality.v1",
+                        "subject_id": task.task_id,
+                        "outcome": status,
+                        "evidence_refs": (str(governed["receipt_sha256"]),),
+                    }
+                    append_consequence_event(event="produced", **consequence_event)
                     row["lean"] = {
                         "status": status,
                         "task_id": task.task_id,
                         "governed_attempt": governed,
                     }
                     attributed = status == "proved_attributed"
+                    kernel_refuted = status == "refuted_by_kernel"
                     if attributed:
                         singletons_excluded = (
                             row["logical_premise_ablation"].get("status")
@@ -755,9 +1204,44 @@ def run_frontier_boundaries(
                                 )
                             )
                         row["program_prediction_status"] = "kernel_verified_attributed"
+                    elif kernel_refuted:
+                        certificate = governed.get("refutation")
+                        certificate_core = {
+                            key: value
+                            for key, value in dict(certificate or {}).items()
+                            if key != "receipt_sha256"
+                        }
+                        if (
+                            not isinstance(certificate, Mapping)
+                            or certificate.get("receipt_sha256")
+                            != content_hash(certificate_core)
+                        ):
+                            raise ValueError(
+                                "Lean refutation lacks a replayable certificate"
+                            )
+                        refuted = True
+                        row["program_prediction_status"] = "refuted_by_kernel"
+                        if pack_dependency_candidate:
+                            row["pack_synergy_status"] = "refuted_by_kernel"
+                        refutation_ref = str(certificate["receipt_sha256"])
+                        epoch_evidence_refs.append(refutation_ref)
+                        epoch_additions.append(
+                            {
+                                "kind": "lean_refutation",
+                                "target_formula_id": target_id,
+                                "premise_formula_ids": list(premises),
+                                "witness_receipt_ref": refutation_ref,
+                            }
+                        )
                     else:
                         row["program_prediction_status"] = "unresolved"
-                    event_type = "conditional_consequence_proved" if attributed else "proof_attempt_unresolved"
+                    event_type = (
+                        "conditional_consequence_proved"
+                        if attributed
+                        else "conditional_consequence_refuted"
+                        if kernel_refuted
+                        else "proof_attempt_unresolved"
+                    )
                     _journal(
                         journal,
                         attempt_id=attempt_id,
@@ -768,15 +1252,28 @@ def run_frontier_boundaries(
                         subject_id=target_id,
                         input_refs=premises,
                         output_ref=str(governed["receipt_sha256"]),
-                        evidence_status="proved" if attributed else "unresolved",
-                        authority="lean_kernel_matched_attribution",
+                        evidence_status=(
+                            "proved"
+                            if attributed
+                            else "witnessed"
+                            if kernel_refuted
+                            else "unresolved"
+                        ),
+                        authority=(
+                            "lean_kernel_refutation"
+                            if kernel_refuted
+                            else "lean_kernel_matched_attribution"
+                        ),
                     )
                     budget_ledger.observe_information(
                         action_id=f"boundary:{target_id}:lean",
-                        marginal_information_per_cost_ppm=1_000_000 if attributed else 0,
+                        marginal_information_per_cost_ppm=(
+                            1_000_000 if attributed or kernel_refuted else 0
+                        ),
                         coverage_ppm=min(1_000_000, len(results + [row]) * 1_000_000 // max(1, query_limit)),
                         evidence_refs=(str(governed["receipt_sha256"]),),
                     )
+                    append_consequence_event(event="consumed", **consequence_event)
             if row["isabelle"].get("status") == "proved":
                 from ztare.common.cross_substrate_consensus import (
                     SubstrateVerdict,
@@ -838,8 +1335,18 @@ def run_frontier_boundaries(
                     authority="frontier_boundary_orchestrator",
                 )
             results.append(row)
+            if refuted:
+                stop_reason = "candidate_refuted_return_to_search"
+                break
         if stop_reason != "campaign_finished":
             break
+
+    if results and all(
+        row.get("program_prediction_status")
+        == "inadmissible_logical_product_coordinate"
+        for row in results
+    ):
+        stop_reason = "all_boundary_candidates_inadmissible"
 
     proposal = propose_context_epoch(
         journal,
@@ -857,4 +1364,6 @@ def run_frontier_boundaries(
     )
 
 
-__all__ = ["FrontierBoundaryResult", "run_frontier_boundaries"]
+__all__ = [
+    "FrontierBoundaryResult", "larger_model_strata", "run_frontier_boundaries",
+]

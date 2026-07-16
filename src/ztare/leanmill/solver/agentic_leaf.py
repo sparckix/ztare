@@ -291,7 +291,13 @@ def _dispatch_once(prompt: str, runtime: str, repo: "str | Path", timeout: int,
     # repo-scoped one, so CONCURRENT dispatches never collide on a single session resume (and tagged
     # slots stay warm across rounds — same economics, no shared-context correlation). A PARAMETER, not
     # an env var, by design: env is process-global and therefore not thread-safe under concurrency.
-    agent_id = _leaf_agent_id(repo) + (f"__{agent_tag}" if agent_tag else "")
+    from ztare.common.subscription_agent_runtime import (
+        current_subscription_dispatch_provenance_agent_id,
+    )
+    governed_agent_id = current_subscription_dispatch_provenance_agent_id()
+    agent_id = governed_agent_id or (
+        _leaf_agent_id(repo) + (f"__{agent_tag}" if agent_tag else "")
+    )
     sess = get_or_create_warm_session(sess_dir, runtime=runtime, agent_id=agent_id, enabled=enabled)
     inval, repl = warm_session_recovery_callbacks(sess_dir, runtime=runtime, agent_id=agent_id)
     resumed = bool(sess and not sess.get("is_new"))
