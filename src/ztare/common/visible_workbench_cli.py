@@ -24,6 +24,17 @@ from ztare.common.worldmodel_carrier_purity import carrier_contract_error
 
 SCHEMA = "ztare-visible-workbench-cli-receipt-v1"
 
+# These capabilities return bounded derived receipts over large, prompt-visible
+# evidence.  The artifact may be withheld from the staged cwd only because of
+# its byte size; the registered handler still needs the authority-side bytes.
+# This is an evidence service, not a general filesystem bridge.
+_AUTHORITY_DERIVED_ACTIONS = frozenset(
+    {
+        "inspect_worldmodel_event_timeline",
+        "contrast_worldmodel_episodes",
+    }
+)
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
@@ -127,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.command == "manifest":
-            payload = _manifest()
+            payload = _manifest(project)
         elif args.command == "probe-json":
             payload = _probe_json(
                 project=project,
@@ -210,12 +221,34 @@ def _attach_persistent_receipt(*, project: Path, payload: dict[str, Any]) -> Non
         }
 
 
-def _manifest() -> dict[str, Any]:
-    return manifest_payload()
+def _manifest(project: Path | None = None) -> dict[str, Any]:
+    return manifest_payload(project=project)
 
 
-def manifest_payload() -> dict[str, Any]:
-    return {
+def manifest_payload(*, project: Path | None = None) -> dict[str, Any]:
+    routes = visible_workbench_capability_routes()
+    in_turn_routes = visible_workbench_action_routes()
+    parent_routes = visible_workbench_parent_kernel_routes()
+    task_scope: frozenset[str] = frozenset()
+    task: dict[str, Any] = {}
+    if project is not None:
+        from ztare.common.leaf_workbench_executor import (
+            active_workbench_task_capability_scope,
+            workbench_task_operational_exit_capability_ids,
+        )
+
+        task_scope, task = active_workbench_task_capability_scope(project)
+    if task_scope:
+        operational = set(workbench_task_operational_exit_capability_ids())
+        allowed = set(task_scope) | operational
+        routes = {key: value for key, value in routes.items() if key in allowed}
+        in_turn_routes = {
+            key: value for key, value in in_turn_routes.items() if key in allowed
+        }
+        parent_routes = {
+            key: value for key, value in parent_routes.items() if key in allowed
+        }
+    payload = {
         "schema": SCHEMA,
         "status": "ok",
         "commands": [
@@ -267,20 +300,9 @@ def manifest_payload() -> dict[str, Any]:
                 "output": "JSON receipt for registered local adapter actions only",
             },
         ],
-        "capability_routes": visible_workbench_capability_routes(),
-        "in_turn_capability_routes": visible_workbench_action_routes(),
-        "parent_kernel_capability_routes": visible_workbench_parent_kernel_routes(),
-        "strategy_gate_command_wrapper": {
-            "capability_id": "run_strategy_required_gate",
-            "input_refs": {
-                "command": "<required_next_gate.command>",
-                "strategy_card_sha": "<optional failure_family_sha>",
-            },
-            "note": (
-                "Strategy gate command names are not capability_id values. "
-                "Wrap registered gate commands with capability_id=run_strategy_required_gate."
-            ),
-        },
+        "capability_routes": routes,
+        "in_turn_capability_routes": in_turn_routes,
+        "parent_kernel_capability_routes": parent_routes,
         "authority_boundary": (
             "This CLI reads only staged visible artifacts or stdin. Hidden holdout, "
             "promotion gates, and live environment actions remain outside this surface."
@@ -291,6 +313,29 @@ def manifest_payload() -> dict[str, Any]:
             "Use those refs as probe-json artifacts when composing visible evidence locally."
         ),
     }
+    if task_scope:
+        payload["active_task_scope"] = {
+            "task_id": str(task.get("task_id") or ""),
+            "admissible_evidence_capability_ids": sorted(task_scope),
+            "operational_exit_capability_ids": sorted(
+                set(routes).intersection(operational)
+            ),
+        }
+        payload["commands"] = [
+            row
+            for row in payload["commands"]
+            if row["command"] != "probe-json"
+            or "run_visible_json_probe" in task_scope
+        ]
+    return payload
+
+
+def _active_task_scope_error(project: Path, capability_id: str) -> str | None:
+    from ztare.common.leaf_workbench_executor import (
+        active_workbench_task_scope_error,
+    )
+
+    return active_workbench_task_scope_error(project, capability_id)
 
 
 def _probe_json(
@@ -300,6 +345,9 @@ def _probe_json(
     probe_py: str,
     max_output_chars: int,
 ) -> dict[str, Any]:
+    scope_error = _active_task_scope_error(project, "run_visible_json_probe")
+    if scope_error:
+        raise ValueError(scope_error)
     result = run_visible_json_probe(
         project_dir=project,
         artifact_refs=artifact_refs,
@@ -445,53 +493,26 @@ def _score_worldmodel_candidate_against_project(
     source_ref: str,
     source_sha256: str,
 ) -> dict[str, Any]:
-    from ztare.validator.core.pre_judge_gate import detect_patch_base_regression_preflight
-    from ztare.worldmodel.leaf_workbench import WORLD_MODEL_LEAF_WORKBENCH_CONTRACT
+    from ztare.worldmodel.leaf_workbench import (
+        WORLD_MODEL_LEAF_WORKBENCH_CONTRACT,
+        score_worldmodel_candidate_delta,
+    )
 
     with tempfile.TemporaryDirectory(prefix="ztare_visible_candidate_score_") as tmp:
         candidate_path = Path(tmp) / f"{source_sha256}.py"
         candidate_path.write_text(source, encoding="utf-8")
-        result = detect_patch_base_regression_preflight(
-            enabled=True,
-            project_dir=authority_project,
-            candidate_path=candidate_path,
-        )
-    if result is None:
-        summary = {
-            "schema": "ztare-worldmodel-candidate-delta-score-v1",
-            "status": "candidate_preflight_passed",
-            "candidate_relation": "no_regression_detected",
-            "candidate_delta_admissible": True,
-            "promotion_authority": "replay_holdout_gate_only",
-        }
-    else:
-        receipt = result.regression_receipt
-        trace = result.counterexample_trace
-        summary = {
-            "schema": "ztare-worldmodel-candidate-delta-score-v1",
-            "status": "candidate_preflight_failed",
-            "candidate_relation": receipt.get("candidate_relation"),
-            "candidate_exact_rows": receipt.get("candidate_exact_rows"),
-            "candidate_wrong_cells": receipt.get("candidate_wrong_cells"),
-            "candidate_holdout_depth": receipt.get("candidate_holdout_depth"),
-            "best_prior_exact_rows": receipt.get("best_prior_exact_rows"),
-            "best_prior_wrong_cells": receipt.get("best_prior_wrong_cells"),
-            "best_prior_holdout_depth": receipt.get("best_prior_holdout_depth"),
-            "exact_rows_delta": receipt.get("exact_rows_delta"),
-            "wrong_cells_delta": receipt.get("wrong_cells_delta"),
-            "holdout_depth_delta": receipt.get("holdout_depth_delta"),
-            "failed_gates": result.failed_gates,
-            "first_mismatch": trace.get("first_mismatch") if isinstance(trace, dict) else "",
-            "candidate_regression_receipt": _bounded_json_object(receipt),
-            "counterexample_trace": _bounded_json_object(trace),
-            "quotient_relation": (
-                receipt.get("quotient_comparison", {}).get("relation")
-                if isinstance(receipt.get("quotient_comparison"), dict)
-                else ""
+        summary = score_worldmodel_candidate_delta(
+            authority_project,
+            candidate_path,
+            candidate_sha256=source_sha256,
+            include_diagnostics=True,
+            workspace_cache_dir=(
+                visible_project / "workspace" / "gate_result_cache"
             ),
-            "candidate_delta_admissible": False,
-            "promotion_authority": "replay_holdout_gate_only",
-        }
+        )
+    for key in ("candidate_regression_receipt", "counterexample_trace"):
+        if key in summary:
+            summary[key] = _bounded_json_object(summary[key])
     return {
         "capability_id": "score_worldmodel_candidate_delta",
         "claim_bindings": ["visible CLI candidate-delta score"],
@@ -936,6 +957,21 @@ def _route_action(*, project: Path, source_ref: str) -> dict[str, Any]:
     digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
     payload = _parse_action_request_source(source)
     route = route_visible_workbench_action_request(payload)
+    scope_error = _active_task_scope_error(
+        project,
+        str(route.get("capability_id") or ""),
+    )
+    if scope_error:
+        return {
+            "schema": SCHEMA,
+            "status": "fail",
+            "capability_id": route.get("capability_id") or "",
+            "authority": "pure_diagnostic",
+            "secret_policy": "public_only",
+            "input_hashes": {"source_ref": label, "source_sha256": digest},
+            "output_summary": scope_error,
+            "route": {**route, "route": "blocked_by_active_task_scope"},
+        }
     return {
         "schema": SCHEMA,
         "status": route.get("status") or ("fail" if route.get("route") == "invalid_action_request" else "ok"),
@@ -975,6 +1011,21 @@ def _run_action(*, project: Path, source_ref: str) -> dict[str, Any]:
         }
     req = _normalize_action_request_payload(payload)
     cap = str(req.get("capability_id") or "").strip()
+    scope_error = _active_task_scope_error(project, cap)
+    if scope_error:
+        return {
+            "schema": SCHEMA,
+            "status": "fail",
+            "capability_id": cap,
+            "authority": "pure_diagnostic",
+            "secret_policy": "public_only",
+            "input_hashes": {
+                "source_ref": label,
+                "source_sha256": digest,
+            },
+            "output_summary": scope_error,
+            "route": {**route, "route": "blocked_by_active_task_scope"},
+        }
     if cap in {
         "run_visible_json_probe",
         "check_worldmodel_carrier_contract",
@@ -1005,7 +1056,17 @@ def _run_action(*, project: Path, source_ref: str) -> dict[str, Any]:
         contract = env["contract"]
         if cap not in local_cli_actions or cap not in handlers:
             raise ValueError(f"{cap} is not registered for visible local execution")
-        receipt = handlers[cap](project, req, None, contract)
+        action_project = project
+        authority_binding: dict[str, Any] = {}
+        if cap in _AUTHORITY_DERIVED_ACTIONS:
+            action_project, authority_binding = _authority_project_for_derived_action(
+                visible_project=project,
+                capability_id=cap,
+                request=req,
+            )
+        receipt = handlers[cap](action_project, req, None, contract)
+        if authority_binding:
+            receipt.setdefault("input_hashes", {}).update(authority_binding)
     except Exception as exc:  # noqa: BLE001
         return {
             "schema": SCHEMA,
@@ -1037,6 +1098,123 @@ def _run_action(*, project: Path, source_ref: str) -> dict[str, Any]:
         "route": route,
         "receipt": {"type": "LEAF_WORKBENCH_RECEIPT", "payload": receipt},
     }
+
+
+def _authority_project_for_derived_action(
+    *,
+    visible_project: Path,
+    capability_id: str,
+    request: dict[str, Any],
+) -> tuple[Path, dict[str, Any]]:
+    """Bind a registered derived query to manifest-visible authority bytes.
+
+    Large evidence can be withheld from physical staging without becoming
+    hidden evidence.  Only refs declared visible (or withheld solely for size)
+    may cross this bridge; the registered handler returns a bounded receipt.
+    """
+    manifest = _load_visible_manifest(visible_project)
+    authority_project = _authority_project_for_aggregate(visible_project)
+    allowed = _manifest_visible_evidence_refs(manifest)
+    requested = _derived_action_evidence_refs(capability_id, request)
+    refs = request.get("input_refs") if isinstance(request.get("input_refs"), dict) else {}
+    requested_holdout_role = capability_id == "contrast_worldmodel_episodes" and any(
+        str(refs.get(key) or default).strip() == "holdout"
+        for key, default in (("episode_ref_a", "visible"), ("episode_ref_b", "holdout"))
+    )
+    if requested_holdout_role:
+        raise ValueError("derived action requested the withheld evidence role: holdout")
+    denied = sorted(ref for ref in requested if _canonical_manifest_ref(ref) not in allowed)
+    if denied:
+        raise ValueError(
+            "derived action requested evidence outside the manifest-visible set: "
+            + ", ".join(denied)
+        )
+    manifest_path = visible_project / "MANIFEST.json"
+    return authority_project, {
+        "evidence_execution_mode": "authority_derived_query",
+        "visible_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+        "authority_project_ref": str(manifest.get("authority_project_ref") or ""),
+        "manifest_visible_evidence_refs": sorted(requested),
+    }
+
+
+def _manifest_visible_evidence_refs(manifest: dict[str, Any]) -> set[str]:
+    allowed: set[str] = set()
+    roles = manifest.get("episode_roles")
+    roles = roles if isinstance(roles, dict) else {}
+    holdout_refs = {
+        _canonical_manifest_ref(str(ref))
+        for ref in (
+            roles.get("holdout"),
+            manifest.get("holdout_episode"),
+        )
+        if ref
+    }
+    artifacts = manifest.get("visible_artifacts")
+    if not isinstance(artifacts, list):
+        return allowed
+    for row in artifacts:
+        if not isinstance(row, dict):
+            continue
+        visible = row.get("visible_status") == "visible"
+        size_only = row.get("status") == "withheld" and row.get("reason") == "too_large"
+        if not (visible or size_only):
+            continue
+        ref = _canonical_manifest_ref(str(row.get("ref") or ""))
+        if ref and ref not in holdout_refs:
+            allowed.add(ref)
+    return allowed
+
+
+def _canonical_manifest_ref(ref: str) -> str:
+    text = str(ref or "").strip().split(":", 1)[0]
+    aliases = {
+        "visible": "raw/episodes/episode_001.jsonl",
+        "holdout": "raw/episodes/episode_002.jsonl",
+    }
+    return aliases.get(text, text)
+
+
+def _derived_action_evidence_refs(
+    capability_id: str,
+    request: dict[str, Any],
+) -> set[str]:
+    refs = request.get("input_refs") if isinstance(request.get("input_refs"), dict) else {}
+    if capability_id == "inspect_worldmodel_counterexample_context":
+        return {
+            _canonical_manifest_ref(
+                str(
+                    refs.get("latest_regression_ref")
+                    or refs.get("regression_ref")
+                    or "workspace/latest_patch_base_regression.json"
+                )
+            ),
+            "raw/episodes/episode_001.jsonl",
+        }
+    if capability_id in {
+        "mine_worldmodel_separating_features",
+        "mine_worldmodel_lowerable_selectors",
+    }:
+        return {
+            _canonical_manifest_ref(
+                str(
+                    refs.get("latest_regression_ref")
+                    or refs.get("regression_ref")
+                    or "workspace/latest_patch_base_regression.json"
+                )
+            ),
+            _canonical_manifest_ref(
+                str(refs.get("episode_log_ref") or "raw/episodes/episode_001.jsonl")
+            ),
+        }
+    if capability_id == "inspect_worldmodel_event_timeline":
+        return {_canonical_manifest_ref(str(refs.get("episode_ref") or "visible"))}
+    if capability_id == "contrast_worldmodel_episodes":
+        return {
+            _canonical_manifest_ref(str(refs.get("episode_ref_a") or "visible")),
+            _canonical_manifest_ref(str(refs.get("episode_ref_b") or "holdout")),
+        }
+    return set()
 
 
 def _normalize_action_request_payload(payload: dict[str, Any]) -> dict[str, Any]:

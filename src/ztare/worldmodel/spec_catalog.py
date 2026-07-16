@@ -78,6 +78,7 @@ _MC_MEMO_CAP = 200_000
 _MC_MEMO_ON = os.environ.get("ZTARE_MC_MEMO", "1") != "0"   # A/B control for equivalence proof
 _MC_HITS = 0
 _MC_MISS = 0
+_UNDEFINED_OPERATION_IMAGE = object()
 
 
 def _match_components(g: "list[list[int]]", match: set) -> "list[list[tuple]]":
@@ -360,6 +361,22 @@ def _next_state_index(idx, rule) -> "int | None":
     return None
 
 
+def region_event_triggered(g0, g, rule) -> bool:
+    """Whether one adapter-local crossing relation occurs.
+
+    This is the identity-bearing trigger shared by execution and active
+    discrimination.  Its coordinates remain a presentation supplied by the
+    interactive-grid adapter; callers may use it to choose an experiment, but
+    it grants no carrier or task authority.
+    """
+
+    cols = {int(c) for c in rule["mover_colors"]}
+    rect = rule["rect"]
+    edge = rule.get("edge", "exit")
+    before, after = _overlap(g0, cols, rect), _overlap(g, cols, rect)
+    return (before and not after) if edge == "exit" else ((not before) and after)
+
+
 def _apply_region_event(g, rule, g0):
     """A region-crossing event: iff the mover crossed the rect between the
     step-start grid `g0` and the current (post-action) grid `g` in the named
@@ -373,12 +390,7 @@ def _apply_region_event(g, rule, g0):
     inconsistent there, since one crossing must write different cells by phase.
     `edge`: 'exit' = mover in the rect at step-start but gone after the move
     (terrain restored / plate released); 'enter' = the reverse."""
-    cols = {int(c) for c in rule["mover_colors"]}
-    rect = rule["rect"]
-    edge = rule.get("edge", "exit")
-    o0, o1 = _overlap(g0, cols, rect), _overlap(g, cols, rect)
-    fired = (o0 and not o1) if edge == "exit" else ((not o0) and o1)
-    if not fired:
+    if not region_event_triggered(g0, g, rule):
         return g
     states = rule.get("content_states")
     if states is not None:
@@ -398,7 +410,7 @@ def _apply_region_event(g, rule, g0):
             return g
         nxt = _next_state_index(idx, rule)
         if nxt is None:
-            return g
+            return _UNDEFINED_OPERATION_IMAGE
         out = [row[:] for row in g]
         st, k = states[nxt], 0
         for y in range(ry0, ry1 + 1):
@@ -445,11 +457,13 @@ _REQUIRED_FIELDS = {
 }
 
 
-def validate_spec(spec) -> "str | None":
-    """Structural check before lowering. Returns an error string or None."""
+def _validate_spec(spec, *, require_action_rules: bool) -> "str | None":
+    """Validate one catalog presentation without conflating its carrier role."""
     if not isinstance(spec, dict):
         return "spec is not a dict"
-    if not isinstance(spec.get("actions"), dict) or not spec["actions"]:
+    if not isinstance(spec.get("actions"), dict):
+        return "spec.actions must be a dict of action_id -> [rules]"
+    if require_action_rules and not spec["actions"]:
         return "spec.actions must be a non-empty dict of action_id -> [rules]"
     all_rules = [r for rules in spec["actions"].values() for r in (rules or [])]
     all_rules += list(spec.get("always") or [])
@@ -577,18 +591,36 @@ def validate_spec(spec) -> "str | None":
     return None
 
 
-def lower_spec(spec):
+def validate_spec(spec) -> "str | None":
+    """Validate a standalone transition carrier."""
+
+    return _validate_spec(spec, require_action_rules=True)
+
+
+def validate_patch_delta_spec(spec) -> "str | None":
+    """Validate an operation delta composed over an existing carrier.
+
+    A delta may consist only of ``always`` rules. Requiring an arbitrary
+    action bucket here would turn an action-invariant operation identity into
+    an action-specific presentation.
+    """
+
+    return _validate_spec(spec, require_action_rules=False)
+
+
+def _lower_spec(spec, *, validator):
     """Deterministically lower a WORLD_MODEL_SPEC to `step(grid, action, t)`.
 
     Returns (step_fn, "") or (None, error). The lowered function is pure,
     tuple-in/tuple-out, and fail-closed (any internal error -> the input
     grid is returned unchanged rather than a corrupted one — gates then
     catch the mispredict honestly)."""
-    err = validate_spec(spec)
+    err = validator(spec)
     if err:
         return None, err
     actions = {int(k): list(v or []) for k, v in spec["actions"].items()}
     always = list(spec.get("always") or [])
+    partial_patch = validator is validate_patch_delta_spec
 
     def _fires(rule, g0, t, action, fired_ids):
         # when_effect [ref_id, want]: a RULE-COUPLING gate evaluated MID-CHAIN —
@@ -678,9 +710,16 @@ def lower_spec(spec):
                     return False
         return True
 
-    def step(grid: Grid, action: int, t: int = 0) -> Grid:
-        g0 = grid
-        g = [list(row) for row in grid]
+    def _execute(g0: Grid, initial: Grid, action: int, t: int = 0) -> Grid:
+        """Apply the spec with distinct source and current presentations.
+
+        Standalone specs use the same grid for both.  A declarative patch
+        starts from the base carrier's consequence while guards and crossing
+        relations retain the source state.  The operation algebra is shared;
+        only the carrier composition differs.
+        """
+
+        g = [list(row) for row in initial]
         fired_ids: "set[str]" = set()   # ids of rules that CHANGED the grid this step
 
         def _run(rule, cur):
@@ -705,6 +744,10 @@ def lower_spec(spec):
                 # returning the input grid earns replay credit on no-op rows.
                 # None is the convention the gates already understand.
                 return None
+            if g2 is _UNDEFINED_OPERATION_IMAGE:
+                if partial_patch:
+                    return None
+                g2 = g
             rid = rule.get("id")
             if (rid is not None or rule.get("stop_if_applied")) and g2 != g:
                 g = g2
@@ -722,16 +765,65 @@ def lower_spec(spec):
                 g2 = _run(rule, g)
             except Exception:
                 return None     # fail-closed, same as the action-rule path above
+            if g2 is _UNDEFINED_OPERATION_IMAGE:
+                if partial_patch:
+                    return None
+                g2 = g
             rid = rule.get("id")
             if rid is not None and g2 != g:
                 fired_ids.add(str(rid))
             g = g2
         return tuple(tuple(row) for row in g)
 
+    def step(grid: Grid, action: int, t: int = 0) -> Grid:
+        return _execute(grid, grid, action, t)
+
     step.__name__ = "step"
     step.lowered_from_spec = True
     step._ztare_world_model_spec = spec
+    step._ztare_execute_spec = _execute
     return step, ""
+
+
+def lower_spec(spec):
+    """Lower a standalone catalog transition carrier."""
+
+    return _lower_spec(spec, validator=validate_spec)
+
+
+def lower_patch_delta_spec(spec):
+    """Lower a PATCH_DELTA_SPEC over ``(base_next, state, action, t)``.
+
+    This is the declarative sibling of a hand-written PATCH_DELTA.  It reuses
+    the catalog validator and executor while preserving the distinction
+    between source state and the base carrier's proposed consequence.
+    """
+
+    step, err = _lower_spec(spec, validator=validate_patch_delta_spec)
+    if step is None:
+        return None, err
+    execute = step._ztare_execute_spec
+
+    def patch_delta(base_next, state, action, t=0):
+        return execute(state, base_next, action, t)
+
+    patch_delta.__name__ = "patch_delta_spec"
+    patch_delta.lowered_from_patch_delta_spec = True
+    patch_delta._ztare_patch_delta_spec = spec
+    return patch_delta, ""
+
+
+def render_region_event_contract() -> str:
+    """One owner for region-event schema and source/destination semantics."""
+
+    return (
+        '{"op": "region_event", "mover_colors": [..], '
+        '"rect": [y0,x0,y1,x1], "edge": "enter"|"exit", '
+        '"writes": [[color, [[y,x], ...]], ...]} — compare the step-start '
+        "grid with the post-action/base-next grid: enter means the mover is "
+        "absent from rect at step-start and present there post-action; exit "
+        "means the reverse; then apply the fixed writes"
+    )
 
 
 def render_catalog_contract() -> str:
@@ -759,6 +851,7 @@ def render_catalog_contract() -> str:
         "\"axis\": \"row\"|\"col\", \"extreme\": \"min\"|\"max\", optional \"rate\": [p,q]}  — "
         "the mirror: per row/col, fill its extremal-index EMPTY cell with the color; accepts "
         "the same optional component_scope\n"
+        "  " + render_region_event_contract() + "\n"
         "  {\"op\": \"identity\"}\n"
         "GUARD for RULE-COUPLING: give a rule an \"id\": \"<name>\" and gate another rule with "
         "\"when_effect\": [\"<name>\", true] — it fires iff the id'd rule CHANGED the grid earlier "

@@ -49,6 +49,38 @@ def test_gate_command_as_capability_routes_to_invalid_request() -> None:
     assert "run_strategy_required_gate" in route["reason"]
 
 
+def test_strategy_gate_wrapper_rejects_verification_only_inner_command() -> None:
+    route = route_visible_workbench_action_request(
+        {
+            "type": "LEAF_WORKBENCH_ACTION_REQUEST",
+            "payload": {
+                "capability_id": "run_strategy_required_gate",
+                "input_refs": {"command": "replay_diagnostics"},
+            },
+        }
+    )
+
+    assert route["route"] == "invalid_action_request"
+    assert route["status"] == "fail"
+    assert "registered executable domain" in route["reason"]
+    assert "candidate-bound" in route["reason"]
+
+
+def test_strategy_gate_wrapper_accepts_registered_inner_command() -> None:
+    route = route_visible_workbench_action_request(
+        {
+            "type": "LEAF_WORKBENCH_ACTION_REQUEST",
+            "payload": {
+                "capability_id": "run_strategy_required_gate",
+                "input_refs": {"command": "arc3_level_transfer_probe"},
+            },
+        }
+    )
+
+    assert route["route"] == "parent_kernel"
+    assert route["status"] == "ok"
+
+
 def test_adapter_registered_local_workbench_capability_routes_to_in_turn_cli() -> None:
     route = route_visible_workbench_action_request(
         {

@@ -14,6 +14,7 @@ All tests are unit/integration only — no live play-loop run.
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -36,8 +37,48 @@ def _make_project(tmp_path: Path) -> Path:
     return p
 
 
+def _install_current_binding(project: Path, audited_source: str = "def frozenTheory := True") -> dict:
+    """Install the same spec/blueprint/evidence identity production emits."""
+    from ztare.common.observation_chart import capture_project_evidence_epoch
+
+    spec = {"actions": {"0": [{"op": "identity"}]}}
+    spec_sha = hashlib.sha256(
+        json.dumps(spec, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    blueprint = project / "workspace" / "worldmodel_auto_blueprint.md"
+    blueprint.write_text(
+        f"# test blueprint\n\n## Theory\n\n```lean\n{audited_source}\n```\n",
+        encoding="utf-8",
+    )
+    binding = {
+        "binding_schema": "ztare-worldmodel-invariant-binding-v1",
+        "spec_sha256": spec_sha,
+        "evidence_epoch_sha256": capture_project_evidence_epoch(project).epoch_sha256,
+    }
+    (project / "workspace" / "abduced_core.json").write_text(
+        json.dumps({"schema": "ztare-abduced-core-v1", "spec": spec}),
+        encoding="utf-8",
+    )
+    (project / "workspace" / "worldmodel_lean_feedback_receipt.json").write_text(
+        json.dumps({
+            "schema": "ztare-worldmodel-lean-feedback-v2",
+            "invariant_binding_schema": "ztare-worldmodel-invariant-binding-v1",
+            "blueprint_ref": "workspace/worldmodel_auto_blueprint.md",
+            "blueprint_sha256": hashlib.sha256(blueprint.read_bytes()).hexdigest(),
+            **binding,
+        }),
+        encoding="utf-8",
+    )
+    return binding
+
+
 def _write_cert_direct(project: Path, theorem: str = "myInvariant") -> None:
     """Write a well-formed certificate line directly (bypasses proof audit)."""
+    binding = _install_current_binding(project)
+    (project / "test_model.py").write_text(
+        "WORLD_MODEL_SPEC = {'actions': {'0': [{'op': 'identity'}]}}\n",
+        encoding="utf-8",
+    )
     line = json.dumps({
         "quantity": ["count", 3],
         "relation": "non_increasing",
@@ -45,6 +86,7 @@ def _write_cert_direct(project: Path, theorem: str = "myInvariant") -> None:
         "theorem": theorem,
         "artifact_sha256": "abc",
         "proof_audit_sha256": "def",
+        **binding,
     })
     out = project / "workspace" / "invariant_certificates.jsonl"
     out.write_text(line + "\n", encoding="utf-8")
@@ -141,6 +183,7 @@ def test_checkpoint_absorbs_completed_job(tmp_path):
     """A COMPLETED proof_audit job causes absorb_ratification to write invariant_certificates.jsonl."""
     project = _make_project(tmp_path)
     lean_file = _make_lean_file(tmp_path, "myInvariant")
+    _install_current_binding(project, lean_file.read_text(encoding="utf-8"))
     _write_job_file(project, lean_file, "myInvariant", result_status="completed", ok=True)
 
     receipt = _make_proof_audit_receipt(lean_file, "myInvariant")
@@ -269,6 +312,7 @@ def test_absorb_ratification_roundtrip(tmp_path):
     """absorb_ratification → invariant_certificates.jsonl → _invariants reads it."""
     project = _make_project(tmp_path)
     lean_file = _make_lean_file(tmp_path, "roundtripInvariant")
+    _install_current_binding(project, lean_file.read_text(encoding="utf-8"))
     receipt = _make_proof_audit_receipt(lean_file, "roundtripInvariant")
 
     from ztare.worldmodel.lean_bridge import absorb_ratification, extract_theorem_statements
@@ -296,6 +340,64 @@ def test_absorb_ratification_roundtrip(tmp_path):
     assert len(read_back) == 1
     assert read_back[0].theorem == "roundtripInvariant"
     assert read_back[0].status == "kernel_ratified"
+
+
+def test_invariants_sever_when_spec_or_evidence_identity_moves(tmp_path):
+    project = _make_project(tmp_path)
+    _write_cert_direct(project, "epochBoundInvariant")
+
+    sys.path.insert(0, str(REPO / "scripts" / "public" / "control"))
+    import importlib
+    import arc3_play_loop as pl
+    importlib.reload(pl)
+
+    assert [c.theorem for c in pl._invariants(project)] == ["epochBoundInvariant"]
+    core_path = project / "workspace" / "abduced_core.json"
+    core = json.loads(core_path.read_text(encoding="utf-8"))
+    original_spec = json.loads(json.dumps(core["spec"]))
+    core["spec"]["actions"]["1"] = [{"op": "identity"}]
+    core_path.write_text(json.dumps(core), encoding="utf-8")
+    assert pl._invariants(project) == []
+    core["spec"] = original_spec
+    core_path.write_text(json.dumps(core), encoding="utf-8")
+    assert [c.theorem for c in pl._invariants(project)] == ["epochBoundInvariant"]
+    episodes = project / "raw" / "episodes"
+    episodes.mkdir(parents=True)
+    (episodes / "episode_001.jsonl").write_text("{}\n", encoding="utf-8")
+    assert pl._invariants(project) == []
+
+
+def test_unbound_legacy_invariant_never_enforces(tmp_path):
+    project = _make_project(tmp_path)
+    _install_current_binding(project)
+    out = project / "workspace" / "invariant_certificates.jsonl"
+    out.write_text(json.dumps({
+        "quantity": ["count", 3],
+        "relation": "non_increasing",
+        "status": "kernel_ratified",
+        "theorem": "legacyInvariant",
+    }) + "\n", encoding="utf-8")
+
+    from ztare.worldmodel.lean_bridge import load_current_invariants
+
+    assert load_current_invariants(project) == []
+
+
+def test_invariant_enforcement_requires_the_exact_lowered_spec_subject(tmp_path):
+    project = _make_project(tmp_path)
+    _write_cert_direct(project, "subjectBoundInvariant")
+    from ztare.worldmodel.lean_bridge import load_current_invariants
+    from ztare.worldmodel.spec_catalog import lower_spec
+
+    matching, error = lower_spec({"actions": {"0": [{"op": "identity"}]}})
+    assert error == ""
+    different, error = lower_spec({"actions": {"1": [{"op": "identity"}]}})
+    assert error == ""
+    assert [c.theorem for c in load_current_invariants(
+        project, subject=matching
+    )] == ["subjectBoundInvariant"]
+    assert load_current_invariants(project, subject=different) == []
+    assert load_current_invariants(project, subject=lambda state, action, time: state) == []
 
 
 # ---------------------------------------------------------------------------

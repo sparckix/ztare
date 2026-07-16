@@ -33,6 +33,7 @@ from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 # ponytail: env knob caps per-call reachability sweep cost (200k default exhausted 26 min/sprint
 # at ls20 scale; 5000 gives ~29s/sprint with valid steering paths). Override when FSM is tiny.
@@ -43,8 +44,14 @@ from ztare.worldmodel.frontier_codec import (
     AbstractCarrierInterner, StateInterner, abstract_novelty, batch_novelty,
 )
 from ztare.worldmodel.gates import as_predictor
+from ztare.worldmodel.goal_abduction import goal_edge_matches
 from ztare.worldmodel.grid_dsl import Grid, Program, evaluate
+from ztare.worldmodel.episode_log import Transition
 from ztare.worldmodel.terminal_witness import terminal_witness_fingerprint
+from ztare.worldmodel.transition_identity import (
+    TransitionIdentity,
+    authoritative_boundary,
+)
 
 _log = logging.getLogger(__name__)
 
@@ -59,20 +66,65 @@ class Plan:
     simulated_terminal: "Grid | None" = None
 
 
+def _goal_sources_at(predicate, step: int) -> tuple:
+    """Return source presentations that can still fire at ``step``.
+
+    Predicates without a temporal-source interface remain ordinary searchable
+    edges.  A predicate that does expose ``nearest_future_sources`` owns an
+    exact-time witness identity; an empty result means that identity has
+    expired, rather than authorizing an unprioritized search for an impossible
+    edge.
+    """
+    if predicate is None:
+        return ()
+    nearest_sources = getattr(predicate, "nearest_future_sources", None)
+    if callable(nearest_sources):
+        return tuple(nearest_sources(step))
+    return tuple(getattr(predicate, "goal_source_states", ()) or ())
+
+
+def _active_goal_edge(predicate, step: int):
+    nearest_sources = getattr(predicate, "nearest_future_sources", None)
+    if callable(nearest_sources) and not _goal_sources_at(predicate, step):
+        return None
+    return predicate
+
+
+def _bounded_plan_outcome(
+    plan: "Plan | None",
+    *,
+    policy: str,
+    found_status: str,
+    missing_status: str = "no_plan_within_bound",
+) -> dict:
+    return {
+        "policy": policy,
+        "status": found_status if plan is not None and plan.actions else missing_status,
+        "exhaustive": False,
+    }
+
+
 def plan_to_goal(champion: Program, start: Grid, action_arity: int,
-                 goal_fn, *, start_step: int = 0, max_depth: int = 12,
+                 goal_fn=None, *, goal_edge_fn=None, start_step: int = 0,
+                 max_depth: int = 12,
                  abstract_fn=None,
                  max_nodes: int = 20000,
                  _state_interner: "StateInterner | None" = None,
-                 _abstract_interner_cache: "AbstractCarrierInterner | None" = None,
                  ) -> "Plan | None":
-    """Bounded BFS for the shortest action sequence whose SIMULATED terminal
-    state satisfies `goal_fn(grid)`. Pure — touches no environment. Prunes by
-    visited (grid, step%6) so cyclic worlds terminate; step is tracked mod 6
-    because seed-grammar guards only read t via %2/%3 (same soundness argument
-    as the Lean probe set)."""
+    """Bounded search for a simulated goal state or attested goal edge.
+
+    Ordinary predicates use BFS.  A typed environment-edge predicate may expose
+    its witnessed source states; then the same node budget is best-first ordered
+    by cell distance to those sources.  This changes frontier allocation only:
+    the receipt does not enter a prompt, a source state is not treated as a
+    general goal law, and exact edge matching still decides success.  Pruning
+    keeps ``(state, full_time)`` identity unless a temporal quotient is certified.
+    """
     predict = as_predictor(champion)
-    if goal_fn(start):
+    goal_edge_fn = _active_goal_edge(goal_edge_fn, start_step)
+    if goal_fn is None and goal_edge_fn is None:
+        return None
+    if goal_fn is not None and goal_fn(start):
         # F5 guard (2026-07-09): a goal that is already satisfied at the start
         # state is a degenerate / null plan. Returning it with empty actions and
         # a distinct reason string ensures pursue_goal's empty-actions filter
@@ -81,24 +133,50 @@ def plan_to_goal(champion: Program, start: Grid, action_arity: int,
         # predicate always fires here; a well-formed abduction goal (always True)
         # would produce the same degenerate path. Neither receives credit.
         return Plan(actions=[], reason="goal_satisfied_at_start: null plan, no credit")
+    # A target predicate has not certified that it is constant on the caller's
+    # abstraction fibers.  Keep concrete state identity for target search;
+    # abstraction remains available to acquisition-only planners.
+    key_abstraction = None
     # FIX B: interner-aware keying — int IDs are exact surrogates for grid identity.
-    if _state_interner is not None and abstract_fn is None:
-        _start_key = (_state_interner.intern(start), start_step % 6)
-        def _key(g, s): return (_state_interner.intern(g), s % 6)
-    elif _abstract_interner_cache is not None:
-        _start_key = (_abstract_interner_cache.intern(abstract_fn(start)), start_step % 6)
-        def _key(g, s): return (_abstract_interner_cache.intern(abstract_fn(g)), s % 6)
+    if _state_interner is not None:
+        _start_key = (_state_interner.intern(start), start_step)
+        def _key(g, s): return (_state_interner.intern(g), s)
     else:
-        _start_key = _planner_key(start, start_step, abstract_fn)
-        def _key(g, s): return _planner_key(g, s, abstract_fn)
+        _start_key = _planner_key(start, start_step, key_abstraction)
+        def _key(g, s): return _planner_key(g, s, key_abstraction)
     seen = {_start_key}
-    frontier: "deque[tuple[Grid, int, list[int]]]" = deque([(start, start_step, [])])
+    goal_sources = _goal_sources_at(goal_edge_fn, start_step)
+    prioritized = bool(goal_sources)
+    if prioritized:
+        import heapq
+
+        def distance(grid: Grid) -> int:
+            return min(_hamming(grid, target) for target in goal_sources)
+
+        tie = 0
+        frontier = [(distance(start), 0, tie, start, start_step, [])]
+    else:
+        frontier = deque([(start, start_step, [])])
     nodes = 0
     while frontier and nodes < max_nodes:
-        grid, step, path = frontier.popleft()
+        if prioritized:
+            _distance, _depth, _tie, grid, step, path = heapq.heappop(frontier)
+        else:
+            grid, step, path = frontier.popleft()
         if len(path) >= max_depth:
             continue
         for a in range(action_arity):
+            if (
+                goal_edge_fn is not None
+                and goal_edge_matches(goal_edge_fn, grid, a, step)
+            ):
+                return Plan(
+                    actions=path + [a],
+                    reason=f"environment goal edge reachable in {len(path) + 1} steps "
+                           f"(searched {nodes} nodes; "
+                           f"policy={'witness-distance' if prioritized else 'breadth-first'})",
+                    simulated_terminal=grid,
+                )
             nxt = predict(grid, a, step)
             if nxt is None:
                 continue
@@ -108,12 +186,19 @@ def plan_to_goal(champion: Program, start: Grid, action_arity: int,
             seen.add(key)
             nodes += 1
             new_path = path + [a]
-            if goal_fn(nxt):
+            if goal_fn is not None and goal_fn(nxt):
                 return Plan(actions=new_path,
                             reason=f"goal reachable in {len(new_path)} steps "
                                    f"(searched {nodes} nodes)",
                             simulated_terminal=nxt)
-            frontier.append((nxt, step + 1, new_path))
+            if prioritized:
+                tie += 1
+                heapq.heappush(
+                    frontier,
+                    (distance(nxt), len(new_path), tie, nxt, step + 1, new_path),
+                )
+            else:
+                frontier.append((nxt, step + 1, new_path))
     return Plan(actions=[], reason=f"no plan within depth {max_depth} / {nodes} nodes") \
         if nodes else None
 
@@ -174,8 +259,8 @@ def _planner_key(grid: Grid, step: int, abstract_fn=None):
     classes instead of action-prefix strings.
     """
     if abstract_fn is None:
-        return (grid, step % 6)
-    return (abstract_fn(grid), step % 6)
+        return (grid, step)
+    return (abstract_fn(grid), step)
 
 
 def plan_novelty(champion: Program, start: Grid, action_arity: int,
@@ -218,7 +303,7 @@ def plan_novelty(champion: Program, start: Grid, action_arity: int,
             _interner = StateInterner()
             for _g in visited:
                 try:
-                    _interner.intern(_g)
+                    _interner.mark_visited(_g)
                 except ValueError:
                     # mixed grid sizes (shouldn't happen in a single BFS but be safe)
                     _interner = None
@@ -266,6 +351,18 @@ def plan_novelty(champion: Program, start: Grid, action_arity: int,
             nov = _novelty_fn(nxt)
             if nov > best_novelty:
                 best_novelty, best_plan = nov, new_path
+                if abstract_fn is not None:
+                    # Abstract novelty is a membership indicator (0/1).  The
+                    # first unseen quotient class is therefore already
+                    # optimal; continuing to enumerate cannot improve the
+                    # acquisition objective.
+                    return Plan(
+                        actions=best_plan,
+                        reason=(
+                            "first unseen abstract carrier "
+                            f"({len(best_plan)} steps, {nodes} nodes)"
+                        ),
+                    )
             tie += 1
             heapq.heappush(frontier, (-nov, tie, nxt, step + 1, new_path))
     if not best_plan:
@@ -301,11 +398,11 @@ def plan_progress(champion: Program, start: Grid, action_arity: int,
 
     # FIX B: interner-aware keying — int IDs are exact surrogates for grid identity.
     if _state_interner is not None and abstract_fn is None:
-        _start_key = (_state_interner.intern(start), start_step % 6)
-        def _key(g, s): return (_state_interner.intern(g), s % 6)
+        _start_key = (_state_interner.intern(start), start_step)
+        def _key(g, s): return (_state_interner.intern(g), s)
     elif _abstract_interner_cache is not None:
-        _start_key = (_abstract_interner_cache.intern(abstract_fn(start)), start_step % 6)
-        def _key(g, s): return (_abstract_interner_cache.intern(abstract_fn(g)), s % 6)
+        _start_key = (_abstract_interner_cache.intern(abstract_fn(start)), start_step)
+        def _key(g, s): return (_abstract_interner_cache.intern(abstract_fn(g)), s)
     else:
         _start_key = _planner_key(start, start_step, abstract_fn)
         def _key(g, s): return _planner_key(g, s, abstract_fn)
@@ -380,7 +477,11 @@ class PursuitReceipt:
     # the exact transitions the live env produced during pursuit — the model
     # was NEVER fit on these (they are off-basin by construction once it
     # diverges), so they are pure re-identification evidence
-    observed_transitions: "list[tuple]" = field(default_factory=list)
+    observed_transitions: "list[Transition]" = field(default_factory=list)
+    # Typed terminal outcome of the search policy that selected (or failed to
+    # select) the next intervention.  This remains separate from live task and
+    # environment outcomes.
+    planning_outcome: "dict" = field(default_factory=dict)
 
 
 def _levels(adapter) -> int:
@@ -441,16 +542,53 @@ def _emit_saturation_receipt(adapter, visited_store, abstract_growth_rate=None, 
               game_id, receipt["visited_store_size"])
 
 
-def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
+def _append_acquisition_routing(
+    receipts_dir,
+    *,
+    visited_store,
+    plan,
+    policy: str,
+    search_status: str,
+    states_enumerated: int = 0,
+    exhaustive: bool = False,
+) -> None:
+    """Record which substrate-neutral acquisition policy owned a plan."""
+    if receipts_dir is None:
+        return
+    acquisition_path = Path(receipts_dir) / "acquisition_routing.jsonl"
+    acquisition_path.parent.mkdir(parents=True, exist_ok=True)
+    with acquisition_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps({
+            "schema": "ztare-acquisition-routing-v1",
+            "terminal_identity": "undefined_for_active_epoch",
+            "objective_identity": "abstraction_shattering",
+            "policy": policy,
+            "persistent_frontier_size": len(visited_store or ()),
+            "plan_found": bool(plan and plan.actions),
+            "reason": getattr(plan, "reason", "") if plan else "",
+            "search_status": search_status,
+            "states_enumerated": int(states_enumerated),
+            "exhaustive": bool(exhaustive),
+        }, sort_keys=True) + "\n")
+
+
+def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
+                acquisition_obligation=None,
+                progress_fn=None,
                 resource_colors=None, invariants=None, abstract_fn=None,
                 coverage_fn=None, visited_store=None, visited_path=None,
+                evidence_states=None,
                 max_steps: int = 400, max_replans: int = 8,
                 plan_depth: int = 12, receipts_dir=None) -> PursuitReceipt:
     """Plan under `champion`, execute against the live adapter, stop on the
     terminal verifier event. Steering is NOVELTY search by default (drive toward the
     most-novel state the model predicts) — general and game-agnostic, with no
-    model-authored success criterion. `goal_fn(grid)->bool` overrides with an
-    explicit target frame when a caller has one.
+    model-authored success criterion. ``goal_fn(grid)`` targets a state;
+    ``goal_edge_fn(grid, action[, time])`` targets an environment-attested success edge
+    without asking the within-epoch carrier to simulate through the boundary.
+    ``acquisition_obligation`` is a separately typed experiment obligation: it
+    may seek a new context for a witnessed operation trigger but cannot define
+    success, promote a carrier, or discharge the task.
 
     The non-iatrogenic split: the model only STEERS exploration; SUCCESS is
     judged solely by the environment's sealed `levels_completed`, which the
@@ -478,10 +616,13 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
     _saturation_receipt_emitted = False
 
     predict = as_predictor(champion)
+    factored_projection = getattr(champion, "_ztare_factored_projection", None)
+    factored_projection_compiled_emitted = False
     baseline = _levels(adapter)
     state = adapter.state
+    evidence_states = tuple(evidence_states or ())
     trace: "list[int]" = []
-    observed: "list[tuple]" = []   # (state, action, real_next, step) — re-id evidence
+    observed: "list[Transition]" = []
     # ponytail: one ImageMaintainingSet replaces the visited/visited_abstract pair;
     # 'abstract' image is co-maintained pointwise on every add — O(1) vs O(|visited|)
     # per BFS node in plan_novelty. Functoriality holds: abstract_fn is grid→carrier
@@ -489,56 +630,43 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
     _functors = {"abstract": abstract_fn} if abstract_fn is not None else {}
     _vset = ImageMaintainingSet(functors=_functors, receipts_dir=receipts_dir)
     _vset.add(state)
+    persistent_abstract = set(visited_store or ()) if abstract_fn is not None else set()
     replans = 0
     replan_limit = max_replans
-    if coverage_fn is not None and goal_fn is None and progress_fn is None:
-        # Projected coverage may intentionally return the cheapest path to the
-        # next new carrier state, often one action. In that regime the action
-        # budget, not a small fixed replan count, is the proportional stop.
-        replan_limit = max(max_replans, max_steps)
 
-    # FIX B: persistent interners so each replan only interns NEW entries.
-    # _pg_interner is the raw-grid StateInterner; _pg_abs_interner is the
-    # AbstractCarrierInterner for the abstract path.  Both are grown incrementally
-    # alongside _vset inside the loop, so plan_novelty never re-seeds from scratch.
-    # _pg_interner_seeded tracks how many raw grids the interner has seen; any
-    # grids added to _vset._raw since then are interned before the next plan call.
+    # Persistent interners share simulated-state identity across planners while
+    # only live observations enter their visited membership.
     _pg_interner: "StateInterner | None" = None
-    _pg_interner_seeded: int = 0
     _pg_abs_interner: "AbstractCarrierInterner | None" = None
-    _pg_abs_interner_seeded: int = 0
     if _VECTORIZED and abstract_fn is None:
         _pg_interner = StateInterner()
+        _pg_interner.mark_visited(state)
     elif _VECTORIZED and abstract_fn is not None:
         _pg_abs_interner = AbstractCarrierInterner()
+        for carrier in persistent_abstract:
+            _pg_abs_interner.mark_visited(carrier)
+        _pg_abs_interner.mark_visited(abstract_fn(state))
 
-    def _ensure_interners_synced():
-        """Intern any grids/carriers added to _vset since the last plan call."""
-        nonlocal _pg_interner_seeded, _pg_abs_interner_seeded
-        if _pg_interner is not None:
-            raw_list = list(_vset._raw)
-            new_entries = raw_list[_pg_interner_seeded:]
-            for _g in new_entries:
-                try:
-                    _pg_interner.intern(_g)
-                    _pg_interner_seeded += 1
-                except ValueError:
-                    # mixed grid sizes — fall back to cold-start by nulling interner
-                    break
-        if _pg_abs_interner is not None:
-            abs_img = _vset._images.get("abstract")
-            if abs_img is not None:
-                abs_list = list(abs_img)
-                new_abs = abs_list[_pg_abs_interner_seeded:]
-                for _c in new_abs:
-                    _pg_abs_interner.mark_visited(_c)
-                    _pg_abs_interner_seeded += 1
+    def _visited_abstract():
+        if abstract_fn is None:
+            return None
+        return persistent_abstract | set(_vset._images.get("abstract") or ())
 
-    # Task 3: predict memo.
-    # Real-data test (20 rows of episode_001.jsonl) confirmed predict(s, a, t) == predict(s, a, t+4)
-    # for ALL 20 rows → keying by (state_id, action, step%4) is safe and correct.
-    # ponytail: step%4 key — verified period-4 on real champion; use full step if ever broken
+    def _novelty_view(*, projected: bool):
+        carriers = _visited_abstract()
+        if not projected or abstract_fn is None or coverage_fn is None:
+            return abstract_fn, carriers, _pg_abs_interner
+        return (
+            lambda grid: coverage_fn(abstract_fn(grid)),
+            {coverage_fn(carrier) for carrier in carriers or ()},
+            None,
+        )
+
+    # Prediction memo identity includes full adapter time.  A finite period is a
+    # carrier theorem/certificate, not a property inferred from 20 visible rows.
     _predict_memo: dict = {}
+    acquisition_policy = "projected_reachability_coverage"
+    last_planning_outcome: dict = {}
 
     # Task 5: accumulating sub-phase timing counters (float seconds, no per-step I/O)
     _t_plan: float = 0.0
@@ -549,26 +677,386 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
     try:
         while len(trace) < max_steps and replans <= replan_limit:
             plan = None
-            # ABSTRACT REACHABILITY first (goal-directed OR exploratory coverage):
+            planned_undefined_terminal = False
+            incremental_attempted = False
+            active_goal_edge_fn = _active_goal_edge(goal_edge_fn, adapter.t)
+            terminal_identity_defined = (
+                goal_fn is not None or active_goal_edge_fn is not None
+            )
+            # An accepted carrier may expose a substrate lowering into the
+            # common factored-search protocol.  With a witnessed edge it serves
+            # target steering; without one it serves current-lifecycle factor
+            # acquisition.  Both paths retain the adapter adjudicator and the
+            # runtime non-commutation guard.
+            if factored_projection is not None:
+                factored_policy = ""
+                try:
+                    if acquisition_obligation is not None:
+                        factored_policy = "factored_operation_discrimination"
+                        factored_problem = (
+                            factored_projection.operation_discrimination_problem(
+                                acquisition_obligation,
+                                state,
+                                predict,
+                            )
+                        )
+                    elif active_goal_edge_fn is not None:
+                        factored_policy = "factored_terminal_edge_search"
+                        factored_problem = factored_projection.problem_for(
+                            active_goal_edge_fn, state
+                        )
+                    else:
+                        partial_factory = getattr(
+                            factored_projection,
+                            "partial_operation_problem",
+                            None,
+                        )
+                        factored_problem = (
+                            partial_factory(start=state, predict=predict)
+                            if callable(partial_factory)
+                            else None
+                        )
+                        if factored_problem is not None:
+                            factored_policy = "factored_partial_operation_completion"
+                    if factored_problem is None and evidence_states:
+                        factored_policy = "factored_operation_acquisition"
+                        factored_problem = factored_projection.acquisition_problem(
+                            start=state,
+                            evidence_states=(
+                                *evidence_states,
+                                *_vset._raw,
+                            ),
+                            evidence_ref="active_lifecycle_observations",
+                        )
+                except Exception as _projection_error:  # noqa: BLE001
+                    return PursuitReceipt(
+                        status="apparatus_obstructed",
+                        steps_executed=len(trace),
+                        levels_gained=_levels(adapter) - baseline,
+                        detail=(
+                            "factored projection failed before search; repair or "
+                            "retire that projection before scientific fallback"
+                        ),
+                        replans=replans,
+                        trace=trace,
+                        saturated=saturated,
+                        observed_transitions=observed,
+                        planning_outcome={
+                            "policy": factored_policy or "factored_projection",
+                            "status": "projection_instrument_error",
+                            "error_type": type(_projection_error).__name__,
+                        },
+                    )
+                if factored_problem is not None:
+                    from ztare.common.factored_search import search_factored
+                    from ztare.common.schema_routes import append_consequence_event
+                    from ztare.worldmodel.compiled_fiber_planning import (
+                        append_projection_receipt,
+                    )
+
+                    if receipts_dir is not None and not factored_projection_compiled_emitted:
+                        append_projection_receipt(
+                            receipts_dir,
+                            projection=factored_projection,
+                            event="compiled",
+                            problem=factored_problem,
+                        )
+                        factored_projection_compiled_emitted = True
+                    _t0 = time.perf_counter()
+                    factored_result = search_factored(
+                        predict=getattr(factored_problem, "predict", predict),
+                        start=state,
+                        interventions=tuple(range(adapter.action_arity)),
+                        problem=factored_problem,
+                        start_time=adapter.t,
+                        max_depth=plan_depth * 6,
+                        max_states=_SWEEP_MAX_STATES,
+                    )
+                    last_planning_outcome = {
+                        "policy": factored_policy,
+                        "status": factored_result.status,
+                        "states_generated": factored_result.generated,
+                        "states_expanded": factored_result.expanded,
+                        "problem_id": factored_problem.problem_id,
+                        "exhaustive": factored_result.status
+                        == "projected_frontier_exhausted",
+                    }
+                    if factored_result.projection_counterexample:
+                        last_planning_outcome["projection_counterexample"] = dict(
+                            factored_result.projection_counterexample
+                        )
+                    _t_plan += time.perf_counter() - _t0
+                    if receipts_dir is not None:
+                        append_consequence_event(
+                            receipts_dir,
+                            contract_id="factored_search_outcome_totality.v1",
+                            subject_id=factored_problem.problem_id,
+                            outcome=factored_result.status,
+                            event="produced",
+                            evidence_refs=factored_problem.evidence_refs,
+                        )
+                        append_projection_receipt(
+                            receipts_dir,
+                            projection=factored_projection,
+                            event="first_fire",
+                            problem=factored_problem,
+                            search_result=factored_result,
+                        )
+                    if (
+                        factored_result.status in {"edge_found", "state_found"}
+                        and factored_result.actions
+                    ):
+                        if receipts_dir is not None:
+                            append_consequence_event(
+                                receipts_dir,
+                                contract_id="factored_search_outcome_totality.v1",
+                                subject_id=factored_problem.problem_id,
+                                outcome=factored_result.status,
+                                event="consumed",
+                                evidence_refs=factored_problem.evidence_refs,
+                            )
+                        plan = Plan(
+                            actions=list(factored_result.actions),
+                            reason=(
+                                f"{factored_policy}: "
+                                f"{factored_result.generated} generated / "
+                                f"{factored_result.expanded} expanded"
+                            ),
+                        )
+                        planned_undefined_terminal = (
+                            factored_policy
+                            == "factored_partial_operation_completion"
+                        )
+                        if (
+                            factored_result.status == "state_found"
+                            or factored_policy == "factored_operation_discrimination"
+                        ):
+                            _append_acquisition_routing(
+                                receipts_dir,
+                                visited_store=visited_store,
+                                plan=plan,
+                                policy=factored_policy,
+                                search_status=(
+                                    "distinct_operation_trigger_context"
+                                    if factored_policy
+                                    == "factored_operation_discrimination"
+                                    else "novel_operation_affordance_identity"
+                                ),
+                                states_enumerated=factored_result.generated,
+                            )
+                    elif receipts_dir is not None:
+                        # Every non-plan result crosses the declared consequence
+                        # route.  Refutation is fenced below; inapplicability and
+                        # bounded outcomes may continue through other planners.
+                        append_consequence_event(
+                            receipts_dir,
+                            contract_id="factored_search_outcome_totality.v1",
+                            subject_id=factored_problem.problem_id,
+                            outcome=factored_result.status,
+                            event="consumed",
+                            evidence_refs=factored_problem.evidence_refs,
+                        )
+                    if factored_result.status == "projection_noncommuting":
+                        return PursuitReceipt(
+                            status="projection_noncommuting",
+                            steps_executed=len(trace),
+                            levels_gained=_levels(adapter) - baseline,
+                            detail=(
+                                "consumer projection merged states with different "
+                                "intervention consequences; refine that projection "
+                                "before allocating another live intervention"
+                            ),
+                            replans=replans,
+                            trace=trace,
+                            saturated=saturated,
+                            observed_transitions=observed,
+                            planning_outcome=dict(last_planning_outcome),
+                        )
+            bounded_edge_fn = active_goal_edge_fn
+            bounded_goal_fn = goal_fn
+            bounded_edge_policy = "terminal_edge"
+            if bounded_edge_fn is None and acquisition_obligation is not None:
+                def bounded_edge_fn(
+                    source: Any,
+                    intervention: Any,
+                    time_value: Any,
+                ) -> bool:
+                    successor = predict(source, intervention, time_value)
+                    return successor is not None and acquisition_obligation.accepts_edge(
+                        source,
+                        intervention,
+                        time_value,
+                        successor,
+                    )
+
+                bounded_edge_fn.goal_source_states = (
+                    acquisition_obligation.goal_source_states
+                )
+                bounded_edge_fn.time_aware = True
+                bounded_goal_fn = None
+                bounded_edge_policy = "raw_operation_discrimination"
+            goal_edge_has_witness_sources = bool(
+                _goal_sources_at(bounded_edge_fn, adapter.t)
+            )
+            # An adapter-attested edge carries finite source witnesses. Reorder
+            # the bounded search toward those witnesses before paying for an
+            # exhaustive sweep; this is allocator state, never prompt content.
+            if plan is None and goal_edge_has_witness_sources:
+                _t0 = time.perf_counter()
+                plan = plan_to_goal(
+                    champion,
+                    state,
+                    adapter.action_arity,
+                    bounded_goal_fn,
+                    goal_edge_fn=bounded_edge_fn,
+                    start_step=adapter.t,
+                    max_depth=plan_depth * 6,
+                    max_nodes=_SWEEP_MAX_STATES,
+                    abstract_fn=abstract_fn,
+                    _state_interner=_pg_interner,
+                )
+                _t_plan += time.perf_counter() - _t0
+                last_planning_outcome = _bounded_plan_outcome(
+                    plan,
+                    policy=bounded_edge_policy,
+                    found_status="edge_found",
+                    missing_status="witness_source_unreachable_within_bound",
+                )
+                if plan is None or not plan.actions:
+                    plan = None
+                elif bounded_edge_policy == "raw_operation_discrimination":
+                    _append_acquisition_routing(
+                        receipts_dir,
+                        visited_store=visited_store,
+                        plan=plan,
+                        policy=bounded_edge_policy,
+                        search_status="distinct_operation_trigger_context",
+                    )
+            # With no terminal identity and no consumer projection, the first
+            # unseen abstract carrier is already the optimal acquisition target.
+            # Ask the incremental novelty planner first; pay for an exhaustive
+            # sweep only when it cannot find one and saturation must be decided.
+            if (
+                plan is None
+                and not terminal_identity_defined
+                and abstract_fn is not None
+                and (
+                    coverage_fn is None
+                    or acquisition_policy
+                    == "incremental_novelty_after_bounded_capitulation"
+                )
+            ):
+                incremental_attempted = True
+                novelty_abstract_fn, novelty_visited, novelty_interner = _novelty_view(
+                    projected=(
+                        acquisition_policy
+                        == "incremental_novelty_after_bounded_capitulation"
+                    )
+                )
+                _t0 = time.perf_counter()
+                plan = plan_novelty(
+                    champion,
+                    state,
+                    adapter.action_arity,
+                    _vset._raw,
+                    visited_abstract=novelty_visited,
+                    start_step=adapter.t,
+                    max_depth=plan_depth,
+                    abstract_fn=novelty_abstract_fn,
+                    _state_interner=_pg_interner,
+                    _abstract_interner_cache=novelty_interner,
+                )
+                _t_plan += time.perf_counter() - _t0
+                if plan is not None and plan.actions:
+                    _append_acquisition_routing(
+                        receipts_dir,
+                        visited_store=visited_store,
+                        plan=plan,
+                        policy=(
+                            "incremental_abstract_novelty"
+                            if coverage_fn is None
+                            else acquisition_policy
+                        ),
+                        search_status="first_unseen_abstract_carrier",
+                    )
+                    last_planning_outcome = {
+                        "policy": (
+                            "incremental_abstract_novelty"
+                            if coverage_fn is None
+                            else acquisition_policy
+                        ),
+                        "status": "first_unseen_abstract_carrier",
+                        "exhaustive": False,
+                    }
+                else:
+                    plan = None
+                    last_planning_outcome = {
+                        "policy": (
+                            "incremental_abstract_novelty"
+                            if coverage_fn is None
+                            else acquisition_policy
+                        ),
+                        "status": "no_unseen_within_incremental_bound",
+                        "exhaustive": False,
+                    }
+                    _append_acquisition_routing(
+                        receipts_dir,
+                        visited_store=visited_store,
+                        plan=None,
+                        policy=last_planning_outcome["policy"],
+                        search_status="no_unseen_within_incremental_bound",
+                        exhaustive=False,
+                    )
+            # ABSTRACT REACHABILITY is the single acquisition door.  It keeps
+            # transition-state equality in ``abstract_fn`` while pricing novelty
+            # through the consumer-indexed ``coverage_fn`` projection.  Running
+            # raw abstract novelty first would let predictable clocks or other
+            # feasibility coordinates preempt changes in controllable factors.
             # object-state memoization makes exhaustive FSM coverage tractable, and
             # coverage is how the FIRST level is found before any goal predicate.
-            if abstract_fn is not None:
+            if (
+                plan is None
+                and abstract_fn is not None
+                and acquisition_policy == "projected_reachability_coverage"
+            ):
                 _t0 = time.perf_counter()
                 sw = reachability_sweep(champion, state, adapter.action_arity,
-                                        goal_fn=goal_fn, resource_colors=resource_colors,
+                                        goal_fn=goal_fn, goal_edge_fn=active_goal_edge_fn,
+                                        resource_colors=resource_colors,
                                         start_step=adapter.t, max_depth=plan_depth * 6,
                                         max_states=_SWEEP_MAX_STATES,
                                         invariants=invariants, abstract_fn=abstract_fn,
                                         visited_store=visited_store,
                                         coverage_fn=coverage_fn)
                 _t_plan += time.perf_counter() - _t0
-                if getattr(sw, "states_enumerated", 0) >= _SWEEP_MAX_STATES:
+                sw_states_enumerated = int(
+                    getattr(sw, "states_enumerated", 0) or 0
+                )
+                sw_exhaustive = bool(getattr(sw, "exhaustive", False))
+                last_planning_outcome = {
+                    "policy": "projected_reachability_coverage",
+                    "status": sw.status,
+                    "states_enumerated": sw_states_enumerated,
+                    "exhaustive": sw_exhaustive,
+                }
+                if (
+                    sw.status == "search_budget_exhausted"
+                    and not terminal_identity_defined
+                ):
+                    # The bounded search has paid for a capitulation receipt.
+                    # Repeating the same full allocation on the next replan
+                    # discards that consequence.  Shift only allocation; the
+                    # model, prompt, task identity, and verifier remain fixed.
+                    acquisition_policy = (
+                        "incremental_novelty_after_bounded_capitulation"
+                    )
+                if sw_states_enumerated >= _SWEEP_MAX_STATES:
                     _budget_p = (Path(receipts_dir) if receipts_dir else Path("workspace")) / "reachability_budget.jsonl"
                     _budget_p.parent.mkdir(parents=True, exist_ok=True)
                     with _budget_p.open("a") as _bf:
                         _bf.write(json.dumps({
                             "schema": "ztare-reachability-budget-v1",
-                            "states_enumerated": sw.states_enumerated,
+                            "states_enumerated": sw_states_enumerated,
                             "cap": _SWEEP_MAX_STATES,
                             "status": sw.status,
                             "replans": replans,
@@ -582,15 +1070,37 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                         _emit_saturation_receipt(adapter, _vset, abstract_growth_rate=_gr, receipts_dir=receipts_dir)
                 if sw.status in ("goal_paths", "coverage") and sw.paths and sw.paths[0]:
                     plan = Plan(actions=sw.paths[0], reason=f"sweep({sw.status}): {sw.detail}")
-            if plan is None and goal_fn is not None:
-                _ensure_interners_synced()
+                if (
+                    receipts_dir is not None
+                    and not terminal_identity_defined
+                    and progress_fn is None
+                ):
+                    _append_acquisition_routing(
+                        receipts_dir,
+                        visited_store=visited_store,
+                        plan=plan,
+                        policy="projected_reachability_coverage",
+                        search_status=sw.status,
+                        states_enumerated=sw_states_enumerated,
+                        exhaustive=sw_exhaustive,
+                    )
+            if (
+                plan is None
+                and (goal_fn is not None or active_goal_edge_fn is not None)
+                and not goal_edge_has_witness_sources
+            ):
                 _t0 = time.perf_counter()
                 plan = plan_to_goal(champion, state, adapter.action_arity, goal_fn,
+                                    goal_edge_fn=active_goal_edge_fn,
                                     start_step=adapter.t, max_depth=plan_depth,
                                     abstract_fn=abstract_fn,
-                                    _state_interner=_pg_interner,
-                                    _abstract_interner_cache=_pg_abs_interner)
+                                    _state_interner=_pg_interner)
                 _t_plan += time.perf_counter() - _t0
+                last_planning_outcome = _bounded_plan_outcome(
+                    plan,
+                    policy="bounded_terminal_search",
+                    found_status="target_path_found",
+                )
                 # F5 guard: plan_to_goal returns an empty-actions Plan for both
                 # "goal_satisfied_at_start" and "no plan within depth N". Neither
                 # should propagate as a real plan — the start-satisfied case is a
@@ -603,17 +1113,20 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                 # few replans inject a novelty plan so a flat/wrong heuristic can't
                 # trap the search (terminal verifier is still the only success signal)
                 if replans % 3 == 2:
-                    _ensure_interners_synced()
                     _t0 = time.perf_counter()
                     plan = plan_novelty(champion, state, adapter.action_arity, _vset._raw,
-                                        visited_abstract=_vset._images.get("abstract"),
+                                        visited_abstract=_visited_abstract(),
                                         start_step=adapter.t, max_depth=plan_depth,
                                         abstract_fn=abstract_fn,
                                         _state_interner=_pg_interner,
                                         _abstract_interner_cache=_pg_abs_interner)
                     _t_plan += time.perf_counter() - _t0
+                    last_planning_outcome = _bounded_plan_outcome(
+                        plan,
+                        policy="periodic_novelty_steering",
+                        found_status="novelty_path_found",
+                    )
                 else:
-                    _ensure_interners_synced()
                     _t0 = time.perf_counter()
                     plan = plan_progress(champion, state, adapter.action_arity, progress_fn,
                                          start_step=adapter.t, max_depth=plan_depth,
@@ -621,29 +1134,62 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                                          _state_interner=_pg_interner,
                                          _abstract_interner_cache=_pg_abs_interner)
                     _t_plan += time.perf_counter() - _t0
-            elif plan is None:
+                    last_planning_outcome = _bounded_plan_outcome(
+                        plan,
+                        policy="progress_steering",
+                        found_status="progress_path_found",
+                    )
+            elif plan is None and not incremental_attempted:
                 # only when reachability/goal produced nothing — DON'T overwrite a
                 # coverage/goal plan (that made the whole sweep apparatus inert)
-                _ensure_interners_synced()
+                novelty_abstract_fn, novelty_visited, novelty_interner = _novelty_view(
+                    projected=(
+                        acquisition_policy
+                        == "incremental_novelty_after_bounded_capitulation"
+                    )
+                )
                 _t0 = time.perf_counter()
                 plan = plan_novelty(champion, state, adapter.action_arity, _vset._raw,
-                                    visited_abstract=_vset._images.get("abstract"),
+                                    visited_abstract=novelty_visited,
                                     start_step=adapter.t, max_depth=plan_depth,
-                                    abstract_fn=abstract_fn,
+                                    abstract_fn=novelty_abstract_fn,
                                     _state_interner=_pg_interner,
-                                    _abstract_interner_cache=_pg_abs_interner)
+                                    _abstract_interner_cache=novelty_interner)
                 _t_plan += time.perf_counter() - _t0
+                last_planning_outcome = _bounded_plan_outcome(
+                    plan,
+                    policy=(
+                        acquisition_policy
+                        if acquisition_policy
+                        == "incremental_novelty_after_bounded_capitulation"
+                        else "novelty_fallback"
+                    ),
+                    found_status="first_unseen_abstract_carrier",
+                )
+                if (
+                    plan is not None
+                    and plan.actions
+                    and acquisition_policy
+                    == "incremental_novelty_after_bounded_capitulation"
+                ):
+                    _append_acquisition_routing(
+                        receipts_dir,
+                        visited_store=visited_store,
+                        plan=plan,
+                        policy=acquisition_policy,
+                        search_status="first_unseen_abstract_carrier",
+                    )
             if plan is None or not plan.actions:
                 return PursuitReceipt(status="plan_exhausted", steps_executed=len(trace),
                                       levels_gained=_levels(adapter) - baseline,
                                       detail=(plan.reason if plan else "planner returned nothing"),
                                       replans=replans, trace=trace, saturated=saturated,
-                                      observed_transitions=observed)
-            for a in plan.actions:
+                                      observed_transitions=observed,
+                                      planning_outcome=dict(last_planning_outcome))
+            for action_index, a in enumerate(plan.actions):
                 step_now = adapter.t
-                # predict memo: period-4 verified on real data → key by (state_id, action, step%4)
                 _sid = _pg_interner.get_id(state) if _pg_interner is not None else None
-                _memo_key = (_sid if _sid is not None else state, a, step_now % 4)
+                _memo_key = (_sid if _sid is not None else state, a, step_now)
                 if _memo_key in _predict_memo:
                     predicted = _predict_memo[_memo_key]
                 else:
@@ -655,10 +1201,28 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                 real = adapter.step(a)
                 _t_env += time.perf_counter() - _t0
                 trace.append(a)
-                observed.append((state, a, real, step_now))
+                transition_identity = getattr(adapter, "last_transition_identity", None)
+                if not isinstance(transition_identity, TransitionIdentity):
+                    transition_identity = None
+                observed.append(
+                    Transition(
+                        t=step_now,
+                        s=state,
+                        a=a,
+                        s_next=real,
+                        identity=transition_identity,
+                    )
+                )
+                environment_boundary = authoritative_boundary(transition_identity)
                 # frontier memory: the observed live state is now visited
-                if abstract_fn is not None and visited_store is not None:
-                    visited_store.add(abstract_fn(real))
+                if (
+                    not environment_boundary
+                    and abstract_fn is not None
+                    and visited_store is not None
+                ):
+                    carrier = abstract_fn(real)
+                    visited_store.add(carrier)
+                    persistent_abstract.add(carrier)
                     steps_since_save += 1
                     if visited_path is not None and steps_since_save >= 50:
                         save_visited(visited_path, visited_store)
@@ -667,18 +1231,92 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                 # agreement: pursuing blind under an erroring model is a divergence
                 # event (terminal_witness_fingerprint emits its prediction_none kind).
                 mismatch = predicted is None or real != predicted
+                acquisition_observed = bool(
+                    acquisition_obligation is not None
+                    and transition_identity is not None
+                    and transition_identity.is_authoritative
+                    and not transition_identity.is_boundary
+                    and acquisition_obligation.accepts_edge(
+                        state,
+                        a,
+                        step_now,
+                        real,
+                    )
+                )
+                planned_unknown_observation = (
+                    predicted is None
+                    and planned_undefined_terminal
+                    and action_index == len(plan.actions) - 1
+                )
                 if _levels(adapter) > baseline:
                     detail = "terminal verifier event occurred after model steering"
                     divergence = None
-                    if mismatch:
+                    if planned_unknown_observation:
+                        detail += "; terminal event supplied an undefined operation image"
+                    elif mismatch and not environment_boundary:
                         detail += "; terminal edge also refuted the transition law"
                         divergence = _divergence_payload(a, step_now, state, predicted, real)
+                    elif mismatch:
+                        detail += "; adapter-owned boundary lies outside the within-epoch carrier"
                     return PursuitReceipt(status="goal_reached", steps_executed=len(trace),
                                           levels_gained=_levels(adapter) - baseline,
                                           detail=detail, divergence=divergence,
                                           replans=replans, trace=trace, saturated=saturated,
-                                          observed_transitions=observed)
+                                          observed_transitions=observed,
+                                          planning_outcome=dict(last_planning_outcome))
                 if mismatch:
+                    if environment_boundary:
+                        return PursuitReceipt(
+                            status="environment_boundary",
+                            steps_executed=len(trace),
+                            levels_gained=0,
+                            detail=(
+                                "adapter-owned epoch boundary encountered; resume from "
+                                "the adapter's new epoch without refining the within-epoch law"
+                            ),
+                            divergence=None,
+                            replans=replans,
+                            trace=trace,
+                            saturated=saturated,
+                            observed_transitions=observed,
+                            planning_outcome=dict(last_planning_outcome),
+                        )
+                    if (
+                        planned_unknown_observation
+                    ):
+                        return PursuitReceipt(
+                            status="acquisition_observed",
+                            steps_executed=len(trace),
+                            levels_gained=0,
+                            detail=(
+                                "live execution supplied the consequence of an "
+                                "admitted partial operation"
+                            ),
+                            divergence=None,
+                            replans=replans,
+                            trace=trace,
+                            saturated=saturated,
+                            observed_transitions=observed,
+                            planning_outcome=dict(last_planning_outcome),
+                        )
+                    if acquisition_observed:
+                        return PursuitReceipt(
+                            status="acquisition_observed",
+                            steps_executed=len(trace),
+                            levels_gained=0,
+                            detail=(
+                                "live execution supplied a new law-owned observation "
+                                "of the operation; the transition law was also refuted"
+                            ),
+                            divergence=_divergence_payload(
+                                a, step_now, state, predicted, real
+                            ),
+                            replans=replans,
+                            trace=trace,
+                            saturated=saturated,
+                            observed_transitions=observed,
+                            planning_outcome=dict(last_planning_outcome),
+                        )
                     return PursuitReceipt(
                         status="model_diverged", steps_executed=len(trace),
                         levels_gained=_levels(adapter) - baseline,
@@ -686,9 +1324,34 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
                                "re-identify before planning further",
                         divergence=_divergence_payload(a, step_now, state, predicted, real),
                         replans=replans, trace=trace, saturated=saturated,
-                        observed_transitions=observed)
+                        observed_transitions=observed,
+                        planning_outcome=dict(last_planning_outcome))
+                if acquisition_observed:
+                    return PursuitReceipt(
+                        status="acquisition_observed",
+                        steps_executed=len(trace),
+                        levels_gained=0,
+                        detail=(
+                            "live execution supplied a new law-owned observation "
+                            "of the operation"
+                        ),
+                        divergence=None,
+                        replans=replans,
+                        trace=trace,
+                        saturated=saturated,
+                        observed_transitions=observed,
+                        planning_outcome=dict(last_planning_outcome),
+                    )
                 state = real
                 _vset.add(state)
+                if _pg_interner is not None:
+                    try:
+                        _pg_interner.mark_visited(state)
+                    except ValueError:
+                        # A shape-changing epoch cannot share this fixed-width arena.
+                        _pg_interner = None
+                elif _pg_abs_interner is not None:
+                    _pg_abs_interner.mark_visited(abstract_fn(state))
                 if len(trace) >= max_steps:
                     break
             replans += 1  # plan consumed without reaching goal → replan from the new state
@@ -699,7 +1362,8 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, progress_fn=None,
         return PursuitReceipt(status="plan_exhausted", steps_executed=len(trace),
                               levels_gained=_levels(adapter) - baseline,
                               detail=detail, replans=replans, trace=trace,
-                              saturated=saturated, observed_transitions=observed)
+                              saturated=saturated, observed_transitions=observed,
+                              planning_outcome=dict(last_planning_outcome))
     finally:
         # persist on EVERY exit path (return, break, or exception)
         if visited_path is not None and visited_store is not None:
@@ -769,8 +1433,8 @@ def act_and_learn(adapter, log, action_arity, *, resynthesize, extend_at_ceiling
                                    champions=champions,
                                    detail="ratified-then-refined model completed a level")
         before = len(log)
-        for (s, a, s_next, t) in pr.observed_transitions:
-            log.append(s, a, s_next, t=t)
+        for transition in pr.observed_transitions:
+            log.append_transition(transition)
         growth.append(len(log))
         if len(log) == before:
             # nothing new to learn from this pursuit; the model is basin-complete
@@ -808,7 +1472,7 @@ def plan_disagreement(candidates, start: Grid, action_arity: int, *,
     predict = as_predictor(candidates[0])
     import heapq
     best_plan, best_dis = [], 1
-    seen = {(start, start_step % 6)}
+    seen = {(start, start_step)}
     frontier = [(0, 0, start, start_step, [])]
     nodes, tie = 0, 0
     while frontier and nodes < max_nodes:
@@ -819,7 +1483,7 @@ def plan_disagreement(candidates, start: Grid, action_arity: int, *,
             nxt = predict(grid, a, step)
             if nxt is None:
                 continue
-            key = (nxt, (step + 1) % 6)
+            key = (nxt, step + 1)
             if key in seen:
                 continue
             seen.add(key)

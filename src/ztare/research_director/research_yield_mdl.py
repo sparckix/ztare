@@ -9,13 +9,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import math
-import re
 from typing import Any
 
 try:
     from ztare.fit.mdl import (
         DEFAULT_CITATION_COST,
         DEFAULT_MIN_EXPOSURE,
+        description_units,
         ItemStat,
         KEEP,
         PROVISIONAL,
@@ -30,6 +30,7 @@ except ModuleNotFoundError:
     from ztare.fit.mdl import (
         DEFAULT_CITATION_COST,
         DEFAULT_MIN_EXPOSURE,
+        description_units,
         ItemStat,
         KEEP,
         PROVISIONAL,
@@ -42,7 +43,6 @@ except ModuleNotFoundError:
     from ztare.validator.core.information_yield import IterationSignal
 
 
-_WORD_RE = re.compile(r"[A-Za-z0-9_./:+-]+")
 CANONICAL_MDL_ENGINE = "ztare.fit.mdl.score_item"
 
 
@@ -108,13 +108,6 @@ class ResearchAvenueScore:
             "shell_transport_receipt": self.shell_transport_receipt,
             "rationale": self.rationale,
         }
-
-
-def description_units(*parts: object) -> int:
-    """Approximate description length in stable token-like units."""
-
-    text = " ".join(str(part) for part in parts if part is not None)
-    return max(1, len(_WORD_RE.findall(text)))
 
 
 def _iteration_signal_for_avenue(

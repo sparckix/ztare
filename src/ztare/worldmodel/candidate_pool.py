@@ -38,20 +38,15 @@ def add_candidate(project_dir, source_text: str, *, carrier: str, origin: str) -
     return digest
 
 
-def _load_member(entry: dict):
+def _load_member(entry: dict, *, project_dir: str | Path):
     ns: dict = {"__name__": "candidate"}
     try:
         exec(compile(entry["source"], f"pool:{entry['sha']}", "exec"), ns)  # noqa: S102
+        from ztare.worldmodel.carrier_loader import lower_carrier_namespace
+
+        return lower_carrier_namespace(ns, project_dir=project_dir)
     except Exception:
         return None
-    if isinstance(ns.get("WORLD_MODEL_SPEC"), dict):
-        from ztare.worldmodel.spec_catalog import lower_spec
-        fn, _ = lower_spec(ns["WORLD_MODEL_SPEC"])
-        return fn
-    for alias in ("step", "f", "model", "I_model"):
-        if callable(ns.get(alias)):
-            return ns[alias]
-    return None
 
 
 def surviving_committee(project_dir, log: EpisodeLog) -> "list":
@@ -74,7 +69,7 @@ def surviving_committee(project_dir, log: EpisodeLog) -> "list":
             entry = json.loads(line)
         except Exception:
             continue
-        fn = _load_member(entry)
+        fn = _load_member(entry, project_dir=project_dir)
         if fn is None or not replay_consistency_gate(fn, log).ok:
             continue
         p = as_predictor(fn)

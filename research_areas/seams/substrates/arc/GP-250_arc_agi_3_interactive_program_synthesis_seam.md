@@ -1,6 +1,8 @@
 # GP-250 — ARC-AGI-3 interactive program synthesis (world-model substrate + action-as-falsifier loop)
 
-> **Seam metadata** · `seam_id:` GP-250 · `track:` substrates/arc · `status:` SPEC (panel review pending) · `opened:` 2026-07-02
+> **Seam metadata** · `seam_id:` GP-250 · `track:` substrates/arc · `status:` SPEC (panel review pending) · `last_updated:` 2026-07-02
+>
+> Opened 2026-07-02
 > `owner:` operator + engine
 > `update_post:` any change to the interactive-substrate contract, the transition-program grammar tier, the action-selection policy, or the bounded claims below.
 > `depends_on:` the portfolio-conductor recommendation in the 2026-07 architecture review (internal); [GP-246](../../engine/lean/GP-246_governed_dag_proof_search_seam.md) for the governed-search precedent; [GP-046](../../protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) for the out-of-window survival discipline.

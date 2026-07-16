@@ -1,8 +1,7 @@
 import os
 import json
 import argparse
-from google import genai
-from google.genai import types
+import concurrent.futures
 from ztare.common import utils
 from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
@@ -14,7 +13,6 @@ from ztare.common.dispatch_model import (
 from ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES, LLMRuntime, resolve_model_id
 from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import time
-import concurrent.futures
 from ztare.primitives.primitive_library import format_attack_templates, retrieve_primitives
 from ztare.validator.committees.shadow_board import build_shadow_board_committee
 from ztare.validator.utilities.v4_family import is_v4_family_project
@@ -36,25 +34,10 @@ parser.add_argument(
 args = parser.parse_known_args()[0]
 COMMITTEE_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
 
-# Model resolution: gemini family still uses genai structured response;
-# other families route through llm_runtime with a JSON-output prompt.
 _COMMITTEE_MODEL_LABEL = args.model.strip()
+MODEL_ID = resolve_model_id(_COMMITTEE_MODEL_LABEL)
 _IS_GEMINI = _COMMITTEE_MODEL_LABEL.startswith("gemini")
-if _IS_GEMINI:
-    # Map ZTARE gemini aliases to concrete model IDs for the genai client
-    _GEMINI_MODEL_MAP = {
-        "gemini": "gemini-3.1-pro-preview",
-        "gemini-lite": "gemini-3.1-flash-lite-preview",
-        "gemini-pro": "gemini-3.1-pro-preview",
-    }
-    MODEL_ID = _GEMINI_MODEL_MAP.get(_COMMITTEE_MODEL_LABEL, _COMMITTEE_MODEL_LABEL)
-    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-else:
-    # Non-gemini route: llm_runtime (gpt4.1, claude, etc.). Map the ZTARE
-    # alias to the concrete model id the runtime expects.
-    MODEL_ID = resolve_model_id(_COMMITTEE_MODEL_LABEL)
-    _RUNTIME = LLMRuntime()
-    client = None
+_RUNTIME = LLMRuntime()
 
 
 PROJECT_DIR = str(PROJECTS_DIR / args.project)
@@ -75,8 +58,16 @@ class _RuntimeResponse:
 def _prompt_with_response_config_hint(prompt: str, config) -> str:
     if config is None:
         return prompt
-    response_mime = getattr(config, "response_mime_type", None)
-    response_schema = getattr(config, "response_schema", None)
+    response_mime = (
+        config.get("response_mime_type")
+        if isinstance(config, dict)
+        else getattr(config, "response_mime_type", None)
+    )
+    response_schema = (
+        config.get("response_schema")
+        if isinstance(config, dict)
+        else getattr(config, "response_schema", None)
+    )
     if not response_mime and response_schema is None:
         return prompt
     try:
@@ -100,7 +91,7 @@ def _prompt_with_response_config_hint(prompt: str, config) -> str:
 def safe_generate_committee(prompt, config=None):
     """Retries for 503 (High Demand) and 429 (Rate Limits).
 
-    Dispatches via genai for gemini models or via llm_runtime for others.
+    Dispatches through the shared lazy provider runtime or a subscription worker.
     """
     capability = resolve_dispatch_capability("committee")
     if capability == "agent":
@@ -131,24 +122,12 @@ def safe_generate_committee(prompt, config=None):
         raise ValueError(f"unsupported committee dispatch capability: {capability}")
 
     if not _IS_GEMINI:
-        # Non-gemini path: run through llm_runtime with a JSON-output
-        # instruction appended. Schema info from config is folded into
-        # the prompt as natural language so the model knows the shape.
-        schema_hint = ""
-        if config is not None:
-            # config is a GenerateContentConfig with response_schema;
-            # for non-gemini we communicate the schema via prompt.
-            schema_hint = (
-                "\n\nRESPONSE FORMAT: Return ONLY a JSON array of 3 "
-                "objects, each with keys 'role', 'persona', 'focus_area'. "
-                "No prose, no code fences, no preamble — just the JSON array."
-            )
-        full_prompt = prompt + schema_hint
+        full_prompt = _prompt_with_response_config_hint(prompt, config)
         for i in range(PRODUCTION_CALL_RETRIES):
             try:
                 print(f"📡 [DEBUG] Dispatching request to {MODEL_ID} via llm_runtime... (Attempt {i+1})")
                 start_time = time.time()
-                resp = _RUNTIME.call_text(
+                response = _RUNTIME.call_text(
                     full_prompt,
                     model_id=MODEL_ID,
                     max_tokens=4096,
@@ -157,37 +136,46 @@ def safe_generate_committee(prompt, config=None):
                 )
                 elapsed = time.time() - start_time
                 print(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
-                # call_text returns LLMTextResponse with .text attribute
-                text = getattr(resp, "text", str(resp))
-                return _RuntimeResponse(text)
+                return _RuntimeResponse(response.text)
             except Exception as e:
                 error_str = str(e)
                 if any(code in error_str for code in ["429", "500", "502", "503", "504"]):
                     wait_time = (i + 1) * 15
-                    print(f"⚠️ API Transient Issue ({error_str[:30]}...). Retrying in {wait_time}s...")
+                    print(f"⚠️ API Transient Issue ({error_str[:15]}...). Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 else:
                     print(f"❌ Unhandled Exception: {error_str}")
                     raise
-        raise Exception("Max retries exceeded (llm_runtime).")
+        raise Exception("Max retries exceeded.")
 
-    # Gemini path (preserved verbatim from original)
+    # Keep the established Gemini structured-output and 150-second deadline.
+    # Imports remain inside the actual API route, so subscription committees do
+    # not need the Google SDK merely to start.
+    try:
+        from google import genai
+        from google.genai import types
+    except ImportError as exc:
+        raise RuntimeError(
+            "Gemini committee generation requires the optional SDK. "
+            "Install `ztare[google]` or select subscription dispatch."
+        ) from exc
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
+    gemini_config = types.GenerateContentConfig(**config) if isinstance(config, dict) else config
     for i in range(PRODUCTION_CALL_RETRIES):
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         try:
             print(f"📡 [DEBUG] Dispatching request to {MODEL_ID}... (Attempt {i+1})")
             start_time = time.time()
-
             future = executor.submit(
                 client.models.generate_content,
-                model=MODEL_ID, contents=prompt, config=config
+                model=MODEL_ID,
+                contents=prompt,
+                config=gemini_config,
             )
             response = future.result(timeout=150)
-
             elapsed = time.time() - start_time
             print(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
             return response
-
         except concurrent.futures.TimeoutError:
             wait_time = (i + 1) * 15
             print(f"⚠️ Zombie Connection Killed (150s Timeout). Retrying in {wait_time}s...")
@@ -200,7 +188,7 @@ def safe_generate_committee(prompt, config=None):
                 time.sleep(wait_time)
             else:
                 print(f"❌ Unhandled Exception: {error_str}")
-                raise e
+                raise
         finally:
             executor.shutdown(wait=False, cancel_futures=True)
 
@@ -233,9 +221,9 @@ def generate_dynamic_attackers(thesis_text, evidence_text):
     THESIS: {thesis_text}
     """
     
-    config = types.GenerateContentConfig(
-        response_mime_type="application/json",
-        response_schema={
+    config = {
+        "response_mime_type": "application/json",
+        "response_schema": {
             "type": "ARRAY",
             "items": {
                 "type": "OBJECT",
@@ -246,8 +234,8 @@ def generate_dynamic_attackers(thesis_text, evidence_text):
                 },
                 "required": ["role", "persona", "focus_area"]
             }
-        }
-    )
+        },
+    }
     
     response = safe_generate_committee(prompt, config=config)
     return utils.parse_llm_json(response.text)

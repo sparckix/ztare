@@ -11,9 +11,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Literal
 
-from openai import OpenAI
 from pydantic import BaseModel, ConfigDict, Field
-from anthropic import Anthropic
 
 from ztare.common.paths import REPO_ROOT
 from ztare.supervisor.supervisor_manifest import (
@@ -1020,6 +1018,13 @@ def _call_openai_research_a2_api(
     model_name: str | None,
     max_output_tokens: int | None,
 ) -> APITransportResult:
+    try:
+        from openai import OpenAI
+    except ImportError as exc:
+        raise RuntimeError(
+            "OpenAI API transport requires the optional SDK. Install `ztare[openai]` "
+            "or select a CLI transport."
+        ) from exc
     client = OpenAI()
     response = client.responses.parse(
         model=model_name or "o4-mini",
@@ -1071,6 +1076,13 @@ def _call_anthropic_research_a1_api(
     prompt_text: str,
     model_name: str | None,
 ) -> APITransportResult:
+    try:
+        from anthropic import Anthropic
+    except ImportError as exc:
+        raise RuntimeError(
+            "Anthropic API transport requires the optional SDK. Install `ztare[anthropic]` "
+            "or select a CLI transport."
+        ) from exc
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     response = client.messages.create(
         model=model_name or "claude-sonnet-4-6",
@@ -1136,6 +1148,13 @@ def _call_anthropic_research_b_api(
     prompt_text: str,
     model_name: str | None,
 ) -> APITransportResult:
+    try:
+        from anthropic import Anthropic
+    except ImportError as exc:
+        raise RuntimeError(
+            "Anthropic API transport requires the optional SDK. Install `ztare[anthropic]` "
+            "or select a CLI transport."
+        ) from exc
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     response = client.messages.create(
         model=model_name or "claude-sonnet-4-6",

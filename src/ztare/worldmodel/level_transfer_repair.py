@@ -17,6 +17,11 @@ from ztare.common.operator_proposal_contract import (
     open_cards,
     record_disposition,
 )
+from ztare.worldmodel.carrier_loader import (
+    CarrierEvidenceIdentityError,
+    require_current_carrier_evidence_binding,
+    resolve_current_carrier_evidence_identity,
+)
 from ztare.research_director.strategy_decision_policy import (
     STRATEGY_LEDGER,
     StrategyCardBatchSubmission,
@@ -51,6 +56,9 @@ def build_compressed_counterexample_repair_card(receipt: dict[str, Any]) -> dict
     plan = {
         "source_receipt_schema": receipt.get("schema"),
         "source_receipt": "workspace/latest_level_transfer_probe.json",
+        "carrier_evidence_identity": dict(
+            receipt.get("carrier_evidence_identity") or {}
+        ),
         "probe_kind": "level_boundary_first_step",
         "seed_prerequisite": {
             "seed_path": seed_path,
@@ -198,6 +206,10 @@ def _reject_superseded_narrow_cards(project: Path, new_card: dict) -> None:
         if row.get("failure_family_sha") == family_sha(new_card.get("failure_family")):
             continue
         old_plan = row.get("action_plan") or {}
+        if old_plan.get("carrier_evidence_identity") != plan.get(
+            "carrier_evidence_identity"
+        ):
+            continue
         if old_plan.get("source_receipt") != plan.get("source_receipt"):
             continue
         old_q = old_plan.get("residue_quotient") or {}
@@ -304,6 +316,16 @@ def write_level_transfer_repair_card(project: str | Path) -> list[dict]:
     if not receipt_path.exists():
         return []
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict):
+        return []
+    try:
+        current = resolve_current_carrier_evidence_identity(project)
+        binding = require_current_carrier_evidence_binding(receipt, current)
+    except (CarrierEvidenceIdentityError, OSError, TypeError, ValueError):
+        # The file remains historical telemetry, but it cannot open or
+        # reactivate a current-population Strategy Office work order.
+        return []
+    receipt = {**receipt, "carrier_evidence_identity": binding}
     card = build_compressed_counterexample_repair_card(receipt)
     if card is None:
         return []

@@ -1,8 +1,12 @@
-# MACHINERY RULES
+---
+description: "Rules governing evidence-bound changes to classifiers, gates, acceptance checks, and harness machinery."
+---
+
+# Machinery Rules
 
 Version: v1
 Date: 2026-07-03
-File SHA: `git rev-parse HEAD:MACHINERY_RULES.md` after first commit — the file's SHA is the version.
+File SHA: `git rev-parse HEAD:docs/reference/machinery_rules.md` after first commit — the file's SHA is the version.
 
 These rules govern how the system's own machinery (classifiers, gates, acceptance
 tests, harness) may be self-modified. Each rule names the primitive it instantiates
@@ -74,7 +78,7 @@ uncertified region-write replay.
 
 ## Rule 8 — Artifact Authority  (S1: Separation of Generation from Evaluation; S2: Deterministic Enforcement Floor)
 
-Replay, holdout, reachability, sealed reward, planted synthetic tests, and
+Replay, holdout, reachability, task adjudication, planted synthetic tests, and
 project-local deterministic gate payloads dominate prose, judge rationale,
 strategy-office notes, conjectures, and prompt summaries. A failed deterministic
 gate is candidate failure unless a separate gate-integrity receipt proves the

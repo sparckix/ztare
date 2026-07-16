@@ -26,6 +26,21 @@ class WorldmodelCommitteeProvider(BriefingProvider):
     def applies(self, ctx: BriefingContext) -> bool:
         if (ctx.rubric or {}).get("fit_expression_grammar") != "grid_dsl":
             return False
+        try:
+            from ztare.common.leaf_workbench_executor import (
+                active_workbench_task_capability_scope,
+            )
+
+            task_scope, _task = active_workbench_task_capability_scope(
+                ctx.project_dir
+            )
+            if task_scope:
+                # Committee projections are broad read models.  A selected
+                # task owns the current evidence topology and reaches the leaf
+                # through its task-bound kernel receipt instead.
+                return False
+        except Exception:  # noqa: BLE001
+            pass
         return (ctx.project_dir / "workspace" / "worldmodel_committee.json").exists()
 
     def fragment(self, ctx: BriefingContext) -> str:
@@ -80,15 +95,15 @@ class WorldmodelCommitteeProvider(BriefingProvider):
                 "rollout gates; a bare seed-grammar PROGRAM cannot pass at a ceiling. "
                 "OPTIONAL goal-cue: you MAY also define progress(grid)->float — a "
                 "heuristic inferred from the OBSERVED frames estimating how close a "
-                "state is to a rewarded outcome. It is NOT scored and NOT a success "
+                "state is to a task-discharge event. It is NOT scored and NOT a success "
                 "claim; it only STEERS the planner's exploration, and the "
-                "environment's own reward is the sole judge of success. Higher = "
+                "registered adapter adjudicator is the sole judge of success. Higher = "
                 "closer. Omit it if the frames give no usable cue. You MAY also "
                 "define GOAL_PREDICATE(grid)->bool — your falsifiable HYPOTHESIS of "
-                "the rewarded terminal configuration, inferred from observed frames "
+                "the task-discharge configuration, inferred from observed frames "
                 "(state its rival and what observation would refute it in your "
                 "thesis). The planner searches directly for states satisfying it; "
-                "the environment's own reward remains the sole judge — a wrong "
+                "the registered adapter adjudicator remains the sole judge — a wrong "
                 "predicate costs search time, never a false success."
             )
             try:
@@ -189,7 +204,7 @@ def _planner_anomaly_records(project: Path) -> list[dict]:
             continue
         records.append({
             "source_type": "planner_anomaly",
-            "anomaly_class": "plan_exhausted_without_reward_or_new_evidence",
+            "anomaly_class": "plan_exhausted_without_task_progress_or_new_evidence",
             "expected_next_kernel_action": "goal-cue synthesis, compressed counterexample repair, or targeted evidence request",
             "observed_next_action": (
                 f"cycle={entry.get('cycle')} exhausted {entry.get('steps')} steps "

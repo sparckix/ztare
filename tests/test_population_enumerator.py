@@ -4,9 +4,9 @@ Synthetic tmp projects, no LLM calls. 10+ tests covering:
   - spec-variant well-formedness
   - wrapper identity on witnessed states
   - wrapper differs on never-witnessed state
-  - visible-perfect filter rejects broken variant
   - budget + target-survivor stopping
-  - fingerprint dedup drops clone variants
+  - source identity dedup drops clone variants
+  - wrapper variants enter the executable population
   - receipts row written
   - determinism
   - never-witnessed predicates derived from episode
@@ -15,17 +15,15 @@ Synthetic tmp projects, no LLM calls. 10+ tests covering:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from ztare.worldmodel.episode_log import EpisodeLog
-from ztare.worldmodel.spec_catalog import validate_spec, lower_spec
+from ztare.worldmodel.spec_catalog import validate_spec
 from ztare.worldmodel.population_enumerator import (
     _extract_spec_from_source,
-    _is_visible_perfect,
     _never_witnessed_predicates,
     _spec_to_source,
     _spec_variants,
@@ -105,91 +103,48 @@ def test_spec_to_source_roundtrip():
 
 def test_wrapper_identity_on_witnessed_states():
     """Wrapper prediction == champion prediction on every row in episode."""
-    champ_src = "def step(s, a, t):\n    return s\nf=step\nmodel=step\nI_model=step\n"
-    # Guard fires on state[5][5] == 99 — never in our 2x2 grids
-    guard = "(len(state) > 5 and len(state[5]) > 5 and state[5][5] == 99)"
-    wrapper_src = _wrapper_source(champ_src, guard, "state[5][5]==99", 0)
+    from ztare.worldmodel.carrier_loader import load_carrier_from_source
 
-    # Build champion callable
-    ns_champ: dict = {"__name__": "champ"}
-    exec(compile(champ_src, "<c>", "exec"), ns_champ)  # noqa: S102
-    champ = ns_champ["step"]
-
-    # Build wrapper callable
-    ns_wrap: dict = {"__name__": "wrap"}
-    exec(compile(wrapper_src, "<w>", "exec"), ns_wrap)  # noqa: S102
-    wrap = ns_wrap["step"]
-
-    # Witnessed states: small grids, no cell has value 99
-    test_states = [_G1, _G2, _G3]
-    for s in test_states:
-        assert wrap(s, 0, 0) == champ(s, 0, 0), (
-            f"wrapper must match champion on witnessed state {s}"
+    with tempfile.TemporaryDirectory() as td:
+        project = Path(td)
+        champ_src = "def step(s, a, t):\n    return s\n"
+        base = project / "workspace" / "submissions" / "base.py"
+        base.parent.mkdir(parents=True)
+        base.write_text(champ_src)
+        guard = "(len(state) > 5 and len(state[5]) > 5 and state[5][5] == 99)"
+        wrapper_src = _wrapper_source(
+            "workspace/submissions/base.py", hashlib.sha256(base.read_bytes()).hexdigest(),
+            guard, "state[5][5]==99", 0,
         )
+        wrap = load_carrier_from_source(wrapper_src, "wrapper.py", project)
+
+        for state in [_G1, _G2, _G3]:
+            assert wrap(state, 0, 0) == state
 
 
 # ── test 4: wrapper DIFFERS on a never-witnessed state ───────────────────────
 
 def test_wrapper_differs_on_never_witnessed_state():
     """When guard fires the wrapper returns something different from champion."""
-    champ_src = (
-        "def step(s, a, t):\n"
-        "    return tuple(tuple(row) for row in s)\n"
-        "f=step\nmodel=step\nI_model=step\n"
-    )
-    # Guard fires when state[0][0] == 99
-    guard = "(len(state) > 0 and len(state[0]) > 0 and state[0][0] == 99)"
-    wrapper_src = _wrapper_source(champ_src, guard, "state[0][0]==99", 0)
+    from ztare.worldmodel.carrier_loader import load_carrier_from_source
 
-    ns_champ: dict = {"__name__": "champ"}
-    exec(compile(champ_src, "<c>", "exec"), ns_champ)  # noqa: S102
-    champ = ns_champ["step"]
-
-    ns_wrap: dict = {"__name__": "wrap"}
-    exec(compile(wrapper_src, "<w>", "exec"), ns_wrap)  # noqa: S102
-    wrap = ns_wrap["step"]
-
-    # Unwitnessed state: state[0][0] == 99
-    unwitnessed = ((99, 0), (0, 0))
-    champ_pred = champ(unwitnessed, 0, 0)
-    wrap_pred = wrap(unwitnessed, 0, 0)
-    assert wrap_pred != champ_pred, (
-        "wrapper must predict differently on state where guard fires"
-    )
-
-
-# ── test 5: _is_visible_perfect rejects broken variant ───────────────────────
-
-def test_visible_perfect_filter_rejects_broken():
-    """A carrier that always returns None is not visible-perfect."""
     with tempfile.TemporaryDirectory() as td:
-        tmp = Path(td)
-        # Episode: identity law
-        proj = _make_project(tmp, [(_G1, 0, _G1), (_G2, 1, _G2)])
-        ep = proj / "raw" / "episodes" / "episode_001.jsonl"
-
-        broken_src = "def step(s, a, t):\n    return None\nf=step\nmodel=step\nI_model=step\n"
-        assert not _is_visible_perfect(broken_src, "broken", ep, proj, tmp)
-
-
-# ── test 6: _is_visible_perfect accepts a correct carrier ────────────────────
-
-def test_visible_perfect_filter_accepts_correct():
-    """A carrier that returns s unchanged is visible-perfect for identity episode."""
-    with tempfile.TemporaryDirectory() as td:
-        tmp = Path(td)
-        proj = _make_project(tmp, [(_G1, 0, _G1), (_G2, 1, _G2)])
-        ep = proj / "raw" / "episodes" / "episode_001.jsonl"
-
-        identity_src = (
-            "def step(s, a, t):\n"
-            "    return tuple(tuple(r) for r in s)\n"
-            "f=step\nmodel=step\nI_model=step\n"
+        project = Path(td)
+        champ_src = "def step(s, a, t):\n    return tuple(tuple(row) for row in s)\n"
+        base = project / "workspace" / "submissions" / "base.py"
+        base.parent.mkdir(parents=True)
+        base.write_text(champ_src)
+        guard = "(len(state) > 0 and len(state[0]) > 0 and state[0][0] == 99)"
+        wrapper_src = _wrapper_source(
+            "workspace/submissions/base.py", hashlib.sha256(base.read_bytes()).hexdigest(),
+            guard, "state[0][0]==99", 0,
         )
-        assert _is_visible_perfect(identity_src, "identity", ep, proj, tmp)
+        wrap = load_carrier_from_source(wrapper_src, "wrapper.py", project)
+        unwitnessed = ((99, 0), (0, 0))
+        assert wrap(unwitnessed, 0, 0) != unwitnessed
 
 
-# ── test 7: budget stopping ───────────────────────────────────────────────────
+# ── budget stopping ───────────────────────────────────────────────────────────
 
 def test_budget_stopping():
     """enumerate_population stops at budget even if target not reached."""
@@ -200,7 +155,7 @@ def test_budget_stopping():
         assert result["generated_count"] <= 2, "should not exceed budget"
 
 
-# ── test 8: target-survivor stopping ─────────────────────────────────────────
+# ── target-survivor stopping ─────────────────────────────────────────────────
 
 def test_target_survivor_stopping():
     """enumerate_population stops once target distinct fingerprints reached."""
@@ -213,15 +168,15 @@ def test_target_survivor_stopping():
             "def step(s, a, t): return tuple(tuple(r) for r in s)\n"
             "f=step\nmodel=step\nI_model=step\n"
         )
-        # Large budget but tiny target: stop at 1 distinct fingerprint (champion alone)
+        # Large budget but tiny target: stop at one hypothesis (champion alone)
         result = enumerate_population(proj, budget=100, target_survivors=1)
-        # Champion is admitted → at least 1 distinct fingerprint
-        assert result["distinct_fingerprints"] >= 1
+        assert result["distinct_hypotheses"] == 1
+        assert result["generated_count"] == 0
 
 
-# ── test 9: fingerprint dedup drops clone variants ───────────────────────────
+# ── source identity dedup drops clone variants ───────────────────────────────
 
-def test_fingerprint_dedup():
+def test_source_identity_dedup():
     """Identical source admitted twice gets status=duplicate on second call."""
     from ztare.worldmodel.version_space import admit, load
     with tempfile.TemporaryDirectory() as td:
@@ -244,6 +199,31 @@ def test_fingerprint_dedup():
         assert r2.get("status") == "duplicate", f"expected duplicate, got {r2}"
 
 
+def test_wrappers_are_executable_version_space_members():
+    from ztare.worldmodel.version_space import load
+
+    with tempfile.TemporaryDirectory() as td:
+        proj = _make_project(Path(td), [(_G1, 0, _G1), (_G2, 1, _G2)])
+        (proj / "test_model.py").write_text(
+            "def step(s,a,t): return tuple(tuple(r) for r in s)\n"
+            "f=step\nmodel=step\nI_model=step\n"
+        )
+        result = enumerate_population(proj, budget=5, target_survivors=3)
+        survivors = load(proj)
+        wrappers = [
+            row for row in survivors
+            if (row.get("provenance") or {}).get("generator")
+            == "wrapper_never_witnessed_guard"
+        ]
+
+        assert result["distinct_hypotheses"] == len(survivors) == 3
+        assert result["distinct_fingerprints"] == 1
+        assert "wrapper_hypotheses" not in result
+        assert len(wrappers) == 2
+        assert all(Path(row["candidate_ref"]).exists() for row in wrappers)
+        assert all(row["hypothesis_id"] for row in wrappers)
+
+
 # ── test 10: receipt written to JSONL ─────────────────────────────────────────
 
 def test_receipt_written():
@@ -261,6 +241,7 @@ def test_receipt_written():
         assert "generated_count" in row
         assert "perfect" in row
         assert "admitted" in row
+        assert "distinct_hypotheses" in row
         assert "distinct_fingerprints" in row
 
 

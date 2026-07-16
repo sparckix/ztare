@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from ztare.common.control_state_machine import ControlMorphism
@@ -96,7 +98,64 @@ def test_boundary_cegar_warns_candidate_without_lowerability_witness() -> None:
         carried_receipts_json=receipts,
     )
     assert "candidate_delta_warning" in surface
-    assert "try a transportable candidate if current evidence permits" in surface
+    assert "negative receipts refute only their named subjects" in surface
+
+
+def test_candidate_and_family_rejections_do_not_become_space_exhaustion() -> None:
+    receipts = json.dumps(
+        [
+            {
+                "type": "LEAF_WORKBENCH_RECEIPT",
+                "payload": {
+                    "capability_id": "score_worldmodel_candidate_delta",
+                    "output_summary": json.dumps(
+                        {
+                            "schema": "ztare-worldmodel-candidate-delta-score-v1",
+                            "admissibility_scope": "candidate",
+                            "candidate_sha256": "candidate-a",
+                            "candidate_delta_admissible": False,
+                            "status": "candidate_preflight_failed",
+                        }
+                    ),
+                },
+            },
+            {
+                "type": "LEAF_WORKBENCH_RECEIPT",
+                "payload": {
+                    "capability_id": "mine_worldmodel_lowerable_selectors",
+                    "output_summary": json.dumps(
+                        {
+                            "schema": "ztare-worldmodel-lowerable-selector-miner-v1",
+                            "admissibility_scope": "candidate_family",
+                            "candidate_family_id": "same-shaped-window-selector-v1",
+                            "candidate_family_admissible": False,
+                            "lowerability_status": "no_zero_error_selector_found",
+                        }
+                    ),
+                },
+            },
+        ]
+    )
+
+    assert boundary_cegar_candidate_delta_lowerability(receipts) is None
+    obj = boundary_cegar_state_object(
+        state="observation_receipt_available",
+        carried_receipts_json=receipts,
+    )
+    assert obj["context"]["refuted_scopes"] == [
+        {
+            "scope_kind": "candidate",
+            "subject": "candidate-a",
+            "verdict": "candidate_preflight_failed",
+            "schema": "ztare-worldmodel-candidate-delta-score-v1",
+        },
+        {
+            "scope_kind": "candidate_family",
+            "subject": "same-shaped-window-selector-v1",
+            "verdict": "no_zero_error_selector_found",
+            "schema": "ztare-worldmodel-lowerable-selector-miner-v1",
+        },
+    ]
 
 
 def test_boundary_cegar_warns_candidate_on_lowerability_blocked_receipt() -> None:

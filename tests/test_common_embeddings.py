@@ -97,3 +97,34 @@ def test_query_atlas_can_cache_query_embedding(tmp_path: Path) -> None:
     assert hits1[0]["id"] == "doc-a"
     assert hits2[0]["id"] == "doc-a"
     assert calls["n"] == 1
+
+
+def test_pinned_remote_embedding_space_overrides_local_allocation(monkeypatch) -> None:
+    import ztare.common.embeddings as emb
+
+    class Models:
+        @staticmethod
+        def embed_content(**_kwargs):
+            return type("Response", (), {
+                "embeddings": [type("Embedding", (), {"values": [0.25, 0.75]})()],
+            })()
+
+    client = type("Client", (), {"models": Models()})()
+    monkeypatch.setattr(emb, "_LOCAL_EMBED", True)
+    monkeypatch.setattr(
+        emb,
+        "_embed_local",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("local embedding space substituted for pinned remote space")
+        ),
+    )
+
+    vector = emb.embed_batch(
+        client,
+        ["consumer-indexed quotient"],
+        model="gemini-embedding-001",
+        dimensions=2,
+        force_remote=True,
+    )
+
+    assert vector == [[0.25, 0.75]]

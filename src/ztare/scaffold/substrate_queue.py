@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
-from ztare.scaffold.source_check import check_source_project
+from ztare.scaffold.source_check import check_evidence_project
 from ztare.scaffold.source_project import project_dir_for
 from ztare.workspace.evidence_gaps import (
     LOCAL_VERIFICATION_RECOVERY_KIND,
@@ -317,6 +317,7 @@ def _missing_local_ref_errors(
 def _project_source_preflight(
     *,
     project: str,
+    rubric: str | None,
     repo_root: Path,
     require: bool | None,
 ) -> dict[str, Any]:
@@ -347,7 +348,11 @@ def _project_source_preflight(
             "project_dir": str(project_dir),
             "next_command": f"ztare project source-init --project {project}",
         }
-    report = check_source_project(project=project, repo=repo_root)
+    report = check_evidence_project(
+        project=project,
+        repo=repo_root,
+        rubric=rubric,
+    )
     return {
         "checked": True,
         "required": bool(require),
@@ -536,6 +541,7 @@ def validate_project_packet(
     )
     source_preflight = _project_source_preflight(
         project=str(packet.get("project") or ""),
+        rubric=str(packet.get("rubric") or "") or None,
         repo_root=effective_repo_root,
         require=require_source_preflight,
     )

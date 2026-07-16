@@ -11,6 +11,7 @@ REPAIR_PREFLIGHT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "repair_
 CANDIDATE_PREFLIGHT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "candidate_preflight.py"
 WORLDMODEL_CONTEXT = REPO_ROOT / "src" / "ztare" / "validator" / "core" / "worldmodel_prompt_context.py"
 WORLDMODEL_PAYLOAD = REPO_ROOT / "src" / "ztare" / "validator" / "worldmodel_typed_payload.py"
+ORCHESTRATOR_PROMPT = REPO_ROOT / "src" / "ztare" / "orchestrator" / "prompt.py"
 STRATEGY_DECISION_POLICY = REPO_ROOT / "src" / "ztare" / "research_director" / "strategy_decision_policy.py"
 GENERATE_COMMITTEE = REPO_ROOT / "src" / "ztare" / "validator" / "generate_committee.py"
 MAKEFILE = REPO_ROOT / "Makefile"
@@ -77,7 +78,36 @@ def test_pre_judge_skip_command_is_iteration_local() -> None:
         and call.args
         and isinstance(call.args[0], ast.Name)
     ]
-    assert "iteration_test_cmd" in run_targets
+    bound_runner_targets = [
+        call.args[0].id
+        for call in ast.walk(main_loop)
+        if isinstance(call, ast.Call)
+        and isinstance(call.func, ast.Name)
+        and call.func.id == "_run_test_thesis_command"
+        and call.args
+        and isinstance(call.args[0], ast.Name)
+    ]
+    assert "iteration_test_cmd" in (run_targets + bound_runner_targets)
+
+
+def test_bound_promotion_and_stop_contracts_have_consumers() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "_promotion_decision_present" in source
+    assert (
+        '_pre_judge_decision.get("candidate_promotion_authorized"), bool'
+        in source
+    )
+    assert 'rubric_data.get("stop_on_gate_pass", False)' in source
+    assert '_pre_judge_decision.get("gate_contract_closed") is True' in source
+
+
+def test_verifier_error_cannot_become_scientific_feedback() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert source.count('== "pre_judge_gate_harness_error"') >= 2
+    assert "refusing to dispatch" in source
+    assert "refusing to convert an apparatus failure into scientific feedback" in source
 
 
 def test_theorem_packet_substrates_skip_parametric_form_r1_preflight() -> None:
@@ -195,14 +225,18 @@ def test_single_mutator_route_avoids_parallel_wrapper_until_rubric_triggers() ->
 
 def test_worldmodel_bounded_discriminator_prompt_uses_transition_contract() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    prompt_source = ORCHESTRATOR_PROMPT.read_text(encoding="utf-8")
 
     assert "is_worldmodel_submission_contract" in source
-    branch_pos = source.index("_worldmodel_contract = worldmodel_typed_payload_contract")
-    worldmodel_pos = source.index("CRITICAL OUTPUT REQUIREMENT (THE EXECUTABLE TRANSITION LAW)", branch_pos)
-    numeric_pos = source.index("choose one accepted numeric declaration", branch_pos)
-    assert worldmodel_pos < numeric_pos
+    selector_pos = source.index("_specialized_submission_prompt = select_specialized_submission_prompt(")
+    numeric_pos = source.index("choose one accepted numeric declaration", selector_pos)
+    assert selector_pos < numeric_pos
+    assert "CRITICAL OUTPUT REQUIREMENT (THE EXECUTABLE TRANSITION LAW)" not in source
 
-    worldmodel_block = source[worldmodel_pos:numeric_pos]
+    worldmodel_pos = prompt_source.index(
+        "CRITICAL OUTPUT REQUIREMENT (THE EXECUTABLE TRANSITION LAW)"
+    )
+    worldmodel_block = prompt_source[worldmodel_pos:]
     assert "WORLD_MODEL_SPEC, PROGRAM, or step(grid, action, t)" in worldmodel_block
     assert "PARAMETRIC_FORM, LAGRANGIAN, MODEL_PARAMS" in worldmodel_block
     assert "assertion-only suites" in worldmodel_block
@@ -283,10 +317,12 @@ def test_mutator_briefing_routes_candidate_memory_visibility_to_machinery_cards(
 
 def test_strategy_card_receipts_are_prompted_outside_python_blocks() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    prompt_source = ORCHESTRATOR_PROMPT.read_text(encoding="utf-8")
     context_source = WORLDMODEL_CONTEXT.read_text(encoding="utf-8")
     candidate_preflight_source = CANDIDATE_PREFLIGHT.read_text(encoding="utf-8")
 
-    assert "strategy_card_obligation_prompt(PROJECT_DIR)" in source
+    assert "select_specialized_submission_prompt" in source
+    assert "strategy_card_obligation_prompt(project_dir)" in prompt_source
     assert "Place the `STRATEGY_CARD_DISCHARGE:` line in markdown outside the Python" in context_source
     assert "Never put this receipt inside a string literal, comment," in context_source
     assert "strategy_card_retry_message" in candidate_preflight_source
@@ -295,10 +331,11 @@ def test_strategy_card_receipts_are_prompted_outside_python_blocks() -> None:
 
 def test_worldmodel_mutator_uses_typed_payload_contract() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    prompt_source = ORCHESTRATOR_PROMPT.read_text(encoding="utf-8")
     payload_source = WORLDMODEL_PAYLOAD.read_text(encoding="utf-8")
 
-    assert "worldmodel_typed_payload_contract = is_worldmodel_submission_contract" in source
-    assert "worldmodel_typed_payload_contract_prompt()" in source
+    assert "select_specialized_submission_prompt" in source
+    assert "worldmodel_typed_payload_contract_prompt()" in prompt_source
     assert "WORLDMODEL TYPED PAYLOAD CONTRACT" in payload_source
     assert "`control_receipts`: list" in payload_source
     assert "`test_model_py`: string" in payload_source
@@ -371,7 +408,9 @@ def test_test_thesis_uses_deterministic_gate_payload_for_pre_judge_projects() ->
     assert "Candidate failed the project-local" in helper_block
     assert "deterministic gate harness did not" in helper_block
     assert '"test_suite_status": "fail_assert"' in helper_block
-    assert '"test_suite_status": "fail_other"' not in helper_block
+    assert "consume_pre_judge_gate_receipt(" in helper_block
+    assert "timeout=120" in helper_block
+    assert "bound_gate_payload = load_bound_pre_judge_gate_payload()" in helper_block
 
 
 def test_make_autoresearch_loop_disables_model_fallback_by_default() -> None:
@@ -446,13 +485,14 @@ def test_baseline_eval_uses_pre_judge_gate_before_test_thesis() -> None:
         "baseline_test_cmd = [sys.executable, \"-c\", \"pass\"]",
         gate_call_pos,
     )
-    run_pos = source.index("subprocess.run(baseline_test_cmd, check=True)", skip_pos)
+    run_pos = source.index("_run_test_thesis_command(", skip_pos)
     load_pos = source.index('context_label="baseline latest_eval_results.json"', run_pos)
 
     assert baseline_cmd_pos < gate_call_pos < skip_pos < run_pos < load_pos
     gate_block = source[gate_call_pos:run_pos]
     assert "latest_eval_results_path=LATEST_EVAL_RESULTS_PATH" in gate_block
     assert 'candidate_path=f"{PROJECT_DIR}/test_model.py"' in gate_block
+    assert "baseline_pre_judge_gate_result.payload" in source[run_pos:load_pos]
 
 
 def test_baseline_eval_cache_binds_to_gate_footprint_before_skip() -> None:
@@ -560,6 +600,20 @@ def test_committee_generation_routes_through_dispatch_model_before_api_call() ->
     api_call_pos = source.index("_RUNTIME.call_text(", safe_generate_start)
     assert dispatch_pos < api_call_pos
 
+    # Provider decoupling must not silently change the established Gemini
+    # structured-output or deadline semantics. Google is imported only after
+    # subscription dispatch has been ruled out; other providers receive the
+    # array schema as a prompt contract rather than an incompatible
+    # chat-completions `json_object` constraint.
+    google_import_pos = source.index("from google import genai", safe_generate_start)
+    gemini_call_pos = source.index("client.models.generate_content", google_import_pos)
+    assert dispatch_pos < google_import_pos < gemini_call_pos
+    assert "types.GenerateContentConfig(**config)" in source[google_import_pos:gemini_call_pos]
+    assert "future.result(timeout=150)" in source[gemini_call_pos:]
+    non_google_block = source[api_call_pos:google_import_pos]
+    assert "full_prompt = _prompt_with_response_config_hint(prompt, config)" in source[safe_generate_start:api_call_pos]
+    assert "config=config" not in non_google_block
+
 
 def test_primitive_class_rotation_tracks_judged_candidates_not_only_champions() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
@@ -571,7 +625,15 @@ def test_primitive_class_rotation_tracks_judged_candidates_not_only_champions() 
     assert r3_track_pos < r3_continue_pos
     assert 'outcome="r3_rejected"' in source[r3_track_pos:r3_continue_pos]
 
-    candidate_improved_pos = source.index("_candidate_improved = _capped_strict")
+    promotion_verdict_pos = source.index(
+        '_promotion_decision_present = isinstance('
+    )
+    candidate_improved_pos = source.index(
+        "_candidate_improved = bool(", promotion_verdict_pos
+    )
+    assert "candidate_promotion_authorized" in source[
+        promotion_verdict_pos:candidate_improved_pos + 240
+    ]
     judged_track_pos = source.index(
         "_track_primitive_class_rotation_candidate(",
         candidate_improved_pos,
@@ -600,3 +662,30 @@ def test_global_soft_penalties_apply_before_post_harness_import_fallback() -> No
         post_harness_pos:source.index("except Exception as _gg_exc:", post_harness_pos)
     ]
     assert 'new_eval["score"] = max(0, int(new_eval.get("score", 0)) + _penalty)' not in post_harness_block
+
+
+def test_control_only_turn_cannot_be_coerced_through_candidate_snapshot_or_gate() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert (
+        '_control_only_sentinel is None\n'
+        '        and os.environ.get("MUTATOR_SUBMISSION_SNAPSHOT", "1") != "0"'
+        in source
+    )
+    assert "if _control_only_sentinel is None and _adherence_path.exists():" in source
+    assert (
+        'if rubric_data.get("pre_judge_gate_harness") and _control_only_sentinel is None:'
+        in source
+    )
+
+
+def test_bound_pre_judge_promotion_authority_fences_champion_selection() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert '"candidate_promotion_authorized"' in source
+    promotion_block = source[
+        source.index("_pre_judge_payload = new_eval.get"):
+        source.index("_track_primitive_class_rotation_candidate", source.index("_pre_judge_payload = new_eval.get"))
+    ]
+    assert "_candidate_improved = bool(" in promotion_block
+    assert "_promotion_authorized" in promotion_block

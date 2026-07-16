@@ -25,7 +25,125 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
+from ztare.common.equivariance import stable_sha256
 from ztare.worldmodel.invariant_bridge import invariant_from_theorem
+
+WORLDMODEL_INVARIANT_BINDING_SCHEMA = "ztare-worldmodel-invariant-binding-v1"
+
+
+def _blueprint_theory(source: str) -> str | None:
+    match = re.search(r"(?ms)^## Theory\s*```lean\s*\n(.*?)^```\s*$", source)
+    return match.group(1).strip() if match else None
+
+
+def current_invariant_binding(
+    project: str | Path,
+    *,
+    audited_source: str | None = None,
+) -> dict[str, str] | None:
+    """Resolve the current spec/evidence identity or fail closed.
+
+    The handoff receipt is only a locator.  Its spec digest must still match
+    the current abduced specification, its blueprint digest must match the
+    referenced bytes, and its evidence epoch must match the active bank.  At
+    absorption the audited Lean source must contain that blueprint's theory.
+    """
+    root = Path(project).resolve()
+    workspace = root / "workspace"
+    try:
+        receipt = json.loads(
+            (workspace / "worldmodel_lean_feedback_receipt.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        core = json.loads(
+            (workspace / "abduced_core.json").read_text(encoding="utf-8")
+        )
+        if not isinstance(receipt, dict) or not isinstance(core, dict):
+            return None
+        if (
+            receipt.get("invariant_binding_schema")
+            != WORLDMODEL_INVARIANT_BINDING_SCHEMA
+        ):
+            return None
+        spec = core.get("spec")
+        if not isinstance(spec, dict):
+            return None
+        spec_sha256 = str(receipt.get("spec_sha256") or "").strip().lower()
+        if spec_sha256 != stable_sha256(spec):
+            return None
+
+        from ztare.worldmodel.carrier_loader import (
+            require_current_carrier_evidence_binding,
+            resolve_current_carrier_evidence_identity,
+        )
+
+        current = resolve_current_carrier_evidence_identity(
+            root, carrier_ref=str(receipt.get("blueprint_ref") or "")
+        )
+        require_current_carrier_evidence_binding(
+            {
+                "carrier_sha256": receipt.get("blueprint_sha256"),
+                "evidence_epoch_sha256": receipt.get("evidence_epoch_sha256"),
+            },
+            current,
+        )
+        blueprint_path = root / current.carrier_ref
+        blueprint_source = blueprint_path.read_text(encoding="utf-8")
+        if audited_source is not None:
+            theory = _blueprint_theory(blueprint_source)
+            if not theory or theory not in audited_source:
+                return None
+        return {
+            "binding_schema": WORLDMODEL_INVARIANT_BINDING_SCHEMA,
+            "spec_sha256": spec_sha256,
+            "evidence_epoch_sha256": current.evidence_epoch_sha256,
+        }
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
+        return None
+
+
+def load_current_invariants(project: str | Path, *, subject: object = None) -> list:
+    """Load certificates for the current spec/evidence and optional carrier.
+
+    Passing an executable subject is required at an enforcement site.  Only a
+    catalog carrier exposing the exact lowered specification can inherit a
+    theorem about ``specStep``; a callable or patch with no such identity gets
+    no pruning authority.
+    """
+    binding = current_invariant_binding(project)
+    if binding is None:
+        return []
+    if subject is not None:
+        subject_spec = getattr(subject, "_ztare_world_model_spec", None)
+        if not isinstance(subject_spec, dict):
+            return []
+        if stable_sha256(subject_spec) != binding["spec_sha256"]:
+            return []
+    path = Path(project) / "workspace" / "invariant_certificates.jsonl"
+    if not path.exists():
+        return []
+    from ztare.worldmodel.invariant_bridge import InvariantCertificate
+
+    out = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            row = json.loads(line)
+            if not isinstance(row, dict):
+                continue
+            if any(row.get(key) != value for key, value in binding.items()):
+                continue
+            out.append(
+                InvariantCertificate(
+                    tuple(row["quantity"]),
+                    row["relation"],
+                    row["status"],
+                    row.get("theorem", ""),
+                )
+            )
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+            continue
+    return out
 
 
 def _counts(grid) -> Counter:
@@ -226,6 +344,9 @@ def absorb_ratification(project, lean_file_path, statements) -> list:
         audited_source = lean_file_path.read_text(encoding="utf-8")
     except OSError:
         return []
+    binding = current_invariant_binding(project, audited_source=audited_source)
+    if binding is None:
+        return []
     requested_names: list[str] = []
     for stmt in statements:
         match = re.search(r"\btheorem\s+([A-Za-z0-9_'.]+)", str(stmt))
@@ -254,7 +375,14 @@ def absorb_ratification(project, lean_file_path, statements) -> list:
         for line in out_path.read_text().splitlines():
             try:
                 d = json.loads(line)
-                seen.add((tuple(d["quantity"]), d["relation"], d.get("theorem", "")))
+                seen.add((
+                    tuple(d["quantity"]),
+                    d["relation"],
+                    d.get("theorem", ""),
+                    d.get("binding_schema"),
+                    d.get("spec_sha256"),
+                    d.get("evidence_epoch_sha256"),
+                ))
             except Exception:  # noqa: BLE001
                 continue
 
@@ -269,7 +397,14 @@ def absorb_ratification(project, lean_file_path, statements) -> list:
                                       theorem=m.group(1) if m else "")
         if cert is None:
             continue
-        key = (tuple(cert.quantity), cert.relation, cert.theorem)
+        key = (
+            tuple(cert.quantity),
+            cert.relation,
+            cert.theorem,
+            binding["binding_schema"],
+            binding["spec_sha256"],
+            binding["evidence_epoch_sha256"],
+        )
         if key in seen:
             continue
         seen.add(key)
@@ -284,6 +419,7 @@ def absorb_ratification(project, lean_file_path, statements) -> list:
             "theorem": cert.theorem,
             "artifact_sha256": artifact_sha256,
             "proof_audit_sha256": receipt_sha256,
+            **binding,
         }))
     if lines:
         out_path.parent.mkdir(parents=True, exist_ok=True)

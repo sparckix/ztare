@@ -1,21 +1,27 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 from pathlib import Path
 from typing import Any, Callable
 
 from ztare.common.leaf_workbench_executor import (
-    blocked_strategy_discharge_wants_boundary_morphism,
+    active_workbench_task_capability_scope,
+    blocked_control_receipts_want_boundary_morphism,
     execute_unique_boundary_morphism_chain,
     leaf_workbench_action_request_retry_message,
     leaf_workbench_receipt_preflight_message,
     replay_candidate_bound_leaf_receipt_for_current_candidate,
+    required_active_task_action_error,
     required_candidate_bound_action_error,
+    selected_control_boundary_morphism,
 )
+from ztare.common.control_state_machine import (
+    control_receipt_rows,
+    executed_morphism_ids_from_receipts,
+)
+from ztare.common.leaf_workbench_contract import leaf_workbench_action_request_object
 from ztare.common.worldmodel_carrier_purity import carrier_contract_error
-from ztare.common.control_state_machine import control_receipt_rows
 from ztare.common.sealed_boundary_cegar import (
     boundary_cegar_candidate_delta_lowerability,
 )
@@ -129,12 +135,14 @@ def _looks_like_executable_worldmodel_carrier(candidate_source: str) -> bool:
 
 def _strategy_card_retry_context(project_dir: str | Path) -> str:
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
         from ztare.validator.core.strategy_card_gate import (
             admissible_no_attempt_blocker_kinds,
         )
 
-        all_cards = open_cards(Path(project_dir) / "workspace" / "strategy_experiments.jsonl")
+        all_cards = active_strategy_cards(
+            Path(project_dir) / "workspace" / "strategy_experiments.jsonl"
+        )
         cards = [
             card for card in all_cards
             if strategy_card_blocks_context(card)
@@ -201,6 +209,13 @@ def leaf_workbench_retry_message(
             stateless_actions=stateless_actions,
         )
     if candidate_source.strip() and project_dir is not None:
+        active_task_error = required_active_task_action_error(
+            project_dir=project_dir,
+            thesis_text=combined,
+            candidate_source=candidate_source,
+        )
+        if active_task_error is not None:
+            return active_task_error
         missing_action_error = required_candidate_bound_action_error(
             project_dir=project_dir,
             thesis_text=combined,
@@ -264,7 +279,7 @@ def boundary_cegar_ready_delta_retry_message(
     )
 
 
-def strategy_discharge_missing_evidence_action_retry_message(
+def blocked_control_missing_evidence_action_retry_message(
     *,
     enabled: bool,
     project_dir: str | Path,
@@ -275,19 +290,65 @@ def strategy_discharge_missing_evidence_action_retry_message(
     action_handlers: dict[str, Callable[[str | Path, dict[str, Any], dict[str, Any] | None, Any], dict[str, Any]]] | None = None,
     stateless_actions: set[str] | frozenset[str] | None = None,
 ) -> str | None:
-    """Run the current workbench action for a typed blocked Strategy receipt.
+    """Run an available workbench action selected by a typed control block.
 
-    A Strategy-card discharge may lawfully say "blocked: missing_evidence".
-    When the current boundary already exposes exactly the needed registered
-    workbench morphism, consuming the iteration would only measure plumbing.
-    Compile that typed block into the same action-request executor used for
-    explicit ``LEAF_WORKBENCH_ACTION_REQUEST`` rows.
+    Strategy discharges and lowerability blocks share this boundary: when the
+    block selects a capability already admitted by the active task, the parent
+    executes it through the ordinary action-request door and returns its receipt
+    on the free retry.  A block remains terminal only when no admitted morphism
+    was selected.
     """
     if not enabled:
         return None
     receipts = extract_strategy_card_discharges(thesis_text or "")
-    if not blocked_strategy_discharge_wants_boundary_morphism(receipts):
+    receipts.extend(
+        row["payload"]
+        for row in control_receipt_rows(thesis_text or "")
+        if str(row.get("type") or "") == "LOWERABILITY_BLOCKED"
+        and isinstance(row.get("payload"), dict)
+    )
+    admitted, _task = active_workbench_task_capability_scope(project_dir)
+    selected = selected_control_boundary_morphism(
+        receipts,
+        admitted_capability_ids=admitted,
+    )
+    # Prose such as "request another morphism" is not a control selection.
+    # Implicit continuation is safe only when the task has one possible action,
+    # or when this payload itself carries an executed-morphism receipt that
+    # gives the program counter a concrete state.  R1 prompt context is not
+    # re-parsed here; without one of these identities the block is terminal.
+    if selected is None:
+        executed = executed_morphism_ids_from_receipts(thesis_text or "")
+        if len(admitted) != 1 and not executed:
+            return None
+    if not blocked_control_receipts_want_boundary_morphism(
+        receipts,
+        admitted_capability_ids=admitted,
+    ):
         return None
+    if selected is not None:
+        request = leaf_workbench_action_request_object(
+            capability_id=selected,
+            input_refs={
+                "task_ref": "workspace/latest_harness_weakness.json:workbench_task"
+            },
+            claim_bindings=[
+                str(_task.get("objective") or f"run registered {selected}")
+            ],
+        )
+        return leaf_workbench_action_request_retry_message(
+            enabled=True,
+            project_dir=project_dir,
+            thesis_text=(
+                "LEAF_WORKBENCH_ACTION_REQUEST: "
+                + json.dumps(request, sort_keys=True, separators=(",", ":"))
+            ),
+            candidate_source=candidate_source,
+            contract=contract,
+            records_fn=records_fn,
+            action_handlers=action_handlers,
+            stateless_actions=stateless_actions,
+        )
     return execute_unique_boundary_morphism_chain(
         project_dir=project_dir,
         thesis_text=thesis_text,
@@ -312,6 +373,12 @@ def _visible_counterexample_exhausted(trace: object, failed_gates: list[str]) ->
         return False
     labels = " ".join(str(label).lower() for label in failed_gates)
     return any(token in labels for token in ("holdout", "transfer", "terminal"))
+
+
+def _short_json(payload: object) -> str:
+    """Render bounded diagnostic context without importing executor internals."""
+
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)[:500]
 
 
 def _strategy_gate_action_summary(payload: object) -> str:
@@ -404,30 +471,53 @@ def patch_base_regression_retry_message(
             return None
         if regression is None:
             return None
-        receipt = regression.regression_receipt
+        receipt = dict(regression.regression_receipt)
         trace = regression.counterexample_trace
-        receipt_payload = {
-            "schema": "ztare-latest-patch-base-regression-v1",
-            "candidate_regression_receipt": receipt,
-            "counterexample_trace": trace,
-        }
+        relation = str(receipt.get("candidate_relation") or "regression")
+        frontier_ref = ""
+        frontier_sha = ""
+        if (
+            relation == "improved_but_gate_failed"
+            or not str(receipt.get("best_prior_submission") or "").strip()
+        ):
+            frontier_ref, frontier_sha = _persist_retry_frontier_candidate(
+                project_path,
+                candidate_source,
+            )
+            # The pure preflight has no promotion authority.  It does own a
+            # durable evaluated-candidate identity when no admissible prior
+            # exists, and the repair-frontier transition when evidence fit
+            # improved.  Preserve that identity on the receipt before the
+            # temporary probe disappears.
+            receipt["candidate_submission"] = frontier_ref
+            receipt["candidate_sha"] = frontier_sha
+        frontier_selected = False
         try:
-            (project_path / "workspace" / "latest_patch_base_regression.json").write_text(
-                json.dumps(receipt_payload, sort_keys=True, indent=2, default=str),
-                encoding="utf-8",
+            from ztare.common.patch_base_identity import (
+                persist_repair_frontier_observation,
+            )
+
+            frontier_selected = persist_repair_frontier_observation(
+                project_path,
+                regression_receipt=receipt,
+                counterexample_trace=trace,
+                evidence_epoch=(
+                    regression.gate_payload.get("evidence_epoch") or {}
+                ),
             )
         except Exception:
-            pass
+            frontier_selected = False
         weakness_receipt: dict[str, object] | None = None
         try:
             from ztare.common.harness_weakness import write_harness_weakness_receipt
 
-            weakness_receipt = write_harness_weakness_receipt(
-                project_dir=project_path,
-                source_ref="workspace/latest_patch_base_regression.json",
-                regression_receipt=receipt,
-                counterexample_trace=trace,
-            )
+            if frontier_selected:
+                weakness_receipt = write_harness_weakness_receipt(
+                    project_dir=project_path,
+                    source_ref="workspace/latest_patch_base_regression.json",
+                    regression_receipt=receipt,
+                    counterexample_trace=trace,
+                )
         except Exception:
             weakness_receipt = None
         weakness_line = ""
@@ -446,7 +536,6 @@ def patch_base_regression_retry_message(
                     separators=(",", ":"),
                 )
             )
-        relation = str(receipt.get("candidate_relation") or "regression")
         comparison = receipt.get("quotient_comparison")
         quotient_relation = ""
         quotient_receipt = ""
@@ -465,6 +554,16 @@ def patch_base_regression_retry_message(
             quotient_receipt = (
                 "\nPATCH_BASE_QUOTIENT_RECEIPT: "
                 f"{quotient_json}"
+            )
+        description_comparison = ""
+        candidate_description = receipt.get("candidate_description_length")
+        prior_description = receipt.get("best_prior_description_length")
+        description_delta = receipt.get("description_length_delta")
+        if isinstance(candidate_description, int) and isinstance(prior_description, int):
+            description_comparison = (
+                f"; description_length {candidate_description} vs "
+                f"{prior_description} (delta={description_delta}, "
+                f"unit={receipt.get('description_length_unit')})"
             )
         if relation == "hard_gate_failure":
             if _visible_counterexample_exhausted(trace, regression.failed_gates):
@@ -517,6 +616,24 @@ def patch_base_regression_retry_message(
                 f"{quotient_receipt}"
                 f"{weakness_line}"
             )
+        if relation == "improved_but_gate_failed":
+            return (
+                "PATCH_BASE_IMPROVEMENT_PRECHECK: the candidate dominates the "
+                "previous near-miss but still has a localized deterministic "
+                "counterexample (relation=improved_but_gate_failed). The "
+                "candidate itself is now the repair frontier; do not revert to "
+                "the inferior comparison base. Preserve the content-addressed "
+                f"frontier ({frontier_ref} sha={frontier_sha}) as PATCH_BASE "
+                "and repair the remaining quotient, or return a receipt-bound "
+                "obstruction after the registered observation actions fire. "
+                f"exact_rows={receipt.get('candidate_exact_rows')}; "
+                f"wrong_cells={receipt.get('candidate_wrong_cells')}; "
+                f"holdout={receipt.get('candidate_holdout_depth')}; first="
+                f"{str(trace.get('first_mismatch') or '')[:260]}"
+                f"{quotient_relation}"
+                f"{quotient_receipt}"
+                f"{weakness_line}"
+            )
         best_prior = str(receipt.get("best_prior_submission") or "")
         best_prior_id = (
             f"{best_prior} sha={receipt.get('best_prior_sha')}"
@@ -535,7 +652,8 @@ def patch_base_regression_retry_message(
             f"{receipt.get('candidate_wrong_cells')} vs "
             f"{receipt.get('best_prior_wrong_cells')}; holdout "
             f"{receipt.get('candidate_holdout_depth')} vs "
-            f"{receipt.get('best_prior_holdout_depth')}; first="
+            f"{receipt.get('best_prior_holdout_depth')}"
+            f"{description_comparison}; first="
             f"{str(trace.get('first_mismatch') or '')[:260]}"
             f"{quotient_relation}"
             f"{quotient_receipt}"
@@ -546,3 +664,17 @@ def patch_base_regression_retry_message(
             probe_path.unlink(missing_ok=True)
         except Exception:
             pass
+
+
+def _persist_retry_frontier_candidate(
+    project: Path,
+    candidate_source: str,
+) -> tuple[str, str]:
+    """Give a dominating-but-refuted candidate a stable repair identity."""
+    from ztare.worldmodel.patch_base_carrier import materialize_immutable_patch_base
+
+    return materialize_immutable_patch_base(
+        project,
+        candidate_source,
+        prefix="retry_frontier",
+    )

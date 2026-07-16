@@ -258,6 +258,87 @@ def _abduce_recolor_map(s, s_next, diff) -> "list[dict]":
         if mapping else []
 
 
+def _extremal_component_scope_candidates(rule: dict) -> "list[dict]":
+    """Structural scope refinements shared by abduction and transport checks.
+
+    An extremal write over-fires when the same presentation value belongs to
+    more than one connected component.  The existing refinement pass already
+    resolves that ambiguity by quotienting components by size or width.  Keep
+    the candidate language in one place so a finite transport witness and the
+    full-log assembler cannot silently mean different things by "component".
+    """
+    op = rule.get("op")
+    if op == "consume_extremal":
+        match = int(rule["color"])
+        companion = int(rule["replacement"])
+    elif op == "accumulate_extremal":
+        match = int(rule.get("from", 0))
+        companion = int(rule["color"])
+    else:
+        return []
+    scopes = [
+        {"colors": [match], "select": "largest", "min_size": 2},
+        {"colors": [match], "select": "widest", "min_width": 2},
+    ]
+    if companion != match:
+        scopes.extend([
+            {
+                "colors": [match, companion],
+                "select": "largest",
+                "min_size": 2,
+            },
+            {
+                "colors": [match, companion],
+                "select": "widest",
+                "min_width": 2,
+            },
+        ])
+    return scopes
+
+
+def catalog_state_morphisms(source, target) -> "list[dict]":
+    """Return catalog rules whose lowered pointwise map is exactly source→target.
+
+    This is a bounded adapter operation, not a law or symmetry certificate.  It
+    answers a smaller question: whether two observed presentations are related
+    by one already-registered operation.  Callers must separately establish
+    lifecycle compatibility and test the same operation on consequences before
+    claiming a finite commuting square.
+    """
+    diff = _diff(source, target)
+    if not diff:
+        return [{"op": "identity"}]
+    proposed: "list[dict]" = []
+    for abducer in (
+        _abduce_translate_block,
+        _abduce_translate_com,
+        _abduce_consume_extremal,
+        _abduce_accumulate_extremal,
+        _abduce_recolor_map,
+    ):
+        for rule in abducer(source, target, diff):
+            proposed.append(rule)
+            proposed.extend(
+                {**rule, "component_scope": scope}
+                for scope in _extremal_component_scope_candidates(rule)
+            )
+
+    target_key = tuple(tuple(row) for row in target)
+    exact: "list[dict]" = []
+    seen: "set[str]" = set()
+    for rule in proposed:
+        key = json.dumps(rule, sort_keys=True, separators=(",", ":"))
+        if key in seen:
+            continue
+        seen.add(key)
+        step, _error = lower_spec(
+            {"actions": {"0": [rule]}, "always": []}
+        )
+        if step is not None and step(source, 0, 0) == target_key:
+            exact.append(rule)
+    return exact
+
+
 def _broaden_dests(actions: dict, log, mover_colors) -> dict:
     """A sprite crossing varied terrain refuses moves whenever the per-diff
     require_dest set (learned from ONE frame) omits a terrain color it actually
@@ -804,25 +885,12 @@ def _transition_class_key_id(tr, s_id: int, features: _TimeFeatures):
     return (s_id, int(tr.a), t_key)
 
 
-_GWC_TARGET_CACHE: "dict" = {}   # target tuple → pre-built uint8 ndarray; cleared between abductions
-_GWC_TARGET_CACHE_CAP = 2048    # ponytail: bound to O(unique s_next) per episode; evict when full
-
-
 def _grid_wrong_cells(pred, target) -> int:
-    # ponytail: hot path in _wrong_cell_count (called per class per scoring round);
-    # cache target→np.array (stable frozen tuple); pred is always fresh so one
-    # construction is unavoidable. 3x faster than pure-Python at 64×64 with cache.
-    # Upgrade path: convert pred side too if pred objects are reused across calls.
+    """Count mismatches without memoizing ephemeral Python identities."""
     try:
         import numpy as _np
-        ta = _GWC_TARGET_CACHE.get(id(target))
-        if ta is None:
-            ta = _np.array(target, dtype=_np.uint8)
-            if len(_GWC_TARGET_CACHE) >= _GWC_TARGET_CACHE_CAP:
-                _GWC_TARGET_CACHE.clear()
-            _GWC_TARGET_CACHE[id(target)] = ta
-        pa = _np.array(pred, dtype=_np.uint8)
-        return int((pa != ta).sum())
+        return int((_np.asarray(pred, dtype=_np.uint8)
+                    != _np.asarray(target, dtype=_np.uint8)).sum())
     except ImportError:
         return sum(1 for y in range(len(target)) for x in range(len(target[0]))
                    if pred[y][x] != target[y][x])
@@ -906,8 +974,6 @@ def _rule_static_footprint(g, rule: dict, t: int) -> "set[tuple[int, int]] | Non
     return None
 
 
-_FP_MEMO: dict = {}
-
 # Warm-start verify memo: prior_spec x log identity → replay_consistency_gate().ok bool.
 # Key: (prior_spec_sha, log_len, log_fingerprint)
 # log_fingerprint: sha256 of repr of first+last transition (fast; detects log growth or swap).
@@ -946,17 +1012,6 @@ def _warm_verify_ok(pstep: "object", prior_spec: dict, log: EpisodeLog) -> bool:
     result = replay_consistency_gate(pstep, log).ok
     _WARM_VERIFY_MEMO[key] = result
     return result
-
-
-def _fp_memo_get(*args):
-    key = (id(args[1]) if len(args) > 1 else 0, id(args[0]))
-    hit = _FP_MEMO.get(key, '__miss__')
-    if hit != '__miss__':
-        return hit
-    val = _spec_static_footprint(*args)
-    if len(_FP_MEMO) < 500000:
-        _FP_MEMO[key] = val
-    return val
 
 
 def _spec_static_footprint(spec, tr) -> "set[tuple[int, int]] | None":
@@ -1022,7 +1077,7 @@ def _galois_footprint_lower_bound(step, log, metric: str, env=frozenset()) -> in
         if classes is not None:
             total = 0
             for cls in classes:
-                fp = _fp_memo_get(spec, cls.representative)
+                fp = _spec_static_footprint(spec, cls.representative)
                 if fp is None:
                     return 0
                 for target, n in cls.target_counts.items():
@@ -1145,8 +1200,6 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
     # NOISE DEFERRAL (2026-07-05): mining sees only recurring-signature frames;
     # gates and final status judge the FULL log (deferred frames stay residual,
     # visible to cards/checkpoints — deferred, never dropped).
-    _FP_MEMO.clear()
-    _GWC_TARGET_CACHE.clear()   # reset per-abduction numpy target array cache
     full_log = log
     from ztare.worldmodel.gates import env_frame_indices as _efi
     _deferred = _noise_deferred_frames(log, _efi(log))
@@ -1287,8 +1340,31 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
                     if len(opts) >= 2:
                         break
                 if r1.get("op") == r2.get("op"):
-                    set1 = [tr for tr in trs if expl([r1])]
-                    set2 = [tr for tr in trs if expl([r2]) and tr not in set1]
+                    base_frag, _ = lower_spec(
+                        {"actions": {"0": [{"op": "identity"}]},
+                         "always": always_opt}
+                    )
+                    frag1, _ = lower_spec(
+                        {"actions": {"0": [r1]}, "always": always_opt}
+                    )
+                    frag2, _ = lower_spec(
+                        {"actions": {"0": [r2]}, "always": always_opt}
+                    )
+                    set1 = [
+                        tr for tr in trs
+                        if frag1 is not None
+                        and base_frag is not None
+                        and frag1(tr.s, 0, tr.t) == tr.s_next
+                        and frag1(tr.s, 0, tr.t) != base_frag(tr.s, 0, tr.t)
+                    ]
+                    set2 = [
+                        tr for tr in trs
+                        if tr not in set1
+                        and frag2 is not None
+                        and base_frag is not None
+                        and frag2(tr.s, 0, tr.t) == tr.s_next
+                        and frag2(tr.s, 0, tr.t) != base_frag(tr.s, 0, tr.t)
+                    ]
                     if set1 and set2:
                         guard = _separating_count(set2, set1)
                         if guard is not None:
@@ -2292,16 +2368,7 @@ def _component_scope_consume_refine(spec, log):
                 if rule.get("op") != "consume_extremal" or rule.get("component_scope"):
                     continue
                 color = int(rule["color"])
-                repl = int(rule["replacement"])
-                scope_candidates = [
-                    {"colors": [color], "select": "largest", "min_size": 2},
-                    {"colors": [color], "select": "widest", "min_width": 2},
-                ]
-                if repl != color:
-                    scope_candidates.extend([
-                        {"colors": [color, repl], "select": "largest", "min_size": 2},
-                        {"colors": [color, repl], "select": "widest", "min_width": 2},
-                    ])
+                scope_candidates = _extremal_component_scope_candidates(rule)
                 feature_values = sorted({
                     sum(1 for row in tr.s for c in row if c == color)
                     for i, tr in enumerate(log) if i not in env
@@ -3269,6 +3336,64 @@ def _as_cycle_or_graph(m: dict, states: list):
     return [[int(f), int(t)] for f, t in sorted(m.items())], states
 
 
+def _mine_content_state_machine(observations, *, eligible_states=None):
+    """Return the MDL-smallest whole-content transition machine in observations.
+
+    ``observations`` contains pairs of equal-sized, hashable presentations.  The
+    resulting machine is an identity over whole contents: a conflicting
+    successor refutes functionality, while a single cell-wise substitution is
+    left to the cheaper write-function family.  ``eligible_states`` lets a
+    caller impose its own recurrence/authority filter without duplicating the
+    transition-algebra test.
+    """
+    pairs = [(tuple(before), tuple(after)) for before, after in observations
+             if tuple(before) != tuple(after)]
+    if not pairs:
+        return None
+    if eligible_states is None:
+        states = []
+        for before, after in pairs:
+            for state in (before, after):
+                if state not in states:
+                    states.append(state)
+    else:
+        states = [tuple(state) for state in eligible_states]
+    if len(states) < 2 or len({len(state) for state in states}) != 1:
+        return None
+    index = {state: position for position, state in enumerate(states)}
+    transitions = {}
+    for before, after in pairs:
+        if before not in index or after not in index:
+            continue
+        source, target = index[before], index[after]
+        if source in transitions and transitions[source] != target:
+            return None
+        transitions[source] = target
+    if not transitions or _cellwise_reproducible(states, transitions):
+        return None
+    state_transition, ordered = _as_cycle_or_graph(transitions, states)
+    return state_transition, ordered
+
+
+def _gap_tolerant_components(cells, *, gap=3):
+    """Connected components under a bounded Chebyshev-neighbour relation."""
+    components = []
+    for point in sorted({(int(row), int(col)) for row, col in cells}):
+        touching = [component for component in components
+                    if any(max(abs(point[0] - other[0]),
+                               abs(point[1] - other[1])) <= gap
+                           for other in component)]
+        if not touching:
+            components.append({point})
+            continue
+        merged = {point}
+        for component in touching:
+            merged.update(component)
+            components.remove(component)
+        components.append(merged)
+    return components
+
+
 def _residual_regions(rows, env, step, res_cols=frozenset()) -> "list[tuple]":
     """Bounding boxes of the cell-sets the current step still mispredicts. The
     whole-residual bbox is offered first (when the resource/guard refines already
@@ -3294,18 +3419,7 @@ def _residual_regions(rows, env, step, res_cols=frozenset()) -> "list[tuple]":
     regions = [_bbox([list(c) for c in resid])]
     # gap-tolerant clustering (Chebyshev <= 3): the display's scattered residual
     # cells fuse into one glyph without bridging to a distant bar.
-    pts, clusters = list(resid), []
-    for p in pts:
-        hit = [c for c in clusters if any(max(abs(p[0] - q[0]), abs(p[1] - q[1])) <= 3
-                                          for q in c)]
-        if not hit:
-            clusters.append([p])
-        else:
-            merged = [p]
-            for c in hit:
-                merged += c
-                clusters.remove(c)
-            clusters.append(merged)
+    clusters = _gap_tolerant_components(resid)
     for c in clusters:
         if len(c) >= 4:
             regions.append(_bbox([list(q) for q in c]))
@@ -3419,8 +3533,10 @@ def _region_state_refine(spec, log):
             if key in seen_site:
                 continue
             seen_site.add(key)
-            # map = region transition over frames this rect+edge crossing fires
-            m, ok = {}, True
+            # Whole-content observations over frames this crossing fires.  The
+            # shared miner owns functionality, cell-wise reducibility, and the
+            # cycle/partial-graph representation.
+            observations = []
             for i, tr in enumerate(rows):
                 if i in env:
                     continue
@@ -3431,16 +3547,14 @@ def _region_state_refine(spec, log):
                 fired = (o0 and not o1) if edge == "exit" else ((not o0) and o1)
                 if not fired:
                     continue
-                f, t = sidx[c0], sidx[c1]
-                if m.get(f, t) != t:                 # not a function -> not this trigger's machine
-                    ok = False
-                    break
-                m[f] = t
-            # keep only the genuinely non-cell-wise machines; a plain toggle/cycle
-            # is the write-function learner's job (general check, not a state count).
-            if not ok or not m or _cellwise_reproducible(states, m):
+                observations.append((c0, c1))
+            machine = _mine_content_state_machine(
+                observations,
+                eligible_states=states,
+            )
+            if machine is None:
                 continue
-            trans, ordered = _as_cycle_or_graph(m, states)
+            trans, ordered = machine
             cands.append({"op": "region_event", "mover_colors": sorted(mc),
                           "rect": list(rect), "edge": edge, "region": [y0, x0, y1, x1],
                           "content_states": [list(s) for s in ordered],

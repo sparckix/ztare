@@ -11,11 +11,11 @@ import ast
 import atexit
 import signal
 from pathlib import Path
+from typing import Any
 import argparse
 import sys
 from datetime import datetime, timezone
 import concurrent.futures
-from google.genai import types
 from ztare.common import utils
 from ztare.common.llm_runtime import (
     LLMRuntime,
@@ -44,6 +44,7 @@ from ztare.validator.mform_alignment_audit import (
 import re
 from ztare.primitives.primitive_library import format_transfer_hypotheses, retrieve_primitives
 from ztare.validator.core.mutation_contract import (
+    MutationDeclaration,
     MutationMismatchCode,
     approved_primitive_keys,
     evaluate_mutation_declaration,
@@ -57,7 +58,6 @@ from ztare.validator.core.information_yield import (
     apply_latent_motion_veto,
     evaluate_information_yield,
     render_loop_control_prompt_context,
-    select_thesis_control_mode,
 )
 from ztare.validator.utilities.pivot_heuristics import (
     PivotState,
@@ -575,10 +575,6 @@ if is_v4_family_project(args.project) and not args.runner_r1_contract:
     print(f"INFO: Enforcing --runner_r1_contract for V4-family project [{args.project}].")
 
 RUNTIME = LLMRuntime()
-
-# Keep legacy `client` pointing to Gemini for downstream verification panels.
-# Preflight-only exits before those panels and must not require API credentials.
-client = None if args.preflight_only else RUNTIME.require_gemini_client()
 
 
 # Phase 4g extraction (2026-05-06 PM): startup recovery hooks
@@ -1454,7 +1450,6 @@ def _derive_mutation_declaration(
     from ztare.validator.core.mutation_contract import (
         ClaimDeltaType,
         MutationArtifact,
-        MutationDeclaration,
         MutationScopeDelta,
         _estimate_claim_breadth,
         _infer_scope_for_artifacts,
@@ -1587,6 +1582,26 @@ def _validate_bounded_discriminator_suite(
         )
 
 
+def _parse_worldmodel_payload_with_retry(text: str) -> dict[str, object]:
+    """Parse and schema-check the worldmodel submission envelope.
+
+    The typed parser owns its bounded repair rules.  Keeping this as a distinct
+    intake door prevents a malformed worldmodel envelope from being silently
+    reclassified as a generic fenced-Python submission.
+    """
+    from ztare.validator.worldmodel_typed_payload import (
+        parse_worldmodel_typed_payload_text,
+        render_worldmodel_typed_payload,
+    )
+
+    payload_obj = parse_worldmodel_typed_payload_text(text)
+    # Rendering is the schema validator and the canonical projection used by
+    # receipt consumers.  Run it here even though the caller renders again for
+    # persistence so malformed control/candidate combinations fail at intake.
+    render_worldmodel_typed_payload(payload_obj)
+    return payload_obj
+
+
 def _prepare_mutation_candidate(
     *,
     raw_text: str,
@@ -1632,12 +1647,30 @@ def _prepare_mutation_candidate(
     python_code = None
     clean_thesis = None
     _control_only_submission = None  # sentinel; set when INVESTIGATED/LOWERABILITY_BLOCKED/action-request with empty carrier
-    if is_worldmodel_submission_contract(rubric_data):
+    is_worldmodel_contract = is_worldmodel_submission_contract(rubric_data)
+    candidate_thesis_pre_carrier = working_text
+    if is_worldmodel_contract:
+        from ztare.validator.core.candidate_preflight import (
+            ControlOnlyPreflightRequest,
+            run_worldmodel_control_only_preflights,
+            sync_worldmodel_capability_proposals,
+        )
+        from ztare.validator.worldmodel_typed_payload import (
+            render_worldmodel_typed_payload,
+        )
+
+        # Capability proposals are control-plane transitions.  Preserve them
+        # before deciding whether this envelope also carries executable code.
+        sync_worldmodel_capability_proposals(
+            project_dir=project_dir or PROJECT_DIR,
+            text=candidate_thesis_pre_carrier,
+            source_ref=f"autoresearch:{getattr(args, 'project', 'unknown')}:mutator",
+            log=lambda message: print(f"[candidate-preflight] {message}"),
+        )
         try:
-            from ztare.validator.worldmodel_typed_payload import (
-                parse_worldmodel_typed_payload_text as _parse_wm_payload,
-            )
-            _wm_payload = _parse_wm_payload(working_text)
+            payload_obj = _parse_worldmodel_payload_with_retry(working_text)
+            candidate_thesis_pre_carrier = render_worldmodel_typed_payload(payload_obj)
+            _wm_payload = payload_obj
             _wm_code = str(_wm_payload.get("test_model_py") or "")
             if _wm_code.strip():
                 python_code = _wm_code
@@ -1661,11 +1694,30 @@ def _prepare_mutation_candidate(
                 )
                 _control_only_submission = _check_co(_wm_payload, raw_text=working_text)
                 if _control_only_submission is not None:
+                    _control_preflight_message = run_worldmodel_control_only_preflights(
+                        ControlOnlyPreflightRequest(
+                            project_dir=project_dir or PROJECT_DIR,
+                            thesis_text=candidate_thesis_pre_carrier,
+                        )
+                    )
+                    if _control_preflight_message is not None:
+                        raise ValueError(_control_preflight_message)
                     # Return early — no fence scan, no validate_python_suite_candidate.
-                    return declaration, None, working_text, None, working_text, _control_only_submission
-        except Exception:
-            python_code = None
-    if python_code is None:
+                    return (
+                        declaration,
+                        None,
+                        candidate_thesis_pre_carrier,
+                        None,
+                        candidate_thesis_pre_carrier,
+                        _control_only_submission,
+                    )
+                raise ValueError(
+                    "Worldmodel submission missing executable transition carrier "
+                    "and carries no admissible control-only transition."
+                )
+        except ValueError as exc:
+            raise ValueError(f"Worldmodel typed payload contract reject: {exc}") from exc
+    else:
         extraction = extract_best_python_candidate(working_text, rubric_data)
         python_code = extraction.python_code
         clean_thesis = extraction.clean_thesis
@@ -1687,8 +1739,43 @@ def _prepare_mutation_candidate(
 
     validate_python_suite_candidate(python_code)
 
+    if is_worldmodel_contract:
+        from ztare.common.worldmodel_carrier_purity import (
+            validate_worldmodel_carrier_source,
+        )
+
+        if str(rubric_data.get("dynamics_assumption") or "").strip().lower() == "lawful_time":
+            validate_worldmodel_carrier_source(
+                python_code,
+                dynamics_assumption="lawful_time",
+            )
+        else:
+            validate_worldmodel_carrier_source(python_code)
+
+    _executable_candidate_source = _ensure_canonical_model_aliases(python_code or "")
+    from ztare.validator.core.candidate_preflight import (
+        CandidatePreflightRequest,
+        run_candidate_preflights,
+    )
+
+    _candidate_preflight_message = run_candidate_preflights(
+        CandidatePreflightRequest(
+            project_dir=project_dir or PROJECT_DIR,
+            thesis_text=candidate_thesis_pre_carrier,
+            executable_candidate_source=_executable_candidate_source,
+            python_executable=sys.executable,
+            pre_judge_gate_harness=bool(rubric_data.get("pre_judge_gate_harness")),
+            is_worldmodel_contract=is_worldmodel_submission_contract(rubric_data),
+            source_ref=f"autoresearch:{getattr(args, 'project', 'unknown')}:candidate",
+        ),
+        log=lambda message: print(f"[candidate-preflight] {message}"),
+    )
+    if _candidate_preflight_message is not None:
+        raise ValueError(_candidate_preflight_message)
+
     if (
         python_code is not None
+        and not is_worldmodel_contract
         and (falsification_mode or "numerical_proof").strip().lower() == "bounded_discriminator"
     ):
         _validate_bounded_discriminator_suite(
@@ -1754,14 +1841,10 @@ def _prepare_mutation_candidate(
             before_text=current_thesis,
             after_text=clean_thesis,
             approved_primitive_keys=approved_primitive_keys(),
-            expected_thesis_control_mode=(
-                select_thesis_control_mode(
-                    pending_action=pending_loop_action,
-                    rationale=pending_loop_rationale,
-                )
-                if pending_loop_action != LoopControlAction.CONTINUE
-                else None
-            ),
+            # Search-control policy is kernel state. The leaf may describe its
+            # mutation, but it cannot be rejected for failing to repeat policy
+            # advice that should never enter its semantic prompt.
+            expected_thesis_control_mode=None,
         )
 
     return declaration, validation_record, clean_thesis, python_code, working_text, None
@@ -2053,9 +2136,9 @@ def mutate_thesis(
     pivot_profile = pivot_state.profile
     pivot_profile_instruction = pivot_profile.instruction if pivot_profile else ""
     if pivot_profile and not is_v4_project:
-        # GP-216: enrich stagnation/emergency pivot profiles with an advisory
-        # universal operation class inferred from the latest weakest-point text.
-        # This does not alter pivot control flow; it only sharpens the prompt.
+        # Scientific stagnation may select a structural operation class. Runner
+        # and R1 failures never reach this branch because they do not accumulate
+        # scientific stagnation.
         try:
             from ztare.validator.utilities.gap_to_op_class_integration import (
                 enrich_pivot_instruction_with_op_class,
@@ -2209,8 +2292,21 @@ def mutate_thesis(
         "the OPERATIVE FAILURE above is authoritative where they conflict)"
         + (f"\n{_prior_thesis_stale_note}" if _prior_thesis_stale_note else "")
     )
+    from ztare.validator.core.worldmodel_prompt_context import (
+        deterministic_patch_base_document_context,
+    )
+
+    authority_document_context = deterministic_patch_base_document_context(
+        project_dir=PROJECT_DIR,
+        current_content=current_content,
+        current_test_model=current_test_model,
+    )
+    default_document_context = (
+        authority_document_context
+        or f"{_prior_thesis_header}\n{current_content}"
+    )
     if is_v4_project:
-        document_context = f"{_prior_thesis_header}\n{current_content}"
+        document_context = default_document_context
         if pivot_state.event_type == "v4_bounded_mutation_override":
             profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
             print(
@@ -2298,36 +2394,8 @@ def mutate_thesis(
         - Do NOT claim stable adversarial coverage, whole-system robustness, or upstream trust repair.
         - Any upstream-stage weakness must be labeled `OUT-OF-SCOPE DEBT` and must not be the main thesis target.
         """
-    elif pivot_state.loop_control_action == "emergency_pivot":
-        print("🚨 emergency mandate: executing emergency structural pivot")
-        if pivot_profile:
-            profile_summary = ", ".join(pivot_profile.modules)
-            print(
-                "🚨 Emergency pivot profile injected "
-                f"(profile={pivot_profile.name}; modules=[{profile_summary}]; "
-                f"stagnation_count={stagnation_count})."
-            )
-        print("🧹 Purging toxic axioms to allow true architectural reset...")
-        
-        if os.path.exists(AXIOM_PATH):
-            shutil.copy(AXIOM_PATH, f"{AXIOM_PATH}.bak")
-            os.remove(AXIOM_PATH) # Hide from test_thesis.py            
-        axiom_str = "NONE. (Previous axioms purged due to emergency structural pivot)."
-        document_context = "🚨 [SYSTEM STATE PURGED]: Your previous logic was fundamentally and repeatedly rejected by the Auditor. You are starting from a BLANK SLATE. You must derive a new architecture using ONLY the Grounding Data and First Principles. Do NOT iterative-fix; RE-ENGINEER. 🚨"
-        task_header = "🚨 EMERGENCY MANDATE: EXECUTE STRUCTURAL PIVOT 🚨"
-    elif pivot_state.loop_control_action == "stagnation_pivot":
-        profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
-        print(
-            "🚨 Stagnation pivot profile injected "
-            f"(profile={pivot_profile.name if pivot_profile else 'none'}; "
-            f"modules=[{profile_summary}]; stagnation_count={stagnation_count})."
-        )
-        document_context = "🚨 [SYSTEM STATE PURGED]: Current logic has reached a terminal friction point. You must derive a NEW Transformation Function. 🚨"
-        task_header = "🚨 STAGNATION MANDATE: EXECUTE STRUCTURAL PIVOT 🚨"
     else:
-        document_context = (
-            f"{_prior_thesis_header}\n{current_content}"
-        )
+        document_context = default_document_context
 
     if not is_v4_project and pivot_profile:
         pivot_instruction = pivot_profile_instruction
@@ -2342,7 +2410,17 @@ def mutate_thesis(
             ))
             or []
         )
-        if (
+        from ztare.orchestrator.prompt import select_specialized_submission_prompt
+
+        _specialized_submission_prompt = select_specialized_submission_prompt(
+            rubric_data,
+            project_dir=PROJECT_DIR,
+            dynamics_assumption=_dynamics_assumption,
+        )
+        if _specialized_submission_prompt is not None:
+            style_guide = _specialized_submission_prompt["style_guide"]
+            output_requirements = _specialized_submission_prompt["output_requirements"]
+        elif (
             _theorem_packet_required
             and not requires_i_model_submission(rubric_data)
         ):
@@ -2611,6 +2689,34 @@ def mutate_thesis(
         stagnant_window=stagnation_count,
     )
     _briefing_block = ""
+    _briefing_records: list[dict[str, Any]] = []
+
+    if is_worldmodel_submission_contract(rubric_data):
+        from ztare.common.leaf_workbench_executor import (
+            active_workbench_task_capability_scope,
+            active_workbench_task_first_fire_receipt,
+        )
+
+        _active_task_scope, _active_task = active_workbench_task_capability_scope(
+            PROJECT_DIR
+        )
+        if _active_task_scope:
+            _first_fire_receipt = active_workbench_task_first_fire_receipt(
+                PROJECT_DIR,
+                adapter_id="worldmodel",
+                materialize=True,
+            )
+            if _first_fire_receipt is None:
+                raise RuntimeError(
+                    "active workbench task could not produce its selected first-fire "
+                    "receipt; refusing to spend a proposer turn with an unconsumed "
+                    "control transition"
+                )
+            print(
+                "🔬 Active workbench task first-fired: "
+                f"task={_active_task.get('task_id')} "
+                f"capability={_first_fire_receipt.get('capability_id')}"
+            )
 
     try:
         from ztare.orchestrator.mutator_briefing import (
@@ -2636,6 +2742,38 @@ def mutate_thesis(
         )
         _briefing_render = render_default_briefing_context(_briefing_ctx)
         _briefing_block = str(_briefing_render.get("body") or "")
+        _briefing_records = [
+            dict(record)
+            for record in (_briefing_render.get("structured_records") or [])
+            if isinstance(record, dict)
+        ]
+        try:
+            from ztare.common.candidate_memory import (
+                admissible_candidate_memory_records,
+                load_candidate_memory,
+            )
+            from ztare.worldmodel.machinery_contradictions import detect_and_card as _detect_machinery
+
+            # The ledger path is workspace/candidate_memory.json; the reader
+            # filters historical rows through the current carrier contract
+            # before the visibility detector treats one as an active prior.
+            memory_records = admissible_candidate_memory_records(
+                PROJECT_DIR,
+                load_candidate_memory(PROJECT_DIR),
+                require_submission_source=True,
+            )
+            _detect_machinery(
+                PROJECT_DIR,
+                [],
+                [],
+                candidate_memory_records=memory_records,
+                prompt_text=_briefing_block,
+            )
+        except Exception as _machinery_exc:  # noqa: BLE001
+            print(
+                "⚠️ Candidate-memory visibility audit failed: "
+                f"{_machinery_exc} (continuing with rendered briefing)"
+            )
         _active = list(_briefing_render.get("active_providers") or [])
         _diag = dict(_briefing_render.get("diagnostics") or {})
         _gated = _diag.get("tier_gated", [])
@@ -2650,6 +2788,13 @@ def mutate_thesis(
     except Exception as _briefing_exc:
         print(f"⚠️ MutatorBriefing render failed: {_briefing_exc} (continuing without provider briefing)")
         _briefing_block = ""
+
+    # Rendering is transport, not downstream consumption.  An operational
+    # edge may enter candidate synthesis here; the invoked endpoint must close
+    # it before the candidate reaches parsing or evaluation.
+    from ztare.common.schema_routes import assert_operational_routes_ready
+
+    assert_operational_routes_ready(PROJECT_DIR, entering_phase="governed_run")
 
     if _briefing_block and not fit_primitive_features_enabled:
         mutator_briefing_context = _briefing_block
@@ -3509,6 +3654,16 @@ COMMITTED DECLARATION:
 ```
 """
         payload_text = safe_mutate(payload_prompt, model_id=model_id)
+        if _briefing_records:
+            from ztare.common.schema_routes import observe_dispatched_schema_route_delivery
+
+            observe_dispatched_schema_route_delivery(
+                PROJECT_DIR,
+                records=_briefing_records,
+                rendered_text=payload_prompt,
+                consumer="autoresearch_mutator_r1_payload",
+                attempt_id=f"{RUN_ID}:{i + 1}:r1_payload",
+            )
         return f"```json\n{declaration_json}\n```\n\n{payload_text.strip()}"
 
     prompt = base_prompt
@@ -3548,11 +3703,21 @@ RUNNER R1 DECLARATION CONTRACT (MANDATORY):
   - `runner_runtime`
   - `other`
 - `primitive_invoked` must be `null` or an approved primitive key if you are explicitly relying on one.
-- `thesis_control_mode` must match the LOOP CONTROL SIGNAL when that signal is present.
 - This declaration is a prior commitment. Do not generate the thesis first and then rationalize the declaration after the fact.
 """
     # --- CHANGED: Passing model_id through to safe_mutate ---
-    return safe_mutate(prompt, model_id=model_id)
+    response = safe_mutate(prompt, model_id=model_id)
+    if _briefing_records:
+        from ztare.common.schema_routes import observe_dispatched_schema_route_delivery
+
+        observe_dispatched_schema_route_delivery(
+            PROJECT_DIR,
+            records=_briefing_records,
+            rendered_text=prompt,
+            consumer="autoresearch_mutator_candidate_synthesis",
+            attempt_id=f"{RUN_ID}:{i + 1}:candidate_synthesis",
+        )
+    return response
 
 
 def evolve_rubric(current_rubric_data, winning_thesis):
@@ -3577,9 +3742,7 @@ def evolve_rubric(current_rubric_data, winning_thesis):
     - "criteria": A JSON object containing key-value string pairs of the grading rules.
     """
 
-    config = types.GenerateContentConfig(
-        response_mime_type="application/json"
-    )
+    config = {"response_mime_type": "application/json"}
 
     print("\n" + "·" * 40)
     print(f"🧠 director ({DIRECTOR_MODEL_ID}): evolving rubric")
@@ -4141,12 +4304,104 @@ if args.dynamic:
         ],
         check=True,
     )
-subprocess.run(test_cmd, check=True)
+baseline_test_cmd = list(test_cmd)
+from ztare.validator.core.pre_judge_gate import (
+    bind_pre_judge_gate_payload as _bind_pre_judge_gate_payload,
+    evaluation_cache_key as _evaluation_cache_key,
+    load_cached_evaluation as _load_cached_evaluation,
+    run_pre_judge_gate_harness,
+    store_cached_evaluation as _store_cached_evaluation,
+)
+from ztare.common.observation_chart import (
+    assert_project_evidence_epoch,
+    capture_project_evidence_epoch,
+)
+
+# Scientific CEGAR holds one immutable evidence/chart epoch for the whole run.
+# A System-1.5 evidence repair is published between governed runs; if any active
+# episode or sidecar moves after this pin, every later pre-judge call fails
+# closed and the next run starts from the migrated bank.
+_ACTIVE_EVIDENCE_EPOCH = capture_project_evidence_epoch(PROJECT_DIR)
+
+
+def _run_test_thesis_command(
+    command: list[str],
+    gate_payload: dict | None,
+) -> None:
+    """Run the evaluator with the gate receipt for this exact candidate."""
+
+    with _bind_pre_judge_gate_payload(gate_payload) as evaluator_env:
+        subprocess.run(command, check=True, env=evaluator_env)
+
+baseline_pre_judge_gate_result = run_pre_judge_gate_harness(
+    enabled=bool(rubric_data.get("pre_judge_gate_harness")),
+    project_dir=PROJECT_DIR,
+    latest_eval_results_path=LATEST_EVAL_RESULTS_PATH,
+    python_executable=sys.executable,
+    candidate_path=f"{PROJECT_DIR}/test_model.py",
+    expected_evidence_epoch=_ACTIVE_EVIDENCE_EPOCH,
+)
+if baseline_pre_judge_gate_result.message:
+    print(baseline_pre_judge_gate_result.message)
+if (
+    baseline_pre_judge_gate_result.score_cap_reason
+    == "pre_judge_gate_harness_error"
+):
+    raise SystemExit(
+        "Pre-judge verifier unavailable for the baseline; refusing to dispatch "
+        "a scientific mutation against an unevaluated carrier."
+    )
+
+baseline_eval_cache_key = _evaluation_cache_key(
+    project_dir=PROJECT_DIR,
+    candidate_path=f"{PROJECT_DIR}/test_model.py",
+    gate_payload=baseline_pre_judge_gate_result.payload,
+    rubric_path=MAIN_RUBRIC_PATH,
+    extra_paths=[
+        WORKING_PATH,
+        EVIDENCE_PATH,
+        PROJECT_CHARTER_PATH,
+        Path(PROJECT_DIR) / "workspace" / "strategy_experiments.jsonl",
+    ],
+)
+_baseline_cache_path = Path(PROJECT_DIR) / "workspace" / "evaluation_by_candidate_sha.json"
+if _baseline_cache_path.exists():
+    _cached_baseline_eval = _load_cached_evaluation(
+        PROJECT_DIR,
+        baseline_eval_cache_key,
+    )
+else:
+    _cached_baseline_eval = None
+if (
+    isinstance(_cached_baseline_eval, dict)
+    and _cached_baseline_eval.get("cache_verdict") == "cache_hit"
+):
+    Path(LATEST_EVAL_RESULTS_PATH).write_text(
+        json.dumps(_cached_baseline_eval, indent=2),
+        encoding="utf-8",
+    )
+    baseline_test_cmd = [sys.executable, "-c", "pass"]
+elif baseline_pre_judge_gate_result.should_skip_judge:
+    baseline_test_cmd = [sys.executable, "-c", "pass"]
+
+_run_test_thesis_command(
+    baseline_test_cmd,
+    (
+        baseline_pre_judge_gate_result.payload
+        if baseline_pre_judge_gate_result.enabled and baseline_pre_judge_gate_result.ran
+        else None
+    ),
+)
 with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
     res = _normalize_eval_payload(
         json.load(f),
         context_label="baseline latest_eval_results.json",
     )
+_store_cached_evaluation(
+    project_dir=PROJECT_DIR,
+    cache_key=baseline_eval_cache_key,
+    evaluation=res,
+)
 previous_champion_fingerprint = artifact_regime_fingerprint(
     _champion_eval_payload(),
     score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
@@ -4932,6 +5187,16 @@ except Exception as _mat_exc:  # noqa: BLE001
     print(f"🏅 champion materialization error (non-fatal): {_mat_exc}")
 
 for i in range(ITERATIONS):
+    # Phase isolation is checked before prompt construction as well as before
+    # the gate.  A chart/evidence migration therefore cannot feed a leaf a new
+    # bank and only be noticed after the leaf has already searched against it.
+    assert_project_evidence_epoch(PROJECT_DIR, _ACTIVE_EVIDENCE_EPOCH)
+    # A consequence-bearing receipt with no consumer is an apparatus
+    # obstruction.  Do not spend another model call mutating scientific law
+    # until the declared route has consumed (or explicitly disposed of) it.
+    from ztare.common.schema_routes import assert_operational_routes_ready
+
+    assert_operational_routes_ready(PROJECT_DIR, entering_phase="governed_run")
     print(
         f"\n--- Iteration {i + 1} (Score: {best_score} | Stagnation: {stagnation_count}) ---"
     )
@@ -5072,6 +5337,8 @@ for i in range(ITERATIONS):
                 *(["--use_primitives"] if args.use_primitives else []),
                 "--primitive_top_k",
                 str(args.primitive_top_k),
+                "--model",
+                (args.committee_model or args.judge_model),
             ],
             check=True,
         )
@@ -5682,6 +5949,12 @@ for i in range(ITERATIONS):
                 except Exception as _bl_exc:
                     print(f"⚔️  Blitz dispatch error (non-fatal): {_bl_exc}; falling back to single mutate")
                     new_content = _single_mutate("")
+        # A rendered or persisted projection is insufficient.  Before parsing
+        # a candidate, require every admitted operational observation to have
+        # reached an invoked synthesis endpoint under the same task identity.
+        from ztare.common.schema_routes import assert_operational_routes_ready
+
+        assert_operational_routes_ready(PROJECT_DIR)
         _runner_allowed_raw = rubric_data.get("runner_allowed_imports", ()) or ()
         _runner_allowed = tuple(
             str(x).strip() for x in _runner_allowed_raw if isinstance(x, str) and x.strip()
@@ -7368,7 +7641,10 @@ for i in range(ITERATIONS):
     # workspace/submissions/iter_<N>_<utc>.{py,md} so failed iters are
     # always inspectable. No-op when MUTATOR_SUBMISSION_SNAPSHOT=0.
     _submission_snapshot_py_path = None
-    if os.environ.get("MUTATOR_SUBMISSION_SNAPSHOT", "1") != "0":
+    if (
+        _control_only_sentinel is None
+        and os.environ.get("MUTATOR_SUBMISSION_SNAPSHOT", "1") != "0"
+    ):
         try:
             _submissions_dir = workspace_dir / "submissions"
             _submissions_dir.mkdir(parents=True, exist_ok=True)
@@ -7397,7 +7673,7 @@ for i in range(ITERATIONS):
         )
         # test_model_path is a string in this scope (see L5104); coerce to Path.
         _adherence_path = Path(test_model_path)
-        if _adherence_path.exists():
+        if _control_only_sentinel is None and _adherence_path.exists():
             _adherence_text = _adherence_path.read_text(encoding="utf-8", errors="ignore")
             _adherence_report = _emit_adherence(ctx, _adherence_text)
             _adherence_summary = _format_adherence_summary(_adherence_report)
@@ -7407,6 +7683,7 @@ for i in range(ITERATIONS):
         print(f"📋 contract-adherence telemetry error (non-fatal): {_adherence_err}")
 
     iteration_test_cmd = list(test_cmd)
+    pre_judge_gate_result = None
 
     # Control-only turn: INVESTIGATED / LOWERABILITY_BLOCKED / registered-action
     # receipt with empty carrier. Build the eval row synthetically and skip the
@@ -7435,7 +7712,7 @@ for i in range(ITERATIONS):
         )
         iteration_test_cmd = [sys.executable, "-c", "pass"]
 
-    if rubric_data.get("pre_judge_gate_harness"):
+    if rubric_data.get("pre_judge_gate_harness") and _control_only_sentinel is None:
         from ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
 
         with _phase_timing("gate_run", workspace_dir):
@@ -7445,15 +7722,32 @@ for i in range(ITERATIONS):
                 latest_eval_results_path=LATEST_EVAL_RESULTS_PATH,
                 python_executable=sys.executable,
                 candidate_path=_submission_snapshot_py_path,
+                expected_evidence_epoch=_ACTIVE_EVIDENCE_EPOCH,
+                run_role=resolve_cegis_run_role("mutator"),
             )
         if pre_judge_gate_result.message:
             print(pre_judge_gate_result.message)
+        if (
+            pre_judge_gate_result.score_cap_reason
+            == "pre_judge_gate_harness_error"
+        ):
+            raise SystemExit(
+                "Pre-judge verifier unavailable for the proposed carrier; "
+                "refusing to convert an apparatus failure into scientific feedback."
+            )
         if pre_judge_gate_result.should_skip_judge:
             iteration_test_cmd = [sys.executable, "-c", "pass"]
 
     try:
         with _phase_timing("agent_dispatch", workspace_dir):
-            subprocess.run(iteration_test_cmd, check=True)
+            _run_test_thesis_command(
+                iteration_test_cmd,
+                (
+                    pre_judge_gate_result.payload
+                    if pre_judge_gate_result is not None
+                    else None
+                ),
+            )
         with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
             new_eval = _normalize_eval_payload(
                 json.load(f),
@@ -7823,7 +8117,43 @@ for i in range(ITERATIONS):
             and _new_raw_score > best_raw_score
             and _new_gate_failure_count <= best_gate_failure_count
         )
-        _candidate_improved = _capped_strict or _capped_equal_raw_better
+        _pre_judge_payload = new_eval.get("pre_judge_gate_payload")
+        _pre_judge_payload = (
+            _pre_judge_payload if isinstance(_pre_judge_payload, dict) else {}
+        )
+        _pre_judge_decision = _pre_judge_payload.get("pre_judge_decision")
+        _pre_judge_decision = (
+            _pre_judge_decision
+            if isinstance(_pre_judge_decision, dict)
+            else {}
+        )
+        _promotion_authorized = _pre_judge_decision.get(
+            "candidate_promotion_authorized"
+        )
+        # Compatibility: projects without the split authority field retain
+        # their existing score-selection behavior.
+        _promotion_authorized = (
+            _promotion_authorized
+            if isinstance(_promotion_authorized, bool)
+            else True
+        )
+        _promotion_decision_present = isinstance(
+            _pre_judge_decision.get("candidate_promotion_authorized"), bool
+        )
+        # A bound pre-judge decision with search-incumbent authority is the
+        # selection verdict, not merely permission for a second scorer to make
+        # the same decision.  Projects without that typed edge retain the
+        # legacy score comparison.
+        _candidate_improved = bool(
+            _promotion_authorized
+            if _promotion_decision_present
+            else (_capped_strict or _capped_equal_raw_better)
+        )
+        if not _promotion_authorized and (_capped_strict or _capped_equal_raw_better):
+            print(
+                "🧱 Candidate improved its evaluation score but its bound "
+                "pre-judge receipt did not authorize champion promotion."
+            )
         if _capped_equal_raw_better and not _capped_strict:
             print(
                 f"🎯 LATENT-GRADIENT promotion: capped {best_score}→{new_eval.get('score', 0)} "
@@ -8283,6 +8613,17 @@ for i in range(ITERATIONS):
                             print("    🔬 GP-103: no compressed form passes gates — champion retained")
                 except Exception as _comp_exc:
                     print(f"    🔬 GP-103 compression: error — {_comp_exc}")
+
+            if (
+                rubric_data.get("stop_on_gate_pass", False)
+                and _pre_judge_decision.get("gate_contract_closed") is True
+            ):
+                print(
+                    "🛑 stop_on_gate_pass: the bound deterministic contract "
+                    "closed; returning the promoted carrier to its downstream "
+                    "consumer."
+                )
+                break
 
         else:
             # Retroactive champion invalidation. If the new iter

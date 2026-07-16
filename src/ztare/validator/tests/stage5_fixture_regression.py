@@ -159,13 +159,13 @@ def build_stage5_fixture_cases() -> list[Stage5FixtureCase]:
             expected_action=LoopControlAction.PIVOT_REQUIRED,
         ),
         Stage5FixtureCase(
-            case_id="crash_tail_pivot",
-            description="Repeated crash-only iterations should require a pivot.",
+            case_id="crash_tail_excluded",
+            description="Repeated runtime failures stay outside scientific search control.",
             history=(
                 IterationSignal(iteration_index=1, score=0, weakest_point="auditor subprocess crashed", runtime_failure=True),
                 IterationSignal(iteration_index=2, score=0, weakest_point="auditor subprocess crashed", runtime_failure=True),
             ),
-            expected_action=LoopControlAction.PIVOT_REQUIRED,
+            expected_action=LoopControlAction.CONTINUE,
         ),
         Stage5FixtureCase(
             case_id="weakest_point_churn_no_credit",

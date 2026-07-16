@@ -16,7 +16,7 @@ from ztare.validator.core.repair_preflight import (
     leaf_workbench_retry_message,
     patch_base_regression_retry_message,
     strategy_card_retry_message,
-    strategy_discharge_missing_evidence_action_retry_message,
+    blocked_control_missing_evidence_action_retry_message,
 )
 from ztare.validator.worldmodel_typed_payload import extract_worldmodel_control_receipts
 
@@ -258,10 +258,10 @@ def _control_only_preflight_rules(request: ControlOnlyPreflightRequest) -> tuple
             ),
         ),
         PreflightRule(
-            id="strategy_discharge_boundary_morphism",
+            id="blocked_control_boundary_morphism",
             applies_to="control_only",
             authority="admissibility",
-            run=lambda: strategy_discharge_missing_evidence_action_retry_message(
+            run=lambda: blocked_control_missing_evidence_action_retry_message(
                 enabled=True,
                 project_dir=request.project_dir,
                 thesis_text=thesis_text,

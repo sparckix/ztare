@@ -25,6 +25,18 @@ META_HARDENING_LANE: Lane = "meta_hardening"
 PROOF_WORK_LANE: Lane = "proof_work"
 ADVISORY_LANE: Lane = "advisory"
 
+# Compatibility only for cards written before lane became part of card
+# identity. New producers must write ``lane`` explicitly.
+_LEGACY_SKILL_CARD_KINDS = frozenset(
+    {
+        "compressed_counterexample_repair",
+        "evidence_probe",
+        "search_control_residue_repair",
+        "horizon_exhaustion_probe",
+        "carrier_repair_probe",
+    }
+)
+
 
 @dataclass(frozen=True)
 class RunContext:
@@ -97,7 +109,7 @@ def classify_control_work_item(item: dict[str, Any]) -> WorkItemRole:
             gate_success_status=gate_success_status,
         )
 
-    if item_type == "strategy_experiment" or kind:
+    if item_type == "strategy_experiment" and kind in _LEGACY_SKILL_CARD_KINDS:
         return WorkItemRole(
             lane=SKILL_ACQUISITION_LANE,
             target_surface="candidate",

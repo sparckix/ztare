@@ -34,6 +34,8 @@ def patch_carrier_brief_line(*, include_compat_note: bool = False) -> str:
         "Patch-base carrier, only when this prompt supplies a concrete "
         'patch_base_ref plus full SHA: `PATCH_BASE = {"source_ref":'
         '"workspace/submissions/<file>.py","sha256":"<full-sha256>"}` plus '
+        "either a literal catalog `PATCH_DELTA_SPEC` (preferred when the "
+        "receipt names a registered operation) or "
         f"`def {patch_delta_signature()}: ...`."
     )
     if include_compat_note:

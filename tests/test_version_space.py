@@ -4,7 +4,7 @@
   - battery construction + determinism
   - fingerprint distinguishes differently-wrong candidates
   - admit rejects non-visible-perfect
-  - duplicate detection by fingerprint
+  - source identity distinct from finite-evidence equivalence
   - seed_from_history admits perfect + rejects broken
   - disagreement report on two survivors differing on one probe
   - collapsed-population case
@@ -27,7 +27,6 @@ from ztare.worldmodel.version_space import (
     probe_battery,
     seed_from_history,
     _load_prunes,
-    _fp_cache_path,
 )
 
 # ── synthetic project helpers ─────────────────────────────────────────────────
@@ -107,25 +106,55 @@ class TestProbeBattery:
         assert battery == []
 
     def test_battery_uses_wrong_rows_from_bitmaps(self, tmp_path):
-        # Plant a fake bitmap with a wrong row
-        project = _make_project(tmp_path, _pairs_for_identity(100))
+        project = _make_project(tmp_path, _pairs_for_identity(1000))
+        visible = EpisodeLog.read_jsonl(
+            project / "raw" / "episodes" / "episode_001.jsonl"
+        )
         bm_dir = project / "workspace" / "row_bitmaps"
         bm_dir.mkdir(parents=True)
         fake_bm = {
             "schema": "ztare-row-bitmap-v1",
             "carrier_sha256": "x" * 64,
-            "episode_hash": "y" * 64,
+            "episode_hash": visible.content_hash(),
             "episode_path": "ep.jsonl",
-            "total_rows": 100,
+            "total_rows": 1000,
             "env_frame_indices": [],
-            "exact_count": 99,
+            "exact_count": 999,
             "wrong_rows": [7],
-            "bits": [True] * 100,
+            "bits": [True] * 1000,
         }
         (bm_dir / "fake_a3b4_fake1234.json").write_text(json.dumps(fake_bm))
         battery = probe_battery(project)
-        row_indices = [p["row_index"] for p in battery]
-        assert 7 in row_indices
+        planted = next(p for p in battery if p["row_index"] == 7)
+        assert "bitmap:fake_a3b4_fa" in planted["provenance"]
+
+    def test_battery_rejects_wrong_rows_from_another_evidence_identity(self, tmp_path):
+        project = _make_project(tmp_path, _pairs_for_identity(1000))
+        bm_dir = project / "workspace" / "row_bitmaps"
+        bm_dir.mkdir(parents=True)
+        (bm_dir / "withheld.json").write_text(json.dumps({
+            "schema": "ztare-row-bitmap-v1",
+            "episode_hash": "withheld-evidence-sha",
+            "wrong_rows": [7],
+        }))
+        battery = probe_battery(project)
+        assert all(p["row_index"] != 7 for p in battery)
+
+    def test_battery_rejects_wrong_rows_from_failed_bitmap(self, tmp_path):
+        project = _make_project(tmp_path, _pairs_for_identity(1000))
+        visible = EpisodeLog.read_jsonl(
+            project / "raw" / "episodes" / "episode_001.jsonl"
+        )
+        bm_dir = project / "workspace" / "row_bitmaps"
+        bm_dir.mkdir(parents=True)
+        (bm_dir / "failed.json").write_text(json.dumps({
+            "schema": "ztare-row-bitmap-v1",
+            "episode_hash": visible.content_hash(),
+            "load_error": "transient",
+            "wrong_rows": [7],
+        }))
+        battery = probe_battery(project)
+        assert all(p["row_index"] != 7 for p in battery)
 
 
 class TestFingerprint:
@@ -189,7 +218,7 @@ class TestAdmit:
         rec = admit(cpath, project)
         assert rec["status"] == "rejected"
 
-    def test_admit_duplicate_fingerprint(self, tmp_path):
+    def test_admit_retains_source_distinct_evidence_equivalents(self, tmp_path):
         project = _make_project(tmp_path, _pairs_for_identity(100))
         src_a = "def step(s, a, t):\n    return s  # ver A\n"
         src_b = "def step(s, a, t):\n    x = s; return x  # ver B\n"
@@ -198,7 +227,36 @@ class TestAdmit:
         r1 = admit(ca, project)
         r2 = admit(cb, project)
         assert r1["status"] == "admitted"
-        assert r2["status"] == "duplicate"
+        assert r2["status"] == "admitted"
+        assert r1["hypothesis_id"] != r2["hypothesis_id"]
+        assert r1["fingerprint"] == r2["fingerprint"]
+        assert r1["evidence_equivalence"]["relation"] == "agreement_on_probe_battery"
+        assert len(load(project)) == 2
+
+    def test_admit_deduplicates_identical_source_identity(self, tmp_path):
+        project = _make_project(tmp_path, _pairs_for_identity(100))
+        ca = _write_candidate(project, "id_a.py", _IDENTITY_SRC)
+        cb = _write_candidate(project, "id_b.py", _IDENTITY_SRC)
+        assert admit(ca, project)["status"] == "admitted"
+        duplicate = admit(cb, project)
+        assert duplicate["status"] == "duplicate"
+        assert len(load(project)) == 1
+
+    def test_same_source_is_rechecked_after_evidence_changes(self, tmp_path):
+        project = _make_project(tmp_path, [(_G1, 0, _G1)])
+        candidate = _write_candidate(project, "identity.py", _IDENTITY_SRC)
+        first = admit(candidate, project)
+        assert first["status"] == "admitted"
+
+        episode = project / "raw" / "episodes" / "episode_001.jsonl"
+        _write_episode(episode, [(_G1, 0, _G1), (_G2, 1, _G2)])
+        refreshed = admit(candidate, project)
+
+        assert refreshed["status"] == "admitted"
+        assert refreshed["evidence_equivalence"]["battery_sha256"] != (
+            first["evidence_equivalence"]["battery_sha256"]
+        )
+        assert len(load(project)) == 1
 
     def test_load_persists_to_jsonl(self, tmp_path):
         project = _make_project(tmp_path, _pairs_for_identity(50))
@@ -289,13 +347,6 @@ class TestDisagreementReport:
         ca = _write_candidate(ws, "candidate_a.py", src_a)
         cb = _write_candidate(ws, "candidate_b.py", src_b)
         admit(ca, project)
-        # cb will be duplicate since same fingerprint; need different behavior
-        # so plant a truly different perfect candidate that can't exist on this
-        # episode... we leave cb as a duplicate.
-        # Force a second distinct survivor by patching the ledger directly:
-        # (this is the honest thing — on a finite visible episode, two perfect
-        #  candidates are fingerprint-identical. We test the duplicate detection
-        #  path and the collapsed-population note.)
         admit(cb, project)
         return project
 
@@ -303,12 +354,12 @@ class TestDisagreementReport:
         project = self._two_survivor_project(tmp_path)
         report = disagreement_report(project)
         assert "n_survivors" in report
-        # Should report 1 survivor (the other was a duplicate)
         survivors = load(project)
-        if len(survivors) == 1:
-            assert "only" in report.get("note", "") or "no survivors" not in report.get("note", "")
-        else:
-            assert report.get("disagreement_states") is not None
+        assert len(survivors) == 2
+        assert report["n_distinct_hypotheses"] == 2
+        assert report["n_distinct_fingerprints"] == 1
+        assert report["disagreement_states"] == []
+        assert "evidence-equivalent" in report["note"]
 
     def test_collapsed_note_present(self, tmp_path):
         project = _make_project(tmp_path, _pairs_for_identity(100))
@@ -425,8 +476,8 @@ class TestPruneJoin:
         assert len(survivors) == 1
         assert survivors[0]["candidate_ref"] == str(ca)
 
-    def test_prune_join_by_fingerprint(self, tmp_path):
-        """Prune by fingerprint also works (candidate_ref may differ)."""
+    def test_ref_bound_prune_does_not_erase_evidence_equivalent_peer(self, tmp_path):
+        """A ref-bound prune cannot promote an evidence property to identity."""
         project = _make_project(tmp_path, _pairs_for_identity(50))
         ws = project / "workspace"
         ws.mkdir(exist_ok=True)
@@ -448,7 +499,8 @@ class TestPruneJoin:
 
         assert len(load(project)) == 1
 
-        # Prune by fingerprint only (different candidate_ref)
+        # The row names another candidate while carrying this record's finite-bank
+        # fingerprint.  The unrelated executable hypothesis must remain.
         prune_row = {
             "schema": "ztare.version_space_prunes.v1",
             "candidate_ref": "/different/path.py",
@@ -458,7 +510,28 @@ class TestPruneJoin:
         with prune_file.open("a") as f:
             f.write(json.dumps(prune_row) + "\n")
 
-        assert load(project) == []
+        assert len(load(project)) == 1
+
+    def test_prune_one_of_two_source_distinct_equivalents(self, tmp_path):
+        project = _make_project(tmp_path, _pairs_for_identity(50))
+        ws = project / "workspace"
+        ws.mkdir(exist_ok=True)
+        ca = _write_candidate(ws, "a.py", "def step(s,a,t):\n    return s\n")
+        cb = _write_candidate(ws, "b.py", "def step(s,a,t):\n    x=s; return x\n")
+        ra = admit(ca, project)
+        rb = admit(cb, project)
+        assert ra["fingerprint"] == rb["fingerprint"]
+        assert len(load(project)) == 2
+
+        prune_file = project / "workspace" / "version_space_prunes.jsonl"
+        prune_file.write_text(json.dumps({
+            "schema": "ztare.version_space_prunes.v1",
+            "candidate_ref": str(ca),
+            "fingerprint": ra["fingerprint"],
+        }) + "\n")
+
+        survivors = load(project)
+        assert [row["candidate_ref"] for row in survivors] == [str(cb)]
 
     def test_no_prune_file_returns_all_survivors(self, tmp_path):
         """If no prune file exists, load() returns all admitted candidates."""
@@ -472,56 +545,26 @@ class TestPruneJoin:
         assert len(load(project)) == 1
 
 
-class TestFingerprintCache:
-    """Cache hit/miss: on second call with poisoned executor, result comes from cache."""
-
-    def test_cache_hit_skips_execution(self, tmp_path):
-        """Compute fingerprint (populates cache), then replace executor with a poisoned
-        version that raises. The second fingerprint() call must return the cached value
-        without executing the poisoned candidate, proving the cache path is taken."""
+class TestFingerprintRecomputation:
+    def test_same_bytes_are_recomputed_under_current_evaluator(self, tmp_path, monkeypatch):
+        """A diagnostic fingerprint cannot outlive its evaluator semantics."""
         import ztare.worldmodel.version_space as _vs
         project = _make_project(tmp_path, _pairs_for_identity(100))
-        cpath = _write_candidate(project, "identity_cache.py", _IDENTITY_SRC)
+        cpath = _write_candidate(project, "identity.py", _IDENTITY_SRC)
         battery = probe_battery(project)
 
-        # First call: computes and writes cache
         fp1 = fingerprint(cpath, battery, project)
-        assert fp1["load_error"] is None
-        cache_file = _fp_cache_path(project)
-        assert cache_file.exists(), "cache file must exist after first fingerprint call"
+        monkeypatch.setattr(
+            _vs,
+            "_load_carrier_from_source",
+            lambda *_args, **_kwargs: (lambda _s, _a, _t: _G2),
+        )
+        fp2 = fingerprint(cpath, battery, project)
 
-        # Poison the candidate file so any real execution would raise
-        cpath.write_text("def step(s, a, t): raise RuntimeError('SHOULD NOT EXECUTE')\n")
-
-        # Second call: must hit cache (candidate sha changed, so we need to restore sha)
-        # Restore the original bytes so the sha matches the cached entry
-        cpath.write_text(_IDENTITY_SRC)
-        # Now poison by monkey-patching _load_carrier_from_source to raise
-        original_load = _vs._load_carrier_from_source
-        def _poisoned_load(*args, **kwargs):
-            raise RuntimeError("POISONED: cache should have been hit")
-        _vs._load_carrier_from_source = _poisoned_load
-        try:
-            fp2 = fingerprint(cpath, battery, project)
-        finally:
-            _vs._load_carrier_from_source = original_load
-
-        assert fp2["sha16"] == fp1["sha16"], "cache hit must return equal fingerprint"
-        assert fp2["exact_count"] == fp1["exact_count"]
-
-    def test_cache_written_to_jsonl(self, tmp_path):
-        project = _make_project(tmp_path, _pairs_for_identity(50))
-        cpath = _write_candidate(project, "c.py", _IDENTITY_SRC)
-        battery = probe_battery(project)
-        fingerprint(cpath, battery, project)
-        cache_file = _fp_cache_path(project)
-        assert cache_file.exists()
-        rows = [json.loads(l) for l in cache_file.read_text().splitlines() if l.strip()]
-        assert len(rows) >= 1
-        assert rows[-1]["schema"] == "ztare.version_space_fp_cache.v1"
-        assert "candidate_sha256" in rows[-1]
-        assert "battery_sha256" in rows[-1]
-        assert "fingerprint" in rows[-1]
+        assert fp1["exact_count"] == fp1["vector_len"]
+        assert fp2["exact_count"] == 0
+        assert fp2["sha16"] != fp1["sha16"]
+        assert not (project / "workspace" / "version_space_fp_cache.jsonl").exists()
 
 
 # ponytail: main self-check omitted — pytest covers everything, YAGNI

@@ -16,7 +16,11 @@ from ztare.leanmill.finite_theory_context import (
     load_formal_theory_context,
 )
 from ztare.leanmill.magma_law_universe import magma_laws_through_order
-from ztare.leanmill.theory_interest import theory_residual_information_yield
+from ztare.leanmill.theory_interest import (
+    profile_theory_program_predictions,
+    theory_program_information_yield,
+    theory_residual_information_yield,
+)
 from ztare.leanmill.theory_ir import (
     AxiomFormula,
     Binder,
@@ -90,9 +94,9 @@ def test_bounded_reduction_catches_short_regular_unary_bridge() -> None:
     )
 
     assert witness is not None
-    assert witness.schema == "leanmill.bounded_equational_reduction.v2"
+    assert witness.schema == "leanmill.bounded_equational_reduction.v3"
     assert witness.max_states_per_side == 4_096
-    assert witness.growth_policy == "root_or_direct_child"
+    assert witness.growth_policy == "root_or_direct_child_with_target_subterms"
     assert 1 <= witness.explored_left_states <= witness.max_states_per_side
     assert 1 <= witness.explored_right_states <= witness.max_states_per_side
     assert len(witness.steps) == 4
@@ -101,6 +105,44 @@ def test_bounded_reduction_catches_short_regular_unary_bridge() -> None:
         left_recovery.semantic_hash,
         square_is_inverse.semantic_hash,
     }
+
+
+def test_non_equational_background_does_not_erase_equational_bridge() -> None:
+    x, y, z = (Term.var(name) for name in "xyz")
+    op = lambda a, b, c: Term.app("op0", a, b, c)
+    inversion = AxiomFormula(
+        "inversion",
+        Formula.forall(
+            tuple(Binder(name, "S") for name in "xyz"),
+            Formula.eq(op(x, op(y, z, x), y), z),
+        ),
+    )
+    diagonal = AxiomFormula(
+        "diagonal",
+        Formula.forall(
+            (Binder("x", "S"),), Formula.eq(op(op(x, x, x), x, x), x)
+        ),
+    )
+    target = AxiomFormula(
+        "target",
+        Formula.forall(
+            (Binder("x", "S"),), Formula.eq(op(x, x, op(x, x, x)), x)
+        ),
+    )
+    cancellation = AxiomFormula(
+        "cancellation",
+        Formula.forall(
+            (Binder("x", "S"), Binder("y", "S")),
+            Formula.implies(Formula.eq(x, y), Formula.eq(y, x)),
+        ),
+    )
+
+    witness = direct_equational_consequence_witness(
+        (cancellation, inversion, diagonal), target
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.bounded_equational_reduction.v3"
 
 
 def test_bidirectional_reduction_reuses_selected_inverse_intermediate() -> None:
@@ -216,6 +258,66 @@ def test_direct_baseline_catches_substitution_instance_from_residual_smoke() -> 
     assert witness.schema == "leanmill.equational_substitution_instance.v1"
     assert witness.target_side_order == "swapped"
     assert set(witness.substitution) == {"x0", "x1"}
+
+
+def test_bounded_baseline_instantiates_expansion_only_variables() -> None:
+    context = load_formal_theory_context(
+        "research_areas/pre_registrations/axiompack_gp251_smoke_20260710/"
+        "formal_context.materialized.json"
+    )
+    premise_ids = (
+        "formula:2c14916751fc910ed4e91f402f1e09001b238f2c2ff4d5bf7aa26ffd0357f194",
+        "formula:af9e3e48dad8227ff995322988199acc80bce613606830b21137005e5b2e24da",
+    )
+    target_id = (
+        "formula:abc9052c5ed9f8f6085aa24933ded16132719e4c65ac1251bc2e02371ae6f87c"
+    )
+    formulas = {row.formula_id: row.axiom for row in context.formula_profiles}
+
+    witness = direct_equational_consequence_witness(
+        tuple(formulas[row] for row in premise_ids), formulas[target_id]
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.bounded_equational_reduction.v3"
+    assert {step["premise_hash"] for step in witness.steps} == {
+        formulas[row].semantic_hash for row in premise_ids
+    }
+
+
+def test_program_baseline_composes_already_receipted_consequences() -> None:
+    context = load_formal_theory_context(
+        "research_areas/pre_registrations/axiompack_gp251_smoke_20260710/"
+        "formal_context.materialized.json"
+    )
+    premise_ids = (
+        "formula:2c14916751fc910ed4e91f402f1e09001b238f2c2ff4d5bf7aa26ffd0357f194",
+        "formula:af9e3e48dad8227ff995322988199acc80bce613606830b21137005e5b2e24da",
+    )
+    bridge_id = (
+        "formula:abc9052c5ed9f8f6085aa24933ded16132719e4c65ac1251bc2e02371ae6f87c"
+    )
+    composed_target = (
+        "formula:1944272b3136907f1e971c006620ba5d92475726a49c922c715a527d05cb1737"
+    )
+
+    result = theory_program_information_yield(context, premise_ids)
+
+    assert bridge_id in result.cheap_baseline_consequence_ids
+    assert composed_target in result.residual_prediction_ids
+
+    deeper_target = (
+        "formula:0c2c3751b5ca6e8dad455039a08f558c0297e2e9a5c360728a18addcca14677e"
+    )
+    profile = profile_theory_program_predictions(
+        context, premise_ids, (composed_target, deeper_target)
+    )
+    for prediction in profile["predictions"]:
+        assert prediction["consequence_class"] == "cheap_baseline_bounded_consequence"
+        dependency_id = prediction["targeted_cheap_baseline_witness"][
+            "dependency_formula_id"
+        ]
+        assert dependency_id in result.cheap_baseline_consequence_ids
 
 
 def test_direct_baseline_uses_the_frozen_base_theory() -> None:

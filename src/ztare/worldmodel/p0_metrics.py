@@ -1,15 +1,21 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
 from typing import Any
 
-from ztare.common.operator_proposal_contract import open_cards
+from ztare.common.strategy_card_roles import active_strategy_cards
+from ztare.worldmodel.carrier_loader import (
+    CarrierEvidenceIdentityError,
+    require_current_carrier_evidence_binding,
+    resolve_current_carrier_evidence_identity,
+)
 
 
-SCHEMA = "ztare-arc3-p0-metrics-v1"
+SCHEMA = "ztare-arc3-p0-metrics-v2"
 
 
 def build_p0_metrics(project: str | Path) -> dict[str, Any]:
@@ -21,18 +27,42 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
     """
     project = Path(project)
     ws = project / "workspace"
-    transfer = _read_json(ws / "latest_level_transfer_probe.json")
+    raw_transfer = _read_json(ws / "latest_level_transfer_probe.json")
+    transfer: dict[str, Any] = {}
+    transfer_binding: dict[str, Any] | None = None
+    transfer_identity_status = "missing"
+    if raw_transfer:
+        try:
+            current = resolve_current_carrier_evidence_identity(project)
+            transfer_binding = require_current_carrier_evidence_binding(
+                raw_transfer, current
+            )
+            transfer = {
+                **raw_transfer,
+                "carrier_evidence_identity": transfer_binding,
+            }
+            transfer_identity_status = "current"
+        except (CarrierEvidenceIdentityError, OSError, TypeError, ValueError):
+            transfer_identity_status = "historical_or_unbound"
     terminal = _read_json(ws / "terminal_closure_audit.json")
     play = _read_json(ws / "arc3_play_loop_report.json")
-    candidate_memory = _read_json(ws / "candidate_memory.json")
+    self_play = _read_json(ws / "latest_self_play_probe.json")
+    try:
+        from ztare.common.candidate_memory import admissible_candidate_memory_records
+
+        active_candidate_records = admissible_candidate_memory_records(project)
+    except Exception:  # noqa: BLE001 - observer remains available with missing projection
+        active_candidate_records = []
     proposals = _read_jsonl(ws / "operator_proposals.jsonl")
     promotions = _read_jsonl(ws / "grammar_extension_promotion_contracts.jsonl")
     telemetry = _read_jsonl(ws / "iteration_telemetry.jsonl")
     r1_debug_text = _read_r1_debug_text(ws)
     reachability = _latest_reachability_receipt(ws)
+    seed_replays = _read_jsonl(ws / "level_boundary_seed_replays.jsonl")
 
-    levels_beaten = _levels_beaten(play, terminal)
-    actions = _actions_per_level(play)
+    trials = _verified_skill_trials(play, self_play)
+    levels_beaten = _levels_beaten(play, self_play, seed_replays)
+    actions = [row["active_interventions"] for row in trials] or _actions_per_level(play)
     catalog_size = _catalog_size()
     catalog_promotions = len(promotions)
     catalog_proposals = len(proposals)
@@ -60,6 +90,8 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
                 "latest_level_transfer_probe.json",
                 "terminal_closure_audit.json",
                 "arc3_play_loop_report.json",
+                "latest_self_play_probe.json",
+                "level_boundary_seed_replays.jsonl",
                 "candidate_memory.json",
                 "strategy_experiments.jsonl",
                 "operator_proposals.jsonl",
@@ -71,21 +103,29 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
         "scoreboard": {
             "levels_beaten": levels_beaten,
             "actions_per_level": actions,
+            "verified_skill_trials": trials,
             "relative_human_action_efficiency": _rhae(play, terminal),
             "conductor_interventions": _count_interventions(telemetry),
         },
         "closure_boundaries": _closure_boundaries(terminal),
         "information_theory": {
             "catalog_size": catalog_size,
-            "catalog_growth_velocity": _ratio(catalog_promotions, max(1, levels_beaten)),
-            "operator_reusability_index": _operator_reusability_index(candidate_memory),
+            "catalog_growth_velocity": None,
+            "carrier_fidelity_best": _carrier_fidelity_best(active_candidate_records),
+            "operator_reusability_index": None,
             "temporal_admissibility_leakage": _ratio(temporal_rejections, max(1, total_r1)),
         },
         "transfer": {
+            "identity_status": transfer_identity_status,
+            "carrier_evidence_identity": transfer_binding,
+            "historical_receipt_present": bool(raw_transfer and not transfer),
             "post_depth": _get_int(transfer, "post_depth"),
             "exact_actions": _get_int(transfer, "exact_actions"),
-            "exact_steps": _get_int(transfer, "exact_steps"),
-            "empirical_transfer_depth": transfer_exact_after_repair or _get_int(transfer, "exact_steps"),
+            "exact_steps": _nested_int(transfer, "local_transfer", "exact_steps")
+            or _get_int(transfer, "exact_steps"),
+            "empirical_transfer_depth": transfer_exact_after_repair
+            or _nested_int(transfer, "local_transfer", "exact_steps")
+            or _get_int(transfer, "exact_steps"),
             "local_steps_tested": transfer_steps,
             "exact_steps_after_first_step_repair": transfer_exact_after_repair,
             "first_step_repair_generalizes_to_depth": _nested_value(
@@ -103,19 +143,59 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
         "compression": {
             "catalog_proposals": catalog_proposals,
             "catalog_promotions": catalog_promotions,
-            "catalog_growth_rate": _ratio(catalog_promotions, max(1, levels_beaten)),
-            "operator_reuse_count": _operator_reuse_count(candidate_memory),
-            "open_strategy_cards": len(open_cards(ws / "strategy_experiments.jsonl")),
+            "catalog_growth_rate": None,
+            "operator_vocabulary_size": _operator_vocabulary_size(active_candidate_records),
+            "operator_reuse_count": None,
+            "open_strategy_cards": len(
+                active_strategy_cards(ws / "strategy_experiments.jsonl")
+            ),
         },
         "kernel_pressure": {
             "temporal_admissibility_failures": temporal_rejections,
             "r1_failures": total_r1,
             "pre_judge_failures": _telemetry_contains(telemetry, "PRE_JUDGE"),
             "tool_action_requests": action_requests,
+            "scope": "unscoped_cumulative_history",
+        },
+        "metric_contracts": _metric_contracts(
+            have_trials=bool(trials),
+            have_transfer=bool(transfer),
+            have_reachability=bool(reachability),
+            have_active_candidates=bool(active_candidate_records),
+        ),
+        "source_manifest": _source_manifest(
+            ws,
+            [
+                "latest_level_transfer_probe.json",
+                "terminal_closure_audit.json",
+                "arc3_play_loop_report.json",
+                "latest_self_play_probe.json",
+                "candidate_memory.json",
+                "strategy_experiments.jsonl",
+                "operator_proposals.jsonl",
+                "grammar_extension_promotion_contracts.jsonl",
+                "iteration_telemetry.jsonl",
+                "level_boundary_seed_replays.jsonl",
+            ],
+        ),
+        "control_readiness": {
+            "status": "observer_only",
+            "decision_consumer_count": 0,
+            "blocking_reasons": [
+                *(
+                    ["transfer receipt is not bound to the current carrier/evidence identity"]
+                    if raw_transfer and not transfer
+                    else []
+                ),
+                "other telemetry populations lack one shared run-and-epoch identity",
+                "catalog growth has no before/after population denominator",
+                "operator reuse has no cross-context identity ledger",
+                "no registered allocator or router consumes this snapshot",
+            ],
         },
         "interpretation": (
-            "read-only P0 metrics; replay/holdout/sealed terminal gates remain "
-            "candidate authority"
+            "read-only P0 observations; only metrics marked operational have a "
+            "compatible evidence population, and none currently steers search"
         ),
     }
 
@@ -175,17 +255,84 @@ def _existing_refs(workspace: Path, names: list[str]) -> list[str]:
     return [f"workspace/{name}" for name in names if (workspace / name).exists()]
 
 
-def _levels_beaten(play: dict[str, Any], terminal: dict[str, Any]) -> int:
-    terminal_report = terminal.get("terminal_report") if isinstance(terminal.get("terminal_report"), dict) else {}
-    if (
-        terminal.get("terminal_event")
-        or terminal.get("result") == "beat"
-        or terminal_report.get("result") == "beat"
-        or int(terminal_report.get("levels_gained") or 0) > 0
-    ):
-        return 1
+def _levels_beaten(
+    play: dict[str, Any],
+    self_play: dict[str, Any] | None = None,
+    seed_replays: list[dict[str, Any]] | None = None,
+) -> int:
+    self_play_levels = 0
+    if (self_play or {}).get("schema") == "ztare-arc3-self-play-probe-v1":
+        self_play_levels = int((self_play or {}).get("levels_after") or 0)
+    confirmed_epochs = [
+        self_play_levels,
+        *[
+            int(row.get("observed_epoch") or 0)
+            for row in (seed_replays or [])
+            if row.get("status") == "verified"
+        ],
+    ]
+    # A generic task-discharge receipt closes its task contract; it does not
+    # attest an adapter progress coordinate. ARC progress comes only from the
+    # adapter-owned self-play/seed/play telemetry above and below.
     cycles = play.get("cycles") if isinstance(play.get("cycles"), list) else []
-    return sum(int(row.get("levels_gained") or 0) for row in cycles if isinstance(row, dict))
+    cycle_total = sum(
+        int(row.get("levels_gained") or 0) for row in cycles if isinstance(row, dict)
+    )
+    confirmed_epochs.append(cycle_total)
+    return max(confirmed_epochs, default=0)
+
+
+def _verified_skill_trials(
+    play: dict[str, Any], self_play: dict[str, Any]
+) -> list[dict[str, Any]]:
+    trials: list[dict[str, Any]] = []
+    if self_play.get("schema") == "ztare-arc3-self-play-probe-v1":
+        seed = self_play.get("seed_receipt")
+        if isinstance(seed, dict):
+            target = int(seed.get("observed_progress_after") or 0)
+            actions = int(seed.get("interventions_executed") or 0)
+            if target > 0 and actions > 0:
+                trials.append({
+                    "source_epoch": 0,
+                    "target_epoch": target,
+                    "active_interventions": actions,
+                    "evidence_ref": "workspace/latest_self_play_probe.json#seed_receipt",
+                    "authority": "environment_observed_epoch_after_seed_replay",
+                    "establishes_task_discharge": False,
+                })
+        gained = int(self_play.get("levels_gained") or 0)
+        before = int(self_play.get("levels_before") or 0)
+        after = int(self_play.get("levels_after") or 0)
+        if self_play.get("status") == "goal_reached" and gained > 0 and after > before:
+            trials.append({
+                "source_epoch": before,
+                "target_epoch": after,
+                "active_interventions": int(self_play.get("steps_executed") or 0),
+                "replans": int(self_play.get("replans") or 0),
+                "evidence_ref": "workspace/latest_self_play_probe.json",
+                "authority": "environment_terminal_verifier",
+                "establishes_task_discharge": False,
+            })
+    if trials:
+        return sorted(trials, key=lambda row: row["target_epoch"])
+    cycles = play.get("cycles") if isinstance(play.get("cycles"), list) else []
+    epoch = 0
+    for row in cycles:
+        if not isinstance(row, dict):
+            continue
+        gained = int(row.get("levels_gained") or 0)
+        if gained <= 0:
+            continue
+        trials.append({
+            "source_epoch": epoch,
+            "target_epoch": epoch + gained,
+            "active_interventions": int(row.get("steps") or row.get("actions") or 0),
+            "evidence_ref": "workspace/arc3_play_loop_report.json",
+            "authority": "adapter_progress_telemetry",
+            "establishes_task_discharge": False,
+        })
+        epoch += gained
+    return trials
 
 
 def _actions_per_level(play: dict[str, Any]) -> list[int]:
@@ -210,7 +357,9 @@ def _closure_boundaries(terminal: dict[str, Any]) -> dict[str, Any]:
     """Project terminal-close claim boundaries into the read-only P0 receipt."""
     if terminal.get("schema") != "ztare-worldmodel-terminal-closure-audit-v1":
         return {
+            "task_discharged": False,
             "level_closed": False,
+            "level_projection_status": "missing_task_discharge_audit",
             "search_control_closed": False,
             "candidate_promoted_by_terminal": False,
             "candidate_promotion_proven": False,
@@ -224,7 +373,11 @@ def _closure_boundaries(terminal: dict[str, Any]) -> dict[str, Any]:
     authority = terminal.get("authority") if isinstance(terminal.get("authority"), dict) else {}
     report = terminal.get("terminal_report") if isinstance(terminal.get("terminal_report"), dict) else {}
     return {
-        "level_closed": bool(terminal.get("level_closed")),
+        "task_discharged": bool(terminal.get("task_discharged")),
+        # ``level_closed`` in the generic audit is a deprecated compatibility
+        # projection of task discharge. It has no adapter-level authority.
+        "level_closed": False,
+        "level_projection_status": "adapter_progress_required",
         "search_control_closed": bool(terminal.get("search_control_closed")),
         "candidate_promoted_by_terminal": bool(authority.get("candidate_promotion_used_for_closure")),
         "candidate_promotion_proven": bool(candidate.get("proven")),
@@ -239,16 +392,15 @@ def _closure_boundaries(terminal: dict[str, Any]) -> dict[str, Any]:
 
 
 def _count_interventions(rows: list[dict[str, Any]]) -> int:
-    needles = ("conductor", "manual", "operator_intervention")
     return sum(
         1
         for row in rows
-        if any(needle in json.dumps(row, sort_keys=True, default=str).lower() for needle in needles)
+        if row.get("record_type") == "conductor_intervention"
+        or row.get("operator_intervention") is True
     )
 
 
-def _operator_reuse_count(candidate_memory: dict[str, Any]) -> int:
-    records = candidate_memory.get("records")
+def _operator_vocabulary_size(records: list[dict[str, Any]]) -> int:
     if not isinstance(records, list):
         return 0
     seen: set[str] = set()
@@ -262,8 +414,7 @@ def _operator_reuse_count(candidate_memory: dict[str, Any]) -> int:
     return len(seen)
 
 
-def _operator_reusability_index(candidate_memory: dict[str, Any]) -> float | None:
-    records = candidate_memory.get("records")
+def _carrier_fidelity_best(records: list[dict[str, Any]]) -> float | None:
     if not isinstance(records, list) or not records:
         return None
     best = 0.0
@@ -324,20 +475,74 @@ def _hypothesis_split_ratio(transfer: dict[str, Any]) -> float | None:
     if isinstance(prior, (int, float)) and prior:
         if isinstance(survive, (int, float)):
             return round(float(survive) / float(prior), 6)
-    q = transfer.get("local_residue_quotient")
-    if isinstance(q, dict):
-        actions = None
-        classes = q.get("classes")
-        if isinstance(classes, list):
-            all_actions = set()
-            for cls in classes:
-                if isinstance(cls, dict) and isinstance(cls.get("actions"), list):
-                    all_actions.update(cls["actions"])
-            actions = len(all_actions) if all_actions else None
-        class_count = q.get("class_count")
-        if isinstance(class_count, (int, float)) and actions:
-            return round(float(class_count) / float(actions), 6)
     return None
+
+
+def _source_manifest(workspace: Path, names: list[str]) -> list[dict[str, Any]]:
+    rows = []
+    for name in names:
+        path = workspace / name
+        if not path.is_file():
+            continue
+        raw = path.read_bytes()
+        rows.append({
+            "source_ref": f"workspace/{name}",
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+            "mtime_ns": path.stat().st_mtime_ns,
+        })
+    return rows
+
+
+def _metric_contracts(
+    *,
+    have_trials: bool,
+    have_transfer: bool,
+    have_reachability: bool,
+    have_active_candidates: bool,
+) -> dict[str, dict[str, Any]]:
+    return {
+        "scoreboard.levels_beaten": {
+            "identity": "maximum environment-attested epoch reached",
+            "status": "operational" if have_trials else "missing_evidence",
+        },
+        "transfer.empirical_transfer_depth": {
+            "identity": "consecutive exact transitions in one declared transfer population",
+            "status": "operational" if have_transfer else "missing_evidence",
+        },
+        "information_theory.carrier_fidelity_best": {
+            "identity": (
+                "maximum exact-row ratio among admissible carriers on the active "
+                "maximum visible evidence epoch"
+            ),
+            "status": "operational" if have_active_candidates else "missing_evidence",
+        },
+        "information_theory.catalog_growth_velocity": {
+            "identity": "delta promoted vocabulary over delta acquired contexts",
+            "status": "not_computable",
+            "reason": "current ledgers expose cumulative rows without paired context epochs",
+        },
+        "information_theory.operator_reusability_index": {
+            "identity": "same operator identity reused across distinct context identities",
+            "status": "not_computable",
+            "reason": "candidate fidelity is not cross-context reuse",
+        },
+        "information_theory.temporal_admissibility_leakage": {
+            "identity": "temporally inadmissible attempts over one scoped R1 population",
+            "status": "diagnostic_only",
+            "reason": "current numerator and denominator are cumulative and lack shared run identity",
+        },
+        "transfer.hypothesis_split_ratio": {
+            "identity": "surviving hypothesis identities over prior hypothesis identities",
+            "status": "operational_when_explicit_counts_present",
+            "reason": "residual classes divided by actions are not hypotheses",
+        },
+        "reachability.abstract_entropy_bits": {
+            "identity": "log-size proxy of a declared abstract search graph",
+            "status": "diagnostic_only" if have_reachability else "missing_evidence",
+            "reason": "log2(vertices+edges+1) is search size, not a state-distribution entropy",
+        },
+    }
 
 
 def _telemetry_contains(rows: list[dict[str, Any]], needle: str) -> int:

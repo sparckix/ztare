@@ -14,8 +14,9 @@ from pathlib import Path
 from ztare.common.operator_proposal_contract import family_sha
 from ztare.common.strategy_card_roles import (
     META_HARDENING_LANE,
+    active_strategy_cards,
+    blocking_strategy_cards,
     strategy_card_role,
-    strategy_card_lane,
 )
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 from ztare.validator.core.strategy_card_gate import admissible_no_attempt_blocker_kinds
@@ -27,23 +28,45 @@ class StrategyExperimentsProvider(BriefingProvider):
 
     def _cards(self, project: Path) -> list[dict]:
         try:
-            from ztare.common.operator_proposal_contract import open_cards
             path = project / "workspace" / "strategy_experiments.jsonl"
-            return [_card_with_sha(card) for card in open_cards(path)]
+            return [_card_with_sha(card) for card in active_strategy_cards(path)]
         except Exception:  # noqa: BLE001
             return []
+
+    def _selected_cards(self, project: Path, *, limit: int) -> list[dict]:
+        cards = self._cards(project)
+        frontier = blocking_strategy_cards(cards, project_dir=project)
+        # An identity-bound workbench task is the active work order.  Unbound
+        # Strategy rows remain ledger history; re-appending them here would
+        # turn case memory back into current task references after
+        # ``blocking_strategy_cards`` deliberately removed them.
+        try:
+            from ztare.common.leaf_workbench_executor import (
+                active_workbench_task_capability_scope,
+            )
+
+            scope, _task = active_workbench_task_capability_scope(project)
+        except (OSError, ValueError, TypeError):
+            scope = set()
+        if scope:
+            return frontier[:limit]
+        selected = frontier + [card for card in cards if card not in frontier]
+        return selected[:limit]
 
     def applies(self, ctx: BriefingContext) -> bool:
         return bool(self._cards(Path(getattr(ctx, "project_dir", "") or "")))
 
     def fragment(self, ctx: BriefingContext) -> str:
-        cards = self._cards(Path(ctx.project_dir))
+        project = Path(ctx.project_dir)
+        cards = self._selected_cards(project, limit=5)
         if not cards:
             return ""
         lines = [
             "## Strategy Office Experiment Cards",
             "- These are falsifiable cross-cycle work orders from deterministic receipts. "
             "They do not certify a model and do not override gates.",
+            "- Cards are ordered newest-first. The first blocking card for the active "
+            "run lane is the frontier work order; older rows remain nonblocking case memory.",
             "- Object-level cards are current skill-acquisition obligations. Meta-hardening "
             "cards are queued apparatus work and do not block an executable candidate.",
             "- For object-level cards, include one typed receipt using the exact full "
@@ -64,7 +87,7 @@ class StrategyExperimentsProvider(BriefingProvider):
             "no-regression or by an explicit operator/proposal card explaining "
             "why the broader equivalence class is necessary.",
         ]
-        for card in cards[:5]:
+        for card in cards:
             plan = card.get("action_plan") or {}
             role = strategy_card_role(card)
             lane = role.lane
@@ -89,6 +112,14 @@ class StrategyExperimentsProvider(BriefingProvider):
                     f"evaluator={plan.get('evaluator', '')}; "
                     f"next_gate={gate.get('command', '?')}:{gate.get('success_status', '?')}; "
                     f"rollback={plan.get('rollback_condition', '')}"
+                )
+                continue
+            if lane != "skill_acquisition":
+                lines.append(
+                    f"- lane={lane}; kind={card.get('kind', '?')}; "
+                    f"sha={str(card.get('failure_family_sha', '?'))}; "
+                    "status=nonblocking_control_memory. This row cannot block "
+                    "the active skill-acquisition candidate."
                 )
                 continue
             gate = plan.get("required_next_gate") or {}
@@ -138,7 +169,7 @@ class StrategyExperimentsProvider(BriefingProvider):
 
     def structured_records(self, ctx: BriefingContext) -> list[dict]:
         records = []
-        for card in self._cards(Path(ctx.project_dir))[:8]:
+        for card in self._selected_cards(Path(ctx.project_dir), limit=8):
             plan = card.get("action_plan") or {}
             role = strategy_card_role(card)
             stale_meta = _meta_hardening_projection_status(card) if role.lane == META_HARDENING_LANE else ""
@@ -171,7 +202,13 @@ class StrategyExperimentsProvider(BriefingProvider):
                 "kind": card.get("kind"),
                 "lane": role.lane,
                 "role": role.to_dict(),
-                "record_role": "stale_meta_hardening" if stale_meta else None,
+                "record_role": (
+                    "stale_meta_hardening"
+                    if stale_meta
+                    else "advisory_control"
+                    if role.lane not in {"skill_acquisition", META_HARDENING_LANE}
+                    else None
+                ),
                 "stale_reason": stale_meta or None,
                 "summary": summary,
                 "action": card.get("falsifiable_prediction") or "",

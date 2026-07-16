@@ -30,7 +30,31 @@ _COMPRESSION_THRESHOLD = 0.9
 _WARNINGS_PATH = Path("workspace/functor_compression_warnings.jsonl")
 
 
-def _emit_compression_warning(name: str, ratio: float, raw_size: int, *, receipts_dir: "Path | None" = None) -> None:
+def classify_image_growth(
+    *,
+    prior_raw: set | frozenset,
+    current_raw: set | frozenset,
+    prior_image: set | frozenset,
+    current_image: set | frozenset,
+) -> str:
+    """Classify one search wave under a pointwise abstraction."""
+
+    if not current_raw - prior_raw:
+        return "exhausted"
+    if not current_image - prior_image:
+        return "alpha_blind"
+    return "expanding"
+
+
+def _emit_compression_warning(
+    name: str,
+    ratio: float,
+    representation_ratio: float,
+    raw_size: int,
+    *,
+    receipts_dir: "Path | None" = None,
+    context: "dict | None" = None,
+) -> None:
     """Append a one-line friction receipt to functor_compression_warnings.jsonl.
 
     receipts_dir: explicit directory for the receipt file (overrides CWD-relative
@@ -41,15 +65,20 @@ def _emit_compression_warning(name: str, ratio: float, raw_size: int, *, receipt
     try:
         out.parent.mkdir(parents=True, exist_ok=True)
         with out.open("a") as fh:
-            fh.write(json.dumps({
+            row = {
                 "functor": name,
                 "compression_ratio": round(ratio, 4),
+                "representation_ratio": round(representation_ratio, 4),
                 "raw_size": raw_size,
                 "note": (
-                    f"functor '{name}' compression_ratio={ratio:.2%} > {_COMPRESSION_THRESHOLD:.0%} "
-                    f"— injective α duplicates RAM; consider a coarser quotient"
+                    f"functor '{name}' merges only {1-ratio:.2%} of observed classes "
+                    f"and retains {representation_ratio:.2%} of presentation bytes; "
+                    "consider a coarser quotient or carrier"
                 ),
-            }) + "\n")
+            }
+            if isinstance(context, dict):
+                row.update(context)
+            fh.write(json.dumps(row) + "\n")
     except OSError:
         pass  # never crash the caller over a receipt
 
@@ -117,7 +146,7 @@ class ImageMaintainingSet:
         # tracks whether we've run the first-add hash check per functor
         self._hash_checked: "set[str]" = set()
         self._compression_warmup = compression_warmup
-        # tracks whether we've already emitted a compression warning per functor
+        # tracks whether we've already sampled representation grain per functor
         self._compression_warned: "set[str]" = set()
         # explicit sink for receipts; None → CWD-relative workspace/ (compat)
         self._receipts_dir: "Path | None" = Path(receipts_dir) if receipts_dir is not None else None
@@ -177,9 +206,30 @@ class ImageMaintainingSet:
                 and raw_size >= self._compression_warmup
             ):
                 ratio = len(self._images[name]) / raw_size
-                if ratio > _COMPRESSION_THRESHOLD:
-                    self._compression_warned.add(name)
-                    _emit_compression_warning(name, ratio, raw_size, receipts_dir=self._receipts_dir)
+                raw_repr_bytes = sum(
+                    max(1, len(repr(value).encode("utf-8"))) for value in self._raw
+                )
+                image_repr_bytes = sum(
+                    max(1, len(repr(value).encode("utf-8")))
+                    for value in self._images[name]
+                )
+                representation_ratio = image_repr_bytes / max(1, raw_repr_bytes)
+                # Representation grain is sampled once at warmup.  Compact but
+                # injective carriers must not pay an O(n) rescan on every add.
+                self._compression_warned.add(name)
+                if (
+                    ratio > _COMPRESSION_THRESHOLD
+                    and representation_ratio > _COMPRESSION_THRESHOLD
+                ):
+                    context = getattr(fn, "_ztare_receipt_context", None)
+                    _emit_compression_warning(
+                        name,
+                        ratio,
+                        representation_ratio,
+                        raw_size,
+                        receipts_dir=self._receipts_dir,
+                        context=context if isinstance(context, dict) else None,
+                    )
 
     def __contains__(self, x) -> bool:
         return x in self._raw

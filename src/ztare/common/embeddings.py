@@ -72,9 +72,16 @@ def _embed_local(texts: list, task_type: str = "RETRIEVAL_DOCUMENT") -> list:
         # the whole process (2026-07-11: killed a governed round mid-
         # iteration from inside briefing embed). Batches here are small;
         # CPU is crash-proof. Set ZTARE_EMBED_DEVICE=mps to opt back in.
+        # Runtime retrieval must never turn a proof/campaign step into an
+        # implicit network install.  Images/VPSes warm the model explicitly;
+        # an absent cache fails immediately and advisory consumers fall back.
         _ST_MODEL = SentenceTransformer(
             _LOCAL_MODEL_NAME,
-            device=_os.environ.get("ZTARE_EMBED_DEVICE", "cpu"))
+            device=_os.environ.get("ZTARE_EMBED_DEVICE", "cpu"),
+            local_files_only=(
+                _os.environ.get("ZTARE_EMBED_ALLOW_DOWNLOAD", "0") != "1"
+            ),
+        )
     _m = _LOCAL_MODEL_NAME.lower()
     _fam = "bge" if "bge" in _m else "e5" if "e5" in _m else "gte" if "gte" in _m else "default"
     _pre = _QUERY_INSTR.get(_fam, "") if "QUERY" in (task_type or "").upper() else ("query: " if _fam == "e5" and False else "")
@@ -117,14 +124,27 @@ def resolve_gemini_key() -> "str | None":
     return os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
 
-def make_client(api_key: "str | None" = None):
+def make_client(api_key: "str | None" = None, *, force_remote: bool = False):
     """Gemini client (raises SystemExit if no key). Kept here so no consumer imports genai."""
     # `resolve_gemini_key` does the env-read + project-root .env bootstrap (the ONE door); daemon/
     # manual launches often don't export the key though it lives in .env (the gap that left the
     # semantic shelf silently dead on the VPS). No-op if already loaded; never clobbers explicit env.
-    if _LOCAL_EMBED:   # local embedder ignores the client (embed_batch routes to sentence-transformers)
+    if _LOCAL_EMBED and not force_remote:
+        # Local-default consumers do not need an API client.  A consumer whose
+        # stored vector space explicitly names Gemini must opt out of this
+        # allocation policy so model/dimension identity cannot change silently.
         return "LOCAL"
-    api_key = api_key or resolve_gemini_key()
+    if force_remote:
+        api_key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            try:
+                from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
+                _bootstrap_dotenv_if_needed()
+            except Exception:  # noqa: BLE001 - missing key is handled below
+                pass
+            api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    else:
+        api_key = api_key or resolve_gemini_key()
     if not api_key:
         raise SystemExit("GEMINI_API_KEY or GOOGLE_API_KEY required to build/query an embedding atlas")
     from google import genai
@@ -133,9 +153,11 @@ def make_client(api_key: "str | None" = None):
 
 def embed_batch(client, texts: list, *, model: str = DEFAULT_MODEL, dimensions: int = 768,
                 task_type: str = "RETRIEVAL_DOCUMENT", max_retries: int = 5,
-                default_backoff: float = 30.0) -> list:
+                default_backoff: float = 30.0, force_remote: bool = False) -> list:
     """Embed a batch with rate-limit retry/backoff. The ONE embed call (was duplicated per builder)."""
-    if _LOCAL_EMBED or str(model).startswith("st:"):   # frugal: local sentence-transformers, no API/key
+    if str(model).startswith("st:") or (_LOCAL_EMBED and not force_remote):
+        # The local setting is an allocation default.  Stored atlas identity
+        # wins when a caller explicitly pins a remote model and force_remote.
         return _embed_local(texts, task_type)
     from google.genai import types
     attempt = 0

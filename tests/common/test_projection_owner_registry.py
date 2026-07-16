@@ -65,6 +65,11 @@ def test_visible_workbench_source_refs_are_curated_execution_membrane() -> None:
     assert "src/ztare/common/visible_workbench_cli.py" in refs
     assert "src/ztare/common/visible_workbench_actions.py" in refs
     assert "src/ztare/common/projection_owner_registry.py" in refs
+    assert "src/ztare/common/equivariance.py" in refs
+    assert "src/ztare/common/observation_chart.py" in refs
+    assert "src/ztare/worldmodel/transition_identity.py" in refs
+    assert "src/ztare/worldmodel/evidence_consolidation.py" in refs
+    assert "src/ztare/worldmodel/gates.py" in refs
     assert "src/ztare/worldmodel/spec_abduction.py" in refs
     assert "tests/test_dispatch_model.py" not in refs
     assert all((root / ref).exists() for ref in refs)

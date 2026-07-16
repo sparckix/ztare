@@ -47,6 +47,7 @@ def test_scaffold_game_project_writes_arc3_surfaces(tmp_path, monkeypatch):
     (rubrics / f"{agp.CANONICAL_ARC3}.json").write_text(
         json.dumps({
             "rubric_id": agp.CANONICAL_ARC3,
+            "evidence_carrier_kind": "transition_stream",
             "substrate_class": "interactive_environment",
             "fit_expression_grammar": "grid_dsl",
         }),
@@ -69,7 +70,9 @@ def test_scaffold_game_project_writes_arc3_surfaces(tmp_path, monkeypatch):
     assert (project / "play_config.json").exists()
     assert (project / "project_charter.md").read_text().count("2 actions") == 1
     assert "arc3_fx00_gov" in (project / "gate_harness.py").read_text()
-    assert json.loads((rubrics / "arc3_fx00_gov.json").read_text())["rubric_id"] == "arc3_fx00_gov"
+    written_rubric = json.loads((rubrics / "arc3_fx00_gov.json").read_text())
+    assert written_rubric["rubric_id"] == "arc3_fx00_gov"
+    assert written_rubric["evidence_carrier_kind"] == "transition_stream"
     assert len(EpisodeLog.read_jsonl(episode_log_path(project))) == 0
     assert len(EpisodeLog.read_jsonl(episode_log_path(project, 2))) == 3
     assert (project / "evidence.txt").exists()

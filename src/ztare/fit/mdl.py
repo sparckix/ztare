@@ -18,6 +18,7 @@ per domain.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 from typing import Callable, Protocol
 
@@ -50,7 +51,20 @@ def bic_from_loglik(log_likelihood: float, k: int, n_obs: int) -> float:
 DEFAULT_CITATION_COST = 4      # units to invoke a cached item (`exact L a b`) vs inlining its body
 DEFAULT_MIN_EXPOSURE = 3       # times an item must be offered before net-negative ⇒ proven dead weight
 
+_DESCRIPTION_TOKEN_RE = re.compile(r"[A-Za-z0-9_./:+-]+")
+
 KEEP, RETIRE, PROVISIONAL = "KEEP", "RETIRE", "PROVISIONAL"
+
+
+def description_units(*parts: object) -> int:
+    """Approximate representation length in stable token-like units.
+
+    Domain owners decide which representation closure belongs in ``parts``.
+    This function only supplies the shared, deterministic unit measure.
+    """
+
+    text = " ".join(str(part) for part in parts if part is not None)
+    return max(1, len(_DESCRIPTION_TOKEN_RE.findall(text)))
 
 
 def marginal_compression(item_size: int, reuse: int, citation_cost: int = DEFAULT_CITATION_COST) -> int:

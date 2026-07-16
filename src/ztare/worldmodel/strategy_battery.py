@@ -26,6 +26,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from ztare.common.operator_proposal_contract import open_cards
+from ztare.common.strategy_card_roles import active_strategy_cards
 from ztare.worldmodel.episode_log import EpisodeLog, Transition
 from ztare.worldmodel.cycle_enumeration import cycles_from_evidence
 from ztare.worldmodel.gates import env_frame_indices
@@ -209,6 +210,11 @@ def _regions(spec: dict, roles, start_grid) -> "list[tuple]":
                 members.add(m)
             elif isinstance(m, (list, tuple)):
                 members.update(x for x in m if isinstance(x, int))
+            elif isinstance(m, dict):
+                members.update(
+                    x for x in (m.get("feature_values") or [])
+                    if isinstance(x, int) and not isinstance(x, bool)
+                )
     if not members or not start_grid:
         return []
     cells = tuple(sorted((y, x) for y in range(len(start_grid))
@@ -290,7 +296,7 @@ def _event_context(rows, spec, roles, *, top: int = 10) -> dict:
 def _ledger_closure(project, rows, spec, roles) -> dict:
     ws = Path(project) / "workspace"
     open_ops = open_cards(ws / "operator_proposals.jsonl")
-    open_strat = open_cards(ws / "strategy_experiments.jsonl")
+    open_strat = active_strategy_cards(ws / "strategy_experiments.jsonl")
     goal = abduce_goal_candidates(EpisodeLog(rows), spec, roles) if rows else {}
     cand_kinds = Counter(c.get("kind") for c in goal.get("candidates", []))
     return {
@@ -344,7 +350,7 @@ def _typed_kernel_role_pressure(project: "Path | str") -> dict:
     """Read explicit concept→kernel-role bindings from structured receipts.
 
     This is the preferred carrier. Producers should emit e.g.
-    ``{"kernel_role_bindings": [{"term": "reward", "roles": ["verification",
+    ``{"kernel_role_bindings": [{"term": "terminal_verifier", "roles": ["verification",
     "model_update"]}]}`` so Strategy Office does not infer roles from prose.
     """
     root = Path(project)
@@ -545,7 +551,7 @@ def _planner_attention_pressure(project: "Path | str") -> dict:
         if int(entry.get("evidence_grown_by") or 0) != 0:
             continue
         anomalies.append({
-            "anomaly_class": "plan_exhausted_without_reward_or_new_evidence",
+            "anomaly_class": "plan_exhausted_without_task_progress_or_new_evidence",
             "cycle": entry.get("cycle"),
             "steps": entry.get("steps"),
             "played": entry.get("played"),
@@ -600,7 +606,7 @@ def _level_transfer_pressure(project: "Path | str") -> dict:
         "rule": (
             "level-transfer residues are compressed counterexamples. A sufficiency "
             "certificate may select a repair card, but cannot claim solve or "
-            "canonical adoption without replay/holdout/sealed reward."
+            "canonical adoption without replay, holdout, and task adjudication."
         ),
     }
 

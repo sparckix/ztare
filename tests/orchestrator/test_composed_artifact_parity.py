@@ -325,6 +325,9 @@ def test_live_champion_attention_priority_beats_surviving_candidates() -> None:
     assert _attention_priority(champion_record) <= _attention_priority(rejected_record), (
         "live_champion must outrank diagnostic_rejected_witness in attention ordering"
     )
+    assert _attention_priority(near_miss_record) < _attention_priority(rejected_record), (
+        "an admissible near-miss must outrank a contract-rejected witness"
+    )
 
 
 def test_budget_trim_never_drops_tier0_content(tmp_path: Path) -> None:

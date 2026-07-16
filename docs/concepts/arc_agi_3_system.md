@@ -6,7 +6,14 @@ description: "GP-250: the worldmodel substrate and governed action loop for ARC-
 
 > Up: [`docs/README.md`](../README.md)
 
-GP-250 applies the ZTARE thesis to ARC-AGI-3 interactive grid games: governance around a frozen model produces more reliable behavior than an ungoverned agent. The system identifies a game's complete physics as a compact symbolic law, verifies it through deterministic gates, and hunts the win condition through planned exploration. Every hypothesis is falsifiable and every claim is receipted.
+GP-250 applies the ZTARE thesis to ARC-AGI-3 interactive grid games: governance around a frozen model produces more reliable behavior than an ungoverned agent. The system identifies a compact transition law, verifies it through deterministic gates, and searches for adapter-adjudicated task discharge through planned exploration. Every hypothesis is falsifiable and every claim is receipted.
+
+The product target is general-purpose skill acquisition. ARC contributes a
+2D observation adapter, discrete interventions, and one adjudicator. Common
+contracts may not assume any of those properties. Observation payloads may be
+text, 3D scenes, graphs, theorem states, quantitative models, or partial
+histories; task discharge may be qualitative, kernel-checked, committee-owned,
+or environment-owned. Substrate nouns remain in profiles and adapters.
 
 The seam document is at
 [`research_areas/seams/substrates/arc/GP-250_arc_agi_3_interactive_program_synthesis_seam.md`](../../research_areas/seams/substrates/arc/GP-250_arc_agi_3_interactive_program_synthesis_seam.md).
@@ -15,12 +22,13 @@ The seam document is at
 
 - [What the system does](#what-the-system-does)
 - [End-to-end flow](#end-to-end-flow)
+- [The active learning transaction](#the-active-learning-transaction)
 - [The worldmodel pipeline](#the-worldmodel-pipeline)
   - [Spec abduction](#spec-abduction)
   - [The operator catalog](#the-operator-catalog)
   - [Replay and holdout gates](#replay-and-holdout-gates)
   - [Reachability sweep](#reachability-sweep)
-  - [Sealed terminal verifier](#sealed-terminal-verifier)
+  - [Task adjudication](#task-adjudication)
 - [Governance layers](#governance-layers)
 - [Escalation ladder](#escalation-ladder)
 - [Runtime proportionality invariants](#runtime-proportionality-invariants)
@@ -34,7 +42,14 @@ The seam document is at
 
 ARC-AGI-3 levels are interactive: the agent earns evidence by acting in an environment whose rules are unknown. GP-250 treats each action as a falsifier. The next action is chosen as the cheapest experiment that kills the most surviving candidate world-models; when one candidate survives to a singleton committee, the reachability sweep produces a goal-directed plan.
 
-The governed object is a transition program: a symbolic law `T(state, action) -> state'` over the declared state basis. Clocked behavior is admissible only when the clock/phase is itself a state-derived or adapter-certified feature, not an exogenous replay index. A candidate earns status by reproducing all observed transitions (replay gate) and predicting held-out future steps it was not fit on (holdout gate). When zero candidates survive, the gap is classified and the escalation ladder fires.
+The governed object is a transition program over its declared observation
+chart, such as `T(observation, intervention, chart_coordinates) ->
+observation'`. Clocked behavior is admissible only when the coordinate belongs
+to a versioned chart or is derived from observation state. A raw replay index
+has no authority. A candidate earns status by reproducing all observed
+transitions (replay gate) and predicting held-out future steps it was not fit
+on (holdout gate). When zero candidates survive, the gap is classified and the
+escalation ladder fires.
 
 The system inherits the ZTARE deterministic enforcement floor. No candidate is ratified unless all deterministic gates pass. The key invariant is zero false ratification.
 
@@ -64,7 +79,7 @@ flowchart TD
     M -->|plan| O[Play loop action sequence]
     M -->|unreachable / saturated| N
     O --> P[Terminal verifier / external event]
-    P -->|level progress| Q[Closure audit + score telemetry]
+    P -->|level progress| Q[Task-discharge audit + adapter telemetry]
     P -->|no progress| B
     N --> J
     J --> C
@@ -91,11 +106,11 @@ stateDiagram-v2
     GatePass --> PlanReady: reachability succeeds
     GatePass --> ResidualOpen: reachability refutes / saturates
     PlanReady --> EvidenceOpen: play yields more observations
-    PlanReady --> TerminalClosed: terminal verifier fires
+    PlanReady --> TaskDischarged: adjudicator receipt fires
     ResidualOpen --> EvidenceOpen: quotient becomes next work item
     BlockerProposed --> EvidenceOpen: Strategy routes next experiment
     CapabilityProposed --> EvidenceOpen: tool-synthesis accepted or rejected
-    TerminalClosed --> [*]
+    TaskDischarged --> [*]
 ```
 
 Run status belongs in receipts and observability files, not in this architecture
@@ -103,6 +118,47 @@ map. The stable contract is that an interaction-envelope failure is an
 interface defect, while a replay/holdout/terminal failure is candidate evidence.
 The next work item should be derived from the current typed residual quotient
 and the admissible morphism frontier, not from stale prose in this document.
+
+## The active learning transaction
+
+The smallest object that can claim learning spans the full evidence-to-action
+cycle. Its content identity binds the task contract, adapter, evidence epoch,
+active abstraction or version space, incumbent carrier, and phase. The active
+worldmodel lowering realizes the following state sequence:
+
+```text
+counterexample observed
+-> operation identity abstracted
+-> recurrence/discriminator obligation selected
+-> intervention planned and executed
+-> new transition checked
+-> selector refined
+-> candidate compiled over the named carrier
+-> replay/holdout consequence consumed
+-> carrier adopted or the next typed residual opened
+```
+
+No intermediate artifact can claim the whole transition. In particular,
+prompt delivery is not consumption, a materialized candidate is not evaluated,
+and a selector status from one evidence epoch cannot govern its successor. A
+cached workbench receipt binds the bytes of the episode, regression, and
+handler implementation it consumed. Evidence growth invalidates that receipt
+and replays the same registered morphism chain.
+
+Operational route events are idempotent under their declared governing
+identity. Candidate materialization and gate consumption are emitted by the
+single evaluator door; diagnostic proposal enumeration has no operational
+write authority. A projection counterexample fences live action until its
+consumer refines the factor roles. Apparatus obstruction, scientific
+refutation, abstraction non-commutation, bounded capitulation, and task
+discharge remain disjoint terminal outcomes.
+
+This transaction has now first-fired through two successive LS20 operation
+acquisitions. The repository still lacks one shared digest joining every stage,
+and the P0 snapshot remains `observer_only`. The architectural migration is to
+centralize that identity and reducer while deleting alternate `latest` readers,
+private rerankers, and prompt-based acknowledgements. Adding a parallel
+learning ledger would repeat the defect.
 
 ---
 
@@ -112,7 +168,22 @@ The substrate lives under `src/ztare/worldmodel/`.
 
 ### Spec abduction
 
-Raw play transitions accumulate in the episode log (`episode_log.py`). Spec abduction (`spec_abduction.py`) recovers a candidate law deterministically from those transitions with zero LLM calls. A transition's changed-cell diff nearly dictates its rule, so the abductor reads candidate rules off the diff, proposes them into per-action option lists, and hands those lists to a population assembler. The assembler scores all option combinations by summing per-action mismatches and selects the fewest-rule spec among gate-passing assemblies by MDL.
+Raw play transitions accumulate in the episode log (`episode_log.py`). The
+module `spec_abduction.py` is the interactive-grid adapter: it recovers a
+candidate law deterministically from those transitions with zero LLM calls. A
+transition's changed-cell diff proposes rules into per-action option lists; a
+population assembler scores combinations and selects the fewest-rule
+gate-passing spec by MDL. Rectangles, cells, palettes, and spatial guards remain
+inside this adapter.
+
+The common spec-abduction contract is evidence population plus versioned
+hypothesis language, consumer equality, complexity prior, executable
+concretization, and falsifier. It returns a version space with supported and
+undefined domains. Group actions govern certified invertible symmetries;
+partial maps govern incomplete or irreversible transition graphs; groupoids
+and chart morphisms govern local transport; alpha/gamma and future-behavior
+equivalence govern abstraction and state merging. No observation totalizes a
+partial graph merely because its presentation resembles a familiar group.
 
 Two learners populate the options. The write-function learner (`_fit_write_function`) fits constant, involution, and permutation rewrites from transition consistency and MDL. The Espresso guard learner constructs guard conjuncts using `when_dest` without replacing prior guards, so refinement compounds rather than resets.
 
@@ -137,7 +208,7 @@ Guards compose onto any rule:
 - `when_effect` — rule-coupling: fires only if a named rule changed the grid on this step
 - `when_dest` — relational destination content gate
 
-A post-closure refinement pass (`_derived_display_refine`) handles indicator-flag cells whose color state mirrors the goal condition without belonging to the physics chain. These derived-display laws extend the spec after the primary operator chain closes.
+A post-identification refinement pass (`_derived_display_refine`) handles indicator-flag cells whose color state mirrors the goal condition without belonging to the physics chain. These derived-display laws extend the spec after the primary operator chain passes its current replay obligations.
 
 Lean parity (`spec_lean.py`) maps catalog operators to Lean 4 definitions. The LeanMill bridge (`lean_bridge.py`) certifies structural invariants such as monotone resource depletion and grid factorization.
 
@@ -155,7 +226,13 @@ The feedback loop uses three inference levels with different candidates and judg
 
 AxiomPack is an escalation for a repeated family of distinct, admitted proof gaps under the same typed base theory. A candidate pack remains conditional even after it improves proof yield. Before an axiom-derived claim constrains ARC play, the claim must be proved from the concrete spec or receive independent environment evidence. This prevents a useful assumption from being mistaken for an observed world law.
 
-The abstraction functor and constraint morphisms transport representations and certificates. Hypothesis induction remains the responsibility of the three operations above. The current `AbstractionFunctor` contract is an alpha/gamma abstraction interface with CEGAR checks; category-theoretic identity and composition laws are outside its present contract.
+The abstraction functor and constraint morphisms transport representations and
+certificates. Hypothesis induction remains the responsibility of the three
+operations above. `AbstractionFunctor` owns alpha/gamma CEGAR checks;
+`common/equivariance.py` separately certifies group presentations, actions, and
+quotient authority; `common/observation_chart.py` owns partial chart transport.
+Keeping these certificates distinct prevents an invertible symmetry claim from
+silently authorizing an irreversible or cross-epoch map.
 
 ### Replay and holdout gates
 
@@ -171,6 +248,42 @@ Gate tiers and holdout exposure policy follow the CEGIS membrane. Gates carry an
 
 **Role-conditional personas.** Both ARC rubrics declare a `personas` dict with `discovery` and `evaluation` keys. `cegis_membrane.select_persona(rubric_data, run_role)` picks the relevant stance: DISCOVERY and HARNESS\_DEBUG roles receive the `discovery` key ("natural scientist of transition programs"), while EVALUATION receives the `evaluation` key ("adversarial reviewer"). Judges are dispatched with `run_role=EVALUATION` (`test_thesis.py` passes `EVALUATION` directly), so they always see the adversarial-reviewer stance. Mutators are dispatched under `resolve_cegis_run_role("mutator")`.
 
+### Observation charts and evidence migration
+
+`common/observation_chart.py` separates coordinate presentation from
+transition identity. An `ObservationChart` is versioned and content-addressed.
+A `ChartTransportMorphism` is a declarative partial map between two charts. It
+is not represented as a group action: chart transport may be non-invertible,
+while `common/equivariance.py` certifies within-epoch automorphisms.
+
+Whole-bank analysis may discover a clock origin or coordinate alignment. Once
+admitted to incremental image maintenance, the resulting transport token must
+be frozen and pointwise: registered operations receive one packet value and
+immutable JSON parameters. Exact target checks plus repeated, reversed, and
+rotated witness order expose stateful or order-dependent maps. A contextual map
+that still requires history is executed as a batch evidence migration or as a
+stateful transducer with explicit state identity.
+
+An append to a sidecar-bound evidence log advances two coupled identities: the
+episode bytes and the sidecar binding. Before replacement, every existing bound
+row and transport witness is checked against the proposed row positions and
+observation hashes. After a compatible append, the sidecar is rebound to the
+successor episode digest. Reorder, deletion, or mutation of a bound observation
+fails before the authority moves.
+
+Concretization is a constrained fiber selection. A canonical observation may
+lower only to a unique destination-chart member whose reachability receipt
+binds canonical identity, chart identity, and presentation bytes. Zero members
+returns `unreachable`; multiple members return `ambiguous`.
+
+Every governed run pins an `EvidenceEpochSnapshot` before its first leaf prompt
+and checks the same content identity before subsequent prompts and candidate
+gates. This is multi-version concurrency rather than a global lock. A worker
+may finish against its pinned epoch, while the promoter rejects that result for
+any successor epoch. Chart migration publishes a new bank identity; caches and
+image histories rebuild lazily under that identity. System 1.5 cannot move the
+scientific leaf's data manifold inside a live CEGAR round.
+
 ### Reachability sweep
 
 When the candidate pool reaches singleton, `reachability.py` enumerates the reachable abstract state space under the champion law. The kernel sweep is parameterized by caller-supplied `abstract_fn`, `coverage_fn`, `goal_fn`, and optional ratified invariants. In the ARC adapter, the abstract key currently lowers to controllable support, monotone quantity state, and reactive supports; other substrates should provide their own quotient. Pruning is allowed only from kernel-ratified invariants. Role-derived coordinates are search hints until certified.
@@ -181,11 +294,64 @@ not by action-prefix identity. Raw-grid planning remains the fallback when no
 abstraction map is supplied. Novelty is measured over the chosen abstraction,
 so visual churn that preserves the quotient does not count as exploration.
 
-In environments with multi-life play, each life segment is swept independently under the same law. If the bounded object space exhausts without reaching the goal, the sweep returns `refuted_or_unreachable` with the deepest frontier, which opens a new falsification channel: the model must be wrong somewhere in the reachable space.
+In environments with multi-life play, each life segment is swept independently
+under the same law. Exact finite-frontier drainage returns
+`model_target_unreachable`: a theorem only about the current model and quotient.
+Hitting the state cap returns `search_budget_exhausted` with frontier size,
+expanded-state count, recent discovery rate, and deepest witness. A flat
+discovery derivative may change allocation or trigger an abstraction-cost
+audit; it cannot refute the transition law or prove target unreachability.
 
-### Sealed terminal verifier
+The active allocator pays for at most one full projected-coverage exhaustion
+per pursuit. After `search_budget_exhausted`, subsequent replans use
+`incremental_novelty_after_bounded_capitulation`; the carrier, task contract,
+prompt, and environment adjudicator do not change. Both policies write the
+same acquisition-routing receipt family. The multi-epoch wrapper preserves
+the final planning status and typed planning outcome; the number of execution
+segments is reported separately. This prevents a history property such as
+`multilife` from hiding the state transition that Strategy routing consumes.
 
-Goal hypotheses are abducted from indicator regions by `goal_abduction.py` and held as candidates alongside the physics candidates. The external environment exposes a sealed terminal verifier. In ARC-AGI-3 that verifier is reported through the game reward/status channel, but the kernel treats it as an exogenous pass/fail terminal event, not as a dense optimization target. A candidate that explains transitions but predicts the wrong terminal condition is falsified at this terminal gate.
+Accepted carriers may expose a consumer-indexed factor lowering through
+`worldmodel/compiled_fiber_planning.py`. The lowering compiles carrier-emitted
+effect receipts into four algebraic jobs: controlled base, finite
+configuration, ordered feasibility, and one-shot availability. These names are
+worldmodel lowering vocabulary; `common/factored_search.py` receives only
+opaque keys, an ordered vector, an edge predicate, and an estimate.
+
+The terminal projection and the reachability projection are deliberately
+different. Terminal-edge steering compares controlled base plus finite
+configuration. Search retains availability and Pareto-orders feasibility,
+because those coordinates determine whether the edge can be reached inside the
+active lifecycle without changing what the edge means. Every compiled
+projection writes `compiled` and `first_fire` events under the registered
+`compiled_factors_to_planner.v1` route. A projected transition image that fails
+to commute returns a projection counterexample rather than silently merging
+the states.
+
+### Task adjudication
+
+Goal hypotheses are abducted from indicator regions by `goal_abduction.py` and
+held as steering candidates alongside the physics candidates. Steering targets
+do not decide task achievement. The project profile declares a
+`TaskDischargeContract`; the ARC adapter owns `arc.level_count.v1` and returns a
+`TaskDischargeReceipt` bound to adapter evidence. Common lifecycle code sees
+only the receipt status. A proof substrate can lower the same contract through
+a kernel checker, and a prose substrate through a registered human or committee
+adjudicator, without importing ARC counters or spatial assumptions.
+
+Terminal witnesses carry their source epoch. They may steer only inside that
+epoch; an epoch boundary severs terminal identity unless target-epoch evidence
+attests a new edge. When terminal identity is undefined, the planner does not
+invent or transport an objective. It allocates interventions to disagreement or
+the first unseen abstract class, then lets the external adjudicator and the
+new observations determine the next refinement.
+
+For repeated skill acquisition, a task contract may name a relative lifecycle
+relation rather than an absolute milestone. The ARC lowering records the
+adapter-attested epoch at post-seed run entry and discharges after a declared
+successor delta. The counter remains adapter evidence; the common identity is
+the authority-bound lifecycle morphism. Other substrates supply different
+relations under the same contract.
 
 ---
 
@@ -198,7 +364,7 @@ in the three-legs document. At every layer an agentic worker proposes; a determi
 Artifact authority is fixed. The sealed terminal verifier dominates replay, holdout, and
 reachability; those dominate candidate snapshots and evidence logs; those
 dominate strategy-office notes, judge rationale, conjectures, and prose. A
-failed replay, holdout, reachability, reward, planted-synthetic, or deterministic
+failed replay, holdout, reachability, task-adjudication, planted-synthetic, or deterministic
 gate means candidate failure unless a separate gate-integrity receipt proves the
 checker failed. Strategy can choose the next experiment, but it cannot promote a
 candidate over the gate battery.
@@ -211,24 +377,24 @@ The synthesis loop (`synthesis.py`, `spec_abduction.py`) generates candidate tra
 
 #### Certification
 
-The gate battery (replay, holdout, reachability, sealed terminal verifier) disposes every candidate. Promotion uses tiered dominance rather than all-gates-pass: every observed-tier gate must pass absolutely, and every heldout-tier gate must be non-regressing relative to the champion's last recorded value. A candidate that strictly improves observed performance without regressing on heldout depth is promotable even when the heldout gate has not yet closed. The `ZTARE_DOMINANCE_PROMOTION` environment variable (default `"1"`) controls this path; setting it to `"0"` restores the older all-gates-pass behavior for regression and A/B testing. The pre-registered synthetic harness (`harness.py`) provides the current behavioral baseline: BC-0 recovery ran 8 of 8 expressible environments to closure with 0 false ratifications. BC-1'' (high-arity efficiency, pre-registered 2026-07-02) is the live gate; BC-1' failed as registered and its historical verdict stands in the seam.
+The gate battery (replay, holdout, reachability, sealed terminal verifier) disposes every candidate. Promotion uses tiered dominance rather than all-gates-pass: every observed-tier gate must pass absolutely, and every heldout-tier gate must be non-regressing relative to the champion's last recorded value. A candidate that strictly improves observed performance without regressing on heldout depth is promotable even when the heldout gate has not yet reached its threshold. The `ZTARE_DOMINANCE_PROMOTION` environment variable (default `"1"`) controls this path; setting it to `"0"` restores the older all-gates-pass behavior for regression and A/B testing. The pre-registered synthetic harness (`harness.py`) provides the current behavioral baseline: BC-0 recovery discharged its registered protocol on 8 of 8 expressible environments with 0 false ratifications. BC-1'' (high-arity efficiency, pre-registered 2026-07-02) is the live gate; BC-1' failed as registered and its historical verdict stands in the seam.
 
 #### Strategy
 
-Two arms. The per-iteration arm is the M-form alignment audit (`src/ztare/validator/mform_alignment_audit.py`): a rubric-governed check that runs beside each loop iteration and writes Goodhart incidents to `rubrics/goodhart_log.jsonl`. The cross-cycle arm is the strategy office substrate (`strategy_battery.py`, backing `research_director.strategy_office`): a deterministic battery of audits — novelty decay, conditional coverage, event context, ledger closure, sweep horizon, level-transfer pressure, semantic-deanchor pressure, planner-attention pressure, and loop-control pressure — that the Research Director consumes to choose the next experiment.
+Two arms. The per-iteration arm is the M-form alignment audit (`src/ztare/validator/mform_alignment_audit.py`): a rubric-governed check that runs beside each loop iteration and writes Goodhart incidents to `rubrics/goodhart_log.jsonl`. The cross-cycle arm is the strategy office substrate (`strategy_battery.py`, backing `research_director.strategy_office`): a deterministic battery of audits — novelty decay, conditional coverage, event context, ledger consumer coverage, sweep horizon, level-transfer pressure, semantic-deanchor pressure, planner-attention pressure, and loop-control pressure — that the Research Director consumes to choose the next experiment.
 
-Strategy Office is meta-control, not a model patcher. Its receipts compile low-yield behavior into typed work orders: compressed counterexample repair, target/discriminator selection, semantic deanchoring, or scheduler-counterexample review. For example, `workspace/latest_information_yield.json` can surface repeated R1/pre-judge/patch-base stagnation as `scheduler_counterexample` pressure. This can redirect attention and commission a kernel-improvement proposal, but replay/holdout/terminal gates still own candidate authority. In agentic filepack mode, Strategy cards are records and refs; they must not become the primary `TASK.md` objective. The primary ask is substrate-invariant: compress visible transition evidence through alpha/gamma into an executable law, or return a receipt-bound obstruction.
+Strategy Office is meta-control, not a model patcher. Its receipts compile low-yield behavior into typed work orders: compressed counterexample repair, target/discriminator selection, semantic deanchoring, or scheduler-counterexample review. For example, `workspace/latest_information_yield.json` can surface repeated R1/pre-judge/patch-base stagnation as `scheduler_counterexample` pressure. This can redirect attention and commission a kernel-improvement proposal, but replay/holdout/terminal gates still own candidate authority. In agentic filepack mode, Strategy cards are records and refs; they must not become the primary `TASK.md` ask. The primary ask is substrate-invariant: compress visible transition evidence through alpha/gamma into an executable law, or return a receipt-bound obstruction.
 
 #### Machinery
 
 The machinery itself is a governed object under the same form.
-Contradiction detectors (`machinery_contradictions.py`) issue proposal cards when classifier excusals conflict with live play. Cards travel through the operator-proposal ledger (`workspace/operator_proposals.jsonl`) and are adopted only under the rules in [MACHINERY_RULES.md](../../MACHINERY_RULES.md). Certifier-touched cards require conductor disposition; auto-adoption is restricted to tightening changes. The [Machinery governance](capabilities.md#machinery-governance) section records the substrate-agnostic parts of this contract.
+Contradiction detectors (`machinery_contradictions.py`) issue proposal cards when classifier excusals conflict with live play. Cards travel through the operator-proposal ledger (`workspace/operator_proposals.jsonl`) and are adopted only under the [machinery rules](../reference/machinery_rules.md). Certifier-touched cards require conductor disposition; auto-adoption is restricted to tightening changes. The [Machinery governance](capabilities.md#machinery-governance) section records the substrate-agnostic parts of this contract.
 
 ---
 
 ## Cross-substrate algebra
 
-The worldmodel substrate (`src/ztare/worldmodel/`) and the decision-support kernel ([`docs/concepts/decision_support_primitives.md`](decision_support_primitives.md)) instantiate the same five-cell decomposition — ADMIT / EVALUATE / ATTRIBUTE / AGENDA / MAINTAIN — over different evidence types. The warrant-tier ladder maps one-to-one: *unchecked* corresponds to leaf-authored prose and raw riders; *cited* corresponds to receipt-bound claims (`evidence_refs`, `search_receipts`); *reproducible* corresponds to deterministic gate replay; *proven* corresponds to kernel invariant certificates (`invariant_certificates.jsonl`). Both substrates built this structure independently; its recurrence is evidence that the decomposition is real, not an artifact of one design session.
+The worldmodel substrate (`src/ztare/worldmodel/`) and the decision-support kernel ([`docs/concepts/decision_support_primitives.md`](decision_support_primitives.md)) instantiate the same five-cell decomposition — ADMIT / EVALUATE / ATTRIBUTE / AGENDA / MAINTAIN — over different evidence types. The warrant-tier ladder maps one-to-one: *unchecked* corresponds to leaf-authored prose and raw riders; *cited* corresponds to receipt-bound claims (`evidence_refs`, `search_receipts`); *reproducible* corresponds to deterministic gate replay; *proven* corresponds to kernel invariant certificates (`invariant_certificates.jsonl`). Both substrates built this structure independently; its recurrence shows that the decomposition is not an artifact of one design session.
 
 The **shared-algebra-sovereign-substrates** policy governs which parts live where. Substrate-free math is extracted to `src/ztare/common/`: `identification_bits` (the prior-free information yield used in the AGENDA cell) lives in `src/ztare/common/information_yield_pricing.py`; the hitting-set core used for minimal environments lives in `src/ztare/common/hitting_sets.py`. Evidence semantics, receipt shapes, and determinism floors remain substrate-local — the worldmodel substrate's replay/holdout gates and the kernel's quote-binding and recheck door are not merged, because the evidence types they govern differ and the independence of the gatekeeping matters.
 
@@ -274,7 +440,7 @@ The routing rule is mechanized: `worldmodel/engine_router.py` computes the
 knowledge state from receipts (champion present, visible residual, frontier
 witness freshness, population fingerprint diversity, unresolved
 disagreement targets, stagnation) and selects the engine, appending every
-decision to `workspace/engine_routing.jsonl`. On its first real invocation
+decision to `workspace/engine_routing.jsonl`. On its first production invocation
 the router out-routed the human conductor — the conductor's choice was
 stale against receipts that had moved. Long-term the router's invocation
 point belongs in autoresearch loop control (System 2 is a single shell with
@@ -288,33 +454,37 @@ promoter. None of them holds promotion authority; the materializer's
 product-order dominance is the only door into `test_model.py`, whichever
 engine authored the candidate.
 
-**K-lines (Minsky), Shapley-filtered** (`common/k_line.py`) complete the
-memory set: the catalog remembers laws, nogoods remember dead ends, the
-mechanism ledger remembers rival theories, case-law remembers rulings —
-K-lines remember *the configuration in force when the system won* (engine,
-mode, model tier, width, briefing features), keyed by a coarse
-problem-signature quotient. Attribution over the receipt corpus filters
-superstition from the record (v1 is presence-contrast, explicitly labeled
-correlational; scheduled component ablations — the K=1-ablation pattern
-generalized — upgrade it to causal). `propose_configuration` re-activates
-the highest-attribution configuration for a matching signature:
-configurations only, never science content. This is the conductor's craft
-moved into a machine ledger — the last routing function that had no receipt
-home. It is also the second cross-task transfer object: the catalog
-transfers laws; K-lines transfer ways of working.
+**Configuration memory remains a causal-experiment requirement.** The former
+`common/k_line.py` presence-contrast implementation and its router-prior lane
+were removed: no production path wrote matched treatment/control evidence, its
+stored vocabularies could not match router signatures, and no routing decision
+had consumed its output. Ordinary stagnation and pivot control are independent
+and remain active.
+
+A successor may remember a configuration only as a prospective ablation over a
+declared problem population. Correlational telemetry may nominate the factor;
+it has no allocation authority. A matched treatment/control consequence on the
+same population can then authorize a bounded allocator change. This control
+memory changes search topology only and never supplies scientific content.
+
+Control receipts compile only into search topology: allocation weights,
+frontier width/depth, active tools, phase transitions, and structural filters.
+They do not become semantic advice in a worker prompt. Review packets remain
+queryable, but the worker supplies their scientific interpretation.
 
 ### Category contracts: measurements vs causal identities
 
 The system uses several named categories for committee members and episodes.
 Their epistemic status differs and must not be conflated.
 
-**Measurement categories (attribute-statuses).**  Holdout depth, visible-perfect,
-champion, and level closure are *measurements*: they record what the current
-evidence says about a candidate's performance on a defined gate.  A candidate
-is ``visible-perfect`` when it reproduces every visible transition exactly;
-``champion`` when it holds the highest dominance rank; ``closed`` when replay,
-holdout, and terminal gates all pass.  These are contingent on the evidence
-seen so far and can change as new transitions arrive.
+**Measurement categories (attribute-statuses).** Holdout depth,
+visible-perfect, champion, and task-discharge status are measurements: they
+record what the current evidence says about a candidate or run under a defined
+protocol. A candidate is `visible-perfect` when it reproduces every visible
+transition exactly; `champion` when it holds the highest dominance rank. A run
+is `discharged` only when its declared adjudicator emits a bound receipt. These
+statuses are contingent on the evidence and protocol and may change when a new
+epoch begins.
 
 **Causal-identity categories.**  Mechanism family and episode are causal
 identities — they name *what produces the behavior*, not what the behavior
@@ -324,24 +494,32 @@ underlying rule family).  An episode boundary is a causal identity only after
 reset-invariance tests confirm that the physics resets cleanly rather than
 carrying hidden state across lives.
 
-**Closure claims require pre-registered receipts.**  Asserting that a level is
-closed requires the pre-registered evaluation protocol — specifically,
-``eval_protocol.jsonl`` receipts that name the gate battery, holdout slice,
-and terminal-event witness.  A depth reading alone (``holdout_depth == N``) is
-a measurement; it is not a closure claim.  The distinction matters because a
-depth reading can be satisfied by a candidate that memorizes the holdout order
-rather than generalizing the law.
+**Protocol discharge requires bound receipts.** A law-identification claim
+requires replay and withheld-transition receipts. A task-achievement claim
+requires the separate `TaskDischargeReceipt`. A search-exhaustion claim
+requires its bounded frontier receipt. These obligations are neither
+interchangeable nor summarized by one broad status. A depth reading alone
+(`holdout_depth == N`) is a measurement and cannot discharge any other
+obligation.
+
+**Operational schemas declare their governing identity.** The schema route
+registry requires job, owner, lifecycle or epoch, authority, equality relation,
+compatibility relation, and an active producer-to-consumer edge. Cold proposals
+and telemetry have different lifecycle identities and cannot acquire authority
+from mere existence.
 
 **Adapter-Width Law.**  A substrate adapter's interface is the machine-readable
 enumeration of every abduction outsourced to humans — the "givens": variables,
 actions, success signal, reset semantics, time structure, observability, and
 verification oracle.  Width is the count of fields still at status ``given``.
 Generality is the ordered deletion of adapter fields, each replaced by an
-abduction organ and a validation receipt.  This is a measured, receipted number:
-the current baseline lives at ``analytics/public/adapter_width/`` and is
-updated by ``ztare.common.adapter_width.declare_adapter_contract()``.  The
-GP-250 worldmodel starts at width 6–7/7 (honest baseline); each field
-deletion must produce a receipt before the width decreases.
+abduction organ and a validation receipt. The former standalone width reporter
+was deleted because it wrote snapshots that no decision path read. Width is
+now a derived architectural score over registered adapter contracts and their
+first-fire receipts; a self-written JSON file cannot lower it. The current ARC
+adapter still supplies every listed category, so no graduation should be
+claimed until one is removed from the adapter API and recovered through the
+same common transaction on at least one additional substrate.
 
 ---
 
@@ -353,15 +531,21 @@ When abduction stalls, the system climbs a cost ladder before calling an LLM.
 
 **Seeded search (minutes).** `synthesis.py` runs version-space candidate elimination over the per-action option lists, with MDL scoring, the population assembler cache, and the E-graph shared sub-evaluation. No LLM calls.
 
-**Operator proposal cards.** When the gap survives seeded search, `closure_audit.py` emits an operator-proposal card describing the unresolved transition family. The implement leg (`operator_implement.py`) dispatches a sealed leaf worker that proposes one new guard or operator against that card. The proposal travels through the adoption cycle before entering the grammar.
-
-**Tactical structural bridge.** If the normal implement leg fails at a grammar ceiling, the reflex may ask the structural-transport provider for one cached cross-domain prescription against the current residual cut. It runs as the reflex's last rung: one provider, SHA-cached inputs, `spec_patch` required, and the same strict-improvement/no-regression arbiter as the operator path. A surviving bridge writes back into the dictionary so future ceilings retrieve it as earned advice.
+**Operator proposal cards.** When the gap survives seeded search, the
+grammar-completeness audit (legacy module name `closure_audit.py`) and current
+residual triage emit proposal cards bound to the visible evidence digest, row
+count, residual family, and active task when present. `grammar_reflex.py` owns
+only this binding and delivery. The registered briefing consumer exposes the
+card to the ordinary governed executable-carrier worker; the single evaluator
+owns materialization, replay, withheld evaluation, and adoption. The previous
+grid-only sealed implementer and disabled structural-bridge branch were removed
+because they formed a second implementation door.
 
 **Sealed 5.5 checkpoint.** `evidence_digest.py` builds a bounded, prioritized digest of the episode log under a character budget: all residuals first (the transitions the current champion does not yet explain), then exemplars by diff-signature cluster, then newest transitions. This digest is the evidence surface for a toolless single-shot LLM call — sealed and context-bounded.
 
 **Champion materialization.** At loop bootstrap, `validator/core/champion_materialization.py` scans `workspace/candidate_*.py` and `workspace/submissions/*.py`, runs the project gate harness on each, and promotes the best dominance-eligible candidate to `test_model.py`. A candidate is eligible only if it passes all observed-tier gates and satisfies the tiered dominance check against the live model. The backup of the prior model is written to `workspace/test_model_pre_materialization_<ts>.py` and the promotion receipt appended to `workspace/champion_materialization.jsonl`. The behavior is env-gated (`ZTARE_CHAMPION_MATERIALIZATION`, default `"1"`). `test_model.py` is also staged into briefing packs as a compact visible-workbench reference artifact.
 
-The live-champion briefing provider (`ztare.orchestrator.briefing_providers.live_champion`, tier 0, priority 18) reads the newest `"promoted"` row from `workspace/champion_materialization.jsonl` and renders it as a mandatory patch-base directive — the first directive the leaf sees. Without this provider the leaf cannot identify the correct patch base and regresses. When no promotion receipt exists but `test_model.py` is present, the provider renders a degraded banner.
+**Active search carrier.** Promotion history and the next repair baseline are separate objects. A configured producer may supply a stronger but still refuted carrier as the governed repair frontier. The play loop copies those exact bytes to `test_model.py` and records the selection in its existing play receipt without granting promotion authority. The tier-0 carrier provider composes three existing surfaces: current root bytes, admissible candidate memory, and the newest promotion receipt. It renders a promotion directive only when the promoted digest still equals the root carrier; otherwise an equal-byte candidate-memory record becomes the repair baseline with `promotion_authority:false`. This prevents an old champion directive and a newer repair frontier from competing in the same prompt without introducing another ledger.
 
 **Envelope normalization.** The kernel normalizes declaration headers rather than rejecting them with strikes. `evaluate_mutation_declaration` (`ztare.validator.core.mutation_contract`) computes the actual touched artifacts from the diff. If the declared scope is narrower than the actual change (`UNDECLARED_ARTIFACT_BREADTH`), the kernel upgrades scope and records an attribution note. If the declared primitive is not in the approved index (`INVALID_PRIMITIVE_DECLARATION`), the kernel drops it with a note. Neither case consumes a strike. R1 retries run in `visible_workbench` mode via `resolve_agent_execution_mode("mutator")`, which preserves instruments across the retry.
 
@@ -381,7 +565,9 @@ source artifacts, hidden evaluator data, live actions, and authority gates
 remain outside the leaf. If the needed observation is authority-bearing
 (sealed replay, hidden holdout, live world actions, canonical adoption, or
 dictionary write-back), the worker must emit a typed workbench action request and
-consume the kernel-produced receipt on retry. This is the in-loop analogue of
+cite the durable kernel-produced receipt on retry. The parent resolves that ref
+and verifies its subject identity against the submitted carrier; the worker does
+not copy the parent-owned receipt object into its response. This is the in-loop analogue of
 `ztare autoresearch route`: the outer router decides whether a task belongs in
 the workbench; the inner leaf workbench gives an admitted worker the minimal
 observation/action loop without raw repository or holdout access. It must
@@ -483,19 +669,19 @@ coordinates. Property fields describe current interpretation: freshness,
 dominance, role, status, quotient relation, score, or admissibility. A prompt or
 provider may summarize properties, but it must not encode them into artifact
 refs or command identities. Conversely, substrate folklore (`row`, `color`,
-`level`, `reward`, `agent`, `resource`) may appear inside adapter receipts when
+`level`, `outcome counter`, `agent`, `resource`) may appear inside adapter receipts when
 that is the observed evidence vocabulary, but it must not become kernel policy.
 The portable kernel vocabulary is artifact, carrier, quotient, gate, receipt,
 adapter lowering, and prediction/action card.
 
-Action requests are part of the same contract. A leaf may submit a `LEAF_WORKBENCH_ACTION_REQUEST` for a registered capability; the kernel executes only the registered lowering over allowed artifacts and returns `LEAF_WORKBENCH_RECEIPT` on the free retry. The kernel verbs stay generic: read an artifact, run a pure diagnostic, run a Strategy card's declared gate, score a candidate delta, record a missing-instrument observation, and record a receipt. Substrate commands such as ARC transfer probes live behind a registry selected by the Strategy card's `required_next_gate`; they are not new kernel verbs. A bounded common probe, `run_visible_json_probe`, lets the leaf run pure Python over explicitly named visible JSON artifacts when it needs a one-off aggregate before a stable wrapper exists. In visible-workbench mode, the same probe surface is also staged as an in-turn CLI over visible artifacts/stdin, so the leaf can run local counterexample checks before final submission; hidden holdout, live environment actions, candidate promotion, and dictionary write-back remain kernel-only. Every non-manifest visible CLI command writes a content-addressed receipt under `workspace/visible_cli_receipts/` and returns `persistent_receipt.ref`; the leaf can pass those refs into `probe-json` to compose visible evidence inside the same turn. If neither layer fits, the leaf emits `LOWERABILITY_BLOCKED` and may attach an optional proposal skeleton as cold backlog. This is the sealed-worker version of tool access: choose the next observation/action agentically, but execute through typed capability receipts rather than arbitrary repo access.
+Action requests are part of the same contract. A leaf may submit a `LEAF_WORKBENCH_ACTION_REQUEST` for a registered capability and parameter tuple; the kernel executes only a tuple inside the consumer's declared executable domain and returns `LEAF_WORKBENCH_RECEIPT` on the free retry. Wrapper capability identity does not authorize arbitrary inner commands. A Strategy card's `required_next_gate` is a verification predicate; it becomes an executable control action only when the substrate adapter registers that command as a consumer. The kernel verbs stay generic: read an artifact, run a pure diagnostic, invoke a registered bounded action, score a candidate delta, record a missing-instrument observation, and record a receipt. Substrate commands such as ARC transfer probes live behind that adapter registry. A bounded common probe, `run_visible_json_probe`, lets the leaf run pure Python over explicitly named visible JSON artifacts when it needs a one-off aggregate before a stable wrapper exists. In visible-workbench mode, the same probe surface is also staged as an in-turn CLI over visible artifacts/stdin, so the leaf can run local counterexample checks before final submission; hidden holdout, live environment actions, candidate promotion, and dictionary write-back remain kernel-only. Every non-manifest visible CLI command writes a content-addressed receipt under `workspace/visible_cli_receipts/` and returns `persistent_receipt.ref`; the leaf can pass those refs into `probe-json` to compose visible evidence inside the same turn. If neither layer fits, the leaf emits `LOWERABILITY_BLOCKED` and may attach an optional proposal skeleton as cold backlog. This is the sealed-worker version of tool access: choose the next observation/action agentically, but execute through typed capability receipts rather than arbitrary repo access.
 
 The receipt/action wording is centralized in `ztare.common.leaf_workbench_contract`. Prompt and projection files that expose that contract are mutable sensors: they may be improved through `tool_synthesis`, but they must render common action-request objects and must round-trip through the same parser and validator used by the loop. No substrate adapter owns a private receipt dialect.
 
 Strategy Office cards split by role through one common classifier:
 `ztare.common.control_work_items` (`strategy_card_roles` is only a compatibility
 projection). Skill-acquisition cards are active memory and gateable obligations,
-but they do not define the leaf's cognitive objective. The worker may cite a
+but they do not define the leaf's primary ask. The worker may cite a
 card, satisfy it, refute it, or block it with evidence; the AskSpec remains the
 single task contract. Meta-hardening cards improve mutable instruments
 such as prompt renderers, workbench tools, briefing providers, retry adapters,
@@ -675,7 +861,7 @@ contract text, automaton events, prompt projections, or Strategy write policy.
 
 No renderer decides policy. No preflight parses prose when a typed object
 exists. No adapter owns a private receipt dialect. No common module should route
-on substrate folklore such as a specific level, cell color, reward channel, or
+on substrate folklore such as a specific level, cell color, scalar outcome channel, or
 gameplay noun. Adapter facts may appear in adapter receipts; common code should
 route on registered capability ids, authority class, lane, lowerability signal,
 and gate status.
@@ -739,7 +925,7 @@ counterexample, or propose the missing capability needed to test/lower it.
 ### P0 Learning Metrics
 
 The harvest phase is judged by computable receipts, not by architectural
-vocabulary. Each run should be able to emit a `ztare-arc3-p0-metrics-v1`
+vocabulary. Each run should be able to emit a `ztare-arc3-p0-metrics-v2`
 snapshot from existing workspace artifacts:
 
 - Catalog growth velocity: `V_G = delta(|G|) / delta(N)`. The claim that the
@@ -762,16 +948,22 @@ snapshot from existing workspace artifacts:
 
 Current implementation: `python -m ztare.worldmodel.p0_metrics --project
 projects/<project> --write` writes `workspace/p0_metrics.json`. The snapshot is
-read-only telemetry; replay, holdout, and the sealed terminal verifier remain
-candidate authority.
+read-only telemetry and is excluded from leaf briefing packs. Each metric
+declares the identity of its evidence population. Missing denominators remain
+`null`: candidate fidelity is not operator reuse, cumulative proposal counts
+are not catalog velocity, and residual classes divided by actions are not a
+hypothesis split. Carrier fidelity reads only admissible candidates on the
+active maximum visible evidence epoch; shorter historical survivors cannot
+project a perfect score onto a longer bank. A snapshot remains `observer_only` until a registered
+allocator consumes it and its evidence populations share the required
+run-and-epoch identities. Project receipts, rather than this document, own the
+current values. Replay, holdout, and task-adjudication receipts retain candidate
+and task authority.
 
-Run RCA is a read-only join over the same receipts, not a new telemetry clock.
-`python -m ztare.worldmodel.arc3_run_observability --project projects/<project>
---write` writes `workspace/arc3_run_observability.json`. It revalidates the top
-candidate-memory rows against the current carrier contract, summarizes existing
-visible-workbench receipts, and points at the active abduction/transfer/P0
-artifacts. Its job is to expose stale-prior and cognitive-parity failures in one
-place; it does not promote, mutate, time, or judge candidates.
+The former ARC run-RCA module was removed because its output had no consumer and
+had remained stale while the loop continued. Diagnostic joins must be views of
+the same transaction identity and must either alter a registered decision or
+remain external inspection queries; they do not earn a second telemetry clock.
 
 The live loop is split into producers and readers. Producers may compute: sprint abduction, refinement ladders, operator adoption, and strategy-office experiments. They persist receipts such as `workspace/champion_spec.json`, `workspace/abduced_core.json`, `workspace/structural_transport_cuts.json`, and dictionary entries. Readers may only read those receipts or a SHA-matched cache: mutator-briefing providers, `applies()` checks, and prompt renderers cannot run `abduce_spec`, replay a world, or query a provider just to decide whether text should be shown.
 
@@ -789,7 +981,7 @@ document. If a run discovers a failure by inspecting an evaluation slice, that
 slice is demoted into counterexample evidence and the next transport claim needs
 a fresh withheld slice. This is the CEGIS membrane: discovery may consume
 counterexamples; evaluation measures whether the next abstraction transports.
-Every candidate/gate/closure reader should preserve the membrane metadata:
+Every candidate, gate, and protocol-status reader should preserve the membrane metadata:
 `run_role` (`DISCOVERY`, `EVALUATION`, or `HARNESS_DEBUG`),
 `holdout_exposed_to_proposer`, `claim_class`, and
 `fresh_holdout_required`. Discovery may stage holdout-like slices in the
@@ -802,6 +994,30 @@ must be immutable `workspace/submissions/*` artifacts with a content hash and an
 admissible carrier chain. A property such as "best visible replay score" cannot
 promote a mutable root file into patch-base authority.
 
+Conversely, `workspace/submissions/*` is an adoption namespace, not scratch
+space. Out-of-loop probes and conductor diagnostics must live outside every
+candidate/champion scan. Placing diagnostic code in that namespace changes its
+authority regardless of its filename; removal and restoration are required
+before a subsequent run can count as governed acquisition.
+
+Admissibility is scoped to the judged subject. A replay failure refutes one
+carrier. A selector-miner failure refutes one finite selector family. Neither
+may be rendered as a global lowerability verdict. Only a typed
+`LOWERABILITY_BLOCKED` receipt can claim a current search-space obstruction,
+and it must bind the searched space, evidence epoch, attempted families,
+stopping rationale, and remaining affordances. The retry surface carries
+negative verdicts as `refuted_scopes` and keeps other carrier families open.
+
+The counterexample object is a chart-bound observation triple containing
+source state, incumbent consequence, observed consequence, intervention,
+proposal identity, transition identity, and evidence epoch. The ARC adapter may
+localize that object to an axis-aligned window; the window is presentation
+metadata. The common contract also accepts token spans, subgraphs, tensors,
+volumes, and partially observed histories. Retry compression carries the triple
+rather than substituting selected cell features. Its operational route requires
+paired `materialized` and candidate-synthesis `first_fire` events under one
+digest.
+
 Harness weakness receipts are diagnostic error signals for self-repair, not
 candidate authority. When a retry/pre-judge path detects a gate-process defect,
 stale-prior leak, unclassifiable carrier failure, or local repair
@@ -809,6 +1025,16 @@ overgeneralization, it writes a typed receipt under workspace and routes the
 next work item toward carrier repair, a bounded workbench action, or a
 capability proposal. The receipt cannot close a Strategy card, promote a
 candidate, or override replay/holdout/sealed terminal authority.
+
+Operational awareness uses the common ACI criterion: the registered consumer
+must parse the exact typed producer object and change control state. The
+counterexample-observation route satisfies this by appending `first_fire` only
+after candidate synthesis parses a
+`ztare-counterexample-context-observation-v1` receipt and inserts its
+`observation_sha256` into the next synthesis facts. File presence and prompt
+text alone do not count. `assert_operational_routes_ready` runs before a new
+governed mutation and before each play cycle; an open operational route stops
+science while cold capability proposals remain non-blocking.
 
 Adapter coordinates must be typed in receipts. Any counterexample or local
 residue that names cells or bounding boxes must include the adapter basis
@@ -827,11 +1053,32 @@ grants one bounded post-receipt carrier retry before consuming the iteration.
 This keeps tool use from arriving too late to matter while preserving the
 finite strike budget.
 
+The task's `admissible_capability_ids` are compiled into one active action door.
+`active_workbench_task_capability_scope` binds the task to visible carrier
+bytes, and the same resolver drives the staged CLI manifest, CLI execution, and
+parent-kernel action executor. Evidence actions outside that set fail before
+execution. Carrier syntax checks, receipt validation, and aggregate scoring are
+retained as operational exits, but a candidate cannot enter evaluation until a
+kernel receipt from one admitted evidence action is carried. The capability set
+therefore controls topology rather than adding semantic instructions to the
+leaf prompt.
+
 Regression quotient failures route to tools before broadening. If a local delta
 changes support, or flips the same support in opposite directions against the
 best prior, the harness weakness receipt should point to a counterexample
 context capability. The next useful act is to find the separating predicate
 between candidate and prior quotients, not to make the coordinate patch wider.
+
+The counterexample-context capability also joins an observed behavioral fiber
+to the immutable `PATCH_BASE` chain. `resolved_patch_base_paths` is the shared
+content-addressed traversal used by complexity accounting, provenance, and
+this diagnostic. Each ancestor is evaluated only on the fiber members, and the
+receipt records which members become correct or regress at each layer. Repeated
+layers adding disjoint members of one consequence fiber are thereby visible as
+one composition problem rather than unrelated coordinates. Retry compression
+retains those layer consequences while dropping raw prediction fingerprints.
+The receipt grants neither an operation identity nor promotion authority; the
+leaf still proposes the invariant and the ordinary gates decide it.
 
 Prompt compression may not shatter structured syntax. If a briefing provider
 must cap a fragment, code fences and bracketed object/list blocks are atomic:
@@ -949,7 +1196,7 @@ before use:
   evidence is always possible.
 - `worldmodel/batch_gate.py` — K candidates evaluated in one process with
   episodes loaded once (measured 3.6x at K=5 over subprocess-per-candidate;
-  exact-match verdicts on champion and real candidates). Early-abort screening
+  exact-match verdicts on champion and production candidates). Early-abort screening
   exists but its results are marked `partial` and can never stand as verdicts.
 - `worldmodel/frontier_codec.py` — interned packed states and vectorized
   novelty over a uint8 matrix (measured ~166x at 2,000 visited states against
@@ -961,7 +1208,25 @@ before use:
 - `common/image_set.py` `saturation_kind` — distinguishes `alpha_blind`
   (raw set growing while the image is flat: the abstraction is lossy here,
   refine the quotient) from `exhausted` (raw flat: the explored space is
-  genuinely spent). A flat image alone never licenses either conclusion.
+  actually spent). A flat image alone never licenses either conclusion.
+- Frontier images are maintained along a certified append lineage. Reuse
+  requires the prior episode bytes to be an exact prefix, unchanged sidecar
+  semantics, and the same abstraction version. A compatible append projects
+  only new rows and delta-appends new quotient keys to the same cache object;
+  a prefix mutation starts a new cache lineage. Evidence-induced object roles
+  are computed once per episode/sidecar byte identity and shared by abstraction,
+  coverage, and resource projections within the play turn.
+
+Current violation: operation-domain selection still re-evaluates the carrier
+and proposed delta over the whole visible bank in order to find beneficial and
+harmful firings, and the authority gate repeats a full replay after small
+appends. The correctness bitmap and append lineage exist but are not the single
+read path for these consumers. The next performance refactor should index
+operation-trigger candidates over the residual plus previously certified
+harmful supports, and validate only the compatible suffix before reusing a
+prior full-gate receipt. Until equivalence with full replay is demonstrated,
+the existing full gate remains authoritative. This is the current weakest
+computational seam, not a reason to weaken exact checking.
 
 Authority is unchanged by all of the above: fast paths are screening and
 telemetry; promotion verdicts remain with the full gate, and any fast-path
@@ -971,33 +1236,175 @@ adoption requires a pasted equivalence proof against it.
 
 ## Case study: ls20
 
-ls20 is the only ARC-AGI-3 level the system has run to physics closure.
+This section records dated acquisition episodes; project receipts own current
+scores, rows, and task state. Historical replay or withheld numbers cannot be
+projected onto a later evidence epoch. The former effect-table compiler and
+fiber extractor were deleted after a caller/consumer audit showed that neither
+participated in the active transaction.
 
-The episode log reached 486 transitions covering all action-state combinations. After appending 653 further transitions from a second episode, closure held at 1139/1139: the champion law predicted every observed transition exactly, and the replay and holdout gates passed throughout.
+The active acquisition path is task-bound counterexample inspection, operation
+identity, recurrence/discriminator planning, domain selection, and
+`worldmodel.catalog_operation_patch_compiler.v1`. The compiler consumes the
+receipt family and composes a delta over the exact carrier named by the task.
+It neither reads a semantic answer from a prompt nor edits the incumbent.
 
-Four hypotheses were falsified during that process:
+A 2026-07-15 operation frontier began from carrier `23c7576c…`, which was
+14,574/14,576 exact and 16/16 on the then-configured discovery rollout. One arrival-conditioned
+remote consequence occurred at visible row 14950. Factored search rejected a
+non-commuting projection, reclassified an ordered quantity as an
+equality-bearing factor for this consumer, and selected a distinct 23-action
+experiment. Live play produced a second occurrence at row 14952 under a
+different source observation. Evidence growth invalidated the one-witness
+workbench cache; the selector recomputed, found support `{14950,14952}`, and
+excluded one harmful historical firing. Candidate `b5abed8c…` then passed
+14,576/14,576 visible transitions and 16/16 on that discovery rollout through the normal
+project gate.
 
-**Count-guards as the primary gating mechanism.** The `when_count` guard was trialled as the main gate condition and rejected: live play produced transitions where count-conditioned rules misfired on frames the guard should have blocked.
+Fresh play with that adopted carrier reached depth 25 and opened a different
+operation identity: departure from the controlled region revealed previously
+covered substrate at row 14957. The same acquisition transaction selected a
+second experiment and produced recurrence at row 14959. The selector found
+support `{14957,14959}`, the compiler composed the departure operation over the
+arrival carrier, and candidate `83e6ea51…` passed 14,583/14,583 visible
+transitions plus 16/16 on that discovery rollout. Fresh play then reached depth 26 and
+opened a successor one-row frontier (14,586/14,587 exact). The adapter still
+reports two task discharges; the next task is open. These receipts establish
+two consecutive in-loop skill refinements without a conductor-authored law,
+not completion of the general-purpose program.
 
-**Lock-and-key state configurations.** Candidate laws with paired key-and-door mechanics were assembled and tested. They failed the holdout gate because key-consumption and door-open events did not co-occur with the predicted timing.
+Two apparatus defects had blocked this sequence. Workbench caching bound task
+and handler identity but omitted the consumed evidence bytes, so recurrence
+returned a stale singleton receipt. After invalidation, the operation compiler
+still rejected the fresh selector because it privileged the inspector's old
+`operation_recurrence_required` property. Removing that redundant check let the
+downstream selector own current authority. A third single-door defect allowed a
+diagnostic proposal call to emit an unconsumed materialization event; candidate
+production and gate consumption now share the evaluator door, and duplicate
+events with the same governing identity are idempotent.
 
-**Both-keys singleton.** A candidate requiring two keys held simultaneously reached singleton committee briefly. The conditional coverage audit flagged a multi-flag configuration witnessed at only one agent position. Probing that position falsified the singleton: the marker cell labeled "flag" turned out to be a terrain-restore event — the color reverts when the agent leaves, matching the `terrain` role in `object_roles.py`, not the `indicator` role.
+An earlier four-row residual combined adapter lifecycle frames and a
+presentation described as a col-57 oscillator. Those rows were separated by
+transition identity and extraction evidence. A later historical evidence
+append changed that frontier. Its first counterexample was visible row 14262
+(`t=71`, intervention 0): a localized source/incumbent/observed triple over
+rows 5–9 and columns 9–38. The source contains one 5×5 structured object at the
+left presentation, the incumbent consequence places it on the left, and the
+environment consequence places the same value structure on the right. The
+unresolved object is the state relation selecting that transport, rather than
+the coordinates or values in this witness. The triple is now produced and
+first-fired in-loop. A conductor-authored contact rule used during diagnosis
+was invalidated and is excluded from candidate selection.
 
-**Horizon-check and coverage audits.** `strategy_battery.py` ran the novelty-decay and conditional-coverage audits continuously throughout. Both flagged insufficient coverage before the falsifications were discovered by replay, which is the intended workflow.
+The visible bank also merged two clock charts. Rows 14077/14078 are exact
+environment replay at local times 65/66; rows 13958/13959 contain the same
+state, intervention, successor, and transition identities at legacy-bank times
+90/91. The identity sidecar now carries a certified `+25` pointwise chart
+transport over that exact two-row domain. This repairs evidence presentation;
+it does not add a mechanic to the carrier.
 
-Current state: ls20 Level 1 has both physics closure and a sealed terminal-event receipt. The Level-2 boundary probe is not closed: `latest_level_transfer_probe.json` shows first-step transfer structure but deeper local transfer still mismatches. The current repair target is general, not ls20-specific: quotient-scope an existing ordered-component extremal rewrite to the selected connected-component class, then let replay/holdout decide whether the local transfer depth closes. The metric remains solve rate on held-out ARC-AGI-3 levels, measured against the sealed environment terminal verifier; replay closure and terminal success are separate receipts.
+The banked successor-epoch prefix from rows 14210 through 14253 has zero carrier
+failures and reaches the task edge at row 14254. A raw distance-to-witness beam
+dropped the necessary detour at depth 17 because it preserved the whole grid
+and clock presentation. A controlled-base-only quotient reached the witnessed
+position in 17 interventions but the adapter did not discharge the task.
+Adding finite configuration isolated the terminal identity, while dropping
+ordered feasibility caused a lifecycle loss before the target. These
+counterexamples routed to different projection owners.
+
+The wired factored planner then generated 434 states, expanded 403, and found a
+45-intervention successor-epoch plan. The normal self-play entry point composed the
+accepted PATCH_BASE carrier, replayed the content-addressed prior-epoch skill seed,
+called `pursue_goal`, and received the adapter boundary receipt
+`levels_completed:1->2` with zero replans and zero transition divergence. The
+projection ledger contains paired `compiled` and `first_fire` events with the
+same projection and problem identities; neither event stores the action route.
+
+The subsequent epoch exposed a different category: the prior epoch's terminal
+presentation had been reused as an objective despite having no target-epoch
+witness. Epoch scoping severs that identity. With terminal identity undefined,
+the planner switches from task-directed search to abstraction-shattering
+acquisition and stops after the first unseen quotient class. A live acquisition
+then exposed a transition-law counterexample, localizing the next scientific
+object to dynamics rather than objective transport or planning. The out-of-loop
+probe can write a caller-selected quarantined transition trace for apparatus
+inspection, but that trace is marked `admissible_to_synthesis=false`; only the
+governed collector may add target-epoch rows to the evidence bank.
+
+At the 2026-07-15 cold-audit boundary, immutable carrier `8d3e1f…` is refuted on
+the newest visible evidence: 15,082/15,084 exact, with two wrong rows and 28
+wrong cells. It also reaches only 17/106 on the newest sealed trajectory. The
+historical 16/16 episode is declared consumable discovery evidence by the
+project manifest and task file; P0 records transfer as
+`historical_or_unbound`. It cannot authorize a transfer or task-discharge
+claim.
+
+The two current residual identities are remote support effects under
+intervention 2. At local time 81, the observation creates a 2×10 value-11
+support at rows 61–62 and columns 13–22 beside an existing support; the carrier
+leaves 24 cells at the background value inside the gate projection. At local
+time 169, a 2×2 value-9 support relocates to rows 59–60 and columns 5–6 while
+the carrier writes value 12, leaving four wrong cells. These witnesses localize
+the open question to the trigger and operation identity for remote support
+effects. Their coordinates and values are adapter presentation metadata.
+
+The earlier “col-57 oscillator” was a partial residual projection. Its physical
+object was a full 2×2 support at rows 61–62 and columns 56–57, changing
+uniformly between values 8 and 3 inside value-5 borders. Column 56 happened to
+be predicted correctly, so only column 57 remained visible in one residual
+table. The object occurred under every intervention label, and the same local
+time differed across runs; neither action identity nor global clock was its
+selector. This is the structural signature required before proposing another
+scientific split.
+
+Sealed live trajectories now bind the exact SHA-256 of the immutable carrier
+that generated them, and the gate rechecks both that binding and the slice
+bytes. A later carrier trained on the appended transitions cannot borrow the
+earlier slice as unseen evidence. The next governed cycle therefore begins from
+an explicitly refuted carrier and must acquire a new executable consequence
+through the active transaction.
+
+Boundary seeds preserve execution identity as typed segments—verified origin,
+disagreement acquisition, and active control—with source authority and action
+intervals. The flat action sequence is an adapter projection checked against
+those segments, not the authoritative trace identity.
+
+The active planning split is the substrate-neutral
+`common/factored_search.py` protocol plus the compiler-derived interactive-grid
+lowering in `compiled_fiber_planning.py`. This establishes an ARC first fire;
+transport to another ontology is still required before claiming broad planning
+transfer.
 
 ---
 
 ## Generalization discipline
 
-Operators are parameterized from episode-log evidence, carrying no game constants. A `translate_block` rule names colors and a displacement extracted from the diff. A `when_count` guard names a threshold learned from observed firing counts. This is what makes the grammar portable across levels.
+Adapter operators are parameterized from episode-log evidence. A
+`translate_block` rule may name values and a displacement extracted from an ARC
+diff; a `when_count` guard may name a threshold learned from observed firing
+counts. Those parameters are adapter properties. Portability requires the
+operator identity, proposal/falsification path, and consumer route to lower into
+another ontology without source-project coordinates or mechanism advice.
 
-Grammar extension goes through planted-synthetic acceptance. Each new operator proposed through the implement leg must pass a planted synthetic test before entering the catalog. The strict-improvement gate then checks that overall spec quality does not regress. These two checks implement the same proposal-dispose structure used for kernel patches (see [MACHINERY_RULES.md](../../MACHINERY_RULES.md) Rule 2).
+An operator card carries a planted or metamorphic falsification obligation, but
+the card itself cannot enter the catalog. The governed worker must produce
+executable bytes; the single evaluator checks the bound residual, full replay,
+withheld consequences, and no-regression dominance. Catalog registration
+requires a later first-fire receipt under the same operator identity. This is
+the proposal-dispose structure used for kernel patches (see
+[Machinery Rules](../reference/machinery_rules.md), Rule 2).
 
-The closure-table audit (`closure_audit.py`) pre-registers grammar gaps before any manual inspection. It maps known operator kinds against the current catalog and emits cards for operator families that appear in the log but have no catalog entry.
+The grammar-completeness audit (legacy module name `closure_audit.py`) pre-registers grammar gaps before any manual inspection. It maps known operator kinds against the current catalog and emits cards for operator families that appear in the log but have no catalog entry.
 
-The inter-game generalization test is tu93. The tu93 project is at `projects/arc3_tu93_gov/`. Current receipts show Level 1 closed by the main live loop: `workspace/arc3_play_loop_report.json` records `result=beat`, `levels_gained=1`, `steps=18`, and terminal witness `9dd53bf8b85698ac867f59b2df7a3ff84de042db603a1fbe84623db046f432d7`. The gate-passing candidate sha `d95c148c...` is recorded as a full survivor with `2581/2581` visible replay and holdout depth 10, without the older `codex_assisted` label. Non-laundering caveat: the live terminal event closes the Level-1 search-control residual; it does not promote later failed autoresearch candidates, and post-terminal transition-model refinements still obey replay/holdout and strategy-card gates. The checkable receipt is `workspace/terminal_closure_audit.json`; `python -m ztare.worldmodel.search_control_repair --project projects/arc3_tu93_gov --closure-audit --check` verifies that terminal closure, card discharge, candidate promotion, bridge-law support, and autonomy provenance remain separate.
+The inter-game generalization project is `projects/arc3_tu93_gov/`. Its receipts,
+not this document, own current outcomes. The architectural test is whether the
+same operator identities, induction path, and task-discharge contract lower into
+the new game without source-game coordinates or manually supplied mechanisms.
+The checkable receipt retains the legacy filename
+`workspace/terminal_closure_audit.json`; `python -m
+ztare.worldmodel.search_control_repair --project projects/arc3_tu93_gov
+--closure-audit --check` verifies that task discharge, card disposition,
+candidate promotion, bridge-law support, and autonomy provenance remain
+separate.
 
 ## Flows
 
@@ -1026,6 +1433,35 @@ the concretized law preserves the raw fiber. When a Galois-style bound or
 quotient abstraction yields no measured eliminations, it is disabled or
 rerouted; the mathematics licenses the check shape, not its runtime utility.
 
+There is a family of typed quotients rather than one erased quotient object:
+
+- the state-behavior functor partitions observations by future intervention
+  behavior inside one chart epoch;
+- the hypothesis functor partitions executable carriers by fingerprints over
+  a declared probe battery;
+- the residual functor partitions counterexamples by repair obligation and
+  witness shape;
+- the epistemic functor partitions search-state telemetry for allocator
+  experiments.
+
+They may share a parametric partition/refinement data structure and one typed
+consequence ledger. They do not share object identifiers, counterexample
+schemas, equality relations, epochs, or consumers. A grid divergence can split
+a state or residual class; it cannot directly update a configuration-memory
+causal estimate. The
+existing Myhill–Nerode-style implementation is `_ScoreContext` in
+`spec_abduction.py`: it memoizes candidate scoring by behavioral equivalence
+over the current evidence population. It should be composed with other
+consumers only after their equivalence relation is shown to match; a second DFA
+minimizer would duplicate machinery without establishing that match.
+
+Cross-domain transport follows the same rule. The portable object is the
+invariant-owning contract plus target witnesses, never the ARC presentation
+that first exposed it. A 3D adapter may lower pose, contact topology, and
+occlusion state into opaque factors; prose, proof, and quantitative adapters
+may lower entirely different carriers. Reuse is authorized only when the
+consumer diagram commutes on the target domain.
+
 Finite-state decomposition results such as Krohn-Rhodes are useful as a
 diagnostic analogy for catalog ceilings: a missing symmetry, flip-flop, or
 state component can appear operationally as an expressivity failure. GP-250
@@ -1034,54 +1470,97 @@ engineering lesson: if the current primitive basis cannot express the quotient
 dynamics, emit a grammar-family or abstraction-split card with replay
 obligations, rather than hiding the behavior in a local coordinate patch.
 
-The operator catalog, the scene grammar, and the core-knowledge priors together play the role of a non-uniform advice string in the P/poly sense. Advice is knowledge the per-instance computation receives rather than derives, and it is what collapses per-game inference from intractable to polynomial. A new game does not re-derive objectness, contact events, resource depletion, state machines, or panel structure; it receives them and fits parameters. The competition form of this claim is measurable: the catalog is a versioned artifact grown on public games, and the cost of closing a new game's physics should fall from thousands of transitions to hundreds as the advice string covers more of the mechanic space. The tu93 test above is that measurement.
+The operator catalog and evidence-earned structural priors may eventually play
+the role of a non-uniform advice string in the P/poly sense. The claim is
+measurable only when stable operator identities are reused across distinct
+context identities and acquisition cost falls on later substrates. A library
+that grows one entry per task is a cache. The deleted scene-grammar prototype
+and cumulative proposal counts provide no evidence for this claim.
 
-Two properties distinguish this from advice as complexity theory imagines it. The advice is earned: every operator entered the catalog through evidence, a planted synthetic only it explains, and a strict-improvement gate, so the string contains no postulates. And the advice is self-extending under governance: when the grammar meets physics it cannot express, the residual becomes a proposal card, a sealed worker drafts the operator, and the same gates dispose. An advice string that grows itself while remaining auditable is the system's actual bet about general intelligence: not a larger model, but a longer, certified advice string and a fixed induction engine that consumes it.
+The intended distinction from advice as complexity theory imagines it is an
+evidence-earned and self-extending library. Current implementation is uneven.
+The active play loop hands current-evidence residual cards to the ordinary
+governed executable-carrier worker and its replay/withheld arbiter. The
+grid-specific sealed catalog implementer was deleted. `grammar_extension.py`
+now contains only the sandbox decoder needed to load historical carried
+extension functions; it has no dispatch or promotion authority. Consolidation
+is complete only when one typed counterexample route can produce, sandbox,
+falsify, register, and first-fire a new operator identity across
+adapter-defined observation and intervention types.
 
 ## The examiner must be falsifiable; identity is revealed by movement (2026-07-11/12)
 
-Level 1 closed (16/16 holdout) and level 2 fell the same night — and the week-long
-"wall" turned out to be three-quarters instrument. The lessons are now standing
-machinery:
+The LS20 campaign produced successive adapter-attested task discharges after
+the harness defects below were repaired. The architectural content is the
+failure identity and its prevention; current epoch status belongs in project
+receipts.
 
 **Gate achievability.** The holdout rollout propagated predictions across what was
 actually four independent trajectories; the hard gate was unpassable by construction
 for ANY law (every candidate scored exactly 4 or 0 for a week — a uniformity
 fingerprint nobody priced). Doctrine: a plateau is a property; the failure's identity
-is "max-achievable under the artifact's real structure < threshold", and its proof is
+is "max-achievable under the artifact's segmented structure < threshold", and its proof is
 an achievability receipt (planted oracle reaching the threshold). Every hard gate now
-owes one; the trace-auditor demands it whenever a sub-threshold plateau appears
-(`check_gate_achievability`), and the rollout reseeds at segment boundaries.
+owes one through the gate's own validator, and the rollout reseeds at segment
+boundaries. The former heuristic trace-auditor plateau detector was removed;
+gate authority cannot depend on an unconsumed timing or shape alarm.
 
 **Verdicts owe witnesses, and witnesses owe delivery.** The feedback chain (gate
 counterexample → weakness ledger → briefing digest → leaf) had three dead links:
 computed-but-never-persisted, stale-passed-as-current, dropped-at-render. All fixed
-and audited (`check_stale_latest_artifacts`); pre-judge blocks now write their full
+through typed source and consumer events; pre-judge blocks now write their full
 residual table through to the next briefing. The A/B receipt: witness-starved round
 = 8 identical failures; witness-fed round = visible-perfect law by iteration 7.
 
-**Properties vs invariants, mechanized.** A portable law must factor through the
-state quotient (`check_alpha_measurability`: equal grids at different t must predict
-identically — fired on a t-keyed champion whose discriminating pairs had been in the
-bank for days). The general form arrived via the isomorphism engine (conjecture mode):
+**Properties vs invariants, mechanized.** Equal serialized grids at different
+times do not by themselves establish equal transition state: the rows may
+belong to different lifecycle epochs or observation charts. A portable law must
+commute across a certified chart transport. Full time remains part of state
+identity until a quotient certificate proves otherwise. The general form
+arrived via the isomorphism engine (conjecture mode):
 four mother structures — loop-holonomy, gluing obstructions, stabilizer drops,
 exchange matroids — that are LIFTS of organs we already had (collision table → loops,
 measurability → chart compositions, saturation → stabilizer boundaries, pricing →
 matroid rank). One consistency functor, evaluated at longer paths and higher object
 levels. Identity is revealed by movement, not inspection.
 
-**The level protocol (fixed code, per-level data).** Level 2's win (env-ratified,
-45 steps) upleveled into the fiber-lift: state = position × discovered fiber
-(rotation, timer, one-time flags); each board object contributes a holonomy element
-learned from one transit; the win is shortest-path in the lifted graph. New level =
-loop each object once (a closed loop returning to start isolates the hidden
-coordinate; monsters are absorbing holonomy) → effect table → lifted plan → win.
-Levels differ in data, not code — that is the generality claim the next levels test.
+**Compiler status and fiber hypothesis.** The task-bound catalog-operation
+compiler remains the registered interactive-grid lowering. It consumes an
+operation identity and evidence-bound selector, composes a delta over a named
+carrier, and returns to the single evaluator. The unconsumed effect compiler
+and fiber extractor were deleted. Their grid footprints, array windows, values,
+bounding boxes, and local guards were adapter properties rather than common
+System-1 identities.
 
-**Wiring discipline.** Twice tonight organs existed unwired (grammar reflex bypassed;
-new auditor checks with no in-loop caller; profiler receipts without receipts_dir).
-Built ≠ wired ≠ fired: every organ needs a caller in the loop and a receipt proving
-first fire. The trace-auditor now runs at every play-cycle end.
+The broader fiber hypothesis remains a research program: discover
+transformation actions from interventions, certify their group action and
+carrier equivariance, construct the quotient, and demonstrate transport to a
+different ontology. A text, 3D, graph, proof, or quantitative adapter must
+provide its own lowering under the same evidence, partial-transport, and
+consequence contracts.
+
+The active counterexample route is now inspect → lowerable-selector. The older
+separating-feature diagnostic remains callable for explicit inspection but is
+not inserted into this route: its output was not read by the selector, so the
+extra stage created latency and a false appearance of composition. Prompt
+delivery writes `delivered_to_synthesis_prompt`; only the registered operation
+compiler may write candidate-synthesis `first_fire` for this route.
+
+**Wiring discipline.** Module presence carries no authority. Every operational
+producer declares its consumer and governing identity in the shared schema
+route registry; entry preflight and the compact phase-exit audit use that same
+registry. A missing active consequence fences the loop. The recurrence rung
+fires only after anomaly → recovery → anomaly on a blocking route, and its
+ledger has a registered forced-REFRAME briefing consumer.
+
+The visible workbench applies the same rule to advertised actions. Its curated
+source membrane must include the executable dependency graph of every registered
+command, and an integration check imports the scorer from the staged directory.
+Candidate-memory readers resolve carrier admissibility from the project-bound
+transition contract, so a profile declaration cannot disappear between gate
+evaluation and patch-base selection. The attention projection preserves one row
+per active producer before filling spare slots; repeated near-miss rows cannot
+hide the current committee or instrument diagnosis.
 
 ## Proposal taxonomy, consolidated (MECE by mutated artifact)
 
@@ -1095,13 +1574,13 @@ LOWERABILITY_BLOCKED obstruction or telemetry-backed recurrence.
 | # | Target | Proposal form | Proposers | Committee / gate | Builder | Status |
 |---|--------|--------------|-----------|------------------|---------|--------|
 | 1 | LAW (candidate/thesis) | code carrier / spec patch | mutator leaves | replay + holdout + dominance | none needed (the carrier IS the build) | implemented |
-| 2 | GRAMMAR (operators) | operator card | closure_audit, reflex triage, leaves | replay arbiter (adoption cycle) | operator_implement sealed leg | implemented (fired + lawful rejection receipts) |
+| 2 | GRAMMAR (operators) | counterexample-bound operator/carrier proposal | grammar-completeness audit (`closure_audit.py`), reflex triage, leaves | replay arbiter (adoption cycle) | governed executable-carrier worker | partial — proposal delivery is wired; executable operator registration and cross-substrate first fire remain owed |
 | 3 | TOOLS (capabilities/sensors) | morphism-shaped skeleton (contract, evaluator, secret policy, safety invariant, rollback) | leaves (optional), office | obstruction-pairing → Strategy Office batch review | **the gap**: no owner of build→register→wire→first-fire | partial — skeletons defined, pipeline unowned |
 | 4 | HARNESS (machinery/kernel) | contradiction card / kernel-improvement commission | machinery_contradictions, office | MACHINERY_RULES: auto-adopt tightening only; certifier-touched needs conductor | conductor today; should inherit wired-and-fired | partial |
-| 5 | CONTROL (budgets, routing order, ladder) | K-line routing priors, reframe/cold-seed activation, conjecture-rung findings | NEVER leaves — orchestrator organs only (capability sealing) | order-bias-only rule: priors bias defaults, rules stay rules; counterfactual audits | engine router | being wired (K-line forward edge) |
+| 5 | CONTROL (budgets, routing order, ladder) | prospective configuration ablations, reframe/cold-seed activation, recurring-route conjectures | NEVER leaves — orchestrator organs only (capability sealing) | correlational rows may nominate ablations; only matched treatment/control receipts may bias allocation; rules stay rules | engine router | routing and stagnation active; causal configuration memory absent |
 
 Adoption discipline shared by all five: a proposal is ADOPTED only when its
 artifact is built, WIRED (has a caller), and FIRED (first-fire receipt) —
-`check_organ_liveness` audits the gap. Rows 3 and 4 are where the repo's
-dominant failure mode (orphaned tools) lived; row 3's unowned pipeline is the
-open build.
+the operational schema-route registry requires the consumer edge, and paired
+runtime events establish first fire. Rows 3 and 4 are where the repo's dominant
+failure mode (orphaned tools) lived; row 3's unowned pipeline is the open build.

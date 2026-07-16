@@ -1116,6 +1116,94 @@ def _dispatch_text_with_receipt(
     completions) rather than reaching through this module. The receipt is for debug surfaces; production
     callers should still treat empty text as no candidate."""
     provider = (provider or "gemini").lower()
+    dispatch_id = _sha256_text(
+        _canonical_json({"provider": provider, "model": model, "prompt": prompt})
+    )
+    artifact_root: Path | None = Path(
+        os.environ.get(
+            "ZTARE_CONSTRAINT_ISOMORPHISM_ARTIFACT_DIR",
+            "/tmp/ztare_constraint_isomorphism_dispatches",
+        )
+    )
+    artifact_setup_error = ""
+    try:
+        artifact_root.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        artifact_setup_error = f"{type(exc).__name__}:{exc}"
+        fallback = Path("/tmp/ztare_constraint_isomorphism_dispatches")
+        try:
+            fallback.mkdir(parents=True, exist_ok=True)
+            artifact_root = fallback
+        except OSError as fallback_exc:
+            artifact_setup_error += (
+                f";fallback:{type(fallback_exc).__name__}:{fallback_exc}"
+            )
+            artifact_root = None
+    prompt_path = (
+        artifact_root / f"{dispatch_id}.prompt.txt" if artifact_root else None
+    )
+    stdout_path = (
+        artifact_root / f"{dispatch_id}.stdout.txt" if artifact_root else None
+    )
+    receipt_path = (
+        artifact_root / f"{dispatch_id}.receipt.json" if artifact_root else None
+    )
+
+    def finish(text: str, row: dict) -> "tuple[str, dict]":
+        import json as _json
+        import uuid as _uuid
+
+        status = (
+            "transport_failed"
+            if row.get("exception_type") or row.get("returncode") not in (0, None)
+            else "text_returned"
+            if text
+            else "no_text"
+        )
+        frozen = {
+            **row,
+            "dispatch_id": dispatch_id,
+            "prompt_sha256": _sha256_text(prompt),
+            "status": status,
+            "prompt_ref": str(prompt_path) if prompt_path else "",
+            "stdout_ref": str(stdout_path) if stdout_path else "",
+            "receipt_ref": str(receipt_path) if receipt_path else "",
+        }
+        if artifact_setup_error:
+            frozen["artifact_setup_error"] = artifact_setup_error
+        try:
+            for path, value in (
+                (prompt_path, prompt),
+                (stdout_path, text),
+                (receipt_path, _json.dumps(frozen, sort_keys=True, indent=2) + "\n"),
+            ):
+                if path is None:
+                    continue
+                temporary = path.with_name(path.name + f".{_uuid.uuid4().hex}.tmp")
+                temporary.write_text(value, encoding="utf-8")
+                os.replace(temporary, path)
+        except OSError as exc:
+            frozen["artifact_error"] = f"{type(exc).__name__}:{exc}"
+        return text, frozen
+
+    try:
+        import json as _json
+
+        if receipt_path is None or stdout_path is None:
+            raise OSError("dispatch artifact persistence is unavailable")
+        prior = _json.loads(receipt_path.read_text(encoding="utf-8"))
+        if (
+            prior.get("status") == "text_returned"
+            and prior.get("prompt_sha256") == _sha256_text(prompt)
+            and stdout_path.is_file()
+        ):
+            return stdout_path.read_text(encoding="utf-8"), {
+                **prior,
+                "replayed": True,
+            }
+    except (OSError, ValueError, TypeError):
+        pass
+
     receipt: dict = {
         "provider": provider,
         "model": model,
@@ -1145,7 +1233,7 @@ def _dispatch_text_with_receipt(
             except Exception as exc:  # noqa: BLE001
                 receipt["exception_type"] = type(exc).__name__
                 receipt["exception_message"] = str(exc)[:500]
-                return "", receipt
+                return finish("", receipt)
         try:
             codex_model_env = "ZTARE_CODEX_AGENT_MODEL"
             prior_model_env: str | None = None
@@ -1176,7 +1264,7 @@ def _dispatch_text_with_receipt(
                 "command": redact_prompt_command(command, "<prompt>") if command else [],
                 "recovery_note": getattr(run, "recovery_note", None),
             })
-            return text, receipt
+            return finish(text, receipt)
         except Exception as exc:  # noqa: BLE001
             if provider == "codex" and model:
                 try:
@@ -1188,7 +1276,7 @@ def _dispatch_text_with_receipt(
                     pass
             receipt["exception_type"] = type(exc).__name__
             receipt["exception_message"] = str(exc)[:500]
-            return "", receipt
+            return finish("", receipt)
     # API providers (gemini/deepseek allowed). Fallback stays within the same family → never a
     # metered OpenAI/Anthropic call.
     try:
@@ -1199,7 +1287,7 @@ def _dispatch_text_with_receipt(
         except Exception as exc:  # noqa: BLE001
             receipt["exception_type"] = type(exc).__name__
             receipt["exception_message"] = str(exc)[:500]
-            return "", receipt
+            return finish("", receipt)
     # Resolve through the central registry (MODEL_MAP, policy-overridable via principal.yaml `model_map`) so a
     # stale version id is retargeted in ONE place, not hardcoded here.
     def _rid(alias: str, default: str) -> str:
@@ -1222,12 +1310,12 @@ def _dispatch_text_with_receipt(
             "model_id_used": getattr(resp, "model_id_used", None),
             "returncode": 0,
         })
-        return text, receipt
+        return finish(text, receipt)
     except Exception as exc:  # noqa: BLE001
         receipt["model"] = mid
         receipt["exception_type"] = type(exc).__name__
         receipt["exception_message"] = str(exc)[:500]
-        return "", receipt
+        return finish("", receipt)
 
 
 def _parse_isomorphisms(text: str) -> "list[SurfacedIsomorphism]":
@@ -1276,7 +1364,7 @@ def default_llm_query(fp: ConstraintFingerprint, n: int = 5, *, provider: str = 
 def prediction_specificity(conj: SurfacedConjecture) -> float:
     """Deterministic specificity score for conjectures.
 
-    This deliberately does not score plausibility. It only rewards predictions/kill conditions that
+    This deliberately does not score plausibility. It ranks predictions/kill conditions that
     name bounded, inspectable consequences instead of vague downstream benefit.
     """
     import re

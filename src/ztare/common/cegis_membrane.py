@@ -197,6 +197,14 @@ def evidence_promotion_receipt(
 
 
 def normalize_evidence_statuses(raw: object) -> tuple[dict[str, str], ...]:
+    # Accept the two lossless typed presentations at the boundary.  The map
+    # form is convenient for generated payloads; the row form is the canonical
+    # ledger representation consumed downstream.
+    if isinstance(raw, dict):
+        raw = [
+            {"ref": ref, "status": status}
+            for ref, status in raw.items()
+        ]
     if not isinstance(raw, list):
         return ()
     out: list[dict[str, str]] = []

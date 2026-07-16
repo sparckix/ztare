@@ -1,9 +1,8 @@
-"""Tests for the 4 disposition fixes in strategy_office + trace_auditor.
+"""Tests for strategy-office disposition identity.
 
 1. rejection_class derivation (incomplete vs unsound)
 2. supersedes chain linking
 3. reconcile_dispositions updates ledger
-4. case_law_divergence detector fires on planted divergence
 """
 from __future__ import annotations
 
@@ -24,7 +23,6 @@ from ztare.research_director.strategy_office import (
     DISPOSITION_RECONCILIATION,
     LEAF_PROPOSAL_LEDGER,
 )
-from ztare.orchestrator.trace_auditor import check_case_law_divergence
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -172,42 +170,3 @@ def test_reconcile_no_recon_file(tmp_path):
     result = reconcile_dispositions(proj)
     assert result["status"] == "no_reconciliation_map"
     assert result["updated_count"] == 0
-
-
-# ── 4. case_law_divergence detector ──────────────────────────────────────────
-
-def test_case_law_divergence_fires_on_unreconciled(tmp_path):
-    ws = _ws(tmp_path)
-    sig = "e" * 64
-    _jl(ws / LEAF_PROPOSAL_LEDGER, [
-        {"proposal_signature": sig, "disposition": "rejected", "reason": "lacks test"},
-    ])
-    _jl(ws / DISPOSITION_RECONCILIATION, [
-        {"proposal_sig": sig, "implemented_receipt_refs": ["src/bar.py"]},
-    ])
-    state: dict = {}
-    f = check_case_law_divergence(ws, state)
-    assert f["verdict"] == "anomaly"
-    assert f["check_id"] == "case_law_divergence"
-    assert sig[:16] in f["witness"]["divergent_sigs"]
-
-
-def test_case_law_divergence_ok_after_reconcile(tmp_path):
-    ws = _ws(tmp_path)
-    sig = "f" * 64
-    _jl(ws / LEAF_PROPOSAL_LEDGER, [
-        {"proposal_signature": sig, "disposition": "superseded_implemented"},
-    ])
-    _jl(ws / DISPOSITION_RECONCILIATION, [
-        {"proposal_sig": sig, "implemented_receipt_refs": ["src/baz.py"]},
-    ])
-    state: dict = {}
-    f = check_case_law_divergence(ws, state)
-    assert f["verdict"] == "ok"
-
-
-def test_case_law_divergence_ok_no_recon_file(tmp_path):
-    ws = _ws(tmp_path)
-    state: dict = {}
-    f = check_case_law_divergence(ws, state)
-    assert f["verdict"] == "ok"

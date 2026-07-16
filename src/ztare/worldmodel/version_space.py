@@ -1,9 +1,9 @@
 """Version-space ledger: population of surviving world-model programs.
 
-Identifies mechanisms by BEHAVIOR (fingerprint of prediction bitvector),
-not by prose or path. Maintains all visible-perfect survivors as a population
-and exposes the disagreement structure across that population to suggest
-distinguishing experiments.
+Identifies executable hypotheses by source content and records agreement on a
+finite evidence battery as a certificate property.  Evidence agreement does
+not merge hypothesis identities: source-distinct visible-perfect programs stay
+in the population until new observations discriminate between them.
 
 This is the EXTENSIONAL dual of the nogood/derived-constraints ledgers (they
 describe the space by its boundaries; this enumerates its surviving members).
@@ -19,7 +19,7 @@ evidence semantics):
   pruning (on new obs.)   → MAINTAIN cell
 
 Substrate seam:
-  Substrate-neutral core: ledger operations (admit/dedupe/disagreement).
+  Substrate-neutral core: ledger operations (admit/source-dedupe/disagreement).
   Worldmodel adapter: battery construction (probe_battery) + carrier loading
     (_load_carrier_from_source). A numeric-substrate adapter would fingerprint
     I_model on a feature battery; split into separate modules only when a
@@ -84,12 +84,17 @@ def probe_battery(project_dir: "str | Path") -> list[dict]:
     if total == 0:
         return []
 
-    episode_hash = log.content_hash()[:16]
+    episode_sha256 = log.content_hash()
+    episode_hash = episode_sha256[:16]
     snapshot_file = project_dir / "workspace" / "version_space_battery.json"
     if snapshot_file.exists():
         try:
             snap = json.loads(snapshot_file.read_text())
-            if snap.get("episode_hash") == episode_hash:
+            if (
+                snap.get("schema") == "ztare.version_space_battery.v2"
+                and snap.get("evidence_role") == "visible"
+                and snap.get("episode_sha256") == episode_sha256
+            ):
                 return snap["battery"]
         except Exception:  # noqa: BLE001
             pass  # corrupt snapshot → rebuild
@@ -109,6 +114,8 @@ def probe_battery(project_dir: "str | Path") -> list[dict]:
         for bf in bitmap_dir.glob("*.json"):
             try:
                 bm = json.loads(bf.read_text())
+                if bm.get("episode_hash") != episode_sha256 or bm.get("load_error"):
+                    continue
                 for row in bm.get("wrong_rows", []):
                     _add(row, f"bitmap:{bf.stem[:12]}")
             except Exception:  # noqa: BLE001
@@ -138,8 +145,11 @@ def probe_battery(project_dir: "str | Path") -> list[dict]:
     try:
         snapshot_file.parent.mkdir(parents=True, exist_ok=True)
         snapshot_file.write_text(json.dumps(
-            {"schema": "ztare.version_space_battery.v1",
-             "episode_hash": episode_hash, "battery": result}))
+            {"schema": "ztare.version_space_battery.v2",
+             "evidence_role": "visible",
+             "episode_hash": episode_hash,
+             "episode_sha256": episode_sha256,
+             "battery": result}))
     except Exception:  # noqa: BLE001
         pass  # best-effort persistence; in-memory battery is the truth
 
@@ -148,57 +158,10 @@ def probe_battery(project_dir: "str | Path") -> list[dict]:
 
 # ── fingerprint ───────────────────────────────────────────────────────────────
 
-_FP_CACHE_SCHEMA = "ztare.version_space_fp_cache.v1"
-
-
-def _fp_cache_path(project_dir: Path) -> Path:
-    return project_dir / "workspace" / "version_space_fp_cache.jsonl"
-
-
 def _battery_sha(battery: list[dict]) -> str:
     return hashlib.sha256(
         json.dumps(battery, separators=(",", ":"), sort_keys=True).encode()
     ).hexdigest()[:32]
-
-
-def _fp_cache_lookup(project_dir: Path, candidate_sha256: str, battery_sha256: str) -> "dict | None":
-    """Return cached fingerprint dict or None. Last-write-wins on duplicate keys."""
-    path = _fp_cache_path(project_dir)
-    if not path.exists():
-        return None
-    result = None
-    try:
-        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-            if not line.strip():
-                continue
-            try:
-                row = json.loads(line)
-            except Exception:  # noqa: BLE001
-                continue
-            if (row.get("candidate_sha256") == candidate_sha256
-                    and row.get("battery_sha256") == battery_sha256):
-                result = row.get("fingerprint")  # last write wins
-    except Exception:  # noqa: BLE001
-        pass
-    return result
-
-
-def _fp_cache_append(project_dir: Path, candidate_sha256: str, battery_sha256: str,
-                     fp: dict) -> None:
-    """Append a cache row. Best-effort; never raises."""
-    try:
-        path = _fp_cache_path(project_dir)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        row = {
-            "schema": _FP_CACHE_SCHEMA,
-            "candidate_sha256": candidate_sha256,
-            "battery_sha256": battery_sha256,
-            "fingerprint": fp,
-        }
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(row) + "\n")
-    except Exception:  # noqa: BLE001
-        pass
 
 
 def fingerprint(
@@ -206,22 +169,22 @@ def fingerprint(
     battery: list[dict],
     project_dir: "str | Path",
 ) -> dict:
-    """Fingerprint a candidate on the probe battery.
+    """Return a finite-evidence equivalence certificate for a candidate.
 
     Returns:
-      {sha16: str, exact_count: int, vector_len: int,
-       load_error: str|None, predictions_top20: list}
+      {sha16: str, exact_count: int, vector_len: int, load_error: str|None}
 
     sha16 = first 16 hex chars of sha256 of:
       (tuple of (predicted==s_next bools for all battery probes)
        + canonical JSON of predictions on top-20 highest-provenance probes)
 
-    Two candidates wrong in DIFFERENT ways get different fingerprints because
-    their prediction outputs differ even when both are wrong.
+    Equal fingerprints certify agreement only on this battery.  They never
+    establish executable-hypothesis identity and therefore never authorize
+    source deduplication.
 
-    On-disk memo: workspace/version_space_fp_cache.jsonl keyed by
-    (candidate source sha256, battery sha256). Cache hit skips execution.
-    Append-only ledger; last-write-wins on read (mirrors prune-ledger idiom).
+    This diagnostic certificate is recomputed from the candidate and visible
+    evidence on every call.  Persisting it beside the gate-owned row bitmap
+    would add a second, weaker judgment cache.
     """
     candidate_path = Path(candidate_path).resolve()
     project_dir = Path(project_dir).resolve()
@@ -232,33 +195,18 @@ def fingerprint(
         return {"sha16": "no_episode", "exact_count": 0, "vector_len": 0,
                 "load_error": "no visible episode"}
 
-    # Cache lookup: (candidate source sha256, battery sha256) → fingerprint dict.
-    # ponytail: sha256 of source bytes + sha256 of battery JSON = stable content key.
-    try:
-        candidate_sha256 = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
-    except Exception:  # noqa: BLE001
-        candidate_sha256 = ""
-    battery_sha256 = _battery_sha(battery)
-    if candidate_sha256:
-        cached = _fp_cache_lookup(project_dir, candidate_sha256, battery_sha256)
-        if cached is not None:
-            return cached
-
     log = EpisodeLog.read_jsonl(visible_path)
     rows = list(log)
 
     try:
         source = candidate_path.read_text()
         program = _load_carrier_from_source(source, str(candidate_path), project_dir)
-        load_error = None
     except Exception as exc:  # noqa: BLE001
         return {"sha16": "load_error", "exact_count": 0, "vector_len": len(battery),
                 "load_error": str(exc)[:300]}
 
     predict = as_predictor(program)
     booleans: list[bool] = []
-    preds_raw: list[Any] = []  # raw predictions for top-20
-
     # Sort battery by provenance_count desc to identify top-20
     sorted_battery = sorted(battery, key=lambda x: -x["provenance_count"])
     top20_indices = {b["row_index"] for b in sorted_battery[:20]}
@@ -290,15 +238,12 @@ def fingerprint(
     sha16 = hashlib.sha256(fingerprint_payload.encode()).hexdigest()[:16]
     exact_count = sum(booleans)
 
-    result = {
+    return {
         "sha16": sha16,
         "exact_count": exact_count,
         "vector_len": len(booleans),
         "load_error": None,
     }
-    if candidate_sha256:
-        _fp_cache_append(project_dir, candidate_sha256, battery_sha256, result)
-    return result
 
 
 def _grid_to_json(grid: Any) -> Any:
@@ -322,12 +267,12 @@ def _ledger_path(project_dir: Path) -> Path:
 
 
 def _load_prunes(project_dir: Path) -> tuple[set[str], set[str]]:
-    """Return (pruned_refs, pruned_fps) from version_space_prunes.jsonl.
+    """Return ref-bound prunes and legacy fingerprint-only prunes.
 
-    Join keys: candidate_ref OR fingerprint — a prune row carries both.
-    Either match is sufficient to exclude the candidate from load().
+    A row carrying ``candidate_ref`` prunes only that executable hypothesis.
+    Its evidence fingerprint is descriptive and cannot erase source-distinct
+    peers.  Fingerprint matching remains only for old rows that have no ref.
     """
-    # ponytail: two sets so load() can join on whichever key is non-None
     pruned_refs: set[str] = set()
     pruned_fps: set[str] = set()
     p = project_dir / "workspace" / "version_space_prunes.jsonl"
@@ -344,7 +289,7 @@ def _load_prunes(project_dir: Path) -> tuple[set[str], set[str]]:
         fp = row.get("fingerprint")
         if ref:
             pruned_refs.add(str(ref))
-        if fp:
+        elif fp:
             pruned_fps.add(str(fp))
     return pruned_refs, pruned_fps
 
@@ -352,25 +297,22 @@ def _load_prunes(project_dir: Path) -> tuple[set[str], set[str]]:
 def load(project_dir: "str | Path") -> list[dict]:
     """Return current survivor set (admitted, not duplicate, rejected, or pruned).
 
-    Keyed by candidate_ref (file path) so that:
-      - A 'duplicate' record for path B doesn't cancel an 'admitted' record
-        for path A, even if A and B share the same source content/sha.
-      - The latest record for each path wins (append-only ledger).
-    Deduplication by fingerprint is enforced at admit() time (TOCTOU race
-    produces duplicate admitted records for the same fingerprint; load() returns
-    both — callers that need strict behavioral dedup should filter by fingerprint).
+    The latest record per mutable path wins, then identical source identities
+    are deduplicated.  Source-distinct programs remain separate even when their
+    finite-evidence fingerprints agree.
 
     Prune join: candidates present in version_space_prunes.jsonl (written by
-    distinguishing_play.prune()) are EXCLUDED — join on candidate_ref OR fingerprint.
+    distinguishing_play.prune()) are excluded by candidate_ref.  A legacy
+    fingerprint-only row is honored only when it carries no candidate_ref.
     """
     project_dir = Path(project_dir).resolve()
     lp = _ledger_path(project_dir)
     if not lp.exists():
         return []
     pruned_refs, pruned_fps = _load_prunes(project_dir)
-    # latest record per candidate_ref
-    by_ref: dict[str, dict] = {}
-    for line in lp.read_text().splitlines():
+    # Latest record per locator, followed by latest record per source identity.
+    by_ref: dict[str, tuple[int, dict]] = {}
+    for seq, line in enumerate(lp.read_text().splitlines()):
         if not line.strip():
             continue
         try:
@@ -381,34 +323,44 @@ def load(project_dir: "str | Path") -> list[dict]:
             continue
         ref = rec.get("candidate_ref")
         if ref:
-            by_ref[ref] = rec  # last write wins per path
-    # Only return admitted records; for distinct fingerprints only (take first per fp)
-    # Exclude any candidate whose ref OR fingerprint appears in the prune ledger
-    seen_fps: set[str] = set()
+            by_ref[ref] = (seq, rec)
+    seen_hypotheses: set[str] = set()
     survivors: list[dict] = []
-    for rec in by_ref.values():
+    for _seq, rec in sorted(by_ref.values(), reverse=True):
         if rec.get("status") != "admitted":
             continue
         ref = rec.get("candidate_ref")
         fp = rec.get("fingerprint")
-        # Prune join: skip if ref or fingerprint was pruned by distinguishing play
         if ref and ref in pruned_refs:
             continue
         if fp and fp in pruned_fps:
             continue
-        if fp and fp in seen_fps:
+        hypothesis_id = str(
+            rec.get("hypothesis_id")
+            or rec.get("candidate_sha")
+            or ref
+            or ""
+        )
+        if hypothesis_id in seen_hypotheses:
             continue
-        seen_fps.add(fp)
+        seen_hypotheses.add(hypothesis_id)
         survivors.append(rec)
+    survivors.reverse()
     return survivors
 
 
-def admit(candidate_path: "str | Path", project_dir: "str | Path") -> dict:
+def admit(
+    candidate_path: "str | Path",
+    project_dir: "str | Path",
+    *,
+    provenance: "dict | None" = None,
+) -> dict:
     """Admit a candidate into the version space.
 
     Gate: visible-perfect (wrong_rows empty) via build_row_bitmap.
-    Status: admitted | rejected | duplicate.
-    Returns the ledger record appended.
+    Status: admitted | rejected | duplicate.  Duplicate means identical source
+    content, never finite-evidence agreement.  Duplicate admissions are
+    idempotent and do not supersede an existing admitted record.
     """
     candidate_path = Path(candidate_path).resolve()
     project_dir = Path(project_dir).resolve()
@@ -420,11 +372,17 @@ def admit(candidate_path: "str | Path", project_dir: "str | Path") -> dict:
     if visible_path is None or not visible_path.exists():
         return {"error": "no visible episode", "candidate": str(candidate_path)}
 
+    try:
+        hypothesis_id = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    except Exception as exc:  # noqa: BLE001
+        return {"error": f"candidate_read_error:{str(exc)[:200]}",
+                "candidate": str(candidate_path)}
+
     # Build bitmap (uses cache if available)
     try:
         bm = build_row_bitmap(candidate_path, visible_path, project_dir=project_dir)
     except Exception as exc:  # noqa: BLE001
-        rec = _make_record(candidate_path, None, None, 0, 0, "rejected",
+        rec = _make_record(candidate_path, hypothesis_id, None, 0, 0, "rejected",
                            note=f"bitmap_error:{str(exc)[:200]}")
         _append_record(project_dir, rec)
         return rec
@@ -435,7 +393,7 @@ def admit(candidate_path: "str | Path", project_dir: "str | Path") -> dict:
 
     if wrong_rows:
         # Not visible-perfect
-        rec = _make_record(candidate_path, None, None, visible_exact, visible_total,
+        rec = _make_record(candidate_path, hypothesis_id, None, visible_exact, visible_total,
                            "rejected", note=f"wrong_rows:{len(wrong_rows)}")
         _append_record(project_dir, rec)
         return rec
@@ -445,45 +403,62 @@ def admit(candidate_path: "str | Path", project_dir: "str | Path") -> dict:
     fp = fingerprint(candidate_path, battery, project_dir)
 
     if fp.get("load_error"):
-        rec = _make_record(candidate_path, None, fp["sha16"], visible_exact, visible_total,
+        rec = _make_record(candidate_path, hypothesis_id, fp["sha16"], visible_exact, visible_total,
                            "rejected", note=f"fingerprint_load_error:{fp['load_error'][:100]}")
         _append_record(project_dir, rec)
         return rec
 
-    sha16 = fp["sha16"]
+    evidence_equivalence = {
+        "relation": "agreement_on_probe_battery",
+        "certificate": fp["sha16"],
+        "battery_sha256": _battery_sha(battery),
+        "exact_count": fp["exact_count"],
+        "vector_len": fp["vector_len"],
+    }
+    duplicate = next(
+        (
+            row for row in load(project_dir)
+            if str(row.get("hypothesis_id") or row.get("candidate_sha") or "")
+            in {hypothesis_id, hypothesis_id[:16]}
+            and row.get("evidence_equivalence") == evidence_equivalence
+        ),
+        None,
+    )
+    if duplicate is not None:
+        return {**duplicate, "status": "duplicate",
+                "note": f"duplicate_of:{duplicate.get('candidate_ref')}"}
 
-    # Check for duplicate fingerprint in current survivors
-    existing = load(project_dir)
-    existing_fps = {s.get("fingerprint") for s in existing}
-    candidate_sha = hashlib.sha256(candidate_path.read_bytes()).hexdigest()[:16]
-
-    if sha16 in existing_fps:
-        # Find who it duplicates
-        dup_of = next((s["candidate_ref"] for s in existing if s.get("fingerprint") == sha16), None)
-        rec = _make_record(candidate_path, candidate_sha, sha16, visible_exact, visible_total,
-                           "duplicate", note=f"duplicate_of:{dup_of}")
-        _append_record(project_dir, rec)
-        return rec
-
-    rec = _make_record(candidate_path, candidate_sha, sha16, visible_exact, visible_total,
-                       "admitted")
+    rec = _make_record(
+        candidate_path,
+        hypothesis_id,
+        fp["sha16"],
+        visible_exact,
+        visible_total,
+        "admitted",
+        evidence_equivalence=evidence_equivalence,
+        provenance=provenance,
+    )
     _append_record(project_dir, rec)
     return rec
 
 
 def _make_record(
     candidate_path: Path,
-    candidate_sha: "str | None",
+    hypothesis_id: "str | None",
     fp_sha16: "str | None",
     visible_exact: int,
     visible_total: int,
     status: str,
     note: "str | None" = None,
+    evidence_equivalence: "dict | None" = None,
+    provenance: "dict | None" = None,
 ) -> dict:
+    source_sha = hypothesis_id or hashlib.sha256(candidate_path.read_bytes()).hexdigest()
     rec: dict = {
         "schema": _LEDGER_SCHEMA,
         "candidate_ref": str(candidate_path),
-        "candidate_sha": candidate_sha or hashlib.sha256(candidate_path.read_bytes()).hexdigest()[:16],
+        "candidate_sha": source_sha[:16],
+        "hypothesis_id": source_sha,
         "fingerprint": fp_sha16,
         "visible_exact": visible_exact,
         "visible_total": visible_total,
@@ -493,6 +468,10 @@ def _make_record(
     }
     if note:
         rec["note"] = note
+    if evidence_equivalence:
+        rec["evidence_equivalence"] = evidence_equivalence
+    if provenance:
+        rec["provenance"] = provenance
     return rec
 
 
@@ -573,6 +552,7 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         report = {
             "schema": "ztare.vs_disagreements.v1",
             "n_survivors": 0,
+            "n_distinct_hypotheses": 0,
             "n_distinct_fingerprints": 0,
             "note": "no survivors — admit candidates first",
         }
@@ -585,6 +565,7 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         report = {
             "schema": "ztare.vs_disagreements.v1",
             "n_survivors": len(survivors),
+            "n_distinct_hypotheses": len(survivors),
             "n_distinct_fingerprints": distinct_fps,
             "note": "no visible episode — cannot compute disagreements",
         }
@@ -592,6 +573,11 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         return report
 
     log = EpisodeLog.read_jsonl(visible_path)
+    visible_sha256 = log.content_hash()
+    try:
+        visible_ref = str(visible_path.relative_to(project_dir))
+    except ValueError:
+        visible_ref = str(visible_path)
     rows = list(log)
     battery = probe_battery(project_dir)
 
@@ -599,6 +585,7 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         report = {
             "schema": "ztare.vs_disagreements.v1",
             "n_survivors": len(survivors),
+            "n_distinct_hypotheses": len(survivors),
             "n_distinct_fingerprints": distinct_fps,
             "note": "empty battery — no rows to probe",
         }
@@ -621,6 +608,7 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         report = {
             "schema": "ztare.vs_disagreements.v1",
             "n_survivors": len(survivors),
+            "n_distinct_hypotheses": len(survivors),
             "n_distinct_fingerprints": distinct_fps,
             "note": f"only {len(programs)} loadable survivors — need ≥2 for disagreements",
         }
@@ -664,12 +652,13 @@ def disagreement_report(project_dir: "str | Path") -> dict:
         report = {
             "schema": "ztare.vs_disagreements.v1",
             "n_survivors": len(survivors),
+            "n_distinct_hypotheses": len(survivors),
             "n_distinct_fingerprints": distinct_fps,
             "disagreement_states": [],
             "note": (
-                "population is behaviorally collapsed on battery — "
-                "survivors are identical clones on visible; "
-                "distinguishing evidence must come from NEW states. "
+                "hypotheses are evidence-equivalent on the current battery; "
+                "their executable identities remain distinct pending a "
+                "distinguishing observation from a new state. "
                 + frontier_note
             ),
         }
@@ -708,7 +697,11 @@ def disagreement_report(project_dir: "str | Path") -> dict:
 
     report = {
         "schema": "ztare.vs_disagreements.v1",
+        "evidence_role": "visible",
+        "evidence_ref": visible_ref,
+        "evidence_sha256": visible_sha256,
         "n_survivors": len(survivors),
+        "n_distinct_hypotheses": len(survivors),
         "n_distinct_fingerprints": distinct_fps,
         "n_disagreement_probes": len(probe_preds),
         "disagreement_states": [
@@ -770,6 +763,13 @@ def _frontier_note(project_dir: Path) -> str:
 
 
 def _append_disagreement(project_dir: Path, report: dict) -> None:
+    if report.get("disagreement_states") and (
+        report.get("evidence_role") != "visible"
+        or not report.get("evidence_sha256")
+    ):
+        raise ValueError(
+            "action-selecting disagreement targets require visible-evidence identity"
+        )
     p = project_dir / "workspace" / "version_space_disagreements.jsonl"
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a") as f:
@@ -812,7 +812,8 @@ def _cli() -> int:
         survivors = load(project_dir)
         print(f"survivors: {len(survivors)}")
         fps = {s.get('fingerprint') for s in survivors}
-        print(f"distinct fingerprints: {len(fps)}")
+        print(f"distinct hypotheses: {len(survivors)}")
+        print(f"evidence-equivalence classes: {len(fps)}")
         for s in survivors:
             print(f"  {s['fingerprint'][:12]}  {Path(s['candidate_ref']).name}")
 

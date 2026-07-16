@@ -20,6 +20,18 @@ PROMPT_PACK_FILE_REFS: frozenset[str] = frozenset(
     }
 )
 
+_SHA256_REF_RE = re.compile(r"(?:sha256:)?([0-9a-fA-F]{64})\Z")
+_TYPED_FRAGMENT_RE = re.compile(r"\A(.+\.(?:jsonl?|md|py|txt)):[^/].*\Z")
+
+
+def canonical_sha256_ref(value: object) -> str:
+    """Normalize bare and prefixed SHA-256 identities to one reference form."""
+
+    match = _SHA256_REF_RE.fullmatch(str(value or "").strip())
+    if match is None:
+        raise ValueError("value is not a SHA-256 identity")
+    return "sha256:" + match.group(1).lower()
+
 
 def normalize_artifact_ref(ref: object) -> str:
     """Return the path-bearing part of an artifact ref."""
@@ -27,6 +39,9 @@ def normalize_artifact_ref(ref: object) -> str:
     text = str(ref or "").strip().replace("\\", "/")
     if "#" in text:
         text = text.split("#", 1)[0].strip()
+    fragment = _TYPED_FRAGMENT_RE.fullmatch(text)
+    if fragment is not None:
+        text = fragment.group(1)
     return text
 
 
@@ -115,7 +130,17 @@ def collect_artifact_refs(payload: object) -> tuple[str, ...]:
             return
         if isinstance(value, list | tuple):
             if key in ARTIFACT_REF_KEYS or key.endswith("_refs"):
-                refs.extend(str(item).strip() for item in value if str(item or "").strip())
+                for item in value:
+                    if isinstance(item, (Mapping, list, tuple)):
+                        # A ref collection may use scalar paths or typed ref
+                        # objects carrying status/authority alongside ``ref``.
+                        # Preserve the object category and traverse it; string
+                        # coercion manufactures a path from its repr.
+                        visit(item)
+                    else:
+                        text = str(item or "").strip()
+                        if text:
+                            refs.append(text)
                 return
             for item in value:
                 visit(item, key=key)

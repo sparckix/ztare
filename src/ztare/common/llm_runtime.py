@@ -170,6 +170,14 @@ _SUBSCRIPTION_EFFORTS = {
 }
 
 _SUBSCRIPTION_MODEL_EFFORTS = {
+    # GPT-5.5's Responses endpoint stops at `xhigh`.  Codex CLI accepts the
+    # normalized spelling `ultra` but lowers it internally to the unsupported
+    # API value `max`, so pin this model before the command is launched.
+    ("codex", "gpt-5.5"): {
+        "high": "xhigh",
+        "ultra": "xhigh",
+        "xhigh": "xhigh",
+    },
     # Luna exposes `max` as its deepest native tier.  Keep campaign-facing
     # `ultra` engine-neutral and lower it only after model routing.
     ("codex", "gpt-5.6-luna"): {
@@ -885,8 +893,10 @@ def pricing_model_name(model_name: str | None) -> str | None:
 
 
 def _response_contract_parts(config: Any) -> tuple[str | None, Any]:
-    if config is None or isinstance(config, dict):
+    if config is None:
         return None, None
+    if isinstance(config, dict):
+        return config.get("response_mime_type"), config.get("response_schema")
     return (
         getattr(config, "response_mime_type", None),
         getattr(config, "response_schema", None),
@@ -974,7 +984,7 @@ class LLMRuntime:
             if genai is None:
                 raise RuntimeError(
                     "Gemini provider requested but google-genai is not "
-                    "installed (optional dependency). Install google-genai "
+                    "installed (optional dependency). Install `ztare[google]` "
                     "or use the anthropic/openai providers.")
             self._gemini_client = build_google_genai_client(
                 genai.Client,
@@ -987,7 +997,7 @@ class LLMRuntime:
             if anthropic is None:
                 raise RuntimeError(
                     "Anthropic provider requested but anthropic is not "
-                    "installed (optional dependency). Install anthropic "
+                    "installed (optional dependency). Install `ztare[anthropic]` "
                     "or use the google/openai providers.")
             self._anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         return self._anthropic_client
@@ -997,7 +1007,7 @@ class LLMRuntime:
             if OpenAI is None:
                 raise RuntimeError(
                     "OpenAI provider requested but openai is not installed "
-                    "(optional dependency). Install openai or use the "
+                    "(optional dependency). Install `ztare[openai]` or use the "
                     "anthropic/google providers.")
             self._openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         return self._openai_client
@@ -1007,7 +1017,7 @@ class LLMRuntime:
             if OpenAI is None:
                 raise RuntimeError(
                     "DeepSeek provider requested but the Chat Completions "
-                    "transport dependency is not installed."
+                    "transport dependency is not installed. Install `ztare[openai]`."
                 )
             self._deepseek_client = OpenAI(
                 api_key=os.environ.get("DEEPSEEK_API_KEY"),
@@ -1021,7 +1031,7 @@ class LLMRuntime:
             if OpenAI is None:
                 raise RuntimeError(
                     "Kimi provider requested but the Chat Completions "
-                    "transport dependency is not installed."
+                    "transport dependency is not installed. Install `ztare[openai]`."
                 )
             self._kimi_client = OpenAI(
                 api_key=kimi_api_key,
@@ -1039,7 +1049,7 @@ class LLMRuntime:
             if OpenAI is None:
                 raise RuntimeError(
                     "Grok provider requested but the Chat Completions "
-                    "transport dependency is not installed."
+                    "transport dependency is not installed. Install `ztare[openai]`."
                 )
             self._grok_client = OpenAI(
                 api_key=grok_api_key,

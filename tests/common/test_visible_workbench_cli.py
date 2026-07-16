@@ -74,6 +74,58 @@ def test_score_worldmodel_candidate_uses_manifest_authority_project(
     assert summary["candidate_relation"] == "no_regression_detected"
 
 
+def test_visible_cli_compiles_active_task_into_action_scope(
+    tmp_path: Path,
+) -> None:
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    source = "def step(grid, action, t):\n    return grid\n"
+    (tmp_path / "test_model.py").write_text(source, encoding="utf-8")
+    import hashlib
+
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "active_frontier": {
+                    "candidate_sha": digest,
+                    "source_ref": "test_model.py",
+                },
+                "workbench_task": {
+                    "schema": "ztare-leaf-workbench-task-v1",
+                    "task_id": "context-only",
+                    "source_ref": "test_model.py",
+                    "admissible_capability_ids": [
+                        "inspect_worldmodel_counterexample_context"
+                    ],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (workspace / "input.json").write_text("{}", encoding="utf-8")
+
+    manifest = visible_workbench_cli.manifest_payload(project=tmp_path)
+    assert manifest["active_task_scope"]["admissible_evidence_capability_ids"] == [
+        "inspect_worldmodel_counterexample_context"
+    ]
+    assert "inspect_worldmodel_counterexample_context" in manifest["capability_routes"]
+    assert (
+        manifest["capability_routes"]["inspect_worldmodel_counterexample_context"]["route"]
+        == "parent_kernel"
+    )
+    assert "run_visible_json_probe" not in manifest["capability_routes"]
+    assert "probe-json" not in {row["command"] for row in manifest["commands"]}
+
+    with pytest.raises(ValueError, match="outside that task scope"):
+        visible_workbench_cli._probe_json(
+            project=tmp_path,
+            artifact_refs=["workspace/input.json"],
+            probe_py="",
+            max_output_chars=100,
+        )
+
+
 def test_lowerability_blocker_with_tool_claims_requires_receipt_refs(
     tmp_path: Path,
 ) -> None:
@@ -373,6 +425,132 @@ def test_visible_cli_persistent_receipt_binds_nested_leaf_receipt(tmp_path: Path
     assert nested["input_hashes"]["receipt_sha256"] == persistent["sha256"]
     assert nested["output_ref"] == persistent["ref"]
     assert nested["output_sha256"] == persistent["sha256"]
+
+
+def test_authority_derived_query_preserves_manifest_evidence_boundary(tmp_path: Path) -> None:
+    authority = tmp_path / "authority"
+    visible = tmp_path / "visible"
+    authority.mkdir()
+    visible.mkdir()
+    (authority / "gate_harness.py").write_text("# gate\n", encoding="utf-8")
+    (visible / "MANIFEST.json").write_text(
+        json.dumps(
+            {
+                "authority_project_path": str(authority),
+                "authority_project_ref": "projects/example",
+                "visible_artifacts": [
+                    {
+                        "ref": "raw/episodes/episode_001.jsonl",
+                        "status": "withheld",
+                        "visible_status": "withheld",
+                        "reason": "too_large",
+                    },
+                    {
+                        "ref": "workspace/latest_patch_base_regression.json",
+                        "status": "materialized",
+                        "visible_status": "visible",
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    resolved, binding = visible_workbench_cli._authority_project_for_derived_action(
+        visible_project=visible,
+        capability_id="mine_worldmodel_lowerable_selectors",
+        request={
+            "input_refs": {
+                "latest_regression_ref": "workspace/latest_patch_base_regression.json",
+                "episode_log_ref": "visible",
+            }
+        },
+    )
+
+    assert resolved == authority.resolve()
+    assert binding["evidence_execution_mode"] == "authority_derived_query"
+    assert binding["manifest_visible_evidence_refs"] == [
+        "raw/episodes/episode_001.jsonl",
+        "workspace/latest_patch_base_regression.json",
+    ]
+
+
+def test_authority_derived_query_rejects_nonvisible_episode(tmp_path: Path) -> None:
+    authority = tmp_path / "authority"
+    visible = tmp_path / "visible"
+    authority.mkdir()
+    visible.mkdir()
+    (authority / "gate_harness.py").write_text("# gate\n", encoding="utf-8")
+    (visible / "MANIFEST.json").write_text(
+        json.dumps(
+            {
+                "authority_project_path": str(authority),
+                "visible_artifacts": [
+                    {
+                        "ref": "raw/episodes/episode_001.jsonl",
+                        "status": "materialized",
+                        "visible_status": "visible",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="withheld evidence role"):
+        visible_workbench_cli._authority_project_for_derived_action(
+            visible_project=visible,
+            capability_id="contrast_worldmodel_episodes",
+            request={"input_refs": {"episode_ref_a": "visible", "episode_ref_b": "holdout"}},
+        )
+
+
+def test_holdout_role_cannot_cross_bridge_when_withheld_only_for_size(
+    tmp_path: Path,
+) -> None:
+    authority = tmp_path / "authority"
+    visible = tmp_path / "visible"
+    authority.mkdir()
+    visible.mkdir()
+    (authority / "gate_harness.py").write_text("# gate\n", encoding="utf-8")
+    (visible / "MANIFEST.json").write_text(
+        json.dumps(
+            {
+                "authority_project_path": str(authority),
+                "episode_roles": {
+                    "visible": "raw/episodes/episode_001.jsonl",
+                    "holdout": "raw/episodes/episode_002.jsonl",
+                },
+                "visible_artifacts": [
+                    {
+                        "ref": "raw/episodes/episode_001.jsonl",
+                        "status": "withheld",
+                        "visible_status": "withheld",
+                        "reason": "too_large",
+                    },
+                    {
+                        "ref": "raw/episodes/episode_002.jsonl",
+                        "status": "withheld",
+                        "visible_status": "withheld",
+                        "reason": "too_large",
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="withheld evidence role"):
+        visible_workbench_cli._authority_project_for_derived_action(
+            visible_project=visible,
+            capability_id="contrast_worldmodel_episodes",
+            request={
+                "input_refs": {
+                    "episode_ref_a": "visible",
+                    "episode_ref_b": "holdout",
+                }
+            },
+        )
 
 
 def test_visible_cli_activity_meter_classifies_receipt(tmp_path: Path) -> None:

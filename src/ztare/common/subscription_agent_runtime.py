@@ -24,6 +24,9 @@ from typing import Any, Callable, Iterator, Mapping
 
 
 SUPPORTED_SUBSCRIPTION_RUNTIMES = {"codex", "claude"}
+SUBSCRIPTION_DISPATCH_PRE_SPAWN_FAILURE_SCHEMA = (
+    "ztare.subscription_dispatch_pre_spawn_failure.v1"
+)
 CODEX_SANDBOX_SEALED_COMPLETION = "read-only"
 CODEX_SANDBOX_VISIBLE_WORKBENCH = "workspace-write-shell"
 CODEX_SANDBOX_LEGACY_READ_ONLY_SHELL = "read-only-shell"
@@ -57,8 +60,175 @@ def prompt_inline_max_bytes() -> int:
         return max(1, int(os.sysconf("SC_ARG_MAX")) // 4)
 
 _DISPATCH_BUDGET_HOOKS: ContextVar[
-    tuple[Callable[[str, tuple[str, ...]], Any], Callable[[Any], None]] | None
+    tuple[
+        Callable[[str, tuple[str, ...]], Any],
+        Callable[[Any], None],
+        Callable[[Any, subprocess.CompletedProcess[str] | None], bool] | None,
+    ]
+    | None
 ] = ContextVar("subscription_dispatch_budget_hooks", default=None)
+_DISPATCH_AGENT_ID: ContextVar[str] = ContextVar(
+    "subscription_dispatch_agent_id", default=""
+)
+_DISPATCH_PROVENANCE_CONTEXT: ContextVar[dict[str, Any] | None] = ContextVar(
+    "subscription_dispatch_provenance_context", default=None
+)
+
+
+def current_subscription_dispatch_agent_id() -> str:
+    """Return the logical agent job currently entering the shared transport."""
+
+    return _DISPATCH_AGENT_ID.get()
+
+
+def current_subscription_dispatch_provenance_agent_id() -> str:
+    """Return the frozen campaign-role identity for the current dispatch."""
+
+    context = _DISPATCH_PROVENANCE_CONTEXT.get()
+    return str((context or {}).get("agent_id") or "")
+
+
+def current_subscription_dispatch_provenance_identity() -> dict[str, str]:
+    """Read the frozen role configuration without exposing its collector."""
+
+    context = _DISPATCH_PROVENANCE_CONTEXT.get() or {}
+    return {
+        key: str(context.get(key) or "")
+        for key in (
+            "role", "agent_id", "run_tag", "runtime", "model",
+            "reasoning_effort", "config_sha256",
+        )
+    }
+
+
+def subscription_dispatch_provenance_active() -> bool:
+    return _DISPATCH_PROVENANCE_CONTEXT.get() is not None
+
+
+@contextmanager
+def subscription_dispatch_provenance_scope(
+    *,
+    artifact_dir: str | Path,
+    role: str,
+    agent_id: str,
+    run_tag: str,
+    runtime: str,
+    model: str,
+    reasoning_effort: str,
+    config_sha256: str,
+    attempt_input_sha256: str = "",
+    record_empty_attempt: bool = False,
+) -> Iterator[list[dict[str, Any]]]:
+    """Persist process-level call evidence for one governed role family.
+
+    The returned list is populated only by ``_run_cli`` after the transport
+    returned and its budget reservation was committed.  Merely producing a
+    downstream value therefore cannot manufacture a role call.
+    """
+
+    values = {
+        "role": str(role),
+        "agent_id": str(agent_id),
+        "run_tag": str(run_tag),
+        "runtime": str(runtime),
+        "model": str(model),
+        "reasoning_effort": str(reasoning_effort),
+        "config_sha256": str(config_sha256),
+    }
+    if any(not value.strip() for value in values.values()):
+        raise ValueError("dispatch provenance role identity is incomplete")
+    root = Path(artifact_dir)
+    root.mkdir(parents=True, exist_ok=True)
+    collector: list[dict[str, Any]] = []
+    context = {
+        **values,
+        "artifact_dir": root,
+        "collector": collector,
+        "attempt_input_sha256": str(attempt_input_sha256),
+    }
+    token = _DISPATCH_PROVENANCE_CONTEXT.set(context)
+    try:
+        yield collector
+    except Exception as exc:
+        if attempt_input_sha256:
+            record_subscription_dispatch_pre_spawn_failure(
+                input_sha256=attempt_input_sha256,
+                reason_code=type(exc).__name__,
+                exception=exc,
+                if_role_empty=True,
+            )
+        raise
+    else:
+        if record_empty_attempt and attempt_input_sha256:
+            record_subscription_dispatch_pre_spawn_failure(
+                input_sha256=attempt_input_sha256,
+                reason_code="no_transport_observed",
+                if_role_empty=True,
+            )
+    finally:
+        _DISPATCH_PROVENANCE_CONTEXT.reset(token)
+
+
+@contextmanager
+def subscription_dispatch_role_scope(
+    *,
+    role: str,
+    agent_id: str,
+    run_tag: str,
+    runtime: str,
+    model: str,
+    reasoning_effort: str,
+    config_sha256: str,
+    attempt_input_sha256: str = "",
+    record_empty_attempt: bool = False,
+) -> Iterator[None]:
+    """Switch roles while retaining the outer durable call collector."""
+
+    parent = _DISPATCH_PROVENANCE_CONTEXT.get()
+    if parent is None:
+        raise RuntimeError("dispatch role scope requires an active provenance scope")
+    values = {
+        "role": str(role),
+        "agent_id": str(agent_id),
+        "run_tag": str(run_tag),
+        "runtime": str(runtime),
+        "model": str(model),
+        "reasoning_effort": str(reasoning_effort),
+        "config_sha256": str(config_sha256),
+    }
+    if any(not value.strip() for value in values.values()):
+        raise ValueError("dispatch provenance role identity is incomplete")
+    effective_input_sha256 = str(
+        attempt_input_sha256 or parent.get("attempt_input_sha256") or ""
+    )
+    token = _DISPATCH_PROVENANCE_CONTEXT.set(
+        {
+            **values,
+            "artifact_dir": parent["artifact_dir"],
+            "collector": parent["collector"],
+            "attempt_input_sha256": effective_input_sha256,
+        }
+    )
+    try:
+        yield
+    except Exception as exc:
+        if effective_input_sha256:
+            record_subscription_dispatch_pre_spawn_failure(
+                input_sha256=effective_input_sha256,
+                reason_code=type(exc).__name__,
+                exception=exc,
+                if_role_empty=True,
+            )
+        raise
+    else:
+        if record_empty_attempt and effective_input_sha256:
+            record_subscription_dispatch_pre_spawn_failure(
+                input_sha256=effective_input_sha256,
+                reason_code="no_transport_observed",
+                if_role_empty=True,
+            )
+    finally:
+        _DISPATCH_PROVENANCE_CONTEXT.reset(token)
 
 
 @contextmanager
@@ -66,10 +236,20 @@ def subscription_dispatch_budget_scope(
     *,
     before_dispatch: Callable[[str, tuple[str, ...]], Any],
     after_dispatch: Callable[[Any], None],
+    settle_dispatch: (
+        Callable[[Any, subprocess.CompletedProcess[str] | None], bool] | None
+    ) = None,
 ) -> Iterator[None]:
-    """Meter logical subscription dispatches without changing their transport."""
+    """Meter logical subscription dispatches without changing their transport.
 
-    token = _DISPATCH_BUDGET_HOOKS.set((before_dispatch, after_dispatch))
+    ``settle_dispatch`` is the result-aware path for callers that distinguish
+    provider-free transport failures from charged inference.  Legacy callers
+    retain the conservative one-argument ``after_dispatch`` behavior.
+    """
+
+    token = _DISPATCH_BUDGET_HOOKS.set(
+        (before_dispatch, after_dispatch, settle_dispatch)
+    )
     try:
         yield
     finally:
@@ -175,6 +355,125 @@ class OwnedDispatch:
 def _command_digest(command: list[str]) -> str:
     raw = json.dumps(command, ensure_ascii=True, separators=(",", ":")).encode()
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def _text_digest(value: str) -> str:
+    return "sha256:" + hashlib.sha256(str(value).encode("utf-8")).hexdigest()
+
+
+def _write_dispatch_provenance_artifact(
+    context: Mapping[str, Any], row: Mapping[str, Any], *, artifact_path: Path
+) -> dict[str, Any]:
+    core = dict(row)
+    encoded = json.dumps(
+        core, ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    frozen = {**core, "receipt_sha256": hashlib.sha256(encoded).hexdigest()}
+    temporary = artifact_path.with_name(
+        artifact_path.name + f".{uuid.uuid4().hex}.tmp"
+    )
+    with temporary.open("w", encoding="utf-8") as handle:
+        json.dump(frozen, handle, ensure_ascii=True, sort_keys=True)
+        handle.write("\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, artifact_path)
+    context["collector"].append(frozen)
+    return frozen
+
+
+def record_subscription_dispatch_pre_spawn_failure(
+    *,
+    input_sha256: str,
+    reason_code: str,
+    exception: BaseException | None = None,
+    command: tuple[str, ...] | list[str] = (),
+    prompt: str = "",
+    timeout_seconds: int = 0,
+    reservation: Any = None,
+    charged: bool = False,
+    agent_id: str = "",
+    if_role_empty: bool = False,
+) -> dict[str, Any] | None:
+    """Freeze an attempted role firing that never returned a process result.
+
+    This receipt is evidence of an unavailable attempt only.  It cannot satisfy
+    a successful dispatch check.  ``input_sha256`` binds callback-level failures
+    that occur before a command exists to the caller's frozen task bytes.
+    """
+
+    context = _DISPATCH_PROVENANCE_CONTEXT.get()
+    if context is None:
+        raise RuntimeError("pre-spawn receipt requires an active provenance scope")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(input_sha256)):
+        raise ValueError("pre-spawn receipt requires a canonical input digest")
+    if not str(reason_code).strip():
+        raise ValueError("pre-spawn receipt requires a reason code")
+    if type(timeout_seconds) is not int or timeout_seconds < 0:
+        raise ValueError("pre-spawn receipt timeout must be nonnegative")
+    role = str(context["role"])
+    run_tag = str(context["run_tag"])
+    if if_role_empty and any(
+        str(row.get("role") or "") == role
+        and str(row.get("run_tag") or "") == run_tag
+        for row in context["collector"]
+        if isinstance(row, Mapping)
+    ):
+        return None
+    reservation_id = str(getattr(reservation, "reservation_id", "") or "")
+    reservation_resources = dict(getattr(reservation, "resources", {}) or {})
+    charged_reservation = bool(charged and reservation_id)
+    settlement = (
+        "committed"
+        if charged_reservation
+        else "released"
+        if reservation_id
+        else "not_reserved"
+    )
+    failure_type = (
+        type(exception).__name__ if exception is not None else "NoTransportObserved"
+    )
+    failure_text = (
+        f"{failure_type}\n{exception}" if exception is not None else failure_type
+    )
+    dispatch_attempt_id = "dispatch-attempt:" + uuid.uuid4().hex
+    artifact_path = Path(context["artifact_dir"]) / (
+        re.sub(r"[^A-Za-z0-9_.-]+", "_", role)
+        + f".{dispatch_attempt_id.split(':', 1)[1]}.pre_spawn.json"
+    )
+    row = {
+        "schema": SUBSCRIPTION_DISPATCH_PRE_SPAWN_FAILURE_SCHEMA,
+        "dispatch_attempt_id": dispatch_attempt_id,
+        "disposition": "pre_spawn_failure",
+        "role": role,
+        "agent_id": str(context["agent_id"]),
+        "requested_transport_agent_id": str(agent_id or context["agent_id"]),
+        "run_tag": run_tag,
+        "runtime": str(context["runtime"]),
+        "model": str(context["model"]),
+        "reasoning_effort": str(context["reasoning_effort"]),
+        "config_sha256": str(context["config_sha256"]),
+        "input_sha256": str(input_sha256),
+        "command_sha256": _command_digest(list(command)),
+        "prompt_sha256": _text_digest(prompt),
+        "failure_type": failure_type,
+        "failure_sha256": _text_digest(failure_text),
+        "reason_code": str(reason_code),
+        "timeout_seconds": int(timeout_seconds),
+        "reservation_id": reservation_id,
+        "reservation_action_id": str(
+            getattr(reservation, "action_id", "") or ""
+        ),
+        "reservation_phase": str(getattr(reservation, "phase", "") or ""),
+        "reservation_resources": reservation_resources,
+        "charged_reservation": charged_reservation,
+        "reservation_settlement": settlement,
+        "artifact_path": str(artifact_path),
+        "authority": "subscription_transport_pre_spawn_observation",
+    }
+    return _write_dispatch_provenance_artifact(
+        context, row, artifact_path=artifact_path
+    )
 
 
 def _owned_dispatch_for_process(
@@ -865,24 +1164,156 @@ def _run_cli(command: list[str], *, runtime: str, repo: str | Path, timeout_seco
              idle_timeout_seconds: "int | None" = None,
              stdin_text: str | None = None,
              dispatch_receipt_path: "str | Path | None" = None,
-             stdout_path: str = "", stderr_path: str = "") -> subprocess.CompletedProcess[str]:
-    hooks = _DISPATCH_BUDGET_HOOKS.get()
-    reservation = hooks[0](runtime, tuple(command)) if hooks is not None else None
-    try:
-        return _run_cli_unbudgeted(
-            command,
-            runtime=runtime,
-            repo=repo,
-            timeout_seconds=timeout_seconds,
-            idle_timeout_seconds=idle_timeout_seconds,
-            stdin_text=stdin_text,
-            dispatch_receipt_path=dispatch_receipt_path,
-            stdout_path=stdout_path,
-            stderr_path=stderr_path,
+             stdout_path: str = "", stderr_path: str = "",
+             agent_id: str = "") -> subprocess.CompletedProcess[str]:
+    def record_provenance(
+        result: subprocess.CompletedProcess[str],
+        reservation: Any,
+        *,
+        charged: bool,
+    ) -> None:
+        context = _DISPATCH_PROVENANCE_CONTEXT.get()
+        if context is None:
+            return
+        expected_runtime = str(context["runtime"])
+        expected_agent_id = str(context["agent_id"])
+        if runtime != expected_runtime or str(agent_id) != expected_agent_id:
+            raise ValueError("subscription dispatch crossed its frozen role identity")
+        prompt = (
+            stdin_text
+            if stdin_text is not None
+            else str(command[-1]) if command else ""
         )
+        command_model = ""
+        command_effort = ""
+        if "--model" in command:
+            model_index = command.index("--model")
+            if model_index + 1 < len(command):
+                command_model = str(command[model_index + 1])
+        if "--effort" in command:
+            effort_index = command.index("--effort")
+            if effort_index + 1 < len(command):
+                command_effort = str(command[effort_index + 1])
+        if runtime == "codex":
+            for index, token in enumerate(command[:-1]):
+                if token == "-c" and str(command[index + 1]).startswith(
+                    "model_reasoning_effort="
+                ):
+                    command_effort = str(command[index + 1]).split("=", 1)[1]
+                    break
+        reservation_id = str(getattr(reservation, "reservation_id", "") or "")
+        reservation_resources = dict(getattr(reservation, "resources", {}) or {})
+        call_id = "dispatch:" + uuid.uuid4().hex
+        artifact_path = Path(context["artifact_dir"]) / (
+            re.sub(r"[^A-Za-z0-9_.-]+", "_", str(context["role"]))
+            + f".{call_id.split(':', 1)[1]}.json"
+        )
+
+        core = {
+            "schema": "ztare.subscription_dispatch_provenance.v1",
+            "call_id": call_id,
+            "role": str(context["role"]),
+            "agent_id": expected_agent_id,
+            "transport_agent_id": str(agent_id),
+            "run_tag": str(context["run_tag"]),
+            "runtime": runtime,
+            "model": str(context["model"]),
+            "reasoning_effort": str(context["reasoning_effort"]),
+            "config_sha256": str(context["config_sha256"]),
+            "command_sha256": _command_digest(command),
+            "command_model": command_model,
+            "command_reasoning_effort": command_effort,
+            "prompt_sha256": _text_digest(prompt),
+            "stdout_sha256": _text_digest(str(result.stdout or "")),
+            "stderr_sha256": _text_digest(str(result.stderr or "")),
+            "result_sha256": _text_digest(
+                f"{int(result.returncode)}\n{result.stdout or ''}\n{result.stderr or ''}"
+            ),
+            "session_id": (
+                extract_subscription_session_id(
+                    runtime,
+                    str(result.stdout or ""),
+                    str(result.stderr or ""),
+                )
+                or ""
+            ),
+            "returncode": int(result.returncode),
+            "timeout_seconds": int(timeout_seconds),
+            "reservation_id": reservation_id,
+            "reservation_action_id": str(
+                getattr(reservation, "action_id", "") or ""
+            ),
+            "reservation_phase": str(getattr(reservation, "phase", "") or ""),
+            "reservation_resources": reservation_resources,
+            "charged_reservation": bool(charged and reservation_id),
+            "artifact_path": str(artifact_path),
+            "authority": "subscription_transport_post_commit_observation",
+        }
+        _write_dispatch_provenance_artifact(
+            context, core, artifact_path=artifact_path
+        )
+
+    identity_token = _DISPATCH_AGENT_ID.set(str(agent_id or ""))
+    try:
+        hooks = _DISPATCH_BUDGET_HOOKS.get()
+        reservation = hooks[0](runtime, tuple(command)) if hooks is not None else None
+        result: subprocess.CompletedProcess[str] | None = None
+        failure: BaseException | None = None
+        try:
+            result = _run_cli_unbudgeted(
+                command,
+                runtime=runtime,
+                repo=repo,
+                timeout_seconds=timeout_seconds,
+                idle_timeout_seconds=idle_timeout_seconds,
+                stdin_text=stdin_text,
+                dispatch_receipt_path=dispatch_receipt_path,
+                stdout_path=stdout_path,
+                stderr_path=stderr_path,
+            )
+            return result
+        except Exception as exc:
+            failure = exc
+            raise
+        finally:
+            charged = False
+            if hooks is not None:
+                if hooks[2] is None:
+                    hooks[1](reservation)
+                    charged = reservation is not None
+                else:
+                    charged = bool(hooks[2](reservation, result))
+            if result is not None:
+                record_provenance(
+                    result,
+                    reservation,
+                    charged=charged,
+                )
+            elif failure is not None and _DISPATCH_PROVENANCE_CONTEXT.get() is not None:
+                context = _DISPATCH_PROVENANCE_CONTEXT.get() or {}
+                prompt = (
+                    stdin_text
+                    if stdin_text is not None
+                    else str(command[-1]) if command else ""
+                )
+                input_sha256 = str(context.get("attempt_input_sha256") or "")
+                if not input_sha256:
+                    input_sha256 = hashlib.sha256(
+                        prompt.encode("utf-8")
+                    ).hexdigest()
+                record_subscription_dispatch_pre_spawn_failure(
+                    input_sha256=input_sha256,
+                    reason_code=type(failure).__name__,
+                    exception=failure,
+                    command=tuple(command),
+                    prompt=prompt,
+                    timeout_seconds=int(timeout_seconds),
+                    reservation=reservation,
+                    charged=charged,
+                    agent_id=str(agent_id),
+                )
     finally:
-        if hooks is not None:
-            hooks[1](reservation)
+        _DISPATCH_AGENT_ID.reset(identity_token)
 
 
 def _codex_needs_tty_recovery(result: subprocess.CompletedProcess[str]) -> bool:
@@ -1104,7 +1535,8 @@ def run_subscription_agent_with_recovery(
     result = _run_cli(initial_command, runtime=runtime, repo=repo, timeout_seconds=timeout_seconds,
                       idle_timeout_seconds=_idle, stdin_text=initial_stdin_text,
                       dispatch_receipt_path=dispatch_receipt_path,
-                      stdout_path=stdout_path, stderr_path=stderr_path)
+                      stdout_path=stdout_path, stderr_path=stderr_path,
+                      agent_id=agent_id)
     recovery_note: str | None = None
     transient_retries, transient_delay = _transient_capacity_retry_budget()
     for attempt in range(1, transient_retries + 1):
@@ -1119,7 +1551,8 @@ def run_subscription_agent_with_recovery(
         result = _run_cli(initial_command, runtime=runtime, repo=repo, timeout_seconds=timeout_seconds,
                           idle_timeout_seconds=_idle, stdin_text=initial_stdin_text,
                           dispatch_receipt_path=dispatch_receipt_path,
-                          stdout_path=stdout_path, stderr_path=stderr_path)
+                          stdout_path=stdout_path, stderr_path=stderr_path,
+                          agent_id=agent_id)
     final_session_state = note_subscription_session_result(
         runtime=runtime,
         session_state=session_state,
@@ -1153,7 +1586,8 @@ def run_subscription_agent_with_recovery(
                           idle_timeout_seconds=_idle,
                           stdin_text=prompt if final_command and final_command[-1] == "-" else None,
                           dispatch_receipt_path=dispatch_receipt_path,
-                          stdout_path=stdout_path, stderr_path=stderr_path)
+                          stdout_path=stdout_path, stderr_path=stderr_path,
+                          agent_id=agent_id)
         final_session_state = note_subscription_session_result(
             runtime=runtime,
             session_state=replacement_session_state,

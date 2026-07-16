@@ -11,6 +11,7 @@ VISIBLE_WORKBENCH_SOURCE_REFS: tuple[str, ...] = (
     "src/ztare/validator/__init__.py",
     "src/ztare/validator/core/__init__.py",
     "src/ztare/worldmodel/__init__.py",
+    "src/ztare/fit/mdl.py",
     "src/ztare/common/activity_meter.py",
     "src/ztare/common/artifact_refs.py",
     "src/ztare/common/candidate_first_policy.py",
@@ -23,10 +24,11 @@ VISIBLE_WORKBENCH_SOURCE_REFS: tuple[str, ...] = (
     "src/ztare/common/ask_spec.py",
     "src/ztare/common/leaf_workbench_executor.py",
     "src/ztare/common/leaf_workbench_contract.py",
+    "src/ztare/common/equivariance.py",
+    "src/ztare/common/observation_chart.py",
     "src/ztare/common/sealed_boundary_cegar.py",
     "src/ztare/common/structured_blocks.py",
     "src/ztare/common/leaf_workbench_python.py",
-    "src/ztare/common/tool_synthesis_contract.py",
     "src/ztare/common/visible_workbench_actions.py",
     "src/ztare/common/visible_workbench_cli.py",
     "src/ztare/common/worldmodel_carrier_purity.py",
@@ -36,15 +38,63 @@ VISIBLE_WORKBENCH_SOURCE_REFS: tuple[str, ...] = (
     "src/ztare/validator/core/repair_preflight.py",
     "src/ztare/validator/worldmodel_typed_payload.py",
     "src/ztare/worldmodel/episode_log.py",
+    "src/ztare/worldmodel/carrier_loader.py",
+    "src/ztare/worldmodel/evidence_consolidation.py",
+    "src/ztare/worldmodel/transition_identity.py",
     "src/ztare/worldmodel/evidence_probe.py",
     "src/ztare/worldmodel/evidence_quotients.py",
+    "src/ztare/worldmodel/gates.py",
     "src/ztare/worldmodel/grid_dsl.py",
-    "src/ztare/worldmodel/goal_abduction.py",
     "src/ztare/worldmodel/leaf_workbench.py",
+    "src/ztare/worldmodel/patch_base_carrier.py",
     "src/ztare/worldmodel/patch_carrier_contract.py",
     "src/ztare/worldmodel/retry_surface.py",
     "src/ztare/worldmodel/spec_abduction.py",
     "src/ztare/worldmodel/spec_catalog.py",
+)
+
+# One owner for the staged source set and the smaller prompt-visible subset.
+# A fiber may only advertise bytes that dispatch_model actually stages.
+_VISIBLE_WORKBENCH_SOURCE_FIBER_PURPOSES: dict[str, str] = {
+    "src/ztare/worldmodel/leaf_workbench.py": (
+        "worldmodel workbench lowering and action handlers"
+    ),
+    "src/ztare/common/leaf_workbench_contract.py": (
+        "substrate-general workbench receipt/proposal validator"
+    ),
+    "src/ztare/common/projection_owner_registry.py": (
+        "owner/projection/test routing and staged-source authority"
+    ),
+    "src/ztare/validator/worldmodel_typed_payload.py": (
+        "worldmodel payload compiler and control-receipt renderer"
+    ),
+    "src/ztare/common/leaf_workbench_python.py": (
+        "bounded visible JSON probe runtime"
+    ),
+    "src/ztare/common/visible_workbench_cli.py": (
+        "same-turn visible workbench CLI"
+    ),
+    "src/ztare/common/worldmodel_carrier_purity.py": (
+        "carrier purity and temporal-admissibility contract"
+    ),
+    "src/ztare/validator/core/repair_preflight.py": (
+        "retry-time workbench execution and repair preflight"
+    ),
+}
+
+_unstaged_source_fibers = (
+    set(_VISIBLE_WORKBENCH_SOURCE_FIBER_PURPOSES) - set(VISIBLE_WORKBENCH_SOURCE_REFS)
+)
+if _unstaged_source_fibers:
+    raise RuntimeError(
+        "visible source fibers are not staged: "
+        + ", ".join(sorted(_unstaged_source_fibers))
+    )
+
+VISIBLE_WORKBENCH_SOURCE_FIBERS: tuple[tuple[str, str], ...] = tuple(
+    (ref, _VISIBLE_WORKBENCH_SOURCE_FIBER_PURPOSES[ref])
+    for ref in VISIBLE_WORKBENCH_SOURCE_REFS
+    if ref in _VISIBLE_WORKBENCH_SOURCE_FIBER_PURPOSES
 )
 
 
@@ -332,10 +382,14 @@ PROJECTION_OWNERS: tuple[ProjectionOwner, ...] = (
         concept_id="visible_workbench_source_membrane",
         owner_module="ztare.common.projection_owner_registry",
         owner_file="src/ztare/common/projection_owner_registry.py",
-        owner_symbols=("VISIBLE_WORKBENCH_SOURCE_REFS",),
+        owner_symbols=(
+            "VISIBLE_WORKBENCH_SOURCE_REFS",
+            "VISIBLE_WORKBENCH_SOURCE_FIBERS",
+        ),
         projections=(
             "src/ztare/common/dispatch_model.py",
             "src/ztare/common/briefing_pack.py",
+            "src/ztare/worldmodel/leaf_workbench.py",
         ),
         tests=("tests/common/test_projection_owner_registry.py",),
         doc_refs=("docs/concepts/arc_agi_3_system.md",),
@@ -384,7 +438,6 @@ PROJECTION_OWNERS: tuple[ProjectionOwner, ...] = (
             "src/ztare/orchestrator/briefing_providers/strategy_experiments.py",
             "src/ztare/orchestrator/briefing_providers/leaf_workbench.py",
             "src/ztare/orchestrator/briefing_providers/worldmodel_committee.py",
-            "src/ztare/worldmodel/operator_implement.py",
         ),
         tests=(
             "tests/test_dispatch_model.py",
@@ -444,6 +497,31 @@ PROJECTION_OWNERS: tuple[ProjectionOwner, ...] = (
         notes="Project-relative patch-base refs and full-digest identity checks.",
     ),
     ProjectionOwner(
+        concept_id="worldmodel_carrier_lowering",
+        owner_module="ztare.worldmodel.carrier_loader",
+        owner_file="src/ztare/worldmodel/carrier_loader.py",
+        owner_symbols=(
+            "load_carrier_from_source",
+            "load_carrier_path",
+            "lower_carrier_namespace",
+        ),
+        projections=(
+            "src/ztare/worldmodel/batch_gate.py",
+            "src/ztare/worldmodel/evidence_consolidation.py",
+            "scripts/public/control/arc3_play_loop.py",
+            "scripts/public/control/arc3_level_transfer_probe.py",
+            "projects/arc3_ls20_gov/gate_harness.py",
+            "projects/arc3_tu93_gov/gate_harness.py",
+        ),
+        tests=(
+            "tests/test_consolidation.py",
+            "tests/test_batch_gate_counting.py",
+            "tests/validator/test_pre_judge_gate_harness.py",
+        ),
+        doc_refs=("docs/concepts/arc_agi_3_system.md",),
+        notes="One lowering order for every executable transition-carrier consumer.",
+    ),
+    ProjectionOwner(
         concept_id="worldmodel_induction_tools",
         owner_module="ztare.worldmodel.spec_abduction",
         owner_file="src/ztare/worldmodel/spec_abduction.py",
@@ -454,7 +532,6 @@ PROJECTION_OWNERS: tuple[ProjectionOwner, ...] = (
             "src/ztare/worldmodel/grid_dsl.py",
             "src/ztare/worldmodel/episode_log.py",
             "src/ztare/worldmodel/patch_carrier_contract.py",
-            "src/ztare/worldmodel/operator_implement.py",
         ),
         tests=(
             "tests/test_worldmodel_p0.py",

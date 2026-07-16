@@ -10,6 +10,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
+from ztare.fit.mdl import description_units
 from ztare.worldmodel.residual_specialists import (
     RECEIPT_SCHEMA,
     build_frontier,
@@ -17,7 +18,6 @@ from ztare.worldmodel.residual_specialists import (
     specialist_briefing,
     run_specialists,
     _partition_too_fine,
-    _mdl,
     _information_yield,
     _parse_mechanism,
     _parse_discriminator,
@@ -274,7 +274,7 @@ def test_mdl_tiebreak(tmp_path):
     f1.write_text("def solve(g): return g\n", encoding="utf-8")
     f2.write_text("\n".join(["def solve(g):"] + [f"    x{i} = {i}" for i in range(50)] + ["    return g"]),
                   encoding="utf-8")
-    assert _mdl(str(f1)) < _mdl(str(f2))
+    assert description_units(f1.read_text()) < description_units(f2.read_text())
 
 
 # ── Test 9: partition_too_fine on shared t==128 guard ─────────────────────

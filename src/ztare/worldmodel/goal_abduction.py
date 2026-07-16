@@ -22,6 +22,9 @@ from the evidence — no ls20 (or any level) constants.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import ClassVar
+
 DEFAULT_K = 3
 
 
@@ -49,6 +52,13 @@ def _role_members(roles, *names):
                 got.add(int(m))
             elif isinstance(m, (list, tuple)):        # e.g. a mirror color signature
                 got.update(int(x) for x in m if isinstance(x, int))
+            elif isinstance(m, dict):
+                # Adapter role descriptors keep feature values as presentation
+                # metadata while their behavioral identity remains structural.
+                got.update(
+                    int(x) for x in (m.get("feature_values") or [])
+                    if isinstance(x, int) and not isinstance(x, bool)
+                )
     return sorted(got)
 
 
@@ -123,13 +133,112 @@ def _completions(rows, resource):
     return refill
 
 
+def _authoritative_completions(rows) -> list[int]:
+    """Environment-owned level boundaries; grid properties have no veto."""
+    return [
+        index
+        for index, transition in enumerate(rows)
+        if transition.identity is not None
+        and transition.identity.is_authoritative
+        and transition.identity.kind == "epoch_boundary"
+        and transition.identity.boundary_kind == "level_completed"
+    ]
+
+
+@dataclass(frozen=True)
+class AuthoritativeGoalEdgePredicate:
+    """Finite, bank-witnessed success edges with no cross-level claim."""
+
+    time_aware: ClassVar[bool] = True
+    witnesses: tuple[tuple[object, int, int, str, object], ...]
+
+    def __call__(self, grid, action, time=None) -> bool:
+        return any(
+            grid == source
+            and action == expected
+            and (time is None or time == witness_time)
+            for source, expected, witness_time, _evidence_ref, _source_epoch
+            in self.witnesses
+        )
+
+    @property
+    def goal_source_states(self) -> tuple[object, ...]:
+        # Preserve evidence order while quotienting byte-identical sources.
+        out = []
+        for source, _action, _time, _ref, _source_epoch in self.witnesses:
+            if source not in out:
+                out.append(source)
+        return tuple(out)
+
+    def nearest_future_sources(self, start_time: int) -> tuple[object, ...]:
+        future = [row for row in self.witnesses if row[2] >= start_time]
+        if not future:
+            return ()
+        nearest_time = min(row[2] for row in future)
+        return tuple(row[0] for row in future if row[2] == nearest_time)
+
+    def for_source_epoch(self, source_epoch: object) -> "AuthoritativeGoalEdgePredicate | None":
+        """Restrict exemplars to the lifecycle in which their edge occurred.
+
+        A boundary outcome has a reusable identity, but its source grid is only
+        a presentation inside one epoch.  Returning ``None`` when the bank has
+        no exemplar for the active epoch prevents an old source presentation
+        from becoming a target in a new ontology.
+        """
+        selected = tuple(row for row in self.witnesses if row[4] == source_epoch)
+        return AuthoritativeGoalEdgePredicate(selected) if selected else None
+
+
+def authoritative_goal_edge_predicate(log, *, source_epoch: object | None = None):
+    """Compile environment-success receipts into an edge predicate.
+
+    A completion is an intervention-bearing transition identity. Treating it
+    as a property of the successor frame loses the action and asks the learned
+    dynamics to predict an environment-owned repaint. The returned predicate
+    recognizes only bank-witnessed ``(source_state, action)`` edges and makes no
+    cross-level or symmetry claim.
+    """
+    witnesses = [
+        (
+            transition.s,
+            transition.a,
+            transition.t,
+            next(iter(transition.identity.evidence_refs), f"episode_row:{index}"),
+            transition.identity.source_epoch,
+        )
+        for index, transition in enumerate(log)
+        if transition.identity is not None
+        and transition.identity.is_authoritative
+        and transition.identity.kind == "epoch_boundary"
+        and transition.identity.boundary_kind == "level_completed"
+    ]
+    if not witnesses:
+        return None, 0
+
+    predicate = AuthoritativeGoalEdgePredicate(tuple(witnesses))
+    if source_epoch is not None:
+        predicate = predicate.for_source_epoch(source_epoch)
+        if predicate is None:
+            return None, 0
+    return predicate, len(predicate.witnesses)
+
+
+def goal_edge_matches(predicate, grid, action, time) -> bool:
+    """Invoke a typed time-aware edge, preserving legacy two-argument callers."""
+    if getattr(predicate, "time_aware", False):
+        return predicate(grid, action, time)
+    return bool(predicate(grid, action))
+
+
 # ── entry point ──────────────────────────────────────────────────────────────
 
 def abduce_goal_candidates(log, spec, roles) -> dict:
     rows = list(log)
     spec = _norm_spec(spec)
     resource = _role_members(roles, "monotone_depleting")
-    completions = _completions(rows, resource) if (resource and rows) else []
+    completions = _authoritative_completions(rows)
+    if not completions and resource and rows:
+        completions = _completions(rows, resource)
     if completions:
         return _post_success(rows, resource, completions)
     return _pre_success(rows, spec, roles)
@@ -473,18 +582,16 @@ def _post_success(rows, resource, completions, K=DEFAULT_K) -> dict:
 
 # ── predicate compilation (usable by reachability_sweep goal_fn) ─────────────
 
-def predicate_from_spec(pspec, start_grid, symmetry_group="dihedral"):
+def predicate_from_spec(pspec, start_grid, symmetry_group="identity"):
     """Compile a predicate_spec to ``goal_fn(grid) -> bool`` with region-differs-
     from-start semantics. A ``conjunction`` spec compiles to the AND of its
     sub-predicates. Fail-closed: a malformed spec / out-of-range grid -> False.
 
-    `symmetry_group` is the SUBSTRATE's shape-symmetry group (2D grids: 'dihedral';
-    a 3D voxel substrate would pass its octahedral group; 'identity' = plain
-    translation-tolerant equality). template_match compares copy vs template as
-    SHAPES under that group — a Core-Knowledge geometry prior: a glyph and its
-    rotations/reflections are one object, so a copy that equals the template only
-    after a 90° turn still satisfies the goal (translation-only alignment would
-    reject it)."""
+    `symmetry_group` is supplied by the substrate after it has earned the
+    corresponding quotient authority.  The default preserves only the
+    predicate's declared alignment relation; it does not promote a geometric
+    prior into object identity.  A certified 2D adapter may pass ``dihedral``;
+    another substrate may pass its own executable action."""
     if not pspec:
         return lambda g: False
     if pspec.get("conjunction"):

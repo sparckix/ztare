@@ -59,6 +59,35 @@ def test_worldmodel_typed_payload_parser_prefers_outer_schema_object() -> None:
     assert "def step" in payload["test_model_py"]
 
 
+def test_worldmodel_typed_payload_parser_does_not_coerce_evidence_status_into_carrier() -> None:
+    payload = {
+        "control_receipts": [
+            {
+                "type": "LOWERABILITY_BLOCKED",
+                "payload": {
+                    "visible_capabilities_attempted": ["probe-json"],
+                    "candidate_family_attempted": "finite selector family",
+                    "obstruction": "visible search exhausted the declared family",
+                    "missing_witness_or_sensor": "consumer-readable selector witness",
+                    "next_action": "refine the observation chart",
+                    "evidence_refs": ["workspace/visible_cli_receipts/probe.json"],
+                    "evidence_statuses": {
+                        "test_model.py": "used_for_abduction",
+                    },
+                },
+            }
+        ],
+        "thesis_markdown": "control transition with an artifact named test_model.py",
+        "test_model_py": "",
+    }
+
+    parsed = parse_worldmodel_typed_payload_text(json.dumps(payload))
+
+    assert parsed["test_model_py"] == ""
+    assert parsed["control_receipts"][0]["type"] == "LOWERABILITY_BLOCKED"
+    assert "```python" not in render_worldmodel_typed_payload(parsed)
+
+
 def test_worldmodel_typed_payload_parser_keeps_receipt_array_boundary() -> None:
     text = (
         "{\"control_receipts\":["
@@ -475,6 +504,40 @@ def test_worldmodel_carrier_rejects_bare_patch_delta_without_patch_base() -> Non
         )
 
 
+def test_worldmodel_carrier_accepts_literal_patch_delta_spec() -> None:
+    validate_worldmodel_carrier_source(
+        "PATCH_BASE = {'source_ref': 'workspace/submissions/base.py', "
+        "'sha256': '" + ("a" * 64) + "'}\n"
+        "PATCH_DELTA_SPEC = {'actions': {}, 'always': [{'op': 'identity'}]}\n"
+    )
+
+
+def test_standalone_world_model_spec_still_requires_action_identity() -> None:
+    with pytest.raises(ValueError, match="non-empty dict"):
+        validate_worldmodel_carrier_source(
+            "WORLD_MODEL_SPEC = {'actions': {}, "
+            "'always': [{'op': 'identity'}]}\n"
+        )
+
+
+def test_worldmodel_carrier_rejects_bare_patch_delta_spec() -> None:
+    with pytest.raises(ValueError, match="PATCH_DELTA_SPEC is a patch combiner"):
+        validate_worldmodel_carrier_source(
+            "PATCH_DELTA_SPEC = {'actions': {'0': [{'op': 'identity'}]}}\n"
+        )
+
+
+def test_worldmodel_carrier_rejects_two_patch_delta_presentations() -> None:
+    with pytest.raises(ValueError, match="not both"):
+        validate_worldmodel_carrier_source(
+            "PATCH_BASE = {'source_ref': 'workspace/submissions/base.py', "
+            "'sha256': '" + ("a" * 64) + "'}\n"
+            "PATCH_DELTA_SPEC = {'actions': {'0': [{'op': 'identity'}]}}\n"
+            "def PATCH_DELTA(base_next, state, action):\n"
+            "    return base_next\n"
+        )
+
+
 def test_worldmodel_carrier_rejects_self_declared_temporal_receipt() -> None:
     with pytest.raises(ValueError, match="temporal admissibility"):
         validate_worldmodel_carrier_source(
@@ -616,8 +679,9 @@ def test_worldmodel_typed_payload_accepts_worldmodel_leaf_workbench_receipt() ->
     assert '"capability_id":"inspect_replay_residual_quotient"' in rendered
 
 
-def test_worldmodel_typed_payload_accepts_non_lowerable_receipt_without_carrier() -> None:
-    rendered = render_worldmodel_typed_payload(
+def test_subject_local_non_lowerable_receipt_does_not_omit_search_space_candidate() -> None:
+    with pytest.raises(ValueError, match="requires non-empty `test_model_py`"):
+        render_worldmodel_typed_payload(
         {
             "control_receipts": [
                 {
@@ -647,17 +711,11 @@ def test_worldmodel_typed_payload_accepts_non_lowerable_receipt_without_carrier(
             "thesis_markdown": "blocked by carried lowerability receipt",
             "test_model_py": "",
         }
-    )
-
-    assert "STRATEGY_CARD_DISCHARGE:" in rendered
-    assert "LEAF_WORKBENCH_RECEIPT:" in rendered
-    assert "candidate_delta_admissible" in rendered
-    assert "```python" not in rendered
+        )
 
 
-def test_worldmodel_typed_payload_rejects_candidate_with_non_lowerable_receipt() -> None:
-    with pytest.raises(ValueError, match="cannot pair executable"):
-        render_worldmodel_typed_payload(
+def test_subject_local_non_lowerable_receipt_allows_another_candidate_family() -> None:
+    rendered = render_worldmodel_typed_payload(
             {
                 "control_receipts": [
                     {
@@ -676,8 +734,11 @@ def test_worldmodel_typed_payload_rejects_candidate_with_non_lowerable_receipt()
                 ],
                 "thesis_markdown": "contradictory candidate",
                 "test_model_py": "def step(grid, action, t):\n    return grid",
-            }
-        )
+        }
+    )
+
+    assert "candidate_delta_admissible" in rendered
+    assert "```python\ndef step" in rendered
 
 
 def test_worldmodel_typed_payload_accepts_lowerability_blocked_without_carrier() -> None:

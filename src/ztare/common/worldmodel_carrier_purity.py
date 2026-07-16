@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import ast
+import json
 import os
+from pathlib import Path
 
 
 _TRANSITION_FUNCTION_NAMES = {"step", "PATCH_DELTA"}
 _PREDICTOR_NAMES = {"step", "f", "model", "I_model"}
 _PROGRAM_NAMES = {"PROGRAM", "WORLD_MODEL_SPEC"}
 _PATCH_BASE_NAMES = {"PATCH_BASE", "PATCH_BASE_REF", "PATCH_BASE_PATH"}
+_PATCH_DELTA_SPEC_NAME = "PATCH_DELTA_SPEC"
 _MUTATING_METHODS = {
     "append",
     "clear",
@@ -81,6 +84,29 @@ def _resolve_dynamics_assumption(dynamics_assumption: str | None = None) -> str:
     return "markovian"
 
 
+def project_dynamics_assumption(project_dir: str | Path) -> str | None:
+    """Resolve the transition contract declared for one project identity.
+
+    Candidate-memory and prompt projections often run outside the main loop,
+    so process-local environment state cannot be their authority.  The rubric
+    adjacent to ``projects/<project_id>`` is the durable declaration.
+    """
+    project = Path(project_dir).resolve()
+    rubric_candidates = [
+        project / "rubric.json",
+        project.parent.parent / "rubrics" / f"{project.name}.json",
+    ]
+    for rubric in rubric_candidates:
+        try:
+            payload = json.loads(rubric.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        value = str(payload.get("dynamics_assumption") or "").strip().lower()
+        if value:
+            return value
+    return None
+
+
 def validate_no_step_argument_reads(tree: ast.AST, dynamics_assumption: str | None = None) -> None:
     """Reject carriers that read the adapter replay index inside dynamics.
 
@@ -119,17 +145,25 @@ def validate_worldmodel_carrier_shape(tree: ast.AST) -> None:
 
     names = _top_level_names(tree)
     has_patch_delta = "PATCH_DELTA" in names
+    has_patch_delta_spec = _PATCH_DELTA_SPEC_NAME in names
     has_patch_base = bool(names & _PATCH_BASE_NAMES)
-    if has_patch_delta or has_patch_base:
-        if not has_patch_delta:
+    if has_patch_delta or has_patch_delta_spec or has_patch_base:
+        if has_patch_delta and has_patch_delta_spec:
             raise ValueError(
-                "Worldmodel carrier contract reject: PATCH_BASE requires callable PATCH_DELTA."
+                "Worldmodel carrier contract reject: choose PATCH_DELTA or "
+                "PATCH_DELTA_SPEC, not both."
+            )
+        if not (has_patch_delta or has_patch_delta_spec):
+            raise ValueError(
+                "Worldmodel carrier contract reject: PATCH_BASE requires "
+                "PATCH_DELTA or PATCH_DELTA_SPEC."
             )
         if not has_patch_base:
+            delta_name = "PATCH_DELTA" if has_patch_delta else "PATCH_DELTA_SPEC"
             raise ValueError(
-                "Worldmodel carrier contract reject: PATCH_DELTA is a patch "
-                "combiner, not a standalone transition law. Declare PATCH_BASE "
-                "with a gate-supplied full sha256, or submit a direct step/PROGRAM/"
+                f"Worldmodel carrier contract reject: {delta_name} is a patch "
+                "combiner, not a standalone transition law. Declare PATCH_BASE with a "
+                "gate-supplied full sha256, or submit a direct step/PROGRAM/"
                 "WORLD_MODEL_SPEC carrier."
             )
         return
@@ -141,7 +175,7 @@ def validate_worldmodel_carrier_shape(tree: ast.AST) -> None:
     raise ValueError(
         "Worldmodel carrier contract reject: source exposes no lowerable "
         "transition carrier. Define step/grid model aliases, PROGRAM, "
-        "WORLD_MODEL_SPEC, or PATCH_BASE plus PATCH_DELTA."
+        "WORLD_MODEL_SPEC, or PATCH_BASE plus a typed patch delta."
     )
 
 
@@ -181,39 +215,48 @@ def validate_worldmodel_carrier_source(source: str, *, dynamics_assumption: str 
             f"Worldmodel carrier contract reject: source is not valid Python: {exc.msg}."
         ) from exc
     validate_worldmodel_transition_contract(tree, dynamics_assumption)
-    _validate_literal_world_model_spec(tree)
+    _validate_literal_catalog_specs(tree)
 
 
-def _validate_literal_world_model_spec(tree: ast.AST) -> None:
-    spec_node: ast.AST | None = None
+def _validate_literal_catalog_specs(tree: ast.AST) -> None:
+    spec_nodes: dict[str, ast.AST] = {}
     for node in getattr(tree, "body", []):
         if isinstance(node, ast.Assign):
-            if any(isinstance(t, ast.Name) and t.id == "WORLD_MODEL_SPEC" for t in node.targets):
-                spec_node = node.value
+            for target in node.targets:
+                if (
+                    isinstance(target, ast.Name)
+                    and target.id in {"WORLD_MODEL_SPEC", _PATCH_DELTA_SPEC_NAME}
+                ):
+                    spec_nodes[target.id] = node.value
         elif isinstance(node, ast.AnnAssign):
-            if isinstance(node.target, ast.Name) and node.target.id == "WORLD_MODEL_SPEC":
-                spec_node = node.value
-    if spec_node is None:
-        return
-    try:
-        spec = ast.literal_eval(spec_node)
-    except Exception as exc:  # noqa: BLE001
-        raise ValueError(
-            "Worldmodel carrier contract reject: WORLD_MODEL_SPEC must be a "
-            "literal catalog spec. If submitting executable Python instead, "
-            "omit WORLD_MODEL_SPEC and define step(grid, action, t), PROGRAM, "
-            "or model aliases directly."
-        ) from exc
-    from ztare.worldmodel.spec_catalog import validate_spec
+            if (
+                isinstance(node.target, ast.Name)
+                and node.target.id in {"WORLD_MODEL_SPEC", _PATCH_DELTA_SPEC_NAME}
+            ):
+                spec_nodes[node.target.id] = node.value
+    from ztare.worldmodel.spec_catalog import validate_patch_delta_spec, validate_spec
 
-    err = validate_spec(spec)
-    if err:
-        raise ValueError(
-            "Worldmodel carrier contract reject: WORLD_MODEL_SPEC failed "
-            f"catalog validation: {err}. Submit a valid catalog spec with "
-            "non-empty actions, or omit WORLD_MODEL_SPEC and define executable "
-            "step(grid, action, t)."
-        )
+    for name, spec_node in spec_nodes.items():
+        try:
+            spec = ast.literal_eval(spec_node)
+        except Exception as exc:  # noqa: BLE001
+            raise ValueError(
+                f"Worldmodel carrier contract reject: {name} must be a literal "
+                "catalog spec."
+            ) from exc
+        validator = validate_patch_delta_spec if name == _PATCH_DELTA_SPEC_NAME else validate_spec
+        err = validator(spec)
+        if err:
+            role_hint = (
+                "a dict-valued actions field and at least one catalog rule"
+                if name == _PATCH_DELTA_SPEC_NAME
+                else "non-empty actions"
+            )
+            raise ValueError(
+                f"Worldmodel carrier contract reject: {name} failed catalog "
+                f"validation: {err}. Submit a valid catalog spec with "
+                f"{role_hint}."
+            )
 
 
 def _top_level_names(tree: ast.AST) -> set[str]:

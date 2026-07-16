@@ -99,6 +99,9 @@ class TestStateInterner:
         id0 = si.intern(g)
         id1 = si.intern(g)
         assert id0 == id1 == 0
+        assert g not in si
+        assert len(si) == 0
+        assert si.mark_visited(g) == id0
         assert len(si) == 1
 
     def test_two_states(self):
@@ -106,13 +109,18 @@ class TestStateInterner:
         g1, g2 = _rand_grid(4, 4, seed=11), _rand_grid(4, 4, seed=12)
         assert si.intern(g1) == 0
         assert si.intern(g2) == 1
-        assert len(si) == 2
+        assert si.matrix.shape == (2, 16)
+        si.mark_visited(g2)
+        assert len(si) == 1
+        assert g1 not in si and g2 in si
 
     def test_contains(self):
         si = StateInterner()
         g = _rand_grid(4, 4, seed=13)
         assert g not in si
         si.intern(g)
+        assert g not in si
+        si.mark_visited(g)
         assert g in si
 
     def test_matrix_shape(self):
@@ -136,7 +144,7 @@ class TestStateInterner:
         grids = [_rand_grid(8, 8, seed=i) for i in range(200)]
         for g in grids:
             si.intern(g)
-        assert len(si) == 200
+        assert len(si) == 0
         assert si.matrix.shape == (200, 64)
 
     def test_save_load_round_trip(self):
@@ -144,14 +152,16 @@ class TestStateInterner:
         grids = [_rand_grid(4, 4, seed=i + 300) for i in range(50)]
         for g in grids:
             si.intern(g)
+        for g in grids[::2]:
+            si.mark_visited(g)
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "interner.npz"
             si.save(p)
             si2 = StateInterner.load(p)
-        assert len(si2) == 50
+        assert len(si2) == 25
         np.testing.assert_array_equal(si.matrix, si2.matrix)
-        for g in grids:
-            assert g in si2
+        for index, g in enumerate(grids):
+            assert (g in si2) is (index % 2 == 0)
         # check IDs match
         for g in grids:
             assert si.get_id(g) == si2.get_id(g)
@@ -206,7 +216,7 @@ class TestEquivalence:
         visited_set: set = set(visited_grids)
         si = StateInterner()
         for g in visited_grids:
-            si.intern(g)
+            si.mark_visited(g)
 
         # 500 probe grids (mix of fresh + some from visited)
         probe_grids = [
@@ -237,7 +247,7 @@ class TestEquivalence:
         visited_set = set(grids)
         si = StateInterner()
         for g in grids:
-            si.intern(g)
+            si.mark_visited(g)
         for g in grids:
             assert batch_novelty(g, si) == 0
             assert _novelty(g, visited_set) == 0
@@ -252,9 +262,27 @@ class TestEquivalence:
         )
         visited_set = {base}
         si = StateInterner()
-        si.intern(base)
+        si.mark_visited(base)
         assert _novelty(modified, visited_set) == 1
         assert batch_novelty(modified, si) == 1
+
+    def test_simulated_arena_order_cannot_change_novelty(self):
+        """Interned search states are identity rows, not visited evidence."""
+        visited = ((0, 0), (0, 0))
+        probe = ((1, 1), (0, 0))
+        simulated = [probe, ((2, 0), (0, 0)), ((3, 3), (3, 3))]
+
+        scores = []
+        for arena_order in (simulated, list(reversed(simulated))):
+            si = StateInterner()
+            for grid in arena_order:
+                si.intern(grid)
+            si.mark_visited(visited)
+            assert probe not in si
+            scores.append(batch_novelty(probe, si))
+
+        assert scores == [_novelty(probe, {visited})] * 2
+        assert scores[0] > 0
 
 
 # ---------------------------------------------------------------------------
@@ -291,7 +319,7 @@ class TestBenchmark:
         t1 = time.perf_counter()
         for g in all_grids:
             batch_novelty(g, si)
-            si.intern(g)
+            si.mark_visited(g)
         vec_time_2000 = time.perf_counter() - t1
 
         # Extrapolate: pure-Python at 2000 states scales O(N^2) from 200

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
 import json
 
 from ztare.orchestrator import mutator_briefing
@@ -18,6 +19,9 @@ from ztare.orchestrator.briefing_providers.leanmill_proof_jobs import (
 )
 from ztare.orchestrator.briefing_providers.leaf_workbench import (
     LeafWorkbenchProvider,
+)
+from ztare.orchestrator.briefing_providers.operator_proposals import (
+    OperatorProposalsProvider,
 )
 from ztare.orchestrator.briefing_providers.strategy_experiments import (
     StrategyExperimentsProvider,
@@ -205,6 +209,131 @@ def test_structural_transport_applies_does_not_compute_cuts(
     )
 
     assert provider.applies(ctx) is True
+
+
+def test_identity_bound_task_suppresses_unbound_sibling_briefings(
+    tmp_path: Path,
+) -> None:
+    import hashlib
+
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    source = "def step(grid, action, t):\n    return grid\n"
+    (tmp_path / "test_model.py").write_text(source, encoding="utf-8")
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "active_frontier": {"candidate_sha": digest},
+                "workbench_task": {
+                    "task_id": "selected-task",
+                    "source_ref": "test_model.py",
+                    "admissible_capability_ids": [
+                        "inspect_worldmodel_counterexample_context"
+                    ],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (workspace / "operator_proposals.jsonl").write_text(
+        json.dumps(
+            {
+                "schema": "operator-proposal-v1",
+                "failure_family": "historical-family",
+                "evidence_indices": [1],
+                "spatial_footprint": {"count": 1},
+                "why_existing_ops_fail": {"identity": "changed"},
+                "proposed_operator_sketch": "historical operator",
+                "acceptance_test": "strict improvement",
+                "disposition": "open",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (workspace / "worldmodel_committee.json").write_text(
+        json.dumps({"status": "grammar_ceiling", "committee_size": 0}),
+        encoding="utf-8",
+    )
+    ctx = BriefingContext(
+        project_dir=tmp_path,
+        workspace_dir=workspace,
+        iter_index=1,
+        rubric={"fit_expression_grammar": "grid_dsl"},
+    )
+
+    assert OperatorProposalsProvider().applies(ctx) is False
+    assert WorldmodelCommitteeProvider().applies(ctx) is False
+
+
+def test_current_evidence_bound_operator_card_composes_with_active_task(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from ztare.common.operator_proposal_contract import (
+        operator_proposal_card,
+        write_proposal_cards,
+    )
+    from ztare.worldmodel.episode_log import EpisodeLog
+
+    workspace = tmp_path / "workspace"
+    episodes = tmp_path / "raw" / "episodes"
+    workspace.mkdir()
+    episodes.mkdir(parents=True)
+    log = EpisodeLog()
+    log.append(((0,),), 0, ((1,),), t=0)
+    log.write_jsonl(episodes / "episode_001.jsonl")
+    card = operator_proposal_card(
+        failure_family="current-family",
+        evidence_indices=[0],
+        spatial_footprint={"count": 1},
+        why_existing_ops_fail={"identity": "state changed"},
+        proposed_operator_sketch="candidate_operation",
+        acceptance_test="strict improvement under the project gate",
+    )
+    card["evidence_binding"] = {
+        "schema": "ztare-operator-proposal-evidence-binding-v1",
+        "mode": "exact_evidence_epoch",
+        "evidence_role": "visible",
+        "evidence_ref": "raw/episodes/episode_001.jsonl",
+        "evidence_content_sha256": log.content_hash(),
+        "workbench_task_id": "current-task",
+        "row_count": 1,
+    }
+    [written] = write_proposal_cards(
+        workspace / "operator_proposals.jsonl",
+        [card],
+    )
+    monkeypatch.setattr(
+        "ztare.common.leaf_workbench_executor.active_workbench_task_capability_scope",
+        lambda *_args, **_kwargs: (
+            frozenset({"inspect_worldmodel_counterexample_context"}),
+            {"task_id": "current-task"},
+        ),
+    )
+    ctx = BriefingContext(
+        project_dir=tmp_path,
+        workspace_dir=workspace,
+        iter_index=1,
+        rubric={"fit_expression_grammar": "grid_dsl"},
+    )
+    provider = OperatorProposalsProvider()
+
+    assert provider.applies(ctx) is True
+    fragment = provider.fragment(ctx)
+    assert written["proposal_identity_sha"] in fragment
+    assert written["failure_family_sha"] in fragment
+    assert "ordinary governed candidate gate" in fragment.splitlines()[0]
+
+    monkeypatch.setattr(
+        "ztare.common.leaf_workbench_executor.active_workbench_task_capability_scope",
+        lambda *_args, **_kwargs: (
+            frozenset({"inspect_worldmodel_counterexample_context"}),
+            {"task_id": "stale-task"},
+        ),
+    )
+    assert provider.applies(ctx) is False
 
 
 def test_structural_transport_legacy_cache_renders_without_recomputing(
@@ -546,7 +675,7 @@ def test_worldmodel_committee_exposes_loop_receipts_as_structured_records(
     by_type = {rec["source_type"]: rec for rec in records}
     assert by_type["kernel_role_binding"]["term"] == "planner_goal_cue_absent"
     assert by_type["planner_anomaly"]["anomaly_class"] == (
-        "plan_exhausted_without_reward_or_new_evidence"
+        "plan_exhausted_without_task_progress_or_new_evidence"
     )
     assert by_type["compressed_counterexample"]["residue_class"] == (
         "action_independent_boundary_update"
@@ -616,7 +745,7 @@ def test_worldmodel_committee_records_reach_attention_agenda(tmp_path: Path) -> 
     body = briefing.render(ctx)
 
     assert body.startswith("## Briefing Attention Agenda")
-    assert "plan_exhausted_without_reward_or_new_evidence" in body
+    assert "plan_exhausted_without_task_progress_or_new_evidence" in body
     assert "route through Strategy Office" in body
 
 
@@ -787,6 +916,59 @@ def test_strategy_experiments_provider_surfaces_routing_cards(tmp_path: Path) ->
     assert "requires_external_actions" in records[0]["admissible_no_attempt_blockers"]
 
 
+def test_strategy_experiments_provider_does_not_reactivate_unbound_cards_under_workbench_task(
+    tmp_path: Path,
+) -> None:
+    ws = tmp_path / "workspace"
+    ws.mkdir()
+    source = "def model(state, action, t): return state\n"
+    (tmp_path / "test_model.py").write_text(source)
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    (ws / "strategy_experiments.jsonl").write_text(
+        json.dumps(
+            {
+                "schema": "strategy-experiment-v1",
+                "kind": "evidence_probe",
+                "failure_family": "obsolete-unbound-probe",
+                "falsifiable_prediction": "inspect an older coordinate witness",
+                "action_plan": {"probe_source": "def probe(episodes): return {}"},
+                "kill_condition": "older witness is superseded",
+                "disposition": "open",
+            }
+        )
+        + "\n"
+    )
+    (ws / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "schema": "ztare-harness-weakness-receipt-v1",
+                "active_frontier": {
+                    "candidate_sha": digest,
+                    "source_ref": "test_model.py",
+                },
+                "workbench_task": {
+                    "schema": "ztare-leaf-workbench-task-v1",
+                    "task_id": "current-task",
+                    "source_ref": "test_model.py",
+                    "admissible_capability_ids": [
+                        "inspect_worldmodel_counterexample_context"
+                    ],
+                },
+            }
+        )
+    )
+    provider = StrategyExperimentsProvider()
+    ctx = BriefingContext(
+        project_dir=tmp_path,
+        workspace_dir=ws,
+        iter_index=2,
+        rubric={},
+    )
+
+    assert provider.fragment(ctx) == ""
+    assert provider.structured_records(ctx) == []
+
+
 def test_default_briefing_includes_strategy_experiment_cards(tmp_path: Path) -> None:
     ws = tmp_path / "workspace"
     ws.mkdir()
@@ -872,9 +1054,10 @@ def test_leaf_workbench_provider_surfaces_worldmodel_actions(tmp_path: Path) -> 
     ws.mkdir()
     (tmp_path / "latest_eval_results.json").write_text(
         json.dumps(
-            {
-                "counterexample_trace": {
-                    "mismatch_classes": [
+                {
+                    "counterexample_trace": {
+                        "gated_sha256": "abc123",
+                        "mismatch_classes": [
                         {
                             "count": 36,
                             "t": 128,
@@ -1020,7 +1203,9 @@ def test_default_briefing_includes_leaf_workbench_provider() -> None:
     assert "leaf_workbench" in names
 
 
-def test_leaf_workbench_surfaces_same_support_context_split(tmp_path: Path) -> None:
+def test_leaf_workbench_advertises_context_probe_without_eager_analysis(
+    tmp_path: Path,
+) -> None:
     from ztare.worldmodel.episode_log import EpisodeLog
 
     project = tmp_path
@@ -1092,9 +1277,10 @@ def test_leaf_workbench_surfaces_same_support_context_split(tmp_path: Path) -> N
         if r.get("capability_id") == "inspect_worldmodel_counterexample_context"
     ]
     assert context_records
-    assert "same_support_changed_pairs" in context_records[0]["summary"]
-    assert "context_delta=" in context_records[0]["summary"]
-    assert "support_row_sections" in context_records[0]["summary"]
+    assert context_records[0]["source_type"] == "leaf_workbench_capability"
+    assert "available on request" in context_records[0]["summary"]
+    assert "behavioral_fiber" not in context_records[0]
+    assert "commuting_transports" not in context_records[0]
 
 
 def test_leaf_workbench_prefers_fresh_r1_regression_over_stale_eval(tmp_path: Path) -> None:
@@ -1191,8 +1377,7 @@ def test_leaf_workbench_prefers_fresh_r1_regression_over_stale_eval(tmp_path: Pa
     assert context_records[0]["source_ref"].startswith(
         "workspace/latest_patch_base_regression.json"
     )
-    assert "same_support_changed_pairs" in context_records[0]["summary"]
-    assert "context_delta=" in context_records[0]["summary"]
+    assert "available on request" in context_records[0]["summary"]
 
 
 # ── Harness bug fixes: mode-gated budget + render receipts + control-plane floor ──

@@ -4,11 +4,11 @@ Replaces ~94KB/state JSON rows (visited_*.jsonl) with ~1-2 bytes/cell npz.
 
 Design:
 - Grid codec: tuple-of-tuples <-> np.uint8 2D array <-> compact bytes key.
-- StateInterner: bytes-key -> int-id table; visited sets become sets[int];
+- StateInterner: bytes-key -> int-id arena plus an independent visited-id set;
   maintains a growing (N, H*W) uint8 matrix (amortized doubling) for batch ops.
-- Batch novelty: vectorized hamming against the interned matrix, matching
+- Batch novelty: vectorized hamming against visited rows only, matching
   _novelty semantics from planner.py exactly (min distance; early-exit when
-  best==1; returns 0 if visited empty or grid already interned).
+  best==1; returns 0 if visited empty or grid already visited).
 - Persistence: save/load via npz (~1-2 bytes/cell vs ~94KB/state JSON).
 
 Semantic contract: batch_novelty(grid, interner) == planner._novelty(grid,
@@ -77,6 +77,7 @@ class StateInterner:
 
     def __init__(self) -> None:
         self._key_to_id: dict[bytes, int] = {}
+        self._visited: set[int] = set()
         # matrix: rows = interned states, cols = flattened cells
         # _mat is over-allocated; _n is the live count
         self._mat: np.ndarray | None = None  # shape (capacity, H*W) uint8
@@ -91,7 +92,8 @@ class StateInterner:
     def intern(self, grid: Grid) -> int:
         """Return the integer ID for `grid`, adding it if new.
 
-        Returns existing ID without mutation if already interned.
+        Returns existing ID without mutation if already interned. Interning is
+        arena bookkeeping only; call mark_visited() after a live observation.
         """
         key = grid_to_key(grid)
         if key in self._key_to_id:
@@ -127,11 +129,22 @@ class StateInterner:
         self._n += 1
         return new_id
 
+    def mark_visited(self, grid: Grid) -> int:
+        """Intern `grid`, mark its ID visited, and return that ID."""
+        state_id = self.intern(grid)
+        self._visited.add(state_id)
+        return state_id
+
+    def is_visited(self, grid: Grid) -> bool:
+        """True only for a live-observed state, not a simulated arena row."""
+        state_id = self._key_to_id.get(grid_to_key(grid))
+        return state_id is not None and state_id in self._visited
+
     def __contains__(self, grid: Grid) -> bool:
-        return grid_to_key(grid) in self._key_to_id
+        return self.is_visited(grid)
 
     def __len__(self) -> int:
-        return self._n
+        return len(self._visited)
 
     @property
     def matrix(self) -> np.ndarray:
@@ -139,6 +152,18 @@ class StateInterner:
         if self._mat is None or self._n == 0:
             return np.empty((0, 0), dtype=np.uint8)
         return self._mat[:self._n]
+
+    @property
+    def visited_matrix(self) -> np.ndarray:
+        """Rows marked visited; simulated search states stay outside novelty."""
+        if not self._visited:
+            return np.empty((0, self._cell_size), dtype=np.uint8)
+        if len(self._visited) == self._n:
+            return self.matrix
+        visited_ids = np.fromiter(
+            self._visited, dtype=np.intp, count=len(self._visited)
+        )
+        return self.matrix[visited_ids]
 
     def get_id(self, grid: Grid) -> int | None:
         """Return ID if interned, else None."""
@@ -165,6 +190,7 @@ class StateInterner:
             matrix=mat,
             key_blob=key_blob,
             ids=ids,
+            visited=np.array(sorted(self._visited), dtype=np.int32),
             cell_size=np.array([self._cell_size], dtype=np.int32),
             n=np.array([self._n], dtype=np.int32),
         )
@@ -194,6 +220,13 @@ class StateInterner:
             obj._key_to_id[k] = int(rid)
             h, w = struct.unpack(">HH", k[:4])
             obj._shapes.append((h, w))
+        # Legacy files predate the arena/visited split and therefore treated
+        # every interned row as visited.
+        obj._visited = (
+            {int(state_id) for state_id in data["visited"]}
+            if "visited" in data.files
+            else set(range(obj._n))
+        )
         return obj
 
 
@@ -202,22 +235,22 @@ class StateInterner:
 # ---------------------------------------------------------------------------
 
 def batch_novelty(grid: Grid, interner: StateInterner) -> int:
-    """Min hamming distance from `grid` to any interned state.
+    """Min hamming distance from `grid` to any visited state.
 
     Semantics identical to planner._novelty:
-    - Returns 0 if interner is empty or grid is already interned.
+    - Returns 0 if the visited set is empty or grid is already visited.
     - Returns min cell-difference count otherwise.
     - Short-circuits when best reaches 1 (can't improve: 0 excluded by the
-      already-interned guard above).
+      already-visited guard above).
 
     Uses numpy broadcasting: one subtraction+bool over the full matrix, then
     argmin of row sums — O(N * H*W) but in C, not Python loops.
     """
-    if interner._n == 0 or grid in interner:
+    if len(interner) == 0 or grid in interner:
         return 0
 
     arr = grid_to_array(grid).ravel().astype(np.uint8)  # (H*W,)
-    mat = interner.matrix  # (N, H*W)
+    mat = interner.visited_matrix  # (N_visited, H*W)
 
     # hamming rows: count of differing cells per state
     diffs = (mat != arr).sum(axis=1)  # (N,) int64
@@ -235,10 +268,10 @@ def batch_novelty_multi(grids: "list[Grid]", interner: StateInterner) -> "list[i
     Returns list of int novelty scores (same semantics as batch_novelty per
     element). More cache-friendly than calling batch_novelty in a loop.
     """
-    if interner._n == 0:
+    if len(interner) == 0:
         return [0] * len(grids)
 
-    mat = interner.matrix  # (N, H*W)
+    mat = interner.visited_matrix  # (N_visited, H*W)
     results = []
     for grid in grids:
         if grid in interner:

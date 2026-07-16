@@ -1,10 +1,9 @@
-"""Substrate-parametric shape canonicalization (Core-Knowledge geometry prior).
+"""Substrate-parametric shape canonicalization candidates.
 
-Two regions depict the SAME object when one is a rotation or reflection of the
-other — a shape and its symmetries are one object (ARC Core Knowledge: geometry +
-objectness). ``canonical_form(pattern, group)`` reduces a coloured point-set to a
-canonical representative under a symmetry GROUP; equality of canonical forms is
-the shape-equivalence test.
+``canonical_form(pattern, group)`` reduces a coloured point-set under a supplied
+transformation family.  The result is a candidate comparison coordinate; group
+membership alone does not authorize a dynamics quotient.  Operational callers
+must bind non-identity actions through the common equivariance certificate.
 
 The group is SUPPLIED BY THE SUBSTRATE, never hardcoded at the call site: 2D grids
 register the dihedral group D4, a future 3D voxel substrate would register the
@@ -53,8 +52,9 @@ def _scale_reduce(norm: tuple) -> tuple:
     """Quotient an origin-normalized coloured point-set by uniform block scale: a
     pattern that is an exact k-block upsampling of a smaller pattern (every
     (y//k, x//k) block fully present in one colour) reduces to that primitive.
-    Core-Knowledge scale invariance: a glyph and its 2x-rendered display copy are
-    the same shape. Irreducible patterns return unchanged."""
+    This computes a candidate scale relation; callers still need authority to
+    use that relation for an operational quotient. Irreducible patterns return
+    unchanged."""
     cells = set(norm)
     if not cells:
         return norm
@@ -78,29 +78,32 @@ def _scale_reduce(norm: tuple) -> tuple:
     return norm
 
 
-def canonical_form(pattern, group="dihedral") -> tuple:
+def canonical_form(pattern, group="identity", *, scale_invariant: bool = False) -> tuple:
     """Canonical representative of `pattern` (an iterable of (y, x, colour) cells)
-    under translation x uniform scale x a symmetry `group`.
+    under translation and a supplied symmetry ``group``.
 
     `group` is a registry NAME ('dihedral' for 2D grids; 'identity' for plain
-    translation+scale-tolerant equality) OR an explicit sequence of
+    translation-tolerant equality) OR an explicit sequence of
     (y, x) -> (y, x) transforms a substrate supplies (e.g. an octahedral group for
     3D voxels). The transform list is never written at the call site — pass the
-    substrate's group and the same predicate holds on any substrate. Two patterns
-    are equivalent iff their canonical forms are equal; the scale quotient makes a
-    template glyph equal its k-times-larger rendered copy (ARC scale prior)."""
+    substrate's group and the same predicate holds on any substrate.
+    ``scale_invariant`` is an explicit candidate relation and defaults off; a
+    scale prior cannot silently alter identity."""
     transforms = SYMMETRY_GROUPS[group] if isinstance(group, str) else group
     cells = [(int(y), int(x), int(c)) for (y, x, c) in pattern]
     if not cells:
         return ()
-    return min(_scale_reduce(_normalize([(*t(y, x), c) for (y, x, c) in cells]))
-               for t in transforms)
+    images = [_normalize([(*t(y, x), c) for (y, x, c) in cells])
+              for t in transforms]
+    if scale_invariant:
+        images = [_scale_reduce(image) for image in images]
+    return min(images)
 
 
-def shape_similarity(a, b, group="dihedral") -> float:
+def shape_similarity(a, b, group="identity") -> float:
     """Best Jaccard overlap of two coloured point-sets over the group — the
     ranking score for the live-probe fallback when no member matches EXACTLY
-    (the sealed reward, not this score, ultimately disposes). 1.0 iff
+    (the adapter adjudicator, rather than this score, ultimately disposes). 1.0 iff
     group-equivalent."""
     ca = canonical_form(a, group)
     if not ca:
@@ -129,9 +132,12 @@ def _demo() -> None:
     assert canonical_form(L, "identity") != canonical_form(L_rot90, "identity")
     assert canonical_form(L, [lambda y, x: (y, x)]) == canonical_form(L, "identity")
     assert shape_similarity(L, L_rot90, "dihedral") == 1.0
-    # scale quotient: the 2x block-upsampled L is the SAME shape as L
+    # Scale reduction is available only through an explicit candidate relation.
     L2 = [(2 * y + dy, 2 * x + dx, c) for (y, x, c) in L for dy in (0, 1) for dx in (0, 1)]
-    assert canonical_form(L2, "identity") == canonical_form(L, "identity")
+    assert canonical_form(L2, "identity") != canonical_form(L, "identity")
+    assert canonical_form(L2, "identity", scale_invariant=True) == canonical_form(
+        L, "identity", scale_invariant=True
+    )
     print("symmetry._demo ok")
 
 

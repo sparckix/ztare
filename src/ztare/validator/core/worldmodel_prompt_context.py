@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
 from ztare.common.candidate_memory import admissible_candidate_memory_records
+from ztare.common.patch_base_identity import (
+    resolve_patch_base_ref,
+    resolve_repair_frontier,
+    verify_patch_base_digest,
+)
 from ztare.common.strategy_card_roles import (
     META_HARDENING_LANE,
     strategy_card_blocks_context,
@@ -16,12 +20,14 @@ from ztare.common.strategy_card_roles import (
 def strategy_card_obligation_prompt(project_dir: str | Path) -> str:
     """Render a short obligation pointer for blocking Strategy Office cards."""
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
         from ztare.validator.core.strategy_card_gate import (
             admissible_no_attempt_blocker_kinds,
         )
 
-        all_cards = open_cards(Path(project_dir) / "workspace" / "strategy_experiments.jsonl")
+        all_cards = active_strategy_cards(
+            Path(project_dir) / "workspace" / "strategy_experiments.jsonl"
+        )
         cards = [
             card for card in all_cards
             if strategy_card_blocks_context(card)
@@ -94,45 +100,82 @@ def deterministic_patch_base_document_context(
     max_root_excerpt_chars: int = 2400,
 ) -> str | None:
     """Demote stale root prose/code when gate receipts name a better carrier."""
-    path = Path(project_dir) / "workspace" / "candidate_memory.json"
+    project = Path(project_dir)
+    best: dict[str, Any] | None = None
+    source = ""
+    patch_base_sha = ""
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        regression_payload = json.loads(
+            (project / "workspace" / "latest_patch_base_regression.json").read_text(
+                encoding="utf-8"
+            )
+        )
     except Exception:
-        return None
-    if not isinstance(payload, dict) or payload.get("schema") != "ztare-candidate-memory-v1":
-        return None
-    records: list[dict[str, Any]] = [
-        rec for rec in admissible_candidate_memory_records(
-            project_dir,
+        regression_payload = {}
+    regression = (
+        regression_payload.get("candidate_regression_receipt")
+        if isinstance(regression_payload, dict)
+        else None
+    )
+    if isinstance(regression, dict):
+        try:
+            resolved = resolve_repair_frontier(project, regression)
+            source = resolved["path"].read_text(encoding="utf-8", errors="ignore")
+            patch_base_sha = resolved["sha256"]
+            best = {
+                "submission": resolved["source_ref"],
+                "visible_exact_rows": regression.get(
+                    "best_prior_exact_rows"
+                    if resolved["role"] == "best_admissible_prior"
+                    else "candidate_exact_rows"
+                ),
+                "visible_checked_rows": (
+                    (regression_payload.get("counterexample_trace") or {}).get("checked_rows")
+                ),
+                "first_mismatch": regression.get("first_mismatch"),
+            }
+        except (OSError, ValueError):
+            best = None
+
+    if best is None:
+        try:
+            payload = json.loads(
+                (project / "workspace" / "candidate_memory.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+        except Exception:
+            return None
+        if not isinstance(payload, dict) or payload.get("schema") != "ztare-candidate-memory-v1":
+            return None
+        records = admissible_candidate_memory_records(
+            project,
             [row for row in (payload.get("records") or []) if isinstance(row, dict)],
             require_submission_source=True,
         )
-        if str(rec.get("source_excerpt") or "").strip()
-    ]
-    if not records:
-        return None
+        if not records:
+            return None
 
-    def _rank(rec: dict[str, Any]) -> tuple[int, int, int, float, int]:
-        return (
-            1 if rec.get("source_type") == "full_survivor" else 0,
-            int(rec.get("visible_exact_rows") or 0),
-            int(rec.get("holdout_depth") or 0),
-            float(rec.get("gate_score") or 0.0),
-            -int(rec.get("visible_wrong_cells") or 0),
-        )
+        def _rank(rec: dict[str, Any]) -> tuple[int, int, int, float, int]:
+            return (
+                1 if rec.get("source_type") == "full_survivor" else 0,
+                int(rec.get("visible_exact_rows") or 0),
+                int(rec.get("holdout_depth") or 0),
+                float(rec.get("gate_score") or 0.0),
+                -int(rec.get("visible_wrong_cells") or 0),
+            )
 
-    best = max(records, key=_rank)
-    patch_base_sha = str(best.get("sha") or "")
-    submission = str(best.get("submission") or "").strip()
-    if submission:
-        path = (Path(project_dir) / submission).resolve()
-        root = Path(project_dir).resolve()
         try:
-            if path.is_file() and (path == root or root in path.parents):
-                patch_base_sha = hashlib.sha256(path.read_bytes()).hexdigest()
-        except Exception:
-            pass
-    source = str(best.get("source_excerpt") or "").strip()
+            best = max(records, key=_rank)
+            path = resolve_patch_base_ref(project, best.get("submission"))
+            patch_base_sha = verify_patch_base_digest(
+                path,
+                best.get("sha"),
+                allow_legacy_prefix=True,
+            )
+            source = path.read_text(encoding="utf-8", errors="ignore")
+        except (OSError, ValueError):
+            return None
     anchor = source[:240]
     current_content = current_content or ""
     current_test_model = current_test_model or ""
@@ -140,7 +183,7 @@ def deterministic_patch_base_document_context(
     root_code_matches_patch_base = bool(anchor and anchor in current_test_model)
     root_note = (
         "Root prose omitted from mutation context because deterministic "
-        "candidate memory is the higher-authority edit surface. Inspect the "
+        "repair-frontier evidence is the higher-authority edit surface. Inspect the "
         "root files manually if auditing history; do not use them as the next "
         "edit target."
     )
@@ -154,7 +197,7 @@ def deterministic_patch_base_document_context(
         root_note = "Root prose excerpt:\n" + root_excerpt
     return (
         "### CURRENT SYSTEM STATE (ROOT ARTIFACTS QUARANTINED)\n"
-        "A deterministic candidate-memory patch base supersedes the project-root "
+        "A deterministic repair-frontier patch base supersedes the project-root "
         "`current_iteration.md` / `test_model.py` surfaces for the next mutation. "
         "Use the `## Deterministic Candidate Memory` patch base as the edit target; "
         "do not infer the active mechanism from stale root prose.\n\n"

@@ -160,7 +160,7 @@ def terminal_verifier_edge_model_mismatch(rounds) -> list[dict]:
     for i, r in enumerate(rounds or []):
         mismatch = r.get(
             "transition_model_mismatch",
-            r.get("terminal_verifier_model_mismatch", r.get("reward_model_mismatch")),
+            r.get("terminal_verifier_model_mismatch"),
         )
         if mismatch:
             hits.append(r.get("round") or r.get("cycle") or i + 1)
@@ -192,13 +192,6 @@ def terminal_verifier_edge_model_mismatch(rounds) -> list[dict]:
         ),
         certifier_touched=False,
     )]
-
-
-def reward_edge_model_mismatch(rounds) -> list[dict]:
-    """Compatibility alias for older ARC logs/tests."""
-    return terminal_verifier_edge_model_mismatch(rounds)
-
-
 def visible_holdout_split(visible_ok, holdout_depth, holdout_len,
                           prev_holdout_depth) -> list[dict]:
     """Visible replay improved while holdout regressed vs previous champion.

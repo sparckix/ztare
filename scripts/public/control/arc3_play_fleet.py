@@ -11,7 +11,6 @@ Usage:
 
 Environment overrides:
     ZTARE_FLEET_MEMBERS  integer (default 6)
-    ZTARE_PROBE_RIDER    0 to disable probe rider (passed through to members)
 
 Member strategy — CLONE-AND-REAL-SPRINT:
   Each member k clones the project into
@@ -285,7 +284,6 @@ def _run_member(
     venv_py = REPO / "venv" / "bin" / "python"
     env = os.environ.copy()
     env["PYTHONPATH"] = str(clone_root / "src")
-    env["ZTARE_PROBE_RIDER"] = env.get("ZTARE_PROBE_RIDER", "1")
 
     cmd = [
         str(venv_py),

@@ -43,19 +43,19 @@ def build_r4_fixture_cases() -> list[R4FixtureCase]:
     return [
         # --- R1 mismatch cases ---
         R4FixtureCase(
-            case_id="r1_mismatch_single_refresh",
-            description="A single R1 declaration mismatch should trigger specialist refresh.",
+            case_id="r1_mismatch_single_excluded",
+            description="An R1 declaration mismatch stays outside scientific search control.",
             history=(
                 IterationSignal(
                     iteration_index=1, score=70, weakest_point="scope drift",
                     mutation_r1_mismatch=True,
                 ),
             ),
-            expected_action=LoopControlAction.REFRESH_SPECIALISTS,
+            expected_action=LoopControlAction.CONTINUE,
         ),
         R4FixtureCase(
-            case_id="r1_mismatch_repeated_pivot",
-            description="Two consecutive R1 mismatches should trigger pivot, same as crash tail.",
+            case_id="r1_mismatch_repeated_excluded",
+            description="Repeated R1 mismatches cannot authorize a scientific pivot.",
             history=(
                 IterationSignal(
                     iteration_index=1, score=70, weakest_point="scope drift",
@@ -66,7 +66,7 @@ def build_r4_fixture_cases() -> list[R4FixtureCase]:
                     mutation_r1_mismatch=True,
                 ),
             ),
-            expected_action=LoopControlAction.PIVOT_REQUIRED,
+            expected_action=LoopControlAction.CONTINUE,
         ),
         # --- Reframing novelty cases ---
         R4FixtureCase(

@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from ztare.common.candidate_memory import admissible_candidate_memory_records
-from ztare.common.operator_proposal_contract import open_cards
+from ztare.common.strategy_card_roles import active_strategy_cards
 from ztare.research_director.strategy_office import STRATEGY_LEDGER
 from ztare.worldmodel.residual_repair import (
     reject_satisfied_seed_prerequisite_cards,
@@ -43,6 +43,15 @@ def _input_fingerprint(project: Path) -> dict[str, str]:
         "candidate_memory.json": _sha_path(project / "workspace" / "candidate_memory.json"),
         "latest_eval_results.json": _sha_path(project / "latest_eval_results.json"),
     }
+    try:
+        from ztare.common.observation_chart import capture_project_evidence_epoch
+
+        out["evidence_epoch"] = capture_project_evidence_epoch(project).epoch_sha256
+    except Exception:  # noqa: BLE001
+        # Missing evidence keeps the audit usable for project bootstrap.  Once
+        # evidence exists, its content identity participates in every cache
+        # comparison; a `latest` evaluation filename cannot stand in for it.
+        out["evidence_epoch"] = ""
     for seed in sorted((project / "workspace").glob("*level*seed*.json")):
         out[f"boundary_seed:{seed.name}"] = _sha_path(seed)
     return out
@@ -54,16 +63,38 @@ def _load_cached(project: Path, fingerprint: dict[str, str]) -> dict[str, Any] |
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return None
-    if not isinstance(payload, dict) or payload.get("schema") != RECEIPT_SCHEMA:
-        return None
-    if (
-        payload.get("input_fingerprint") != fingerprint
-        and payload.get("input_fingerprint_after") != fingerprint
+    if not stale_surface_receipt_is_current(
+        project,
+        payload,
+        fingerprint=fingerprint,
     ):
         return None
     cached = dict(payload)
     cached["cached"] = True
     return cached
+
+
+def stale_surface_receipt_is_current(
+    project: str | Path,
+    payload: object,
+    *,
+    fingerprint: dict[str, str] | None = None,
+) -> bool:
+    """Whether an audit receipt names the project's current input identity.
+
+    Consumers must not infer currentness from the ``latest`` filename.  This is
+    the same compatibility check used by the producer's cache path, exposed so
+    read-only briefing consumers cannot revive a superseded carrier/evidence
+    projection.
+    """
+
+    if not isinstance(payload, dict) or payload.get("schema") != RECEIPT_SCHEMA:
+        return False
+    current = fingerprint if fingerprint is not None else _input_fingerprint(Path(project))
+    return bool(
+        payload.get("input_fingerprint") == current
+        or payload.get("input_fingerprint_after") == current
+    )
 
 
 def _write_receipt(project: Path, receipt: dict[str, Any]) -> dict[str, Any]:
@@ -173,7 +204,7 @@ def _candidate_dominates_root(
 
 def _open_card_summary(project: Path) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
-    for card in open_cards(project / "workspace" / STRATEGY_LEDGER):
+    for card in active_strategy_cards(project / "workspace" / STRATEGY_LEDGER):
         plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
         residue = plan.get("residue_quotient") if isinstance(plan.get("residue_quotient"), dict) else {}
         gate = plan.get("required_next_gate") if isinstance(plan.get("required_next_gate"), dict) else {}
@@ -193,6 +224,7 @@ def run_stale_surface_audit(
     apply: bool = False,
     timeout_seconds: int = 120,
     force: bool = False,
+    gate_payload: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Audit and optionally dispose stale worldmodel routing surfaces."""
     root = Path(project)
@@ -212,12 +244,17 @@ def run_stale_surface_audit(
     active_candidate_path: Path | None = None
     carrier_source = "project_root"
     try:
-        root_gate_payload = _run_gate(root, timeout_seconds=timeout_seconds)
-        root_diagnostics = _visible_diagnostics(root_gate_payload or {})
-        diagnostics = root_diagnostics
-        active_gate_payload = root_gate_payload
+        if isinstance(gate_payload, dict) and gate_payload:
+            active_gate_payload = gate_payload
+            diagnostics = _visible_diagnostics(gate_payload)
+            carrier_source = "configured_system1_gate"
+        else:
+            root_gate_payload = _run_gate(root, timeout_seconds=timeout_seconds)
+            root_diagnostics = _visible_diagnostics(root_gate_payload or {})
+            diagnostics = root_diagnostics
+            active_gate_payload = root_gate_payload
         candidate_rec, candidate_path = _best_candidate_memory_path(root)
-        if _candidate_dominates_root(candidate_rec, root_diagnostics):
+        if gate_payload is None and _candidate_dominates_root(candidate_rec, root_diagnostics):
             try:
                 candidate_gate = _run_gate(
                     root,

@@ -7,9 +7,9 @@ from pathlib import Path
 from typing import Any
 
 from ztare.common.operator_proposal_contract import record_disposition
-from ztare.common.control_work_items import RunContext, should_block
+from ztare.common.control_work_items import RunContext
 from ztare.common.structured_blocks import balanced_object_after_marker
-from ztare.common.strategy_card_roles import strategy_card_role
+from ztare.common.strategy_card_roles import blocking_strategy_cards, strategy_card_role
 
 
 @dataclass(frozen=True)
@@ -95,23 +95,17 @@ def admissible_no_attempt_blocker_kinds(card: dict[str, Any]) -> list[str]:
 
 def _load_open_strategy_cards(project_dir: Path) -> list[dict[str, Any]]:
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
 
         return [
-            card for card in open_cards(project_dir / "workspace" / "strategy_experiments.jsonl")
+            card
+            for card in active_strategy_cards(
+                project_dir / "workspace" / "strategy_experiments.jsonl"
+            )
             if isinstance(card, dict)
         ]
     except Exception:  # noqa: BLE001
         return []
-
-
-def _blocking_strategy_cards(
-    cards: list[dict[str, Any]],
-    *,
-    context: RunContext | None = None,
-) -> list[dict[str, Any]]:
-    ctx = context or RunContext()
-    return [card for card in cards if should_block(strategy_card_role(card), ctx)]
 
 
 def _coerce_receipt(raw: str) -> dict[str, Any] | None:
@@ -280,7 +274,11 @@ def evaluate_strategy_card_gate(
     project = Path(project_dir)
     all_cards = _load_open_strategy_cards(project)
     context = run_context or RunContext()
-    cards = _blocking_strategy_cards(all_cards, context=context)
+    cards = blocking_strategy_cards(
+        all_cards,
+        context=context,
+        project_dir=project,
+    )
     if not cards:
         receipt = {
             "site": "strategy_card_gate.py:104",
@@ -399,7 +397,11 @@ def has_valid_blocked_strategy_card_discharge(
     the worker to invent a non-improving executable carrier.
     """
     project = Path(project_dir)
-    cards = _blocking_strategy_cards(_load_open_strategy_cards(project), context=RunContext())
+    cards = blocking_strategy_cards(
+        _load_open_strategy_cards(project),
+        context=RunContext(),
+        project_dir=project,
+    )
     if not cards:
         return False
     receipts = extract_strategy_card_discharges(thesis_text, candidate_source)

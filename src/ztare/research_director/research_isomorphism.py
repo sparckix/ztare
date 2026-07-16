@@ -1303,10 +1303,39 @@ def conjecture_between(
     dom = ResearchDomain()
     left = dom.abstract_failure(dict(left_state or {}))
     right = dom.abstract_failure(dict(right_state or {}))
+    query_receipt = {"transport": "injected", "parse_status": "injected"}
     if query is None:
+        import re as _re
+
+        from ztare.common.constraint_isomorphism import (
+            _build_conjecture_prompt,
+            _dispatch_text_with_receipt,
+            _parse_conjectures,
+        )
+
         prov, mid = _provider_and_model(model)
-        query = lambda a, b, k: default_llm_conjecture_query(a, b, k, provider=prov, model=mid)  # noqa: E731
-    raw = query(left, right, n) or []
+        text, dispatch = _dispatch_text_with_receipt(
+            _build_conjecture_prompt(left, right, n), provider=prov, model=mid
+        )
+        raw = _parse_conjectures(text)
+        match = _re.search(r"\[.*\]", text, _re.S) if text else None
+        query_receipt = {
+            **dispatch,
+            "parse_status": (
+                "transport_failed"
+                if dispatch.get("status") == "transport_failed"
+                else "no_text"
+                if not text
+                else "no_json_list"
+                if match is None
+                else "parsed_candidates"
+                if raw
+                else "valid_empty_or_schema_empty"
+            ),
+            "raw_candidate_count": len(raw),
+        }
+    else:
+        raw = query(left, right, n) or []
     kept, rejected = [], []
     adjudications: dict[int, dict] = {}
     for conj in raw:
@@ -1355,6 +1384,7 @@ def conjecture_between(
         "right": right,
         "conjectures": kept,
         "rejected": rejected,
+        "query_receipt": query_receipt,
     }
 
 
@@ -1913,6 +1943,7 @@ def main(argv: "list[str] | None" = None) -> int:
             payload = {
                 "candidate_count": len(out["conjectures"]),
                 "rejected_count": len(out["rejected"]),
+                "query_receipt": out.get("query_receipt"),
                 "conjectures": [
                     {
                         "mother_structure": c.mother_structure,

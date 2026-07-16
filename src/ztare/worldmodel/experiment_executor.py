@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from ztare.common.operator_proposal_contract import open_cards, record_disposition
+from ztare.common.operator_proposal_contract import record_disposition
+from ztare.common.strategy_card_roles import active_strategy_cards
 from ztare.common.worldmodel_carrier_purity import carrier_contract_error
 from ztare.validator.core.pre_judge_gate import detect_patch_base_regression_preflight
 from ztare.worldmodel.goal_abduction import predicate_from_spec
@@ -317,7 +318,7 @@ def execute_experiments(
             f"experiment ledger not found: {ledger} — pass the project directory "
             f"(e.g. projects/<name>), not the bare project name"
         )
-    cards = [card for card in open_cards(ledger) if isinstance(card, dict)]
+    cards = [card for card in active_strategy_cards(ledger) if isinstance(card, dict)]
     if card_sha:
         cards = [card for card in cards if str(card.get("failure_family_sha") or "") == str(card_sha)]
     elif not all_open:

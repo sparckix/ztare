@@ -147,6 +147,35 @@ def test_replay_diagnostics_quotients_repeated_mismatch_classes():
     ]
 
 
+def test_combined_replay_gate_matches_separate_verdict_with_one_carrier_scan():
+    from ztare.worldmodel.episode_log import EpisodeLog
+    from ztare.worldmodel.gates import (
+        replay_consistency_gate,
+        replay_gate_and_diagnostics,
+    )
+
+    log = EpisodeLog()
+    state = ((0, 0), (0, 0))
+    successor = ((0, 1), (0, 0))
+    for t in range(4):
+        log.append(state, 0, successor, t=t)
+    calls = {"n": 0}
+
+    def candidate(grid, action, t):
+        calls["n"] += 1
+        return successor if t < 3 else grid
+
+    separate = replay_consistency_gate(candidate, log)
+    calls["n"] = 0
+    combined, diagnostics = replay_gate_and_diagnostics(candidate, log)
+
+    assert combined.ok == separate.ok is False
+    assert combined.detail == separate.detail
+    assert diagnostics.checked_rows == 4
+    assert diagnostics.exact_rows == 3
+    assert calls["n"] == diagnostics.checked_rows
+
+
 def test_rollout_diagnostics_emits_holdout_witness_from_first_mismatch():
     from ztare.worldmodel.episode_log import EpisodeLog
     from ztare.worldmodel.gates import rollout_diagnostics
@@ -188,9 +217,8 @@ def test_planner_reaches_goal_under_known_model():
     assert bad is not None and not bad.actions
 
 
-def test_planner_can_prune_by_supplied_quotient():
-    """A caller-provided alpha map can collapse behaviorally equivalent states
-    without changing the planner's public contract."""
+def test_planner_grid_quotient_does_not_silently_quotient_time():
+    """A grid alpha map has no authority to merge distinct lawful times."""
     from ztare.worldmodel.planner import plan_to_goal
     from ztare.worldmodel.grid_dsl import grid_from_lists
 
@@ -208,7 +236,60 @@ def test_planner_can_prune_by_supplied_quotient():
         abstract_fn=coarse_alpha,
     )
 
-    assert plan is not None and not plan.actions
+    assert plan is not None
+    assert plan.actions == [0] * 7
+
+
+def test_undefined_terminal_acquisition_uses_projected_coverage_before_raw_novelty(tmp_path):
+    """A passive clock change is transition state, but not a new acquisition target."""
+    from ztare.worldmodel.planner import pursue_goal
+
+    def law(state, action, _time):
+        position, remaining = state[0]
+        return ((position + int(action == 1), remaining - 1),)
+
+    class Adapter:
+        action_arity = 2
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self._state = ((0, 3),)
+            self._time = 0
+
+        @property
+        def state(self):
+            return self._state
+
+        @property
+        def t(self):
+            return self._time
+
+        def step(self, action):
+            self._state = law(self._state, action, self._time)
+            self._time += 1
+            return self._state
+
+    abstract = lambda grid: tuple(grid[0])  # noqa: E731
+    controllable = lambda signature: signature[0]  # noqa: E731
+    receipt = pursue_goal(
+        Adapter(),
+        law,
+        max_steps=1,
+        plan_depth=2,
+        abstract_fn=abstract,
+        coverage_fn=controllable,
+        visited_store={abstract(((0, 3),))},
+        receipts_dir=tmp_path,
+    )
+
+    # Action 0 changes only the predictable clock.  Action 1 reaches the first
+    # unseen controllable quotient class and therefore has higher acquisition
+    # value despite both successors being distinct transition states.
+    assert receipt.trace == [1]
+    route = json.loads((tmp_path / "acquisition_routing.jsonl").read_text().splitlines()[-1])
+    assert route["policy"] == "projected_reachability_coverage"
+    assert route["plan_found"] is True
 
 
 def test_pursue_reports_model_divergence():
@@ -319,9 +400,21 @@ def test_terminal_witness_quotients_translation_but_not_phase_or_context():
         action=2, step=8, state=state_b, predicted=pred_b, observed=obs_b)
     fp_phase = terminal_witness_fingerprint(
         action=2, step=9, state=state_b, predicted=pred_b, observed=obs_b)
+    fp_later = terminal_witness_fingerprint(
+        action=2, step=14, state=state_b, predicted=pred_b, observed=obs_b)
+    fp_certified_a = terminal_witness_fingerprint(
+        action=2, step=8, state=state_b, predicted=pred_b, observed=obs_b,
+        certified_period=6)
+    fp_certified_b = terminal_witness_fingerprint(
+        action=2, step=14, state=state_b, predicted=pred_b, observed=obs_b,
+        certified_period=6)
 
     assert fp_a["sha256"] == fp_b["sha256"]
     assert fp_phase["sha256"] != fp_a["sha256"]
+    assert fp_later["sha256"] != fp_a["sha256"]
+    assert fp_a["step"] == 8 and "phase" not in fp_a
+    assert fp_certified_a["sha256"] == fp_certified_b["sha256"]
+    assert fp_certified_a["certified_period"] == 6
     roles = {
         binding["term"]: set(binding["roles"])
         for binding in fp_a["kernel_role_bindings"]
@@ -383,7 +476,7 @@ def test_act_and_learn_absorbs_offbasin_transitions():
 def test_novelty_planner_seeks_unexplored_states():
     """Novelty steering plans toward states farthest from the visited set —
     general, no goal predicate. A wrong steer can't fake success (that's the
-    sealed reward's job); this only checks it drives exploration."""
+    adapter adjudicator's job); this only checks it drives exploration."""
     from ztare.worldmodel.planner import plan_novelty
     from ztare.worldmodel.grid_dsl import grid_from_lists
     # marker moves right under action 0; novelty should push it away from start
@@ -830,10 +923,9 @@ def test_cegar_classification_finds_aliasing_witness():
     assert v3.kind == "not_a_counterexample"
 
 
-def test_reachability_sweep_finds_and_refutes():
+def test_reachability_sweep_separates_exhaustion_from_budget():
     """Certified sweep: returns a ranked goal path when reachable; returns
-    refuted_or_unreachable (with deepest frontier) when the bounded resource
-    space is exhausted without the goal."""
+    model_target_unreachable only when the finite model frontier drains."""
     from ztare.worldmodel.reachability import reachability_sweep
     from ztare.worldmodel.grid_dsl import grid_from_lists
     # marker shifts right under action 0; goal = marker in last column
@@ -841,9 +933,16 @@ def test_reachability_sweep_finds_and_refutes():
     start = grid_from_lists([[1, 0, 0, 0]])
     r = reachability_sweep(champ, start, 2, goal_fn=lambda g: g[0][3] == 1, max_depth=8)
     assert r.status == "goal_paths" and [0, 0, 0] in r.paths, r
-    # unreachable goal -> exhausted -> refuted
+    # unreachable goal -> exact model-frontier exhaustion
     r2 = reachability_sweep(champ, start, 2, goal_fn=lambda g: g[0][0] == 9, max_depth=8)
-    assert r2.status == "refuted_or_unreachable", r2
+    assert r2.status == "model_target_unreachable" and r2.exhaustive, r2
+    # state cap -> indeterminate; a flat discovery derivative cannot upgrade it
+    # into an unreachability verdict.
+    r3 = reachability_sweep(
+        champ, start, 2, goal_fn=lambda g: g[0][0] == 9,
+        max_depth=8, max_states=1,
+    )
+    assert r3.status == "search_budget_exhausted" and not r3.exhaustive, r3
 
 
 def test_invariant_bridge_filters_only_impossible_transitions():
@@ -1216,6 +1315,7 @@ def test_play_loop_emits_leanmill_blueprint_receipt(tmp_path):
     assert receipt["blueprint_ref"] == "workspace/worldmodel_auto_blueprint.md"
     assert len(receipt["blueprint_sha256"]) == 64
     assert len(receipt["spec_sha256"]) == 64
+    assert len(receipt["evidence_epoch_sha256"]) == 64
     assert "ztare.leanmill.cli campaign" in receipt["next_command"]
     assert receipt["next_command"].endswith(
         "project/workspace/worldmodel_auto_blueprint.md"
@@ -1460,6 +1560,14 @@ def _passing_worldmodel_proof_audit(path, theorem):
     }
 
 
+def _current_test_invariant_binding(*_args, **_kwargs):
+    return {
+        "binding_schema": "ztare-worldmodel-invariant-binding-v1",
+        "spec_sha256": "1" * 64,
+        "evidence_epoch_sha256": "3" * 64,
+    }
+
+
 def test_lean_bridge_absorb_ratification_persists_and_dedups(tmp_path, monkeypatch):
     import json as _json
     from ztare.worldmodel import lean_bridge
@@ -1472,6 +1580,9 @@ def test_lean_bridge_absorb_ratification_persists_and_dedups(tmp_path, monkeypat
         lean_bridge,
         "_run_proof_audit",
         lambda path, theorem: _passing_worldmodel_proof_audit(path, theorem),
+    )
+    monkeypatch.setattr(
+        lean_bridge, "current_invariant_binding", _current_test_invariant_binding
     )
     certs = lean_bridge.absorb_ratification(tmp_path, lean, [stmt])
     assert len(certs) == 1 and certs[0].status == "kernel_ratified"
@@ -1507,6 +1618,9 @@ def test_lean_bridge_absorb_cli_extracts_theorem_and_writes_cert(tmp_path, monke
         "_run_proof_audit",
         lambda path, theorem: _passing_worldmodel_proof_audit(path, theorem),
     )
+    monkeypatch.setattr(
+        lean_bridge, "current_invariant_binding", _current_test_invariant_binding
+    )
 
     rc = lean_bridge.main([
         "absorb", "--project", str(tmp_path), "--lean-file", str(lean),
@@ -1539,6 +1653,9 @@ def test_lean_bridge_rejects_sorry_even_if_audit_payload_claims_clean(tmp_path, 
         "_run_proof_audit",
         lambda path, theorem: _passing_worldmodel_proof_audit(path, theorem),
     )
+    monkeypatch.setattr(
+        lean_bridge, "current_invariant_binding", _current_test_invariant_binding
+    )
 
     assert lean_bridge.absorb_ratification(
         tmp_path,
@@ -1556,6 +1673,9 @@ def test_lean_bridge_binds_invariant_statement_to_audited_file(tmp_path, monkeyp
         lean_bridge,
         "_run_proof_audit",
         lambda path, theorem: _passing_worldmodel_proof_audit(path, theorem),
+    )
+    monkeypatch.setattr(
+        lean_bridge, "current_invariant_binding", _current_test_invariant_binding
     )
     stronger_caller_statement = (
         "theorem count11_monotone (g : Grid) (a t : Nat) : "
@@ -1943,9 +2063,9 @@ def test_seed_visited_unions_log_and_cache(tmp_path):
     assert mod._seed_visited(cache, log, None) == {frozenset({(9, 9, 1)})}
 
 
-def test_frontier_memory_is_scoped_to_evidence_hash(tmp_path):
-    """The live frontier cache is a quotient memo. A stale memo from a different
-    evidence content hash must not make a fresh play round look saturated."""
+def test_frontier_memory_reuses_only_exact_append_lineage(tmp_path):
+    """A quotient image survives an append only when prior episode bytes are an
+    exact prefix; mutating the prefix severs the cache lineage."""
     import importlib.util
     from pathlib import Path
     from ztare.worldmodel.episode_log import EpisodeLog
@@ -1982,8 +2102,54 @@ def test_frontier_memory_is_scoped_to_evidence_hash(tmp_path):
     log.append(((0, 1),), 0, ((0, 0),), t=1)
     log.write_jsonl(ep)
     _af3, next_path, next_store = mod._frontier_memory(project)
-    assert next_path != scoped_path
-    assert current_key not in next_store
+    assert next_path == scoped_path
+    assert current_key in next_store
+    receipt = json.loads((project / "workspace" / "latest_frontier_scope.json").read_text())
+    assert receipt["inherited_rows"] == 1
+
+    mutated = EpisodeLog()
+    mutated.append(((9, 9),), 0, ((0, 1),), t=0)
+    mutated.append(((0, 1),), 0, ((0, 0),), t=1)
+    mutated.write_jsonl(ep)
+    _af4, mutation_path, mutation_store = mod._frontier_memory(project)
+    assert mutation_path != next_path
+    assert current_key not in mutation_store
+    receipt = json.loads((project / "workspace" / "latest_frontier_scope.json").read_text())
+    assert receipt["inherited_rows"] == 0
+
+
+def test_play_turn_reuses_one_evidence_induced_role_projection(tmp_path, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+    from ztare.worldmodel.episode_log import EpisodeLog
+    import ztare.worldmodel.object_roles as object_roles
+
+    root = Path(__file__).resolve().parents[1]
+    path = root / "scripts" / "public" / "control" / "arc3_play_loop.py"
+    spec = importlib.util.spec_from_file_location("arc3_play_loop_role_cache", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    project = tmp_path / "project"
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    episode.parent.mkdir(parents=True)
+    log = EpisodeLog()
+    log.append(((1, 0),), 0, ((0, 1),), t=0)
+    log.write_jsonl(episode)
+    calls = 0
+    original = object_roles.induce_roles
+
+    def counted(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(object_roles, "induce_roles", counted)
+    mod._ROLE_STATE_CACHE.clear()
+    mod._abstract_fn(project)
+    mod._coverage_fn(project)
+    mod._resource_colors(project)
+    assert calls == 1
 
 
 def test_governed_play_uses_persistent_frontier_memory():
@@ -1996,7 +2162,8 @@ def test_governed_play_uses_persistent_frontier_memory():
         encoding="utf-8"
     )
     governed = source[source.index("===== CYCLE {cyc}: live play") :]
-    assert "af, visited_path, visited_store = _frontier_memory(project)" in governed
+    assert "af, visited_path, visited_store = _frontier_memory(" in governed
+    assert "source_epoch=active_epoch" in governed
     assert "visited_store=visited_store" in governed
     assert "visited_path=visited_path" in governed
 
@@ -2060,29 +2227,6 @@ def test_spec_when_effect_couples_rule_to_prior_firing():
     assert bad is None and "when_effect" in err2
 
 
-def test_spec_abduction_recovers_rule_coupling():
-    """Zero-model recovery of a PLANTED coupled mechanic: a timer that ticks iff
-    the mover did NOT move, at VARYING freeze positions so no positional/periodic
-    guard separates the split. Baseline abduction (coupling refine OFF) leaves a
-    residual; enabling the when_effect refine recovers it exactly and attaches a
-    when_effect rule."""
-    from ztare.worldmodel.spec_abduction import abduce_spec
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.gates import env_frame_indices
-    log = build_coupling_synthetic()
-    env = env_frame_indices(log)
-
-    def mism(res):
-        st = res.step_fn
-        return sum(1 for i, tr in enumerate(log)
-                   if i not in env and st(tr.s, tr.a, tr.t) != tr.s_next)
-    base = abduce_spec(log, 2, _effect_refine=False)
-    full = abduce_spec(log, 2, _effect_refine=True)
-    assert mism(base) > 0, "planted coupling must leave a residual before the refine"
-    assert full.replay_ok and mism(full) == 0, full.detail
-    assert any("when_effect" in r for r in full.spec["always"]), full.spec["always"]
-
-
 def test_implement_and_validate_accept_reject_and_persists(tmp_path):
     """The kernel contract runs a leaf then a harness and disposes the card:
     accept -> receipt, reject -> counterexample. Both dispositions upsert into
@@ -2113,149 +2257,6 @@ def test_implement_and_validate_accept_reject_and_persists(tmp_path):
     lines = ledger.read_text().splitlines()
     assert len(lines) == 1, lines
     assert open_cards(ledger) == []           # a closed card leaves the open set empty
-
-
-def test_worldmodel_harness_accepts_true_coupling():
-    """The rule-coupling harness accepts when the leaf names a fired-this-step
-    coupling AND both legs hold: the planted synthetic recovers with when_effect
-    and replay on the (coupling-carrying) real log strictly improves."""
-    from ztare.worldmodel.operator_implement import (
-        worldmodel_harness, build_coupling_synthetic)
-    from ztare.common.operator_proposal_contract import operator_proposal_card
-    card = operator_proposal_card(
-        failure_family="action=all|motion=count|coupling",
-        evidence_indices=[110, 112], spatial_footprint={"bbox": [61, 39, 62, 51]},
-        why_existing_ops_fail={"consume_extremal": "over-fires on freeze frames"},
-        proposed_operator_sketch="timer coupled to mover firing",
-        acceptance_test="planted synthetic + real strict improvement")
-    # canned leaf shape (no live codex here); the harness disposes it
-    from ztare.worldmodel.operator_implement import _CANNED_LEAF
-    art = dict(_CANNED_LEAF)
-    real = build_coupling_synthetic()      # a real log that DOES carry the coupling
-    verdict = worldmodel_harness(art, real_log=real)
-    assert verdict["accepted"], verdict
-    assert "strict improvement" in verdict["receipt"]
-
-
-def test_worldmodel_harness_real_leg_uses_evidence_slice(monkeypatch):
-    """The real strict-improvement leg must score only the card's residual
-    evidence rows, not re-abduce the whole world during reflex validation."""
-    from types import SimpleNamespace
-    from ztare.worldmodel import operator_implement as oi
-    from ztare.worldmodel.episode_log import EpisodeLog
-
-    log = EpisodeLog()
-    s = ((0,),)
-    s2 = ((1,),)
-    for t in range(5):
-        log.append(s, 0, s2, t=t)
-
-    seen_lengths = []
-    seen_ladder = []
-
-    def fake_abduce(score_log, arity, **kw):
-        import os
-        rows = list(score_log)
-        seen_lengths.append(len(rows))
-        seen_ladder.append(os.environ.get("ZTARE_REFINE_LADDER"))
-        if kw.get("_effect_refine"):
-            return SimpleNamespace(
-                replay_ok=True,
-                spec={"always": [{"when_effect": ["m", True]}]},
-                step_fn=lambda s, a, t: ((1,),),
-            )
-        return SimpleNamespace(
-            replay_ok=False,
-            spec={"always": []},
-            step_fn=lambda s, a, t: s,
-        )
-
-    monkeypatch.setattr(oi, "abduce_spec", fake_abduce)
-    monkeypatch.setenv("ZTARE_REFINE_LADDER", "1")
-    verdict = oi.worldmodel_harness(
-        {
-            "mover_colors": [9],
-            "timer_color": 11,
-            "ticks_when_moved": False,
-            "_real_indices": [1, 3],
-            "_baseline": {"spec": {"actions": {}, "always": []}},
-        },
-        real_log=log,
-    )
-
-    assert verdict["accepted"], verdict
-    assert seen_lengths[0] > 2      # planted synthetic
-    assert seen_lengths[1:] == [2, 2]
-    assert seen_ladder[1:] == ["0", "0"]
-    import os
-    assert os.environ.get("ZTARE_REFINE_LADDER") == "1"
-
-
-def test_worldmodel_harness_rejects_slice_only_improvement(monkeypatch):
-    """Residual-slice improvement is only a fast gate; adoption needs full replay."""
-    from types import SimpleNamespace
-    from ztare.worldmodel import operator_implement as oi
-    from ztare.worldmodel.episode_log import EpisodeLog
-
-    log = EpisodeLog()
-    s = ((0,),)
-    for t in range(4):
-        target = ((1,),) if t in (1, 3) else ((0,),)
-        log.append(s, 0, target, t=t)
-
-    def fake_abduce(score_log, arity, **kw):
-        if kw.get("_effect_refine"):
-            return SimpleNamespace(
-                replay_ok=True,
-                spec={"always": [{"when_effect": ["m", True]}]},
-                step_fn=lambda s, a, t: ((1,),),
-            )
-        return SimpleNamespace(
-            replay_ok=False,
-            spec={"always": []},
-            step_fn=lambda s, a, t: s,
-        )
-
-    monkeypatch.setattr(oi, "abduce_spec", fake_abduce)
-    verdict = oi.worldmodel_harness(
-        {
-            "mover_colors": [9],
-            "timer_color": 11,
-            "ticks_when_moved": False,
-            "_real_indices": [1, 3],
-            "_baseline": {"spec": {"actions": {}, "always": []}},
-        },
-        real_log=log,
-    )
-
-    assert not verdict["accepted"], verdict
-    assert "full replay did not strictly improve" in verdict["counterexample"]
-
-
-def test_worldmodel_harness_rejects_wrong_spec():
-    """Reject discipline: a coupling shape whose planted synthetic passes but
-    whose coupling does NOT improve the real log (a coupling-free move log) is
-    rejected; a shape that names no coupling at all is rejected at the gate."""
-    from ztare.worldmodel.operator_implement import worldmodel_harness, _CANNED_LEAF
-    from ztare.worldmodel.episode_log import EpisodeLog
-    from ztare.worldmodel.spec_catalog import lower_spec
-    # a coupling-FREE real log: a plain mover, no timer -> the refine cannot improve it
-    truth, _ = lower_spec({"actions": {"0": [{"op": "translate_block", "match_colors": [9],
-                           "dy": 0, "dx": 1, "require_dest_colors": [3], "fill_color": 3}],
-                           "1": [{"op": "identity"}]}})
-    plain = EpisodeLog()
-    s = ((3, 9, 3, 3, 3), (3, 3, 3, 3, 3))
-    for a in (0, 0, 1, 0):
-        s2 = truth(s, a, 0)
-        plain.append(s, a, s2, t=0)
-        s = s2
-    verdict = worldmodel_harness(dict(_CANNED_LEAF), real_log=plain)
-    assert not verdict["accepted"]
-    assert "did not strictly improve" in verdict["counterexample"], verdict
-    # a shape that names no fired-this-step coupling is rejected before any replay
-    v2 = worldmodel_harness({"name": "rotate_block", "semantics": "a 90 degree rotation"},
-                            real_log=plain)
-    assert not v2["accepted"] and "coupling" in v2["counterexample"]
 
 
 def test_closure_audit_registers_rule_coupling_until_when_effect():
@@ -2462,7 +2463,7 @@ def test_terminal_verifier_edge_model_mismatch_fires_and_silent():
     """A scored edge that refutes the transition law becomes a refinement card;
     an ordinary scored edge stays silent."""
     from ztare.worldmodel.machinery_contradictions import (
-        reward_edge_model_mismatch, terminal_verifier_edge_model_mismatch)
+        terminal_verifier_edge_model_mismatch)
 
     cards = terminal_verifier_edge_model_mismatch([
         {"round": 2, "pursuit": "goal_reached", "terminal_verifier_model_mismatch": True,
@@ -2478,9 +2479,6 @@ def test_terminal_verifier_edge_model_mismatch_fires_and_silent():
 
     assert not terminal_verifier_edge_model_mismatch([
         {"round": 2, "pursuit": "goal_reached", "terminal_verifier_model_mismatch": False},
-    ])
-    assert reward_edge_model_mismatch([
-        {"round": 2, "pursuit": "goal_reached", "reward_model_mismatch": True},
     ])
     wrapped = terminal_verifier_edge_model_mismatch([
         {"round": 4, "pursuit": "multilife", "transition_model_mismatch": True,
@@ -2624,104 +2622,6 @@ def test_detect_and_card_dedup_and_empty(tmp_path):
     # second call with identical inputs → deduped, nothing new written
     c2 = detect_and_card(tmp_path, log, rounds)
     assert c2 == 0, "second call must be deduped to 0"
-
-
-# ---------------------------------------------------------------------------
-# BUILD 3 — machinery_adoption tests (hermetic, tmp dirs, fake test commands)
-# ---------------------------------------------------------------------------
-
-def _open_card(**kw) -> dict:
-    """Minimal open card; certifier_touched=False unless overridden."""
-    from ztare.common.operator_proposal_contract import operator_proposal_card
-    base = operator_proposal_card(
-        failure_family=kw.get("failure_family", "test:family"),
-        evidence_indices=[0],
-        spatial_footprint={"k": 1},
-        why_existing_ops_fail={"m": "reason"},
-        proposed_operator_sketch="sketch()",
-        acceptance_test="plant and verify",
-    )
-    base["certifier_touched"] = kw.get("certifier_touched", False)
-    return base
-
-
-def test_adoption_certifier_card_refused(tmp_path):
-    """Rule 3: certifier_touched card is refused without touching any file."""
-    import sys as _sys
-    from ztare.common.machinery_adoption import adopt_machinery_patch
-    target = tmp_path / "target.py"
-    target.write_text("original")
-    card = _open_card(certifier_touched=True)
-    result = adopt_machinery_patch(
-        card, {str(target): "modified"}, [_sys.executable, "-c", "exit(0)"], "conductor",
-    )
-    assert result["status"] == "refused"
-    assert target.read_text() == "original", "file must not be touched on refusal"
-
-
-def test_adoption_denylist_path_refused(tmp_path):
-    """Rules 3/4: a patch path that matches the certifier denylist is refused."""
-    import sys as _sys
-    from ztare.common.machinery_adoption import adopt_machinery_patch
-    # Use a path that contains the denylist fragment "MACHINERY_RULES.md"
-    denylist_target = tmp_path / "MACHINERY_RULES.md"
-    denylist_target.write_text("rules")
-    card = _open_card(certifier_touched=False)
-    result = adopt_machinery_patch(
-        card, {str(denylist_target): "tampered"}, [_sys.executable, "-c", "exit(0)"], "conductor",
-    )
-    assert result["status"] == "refused"
-    assert denylist_target.read_text() == "rules", "denylist file must not be modified"
-
-
-def test_adoption_failing_suite_restores_byte_exact(tmp_path):
-    """A failing test suite triggers byte-exact restore of all patched files."""
-    import sys as _sys
-    from ztare.common.machinery_adoption import adopt_machinery_patch
-    target = tmp_path / "module.py"
-    original_bytes = b"original content \xff"   # non-utf8 tail to verify byte exactness
-    target.write_bytes(original_bytes)
-    card = _open_card()
-    result = adopt_machinery_patch(
-        card, {str(target): "modified content"},
-        [_sys.executable, "-c", "exit(1)"], "conductor",
-    )
-    assert result["status"] == "rejected"
-    assert target.read_bytes() == original_bytes, "file must be restored byte-exact"
-    assert "test_tail" in result
-
-
-def test_adoption_passing_suite_persists_attestation(tmp_path):
-    """A passing test suite returns accepted + attestation with a 16-hex rules_sha."""
-    import sys as _sys
-    from ztare.common.machinery_adoption import adopt_machinery_patch
-    # write a temporary rules file so rules_sha is non-empty
-    rules = tmp_path / "RULES.md"
-    rules.write_text("# rules")
-    target = tmp_path / "patch_target.py"
-    target.write_text("before")
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    card = _open_card(failure_family="test:tightening")
-    result = adopt_machinery_patch(
-        card, {str(target): "after"},
-        [_sys.executable, "-c", "print('1 passed')"],
-        "conductor",
-        ledger=ledger,
-        ts="2026-07-03T00:00:00Z",
-        rules_path=rules,
-    )
-    assert result["status"] == "accepted"
-    att = result["attestation"]
-    assert att["outcome"] == "accepted"
-    assert att["principal"] == "conductor"
-    assert att["ts"] == "2026-07-03T00:00:00Z"
-    assert len(att["rules_sha"]) == 16 and all(c in "0123456789abcdef" for c in att["rules_sha"])
-    # ledger row must carry the attestation
-    import json as _json
-    rows = [_json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    assert rows, "ledger must have a row"
-    assert rows[-1].get("attestation", {}).get("rules_sha") == att["rules_sha"]
-    assert target.read_text() == "after", "file must be kept on pass"
 
 
 # ── GP-250: warm start, unified write learner, guard conjunction, episode crossing ──
@@ -3075,12 +2975,28 @@ def _mini_worldmodel_project(tmp_path):
     return tmp_path
 
 
+def _bind_current_transfer_receipt(project, receipt):
+    from ztare.worldmodel.carrier_loader import (
+        resolve_current_carrier_evidence_identity,
+    )
+
+    carrier = project / "test_model.py"
+    if not carrier.exists():
+        carrier.write_text("VALUE = 1\n", encoding="utf-8")
+    return {
+        **receipt,
+        "carrier_evidence_identity": (
+            resolve_current_carrier_evidence_identity(project).to_dict()
+        ),
+    }
+
+
 def test_strategy_battery_dossier_compiles_under_cap(tmp_path):
     from ztare.worldmodel.strategy_battery import WorldmodelBattery
     proj = _mini_worldmodel_project(tmp_path)
     (proj / "current_iteration.md").write_text(
-        "reward certifies the outcome; reward updates the model; "
-        "reward should not author reusable advice"
+        "verifier certifies the outcome; verifier updates the model; "
+        "verifier should not author reusable advice"
     )
     dossier = WorldmodelBattery().run_audits(proj)
     assert dossier["rows_scanned"] == 4
@@ -3095,7 +3011,7 @@ def test_strategy_battery_dossier_compiles_under_cap(tmp_path):
     # novelty decay carries the CAP-HORIZON caveat + a Good-Turing estimate
     assert "CAP-HORIZON" in dossier["novelty_decay"]["caveat"]
     assert 0.0 <= dossier["novelty_decay"]["good_turing_unseen_mass"] <= 1.0
-    assert dossier["semantic_deanchor_pressure"]["suspects"][0]["term"] == "reward"
+    assert dossier["semantic_deanchor_pressure"]["suspects"][0]["term"] == "verifier"
     assert "deanchor_seam" in dossier["semantic_deanchor_pressure"]["suspects"][0]
 
 
@@ -3150,7 +3066,8 @@ def test_strategy_battery_reads_level_transfer_receipt_as_pressure(tmp_path):
     from ztare.worldmodel.strategy_battery import WorldmodelBattery
     proj = _mini_worldmodel_project(tmp_path)
     (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps({
+    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
+        _bind_current_transfer_receipt(proj, {
         "schema": "ztare-arc3-level-transfer-probe-v1",
         "status": "bounded_mismatch",
         "exact_actions": 0,
@@ -3178,7 +3095,8 @@ def test_strategy_battery_reads_level_transfer_receipt_as_pressure(tmp_path):
                 "evidence": "same two cells disagree for every first post-boundary action",
             }
         ],
-    }))
+        })
+    ))
     out = WorldmodelBattery().query_menu()["semantic_deanchor"][1](proj, top=3)
     assert out["method"] == "typed_kernel_role_binding"
     assert out["suspects"][0]["term"] == "first_step_boundary_residue"
@@ -3196,7 +3114,8 @@ def test_level_transfer_repair_card_written_from_certificate(tmp_path):
     from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
     proj = _mini_worldmodel_project(tmp_path)
     (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps({
+    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
+        _bind_current_transfer_receipt(proj, {
         "schema": "ztare-arc3-level-transfer-probe-v1",
         "status": "bounded_mismatch",
         "actions_tested": 4,
@@ -3220,7 +3139,8 @@ def test_level_transfer_repair_card_written_from_certificate(tmp_path):
             }],
             "authority": "bounded sufficiency certificate only",
         },
-    }))
+        })
+    ))
 
     written = write_level_transfer_repair_card(proj)
     written_again = write_level_transfer_repair_card(proj)
@@ -3238,12 +3158,36 @@ def test_level_transfer_repair_card_written_from_certificate(tmp_path):
     assert len([l for l in ledger.read_text().splitlines() if l.strip()]) == 1
 
 
+def test_level_transfer_repair_card_rejects_path_or_sha_prefix_identity(tmp_path):
+    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
+
+    proj = _mini_worldmodel_project(tmp_path)
+    (proj / "workspace").mkdir(exist_ok=True)
+    receipt = _bind_current_transfer_receipt(proj, {
+        "schema": "ztare-arc3-level-transfer-probe-v1",
+        "status": "bounded_mismatch",
+        "residue_quotient": {"residue_class": "bounded_residue"},
+        "repair_certificate": {"sufficient_for_first_step": True},
+    })
+    receipt["carrier_evidence_identity"]["carrier_sha256"] = (
+        receipt["carrier_evidence_identity"]["carrier_sha256"][:12]
+    )
+    receipt["candidate_path"] = "test_model.py"
+    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(
+        json.dumps(receipt)
+    )
+
+    assert write_level_transfer_repair_card(proj) == []
+    assert not (proj / "workspace" / "strategy_experiments.jsonl").exists()
+
+
 def test_level_transfer_card_routes_missing_seed_before_transfer_exactness(tmp_path):
     from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
 
     proj = _mini_worldmodel_project(tmp_path)
     (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps({
+    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
+        _bind_current_transfer_receipt(proj, {
         "schema": "ztare-arc3-level-transfer-probe-v1",
         "status": "bounded_mismatch",
         "actions_tested": 4,
@@ -3267,7 +3211,8 @@ def test_level_transfer_card_routes_missing_seed_before_transfer_exactness(tmp_p
             "exact_steps_after_first_step_repair": 4,
             "first_step_repair_generalizes_to_depth": False,
         },
-    }))
+        })
+    ))
 
     written = write_level_transfer_repair_card(proj)
 
@@ -3306,6 +3251,7 @@ def test_level_transfer_repair_card_supersedes_narrow_first_step_card(tmp_path):
             "repair_map": [{"y": 61, "x": 14, "from_predicted": 11, "to_observed": 3}],
         },
     }
+    receipt = _bind_current_transfer_receipt(proj, receipt)
     path = proj / "workspace" / "latest_level_transfer_probe.json"
     path.write_text(json.dumps(receipt))
     assert len(write_level_transfer_repair_card(proj)) == 1
@@ -3377,6 +3323,7 @@ def test_level_transfer_repair_card_supersedes_generic_hint_with_component_scope
             }],
         },
     }
+    receipt = _bind_current_transfer_receipt(proj, receipt)
     path = proj / "workspace" / "latest_level_transfer_probe.json"
     path.write_text(json.dumps(receipt))
     assert len(write_level_transfer_repair_card(proj)) == 1
@@ -3445,6 +3392,7 @@ def test_level_transfer_repair_card_reopens_current_receipt_after_stale_rejectio
             }],
         },
     }
+    receipt = _bind_current_transfer_receipt(proj, receipt)
     path = proj / "workspace" / "latest_level_transfer_probe.json"
     path.write_text(json.dumps(receipt))
     stale_closed = build_compressed_counterexample_repair_card(receipt)
@@ -4018,6 +3966,92 @@ print(json.dumps({
     assert open_cards(ledger) == []
 
 
+def test_stale_surface_audit_consumes_supplied_gate_without_rerun(
+    tmp_path: Path,
+    monkeypatch,
+):
+    import ztare.worldmodel.stale_surface_audit as audit
+
+    project = tmp_path / "project"
+    (project / "workspace").mkdir(parents=True)
+    (project / "test_model.py").write_text(
+        "def step(state, action, t):\n    return state\n",
+        encoding="utf-8",
+    )
+    payload = {
+        "harness_ok": True,
+        "gated_sha256": "configured",
+        "gates": {
+            "visible_replay_exact": {
+                "diagnostics": {
+                    "checked_rows": 3,
+                    "exact_rows": 2,
+                    "wrong_rows": 1,
+                    "wrong_cell_count": 4,
+                    "mismatch_classes": [],
+                }
+            }
+        },
+    }
+
+    def forbidden_gate(*_args, **_kwargs):
+        raise AssertionError("supplied gate payload must prevent a second gate run")
+
+    monkeypatch.setattr(audit, "_run_gate", forbidden_gate)
+    receipt = audit.run_stale_surface_audit(
+        project,
+        force=True,
+        gate_payload=payload,
+    )
+
+    assert receipt["active_carrier"]["source"] == "configured_system1_gate"
+    assert receipt["current_replay"]["exact_rows"] == 2
+    assert receipt["gate"]["gated_sha256"] == "configured"
+
+
+def test_stale_surface_cache_identity_advances_with_evidence_epoch(tmp_path: Path):
+    """A `latest` gate projection cannot remain current after bank growth."""
+    from ztare.worldmodel.stale_surface_audit import run_stale_surface_audit
+
+    project = tmp_path / "project"
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    episode.parent.mkdir(parents=True)
+    (project / "workspace").mkdir()
+    (project / "test_model.py").write_text(
+        "def step(state, action, t):\n    return state\n",
+        encoding="utf-8",
+    )
+    episode.write_text('{"observation":1}\n', encoding="utf-8")
+    payload = {
+        "harness_ok": True,
+        "gated_sha256": "configured",
+        "gates": {
+            "visible_replay_exact": {
+                "diagnostics": {
+                    "checked_rows": 1,
+                    "exact_rows": 1,
+                    "wrong_rows": 0,
+                    "wrong_cell_count": 0,
+                    "mismatch_classes": [],
+                }
+            }
+        },
+    }
+
+    first = run_stale_surface_audit(project, gate_payload=payload)
+    assert first["cached"] is False
+    assert run_stale_surface_audit(project, gate_payload=payload)["cached"] is True
+
+    with episode.open("a", encoding="utf-8") as handle:
+        handle.write('{"observation":2}\n')
+    advanced = run_stale_surface_audit(project, gate_payload=payload)
+    assert advanced["cached"] is False
+    assert (
+        advanced["input_fingerprint"]["evidence_epoch"]
+        != first["input_fingerprint"]["evidence_epoch"]
+    )
+
+
 def test_level_transfer_probe_quotients_action_invariant_boundary_residue():
     import importlib.util
     from pathlib import Path
@@ -4206,6 +4240,34 @@ def test_play_loop_detects_open_strategy_cards(tmp_path):
     assert mod._has_open_strategy_cards(tmp_path) is True
 
 
+def _bound_discharged_task_payload() -> dict:
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    contract = TaskDischargeContract(
+        contract_id="test.skill.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="test_run",
+        owner="test_profile",
+    )
+    receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="discharged",
+        authority="test_adapter",
+        observed={"attested": True},
+        evidence_refs=("test_adapter:discharge",),
+    )
+    return {
+        "task_contract": contract.to_dict(),
+        "task_discharge_receipt": receipt.to_dict(),
+        "task_discharged": True,
+        "status": "TASK_DISCHARGED",
+    }
+
+
 def test_search_control_card_disposition_from_terminal_report(tmp_path):
     from ztare.common.operator_proposal_contract import open_cards, write_proposal_cards
     from ztare.worldmodel.search_control_repair import (
@@ -4229,7 +4291,7 @@ def test_search_control_card_disposition_from_terminal_report(tmp_path):
         "cycles": [{
             "cycle": 2,
             "pursuit": "goal_reached",
-            "status": "LEVEL_COMPLETED",
+            **_bound_discharged_task_payload(),
             "levels_gained": 1,
             "steps": 18,
             "terminal_witness_sha": "abc",
@@ -4270,7 +4332,7 @@ def test_terminal_closure_audit_keeps_candidate_gate_separate(tmp_path):
         "cycles": [{
             "cycle": 2,
             "pursuit": "goal_reached",
-            "status": "LEVEL_COMPLETED",
+            **_bound_discharged_task_payload(),
             "levels_gained": 1,
             "steps": 18,
             "terminal_witness_sha": "abc",
@@ -4283,6 +4345,15 @@ def test_terminal_closure_audit_keeps_candidate_gate_separate(tmp_path):
         "score": 0,
         "score_cap_reason": "pre_judge_gate_harness_failed",
     }))
+    current_survivor = _bind_current_transfer_receipt(proj, {
+        "observed_at_utc": "2026-07-06T04:54:49+00:00",
+        "gate_score": 1.0,
+        "passed_gates": 3,
+        "holdout_depth": 10,
+        "source_type": "full_survivor",
+    })
+    current_sha = current_survivor["carrier_evidence_identity"]["carrier_sha256"]
+    current_survivor["sha"] = current_sha
     (proj / "workspace" / "candidate_memory.json").write_text(json.dumps({
         "schema": "ztare-worldmodel-candidate-memory-v1",
         "records": [
@@ -4295,14 +4366,7 @@ def test_terminal_closure_audit_keeps_candidate_gate_separate(tmp_path):
                 "source_type": "manual_probe",
                 "assistance_label": "codex_assisted",
             },
-            {
-                "sha": "new-full-survivor",
-                "observed_at_utc": "2026-07-06T04:54:49+00:00",
-                "gate_score": 1.0,
-                "passed_gates": 3,
-                "holdout_depth": 10,
-                "source_type": "full_survivor",
-            },
+            current_survivor,
         ],
     }))
 
@@ -4318,7 +4382,7 @@ def test_terminal_closure_audit_keeps_candidate_gate_separate(tmp_path):
     assert receipt["candidate_memory"]["records"] == 2
     assert (
         receipt["candidate_memory"]["latest_gate_passing"]["sha"]
-        == "new-full-survivor"
+        == current_sha
     )
     assert receipt["claim_boundaries"]["level_closure"]["proven"] is True
     assert receipt["claim_boundaries"]["candidate_promotion"]["proven"] is False
@@ -4329,7 +4393,7 @@ def test_terminal_closure_audit_keeps_candidate_gate_separate(tmp_path):
     assert receipt["claim_boundaries"]["bridge_law_support"]["proven"] is True
     assert (
         receipt["claim_boundaries"]["bridge_law_support"]["latest_gate_passing_sha"]
-        == "new-full-survivor"
+        == current_sha
     )
     assert receipt["claim_boundaries"]["autonomous_completion"]["proven"] is False
     assert (
@@ -4364,7 +4428,7 @@ def test_terminal_closure_audit_requires_explicit_autonomy_provenance(tmp_path):
         "cycles": [{
             "cycle": 2,
             "pursuit": "goal_reached",
-            "status": "LEVEL_COMPLETED",
+            **_bound_discharged_task_payload(),
             "levels_gained": 1,
             "steps": 18,
             "terminal_witness_sha": "abc",
@@ -4417,7 +4481,7 @@ def test_terminal_closure_audit_ledger_survives_later_nonclose_attempt(tmp_path)
         "cycles": [{
             "cycle": 1,
             "pursuit": "goal_reached",
-            "status": "LEVEL_COMPLETED",
+            **_bound_discharged_task_payload(),
             "levels_gained": 1,
             "steps": 19,
             "terminal_witness_sha": "terminal-level-1",
@@ -4485,7 +4549,7 @@ def test_play_loop_report_writer_always_emits_terminal_closure_audit(tmp_path):
         "cycles": [{
             "cycle": 1,
             "pursuit": "goal_reached",
-            "status": "LEVEL_COMPLETED",
+            **_bound_discharged_task_payload(),
             "levels_gained": 1,
             "steps": 18,
             "terminal_witness_sha": "abc",
@@ -4570,7 +4634,11 @@ def test_search_control_gate_matching_uses_status_atoms_not_substrings():
     from ztare.common.abstraction_functor import FiniteQuotient, parse_disjunctive_atoms
     from ztare.worldmodel.search_control_repair import _cycle_satisfies_required_gate
 
-    cycle = {"pursuit": "goal_reached", "levels_gained": 1}
+    cycle = {
+        "pursuit": "goal_reached",
+        "levels_gained": 1,
+        **_bound_discharged_task_payload(),
+    }
 
     assert parse_disjunctive_atoms(
         "terminal_event_or_new_evidence"
@@ -4587,6 +4655,15 @@ def test_search_control_gate_matching_uses_status_atoms_not_substrings():
         "terminal_event_or_new_evidence_or_more_specific_strategy_receipt",
     ) is True
     assert _cycle_satisfies_required_gate(cycle, "terminal_eventual") is False
+    progress_only = {"pursuit": "goal_reached", "levels_gained": 1}
+    assert _cycle_satisfies_required_gate(progress_only, "terminal_event") is False
+
+    forged_properties = {
+        "observed_status": "terminal_event",
+        "status": "TASK_DISCHARGED",
+        "task_discharged": True,
+    }
+    assert _cycle_satisfies_required_gate(forged_properties, "terminal_event") is False
 
 
 def test_play_loop_strategy_office_hook_commissions_after_no_progress(
@@ -4643,10 +4720,95 @@ def test_play_loop_writes_replayable_next_level_seed(tmp_path):
     assert seed["schema"] == "ztare-level-boundary-seed-v1"
     assert seed["target_level"] == 2
     assert seed["full_sequence_from_reset"] == [0, 1, 3]
+    assert seed["execution_segments"] == [{
+        "segment_id": "segment-0",
+        "segment_kind": "active_control",
+        "source_ref": "arc3_play_loop",
+        "authority": "live_environment_execution",
+        "start_index": 0,
+        "end_index_exclusive": 3,
+        "actions": [0, 1, 3],
+    }]
     level_seed = json.loads((tmp_path / "workspace" / "level2_seed.json").read_text())
     latest = json.loads((tmp_path / "workspace" / "latest_level_boundary_seed.json").read_text())
     assert level_seed == latest == seed
     assert "replay seed only" in seed["authority"]
+
+
+def test_play_loop_replays_seed_through_environment_before_use(tmp_path):
+    mod = _load_arc3_play_loop()
+    mod._write_level_boundary_seed(
+        tmp_path,
+        game_id="toy-game",
+        cycle=1,
+        completed_level=2,
+        actions=[0, 1, 1],
+    )
+
+    class Adapter:
+        action_arity = 2
+
+        def __init__(self):
+            self.reset()
+
+        def reset(self):
+            self.levels_completed = 0
+            self.actions = []
+
+        def step(self, action):
+            self.actions.append(action)
+            if self.actions == [0]:
+                self.levels_completed = 1
+            if self.actions == [0, 1, 1]:
+                self.levels_completed = 2
+
+    adapter = Adapter()
+    receipt = mod._replay_latest_level_boundary_seed(tmp_path, adapter)
+
+    assert receipt["status"] == "verified"
+    assert receipt["declared_epoch"] == receipt["observed_epoch"] == 2
+    assert receipt["actions"] == [0, 1, 1]
+    assert receipt["execution_segments"][0]["segment_kind"] == "active_control"
+    assert adapter.levels_completed == 2
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "workspace" / "level_boundary_seed_replays.jsonl")
+        .read_text()
+        .splitlines()
+    ]
+    assert rows[-1]["status"] == "verified"
+
+
+def test_play_loop_severs_seed_when_replay_epoch_disagrees(tmp_path):
+    mod = _load_arc3_play_loop()
+    mod._write_level_boundary_seed(
+        tmp_path,
+        game_id="toy-game",
+        cycle=1,
+        completed_level=2,
+        actions=[0],
+    )
+
+    class Adapter:
+        action_arity = 1
+
+        def __init__(self):
+            self.reset()
+
+        def reset(self):
+            self.levels_completed = 0
+
+        def step(self, _action):
+            self.levels_completed = 1
+
+    adapter = Adapter()
+    receipt = mod._replay_latest_level_boundary_seed(tmp_path, adapter)
+
+    assert receipt["status"] == "epoch_mismatch"
+    assert receipt["observed_epoch"] == 1
+    assert receipt["active_epoch"] == 0
+    assert receipt["actions"] == []
+    assert adapter.levels_completed == 0
 
 
 def test_seed_recovery_card_executes_live_seed_producer(tmp_path):
@@ -4842,6 +5004,223 @@ def test_play_round_multilife_preserves_action_trace(monkeypatch):
     assert calls == [10]
     assert pr.levels_gained == 1
     assert pr.trace == [2, 1, 3]
+    assert pr.task_discharged is False
+    assert pr.legacy_boundary_stop is True
+    assert pr.status == "environment_boundary"
+
+
+def test_play_round_crosses_first_level_until_profile_task_discharge(monkeypatch):
+    from types import SimpleNamespace
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    mod = _load_arc3_play_loop()
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, contract):
+            observed = int(self.levels_completed)
+            discharged = observed >= int(contract.parameters["target"])
+            return TaskDischargeReceipt(
+                contract_sha256=contract.sha256,
+                adjudicator_id=contract.adjudicator_id,
+                status="discharged" if discharged else "open",
+                authority="test_adapter",
+                observed={"level_count": observed},
+                evidence_refs=(f"test_level_count:{observed}",) if discharged else (),
+            )
+
+    adapter = Adapter(levels_completed=0)
+    calls = []
+
+    def fake_pursue_goal(active_adapter, _model, max_steps, **_kw):
+        calls.append(max_steps)
+        active_adapter.levels_completed += 1
+        return SimpleNamespace(
+            status="goal_reached",
+            steps_executed=3 if len(calls) == 1 else 2,
+            levels_gained=1,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[len(calls)],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    task_contract = TaskDischargeContract(
+        contract_id="two-level-run",
+        adjudicator_id="test.level_count.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+        parameters={"target": 2},
+    )
+    pr = mod._play_round_multilife(
+        adapter,
+        object(),
+        budget=10,
+        context_log=[],
+        task_contract=task_contract,
+        plan_depth=1,
+    )
+
+    assert calls == [10, 7]
+    assert pr.levels_gained == 2
+    assert pr.steps_executed == 5
+    assert pr.task_discharged is True
+    assert pr.status == "task_discharged"
+    assert pr.trace == [1, 2]
+
+
+def test_play_round_accepts_task_discharge_without_level_delta(monkeypatch):
+    from types import SimpleNamespace
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    mod = _load_arc3_play_loop()
+
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, contract):
+            return TaskDischargeReceipt(
+                contract_sha256=contract.sha256,
+                adjudicator_id=contract.adjudicator_id,
+                status="discharged",
+                authority="test_adapter",
+                observed={"accepted": True},
+                evidence_refs=("test:discharge",),
+            )
+
+    def should_not_play(*_args, **_kwargs):
+        raise AssertionError("a discharged task must stop before another action")
+
+    monkeypatch.setattr(mod, "pursue_goal", should_not_play)
+    contract = TaskDischargeContract(
+        contract_id="non-counter-task",
+        adjudicator_id="test.acceptance.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+    )
+    pr = mod._play_round_multilife(
+        Adapter(), object(), budget=5, context_log=[], task_contract=contract
+    )
+
+    assert pr.task_discharged is True
+    assert pr.levels_gained == 0
+    assert pr.status == "task_discharged"
+
+
+def test_multilife_rescopes_terminal_edge_at_each_epoch(monkeypatch):
+    from types import SimpleNamespace
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    mod = _load_arc3_play_loop()
+
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, contract):
+            discharged = self.current_epoch >= int(contract.parameters["target"])
+            return TaskDischargeReceipt(
+                contract_sha256=contract.sha256,
+                adjudicator_id=contract.adjudicator_id,
+                status="discharged" if discharged else "open",
+                authority="test_adapter",
+                observed={"epoch": self.current_epoch},
+                evidence_refs=(f"epoch:{self.current_epoch}",) if discharged else (),
+            )
+
+    class EpochEdge:
+        def for_source_epoch(self, epoch):
+            return f"edge-for-{epoch}" if epoch == 0 else None
+
+    adapter = Adapter(current_epoch=0)
+    seen_edges = []
+
+    def fake_pursue_goal(active_adapter, _model, max_steps, **kw):
+        seen_edges.append(kw.get("goal_edge_fn"))
+        if len(seen_edges) == 1:
+            active_adapter.current_epoch = 1
+            return SimpleNamespace(
+                status="goal_reached",
+                steps_executed=1,
+                levels_gained=1,
+                saturated=False,
+                observed_transitions=[],
+                divergence=None,
+                trace=[0],
+            )
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[1],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    contract = TaskDischargeContract(
+        contract_id="epoch-scoped-run",
+        adjudicator_id="test.epoch.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+        parameters={"target": 2},
+    )
+    mod._play_round_multilife(
+        adapter,
+        object(),
+        budget=2,
+        context_log=[],
+        task_contract=contract,
+        goal_edge_fn=EpochEdge(),
+    )
+
+    assert seen_edges == ["edge-for-0", None]
+
+
+def test_play_round_does_not_relabel_environment_reset_as_law_divergence(monkeypatch):
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    calls = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **_kw):
+        calls.append(max_steps)
+        if len(calls) == 1:
+            return SimpleNamespace(
+                status="model_diverged",
+                steps_executed=1,
+                levels_gained=0,
+                saturated=False,
+                observed_transitions=[("before", 0, "reset", 7)],
+                divergence={"terminal_witness": {"sha256": "boundary"}},
+                trace=[0],
+            )
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[1],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    monkeypatch.setattr(mod, "_is_env_reset", lambda _context, _obs: True)
+    pr = mod._play_round_multilife(
+        object(), object(), budget=2, context_log=[], plan_depth=1)
+
+    assert calls == [2, 1]
+    assert pr.lives == 2
+    assert pr.status == "plan_exhausted"
+    assert pr.divergence is None
+    assert mod._transition_model_mismatch(pr) is False
+    assert pr.leg_outcomes[0]["status"] == "environment_boundary_inferred"
+    assert "adapter-unclassified repaint" in pr.leg_outcomes[0]["detail"]
 
 
 def test_play_loop_mismatch_fields_separate_transition_from_terminal():
@@ -4961,7 +5340,7 @@ def test_strategy_battery_surfaces_planner_attention_pressure(tmp_path):
 
     assert pressure["firing_signal"] > 0
     assert pressure["anomalies"][0]["anomaly_class"] == (
-        "plan_exhausted_without_reward_or_new_evidence"
+        "plan_exhausted_without_task_progress_or_new_evidence"
     )
     assert "override gates" in pressure["rule"]
 
@@ -5367,6 +5746,13 @@ def test_adjudicate_leaf_proposals_persists_dispositions_digest_and_counters(tmp
             "submitted_leaf_model": "gpt-5.5",
             "disposition": "open",
         }),
+        json.dumps({
+            "category": "process_health",
+            "provenance": "trace_auditor",
+            "check_id": "organ_liveness",
+            "proposed_change": "global catalog advisory",
+            "disposition": "open",
+        }),
     ]) + "\n", encoding="utf-8")
     open_ledger = ws / "strategy_experiments.jsonl"
     open_ledger.write_text(json.dumps({
@@ -5387,7 +5773,12 @@ def test_adjudicate_leaf_proposals_persists_dispositions_digest_and_counters(tmp
     rows = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines()]
     assert any(row["disposition"] == "accepted" for row in rows)
     assert any(row["disposition"] == "rejected" for row in rows)
+    process_rows = [row for row in rows if row.get("check_id") == "organ_liveness"]
+    assert len(process_rows) == 1
+    assert process_rows[0]["disposition"] == "open"
     digest = json.loads((ws / "leaf_proposals_digest.json").read_text(encoding="utf-8"))
+    assert digest["excluded_process_health_rows"] == 1
+    assert not any(row.get("check_id") == "organ_liveness" for row in digest["last_k"])
     assert digest["counters"]["leaf_originated_adopted"] == 1
     counters = json.loads((ws / "leaf_proposal_adoption_counters.json").read_text(encoding="utf-8"))
     assert counters["leaf_originated_adopted"] == 1
@@ -5711,98 +6102,6 @@ def test_template_copy_candidate_and_predicate():
     assert goal(grid_from_lists(solved)) is True
 
 
-# ── scene_grammar: the screen grammar / perception layer ──────────────────────
-
-from ztare.worldmodel.scene_grammar import parse_scene, SceneParams
-
-
-def _scene_log(frames):
-    log = EpisodeLog()
-    for a, b in zip(frames, frames[1:]):
-        log.append(grid_from_lists(a), 0, grid_from_lists(b))
-    return log
-
-
-def _panel_frames(n=8):
-    """A synthetic screen with all four designed panel kinds plus chrome:
-    a walled play field with a moving mover, a shrinking resource bar, a readout
-    that toggles in lock-step, a static framed goal display, a static chrome
-    block. Regions are set apart by background margins so a margin cut splits
-    them; the goal/bar/box are uniform rings so ring detection recovers them."""
-    H, W = 20, 24
-    out = []
-    for f in range(n):
-        g = [[0] * W for _ in range(H)]
-        for x in range(2, 12):                         # play-field wall + mover
-            g[2][x] = 7; g[11][x] = 7
-        for y in range(2, 12):
-            g[y][2] = 7; g[y][11] = 7
-        g[5][3 + f] = 1                                # mover translates right
-        for x in range(2, 2 + (10 - f)):               # resource bar shrinks
-            g[16][x] = 2; g[17][x] = 2
-        if f % 2 == 0:                                 # readout toggles in sync
-            for y in range(2, 5):
-                for x in range(14, 17):
-                    g[y][x] = 3
-        for x in range(14, 19):                        # static framed goal display
-            g[6][x] = 4; g[10][x] = 4
-        for y in range(6, 11):
-            g[y][14] = 4; g[y][18] = 4
-        for i, row in enumerate(([5, 6, 5], [6, 5, 6], [5, 6, 5])):
-            for j, c in enumerate(row):
-                g[7 + i][15 + j] = c
-        for y in range(16, 19):                        # static chrome block
-            for x in range(20, 23):
-                g[y][x] = 8
-        out.append(g)
-    return out
-
-
-def _by_kind(scene, kind):
-    ps = scene.panels_of(kind)
-    assert ps, f"expected a {kind} panel; got {[(p.bbox, p.kind) for p in scene.panels]}"
-    return ps[0]
-
-
-def test_scene_segments_panels_across_a_background_margin():
-    g = [[0] * 7 for _ in range(3)]
-    for y in range(3):
-        g[y][0] = g[y][1] = 1                          # left block
-        g[y][5] = g[y][6] = 2                          # right block; cols 2-4 are margin
-    scene = parse_scene(_scene_log([g, g]))
-    boxes = sorted(p.bbox for p in scene.panels)
-    assert boxes == [(0, 0, 2, 1), (0, 5, 2, 6)]       # split on the margin, no bleed
-
-
-def test_scene_types_static_frame_vs_readout_vs_bar():
-    scene = parse_scene(_scene_log(_panel_frames()))
-    assert _by_kind(scene, "play_field").bbox == (2, 2, 11, 11)
-    assert _by_kind(scene, "resource_bar").bbox == (16, 2, 17, 11)
-    assert _by_kind(scene, "readout").bbox == (2, 14, 4, 16)
-    goal = _by_kind(scene, "goal_display")
-    assert goal.bbox == (6, 14, 10, 18) and goal.frame_color == 4
-    assert _by_kind(scene, "chrome").bbox == (16, 20, 18, 22)
-    # the consumer hook exposes the (goal, readout) template/copy candidates
-    assert scene.panel_pairs("goal_display", "readout")
-
-
-def test_scene_mover_colors_pick_play_field():
-    scene = parse_scene(_scene_log(_panel_frames()), mover_colors={1})
-    assert _by_kind(scene, "play_field").bbox == (2, 2, 11, 11)
-
-
-def test_scene_briefing_renders():
-    b = parse_scene(_scene_log(_panel_frames())).to_briefing()
-    assert isinstance(b, str) and "play_field" in b and "goal_display" in b
-
-
-def test_scene_is_deterministic():
-    frames = _panel_frames()
-    s1, s2 = parse_scene(_scene_log(frames)), parse_scene(_scene_log(frames))
-    assert s1.to_briefing() == s2.to_briefing()
-    assert [(p.bbox, p.kind) for p in s1.panels] == [(p.bbox, p.kind) for p in s2.panels]
-
-
 # ── GP-250 region-state machine + dihedral shape equivalence (appended) ──────
 from ztare.worldmodel.spec_catalog import lower_spec as _lower
 from ztare.worldmodel.spec_abduction import _cellwise_reproducible, _fit_write_function
@@ -5872,6 +6171,78 @@ def test_shifting_glyph_is_not_cellwise_but_content_states_fits():
     assert _cellwise_reproducible([(8, 7, 0), (0, 8, 7)], {0: 1, 1: 0}) is False
 
 
+def test_counterexample_route_compresses_phase_writes_equivariantly():
+    """Repeated trigger effects become one state machine under chart relabeling."""
+    from types import SimpleNamespace
+
+    from ztare.worldmodel.leaf_workbench import _catalog_residual_event_candidates
+
+    def run_case(row_shift, col_shift, palette):
+        mover = palette["mover"]
+        idle, lit = palette["idle"], palette["lit"]
+        source = (2 + row_shift, 1 + col_shift)
+        target = (2 + row_shift, 3 + col_shift)
+        display = (8 + row_shift, 2 + col_shift)
+        states = (
+            ((lit, idle, idle), (lit, idle, idle)),
+            ((idle, lit, idle), (idle, lit, idle)),
+            ((idle, idle, lit), (idle, idle, lit)),
+        )
+
+        def transition(before_state, after_state):
+            before = [[0] * 16 for _ in range(16)]
+            after = [[0] * 16 for _ in range(16)]
+            for grid, anchor in ((before, source), (after, target)):
+                r0, c0 = anchor
+                grid[r0][c0:c0 + 2] = [mover[0], mover[0]]
+                grid[r0 + 1][c0:c0 + 2] = [mover[1], mover[1]]
+            dr, dc = display
+            for rr in range(2):
+                before[dr + rr][dc:dc + 3] = list(before_state[rr])
+                after[dr + rr][dc:dc + 3] = list(after_state[rr])
+            return SimpleNamespace(
+                s=tuple(tuple(row) for row in before),
+                s_next=tuple(tuple(row) for row in after),
+                a=0,
+                t=0,
+                identity=None,
+            )
+
+        prior = [
+            (0, transition(states[0], states[1])),
+            (1, transition(states[1], states[2])),
+        ]
+        current = transition(states[2], states[0])
+        proposed = [list(row) for row in current.s_next]
+        dr, dc = display
+        for rr in range(2):
+            proposed[dr + rr][dc:dc + 3] = list(states[2][rr])
+        events = _catalog_residual_event_candidates(
+            prior,
+            current,
+            tuple(tuple(row) for row in proposed),
+            current.s_next,
+        )
+        assert events
+        return events[0]
+
+    first = run_case(0, 0, {"mover": (1, 2), "idle": 7, "lit": 8})
+    transformed = run_case(1, 2, {"mover": (4, 9), "idle": 5, "lit": 12})
+
+    assert first["operation_identity"] == transformed["operation_identity"] == {
+        "relation": "boundary_conditioned_state_transition",
+        "subject_role": "moves_under_actions",
+        "boundary": "arrival",
+        "consequence_role": "finite_state_object",
+    }
+    assert first["lowering"]["state_transition"] == "cycle"
+    assert transformed["lowering"]["state_transition"] == "cycle"
+    assert first["lowering"]["region"] == [8, 2, 9, 4]
+    assert transformed["lowering"]["region"] == [9, 4, 10, 6]
+    assert first["state_machine_evidence"]["state_count"] == 3
+    assert first["operation_support_rows"] == [0, 1]
+
+
 def _place(g, y0, x0, cells, color):
     for (dy, dx) in cells:
         g[y0 + dy][x0 + dx] = color
@@ -5893,6 +6264,8 @@ def test_template_match_dihedral_matches_rotation_translation_fails():
     assert predicate_from_spec(spec, start, "dihedral")(goal) is True
     # identity group (translation only): a rotated copy provably does NOT match
     assert predicate_from_spec(spec, start, "identity")(goal) is False
+    # A geometric prior is never the implicit authority-bearing default.
+    assert predicate_from_spec(spec, start)(goal) is False
 
 
 def test_accumulate_extremal_is_consume_transpose_and_mines_dropped_fills():
@@ -5977,6 +6350,497 @@ def _load_arc3_play_loop():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def test_governed_adoption_requires_current_run_promotion_and_changed_bytes(tmp_path):
+    mod = _load_arc3_play_loop()
+    project = tmp_path / "project"
+    workspace = project / "workspace"
+    workspace.mkdir(parents=True)
+    model = project / "test_model.py"
+    telemetry = workspace / "iteration_telemetry.jsonl"
+    model.write_text("def step(s, a, t): return s\n", encoding="utf-8")
+    telemetry.write_text("", encoding="utf-8")
+    cursor = mod._governed_adoption_cursor(project)
+
+    telemetry.write_text(
+        json.dumps({"record_type": "iteration", "champion_promoted": False}) + "\n",
+        encoding="utf-8",
+    )
+    no_promotion = mod._governed_adoption_since(project, cursor)
+    assert no_promotion["adopted"] is False
+
+    cursor = mod._governed_adoption_cursor(project)
+    model.write_text("def step(s, a, t): return tuple(s)\n", encoding="utf-8")
+    with telemetry.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps({"record_type": "iteration", "champion_promoted": True}) + "\n")
+    promoted = mod._governed_adoption_since(project, cursor)
+    assert promoted["adopted"] is True
+    assert promoted["candidate_bytes_changed"] is True
+    assert promoted["adoption_scope"] == "active_discriminator_frontier"
+    assert promoted["task_discharge_authorized"] is False
+
+
+def test_residual_frontier_materializes_as_baseline_without_promotion(tmp_path):
+    import hashlib
+
+    mod = _load_arc3_play_loop()
+    project = tmp_path / "project"
+    workspace = project / "workspace"
+    workspace.mkdir(parents=True)
+    (workspace / "iteration_telemetry.jsonl").write_text("", encoding="utf-8")
+    (project / "test_model.py").write_text(
+        "def step(state, action, t): return state\n",
+        encoding="utf-8",
+    )
+    frontier = "def step(state, action, t): return tuple(state)\n"
+    frontier_sha = hashlib.sha256(frontier.encode("utf-8")).hexdigest()
+    (workspace / "frontier.py").write_text(frontier, encoding="utf-8")
+
+    receipt = mod._materialize_governed_baseline(
+        project,
+        source=frontier,
+        source_ref="workspace/frontier.py",
+        candidate_sha256=frontier_sha,
+        producer_id="deterministic-frontier",
+    )
+    cursor = mod._governed_adoption_cursor(project)
+    with (workspace / "iteration_telemetry.jsonl").open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps({"record_type": "iteration", "champion_promoted": True}) + "\n")
+
+    assert receipt["changed"] is True
+    assert receipt["promotion_authority"] is False
+    assert (project / "test_model.py").read_text(encoding="utf-8") == frontier
+    assert mod._governed_adoption_since(project, cursor)["adopted"] is False
+
+
+def test_configured_candidate_verifier_error_does_not_unlock_raw_abduction(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    candidate = SimpleNamespace(
+        proposal=SimpleNamespace(candidate_sha256="a" * 64),
+        gate_pass=False,
+        gate_payload={
+            "verdict": "harness_error",
+            "control_receipt": {"cause": "RuntimeError: verifier timed out"},
+        },
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.deterministic_candidate_producers.evaluate_configured_candidates",
+        lambda *_args, **_kwargs: [candidate],
+    )
+
+    outcome = mod._configured_system1_candidate(tmp_path, {})
+
+    assert outcome["status"] == "verification_unavailable"
+    assert outcome["candidate_sha256s"] == ["a" * 64]
+    assert outcome["causes"] == ["RuntimeError: verifier timed out"]
+
+
+def test_configured_system1_reuses_current_incumbent_before_mutation(
+    tmp_path, monkeypatch
+):
+    """An empty residual selects the incumbent role, not a challenger role."""
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    source = "def step(state, action, t):\n    return state\n"
+    incumbent = tmp_path / "test_model.py"
+    incumbent.write_text(source, encoding="utf-8")
+    (tmp_path / "gate_harness.py").write_text("# identity stub\n", encoding="utf-8")
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    payload = {
+        "harness_ok": True,
+        "gated_sha256": digest[:16],
+        "gates": {
+            "visible": {"name": "visible", "pass": True},
+            "holdout": {"name": "holdout", "pass": True},
+        },
+        # Reuse does not need replacement authority.  This false bit proves
+        # the two lifecycle roles are not being conflated.
+        "pre_judge_decision": {"evaluator_authorized": False},
+    }
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: SimpleNamespace(ran=True, payload=payload),
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.deterministic_candidate_producers.evaluate_configured_candidates",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("mutation producer must not fire without a residual")
+        ),
+    )
+
+    outcome = mod._configured_system1_candidate(tmp_path, {})
+
+    assert outcome["status"] == "incumbent_current"
+    assert outcome["candidate_sha256"] == digest
+    assert outcome["model"](((1,),), 0, 0) == ((1,),)
+
+
+def test_deterministic_producer_consumes_pre_judge_authority_bit(
+    tmp_path, monkeypatch
+):
+    """Raw gate success cannot be reconstructed as replacement authority."""
+    from types import SimpleNamespace
+
+    from ztare.worldmodel import deterministic_candidate_producers as producers
+
+    candidate = tmp_path / "workspace" / "submissions" / "candidate.py"
+    candidate.parent.mkdir(parents=True)
+    candidate.write_text(
+        "def step(state, action, t):\n    return state\n",
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    proposal = producers.DeterministicCandidateProposal(
+        producer_id="fixture",
+        candidate_path=candidate,
+        candidate_sha256=digest,
+        input_sha256s={},
+    )
+    payload = {
+        "harness_ok": True,
+        "gated_sha256": digest[:16],
+        "gates": {"visible": {"name": "visible", "pass": True}},
+        "pre_judge_decision": {"evaluator_authorized": False},
+    }
+    monkeypatch.setattr(
+        producers,
+        "configured_proposals",
+        lambda *_args, **_kwargs: [proposal],
+    )
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: SimpleNamespace(ran=True, payload=payload),
+    )
+
+    assessed = producers.evaluate_configured_candidates(
+        tmp_path,
+        {},
+        phase="checkpoint_identification",
+    )
+
+    assert len(assessed) == 1
+    assert assessed[0].gate_pass is False
+
+
+def test_catalog_operation_compiler_consumes_matching_task_receipt_family(
+    tmp_path, monkeypatch
+):
+    from ztare.worldmodel import deterministic_candidate_producers as producers
+
+    project = tmp_path
+    workspace = project / "workspace"
+    workspace.mkdir()
+    base_source = "def step(state, action, t):\n    return state\n"
+    base_path = workspace / "base.py"
+    base_path.write_text(base_source, encoding="utf-8")
+    base_sha = hashlib.sha256(base_source.encode("utf-8")).hexdigest()
+    operation_identity = {
+        "relation": "covered_uncovered",
+        "subject_role": "moves_under_actions",
+        "boundary": "departure",
+        "consequence_role": "revealed_substrate",
+    }
+    operation_sha = hashlib.sha256(
+        json.dumps(
+            operation_identity,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    inspection = {
+        "input_hashes": {
+            "kernel_receipt_ref": "workspace/inspect.json",
+        },
+        "output_summary": json.dumps(
+            {
+                "catalog_residual_event_candidates": [
+                    {
+                        "identity_status": "catalog_operation_reuse_candidate",
+                        "operation_identity": {
+                            "relation": "decoy",
+                            "subject_role": "unselected",
+                        },
+                        "operation_identity_sha256": hashlib.sha256(
+                            json.dumps(
+                                {
+                                    "relation": "decoy",
+                                    "subject_role": "unselected",
+                                },
+                                sort_keys=True,
+                                separators=(",", ":"),
+                            ).encode("utf-8")
+                        ).hexdigest(),
+                        "lowering_kind": "identity",
+                        "lowering": {"op": "identity"},
+                    },
+                    {
+                        # The inspector predates recurrence acquisition.  The
+                        # downstream selector owns current reuse authority.
+                        "identity_status": "operation_recurrence_required",
+                        "operation_identity": operation_identity,
+                        "operation_identity_sha256": operation_sha,
+                        "lowering_kind": "region_event",
+                        "lowering": {
+                            "op": "region_event",
+                            "mover_colors": [1, 2],
+                            "rect": [2, 2, 3, 3],
+                            "edge": "exit",
+                            "writes": [[9, [[2, 2]]]],
+                        },
+                    }
+                ]
+            }
+        ),
+    }
+    selector = {
+        "input_hashes": {
+            "kernel_receipt_ref": "workspace/selector.json",
+        },
+        "output_summary": json.dumps(
+            {
+                "schema": "ztare-worldmodel-operation-domain-selector-v1",
+                "task_id": "task-1",
+                "task_source_sha256": base_sha,
+                "operation_identity_sha256": operation_sha,
+                "candidate_delta_admissible": True,
+                "operation_guard": {
+                    "kind": "adapter_local_exact_chart",
+                    "lowering": {"when_region": [1, 1, 4, 4, [0] * 16]},
+                },
+            }
+        ),
+    }
+    task = {
+        "task_id": "task-1",
+        "source_ref": "workspace/base.py",
+        "source_sha256": base_sha,
+    }
+    monkeypatch.setattr(
+        "ztare.common.leaf_workbench_executor.active_workbench_task_capability_scope",
+        lambda *_args, **_kwargs: (
+            frozenset(
+                {
+                    "inspect_worldmodel_counterexample_context",
+                    "mine_worldmodel_lowerable_selectors",
+                }
+            ),
+            task,
+        ),
+    )
+    monkeypatch.setattr(
+        "ztare.common.leaf_workbench_executor.active_workbench_task_receipt_family",
+        lambda *_args, **_kwargs: {
+            "inspect_worldmodel_counterexample_context": inspection,
+            "mine_worldmodel_lowerable_selectors": selector,
+        },
+    )
+
+    proposal = producers._catalog_operation_patch_compiler(project, {})
+
+    assert proposal is not None
+    source = proposal.candidate_path.read_text(encoding="utf-8")
+    assert "# TaskIdentity: task-1" in source
+    assert "# OperationIdentity: " + operation_sha in source
+    assert "'when_region': [1, 1, 4, 4" in source
+    assert "'when_action'" not in source
+
+    mismatched = json.loads(selector["output_summary"])
+    mismatched["operation_identity_sha256"] = "f" * 64
+    selector["output_summary"] = json.dumps(mismatched)
+    assert producers._catalog_operation_patch_compiler(project, {}) is None
+
+
+def test_configured_system1_keeps_better_incumbent_residual_frontier(
+    tmp_path, monkeypatch
+):
+    """A rejected challenger cannot displace a narrower incumbent residual."""
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    submissions = tmp_path / "workspace" / "submissions"
+    submissions.mkdir(parents=True)
+    incumbent_source = "def step(state, action, t):\n    return state\n"
+    incumbent_path = tmp_path / "test_model.py"
+    incumbent_path.write_text(incumbent_source, encoding="utf-8")
+    (submissions / "incumbent.py").write_text(incumbent_source, encoding="utf-8")
+    (tmp_path / "gate_harness.py").write_text("# fixture\n", encoding="utf-8")
+    incumbent_sha = hashlib.sha256(incumbent_source.encode("utf-8")).hexdigest()
+
+    def payload(sha, exact, wrong):
+        return {
+            "harness_ok": True,
+            "gated_sha256": sha[:16],
+            "gates": {
+                "visible": {
+                    "name": "visible",
+                    "pass": False,
+                    "diagnostics": {
+                        "exact_rows": exact,
+                        "wrong_cell_count": wrong,
+                        "residual_table": [{"row": exact}],
+                    },
+                }
+            },
+            "pre_judge_decision": {"evaluator_authorized": False},
+        }
+
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: SimpleNamespace(
+            ran=True,
+            payload=payload(incumbent_sha, 10, 2),
+        ),
+    )
+    challenger_source = "def step(state, action, t):\n    return tuple(state)\n"
+    challenger_path = submissions / "challenger.py"
+    challenger_path.write_text(challenger_source, encoding="utf-8")
+    challenger_sha = hashlib.sha256(challenger_source.encode("utf-8")).hexdigest()
+    challenger = SimpleNamespace(
+        proposal=SimpleNamespace(
+            candidate_path=challenger_path,
+            candidate_sha256=challenger_sha,
+            producer_id="challenger",
+        ),
+        gate_pass=False,
+        gate_payload=payload(challenger_sha, 9, 20),
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.deterministic_candidate_producers.evaluate_configured_candidates",
+        lambda *_args, **_kwargs: [challenger],
+    )
+
+    outcome = mod._configured_system1_candidate(tmp_path, {})
+
+    assert outcome["status"] == "residual_frontier"
+    assert outcome["producer_id"] == "current_incumbent"
+    assert outcome["candidate_sha256"] == incumbent_sha
+    assert outcome["rank"][0] == 10
+    assert outcome["rank"][3] == -2
+    assert outcome["source_ref"] == "workspace/submissions/incumbent.py"
+
+
+def test_configured_system1_consumes_receipt_owned_repair_frontier(
+    tmp_path, monkeypatch
+):
+    """A resolved continuation role outranks private candidate re-ranking."""
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    workspace = tmp_path / "workspace"
+    submissions = workspace / "submissions"
+    submissions.mkdir(parents=True)
+    (workspace / "latest_patch_base_regression.json").write_text("{}\n")
+    (tmp_path / "gate_harness.py").write_text("# fixture\n", encoding="utf-8")
+    incumbent_source = "def step(state, action, t): return state\n"
+    (tmp_path / "test_model.py").write_text(incumbent_source, encoding="utf-8")
+    frontier = submissions / "frontier.py"
+    frontier_source = "def step(state, action, t): return tuple(state)\n"
+    frontier.write_text(frontier_source, encoding="utf-8")
+    frontier_sha = hashlib.sha256(frontier.read_bytes()).hexdigest()
+    incumbent_sha = hashlib.sha256(incumbent_source.encode()).hexdigest()
+    incumbent_payload = {
+        "harness_ok": True,
+        "gated_sha256": incumbent_sha[:16],
+        "gates": {
+            "visible": {
+                "pass": False,
+                "diagnostics": {
+                    "exact_rows": 100,
+                    "wrong_cell_count": 1,
+                    "residual_table": [{"row": 0}],
+                },
+            }
+        },
+    }
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: SimpleNamespace(ran=True, payload=incumbent_payload),
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.deterministic_candidate_producers.evaluate_configured_candidates",
+        lambda *_args, **_kwargs: [],
+    )
+    monkeypatch.setattr(
+        "ztare.common.patch_base_identity.load_current_repair_frontier",
+        lambda _project: {
+            "path": frontier,
+            "source_ref": "workspace/submissions/frontier.py",
+            "sha256": frontier_sha,
+            "exact_rows": 90,
+            "wrong_cells": 5,
+        },
+    )
+
+    outcome = mod._configured_system1_candidate(tmp_path, {})
+
+    assert outcome["status"] == "residual_frontier"
+    assert outcome["producer_id"] == "repair_preflight_frontier"
+    assert outcome["candidate_sha256"] == frontier_sha
+
+
+def test_configured_system1_replaces_expired_repair_frontier_from_current_epoch(
+    tmp_path, monkeypatch
+):
+    """Evidence growth expires the singleton role without disabling verification."""
+    from types import SimpleNamespace
+
+    from ztare.common.patch_base_identity import StaleRepairFrontierError
+
+    mod = _load_arc3_play_loop()
+    workspace = tmp_path / "workspace"
+    submissions = workspace / "submissions"
+    submissions.mkdir(parents=True)
+    (workspace / "latest_patch_base_regression.json").write_text("{}\n")
+    (tmp_path / "gate_harness.py").write_text("# fixture\n", encoding="utf-8")
+    incumbent_source = "def step(state, action, t): return state\n"
+    incumbent = tmp_path / "test_model.py"
+    incumbent.write_text(incumbent_source, encoding="utf-8")
+    immutable = submissions / "incumbent.py"
+    immutable.write_text(incumbent_source, encoding="utf-8")
+    incumbent_sha = hashlib.sha256(incumbent_source.encode()).hexdigest()
+    incumbent_payload = {
+        "harness_ok": True,
+        "gated_sha256": incumbent_sha[:16],
+        "gates": {
+            "visible": {
+                "pass": False,
+                "diagnostics": {
+                    "exact_rows": 101,
+                    "wrong_cell_count": 3,
+                    "residual_table": [{"row": 0}],
+                },
+            }
+        },
+    }
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: SimpleNamespace(ran=True, payload=incumbent_payload),
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.deterministic_candidate_producers.evaluate_configured_candidates",
+        lambda *_args, **_kwargs: [],
+    )
+
+    def expired(_project):
+        raise StaleRepairFrontierError("prior evidence epoch")
+
+    monkeypatch.setattr(
+        "ztare.common.patch_base_identity.load_current_repair_frontier",
+        expired,
+    )
+
+    outcome = mod._configured_system1_candidate(tmp_path, {})
+
+    assert outcome["status"] == "residual_frontier"
+    assert outcome["producer_id"] == "current_incumbent"
+    assert outcome["candidate_sha256"] == incumbent_sha
+    assert outcome["source_ref"] == "workspace/submissions/incumbent.py"
 
 
 def _setup_sprint_project(tmp_path, log):
@@ -6144,389 +7008,25 @@ def test_arc3_play_loads_candidate_memory_patch_base_advice(tmp_path):
     assert model(s, 0, 0) == s2
 
 
-def test_grammar_reflex_accept_reabduces_closes_and_attests(tmp_path, monkeypatch):
-    """On a partial abduction whose residual IS closable once the proposed
-    operator is enabled, a mocked-accept implement leg drives a prior-seeded
-    re-abduction that CLOSES the law (sprint may continue in-run). Rule 6: the
-    adoption writes an attestation (16-hex rules sha) onto the ledger row."""
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.spec_abduction import abduce_spec
-    import json
-
-    log = build_coupling_synthetic()
-    # the catalog WITHOUT the coupling operator leaves a residual (partial)
-    ab_partial = abduce_spec(log, 2, _effect_refine=False)
-    assert not ab_partial.replay_ok, "fixture must be a genuine ceiling"
-
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner",
-                        lambda card, provider="mock": {"artifact": "shape"})
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": True, "receipt": "MOCK-RECEIPT", "counterexample": None})
-
-    res = gr.attempt_grammar_extension(tmp_path, log, ab_partial, budget=1)
-    assert res["closed"] is True and res["result"].replay_ok, res
-    assert res["receipt"] == "MOCK-RECEIPT"
-    assert [d["disposition"] for d in res["dispositions"]] == ["accepted"]
-
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    accepted = [r for r in rows if r.get("disposition") == "accepted"]
-    assert accepted and "attestation" in accepted[0]             # Rule 6
-    att = accepted[0]["attestation"]
-    assert att["outcome"] == "accepted" and len(att["rules_sha"]) == 16
-    assert "grammar_reflex" in att["principal"]
-    # Rule 3 by construction: no proposal card is certifier-touched
-    assert all(not r.get("certifier_touched") for r in rows)
-
-
-def test_grammar_reflex_reject_defers_with_disposition_written(tmp_path, monkeypatch):
-    """A mocked-reject implement leg leaves the law OPEN: the reflex returns the
-    ORIGINAL result (closed False) with the rejected card + its counterexample
-    persisted to the ledger as the checkpoint briefing."""
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.spec_abduction import abduce_spec
-    import json
-
-    log = build_coupling_synthetic()
-    ab_partial = abduce_spec(log, 2, _effect_refine=False)
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner",
-                        lambda card, provider="mock": {"artifact": "shape"})
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "NO-IMPROVEMENT"})
-
-    res = gr.attempt_grammar_extension(tmp_path, log, ab_partial, budget=1)
-    assert res["closed"] is False and res["result"] is ab_partial
-    assert res["dispositions"][0]["disposition"] == "rejected"
-
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    assert any(r.get("disposition") == "rejected"
-               and r.get("counterexample") == "NO-IMPROVEMENT" for r in rows)
-
-
-def test_grammar_reflex_skips_empty_evidence_cards_in_sprint(tmp_path, monkeypatch):
-    from ztare.common.operator_proposal_contract import operator_proposal_card
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.spec_abduction import abduce_spec
-
-    log = build_coupling_synthetic()
-    ab_partial = abduce_spec(log, 2, _effect_refine=False)
-    stale = operator_proposal_card(
-        failure_family="closure:condition:event_history_latch",
-        evidence_indices=[],
-        spatial_footprint={},
-        why_existing_ops_fail={"closure_audit": "pre-registered"},
-        proposed_operator_sketch="strategic card",
-        acceptance_test="strategy office only",
-    )
-    certifier_touched = operator_proposal_card(
-        failure_family="certifier:touched:evidence_card",
-        evidence_indices=[0],
-        spatial_footprint={},
-        why_existing_ops_fail={"rule": "needs conductor"},
-        proposed_operator_sketch="not auto-adoptable",
-        acceptance_test="conductor only",
-    )
-    certifier_touched["certifier_touched"] = True
-    gr.write_proposals(tmp_path, [stale, certifier_touched])
-    seen = []
-
-    def leaf(card, provider="mock"):
-        seen.append(card["failure_family"])
-        return {"artifact": "shape"}
-
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner", leaf)
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "NO"})
-    gr.attempt_grammar_extension(tmp_path, log, ab_partial, budget=1)
-
-    assert seen
-    assert seen[0] != "closure:condition:event_history_latch"
-    assert seen[0] != "certifier:touched:evidence_card"
-
-
-def test_grammar_reflex_structural_bridge_rejects_prose_only_transport(tmp_path, monkeypatch):
-    """The bridge is a final rung only when explicitly enabled and standard
-    cards are exhausted. A transport without spec_patch is recorded and killed
-    before replay."""
+def test_sprint_ceiling_reflex_hands_open_cards_to_governed_owner(tmp_path, monkeypatch):
+    """Sprint triages the ceiling but cannot implement through a second door."""
     from types import SimpleNamespace
-    from ztare.common.operator_proposal_contract import operator_proposal_card
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.episode_log import EpisodeLog
-    import json
-
-    log = EpisodeLog()
-    log.append(((0,),), 0, ((1,),), t=0)
-    card = operator_proposal_card(
-        failure_family="single-bridge-card",
-        evidence_indices=[0],
-        spatial_footprint={"bbox": [0, 0, 0, 0]},
-        why_existing_ops_fail={"catalog": "no current operator maps 0 to 1"},
-        proposed_operator_sketch="cross_field_template(...)",
-        acceptance_test="mock",
-    )
-    monkeypatch.setenv("ZTARE_REFLEX_STRUCTURAL_BRIDGE", "1")
-    monkeypatch.setattr(gr, "propose_operators", lambda log, spec, mismatch_indices: [card])
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner",
-                        lambda card, provider="mock": {"artifact": "shape"})
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "leaf failed"})
-    calls = {"n": 0}
-    def fake_prescribe(*args, **kwargs):
-        calls["n"] += 1
-        return {"source_theorem": "Kossel-Stranski growth",
-                "source_field": "crystal growth",
-                "transported_structure": "layer completion template",
-                "predict_then_falsify": "would imply a concrete patch if lowerable"}
-    monkeypatch.setattr(gr, "prescribe_for_seam", fake_prescribe)
-
-    ab = SimpleNamespace(spec={"actions": {"0": [{"op": "identity"}]}, "always": []},
-                         step_fn=(lambda s, a, t: s), replay_ok=False)
-    res = gr.attempt_grammar_extension(tmp_path, log, ab, budget=1)
-    assert res["closed"] is False
-    assert calls["n"] == 1
-    assert res["structural_bridge"]["status"] == "no_spec_patch"
-
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    assert any(r.get("counterexample") == "NO_SPEC_PATCH" for r in rows)
-
-
-def test_grammar_reflex_structural_bridge_cache_reuses_prescription(tmp_path, monkeypatch):
-    """The structural query is keyed by log/spec/failure shape, so a repeat
-    bridge attempt uses the sha cache instead of re-querying a provider."""
-    from types import SimpleNamespace
-    from ztare.common.operator_proposal_contract import operator_proposal_card, set_disposition
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.episode_log import EpisodeLog
-
-    log = EpisodeLog()
-    log.append(((0,),), 0, ((1,),), t=0)
-    card = operator_proposal_card(
-        failure_family="cache-bridge-card",
-        evidence_indices=[0],
-        spatial_footprint={"bbox": [0, 0, 0, 0]},
-        why_existing_ops_fail={"catalog": "x"},
-        proposed_operator_sketch="x",
-        acceptance_test="mock",
-    )
-    disp = set_disposition(card, "rejected")
-    disp["counterexample"] = "leaf failed"
-    ab = SimpleNamespace(spec={"actions": {"0": [{"op": "identity"}]}, "always": []},
-                         step_fn=(lambda s, a, t: s), replay_ok=False)
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    monkeypatch.setenv("ZTARE_REFLEX_STRUCTURAL_BRIDGE", "1")
-    calls = {"n": 0}
-    def fake_prescribe(*args, **kwargs):
-        calls["n"] += 1
-        return {"source_theorem": "cached theorem", "source_field": "field",
-                "transported_structure": "shape", "predict_then_falsify": "test"}
-    monkeypatch.setattr(gr, "prescribe_for_seam", fake_prescribe)
-
-    first = gr._attempt_structural_transport_bridge(tmp_path, log, ab, [card], [disp], ledger)
-    second = gr._attempt_structural_transport_bridge(tmp_path, log, ab, [card], [disp], ledger)
-    assert first["status"] == "no_spec_patch"
-    assert second["status"] == "no_spec_patch"
-    assert second["source"] == "cache"
-    assert calls["n"] == 1
-
-
-def test_grammar_reflex_structural_bridge_house_arbiter_accepts_improvement_no_regression():
-    from types import SimpleNamespace
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.episode_log import EpisodeLog
-
-    log = EpisodeLog()
-    log.append(((0,),), 0, ((1,),), t=0)
-    log.append(((1,),), 0, ((2,),), t=1)
-    baseline_spec = {"actions": {"0": [{"op": "identity"}]}, "always": []}
-    candidate = {"actions": {"0": [{"op": "recolor_map", "mapping": {"0": 1, "1": 2}}]},
-                 "always": []}
-    ab = SimpleNamespace(spec=baseline_spec, step_fn=(lambda s, a, t: s), replay_ok=False)
-    verdict = gr._spec_patch_house_verdict(log, ab, candidate)
-    assert verdict["accepted"] is True
-    assert verdict["baseline_wrong"] == 2
-    assert verdict["candidate_wrong"] == 0
-    assert verdict["regressions"] == []
-
-
-def test_grammar_reflex_structural_bridge_acceptance_writes_dictionary(tmp_path, monkeypatch):
-    from types import SimpleNamespace
-    from ztare.common.operator_proposal_contract import operator_proposal_card, set_disposition
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.episode_log import EpisodeLog
-    import json
-
-    log = EpisodeLog()
-    log.append(((0,),), 0, ((1,),), t=0)
-    log.append(((1,),), 0, ((2,),), t=1)
-    card = operator_proposal_card(
-        failure_family="accepted-bridge-card",
-        evidence_indices=[0, 1],
-        spatial_footprint={"bbox": [0, 0, 0, 0]},
-        why_existing_ops_fail={"catalog": "x"},
-        proposed_operator_sketch="x",
-        acceptance_test="mock",
-    )
-    disp = set_disposition(card, "rejected")
-    disp["counterexample"] = "leaf failed"
-    ab = SimpleNamespace(
-        spec={"actions": {"0": [{"op": "identity"}]}, "always": []},
-        step_fn=(lambda s, a, t: s),
-        replay_ok=False,
-    )
-    spec_patch = {"actions": {"0": [{"op": "recolor_map", "mapping": {"0": 1, "1": 2}}]},
-                  "always": []}
-    dictionary = tmp_path / "dictionary.jsonl"
-    monkeypatch.setenv("ZTARE_REFLEX_STRUCTURAL_BRIDGE", "1")
-    monkeypatch.setenv("ZTARE_RESEARCH_ISOMORPHISM_DICTIONARY", str(dictionary))
-    monkeypatch.setattr(gr, "prescribe_for_seam",
-                        lambda *args, **kwargs:
-                        {"source_theorem": "clocked resource transducer",
-                         "source_field": "automata",
-                         "transported_structure": "resource state lowers to recolor patch",
-                         "predict_then_falsify": "patch must improve replay",
-                         "spec_patch": spec_patch})
-
-    out = gr._attempt_structural_transport_bridge(
-        tmp_path, log, ab, [card], [disp], tmp_path / "workspace" / "operator_proposals.jsonl")
-    assert out["status"] == "accepted"
-    rows = [json.loads(l) for l in dictionary.read_text().splitlines() if l.strip()]
-    assert rows[0]["record_type"] == "learned_correspondence_dictionary_entry"
-    assert rows[0]["source_key"].startswith("structural_bridge:")
-    assert rows[0]["lowerings"]["worldmodel_spec_patch"] == spec_patch
-
-
-def test_grammar_reflex_budget_cap_respected(tmp_path, monkeypatch):
-    """Rule 5 (exogenous clock): with a residual yielding multiple cards, budget=1
-    implements exactly ONE — the remaining card stays OPEN for the next round."""
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.spec_abduction import abduce_spec
-    import json
-
-    log = build_coupling_synthetic()
-    ab_partial = abduce_spec(log, 2, _effect_refine=False)
-    # this residual clusters into >1 card (per-action rewrite signatures)
-    assert len(gr.propose_operators(log, ab_partial.spec, None)) >= 2
-
-    calls = {"n": 0}
-    def counting_leaf(card, provider="mock"):
-        calls["n"] += 1
-        return {"artifact": "shape"}
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner", counting_leaf)
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "x"})
-
-    res = gr.attempt_grammar_extension(tmp_path, log, ab_partial, budget=1)
-    assert calls["n"] == 1 and len(res["dispositions"]) == 1
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    assert sum(r.get("disposition") == "open" for r in rows) >= 1   # a card left for later
-
-
-def test_grammar_reflex_refuses_certifier_touched_card(tmp_path, monkeypatch):
-    """Rule 3 (certifier separation): an operator card must not be
-    certifier_touched. A planted one is not eligible for sprint auto-adoption."""
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.common.operator_proposal_contract import (
-        operator_proposal_card, write_proposal_cards)
-    from ztare.worldmodel.operator_implement import build_coupling_synthetic
-    from ztare.worldmodel.spec_abduction import abduce_spec
-
-    # plant a certifier-touched card FIRST so it heads the open set (file order)
-    bad = operator_proposal_card(
-        failure_family="certifier-amendment", evidence_indices=[0],
-        spatial_footprint={"bbox": [0, 0, 0, 0]},
-        why_existing_ops_fail={"gate": "would amend its own gate"},
-        proposed_operator_sketch="loosen_gate(...)", acceptance_test="n/a")
-    bad["certifier_touched"] = True
-    write_proposal_cards(tmp_path / "workspace" / "operator_proposals.jsonl", [bad])
-
-    log = build_coupling_synthetic()
-    ab_partial = abduce_spec(log, 2, _effect_refine=False)
-    seen = []
-    def leaf(_card, provider="mock"):
-        seen.append(dict(_card))
-        return {"artifact": "shape"}
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner", leaf)
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "x"})
-    res = gr.attempt_grammar_extension(tmp_path, log, ab_partial, budget=1)
-    assert seen
-    assert all(not c.get("certifier_touched") for c in seen)
-    assert res["closed"] is False
-    assert len(res["dispositions"]) == 1
-
-
-def test_sprint_ceiling_reflex_reject_checkpoints(tmp_path, monkeypatch):
-    """Wiring: a sprint that hits the catalog ceiling runs ONE reflex round; on
-    reject it falls through to the governed checkpoint (abduction_partial) with
-    the cards + disposition now on the ledger as briefing."""
-    from types import SimpleNamespace
-    from ztare.worldmodel import grammar_reflex as gr
     import json
 
     mod = _load_arc3_play_loop()
     log = _rotation_residual_log()
     cfg = _setup_sprint_project(tmp_path, log)
-    monkeypatch.setattr(gr, "worldmodel_leaf_runner",
-                        lambda card, provider="mock": {"artifact": "shape"})
-    monkeypatch.setattr(gr, "worldmodel_harness",
-                        lambda artifact, real_log=None:
-                        {"accepted": False, "receipt": "", "counterexample": "NOPE"})
-
     out = mod._sprint(tmp_path, SimpleNamespace(action_arity=1), cfg, None, None)
     assert any(r.get("status") == "abduction_partial" for r in out["rounds"])
-    assert out["grammar_reflex"][0]["closed"] is False
+    assert out["grammar_reflex"][0]["status"] == "proposals_routed"
     ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
     rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
-    assert any(r.get("disposition") == "rejected" for r in rows)
+    assert rows
+    assert all(r.get("disposition") not in {"accepted", "rejected"} for r in rows)
     receipt = json.loads((tmp_path / "workspace" / "latest_sprint_receipt.json").read_text())
     assert receipt["status"] == "abduction_partial"
     assert receipt["transition_model_mismatch"] is False
     assert receipt["terminal_verifier_model_mismatch"] is False
-
-
-def test_sprint_ceiling_reflex_accept_continues_in_run(tmp_path, monkeypatch):
-    """Wiring: when the reflex CLOSES the law, the sprint adopts the extended
-    model and keeps PLAYING the same run — no abduction_partial, no checkpoint."""
-    from types import SimpleNamespace
-    from ztare.worldmodel import grammar_reflex as gr
-    from ztare.worldmodel.spec_abduction import AbductionResult
-
-    mod = _load_arc3_play_loop()
-    log = _rotation_residual_log()
-    cfg = _setup_sprint_project(tmp_path, log)
-
-    played = {"n": 0}
-    def fake_play(adapter, play_model, **kw):
-        played["n"] += 1
-        return SimpleNamespace(status="saturated", steps_executed=0, levels_gained=0,
-                               saturated=True, observed_transitions=[], lives=1)
-    monkeypatch.setattr(mod, "_play_round_multilife", fake_play)
-    closed = AbductionResult(status="spec_identified", spec={"actions": {}, "always": []},
-                             step_fn=(lambda s, a, t: s), replay_ok=True)
-    monkeypatch.setattr(gr, "attempt_grammar_extension",
-                        lambda project, log, ab, budget=1:
-                        {"closed": True, "result": closed, "receipt": "ok",
-                         "dispositions": [{"disposition": "accepted"}]})
-
-    out = mod._sprint(tmp_path, SimpleNamespace(action_arity=1), cfg, None, None)
-    assert all(r.get("status") != "abduction_partial" for r in out["rounds"])
-    assert out["grammar_reflex"][0]["closed"] is True
-    assert played["n"] == 1                       # it PLAYED after closing, in-run
-
-
 def test_sprint_uses_candidate_goal_before_goal_exemplar(tmp_path, monkeypatch):
     """A candidate goal predicate is steering, not authority; it may guide the
     planner before any terminal exemplar exists because the sealed environment
@@ -6566,7 +7066,7 @@ def test_sprint_grammar_reflex_flag_off_restores_old_behavior(tmp_path, monkeypa
     cfg = _setup_sprint_project(tmp_path, log)
     monkeypatch.setenv("ZTARE_GRAMMAR_REFLEX", "0")
     called = {"n": 0}
-    monkeypatch.setattr(gr, "attempt_grammar_extension",
+    monkeypatch.setattr(gr, "route_operator_proposals",
                         lambda *a, **k: called.__setitem__("n", called["n"] + 1))
 
     out = mod._sprint(tmp_path, SimpleNamespace(action_arity=1), cfg, None, None)
@@ -6765,6 +7265,40 @@ def test_spec_abduction_galois_footprint_prunes_dominated_candidate(monkeypatch)
     assert on_stats["footprint_pruned"] == 1
     assert on_stats["bounded_candidates"] == 1
     assert on_stats["footprint_pruned_fraction"] == 1.0
+
+
+def test_spec_abduction_scoring_does_not_alias_python_object_identities(monkeypatch):
+    """Distinct targets and specs remain distinct even under an id collision."""
+    from ztare.worldmodel import spec_abduction as SA
+    from ztare.worldmodel.episode_log import EpisodeLog
+
+    monkeypatch.setattr(SA, "id", lambda _obj: 1, raising=False)
+    assert SA._grid_wrong_cells(((0,),), ((0,),)) == 0
+    assert SA._grid_wrong_cells(((0,),), ((1,),)) == 1
+
+    state = ((1, 0), (0, 0))
+    target = ((2, 0), (0, 0))
+    log = EpisodeLog()
+    log.append(state, 0, target, t=0)
+    identity = {"actions": {"0": [{"op": "identity"}]}, "always": []}
+    recolor = {
+        "actions": {"0": [{"op": "recolor_map", "mapping": {"1": 2}}]},
+        "always": [],
+    }
+
+    def identity_step(g, _a, _t):
+        return g
+
+    def recolor_step(_g, _a, _t):
+        return target
+
+    identity_step._ztare_world_model_spec = identity
+    recolor_step._ztare_world_model_spec = recolor
+    monkeypatch.setenv("ZTARE_QUOTIENT_SCORE", "1")
+    SA._install_score_context(log)
+
+    assert SA._galois_footprint_lower_bound(identity_step, log, "cell") == 1
+    assert SA._galois_footprint_lower_bound(recolor_step, log, "cell") == 0
 
 
 def test_spec_abduction_incumbent_early_exit_preserves_winner(monkeypatch):

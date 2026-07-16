@@ -123,7 +123,11 @@ class ScienceOutputPolicy:
             "and the evidence-backed obstruction, not satisfy a fixed tool "
             "checklist. A failed registered morphism is diagnostic; it is not by "
             "itself evidence that visible counterexamples contain no lowerable "
-            "law."
+            "law. Candidate and candidate-family verdicts are scoped: rejection of "
+            "one executable carrier or exhaustion of one finite selector grammar "
+            "refutes only that named subject. Do not promote either result into a "
+            "search-space LOWERABILITY_BLOCKED claim; pivot the hypothesis family, "
+            "request another typed observation, or submit another carrier."
         )
 
     def final_contract_text(self) -> str:

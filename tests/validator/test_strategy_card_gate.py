@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -126,6 +127,86 @@ def test_strategy_card_gate_blocks_object_card_even_with_meta_card_present(tmp_p
     ]
     assert len(result.payload["nonblocking_cards"]) == 1
     assert result.payload["nonblocking_cards"][0]["role"]["lane"] == "meta_hardening"
+
+
+def test_strategy_card_gate_binds_only_newest_frontier_work_order(tmp_path: Path) -> None:
+    older = _write_strategy_card(tmp_path)
+    newer = dict(older)
+    newer["failure_family"] = "family-b"
+    newer.pop("failure_family_sha", None)
+    written = write_proposal_cards(
+        tmp_path / "workspace" / "strategy_experiments.jsonl",
+        [newer],
+    )
+    assert written
+
+    result = evaluate_strategy_card_gate(
+        project_dir=tmp_path,
+        thesis_text="candidate without a frontier discharge",
+        candidate_source="def step(grid, action, t): return grid",
+    )
+
+    assert result.payload["open_cards"] == 1
+    assert result.payload["all_open_cards"] == 2
+    assert result.payload["missing"] == [
+        {
+            "failure_family_sha": written[0]["failure_family_sha"],
+            "kind": newer["kind"],
+        }
+    ]
+    assert len(result.payload["nonblocking_cards"]) == 1
+    assert result.payload["nonblocking_cards"][0]["failure_family_sha"] == (
+        older["failure_family_sha"]
+    )
+
+
+def test_identity_bound_workbench_task_supersedes_unbound_strategy_backlog(
+    tmp_path: Path,
+) -> None:
+    older = _write_strategy_card(tmp_path)
+    source = "def step(grid, action, t): return grid\n"
+    (tmp_path / "test_model.py").write_text(source, encoding="utf-8")
+    candidate_sha = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    weakness = {
+        "active_frontier": {"candidate_sha": candidate_sha},
+        "candidate_sha": candidate_sha,
+        "workbench_task": {
+            "task_id": "task-current",
+            "source_ref": "test_model.py",
+            "admissible_capability_ids": ["inspect_worldmodel_counterexample_context"],
+        },
+    }
+    workspace = tmp_path / "workspace"
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(weakness),
+        encoding="utf-8",
+    )
+
+    superseded = evaluate_strategy_card_gate(
+        project_dir=tmp_path,
+        thesis_text="current task owns the evidence frontier",
+        candidate_source=source,
+    )
+    assert superseded.ran is False
+    assert superseded.payload["verdict"] == "no_blocking_cards"
+
+    bound = dict(older)
+    bound["failure_family"] = "family-bound-to-current-carrier"
+    bound.pop("failure_family_sha", None)
+    bound["active_frontier"] = {"candidate_sha": candidate_sha}
+    written = write_proposal_cards(
+        workspace / "strategy_experiments.jsonl",
+        [bound],
+    )
+    current = evaluate_strategy_card_gate(
+        project_dir=tmp_path,
+        thesis_text="candidate omits the bound Strategy discharge",
+        candidate_source=source,
+    )
+    assert current.ran is True
+    assert current.payload["missing"][0]["failure_family_sha"] == (
+        written[0]["failure_family_sha"]
+    )
 
 
 def test_strategy_card_gate_rejects_thin_blocked_repair_receipt(tmp_path: Path) -> None:

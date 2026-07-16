@@ -247,6 +247,44 @@ def test_lowerability_blocked_payload_routes_control_only():
     assert "lowerability_blocked" in sentinel.get("reasons", [])
 
 
+def test_lowerability_command_failure_routes_to_apparatus_receipt(tmp_path):
+    project = tmp_path / "project"
+    blocker = _lowerability_blocked_receipt()
+    blocker["payload"]["visible_command_errors"] = [
+        {
+            "capability_id": "score_worldmodel_candidate_delta",
+            "status": "fail",
+            "error": "No module named 'ztare.common.observation_chart'",
+            "receipt_ref": "workspace/visible_cli_receipts/score_failed.json",
+        }
+    ]
+    thesis_payload = json.dumps(
+        {
+            "control_receipts": [blocker],
+            "thesis_markdown": "registered scorer failed before comparison",
+            "test_model_py": "",
+        }
+    )
+
+    eval_row = build_worldmodel_control_only_eval(
+        run_id=1,
+        iteration=1,
+        thesis_text=thesis_payload,
+        artifact_refs=[],
+        project_dir=project,
+    )
+
+    assert eval_row["apparatus_obstructions"][0]["weakness_class"] == (
+        "registered_capability_delivery_failure"
+    )
+    assert "workspace/latest_harness_weakness.json" in eval_row["artifact_refs"]
+    latest = json.loads(
+        (project / "workspace" / "latest_harness_weakness.json").read_text()
+    )
+    assert latest["recommended_capability_id"] == "score_worldmodel_candidate_delta"
+    assert latest["quotient_relation"] == "instrument_failed_before_consequence"
+
+
 def test_payload_with_test_model_py_takes_normal_candidate_path():
     """When test_model_py is non-empty, check returns None (normal path)."""
     code = "def step(grid, action, t):\n    return grid\n"

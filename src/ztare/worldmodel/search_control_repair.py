@@ -65,7 +65,21 @@ def _candidate_memory_records(path: Path) -> list[dict[str, Any]]:
     return [r for r in records if isinstance(r, dict)]
 
 
-def _latest_gate_passing_candidate(records: list[dict[str, Any]]) -> dict[str, Any]:
+def _current_gate_passing_candidate(
+    project: Path,
+    records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Select support only from the active carrier/evidence population."""
+    try:
+        from ztare.worldmodel.carrier_loader import (
+            CarrierEvidenceIdentityError,
+            require_current_carrier_evidence_binding,
+            resolve_current_carrier_evidence_identity,
+        )
+
+        current = resolve_current_carrier_evidence_identity(project)
+    except (OSError, TypeError, ValueError):
+        return {}
     passing = [
         r for r in records
         if (
@@ -74,10 +88,17 @@ def _latest_gate_passing_candidate(records: list[dict[str, Any]]) -> dict[str, A
             and int(r.get("holdout_depth") or 0) > 0
         )
     ]
-    if not passing:
+    current_passing = []
+    for row in passing:
+        try:
+            binding = require_current_carrier_evidence_binding(row, current)
+        except CarrierEvidenceIdentityError:
+            continue
+        current_passing.append((row, binding))
+    if not current_passing:
         return {}
-    passing.sort(key=lambda r: str(r.get("observed_at_utc") or ""))
-    row = passing[-1]
+    current_passing.sort(key=lambda pair: str(pair[0].get("observed_at_utc") or ""))
+    row, binding = current_passing[-1]
     has_membrane = "claim_class" in row or "holdout_exposed_to_proposer" in row
     return {
         "sha": str(row.get("sha") or ""),
@@ -99,6 +120,7 @@ def _latest_gate_passing_candidate(records: list[dict[str, Any]]) -> dict[str, A
             if has_membrane
             else True
         ),
+        "carrier_evidence_identity": binding,
     }
 
 
@@ -242,18 +264,35 @@ def _status_options(status: Any) -> set[str]:
     return set(parse_disjunctive_atoms(status))
 
 
+def _bound_task_discharge(cycle: dict[str, Any]):
+    """Return the bound discharged receipt; reject free status properties."""
+    try:
+        from ztare.common.task_discharge import bind_task_discharge_receipt
+
+        _, receipt = bind_task_discharge_receipt(
+            cycle.get("task_contract"),
+            cycle.get("task_discharge_receipt"),
+        )
+    except (TypeError, ValueError):
+        return None
+    return receipt if receipt.discharged else None
+
+
 def _observed_play_status_quotient(cycle: dict[str, Any]) -> FiniteQuotient:
     """Quotient a play-cycle receipt into substrate-neutral status atoms."""
     observed = set()
     explicit = cycle.get("observed_status")
     if explicit:
         observed |= _status_options(explicit)
-    if (
-        int(cycle.get("levels_gained") or 0) > 0
-        or cycle.get("status") == "LEVEL_COMPLETED"
-        or cycle.get("pursuit") == "goal_reached"
-    ):
+    # Terminal authority cannot be supplied by an unbound status atom.  Stored
+    # reports must carry the same contract/receipt pair as the live adapter path.
+    observed.discard("terminal_event")
+    if _bound_task_discharge(cycle) is not None:
         observed.add("terminal_event")
+    if int(cycle.get("levels_gained") or 0) > 0:
+        observed.add("task_progress")
+    if cycle.get("pursuit") == "goal_reached":
+        observed.add("goal_candidate_reached")
     if int(cycle.get("evidence_grown_by") or 0) > 0:
         observed.add("new_evidence")
     if cycle.get("strategy_receipt"):
@@ -296,17 +335,22 @@ def disposition_search_control_cards_from_report(
         if witness is None:
             continue
         observed_atoms = sorted(_observed_play_statuses(witness))
+        matched_atoms = sorted(set(observed_atoms) & _status_options(required))
+        discharge_receipt = _bound_task_discharge(witness)
         out = set_disposition(card, DISPOSITION_ACCEPTED)
         out["receipt"] = "strategy card discharged by typed live-play report"
         out["discharge"] = {
             "schema": "ztare-strategy-card-discharge-v1",
             "required_next_gate": required,
-            "observed_status": observed_atoms[0] if observed_atoms else "",
+            "observed_status": matched_atoms[0] if matched_atoms else "",
             "observed_statuses": observed_atoms,
             "cycle": witness.get("cycle"),
             "levels_gained": int(witness.get("levels_gained") or 0),
             "steps": int(witness.get("steps") or 0),
             "terminal_witness_sha": witness.get("terminal_witness_sha"),
+            "task_discharge_receipt_sha256": (
+                discharge_receipt.sha256 if discharge_receipt is not None else ""
+            ),
             "evidence_refs": ["workspace/arc3_play_loop_report.json"],
         }
         dispositions.append(record_disposition(ledger, out))
@@ -329,18 +373,19 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
     latest_eval = _load_json(root / eval_ref)
     ledger_rows = _ledger_rows(root / ledger_ref)
     candidate_records = _candidate_memory_records(root / candidate_memory_ref)
-    latest_gate_passing = _latest_gate_passing_candidate(candidate_records)
+    latest_gate_passing = _current_gate_passing_candidate(root, candidate_records)
 
     cycles = [c for c in report.get("cycles") or [] if isinstance(c, dict)]
     terminal_cycles = [
-        c for c in cycles
-        if (
-            int(c.get("levels_gained") or 0) > 0
-            or c.get("status") == "LEVEL_COMPLETED"
-            or c.get("pursuit") == "goal_reached"
-        )
+        cycle
+        for cycle in cycles
+        if "terminal_event" in _observed_play_status_quotient(cycle).atoms
     ]
     terminal = terminal_cycles[-1] if terminal_cycles else {}
+    task_discharge_receipt = _bound_task_discharge(terminal) if terminal else None
+    task_discharge_sha = (
+        task_discharge_receipt.sha256 if task_discharge_receipt is not None else ""
+    )
     terminal_sha = str(terminal.get("terminal_witness_sha") or "")
 
     open_rows = [r for r in ledger_rows if str(r.get("disposition") or "open") == "open"]
@@ -358,21 +403,23 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
             terminal_discharges.append(row)
     matching_discharges = [
         row for row in terminal_discharges
-        if not terminal_sha
-        or str((row.get("discharge") or {}).get("terminal_witness_sha") or "") == terminal_sha
+        if task_discharge_sha
+        and str(
+            (row.get("discharge") or {}).get("task_discharge_receipt_sha256") or ""
+        ) == task_discharge_sha
     ]
 
     score_cap = str(latest_eval.get("score_cap_reason") or "")
     score = latest_eval.get("score")
     candidate_blocked = score == 0 and bool(score_cap)
-    level_closed = bool(terminal)
-    search_control_closed = bool(level_closed and not open_rows and matching_discharges)
+    task_discharged = task_discharge_receipt is not None
+    search_control_closed = bool(task_discharged and not open_rows and matching_discharges)
     autonomy = _terminal_autonomy_provenance(terminal)
     if search_control_closed and candidate_blocked:
         status = "terminal_closed_candidate_unpromoted"
     elif search_control_closed:
         status = "terminal_closed"
-    elif level_closed:
+    elif task_discharged:
         status = "terminal_event_without_matching_strategy_discharge"
     else:
         status = "not_terminal_closed"
@@ -381,7 +428,10 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
         "schema": "ztare-worldmodel-terminal-closure-audit-v1",
         "project": str(root),
         "status": status,
-        "level_closed": level_closed,
+        # ``level_closed`` remains a compatibility projection for existing
+        # report readers.  The governing identity is task discharge.
+        "task_discharged": task_discharged,
+        "level_closed": task_discharged,
         "search_control_closed": search_control_closed,
         "sources": {
             "play_report": report_ref,
@@ -398,6 +448,10 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
             "levels_gained": int(terminal.get("levels_gained") or 0),
             "steps": int(terminal.get("steps") or 0),
             "terminal_witness_sha": terminal_sha,
+            "task_contract": terminal.get("task_contract"),
+            "task_discharged": bool(terminal.get("task_discharged")),
+            "task_discharge_receipt": terminal.get("task_discharge_receipt"),
+            "task_discharge_receipt_sha256": task_discharge_sha,
         },
         "strategy_ledger": {
             "rows": len(ledger_rows),
@@ -424,9 +478,10 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
         },
         "claim_boundaries": {
             "level_closure": {
-                "proven": level_closed,
-                "authority": "terminal_report" if level_closed else "",
+                "proven": task_discharged,
+                "authority": "task_discharge_receipt" if task_discharged else "",
                 "terminal_witness_sha": terminal_sha,
+                "task_discharge_receipt_sha256": task_discharge_sha,
             },
             "search_control_card": {
                 "proven": search_control_closed,
@@ -449,7 +504,7 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
         "claim_accounting": {
             "level_solve": assess_cegis_membrane(
                 role="EVALUATION",
-                terminal_event=level_closed,
+                terminal_event=task_discharged,
             ).to_dict(),
             "bridge_law": (
                 {
@@ -478,10 +533,10 @@ def build_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
             "autonomy": autonomy,
         },
         "authority": {
-            "closure_source": "terminal_report" if level_closed else "",
+            "closure_source": "task_discharge_receipt" if task_discharged else "",
             "candidate_gate_source": "latest_eval_results" if latest_eval else "",
             "candidate_promotion_used_for_closure": False,
-            "authority_ladder_ok": bool(level_closed and (search_control_closed or not ledger_rows)),
+            "authority_ladder_ok": bool(task_discharged and (search_control_closed or not ledger_rows)),
         },
     }
     receipt["closure_verification"] = validate_terminal_closure_audit(receipt)
@@ -513,22 +568,25 @@ def validate_terminal_closure_audit(receipt: dict[str, Any]) -> dict[str, Any]:
     bridge = claim_boundaries.get("bridge_law_support") or {}
     autonomy = claim_boundaries.get("autonomous_completion") or {}
 
-    level_closed = bool(receipt.get("level_closed"))
+    level_closed = bool(receipt.get("task_discharged", receipt.get("level_closed")))
     search_closed = bool(receipt.get("search_control_closed"))
     terminal_sha = str(terminal.get("terminal_witness_sha") or "")
-    terminal_event = (
-        int(terminal.get("levels_gained") or 0) > 0
-        or terminal.get("status") == "LEVEL_COMPLETED"
-        or terminal.get("pursuit") == "goal_reached"
-    )
+    terminal_event = "terminal_event" in _observed_play_status_quotient(terminal).atoms
 
     if level_closed:
         if not terminal_event:
             errors.append("level_closed_without_terminal_event")
-        if not terminal_sha:
-            errors.append("level_closed_without_terminal_witness_sha")
-        if level.get("authority") != "terminal_report":
-            errors.append("level_closure_not_bound_to_terminal_report")
+        discharge = _bound_task_discharge(terminal)
+        if discharge is None:
+            errors.append("task_discharge_receipt_not_bound_to_contract")
+        elif terminal.get("task_discharge_receipt_sha256") != discharge.sha256:
+            errors.append("task_discharge_receipt_identity_mismatch")
+        if level.get("authority") != "task_discharge_receipt":
+            errors.append("task_discharge_not_bound_to_receipt")
+        if level.get("task_discharge_receipt_sha256") != terminal.get(
+            "task_discharge_receipt_sha256"
+        ):
+            errors.append("task_discharge_claim_identity_mismatch")
         if not level.get("proven"):
             errors.append("level_closed_but_claim_boundary_unproven")
 
@@ -569,8 +627,8 @@ def validate_terminal_closure_audit(receipt: dict[str, Any]) -> dict[str, Any]:
     elif level_closed:
         warnings.append(str(autonomy.get("reason") or "autonomy_not_proven"))
 
-    if authority.get("closure_source") not in {"", "terminal_report"}:
-        errors.append("closure_source_not_terminal_report")
+    if authority.get("closure_source") not in {"", "task_discharge_receipt"}:
+        errors.append("closure_source_not_task_discharge_receipt")
     if authority.get("authority_ladder_ok") and not level_closed:
         errors.append("authority_ladder_ok_without_level_closure")
     if status == "terminal_closed_candidate_unpromoted":
@@ -598,13 +656,13 @@ def write_terminal_closure_audit(project: str | Path) -> dict[str, Any]:
 
 def _append_terminal_closure_ledger(root: Path, receipt: dict[str, Any]) -> None:
     """Persist durable terminal closes without letting later attempts erase them."""
-    if not receipt.get("level_closed"):
+    if not receipt.get("task_discharged"):
         return
     if not receipt.get("closure_verification", {}).get("ok"):
         return
     terminal = receipt.get("terminal_report") or {}
-    witness = str(terminal.get("terminal_witness_sha") or "")
-    if not witness:
+    discharge_sha = str(terminal.get("task_discharge_receipt_sha256") or "")
+    if not discharge_sha:
         return
     path = root / "workspace" / "terminal_closure_audits.jsonl"
     seen: set[str] = set()
@@ -617,10 +675,15 @@ def _append_terminal_closure_ledger(root: Path, receipt: dict[str, Any]) -> None
             except Exception:  # noqa: BLE001
                 continue
             if isinstance(row, dict):
-                prior = ((row.get("terminal_report") or {}).get("terminal_witness_sha") or "")
+                prior = (
+                    (row.get("terminal_report") or {}).get(
+                        "task_discharge_receipt_sha256"
+                    )
+                    or ""
+                )
                 if prior:
                     seen.add(str(prior))
-    if witness in seen:
+    if discharge_sha in seen:
         return
     row = dict(receipt)
     row["ledger_schema"] = "ztare-terminal-closure-audit-ledger-v1"

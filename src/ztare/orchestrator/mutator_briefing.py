@@ -425,6 +425,10 @@ class MutatorBriefing:
             records=structured_records,
             iter_index=ctx.iter_index,
         )
+        # The synthesis caller retains the typed records separately from the
+        # human-readable diagnostics and decides when a downstream endpoint
+        # has actually consumed them.
+        self._last_structured_records = list(structured_records)
         # Stash gate/trim diagnostics on self so the audit header can
         # show them. Best effort.
         self._last_render_diagnostics = {
@@ -445,6 +449,11 @@ class MutatorBriefing:
             "projection_receipt": projection_receipt,
             "projection_receipt_status": projection_receipt.get("status"),
             "projection_receipt_failures": projection_receipt.get("failures", []),
+            "projected_schema_route_count": sum(
+                1
+                for record in structured_records
+                if isinstance(record.get("route_delivery"), dict)
+            ),
         }
 
         # Persist for operator audit. Best effort.
@@ -535,6 +544,9 @@ def render_default_briefing_context(ctx: BriefingContext) -> dict[str, Any]:
     diagnostics = getattr(briefing, "_last_render_diagnostics", {}) or {}
     return {
         "body": body,
+        "structured_records": list(
+            getattr(briefing, "_last_structured_records", ()) or ()
+        ),
         "active_providers": list(diagnostics.get("active_providers") or []),
         "diagnostics": diagnostics,
         "projection_receipt": diagnostics.get("projection_receipt") or {},

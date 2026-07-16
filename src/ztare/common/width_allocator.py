@@ -28,12 +28,20 @@ import re
 import time
 from pathlib import Path
 
+from ztare.worldmodel.carrier_loader import (
+    CarrierEvidenceIdentityError,
+    CurrentCarrierEvidenceIdentity,
+    require_current_carrier_evidence_binding,
+    resolve_current_carrier_evidence_identity,
+)
+
 RECEIPT_SCHEMA = "ztare.width_allocation.v1"
 _EFFORT_ORDER = ["low", "medium", "high"]
 
 # Hard bounds
 _MIN_SHARDS = 1
 _MAX_SHARDS = 6
+_IDENTITY_UNSET = object()
 
 
 # ── Signal extractors ──────────────────────────────────────────────────────────
@@ -63,33 +71,47 @@ def _holdout_total_from_failed_gates(failed_gates: list) -> int | None:
     return None
 
 
-def _unexplained_holdout_bits(project_dir: Path) -> tuple[int, int | None]:
+def _current_identity(project_dir: Path) -> CurrentCarrierEvidenceIdentity | None:
+    try:
+        return resolve_current_carrier_evidence_identity(project_dir)
+    except (OSError, TypeError, ValueError):
+        return None
+
+
+def _is_current_receipt(
+    row: dict,
+    current: CurrentCarrierEvidenceIdentity,
+) -> bool:
+    try:
+        require_current_carrier_evidence_binding(row, current)
+    except CarrierEvidenceIdentityError:
+        return False
+    return True
+
+
+def _unexplained_holdout_bits(
+    project_dir: Path,
+    current_identity: CurrentCarrierEvidenceIdentity | None | object = _IDENTITY_UNSET,
+) -> tuple[int, int | None]:
     """Return (unexplained_bits, holdout_total).
 
-    Source priority:
-      1. Latest champion from champion_materialization.jsonl, matched in
-         candidate_memory.json (or .jsonl).
-      2. Fallback: candidate_memory max holdout_depth record.
+    Only a candidate-memory observation bound to the current full carrier SHA
+    and evidence epoch may steer width. Prefix matches, path-only records, and
+    the former max-depth fallback remain historical telemetry.
 
     holdout_total parsed from counterexample_trace.failed_gates
     ('holdout_rollout_exact: N').  If not found, treated as None (no
     quiescence suppression).
     """
     ws = project_dir / "workspace"
+    current = (
+        _current_identity(project_dir)
+        if current_identity is _IDENTITY_UNSET
+        else current_identity
+    )
+    if not isinstance(current, CurrentCarrierEvidenceIdentity):
+        return 1, None
 
-    # 1. Find champion sha
-    champion_sha: str | None = None
-    cm_rows = _read_jsonl(ws / "champion_materialization.jsonl")
-    for row in reversed(cm_rows):
-        sha = row.get("promoted_sha") or row.get("from_ref")
-        if not sha:
-            gs = row.get("gate_summary_after") or {}
-            sha = gs.get("gated_sha256")
-        if sha:
-            champion_sha = sha
-            break
-
-    # 2. Load candidate records
     records: list[dict] = []
     cm_json = ws / "candidate_memory.json"
     if cm_json.exists():
@@ -101,21 +123,15 @@ def _unexplained_holdout_bits(project_dir: Path) -> tuple[int, int | None]:
     if not records:
         records = _read_jsonl(ws / "candidate_memory.jsonl")
 
-    # 3. Match champion record
-    champ_rec: dict | None = None
-    if champion_sha and records:
-        short = champion_sha[:8]
-        for rec in records:
-            rsha = rec.get("sha") or ""
-            if rsha.startswith(short) or champion_sha.startswith(rsha[:8]):
-                champ_rec = rec
-                break
-    # fallback: highest holdout_depth
-    if champ_rec is None and records:
-        champ_rec = max(records, key=lambda r: r.get("holdout_depth") or 0)
+    champ_rec = next(
+        (rec for rec in reversed(records) if _is_current_receipt(rec, current)),
+        None,
+    )
 
     if champ_rec is None:
-        return 0, None
+        # Unknown population is not quiescence. The router treats one bit as
+        # unresolved while the allocator stays at its narrow safe default.
+        return 1, None
 
     depth: int = champ_rec.get("holdout_depth") or 0
     ct = champ_rec.get("counterexample_trace") or {}
@@ -147,13 +163,22 @@ def _unexplained_holdout_bits(project_dir: Path) -> tuple[int, int | None]:
     return unexplained, holdout_total
 
 
-def _recent_elimination_rate(project_dir: Path, n_runs: int = 3) -> int:
+def _recent_elimination_rate(
+    project_dir: Path,
+    n_runs: int = 3,
+    current_identity: CurrentCarrierEvidenceIdentity | None | object = _IDENTITY_UNSET,
+) -> int:
     """Count eliminated_family + refuted_mechanism rows in last N run entries
     of workspace/residual_specialists.jsonl."""
     rows = _read_jsonl(project_dir / "workspace" / "residual_specialists.jsonl")
-    if not rows:
+    current = (
+        _current_identity(project_dir)
+        if current_identity is _IDENTITY_UNSET
+        else current_identity
+    )
+    if not rows or not isinstance(current, CurrentCarrierEvidenceIdentity):
         return 0
-    recent = rows[-n_runs:]
+    recent = [row for row in rows if _is_current_receipt(row, current)][-n_runs:]
     count = 0
     for row in recent:
         for disp in row.get("dispatches") or []:
@@ -162,11 +187,23 @@ def _recent_elimination_rate(project_dir: Path, n_runs: int = 3) -> int:
     return count
 
 
-def _stagnation(project_dir: Path) -> int:
-    """Consecutive prior runs with no promotion in champion_materialization.jsonl."""
+def _stagnation(
+    project_dir: Path,
+    current_identity: CurrentCarrierEvidenceIdentity | None | object = _IDENTITY_UNSET,
+) -> int:
+    """Current-population runs since a promotion of this carrier identity."""
     rows = _read_jsonl(project_dir / "workspace" / "champion_materialization.jsonl")
+    current = (
+        _current_identity(project_dir)
+        if current_identity is _IDENTITY_UNSET
+        else current_identity
+    )
+    if not isinstance(current, CurrentCarrierEvidenceIdentity):
+        return 0
     stag = 0
     for row in reversed(rows):
+        if not _is_current_receipt(row, current):
+            continue
         if row.get("result") == "promoted":
             break
         stag += 1
@@ -233,15 +270,19 @@ def allocate_width(project_dir: str | Path) -> dict:
     ws = project_dir / "workspace"
 
     # ── Gather signals ──
-    unexplained, holdout_total = _unexplained_holdout_bits(project_dir)
-    elimination_rate = _recent_elimination_rate(project_dir)
-    stag = _stagnation(project_dir)
+    current = _current_identity(project_dir)
+    unexplained, holdout_total = _unexplained_holdout_bits(project_dir, current)
+    elimination_rate = _recent_elimination_rate(
+        project_dir, current_identity=current
+    )
+    stag = _stagnation(project_dir, current)
 
     signals = {
         "unexplained_holdout_bits": unexplained,
         "holdout_total": holdout_total,
         "recent_elimination_rate": elimination_rate,
         "stagnation": stag,
+        "identity_status": "current" if current is not None else "unavailable",
     }
 
     # ── Operator overrides (env wins) ──
@@ -261,6 +302,7 @@ def allocate_width(project_dir: str | Path) -> dict:
 
     # ── Rationale ──
     parts = [
+        f"identity={'current' if current is not None else 'unavailable'}",
         f"unexplained_bits={unexplained}",
         f"stagnation={stag}",
         f"elimination_rate={elimination_rate}",
@@ -277,6 +319,7 @@ def allocate_width(project_dir: str | Path) -> dict:
         "effort": effort,
         "rationale": rationale,
         "signals": signals,
+        "carrier_evidence_identity": current.to_dict() if current is not None else None,
     }
 
     # ── Emit receipt ──
@@ -288,6 +331,8 @@ def allocate_width(project_dir: str | Path) -> dict:
         "rationale": rationale,
         "ts": time.time(),
     }
+    if current is not None:
+        receipt["carrier_evidence_identity"] = current.to_dict()
     receipt_path = ws / "width_allocations.jsonl"
     with receipt_path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(receipt) + "\n")

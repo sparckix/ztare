@@ -3,7 +3,19 @@ import random
 
 import pytest
 
-from ztare.common.image_set import ImageMaintainingSet
+from ztare.common.image_set import ImageMaintainingSet, classify_image_growth
+
+
+def test_image_growth_separates_expansion_blindness_and_exhaustion():
+    assert classify_image_growth(
+        prior_raw={"a"}, current_raw={"b"}, prior_image={1}, current_image={2}
+    ) == "expanding"
+    assert classify_image_growth(
+        prior_raw={"a"}, current_raw={"b"}, prior_image={1}, current_image={1}
+    ) == "alpha_blind"
+    assert classify_image_growth(
+        prior_raw={"a"}, current_raw={"a"}, prior_image={1}, current_image={1}
+    ) == "exhausted"
 
 
 def _mod10(x):
@@ -154,6 +166,20 @@ def test_compression_warning_emitted(tmp_path, monkeypatch):
     receipt = json.loads(lines[0])
     assert receipt["functor"] == "id"
     assert receipt["compression_ratio"] > 0.9
+    assert receipt["representation_ratio"] > 0.9
+
+
+def test_injective_compact_carrier_does_not_claim_ram_duplication(tmp_path):
+    """Distinct classes can still compress each presentation substantially."""
+    s = ImageMaintainingSet(
+        functors={"digest": lambda value: value[:8]},
+        compression_warmup=5,
+        receipts_dir=tmp_path,
+    )
+    for i in range(25):
+        s.add(f"{i:08d}" + ("x" * 10_000))
+    assert s.compression_ratio("digest") == 1.0
+    assert not (tmp_path / "functor_compression_warnings.jsonl").exists()
 
 
 def test_check_invariant_returns_report():

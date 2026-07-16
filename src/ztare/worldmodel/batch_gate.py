@@ -11,16 +11,9 @@ Soundness guarantee (verdict-identical to gate_harness.py):
   must match gate_harness.py subprocess output exactly (visible exact count
   and holdout depth). Any discrepancy aborts with AssertionError.
 
-EXTENSIONS_SRC carriers — the global EXTENSIONS dict in grid_dsl:
-  gate_harness._load_program calls _register_carried_extensions which clears
-  EXTENSIONS before loading each candidate. batch_gate replicates this:
-  for candidates that carry EXTENSIONS_SRC, we load and evaluate them
-  sequentially (not concurrently) so EXTENSIONS is always in the state the
-  candidate expects. Candidates that do NOT use EXTENSIONS are unaffected.
-  If a candidate's EXTENSIONS_SRC can't be safely isolated (e.g. it conflicts
-  with the already-registered set from a previous candidate), we fall back to
-  subprocess evaluation for that candidate and mark carrier="subprocess_fallback"
-  in the result. This is the honest ceiling note.
+EXTENSIONS_SRC carriers capture their compiled operation registry at the
+canonical lowering door.  Batch order therefore cannot change an already
+loaded carrier's meaning.
 
 Early abort (partial verdicts, screening only):
   With early_abort_on_worse=N, a candidate's visible scan stops once its
@@ -44,7 +37,6 @@ Output per candidate:
     "partial": bool,             # True = early-aborted, not a full verdict
     ["load_error": str],         # if carrier failed to load
     ["abort_reason": str],       # if early-aborted
-    ["subprocess_fallback": bool] # True = evaluated via subprocess, not in-process
   }
 """
 
@@ -59,78 +51,8 @@ from typing import Any
 from ztare.worldmodel.episode_log import EpisodeLog
 from ztare.worldmodel.gates import as_predictor, env_frame_indices, rollout_depth
 from ztare.worldmodel.grid_dsl import evaluate as _dsl_evaluate, program_size as _dsl_program_size
-
-
-# ── carrier loading (mirrors gate_harness._load_program) ─────────────────────
-
-def _rubric_dynamics_assumption(project_dir: Path) -> "str | None":
-    repo = project_dir.parents[1]
-    rubric_path = repo / "rubrics" / f"{project_dir.name}.json"
-    try:
-        return json.loads(rubric_path.read_text()).get("dynamics_assumption") or None
-    except Exception:  # noqa: BLE001
-        return None
-
-
-def _to_program(node):
-    if isinstance(node, list):
-        return tuple(_to_program(x) for x in node)
-    return node
-
-
-def _register_carried_extensions(namespace: dict) -> "tuple[int, int]":
-    from ztare.worldmodel.grammar_extension import compile_extension
-    from ztare.worldmodel.grid_dsl import EXTENSIONS, register_extension
-    EXTENSIONS.clear()
-    srcs = namespace.get("EXTENSIONS_SRC") or {}
-    ok = 0
-    for name, code in list(srcs.items())[:6]:
-        if not str(name).replace("_", "").isalnum():
-            continue
-        fn, _err = compile_extension(str(code))
-        if fn is not None:
-            register_extension(str(name), fn)
-            ok += 1
-    return ok, len(srcs)
-
-
-def _program_from_namespace(namespace: dict, *, project_dir: Path) -> Any:
-    _register_carried_extensions(namespace)
-
-    from ztare.worldmodel.patch_base_carrier import compose_patch_base_carrier
-
-    def _call_program(program, grid, action, t):
-        from ztare.worldmodel.grid_dsl import evaluate
-        if callable(program):
-            return program(grid, action, t)
-        return evaluate(program, grid, action, t)
-
-    patched = compose_patch_base_carrier(
-        namespace,
-        project_dir=project_dir,
-        load_program_from_namespace=lambda ns: _program_from_namespace(ns, project_dir=project_dir),
-        call_program=_call_program,
-    )
-    if patched is not None:
-        return patched
-
-    spec = namespace.get("WORLD_MODEL_SPEC")
-    if spec is not None:
-        from ztare.worldmodel.spec_catalog import lower_spec
-        fn, err = lower_spec(spec)
-        if fn is not None:
-            return fn
-        raise ValueError(f"WORLD_MODEL_SPEC failed to lower: {err}")
-
-    raw = namespace.get("PROGRAM")
-    if raw is None:
-        for alias in ("step", "f", "model", "I_model"):
-            fn = namespace.get(alias)
-            if callable(fn):
-                return fn
-    if raw is None:
-        raise AttributeError("no PROGRAM or callable in submission")
-    return _to_program(raw)
+from ztare.worldmodel.carrier_loader import load_carrier_path
+from ztare.worldmodel.patch_base_carrier import composed_carrier_description_length
 
 
 def _load_candidate(path: Path, project_dir: Path) -> "tuple[Any, str, str | None]":
@@ -139,39 +61,15 @@ def _load_candidate(path: Path, project_dir: Path) -> "tuple[Any, str, str | Non
     carrier_type is one of: 'patch_base', 'world_model_spec', 'program_ast',
     'python_callable', 'extensions_src'.
     """
-    from ztare.validator.worldmodel_typed_payload import validate_worldmodel_carrier_source
-    source = path.read_text()
     try:
-        validate_worldmodel_carrier_source(
-            source,
-            dynamics_assumption=_rubric_dynamics_assumption(project_dir),
+        program, kind, _source_sha = load_carrier_path(
+            path,
+            project_dir=project_dir,
+            attach_projection=False,
         )
     except Exception as exc:  # noqa: BLE001
         return None, "invalid", str(exc)[:300]
-
-    namespace: dict = {"__name__": "candidate"}
-    try:
-        exec(compile(source, str(path), "exec"), namespace)  # noqa: S102
-    except Exception as exc:  # noqa: BLE001
-        return None, "exec_error", str(exc)[:300]
-
-    # Detect carrier type for the result record
-    if namespace.get("PATCH_BASE"):
-        ctype = "patch_base"
-    elif namespace.get("EXTENSIONS_SRC"):
-        ctype = "extensions_src"
-    elif namespace.get("WORLD_MODEL_SPEC"):
-        ctype = "world_model_spec"
-    elif namespace.get("PROGRAM"):
-        ctype = "program_ast"
-    else:
-        ctype = "python_callable"
-
-    try:
-        program = _program_from_namespace(namespace, project_dir=project_dir)
-        return program, ctype, None
-    except Exception as exc:  # noqa: BLE001
-        return None, ctype, str(exc)[:300]
+    return program, kind, None
 
 
 def _eval_visible(
@@ -210,48 +108,6 @@ def _eval_visible(
     return exact, wrong, len(env_idx), False, None
 
 
-def _subprocess_gate(candidate_path: Path, harness_path: Path) -> "dict | None":
-    """Fall back to subprocess gate_harness for a single candidate."""
-    try:
-        result = subprocess.run(
-            [sys.executable, str(harness_path), "--candidate-path", str(candidate_path)],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(harness_path.parent),
-        )
-        data = json.loads(result.stdout)
-        visible_gate = data.get("gates", {}).get("visible_replay_exact", {})
-        holdout_gate = data.get("gates", {}).get("holdout_rollout_exact", {})
-        diag = visible_gate.get("diagnostics", {})
-        total = diag.get("checked_rows", 0) + visible_gate.get("env_excluded", 0)
-        return {
-            "candidate": str(candidate_path),
-            "carrier": "subprocess_fallback",
-            "visible_exact": diag.get("exact_rows", 0),
-            "visible_total": total,
-            "visible_env_excluded": 0,
-            "wrong_rows": [],   # not available from subprocess output
-            "holdout_depth": holdout_gate.get("value", -1),
-            "holdout_total": holdout_gate.get("threshold", 0),
-            "partial": False,
-            "subprocess_fallback": True,
-            "raw_harness": data,
-        }
-    except Exception as exc:  # noqa: BLE001
-        return {
-            "candidate": str(candidate_path),
-            "carrier": "subprocess_fallback",
-            "load_error": str(exc)[:300],
-            "visible_exact": -1,
-            "visible_total": -1,
-            "visible_env_excluded": 0,
-            "wrong_rows": [],
-            "holdout_depth": -1,
-            "holdout_total": 0,
-            "partial": False,
-            "subprocess_fallback": True,
-        }
-
-
 def batch_gate(
     project_dir: "str | Path",
     candidate_paths: "list[str | Path]",
@@ -285,8 +141,6 @@ def batch_gate(
     _ep = resolve_episode_paths(project_dir)
     visible_path = _ep["visible"]
     holdout_path = _ep["holdout"]
-    harness_path = project_dir / "gate_harness.py"
-
     # Load episodes once
     visible: "EpisodeLog | None" = None
     holdout: "EpisodeLog | None" = None
@@ -333,11 +187,16 @@ def batch_gate(
             results.append(rec)
             continue
 
-        # EXTENSIONS_SRC carriers registered during _load_candidate (via
-        # _register_carried_extensions). Evaluate immediately before loading
-        # the next candidate to avoid EXTENSIONS state pollution.
-        # For carriers with EXTENSIONS_SRC, the EXTENSIONS dict is already
-        # populated from _load_candidate above. We proceed in-process.
+        try:
+            rec["description_length"] = composed_carrier_description_length(
+                cpath,
+                project_dir=project_dir,
+            )
+            rec["description_length_unit"] = "source_token_closure_v1"
+        except Exception as exc:  # noqa: BLE001
+            rec["load_error"] = f"carrier description closure invalid: {exc}"
+            results.append(rec)
+            continue
 
         # grid_dsl_expressible: mirrors gate_harness logic exactly — callable
         # carriers pass with size=-2; AST carriers probe evaluate() on the

@@ -232,22 +232,17 @@ def evaluate_information_yield(
 
     latest = history[-1]
 
-    # R4: R1 mismatch is non-informative — treat identically to runtime_failure
-    if latest.is_r1_failure():
-        flat_tail = _collect_flat_tail(history)
-        stagnant_window = len(flat_tail)
-        if stagnant_window >= 2 and all(
-            (item.runtime_failure or item.is_r1_failure()) for item in flat_tail[-2:]
-        ):
-            return InformationYieldDecision(
-                action=LoopControlAction.PIVOT_REQUIRED,
-                stagnant_window=stagnant_window,
-                rationale="Recent iterations are R1 declaration failures or crashes with no new evidence.",
-            )
+    # Runner/interface failures are outside the scientific version space.
+    # They cannot accumulate search stagnation or authorize semantic pivots.
+    if latest.is_r1_failure() or latest.runtime_failure:
+        kind = "R1 declaration" if latest.is_r1_failure() else "runtime"
         return InformationYieldDecision(
-            action=LoopControlAction.REFRESH_SPECIALISTS,
-            stagnant_window=stagnant_window,
-            rationale="Latest iteration failed R1 declaration validation; refresh before continuing.",
+            action=LoopControlAction.CONTINUE,
+            stagnant_window=0,
+            rationale=(
+                f"Latest iteration had a {kind} failure; excluded from "
+                "search-control evidence and routed to interface diagnostics."
+            ),
         )
 
     if latest.score_improved:
@@ -339,15 +334,6 @@ def evaluate_information_yield(
                 "— in which case this is a legitimate research outcome, not a runner failure. "
                 "Operator must distinguish between these before deciding next action."
             ),
-        )
-
-    if stagnant_window >= 2 and all(
-        (item.runtime_failure or item.is_r1_failure()) for item in flat_tail[-2:]
-    ):
-        return InformationYieldDecision(
-            action=LoopControlAction.PIVOT_REQUIRED,
-            stagnant_window=stagnant_window,
-            rationale="Recent iterations are crash-only or R1 failures with no new evidence.",
         )
 
     weakest_points = {item.weakest_point for item in flat_tail}

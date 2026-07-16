@@ -19,8 +19,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import subprocess
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -29,51 +27,18 @@ from ztare.common.candidate_memory import (
     admissible_candidate_memory_records,
     candidate_memory_contract_error,
 )
+from ztare.common.patch_base_identity import load_current_repair_frontier
 from ztare.common.activity_meter import summarize_activity_spend
 from ztare.common.cegis_membrane import assess_cegis_membrane
 from ztare.orchestrator.briefing_providers import section_unavailable
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 from ztare.worldmodel.patch_carrier_contract import patch_base_declaration, patch_delta_signature
+from ztare.worldmodel.carrier_loader import CurrentCarrierEvidenceIdentity
 
-_MAX_CANDIDATES = 12          # newest snapshots re-gated per iteration (cost bound)
-_TIMEOUT_S = 30
 _CACHE_NAME = "candidate_memory.json"
 _CACHE_SCHEMA = "ztare-candidate-memory-v1"
 _MAX_CACHE_RECORDS = 64
 _MAX_SOURCE_EXCERPT_CHARS = 2200
-
-
-class _GateRunError(Exception):
-    """A gate harness run crashed or emitted unparseable output.
-
-    Distinct from "the candidate simply did not survive": a crash means we do
-    NOT know the candidate's status, so it must NOT be silently classified as a
-    non-survivor. Callers surface this as a DEGRADED banner.
-    """
-
-
-def _gate(harness: Path, candidate: Path) -> "dict | None":
-    try:
-        res = subprocess.run(
-            [sys.executable, str(harness.resolve()), "--emit-deterministic-gates",
-             "--candidate-path", str(candidate.resolve())],
-            capture_output=True, text=True, timeout=_TIMEOUT_S,
-            cwd=harness.parent)
-    except SystemExit:
-        raise
-    except Exception as exc:  # noqa: BLE001 — a crashed gate run is UNKNOWN, not a non-survivor
-        raise _GateRunError(f"gate harness run failed for {candidate.name}: {exc}") from exc
-    if not res.stdout:
-        # Empty stdout with a clean exit = harness ran but emitted no gates.
-        # Treat as "no gate payload" (not a crash) — the record layer handles
-        # empty payloads as non-survivors, which is correct here.
-        return None
-    try:
-        return json.loads(res.stdout)
-    except Exception as exc:  # noqa: BLE001 — unparseable gate output is UNKNOWN
-        raise _GateRunError(
-            f"gate harness emitted unparseable output for {candidate.name}: {exc}"
-        ) from exc
 
 
 class SurvivingCandidatesProvider(BriefingProvider):
@@ -92,7 +57,6 @@ class SurvivingCandidatesProvider(BriefingProvider):
 
     def fragment(self, ctx: BriefingContext) -> str:
         project = Path(ctx.project_dir)
-        crashed_snaps: list[str] = []
         try:
             memory_records = _fresh_records(project, _load_records(project, strict=True))
         except _CacheReadError as exc:
@@ -102,13 +66,7 @@ class SurvivingCandidatesProvider(BriefingProvider):
             memory_records,
         )
         if _worldmodel_contract(ctx):
-            records = [rec for rec in records if _is_submission_artifact(rec)]
-        if not records and bool((ctx.rubric or {}).get("briefing_compute_candidate_memory", False)):
-            memory_records = _compute_records(project, crashed_snaps)
-            _write_cache(project, memory_records)
-            records = admissible_candidate_memory_records(project, memory_records)
-            if _worldmodel_contract(ctx):
-                records = [rec for rec in records if _is_submission_artifact(rec)]
+            records = _records_with_current_repair_frontier(project, records)
         rejected_witnesses = (
             _diagnostic_rejected_witnesses(project, memory_records, records)
             if _worldmodel_contract(ctx)
@@ -123,14 +81,13 @@ class SurvivingCandidatesProvider(BriefingProvider):
             if rec.get("source_type") == "deterministic_near_miss"
         ]
         if not survivors and not near_misses:
-            if crashed_snaps:
-                names = "; ".join(crashed_snaps[:6])
-                return (
-                    "## ⚠️  DETERMINISTIC CANDIDATE MEMORY (DEGRADED)\n\n"
-                    f"DETERMINISTIC CANDIDATE MEMORY DEGRADED — {len(crashed_snaps)} "
-                    f"candidate snapshot(s) could not be gated (gate run crashed or "
-                    f"emitted unparseable output); their survivor status is UNKNOWN, "
-                    f"not non-survivor: {names}; prior guidance still in force\n\n"
+            if bool((ctx.rubric or {}).get("briefing_compute_candidate_memory", False)):
+                return section_unavailable(
+                    "DETERMINISTIC CANDIDATE MEMORY",
+                    RuntimeError(
+                        "no admissible producer receipt; prompt assembly is read-only "
+                        "and cannot re-run candidate gates"
+                    ),
                 )
             return ""
         lines = [
@@ -138,13 +95,6 @@ class SurvivingCandidatesProvider(BriefingProvider):
             "- ATTENTION: this is executable counterexample memory from deterministic gates. "
             "Prefer these rows over stale prose when they conflict.",
         ]
-        if crashed_snaps:
-            names = "; ".join(crashed_snaps[:6])
-            lines.append(
-                f"- ⚠️  DEGRADED: {len(crashed_snaps)} candidate snapshot(s) could not "
-                f"be gated (gate crashed / unparseable output) — status UNKNOWN, not "
-                f"non-survivor: {names}"
-            )
         if survivors:
             best = sorted(survivors, key=_record_rank_key, reverse=True)[0]
             lines.append(
@@ -207,7 +157,7 @@ class SurvivingCandidatesProvider(BriefingProvider):
             memory_records,
         )
         if _worldmodel_contract(ctx):
-            records = [rec for rec in records if _is_submission_artifact(rec)]
+            records = _records_with_current_repair_frontier(project, records)
         out = sorted(records, key=_record_rank_key, reverse=True)[:8]
         if _worldmodel_contract(ctx):
             for rec, reason in _diagnostic_rejected_witnesses(project, memory_records, records)[:3]:
@@ -216,6 +166,60 @@ class SurvivingCandidatesProvider(BriefingProvider):
                 row["contract_rejection_reason"] = reason
                 out.append(row)
         return out
+
+
+def _records_with_current_repair_frontier(
+    project: Path,
+    admissible_records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Bind plural candidate evidence to the receipt-owned repair role."""
+
+    immutable = [rec for rec in admissible_records if _is_submission_artifact(rec)]
+    try:
+        frontier = load_current_repair_frontier(project)
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
+        return immutable
+    full_sha = str(frontier["sha256"])
+    def same_carrier(rec: dict[str, Any]) -> bool:
+        candidate_sha = str(rec.get("sha") or "").strip()
+        return candidate_sha == full_sha
+
+    matching = [
+        rec for rec in admissible_records
+        if same_carrier(rec)
+    ]
+    if matching:
+        active = dict(max(matching, key=lambda rec: str(rec.get("observed_at_utc") or "")))
+    else:
+        active = {
+            "source_type": "deterministic_near_miss",
+            "visible_checked_rows": 0,
+            "observed_at_utc": "",
+        }
+    source = frontier["path"].read_text(encoding="utf-8")
+    active.update({
+        "sha": full_sha,
+        "submission": frontier["source_ref"],
+        "source_excerpt": source[:_MAX_SOURCE_EXCERPT_CHARS],
+        "source_truncated": len(source) > _MAX_SOURCE_EXCERPT_CHARS,
+        "visible_exact_rows": frontier["exact_rows"],
+        "visible_wrong_cells": frontier["wrong_cells"],
+        "holdout_depth": frontier["holdout_depth"],
+        "gate_score": frontier["gate_score"],
+        "repair_frontier_role": frontier["role"],
+        "repair_frontier_receipt_ref": frontier["receipt_ref"],
+        "evidence_epoch_sha256": frontier["evidence_epoch_sha256"],
+        "carrier_evidence_identity": CurrentCarrierEvidenceIdentity(
+            carrier_ref=str(frontier["source_ref"]),
+            carrier_sha256=full_sha,
+            evidence_epoch_sha256=str(frontier["evidence_epoch_sha256"]),
+            carrier_role="repair_frontier",
+        ).to_dict(),
+    })
+    return [
+        rec for rec in immutable
+        if not same_carrier(rec)
+    ] + [active]
 
 
 def record_candidate_gate_payload(
@@ -234,11 +238,32 @@ def record_candidate_gate_payload(
     project = Path(project_dir)
     candidate = Path(candidate_path) if candidate_path is not None else None
     name = candidate.name if candidate is not None else "test_model.py"
-    submission = _submission_label(project, candidate)
     digest = _candidate_digest(candidate, gate_payload)
+    submission = _submission_label(project, candidate)
     rec = _record_from_payload(name, digest, gate_payload, submission=submission)
     if rec is None:
         return
+    epoch = gate_payload.get("evidence_epoch")
+    if isinstance(epoch, dict) and str(epoch.get("epoch_sha256") or "").strip():
+        epoch_sha = str(epoch["epoch_sha256"])
+        rec["evidence_epoch_sha256"] = epoch_sha
+        if len(digest) == 64 and len(epoch_sha) == 64:
+            rec["carrier_evidence_identity"] = CurrentCarrierEvidenceIdentity(
+                carrier_ref=str(submission or name),
+                carrier_sha256=digest,
+                evidence_epoch_sha256=epoch_sha,
+                carrier_role="evaluated_candidate",
+            ).to_dict()
+    policy_sha = str(gate_payload.get("evaluation_policy_sha256") or "").strip()
+    if policy_sha:
+        rec["evaluation_policy_sha256"] = policy_sha
+    description_length = gate_payload.get("description_length")
+    if isinstance(description_length, int) and description_length > 0:
+        rec["description_length"] = description_length
+        rec["description_length_unit"] = str(
+            gate_payload.get("description_length_unit")
+            or "source_token_closure_v1"
+        )
     if not rec.get("holdout_witness"):
         rec["holdout_witness"] = _fallback_holdout_witness(project)
     trace_holdout = _holdout_witness_from_gate(
@@ -252,24 +277,60 @@ def record_candidate_gate_payload(
     )
     if gate_payload.get("assistance_label"):
         rec["assistance_label"] = str(gate_payload.get("assistance_label"))
+    records = _load_records(project)
     membrane = assess_cegis_membrane(
         role=str(gate_payload.get("run_role") or "EVALUATION"),
         withheld_refs=tuple(str(ref) for ref in gate_payload.get("withheld_refs") or ()),
         exposed_refs=tuple(str(ref) for ref in gate_payload.get("exposed_refs") or ()),
         candidate_gate_passed=float(rec.get("gate_score") or 0.0) >= 1.0,
     ).to_dict()
-    rec["run_role"] = membrane["run_role"]
-    rec["holdout_exposed_to_proposer"] = membrane["holdout_exposed_to_proposer"]
-    rec["claim_class"] = membrane["claim_class"]
-    rec["fresh_holdout_required"] = membrane["fresh_holdout_required"]
+    membrane_keys = (
+        "run_role",
+        "holdout_exposed_to_proposer",
+        "claim_class",
+        "fresh_holdout_required",
+        "withheld_refs",
+        "exposed_withheld_refs",
+        "evidence_statuses",
+        "supportable_claims",
+        "forbidden_claims",
+        "membrane_status",
+    )
+    for key in membrane_keys:
+        rec[key] = membrane[key]
+    if not str(gate_payload.get("run_role") or "").strip():
+        prior = next(
+            (
+                row
+                for row in records
+                if str(row.get("sha") or "") == digest
+                and str(row.get("submission") or "") == str(submission or "")
+                and bool(row.get("fresh_holdout_required"))
+            ),
+            None,
+        )
+        if prior is not None:
+            for key in membrane_keys:
+                rec[key] = prior.get(key)
     rec["activity_meter"] = summarize_activity_spend([gate_payload])
     _attach_source_excerpt(rec, candidate)
     rec["observed_at_utc"] = datetime.now(timezone.utc).isoformat()
-    records = _load_records(project)
-    dedup_key = (rec.get("sha"), rec.get("submission"), rec.get("source_type"))
+    dedup_key = (
+        rec.get("sha"),
+        rec.get("submission"),
+        rec.get("source_type"),
+        rec.get("evidence_epoch_sha256"),
+        rec.get("evaluation_policy_sha256"),
+    )
     records = [
         old for old in records
-        if (old.get("sha"), old.get("submission"), old.get("source_type")) != dedup_key
+        if (
+            old.get("sha"),
+            old.get("submission"),
+            old.get("source_type"),
+            old.get("evidence_epoch_sha256"),
+            old.get("evaluation_policy_sha256"),
+        ) != dedup_key
     ]
     records.append(rec)
     records = sorted(records, key=_record_rank_key, reverse=True)[:max_records]
@@ -404,10 +465,28 @@ def _worldmodel_contract(ctx: BriefingContext) -> bool:
 def _submission_label(project: Path, candidate: Path | None) -> str | None:
     if candidate is None:
         return None
+    project = project.resolve()
     try:
-        return str(candidate.resolve().relative_to(project.resolve()))
-    except Exception:
+        return str(candidate.resolve().relative_to(project))
+    except ValueError:
+        pass
+    try:
+        source = candidate.read_bytes()
+    except OSError:
         return None
+    digest = hashlib.sha256(source).hexdigest()
+    suffix = candidate.suffix if candidate.suffix else ".py"
+    destination = project / "workspace" / "submissions" / f"gated_{digest}{suffix}"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        try:
+            if destination.read_bytes() != source:
+                return None
+        except OSError:
+            return None
+    else:
+        destination.write_bytes(source)
+    return str(destination.relative_to(project))
 
 
 def _write_cache(project: Path, records: list[dict[str, Any]]) -> None:
@@ -421,47 +500,14 @@ def _write_cache(project: Path, records: list[dict[str, Any]]) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def _compute_records(
-    project: Path, crashed: "list[str] | None" = None
-) -> list[dict[str, Any]]:
-    harness = project / "gate_harness.py"
-    snaps = sorted(
-        (project / "workspace" / "submissions").glob("*.py"),
-        key=lambda p: p.stat().st_mtime,
-        reverse=True,
-    )[:_MAX_CANDIDATES]
-    records = []
-    seen_hashes = set()
-    for snap in snaps:
-        digest = hashlib.sha256(snap.read_bytes()).hexdigest()[:12]
-        if digest in seen_hashes:
-            continue
-        seen_hashes.add(digest)
-        try:
-            payload = _gate(harness, snap)
-        except _GateRunError as exc:
-            # UNKNOWN, not a non-survivor: name the crashed snapshot so the
-            # caller can surface a DEGRADED banner rather than silently
-            # treating a crashed gate run as "this candidate did not survive."
-            if crashed is not None:
-                crashed.append(f"{snap.name}: {exc}")
-            continue
-        rec = _record_from_payload(snap.name, digest, payload or {})
-        if rec is not None:
-            _attach_source_excerpt(rec, snap)
-            rec["observed_at_utc"] = datetime.now(timezone.utc).isoformat()
-            records.append(rec)
-    return sorted(records, key=_record_rank_key, reverse=True)
-
-
 def _candidate_digest(candidate: Path | None, gate_payload: dict[str, Any]) -> str:
     if candidate is not None:
         try:
-            return hashlib.sha256(candidate.read_bytes()).hexdigest()[:12]
+            return hashlib.sha256(candidate.read_bytes()).hexdigest()
         except Exception:
             pass
     sha = gate_payload.get("gated_sha256")
-    return str(sha or "unknown")[:12]
+    return str(sha or "unknown")
 
 
 def _record_from_payload(name: str, digest: str, payload: dict[str, Any],
@@ -665,6 +711,7 @@ def _counterexample_trace_from_payload(
         "exact_rows": diagnostics.get("exact_rows"),
         "wrong_rows": diagnostics.get("wrong_rows"),
         "wrong_cell_count": diagnostics.get("wrong_cell_count"),
+        "evidence_ref": diagnostics.get("evidence_ref") or "",
         "first_mismatch": diagnostics.get("first_mismatch") or "",
         "first_mismatch_signature": signature if isinstance(signature, dict) else {},
         "mismatch_classes": diagnostics.get("mismatch_classes")
@@ -873,7 +920,8 @@ def _format_patch_base(
         title = "Diagnostic Patch Base"
         directive = (
             "Use this carrier as a diagnostic baseline for replay regressions. "
-            "If an active Strategy Office card names a newer non-replay gate, "
+            "If a skill-acquisition card that blocks this run lane names a newer "
+            "non-replay gate, "
             "that card is the work order; mutate this carrier only when it helps "
             "satisfy that card's required_next_gate."
         )
@@ -910,7 +958,7 @@ def _format_patch_base(
 
 
 def _patch_base_mode(project: Path) -> "tuple[str, str]":
-    """Demote replay near-misses when a newer office card owns the next gate.
+    """Demote replay near-misses when a blocking skill card owns the next gate.
 
     Candidate memory is replay-local. When the Strategy Office has an open
     card whose required gate is not a replay-diagnostics gate, forcing the
@@ -928,9 +976,9 @@ def _patch_base_mode(project: Path) -> "tuple[str, str]":
     if not ledger.exists():
         return "mandatory", ""
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
 
-        cards = open_cards(ledger)
+        cards = active_strategy_cards(ledger)
     except SystemExit:
         raise
     except Exception as exc:  # noqa: BLE001
@@ -940,7 +988,9 @@ def _patch_base_mode(project: Path) -> "tuple[str, str]":
             "patch base degraded from mandatory to diagnostic because open-card "
             "ownership of the next gate could not be determined",
         )
-    for card in cards:
+    from ztare.common.strategy_card_roles import blocking_strategy_cards
+
+    for card in blocking_strategy_cards(cards, project_dir=project):
         plan = card.get("action_plan") if isinstance(card, dict) else None
         if not isinstance(plan, dict):
             continue

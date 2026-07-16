@@ -277,7 +277,11 @@ def _compile_probe_standalone(probe: str, sandbox: Path, tag: str, timeout: int)
         from ztare.formal.repl_compile import compile_probe_via_repl
         _r = compile_probe_via_repl(probe, sandbox, timeout)
         if _r is not None:
-            return _r[0]
+            # A warm success is sufficient.  A warm failure is not: imported project modules can be absent from
+            # the base REPL environment even though the same complete file compiles under ``lake env lean``.
+            # Treat the negative as an optimization miss and fall through to the canonical cold compiler.
+            if _r[0] is True:
+                return True
     except Exception:  # noqa: BLE001
         pass
     d = sandbox / tag

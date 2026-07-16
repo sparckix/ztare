@@ -9,19 +9,24 @@ Design contract (never-delete-the-fiber):
   further explanation.
 
 Reconsolidation phase:
-  Bitmaps are keyed by (carrier_sha256, episode_content_hash). Any evidence
+  Bitmaps are keyed by (carrier_sha256, episode_content_hash,
+  evaluator_sha256, lowering_config_sha256). Any evidence
   append changes episode_content_hash → new key → automatic recompute on next
   call. A champion swap changes carrier_sha256 → new key → automatic recompute.
+  A gate, transition-identity, or bitmap implementation change alters the
+  evaluator digest and cannot reuse a judgment made under old semantics.
   Neither operation requires explicit invalidation: content addressing makes
   reconsolidation fall out of cache lookup. This is the "pull raw back, recompute
   quotient" reconsolidation phase: the bitmap files are ephemeral projections of
   the cold-tier JSONL evidence; deleting workspace/row_bitmaps/ is always safe.
 
-Schema: workspace/row_bitmaps/<carrier_sha16>_<episode_sha16>.json
+Schema: workspace/row_bitmaps/<carrier>_<episode>_<evaluator>_<config>.json
   {
     "schema": "ztare-row-bitmap-v1",
     "carrier_sha256": str,          # sha256 of carrier source text
     "episode_hash": str,            # EpisodeLog.content_hash()
+    "evaluator_sha256": str,        # code identity of bitmap/gate semantics
+    "lowering_config_sha256": str,  # non-code lowering-policy identity
     "episode_path": str,            # absolute path for human reference only
     "total_rows": int,
     "env_frame_indices": [int],     # rows excluded by env_frame_indices()
@@ -39,50 +44,44 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
-from typing import Any
 
+from ztare.common.worldmodel_carrier_purity import project_dynamics_assumption
+from ztare.worldmodel.carrier_loader import (
+    load_carrier_from_source as _load_carrier_from_source,
+)
 from ztare.worldmodel.episode_log import EpisodeLog
-from ztare.worldmodel.gates import as_predictor, env_frame_indices
+from ztare.worldmodel.gates import (
+    as_predictor,
+    env_frame_indices,
+    evaluator_implementation_identity,
+)
+
+
+_ROW_BITMAP_EVALUATOR_SHA256 = str(evaluator_implementation_identity()["sha256"])
 
 
 def _sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def _load_carrier_from_source(source: str, src_path: str, project_dir: Path) -> Any:
-    """Load a carrier from source text using the same logic as gate_harness._load_program.
+def _row_bitmap_evaluator_sha256() -> str:
+    """Identity of the evaluator implementation loaded into this process."""
 
-    Supports all carrier types: PATCH_BASE, WORLD_MODEL_SPEC, PROGRAM (AST),
-    and python callable aliases (step/f/model/I_model).
-
-    EXTENSIONS_SRC note: candidates that carry grammar extensions register them
-    into the global EXTENSIONS dict in grid_dsl. Callers that batch multiple
-    EXTENSIONS_SRC candidates must treat each loaded carrier as a closure that
-    depends on the EXTENSIONS state AT LOAD TIME. Since _register_carried_extensions
-    clears and repopulates EXTENSIONS every call, callers must evaluate each such
-    carrier before loading the next. batch_gate.py enforces this ordering.
-    """
-    from ztare.validator.worldmodel_typed_payload import validate_worldmodel_carrier_source
-    from ztare.worldmodel.grid_dsl import EXTENSIONS
-
-    # Resolve dynamics_assumption from rubric at project level
-    dynamics_assumption = _rubric_dynamics_assumption(project_dir)
-    validate_worldmodel_carrier_source(source, dynamics_assumption=dynamics_assumption)
-
-    namespace: dict = {"__name__": "candidate"}
-    exec(compile(source, src_path, "exec"), namespace)  # noqa: S102
-
-    return _program_from_namespace(namespace, project_dir=project_dir)
+    return _ROW_BITMAP_EVALUATOR_SHA256
 
 
-def _rubric_dynamics_assumption(project_dir: Path) -> "str | None":
-    repo = project_dir.parents[1]
-    rubric_path = repo / "rubrics" / f"{project_dir.name}.json"
-    try:
-        return json.loads(rubric_path.read_text()).get("dynamics_assumption") or None
-    except Exception:  # noqa: BLE001
-        return None
+def _row_bitmap_config_sha256(project_dir: Path) -> str:
+    """Identity of lowering inputs not carried by candidate or evaluator bytes."""
+
+    payload = {
+        "dynamics_assumption_env": os.environ.get("ZTARE_DYNAMICS_ASSUMPTION"),
+        "dynamics_assumption_project": project_dynamics_assumption(project_dir),
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
 def resolve_episode_paths(project_dir: "str | Path") -> "dict[str, Path | None]":
@@ -113,13 +112,27 @@ def resolve_episode_paths(project_dir: "str | Path") -> "dict[str, Path | None]"
     if manifest.exists():
         try:
             m = json.loads(manifest.read_text())
-            roles = m.get("episode_roles") or {}
-            vis = _path_or_none(roles.get("visible") or m.get("visible_episode"), project_dir)
-            hld = _path_or_none(roles.get("holdout") or m.get("holdout_episode"), project_dir)
+        except (OSError, ValueError, TypeError) as exc:
+            raise ValueError(f"unreadable episode-role manifest: {manifest}") from exc
+        roles = m.get("episode_roles") or {}
+        has_role_declaration = bool(
+            roles.get("visible")
+            or roles.get("holdout")
+            or m.get("visible_episode")
+            or m.get("holdout_episode")
+        )
+        if has_role_declaration:
+            vis = _path_or_none(
+                roles.get("visible") or m.get("visible_episode"), project_dir
+            )
+            hld = _path_or_none(
+                roles.get("holdout") or m.get("holdout_episode"), project_dir
+            )
             if vis is not None or hld is not None:
                 return {"visible": vis, "holdout": hld}
-        except Exception:  # noqa: BLE001
-            pass
+            raise ValueError(
+                f"episode-role manifest names no existing evidence: {manifest}"
+            )
 
     # (b) rubric json
     rubric = repo / "rubrics" / f"{project_dir.name}.json"
@@ -141,67 +154,6 @@ def resolve_episode_paths(project_dir: "str | Path") -> "dict[str, Path | None]"
         "visible": eps[0] if len(eps) >= 1 else None,
         "holdout": eps[1] if len(eps) >= 2 else None,
     }
-
-
-def _register_carried_extensions(namespace: dict) -> "tuple[int, int]":
-    from ztare.worldmodel.grammar_extension import compile_extension
-    from ztare.worldmodel.grid_dsl import EXTENSIONS, register_extension
-    EXTENSIONS.clear()
-    srcs = namespace.get("EXTENSIONS_SRC") or {}
-    ok = 0
-    for name, code in list(srcs.items())[:6]:
-        if not str(name).replace("_", "").isalnum():
-            continue
-        fn, _err = compile_extension(str(code))
-        if fn is not None:
-            register_extension(str(name), fn)
-            ok += 1
-    return ok, len(srcs)
-
-
-def _to_program(node):
-    if isinstance(node, list):
-        return tuple(_to_program(x) for x in node)
-    return node
-
-
-def _program_from_namespace(namespace: dict, *, project_dir: Path) -> Any:
-    _register_carried_extensions(namespace)
-
-    from ztare.worldmodel.patch_base_carrier import compose_patch_base_carrier
-
-    def _call_program(program, grid, action, t):
-        from ztare.worldmodel.grid_dsl import evaluate
-        if callable(program):
-            return program(grid, action, t)
-        return evaluate(program, grid, action, t)
-
-    patched = compose_patch_base_carrier(
-        namespace,
-        project_dir=project_dir,
-        load_program_from_namespace=lambda ns: _program_from_namespace(ns, project_dir=project_dir),
-        call_program=_call_program,
-    )
-    if patched is not None:
-        return patched
-
-    spec = namespace.get("WORLD_MODEL_SPEC")
-    if spec is not None:
-        from ztare.worldmodel.spec_catalog import lower_spec
-        fn, err = lower_spec(spec)
-        if fn is not None:
-            return fn
-        raise ValueError(f"WORLD_MODEL_SPEC failed to lower: {err}")
-
-    raw = namespace.get("PROGRAM")
-    if raw is None:
-        for alias in ("step", "f", "model", "I_model"):
-            fn = namespace.get(alias)
-            if callable(fn):
-                return fn
-    if raw is None:
-        raise AttributeError("no PROGRAM or callable in submission")
-    return _to_program(raw)
 
 
 def build_row_bitmap(
@@ -248,21 +200,40 @@ def build_row_bitmap(
 
     log = EpisodeLog.read_jsonl(episode_path)
     episode_hash = log.content_hash()
+    evaluator_sha = _row_bitmap_evaluator_sha256()
+    config_sha = _row_bitmap_config_sha256(project_dir)
 
     # Check cache first
     bitmap_file = None
     if persist_dir is not False:
         _persist_dir = Path(persist_dir) if persist_dir else (project_dir / "workspace" / "row_bitmaps")
         _persist_dir.mkdir(parents=True, exist_ok=True)
-        bitmap_file = _persist_dir / f"{carrier_sha[:16]}_{episode_hash[:16]}.json"
+        bitmap_file = _persist_dir / (
+            f"{carrier_sha[:16]}_{episode_hash[:16]}_{evaluator_sha[:16]}_"
+            f"{config_sha[:16]}.json"
+        )
         if bitmap_file.exists():
             try:
-                return json.loads(bitmap_file.read_text())
+                cached = json.loads(bitmap_file.read_text())
+                if (
+                    cached.get("schema") == "ztare-row-bitmap-v1"
+                    and cached.get("carrier_sha256") == carrier_sha
+                    and cached.get("episode_hash") == episode_hash
+                    and cached.get("evaluator_sha256") == evaluator_sha
+                    and cached.get("lowering_config_sha256") == config_sha
+                    and not cached.get("load_error")
+                ):
+                    return cached
             except Exception:  # noqa: BLE001
                 pass  # recompute on corrupt cache
 
     try:
-        program = _load_carrier_from_source(source, str(carrier_path), project_dir)
+        program = _load_carrier_from_source(
+            source,
+            str(carrier_path),
+            project_dir,
+            attach_projection=False,
+        )
         load_err = None
     except Exception as exc:  # noqa: BLE001
         load_err = str(exc)[:200]
@@ -296,6 +267,8 @@ def build_row_bitmap(
         "schema": "ztare-row-bitmap-v1",
         "carrier_sha256": carrier_sha,
         "episode_hash": episode_hash,
+        "evaluator_sha256": evaluator_sha,
+        "lowering_config_sha256": config_sha,
         "episode_path": str(episode_path),
         "total_rows": len(rows),
         "env_frame_indices": sorted(env_idx),
@@ -306,7 +279,7 @@ def build_row_bitmap(
     if load_err:
         bitmap["load_error"] = load_err
 
-    if bitmap_file is not None:
+    if bitmap_file is not None and load_err is None:
         try:
             bitmap_file.write_text(json.dumps(bitmap))
         except Exception:  # noqa: BLE001

@@ -660,10 +660,69 @@ def test_worldmodel_retry_routes_context_only_receipt_to_feature_miner(
     assert '"capability_id":"mine_worldmodel_separating_features"' in prompt
     assert "no_lowerable_receipt_witness" in prompt
     assert "Candidate carrier surfaces are suppressed" not in prompt
-    assert "If visible evidence still lets you express a transportable law" in prompt
+    assert "A failed carrier refutes that carrier" in prompt
 
 
-def test_worldmodel_retry_suppresses_stale_probe_after_lowerability_block(
+def test_worldmodel_retry_consumes_commuting_transport_before_selector_ladder(
+    tmp_path: Path,
+):
+    (tmp_path / "workspace").mkdir()
+    output_summary = json.dumps(
+        {
+            "schema": "ztare-counterexample-context-observation-v1",
+            "diagnostic_summary": "finite square",
+            "commuting_transports": [
+                {
+                    "schema": "ztare-observed-commuting-transport-v1",
+                    "authority": "diagnostic_finite_witness",
+                    "observed_commutation": True,
+                    "operation": {
+                        "op": "consume_extremal",
+                        "color": 8,
+                        "replacement": 3,
+                        "axis": "row",
+                        "extreme": "max",
+                        "count": 2,
+                    },
+                    "component_identity_status": (
+                        "property_witness_only_requires_recurrence_or_object_identity"
+                    ),
+                    "global_equivariance_authorized": False,
+                    "quotient_authorized": False,
+                    "carrier_promotion_authorized": False,
+                }
+            ],
+        },
+        separators=(",", ":"),
+    )
+    receipt = json.dumps(
+        {
+            "capability_id": "inspect_worldmodel_counterexample_context",
+            "output_summary": output_summary,
+        },
+        separators=(",", ":"),
+    )
+    receipt_error = (
+        "LEAF_WORKBENCH_ACTION_REQUEST_PRECHECK: executed requested registered "
+        "workbench action(s). Free retry with these receipt(s).\n"
+        f"LEAF_WORKBENCH_RECEIPT: {receipt}"
+    )
+
+    prompt = format_r1_retry_skeleton(
+        receipt_error,
+        '{"control_receipts":[],"thesis_markdown":"x","test_model_py":"def step(grid, action, t): return grid"}',
+        rubric_data=_worldmodel_rubric(),
+        project_dir=tmp_path,
+    )
+
+    assert '"observed_commutation":true' in prompt
+    assert "A finite commuting transport through a registered adapter operation" in prompt
+    assert '"capability_id":"mine_worldmodel_separating_features"' not in prompt
+    assert '"capability_id":"mine_worldmodel_lowerable_selectors"' not in prompt
+    assert "grants no global equivariance, quotient, or promotion authority" in prompt
+
+
+def test_worldmodel_retry_suppresses_stale_probe_but_keeps_other_candidate_families(
     tmp_path: Path,
 ):
     workspace = tmp_path / "workspace"
@@ -684,7 +743,9 @@ def test_worldmodel_retry_suppresses_stale_probe_after_lowerability_block(
     output_summary = json.dumps(
         {
             "schema": "ztare-worldmodel-lowerable-selector-miner-v1",
-            "candidate_delta_admissible": False,
+            "admissibility_scope": "candidate_family",
+            "candidate_family_id": "same-shaped-window-selector-v1",
+            "candidate_family_admissible": False,
             "candidate_predicates": [],
             "lowerability_status": "no_zero_error_selector_found",
             "forbidden_feature_classes": [
@@ -720,9 +781,9 @@ def test_worldmodel_retry_suppresses_stale_probe_after_lowerability_block(
     assert '"capability_id":"run_visible_json_probe"' not in prompt
     assert "LOWERABILITY_BLOCKED" in prompt
     assert "Candidate carrier surfaces are suppressed" not in prompt
-    assert "If visible evidence still lets you express a transportable law" in prompt
+    assert "A failed carrier refutes that carrier" in prompt
     assert "AUTHORITATIVE PATCH BASE REFERENCE" not in prompt
-    assert "choose the narrowest carrier" not in prompt
+    assert "choose the narrowest carrier" in prompt
     assert '"admissible_events":["request_typed_observation","submit_candidate_delta","report_tool_gap"]' in prompt
 
 

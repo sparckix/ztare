@@ -297,6 +297,7 @@ def build_replay_residual_repair_card(
     family = f"replay_residual_repair|{json.dumps(plan['residue_quotient'], sort_keys=True)}"
     return {
         "schema": STRATEGY_SCHEMA,
+        "lane": "skill_acquisition",
         "kind": "compressed_counterexample_repair",
         "failure_family": family,
         "failure_family_sha": family_sha(family),

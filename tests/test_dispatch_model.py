@@ -317,6 +317,31 @@ def test_dispatch_model_visible_workbench_stages_when_repo_has_sealed_holdout(
     assert (staged / "WORKBENCH_TOOLS.md").exists()
     assert (staged / "src/ztare/common/visible_workbench_cli.py").exists()
     assert not (staged / "evidence_holdout.txt").exists()
+    route = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "ztare.common.visible_workbench_cli",
+            "route-action",
+            "--source",
+            "-",
+        ],
+        cwd=staged,
+        env={**os.environ, "PYTHONPATH": "src"},
+        input=json.dumps(
+            {
+                "type": "LEAF_WORKBENCH_ACTION_REQUEST",
+                "payload": {
+                    "capability_id": "inspect_worldmodel_counterexample_context"
+                },
+            }
+        ),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert route.returncode == 0, route.stderr
+    assert json.loads(route.stdout)["route"]["route"] == "parent_kernel"
     manifest = json.loads((staged / "MANIFEST.json").read_text(encoding="utf-8"))
     assert manifest["front_door"] == ["TASK.md", "ASKS.json", "ATTENTION.md", "RECORDS.json", "WORKBENCH_TOOLS.md"]
     assert manifest["background"] == ["CONTEXT.md"]
@@ -403,12 +428,13 @@ def test_dispatch_model_visible_workbench_attention_prioritizes_residual_work(
                         "source_type": "leanmill_wip_proof_surface",
                         "summary": "async proof work",
                     },
-                    {
-                        "provider": "strategy_experiments",
-                        "source_type": "strategy_experiment",
-                        "summary": "residual quotient repair",
-                        "action": "run declared residual gate",
-                    },
+                        {
+                            "provider": "strategy_experiments",
+                            "source_type": "strategy_experiment",
+                            "lane": "skill_acquisition",
+                            "summary": "residual quotient repair",
+                            "action": "run declared residual gate",
+                        },
                 ]
             }
         )
@@ -436,6 +462,132 @@ def test_dispatch_model_visible_workbench_attention_prioritizes_residual_work(
 
     attention = (seen["repo"] / "ATTENTION.md").read_text(encoding="utf-8")
     assert attention.find("residual quotient repair") < attention.find("async proof work")
+
+
+def test_dispatch_model_visible_workbench_attention_preserves_producer_coverage(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setenv("ZTARE_AGENT_DISPATCH", "agent")
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    records = [
+        {
+            "provider": "surviving_candidates",
+            "source_type": "deterministic_near_miss",
+            "source_ref": f"workspace/submissions/candidate_{index}.py",
+            "summary": f"candidate row {index}",
+        }
+        for index in range(12)
+    ]
+    records.append(
+        {
+            "provider": "worldmodel_committee",
+            "source_type": "worldmodel_committee",
+            "summary": "current grammar ceiling over the active evidence epoch",
+        }
+    )
+    (workspace / "mutator_briefing_iter_001_records.json").write_text(
+        json.dumps({"records": records}) + "\n",
+        encoding="utf-8",
+    )
+    seen: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(["codex"], 0, stdout="typed contract", stderr=""),
+            final_command=["codex", "exec", "redacted"],
+            recovery_note=None,
+        )
+
+    dispatch_model(
+        "emit mutation",
+        capability="agent",
+        backend="codex",
+        repo=tmp_path,
+        agent_execution_mode="visible_workbench",
+        runner=fake_runner,
+    )
+
+    attention = (seen["repo"] / "ATTENTION.md").read_text(encoding="utf-8")
+    assert "current grammar ceiling over the active evidence epoch" in attention
+    assert attention.count("provider=surviving_candidates") == 7
+
+
+def test_visible_workbench_front_door_prefers_materialized_observation_over_task(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setenv("ZTARE_AGENT_DISPATCH", "agent")
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    records = [
+        {
+            "provider": "leaf_workbench",
+            "source_type": "leaf_workbench_task",
+            "capability_id": "inspect_counterexample_context",
+            "summary": "inspect the active counterexample",
+        },
+        {
+            "provider": "leaf_workbench",
+            # The live provider currently retains its capability identity when
+            # it attaches a materialized observation.  Presence of the typed
+            # fiber, rather than a presentation label, owns front-door rank.
+            "source_type": "leaf_workbench_capability",
+            "capability_id": "inspect_counterexample_context",
+            "summary": "verbose coordinate diagnostics that must follow the identity",
+            "behavioral_fiber": {
+                "member_count": 3,
+                "member_rows": [7, 11, 19],
+                "interventions": [0, 2],
+                "intervention_relation": "varied_interventions_one_consequence",
+                "observed_relation": "many_presentations_one_consequence",
+                "shared_observed_consequence_sha256": "a" * 64,
+                "authority": "diagnostic_finite_witness",
+                "carrier_promotion_authorized": False,
+            },
+        },
+    ]
+    records.extend(
+        {
+            "provider": f"provider_{index}",
+            "source_type": f"type_{index}",
+            "summary": f"producer row {index}",
+        }
+        for index in range(7)
+    )
+    (workspace / "mutator_briefing_iter_001_records.json").write_text(
+        json.dumps({"records": records}) + "\n",
+        encoding="utf-8",
+    )
+    seen: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(
+                ["codex"], 0, stdout="typed contract", stderr=""
+            ),
+            final_command=["codex", "exec", "redacted"],
+            recovery_note=None,
+        )
+
+    dispatch_model(
+        "emit mutation",
+        capability="agent",
+        backend="codex",
+        repo=tmp_path,
+        agent_execution_mode="visible_workbench",
+        runner=fake_runner,
+    )
+
+    attention = (seen["repo"] / "ATTENTION.md").read_text(encoding="utf-8")
+    assert "behavioral_fiber members=" in attention
+    assert "7, 11, 19" in attention
+    assert "many_presentations_one_consequence" in attention
+    assert "varied_interventions_one_consequence" in attention
+    assert "inspect the active counterexample" not in attention
 
 
 def test_dispatch_model_visible_workbench_attention_demotes_meta_tool_cards(
@@ -764,6 +916,10 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
         "PATCH_BASE = {}\n",
         encoding="utf-8",
     )
+    (tmp_path / "projects/demo/workspace/submissions/frontier.py").write_text(
+        "def step(state, action, t): return state\n",
+        encoding="utf-8",
+    )
     (tmp_path / "projects/demo/workspace/sealed_holdout.json").write_text(
         '{"hidden":true}\n',
         encoding="utf-8",
@@ -782,6 +938,7 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
                         "source_type": "strategy_experiment",
                         "source_ref": "workspace/latest_patch_base_regression.json",
                         "evidence_refs": ["workspace/submissions/base.py"],
+                        "submission": "workspace/submissions/frontier.py",
                         "summary": "stage only structured evidence refs",
                     }
                 ]
@@ -823,12 +980,14 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
     assert (staged / "workspace/submissions/base.py").read_text(encoding="utf-8") == (
         "PATCH_BASE = {}\n"
     )
+    assert (staged / "workspace/submissions/frontier.py").is_file()
     assert not (staged / "src/ztare/common/harness_weakness.py").exists()
     assert not (staged / "workspace/sealed_holdout.json").exists()
     manifest = json.loads((staged / "visible_manifest.json").read_text(encoding="utf-8"))
     by_ref = {row["ref"]: row for row in manifest["visible_artifacts"]}
     assert by_ref["workspace/latest_patch_base_regression.json"]["status"] == "materialized"
     assert by_ref["workspace/submissions/base.py"]["status"] == "materialized"
+    assert by_ref["workspace/submissions/frontier.py"]["status"] == "materialized"
     assert "src/ztare/common/harness_weakness.py" not in by_ref
     assert "workspace/sealed_holdout.json" not in by_ref
 
@@ -996,6 +1155,55 @@ def test_dispatch_model_visible_workbench_cli_runs_inside_staged_cwd(
 
     staged = seen["repo"]
     env = {**os.environ, "PYTHONPATH": "src"}
+    scorer_import = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "from ztare.validator.core.pre_judge_gate import "
+                "detect_patch_base_regression_preflight"
+            ),
+        ],
+        cwd=staged,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert scorer_import.returncode == 0, scorer_import.stderr
+    composed_carrier_import = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "from ztare.worldmodel.patch_base_carrier import "
+                "composed_carrier_description_length; "
+                "from ztare.fit.mdl import description_units"
+            ),
+        ],
+        cwd=staged,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert composed_carrier_import.returncode == 0, composed_carrier_import.stderr
+    adapter_operation_import = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "from ztare.worldmodel.spec_abduction import "
+                "catalog_state_morphisms"
+            ),
+        ],
+        cwd=staged,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert adapter_operation_import.returncode == 0, adapter_operation_import.stderr
     probe = subprocess.run(
         [
             sys.executable,
@@ -1511,6 +1719,10 @@ def test_common_effort_policy_maps_campaign_high_to_each_runtime_ceiling() -> No
     assert subscription_reasoning_effort("codex", "high") == "xhigh"
     assert subscription_reasoning_effort("claude", "high") == "max"
     assert subscription_reasoning_effort("codex", "ultra") == "ultra"
+    assert (
+        subscription_reasoning_effort("codex", "ultra", model="gpt-5.5")
+        == "xhigh"
+    )
     assert (
         subscription_reasoning_effort(
             "codex", "ultra", model="gpt-5.6-luna"

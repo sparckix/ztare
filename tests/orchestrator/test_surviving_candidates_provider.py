@@ -9,6 +9,7 @@ from ztare.orchestrator.briefing_providers.surviving_candidates import (
     SurvivingCandidatesProvider,
 )
 from ztare.orchestrator.mutator_briefing import BriefingContext
+from ztare.common.observation_chart import capture_project_evidence_epoch
 
 
 def _payload(exact: int, checked: int = 10, wrong_cells: int = 1, holdout: int = 0) -> dict:
@@ -88,7 +89,9 @@ def _survivor_payload(checked: int = 10, holdout: int = 10) -> dict:
     }
 
 
-def test_surviving_candidates_briefs_deterministic_near_misses(tmp_path: Path, monkeypatch) -> None:
+def test_surviving_candidates_requires_producer_receipt_instead_of_prompt_gating(
+    tmp_path: Path,
+) -> None:
     project = tmp_path / "project"
     subs = project / "workspace" / "submissions"
     subs.mkdir(parents=True)
@@ -98,11 +101,6 @@ def test_surviving_candidates_briefs_deterministic_near_misses(tmp_path: Path, m
     weak.write_text("def step(grid, action, t): return grid\n")
     strong.write_text("def step(grid, action, t): return grid\n# better\n")
 
-    def fake_gate(_harness: Path, candidate: Path) -> dict:
-        return _payload(9 if candidate.name == "strong.py" else 2)
-
-    monkeypatch.setattr(sc, "_gate", fake_gate)
-
     ctx = BriefingContext(
         project_dir=project,
         iter_index=2,
@@ -110,10 +108,8 @@ def test_surviving_candidates_briefs_deterministic_near_misses(tmp_path: Path, m
     )
     fragment = SurvivingCandidatesProvider().fragment(ctx)
 
-    assert "## Deterministic Candidate Memory" in fragment
-    assert "NEAR-MISS SURVIVORS" in fragment
-    assert "visible 9/10" in fragment
-    assert fragment.index("strong.py") < fragment.index("weak.py")
+    assert "DETERMINISTIC CANDIDATE MEMORY UNAVAILABLE" in fragment
+    assert "prompt assembly is read-only" in fragment
 
 
 def test_surviving_candidates_ignores_impure_cached_near_miss(tmp_path: Path) -> None:
@@ -167,7 +163,7 @@ def test_surviving_candidates_ignores_impure_cached_near_miss(tmp_path: Path) ->
     assert "impure.py" not in fragment
 
 
-def test_surviving_candidates_reads_cache_without_prompt_time_gating(tmp_path: Path, monkeypatch) -> None:
+def test_surviving_candidates_reads_cache_without_prompt_time_gating(tmp_path: Path) -> None:
     project = tmp_path / "project"
     subs = project / "workspace" / "submissions"
     subs.mkdir(parents=True)
@@ -180,11 +176,6 @@ def test_surviving_candidates_reads_cache_without_prompt_time_gating(tmp_path: P
         gate_payload=_payload(exact=8, checked=10, wrong_cells=2),
     )
 
-    def fail_gate(_harness: Path, _candidate: Path) -> dict:
-        raise AssertionError("prompt assembly must read cache, not run harness")
-
-    monkeypatch.setattr(sc, "_gate", fail_gate)
-
     ctx = BriefingContext(project_dir=project, iter_index=2, rubric={})
     fragment = SurvivingCandidatesProvider().fragment(ctx)
 
@@ -195,6 +186,38 @@ def test_surviving_candidates_reads_cache_without_prompt_time_gating(tmp_path: P
     assert "Mismatch quotient classes" in fragment
     assert "n=36 row=621 t=128 a=1 bbox=[61, 56, 62, 57] 8->3x4" in fragment
     assert "def step(grid, action, t)" in fragment
+
+
+def test_gate_writer_materializes_external_candidate_by_content_identity(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    candidate = tmp_path / "leaf_workbench" / "candidate.py"
+    candidate.parent.mkdir()
+    source = "def step(grid, action, t):\n    return grid\n"
+    candidate.write_text(source, encoding="utf-8")
+    digest = hashlib.sha256(source.encode()).hexdigest()
+
+    gate_payload = _survivor_payload(checked=12, holdout=10)
+    gate_payload["evidence_epoch"] = capture_project_evidence_epoch(project).to_dict()
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=candidate,
+        gate_payload=gate_payload,
+    )
+
+    payload = json.loads(
+        (project / "workspace" / "candidate_memory.json").read_text(encoding="utf-8")
+    )
+    record = payload["records"][0]
+    assert record["submission"] == f"workspace/submissions/gated_{digest}.py"
+    assert record["sha"] == digest
+    assert record["carrier_evidence_identity"]["carrier_sha256"] == digest
+    assert record["carrier_evidence_identity"]["evidence_epoch_sha256"] == (
+        gate_payload["evidence_epoch"]["epoch_sha256"]
+    )
+    assert (project / record["submission"]).read_text(encoding="utf-8") == source
 
 
 def test_surviving_candidates_renders_holdout_witness_from_record_payload(
@@ -280,6 +303,55 @@ def test_surviving_candidates_briefs_single_full_survivor(tmp_path: Path) -> Non
     assert records[0]["visible_exact_rows"] == 12
 
 
+def test_candidate_memory_does_not_downgrade_an_unspecified_cegis_membrane(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    candidate = project / "workspace" / "submissions" / "winner.py"
+    candidate.parent.mkdir(parents=True)
+    candidate.write_text("def step(grid, action, t): return grid\n")
+    payload = _survivor_payload(checked=12, holdout=10)
+    payload.update(
+        {
+            "run_role": "DISCOVERY",
+            "withheld_refs": ["sealed_slice"],
+            "exposed_refs": ["sealed_slice"],
+        }
+    )
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=candidate,
+        gate_payload=payload,
+    )
+
+    unspecified = _survivor_payload(checked=12, holdout=10)
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=candidate,
+        gate_payload=unspecified,
+    )
+    record = json.loads(
+        (project / "workspace" / "candidate_memory.json").read_text(encoding="utf-8")
+    )["records"][0]
+    assert record["claim_class"] == "law_discovery"
+    assert record["fresh_holdout_required"] is True
+    assert record["withheld_refs"] == ["sealed_slice"]
+    assert record["exposed_withheld_refs"] == ["sealed_slice"]
+
+    evaluated = _survivor_payload(checked=12, holdout=10)
+    evaluated["run_role"] = "EVALUATION"
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=candidate,
+        gate_payload=evaluated,
+    )
+    record = json.loads(
+        (project / "workspace" / "candidate_memory.json").read_text(encoding="utf-8")
+    )["records"][0]
+    assert record["claim_class"] == "clean_transfer"
+    assert record["fresh_holdout_required"] is False
+
+
 def test_surviving_candidates_ignores_stale_cached_full_survivor(tmp_path: Path) -> None:
     project = tmp_path / "project"
     subs = project / "workspace" / "submissions"
@@ -358,6 +430,43 @@ def test_surviving_candidates_prompts_with_best_near_miss_source(tmp_path: Path,
     assert "### Mandatory Patch Base" in fragment
     assert "# strong" in fragment
     assert "# weak" not in fragment.split("### Mandatory Patch Base", 1)[1]
+
+
+def test_patch_base_demotion_is_indexed_by_blocking_run_lane(tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    subs = project / "workspace" / "submissions"
+    subs.mkdir(parents=True)
+    (project / "gate_harness.py").write_text("# harness\n")
+    candidate = subs / "near.py"
+    candidate.write_text("def step(grid, action, t): return grid\n")
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=candidate,
+        gate_payload=_payload(exact=9, checked=10),
+    )
+    ledger = project / "workspace" / "strategy_experiments.jsonl"
+    advisory = {
+        "failure_family_sha": "advisory",
+        "lane": "advisory",
+        "disposition": "open",
+        "action_plan": {"required_next_gate": {"command": "phase_cost_regression"}},
+    }
+    ledger.write_text(json.dumps(advisory) + "\n", encoding="utf-8")
+    ctx = BriefingContext(project_dir=project, iter_index=2, rubric={})
+
+    assert "### Mandatory Patch Base" in SurvivingCandidatesProvider().fragment(ctx)
+
+    blocking = {
+        "failure_family_sha": "skill",
+        "lane": "skill_acquisition",
+        "disposition": "open",
+        "action_plan": {"required_next_gate": {"command": "distinguishing_play"}},
+    }
+    ledger.write_text(
+        json.dumps(advisory) + "\n" + json.dumps(blocking) + "\n",
+        encoding="utf-8",
+    )
+    assert "### Diagnostic Patch Base" in SurvivingCandidatesProvider().fragment(ctx)
 
 
 def test_root_near_miss_is_diagnostic_not_patch_base(tmp_path: Path) -> None:
@@ -474,23 +583,69 @@ def test_surviving_candidates_marks_stale_root_artifacts_lower_authority(tmp_pat
     assert "workspace/submissions/near.py" in fragment
 
 
-def test_gate_invocation_uses_absolute_candidate_path(tmp_path: Path, monkeypatch) -> None:
-    harness = tmp_path / "p" / "gate_harness.py"
-    candidate = tmp_path / "p" / "workspace" / "submissions" / "candidate.py"
-    candidate.parent.mkdir(parents=True)
-    harness.write_text("# harness\n")
-    candidate.write_text("# candidate\n")
-    seen = {}
+def test_worldmodel_briefing_consumes_epoch_bound_repair_frontier(tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    subs = project / "workspace" / "submissions"
+    episodes = project / "raw" / "episodes"
+    subs.mkdir(parents=True)
+    episodes.mkdir(parents=True)
+    (project / "gate_harness.py").write_text("# harness\n")
+    episode = episodes / "episode_001.jsonl"
+    episode.write_text('{"state":0}\n', encoding="utf-8")
 
-    class Result:
-        stdout = '{"gates": {}}'
+    old = subs / "old.py"
+    old.write_text("def step(grid, action, t):\n    return grid\n", encoding="utf-8")
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=old,
+        gate_payload=_payload(exact=8, checked=10, wrong_cells=2),
+    )
+    new_source = "def step(grid, action, t):\n    return tuple(grid)\n"
+    new = subs / "new.py"
+    new.write_text(new_source, encoding="utf-8")
+    root = project / "test_model.py"
+    root.write_text(new_source, encoding="utf-8")
+    sc.record_candidate_gate_payload(
+        project_dir=project,
+        candidate_path=root,
+        gate_payload=_payload(exact=9, checked=10, wrong_cells=1),
+    )
+    old_sha = hashlib.sha256(old.read_bytes()).hexdigest()
+    new_sha = hashlib.sha256(new.read_bytes()).hexdigest()
+    epoch = capture_project_evidence_epoch(project)
+    (project / "workspace" / "latest_patch_base_regression.json").write_text(
+        json.dumps({
+            "candidate_regression_receipt": {
+                "candidate_relation": "improved_but_gate_failed",
+                "candidate_submission": "workspace/submissions/new.py",
+                "candidate_sha": new_sha,
+                "candidate_exact_rows": 9,
+                "candidate_wrong_cells": 1,
+                "candidate_holdout_depth": 0,
+                "candidate_gate_score": 0.3333,
+                "best_prior_submission": "workspace/submissions/old.py",
+                "best_prior_sha": old_sha,
+                "best_prior_exact_rows": 8,
+                "best_prior_wrong_cells": 2,
+                "best_prior_holdout_depth": 0,
+                "best_prior_gate_score": 0.3333,
+            },
+            "evidence_epoch": epoch.to_dict(),
+        }),
+        encoding="utf-8",
+    )
+    ctx = BriefingContext(
+        project_dir=project,
+        iter_index=2,
+        rubric={
+            "substrate_class": "interactive_environment",
+            "fit_expression_grammar": "grid_dsl",
+        },
+    )
 
-    def fake_run(cmd, **_kwargs):
-        seen["candidate_arg"] = cmd[4]
-        return Result()
+    fragment = SurvivingCandidatesProvider().fragment(ctx)
+    assert "Best executable near-miss: workspace/submissions/new.py" in fragment
 
-    monkeypatch.setattr(sc.subprocess, "run", fake_run)
-
-    sc._gate(harness, candidate)
-
-    assert Path(seen["candidate_arg"]).is_absolute()
+    episode.write_text('{"state":0}\n{"state":1}\n', encoding="utf-8")
+    stale_fragment = SurvivingCandidatesProvider().fragment(ctx)
+    assert "Best executable near-miss: workspace/submissions/old.py" in stale_fragment

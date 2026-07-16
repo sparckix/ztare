@@ -4,15 +4,25 @@ import json
 from pathlib import Path
 
 from ztare.worldmodel.p0_metrics import build_p0_metrics, write_p0_metrics
+from ztare.worldmodel.carrier_loader import (
+    resolve_current_carrier_evidence_identity,
+)
+
+
+def _current_binding(project: Path) -> dict:
+    (project / "test_model.py").write_text("VALUE = 1\n", encoding="utf-8")
+    return resolve_current_carrier_evidence_identity(project).to_dict()
 
 
 def test_p0_metrics_summarize_transfer_and_compression(tmp_path: Path) -> None:
     project = tmp_path
     ws = project / "workspace"
     ws.mkdir()
+    binding = _current_binding(project)
     (ws / "latest_level_transfer_probe.json").write_text(
         json.dumps(
             {
+                "carrier_evidence_identity": binding,
                 "post_depth": 4,
                 "exact_actions": 1,
                 "exact_steps": 2,
@@ -52,21 +62,27 @@ def test_p0_metrics_summarize_transfer_and_compression(tmp_path: Path) -> None:
 
     metrics = build_p0_metrics(project)
 
-    assert metrics["schema"] == "ztare-arc3-p0-metrics-v1"
+    assert metrics["schema"] == "ztare-arc3-p0-metrics-v2"
     assert metrics["scoreboard"]["levels_beaten"] == 1
     assert metrics["scoreboard"]["actions_per_level"] == [18]
     assert metrics["scoreboard"]["relative_human_action_efficiency"] == 0.62
     assert isinstance(metrics["information_theory"]["catalog_size"], int)
-    assert metrics["information_theory"]["catalog_growth_velocity"] == 1.0
+    assert metrics["information_theory"]["catalog_growth_velocity"] is None
     assert metrics["information_theory"]["operator_reusability_index"] is None
     assert metrics["information_theory"]["temporal_admissibility_leakage"] == 1.0
     assert metrics["transfer"]["empirical_transfer_depth"] == 4
+    assert metrics["transfer"]["identity_status"] == "current"
     assert metrics["transfer"]["local_steps_tested"] == 16
     assert metrics["transfer"]["first_step_repair_generalizes_to_depth"] is False
     assert metrics["compression"]["catalog_proposals"] == 2
     assert metrics["compression"]["catalog_promotions"] == 1
-    assert metrics["compression"]["catalog_growth_rate"] == 1.0
-    assert metrics["compression"]["operator_reuse_count"] == 1
+    assert metrics["compression"]["catalog_growth_rate"] is None
+    assert metrics["compression"]["operator_vocabulary_size"] == 0
+    assert (
+        metrics["metric_contracts"]["information_theory.carrier_fidelity_best"]["status"]
+        == "missing_evidence"
+    )
+    assert metrics["compression"]["operator_reuse_count"] is None
     assert metrics["kernel_pressure"]["temporal_admissibility_failures"] == 1
     assert metrics["reachability"]["abstract_vertices"] == 7
     assert metrics["reachability"]["abstract_edges"] == 9
@@ -80,7 +96,59 @@ def test_write_p0_metrics_writes_project_workspace_receipt(tmp_path: Path) -> No
     path = write_p0_metrics(tmp_path)
 
     assert path == ws / "p0_metrics.json"
-    assert json.loads(path.read_text())["schema"] == "ztare-arc3-p0-metrics-v1"
+    assert json.loads(path.read_text())["schema"] == "ztare-arc3-p0-metrics-v2"
+
+
+def test_p0_transfer_metrics_ignore_unbound_prefix_receipt(tmp_path: Path) -> None:
+    ws = tmp_path / "workspace"
+    ws.mkdir()
+    binding = _current_binding(tmp_path)
+    binding["carrier_sha256"] = binding["carrier_sha256"][:12]
+    (ws / "latest_level_transfer_probe.json").write_text(json.dumps({
+        "carrier_evidence_identity": binding,
+        "post_depth": 99,
+        "exact_actions": 4,
+        "local_transfer": {"exact_steps_after_first_step_repair": 99},
+    }))
+
+    metrics = build_p0_metrics(tmp_path)
+
+    assert metrics["transfer"]["identity_status"] == "historical_or_unbound"
+    assert metrics["transfer"]["historical_receipt_present"] is True
+    assert metrics["transfer"]["empirical_transfer_depth"] is None
+    assert (
+        metrics["metric_contracts"]["transfer.empirical_transfer_depth"]["status"]
+        == "missing_evidence"
+    )
+
+
+def test_p0_metrics_count_environment_verified_self_play_epochs(tmp_path: Path) -> None:
+    ws = tmp_path / "workspace"
+    ws.mkdir()
+    (ws / "latest_self_play_probe.json").write_text(json.dumps({
+        "schema": "ztare-arc3-self-play-probe-v1",
+        "status": "goal_reached",
+        "levels_before": 1,
+        "levels_after": 2,
+        "levels_gained": 1,
+        "steps_executed": 45,
+        "replans": 0,
+        "seed_receipt": {
+            "interventions_executed": 19,
+            "observed_progress_after": 1,
+        },
+    }))
+
+    metrics = build_p0_metrics(tmp_path)
+
+    assert metrics["scoreboard"]["levels_beaten"] == 2
+    assert metrics["scoreboard"]["actions_per_level"] == [19, 45]
+    assert [row["target_epoch"] for row in metrics["scoreboard"]["verified_skill_trials"]] == [1, 2]
+    assert all(
+        row["establishes_task_discharge"] is False
+        for row in metrics["scoreboard"]["verified_skill_trials"]
+    )
+    assert metrics["control_readiness"]["status"] == "observer_only"
 
 
 def test_p0_metrics_preserve_terminal_closure_candidate_boundary(tmp_path: Path) -> None:
@@ -91,6 +159,7 @@ def test_p0_metrics_preserve_terminal_closure_candidate_boundary(tmp_path: Path)
             {
                 "schema": "ztare-worldmodel-terminal-closure-audit-v1",
                 "status": "terminal_closed_candidate_unpromoted",
+                "task_discharged": True,
                 "level_closed": True,
                 "search_control_closed": True,
                 "terminal_report": {
@@ -119,9 +188,11 @@ def test_p0_metrics_preserve_terminal_closure_candidate_boundary(tmp_path: Path)
 
     metrics = build_p0_metrics(tmp_path)
 
-    assert metrics["scoreboard"]["levels_beaten"] == 1
+    assert metrics["scoreboard"]["levels_beaten"] == 0
     closure = metrics["closure_boundaries"]
-    assert closure["level_closed"] is True
+    assert closure["task_discharged"] is True
+    assert closure["level_closed"] is False
+    assert closure["level_projection_status"] == "adapter_progress_required"
     assert closure["search_control_closed"] is True
     assert closure["candidate_promoted_by_terminal"] is False
     assert closure["candidate_promotion_proven"] is False
@@ -170,29 +241,3 @@ def test_p0_metrics_count_latest_strategy_card_disposition(tmp_path: Path) -> No
     metrics = build_p0_metrics(tmp_path)
 
     assert metrics["compression"]["open_strategy_cards"] == 1
-
-
-def test_path_a_promotion_counted_by_p0_metrics(tmp_path: Path) -> None:
-    """FIX 2: Path A (grammar_reflex) accepted card writes a promotion-contract
-    row so p0_metrics.catalog_promotions counts it alongside Path B promotions."""
-    from ztare.worldmodel.grammar_extension import ExtensionReceipt, _write_promotion_contract
-
-    ws = tmp_path / "workspace"
-    ws.mkdir()
-    # Simulate what grammar_reflex writes on DISPOSITION_ACCEPTED (FIX 2 path).
-    receipt = ExtensionReceipt(
-        env_hint=str(tmp_path),
-        model_id="codex",
-        prompt_sha256="",
-        name="when_effect_rule_coupling",
-        python="",
-        rationale="fired-this-step coupling",
-        verdict="promoted",
-        detail="real replay improved",
-    )
-    _write_promotion_contract(tmp_path, receipt)
-
-    metrics = build_p0_metrics(tmp_path)
-    assert metrics["compression"]["catalog_promotions"] == 1, (
-        "Path A promotion must be counted by p0_metrics.catalog_promotions"
-    )

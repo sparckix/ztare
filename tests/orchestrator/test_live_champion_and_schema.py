@@ -85,6 +85,73 @@ def test_live_champion_newest_promoted_wins(tmp_path):
     assert "old.py" not in frag
 
 
+def test_active_search_carrier_supersedes_historical_champion_without_promotion(tmp_path):
+    project = _make_project(tmp_path)
+    _write_receipt(project / "workspace", [_promoted_receipt(from_ref="workspace/old.py")])
+    source = "def step(state, action, t): return state\n"
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    submissions = project / "workspace" / "submissions"
+    submissions.mkdir()
+    (submissions / "frontier.py").write_text(source, encoding="utf-8")
+    (project / "test_model.py").write_text(source, encoding="utf-8")
+    (project / "workspace" / "candidate_memory.json").write_text(
+        json.dumps({
+            "schema": "ztare-candidate-memory-v1",
+            "records": [{
+                "source_type": "deterministic_near_miss",
+                "submission": "workspace/submissions/frontier.py",
+                "sha": digest,
+                "visible_checked_rows": 10,
+                "visible_exact_rows": 9,
+                "visible_wrong_cells": 1,
+            }],
+        }),
+        encoding="utf-8",
+    )
+
+    provider = LiveChampionProvider(project)
+    fragment = provider.fragment(_ctx(project))
+    records = provider.structured_records(_ctx(project))
+
+    assert "Active Carrier" in fragment
+    assert "workspace/submissions/frontier.py" in fragment
+    assert "promotion_authority=false" in fragment
+    assert "workspace/old.py" not in fragment
+    assert records[0]["source_type"] == "active_candidate_memory_carrier"
+    assert records[0]["promotion_authority"] is False
+
+
+def test_active_search_identity_expires_when_active_bytes_change(tmp_path):
+    project = _make_project(tmp_path)
+    _write_receipt(project / "workspace", [_promoted_receipt(from_ref="workspace/old.py")])
+    source = "def step(state, action, t): return state\n"
+    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    submissions = project / "workspace" / "submissions"
+    submissions.mkdir()
+    (submissions / "frontier.py").write_text(source, encoding="utf-8")
+    (project / "test_model.py").write_text(source, encoding="utf-8")
+    (project / "workspace" / "candidate_memory.json").write_text(
+        json.dumps({
+            "schema": "ztare-candidate-memory-v1",
+            "records": [{
+                "source_type": "deterministic_near_miss",
+                "submission": "workspace/submissions/frontier.py",
+                "sha": digest,
+                "visible_checked_rows": 10,
+                "visible_exact_rows": 9,
+                "visible_wrong_cells": 1,
+            }],
+        }),
+        encoding="utf-8",
+    )
+    (project / "test_model.py").write_text("def step(s, a, t): return tuple(s)\n")
+
+    fragment = LiveChampionProvider(project).fragment(_ctx(project))
+
+    assert "Active Carrier Unavailable" in fragment
+    assert "Governed Search Baseline" not in fragment
+
+
 def test_live_champion_fallback_when_no_promoted_but_test_model_exists(tmp_path):
     """No promoted receipt but test_model.py exists: one-line note."""
     project = _make_project(tmp_path)

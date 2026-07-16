@@ -29,7 +29,8 @@ A Program is a GridExpr evaluated against (grid, action, step).
 from __future__ import annotations
 
 from itertools import product
-from typing import Iterator, Optional
+from types import MappingProxyType
+from typing import Iterator, Mapping, Optional
 
 Grid = tuple  # tuple[tuple[int, ...], ...]
 Program = tuple  # frozen AST node
@@ -114,7 +115,14 @@ def _shift(grid: Grid, dy: int, dx: int) -> Grid:
     return tuple(tuple(row) for row in out)
 
 
-def evaluate(program: Program, grid: Grid, action: int, step: int) -> Optional[Grid]:
+def evaluate(
+    program: Program,
+    grid: Grid,
+    action: int,
+    step: int,
+    *,
+    extensions: "Mapping[str, object] | None" = None,
+) -> Optional[Grid]:
     """Interpret a GridExpr. Returns the predicted next grid, or None (fail-closed).
 
     Fail-closed is a hard guarantee: a malformed node returns None rather than
@@ -122,17 +130,24 @@ def evaluate(program: Program, grid: Grid, action: int, step: int) -> Optional[G
     of the interpreter, and the gate misread a near-correct candidate as
     inexpressible)."""
     try:
-        return _evaluate_unsafe(program, grid, action, step)
+        registry = EXTENSIONS if extensions is None else extensions
+        return _evaluate_unsafe(program, grid, action, step, registry)
     except Exception:  # noqa: BLE001 — fail-closed by contract
         return None
 
 
-def _evaluate_unsafe(program: Program, grid: Grid, action: int, step: int) -> Optional[Grid]:
+def _evaluate_unsafe(
+    program: Program,
+    grid: Grid,
+    action: int,
+    step: int,
+    extensions: "Mapping[str, object]",
+) -> Optional[Grid]:
     op = program[0]
     if op == "s":
         return grid
     if op == "shift":
-        g = evaluate(program[1], grid, action, step)
+        g = evaluate(program[1], grid, action, step, extensions=extensions)
         # deltas are raw ints in the seed grammar; int-expr nodes (a mutator's
         # natural ("lit", k) wrapping) are accepted as a benign superset
         dy = program[2] if isinstance(program[2], int) \
@@ -143,7 +158,7 @@ def _evaluate_unsafe(program: Program, grid: Grid, action: int, step: int) -> Op
             return None
         return _shift(g, dy, dx)
     if op == "recolor":
-        g = evaluate(program[1], grid, action, step)
+        g = evaluate(program[1], grid, action, step, extensions=extensions)
         a = _eval_int(program[2], grid, action, step)
         b = _eval_int(program[3], grid, action, step)
         if g is None or a is None or b is None:
@@ -153,12 +168,18 @@ def _evaluate_unsafe(program: Program, grid: Grid, action: int, step: int) -> Op
         cond = _eval_bool(program[1], grid, action, step)
         if cond is None:
             return None
-        return evaluate(program[2] if cond else program[3], grid, action, step)
+        return evaluate(
+            program[2] if cond else program[3],
+            grid,
+            action,
+            step,
+            extensions=extensions,
+        )
     if op == "ext":
-        fn = EXTENSIONS.get(program[1])
+        fn = extensions.get(program[1])
         if fn is None:
             return None
-        g = evaluate(program[2], grid, action, step)
+        g = evaluate(program[2], grid, action, step, extensions=extensions)
         if g is None:
             return None
         try:
@@ -170,6 +191,24 @@ def _evaluate_unsafe(program: Program, grid: Grid, action: int, step: int) -> Op
             return None
         return out
     return None
+
+
+def bind_extensions(program: Program, extensions: Mapping[str, object]):
+    """Return a predictor whose earned-operation names resolve immutably.
+
+    A persisted carrier owns the operation implementations it declares.  The
+    process-wide registry remains the synthesis vocabulary, while executable
+    carriers capture a read-only snapshot so later lowering cannot change an
+    already-loaded program's meaning.
+    """
+    registry = MappingProxyType(dict(extensions))
+
+    def bound(grid: Grid, action: int, step: int) -> Optional[Grid]:
+        return evaluate(program, grid, action, step, extensions=registry)
+
+    bound._ztare_program = program
+    bound._ztare_extension_names = tuple(sorted(registry))
+    return bound
 
 
 def program_size(program: tuple) -> int:

@@ -20,7 +20,7 @@ from __future__ import annotations
 from typing import Any
 
 # Only these relations carry positive inferential force. TESTS names an experiment, CONSTRAINS limits a
-# claim, and REPORTS records provenance; counting them as support rewards graph density rather than backing.
+# claim, and REPORTS records provenance; counting them as support favors graph density rather than backing.
 SUPPORT_RELATIONS = frozenset({"SUPPORTS", "DERIVES"})
 ATTACK_RELATIONS = frozenset({"CHALLENGES", "FALSIFIES"})
 

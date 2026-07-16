@@ -15,6 +15,7 @@ from ztare.common.leaf_workbench_contract import (
     leaf_workbench_action_request_object,
     render_leaf_workbench_control_rules,
 )
+from ztare.common.patch_base_identity import resolve_repair_frontier
 from ztare.common.retry_prompt_assembly import (
     candidate_memory_refs_for_retry,
     packed_control_receipts,
@@ -23,6 +24,7 @@ from ztare.common.retry_prompt_assembly import (
 from ztare.common.science_output_policy import SCIENCE_OUTPUT_POLICY
 from ztare.common.sealed_boundary_cegar import (
     boundary_cegar_candidate_delta_lowerability,
+    boundary_cegar_refutation_scopes,
     render_boundary_cegar_retry_surface,
 )
 from ztare.common.strategy_card_roles import (
@@ -57,38 +59,75 @@ def _patch_base_context_for_retry(
     if project_dir is None:
         return ""
     project = Path(project_dir)
+    best: dict[str, Any] = {}
+    source_ref = ""
+    sha = ""
     try:
-        payload = json.loads(
-            (project / "workspace" / "candidate_memory.json").read_text(
-                encoding="utf-8",
+        regression_payload = json.loads(
+            (project / "workspace" / "latest_patch_base_regression.json").read_text(
+                encoding="utf-8"
             )
         )
     except Exception:
-        return ""
-    if not isinstance(payload, dict):
-        return ""
-    records = [
-        rec
-        for rec in (payload.get("records") or [])
-        if isinstance(rec, dict) and str(rec.get("submission") or "").strip().startswith("workspace/submissions/")
-    ]
-    if not records:
-        return ""
-    def _rank(rec: dict[str, Any]) -> tuple[int, int, int, float, int]:
-        return (
-            1 if rec.get("source_type") == "full_survivor" else 0,
-            int(rec.get("visible_exact_rows") or 0),
-            int(rec.get("holdout_depth") or 0),
-            float(rec.get("gate_score") or 0.0),
-            -int(rec.get("visible_wrong_cells") or 0),
-        )
-    best = max(records, key=_rank)
-    refs = candidate_memory_refs_for_retry(project)
-    source_ref = refs[0] if refs else str(best.get("submission") or "").strip()
-    source_path = (project / source_ref).resolve()
-    if not source_path.exists() or not source_path.is_file():
-        return ""
-    sha = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        regression_payload = {}
+    regression = (
+        regression_payload.get("candidate_regression_receipt")
+        if isinstance(regression_payload, dict)
+        else None
+    )
+    if isinstance(regression, dict):
+        try:
+            resolved = resolve_repair_frontier(project, regression)
+            source_ref = resolved["source_ref"]
+            sha = resolved["sha256"]
+            best = {
+                "visible_exact_rows": regression.get(
+                    "best_prior_exact_rows"
+                    if resolved["role"] == "best_admissible_prior"
+                    else "candidate_exact_rows"
+                ),
+                "visible_checked_rows": (
+                    (regression_payload.get("counterexample_trace") or {}).get("checked_rows")
+                ),
+            }
+        except (OSError, ValueError):
+            source_ref = ""
+    if not source_ref:
+        try:
+            payload = json.loads(
+                (project / "workspace" / "candidate_memory.json").read_text(
+                    encoding="utf-8",
+                )
+            )
+        except Exception:
+            return ""
+        records = [
+            rec
+            for rec in (payload.get("records") or [])
+            if isinstance(rec, dict)
+            and str(rec.get("submission") or "").strip().startswith(
+                "workspace/submissions/"
+            )
+        ] if isinstance(payload, dict) else []
+        if not records:
+            return ""
+
+        def _rank(rec: dict[str, Any]) -> tuple[int, int, int, float, int]:
+            return (
+                1 if rec.get("source_type") == "full_survivor" else 0,
+                int(rec.get("visible_exact_rows") or 0),
+                int(rec.get("holdout_depth") or 0),
+                float(rec.get("gate_score") or 0.0),
+                -int(rec.get("visible_wrong_cells") or 0),
+            )
+
+        best = max(records, key=_rank)
+        refs = candidate_memory_refs_for_retry(project)
+        source_ref = refs[0] if refs else str(best.get("submission") or "").strip()
+        source_path = (project / source_ref).resolve()
+        if not source_path.exists() or not source_path.is_file():
+            return ""
+        sha = hashlib.sha256(source_path.read_bytes()).hexdigest()
     patch_base_decl = patch_base_declaration(source_ref, sha)
     return (
         "\nAUTHORITATIVE PATCH BASE REFERENCE (compose by hash; do not copy "
@@ -116,10 +155,16 @@ def _counterexample_context_for_retry(project_dir: str | Path | None) -> str:
         return ""
     if not summary.strip():
         return ""
+    compact = _compressed_counterexample_context_payload(summary)
+    rendered = (
+        json.dumps(compact, sort_keys=True, separators=(",", ":"), default=str)
+        if compact
+        else summary.strip()
+    )
     return (
         "\nFRESH COUNTEREXAMPLE CONTEXT (from latest patch-base regression receipt; "
         "use as typed evidence, not as authority over the gate):\n"
-        f"{summary.strip()}\n\n"
+        f"{rendered}\n\n"
     )
 
 
@@ -145,7 +190,7 @@ def _latest_workbench_task_morphism(
         return None
     task = payload.get("workbench_task")
     task = task if isinstance(task, dict) else {}
-    caps = task.get("admissible_capability_ids")
+    caps = task.get("morphism_sequence") or task.get("admissible_capability_ids")
     if not isinstance(caps, list):
         caps = []
     recommended = str(payload.get("recommended_capability_id") or "").strip()
@@ -203,9 +248,11 @@ def _open_strategy_receipt_morphism(
     if not (project / "workspace" / "latest_level_transfer_probe.json").exists():
         return None
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
 
-        cards = open_cards(project / "workspace" / "strategy_experiments.jsonl")
+        cards = active_strategy_cards(
+            project / "workspace" / "strategy_experiments.jsonl"
+        )
     except Exception:  # noqa: BLE001
         return None
     for card in cards:
@@ -365,6 +412,7 @@ def _ready_receipt_facts_for_retry(
     *,
     exclude_candidate_bound_capability: str = "",
     max_predicates: int = 4,
+    project_dir: str | Path | None = None,
 ) -> str:
     rows = _workbench_receipt_rows_for_retry(retry_state_text)
     facts: list[dict[str, object]] = []
@@ -397,6 +445,9 @@ def _ready_receipt_facts_for_retry(
                 "local_residue_status",
                 "local_residue_class_count",
                 "lowerability_status",
+                "admissibility_scope",
+                "candidate_family_id",
+                "candidate_family_admissible",
                 "candidate_delta_admissible",
                 "candidate_label_coverage",
                 "forbidden_feature_classes",
@@ -405,6 +456,41 @@ def _ready_receipt_facts_for_retry(
             ):
                 if key in summary:
                     fact[key] = summary[key]
+            if summary.get("schema") == "ztare-counterexample-context-observation-v1":
+                behavioral_fiber = summary.get("behavioral_fiber")
+                if isinstance(behavioral_fiber, dict):
+                    fact["behavioral_fiber"] = _compact_behavioral_fiber(
+                        behavioral_fiber
+                    )
+                chain_effects = summary.get("patch_base_chain_effects")
+                if isinstance(chain_effects, dict):
+                    fact["patch_base_chain_effects"] = (
+                        _compact_patch_base_chain_effects(chain_effects)
+                    )
+                transports = summary.get("commuting_transports")
+                if isinstance(transports, list) and transports:
+                    fact["commuting_transports"] = [
+                        _compact_commuting_transport(row)
+                        for row in transports[:4]
+                        if isinstance(row, dict)
+                    ]
+                observation = summary.get("counterexample_observation")
+                observation_sha = str(summary.get("observation_sha256") or "").strip()
+                if isinstance(observation, dict) and observation_sha:
+                    fact["observation_sha256"] = observation_sha
+                    fact["counterexample_observation"] = (
+                        _compact_counterexample_observation(observation)
+                    )
+                    fact["diagnostic_summary"] = str(
+                        summary.get("diagnostic_summary") or ""
+                    )[:1600]
+                event_candidates = summary.get("catalog_residual_event_candidates")
+                if isinstance(event_candidates, list) and event_candidates:
+                    fact["catalog_residual_event_candidates"] = [
+                        compact_catalog_residual_event_candidate(row)
+                        for row in event_candidates[:2]
+                        if isinstance(row, dict)
+                    ]
             predicates = summary.get("candidate_predicates")
             if isinstance(predicates, list) and predicates:
                 fact["candidate_predicates"] = predicates[:max_predicates]
@@ -436,6 +522,379 @@ def _parse_jsonish(value: object) -> object | None:
         return None
 
 
+def _compact_commuting_transport(transport: dict[str, Any]) -> dict[str, Any]:
+    keep = (
+        "schema",
+        "authority",
+        "source_row",
+        "target_row",
+        "intervention",
+        "time_translation",
+        "lifecycle_compatibility",
+        "operation",
+        "source_operation",
+        "consequence_operation",
+        "transport_kind",
+        "observed_relation",
+        "operation_identity_sha256",
+        "exact_lowering_variants",
+        "source_exact_lowering_variants",
+        "consequence_exact_lowering_variants",
+        "component_selector_presentations",
+        "component_identity_status",
+        "observed_commutation",
+        "global_equivariance_authorized",
+        "quotient_authorized",
+        "carrier_promotion_authorized",
+        "square_identity_sha256",
+    )
+    return {
+        key: transport[key]
+        for key in keep
+        if key in transport
+    }
+
+
+def _compact_behavioral_fiber(fiber: dict[str, Any]) -> dict[str, Any]:
+    keep = (
+        "schema",
+        "authority",
+        "representative_row",
+        "intervention",
+        "law_coordinate",
+        "member_count",
+        "member_rows",
+        "distinct_source_states",
+        "shared_observed_consequence_sha256",
+        "observed_relation",
+        "equality_contract",
+        "global_equivariance_authorized",
+        "quotient_authorized",
+        "carrier_promotion_authorized",
+        "distinguishing_obligation",
+        "fiber_identity_sha256",
+    )
+    compact = {key: fiber[key] for key in keep if key in fiber}
+    members = fiber.get("members")
+    if isinstance(members, list):
+        member_keys = (
+            "row",
+            "representative",
+            "source_state_sha256",
+            "source_operations_to_representative",
+            "component_selector_presentations",
+        )
+        compact["members"] = [
+            {key: member[key] for key in member_keys if key in member}
+            for member in members[:16]
+            if isinstance(member, dict)
+        ]
+    return compact
+
+
+def _compact_patch_base_chain_effects(
+    effects: dict[str, Any],
+) -> dict[str, Any]:
+    """Preserve layer consequences while dropping prediction fingerprints."""
+
+    keep = (
+        "schema",
+        "authority",
+        "frontier_role",
+        "frontier_sha256",
+        "behavioral_fiber_identity_sha256",
+        "member_rows",
+        "chain_order",
+        "layer_count",
+        "additive_layer_count",
+        "distinct_rows_added_across_layers",
+        "observed_chain_relation",
+        "global_operation_identity_authorized",
+        "carrier_promotion_authorized",
+        "chain_effect_identity_sha256",
+    )
+    compact = {key: effects[key] for key in keep if key in effects}
+    layers = effects.get("layers")
+    if isinstance(layers, list):
+        layer_keys = (
+            "depth_from_root",
+            "carrier_ref",
+            "carrier_sha256",
+            "correct_member_rows",
+            "wrong_member_rows",
+            "added_correct_member_rows",
+            "lost_correct_member_rows",
+            "evaluation_error_rows",
+            "observed_delta_relation",
+        )
+        compact["layers"] = [
+            {key: layer[key] for key in layer_keys if key in layer}
+            for layer in layers[:16]
+            if isinstance(layer, dict)
+        ]
+    return compact
+
+
+def _compact_counterexample_observation(
+    observation: dict[str, Any],
+    *,
+    max_residual_runs: int = 128,
+) -> dict[str, Any]:
+    """Lower a chart packet to its identity plus program-readable residual."""
+    objects = observation.get("objects") if isinstance(observation.get("objects"), dict) else {}
+
+    def windows(kind: str) -> dict[tuple[int, int, int, int], list[list[Any]]]:
+        projected = objects.get(kind) if isinstance(objects.get(kind), dict) else {}
+        rows = projected.get("windows") if isinstance(projected.get("windows"), list) else []
+        out: dict[tuple[int, int, int, int], list[list[Any]]] = {}
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            bbox = row.get("bbox")
+            values = row.get("values")
+            if not isinstance(bbox, list) or len(bbox) != 4 or not isinstance(values, list):
+                continue
+            try:
+                key = tuple(int(value) for value in bbox)
+            except (TypeError, ValueError):
+                continue
+            out[key] = values
+        return out
+
+    source = windows("source_observation")
+    proposed = windows("proposed_consequence")
+    observed = windows("observed_consequence")
+    triples_by_coordinate: dict[tuple[int, int], dict[str, Any]] = {}
+    overlap_conflicts: list[dict[str, Any]] = []
+    for bbox, pred_values in proposed.items():
+        obs_values = observed.get(bbox)
+        if obs_values is None:
+            continue
+        source_values = source.get(bbox) or []
+        r0, c0, _r1, _c1 = bbox
+        for rr in range(min(len(pred_values), len(obs_values))):
+            pred_row = pred_values[rr]
+            obs_row = obs_values[rr]
+            if not isinstance(pred_row, list) or not isinstance(obs_row, list):
+                continue
+            for cc in range(min(len(pred_row), len(obs_row))):
+                source_value = None
+                if rr < len(source_values) and isinstance(source_values[rr], list):
+                    if cc < len(source_values[rr]):
+                        source_value = source_values[rr][cc]
+                triple = {
+                    "coordinate": [r0 + rr, c0 + cc],
+                    "source": source_value,
+                    "proposed": pred_row[cc],
+                    "observed": obs_row[cc],
+                }
+                coordinate = (r0 + rr, c0 + cc)
+                prior = triples_by_coordinate.get(coordinate)
+                if prior is None:
+                    triples_by_coordinate[coordinate] = triple
+                elif any(
+                    prior[key] != triple[key]
+                    for key in ("source", "proposed", "observed")
+                ):
+                    overlap_conflicts.append(
+                        {
+                            "coordinate": list(coordinate),
+                            "first": {
+                                key: prior[key]
+                                for key in ("source", "proposed", "observed")
+                            },
+                            "second": {
+                                key: triple[key]
+                                for key in ("source", "proposed", "observed")
+                            },
+                        }
+                    )
+
+    triples = list(triples_by_coordinate.values())
+
+    def relation_runs(
+        rows: list[dict[str, Any]],
+        value_keys: tuple[str, ...],
+    ) -> list[dict[str, Any]]:
+        runs: list[dict[str, Any]] = []
+        for row in sorted(rows, key=lambda item: tuple(item["coordinate"])):
+            rr, cc = row["coordinate"]
+            values = tuple(row[key] for key in value_keys)
+            if runs:
+                prior = runs[-1]
+                prior_values = tuple(prior[key] for key in value_keys)
+                if (
+                    prior["row"] == rr
+                    and prior["col_end"] + 1 == cc
+                    and prior_values == values
+                ):
+                    prior["col_end"] = cc
+                    continue
+            runs.append(
+                {
+                    "row": rr,
+                    "col_start": cc,
+                    "col_end": cc,
+                    **{key: row[key] for key in value_keys},
+                }
+            )
+        return runs
+
+    residual_rows = [
+        row for row in triples if row["proposed"] != row["observed"]
+    ]
+    state_change_rows = [
+        row
+        for row in triples
+        if row["source"] is not None and row["source"] != row["observed"]
+    ]
+    residual_runs = relation_runs(
+        residual_rows,
+        ("source", "proposed", "observed"),
+    )
+    state_change_runs = relation_runs(
+        state_change_rows,
+        ("source", "observed"),
+    )
+    chart = observation.get("observation_chart")
+    chart = chart if isinstance(chart, dict) else {}
+    compact = {
+        "schema": observation.get("schema"),
+        "observation_ref": observation.get("observation_ref"),
+        "proposal_identity": observation.get("proposal_identity"),
+        "intervention": observation.get("intervention"),
+        "transition_identity": observation.get("transition_identity"),
+        "observation_chart": {
+            key: chart.get(key)
+            for key in ("chart_id", "chart_version", "packet_schema_id", "authority")
+            if chart.get(key) is not None
+        },
+        "residual_runs": residual_runs[:max_residual_runs],
+        "residual_cell_count": len(residual_rows),
+        "residual_run_count": len(residual_runs),
+        "residual_truncated": len(residual_runs) > max_residual_runs,
+        "state_change_runs": state_change_runs[:max_residual_runs],
+        "state_change_cell_count": len(state_change_rows),
+        "state_change_run_count": len(state_change_runs),
+        "state_change_truncated": len(state_change_runs) > max_residual_runs,
+        "chart_overlap_conflicts": overlap_conflicts[:8],
+        "chart_overlap_conflict_count": len(overlap_conflicts),
+    }
+    return {key: value for key, value in compact.items() if value not in (None, "", [], {})}
+
+
+def _compressed_counterexample_context_payload(value: object) -> dict[str, Any]:
+    summary = _parse_jsonish(value)
+    if not isinstance(summary, dict):
+        return {}
+    out: dict[str, Any] = {
+        "schema": summary.get("schema"),
+        "diagnostic_summary": str(summary.get("diagnostic_summary") or "")[:1800],
+    }
+    observation_sha = str(summary.get("observation_sha256") or "").strip()
+    observation = summary.get("counterexample_observation")
+    if observation_sha:
+        out["observation_sha256"] = observation_sha
+    if isinstance(observation, dict):
+        out["counterexample_observation"] = _compact_counterexample_observation(
+            observation
+        )
+    event_candidates = summary.get("catalog_residual_event_candidates")
+    if isinstance(event_candidates, list) and event_candidates:
+        out["catalog_residual_event_candidates"] = [
+            compact_catalog_residual_event_candidate(row)
+            for row in event_candidates[:2]
+            if isinstance(row, dict)
+        ]
+    behavioral_fiber = summary.get("behavioral_fiber")
+    if isinstance(behavioral_fiber, dict):
+        out["behavioral_fiber"] = _compact_behavioral_fiber(behavioral_fiber)
+    transports = summary.get("commuting_transports")
+    if isinstance(transports, list) and transports:
+        out["commuting_transports"] = [
+            _compact_commuting_transport(row)
+            for row in transports[:4]
+            if isinstance(row, dict)
+        ]
+    return {key: value for key, value in out.items() if value not in (None, "", [], {})}
+
+
+def compact_catalog_residual_event_candidate(
+    candidate: dict[str, Any],
+) -> dict[str, Any]:
+    """Keep operation identity and executable lowering without raw-grid bulk."""
+    lowering = candidate.get("lowering")
+    lowering = lowering if isinstance(lowering, dict) else {}
+    writes = lowering.get("writes") if isinstance(lowering.get("writes"), list) else []
+    compact_writes = []
+    for value, coordinates in writes:
+        if not isinstance(coordinates, list):
+            continue
+        by_row: dict[int, list[int]] = {}
+        for coordinate in coordinates:
+            if not isinstance(coordinate, (list, tuple)) or len(coordinate) != 2:
+                continue
+            by_row.setdefault(int(coordinate[0]), []).append(int(coordinate[1]))
+        runs = []
+        for row, columns in sorted(by_row.items()):
+            columns = sorted(set(columns))
+            if not columns:
+                continue
+            start = end = columns[0]
+            for column in columns[1:]:
+                if column == end + 1:
+                    end = column
+                else:
+                    runs.append([row, start, end])
+                    start = end = column
+            runs.append([row, start, end])
+        compact_writes.append({"value": value, "row_col_runs": runs})
+    return {
+        "schema": candidate.get("schema"),
+        "authority": candidate.get("authority"),
+        "operation_identity": candidate.get("operation_identity"),
+        "operation_identity_sha256": candidate.get("operation_identity_sha256"),
+        "role_evidence": candidate.get("role_evidence"),
+        "boundary_evidence": candidate.get("boundary_evidence"),
+        "identity_status": candidate.get("identity_status"),
+        "lowering": {
+            key: lowering.get(key)
+            for key in ("op", "mover_colors", "rect", "edge")
+            if lowering.get(key) is not None
+        }
+        | {"writes": compact_writes},
+        "lowering_sha256": candidate.get("lowering_sha256"),
+        "promotion_authorized": candidate.get("promotion_authorized"),
+    }
+
+
+def _commuting_transports_from_receipts(
+    retry_state_text: str,
+) -> list[dict[str, Any]]:
+    """Read finite transport witnesses already delivered to candidate synthesis."""
+    found: list[dict[str, Any]] = []
+    for row in _workbench_receipt_rows_for_retry(retry_state_text):
+        payload = row.get("payload") if isinstance(row, dict) else None
+        if not isinstance(payload, dict):
+            continue
+        if str(payload.get("capability_id") or "") != "inspect_worldmodel_counterexample_context":
+            continue
+        summary = _parse_jsonish(payload.get("output_summary"))
+        if not isinstance(summary, dict):
+            continue
+        transports = summary.get("commuting_transports")
+        if not isinstance(transports, list):
+            continue
+        found.extend(
+            transport
+            for transport in transports
+            if isinstance(transport, dict)
+            and transport.get("observed_commutation") is True
+            and transport.get("authority") == "diagnostic_finite_witness"
+        )
+    return found
+
+
 def _outstanding_obligation_context_for_retry(
     project_dir: str | Path | None,
     *,
@@ -455,9 +914,11 @@ def _outstanding_obligation_context_for_retry(
         return ""
     project = Path(project_dir)
     try:
-        from ztare.common.operator_proposal_contract import open_cards
+        from ztare.common.strategy_card_roles import active_strategy_cards
 
-        cards = open_cards(project / "workspace" / "strategy_experiments.jsonl")
+        cards = active_strategy_cards(
+            project / "workspace" / "strategy_experiments.jsonl"
+        )
     except Exception:
         cards = []
     if not cards:
@@ -619,14 +1080,10 @@ def format_worldmodel_retry_skeleton(
         "`inspect_worldmodel_counterexample_context`" in (r1_error or "")
     )
     current_requests_visible_probe = "`run_visible_json_probe`" in (r1_error or "")
-    current_requests_feature_miner = (
-        "`mine_worldmodel_separating_features`" in (r1_error or "")
-    )
     named_current_morphism = (
         current_candidate_bound_capability
         or ("inspect_worldmodel_counterexample_context" if current_requests_counterexample_context else "")
         or ("run_visible_json_probe" if current_requests_visible_probe else "")
-        or ("mine_worldmodel_separating_features" if current_requests_feature_miner else "")
     )
     initial_next_morphism: ControlMorphism | None = None
     if not action_request_already_executed and not current_candidate_bound_capability:
@@ -672,6 +1129,7 @@ def format_worldmodel_retry_skeleton(
     input_rebind_caps: set[str] = set()
     candidate_delta_lowerability: bool | None = None
     suppress_candidate_carrier_surface = False
+    commuting_transports: list[dict[str, Any]] = []
     if action_request_already_executed:
         ready_receipts = _ready_receipts_json_for_retry(
             retry_state_text,
@@ -688,8 +1146,10 @@ def format_worldmodel_retry_skeleton(
                 if candidate_binding_refresh
                 else ""
             ),
+            project_dir=project_dir,
         )
         executed_caps = executed_morphism_ids_from_receipts(retry_state_text)
+        commuting_transports = _commuting_transports_from_receipts(retry_state_text)
         if _workbench_inputs_changed_since_receipt(
             project_dir,
             retry_state_text,
@@ -697,13 +1157,6 @@ def format_worldmodel_retry_skeleton(
             artifact_refs=["workspace/latest_patch_base_regression.json"],
         ):
             input_rebind_caps.add("run_visible_json_probe")
-        if _workbench_inputs_changed_since_receipt(
-            project_dir,
-            retry_state_text,
-            capability_id="mine_worldmodel_separating_features",
-            artifact_refs=["workspace/latest_patch_base_regression.json"],
-        ):
-            input_rebind_caps.add("mine_worldmodel_separating_features")
         if _workbench_inputs_changed_since_receipt(
             project_dir,
             retry_state_text,
@@ -728,22 +1181,20 @@ def format_worldmodel_retry_skeleton(
         candidate_delta_lowerability = boundary_cegar_candidate_delta_lowerability(
             ready_receipts
         )
+        refuted_scopes = boundary_cegar_refutation_scopes(ready_receipts)
+        selector_family_refuted = any(
+            row.get("scope_kind") == "candidate_family" for row in refuted_scopes
+        )
         needs_lowerable_selector = (
-            candidate_delta_lowerability is False
-            and "mine_worldmodel_separating_features" in executed_caps
+            not commuting_transports
+            and "inspect_worldmodel_counterexample_context" in executed_caps
             and (
                 "mine_worldmodel_lowerable_selectors" not in executed_caps
                 or "mine_worldmodel_lowerable_selectors" in input_rebind_caps
             )
         )
-        needs_feature_miner = (
-            candidate_delta_lowerability is False
-            and "inspect_worldmodel_counterexample_context" in executed_caps
-            and "mine_worldmodel_separating_features" not in executed_caps
-        )
         needs_cell_local_selector = (
-            candidate_delta_lowerability is False
-            and "mine_worldmodel_global_carrier_selectors_from_observable_context" in executed_caps
+            "mine_worldmodel_global_carrier_selectors_from_observable_context" in executed_caps
             and (
                 "cell_local_lowerable_carrier_selector_miner" not in executed_caps
                 or "cell_local_lowerable_carrier_selector_miner" in input_rebind_caps
@@ -775,45 +1226,6 @@ def format_worldmodel_retry_skeleton(
                             project_dir=project_dir,
                         ),
                         claim_bindings=["separate latest counterexample quotient by typed context"],
-                    )
-                ],
-            )
-        elif needs_feature_miner:
-            action_request_section = render_boundary_cegar_retry_surface(
-                state="observation_receipt_available",
-                executed_morphisms=executed_caps,
-                carried_receipts_json=ready_receipts,
-                admissible_next=[
-                    ControlMorphism(
-                        capability_id="mine_worldmodel_separating_features",
-                        input_refs=_workbench_input_refs_for_capability(
-                            "mine_worldmodel_separating_features",
-                            ["workspace/latest_patch_base_regression.json"],
-                            project_dir=project_dir,
-                        ),
-                        claim_bindings=[
-                            "mine visible alpha features after context-only receipt",
-                        ],
-                    )
-                ],
-            )
-        elif current_requests_feature_miner and (
-            "mine_worldmodel_separating_features" not in executed_caps
-            or "mine_worldmodel_separating_features" in input_rebind_caps
-        ):
-            action_request_section = render_boundary_cegar_retry_surface(
-                state="counterexample_open",
-                executed_morphisms=executed_caps,
-                carried_receipts_json=ready_receipts,
-                admissible_next=[
-                    ControlMorphism(
-                        capability_id="mine_worldmodel_separating_features",
-                        input_refs=_workbench_input_refs_for_capability(
-                            "mine_worldmodel_separating_features",
-                            ["workspace/latest_patch_base_regression.json"],
-                            project_dir=project_dir,
-                        ),
-                        claim_bindings=["mine visible alpha features for latest counterexample"],
                     )
                 ],
             )
@@ -853,12 +1265,10 @@ def format_worldmodel_retry_skeleton(
                     )
                 ],
             )
-        elif (
-            candidate_delta_lowerability is False
-            and (
-                "mine_worldmodel_lowerable_selectors" in executed_caps
-                or "cell_local_lowerable_carrier_selector_miner" in executed_caps
-            )
+        elif not commuting_transports and selector_family_refuted and (
+            "mine_worldmodel_lowerable_selectors" in executed_caps
+            or "cell_local_lowerable_carrier_selector_miner" in executed_caps
+            or "mine_worldmodel_global_carrier_selectors_from_observable_context" in executed_caps
         ):
             action_request_section = render_boundary_cegar_retry_surface(
                 state="observation_receipt_available",
@@ -902,6 +1312,15 @@ def format_worldmodel_retry_skeleton(
                 allow_candidate_rebind=candidate_binding_refresh,
                 allow_input_rebind_caps=input_rebind_caps,
             )
+            if (
+                commuting_transports
+                and next_morphism is not None
+                and next_morphism.capability_id in {
+                    "mine_worldmodel_separating_features",
+                    "mine_worldmodel_lowerable_selectors",
+                }
+            ):
+                next_morphism = None
             next_morphism = (
                 _open_strategy_receipt_morphism(
                     project_dir,
@@ -948,6 +1367,13 @@ def format_worldmodel_retry_skeleton(
     if suppress_candidate_carrier_surface:
         patch_base_context = ""
     carrier_guidance_section = (
+        "A finite commuting transport through a registered adapter operation is "
+        "present in CARRIED RECEIPT FACTS. This closes the automatic selector-search "
+        "branch. Candidate synthesis receives the operation witness, unresolved "
+        "selector presentations, and authority limits as typed evidence. The witness "
+        "grants no global equivariance, quotient, or promotion authority.\n\n"
+        if commuting_transports
+        else
         "Current receipts do not yet expose a lowerability witness. If visible "
         "evidence still lets you express a transportable law, submit the candidate "
         "and let the gate decide. Otherwise submit LOWERABILITY_BLOCKED with "
@@ -956,10 +1382,12 @@ def format_worldmodel_retry_skeleton(
         + "\n\n"
         if candidate_delta_lowerability is False
         else (
-            "A typed observation is available as a useful option, but it does not "
-            "forbid candidate code. Submit an executable carrier when visible "
-            "evidence permits; otherwise request the registered observation or "
-            "submit LOWERABILITY_BLOCKED.\n\n"
+            SCIENCE_OUTPUT_POLICY.local_stopping_text()
+            + "\n\n"
+            + (
+                "Submit an executable carrier from another hypothesis family when "
+                "visible evidence permits, or request another registered observation. "
+                "\n\n"
             if suppress_candidate_carrier_surface
             else (
                 "If this retry submits a candidate delta, choose the narrowest carrier "
@@ -972,6 +1400,7 @@ def format_worldmodel_retry_skeleton(
                 "  - Catalog spec only if lowerable: `WORLD_MODEL_SPEC = {\"actions\":{\"0\":[{\"op\":\"identity\"}]}}`\n"
                 "  - Sealed grid_dsl AST: `PROGRAM = [...]`\n"
                 "Do not include identity fallback code for a control-only move.\n\n"
+            )
             )
         )
     )

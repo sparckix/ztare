@@ -19,6 +19,7 @@ from ztare.common.subscription_agent_runtime import (
     owned_dispatch_status,
     owned_dispatch_receipt_status,
     cancel_owned_dispatch_receipt,
+    current_subscription_dispatch_agent_id,
     subscription_dispatch_budget_scope,
 )
 
@@ -146,6 +147,25 @@ def test_subscription_dispatch_budget_scope_wraps_the_existing_runtime(tmp_path:
         ("before", "claude", "print('bounded')"),
         ("after", "reservation-1"),
     ]
+
+
+def test_budget_hook_observes_logical_agent_identity(tmp_path: Path):
+    seen = []
+    with subscription_dispatch_budget_scope(
+        before_dispatch=lambda _runtime, _command: seen.append(
+            current_subscription_dispatch_agent_id()
+        ),
+        after_dispatch=lambda _reservation: None,
+    ):
+        result = _run_cli(
+            [sys.executable, "-c", "print('typed')"],
+            runtime="claude",
+            repo=tmp_path,
+            timeout_seconds=5,
+            agent_id="agentic_leaf_probe__autoformalize_statement",
+        )
+    assert result.returncode == 0
+    assert seen == ["agentic_leaf_probe__autoformalize_statement"]
 
 
 def test_subscription_dispatch_budget_exhaustion_blocks_before_spawn(

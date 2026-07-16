@@ -110,6 +110,76 @@ class TestCacheAndReconsolidation:
         bm2 = build_row_bitmap(carrier, ep, persist_dir=str(tmp_path))
         assert bm1["exact_count"] == bm2["exact_count"]
         assert bm1["episode_hash"] == bm2["episode_hash"]
+        assert len(bm1["evaluator_sha256"]) == 64
+
+    def test_reconsolidation_on_evaluator_change(self, tmp_path, monkeypatch):
+        """A cached verdict cannot survive a change in judge semantics."""
+        from ztare.worldmodel import evidence_consolidation as consolidation
+
+        ep = _write_episode(str(tmp_path), "ep.jsonl", [(G1, 0, G1, 0)])
+        carrier = _write_identity_carrier(str(tmp_path))
+        monkeypatch.setattr(
+            consolidation,
+            "_row_bitmap_evaluator_sha256",
+            lambda: "a" * 64,
+        )
+        first = consolidation.build_row_bitmap(
+            carrier, ep, persist_dir=str(tmp_path)
+        )
+        monkeypatch.setattr(
+            consolidation,
+            "_row_bitmap_evaluator_sha256",
+            lambda: "b" * 64,
+        )
+        second = consolidation.build_row_bitmap(
+            carrier, ep, persist_dir=str(tmp_path)
+        )
+
+        assert first["evaluator_sha256"] == "a" * 64
+        assert second["evaluator_sha256"] == "b" * 64
+        assert len(list(tmp_path.glob("*.json"))) == 2
+
+    def test_load_failure_is_not_persisted(self, tmp_path, monkeypatch):
+        """A transient lowering failure cannot poison later cache reads."""
+        from ztare.worldmodel import evidence_consolidation as consolidation
+
+        ep = _write_episode(str(tmp_path), "ep.jsonl", [(G1, 0, G1, 0)])
+        carrier = _write_identity_carrier(str(tmp_path))
+        original_loader = consolidation._load_carrier_from_source
+        with monkeypatch.context() as patcher:
+            patcher.setattr(
+                consolidation,
+                "_load_carrier_from_source",
+                lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("transient")),
+            )
+            failed = consolidation.build_row_bitmap(
+                carrier, ep, project_dir=tmp_path, persist_dir=str(tmp_path)
+            )
+
+        recovered = consolidation.build_row_bitmap(
+            carrier, ep, project_dir=tmp_path, persist_dir=str(tmp_path)
+        )
+        assert original_loader is consolidation._load_carrier_from_source
+        assert failed["load_error"] == "transient"
+        assert recovered["exact_count"] == 1
+        assert "load_error" not in recovered
+
+    def test_reconsolidation_on_lowering_config_change(self, tmp_path):
+        """Project lowering policy is part of bitmap judgment identity."""
+        ep = _write_episode(str(tmp_path), "ep.jsonl", [(G1, 0, G1, 0)])
+        carrier = _write_identity_carrier(str(tmp_path))
+        rubric = tmp_path / "rubric.json"
+        rubric.write_text('{"dynamics_assumption":"markovian"}')
+        first = build_row_bitmap(
+            carrier, ep, project_dir=tmp_path, persist_dir=str(tmp_path)
+        )
+        rubric.write_text('{"dynamics_assumption":"lawful_time"}')
+        second = build_row_bitmap(
+            carrier, ep, project_dir=tmp_path, persist_dir=str(tmp_path)
+        )
+
+        assert first["lowering_config_sha256"] != second["lowering_config_sha256"]
+        assert len(list(tmp_path.glob("*.json"))) == 3  # rubric + two bitmaps
 
     def test_reconsolidation_on_evidence_append(self, tmp_path):
         """New evidence (appended row) produces a different episode hash and recomputes."""
@@ -245,7 +315,7 @@ class TestBatchGate:
 
 # ── equivalence test against real gate_harness.py ─────────────────────────────
 
-PROJECT_DIR = Path("/Users/daalami/figs_activist_loop/projects/arc3_ls20_gov")
+PROJECT_DIR = _REPO / "projects" / "arc3_ls20_gov"
 HARNESS = PROJECT_DIR / "gate_harness.py"
 
 
@@ -458,6 +528,12 @@ class TestResolveEpisodePaths:
         result = resolve_episode_paths(proj)
         assert result["visible"].name == "episode_001.jsonl"
         assert result["holdout"].name == "episode_002.jsonl"
+
+    def test_corrupt_manifest_cannot_fall_back_and_swap_roles(self, tmp_path):
+        proj = self._make_project(tmp_path, ["a_holdout.jsonl", "z_visible.jsonl"])
+        (proj / "MANIFEST.json").write_text("{broken", encoding="utf-8")
+        with pytest.raises(ValueError, match="unreadable episode-role manifest"):
+            resolve_episode_paths(proj)
 
     def test_batch_gate_no_crash_without_holdout(self, tmp_path):
         """batch_gate with holdout=None in resolver must not crash (guard short-circuits)."""

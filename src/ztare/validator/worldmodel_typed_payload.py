@@ -125,6 +125,10 @@ WORLDMODEL TYPED PAYLOAD CONTRACT:
   Treat coordinate-only deltas as diagnostic charts unless you state the
   invariant that makes them transport; full replay/holdout decides.
 - `WORLD_MODEL_SPEC` means a literal catalog spec with non-empty `actions`.
+  `PATCH_DELTA_SPEC` is the same literal operation algebra applied after an
+  authoritative PATCH_BASE while retaining the source state for guards and
+  crossing relations. Prefer it over hand-translating a registered operation
+  into Python. It is a patch delta, not a standalone carrier.
   It may use only the catalog operators accepted by `ztare.worldmodel.spec_catalog`
   (for example `translate_block`, `recolor_map`, `consume_extremal`,
   `accumulate_extremal`, `identity`) plus documented guards. Never invent an op
@@ -180,8 +184,18 @@ def parse_worldmodel_typed_payload_text(text: str) -> dict[str, object]:
     object that names a worldmodel payload field, preferably one with an
     executable carrier.
     """
-    candidates: list[dict[str, object]] = []
     source = text or ""
+
+    # The contract's carrier is the outer envelope.  Parse that identity before
+    # searching nested objects: receipt payloads legitimately contain fields
+    # named ``source`` or artifact refs named ``test_model.py``.  Treating one
+    # of those properties as a candidate carrier can erase a control-only
+    # transition and coerce it into executable-candidate validation.
+    whole = _parse_whole_worldmodel_payload(source)
+    if whole is not None:
+        return whole
+
+    candidates: list[dict[str, object]] = []
     start = source.find("{")
     while start >= 0:
         span = json_object_span(source, start)
@@ -207,14 +221,27 @@ def parse_worldmodel_typed_payload_text(text: str) -> dict[str, object]:
         raise ValueError("No worldmodel typed-payload JSON object found.")
     candidates.sort(
         key=lambda obj: (
-            bool(_maybe_test_model_py(obj).strip()),
-            isinstance(obj.get("control_receipts"), list),
-            isinstance(obj.get("thesis_markdown"), str),
+            _worldmodel_envelope_identity_rank(obj),
             len(json.dumps(obj, sort_keys=True, default=str)),
+            bool(_maybe_test_model_py(obj).strip()),
         ),
         reverse=True,
     )
     return candidates[0]
+
+
+def _worldmodel_envelope_identity_rank(obj: dict[str, object]) -> int:
+    """Rank schema-envelope identity ahead of carrier-looking properties."""
+
+    has_receipts = any(key in obj for key in _CONTROL_RECEIPT_KEYS)
+    has_thesis = any(key in obj for key in _THESIS_KEYS)
+    if has_receipts and has_thesis:
+        return 3
+    if has_receipts:
+        return 2
+    if has_thesis:
+        return 1
+    return 0
 
 
 def _parse_repaired_worldmodel_payload(text: str) -> dict[str, object] | None:

@@ -232,7 +232,7 @@ def validate(repo: Path = REPO) -> dict[str, object]:
 
 def _registered_family_call_sites() -> tuple[set[str], str | None]:
     try:
-        from src.ztare.research_director.primitive_family_registry import dispatch_call_sites
+        from ztare.research_director.primitive_family_registry import dispatch_call_sites
     except Exception as exc:  # noqa: BLE001
         return set(), f"{type(exc).__name__}: {str(exc)[:200]}"
     return set(dispatch_call_sites()), None

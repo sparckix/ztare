@@ -1,22 +1,11 @@
-"""Tests for the 4 catalog-promotion kill-point fixes (GP-250).
-
-FIX 1 — non-coupling leaf reaches spec-patch branch and gets a real verdict
-FIX 2 — accepted card produces a promotion-contract row counted by p0_metrics
-         (covered in test_worldmodel_p0_metrics.py::test_path_a_promotion_counted)
-FIX 3 — empty-evidence card gets backfilled or receipted no_evidence_yet
-FIX 4 — persist_strategy_card_discharges called on gate pass (mock);
-         zero-caller list includes the organ
-"""
+"""Tests for current-evidence grammar proposal routing and strategy discharge."""
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
@@ -25,135 +14,89 @@ sys.path.insert(0, str(SRC))
 
 # ── FIX 1: non-coupling leaf routes to spec-patch branch ─────────────────────
 
-def test_non_coupling_leaf_reaches_spec_patch_branch(tmp_path):
-    """worldmodel_harness must route a non-coupling artifact to the spec-patch
-    evaluator and return a branch-labelled verdict (not a silent hard-reject)."""
-    from ztare.worldmodel.operator_implement import worldmodel_harness
+
+def test_governed_carrier_owner_routes_bound_cards(tmp_path):
+    from ztare.worldmodel import grammar_reflex
     from ztare.worldmodel.episode_log import EpisodeLog
 
-    # Minimal EpisodeLog with one trivial transition (grid stays same).
     log = EpisodeLog()
-    g = ((0, 1), (2, 0))
-    log.append(g, 0, g, t=0)
+    log.append(((1, 0), (0, 0)), 0, ((0, 1), (0, 0)), t=0)
+    ab = SimpleNamespace(spec=None, step_fn=None, replay_ok=False)
 
-    # Artifact that is NOT a coupling (no when_effect / rule-coupling language).
-    # Has a spec_patch key so the branch can attempt evaluation.
-    artifact = {
-        "name": "some_non_coupling_op",
-        "semantics": "a plain spec patch that does something else entirely",
-        "catalog_encoding": "recolor_map or similar",
-        "planted_synthetic": "non-coupling scenario",
-        "spec_patch": {"actions": {"0": []}, "always": []},
+    result = grammar_reflex.route_operator_proposals(
+        tmp_path,
+        log,
+        ab,
+    )
+
+    assert result["status"] == "proposals_routed"
+    assert result["implementation_owner"] == "governed_carrier"
+    assert result["route"]["consumer"] == (
+        "operator_proposals_briefing_to_governed_candidate_gate"
+    )
+    assert result["cards"]
+    binding = result["cards"][0]["evidence_binding"]
+    assert binding["mode"] == "exact_evidence_epoch"
+    assert binding["evidence_role"] == "visible"
+    assert binding["evidence_content_sha256"] == log.content_hash()
+    assert result["cards"][0]["proposal_identity_sha"]
+
+
+def test_proposal_dedup_separates_family_from_evidence_lifecycle(tmp_path):
+    from ztare.common.operator_proposal_contract import (
+        operator_proposal_card,
+        open_cards,
+        write_proposal_cards,
+    )
+
+    ledger = tmp_path / "operator_proposals.jsonl"
+    base = operator_proposal_card(
+        failure_family="same-residual-family",
+        evidence_indices=[0],
+        spatial_footprint={"count": 1},
+        why_existing_ops_fail={"identity": "state changed"},
+        proposed_operator_sketch="candidate_operation",
+        acceptance_test="strict improvement",
+    )
+    first = dict(base)
+    first["evidence_binding"] = {
+        "mode": "exact_evidence_epoch",
+        "project_evidence_epoch_sha256": "a" * 64,
+    }
+    second = dict(base)
+    second["evidence_binding"] = {
+        "mode": "exact_evidence_epoch",
+        "project_evidence_epoch_sha256": "b" * 64,
     }
 
-    result = worldmodel_harness(artifact, real_log=log)
-
-    # Must name the branch in the result, not just say "leaf shape does not name coupling".
-    assert result.get("branch") == "spec_patch", (
-        "Non-coupling artifact must be evaluated by spec_patch branch, "
-        f"got counterexample={result.get('counterexample')!r}"
-    )
-    # Verdict must be present and boolean (accepted True or False, not missing).
-    assert "accepted" in result
+    assert len(write_proposal_cards(ledger, [first])) == 1
+    assert write_proposal_cards(ledger, [first]) == []
+    assert len(write_proposal_cards(ledger, [second])) == 1
+    [current] = open_cards(ledger)
+    assert current["evidence_binding"]["project_evidence_epoch_sha256"] == "b" * 64
 
 
-def test_coupling_leaf_still_uses_coupling_branch(tmp_path):
-    """Coupling-named artifacts must still hit the coupling branch (regression guard)."""
-    from ztare.worldmodel.operator_implement import worldmodel_harness
-
-    coupling_artifact = {
-        "name": "when_effect_rule_coupling",
-        "semantics": "rule-coupling: timer ticks only when mover fired this step",
-        "catalog_encoding": "when_effect [id, true]",
-        "planted_synthetic": "two-colour mover on corridor",
-        "mover_colors": [9, 12],
-        "timer_color": 11,
-        "ticks_when_moved": True,
-    }
-    # No real_log → should hit the coupling branch (not spec_patch) and fail
-    # with "no real log" counterexample, not a "branch=spec_patch" error.
-    result = worldmodel_harness(coupling_artifact, real_log=None)
-    assert result.get("branch") != "spec_patch", (
-        "A coupling artifact must not be rerouted to spec_patch branch"
-    )
-    assert not result["accepted"]
-
-
-# ── FIX 3: empty-evidence card backfill ──────────────────────────────────────
-
-def test_empty_evidence_card_backfilled_with_indices(tmp_path):
-    """_backfill_empty_evidence_cards must compute mismatch indices for a card
-    that has evidence_indices=[] and update the ledger row."""
-    from ztare.worldmodel.grammar_reflex import _backfill_empty_evidence_cards
-    from ztare.common.operator_proposal_contract import open_cards
+def test_governed_route_uses_active_carrier_residual_indices(tmp_path, monkeypatch):
+    from ztare.worldmodel import grammar_reflex
     from ztare.worldmodel.episode_log import EpisodeLog
 
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    ledger.parent.mkdir(parents=True)
-
-    # Write one open card with empty evidence_indices.
-    card = {
-        "schema": "operator-proposal-v1",
-        "failure_family": "closure:test:backfill",
-        "failure_family_sha": "aabbccdd",
-        "evidence_indices": [],
-        "disposition": "open",
-        "proposed_operator_sketch": "test sketch",
-        "why_existing_ops_fail": {},
-        "spatial_footprint": {},
-        "acceptance_test": "n/a",
-    }
-    with ledger.open("w") as f:
-        f.write(json.dumps(card) + "\n")
-
-    # Log with one transition that NO spec can predict (spec=None → all mismatches).
     log = EpisodeLog()
-    g = ((0, 1), (2, 0))
-    g2 = ((1, 0), (0, 2))
-    log.append(g, 0, g2, t=0)
+    log.append(((0,),), 0, ((1,),), t=0)
+    seen = {}
 
-    _backfill_empty_evidence_cards(ledger, log, None)
+    def capture(_log, _spec, residual_indices):
+        seen["residual_indices"] = residual_indices
+        return []
 
-    # After backfill, the card's evidence_indices must be non-empty OR have a note.
-    remaining = open_cards(ledger)
-    assert remaining, "card should still be open after backfill"
-    updated = remaining[0]
-    # With spec=None, _infer_mismatches returns all indices (the one row).
-    assert updated.get("evidence_indices") == [0], (
-        f"expected backfilled indices=[0], got {updated.get('evidence_indices')}"
+    monkeypatch.setattr(grammar_reflex, "propose_operators", capture)
+    grammar_reflex.route_operator_proposals(
+        tmp_path,
+        log,
+        SimpleNamespace(spec=None, step_fn=None, replay_ok=False),
+        residual_indices=[0],
     )
 
-
-def test_empty_evidence_card_receipted_no_evidence_yet(tmp_path):
-    """When _infer_mismatches finds nothing, card stays open with no_evidence_yet note."""
-    from ztare.worldmodel.grammar_reflex import _backfill_empty_evidence_cards
-    from ztare.common.operator_proposal_contract import open_cards
-    from ztare.worldmodel.episode_log import EpisodeLog
-
-    ledger = tmp_path / "workspace" / "operator_proposals.jsonl"
-    ledger.parent.mkdir(parents=True)
-
-    card = {
-        "schema": "operator-proposal-v1",
-        "failure_family": "closure:test:noevidence",
-        "failure_family_sha": "deadbeef01",
-        "evidence_indices": [],
-        "disposition": "open",
-        "proposed_operator_sketch": "hidden-state guard",
-        "why_existing_ops_fail": {},
-        "spatial_footprint": {},
-        "acceptance_test": "n/a",
-    }
-    with ledger.open("w") as f:
-        f.write(json.dumps(card) + "\n")
-
-    # Empty log → _infer_mismatches returns [] → no_evidence_yet.
-    log = EpisodeLog()
-    _backfill_empty_evidence_cards(ledger, log, None)
-
-    remaining = open_cards(ledger)
-    assert remaining, "card must stay open"
-    assert remaining[0].get("backfill_note") == "no_evidence_yet"
+    assert seen["residual_indices"] == [0]
 
 
 # ── FIX 4: persist_strategy_card_discharges called on gate pass ──────────────

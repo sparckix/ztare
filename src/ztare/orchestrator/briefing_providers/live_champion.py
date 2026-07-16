@@ -14,9 +14,14 @@ is not advisory).
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 from typing import Any
 
+from ztare.common.candidate_memory import (
+    admissible_candidate_memory_records,
+    candidate_memory_source,
+)
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -65,8 +70,21 @@ class LiveChampionProvider(BriefingProvider):
     def fragment(self, ctx: BriefingContext) -> str:
         project = self._project(ctx)
         receipt = self._newest_receipt(project)
-        if receipt is not None:
+        root_sha = self._root_sha(project)
+        promoted_sha = str((receipt or {}).get("promoted_sha") or "")
+        if receipt is not None and (not root_sha or root_sha.startswith(promoted_sha)):
             return self._render_from_receipt(receipt)
+        active = self._active_candidate_record(project, root_sha)
+        if active is not None:
+            return self._render_from_active_candidate(active, root_sha)
+        if receipt is not None:
+            return (
+                "\n## Active Carrier Unavailable\n"
+                "- `test_model.py` does not match the newest promotion receipt or "
+                "an admissible current candidate-memory record. The historical "
+                "champion is comparison evidence only; do not use it as an active "
+                "patch base until the carrier owner restores a content match.\n"
+            )
         # Fallback: test_model exists but no promotion receipt
         if (project / "test_model.py").is_file():
             return (
@@ -74,6 +92,47 @@ class LiveChampionProvider(BriefingProvider):
                 "- LIVE CHAMPION: `test_model.py` — no promotion receipt found; metrics unavailable.\n"
             )
         return ""
+
+    def _root_sha(self, project: Path) -> str:
+        try:
+            return hashlib.sha256((project / "test_model.py").read_bytes()).hexdigest()
+        except OSError:
+            return ""
+
+    def _active_candidate_record(
+        self,
+        project: Path,
+        root_sha: str,
+    ) -> dict[str, Any] | None:
+        if not root_sha:
+            return None
+        matches = []
+        for record in admissible_candidate_memory_records(
+            project,
+            require_submission_source=True,
+        ):
+            source = candidate_memory_source(project, record)
+            if hashlib.sha256(source.encode("utf-8")).hexdigest() == root_sha:
+                matches.append(record)
+        if not matches:
+            return None
+        return max(matches, key=lambda row: str(row.get("observed_at_utc") or ""))
+
+    def _render_from_active_candidate(
+        self,
+        record: dict[str, Any],
+        digest: str,
+    ) -> str:
+        source_ref = str(record.get("submission") or "test_model.py")
+        return (
+            "\n## Active Carrier (Governed Search Baseline)\n"
+            f"- MANDATORY repair baseline: `{source_ref}` sha={digest}.\n"
+            "  authority=current candidate-memory gate receipt plus byte equality; "
+            "promotion_authority=false.\n"
+            "  Preserve its behavior outside the evidenced counterexample. "
+            "A historical promoted champion is comparison evidence, not the "
+            "active patch identity for this turn.\n"
+        )
 
     def _render_from_receipt(self, receipt: dict[str, Any]) -> str:
         from_ref = str(receipt.get("from_ref") or "test_model.py")
@@ -111,17 +170,31 @@ class LiveChampionProvider(BriefingProvider):
     def structured_records(self, ctx: BriefingContext) -> list[dict[str, Any]]:
         project = self._project(ctx)
         receipt = self._newest_receipt(project)
+        root_sha = self._root_sha(project)
+        promoted_sha = str((receipt or {}).get("promoted_sha") or "")
+        if receipt is not None and (not root_sha or root_sha.startswith(promoted_sha)):
+            return [{
+                "provider": self.name,
+                "source_type": "live_champion_receipt",
+                "from_ref": receipt.get("from_ref"),
+                "promoted_sha": receipt.get("promoted_sha"),
+                "result": receipt.get("result"),
+                "ts": receipt.get("ts"),
+                "gate_summary_after": receipt.get("gate_summary_after"),
+            }]
+        active = self._active_candidate_record(project, root_sha)
+        if active is not None:
+            return [{
+                "provider": self.name,
+                "source_type": "active_candidate_memory_carrier",
+                "from_ref": active.get("submission"),
+                "promoted_sha": root_sha,
+                "result": "repair_frontier",
+                "promotion_authority": False,
+            }]
         if receipt is None:
             return []
-        return [{
-            "provider": self.name,
-            "source_type": "live_champion_receipt",
-            "from_ref": receipt.get("from_ref"),
-            "promoted_sha": receipt.get("promoted_sha"),
-            "result": receipt.get("result"),
-            "ts": receipt.get("ts"),
-            "gate_summary_after": receipt.get("gate_summary_after"),
-        }]
+        return []
 
     def render(self) -> str:
         """Convenience method for direct instantiation (testing / CLI probe)."""

@@ -331,9 +331,9 @@ def render_leaf_workbench_mutator_surface(
         "- Registered tools are conveniences, not the limits of the action space.",
         "- Structured exits remain available through the stopping contract:",
         "  continue(query, mode=None), commit(candidate), stuck(diagnosis, friction).",
-        "- Optional continue modes: repair, re_represent, analogy_query.",
+        "- Base form: continue(query). Optional modes: repair, re_represent, analogy_query.",
         f"- Remaining query budget: {query_rounds_left}",
-        # Salience: the leaf is REWARDED for INVESTIGATED, so it must see the
+        # Salience: INVESTIGATED receives evidence credit, so the leaf must see the
         # option and its remaining budget the way carrier strikes are surfaced.
         "- INVESTIGATED is a first-class positive close: " + SCIENCE_OUTPUT_POLICY.investigated_text(),
     ]

@@ -3,20 +3,17 @@
 Fixes the gap the operator named (2026-07-03): a KERNEL-RATIFIED invariant — a
 machine-checked theorem about the law — was NOT surfacing to the mutator at
 all (it lived only in the worldmodel planner's prediction filter). This
-provider reads any project's `workspace/invariant_certificates.jsonl`, keeps
-only kernel-ratified entries, and surfaces them as a HARD constraint tier —
-stronger than the survived-N-runs derived constraints. General: any substrate
-(fit monotonicity, PDE conservation, worldmodel dynamics) that proves an
-invariant gets it enforced in identification.
+provider reads current, identity-bound rows from
+`workspace/invariant_certificates.jsonl` and surfaces them as a HARD constraint
+tier.  A theorem about a catalog `specStep` is visible only while that exact
+specification and evidence epoch remain the canonical executable subject.
 """
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-from ztare.common.invariant_certificate import (
-    InvariantCertificate, proven_constraints_briefing)
+from ztare.common.invariant_certificate import proven_constraints_briefing
 from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
@@ -24,18 +21,21 @@ class ProvenInvariantsProvider(BriefingProvider):
     name = "proven_invariants"
 
     def _certs(self, project: Path):
-        path = project / "workspace" / "invariant_certificates.jsonl"
-        if not path.exists():
+        from ztare.worldmodel.carrier_loader import load_carrier_path
+        from ztare.worldmodel.lean_bridge import load_current_invariants
+
+        carrier_path = project / "test_model.py"
+        if not carrier_path.is_file():
             return []
-        out = []
-        for line in path.read_text().splitlines():
-            try:
-                d = json.loads(line)
-                out.append(InvariantCertificate(tuple(d["quantity"]), d["relation"],
-                                                d["status"], d.get("theorem", "")))
-            except Exception:  # noqa: BLE001
-                continue
-        return out
+        try:
+            subject, _kind, _sha = load_carrier_path(
+                carrier_path,
+                project_dir=project,
+                attach_projection=False,
+            )
+        except Exception:  # noqa: BLE001 - an unreadable subject has no authority
+            return []
+        return load_current_invariants(project, subject=subject)
 
     def applies(self, ctx: BriefingContext) -> bool:
         return bool(proven_constraints_briefing(self._certs(Path(ctx.project_dir or ""))))

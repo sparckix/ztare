@@ -10,7 +10,7 @@ live play and grows the evidence):
     1. run the governed loop on the current episode log -> a ratified model
        (or, on stagnation, a structurally-pivoted reconception of it)
     2. load the ratified model, PLAY the live game under it (novelty / goal-cue
-       steering), stopping on the sealed levels_completed reward
+       steering), stopping on an adapter-authority task-discharge receipt
     3. LEVEL? report the win. else append the off-basin transitions the live
        game produced (the model was never fit on them) to the episode log,
        re-render evidence, reseal — the next governed cycle re-identifies on the
@@ -35,12 +35,16 @@ REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "src"))
 
 from ztare.common.phase_timing import phase  # noqa: E402
+from ztare.common.worldmodel_carrier_purity import (  # noqa: E402
+    project_dynamics_assumption,
+    validate_worldmodel_carrier_source,
+)
 from ztare.substrates.arc_agi3 import ArcAgi3Adapter  # noqa: E402
-from ztare.validator.worldmodel_typed_payload import validate_worldmodel_carrier_source  # noqa: E402
 from ztare.worldmodel.adapter import (  # noqa: E402
     committee_read_model_path, episode_log_path, write_committee_read_model,
     write_deterministic_evidence)
-from ztare.worldmodel.episode_log import EpisodeLog  # noqa: E402
+from ztare.worldmodel.episode_log import EpisodeLog, Transition  # noqa: E402
+from ztare.worldmodel.carrier_loader import load_carrier_from_source  # noqa: E402
 from ztare.worldmodel.planner import pursue_goal  # noqa: E402
 from ztare.worldmodel.policy import context_key  # noqa: E402
 from ztare.worldmodel.residual_repair import (  # noqa: E402
@@ -51,7 +55,7 @@ from ztare.worldmodel.synthesis import synthesize  # noqa: E402
 
 _ADVICE_MODES = {"advice", "competition", "compiled", "advice_consume"}
 _FRONTIER_SCOPE_SCHEMA = "ztare-frontier-memory-scope-v1"
-_FRONTIER_ABSTRACTION_VERSION = "arc3-object-frontier-v2"
+_FRONTIER_ABSTRACTION_VERSION = "arc3-component-orbit-frontier-v3"
 
 
 def _game_prefix(game: str) -> str:
@@ -105,46 +109,166 @@ def _is_env_reset(context_log, round_obs) -> bool:
     replay gate excuses on drives the episode-crossing decision."""
     from ztare.worldmodel.gates import env_frame_indices
     tmp = EpisodeLog(list(context_log))
-    for (s_, a_, s2_, t_) in round_obs:
-        tmp.append(s_, a_, s2_, t=t_)
+    for observation in round_obs:
+        if isinstance(observation, Transition):
+            tmp.append_transition(observation)
+        else:
+            s_, a_, s2_, t_ = observation
+            tmp.append(s_, a_, s2_, t=t_)
     return bool(len(tmp)) and (len(tmp) - 1) in env_frame_indices(tmp)
 
 
-def _play_round_multilife(adapter, play_model, *, budget, context_log, **kw):
-    """EPISODE-CROSSING round: run pursue_goal repeatedly within ONE round. When a
-    stop is a model divergence that is actually an ENV RESET (the game crossed an
-    episode boundary), do NOT end the round — the adapter already sits at the new
-    episode start and the visited store still carries the frontier, so continue on
-    the remaining action budget. A round is thus multi-life; its action budget is
-    the only stop. Returns a pr-shaped namespace so the caller is unchanged."""
+def _play_round_multilife(
+    adapter,
+    play_model,
+    *,
+    budget,
+    context_log,
+    task_contract=None,
+    **kw,
+):
+    """Cross environment epochs until task discharge or the action budget ends.
+
+    ``pursue_goal`` owns one within-epoch planning leg and returns at an
+    adapter-owned boundary.  This wrapper owns the run lifecycle: it replans
+    from the adapter's new state without asking the carrier to predict the
+    boundary repaint.  With no task contract it preserves the one-level
+    stop used by seed-recovery callers.
+    """
     from types import SimpleNamespace
+    from ztare.common.task_discharge import adjudicate_task_discharge
+
     obs, trace, steps, levels, saturated, status, lives = [], [], 0, 0, False, "plan_exhausted", 1
+    leg_outcomes = []
+    detail = ""
+    replans = 0
+    planning_outcome = {}
     divergence = None
     remaining = int(budget)
+    task_discharged = False
+    legacy_boundary_stop = False
+    discharge_receipt = None
+    run_goal_edge = kw.get("goal_edge_fn")
+    run_acquisition_obligation = kw.get("acquisition_obligation")
     while remaining > 0:
-        pr = pursue_goal(adapter, play_model, max_steps=remaining, **kw)
+        if task_contract is not None:
+            discharge_receipt = adjudicate_task_discharge(adapter, task_contract)
+            task_discharged = discharge_receipt.discharged
+        if task_discharged:
+            status = "task_discharged"
+            break
+        leg_kw = dict(kw)
+        active_epoch = _adapter_epoch(adapter)
+        if active_epoch is not None and "evidence_states" not in leg_kw:
+            active_rows = EpisodeLog(
+                [
+                    transition
+                    for transition in (*tuple(context_log), *tuple(obs))
+                    if isinstance(transition, Transition)
+                ]
+            ).within_epoch_view(active_epoch)
+            leg_kw["evidence_states"] = tuple(
+                state
+                for transition in active_rows
+                for state in (transition.s, transition.s_next)
+            )
+        if hasattr(run_goal_edge, "for_source_epoch"):
+            if active_epoch is not None:
+                # A terminal outcome may recur while its concrete source
+                # presentation does not.  Re-scope on every lifecycle leg;
+                # an absent witness makes directed planning undefined and
+                # hands control to acquisition inside pursue_goal.
+                leg_kw["goal_edge_fn"] = run_goal_edge.for_source_epoch(
+                    active_epoch
+                )
+        if hasattr(run_acquisition_obligation, "for_source_epoch"):
+            if active_epoch is not None:
+                leg_kw["acquisition_obligation"] = (
+                    run_acquisition_obligation.for_source_epoch(active_epoch)
+                )
+        pr = pursue_goal(adapter, play_model, max_steps=remaining, **leg_kw)
         obs.extend(pr.observed_transitions)
         trace.extend(getattr(pr, "trace", []) or [])
         steps += pr.steps_executed
         levels += pr.levels_gained
         saturated = saturated or bool(pr.saturated)
         status = pr.status
-        if divergence is None and getattr(pr, "divergence", None) is not None:
-            divergence = pr.divergence
+        detail = str(getattr(pr, "detail", "") or "")
+        # The ARC adapter cannot attest every environment-owned respawn.  A
+        # mismatch on such a row arrives as ``unclassified`` and can only be
+        # resolved after joining it to the evidence context.  Normalize that
+        # disposition before writing the leg receipt: otherwise the same row
+        # is reported here as scientific refutation and later excluded by the
+        # replay gate's shared boundary classifier.
+        inferred_boundary = (
+            pr.status == "model_diverged"
+            and pr.steps_executed > 0
+            and _is_env_reset(context_log, obs)
+        )
+        if inferred_boundary:
+            status = "environment_boundary_inferred"
+            detail = (
+                "evidence-side boundary classifier resolved an adapter-"
+                "unclassified repaint; the within-epoch carrier was not refuted"
+            )
+        replans += int(getattr(pr, "replans", 0) or 0)
+        planning_outcome = dict(
+            getattr(pr, "planning_outcome", {}) or {}
+        )
+        leg_outcomes.append(
+            {
+                "status": status,
+                "steps_executed": int(pr.steps_executed),
+                "detail": detail,
+                "planning_outcome": planning_outcome,
+            }
+        )
         remaining -= max(pr.steps_executed, 0)
         if pr.levels_gained > 0:
-            break
-        # cross an episode boundary iff the divergence that stopped this life IS an
-        # env reset (progress was made, else a 0-step reset loop would spin)
-        if (pr.status == "model_diverged" and pr.steps_executed > 0
-                and _is_env_reset(context_log, obs)):
+            if task_contract is not None:
+                discharge_receipt = adjudicate_task_discharge(adapter, task_contract)
+                task_discharged = discharge_receipt.discharged
+            else:
+                # Compatibility callers such as seed recovery ask for one
+                # adapter boundary, but no task contract means no discharge
+                # authority.  Preserve the stop without fabricating completion.
+                legacy_boundary_stop = True
+                status = "environment_boundary"
+                break
+            if task_discharged:
+                status = "task_discharged"
+                break
             lives += 1
             continue
+        if status in {"environment_boundary", "environment_boundary_inferred"} \
+                and pr.steps_executed > 0:
+            lives += 1
+            continue
+        # Preserve only a carrier counterexample.  A legacy/untyped boundary can
+        # initially surface from the within-epoch planner as ``model_diverged``;
+        # once the shared boundary classifier identifies it as an environment
+        # reset above, retaining that payload would relabel an epoch transition
+        # as a scientific-law failure in the play report.
+        if divergence is None and getattr(pr, "divergence", None) is not None:
+            divergence = pr.divergence
         break        # genuine stop: saturation / real divergence / budget spent
-    return SimpleNamespace(status=("multilife" if lives > 1 else status),
+    # ``lives`` is execution history.  Preserve the terminal lifecycle outcome
+    # as status so downstream routing can distinguish task discharge, model
+    # refutation, environment boundaries, and bounded planning exhaustion.
+    return SimpleNamespace(status=status,
                            steps_executed=steps, levels_gained=levels,
                            saturated=saturated, observed_transitions=obs,
-                           lives=lives, divergence=divergence, trace=trace)
+                           lives=lives, divergence=divergence, trace=trace,
+                           detail=detail, replans=replans,
+                           planning_outcome=planning_outcome,
+                           leg_outcomes=leg_outcomes,
+                           task_discharged=task_discharged,
+                           legacy_boundary_stop=legacy_boundary_stop,
+                           task_contract=(task_contract.to_dict() if task_contract is not None else None),
+                           task_discharge_receipt=(
+                               discharge_receipt.to_dict()
+                               if discharge_receipt is not None else None
+                           ))
 
 
 def _terminal_witness_sha(pr) -> "str | None":
@@ -186,6 +310,30 @@ def _write_play_report_and_terminal_audit(project: Path, report: dict) -> dict:
         return audit
 
 
+def _apply_trace_audit_consequence(report: dict, audit: dict) -> tuple[list[str], list[str]]:
+    """Fence the existing result field when an operational route is open."""
+    active = [
+        str(finding["check_id"])
+        for finding in audit.get("findings", [])
+        if finding.get("verdict") == "anomaly"
+        and finding.get("routing_scope") == "active_apparatus"
+    ]
+    advisory = [
+        str(finding["check_id"])
+        for finding in audit.get("findings", [])
+        if finding.get("verdict") == "anomaly"
+        and finding.get("routing_scope") == "catalog_advisory"
+    ]
+    if any(
+        bool((finding.get("witness") or {}).get("halt_required"))
+        for finding in audit.get("findings", [])
+    ):
+        report["result"] = "operational_route_obstruction"
+    report["trace_auditor_active_anomalies"] = active
+    report["trace_auditor_catalog_advisories"] = advisory
+    return active, advisory
+
+
 def _kernel_role_bindings(pr) -> list:
     div = getattr(pr, "divergence", None)
     if not isinstance(div, dict):
@@ -215,6 +363,7 @@ def _write_level_boundary_seed(
     completed_level: int,
     actions: list[int],
     source: str = "arc3_play_loop",
+    execution_segments: list[dict] | None = None,
 ) -> dict:
     """Persist a replayable seed for the next level boundary.
 
@@ -223,14 +372,42 @@ def _write_level_boundary_seed(
     on an external scratch file.
     """
     next_level = max(1, int(completed_level) + 1)
+    flat_actions = [int(a) for a in actions]
+    raw_segments = execution_segments or [{
+        "segment_kind": "active_control",
+        "source_ref": source,
+        "authority": "live_environment_execution",
+        "actions": flat_actions,
+    }]
+    segments = []
+    cursor = 0
+    for index, raw_segment in enumerate(raw_segments):
+        segment_actions = [int(a) for a in (raw_segment.get("actions") or [])]
+        if not segment_actions:
+            continue
+        segment = {
+            "segment_id": str(raw_segment.get("segment_id") or f"segment-{index}"),
+            "segment_kind": str(raw_segment.get("segment_kind") or "active_control"),
+            "source_ref": str(raw_segment.get("source_ref") or source),
+            "authority": str(raw_segment.get("authority") or "live_environment_execution"),
+            "start_index": cursor,
+            "end_index_exclusive": cursor + len(segment_actions),
+            "actions": segment_actions,
+        }
+        segments.append(segment)
+        cursor += len(segment_actions)
+    derived_actions = [action for segment in segments for action in segment["actions"]]
+    if derived_actions != flat_actions:
+        raise ValueError("execution segments must derive the from-reset action projection exactly")
     receipt = {
         "schema": "ztare-level-boundary-seed-v1",
         "game": game_id,
         "cycle": int(cycle),
         "completed_level": int(completed_level),
         "target_level": next_level,
-        "full_sequence_from_reset": [int(a) for a in actions],
-        "sequence_len": len(actions),
+        "execution_segments": segments,
+        "full_sequence_from_reset": flat_actions,
+        "sequence_len": len(flat_actions),
         "source": source,
         "authority": (
             "replay seed only; transfer, model adoption, and solve claims still "
@@ -246,12 +423,89 @@ def _write_level_boundary_seed(
     return receipt
 
 
-def _planner_attention_bindings(pr, *, goal_fn=None, progress_fn=None,
+def _replay_latest_level_boundary_seed(project: Path, adapter) -> dict:
+    """Replay and verify the deepest persisted boundary before a play cycle.
+
+    The stored action sequence is episodic memory.  The environment's observed
+    epoch after replay is the authority.  A failed replay is severed here and
+    the cycle remains at reset; downstream planning never inherits the seed's
+    declared epoch merely because the JSON file exists.
+    """
+    from ztare.worldmodel.level_boundary_seed import load_seed
+
+    path = project / "workspace" / "latest_level_boundary_seed.json"
+    if not path.is_file():
+        return {
+            "schema": "ztare-level-boundary-seed-replay-v1",
+            "status": "no_seed",
+            "actions": [],
+            "observed_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
+        }
+    try:
+        seed, sequence, _raw, seed_sha256 = load_seed(path)
+        declared_epoch = int(seed.get("completed_level"))
+        if declared_epoch < 1:
+            raise ValueError("completed_level must be positive")
+        for action in sequence:
+            if action < 0 or action >= int(getattr(adapter, "action_arity", 0) or 0):
+                raise ValueError(f"seed intervention outside adapter domain: {action}")
+            adapter.step(action)
+        observed_epoch = int(getattr(adapter, "levels_completed", 0) or 0)
+        status = "verified" if observed_epoch == declared_epoch else "epoch_mismatch"
+        if status != "verified":
+            adapter.reset()
+        declared_segments = seed.get("execution_segments")
+        if not isinstance(declared_segments, list) or not declared_segments:
+            declared_segments = [{
+                "segment_id": "legacy-origin",
+                "segment_kind": "verified_origin",
+                "source_ref": "workspace/latest_level_boundary_seed.json",
+                "authority": "environment_verified_replay",
+                "start_index": 0,
+                "end_index_exclusive": len(sequence),
+                "actions": sequence,
+            }]
+        receipt = {
+            "schema": "ztare-level-boundary-seed-replay-v1",
+            "status": status,
+            "seed_ref": "workspace/latest_level_boundary_seed.json",
+            "seed_sha256": seed_sha256,
+            "declared_epoch": declared_epoch,
+            "observed_epoch": observed_epoch,
+            "active_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
+            "actions": sequence if status == "verified" else [],
+            "execution_segments": declared_segments if status == "verified" else [],
+            "interventions_executed": len(sequence),
+        }
+    except Exception as exc:  # noqa: BLE001
+        try:
+            adapter.reset()
+        except Exception:  # noqa: BLE001
+            pass
+        receipt = {
+            "schema": "ztare-level-boundary-seed-replay-v1",
+            "status": "invalid_or_unreplayable",
+            "seed_ref": "workspace/latest_level_boundary_seed.json",
+            "observed_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
+            "active_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
+            "actions": [],
+            "execution_segments": [],
+            "error": f"{type(exc).__name__}: {exc}",
+        }
+    ledger = project / "workspace" / "level_boundary_seed_replays.jsonl"
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    with ledger.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(receipt, sort_keys=True) + "\n")
+    return receipt
+
+
+def _planner_attention_bindings(pr, *, goal_fn=None, goal_edge_fn=None,
+                                progress_fn=None,
                                 evidence_grown_by: int | None = None) -> list[dict]:
     """Typed pressure for the Strategy Office: the transition model can be good
     while search control is under-specified. This is advisory routing only; it
     cannot promote a candidate or claim a solve."""
-    if goal_fn is not None or progress_fn is not None:
+    if goal_fn is not None or goal_edge_fn is not None or progress_fn is not None:
         return []
     if getattr(pr, "levels_gained", 0):
         return []
@@ -434,7 +688,10 @@ def _write_worldmodel_blueprint(project: Path, log, spec) -> "Path | None":
         return None
     import json as _j
     try:
-        from ztare.worldmodel.lean_bridge import write_blueprint
+        from ztare.worldmodel.lean_bridge import (
+            WORLDMODEL_INVARIANT_BINDING_SCHEMA,
+            write_blueprint,
+        )
         from ztare.worldmodel.object_roles import induce_roles
         try:
             roles = induce_roles(log, _log_arity(log)).roles
@@ -446,9 +703,12 @@ def _write_worldmodel_blueprint(project: Path, log, spec) -> "Path | None":
         except ValueError:
             command_path = path
         blueprint_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
-        spec_sha256 = hashlib.sha256(
-            _j.dumps(spec, sort_keys=True, separators=(",", ":")).encode("utf-8")
-        ).hexdigest()
+        from ztare.common.equivariance import stable_sha256
+
+        spec_sha256 = stable_sha256(spec)
+        from ztare.common.observation_chart import capture_project_evidence_epoch
+
+        evidence_epoch_sha256 = capture_project_evidence_epoch(project).epoch_sha256
         proof_command = (
             f"./venv/bin/python -m ztare.leanmill.cli campaign "
             f"{command_path}"
@@ -464,6 +724,8 @@ def _write_worldmodel_blueprint(project: Path, log, spec) -> "Path | None":
             "blueprint_ref": str(path.relative_to(project)),
             "blueprint_sha256": blueprint_sha256,
             "spec_sha256": spec_sha256,
+            "evidence_epoch_sha256": evidence_epoch_sha256,
+            "invariant_binding_schema": WORLDMODEL_INVARIANT_BINDING_SCHEMA,
             "next_command": proof_command,
             "async_command": async_command,
             "absorb_command_template": (
@@ -682,17 +944,18 @@ def _champion_warm_start(project: Path, log: "EpisodeLog") -> "dict | None":
 
 
 def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
-            champion_model=None, game_id: str = "") -> dict:
+            champion_model=None, game_id: str = "", goal_edge_fn=None) -> dict:
     """ZERO-TOKEN hot path (the Rodionov-throughput fix): abduce -> play long
     -> absorb divergence -> re-abduce. Plays only gate-passing abduced models;
-    the sealed reward and raw gates hold everywhere; governance runs at
+    the adapter-authority task adjudicator and raw gates hold everywhere; governance runs at
     checkpoints, not per step."""
     import os as _os
     from ztare.worldmodel.spec_abduction import abduce_spec
     from ztare.worldmodel.gates import rollout_depth as _rd
     log = EpisodeLog.read_jsonl(episode_log_path(project))
     hold = EpisodeLog.read_jsonl(episode_log_path(project, episode=2))
-    out = {"rounds": [], "levels": 0, "deepest": 0}
+    out = {"rounds": [], "levels": 0, "deepest": 0,
+           "task_discharged": False}
     from ztare.worldmodel.gates import replay_consistency_gate as _rcg
     # FIX 3: wall-clock budget for the identification step (default 900s).
     try:
@@ -830,12 +1093,10 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
         # is partial (ls20 timer never abduces). Only skip if NO valid model.
         play_model = ab.step_fn if abduced_ok else champion_model
         if play_model is None or not _rcg(play_model, log).ok:
-            # CATALOG CEILING. Before deferring to the governed checkpoint, try ONE
-            # grammar-reflex round: triage the residual into operator cards, run the
-            # sealed-leaf implement path, and re-abduce. If that closes the law the
-            # sprint continues IN-RUN (no conductor); else checkpoint as before with
-            # the cards now on the ledger as briefing. ZTARE_GRAMMAR_REFLEX=0 restores
-            # the old behaviour.
+            # CATALOG CEILING. Triage the residual into counterexample-bound cards,
+            # then hand implementation to the ordinary governed executable-carrier
+            # worker. This keeps one proposal language and one replay/holdout arbiter;
+            # the older grid-only sealed-spec implementer remains a compatibility path.
             reflex = None
             # FIX 1: gate grammar_reflex on non-empty residual — if champion
             # explains all rows the reflex has nothing to mine (propose_operators
@@ -843,81 +1104,119 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
             _has_residual = (_ws is None or bool(_ws.get("wrong_rows")))
             if _has_residual and _os.environ.get("ZTARE_GRAMMAR_REFLEX", "1") != "0":
                 with phase("sprint.grammar_reflex", project / "workspace"):
-                    from ztare.worldmodel.grammar_reflex import attempt_grammar_extension
-                    reflex = attempt_grammar_extension(project, log, ab, budget=1)
+                    from ztare.worldmodel.grammar_reflex import route_operator_proposals
+                    reflex = route_operator_proposals(
+                        project,
+                        log,
+                        ab,
+                        residual_indices=(
+                            list(_ws.get("wrong_rows") or [])
+                            if isinstance(_ws, dict)
+                            else None
+                        ),
+                    )
                 out.setdefault("grammar_reflex", []).append(
-                    {"round": rnd, "closed": reflex["closed"],
+                    {"round": rnd, "status": reflex["status"],
+                     "proposal_count": len(reflex["cards"]),
                      "dispositions": [d.get("disposition") for d in reflex["dispositions"]]})
-            if not (reflex and reflex["closed"]):
-                partial = {"round": rnd, "status": "abduction_partial"}
-                out["rounds"].append(partial)
-                _write_sprint_receipt(project, {
-                    "round": rnd,
-                    "status": "abduction_partial",
-                    "saturated": False,
-                    "goal_mode": "none",
-                    "n_candidates": 0,
-                    "transition_model_mismatch": False,
-                    "terminal_verifier_model_mismatch": False,
-                    "terminal_witness_sha": None,
-                    "kernel_role_bindings": [],
-                })
-                break                                # no gate-passing model -> checkpoint
-            # reflex closed the law in-run: adopt the extended model and keep playing.
-            ab = reflex["result"]
-            prior_spec = ab.spec
-            _save_champion_spec(project, ab.spec)
-            _write_worldmodel_blueprint(project, log, ab.spec)
-            verified_prefix = len(list(log))
-            play_model = ab.step_fn
-            print(f"  grammar reflex closed the catalog ceiling in sprint {rnd} "
-                  f"-> continuing in-run", flush=True)
+            # Governed carrier synthesis is the single implementation owner.
+            # Sprint surfaces the counterexample-bound handoff, then stops; it
+            # cannot auto-adopt through the legacy sealed-spec door.
+            partial = {"round": rnd, "status": "abduction_partial"}
+            out["rounds"].append(partial)
+            _write_sprint_receipt(project, {
+                "round": rnd,
+                "status": "abduction_partial",
+                "saturated": False,
+                "goal_mode": "none",
+                "n_candidates": 0,
+                "transition_model_mismatch": False,
+                "terminal_verifier_model_mismatch": False,
+                "terminal_witness_sha": None,
+                "kernel_role_bindings": [],
+            })
+            break                                    # governed checkpoint owns synthesis
         # goal cascade: candidate goal/progress is steering only; the sealed
         # terminal verifier still decides success. If no candidate cue exists,
         # fall back to abduced structural candidates, then coverage.
-        structural_gf, n_cand = (None, 0) if goal_fn is not None else _structural_goal_fn(project, log, ab)
-        active_goal = goal_fn or structural_gf
-        active_progress = progress_fn if active_goal is None else None
+        from ztare.worldmodel.goal_abduction import authoritative_goal_edge_predicate
+        bank_goal_edge, bank_goal_edge_count = authoritative_goal_edge_predicate(
+            log,
+            source_epoch=int(getattr(adapter, "levels_completed", 0) or 0),
+        )
+        active_goal_edge = goal_edge_fn or bank_goal_edge
+        structural_gf, n_cand = (
+            (None, 0)
+            if goal_fn is not None or active_goal_edge is not None
+            else _structural_goal_fn(
+                project,
+                log,
+                ab,
+                source_epoch=int(
+                    getattr(adapter, "levels_completed", 0) or 0
+                ),
+            )
+        )
+        active_goal = None if active_goal_edge is not None else (goal_fn or structural_gf)
+        active_progress = progress_fn if active_goal is None and active_goal_edge is None else None
+        from ztare.common.task_discharge import task_discharge_from_profile
+        task_contract = task_discharge_from_profile(cfg)
         # VISITED SEED FROM RAW EVIDENCE (single source of truth): the frontier
         # store is the live cache UNION every abstract state in the log, so
         # coverage never re-walks a state the evidence already witnessed.
-        af, visited_path, visited_store = _frontier_memory(project, log)
+        source_epoch = _adapter_epoch(adapter)
+        af, visited_path, visited_store = _frontier_memory(
+            project,
+            log,
+            source_epoch=source_epoch,
+        )
         with phase("sprint.multilife", project / "workspace"):
             pr = _play_round_multilife(
                 adapter, play_model, budget=int(cfg["sprint_steps"]), context_log=log,
                 goal_fn=active_goal,
+                goal_edge_fn=active_goal_edge,
                 progress_fn=active_progress,
-                resource_colors=_resource_colors(project),
-                invariants=_invariants(project), abstract_fn=af,
-                coverage_fn=_coverage_fn(project),
+                resource_colors=_resource_colors(
+                    project,
+                    log,
+                    source_epoch=source_epoch,
+                ),
+                invariants=_invariants(project, play_model), abstract_fn=af,
+                coverage_fn=_coverage_fn(
+                    project,
+                    log,
+                    source_epoch=source_epoch,
+                ),
                 visited_store=visited_store, visited_path=visited_path,
-                plan_depth=int(cfg["plan_depth"]), max_replans=40)
-        for (s_, a_, s2_, t_) in pr.observed_transitions:
-            log.append(s_, a_, s2_, t=t_)
-        log.write_jsonl(episode_log_path(project))
+                plan_depth=int(cfg["plan_depth"]), max_replans=40,
+                task_contract=task_contract)
+        log, _admitted = _append_observations(
+            project, pr.observed_transitions, log=log
+        )
         out["deepest"] = max(out["deepest"], pr.steps_executed)
         out["rounds"].append({"round": rnd, "pursuit": pr.status,
                               "steps": pr.steps_executed, "log": len(log),
                               "saturated": bool(pr.saturated),
                               "transition_model_mismatch": _transition_model_mismatch(pr),
                               "terminal_verifier_model_mismatch": _terminal_model_mismatch(pr),
-                              "reward_model_mismatch": _terminal_model_mismatch(pr),
                               "terminal_witness_sha": _terminal_witness_sha(pr),
                               "kernel_role_bindings": _kernel_role_bindings(pr)})
         _write_sprint_receipt(project, {
             "round": rnd, "saturated": bool(pr.saturated),
             "goal_mode": (
+                "environment_goal_edge" if active_goal_edge is not None else
                 "candidate_goal" if goal_fn is not None else
                 "candidate_progress" if active_progress is not None else
                 "structural" if structural_gf else "coverage"
             ),
-            "n_candidates": n_cand,
+            "n_candidates": bank_goal_edge_count if active_goal_edge is not None else n_cand,
             "transition_model_mismatch": _transition_model_mismatch(pr),
             "terminal_verifier_model_mismatch": _terminal_model_mismatch(pr),
             "terminal_witness_sha": _terminal_witness_sha(pr),
             "kernel_role_bindings": _kernel_role_bindings(pr)})
         print(f"  sprint {rnd}: {pr.status} depth={pr.steps_executed} log={len(log)}",
               flush=True)
+        out["task_discharged"] = bool(getattr(pr, "task_discharged", False))
         if pr.levels_gained > 0:
             out["levels"] += pr.levels_gained
             completed_level = int(getattr(adapter, "levels_completed", 0) or pr.levels_gained)
@@ -936,12 +1235,22 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
             }
             if pr.observed_transitions:
                 import json as _j
-                gs, ga, gnext, gt = pr.observed_transitions[-1]
+                _goal_transition = pr.observed_transitions[-1]
+                if isinstance(_goal_transition, Transition):
+                    gs, ga, gnext, gt = (
+                        _goal_transition.s,
+                        _goal_transition.a,
+                        _goal_transition.s_next,
+                        _goal_transition.t,
+                    )
+                else:
+                    gs, ga, gnext, gt = _goal_transition
                 (project / "workspace" / "goal_exemplars.jsonl").open("a").write(
                     _j.dumps({"schema": "ztare-goal-exemplar-v1", "cycle": f"sprint{rnd}",
                               "t": gt, "action": ga, "s": [list(r) for r in gs],
                               "s_next": [list(r) for r in gnext]}) + chr(10))
             print(f"  🏆 LEVEL in sprint {rnd}", flush=True)
+        if out["task_discharged"]:
             break
     # --- LEVEL-3 machinery contradiction detection (append-only wiring) ---
     try:
@@ -975,7 +1284,59 @@ def _log_arity(log) -> int:
     return 1 + max((tr.a for tr in log), default=0)
 
 
-def _abstract_fn(project: Path):
+def _adapter_epoch(adapter):
+    epoch = getattr(adapter, "current_epoch", None)
+    if epoch is None:
+        epoch = getattr(adapter, "levels_completed", None)
+    if epoch is None:
+        epoch = getattr(
+            getattr(adapter, "last_transition_identity", None),
+            "target_epoch",
+            None,
+        )
+    return epoch
+
+
+_ROLE_STATE_CACHE: dict[tuple, object] = {}
+
+
+def _role_state(project: Path, log=None, *, source_epoch=None):
+    """Compute evidence-induced roles once per episode/sidecar byte identity.
+
+    ``_abstract_fn``, ``_coverage_fn``, and ``_resource_colors`` previously
+    repeated the same full-bank scan in one play turn.  The key contains both
+    episode and sidecar stat identities; any evidence append or chart migration
+    invalidates it.  This is a process-local projection cache, never authority.
+    """
+    episode = episode_log_path(project)
+    sidecar = episode.with_name(f"{episode.stem}.identity.json")
+
+    def stat_identity(path: Path):
+        if not path.is_file():
+            return None
+        stat = path.stat()
+        return (stat.st_mtime_ns, stat.st_size)
+
+    key = (
+        str(episode.resolve()),
+        stat_identity(episode),
+        stat_identity(sidecar),
+        source_epoch,
+    )
+    cached = _ROLE_STATE_CACHE.get(key)
+    if cached is not None:
+        return cached
+    if log is None:
+        log = EpisodeLog.read_jsonl(episode)
+    from ztare.worldmodel.object_roles import induce_roles
+    planning_log = log.within_epoch_view(source_epoch)
+    state = induce_roles(planning_log, _log_arity(planning_log))
+    _ROLE_STATE_CACHE.clear()
+    _ROLE_STATE_CACHE[key] = state
+    return state
+
+
+def _abstract_fn(project: Path, log=None, *, source_epoch=None):
     """Object-state key for FSM memoization and coverage.
 
     Prefer induced role signatures when the log exposes a controlled mover: they
@@ -983,29 +1344,37 @@ def _abstract_fn(project: Path):
     back to volatile-cell signatures for early or non-role evidence.
     """
     from ztare.worldmodel.object_roles import (
-        induce_roles, object_signature, sound_signature, volatile_positions)
-    log = EpisodeLog.read_jsonl(episode_log_path(project))
+        object_signature, sound_signature, volatile_positions)
+    if log is None:
+        log = EpisodeLog.read_jsonl(episode_log_path(project))
+
+    def bind_identity(fn):
+        fn._ztare_receipt_context = {
+            "abstraction_version": _FRONTIER_ABSTRACTION_VERSION,
+            "evidence_hash": log.content_hash(),
+        }
+        return fn
+
     try:
-        roles = induce_roles(log, _log_arity(log)).roles
+        roles = _role_state(project, log, source_epoch=source_epoch).roles
         if any(r.name == "moves_under_actions" for r in roles):
-            return lambda g: object_signature(g, roles)
+            return bind_identity(lambda g: object_signature(g, roles))
     except Exception:
         pass
     vp = volatile_positions(log)
-    return (lambda g: sound_signature(g, vp)) if vp else None
+    return bind_identity(lambda g: sound_signature(g, vp)) if vp else None
 
 
-def _coverage_fn(project: Path):
+def _coverage_fn(project: Path, log=None, *, source_epoch=None):
     """Frontier projection paired with `_abstract_fn`.
 
     ARC object roles expose a shorter controllable-state carrier than their full
     transition signature. Substrates without that carrier keep identity
     coverage.
     """
-    log = EpisodeLog.read_jsonl(episode_log_path(project))
     try:
-        from ztare.worldmodel.object_roles import control_signature, induce_roles
-        roles = induce_roles(log, _log_arity(log)).roles
+        from ztare.worldmodel.object_roles import control_signature
+        roles = _role_state(project, log, source_epoch=source_epoch).roles
         if any(r.name == "moves_under_actions" for r in roles):
             return control_signature
     except Exception:
@@ -1013,67 +1382,110 @@ def _coverage_fn(project: Path):
     return None
 
 
-def _invariants(project: Path) -> list:
+def _invariants(project: Path, subject=None) -> list:
     """Kernel-ratified invariants only enforce; conjectured ones ride along.
     Ratification receipts live in workspace/invariant_certificates.jsonl."""
-    import json as _j
-    path = project / "workspace" / "invariant_certificates.jsonl"
-    if not path.exists():
-        return []
-    from ztare.worldmodel.invariant_bridge import InvariantCertificate
-    out = []
-    for line in path.read_text().splitlines():
-        try:
-            d = _j.loads(line)
-            out.append(InvariantCertificate(tuple(d["quantity"]), d["relation"],
-                                            d["status"], d.get("theorem", "")))
-        except Exception:
-            pass
-    return out
+    from ztare.worldmodel.lean_bridge import load_current_invariants
+
+    return load_current_invariants(project, subject=subject)
 
 
-def _structural_goal_fn(project: Path, log, ab):
+def _structural_goal_fn(project: Path, log, ab, *, source_epoch=None):
     """Pre-exemplar goal source (in-loop wiring, 2026-07-03): dormant-event /
     goal-abduction candidates compiled to ONE OR-predicate — reaching ANY
-    candidate state is worth probing; the sealed reward disposes. Returns
+    candidate state is worth probing; the adapter adjudicator disposes. Returns
     (goal_fn_or_None, n_candidates). Falls back to (None, 0) if the module or
     candidates are absent."""
     try:
         from ztare.worldmodel.goal_abduction import (
             abduce_goal_candidates, predicate_from_spec)
         from ztare.worldmodel.object_roles import induce_roles
-        roles = induce_roles(log, _log_arity(log))
-        out = abduce_goal_candidates(log, getattr(ab, "spec", None), roles)
-        trs = list(log)
+        goal_log = log
+        if source_epoch is not None:
+            # Lifecycle selection has one authority-bearing door.  Repeating a
+            # local identity filter here previously omitted the authority check
+            # and allowed candidate-authored epoch labels to scope planning.
+            goal_log = log.within_epoch_view(source_epoch)
+            if not len(goal_log):
+                return None, 0
+        roles = induce_roles(goal_log, _log_arity(goal_log))
+        out = abduce_goal_candidates(
+            goal_log,
+            getattr(ab, "spec", None),
+            roles,
+        )
+        trs = list(goal_log)
         start = trs[0].s if trs else None
         if start is None or not out:
             return None, 0
         if out.get("mode") == "post_success" and out.get("goal_predicate_spec"):
-            return predicate_from_spec(out["goal_predicate_spec"], start), 1
+            predicate = predicate_from_spec(out["goal_predicate_spec"], start)
+            setattr(predicate, "_ztare_source_epoch", source_epoch)
+            return predicate, 1
         cands = [c for c in out.get("candidates", []) if c.get("predicate_spec")]
         preds = [predicate_from_spec(c["predicate_spec"], start) for c in cands]
         if not preds:
             return None, 0
-        return (lambda g: any(pf(g) for pf in preds)), len(cands)
+        predicate = lambda g: any(pf(g) for pf in preds)
+        setattr(predicate, "_ztare_source_epoch", source_epoch)
+        return predicate, len(cands)
     except Exception:
         return None, 0
 
 
-def _seed_visited(visited_path, log, abstract_fn) -> set:
+def _seed_visited(
+    visited_path,
+    log,
+    abstract_fn,
+    *,
+    inherited=None,
+    start_row: int = 0,
+) -> set:
     """Single source of truth for the exploration frontier: the live-play cache
     (visited_path) UNION every abstract object-state witnessed in the evidence
     log (both endpoints of each transition). The side file is only a live-play
     cache; the evidence log is the master. Pure and testable."""
     from ztare.worldmodel.reachability import load_visited
-    store = load_visited(visited_path)
+    store = set(inherited or ())
+    store.update(load_visited(visited_path))
     if abstract_fn is not None:
-        for tr in log:
+        rows = list(log)
+        for tr in rows[max(0, int(start_row)):]:
             store.add(abstract_fn(tr.s))
             store.add(abstract_fn(tr.s_next))
     return store
 
 
-def _frontier_scope(log, abstract_fn) -> dict:
+def _episode_prefix_identity(path: Path, byte_limit: int | None = None) -> dict:
+    digest = hashlib.sha256()
+    consumed = 0
+    with path.open("rb") as handle:
+        while byte_limit is None or consumed < byte_limit:
+            size = 1024 * 1024
+            if byte_limit is not None:
+                size = min(size, byte_limit - consumed)
+            chunk = handle.read(size)
+            if not chunk:
+                break
+            digest.update(chunk)
+            consumed += len(chunk)
+    return {"bytes": consumed, "sha256": digest.hexdigest()}
+
+
+def _sidecar_semantic_sha(episode_path: Path) -> str | None:
+    sidecar = episode_path.with_name(f"{episode_path.stem}.identity.json")
+    if not sidecar.is_file():
+        return None
+    try:
+        payload = json.loads(sidecar.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "unreadable"
+    payload.pop("episode_sha256", None)
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _frontier_scope(project: Path, log, abstract_fn, *, source_epoch=None) -> dict:
     """Validity key for live frontier memory.
 
     Frontier memory is a quotient cache, not a substrate fact. It is reusable
@@ -1081,9 +1493,16 @@ def _frontier_scope(log, abstract_fn) -> dict:
     quotient; otherwise stale coverage can make a fresh play round look
     saturated before it has spent actions.
     """
+    episode = episode_log_path(project)
+    prefix = _episode_prefix_identity(episode)
     return {
         "schema": _FRONTIER_SCOPE_SCHEMA,
         "evidence_hash": log.content_hash(),
+        "evidence_rows": len(log),
+        "episode_prefix_bytes": prefix["bytes"],
+        "episode_prefix_sha256": prefix["sha256"],
+        "sidecar_semantic_sha256": _sidecar_semantic_sha(episode),
+        "source_epoch": source_epoch,
         "abstraction_version": (
             _FRONTIER_ABSTRACTION_VERSION if abstract_fn is not None else "none"
         ),
@@ -1096,9 +1515,16 @@ def _frontier_memory_path(project: Path, scope: dict) -> Path:
     return project / "workspace" / "frontier" / f"visited_{sha}.jsonl"
 
 
-def _write_frontier_scope_receipt(project: Path, scope: dict, visited_path: Path) -> None:
+def _write_frontier_scope_receipt(
+    project: Path,
+    scope: dict,
+    visited_path: Path,
+    *,
+    inherited_rows: int = 0,
+) -> None:
     receipt = dict(scope)
     receipt["visited_path"] = str(visited_path.relative_to(project))
+    receipt["inherited_rows"] = int(inherited_rows)
     receipt["authority"] = (
         "frontier cache only; ignored automatically when evidence hash or "
         "abstraction version changes"
@@ -1108,15 +1534,74 @@ def _write_frontier_scope_receipt(project: Path, scope: dict, visited_path: Path
     p.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
 
 
-def _frontier_memory(project: Path, log=None):
+def _frontier_memory(project: Path, log=None, *, source_epoch=None):
     """Shared quotient-frontier memory for sprint and governed play."""
     if log is None:
         log = EpisodeLog.read_jsonl(episode_log_path(project))
-    abstract = _abstract_fn(project)
-    scope = _frontier_scope(log, abstract)
+    frontier_log = log.within_epoch_view(source_epoch)
+    abstract = _abstract_fn(project, log, source_epoch=source_epoch)
+    latest_path = project / "workspace" / "latest_frontier_scope.json"
+    prior = None
+    if latest_path.is_file():
+        try:
+            prior = json.loads(latest_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            prior = None
+    scope = _frontier_scope(
+        project,
+        log,
+        abstract,
+        source_epoch=source_epoch,
+    )
     visited_path = _frontier_memory_path(project, scope)
-    _write_frontier_scope_receipt(project, scope, visited_path)
-    visited_store = _seed_visited(visited_path, log, abstract)
+    inherited: set = set()
+    inherited_rows = 0
+    if (
+        source_epoch is None
+        and
+        isinstance(prior, dict)
+        and prior.get("abstraction_version") == scope["abstraction_version"]
+        and prior.get("sidecar_semantic_sha256") == scope["sidecar_semantic_sha256"]
+    ):
+        try:
+            prior_rows = int(prior.get("evidence_rows", -1))
+            prior_bytes = int(prior.get("episode_prefix_bytes", -1))
+            prior_ref = str(prior.get("visited_path") or "")
+            prior_visited = project / prior_ref
+            prefix = _episode_prefix_identity(episode_log_path(project), prior_bytes)
+            prefix_matches = (
+                0 <= prior_rows <= len(log)
+                and prior_bytes >= 0
+                and prefix["bytes"] == prior_bytes
+                and prefix["sha256"] == prior.get("episode_prefix_sha256")
+                and prior_visited.is_file()
+            )
+            if prefix_matches:
+                from ztare.worldmodel.reachability import load_visited
+                inherited = load_visited(prior_visited)
+                inherited_rows = prior_rows
+                # The cache object follows the certified append lineage.  Keep
+                # one file and delta-append new quotient keys instead of
+                # copying the full image into a new evidence-hash filename.
+                visited_path = prior_visited
+        except (OSError, TypeError, ValueError):
+            inherited = set()
+            inherited_rows = 0
+    visited_store = _seed_visited(
+        visited_path,
+        frontier_log,
+        abstract,
+        inherited=inherited,
+        start_row=inherited_rows,
+    )
+    from ztare.worldmodel.reachability import save_visited
+    save_visited(visited_path, visited_store)
+    _write_frontier_scope_receipt(
+        project,
+        scope,
+        visited_path,
+        inherited_rows=inherited_rows,
+    )
     return abstract, visited_path, visited_store
 
 
@@ -1128,14 +1613,12 @@ def _write_sprint_receipt(project: Path, receipt: dict) -> None:
     p.write_text(_j.dumps(receipt))
 
 
-def _resource_colors(project: Path) -> list:
+def _resource_colors(project: Path, log=None, *, source_epoch=None) -> list:
     """Monotone-depleting roles = the resource whose bar bounds the horizon
     as a search coordinate. Proof-enforced pruning is separate and only comes
     from `_invariants(project)` reading kernel-ratified certificates."""
     try:
-        from ztare.worldmodel.object_roles import induce_roles
-        log = EpisodeLog.read_jsonl(episode_log_path(project))
-        for r in induce_roles(log, _log_arity(log)).roles:
+        for r in _role_state(project, log, source_epoch=source_epoch).roles:
             if r.name == "monotone_depleting":
                 return list(r.members)
     except Exception:
@@ -1159,26 +1642,17 @@ def _record_spec_receipt(project: Path, spec: dict, cycle: int) -> None:
 
 
 def _validate_carrier_rubric_aware(source: str, project) -> None:
-    """Honor the rubric's dynamics_assumption (lawful_time etc.) at EVERY
-    carrier-validation site. Third occurrence of this contract drift
-    (transfer probe 2026-07-11, then _load_ratified_model crashed the loop
-    2026-07-12 after a t-reading champion was lawfully promoted): the
-    validator grew the dynamics_assumption parameter and bare call sites
-    silently kept strict mode."""
-    da = None
-    try:
-        rub = REPO / "rubrics" / f"{Path(project).name}.json"
-        da = json.loads(rub.read_text()).get("dynamics_assumption") or None
-    except Exception:  # noqa: BLE001
-        da = None
-    validate_worldmodel_carrier_source(source, dynamics_assumption=da)
+    validate_worldmodel_carrier_source(
+        source,
+        dynamics_assumption=project_dynamics_assumption(project),
+    )
 
 
 def _load_ratified_model(project: Path):
     """The champion the governed loop just ratified — the mutator's test_model.py
     (python carrier or grid_dsl PROGRAM), plus an optional PROGRESS heuristic the
     mutator inferred from the observed frames. Returns (model, progress_fn); the
-    progress heuristic is STEERING ONLY (the sealed reward judges success, so a
+    progress heuristic is STEERING ONLY (the adapter adjudicator judges success, so a
     wrong cue costs efficiency, never correctness — the non-iatrogenic split)."""
     tm = project / "test_model.py"
     if not tm.exists():
@@ -1195,14 +1669,140 @@ def _load_ratified_model(project: Path):
     return _model_from_namespace(project, ns)
 
 
-def _model_from_namespace(project: Path, ns: dict, *, allow_patch_base: bool = True):
-    """Extract a worldmodel carrier from an executed namespace.
+def _governed_adoption_cursor(project: Path) -> dict[str, Any]:
+    telemetry = project / "workspace" / "iteration_telemetry.jsonl"
+    model_path = project / "test_model.py"
+    try:
+        offset = telemetry.stat().st_size
+    except OSError:
+        offset = 0
+    try:
+        model_sha = hashlib.sha256(model_path.read_bytes()).hexdigest()
+    except OSError:
+        model_sha = ""
+    return {"telemetry_offset": offset, "model_sha256": model_sha}
 
-    Patch-base carriers are gate-owned compositions: candidate code names a
-    prior artifact by hash and supplies a pure delta, while this loader resolves
-    and calls the base under project authority. This prevents live advice from
-    treating ``PATCH_DELTA`` itself as a standalone ``f``/``model`` callable.
+
+def _materialize_governed_baseline(
+    project: Path,
+    *,
+    source: str,
+    source_ref: str,
+    candidate_sha256: str,
+    producer_id: str,
+) -> dict[str, Any]:
+    """Bind governed search to the selected residual-frontier carrier.
+
+    This is baseline selection, not promotion.  The cursor is captured after
+    materialization, so adoption still requires changed bytes plus a current-run
+    promotion event.
     """
+
+    source_sha = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    if source_sha != str(candidate_sha256):
+        raise ValueError("governed baseline source does not match proposal identity")
+    _validate_carrier_rubric_aware(source, project)
+    target = project / "test_model.py"
+    prior_sha = hashlib.sha256(target.read_bytes()).hexdigest() if target.is_file() else ""
+    if prior_sha != source_sha:
+        temporary = target.with_suffix(".py.tmp")
+        temporary.write_text(source, encoding="utf-8")
+        temporary.replace(target)
+    repair_frontier_refreshed = False
+    if (project / "gate_harness.py").is_file():
+        from ztare.common.patch_base_identity import load_current_repair_frontier
+        from ztare.validator.core.repair_preflight import (
+            patch_base_regression_retry_message,
+        )
+
+        patch_base_regression_retry_message(
+            enabled=True,
+            project_dir=project,
+            candidate_source=source,
+            python_executable=sys.executable,
+        )
+        frontier = load_current_repair_frontier(project)
+        if str(frontier.get("sha256") or "") != source_sha:
+            raise RuntimeError(
+                "selected governed baseline did not become the current-epoch "
+                "repair frontier"
+            )
+        repair_frontier_refreshed = True
+    receipt = {
+        "schema": "ztare-governed-baseline-materialization-v1",
+        "candidate_sha256": source_sha,
+        "producer_id": str(producer_id),
+        "prior_sha256": prior_sha,
+        "changed": prior_sha != source_sha,
+        "authority": "residual_frontier_selection",
+        "promotion_authority": False,
+        "source_ref": str(source_ref),
+        "repair_frontier_refreshed": repair_frontier_refreshed,
+    }
+    _append_play_receipt(
+        project,
+        {"site": "arc3_play_loop.py:governed_baseline", **receipt},
+    )
+    return receipt
+
+
+def _governed_adoption_since(project: Path, cursor: dict[str, Any]) -> dict[str, Any]:
+    """Adopt a current-run search incumbent as an active discriminator."""
+    telemetry = project / "workspace" / "iteration_telemetry.jsonl"
+    offset = int(cursor.get("telemetry_offset") or 0)
+    rows: list[dict[str, Any]] = []
+    try:
+        with telemetry.open("rb") as handle:
+            handle.seek(offset)
+            for raw in handle:
+                try:
+                    row = json.loads(raw)
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    continue
+                if isinstance(row, dict):
+                    rows.append(row)
+    except OSError:
+        rows = []
+    model_path = project / "test_model.py"
+    try:
+        current_sha = hashlib.sha256(model_path.read_bytes()).hexdigest()
+    except OSError:
+        current_sha = ""
+    promoted = any(
+        row.get("record_type") == "iteration" and row.get("champion_promoted") is True
+        for row in rows
+    )
+    changed = bool(current_sha and current_sha != str(cursor.get("model_sha256") or ""))
+    immutable_ref = ""
+    if promoted and changed:
+        from ztare.worldmodel.patch_base_carrier import (
+            materialize_immutable_patch_base,
+        )
+
+        source = model_path.read_text(encoding="utf-8")
+        immutable_ref, immutable_sha = materialize_immutable_patch_base(
+            project,
+            source,
+            prefix="governed_frontier",
+        )
+        if immutable_sha != current_sha:
+            raise RuntimeError("governed immutable snapshot changed candidate identity")
+    return {
+        "schema": "ztare-governed-candidate-adoption-v1",
+        "adopted": bool(promoted and changed),
+        "champion_promoted_in_run": promoted,
+        "adoption_scope": "active_discriminator_frontier",
+        "task_discharge_authorized": False,
+        "candidate_bytes_changed": changed,
+        "prior_sha256": str(cursor.get("model_sha256") or ""),
+        "current_sha256": current_sha,
+        "immutable_source_ref": immutable_ref,
+        "telemetry_rows_observed": len(rows),
+    }
+
+
+def _model_from_namespace(project: Path, ns: dict, *, allow_patch_base: bool = True):
+    """Extract carrier plus steering-only progress and goal projections."""
 
     # optional goal-cue: a `progress(grid)->float` callable, or PROGRESS_SRC to
     # sandbox-compile (defense-in-depth; steering-only so it is not a trust boundary)
@@ -1212,49 +1812,25 @@ def _model_from_namespace(project: Path, ns: dict, *, allow_patch_base: bool = T
         fn, _err = compile_progress_heuristic(ns["PROGRESS_SRC"])
         progress = fn
     # GOAL_PREDICATE: the mutator's falsifiable goal HYPOTHESIS (rival: the
-    # sealed reward fires elsewhere; discriminator: the level event itself).
+    # adapter adjudicator fires elsewhere; discriminator: the level event itself).
     # Steering-only — plan_to_goal targets it, levels_completed judges it.
     goal = ns.get("GOAL_PREDICATE") if callable(ns.get("GOAL_PREDICATE")) else None
 
-    model = None
-    if allow_patch_base and (ns.get("PATCH_BASE") or ns.get("PATCH_BASE_REF")
-                             or ns.get("PATCH_BASE_PATH")):
-        try:
-            from ztare.worldmodel.gates import as_predictor
-            from ztare.worldmodel.patch_base_carrier import (
-                compose_patch_base_carrier,
-            )
-            model = compose_patch_base_carrier(
-                ns,
-                project_dir=project,
-                load_program_from_namespace=lambda base_ns: _model_from_namespace(
-                    project, base_ns, allow_patch_base=True)[0],
-                call_program=lambda program, state, action, t: as_predictor(program)(
-                    state, action, t),
-            )
-        except Exception as exc:  # noqa: BLE001
-            print(f"  PATCH_BASE carrier skipped: {type(exc).__name__}: {exc}",
-                  flush=True)
-    spec = ns.get("WORLD_MODEL_SPEC")
-    if spec is not None:
-        try:
-            from ztare.worldmodel.spec_catalog import lower_spec
-            model, err = lower_spec(spec)
-            if model is None:
-                print(f"  WORLD_MODEL_SPEC skipped: {err}", flush=True)
-        except Exception as exc:  # noqa: BLE001
-            print(f"  WORLD_MODEL_SPEC skipped: {type(exc).__name__}: {exc}",
-                  flush=True)
-    for alias in ("step", "f", "model", "I_model"):
-        if model is None and callable(ns.get(alias)):
-            model = ns[alias]
-            break
-    if model is None:
-        raw = ns.get("PROGRAM")
-        if raw is not None:
-            def _to(n):
-                return tuple(_to(x) for x in n) if isinstance(n, list) else n
-            model = _to(raw)
+    try:
+        from ztare.worldmodel.carrier_loader import lower_carrier_namespace
+
+        model = lower_carrier_namespace(
+            ns,
+            project_dir=project,
+            attach_projection=True,
+            allow_patch_base=allow_patch_base,
+        )
+    except Exception as exc:  # noqa: BLE001 - absence is an admissible steering outcome
+        print(
+            f"  transition carrier skipped: {type(exc).__name__}: {exc}",
+            flush=True,
+        )
+        model = None
     return model, progress, goal
 
 
@@ -1443,8 +2019,12 @@ def _recover_level_boundary_seed(
             context_log=log,
             goal_fn=candidate.get("goal"),
             progress_fn=candidate.get("progress"),
-            resource_colors=_resource_colors(project),
-            invariants=_invariants(project),
+            resource_colors=_resource_colors(
+                project,
+                log,
+                source_epoch=_adapter_epoch(adapter),
+            ),
+            invariants=_invariants(project, candidate["model"]),
             abstract_fn=None,
             coverage_fn=None,
             visited_store=None,
@@ -1619,7 +2199,12 @@ def _run_governed_cycle(project_slug: str, rubric: str, iters: int, mutator: str
     return subprocess.run(cmd, cwd=REPO, env=_clean_env()).returncode
 
 
-def archive_sealed_eval_slice(project: Path, log: EpisodeLog) -> dict:
+def archive_sealed_eval_slice(
+    project: Path,
+    log: EpisodeLog,
+    *,
+    source_carrier_sha256: str,
+) -> dict:
     """Persist a live-play trajectory as a sealed eval slice.
 
     The slice is written to raw/episodes/eval_slices/ which is NEVER staged
@@ -1631,7 +2216,9 @@ def archive_sealed_eval_slice(project: Path, log: EpisodeLog) -> dict:
     """
     import hashlib as _hl
     from datetime import datetime, timezone
-    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    if len(source_carrier_sha256) != 64:
+        raise ValueError("sealed eval slice requires a full source carrier sha256")
+    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     slice_dir = project / "raw" / "episodes" / "eval_slices"
     slice_dir.mkdir(parents=True, exist_ok=True)
     slice_path = slice_dir / f"eval_{ts}.jsonl"
@@ -1643,6 +2230,7 @@ def archive_sealed_eval_slice(project: Path, log: EpisodeLog) -> dict:
         "recorded_utc": ts,
         "steps": len(log),
         "source": "live_play",
+        "source_carrier_sha256": source_carrier_sha256,
     }
     ledger = project / "workspace" / "sealed_eval_slices.jsonl"
     ledger.parent.mkdir(parents=True, exist_ok=True)
@@ -1651,30 +2239,63 @@ def archive_sealed_eval_slice(project: Path, log: EpisodeLog) -> dict:
     return row
 
 
-def _grow_evidence(project: Path, observed, adapter) -> int:
-    """Append the live off-basin transitions to the episode log + re-render the
-    evidence, so the next governed cycle re-identifies on richer data."""
-    log = EpisodeLog.read_jsonl(episode_log_path(project))
-    before = len(log)
-    # EVIDENCE CURATION (2026-07-05): in a deterministic environment a duplicate
-    # (s, a, phase) transition carries zero information (same context -> same
-    # s_next; determinism_check names violations). Random-walk bootstrap floods
-    # the log with duplicates whose only effect is superlinear mining cost —
-    # keep one witness per context. Lossless for identification; multiplicity
-    # is irrelevant to exact replay.
-    seen = {(tr.s, tr.a, tr.t % 6) for tr in log}
-    for (s, a, s_next, t) in observed:
-        key = (s, a, t % 6)
-        if key in seen:
+def _observation_transitions(observed) -> list[Transition]:
+    """Normalize collector packets at the transition-carrier boundary."""
+    rows: list[Transition] = []
+    for observation in observed:
+        if isinstance(observation, Transition):
+            rows.append(observation)
+        else:
+            s, a, s_next, t = observation
+            rows.append(Transition(t=t, s=s, a=a, s_next=s_next))
+    return rows
+
+
+def _append_observations(project: Path, observed, *, log=None) -> tuple[EpisodeLog, int]:
+    """Single evidence-admission door for live transition observations.
+
+    Exact repeated observations are redundant. A repeated intervention
+    context with a different consequence is retained: it is a determinism or
+    hidden-state witness, not a duplicate. Persistence advances the existing
+    append-only carrier; it never rewrites the population prefix.
+    """
+    if log is None:
+        log = EpisodeLog.read_jsonl(episode_log_path(project))
+    # Observation equality does not subsume lifecycle identity.  The same
+    # visible transition can be re-observed with an adapter-attested identity;
+    # dropping that packet would prevent the authority upgrade from entering
+    # the evidence carrier.  Keep the sidecar's observation hash identity-free
+    # (it binds bytes without circularity), and include the typed identity only
+    # at this admission boundary.
+    index: dict[str, set[tuple[str, object]]] = {}
+    for existing in log:
+        index.setdefault(existing.context_hash(), set()).add(
+            (existing.observation_hash(), existing.identity)
+        )
+    admitted: list[Transition] = []
+    for row in _observation_transitions(observed):
+        context = row.context_hash()
+        observation = (row.observation_hash(), row.identity)
+        consequences = index.setdefault(context, set())
+        if observation in consequences:
             continue
-        seen.add(key)
-        log.append(s, a, s_next, t=t)
-    log.write_jsonl(episode_log_path(project))
+        consequences.add(observation)
+        admitted.append(row)
+    if admitted:
+        log.append_jsonl(episode_log_path(project), admitted)
+    return log, len(admitted)
+
+
+def _grow_evidence(project: Path, observed, adapter, *, log=None) -> int:
+    """Admit live transitions and refresh derived identification views."""
+    log, grown = _append_observations(project, observed, log=log)
+    if grown == 0:
+        return 0
     result = synthesize(log, adapter.action_arity)
     witnessed = {context_key(tr.a, tr.t) for tr in log}
     write_committee_read_model(project, result, witnessed, log)
     write_deterministic_evidence(project)
-    return len(log) - before
+    return grown
 
 
 def _strategy_office_enabled(cfg: dict) -> bool:
@@ -1692,8 +2313,15 @@ def _has_open_strategy_cards(project: Path) -> bool:
     starve the governed worker that can consume the card from the briefing.
     """
     try:
-        from ztare.common.operator_proposal_contract import open_cards
-        return bool(open_cards(project / "workspace" / "strategy_experiments.jsonl"))
+        from ztare.common.strategy_card_roles import (
+            active_strategy_cards,
+            blocking_strategy_cards,
+        )
+
+        cards = active_strategy_cards(
+            project / "workspace" / "strategy_experiments.jsonl"
+        )
+        return bool(blocking_strategy_cards(cards, project_dir=project))
     except Exception:  # noqa: BLE001
         return False
 
@@ -1766,7 +2394,10 @@ def _bootstrap_explore(project: Path, adapter, cfg: dict) -> int:
     bootstrapped by historical probes; a brand-new game has none, so it gathers
     its own. Budget: cfg['sprint_steps']."""
     af, _visited_path, visited = _frontier_memory(
-        project, EpisodeLog.read_jsonl(episode_log_path(project)))
+        project,
+        EpisodeLog.read_jsonl(episode_log_path(project)),
+        source_epoch=_adapter_epoch(adapter),
+    )
     arity, observed, tried = adapter.action_arity, [], {}
     for i in range(int(cfg["sprint_steps"])):
         s, t = adapter.state, adapter.t
@@ -1781,6 +2412,373 @@ def _bootstrap_explore(project: Path, adapter, cfg: dict) -> int:
         if af is not None:
             visited.add(af(s2))
     return _grow_evidence(project, observed, adapter)
+
+
+class _ConfiguredCandidateReady(Exception):
+    """Internal control signal: a narrower System-1 producer closed its gates."""
+
+
+def _gate_candidate_path(project: Path, candidate_path: Path):
+    """Evaluate the exact carrier identity used by a live-play attempt."""
+    project = Path(project).resolve()
+    candidate_path = Path(candidate_path).resolve()
+    if not candidate_path.is_file() or not (project / "gate_harness.py").is_file():
+        return None
+    from ztare.validator.core.pre_judge_gate import (
+        consume_pre_judge_gate_receipt,
+        run_pre_judge_gate_harness,
+    )
+
+    result = run_pre_judge_gate_harness(
+        enabled=True,
+        project_dir=project,
+        latest_eval_results_path=project / "latest_eval_results.json",
+        python_executable=sys.executable,
+        candidate_path=candidate_path,
+    )
+    payload = result.payload if isinstance(result.payload, dict) else {}
+    consumed = consume_pre_judge_gate_receipt(
+        payload,
+        candidate_path=candidate_path,
+    )
+    return {
+        "result": result,
+        "payload": payload,
+        "consumed": consumed,
+    }
+
+
+def _gate_current_incumbent(project: Path):
+    """Evaluate the mutable project root through the single pre-judge door."""
+
+    return _gate_candidate_path(Path(project), Path(project) / "test_model.py")
+
+
+def _apply_current_gate_consequences(project: Path, gate_payload: object) -> dict:
+    """Route one gate receipt through the existing stale-surface producer."""
+    if not isinstance(gate_payload, dict) or not gate_payload:
+        return {}
+    from ztare.worldmodel.stale_surface_audit import run_stale_surface_audit
+
+    return run_stale_surface_audit(
+        project,
+        apply=True,
+        gate_payload=gate_payload,
+    )
+
+
+def _configured_system1_candidate(project: Path, cfg: dict):
+    """Return a configured producer's adoption or localized repair frontier."""
+    project = Path(project).resolve()
+    from ztare.worldmodel.deterministic_candidate_producers import (
+        evaluate_configured_candidates,
+    )
+    from ztare.common.patch_base_identity import repair_frontier_order
+    from ztare.validator.core.pre_judge_gate import (
+        consume_pre_judge_gate_receipt,
+        run_pre_judge_gate_harness,
+    )
+
+    def residual_rank(payload: dict[str, Any]) -> tuple[int, int, float, int, int]:
+        gates = payload.get("gates")
+        if not isinstance(gates, dict):
+            return (-1, -1, -1.0, -1, -(2**63))
+        holdout = gates.get("holdout_rollout_exact")
+        holdout_depth = holdout.get("value") if isinstance(holdout, dict) else 0
+        best = (-1, -1, -1.0, -1, -(2**63))
+        for gate in gates.values():
+            if not isinstance(gate, dict) or gate.get("pass") is True:
+                continue
+            diagnostics = gate.get("diagnostics")
+            if not isinstance(diagnostics, dict):
+                continue
+            residual = diagnostics.get("residual_table")
+            if not isinstance(residual, list) or not residual:
+                continue
+            best = max(
+                best,
+                repair_frontier_order(
+                    exact_rows=diagnostics.get("exact_rows"),
+                    holdout_depth=holdout_depth,
+                    gate_score=payload.get("score"),
+                    wrong_cells=diagnostics.get("wrong_cell_count"),
+                    description_length=payload.get("description_length"),
+                ),
+            )
+        return best
+
+    # Incumbent and challenger have different authority contracts.  Reusing an
+    # incumbent requires current-epoch gate coverage; replacing it additionally
+    # requires strict improvement.  Check the incumbent before opening any
+    # mutation producer, so an empty residual cannot be re-described as a new
+    # candidate family and layered back onto the same carrier.
+    incumbent_path = project / "test_model.py"
+    incumbent_frontier = None
+    incumbent_gate = _gate_current_incumbent(project)
+    if incumbent_gate is not None:
+        incumbent_result = incumbent_gate["result"]
+        incumbent_payload = incumbent_gate["payload"]
+        if incumbent_payload:
+            consumed = incumbent_gate["consumed"]
+            if not consumed["harness_ok"] or not consumed["gates_present"]:
+                return {
+                    "status": "verification_unavailable",
+                    "causes": [
+                        str(
+                            (incumbent_payload.get("control_receipt") or {}).get("cause")
+                            or incumbent_payload.get("verdict")
+                            or "incumbent verifier emitted no gates"
+                        )
+                    ],
+                    "candidate_sha256s": [consumed["candidate_sha256"]],
+                }
+            incumbent_covers_epoch = bool(
+                incumbent_result.ran
+                and consumed["harness_ok"]
+                and consumed["gates_present"]
+                and not consumed["failed_gates"]
+            )
+            if incumbent_covers_epoch:
+                source = incumbent_path.read_text(encoding="utf-8")
+                return {
+                    "status": "incumbent_current",
+                    "model": load_carrier_from_source(
+                        source,
+                        incumbent_path.name,
+                        project,
+                    ),
+                    "source": source,
+                    "candidate_sha256": consumed["candidate_sha256"],
+                    "gate_payload": incumbent_payload,
+                }
+            incumbent_rank = residual_rank(incumbent_payload)
+            if incumbent_rank[0] >= 0:
+                incumbent_source = incumbent_path.read_text(encoding="utf-8")
+                immutable = next(
+                    (
+                        path
+                        for path in sorted(
+                            (project / "workspace" / "submissions").glob("*.py")
+                        )
+                        if hashlib.sha256(path.read_bytes()).hexdigest()
+                        == consumed["candidate_sha256"]
+                    ),
+                    incumbent_path,
+                )
+                incumbent_frontier = {
+                    "source": incumbent_source,
+                    "source_ref": str(immutable.relative_to(project)),
+                    "candidate_sha256": consumed["candidate_sha256"],
+                    "producer_id": "current_incumbent",
+                    "rank": incumbent_rank,
+                    "gate_payload": incumbent_payload,
+                }
+
+    # Candidate memory is executable version-space state, not prompt-only
+    # narrative. Re-verify the strongest current-extent survivor before
+    # opening a new producer. Reuse needs current gate coverage; it does not
+    # need to dominate itself again.
+    try:
+        from ztare.common.candidate_memory import (
+            admissible_candidate_memory_records,
+            candidate_memory_source,
+        )
+
+        survivors = admissible_candidate_memory_records(
+            project,
+            source_types={"full_survivor"},
+            require_submission_source=True,
+        )
+    except Exception:  # noqa: BLE001
+        survivors = []
+    for record in sorted(
+        survivors,
+        key=lambda row: repair_frontier_order(
+            exact_rows=row.get("visible_exact_rows"),
+            holdout_depth=row.get("holdout_depth"),
+            gate_score=row.get("gate_score"),
+            wrong_cells=row.get("visible_wrong_cells"),
+            description_length=row.get("description_length"),
+        ),
+        reverse=True,
+    ):
+        source_ref = str(record.get("submission") or "").strip()
+        candidate_path = project / source_ref
+        if not source_ref or not candidate_path.is_file():
+            continue
+        survivor_result = run_pre_judge_gate_harness(
+            enabled=True,
+            project_dir=project,
+            latest_eval_results_path=project / "latest_eval_results.json",
+            python_executable=sys.executable,
+            candidate_path=candidate_path,
+            run_role=str(record.get("run_role") or "") or None,
+            withheld_refs=tuple(str(ref) for ref in record.get("withheld_refs") or ()),
+            exposed_refs=tuple(
+                str(ref) for ref in record.get("exposed_withheld_refs") or ()
+            ),
+        )
+        survivor_payload = (
+            survivor_result.payload
+            if isinstance(survivor_result.payload, dict)
+            else {}
+        )
+        consumed = consume_pre_judge_gate_receipt(
+            survivor_payload,
+            candidate_path=candidate_path,
+        )
+        if not consumed["harness_ok"] or not consumed["gates_present"]:
+            return {
+                "status": "verification_unavailable",
+                "causes": ["cached survivor verifier emitted no gates"],
+                "candidate_sha256s": [consumed["candidate_sha256"]],
+            }
+        if survivor_result.ran and not consumed["failed_gates"]:
+            source = candidate_memory_source(project, record)
+            return {
+                "status": "cached_survivor_current",
+                "model": load_carrier_from_source(
+                    source,
+                    candidate_path.name,
+                    project,
+                ),
+                "source": source,
+                "source_ref": source_ref,
+                "candidate_sha256": consumed["candidate_sha256"],
+                "producer_id": "candidate_memory_full_survivor",
+                "gate_payload": survivor_payload,
+                "membrane": {
+                    key: record.get(key)
+                    for key in (
+                        "run_role",
+                        "claim_class",
+                        "fresh_holdout_required",
+                    )
+                },
+            }
+
+    assessed = evaluate_configured_candidates(
+        project,
+        cfg,
+        phase="checkpoint_identification",
+    )
+    accepted = [candidate for candidate in assessed if candidate.gate_pass]
+    if accepted:
+        chosen = accepted[0]
+        source = chosen.proposal.candidate_path.read_text(encoding="utf-8")
+        model = load_carrier_from_source(
+            source,
+            chosen.proposal.candidate_path.name,
+            project,
+        )
+        return {
+            "status": "accepted",
+            "model": model,
+            "chosen": chosen,
+            "source": source,
+            "gate_payload": chosen.gate_payload,
+        }
+
+    # The epoch-scoped repair-frontier receipt owns continuation identity.
+    # Candidate memory and producer gates are plural evidence; neither may
+    # privately re-rank a role that this receipt has already resolved.
+    repair_receipt = project / "workspace" / "latest_patch_base_regression.json"
+    if repair_receipt.is_file():
+        try:
+            from ztare.common.patch_base_identity import (
+                StaleRepairFrontierError,
+                load_current_repair_frontier,
+            )
+
+            frontier = load_current_repair_frontier(project)
+        except StaleRepairFrontierError:
+            # Evidence growth expires the singleton lifecycle role.  Select a
+            # replacement below from candidates verified on the current epoch;
+            # an expired receipt is not verifier unavailability.
+            frontier = None
+        except (KeyError, OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            return {
+                "status": "verification_unavailable",
+                "causes": [f"repair frontier unavailable: {type(exc).__name__}: {exc}"],
+                "candidate_sha256s": [],
+            }
+        if frontier is not None:
+            matching_gate_payload = next(
+                (
+                    row.get("gate_payload")
+                    for row in ([incumbent_frontier] if incumbent_frontier else [])
+                    if str(row.get("candidate_sha256") or "") == frontier["sha256"]
+                ),
+                None,
+            )
+            if matching_gate_payload is None:
+                matching_gate_payload = next(
+                    (
+                        candidate.gate_payload
+                        for candidate in assessed
+                        if candidate.proposal.candidate_sha256 == frontier["sha256"]
+                    ),
+                    None,
+                )
+            return {
+                "status": "residual_frontier",
+                "source": frontier["path"].read_text(encoding="utf-8"),
+                "source_ref": frontier["source_ref"],
+                "candidate_sha256": frontier["sha256"],
+                "producer_id": "repair_preflight_frontier",
+                "rank": (frontier["exact_rows"], -frontier["wrong_cells"]),
+                "gate_payload": matching_gate_payload,
+            }
+
+    frontiers = [
+        candidate
+        for candidate in assessed
+        if residual_rank(candidate.gate_payload)[0] >= 0
+    ]
+    if not frontiers and incumbent_frontier is None:
+        # A verifier that emitted no gates did not refute the proposal.  Keep
+        # infrastructure availability distinct from scientific consequence:
+        # otherwise a timeout/error is silently coerced to "no candidate" and
+        # authorizes an unrelated raw-abduction path.
+        unavailable = [
+            candidate
+            for candidate in assessed
+            if candidate.gate_payload.get("verdict") == "harness_error"
+            or not isinstance(candidate.gate_payload.get("gates"), dict)
+            or not candidate.gate_payload.get("gates")
+        ]
+        if unavailable:
+            causes = [
+                str(
+                    (candidate.gate_payload.get("control_receipt") or {}).get("cause")
+                    or candidate.gate_payload.get("verdict")
+                    or "no deterministic gates emitted"
+                )
+                for candidate in unavailable
+            ]
+            return {
+                "status": "verification_unavailable",
+                "causes": causes,
+                "candidate_sha256s": [
+                    candidate.proposal.candidate_sha256 for candidate in unavailable
+                ],
+            }
+        return {"status": "none"}
+    options = []
+    if incumbent_frontier is not None:
+        options.append(incumbent_frontier)
+    if frontiers:
+        chosen = max(frontiers, key=lambda row: residual_rank(row.gate_payload))
+        options.append({
+            "source": chosen.proposal.candidate_path.read_text(encoding="utf-8"),
+            "source_ref": str(chosen.proposal.candidate_path.relative_to(project)),
+            "candidate_sha256": chosen.proposal.candidate_sha256,
+            "producer_id": chosen.proposal.producer_id,
+            "rank": residual_rank(chosen.gate_payload),
+            "gate_payload": chosen.gate_payload,
+        })
+
+    return {"status": "residual_frontier", **max(options, key=lambda row: row["rank"])}
 
 
 def main() -> int:
@@ -1830,6 +2828,8 @@ def main() -> int:
     best_model = None
     best_progress = None
     best_goal = None
+    best_goal_edge = None
+    best_model_path = None
     best_depth = -1
     advice_only = cfg["mode"] == "advice"
     if advice_only:
@@ -1837,22 +2837,90 @@ def main() -> int:
         if _advice_source:
             print(f"  advice model loaded: {_advice_source}", flush=True)
     for cyc in range(1, cycles + 1):
+        # System 1 and the governed worker share one nervous-system fence: an
+        # operational receipt may not be bypassed by starting another science
+        # cycle while its registered consumer has not fired.
+        try:
+            from ztare.common.schema_routes import assert_operational_routes_ready
+
+            assert_operational_routes_ready(project, entering_phase="governed_run")
+        except Exception as route_exc:  # typed error is rendered into the play report
+            report["result"] = "operational_route_obstruction"
+            report["cycles"].append(
+                {
+                    "cycle": cyc,
+                    "status": "operational_route_obstruction",
+                    "cause": str(route_exc),
+                }
+            )
+            print(f"  operational route fence: {route_exc}", flush=True)
+            break
+
+        # Resolve the configured deterministic identification door once before
+        # generic sprint or router allocation.  The same result is consumed
+        # below by adoption or governed repair.
+        try:
+            with phase("system1_candidate_gate", project / "workspace"):
+                _system1 = _configured_system1_candidate(project, cfg)
+        except Exception as _producer_err:  # noqa: BLE001
+            report["cycles"].append(
+                {
+                    "cycle": cyc,
+                    "status": "configured_producer_unavailable",
+                    "cause": f"{type(_producer_err).__name__}: {_producer_err}",
+                }
+            )
+            report["result"] = "configured_producer_unavailable"
+            print(
+                "  configured candidate producer unavailable; ending this attempt: "
+                f"{type(_producer_err).__name__}: {_producer_err}",
+                flush=True,
+            )
+            break
+        _system1_status = str(_system1.get("status") or "none")
+        if _system1_status == "verification_unavailable":
+            report["cycles"].append(
+                {
+                    "cycle": cyc,
+                    "status": "verification_unavailable",
+                    "candidate_sha256s": _system1.get("candidate_sha256s", []),
+                    "causes": _system1.get("causes", []),
+                }
+            )
+            report["result"] = "verification_unavailable"
+            print(
+                "  configured candidate verification unavailable; "
+                "ending this attempt without changing search mode",
+                flush=True,
+            )
+            break
+        _system1_gate_payload = _system1.get("gate_payload")
+        if isinstance(_system1_gate_payload, dict) and _system1_gate_payload:
+            try:
+                _surface_receipt = _apply_current_gate_consequences(
+                    project, _system1_gate_payload
+                )
+                _surface_actions = _surface_receipt.get("actions") or []
+                if _surface_actions:
+                    print(
+                        "  stale-surface producer applied current gate consequences: "
+                        f"{len(_surface_actions)} action(s)",
+                        flush=True,
+                    )
+            except Exception as _surface_err:  # noqa: BLE001
+                print(
+                    "  stale-surface producer unavailable: "
+                    f"{type(_surface_err).__name__}: {_surface_err}",
+                    flush=True,
+                )
         # SPRINT HOT PATH (mode sprint|hybrid): zero-token act-learn rounds.
         # Governance runs as a CHECKPOINT (on catalog ceiling, or every Nth
         # cycle in hybrid) — the throughput fix, with every guarantee intact.
-        if cfg["mode"] in ("sprint", "hybrid", "advice"):
+        if (
+            cfg["mode"] in ("sprint", "hybrid", "advice")
+            and _system1_status == "none"
+        ):
             sp_adapter = ArcAgi3Adapter(game_id)
-            # Probe rider: scripted distinguishing probes fire during ordinary
-            # sprint play when unresolved scripted-probe targets exist (the
-            # sprints reach the post-boundary regime; steered sessions do not).
-            # Inert passthrough when no targets pending. ZTARE_PROBE_RIDER=0 kills.
-            import os as _os_pr
-            if _os_pr.environ.get("ZTARE_PROBE_RIDER", "1") != "0":
-                try:
-                    from ztare.worldmodel.distinguishing_play import ProbeRiderAdapter
-                    sp_adapter = ProbeRiderAdapter(sp_adapter, project)
-                except Exception as _pr_exc:  # noqa: BLE001
-                    print(f"  probe rider unavailable: {_pr_exc}", flush=True)
             sp_adapter.reset()
             print(f"\n===== CYCLE {cyc}/{cycles}: SPRINT (zero-token act-learn) =====",
                   flush=True)
@@ -1867,7 +2935,8 @@ def main() -> int:
             try:
                 with phase("sprint", project / "workspace"):
                     sp = _sprint(project, sp_adapter, cfg, best_progress, best_goal,
-                                 champion_model=best_model, game_id=game_id)
+                                 champion_model=best_model, game_id=game_id,
+                                 goal_edge_fn=best_goal_edge)
             except Exception as _sp_err:  # noqa: BLE001 — sprint is optional, never fatal
                 print(f"  ⚠️  sprint failed ({type(_sp_err).__name__}: {_sp_err}) "
                       f"-> degrading to governed checkpoint", flush=True)
@@ -1876,9 +2945,9 @@ def main() -> int:
                 sp = {"rounds": [{"status": "abduction_partial", "error": str(_sp_err)}],
                       "levels": 0, "deepest": 0}
             report["cycles"].append({"cycle": cyc, "sprint": sp})
-            if sp["levels"] > 0:
+            if sp.get("task_discharged") is True:
                 report["result"] = "beat"
-                print(f"  🏆 LEVEL COMPLETED (sprint, cycle {cyc})", flush=True)
+                print(f"  🏆 TASK DISCHARGED (sprint, cycle {cyc})", flush=True)
                 break
             hit_ceiling = any(r.get("status") == "abduction_partial" for r in sp["rounds"])
             if cfg["mode"] == "sprint":
@@ -1909,6 +2978,7 @@ def main() -> int:
         import os as _os_er
         _er_active = (cfg["mode"] == "hybrid"
                       and not advice_only
+                      and _system1_status == "none"
                       and _os_er.environ.get("ZTARE_ENGINE_ROUTER", "1") != "0")
         if _er_active:
             try:
@@ -1965,51 +3035,189 @@ def main() -> int:
         # Abduction proposes; the SAME gates verify; the mutator is the
         # fallback for what the catalog cannot express.
         rc = None
-        candidate, cand_progress, cand_goal, abduced = None, None, None, False
+        candidate, cand_progress, cand_goal, cand_goal_edge, candidate_path, abduced = (
+            None, None, None, None, None, False
+        )
+        configured_residual_frontier = False
+        acquisition_only = False
+        acquisition_obligation = None
         strategy_pending = _has_open_strategy_cards(project)
         if strategy_pending and not advice_only:
             print("  open strategy card present -> deterministic abduction still runs; "
                   "governed worker consumes briefing only if gates do not close", flush=True)
+        # Narrow, already-compiled System-1 organs get first refusal. This is a
+        # search-allocation decision only: their outputs still traverse the
+        # project harness and candidate pool before use.
         try:
-            import os as _os
-            from ztare.worldmodel.spec_abduction import abduce_spec
-            from ztare.worldmodel.gates import rollout_depth as _rd
-            _log = EpisodeLog.read_jsonl(episode_log_path(project))
-            _hold = EpisodeLog.read_jsonl(episode_log_path(project, episode=2))
-            _champion_prior = _load_prior_spec(project)
-            _prior = (
-                _champion_prior.get("spec")
-                if isinstance(_champion_prior, dict) and _champion_prior.get("verdict") == "loaded"
-                else _load_abduced_core_spec(project)
-            )
-            _warm_only = (
-                isinstance(_champion_prior, dict) and _champion_prior.get("verdict") == "loaded"
-                and _os.environ.get("ZTARE_CHECKPOINT_FULL_ABDUCE", "0") != "1"
-            )
-            _ab = abduce_spec(_log, _log_arity(_log), prior_spec=_prior,
-                              warm_only=_warm_only)
-            _bp = _write_worldmodel_blueprint(project, _log, getattr(_ab, "spec", None))
-            try:
-                _bp_sha = json.loads(
-                    (project / "workspace" / "worldmodel_lean_feedback_receipt.json").read_text()
-                ).get("blueprint_sha256")
-            except Exception:  # noqa: BLE001
-                _bp_sha = None
-            _lean_feedback_checkpoint(project, _bp, _bp_sha)
-            if _ab.replay_ok and _ab.step_fn is not None \
-                    and _rd(_ab.step_fn, _hold) >= len(_hold):
-                candidate, abduced = _ab.step_fn, True
-                _record_spec_receipt(project, _ab.spec, cyc)
-                import json as _j
+            if _system1.get("status") == "accepted":
+                candidate = _system1["model"]
+                chosen = _system1["chosen"]
+                source = _system1["source"]
+                candidate_path = chosen.proposal.candidate_path
+                abduced = True
                 from ztare.worldmodel.candidate_pool import add_candidate
-                add_candidate(project, "WORLD_MODEL_SPEC = " + _j.dumps(_ab.spec),
-                              carrier="spec", origin=f"abduction_cycle_{cyc}")
-                print(f"\n===== CYCLE {cyc}/{cycles}: law ABDUCED from diffs "
-                      f"(zero model calls; replay+holdout pass) =====", flush=True)
-            elif _warm_only and _ab.status == "prior_refuted":
-                print("  checkpoint champion refuted; full re-abduction skipped "
-                      "(set ZTARE_CHECKPOINT_FULL_ABDUCE=1 to force it)",
-                      flush=True)
+                add_candidate(
+                    project,
+                    source,
+                    carrier="deterministic_compiler",
+                    origin=chosen.proposal.producer_id,
+                )
+                print(
+                    f"\n===== CYCLE {cyc}/{cycles}: deterministic compiler "
+                    f"candidate passed project gates "
+                    f"({chosen.proposal.candidate_sha256[:16]}) =====",
+                    flush=True,
+                )
+            elif _system1.get("status") == "cached_survivor_current":
+                candidate = _system1["model"]
+                source = _system1["source"]
+                candidate_path = project / _system1["source_ref"]
+                abduced = True
+                from ztare.worldmodel.candidate_pool import add_candidate
+
+                add_candidate(
+                    project,
+                    source,
+                    carrier="candidate_memory",
+                    origin=_system1["producer_id"],
+                )
+                print(
+                    f"\n===== CYCLE {cyc}/{cycles}: current-epoch cached "
+                    f"survivor reused ({_system1['candidate_sha256'][:16]}); "
+                    "no mutation dispatched =====",
+                    flush=True,
+                )
+            elif _system1.get("status") == "incumbent_current":
+                best_model = _system1["model"]
+                best_model_path = project / "test_model.py"
+                abduced = True
+                print(
+                    f"\n===== CYCLE {cyc}/{cycles}: incumbent carrier covers "
+                    f"the current evidence epoch "
+                    f"({_system1['candidate_sha256'][:16]}); mutation abstained =====",
+                    flush=True,
+                )
+            elif _system1.get("status") == "residual_frontier":
+                configured_residual_frontier = True
+                # Baseline materialization creates the current-epoch repair
+                # task.  Do it before asking for an acquisition obligation so
+                # the deterministic receipt-family executor can consume that
+                # task in this cycle instead of forcing an LLM round merely to
+                # make the task visible.
+                _materialize_governed_baseline(
+                    project,
+                    source=_system1["source"],
+                    source_ref=_system1["source_ref"],
+                    candidate_sha256=_system1["candidate_sha256"],
+                    producer_id=_system1["producer_id"],
+                )
+                try:
+                    from ztare.worldmodel.compiled_fiber_planning import (
+                        operation_recurrence_acquisition_obligation,
+                    )
+
+                    acquisition_obligation = (
+                        operation_recurrence_acquisition_obligation(
+                        project,
+                        materialize=True,
+                        )
+                    )
+                except Exception as _acquisition_err:  # noqa: BLE001
+                    acquisition_obligation = None
+                    print(
+                        "  operation-acquisition obligation unavailable: "
+                        f"{type(_acquisition_err).__name__}: {_acquisition_err}",
+                        flush=True,
+                    )
+                if acquisition_obligation is not None:
+                    candidate = load_carrier_from_source(
+                        _system1["source"],
+                        _system1["source_ref"],
+                        project,
+                    )
+                    candidate_path = project / _system1["source_ref"]
+                    abduced = True
+                    acquisition_only = True
+                print(
+                    "  deterministic compiler supplied a localized residual "
+                    f"frontier ({_system1['candidate_sha256'][:16]}); "
+                    + (
+                        "routing its typed recurrence obligation to live discrimination"
+                        if acquisition_only
+                        else "routing to governed repair without raw-bank re-abduction"
+                    ),
+                    flush=True,
+                )
+        except Exception as _producer_err:  # noqa: BLE001
+            report["cycles"].append(
+                {
+                    "cycle": cyc,
+                    "status": "configured_producer_unavailable",
+                    "cause": f"{type(_producer_err).__name__}: {_producer_err}",
+                }
+            )
+            report["result"] = "configured_producer_unavailable"
+            print(
+                "  configured candidate producer unavailable; ending this attempt: "
+                f"{type(_producer_err).__name__}: {_producer_err}",
+                flush=True,
+            )
+            break
+        try:
+            if abduced:
+                raise _ConfiguredCandidateReady
+            if not configured_residual_frontier:
+                import os as _os
+                from ztare.worldmodel.spec_abduction import abduce_spec
+                from ztare.worldmodel.gates import rollout_depth as _rd
+                _log = EpisodeLog.read_jsonl(episode_log_path(project))
+                _hold = EpisodeLog.read_jsonl(episode_log_path(project, episode=2))
+                _champion_prior = _load_prior_spec(project)
+                _prior = (
+                    _champion_prior.get("spec")
+                    if isinstance(_champion_prior, dict) and _champion_prior.get("verdict") == "loaded"
+                    else _load_abduced_core_spec(project)
+                )
+                _warm_only = (
+                    isinstance(_champion_prior, dict) and _champion_prior.get("verdict") == "loaded"
+                    and _os.environ.get("ZTARE_CHECKPOINT_FULL_ABDUCE", "0") != "1"
+                )
+                _ab = abduce_spec(_log, _log_arity(_log), prior_spec=_prior,
+                                  warm_only=_warm_only)
+                _bp = _write_worldmodel_blueprint(project, _log, getattr(_ab, "spec", None))
+                try:
+                    _bp_sha = json.loads(
+                        (project / "workspace" / "worldmodel_lean_feedback_receipt.json").read_text()
+                    ).get("blueprint_sha256")
+                except Exception:  # noqa: BLE001
+                    _bp_sha = None
+                _lean_feedback_checkpoint(project, _bp, _bp_sha)
+                if _ab.replay_ok and _ab.step_fn is not None \
+                        and _rd(_ab.step_fn, _hold) >= len(_hold):
+                    candidate, abduced = _ab.step_fn, True
+                    _record_spec_receipt(project, _ab.spec, cyc)
+                    import json as _j
+                    from ztare.worldmodel.candidate_pool import add_candidate
+                    _spec_source = "WORLD_MODEL_SPEC = " + repr(_ab.spec) + "\n"
+                    add_candidate(project, _spec_source,
+                                  carrier="spec", origin=f"abduction_cycle_{cyc}")
+                    from ztare.worldmodel.patch_base_carrier import (
+                        materialize_immutable_patch_base,
+                    )
+                    _spec_ref, _spec_sha = materialize_immutable_patch_base(
+                        project,
+                        _spec_source,
+                        prefix="abduced_carrier",
+                    )
+                    candidate_path = project / _spec_ref
+                    print(f"\n===== CYCLE {cyc}/{cycles}: law ABDUCED from diffs "
+                          f"(zero model calls; replay+holdout pass) =====", flush=True)
+                elif _warm_only and _ab.status == "prior_refuted":
+                    print("  checkpoint champion refuted; full re-abduction skipped "
+                          "(set ZTARE_CHECKPOINT_FULL_ABDUCE=1 to force it)",
+                          flush=True)
+        except _ConfiguredCandidateReady:
+            pass
         except Exception as _ab_err:  # noqa: BLE001 — abduction is an optimization, never a blocker
             print(f"  abduction step-0 error (falling through to mutator): {_ab_err}", flush=True)
 
@@ -2025,23 +3233,133 @@ def main() -> int:
             print(f"  advice fallback model loaded: {_advice_source}", flush=True)
         elif not abduced:
             print(f"\n===== CYCLE {cyc}/{cycles}: governed identification =====", flush=True)
+            _adoption_cursor = _governed_adoption_cursor(project)
             with phase("governed_loop", project / "workspace"):
                 rc = _run_governed_cycle(slug, rubric, iters, "gpt5.5", "gpt5.5")
-            candidate, cand_progress, cand_goal = _load_ratified_model(project)
-            if candidate is not None:
+            _adoption = _governed_adoption_since(project, _adoption_cursor)
+            _append_play_receipt(
+                project,
+                {"site": "arc3_play_loop.py:governed_adoption", **_adoption},
+            )
+            if _adoption["adopted"]:
+                candidate, cand_progress, cand_goal = _load_ratified_model(project)
+                _adopted_ref = str(_adoption.get("immutable_source_ref") or "")
+                candidate_path = (
+                    project / _adopted_ref
+                    if _adopted_ref
+                    else project / "test_model.py"
+                )
+            else:
+                candidate, cand_progress, cand_goal = None, None, None
+                print(
+                    "  governed cycle produced no current-run promoted candidate; "
+                    "preserving the unresolved identification state",
+                    flush=True,
+                )
+            if candidate is not None and _adoption["adopted"]:
                 from ztare.worldmodel.candidate_pool import add_candidate
                 add_candidate(project, (project / "test_model.py").read_text(),
                               carrier="mutator", origin=f"governed_cycle_{cyc}")
 
-        # Evaluate the candidate by PLAY DEPTH (the beat metric), and always play
-        # the best model we hold so exploration continues from real strength.
+        # Determine the active lifecycle before selecting any goal consumer.
+        # Previously a witness from an older epoch suppressed structural
+        # acquisition and was only scoped away after that decision.
         adapter = ArcAgi3Adapter(game_id)
         adapter.reset()
+        seed_replay = _replay_latest_level_boundary_seed(project, adapter)
+        seed_prefix = list(seed_replay.get("actions") or [])
+        seed_segments = list(seed_replay.get("execution_segments") or [])
+        active_epoch = int(getattr(adapter, "levels_completed", 0) or 0)
+        if hasattr(cand_goal_edge, "for_source_epoch"):
+            cand_goal_edge = cand_goal_edge.for_source_epoch(active_epoch)
+        if hasattr(best_goal_edge, "for_source_epoch"):
+            best_goal_edge = best_goal_edge.for_source_epoch(active_epoch)
+
+        # Goal abduction is a separate identity from transition-law abduction.
+        # Any gate-passing carrier may consume a goal predicate induced from the
+        # bank; the carrier producer must not smuggle a route or goal into its
+        # source. This also keeps deterministic compiler candidates on the same
+        # planning path as catalog and governed candidates.
+        goal_carrier = candidate if candidate is not None else best_model
+        goal_is_candidate = candidate is not None
+        current_goal = cand_goal if goal_is_candidate else best_goal
+        if goal_carrier is not None and current_goal is None and not acquisition_only:
+            try:
+                from types import SimpleNamespace as _SimpleNamespace
+                from ztare.worldmodel.goal_abduction import (
+                    authoritative_goal_edge_predicate,
+                )
+
+                _goal_log = EpisodeLog.read_jsonl(episode_log_path(project))
+                cand_goal_edge, _goal_edge_count = authoritative_goal_edge_predicate(
+                    _goal_log,
+                    source_epoch=active_epoch,
+                )
+                _goal_ab = locals().get("_ab")
+                if _goal_ab is None:
+                    _goal_ab = _SimpleNamespace(spec=None)
+                if cand_goal_edge is None:
+                    induced_goal, _goal_candidate_count = _structural_goal_fn(
+                        project,
+                        _goal_log,
+                        _goal_ab,
+                        source_epoch=active_epoch,
+                    )
+                else:
+                    induced_goal = None
+                    _goal_candidate_count = _goal_edge_count
+                if goal_is_candidate:
+                    cand_goal = induced_goal
+                else:
+                    best_goal = induced_goal
+                    best_goal_edge = cand_goal_edge
+                if cand_goal_edge is not None:
+                    print(
+                        "  environment goal-edge predicate induced independently "
+                        f"of carrier ({_goal_edge_count} witnesses)",
+                        flush=True,
+                    )
+                elif cand_goal is not None:
+                    print(
+                        "  structural goal predicate induced independently of "
+                        f"carrier ({_goal_candidate_count} candidates)",
+                        flush=True,
+                    )
+            except Exception as _goal_err:  # noqa: BLE001
+                print(f"  structural goal induction skipped: {_goal_err}", flush=True)
+
+        # Evaluate the candidate by PLAY DEPTH (the beat metric), and always play
+        # the best model we hold so exploration continues from real strength.
         if candidate is not None:
-            play_model, play_progress, play_goal = candidate, cand_progress, cand_goal
+            play_model, play_progress, play_goal, play_goal_edge = (
+                candidate, cand_progress, cand_goal, cand_goal_edge
+            )
         else:
-            play_model, play_progress, play_goal = best_model, best_progress, best_goal
+            play_model, play_progress, play_goal, play_goal_edge = (
+                best_model, best_progress, best_goal, best_goal_edge
+            )
+        play_carrier_path = candidate_path if play_model is candidate else best_model_path
+        if hasattr(play_goal_edge, "for_source_epoch"):
+            play_goal_edge = play_goal_edge.for_source_epoch(active_epoch)
+        if hasattr(acquisition_obligation, "for_source_epoch"):
+            acquisition_obligation = (
+                acquisition_obligation.for_source_epoch(active_epoch)
+            )
         if play_model is None:
+            _existing_log = EpisodeLog.read_jsonl(episode_log_path(project))
+            if len(_existing_log) > 0:
+                report["cycles"].append({
+                    "cycle": cyc,
+                    "status": "identification_unresolved",
+                    "transitions_available": len(_existing_log),
+                    "loop_rc": rc,
+                })
+                print(
+                    "  no promoted model; existing evidence is preserved without "
+                    "spending environment actions",
+                    flush=True,
+                )
+                continue
             grew = _bootstrap_explore(project, adapter, cfg)
             report["cycles"].append({"cycle": cyc, "status": "bootstrap_exploration",
                                      "transitions_added": grew, "loop_rc": rc})
@@ -2076,48 +3394,110 @@ def main() -> int:
             prelude_actions = []
 
         steer = (
+            "operation-discrimination" if acquisition_obligation is not None else
+            "goal-edge" if play_goal_edge is not None else
             "goal-cue" if play_goal is not None else
             "progress-cue" if play_progress is not None else
             "novelty"
         )
         print(f"===== CYCLE {cyc}: live play ({steer} steering) =====", flush=True)
-        af, visited_path, visited_store = _frontier_memory(project)
+        context_log = EpisodeLog.read_jsonl(episode_log_path(project))
+        af, visited_path, visited_store = _frontier_memory(
+            project,
+            context_log,
+            source_epoch=active_epoch,
+        )
+        from ztare.common.task_discharge import task_discharge_from_profile
+        task_contract = task_discharge_from_profile(cfg)
         with phase("live_play", project / "workspace"):
-            pr = pursue_goal(adapter, play_model,
-                             goal_fn=play_goal,
-                             progress_fn=play_progress if play_goal is None else None,
-                             resource_colors=_resource_colors(project),
-                             invariants=_invariants(project), abstract_fn=af,
-                             coverage_fn=_coverage_fn(project),
-                             visited_store=visited_store, visited_path=visited_path,
-                             max_steps=250, plan_depth=10, max_replans=12,
-                             receipts_dir=project / "workspace")
+            pr = _play_round_multilife(
+                adapter,
+                play_model,
+                budget=250,
+                context_log=context_log,
+                task_contract=task_contract,
+                goal_fn=play_goal,
+                goal_edge_fn=play_goal_edge,
+                acquisition_obligation=acquisition_obligation,
+                progress_fn=(
+                    play_progress
+                    if play_goal is None
+                    and play_goal_edge is None
+                    and acquisition_obligation is None
+                    else None
+                ),
+                resource_colors=_resource_colors(
+                    project,
+                    context_log,
+                    source_epoch=active_epoch,
+                ),
+                invariants=_invariants(project, play_model), abstract_fn=af,
+                coverage_fn=_coverage_fn(
+                    project,
+                    context_log,
+                    source_epoch=active_epoch,
+                ),
+                visited_store=visited_store, visited_path=visited_path,
+                plan_depth=10, max_replans=12,
+                receipts_dir=project / "workspace")
         # Truthful provenance: a governed cycle that exited rc!=0 leaves a STALE
         # test_model.py on disk; "candidate" would launder it as fresh output.
-        played = "candidate" if play_model is candidate else "prior_champion"
+        played = (
+            "provisional_acquisition_frontier"
+            if acquisition_only
+            else "candidate" if play_model is candidate else "prior_champion"
+        )
         if rc not in (None, 0) and play_model is candidate:
             played = "stale_champion_after_failed_cycle"
+        cycle_execution_segments = [*seed_segments]
+        if prelude_actions:
+            cycle_execution_segments.append({
+                "segment_kind": "disagreement_acquisition",
+                "source_ref": "candidate_pool:surviving_committee",
+                "authority": "live_environment_execution",
+                "actions": list(prelude_actions),
+            })
+        cycle_execution_segments.append({
+            "segment_kind": "active_control",
+            "source_ref": "arc3_play_loop:pursue_goal",
+            "authority": "live_environment_execution",
+            "actions": list(getattr(pr, "trace", []) or []),
+        })
         entry = {"cycle": cyc, "pursuit": pr.status, "steps": pr.steps_executed,
                  "levels_gained": pr.levels_gained, "observed": len(pr.observed_transitions),
                  "planner_detail": getattr(pr, "detail", ""),
                  "planner_saturated": bool(getattr(pr, "saturated", False)),
+                 "planning_outcome": getattr(pr, "planning_outcome", {}),
+                 "planning_legs": getattr(pr, "leg_outcomes", []),
                  "lives": int(getattr(pr, "lives", 1) or 1),
                  "played": played,
                  "loop_rc": rc,
                  "transition_model_mismatch": _transition_model_mismatch(pr),
                  "terminal_verifier_model_mismatch": _terminal_model_mismatch(pr),
-                 "reward_model_mismatch": _terminal_model_mismatch(pr),
                  "terminal_witness_sha": _terminal_witness_sha(pr),
-                 "kernel_role_bindings": _kernel_role_bindings(pr)}
-        if pr.levels_gained > 0:
-            entry["status"] = "LEVEL_COMPLETED"
+                 "kernel_role_bindings": _kernel_role_bindings(pr),
+                 "task_contract": getattr(pr, "task_contract", None),
+                 "task_discharge_receipt": getattr(pr, "task_discharge_receipt", None),
+                 "seed_replay": {
+                     key: value for key, value in seed_replay.items() if key != "actions"
+                 },
+                 "execution_segments": cycle_execution_segments,
+                 "task_discharged": bool(getattr(pr, "task_discharged", False))}
+        if entry["task_discharged"]:
+            entry["status"] = "TASK_DISCHARGED"
+        if pr.levels_gained > 0 and entry["task_discharged"]:
             completed_level = int(getattr(adapter, "levels_completed", 0) or pr.levels_gained)
             seed = _write_level_boundary_seed(
                 project,
                 game_id=game_id,
                 cycle=cyc,
                 completed_level=completed_level,
-                actions=list(prelude_actions) + list(getattr(pr, "trace", []) or []),
+                actions=(
+                    seed_prefix
+                    + list(prelude_actions)
+                    + list(getattr(pr, "trace", []) or [])
+                ),
+                execution_segments=cycle_execution_segments,
             )
             entry["level_boundary_seed"] = {
                 "target_level": seed["target_level"],
@@ -2129,12 +3509,22 @@ def main() -> int:
             # goal-directed planning on this and future levels. Never lose it.
             if pr.observed_transitions:
                 import json as _json
-                gs, ga, gnext, gt = pr.observed_transitions[-1]
+                _goal_transition = pr.observed_transitions[-1]
+                if isinstance(_goal_transition, Transition):
+                    gs, ga, gnext, gt = (
+                        _goal_transition.s,
+                        _goal_transition.a,
+                        _goal_transition.s_next,
+                        _goal_transition.t,
+                    )
+                else:
+                    gs, ga, gnext, gt = _goal_transition
                 (project / "workspace" / "goal_exemplars.jsonl").open("a").write(
                     _json.dumps({"schema": "ztare-goal-exemplar-v1",
                                  "game": game_id, "cycle": cyc, "t": gt, "action": ga,
                                  "s": [list(r) for r in gs],
                                  "s_next": [list(r) for r in gnext]}) + chr(10))
+        if entry["task_discharged"]:
             report["cycles"].append(entry)
             report["result"] = "beat"
             try:
@@ -2154,22 +3544,46 @@ def main() -> int:
                     ]
             except Exception as _strategy_close_err:  # noqa: BLE001
                 print(f"  strategy-card disposition skipped: {_strategy_close_err}", flush=True)
-            print(f"  🏆 LEVEL COMPLETED in cycle {cyc} ({pr.steps_executed} steps)", flush=True)
+            print(f"  🏆 TASK DISCHARGED in cycle {cyc} "
+                  f"({pr.steps_executed} steps, {pr.levels_gained} level gains)",
+                  flush=True)
             break
+        if pr.levels_gained > 0:
+            entry["status"] = "TASK_PROGRESS"
+            print(
+                f"  environment progress +{pr.levels_gained}; task contract remains open",
+                flush=True,
+            )
         # promote the candidate to champion only if it plays DEEPER (beat metric)
-        if pr.steps_executed > best_depth and play_model is candidate:
-            best_depth, best_model, best_progress, best_goal = \
-                pr.steps_executed, candidate, cand_progress, cand_goal
+        if (
+            pr.steps_executed > best_depth
+            and play_model is candidate
+            and not acquisition_only
+        ):
+            best_depth, best_model, best_progress, best_goal, best_goal_edge = \
+                pr.steps_executed, candidate, cand_progress, cand_goal, cand_goal_edge
+            best_model_path = play_carrier_path
             entry["champion_updated"] = True
-        grown = _grow_evidence(project, pr.observed_transitions, adapter)
+        grown = _grow_evidence(
+            project, pr.observed_transitions, adapter, log=context_log
+        )
         entry["evidence_grown_by"] = grown
         entry["kernel_role_bindings"].extend(
             _planner_attention_bindings(
-                pr, goal_fn=play_goal, progress_fn=play_progress,
+                pr, goal_fn=play_goal, goal_edge_fn=play_goal_edge,
+                progress_fn=play_progress,
                 evidence_grown_by=grown))
         if pr.observed_transitions:
-            _fresh_log = EpisodeLog.read_jsonl(episode_log_path(project))
-            _slice_row = archive_sealed_eval_slice(project, _fresh_log)
+            _trajectory = EpisodeLog(_observation_transitions(pr.observed_transitions))
+            if play_carrier_path is None or not play_carrier_path.is_file():
+                raise RuntimeError("live trajectory has no immutable source carrier")
+            _slice_row = archive_sealed_eval_slice(
+                project,
+                _trajectory,
+                source_carrier_sha256=hashlib.sha256(
+                    play_carrier_path.read_bytes()
+                ).hexdigest(),
+            )
             entry["eval_slice"] = {"path": _slice_row["path"], "sha256": _slice_row["sha256"]}
         entry["best_depth"] = best_depth
         report["cycles"].append(entry)
@@ -2180,26 +3594,102 @@ def main() -> int:
         print(f"  no level; depth {pr.steps_executed} (best {best_depth}); grew evidence "
               f"by {grown} ({pr.status}); re-sealing", flush=True)
         with phase("reseal", project / "workspace"):
-            subprocess.run(["make", "seal", f"PROJECT={slug}", f"RUBRIC={rubric}"],
-                           cwd=REPO, input="pass\nyes\npass\n", text=True,
-                           env=_clean_env(), stdout=subprocess.DEVNULL)
+            seal_result = subprocess.run(
+                ["make", "seal", f"PROJECT={slug}", f"RUBRIC={rubric}"],
+                cwd=REPO,
+                input="pass\nyes\npass\n",
+                text=True,
+                env=_clean_env(),
+                stdout=subprocess.DEVNULL,
+            )
+        if seal_result.returncode != 0:
+            entry["reseal_gate"] = {
+                "status": "artifact_seal_failed",
+                "returncode": seal_result.returncode,
+            }
+            report["result"] = "verification_unavailable"
+            print("  refreshed evidence failed the artifact seal", flush=True)
+            break
+        if grown:
+            try:
+                with phase("reseal_gate", project / "workspace"):
+                    if play_carrier_path is None:
+                        raise RuntimeError(
+                            "live-play carrier has no immutable source identity"
+                        )
+                    reseal_gate = _gate_candidate_path(project, play_carrier_path)
+                if reseal_gate is None:
+                    raise RuntimeError("project root has no registered gate harness")
+                reseal_payload = reseal_gate["payload"]
+                reseal_consumed = reseal_gate["consumed"]
+                visible = (
+                    (reseal_payload.get("gates") or {}).get("visible_replay_exact")
+                    or {}
+                )
+                diagnostics = (
+                    visible.get("diagnostics")
+                    if isinstance(visible, dict)
+                    and isinstance(visible.get("diagnostics"), dict)
+                    else {}
+                )
+                entry["reseal_gate"] = {
+                    "status": (
+                        "carrier_covers_current_evidence"
+                        if not reseal_consumed["failed_gates"]
+                        else "carrier_refuted_on_current_evidence"
+                    ),
+                    "candidate_sha256": reseal_consumed["candidate_sha256"],
+                    "failed_gates": list(reseal_consumed["failed_gates"]),
+                    "evidence_epoch": reseal_payload.get("evidence_epoch") or {},
+                    "checked_rows": diagnostics.get("checked_rows"),
+                    "exact_rows": diagnostics.get("exact_rows"),
+                    "wrong_rows": diagnostics.get("wrong_rows"),
+                    "wrong_cell_count": diagnostics.get("wrong_cell_count"),
+                    "first_mismatch": diagnostics.get("first_mismatch"),
+                }
+                _apply_current_gate_consequences(project, reseal_payload)
+                print(
+                    "  current-evidence gate: "
+                    f"{entry['reseal_gate']['status']} "
+                    f"({entry['reseal_gate']['exact_rows']}/"
+                    f"{entry['reseal_gate']['checked_rows']} exact)",
+                    flush=True,
+                )
+            except Exception as reseal_exc:  # noqa: BLE001
+                entry["reseal_gate"] = {
+                    "status": "verification_unavailable",
+                    "cause": f"{type(reseal_exc).__name__}: {reseal_exc}",
+                }
+                report["result"] = "verification_unavailable"
+                print(
+                    "  current-evidence verification unavailable: "
+                    f"{type(reseal_exc).__name__}: {reseal_exc}",
+                    flush=True,
+                )
+                break
 
     report.setdefault("result", "no_level_in_budget")
-    # Trace-auditor sweep at cycle end: the mechanized conductor's checks
-    # (stale-latest, gate-achievability, alpha-measurability, champion-surface
-    # conservation, file-seams, ...) had NO in-loop caller until 2026-07-11 —
-    # built-but-unwired, the exact zero-caller class the auditor itself hunts.
+    # Re-run the typed route fence at phase exit.  Entry preflight prevents a
+    # stale obstruction; this catches an operational producer that fired during
+    # the cycle without its registered consequence.
     try:
         from ztare.orchestrator.trace_auditor import run_audit as _ta_run
-        _ta = _ta_run(project, emit=True)
-        _anoms = [f["check_id"] for f in _ta.get("findings", [])
-                  if f.get("verdict") == "anomaly"]
-        print(f"  trace-auditor: {len(_anoms)} anomalies"
-              + (f" -> {_anoms}" if _anoms else ""), flush=True)
-        report["trace_auditor_anomalies"] = _anoms
+        _active, _advisory = _apply_trace_audit_consequence(
+            report,
+            _ta_run(project),
+        )
+        print(f"  trace-auditor: {len(_active)} active apparatus anomalies"
+              + (f" -> {_active}" if _active else "")
+              + f"; {len(_advisory)} catalog advisories", flush=True)
     except Exception as _ta_exc:  # noqa: BLE001
-        print(f"  trace-auditor error (non-fatal): {_ta_exc}", flush=True)
+        report["result"] = "operational_route_obstruction"
+        print(f"  trace-auditor route fence unavailable: {_ta_exc}", flush=True)
     _write_play_report_and_terminal_audit(project, report)
+    try:
+        from ztare.worldmodel.p0_metrics import write_p0_metrics as _write_p0
+        _write_p0(project)
+    except Exception as _p0_exc:  # noqa: BLE001
+        print(f"  P0 snapshot error (non-fatal): {_p0_exc}", flush=True)
     print("\n" + json.dumps({k: report[k] for k in ("game", "result")}, indent=2))
     return 0
 

@@ -23,10 +23,10 @@ def _is_json_object(line: str) -> bool:
         return False
 
 _HEADER = (
-    "GRAMMAR CEILING EVIDENCE — the residual is irreducible under the current "
-    "operator catalog. Candidate operator card(s) exist; your job is the LAW "
-    "SHAPE (refine the sketch/params in your thesis), not code — the conductor "
-    "validates each via its acceptance test:"
+    "GRAMMAR CEILING HYPOTHESES — candidate operator card(s) report failures "
+    "of the catalog families named on each card. Propose the substrate-admissible "
+    "artifact selected by the active control state; the ordinary governed candidate "
+    "gate retains promotion authority:"
 )
 
 
@@ -34,10 +34,38 @@ class OperatorProposalsProvider(BriefingProvider):
     name = "operator_proposals"
     max_fragment_chars = 900
 
-    def _cards(self, project: Path, *, raise_on_error: bool = False):
+    def _cards(
+        self,
+        project: Path,
+        *,
+        task: dict | None = None,
+        raise_on_error: bool = False,
+    ):
         try:
             from ztare.common.operator_proposal_contract import open_cards
-            return open_cards(project / "workspace" / "operator_proposals.jsonl")
+            from ztare.worldmodel.adapter import episode_log_path
+            from ztare.worldmodel.episode_log import EpisodeLog
+
+            current_visible_sha = EpisodeLog.read_jsonl(
+                episode_log_path(project)
+            ).content_hash()
+            task_id = str((task or {}).get("task_id") or "")
+            cards = []
+            for card in open_cards(project / "workspace" / "operator_proposals.jsonl"):
+                binding = card.get("evidence_binding")
+                if not isinstance(binding, dict):
+                    continue
+                if binding.get("mode") != "exact_evidence_epoch":
+                    continue
+                if binding.get("evidence_role") != "visible":
+                    continue
+                if str(binding.get("evidence_content_sha256") or "") != current_visible_sha:
+                    continue
+                bound_task_id = str(binding.get("workbench_task_id") or "")
+                if task_id and bound_task_id != task_id:
+                    continue
+                cards.append(card)
+            return cards
         except Exception:  # noqa: BLE001 — never fatal to briefing assembly
             if raise_on_error:
                 raise
@@ -71,17 +99,39 @@ class OperatorProposalsProvider(BriefingProvider):
 
     def applies(self, ctx: BriefingContext) -> bool:
         project = Path(getattr(ctx, "project_dir", "") or "")
+        task: dict = {}
+        try:
+            from ztare.common.leaf_workbench_executor import (
+                active_workbench_task_capability_scope,
+            )
+
+            task_scope, task = active_workbench_task_capability_scope(project)
+            if not task_scope:
+                task = {}
+        except Exception:  # noqa: BLE001
+            task = {}
         if self._ledger_corruption(project) is not None:
             return True  # corrupt ledger: reach fragment() to banner
-        return bool(self._cards(project))
+        return bool(self._cards(project, task=task))
 
     def fragment(self, ctx: BriefingContext) -> str:
         project = Path(ctx.project_dir)
         corrupt = self._ledger_corruption(project)
         if corrupt is not None:
             return section_unavailable("OPERATOR PROPOSALS", corrupt)
+        task: dict = {}
         try:
-            cards = self._cards(project, raise_on_error=True)
+            from ztare.common.leaf_workbench_executor import (
+                active_workbench_task_capability_scope,
+            )
+
+            task_scope, task = active_workbench_task_capability_scope(project)
+            if not task_scope:
+                task = {}
+        except Exception:  # noqa: BLE001
+            task = {}
+        try:
+            cards = self._cards(project, task=task, raise_on_error=True)
         except Exception as exc:  # noqa: BLE001 — corrupt/unreadable ledger → banner, not omission
             return section_unavailable("OPERATOR PROPOSALS", exc)
         if not cards:
@@ -91,7 +141,9 @@ class OperatorProposalsProvider(BriefingProvider):
             wef = c.get("why_existing_ops_fail", {}) or {}
             fails = "; ".join(f"{op}: {reason}" for op, reason in list(wef.items())[:3])
             lines.append(
-                f"- residual family `{c.get('failure_family', '?')}` "
+                f"- proposal_sha={c.get('proposal_identity_sha', '?')}; "
+                f"family_sha={c.get('failure_family_sha', '?')}; "
+                f"residual family `{c.get('failure_family', '?')}` "
                 f"(evidence transitions {c.get('evidence_indices', [])[:6]}): "
                 f"candidate {c.get('proposed_operator_sketch', '?')}. "
                 f"why the catalog fails: {fails}. "

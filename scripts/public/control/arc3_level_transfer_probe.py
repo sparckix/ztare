@@ -20,12 +20,11 @@ REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "src"))
 
 from ztare.substrates.arc_agi3 import ArcAgi3Adapter, list_games  # noqa: E402
-from ztare.validator.worldmodel_typed_payload import validate_worldmodel_carrier_source  # noqa: E402
+from ztare.worldmodel.carrier_loader import load_carrier_from_source  # noqa: E402
 from ztare.worldmodel.level_boundary_seed import (  # noqa: E402
     load_seed,
     seed_receipt_fields,
 )
-from ztare.worldmodel.spec_catalog import lower_spec  # noqa: E402
 
 
 def _resolve_game_id(game: str) -> str | None:
@@ -35,65 +34,14 @@ def _resolve_game_id(game: str) -> str | None:
     return next((g for g in list_games() if g.startswith(game)), None)
 
 
-def _call_program(program, grid, action, t):
-    if callable(program):
-        return program(grid, action, t)
-    from ztare.worldmodel.grid_dsl import evaluate
-    return evaluate(program, grid, action, t)
-
-
 def _load_candidate(path: Path, *, project: Path):
     source = path.read_text()
-    # honor the rubric's dynamics_assumption (lawful_time etc.) — validating
-    # without it wrongly rejects carriers the project lawfully permits
-    _da = None
-    try:
-        import json as _json
-        _rub = project.parents[1] / "rubrics" / f"{project.name}.json"
-        _da = _json.loads(_rub.read_text()).get("dynamics_assumption") or None
-    except Exception:  # noqa: BLE001
-        pass
-    validate_worldmodel_carrier_source(source, dynamics_assumption=_da)
-    ns: dict[str, Any] = {"__name__": "candidate"}
-    exec(compile(source, str(path), "exec"), ns)
-
-    def _from_namespace(namespace: dict[str, Any]):
-        from ztare.worldmodel.patch_base_carrier import compose_patch_base_carrier
-
-        patched = compose_patch_base_carrier(
-            namespace,
-            project_dir=project,
-            load_program_from_namespace=_from_namespace,
-            call_program=_call_program,
-        )
-        if patched is not None:
-            return patched
-        spec = namespace.get("WORLD_MODEL_SPEC")
-        if spec is not None:
-            model, err = lower_spec(spec)
-            if model is None:
-                raise RuntimeError(f"WORLD_MODEL_SPEC failed to lower: {err}")
-            return model
-        for alias in ("step", "f", "model", "I_model"):
-            fn = namespace.get(alias)
-            if callable(fn):
-                return fn
-        return None
-
-    patched_or_callable = _from_namespace(ns)
-    if patched_or_callable is not None:
-        return patched_or_callable
-    spec = ns.get("WORLD_MODEL_SPEC")
-    if spec is not None:
-        model, err = lower_spec(spec)
-        if model is None:
-            raise RuntimeError(f"WORLD_MODEL_SPEC failed to lower: {err}")
-        return model
-    for alias in ("step", "f", "model", "I_model"):
-        fn = ns.get(alias)
-        if callable(fn):
-            return fn
-    raise RuntimeError(f"{path} exposes no supported transition model")
+    return load_carrier_from_source(
+        source,
+        path,
+        project,
+        attach_projection=False,
+    )
 
 
 def _grid_lists(grid) -> list[list[int]]:

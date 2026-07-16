@@ -8,7 +8,6 @@ import hashlib
 import concurrent.futures
 import sys
 from pathlib import Path
-from google.genai import types
 from ztare.common import utils
 from ztare.common.llm_runtime import (
     LLMTextResponse,
@@ -76,6 +75,10 @@ from ztare.gates.derived_constraints import (
 )
 from ztare.validator.core.rubric_score_caps import (
     apply_evidence_gap_score_caps,
+)
+from ztare.validator.core.pre_judge_gate import (
+    consume_pre_judge_gate_receipt,
+    load_bound_pre_judge_gate_payload,
 )
 from ztare.workspace.evidence_gaps import (
     canonicalize_evidence_gap_recovery_contract,
@@ -169,9 +172,6 @@ print(f"⚖️  Judge: {JUDGE_MODEL_ID}")
 print(f"🧬 Mutator: {MUTATOR_MODEL_ID}")
 
 RUNTIME = LLMRuntime()
-
-# Keep legacy `client` pointing to Gemini for ATTACKER_CONFIG function calling
-client = RUNTIME.require_gemini_client()
 JUDGE_USAGE = {
     "model_name": None,
     "input_tokens": 0,
@@ -274,7 +274,12 @@ def _worldmodel_evidence_bound_attack_prompt(thesis: str, rubric: dict) -> str:
     latest = _read_json_object(LATEST_EVAL_RESULTS_PATH)
     committee = _read_json_object(Path(WORKSPACE_DIR) / "worldmodel_committee.json")
     candidate_memory = _read_json_object(Path(WORKSPACE_DIR) / "candidate_memory.json")
-    gate_payload = latest.get("pre_judge_gate_payload") if isinstance(latest, dict) else {}
+    bound_gate_payload = load_bound_pre_judge_gate_payload()
+    gate_payload = (
+        bound_gate_payload
+        if bound_gate_payload
+        else latest.get("pre_judge_gate_payload") if isinstance(latest, dict) else {}
+    )
     gates = gate_payload.get("gates") if isinstance(gate_payload, dict) else {}
     visible = gates.get("visible_replay_exact") if isinstance(gates, dict) else {}
     diagnostics = visible.get("diagnostics") if isinstance(visible, dict) else {}
@@ -290,9 +295,16 @@ def _worldmodel_evidence_bound_attack_prompt(thesis: str, rubric: dict) -> str:
             "transitions": committee.get("transitions"),
             "champion_present": bool(committee.get("champion")),
         },
-        "latest_gate": {
-            "score": latest.get("score"),
-            "weakest_point": latest.get("weakest_point"),
+        "gate_receipt": {
+            "source": "bound_current_candidate" if bound_gate_payload else "latest_eval_fallback",
+            "score": (
+                gate_payload.get("score")
+                if isinstance(gate_payload, dict)
+                else None
+            ),
+            "weakest_point": (
+                None if bound_gate_payload else latest.get("weakest_point")
+            ),
             "gated_file": gate_payload.get("gated_file") if isinstance(gate_payload, dict) else None,
             "gated_sha256": gate_payload.get("gated_sha256") if isinstance(gate_payload, dict) else None,
             "visible_exact_rows": diagnostics.get("exact_rows") if isinstance(diagnostics, dict) else None,
@@ -899,8 +911,16 @@ def _accumulate_judge_usage(
 def _prompt_with_response_config_hint(prompt: str, config) -> str:
     if config is None:
         return prompt
-    response_mime = getattr(config, "response_mime_type", None)
-    response_schema = getattr(config, "response_schema", None)
+    response_mime = (
+        config.get("response_mime_type")
+        if isinstance(config, dict)
+        else getattr(config, "response_mime_type", None)
+    )
+    response_schema = (
+        config.get("response_schema")
+        if isinstance(config, dict)
+        else getattr(config, "response_schema", None)
+    )
     if not response_mime and response_schema is None:
         return prompt
     try:
@@ -1049,11 +1069,11 @@ def execute_python_code(code: str) -> str:
 
 
 # --- CONFIGURATION (Defined once to stay DRY/Clean) ---
-ATTACKER_CONFIG = types.GenerateContentConfig(
-    tools=[execute_python_code],
-    automatic_function_calling=types.AutomaticFunctionCallingConfig(),
-)
-ATTACKER_NO_TOOL_CONFIG = types.GenerateContentConfig(temperature=0.2)
+ATTACKER_CONFIG = {
+    "tools": [execute_python_code],
+    "automatic_function_calling": {},
+}
+ATTACKER_NO_TOOL_CONFIG = {"temperature": 0.2}
 
 
 def _route_v4_primitives(thesis_text, evidence_text, critiques_text=""):
@@ -1187,7 +1207,7 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     # Only pass Gemini config if judge is Gemini; other providers receive
     # schema/format instructions through the shared runtime prompt contract.
     config = (
-        types.GenerateContentConfig(temperature=0.2)
+        {"temperature": 0.2}
         if JUDGE_PROVIDER_FAMILY == "google"
         else None
     )
@@ -1377,7 +1397,7 @@ PRECEDENTS:
 {primitive_context}
 """
         config = (
-            types.GenerateContentConfig(temperature=0.2)
+            {"temperature": 0.2}
             if JUDGE_PROVIDER_FAMILY == "google"
             else None
         )
@@ -2322,10 +2342,10 @@ Required fields:
                 "debate_summary",
             ],
         }
-    config = types.GenerateContentConfig(
-        response_mime_type="application/json",
-        response_schema=schema,
-    )
+    config = {
+        "response_mime_type": "application/json",
+        "response_schema": schema,
+    }
     evaluation = utils.parse_llm_json_with_retry(
         lambda: safe_generate(prompt, config=config).text,
         call_site="run_meta_judge",
@@ -2487,10 +2507,10 @@ Required fields:
             "crux_keywords",
         ],
     }
-    config = types.GenerateContentConfig(
-        response_mime_type="application/json",
-        response_schema=schema,
-    )
+    config = {
+        "response_mime_type": "application/json",
+        "response_schema": schema,
+    }
     return utils.parse_llm_json_with_retry(
         lambda: safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID).text,
         call_site="identify_crux_analysis",
@@ -2707,7 +2727,7 @@ def run_project_local_deterministic_gate_harness(
             run_cmd,
             capture_output=True,
             text=True,
-            timeout=15,
+            timeout=120,
             cwd=project_dir,
         )
     except subprocess.TimeoutExpired:
@@ -2726,28 +2746,54 @@ def run_project_local_deterministic_gate_harness(
         gate_payload = json.loads(res.stdout or "{}")
     except json.JSONDecodeError:
         gate_payload = {}
-    gates_obj = gate_payload.get("gates") if isinstance(gate_payload, dict) else None
-    gate_items = list(gates_obj.values()) if isinstance(gates_obj, dict) else (
-        list(gates_obj) if isinstance(gates_obj, list) else []
-    )
-    failed_gates = [
-        str(g.get("name") or f"gate_{idx}")
-        for idx, g in enumerate(gate_items)
-        if isinstance(g, dict) and not bool(g.get("pass", g.get("passed", False)))
-    ]
-    harness_ok = bool(isinstance(gate_payload, dict) and gate_payload.get("harness_ok") is True)
-    if res.returncode == 0 and harness_ok and not failed_gates:
+    if res.returncode != 0 or not isinstance(gate_payload, dict):
+        detail = res.stderr or res.stdout
+        status = "fail_runtime" if res.returncode else "fail_other"
         return {
             "test_result_summary": (
-                "✅ PASS: Deterministic gate harness passed.\n"
-                f"Output: {res.stdout}"
+                "❌ FAIL (harness defect): deterministic gate harness did not "
+                "return a valid harness_ok payload.\n"
+                f"Error: {sanitize_stderr_for_mutator(detail, 'gate_harness')}"
+            ),
+            "test_suite_status": status,
+            "candidate_failed": False,
+            "harness_ok": False,
+            "failed_gates": [],
+            "evaluator_authorized": False,
+        }
+
+    return deterministic_gate_result_from_receipt(
+        gate_payload,
+        candidate_path=candidate_path,
+    )
+
+
+def deterministic_gate_result_from_receipt(
+    gate_payload: dict,
+    *,
+    candidate_path: str,
+) -> dict:
+    consumed = consume_pre_judge_gate_receipt(
+        gate_payload,
+        candidate_path=candidate_path,
+    )
+    failed_gates = consumed["failed_gates"]
+    harness_ok = consumed["harness_ok"]
+    authorized = consumed["evaluator_authorized"]
+    if authorized and harness_ok:
+        return {
+            "test_result_summary": (
+                "✅ PASS: Bound deterministic gate receipt authorized evaluation.\n"
+                f"Receipt: {json.dumps(consumed, sort_keys=True)}"
             ),
             "test_suite_status": "pass",
             "candidate_failed": False,
             "harness_ok": True,
             "failed_gates": [],
+            "evaluator_authorized": True,
+            "gate_payload": gate_payload,
         }
-    if res.returncode == 0 and harness_ok:
+    if harness_ok:
         detail = gate_payload.get("import_error") or gate_payload.get("error") or failed_gates
         return {
             "test_result_summary": (
@@ -2761,20 +2807,22 @@ def run_project_local_deterministic_gate_harness(
             "candidate_failed": True,
             "harness_ok": True,
             "failed_gates": failed_gates,
+            "evaluator_authorized": False,
+            "gate_payload": gate_payload,
         }
 
-    detail = res.stderr or res.stdout
-    status = "fail_runtime" if res.returncode else "fail_other"
     return {
         "test_result_summary": (
             "❌ FAIL (harness defect): deterministic gate harness did not "
             "return a valid harness_ok payload.\n"
-            f"Error: {sanitize_stderr_for_mutator(detail, 'gate_harness')}"
+            f"Receipt: {json.dumps(consumed, sort_keys=True)}"
         ),
-        "test_suite_status": status,
+        "test_suite_status": "fail_other",
         "candidate_failed": False,
         "harness_ok": False,
         "failed_gates": [],
+        "evaluator_authorized": False,
+        "gate_payload": gate_payload,
     }
 
 
@@ -3147,7 +3195,13 @@ if __name__ == "__main__":
 
     critiques_text = ""
     pre_prose_deterministic_gate = None
-    if args.deterministic_score_gates:
+    bound_gate_payload = load_bound_pre_judge_gate_payload()
+    if bound_gate_payload:
+        pre_prose_deterministic_gate = deterministic_gate_result_from_receipt(
+            bound_gate_payload,
+            candidate_path=test_path,
+        )
+    elif args.deterministic_score_gates or bool(main_rubric.get("pre_judge_gate_harness")):
         pre_prose_deterministic_gate = run_project_local_deterministic_gate_harness(
             PROJECT_DIR,
             test_path,
@@ -3282,15 +3336,11 @@ if __name__ == "__main__":
                 # of the thesis still surfaces as fail_assert.
                 frozen_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
                 _uses_deterministic_gate_harness = bool(main_rubric.get("pre_judge_gate_harness"))
-                if _uses_deterministic_gate_harness and os.path.exists(frozen_harness_path):
-                    run_cmd = [
-                        sys.executable,
-                        frozen_harness_path,
-                        "--emit-deterministic-gates",
-                        "--candidate-path",
-                        test_path,
-                    ]
-                elif os.path.exists(frozen_harness_path):
+                if _uses_deterministic_gate_harness:
+                    raise RuntimeError(
+                        "pre-judge project reached Level 3 without its bound gate receipt"
+                    )
+                if os.path.exists(frozen_harness_path):
                     run_cmd = [sys.executable, frozen_harness_path, "--run-visible-assertions"]
                 else:
                     run_cmd = [sys.executable, test_path]
@@ -3304,50 +3354,7 @@ if __name__ == "__main__":
                     cwd=PROJECT_DIR,
                 )
 
-                if _uses_deterministic_gate_harness and os.path.exists(frozen_harness_path):
-                    try:
-                        gate_payload = json.loads(res.stdout or "{}")
-                    except json.JSONDecodeError:
-                        gate_payload = {}
-                    gates_obj = gate_payload.get("gates") if isinstance(gate_payload, dict) else None
-                    gate_items = list(gates_obj.values()) if isinstance(gates_obj, dict) else (
-                        list(gates_obj) if isinstance(gates_obj, list) else []
-                    )
-                    failed_gates = [
-                        str(g.get("name") or f"gate_{idx}")
-                        for idx, g in enumerate(gate_items)
-                        if isinstance(g, dict) and not bool(g.get("pass", g.get("passed", False)))
-                    ]
-                    harness_ok = bool(isinstance(gate_payload, dict) and gate_payload.get("harness_ok") is True)
-                    if res.returncode == 0 and harness_ok and not failed_gates:
-                        test_result_summary = (
-                            "✅ PASS: Deterministic gate harness passed.\n"
-                            f"Output: {res.stdout}"
-                        )
-                        test_suite_status = "pass"
-                        print("✅ Deterministic gate harness passed.")
-                    elif res.returncode == 0 and harness_ok:
-                        detail = gate_payload.get("import_error") or gate_payload.get("error") or failed_gates
-                        test_result_summary = (
-                            "❌ FAIL (deterministic gate): Candidate failed the project-local "
-                            "deterministic gates; the harness itself executed.\n"
-                            f"Failed gates: {failed_gates}\n"
-                            f"Detail: {detail}\n"
-                            f"Payload: {json.dumps(gate_payload, sort_keys=True)[:4000]}"
-                        )
-                        test_suite_status = "fail_assert"
-                        _project_local_deterministic_gate_failed = True
-                        print(f"❌ Deterministic gates failed: {failed_gates}")
-                    else:
-                        detail = res.stderr or res.stdout
-                        test_result_summary = (
-                            "❌ FAIL (harness defect): deterministic gate harness did not "
-                            "return a valid harness_ok payload.\n"
-                            f"Error: {sanitize_stderr_for_mutator(detail, 'gate_harness')}"
-                        )
-                        test_suite_status = "fail_runtime" if res.returncode else "fail_other"
-                        print(f"🚨 Deterministic harness defect ({test_suite_status}): {detail[:80]}...")
-                elif res.returncode == 0:
+                if res.returncode == 0:
                     test_result_summary = f"✅ PASS: The thesis survived its own falsification suite.\nOutput: {res.stdout}"
                     test_suite_status = "pass"
                     print("✅ Unit tests passed.")
@@ -3472,7 +3479,22 @@ if __name__ == "__main__":
         # holdout_hard_gate and a gate_harness.py + evidence_holdout.txt
         # exist, run the holdout gate. If it fails, score → 0. A compelling
         # derivation of a wrong formula is not science.
-        if main_rubric.get("holdout_hard_gate"):
+        if main_rubric.get("holdout_hard_gate") and pre_prose_deterministic_gate is not None:
+            if pre_prose_deterministic_gate.get("evaluator_authorized"):
+                evaluation["holdout_hard_gate_fired"] = False
+                evaluation["holdout_hard_gate_detail"] = (
+                    "Consumed the candidate/evidence-bound pre-judge receipt; "
+                    "the holdout verifier was not rerun."
+                )
+                print("✅ Holdout verdict consumed from bound pre-judge receipt.")
+            else:
+                evaluation["holdout_hard_gate_fired"] = True
+                evaluation["score"] = 0
+                evaluation["holdout_hard_gate_detail"] = (
+                    "Bound pre-judge receipt did not authorize evaluation: "
+                    f"{pre_prose_deterministic_gate.get('failed_gates', [])}"
+                )
+        elif main_rubric.get("holdout_hard_gate"):
             holdout_evidence_path = os.path.join(PROJECT_DIR, "evidence_holdout.txt")
             holdout_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
             if os.path.exists(holdout_evidence_path) and os.path.exists(holdout_harness_path):
@@ -3747,6 +3769,9 @@ if __name__ == "__main__":
 
     evaluation["usage_telemetry"] = dict(JUDGE_USAGE)
     evaluation["worker_dispatch_receipts"] = list(JUDGE_WORKER_DISPATCH_RECEIPTS)
+    bound_gate_payload = load_bound_pre_judge_gate_payload()
+    if bound_gate_payload:
+        evaluation["pre_judge_gate_payload"] = bound_gate_payload
     latest_eval_payload = _evaluation_artifact_payload(evaluation, artifact_role="latest")
     eval_results_path = Path(args.eval_results_path)
     eval_results_path.parent.mkdir(parents=True, exist_ok=True)

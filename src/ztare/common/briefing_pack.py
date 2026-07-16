@@ -29,9 +29,10 @@ from ztare.common.strategy_card_roles import (
 )
 
 _COMPACT_VISIBLE_WORKBENCH_REFS = (
-    # Loop-control and learning-metric sufficient statistics.
+    # Loop-control sufficient statistics. P0 search-policy observations stay
+    # outside the leaf prompt; once control-ready they may alter allocator
+    # weights or structural constraints, never semantic advice.
     "workspace/latest_information_yield.json",
-    "workspace/p0_metrics.json",
     # object-level fiber effects with evidence refs (2026-07-12): the leaf's
     # keyhole onto interior dynamics — written-but-unstaged was the third
     # dead-channel instance of the week
@@ -55,6 +56,7 @@ _VISIBLE_ARTIFACT_REF_KEYS = frozenset(
         "source_log",
         "source_receipt",
         "source_ref",
+        "submission",
     }
 )
 _VISIBLE_ARTIFACT_REF_KEY_SUFFIXES = ("_ref", "_path")
@@ -698,15 +700,44 @@ def _load_latest_mutator_briefing_records(repo: Path, *, agent_id: str = "") -> 
 
 
 def _record_attention_lines(records: list[Any], *, limit: int = 8) -> list[str]:
+    ordered = [
+        record
+        for record in sorted(
+            records,
+            key=lambda row: _attention_priority(row) if isinstance(row, dict) else 99,
+        )
+        if isinstance(record, dict)
+        and record.get("record_role") != "stale_meta_hardening"
+    ]
+    # ATTENTION.md is a route index, not a leaderboard of individual rows.
+    # Preserve one record from every active producer before allowing a prolific
+    # producer to occupy the remaining slots.  The complete rows remain in
+    # RECORDS.json; this projection only protects producer-category coverage.
+    producer_heads: list[dict[str, Any]] = []
+    deferred: list[dict[str, Any]] = []
+    seen_producers: set[str] = set()
+    for record in ordered:
+        producer = str(
+            record.get("provider")
+            or record.get("source_type")
+            or record.get("type")
+            or "unknown"
+        )
+        if producer in seen_producers:
+            deferred.append(record)
+            continue
+        seen_producers.add(producer)
+        producer_heads.append(record)
+    # Producer coverage and control priority are independent constraints. Keep
+    # the best row for every producer, order those representatives by control
+    # priority, then append duplicate rows in their original priority order.
+    # This prevents a prolific producer from hiding a category without making
+    # a lower-priority category precede an active frontier.
+    selected = sorted(producer_heads, key=_attention_priority)
+    selected.extend(deferred)
+
     lines: list[str] = []
-    for record in sorted(
-        records,
-        key=lambda row: _attention_priority(row) if isinstance(row, dict) else 99,
-    ):
-        if not isinstance(record, dict):
-            continue
-        if record.get("record_role") == "stale_meta_hardening":
-            continue
+    for record in selected:
         provider = _compact_field(record.get("provider") or "unknown")
         record_role = _compact_field(record.get("record_role") or "")
         source_type = _compact_field(
@@ -717,15 +748,7 @@ def _record_attention_lines(records: list[Any], *, limit: int = 8) -> list[str]:
             or "record"
         )
         source_ref = _compact_field(record.get("source_ref") or record.get("submission") or record.get("path") or "")
-        summary = _compact_field(
-            record.get("summary")
-            or record.get("title")
-            or record.get("weakest_point")
-            or record.get("falsifiable_prediction")
-            or record.get("contract_rejection_reason")
-            or record.get("required_next_gate")
-            or ""
-        )
+        summary = _record_attention_summary(record)
         action = _compact_field(record.get("action") or record.get("next_action") or record.get("recommendation") or "")
         bits = [f"provider={provider}", f"type={source_type}"]
         kind = _compact_field(record.get("kind") or "")
@@ -736,11 +759,64 @@ def _record_attention_lines(records: list[Any], *, limit: int = 8) -> list[str]:
         if action:
             bits.append(f"action={action[:160]}")
         if summary:
-            bits.append(summary[:260])
+            # A producer may declare the smallest typed object its consumer
+            # needs.  Preserve that object as a unit instead of truncating it
+            # into a provenance-only summary.  Its vocabulary remains opaque
+            # to this substrate-neutral projection owner.
+            summary_limit = 1200 if isinstance(record.get("consumer_projection"), dict) else 260
+            bits.append(summary[:summary_limit])
         lines.append("- " + "; ".join(bits))
         if len(lines) >= limit:
             break
     return lines
+
+
+def _record_attention_summary(record: dict[str, Any]) -> str:
+    """Put a consumer-ready identity before verbose diagnostic coordinates."""
+    consumer_projection = record.get("consumer_projection")
+    if isinstance(consumer_projection, dict) and consumer_projection:
+        projection = _compact_field(consumer_projection)
+        summary = _compact_field(record.get("summary") or "")
+        return (
+            f"consumer_projection={projection}; {summary}"
+            if summary
+            else f"consumer_projection={projection}"
+        )
+    summary = _compact_field(
+        record.get("summary")
+        or record.get("title")
+        or record.get("weakest_point")
+        or record.get("falsifiable_prediction")
+        or record.get("contract_rejection_reason")
+        or record.get("required_next_gate")
+        or ""
+    )
+    fiber = record.get("behavioral_fiber")
+    if not isinstance(fiber, dict) or int(fiber.get("member_count") or 0) < 2:
+        return summary
+    operation_classes = sorted(
+        {
+            str(family.get("operation", {}).get("op") or "")
+            for family in fiber.get("operation_families") or []
+            if isinstance(family, dict)
+            and isinstance(family.get("operation"), dict)
+            and str(family.get("operation", {}).get("op") or "")
+        }
+    )
+    identity = _compact_field(
+        "behavioral_fiber "
+        f"members={fiber.get('member_rows') or []}; "
+        f"interventions={fiber.get('interventions') or []}; "
+        f"relation={fiber.get('observed_relation') or ''}/"
+        f"{fiber.get('intervention_relation') or ''}; "
+        f"source_ops={operation_classes}; "
+        f"unresolved_source_relations={fiber.get('unresolved_source_relation_rows') or []}; "
+        "promotion_authorized="
+        f"{bool(fiber.get('carrier_promotion_authorized'))}; "
+        "shared_consequence="
+        f"{str(fiber.get('shared_observed_consequence_sha256') or '')[:16]}"
+    )
+    return f"{identity}; {summary}" if summary else identity
 
 
 def _attention_priority(record: dict[str, Any]) -> int:
@@ -751,12 +827,26 @@ def _attention_priority(record: dict[str, Any]) -> int:
     # displaced the champion mandate entirely from the front-door file).
     if provider == "live_champion" or source_type == "live_champion_receipt":
         return 1
+    if isinstance(record.get("consumer_projection"), dict):
+        # A first-fired task output changes the consumer's initial state.  It
+        # must win over the instruction that caused it and over provenance-only
+        # records from the same producer.
+        return -1
+    if isinstance(record.get("behavioral_fiber"), dict):
+        # A materialized observation is the active task's consumed output.  If
+        # the task row wins the one-row-per-producer projection instead, the
+        # worker sees an instruction to inspect while the inspection result is
+        # stranded later in RECORDS.json.
+        return -1
     if record.get("record_role") == "diagnostic_rejected_witness":
-        return 1
+        # A contract-rejected carrier is a historical counterexample.  It may
+        # inform a discriminator, but it cannot displace the active admissible
+        # frontier at the prompt front door.
+        return 4
     if record.get("record_role") == "stale_meta_hardening":
         return 9
     if provider == "strategy_experiments" or source_type == "strategy_experiment":
-        if _record_lane(record) == META_HARDENING_LANE:
+        if _record_lane(record) != "skill_acquisition":
             return 5
         return 0
     if provider in {"leaf_workbench", "surviving_candidates", "worldmodel_committee"}:
@@ -881,26 +971,17 @@ def _visible_workbench_command_doc() -> str:
         lines.append(
             "\nAdvanced registered actions are available through `manifest`, "
             "`route-action`, and `run-action`. They are affordances for hypotheses "
-            "you choose, not a menu that must be exhausted.\n"
-        )
-    wrapper = payload.get("strategy_gate_command_wrapper")
-    if isinstance(wrapper, dict):
-        lines.append(
-            "\nStrategy gate commands are wrapped as a workbench action request:\n\n"
-            "```json\n"
-            + json.dumps(
-                {"type": "LEAF_WORKBENCH_ACTION_REQUEST", "payload": wrapper},
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n```\n"
+            "you choose, not a menu that must be exhausted. Parameterized actions "
+            "expose their executable `parameter_domains` in the manifest; a "
+            "verification-only value outside that domain remains candidate-bound.\n"
         )
     lines.append(
         "\nCanonical loop: write and probe a candidate locally; use `route-action` only "
         "when you already intend to emit a workbench action request or run a named "
         "advanced action. Execute only routes marked `in_turn_cli` with `run-action` "
         "or the command named in the manifest; submit `parent_kernel` routes as typed "
-        "action requests; repair `invalid_action_request` before final output. "
+        "action requests only after `route-action` validates their parameters; repair "
+        "`invalid_action_request` before final output. "
         "`capability_proposal` routes are cold meta-work and should be reported through "
         "`LOWERABILITY_BLOCKED` in science mode.\n"
     )

@@ -194,6 +194,21 @@ def build_worldmodel_control_only_eval(
         for payload in lowerability_payloads
         if isinstance(payload, dict)
     ]
+    apparatus_obstructions: list[dict[str, Any]] = []
+    if project_dir is not None:
+        from ztare.common.harness_weakness import (
+            write_lowerability_harness_weakness_receipt,
+        )
+
+        for payload in lowerability_payloads:
+            if not isinstance(payload, dict):
+                continue
+            receipt = write_lowerability_harness_weakness_receipt(
+                project_dir=project_dir,
+                blocker_payload=payload,
+            )
+            if receipt is not None:
+                apparatus_obstructions.append(receipt)
 
     credited, rejected = _process_investigated_receipts(
         control_receipts, project_dir=project_dir
@@ -212,6 +227,10 @@ def build_worldmodel_control_only_eval(
         "artifact_refs": [ref for ref in artifact_refs if str(ref or "").strip()],
         "timestamp": timestamp or datetime.now().isoformat(),
     }
+    if apparatus_obstructions:
+        eval_row["apparatus_obstructions"] = apparatus_obstructions
+        if "workspace/latest_harness_weakness.json" not in eval_row["artifact_refs"]:
+            eval_row["artifact_refs"].append("workspace/latest_harness_weakness.json")
     if rejected:
         # Fail loud: a rejected/duplicate/unbacked elimination is recorded with
         # its reason, never silently credited. The turn keeps the no_candidate

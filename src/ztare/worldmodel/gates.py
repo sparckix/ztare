@@ -19,9 +19,79 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+import hashlib
+import json
+from pathlib import Path
 
 from ztare.worldmodel.episode_log import EpisodeLog
+from ztare.worldmodel.transition_identity import (
+    authoritative_boundary,
+    authoritative_dynamics,
+)
 from ztare.worldmodel.grid_dsl import Program, evaluate
+
+
+_EVALUATOR_IMPLEMENTATION_REFS = (
+    "common/equivariance.py",
+    "common/observation_chart.py",
+    "common/patch_base_identity.py",
+    "common/sandboxed_python.py",
+    "common/worldmodel_carrier_purity.py",
+    "worldmodel/carrier_loader.py",
+    "worldmodel/episode_log.py",
+    "worldmodel/evidence_consolidation.py",
+    "worldmodel/gates.py",
+    "worldmodel/grammar_extension.py",
+    "worldmodel/grid_dsl.py",
+    "worldmodel/patch_base_carrier.py",
+    "worldmodel/spec_catalog.py",
+    "worldmodel/transition_identity.py",
+)
+
+
+def _build_evaluator_implementation_identity() -> dict[str, object]:
+    """Capture the transition evaluator loaded by this process.
+
+    The gate owns the equality relation for replay judgments.  Carrier
+    lowering, chart identity, boundary classification, and prediction are one
+    implementation footprint; caches may add consumer-specific code but may
+    not replace or privately reconstruct this set.
+    """
+
+    package_root = Path(__file__).resolve().parents[1]
+    module_hashes = {
+        ref: hashlib.sha256((package_root / ref).read_bytes()).hexdigest()
+        for ref in _EVALUATOR_IMPLEMENTATION_REFS
+    }
+    payload: dict[str, object] = {
+        "schema": "ztare-transition-evaluator-implementation-v1",
+        "module_hashes": module_hashes,
+    }
+    payload["sha256"] = hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return payload
+
+
+_EVALUATOR_IMPLEMENTATION_IDENTITY = _build_evaluator_implementation_identity()
+
+
+def evaluator_implementation_identity() -> dict[str, object]:
+    """Content identity shared by every transition-verdict cache.
+
+    The identity is captured once during module import.  Re-reading source
+    files for each judgment can relabel code that is already resident in the
+    process after an on-disk edit.  Science/debug phase isolation is the owner
+    of code changes; within one process this value is immutable.
+    """
+
+    return {
+        "schema": _EVALUATOR_IMPLEMENTATION_IDENTITY["schema"],
+        "module_hashes": dict(
+            _EVALUATOR_IMPLEMENTATION_IDENTITY["module_hashes"]  # type: ignore[arg-type]
+        ),
+        "sha256": _EVALUATOR_IMPLEMENTATION_IDENTITY["sha256"],
+    }
 
 
 @dataclass(frozen=True)
@@ -223,13 +293,8 @@ def _divergent_cells(predicted, real, limit: int = 8) -> list[dict]:
     return cells
 
 
-def _holdout_witness(program: Program, holdout: EpisodeLog) -> dict | None:
-    """First failing row under the same segment-aware rollout the gate runs.
-
-    Was row-0-only: a candidate correct on row 0 but failing later got NO
-    witness at all — opaque diagnosis exactly where the witness pipeline is
-    the mutator's primary feedback (hunt finding P3, 2026-07-11).
-    """
+def _propagated_rollout(program: Program, holdout: EpisodeLog):
+    """Yield one segment-aware propagated prediction, stopping at divergence."""
     predict = as_predictor(program)
     current = None
     prev_t = None
@@ -239,6 +304,15 @@ def _holdout_witness(program: Program, holdout: EpisodeLog) -> dict | None:
         prev_t = tr.t
         state = tr.s if current is None else current
         predicted = predict(state, tr.a, tr.t)
+        yield i, tr, predicted
+        if predicted is None or predicted != tr.s_next:
+            return
+        current = predicted
+
+
+def _holdout_witness(program: Program, holdout: EpisodeLog) -> dict | None:
+    """First failing row under the gate's segment-aware rollout."""
+    for i, tr, predicted in _propagated_rollout(program, holdout):
         if predicted is None or predicted != tr.s_next:
             return {
                 "step_index": i,
@@ -249,7 +323,6 @@ def _holdout_witness(program: Program, holdout: EpisodeLog) -> dict | None:
                     f"first rollout divergence at holdout row {i} (t={tr.t})"),
                 "divergent_cells": _divergent_cells(predicted, tr.s_next),
             }
-        current = predicted
     return None
 
 
@@ -263,11 +336,11 @@ def json_dumps_stable(payload) -> str:
 
 
 ENV_FRAME_CAP = 0.05     # >5% env frames = systematic mismatch, refuse to excuse
-_ENV_FRAME_CACHE: "dict[tuple, frozenset[int]]" = {}
+_ENV_FRAME_CACHE: "dict[str, frozenset[int]]" = {}
 # Tracks how many candidate frames were suppressed when the cap tripped (keyed
 # by the same cache key). Consumed by replay_consistency_gate to surface the
 # cap trip in the gate detail — docstring says exclusions are never silent.
-_ENV_FRAME_CAP_TRIPS: "dict[tuple, int]" = {}
+_ENV_FRAME_CAP_TRIPS: "dict[str, int]" = {}
 
 
 def _color_counts(grid) -> Counter:
@@ -279,10 +352,20 @@ def _color_counts(grid) -> Counter:
 
 def env_frame_indices(log: EpisodeLog) -> "set[int]":
     """Transitions OUTSIDE the game's dynamics — not physics, so no law can or
-    should explain them (kernel fix, 2026-07-03: the true, complete law scored
-    120/122 and failed the gate on these). Detected from EPISODE STRUCTURE, not
-    diff magnitude (the old magnitude split failed on ls20: a normal move already
-    touches ~50 cells, a reset ~84-146, no clean separation):
+    should explain them (kernel fix, 2026-07-03: the complete law scored
+    120/122 and failed the gate on these). Adapter-authored transition identity
+    is authoritative.  Legacy rows without identity use the structural fallback
+    below; grid-difference magnitude never decides the row category.
+
+    A positively evidenced authoritative ``dynamics`` row is protected from
+    legacy inference even when it resembles a reset.  A bare dynamics label is
+    not positive evidence: older collectors emitted it merely because their
+    public API exposed no boundary signal, while omitting automatic respawns.
+    An authoritative boundary row is excluded even when no observation
+    heuristic recognizes it.  Candidate-authored/untrusted labels receive no
+    authority.
+
+    Legacy fallback:
 
       (a) environment no-ops: s == s_next (the env swallowed the step; a real
           blocked move differs — it must be PREDICTED as unchanged by a guard,
@@ -308,34 +391,41 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
     rows = list(log)
     if not rows:
         return set()
-    # Content-based key: cheap but collision-resistant. id()-based keys aliased
-    # under GC id recycling (F3b fix, 2026-07-09). Uses length + boundary
-    # timestamps + first/last (t,a) pair + a sampled cell tuple so two distinct
-    # logs of equal length with the same boundary rows are distinguished.
-    def _row_sig(tr):
-        cell = tr.s[0][0] if tr.s and tr.s[0] else 0
-        return (int(tr.t), int(tr.a), int(cell))
-    key = (len(rows), int(rows[0].t), int(rows[-1].t),
-           _row_sig(rows[0]), _row_sig(rows[-1]))
+    # Exact content identity. EpisodeLog memoizes this digest and invalidates it
+    # on append, avoiding both GC-id aliasing and sampled-cell collisions.
+    key = log.content_hash()
     cached = _ENV_FRAME_CACHE.get(key)
     if cached is not None:
         return set(cached)
-    idx = set()
+    explicit_boundary = {
+        i for i, tr in enumerate(rows) if authoritative_boundary(tr.identity)
+    }
+    protected_dynamics = {
+        i for i, tr in enumerate(rows) if authoritative_dynamics(tr.identity)
+    }
+    inferred: set[int] = set()
     # (a) environment no-ops — ONLY when the row also carries a t-anomaly
     # (non-advancing t). A 0-diff frame with normal t advance is a BLOCKED
     # MOVE: real physics the law must PREDICT via a refusal guard (when_dest),
     # never excuse (2026-07-03 night: blanket excusal let live play diverge
     # at depth 1 forever while abduction felt no pressure to learn refusal).
     for i, tr in enumerate(rows):
+        if i in protected_dynamics or i in explicit_boundary:
+            continue
         if tr.s == tr.s_next:
             t_anomalous = (i + 1 < len(rows) and rows[i + 1].t <= tr.t)
             if t_anomalous:
-                idx.add(i)
+                inferred.add(i)
+    # Compute the observation projection once. Recomputing Counters in each
+    # inference branch multiplies full-bank verifier cost without adding
+    # evidence.
+    state_counts = [_color_counts(tr.s) for tr in rows]
+    next_counts = [_color_counts(tr.s_next) for tr in rows]
+
     # identify the depleting horizon resource and where it grows
     down: Counter = Counter()
     grew: "dict[int, set[int]]" = {}
-    for i, tr in enumerate(rows):
-        cs, cn = _color_counts(tr.s), _color_counts(tr.s_next)
+    for i, (cs, cn) in enumerate(zip(state_counts, next_counts)):
         for c in cs.keys() | cn.keys():
             delta = cn[c] - cs[c]
             if delta < 0:
@@ -353,14 +443,16 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
     # probe logs carry advancing t across real resets (2026-07-03 miss), while
     # a lawful small pickup mechanic must stay physics.
     if resource is not None:
-        res_max = max(_color_counts(tr.s).get(resource, 0) for tr in rows)
+        res_max = max(counts.get(resource, 0) for counts in state_counts)
         for i, tr in enumerate(rows):
+            if i in protected_dynamics or i in explicit_boundary:
+                continue
             if i not in grew.get(resource, ()):
                 continue
             at_boundary = (i + 1 == len(rows)) or (rows[i + 1].t <= tr.t)
-            delta = _color_counts(tr.s_next).get(resource, 0) - _color_counts(tr.s).get(resource, 0)
+            delta = next_counts[i].get(resource, 0) - state_counts[i].get(resource, 0)
             if at_boundary or delta >= max(1, res_max // 2):
-                idx.add(i)
+                inferred.add(i)
     # (c) a SECONDARY per-episode counter: a colour that strictly depletes within
     # transitions (down>0) but NEVER regrows in one — it refills only across
     # recording gaps, so no transition shows it grow — and is not the primary
@@ -374,28 +466,53 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
     secondary = {c for c, n in down.items() if n > 0 and c not in grew and c != resource}
     if secondary:
         for i, tr in enumerate(rows):
+            if i in protected_dynamics or i in explicit_boundary:
+                continue
             # ONLY a STRICT t-reset boundary (t jumps DOWN to a new episode), not a
             # non-advancing gap or a constant-t log — else every frame of a single
             # t=0 episode would qualify and a real mid-episode consume be excused.
             if i + 1 >= len(rows) or rows[i + 1].t >= tr.t:
                 continue
-            cs, cn = _color_counts(tr.s), _color_counts(tr.s_next)
+            cs, cn = state_counts[i], next_counts[i]
             if any(cn.get(c, 0) < cs.get(c, 0) for c in secondary):
-                idx.add(i)
-    if len(idx) > max(1, int(len(rows) * ENV_FRAME_CAP)) + 1:
+                inferred.add(i)
+    if len(inferred) > max(1, int(len(rows) * ENV_FRAME_CAP)) + 1:
         # Cap tripped: too many "env frames" → broken harness, not excusable
         # noise. Record how many were suppressed so replay_consistency_gate can
         # surface it in the detail string (docstring: exclusions are NEVER
         # silent — F3a fix, 2026-07-09).
-        _ENV_FRAME_CAP_TRIPS[key] = len(idx)
-        idx = set()
+        _ENV_FRAME_CAP_TRIPS[key] = len(inferred)
+        inferred = set()
     else:
         _ENV_FRAME_CAP_TRIPS.pop(key, None)
     if len(_ENV_FRAME_CACHE) > 64:
         _ENV_FRAME_CACHE.clear()
         _ENV_FRAME_CAP_TRIPS.clear()
+    idx = explicit_boundary | inferred
     _ENV_FRAME_CACHE[key] = frozenset(idx)
     return idx
+
+
+def _env_frame_note(log: EpisodeLog, env: "set[int]") -> str:
+    """Render exclusion authority instead of laundering every row as reset.
+
+    Adapter-attested boundaries and contextual boundary inferences have
+    different epistemic identities even though neither is scored as a
+    within-epoch law row.
+    """
+    if not env:
+        return ""
+    rows = list(log)
+    explicit = sum(
+        1
+        for index in env
+        if 0 <= index < len(rows) and authoritative_boundary(rows[index].identity)
+    )
+    inferred = len(env) - explicit
+    return (
+        f" ({len(env)} environment frames excluded: "
+        f"adapter_attested={explicit}, evidence_inferred={inferred})"
+    )
 
 
 def replay_consistency_gate(program: Program, log: EpisodeLog) -> GateResult:
@@ -404,13 +521,7 @@ def replay_consistency_gate(program: Program, log: EpisodeLog) -> GateResult:
     # Check whether the cap tripped for this log (F3a: cap trips are never
     # silent — surface them in the gate detail).
     rows = list(log)
-
-    def _row_sig(tr):
-        cell = tr.s[0][0] if tr.s and tr.s[0] else 0
-        return (int(tr.t), int(tr.a), int(cell))
-
-    _cap_key = (len(rows), int(rows[0].t), int(rows[-1].t),
-                _row_sig(rows[0]), _row_sig(rows[-1])) if rows else None
+    _cap_key = log.content_hash() if rows else None
     cap_suppressed = _ENV_FRAME_CAP_TRIPS.get(_cap_key, 0) if _cap_key else 0
     for i, tr in enumerate(log):
         if i in env:
@@ -422,7 +533,7 @@ def replay_consistency_gate(program: Program, log: EpisodeLog) -> GateResult:
             return GateResult(False,
                               f"replay mismatch at t={tr.t} action={tr.a}: "
                               + _counterexample_cells(predicted, tr.s_next))
-    note = f" ({len(env)} env frames excluded: no-op/reset)" if env else ""
+    note = _env_frame_note(log, env)
     if cap_suppressed:
         note += f"; env-frame cap tripped: {cap_suppressed} candidate frames suppressed"
     return GateResult(True, f"replay consistent over {len(log) - len(env)} transitions" + note)
@@ -500,34 +611,47 @@ def replay_diagnostics(program: Program, log: EpisodeLog) -> ReplayDiagnostics:
     )
 
 
+def replay_gate_and_diagnostics(
+    program: Program,
+    log: EpisodeLog,
+) -> tuple[GateResult, ReplayDiagnostics]:
+    """Return the exact replay verdict and witness from one carrier scan.
+
+    The diagnostics are a sufficient statistic for the binary verdict:
+    ``wrong_rows == 0`` exactly when every checked prediction equals its
+    successor. Consumers that need both outputs should not evaluate the same
+    carrier twice over one evidence identity.
+    """
+
+    diagnostics = replay_diagnostics(program, log)
+    env = env_frame_indices(log)
+    if diagnostics.wrong_rows:
+        detail = diagnostics.first_mismatch or (
+            f"replay mismatch on {diagnostics.wrong_rows} transitions"
+        )
+        return GateResult(False, detail), diagnostics
+    note = _env_frame_note(log, env)
+    cap_suppressed = _ENV_FRAME_CAP_TRIPS.get(log.content_hash(), 0) if len(log) else 0
+    if cap_suppressed:
+        note += f"; env-frame cap tripped: {cap_suppressed} candidate frames suppressed"
+    return (
+        GateResult(
+            True,
+            f"replay consistent over {diagnostics.checked_rows} transitions" + note,
+        ),
+        diagnostics,
+    )
+
+
 def rollout_depth(program: Program, holdout: EpisodeLog) -> int:
     """Consecutive correctly-predicted steps on a held-out episode, from its
     start, propagating the candidate's own predictions (a true rollout, not
     per-step teacher forcing)."""
-    predict = as_predictor(program)
     depth = 0
-    current = None
-    prev_t = None
-    for tr in holdout:
-        # Segment boundary: t fails to advance (same convention as
-        # env_frame_indices' episode-boundary test). A held-out episode may
-        # be SEVERAL independent trajectories (ls20 holdout: 4 crossings x 4
-        # steps, t=[19..22] repeating, recorded s discontinuous at rows
-        # 4/8/12). Propagating predictions across the boundary compares
-        # segment N's rolled state against segment N+1's fresh start —
-        # unpassable by construction for ANY law, the true one included
-        # (every candidate ever gated scored exactly 4 or 0). Reseed from
-        # the recorded state at each boundary; rollout remains a true
-        # rollout WITHIN each trajectory.
-        if prev_t is not None and tr.t <= prev_t:
-            current = None
-        prev_t = tr.t
-        state = tr.s if current is None else current
-        predicted = predict(state, tr.a, tr.t)
+    for _index, tr, predicted in _propagated_rollout(program, holdout):
         if predicted is None or predicted != tr.s_next:
             break
         depth += 1
-        current = predicted
     return depth
 
 

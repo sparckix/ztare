@@ -44,8 +44,10 @@ from typing import Any, Protocol, runtime_checkable
 
 DEFAULT_SCHEMA = "operator-proposal-v1"
 
-# Default rules path: four levels up from this module lands at repo root.
-_MACHINERY_RULES_PATH = Path(__file__).parent.parent.parent.parent / "MACHINERY_RULES.md"
+# Canonical machinery-governance policy lives in the documentation reference tree.
+_MACHINERY_RULES_PATH = (
+    Path(__file__).parent.parent.parent.parent / "docs/reference/machinery_rules.md"
+)
 
 REQUIRED_CARD_FIELDS = (
     "schema",
@@ -66,6 +68,31 @@ _CLOSED = (DISPOSITION_ACCEPTED, DISPOSITION_REJECTED)
 def family_sha(failure_family: Any) -> str:
     """Stable dedup key: sha256 of the failure-family signature string."""
     return hashlib.sha256(str(failure_family).encode()).hexdigest()
+
+
+def proposal_identity_sha(card: dict) -> str:
+    """Identity of one proposal instance within an evidence lifecycle.
+
+    ``failure_family_sha`` identifies the reusable residual family.  It cannot
+    also identify a particular observation of that family: row indices are
+    coordinates in one evidence presentation and may be rebound after the bank
+    grows.  Bound proposals therefore add their evidence binding to the key;
+    legacy/unbound cards retain the old family-only identity and stay advisory.
+    """
+    family = str(
+        card.get("failure_family_sha")
+        or family_sha(card.get("failure_family"))
+    )
+    binding = card.get("evidence_binding")
+    if not isinstance(binding, dict) or not binding:
+        return family
+    payload = json.dumps(
+        {"failure_family_sha": family, "evidence_binding": binding},
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    )
+    return hashlib.sha256(payload.encode()).hexdigest()
 
 
 def operator_proposal_card(
@@ -128,8 +155,13 @@ def set_disposition(card: dict, disposition: str) -> dict:
 
 
 def write_proposal_cards(path: "Path | str", cards: list[dict]) -> list[dict]:
-    """Append cards to a JSONL ledger, DEDUP by failure_family sha (across the
-    existing ledger and within this batch). Returns the rows actually written."""
+    """Append cards to a JSONL ledger, deduped by proposal identity.
+
+    The family remains stable across observations; the proposal instance is
+    family + evidence binding.  A changed evidence epoch may therefore reopen
+    the same family without mutating an older disposition, while repeated
+    emission in one epoch remains a no-op.
+    """
     p = Path(path)
     seen: set[str] = set()
     if p.exists():
@@ -137,7 +169,7 @@ def write_proposal_cards(path: "Path | str", cards: list[dict]) -> list[dict]:
             if not line.strip():
                 continue
             try:
-                seen.add(str(json.loads(line).get("failure_family_sha")))
+                seen.add(proposal_identity_sha(json.loads(line)))
             except Exception:  # noqa: BLE001 — a corrupt row never blocks writes
                 continue
     written: list[dict] = []
@@ -145,11 +177,13 @@ def write_proposal_cards(path: "Path | str", cards: list[dict]) -> list[dict]:
     with p.open("a") as f:
         for card in cards:
             sha = card.get("failure_family_sha") or family_sha(card.get("failure_family"))
-            if sha in seen:
-                continue
-            seen.add(sha)
             row = dict(card)
             row["failure_family_sha"] = sha
+            proposal_sha = proposal_identity_sha(row)
+            if proposal_sha in seen:
+                continue
+            seen.add(proposal_sha)
+            row["proposal_identity_sha"] = proposal_sha
             row.setdefault("disposition", DISPOSITION_OPEN)
             f.write(json.dumps(row) + "\n")
             written.append(row)
@@ -202,6 +236,8 @@ def record_disposition(path: "Path | str", card: dict,
     sha = card.get("failure_family_sha") or family_sha(card.get("failure_family"))
     row = dict(card)
     row["failure_family_sha"] = sha
+    proposal_sha = proposal_identity_sha(row)
+    row["proposal_identity_sha"] = proposal_sha
     if attestation is not None:
         row["attestation"] = dict(attestation)
     rows: list[dict] = []
@@ -214,9 +250,10 @@ def record_disposition(path: "Path | str", card: dict,
                 d = json.loads(line)
             except Exception:  # noqa: BLE001 — a corrupt row never blocks the upsert
                 continue
-            if str(d.get("failure_family_sha")) == sha:
-                rows.append(row)
-                replaced = True
+            if proposal_identity_sha(d) == proposal_sha:
+                if not replaced:
+                    rows.append(row)
+                    replaced = True
             else:
                 rows.append(d)
     if not replaced:

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-from ztare.common.operator_proposal_contract import open_cards
+from ztare.common.strategy_card_roles import active_strategy_cards
 
 
 @dataclass(frozen=True)
@@ -38,7 +38,7 @@ def strategy_gate_action_summaries(project_dir: str | Path) -> list[dict[str, An
     project = Path(project_dir)
     rows: list[dict[str, Any]] = []
     actions = registered_strategy_gate_actions()
-    for card in open_cards(project / "workspace" / "strategy_experiments.jsonl"):
+    for card in active_strategy_cards(project / "workspace" / "strategy_experiments.jsonl"):
         plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
         gate = plan.get("required_next_gate") if isinstance(plan.get("required_next_gate"), dict) else {}
         command = str(gate.get("command") or "").strip()
@@ -98,7 +98,7 @@ def run_strategy_required_gate_action(
 
 
 def _select_strategy_card(project: Path, refs: dict[str, Any]) -> dict[str, Any]:
-    cards = open_cards(project / "workspace" / "strategy_experiments.jsonl")
+    cards = active_strategy_cards(project / "workspace" / "strategy_experiments.jsonl")
     if not cards:
         raise ValueError("run_strategy_required_gate requires an open Strategy card")
     requested_sha = str(refs.get("failure_family_sha") or refs.get("strategy_card_sha") or "").strip()

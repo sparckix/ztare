@@ -11,7 +11,7 @@ that certifies must not be the unit that produces; cognitive-firm/draft.md §3):
     completed cycle leaves (novelty decay, coverage holes, ledger closure), and
     commissions falsifiable EXPERIMENT CARDS for the next production cycle. It
     NEVER edits the rubric and NEVER executes anything (S1: strategy proposes,
-    production executes, reward certifies).
+    production executes, task adjudication certifies).
 
 CONTRACT.  A substrate supplies an ``AuditBattery``: (a) ``run_audits`` — a
 deterministic receipts dossier; (b) ``query_menu`` — whitelisted parameterized
@@ -186,7 +186,7 @@ def _build_prompt(dossier_text: str, transcript: "list[str]", *,
 cross-cycle experiment commissioner for an automated research loop. You read the
 deterministic receipts a completed cycle left and commission falsifiable
 experiments for the next cycle. You do NOT execute anything and you do NOT edit
-any rubric (strategy proposes; production executes; reward certifies).
+any rubric (strategy proposes; production executes; task adjudication certifies).
 
 {dossier_text}
 {_render_probe_registry()}
@@ -501,10 +501,16 @@ def _render_rejection_line(row: dict) -> str:
 
 
 def _write_digest(project_dir: Path, rows: list[dict], counters: dict[str, int]) -> dict:
+    science_rows = [
+        row for row in rows
+        if str(row.get("category") or "") != "process_health"
+        and str(row.get("provenance") or "") != "trace_auditor"
+    ]
     digest = {
         "schema": "ztare-leaf-proposal-digest-v1",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
-        "last_k": rows[-5:],
+        "last_k": science_rows[-5:],
+        "excluded_process_health_rows": len(rows) - len(science_rows),
         "counters": counters,
     }
     path = project_dir / "workspace" / LEAF_PROPOSAL_DIGEST
@@ -545,9 +551,14 @@ def adjudicate_leaf_proposals(
     project_dir = Path(project)
     ledger = project_dir / "workspace" / LEAF_PROPOSAL_LEDGER
     rows = _read_jsonl(ledger)
+    selectable_rows = [
+        row for row in rows
+        if str(row.get("category") or "") != "process_health"
+        and str(row.get("provenance") or "") != "trace_auditor"
+    ]
     latest: dict[str, dict] = {}
     order: list[str] = []
-    for row in rows:
+    for row in selectable_rows:
         sig = str(row.get("proposal_signature")
                   or _proposal_signature(_normalize_rider_proposal(project_dir, row)))
         if sig not in latest:
@@ -798,8 +809,8 @@ def _leaf_call(project_dir: Path, model: str, prompt: str, *, label: str):
 
 
 def _machinery_rules_text(budget: int = 12000) -> str:
-    """Rules section of MACHINERY_RULES.md, bounded. Empty string if absent."""
-    path = REPO_ROOT / "MACHINERY_RULES.md"
+    """Canonical machinery-rules section, bounded. Empty string if absent."""
+    path = REPO_ROOT / "docs/reference/machinery_rules.md"
     if not path.exists():
         return ""
     text = path.read_text(encoding="utf-8", errors="ignore")

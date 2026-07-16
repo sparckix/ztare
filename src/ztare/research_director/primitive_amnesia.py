@@ -92,6 +92,7 @@ PRIMITIVE_MODULES = [
     "src/ztare/leanmill/theory_interpretation.py",  # evidence-bound key idea + isomorphism projection
     "src/ztare/leanmill/theory_conflict_ledger.py",  # witness-replayed theory-search failure memory
     "src/ztare/common/constraint_isomorphism.py",  # strange loop (common/ not auto-swept)
+    "src/ztare/common/factored_search.py",         # consumer-indexed projected search
     "src/ztare/common/graph_carrier.py",           # graph diagnostic carrier schema/receipt guard
     "src/ztare/workspace/source_freshness.py",     # source-bound artifact freshness / stale-provenance guard
     "src/ztare/forecasting/prediction_contract.py",  # neutral forecast/prediction contract read model
@@ -673,8 +674,14 @@ def _embed(text: str, *, role: str = "query", backend: str = "gemini-code") -> "
                 from ztare.common.embeddings import embed_batch, make_client
             except ModuleNotFoundError:
                 from ztare.common.embeddings import embed_batch, make_client
-            return embed_batch(make_client(key), [text], model="gemini-embedding-001",
-                               dimensions=768, task_type=tt)[0]
+            return embed_batch(
+                make_client(key, force_remote=True),
+                [text],
+                model="gemini-embedding-001",
+                dimensions=768,
+                task_type=tt,
+                force_remote=True,
+            )[0]
         except SystemExit as exc:
             _LAST_EMBED_ERROR = str(exc)[:240]
             return None

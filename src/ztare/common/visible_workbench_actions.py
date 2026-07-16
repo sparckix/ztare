@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Literal, Mapping
 
 
@@ -20,10 +20,17 @@ class VisibleWorkbenchActionRoute:
     authority: str
     secret_policy: str
     suggested_command: list[str] = ()
+    parameter_domains: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
         payload["suggested_command"] = list(self.suggested_command)
+        if self.parameter_domains:
+            payload["parameter_domains"] = {
+                path: list(values) for path, values in self.parameter_domains.items()
+            }
+        else:
+            payload.pop("parameter_domains", None)
         return payload
 
 
@@ -120,17 +127,6 @@ VISIBLE_WORKBENCH_COMMAND_ALIASES: dict[str, str] = {
     "run-action": "run_action",
     "rank-next-morphisms": "rank_next_morphisms",
 }
-_PARENT_KERNEL_ROUTES: dict[str, VisibleWorkbenchActionRoute] = {
-    "run_strategy_required_gate": VisibleWorkbenchActionRoute(
-        capability_id="run_strategy_required_gate",
-        route="parent_kernel",
-        reason="registered authority-bearing Strategy gate action",
-        authority="kernel_registered",
-        secret_policy="contract_declared",
-    ),
-}
-
-
 def visible_workbench_action_routes() -> dict[str, dict[str, Any]]:
     return visible_workbench_capability_routes(route_filter="in_turn_cli")
 
@@ -140,10 +136,7 @@ def visible_workbench_capability_routes(
 ) -> dict[str, dict[str, Any]]:
     """Return the canonical capability route registry for visible workbenches."""
 
-    routes = {
-        **_IN_TURN_CLI_ROUTES,
-        **_PARENT_KERNEL_ROUTES,
-    }
+    routes = dict(_IN_TURN_CLI_ROUTES)
     routes.update(_adapter_registered_routes())
     if route_filter is not None:
         routes = {key: route for key, route in routes.items() if route.route == route_filter}
@@ -248,16 +241,17 @@ def route_visible_workbench_action_request(request: Mapping[str, Any]) -> dict[s
             authority="proposal_only",
             secret_policy="contract_declared",
         ).to_dict() | {"status": "ok"}
-    route = _IN_TURN_CLI_ROUTES.get(capability_id)
+    route = _IN_TURN_CLI_ROUTES.get(capability_id) or _adapter_registered_route(capability_id)
     if route is not None:
-        result = route.to_dict()
-        result["status"] = "ok"
-        return result
-    route = _PARENT_KERNEL_ROUTES.get(capability_id)
-    if route is not None:
-        return route.to_dict() | {"status": "ok"}
-    route = _adapter_registered_route(capability_id)
-    if route is not None:
+        parameter_error = _action_parameter_error(route, payload)
+        if parameter_error:
+            return VisibleWorkbenchActionRoute(
+                capability_id=capability_id,
+                route="invalid_action_request",
+                reason=parameter_error,
+                authority="none",
+                secret_policy="public_only",
+            ).to_dict() | {"status": "fail"}
         return route.to_dict() | {"status": "ok"}
     if next_gate_command:
         reason = (
@@ -288,21 +282,32 @@ def _adapter_registered_route(capability_id: str) -> VisibleWorkbenchActionRoute
 def _adapter_registered_routes() -> dict[str, VisibleWorkbenchActionRoute]:
     try:
         from ztare.worldmodel.leaf_workbench import worldmodel_leaf_workbench_action_environment
-
-        env = worldmodel_leaf_workbench_action_environment()
-        contract = env.get("contract")
-        handlers = env.get("action_handlers") if isinstance(env, Mapping) else {}
-        local_cli_actions = {str(item) for item in (env.get("local_cli_actions") or ()) if str(item)}
-        registry = contract.registry() if contract is not None else {}
-    except Exception:  # noqa: BLE001
-        return {}
+    except ModuleNotFoundError as exc:
+        # An installation without the worldmodel adapter legitimately has only
+        # the common routes.  A missing dependency *inside* an installed
+        # adapter is an apparatus failure and must retain its causal exception;
+        # coercing it to an empty registry fabricates "unknown capability".
+        if exc.name == "ztare.worldmodel.leaf_workbench":
+            return {}
+        raise
+    env = worldmodel_leaf_workbench_action_environment()
+    contract = env.get("contract")
+    handlers = env.get("action_handlers") if isinstance(env, Mapping) else {}
+    parameter_domains = env.get("action_parameter_domains") if isinstance(env, Mapping) else {}
+    local_cli_actions = {str(item) for item in (env.get("local_cli_actions") or ()) if str(item)}
+    registry = contract.registry() if contract is not None else {}
     routes: dict[str, VisibleWorkbenchActionRoute] = {}
     for capability_id in sorted(str(item) for item in (handlers or {}) if str(item)):
-        if capability_id in _IN_TURN_CLI_ROUTES or capability_id in _PARENT_KERNEL_ROUTES:
+        if capability_id in _IN_TURN_CLI_ROUTES:
             continue
         cap = registry.get(capability_id)
         authority = str(getattr(cap, "authority", "") or "kernel_registered")
         secret_policy = str(getattr(cap, "secret_policy", "") or "contract_declared")
+        raw_domains = parameter_domains.get(capability_id, {}) if isinstance(parameter_domains, Mapping) else {}
+        domains = {
+            str(path): tuple(sorted({str(value) for value in values if str(value)}))
+            for path, values in raw_domains.items()
+        } if isinstance(raw_domains, Mapping) else {}
         if capability_id in local_cli_actions:
             routes[capability_id] = VisibleWorkbenchActionRoute(
                 capability_id=capability_id,
@@ -310,6 +315,7 @@ def _adapter_registered_routes() -> dict[str, VisibleWorkbenchActionRoute]:
                 reason="registered adapter action declared safe for staged local execution",
                 authority=authority,
                 secret_policy=secret_policy,
+                parameter_domains=domains,
                 suggested_command=[
                     "python3",
                     "-m",
@@ -326,8 +332,34 @@ def _adapter_registered_routes() -> dict[str, VisibleWorkbenchActionRoute]:
                 reason="registered by staged substrate workbench adapter",
                 authority=authority,
                 secret_policy=secret_policy,
+                parameter_domains=domains,
             )
     return routes
+
+
+def _action_parameter_error(
+    route: VisibleWorkbenchActionRoute, payload: Mapping[str, Any]
+) -> str:
+    for path, allowed in route.parameter_domains.items():
+        value = _mapping_path_value(payload, path)
+        if value in (None, ""):
+            continue
+        if str(value) not in allowed:
+            return (
+                f"{path}={value!r} is outside the registered executable domain "
+                f"{list(allowed)!r} for {route.capability_id!r}; a verification obligation "
+                "without a registered action remains candidate-bound"
+            )
+    return ""
+
+
+def _mapping_path_value(payload: Mapping[str, Any], path: str) -> Any:
+    value: Any = payload
+    for part in path.split("."):
+        if not isinstance(value, Mapping):
+            return None
+        value = value.get(part)
+    return value
 
 
 def _action_request_payload(request: Mapping[str, Any]) -> Mapping[str, Any]:

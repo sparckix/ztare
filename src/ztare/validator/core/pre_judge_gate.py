@@ -6,11 +6,19 @@ import logging
 import os
 import subprocess
 import sys
+import tempfile
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from ztare.common.candidate_memory import admissible_candidate_memory_records
+from ztare.common.observation_chart import (
+    EvidenceEpochSnapshot,
+    assert_project_evidence_epoch,
+    capture_project_evidence_epoch,
+)
+from ztare.common.patch_base_identity import load_current_repair_frontier
 
 _log = logging.getLogger(__name__)
 
@@ -19,15 +27,78 @@ _log = logging.getLogger(__name__)
 # identical to gate_harness.py by design, proven in batch_gate module docstring).
 _BATCH_GATE_ENABLED = os.environ.get("ZTARE_BATCH_GATE", "0") == "1"
 
-# Gate result cache: keyed by (candidate_sha256, harness_sha256, episode_mtime_fingerprint,
-# engine) → raw stdout bytes.  Bounded to newest 200 entries.
-# ponytail: module-level dict + lru-eviction; no persistence needed (results are
-# deterministic within a process run; the key covers all content-relevant surfaces).
+# Gate result cache: keyed by full candidate/dependency bytes, verifier footprint,
+# evidence epoch, rubric, Python version, and engine. Memory is bounded to the
+# newest 200 process-local entries; a content-addressed workspace copy carries
+# the same verdict across deterministic-producer and governed-worker processes.
 # Engine is in the key because payload structure details differ across engines
 # (though both now include grid_dsl_expressible — see FIX 1 parity proof).
 _GATE_RESULT_CACHE: dict[str, str] = {}
 _GATE_RESULT_CACHE_BOUND = 200
 _GATE_CACHE_DIR_NAME = "gate_result_cache"
+_BOUND_GATE_PAYLOAD_PATH_ENV = "ZTARE_CURRENT_PRE_JUDGE_GATE_PAYLOAD_PATH"
+_BOUND_GATE_PAYLOAD_SHA_ENV = "ZTARE_CURRENT_PRE_JUDGE_GATE_PAYLOAD_SHA256"
+
+
+@contextmanager
+def bind_pre_judge_gate_payload(
+    payload: dict[str, Any] | None,
+    *,
+    base_env: dict[str, str] | None = None,
+):
+    """Bind one gate receipt to one downstream evaluator process.
+
+    The temporary file is only an authenticated transport edge.  It is removed
+    when the evaluator returns, so callers cannot later confuse it with the
+    mutable project-wide ``latest_eval_results.json`` surface.
+    """
+
+    env = dict(os.environ if base_env is None else base_env)
+    if not isinstance(payload, dict) or not payload:
+        yield env
+        return
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    digest = hashlib.sha256(raw).hexdigest()
+    fd, raw_path = tempfile.mkstemp(prefix="ztare_pre_judge_", suffix=".json")
+    path = Path(raw_path)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(raw)
+        env[_BOUND_GATE_PAYLOAD_PATH_ENV] = str(path)
+        env[_BOUND_GATE_PAYLOAD_SHA_ENV] = digest
+        yield env
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def load_bound_pre_judge_gate_payload(
+    *,
+    environ: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Read the receipt bound by :func:`bind_pre_judge_gate_payload`.
+
+    Missing transport means the caller is outside a governed pre-judge edge.
+    A present but altered transport is an apparatus error and fails closed.
+    """
+
+    env = os.environ if environ is None else environ
+    raw_path = str(env.get(_BOUND_GATE_PAYLOAD_PATH_ENV) or "").strip()
+    if not raw_path:
+        return {}
+    expected = str(env.get(_BOUND_GATE_PAYLOAD_SHA_ENV) or "").strip()
+    if not expected:
+        raise RuntimeError("bound pre-judge gate payload is missing its digest")
+    raw = Path(raw_path).read_bytes()
+    observed = hashlib.sha256(raw).hexdigest()
+    if observed != expected:
+        raise RuntimeError(
+            "bound pre-judge gate payload digest mismatch: "
+            f"expected={expected} observed={observed}"
+        )
+    payload = json.loads(raw)
+    if not isinstance(payload, dict):
+        raise TypeError("bound pre-judge gate payload must be a JSON object")
+    return payload
 
 
 def _run_batch_gate_inprocess(
@@ -56,14 +127,17 @@ def _run_batch_gate_inprocess(
     visible_exact = int(r.get("visible_exact") or 0)
     visible_total = int(r.get("visible_total") or 0)
     env_excluded = int(r.get("visible_env_excluded") or 0)
-    checked = visible_total - env_excluded
+    # batch_gate.visible_total is already the checked (boundary-excluded)
+    # population.  Subtracting visible_env_excluded again erased rows at this
+    # producer→consumer seam.
+    checked = visible_total
     wrong_rows = list(r.get("wrong_rows") or [])
     holdout_depth = int(r.get("holdout_depth") or -1)
     holdout_total = int(r.get("holdout_total") or 0)
     import hashlib as _hl
     try:
         ctext = Path(cpath).read_text()
-        gated_sha = _hl.sha256(ctext.encode()).hexdigest()[:16]
+        gated_sha = _hl.sha256(ctext.encode()).hexdigest()
     except Exception:  # noqa: BLE001
         gated_sha = "unreadable"
     visible_ok = (load_err is None and checked > 0 and len(wrong_rows) == 0)
@@ -114,24 +188,26 @@ def _run_batch_gate_inprocess(
         "gated_file": str(cpath),
         "gated_sha256": gated_sha,
         "engine": "batch_inprocess",
+        "description_length": r.get("description_length"),
+        "description_length_unit": r.get("description_length_unit"),
         **({"load_error": load_err} if load_err else {}),
         **({"carrier": r.get("carrier")} if r.get("carrier") else {}),
     }
 
 
+def _episode_evidence_fingerprint(project_dir: Path) -> str:
+    """Content identity of the active episode bank and chart sidecars.
+
+    File mtimes are properties of a storage presentation.  The gate cache owns
+    evidence identity, so its key must bind the bytes that can change a verdict,
+    including ``*.identity.json`` chart migrations.
+    """
+    return capture_project_evidence_epoch(project_dir).epoch_sha256
+
+
 def _episode_mtime_fingerprint(project_dir: Path) -> str:
-    """Stable fingerprint of episode file mtimes for the gate cache key."""
-    episodes_dir = project_dir / "raw" / "episodes"
-    parts: list[str] = []
-    try:
-        for ep in sorted(episodes_dir.glob("*.jsonl")):
-            try:
-                parts.append(f"{ep.name}:{ep.stat().st_mtime}")
-            except OSError:
-                parts.append(ep.name)
-    except OSError:
-        pass
-    return hashlib.sha256("|".join(parts).encode()).hexdigest()[:16]
+    """Compatibility alias; now returns content identity rather than mtimes."""
+    return _episode_evidence_fingerprint(project_dir)
 
 
 def _gate_cache_key(
@@ -141,16 +217,136 @@ def _gate_cache_key(
 ) -> "str | None":
     """Content-addressed cache key string, or None if any surface is unreadable."""
     try:
-        cand_sha = hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()[:16] if candidate_path else "live"
-        harness_sha = hashlib.sha256(harness_path.read_bytes()).hexdigest()[:16]
-        ep_fp = _episode_mtime_fingerprint(project_dir)
+        resolved_candidate = (
+            Path(candidate_path) if candidate_path is not None else project_dir / "test_model.py"
+        )
+        candidate_source = resolved_candidate.read_text(encoding="utf-8")
+        cand_sha = hashlib.sha256(candidate_source.encode("utf-8")).hexdigest()
+        harness_sha = hashlib.sha256(harness_path.read_bytes()).hexdigest()
+        ep_fp = _episode_evidence_fingerprint(project_dir)
+        dependency_hashes: dict[str, str] = {}
+        from ztare.common.patch_base_identity import (
+            patch_base_fields_from_source,
+            resolve_patch_base_ref,
+        )
+
+        nested_source = candidate_source
+        seen: set[Path] = set()
+        for _depth in range(8):
+            fields = patch_base_fields_from_source(nested_source)
+            if not fields:
+                break
+            base_path = resolve_patch_base_ref(project_dir, fields[0])
+            if base_path in seen:
+                raise ValueError("PATCH_BASE cache dependency cycle")
+            seen.add(base_path)
+            raw = base_path.read_bytes()
+            dependency_hashes[str(base_path.relative_to(project_dir))] = hashlib.sha256(raw).hexdigest()
+            nested_source = raw.decode("utf-8")
+        from ztare.worldmodel.gates import evaluator_implementation_identity
+
+        evaluator_identity = evaluator_implementation_identity()
+        rubric_path = project_dir.parents[1] / "rubrics" / f"{project_dir.name}.json"
+        rubric_sha = (
+            hashlib.sha256(rubric_path.read_bytes()).hexdigest()
+            if rubric_path.is_file()
+            else ""
+        )
         # Engine IS part of the key: the engines produce the same gate set
         # (grid_dsl_expressible now included in batch_inprocess) but payload
         # structure details may still differ; keying by engine remains correct.
         engine = "batch" if _BATCH_GATE_ENABLED else "subprocess"
-        return f"{cand_sha}:{harness_sha}:{ep_fp}:{engine}"
+        engine_path = (
+            Path(__file__).parents[2] / "worldmodel" / "batch_gate.py"
+            if _BATCH_GATE_ENABLED
+            else harness_path
+        )
+        payload = {
+            "schema": "ztare-gate-result-cache-key-v3",
+            "candidate_sha256": cand_sha,
+            "candidate_dependencies": dependency_hashes,
+            "harness_sha256": harness_sha,
+            "evidence_epoch_sha256": ep_fp,
+            "pre_judge_gate_sha256": hashlib.sha256(
+                Path(__file__).read_bytes()
+            ).hexdigest(),
+            "evaluator_implementation": evaluator_identity,
+            "engine_implementation_sha256": hashlib.sha256(
+                engine_path.read_bytes()
+            ).hexdigest(),
+            "rubric_sha256": rubric_sha,
+            "python_version": ".".join(map(str, sys.version_info[:3])),
+            "engine": engine,
+        }
+        return hashlib.sha256(
+            json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
     except Exception:
         return None
+
+
+def _persistent_gate_cache_path(
+    project_dir: Path,
+    cache_key: str,
+    *,
+    workspace_cache_dir: "Path | None" = None,
+) -> Path:
+    root = (
+        Path(workspace_cache_dir)
+        if workspace_cache_dir is not None
+        else project_dir / "workspace" / _GATE_CACHE_DIR_NAME
+    )
+    return root / f"{cache_key}.json"
+
+
+def _load_persistent_gate_cache(
+    project_dir: Path,
+    cache_key: str,
+    *,
+    workspace_cache_dir: "Path | None" = None,
+) -> str | None:
+    path = _persistent_gate_cache_path(
+        project_dir,
+        cache_key,
+        workspace_cache_dir=workspace_cache_dir,
+    )
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    stdout = payload.get("stdout") if isinstance(payload, dict) else None
+    if (
+        not isinstance(stdout, str)
+        or payload.get("schema") != "ztare-gate-result-cache-entry-v1"
+        or payload.get("cache_key") != cache_key
+        or payload.get("stdout_sha256") != hashlib.sha256(stdout.encode("utf-8")).hexdigest()
+    ):
+        return None
+    return stdout
+
+
+def _store_persistent_gate_cache(
+    project_dir: Path,
+    cache_key: str,
+    stdout: str,
+    *,
+    workspace_cache_dir: "Path | None" = None,
+) -> None:
+    path = _persistent_gate_cache_path(
+        project_dir,
+        cache_key,
+        workspace_cache_dir=workspace_cache_dir,
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema": "ztare-gate-result-cache-entry-v1",
+        "cache_key": cache_key,
+        "stdout_sha256": hashlib.sha256(stdout.encode("utf-8")).hexdigest(),
+        "stdout": stdout,
+    }
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+    temporary.replace(path)
 
 
 def run_gate_harness_subprocess(
@@ -163,7 +359,8 @@ def run_gate_harness_subprocess(
     workspace_cache_dir: "Path | None" = None,
 ) -> str:
     """Run gate_harness.py --emit-deterministic-gates, with a content-addressed
-    result cache keyed on (candidate sha256, harness sha256, episode file mtimes).
+    result cache keyed on candidate/dependency bytes, verifier footprint, and
+    evidence-epoch identity.
 
     Returns raw stdout.  Raises RuntimeError on harness error.  On cache hit logs
     one line 'gate cache hit <sha8>' and skips the subprocess.
@@ -173,9 +370,25 @@ def run_gate_harness_subprocess(
     if cache_key is not None and cache_key in _GATE_RESULT_CACHE:
         _log.info("gate cache hit %s", cache_key[:8])
         return _GATE_RESULT_CACHE[cache_key]
+    if cache_key is not None:
+        cached = _load_persistent_gate_cache(
+            project_dir,
+            cache_key,
+            workspace_cache_dir=workspace_cache_dir,
+        )
+        if cached is not None:
+            _GATE_RESULT_CACHE[cache_key] = cached
+            _log.info("persistent gate cache hit %s", cache_key[:8])
+            return cached
 
+    executable = str(python_executable)
+    if not Path(executable).is_absolute() and os.sep in executable:
+        # subprocess changes cwd to the project.  A caller launched as
+        # ``./venv/bin/python`` otherwise becomes a project-relative path and
+        # the verifier is misclassified as unavailable.
+        executable = str(Path(executable).resolve())
     gate_cmd = [
-        python_executable,
+        executable,
         str(gate_harness_path.resolve()),
         "--emit-deterministic-gates",
     ]
@@ -192,7 +405,7 @@ def run_gate_harness_subprocess(
         )
     except subprocess.TimeoutExpired:
         cand_sha = (
-            hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()[:16]
+            hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()
             if candidate_path is not None
             else None
         )
@@ -225,6 +438,12 @@ def run_gate_harness_subprocess(
             # Evict oldest (first inserted) entry.
             _GATE_RESULT_CACHE.pop(next(iter(_GATE_RESULT_CACHE)), None)
         _GATE_RESULT_CACHE[cache_key] = gate_res.stdout
+        _store_persistent_gate_cache(
+            project_dir,
+            cache_key,
+            gate_res.stdout,
+            workspace_cache_dir=workspace_cache_dir,
+        )
 
     return gate_res.stdout
 
@@ -260,6 +479,141 @@ def _normalize_gate_iter(payload: dict[str, Any]) -> list[dict[str, Any]]:
     if not isinstance(gate_iter, list):
         return []
     return [g for g in gate_iter if isinstance(g, dict)]
+
+
+def _deterministic_gate_contract_closed(gate_payload: dict[str, Any]) -> bool:
+    gates = _normalize_gate_iter(gate_payload)
+    return bool(
+        gate_payload.get("harness_ok")
+        and gates
+        and all(_gate_passed(gate) for gate in gates)
+    )
+
+
+def _deterministic_gate_contract_eval(
+    gate_payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Lower a complete machine-owned score contract into the eval schema.
+
+    A payload declaring ``deterministic_gates_only`` has already named the
+    evaluator for every score-bearing dimension.  Asking a semantic judge to
+    rescore those dimensions creates a second, contradictory authority edge.
+    """
+
+    gates = _normalize_gate_iter(gate_payload)
+    failed = [
+        str(gate.get("name") or f"gate_{index}")
+        for index, gate in enumerate(gates)
+        if not _gate_passed(gate)
+    ]
+    try:
+        score = int(round(100.0 * float(gate_payload.get("score"))))
+    except (TypeError, ValueError):
+        score = int(round(100.0 * sum(_gate_passed(g) for g in gates) / len(gates)))
+    score = max(0, min(100, score))
+    closed = not failed
+    status = "closed" if closed else "selected_frontier"
+    weakest = (
+        "DETERMINISTIC_GATE_CONTRACT_CLOSED: all registered gates passed."
+        if closed
+        else "DETERMINISTIC_GATE_FRONTIER_SELECTED: search-incumbent gates "
+        f"authorized replacement with open verification dimensions={failed}."
+    )
+    return {
+        "score": score,
+        "raw_judge_score": score,
+        "weakest_point": weakest,
+        "verified_axioms": [],
+        "retired_axioms_approved": [],
+        "evidence_gaps": [],
+        "derived_constraints": [],
+        "logic_gaps": [],
+        "debate_summary": (
+            "Evaluation was completed by the candidate-bound deterministic "
+            f"gate contract ({status}); no semantic rescore was requested."
+        ),
+        "adversarial_alignment": "",
+        "friction_points": [],
+        "probability_dag": {
+            "outcome": {
+                "label": f"deterministic_gate_contract_{status}",
+                "probability": score / 100.0,
+            },
+            "nodes": [],
+            "edges": [],
+        },
+        "holdout_hard_gate_fired": False,
+        "holdout_hard_gate_detail": (
+            "Consumed the candidate/evidence-bound deterministic gate contract."
+        ),
+        "score_contract": {
+            "kind": "deterministic_gates_only",
+            "source": "pre_judge_gate_payload",
+            "gates": gates,
+        },
+        "pre_judge_gate_payload": gate_payload,
+    }
+
+
+def consume_pre_judge_gate_receipt(
+    gate_payload: dict[str, Any],
+    *,
+    candidate_path: str | Path,
+) -> dict[str, Any]:
+    """Validate and normalize the one governed gate verdict for a candidate.
+
+    The pre-judge result is the authority edge used by downstream evaluators.
+    Consumers may render or score that verdict, but must not rerun the verifier
+    with a different timeout or evidence view.  Candidate identity is checked
+    here so a receipt cannot drift onto later bytes during transport.
+    """
+
+    if not isinstance(gate_payload, dict) or not gate_payload:
+        raise ValueError("pre-judge gate receipt must be a non-empty object")
+    path = Path(candidate_path)
+    observed_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+    gate_payload = _bind_gate_candidate_identity(gate_payload, path)
+    gated_sha = str(gate_payload.get("gated_sha256") or "").strip().lower()
+    if gated_sha != observed_sha:
+        raise RuntimeError(
+            "pre-judge gate receipt candidate identity mismatch: "
+            f"gated={gated_sha or '<missing>'} observed={observed_sha}"
+        )
+
+    gates = _normalize_gate_iter(gate_payload)
+    harness_ok = bool(gate_payload.get("harness_ok"))
+    failed_gates = [
+        str(gate.get("name") or f"gate_{index}")
+        for index, gate in enumerate(gates)
+        if not _gate_passed(gate)
+    ]
+    decision = gate_payload.get("pre_judge_decision")
+    decision = decision if isinstance(decision, dict) else {}
+    authorized = decision.get("evaluator_authorized")
+    if not isinstance(authorized, bool):
+        # Compatibility for receipts minted before the decision field existed.
+        authorized = bool(harness_ok and gates and not failed_gates)
+    promotion_authorized = decision.get("candidate_promotion_authorized")
+    if not isinstance(promotion_authorized, bool):
+        # Older project harnesses used one gate edge for both operations.
+        promotion_authorized = authorized
+    return {
+        "schema": "ztare-consumed-pre-judge-gate-receipt-v1",
+        "candidate_sha256": observed_sha,
+        "gated_sha256": gated_sha,
+        "evidence_epoch": gate_payload.get("evidence_epoch"),
+        "harness_ok": harness_ok,
+        "gates_present": bool(gates),
+        "failed_gates": failed_gates,
+        "evaluator_authorized": authorized,
+        "candidate_promotion_authorized": promotion_authorized,
+        "authority_scope": str(
+            decision.get("authority_scope") or "search_incumbent_selection"
+        ),
+        "task_discharge_authorized": bool(
+            decision.get("task_discharge_authorized", False)
+        ),
+    }
 
 
 def _failed_gate_labels(gates: list[dict[str, Any]], *, harness_ok: bool = True) -> list[str]:
@@ -327,7 +681,14 @@ def _dominance_promotion_ok(
             try:
                 value = float(gate.get("value"))
             except (TypeError, ValueError):
-                return False  # unscored heldout gate cannot be shown non-regressing
+                # A boolean held-out certificate is sufficient when there is
+                # no incumbent coordinate to compare.  Once an incumbent has
+                # published a numeric coordinate, absence of that coordinate
+                # cannot establish non-regression.
+                gate_name = str(gate.get("name"))
+                if gate_name not in champion_heldout and _gate_passed(gate):
+                    continue
+                return False
             floor = champion_heldout.get(str(gate.get("name")), 0.0)
             if value < floor:
                 return False
@@ -343,7 +704,11 @@ def _dominance_inputs(comparison: dict[str, Any] | None) -> "tuple[dict[str, flo
     fewer wrong cells, OR held-out depth) while the observed non-regression
     is separately enforced by the observed-tier must-pass check. A candidate
     equal on visible but strictly deeper on held-out rollout is a strict
-    improvement — the dual of the champion-freeze case."""
+    improvement — the dual of the champion-freeze case.  Description length
+    breaks behavioral ties; it does not overrule a deterministic evidence
+    improvement.  Treating representation size as a hard evidence coordinate
+    would prevent the system from acquiring any missing operation whose first
+    expression costs source units."""
     if comparison is None:
         return {}, True
     champion_heldout = {
@@ -352,7 +717,8 @@ def _dominance_inputs(comparison: dict[str, Any] | None) -> "tuple[dict[str, flo
     exact_delta = comparison.get("exact_rows_delta")
     wrong_delta = comparison.get("wrong_cells_delta")
     holdout_delta = comparison.get("holdout_depth_delta")
-    strict_improved = bool(
+    description_delta = comparison.get("description_length_delta")
+    evidence_improved = bool(
         (exact_delta is not None and exact_delta > 0)
         or (exact_delta == 0 and wrong_delta is not None and wrong_delta < 0)
         or (
@@ -361,6 +727,14 @@ def _dominance_inputs(comparison: dict[str, Any] | None) -> "tuple[dict[str, flo
             and holdout_delta is not None and holdout_delta > 0
         )
     )
+    compression_improved = bool(
+        description_delta is not None
+        and description_delta < 0
+        and (exact_delta == 0 or exact_delta is None)
+        and (wrong_delta == 0 or wrong_delta is None)
+        and (holdout_delta == 0 or holdout_delta is None)
+    )
+    strict_improved = bool(evidence_improved or compression_improved)
     return champion_heldout, strict_improved
 
 
@@ -392,13 +766,50 @@ def _json_sha(payload: Any) -> str:
     return _sha256_text(json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str))
 
 
+def _evaluation_policy_sha256() -> str:
+    """Identify the policy that turns gate evidence into an adoption verdict.
+
+    Candidate bytes and evidence bytes do not identify a verdict on their own:
+    changing either the evaluator implementation or the selector creates a new
+    decision object that must be allowed to fire once.
+    """
+
+    from ztare.worldmodel.gates import evaluator_implementation_identity
+
+    return _json_sha({
+        "schema": "ztare-evaluation-policy-identity-v1",
+        "pre_judge_gate_sha256": _sha256_path(Path(__file__)),
+        "evaluator_implementation": evaluator_implementation_identity(),
+    })
+
+
 def _candidate_sha(candidate_path: str | Path | None, gate_payload: dict[str, Any]) -> str:
     if candidate_path is not None:
         try:
-            return hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()[:12]
+            return hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()
         except Exception:
             pass
-    return str(gate_payload.get("gated_sha256") or "")[:12]
+    return str(gate_payload.get("gated_sha256") or "")
+
+
+def _bind_gate_candidate_identity(
+    gate_payload: dict[str, Any],
+    candidate_path: str | Path | None,
+) -> dict[str, Any]:
+    """Replace adapter display digests with the candidate's full content ID."""
+
+    if candidate_path is None:
+        return gate_payload
+    observed = hashlib.sha256(Path(candidate_path).read_bytes()).hexdigest()
+    claimed = str(gate_payload.get("gated_sha256") or "").strip().lower()
+    if claimed and not observed.startswith(claimed):
+        raise RuntimeError(
+            "gate harness candidate identity mismatch: "
+            f"gated={claimed} observed={observed}"
+        )
+    bound = dict(gate_payload)
+    bound["gated_sha256"] = observed
+    return bound
 
 
 def _gates_dict(gate_payload: dict[str, Any]) -> dict[str, Any]:
@@ -452,6 +863,7 @@ def _counterexample_trace(
         "exact_rows": diagnostics.get("exact_rows"),
         "wrong_rows": diagnostics.get("wrong_rows"),
         "wrong_cell_count": diagnostics.get("wrong_cell_count"),
+        "evidence_ref": diagnostics.get("evidence_ref") or "",
         "first_mismatch": diagnostics.get("first_mismatch") or "",
         "first_mismatch_signature": signature if isinstance(signature, dict) else {},
         "mismatch_classes": diagnostics.get("mismatch_classes")
@@ -481,11 +893,11 @@ def evaluation_cache_key(
     harness_hash = _sha256_path(project_path / "gate_harness.py")
     module_path = Path(__file__)
     validator_dir = module_path.parents[1]
-    src_dir = module_path.parents[2]
-    worldmodel_dir = src_dir / "worldmodel"
     gate_module_hash = _sha256_path(module_path)
+    from ztare.worldmodel.gates import evaluator_implementation_identity
+
     footprint: dict[str, Any] = {
-        "schema": "ztare-evaluation-cache-key-v1",
+        "schema": "ztare-evaluation-cache-key-v2",
         "candidate_sha256": candidate_full_sha or str(gate_payload.get("gated_sha256") or ""),
         "gated_sha256": gate_payload.get("gated_sha256"),
         "gate_payload_sha256": _json_sha(gate_payload),
@@ -493,8 +905,7 @@ def evaluation_cache_key(
         "pre_judge_gate_module_sha256": gate_module_hash,
         "test_thesis_module_sha256": _sha256_path(validator_dir / "test_thesis.py"),
         "autoresearch_loop_module_sha256": _sha256_path(validator_dir / "autoresearch_loop.py"),
-        "worldmodel_gates_module_sha256": _sha256_path(worldmodel_dir / "gates.py"),
-        "patch_base_carrier_module_sha256": _sha256_path(worldmodel_dir / "patch_base_carrier.py"),
+        "evaluator_implementation": evaluator_implementation_identity(),
         "python_version": ".".join(map(str, sys.version_info[:3])),
         "rubric_sha256": _sha256_path(Path(rubric_path)) if rubric_path is not None else None,
         "extra_path_hashes": {},
@@ -579,7 +990,60 @@ def store_cached_evaluation(
     _write_eval(path, payload)
 
 
+def _same_candidate_sha(left: object, right: object) -> bool:
+    left_text = str(left or "").strip()
+    right_text = str(right or "").strip()
+    return bool(
+        left_text
+        and right_text
+        and (
+            left_text.startswith(right_text)
+            or right_text.startswith(left_text)
+        )
+    )
+
+
 def _best_prior_candidate_record(project_dir: Path, *, exclude_sha: str) -> dict[str, Any] | None:
+    try:
+        frontier = load_current_repair_frontier(project_dir)
+    except FileNotFoundError:
+        frontier = None
+    except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        _append_gate_receipt(project_dir, {
+            "site": "pre_judge_gate.py:_best_prior_candidate_record",
+            "fallback_taken": "invalid_or_stale_repair_frontier",
+            "cause": repr(exc),
+        })
+        frontier = None
+    if frontier is not None and not _same_candidate_sha(
+        frontier.get("sha256"),
+        exclude_sha,
+    ):
+        regression = frontier.get("regression")
+        regression = regression if isinstance(regression, dict) else {}
+        quotient = regression.get("quotient_comparison")
+        quotient = quotient if isinstance(quotient, dict) else {}
+        quotient_key = (
+            "best_prior_top_quotient"
+            if frontier.get("role") == "best_admissible_prior"
+            else "candidate_top_quotient"
+        )
+        top_quotient = quotient.get(quotient_key)
+        top_quotient = top_quotient if isinstance(top_quotient, dict) else {}
+        return {
+            "source_type": "current_repair_frontier",
+            "submission": frontier.get("source_ref"),
+            "sha": frontier.get("sha256"),
+            "visible_exact_rows": frontier.get("exact_rows", 0),
+            "visible_wrong_cells": frontier.get("wrong_cells", 0),
+            "holdout_depth": frontier.get("holdout_depth", 0),
+            "gate_score": frontier.get("gate_score", 0.0),
+            "mismatch_classes": ([{"signature": top_quotient}] if top_quotient else []),
+            "repair_frontier_receipt_ref": frontier.get("receipt_ref"),
+            "repair_frontier_receipt_sha256": frontier.get("receipt_sha256"),
+            "evidence_epoch_sha256": frontier.get("evidence_epoch_sha256"),
+        }
+
     path = project_dir / "workspace" / "candidate_memory.json"
     if not path.exists():
         return None
@@ -600,21 +1064,52 @@ def _best_prior_candidate_record(project_dir: Path, *, exclude_sha: str) -> dict
         rec for rec in admissible_candidate_memory_records(
             project_dir,
             [rec for rec in records if isinstance(rec, dict)],
-            source_types={"deterministic_near_miss"},
+            source_types={"full_survivor", "deterministic_near_miss"},
             require_submission_source=True,
         )
-        if str(rec.get("sha") or "") != exclude_sha
+        if not _same_candidate_sha(rec.get("sha"), exclude_sha)
     ]
     if not usable:
         return None
+    from ztare.common.patch_base_identity import repair_frontier_order
+
     return max(
         usable,
-        key=lambda rec: (
-            int(rec.get("visible_exact_rows") or 0),
-            int(rec.get("holdout_depth") or 0),
-            float(rec.get("gate_score") or 0.0),
-            -int(rec.get("visible_wrong_cells") or 0),
+        key=lambda rec: repair_frontier_order(
+            exact_rows=rec.get("visible_exact_rows"),
+            holdout_depth=rec.get("holdout_depth"),
+            gate_score=rec.get("gate_score"),
+            wrong_cells=rec.get("visible_wrong_cells"),
+            description_length=rec.get("description_length"),
         ),
+    )
+
+
+def _candidate_seen_in_evidence_epoch(
+    project_dir: Path,
+    *,
+    candidate_sha: str,
+    evidence_epoch_sha256: str,
+    evaluation_policy_sha256: str,
+) -> bool:
+    """Whether this carrier received a verdict under this bank and policy."""
+
+    path = project_dir / "workspace" / "candidate_memory.json"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    records = payload.get("records") if isinstance(payload, dict) else None
+    if not isinstance(records, list):
+        return False
+    return any(
+        isinstance(record, dict)
+        and _same_candidate_sha(record.get("sha"), candidate_sha)
+        and str(record.get("evidence_epoch_sha256") or "")
+        == evidence_epoch_sha256
+        and str(record.get("evaluation_policy_sha256") or "")
+        == evaluation_policy_sha256
+        for record in records
     )
 
 
@@ -635,7 +1130,17 @@ def _candidate_regression_receipt(
     cur_rank = comparison.pop("_candidate_rank")
     best_rank = comparison.pop("_best_prior_rank")
     regressed = cur_rank < best_rank
-    no_strict_improvement = require_strict_improvement and cur_rank <= best_rank
+    # Candidate selection already treats a shorter carrier as a strict
+    # improvement when every behavioral coordinate ties.  Repair-frontier
+    # selection must use the same order; otherwise the evaluator promotes the
+    # compressed representative while the repair preflight silently restores a
+    # larger behaviorally-equivalent presentation.
+    _heldout_floor, comparison_strictly_improves = _dominance_inputs(comparison)
+    strictly_improves = bool(
+        cur_rank > best_rank
+        or (cur_rank == best_rank and comparison_strictly_improves)
+    )
+    no_strict_improvement = require_strict_improvement and not strictly_improves
     if not regressed and not no_strict_improvement:
         return None
     comparison["candidate_relation"] = "regression" if regressed else "no_strict_improvement"
@@ -669,6 +1174,44 @@ def _candidate_prior_comparison_receipt(
     best_holdout = int(best.get("holdout_depth") or 0)
     cur_score = float(gate_payload.get("score") or 0.0)
     best_score = float(best.get("gate_score") or 0.0)
+    cur_description = gate_payload.get("description_length")
+    cur_description = (
+        int(cur_description)
+        if isinstance(cur_description, int) and cur_description > 0
+        else None
+    )
+    best_description = best.get("description_length")
+    best_description = (
+        int(best_description)
+        if isinstance(best_description, int) and best_description > 0
+        else None
+    )
+    if best_description is None:
+        submission = str(best.get("submission") or "").strip()
+        raw = Path(submission)
+        if submission and not raw.is_absolute() and ".." not in raw.parts:
+            try:
+                from ztare.worldmodel.patch_base_carrier import (
+                    composed_carrier_description_length,
+                )
+
+                best_description = composed_carrier_description_length(
+                    project_dir / raw,
+                    project_dir=project_dir,
+                    # Migration tolerance for incumbents created before
+                    # literal-prefix compaction. New carriers remain bounded
+                    # by the normal execution gate; this only measures a
+                    # banked representative so an equivalent compression can
+                    # replace it.
+                    max_depth=64,
+                )
+            except (OSError, TypeError, ValueError):
+                best_description = None
+    description_delta = (
+        cur_description - best_description
+        if cur_description is not None and best_description is not None
+        else None
+    )
     quotient_comparison = _regression_quotient_comparison(cur, best)
     holdout_witness = _holdout_witness(gate_payload)
     return {
@@ -689,6 +1232,10 @@ def _candidate_prior_comparison_receipt(
         "wrong_cells_delta": cur_wrong - best_wrong,
         "holdout_depth_delta": cur_holdout - best_holdout,
         "gate_score_delta": cur_score - best_score,
+        "candidate_description_length": cur_description,
+        "best_prior_description_length": best_description,
+        "description_length_delta": description_delta,
+        "description_length_unit": gate_payload.get("description_length_unit"),
         "first_mismatch": str(cur.get("first_mismatch") or "")[:240],
         "holdout_witness": holdout_witness or {},
         "quotient_comparison": quotient_comparison,
@@ -807,12 +1354,26 @@ def _sync_replay_residual_repair_from_gate(
     change the pass/fail result of the pre-judge gate.
     """
     if regression_receipt is not None:
+        diagnostics = _visible_diagnostics(gate_payload)
+        try:
+            from ztare.worldmodel.residual_repair import (
+                reject_cards_dominated_by_candidate_memory,
+            )
+
+            rejected = reject_cards_dominated_by_candidate_memory(
+                project_dir,
+                diagnostics,
+                source_ref=source_ref,
+            )
+        except Exception:  # noqa: BLE001 — routing cleanup cannot alter the gate
+            rejected = []
         return {
             "schema": "ztare-replay-residual-repair-sync-skipped-v1",
             "source_ref": source_ref,
             "reason": "candidate_regressed_against_best_prior",
             "candidate_sha": regression_receipt.get("candidate_sha"),
             "best_prior_sha": regression_receipt.get("best_prior_sha"),
+            "rejected_candidate_dominated_cards": len(rejected),
         }
     if candidate_path is not None:
         try:
@@ -956,6 +1517,10 @@ def run_pre_judge_gate_harness(
     python_executable: str = sys.executable,
     timeout_seconds: int = 120,
     candidate_path: str | Path | None = None,
+    expected_evidence_epoch: EvidenceEpochSnapshot | None = None,
+    run_role: str | None = None,
+    withheld_refs: tuple[str, ...] = (),
+    exposed_refs: tuple[str, ...] = (),
 ) -> PreJudgeGateResult:
     """Run an opt-in project-local gate before paid judge evaluation.
 
@@ -974,6 +1539,11 @@ def run_pre_judge_gate_harness(
         return PreJudgeGateResult(enabled=True, ran=False, should_skip_judge=False, payload={"verdict": "missing_harness"})
 
     try:
+        evidence_epoch = (
+            assert_project_evidence_epoch(project_path, expected_evidence_epoch)
+            if expected_evidence_epoch is not None
+            else capture_project_evidence_epoch(project_path)
+        )
         if _BATCH_GATE_ENABLED:
             gate_payload = _run_batch_gate_inprocess(
                 project_path,
@@ -1005,17 +1575,34 @@ def run_pre_judge_gate_harness(
             if not isinstance(gate_payload, dict):
                 raise TypeError("gate_harness.py emitted non-object JSON")
             gate_payload.setdefault("engine", "subprocess")
+        gate_payload = _bind_gate_candidate_identity(gate_payload, candidate_path)
+        gate_payload["evidence_epoch"] = evidence_epoch.to_dict()
+        evaluation_policy_sha256 = _evaluation_policy_sha256()
+        gate_payload["evaluation_policy_sha256"] = evaluation_policy_sha256
+        if run_role:
+            gate_payload["run_role"] = str(run_role)
+        if withheld_refs:
+            gate_payload["withheld_refs"] = list(withheld_refs)
+        if exposed_refs:
+            gate_payload["exposed_refs"] = list(exposed_refs)
         gate_iter = _normalize_gate_iter(gate_payload)
-        _record_candidate_memory(
-            project_dir=project_path,
-            candidate_path=candidate_path,
-            gate_payload=gate_payload,
+        # Compare against the incumbent set before publishing this observation.
+        # Publishing first makes a candidate with an adapter-supplied/unknown
+        # digest visible as its own prior, turning a temporal identity seam into
+        # a fabricated "no improvement" verdict.
+        candidate_sha = _candidate_sha(candidate_path, gate_payload)
+        already_evaluated = _candidate_seen_in_evidence_epoch(
+            project_path,
+            candidate_sha=candidate_sha,
+            evidence_epoch_sha256=evidence_epoch.epoch_sha256,
+            evaluation_policy_sha256=evaluation_policy_sha256,
         )
         regression_receipt = _candidate_regression_receipt(
             project_dir=project_path,
             candidate_path=candidate_path,
             gate_payload=gate_payload,
         )
+        comparison: dict[str, Any] | None = None
         if _dominance_promotion_enabled():
             comparison = _candidate_prior_comparison_receipt(
                 project_dir=project_path,
@@ -1030,7 +1617,86 @@ def run_pre_judge_gate_harness(
             )
         else:
             promotable = _all_gates_passed(gate_payload, gate_iter)
+        _record_candidate_memory(
+            project_dir=project_path,
+            candidate_path=candidate_path,
+            gate_payload=gate_payload,
+        )
+        promotion_authorized = gate_payload.get("candidate_promotion_authorized")
+        if not isinstance(promotion_authorized, bool):
+            promotion_authorized = bool(promotable)
+        evidence_delta = bool(
+            comparison
+            and (
+                (comparison.get("exact_rows_delta") or 0) > 0
+                or (comparison.get("wrong_cells_delta") or 0) < 0
+                or (comparison.get("holdout_depth_delta") or 0) > 0
+            )
+        )
+        complexity_regressed = bool(
+            comparison
+            and isinstance(comparison.get("description_length_delta"), int)
+            and comparison["description_length_delta"] > 0
+        )
+        model_selection_relation = (
+            "same_carrier_same_evidence"
+            if already_evaluated
+            else
+            "evidence_improvement_with_complexity_cost"
+            if promotable and evidence_delta and complexity_regressed
+            else "dominates_prior"
+            if promotable
+            else "no_strict_dominance"
+            if comparison is not None
+            else "uncompared_first_candidate"
+        )
+        gate_payload["pre_judge_decision"] = {
+            "schema": "ztare-pre-judge-decision-v1",
+            "evaluator_authorized": bool(promotable),
+            "candidate_promotion_authorized": bool(
+                promotable and promotion_authorized and not already_evaluated
+            ),
+            "authority_scope": "search_incumbent_selection",
+            "task_discharge_authorized": bool(
+                gate_payload.get("task_discharge_authorized", False)
+            ),
+            "evaluation_authority": (
+                "deterministic_gate"
+                if gate_payload.get("score_contract") == "deterministic_gates_only"
+                else "semantic_evaluator"
+            ),
+            "gate_contract_closed": _deterministic_gate_contract_closed(
+                gate_payload
+            ),
+            "model_selection_relation": model_selection_relation,
+            "model_selection_deltas": ({
+                key: comparison.get(key)
+                for key in (
+                    "exact_rows_delta",
+                    "wrong_cells_delta",
+                    "holdout_depth_delta",
+                    "description_length_delta",
+                )
+            } if comparison is not None else {}),
+            "candidate_sha": candidate_sha,
+            "evidence_epoch_sha256": evidence_epoch.epoch_sha256,
+        }
         if promotable:
+            if gate_payload.get("score_contract") == "deterministic_gates_only":
+                _write_eval(
+                    latest_path,
+                    _deterministic_gate_contract_eval(gate_payload),
+                )
+                return PreJudgeGateResult(
+                    enabled=True,
+                    ran=True,
+                    should_skip_judge=True,
+                    message=(
+                        "✅ Deterministic pre-judge score contract completed "
+                        "candidate evaluation."
+                    ),
+                    payload=gate_payload,
+                )
             return PreJudgeGateResult(
                 enabled=True,
                 ran=True,
@@ -1042,6 +1708,8 @@ def run_pre_judge_gate_harness(
         failed_gates = _failed_gate_labels(
             gate_iter, harness_ok=bool(gate_payload.get("harness_ok"))
         )
+        if not failed_gates:
+            failed_gates = ["candidate_model_selection"]
         replay_residual_repair_sync = _sync_replay_residual_repair_from_gate(
             project_dir=project_path,
             gate_payload=gate_payload,
@@ -1056,6 +1724,29 @@ def run_pre_judge_gate_harness(
             replay_residual_repair_sync=replay_residual_repair_sync,
         )
         _write_eval(latest_path, pre_judge_eval)
+        # A gate comparison is already the authoritative producer for the
+        # epoch-scoped repair-frontier role.  Persist its consequence here so
+        # play control and retry control consume one identity instead of
+        # independently ranking candidate properties.  The shared writer also
+        # serves the retry preflight path.
+        if isinstance(regression_receipt, Mapping):
+            try:
+                from ztare.common.patch_base_identity import (
+                    persist_repair_frontier_observation,
+                )
+
+                persist_repair_frontier_observation(
+                    project_path,
+                    regression_receipt=regression_receipt,
+                    counterexample_trace=pre_judge_eval.get(
+                        "counterexample_trace"
+                    ),
+                    evidence_epoch=gate_payload.get("evidence_epoch") or {},
+                )
+            except Exception:  # noqa: BLE001
+                # A malformed comparison cannot move the role.  The gate block
+                # still stands and its weakness receipt remains available.
+                pass
         # Feed the block's witness back to the leaf: without this, the
         # counterexample trace computed above dies here and the briefing's
         # tried_failed_digest renders STALE weakness receipts (observed
@@ -1118,6 +1809,7 @@ def detect_patch_base_regression_preflight(
     candidate_path: str | Path,
     python_executable: str = sys.executable,
     timeout_seconds: int = 120,
+    workspace_cache_dir: str | Path | None = None,
 ) -> PatchBaseRegressionPreflight | None:
     """Pure preflight for repair loops with a persisted deterministic near-miss.
 
@@ -1133,16 +1825,23 @@ def detect_patch_base_regression_preflight(
     gate_harness_path = project_path / "gate_harness.py"
     if not gate_harness_path.exists():
         return None
+    evidence_epoch = capture_project_evidence_epoch(project_path)
     stdout = run_gate_harness_subprocess(
         project_dir=project_path,
         python_executable=python_executable,
         gate_harness_path=gate_harness_path,
         candidate_path=Path(candidate_path),
         timeout_seconds=timeout_seconds,
+        workspace_cache_dir=(
+            Path(workspace_cache_dir) if workspace_cache_dir is not None else None
+        ),
     )
     gate_payload = json.loads(stdout)
     if not isinstance(gate_payload, dict):
         raise TypeError("gate_harness.py emitted non-object JSON")
+    gate_payload = _bind_gate_candidate_identity(gate_payload, candidate_path)
+    assert_project_evidence_epoch(project_path, evidence_epoch)
+    gate_payload["evidence_epoch"] = evidence_epoch.to_dict()
     gate_payload.setdefault("engine", "subprocess")
     regression_receipt = _candidate_regression_receipt(
         project_dir=project_path,
@@ -1182,9 +1881,9 @@ def detect_patch_base_regression_preflight(
             comparison_receipt["quotient_comparison"] = {
                 **comparison_receipt.get("quotient_comparison", {}),
                 "use": (
-                    "The candidate improved the visible comparison surface but still "
-                    "failed a deterministic gate; use the counterexample quotient to "
-                    "repair the law, not to promote it."
+                    "The candidate improved the visible comparison surface but "
+                    "still failed a deterministic gate; use the counterexample "
+                    "quotient to repair the law, not to promote it."
                 ),
             }
             regression_receipt = comparison_receipt
@@ -1221,6 +1920,8 @@ def detect_patch_base_regression_preflight(
                     ),
                 },
             }
+    if not failed_gates:
+        failed_gates = ["candidate_model_selection"]
     return PatchBaseRegressionPreflight(
         regression_receipt=regression_receipt,
         failed_gates=failed_gates,

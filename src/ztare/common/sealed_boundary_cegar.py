@@ -208,8 +208,9 @@ def validate_lowerability_blocked_receipt(payload: object) -> dict[str, Any]:
         _validate_local_frontier_decision(normalized, evidence_statuses)
     elif "evidence_statuses" in normalized:
         raise ValueError(
-            "LOWERABILITY_BLOCKED evidence_statuses must be a list of "
-            f"{{ref,status}} rows with status in {sorted(EVIDENCE_STATUSES)}."
+            "LOWERABILITY_BLOCKED evidence_statuses must be a ref-to-status map "
+            "or a list of {ref,status} rows with status in "
+            f"{sorted(EVIDENCE_STATUSES)}."
         )
     return normalized
 
@@ -498,6 +499,15 @@ def _iter_mapping_objects(value: Any):
 
 
 def _lowerability_signal(obj: dict[str, Any]) -> bool | None:
+    """Return a search-space verdict, never a subject-local verdict.
+
+    Several diagnostic receipts carry ``candidate_delta_admissible`` for one
+    candidate or one finite selector family.  A negative value refutes that
+    subject only; promoting it to "no gamma-lowerable candidate exists" erases
+    the verdict's governing identity.  Only a validated LOWERABILITY_BLOCKED
+    receipt speaks for the currently searched space.  A positive witness still
+    establishes existence of at least one lowerable subject.
+    """
     if (
         obj.get("schema") == LOWERABILITY_BLOCKED_SCHEMA
         or str(obj.get("type") or "").strip() == "LOWERABILITY_BLOCKED"
@@ -506,8 +516,8 @@ def _lowerability_signal(obj: dict[str, Any]) -> bool | None:
         return False
 
     explicit = obj.get("candidate_delta_admissible")
-    if isinstance(explicit, bool):
-        return explicit
+    if explicit is True:
+        return True
 
     status = str(obj.get("lowerability_status") or "").strip().lower()
     if status in {
@@ -516,25 +526,75 @@ def _lowerability_signal(obj: dict[str, Any]) -> bool | None:
         "candidate_delta_admissible",
     }:
         return True
-    if status in {
+    predicates = obj.get("candidate_predicates")
+    if isinstance(predicates, list) and predicates:
+        return True
+    return None
+
+
+def _refutation_scope(obj: dict[str, Any]) -> dict[str, Any] | None:
+    """Describe the identity refuted by a negative diagnostic receipt.
+
+    This is deliberately orthogonal to search-space lowerability.  It lets the
+    next worker reuse a counterexample without turning a property of one tested
+    subject into a claim about the whole hypothesis language.
+    """
+
+    schema = str(obj.get("schema") or "").strip()
+    status = str(obj.get("status") or obj.get("lowerability_status") or "").strip()
+    explicit = obj.get("candidate_delta_admissible")
+    candidate_failure = schema == "ztare-worldmodel-candidate-delta-score-v1" and (
+        explicit is False or status == "candidate_preflight_failed"
+    )
+    if candidate_failure:
+        subject = str(
+            obj.get("candidate_sha256")
+            or obj.get("candidate_sha")
+            or obj.get("candidate_submission")
+            or obj.get("candidate_relation")
+            or "scored_candidate"
+        )
+        return {
+            "scope_kind": "candidate",
+            "subject": subject,
+            "verdict": status or "inadmissible",
+            "schema": schema,
+        }
+
+    family_schemas = {
+        "ztare-worldmodel-lowerable-selector-miner-v1",
+        "ztare-worldmodel-global-carrier-selector-miner-v1",
+        "ztare-worldmodel-cell-local-carrier-selector-miner-v1",
+        "ztare-worldmodel-joined-selector-miner-v1",
+    }
+    family_statuses = {
         "no_zero_error_selector_found",
         "no_selector_found",
-        "blocked_insufficient_visible_data",
-        "underdetermined",
-    }:
-        return False
-
-    predicates = obj.get("candidate_predicates")
-    if isinstance(predicates, list):
-        return bool(predicates)
-
-    relation = str(obj.get("relation") or obj.get("candidate_relation") or "").strip()
-    if relation == "hard_gate_failure_without_visible_quotient":
-        return False
+        "missing_local_patch_witness",
+        "underdetermined_no_negative_same_source_windows",
+        "conflict",
+    }
+    if schema in family_schemas and (
+        obj.get("candidate_family_admissible") is False
+        or explicit is False
+        or status in family_statuses
+        or obj.get("join_status") == "conflict"
+    ):
+        return {
+            "scope_kind": "candidate_family",
+            "subject": str(obj.get("candidate_family_id") or schema),
+            "verdict": status or str(obj.get("join_status") or "family_refuted"),
+            "schema": schema,
+        }
     return None
 
 
 def _coverage_signature(obj: dict[str, Any]) -> tuple[str, tuple[str, ...], tuple[str, ...]] | None:
+    if not (
+        obj.get("candidate_delta_admissible") is True
+        or obj.get("candidate_family_admissible") is True
+    ):
+        return None
     coverage = obj.get("candidate_label_coverage")
     if not isinstance(coverage, dict):
         return None
@@ -599,11 +659,6 @@ def _candidate_delta_lowerability_from_receipts(
             return True
         if signal is False:
             blocked = True
-        capability_id = str(payload.get("capability_id") or "").strip()
-        if capability_id == "inspect_worldmodel_counterexample_context":
-            output = str(payload.get("output_summary") or "").strip()
-            if output:
-                blocked = True
     if blocked:
         return False
     if _receipt_family_has_complete_coverage(objects):
@@ -614,9 +669,41 @@ def _candidate_delta_lowerability_from_receipts(
 def boundary_cegar_candidate_delta_lowerability(
     carried_receipts_json: str,
 ) -> bool | None:
-    """Public query for whether carried receipts allow candidate lowering."""
+    """Whether receipts establish existence or exhaustion for the search space.
+
+    ``False`` is reserved for an explicit, validated LOWERABILITY_BLOCKED
+    receipt.  Rejection of one candidate or one diagnostic family returns
+    ``None`` and is available through :func:`boundary_cegar_refutation_scopes`.
+    """
 
     return _candidate_delta_lowerability_from_receipts(carried_receipts_json)
+
+
+def boundary_cegar_refutation_scopes(
+    carried_receipts_json: str,
+) -> list[dict[str, Any]]:
+    """Return deduplicated candidate/family identities refuted by receipts."""
+
+    rows: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    objects: list[dict[str, Any]] = []
+    for summary in _iter_receipt_output_summaries(carried_receipts_json):
+        objects.extend(_iter_mapping_objects(summary))
+    objects.extend(_iter_receipt_payloads(carried_receipts_json))
+    for obj in objects:
+        scope = _refutation_scope(obj)
+        if scope is None:
+            continue
+        key = (
+            str(scope.get("scope_kind") or ""),
+            str(scope.get("subject") or ""),
+            str(scope.get("verdict") or ""),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(scope)
+    return rows
 
 
 def boundary_cegar_admissible_events(
@@ -641,6 +728,12 @@ def boundary_cegar_context(
         "executed_morphisms": executed_morphisms or [],
     }
     lowerability = _candidate_delta_lowerability_from_receipts(carried_receipts_json)
+    refuted_scopes = boundary_cegar_refutation_scopes(carried_receipts_json)
+    if refuted_scopes:
+        context["refuted_scopes"] = refuted_scopes
+        context["refutation_rule"] = (
+            "each verdict applies only to its named candidate or candidate family"
+        )
     if lowerability is False:
         context["candidate_delta_warning"] = "no_lowerable_receipt_witness"
         context["next_valid_move"] = (
@@ -650,6 +743,12 @@ def boundary_cegar_context(
         )
     elif lowerability is True:
         context["candidate_delta_witness"] = "receipt_candidate_predicates"
+    elif carried_receipts_json:
+        context["candidate_delta_warning"] = "no_lowerable_receipt_witness"
+        context["next_valid_move"] = (
+            "negative receipts refute only their named subjects; pivot the candidate "
+            "family, request another typed observation, or submit a new carrier"
+        )
     if extra:
         context.update(extra)
     return context

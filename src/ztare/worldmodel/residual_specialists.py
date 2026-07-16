@@ -39,6 +39,7 @@ from ztare.validator.worldmodel_typed_payload import (
     worldmodel_typed_payload_contract_prompt,
 )
 from ztare.worldmodel.batch_gate import batch_gate
+from ztare.worldmodel.patch_base_carrier import composed_carrier_description_length
 from ztare.worldmodel.probe_selection import build_witness_hypergraph
 
 # ── Specialist mode ────────────────────────────────────────────────────────
@@ -1176,15 +1177,6 @@ def _specialist_worker(item: dict) -> dict:
 # ── Selection helpers ──────────────────────────────────────────────────────
 
 
-def _mdl(candidate_path: str) -> int:
-    """MDL tie-breaker: grid_dsl_size if >=0 else normalized source length."""
-    # ponytail: grid_dsl_size from gate result preferred; fallback = source len
-    src = Path(candidate_path).read_text(encoding="utf-8")
-    # strip comments + blank lines for a cheap normalized size
-    lines = [l for l in src.splitlines() if l.strip() and not l.strip().startswith("#")]
-    return len("\n".join(lines))
-
-
 def _gate_candidates(project_dir: Path, candidate_paths: list[str]) -> list[dict]:
     """Run batch_gate on all candidates; returns gate rows list parallel to candidate_paths."""
     if not candidate_paths:
@@ -1405,8 +1397,9 @@ def run_specialists(
             gr = gate_by_path.get(cp)
             sr["gate_result"] = gr
             if gr and not gr.get("load_error"):
-                dsl = gr.get("grid_dsl_size", -1)
-                sr["mdl"] = dsl if (isinstance(dsl, int) and dsl >= 0) else _mdl(cp)
+                sr["mdl"] = int(gr.get("description_length") or 0) or (
+                    composed_carrier_description_length(cp, project_dir=project_dir)
+                )
                 # Bug-2: genuine mechanism refutation only when candidate loads
                 # AND performs no better than champion baseline
                 mech = sr.get("mechanism")
@@ -1488,9 +1481,12 @@ def run_specialists(
                     uni_path.write_text(uni_code, encoding="utf-8")
                     uni_gate = _gate_candidates(project_dir, [str(uni_path)])
                     uni_gr = uni_gate[0] if uni_gate else {}
-                    uni_mdl = _mdl(str(uni_path))
-                    if uni_gr.get("grid_dsl_size", -1) >= 0:
-                        uni_mdl = uni_gr["grid_dsl_size"]
+                    uni_mdl = int(uni_gr.get("description_length") or 0) or (
+                        composed_carrier_description_length(
+                            uni_path,
+                            project_dir=project_dir,
+                        )
+                    )
 
                     shard_mdls = [sr.get("mdl") for sr in productive if sr.get("mdl") is not None]
                     avg_shard_mdl = sum(shard_mdls) / len(shard_mdls) if shard_mdls else None

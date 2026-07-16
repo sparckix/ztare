@@ -66,19 +66,34 @@ def _normalized_context(state: Grid, cells: "list[tuple[int, int]]",
 
 def terminal_witness_fingerprint(*, action: int, step: int, state: Grid,
                                  predicted: "Grid | None", observed: Grid,
-                                 phase_mod: int = 6) -> dict:
+                                 certified_period: "int | None" = None) -> dict:
     """Return a translation-quotiented mismatch receipt plus stable sha.
 
-    The hash includes the action, phase class, normalized predicted/observed
-    mismatch cells, and local pre-state context around those cells. It excludes
-    absolute coordinates and any terminal-verifier vocabulary.
+    The hash includes the action, an exact step by default, normalized
+    predicted/observed mismatch cells, and local pre-state context around those
+    cells.  A phase quotient is admitted only with an explicit positive period
+    certificate. It excludes absolute coordinates and any terminal-verifier
+    vocabulary.
     """
+    if certified_period is not None:
+        if (
+            not isinstance(certified_period, int)
+            or isinstance(certified_period, bool)
+            or certified_period <= 0
+        ):
+            raise ValueError("certified_period must be a positive integer")
+        temporal_coordinate = {
+            "phase": step % certified_period,
+            "certified_period": certified_period,
+        }
+    else:
+        temporal_coordinate = {"step": step}
     if predicted is None:
         payload = {
-            "schema": "ztare-terminal-witness-v1",
+            "schema": "ztare-terminal-witness-v2",
             "kind": "prediction_none",
             "action": action,
-            "phase": step % phase_mod,
+            **temporal_coordinate,
             "kernel_role_bindings": TERMINAL_WITNESS_KERNEL_ROLE_BINDINGS,
         }
     else:
@@ -108,10 +123,10 @@ def terminal_witness_fingerprint(*, action: int, step: int, state: Grid,
             for y, x in cells
         )
         payload = {
-            "schema": "ztare-terminal-witness-v1",
+            "schema": "ztare-terminal-witness-v2",
             "kind": "grid_transition_mismatch",
             "action": action,
-            "phase": step % phase_mod,
+            **temporal_coordinate,
             "kernel_role_bindings": TERMINAL_WITNESS_KERNEL_ROLE_BINDINGS,
             "mismatch_count": len(cells),
             "shape": None if box is None else [box[2] - box[0] + 1,

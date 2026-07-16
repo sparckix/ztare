@@ -383,7 +383,11 @@ def test_solveresult_preserves_legacy_shape_and_extras():
     assert out["closure_certificate"] == "cert.jsonl"
     assert out["statement_false_verified"] is True
     assert out["move_specific"] == {"kept": True}
+    assert "control_verdict" not in out
     assert sr.primary()["outcome"] == "closed"
+    assert SolveResult.from_dict({"control_verdict": {"kind": "refuted"}}).as_dict()[
+        "control_verdict"
+    ] == {"kind": "refuted"}
 
 
 def test_solveresult_missing_results_is_explicit_empty_list():

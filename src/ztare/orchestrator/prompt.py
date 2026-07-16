@@ -70,6 +70,62 @@ from ztare.research_director.primitive_class_rotation import (
 )
 
 
+def select_specialized_submission_prompt(
+    rubric_data: Mapping[str, Any],
+    *,
+    project_dir: str | Path,
+    dynamics_assumption: str | None = None,
+) -> dict[str, str] | None:
+    """Return the prompt sections owned by a typed submission contract.
+
+    The autoresearch loop is a general-purpose dispatcher.  Contract-specific
+    vocabulary and teaching text live here; the loop receives only rendered
+    sections plus an opaque contract id.
+    """
+    from ztare.orchestrator.submission_path_helpers import (
+        is_worldmodel_submission_contract,
+    )
+
+    if not is_worldmodel_submission_contract(dict(rubric_data)):
+        return None
+
+    from ztare.validator.core.worldmodel_prompt_context import (
+        strategy_card_obligation_prompt,
+    )
+    from ztare.validator.worldmodel_typed_payload import (
+        worldmodel_typed_payload_contract_prompt,
+    )
+
+    typed_contract = worldmodel_typed_payload_contract_prompt()
+    if (dynamics_assumption or "").strip().lower() == "lawful_time":
+        typed_contract = worldmodel_typed_payload_contract_prompt("lawful_time")
+    style_guide = """
+    STYLE GUIDE — EXECUTABLE TRANSITION-LAW MODE:
+        - Name the proposed causal object and the invariant that identifies it.
+        - Treat colors, coordinates, clock values, and adapter fields as observations;
+          they may witness an identity but cannot define it without a transport rule.
+        - Separate environment/epoch transitions from within-epoch dynamics.
+        - State the nearest rival transition law and the shortest replay witness that
+          distinguishes the two carriers.
+        - Keep substrate vocabulary in the typed payload or adapter-facing carrier.
+    """
+    output_requirements = f"""
+    CRITICAL OUTPUT REQUIREMENT (THE EXECUTABLE TRANSITION LAW):
+        - Return a typed payload whose candidate is a WORLD_MODEL_SPEC, PROGRAM, or step(grid, action, t) carrier.
+        - PARAMETRIC_FORM, LAGRANGIAN, MODEL_PARAMS, and assertion-only suites are outside this carrier category.
+        - A prose explanation cannot substitute for deterministic replay over visible transitions plus held-out rollout.
+
+    {typed_contract}
+
+    {strategy_card_obligation_prompt(project_dir)}
+    """
+    return {
+        "contract_id": "worldmodel_transition.v1",
+        "style_guide": style_guide,
+        "output_requirements": output_requirements,
+    }
+
+
 # Substrate classes for which the I_model OVERRIDE contract (Contract B,
 # `I_model(features: dict) -> float`) is the authoritative test_model.py
 # shape. These substrates author their own test_model.py + features.py;

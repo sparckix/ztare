@@ -52,8 +52,9 @@ def _project(tmp_path: Path, *, has_champion: bool = True,
 def _state(has_champion=True, champion_explains_visible=True,
            holdout_residual_bits=1, n_survivors=0,
            n_distinct_fingerprints=0, unresolved_disagreement_targets=0,
-           stagnation=0, ledger_exists=False) -> dict:
-    return {
+           stagnation=0, ledger_exists=False,
+           n_distinct_hypotheses=None) -> dict:
+    state = {
         "has_champion": has_champion,
         "champion_explains_visible": champion_explains_visible,
         "holdout_residual_bits": holdout_residual_bits,
@@ -65,6 +66,9 @@ def _state(has_champion=True, champion_explains_visible=True,
         "stagnation": stagnation,
         "_ledger_exists": ledger_exists,
     }
+    if n_distinct_hypotheses is not None:
+        state["population_stats"]["n_distinct_hypotheses"] = n_distinct_hypotheses
+    return state
 
 
 # ── Routing tests (pure signal → decision, no I/O) ───────────────────────────
@@ -131,6 +135,20 @@ def test_distinct_fingerprints_routes_specialists():
     ))
     assert d["engine"] == "specialists"
     assert "mechanism duel" in d["reason"]
+
+
+def test_source_distinct_hypotheses_do_not_collapse_on_one_evidence_class():
+    d = er.route(_state(
+        champion_explains_visible=True,
+        holdout_residual_bits=5,
+        ledger_exists=True,
+        n_survivors=3,
+        n_distinct_hypotheses=3,
+        n_distinct_fingerprints=1,
+        stagnation=1,
+    ))
+    assert d["engine"] == "specialists"
+    assert "n_distinct_hypotheses=3" in d["reason"]
 
 
 def test_no_ledger_routes_specialists_when_stagnation_low():
@@ -492,8 +510,7 @@ def test_router_advances_past_distinguishing_when_all_targets_unreachable(tmp_pa
              patch.object(er, "_population_stats",
                           return_value={"n_survivors": 1, "n_distinct_fingerprints": 1}), \
              patch.object(er, "_stagnation", return_value=0), \
-             patch.object(er, "_unreachable_targets", return_value=False), \
-             patch.object(er, "_refresh_challenger_portfolio"):
+             patch.object(er, "_unreachable_targets", return_value=False):
             state = er.knowledge_state(tmp_path)
 
         # After _resolve_unreachable_targets runs inside knowledge_state,
@@ -554,3 +571,17 @@ def test_unreachable_signal_persists_after_resolution(tmp_path):
     (ws / "distinguishing_play_resolved.jsonl").write_text(
         json.dumps({"target_id": "abc123", "resolution": "observed"}) + "\n")
     assert _unreachable_targets(proj) is False
+
+    # Resolution is append-only and last-write-wins. Reopening a target
+    # invalidates an earlier unreachability premise; a later unreachable row
+    # can establish it again.
+    (ws / "distinguishing_play_resolved.jsonl").write_text(
+        "\n".join(
+            json.dumps({"target_id": "abc123", "resolution": resolution})
+            for resolution in ("unreachable", "reopened")
+        ) + "\n"
+    )
+    assert _unreachable_targets(proj) is False
+    with (ws / "distinguishing_play_resolved.jsonl").open("a") as fh:
+        fh.write(json.dumps({"target_id": "abc123", "resolution": "unreachable"}) + "\n")
+    assert _unreachable_targets(proj) is True

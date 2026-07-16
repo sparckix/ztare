@@ -2,10 +2,9 @@
 
 CONTEXT
 -------
-When the visible-perfect candidate pool is a behavioral monoculture (all
-candidates share one fingerprint), no distinguishing experiment can prune
-survivors because they all agree everywhere the probe battery can reach.
-This module diversifies the population by ENUMERATION: generating
+When visible-perfect candidates agree on the current evidence battery, that
+agreement is only a finite-evidence certificate.  This module diversifies the
+executable hypothesis population by ENUMERATION: generating
 visible-perfect variants whose predictions differ from the champion ONLY on
 unwitnessed states — the precise gap distinguishing experiments must probe.
 
@@ -38,10 +37,9 @@ PIPELINE
 --------
   enumerate_population(project_dir, budget, target_survivors)
     → for each candidate (generated deterministically by index):
-        1. write temp file
-        2. build_row_bitmap → quick visible-perfect check
-        3. if perfect → version_space.admit() (fingerprint dedup is free)
-        4. stop at target_survivors distinct fingerprints OR budget exhausted
+        1. persist source at a content-addressed executable path
+        2. version_space.admit() → visible gate + source-identity admission
+        3. stop at target_survivors hypotheses OR budget exhausted
     → write workspace/population_enumeration.jsonl receipt
 
 CLI
@@ -52,24 +50,17 @@ CLI
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 import os
-import re
-import sys
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from ztare.worldmodel.evidence_consolidation import (
-    _load_carrier_from_source,
-    build_row_bitmap,
-    resolve_episode_paths,
-)
+from ztare.worldmodel.evidence_consolidation import resolve_episode_paths
 from ztare.worldmodel.episode_log import EpisodeLog
 from ztare.worldmodel.gates import env_frame_indices
-from ztare.worldmodel.spec_catalog import validate_spec, lower_spec
+from ztare.worldmodel.patch_base_carrier import materialize_immutable_patch_base
+from ztare.worldmodel.spec_catalog import validate_spec
 from ztare.worldmodel.version_space import (
     admit,
     load as vs_load,
@@ -81,20 +72,20 @@ _DEFAULT_TARGET = int(os.environ.get("ZTARE_ENUM_TARGET_SURVIVORS", "8"))
 
 # ── champion loading ──────────────────────────────────────────────────────────
 
-def _load_champion_source(project_dir: Path) -> "str | None":
-    """Return source text of the best-available champion for this project.
+def _load_champion_path(project_dir: Path) -> "Path | None":
+    """Return the best-available champion carrier for this project.
 
     Preference order: test_model.py at project root (current champion),
     then workspace/submissions sorted descending (latest iteration).
     """
     tm = project_dir / "test_model.py"
     if tm.exists():
-        return tm.read_text()
+        return tm
     sub_dir = project_dir / "workspace" / "submissions"
     if sub_dir.is_dir():
         cands = sorted(sub_dir.glob("*.py"), reverse=True)
         if cands:
-            return cands[0].read_text()
+            return cands[0]
     return None
 
 
@@ -267,13 +258,13 @@ def _never_witnessed_predicates(
     return predicates
 
 
-def _wrapper_source(champion_source: str, guard_expr: str, guard_desc: str,
-                    variant_idx: int) -> str:
+def _wrapper_source(base_ref: str, base_sha256: str, guard_expr: str,
+                    guard_desc: str, variant_idx: int) -> str:
     """Build Python source for a wrapper-form variant.
 
     The wrapper:
-      1. Embeds the champion's full source (exec'd at module load time).
-      2. Defines a new step function that:
+      1. Binds the champion through a content-addressed PATCH_BASE edge.
+      2. Defines a patch delta that:
          - if guard_expr(state) is True → apply alternative behavior
            (return the s_next with one cell flipped to a different color in
            a cell that also never appears with that color in visible —
@@ -299,42 +290,23 @@ def _wrapper_source(champion_source: str, guard_expr: str, guard_desc: str,
 # population_enumerator wrapper variant {variant_idx}
 # guard: {guard_desc}
 # provenance: generator=wrapper_never_witnessed_guard
-import sys as _sys
-
-# Embed champion source
-_CHAMP_SRC = {champion_source!r}
-_CHAMP_NS = {{"__name__": "champ_embed_{variant_idx}"}}
-exec(compile(_CHAMP_SRC, "<champion_embed>", "exec"), _CHAMP_NS)
-_champ = (_CHAMP_NS.get("step") or _CHAMP_NS.get("f")
-          or _CHAMP_NS.get("model") or _CHAMP_NS.get("I_model"))
-if _champ is None:
-    raise AttributeError("champion embed has no callable step")
+PATCH_BASE = {{"source_ref": {base_ref!r}, "sha256": {base_sha256!r}}}
 
 
-def _guard(state):
-    return {guard_expr}
-
-
-def step(state, action, t=0):
-    base = _champ(state, action, t)
-    if _guard(state):
+def PATCH_DELTA(base_next, state, action):
+    if {guard_expr}:
         # never-witnessed branch: alternative prediction on unwitnessed state
-        if base is None:
-            return base
-        out = [list(row) for row in base]
+        if base_next is None:
+            return base_next
+        out = [list(row) for row in base_next]
         if {alt_row} < len(out) and {alt_col} < len(out[{alt_row}]):
             out[{alt_row}][{alt_col}] = {alt_color}
         return tuple(tuple(r) for r in out)
-    return base
-
-
-f = step
-model = step
-I_model = step
+    return base_next
 '''
 
 
-# ── visible-perfect check ────────────────────────────────────────────────────
+# ── admission helpers ────────────────────────────────────────────────────────
 
 def _guard_never_fires_on_visible(guard_expr: str, visible_rows: list,
                                    env_idx: set) -> bool:
@@ -358,24 +330,12 @@ def _guard_never_fires_on_visible(guard_expr: str, visible_rows: list,
     return True
 
 
-def _is_visible_perfect(
-    source: str,
-    src_label: str,
-    episode_path: Path,
-    project_dir: Path,
-    tmp_dir: Path,
-) -> bool:
-    """Write source to a temp file, run build_row_bitmap, return True iff perfect."""
-    # Content-addressed filename so repeated identical sources hit the bitmap cache
-    sha = hashlib.sha256(source.encode()).hexdigest()[:16]
-    tmp_py = tmp_dir / f"enum_{sha}.py"
-    tmp_py.write_text(source)
-    try:
-        bm = build_row_bitmap(tmp_py, episode_path, project_dir=project_dir,
-                              persist_dir=project_dir / "workspace" / "row_bitmaps")
-        return not bm.get("wrong_rows")
-    except Exception:
-        return False
+def _store_variant(project_dir: Path, source: str) -> Path:
+    """Persist an executable hypothesis under its full source identity."""
+    ref, _digest = materialize_immutable_patch_base(
+        project_dir, source, prefix="version_space_hypothesis"
+    )
+    return project_dir / ref
 
 
 # ── main pipeline ─────────────────────────────────────────────────────────────
@@ -385,7 +345,7 @@ def enumerate_population(
     budget: int = _DEFAULT_BUDGET,
     target_survivors: int = _DEFAULT_TARGET,
 ) -> dict:
-    """Main entry point: generate and admit visible-perfect distinct variants.
+    """Generate and admit source-distinct visible-perfect hypotheses.
 
     Returns a receipt dict (also written to workspace/population_enumeration.jsonl).
     """
@@ -396,20 +356,13 @@ def enumerate_population(
     if visible_path is None or not visible_path.exists():
         return _receipt(project_dir, 0, 0, 0, 0, [], budget, "no visible episode")
 
-    champ_source = _load_champion_source(project_dir)
-    if champ_source is None:
+    champ_path = _load_champion_path(project_dir)
+    if champ_path is None:
         return _receipt(project_dir, 0, 0, 0, 0, [], budget, "no champion found")
+    champ_source = champ_path.read_text()
 
     # Admit champion itself first (establishes baseline fingerprint in ledger)
-    champ_path = project_dir / "test_model.py"
-    if not champ_path.exists():
-        sub_dir = project_dir / "workspace" / "submissions"
-        if sub_dir.is_dir():
-            cands = sorted(sub_dir.glob("*.py"), reverse=True)
-            if cands:
-                champ_path = cands[0]
-    if champ_path.exists():
-        admit(champ_path, project_dir)
+    admit(champ_path, project_dir)
 
     # Probe spec-form
     spec = _extract_spec_from_source(champ_source)
@@ -418,97 +371,81 @@ def enumerate_population(
     visible_log = EpisodeLog.read_jsonl(visible_path)
     visible_rows_list = list(visible_log)
     vis_env_idx = env_frame_indices(visible_log) if visible_rows_list else set()
+    champ_ref, champ_sha256 = materialize_immutable_patch_base(
+        project_dir,
+        champ_source,
+        prefix="version_space_base",
+    )
 
     generated = 0
     perfect = 0
     admitted = 0
     generator_mix: dict[str, int] = {}
 
-    with tempfile.TemporaryDirectory() as tmp_dir_str:
-        tmp_dir = Path(tmp_dir_str)
-
-        # -- SPEC-FORM variants --
-        if spec is not None:
-            for v_spec, v_desc in _spec_variants(spec):
-                if generated >= budget:
-                    break
-                survivors_now = vs_load(project_dir)
-                distinct = len({s.get("fingerprint") for s in survivors_now})
-                if distinct >= target_survivors:
-                    break
-
-                src = _spec_to_source(v_spec)
-                generated += 1
-                if _is_visible_perfect(src, v_desc, visible_path, project_dir, tmp_dir):
-                    perfect += 1
-                    sha = hashlib.sha256(src.encode()).hexdigest()[:16]
-                    tmp_py = tmp_dir / f"enum_{sha}.py"
-                    tmp_py.write_text(src)
-                    rec = admit(tmp_py, project_dir)
-                    if rec.get("status") == "admitted":
-                        admitted += 1
-                        generator_mix["spec_edit"] = generator_mix.get("spec_edit", 0) + 1
-
-        # -- WRAPPER-FORM variants --
-        # Mine predicates from already-loaded episode rows (no re-read).
-        # Wrappers are identity on all visible rows BY CONSTRUCTION (guard-never-fires
-        # proven below). They will fingerprint identically to champion in version_space
-        # (same predictions on all battery probes) and therefore appear as duplicates.
-        # Their value is as play-target hypotheses: recorded in the receipt ledger
-        # with provenance so the play loop can generate distinguishing states.
-        # We record them as "wrapper_hypotheses" in the receipt, separately from
-        # version_space "admitted" count which tracks visible-differentiable programs.
-        predicates = _never_witnessed_predicates(visible_rows_list, vis_env_idx)
-        wrapper_hypotheses: list[dict] = []
-
-        for idx, (guard_expr, guard_desc) in enumerate(predicates):
-            if generated >= budget:
+    # -- SPEC-FORM variants --
+    if spec is not None:
+        for v_spec, v_desc in _spec_variants(spec):
+            if generated >= budget or len(vs_load(project_dir)) >= target_survivors:
                 break
-            # Don't stop on vs distinct_fingerprints for wrappers — they won't add new fps
-            # but they ARE distinct hypotheses for the play loop.
-
-            guard_safe = _guard_never_fires_on_visible(guard_expr, visible_rows_list,
-                                                       vis_env_idx)
             generated += 1
+            path = _store_variant(project_dir, _spec_to_source(v_spec))
+            rec = admit(
+                path,
+                project_dir,
+                provenance={"generator": "spec_edit", "edit": v_desc},
+            )
+            if rec.get("status") == "admitted":
+                perfect += 1
+                admitted += 1
+                generator_mix["spec_edit"] = generator_mix.get("spec_edit", 0) + 1
 
-            if not guard_safe:
-                continue  # predicate fires on visible → not safe
-
-            perfect += 1  # guard-never-fires == provably visible-perfect
-
-            src = _wrapper_source(champ_source, guard_expr, guard_desc, idx)
-            src_sha16 = hashlib.sha256(src.encode()).hexdigest()[:16]
-
-            wrapper_hypotheses.append({
+    # -- WRAPPER-FORM variants --
+    # Guard safety is an inexpensive construction check; admit() remains the one
+    # evidence gate.  The stored wrappers are ordinary version-space members.
+    predicates = _never_witnessed_predicates(visible_rows_list, vis_env_idx)
+    for idx, (guard_expr, guard_desc) in enumerate(predicates):
+        if generated >= budget or len(vs_load(project_dir)) >= target_survivors:
+            break
+        generated += 1
+        if not _guard_never_fires_on_visible(guard_expr, visible_rows_list, vis_env_idx):
+            continue
+        path = _store_variant(
+            project_dir,
+            _wrapper_source(
+                champ_ref,
+                champ_sha256,
+                guard_expr,
+                guard_desc,
+                idx,
+            ),
+        )
+        rec = admit(
+            path,
+            project_dir,
+            provenance={
                 "generator": "wrapper_never_witnessed_guard",
                 "guard": guard_desc,
                 "guard_expr": guard_expr,
                 "variant_idx": idx,
-                "src_sha16": src_sha16,
-                "provenance": "guard_never_fires_on_visible_proven",
-            })
-
-        if wrapper_hypotheses:
-            k = "wrapper_never_witnessed_guard"
-            generator_mix[k] = len(wrapper_hypotheses)
-            # Count each unique guard as "admitted" for receipt reporting
-            admitted += len(wrapper_hypotheses)
+                "construction_certificate": "guard_never_fires_on_visible",
+            },
+        )
+        if rec.get("status") == "admitted":
+            perfect += 1
+            admitted += 1
+            key = "wrapper_never_witnessed_guard"
+            generator_mix[key] = generator_mix.get(key, 0) + 1
 
     survivors_final = vs_load(project_dir)
     vs_distinct_fps = len({s.get("fingerprint") for s in survivors_final})
-
-    # Distinct "population members": version-space fingerprints + wrapper hypotheses
-    # (wrapper hypotheses are distinct by guard text — each is a unique alternative law)
-    n_wrapper_hyps = len(wrapper_hypotheses)
-    distinct_fps = vs_distinct_fps + n_wrapper_hyps
-
-    ledger_entry: dict = {
+    distinct_hypotheses = len(survivors_final)
+    ledger_entry = {
         "vs_distinct_fingerprints": vs_distinct_fps,
-        "wrapper_hypotheses": wrapper_hypotheses,
+        "distinct_hypotheses": distinct_hypotheses,
         "generator_mix": generator_mix,
     }
 
-    return _receipt(project_dir, generated, perfect, admitted, distinct_fps,
+    return _receipt(project_dir, generated, perfect, admitted, vs_distinct_fps,
                     list(generator_mix.keys()), budget, note=None,
                     extra=ledger_entry)
 
@@ -532,6 +469,7 @@ def _receipt(
         "generated_count": generated,
         "perfect": perfect,
         "admitted": admitted,
+        "distinct_hypotheses": int((extra or {}).get("distinct_hypotheses", 0)),
         "distinct_fingerprints": distinct_fps,
         "generator_mix": generator_mix,
     }
@@ -555,13 +493,13 @@ def _cli() -> int:
     from ztare.worldmodel.version_space import disagreement_report
 
     ap = argparse.ArgumentParser(
-        description="Enumerate behaviorally-distinct visible-perfect variants."
+        description="Enumerate source-distinct visible-perfect hypotheses."
     )
     ap.add_argument("--project", required=True, help="Project directory")
     ap.add_argument("--budget", type=int, default=_DEFAULT_BUDGET,
                     help=f"Max candidates to generate (default {_DEFAULT_BUDGET})")
     ap.add_argument("--target", type=int, default=_DEFAULT_TARGET,
-                    help=f"Stop at this many distinct fingerprints (default {_DEFAULT_TARGET})")
+                    help=f"Stop at this many executable hypotheses (default {_DEFAULT_TARGET})")
     ap.add_argument("--report", action="store_true",
                     help="Print disagreement report after enumeration")
     args = ap.parse_args()

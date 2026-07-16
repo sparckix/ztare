@@ -143,7 +143,8 @@ def test_join_lowerable_selectors_coproduct_and_conflict(tmp_path) -> None:
             "source": "selector_b_ref",
         },
     ]
-    assert refused["candidate_delta_admissible"] is False
+    assert refused["candidate_family_admissible"] is False
+    assert "candidate_delta_admissible" not in refused
     assert refused["join_status"] == "conflict"
     assert refused["conflicting_keys"] == ["B"]
     assert refused["conflicting_guard_pairs"] == [
@@ -168,16 +169,25 @@ def test_join_lowerable_selectors_conflicts_without_provable_guard_disjointness(
         encoding="utf-8",
     )
     right.write_text(
-        json.dumps({"selector_map": [{"key": "A", "value": 1}]}),
+        json.dumps({"selector_map": [{"key": "A", "value": 1, "when_phase": [2, 0]}]}),
         encoding="utf-8",
     )
 
     refused = json.loads(join_lowerable_selectors(project, selector_a_ref="left.json", selector_b_ref="right.json"))
 
-    assert refused["candidate_delta_admissible"] is False
+    assert refused["candidate_family_admissible"] is False
+    assert "candidate_delta_admissible" not in refused
     assert refused["join_status"] == "conflict"
     assert refused["conflicting_keys"] == ["A"]
-    assert refused["conflicting_guard_pairs"][0]["overlap_kind"] == "unguarded_duplicate_selector"
+    assert refused["conflicting_guard_pairs"] == [
+        {
+            "selector_key": "A",
+            "overlap_kind": "guard_disjointness_not_proven",
+            "left_guard": {"when_phase": [2, 0]},
+            "right_guard": {"when_phase": [2, 0]},
+            "shared_guard_families": ["when_phase"],
+        }
+    ]
 
 
 def test_leaf_workbench_control_rules_are_single_receipt_boundary() -> None:

@@ -51,7 +51,9 @@ def test_archive_creates_slice_file_and_ledger_row(tmp_path):
 
     project = _project_dir(tmp_path)
     log = _make_synthetic_log(5)
-    row = archive_sealed_eval_slice(project, log)
+    row = archive_sealed_eval_slice(
+        project, log, source_carrier_sha256="a" * 64
+    )
 
     # slice file exists inside eval_slices/
     slice_path = project / row["path"]
@@ -69,6 +71,7 @@ def test_archive_creates_slice_file_and_ledger_row(tmp_path):
     assert len(rows) == 1
     assert rows[0]["source"] == "live_play"
     assert rows[0]["steps"] == 5
+    assert rows[0]["source_carrier_sha256"] == "a" * 64
 
 
 def test_archive_appends_multiple_rows(tmp_path):
@@ -77,12 +80,70 @@ def test_archive_appends_multiple_rows(tmp_path):
 
     project = _project_dir(tmp_path)
     log = _make_synthetic_log(3)
-    archive_sealed_eval_slice(project, log)
-    archive_sealed_eval_slice(project, log)
+    archive_sealed_eval_slice(project, log, source_carrier_sha256="a" * 64)
+    archive_sealed_eval_slice(project, log, source_carrier_sha256="a" * 64)
 
     ledger = project / "workspace" / "sealed_eval_slices.jsonl"
     rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
     assert len(rows) == 2, "each call appends one row"
+
+
+def test_evidence_admission_drops_only_identical_observations(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import _append_observations  # noqa: PLC0415
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+
+    project = _project_dir(tmp_path)
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    a, b, c = ((1,),), ((2,),), ((3,),)
+    original = Transition(t=4, s=a, a=1, s_next=b)
+    EpisodeLog([original]).write_jsonl(episode)
+    prefix = episode.read_bytes()
+    loaded = EpisodeLog.read_jsonl(episode)
+
+    loaded, admitted = _append_observations(
+        project,
+        [original, Transition(t=4, s=a, a=1, s_next=c)],
+        log=loaded,
+    )
+
+    assert admitted == 1
+    assert episode.read_bytes().startswith(prefix)
+    index = loaded.context_observation_index()
+    assert len(index) == 1
+    assert len(next(iter(index.values()))) == 2
+
+
+def test_evidence_admission_preserves_identity_upgrade(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import _append_observations  # noqa: PLC0415
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    project = _project_dir(tmp_path)
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    a, b = ((1,),), ((2,),)
+    original = Transition(t=4, s=a, a=1, s_next=b)
+    identified = Transition(
+        t=4,
+        s=a,
+        a=1,
+        s_next=b,
+        identity=TransitionIdentity(
+            kind="dynamics",
+            authority="environment_adapter",
+            source_epoch=2,
+            target_epoch=2,
+            evidence_refs=("adapter:last_transition_identity",),
+        ),
+    )
+    EpisodeLog([original]).write_jsonl(episode)
+    loaded = EpisodeLog.read_jsonl(episode)
+
+    loaded, admitted = _append_observations(project, [identified], log=loaded)
+
+    assert admitted == 1
+    assert list(loaded)[-1].identity == identified.identity
 
 
 # ---------------------------------------------------------------------------
@@ -180,6 +241,9 @@ def _write_toy_ledger(project: Path, slice_rel_path: str, steps: int) -> None:
             "recorded_utc": "20260101T000000Z",
             "steps": steps,
             "source": "live_play",
+            "source_carrier_sha256": hashlib.sha256(
+                (project / "test_model.py").read_bytes()
+            ).hexdigest(),
         }) + "\n")
 
 
@@ -268,3 +332,24 @@ def test_fresh_gate_fires_with_env_and_slice(tmp_path):
     assert gate["tier"] == "heldout", "tier must be heldout"
     assert "slice_path" in gate["detail"], "detail must include slice_path"
     assert "recorded_utc" in gate["detail"], "detail must include timestamp"
+    assert gate["detail"]["source_carrier_sha256"] == hashlib.sha256(
+        (project / "test_model.py").read_bytes()
+    ).hexdigest()
+
+
+@pytest.mark.parametrize("mutated_identity", ["candidate", "slice"])
+def test_fresh_gate_rejects_identity_mutation(tmp_path, mutated_identity):
+    project = _make_harness_project(tmp_path)
+    slice_rel = "raw/episodes/eval_slices/eval_20260101T000000Z.jsonl"
+    _write_toy_episode(project / slice_rel, n=3)
+    _write_toy_ledger(project, slice_rel, steps=3)
+    if mutated_identity == "candidate":
+        (project / "test_model.py").write_text(_identity_test_model() + "# changed\n")
+    else:
+        with (project / slice_rel).open("a") as handle:
+            handle.write("\n")
+
+    result = _run_harness(project, {"ZTARE_FRESH_EVAL_SLICE": "1"})
+    gate = result["gates"]["fresh_eval_rollout"]
+    assert gate["pass"] is False
+    assert "identity" in gate["error"] or "bytes" in gate["error"]
