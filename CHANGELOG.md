@@ -19,6 +19,12 @@ No unreleased changes.
 - Public command-example validation now checks repository module paths without
   importing their parent packages, so optional scenario dependencies do not
   enter the provider-free first-run path.
+- New ARC/world-model and gate report formatters now parse on every supported
+  Python version instead of relying on Python 3.12+ f-string grammar.
+- The syntax gate now prefers Python 3.11 when it is available, matching the
+  minimum supported interpreter and the public clean-install workflow.
+- Contract-coherence tests now classify `PATCH_DELTA_SPEC` as a carrier format
+  instead of a control-receipt type.
 
 ## [1.2.2] - 2026-07-16
 

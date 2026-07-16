@@ -1410,6 +1410,13 @@ def format_worldmodel_retry_skeleton(
         if action_request_already_executed
         else ""
     )
+    retry_pack_section = render_retry_pack_lines(
+        receipts_text=retry_state_text,
+        candidate_memory_refs=(
+            candidate_memory_refs_for_retry(project_dir) if project_dir else ()
+        ),
+        heading="CARRIED RECEIPT FACTS",
+    )
     body = (
         "This substrate is evaluated by deterministic grid replay and held-out "
         "rollout. Thesis prose and assertion tests are advisory only. Candidate "
@@ -1425,11 +1432,7 @@ def format_worldmodel_retry_skeleton(
         "Kernel-produced observation receipts are not authored by the model; when "
         "compact receipt facts are shown, cite their refs/facts instead of pasting "
         "summaries as new receipts.\n\n"
-        f"{render_retry_pack_lines(
-            receipts_text=retry_state_text,
-            candidate_memory_refs=candidate_memory_refs_for_retry(project_dir) if project_dir else (),
-            heading='CARRIED RECEIPT FACTS',
-        )}"
+        f"{retry_pack_section}"
         f"{control_rules_section}"
         f"{action_request_section}"
         f"{ready_receipt_facts_section}"

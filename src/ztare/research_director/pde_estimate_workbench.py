@@ -4474,11 +4474,11 @@ def render_markdown(pack: dict[str, Any]) -> str:
     if pack.get("dimensionless_exponent_source_checks"):
         for item in pack["dimensionless_exponent_source_checks"]:
             result = item.get("result") or {}
-            lines.append(f"- `{item["label"]}`: {item["report"]}")
+            lines.append(f"- `{item['label']}`: {item['report']}")
             for violation in result.get("violations", []):
                 lines.append(
-                    f"- violation: `{violation.get("type")}` "
-                    f"{violation.get("missing_fields", violation.get("fields", ""))}"
+                    f"- violation: `{violation.get('type')}` "
+                    f"{violation.get('missing_fields', violation.get('fields', ''))}"
                 )
     else:
         lines.append("- (not requested)")
@@ -7359,7 +7359,7 @@ def main() -> int:
     )
     print(
         "dimensionless_exponent_source_checks: "
-        f"{len(pack["dimensionless_exponent_source_checks"])}"
+        f"{len(pack['dimensionless_exponent_source_checks'])}"
     )
     print(
         "persistence_budget_exponent_checks: "

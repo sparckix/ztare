@@ -93,7 +93,7 @@ REQUIRED_MAKE_SNIPPETS = [
     "move-card-atlas-build:",
     "scripts/public/control/primitive_operator_cards.py --build-atlas",
     "compile-src:",
-    "$(PYTHON) -m compileall -q src/ztare",
+    "$(PYTHON_311) -m compileall -q src/ztare",
     "gates: compile-src flakes flakes-leanmill",
     "scripts/public/control/undefined_name_gate.py",
     "forensic-workbench-snapshot:",

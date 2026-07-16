@@ -155,7 +155,7 @@ def test_publish_gate_runs_public_claim_boundary_checks() -> None:
     assert "compile-src" in gate_header
     assert "flakes" in gate_header
     assert "flakes-leanmill" in gate_header
-    assert "$(PYTHON) -m compileall -q src/ztare" in makefile
+    assert "$(PYTHON_311) -m compileall -q src/ztare" in makefile
     assert "scripts/public/control/undefined_name_gate.py" in makefile
     assert "pyflakes src/ztare" not in makefile
 

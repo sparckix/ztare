@@ -144,4 +144,4 @@ def run_gate(*, expression: str, dimensionless_variables: Any,
 def format_report(result: dict[str, Any]) -> str:
     status = "PASS" if result.get("passed") else "FAIL"
     label = result.get("label") or result.get("expression") or GATE_ID
-    return f"{status} {label}: {result.get("reason")}" 
+    return f"{status} {label}: {result.get('reason')}"

@@ -97,7 +97,7 @@ class TestReceiptTypeCoherence:
             "MODEL_PARAMS", "PARAMETER_NAMES", "INIT_RANGE",
             "PARAMETRIC_FORM", "Q_VARIABLES", "EXTENSIONS_SRC",
             # carrier/format concepts (submission form), not control receipts:
-            "PATCH_BASE", "PATCH_DELTA",
+            "PATCH_BASE", "PATCH_DELTA", "PATCH_DELTA_SPEC",
             "LEAF_WORKBENCH_ACTION_REQUEST_PRECHECK",
             "LEAF_WORKBENCH_RECEIPT_PROVENANCE_PRECHECK",
             "PATCH_BASE_REGRESSION_PRECHECK", "PATCH_BASE_IMPROVEMENT_PRECHECK",

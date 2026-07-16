@@ -1,4 +1,5 @@
 PYTHON ?= ./venv/bin/python
+PYTHON_311 ?= $(or $(shell command -v python3.11 2>/dev/null),$(PYTHON))
 PROJECT ?= your_project
 MODEL ?= $(ZTARE_MODEL)
 EVIDENCE_LLM_TIMEOUT ?= 300
@@ -1709,7 +1710,7 @@ research-move-routing-drift-audit:  ## Guard against duplicated brittle research
 	$(PYTHON) scripts/public/control/research_move_routing_drift_audit.py
 .PHONY: compile-src flakes flakes-leanmill
 compile-src:  ## Syntax-compile src/ztare so syntax errors fail before narrower flake gates
-	$(PYTHON) -m compileall -q src/ztare
+	$(PYTHON_311) -m compileall -q src/ztare
 flakes:  ## F821 undefined-name tripwire across src/ztare (the "name bound only in a SIBLING scope / silently-dead feature / live NameError" class — caught the proposer-pool _swap bug)
 	$(PYTHON) scripts/public/control/undefined_name_gate.py --label "flakes src/ztare" src/ztare/
 flakes-leanmill:  ## F821 tripwire scoped to the (now-clean) leanmill core — gated by `make gates` so the bug class can't regress here

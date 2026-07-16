@@ -155,12 +155,12 @@ def format_report(result: Mapping[str, Any]) -> str:
     if result.get("passed"):
         return (
             "PASS rank/coercivity: observable rank "
-            f"{result.get("observable_rank")} supports target dimension "
-            f"{result.get("target_dimension")} with receipts {result.get("receipts")}."
+            f"{result.get('observable_rank')} supports target dimension "
+            f"{result.get('target_dimension')} with receipts {result.get('receipts')}."
         )
     kinds = [v.get("kind") for v in result.get("violations", [])]
     return (
         "FAIL rank/coercivity: "
-        f"observable rank {result.get("observable_rank")} vs target dimension "
-        f"{result.get("target_dimension")}; violations={kinds}."
+        f"observable rank {result.get('observable_rank')} vs target dimension "
+        f"{result.get('target_dimension')}; violations={kinds}."
     )
