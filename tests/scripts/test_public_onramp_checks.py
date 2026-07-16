@@ -529,8 +529,10 @@ def test_cli_guide_lists_every_top_level_command() -> None:
 
 def test_repository_citation_metadata_matches_public_front_door() -> None:
     text = Path("CITATION.cff").read_text(encoding="utf-8")
+    project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+    version = project["project"]["version"]
 
-    assert "version: \"0.2.0\"" in text
+    assert f'version: "{version}"' in text
     assert "ZTARE: A Local Claim-Governance Workbench for Auditable Human-Agent Research" in text
     assert "socio-technical research system" not in text
     assert "BibTeX entries" not in text

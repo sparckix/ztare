@@ -27,6 +27,9 @@ from typing import Iterable
 REPO = Path(__file__).resolve().parents[3]
 PYTHON = os.environ.get("PYTHON", sys.executable)
 TEST_PREFIX = "test_runtime_smoke"
+PROJECT_VERSION = tomllib.loads(
+    (REPO / "pyproject.toml").read_text(encoding="utf-8")
+)["project"]["version"]
 
 RUNTIME_ARTIFACT_DIRS = [
     REPO / "org/tasks/active",
@@ -724,7 +727,7 @@ REQUIRED_CLI_COMMAND_CONTRACTS = [
     (
         ("version",),
         (
-            "ztare 0.2.0",
+            f"ztare {PROJECT_VERSION}",
             "python",
         ),
     ),

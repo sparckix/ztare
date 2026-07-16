@@ -2228,15 +2228,13 @@ def _parse_bool_flags(args: list[str], allowed: set[str]) -> dict[str, bool]:
 
 
 def _ztare_version() -> str:
-    """Resolve the installed ZTARE version from package metadata, falling
-    back to the ``[project].version`` field in ``pyproject.toml`` for a
-    developer checkout, then to ``unknown``. Never raises."""
-    from importlib.metadata import PackageNotFoundError, version
+    """Resolve the checkout version first, then installed package metadata.
 
-    try:
-        return version("ztare")
-    except PackageNotFoundError:
-        pass
+    Editable environments can retain stale distribution metadata after a
+    version bump, while ``pyproject.toml`` is authoritative in a checkout.
+    Installed wheels have no repository root and use package metadata.
+    Never raises.
+    """
     try:
         import tomllib
 
@@ -2247,6 +2245,12 @@ def _ztare_version() -> str:
                 data = tomllib.load(fh)
             return data.get("project", {}).get("version", "unknown")
     except (RuntimeError, OSError, tomllib.TOMLDecodeError):
+        pass
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        return version("ztare")
+    except PackageNotFoundError:
         pass
     return "unknown"
 

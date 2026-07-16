@@ -79,6 +79,15 @@ class HelpAndVersionTests(unittest.TestCase):
         self.assertEqual(rc_flag, 0)
         self.assertEqual(out_sub, out_flag)
 
+    def test_checkout_version_matches_pyproject(self) -> None:
+        import tomllib
+
+        pyproject = cli._repo_root() / "pyproject.toml"
+        with pyproject.open("rb") as fh:
+            expected = tomllib.load(fh)["project"]["version"]
+
+        self.assertEqual(cli._ztare_version(), expected)
+
 
 class UnknownCommandTests(unittest.TestCase):
     def test_unknown_top_command_returns_two_and_prints_help_on_stderr(self) -> None:
