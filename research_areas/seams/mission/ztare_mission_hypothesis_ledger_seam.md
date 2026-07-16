@@ -7540,3 +7540,97 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 - **Result:** mixed/negative for alignment sufficiency. `subtle_wrong_contract` and `subtle_wrong_contract_plus_alignment` both reached action accuracy `0.75` and repair/reject accuracy `0.75`; alignment raised explicit conflict mentions (`0.6667 -> 1.0`) and slightly lowered cost (`22 -> 21`) but did not improve correctness. Correct reference was `1.0`; source-only was `0.6667`.
 - **Interpretation:** source-contract alignment helps make conflicts visible, but subtle wrong order, stop, handoff, and lowering errors require explicit program-order and stop-condition checks.
 - **Runnable packet:** `workingpapers/epistemic-generation/experiments/wrong_contract_robustness_20260524/`
+
+## H-AXIOMPACK-20260712-01 - Search-wave image growth as the continuation discriminator
+
+- **Status:** open / preregistered
+- **Eigenquestion:** are repeated anonymous theory-search waves exploring new semantic failure structure, or only new syntax under a blind representation?
+- **Hypothesis:** classifying each wave by growth of raw conjecture identities versus their residual-yield and premise-ablation image will separate productive continuation from representation blindness and regional exhaustion without prescribing the next theory language.
+- **Discriminating test:** replay the active finite functor-image campaign through the shared image-set classification. `expanding` requires a new outcome carrier; `alpha_blind` requires new raw conjectures with no new carrier; `exhausted` requires no new raw conjecture. Compare the classification with the frozen lineage traces and the leaf's next decision.
+- **Success criterion:** the receipt correctly distinguishes the observed repeated-refutation pattern and causes the next leaf decision to request a representation/language change or stop unresolved when the image is flat, while preserving unchanged-context continuation when the image grows.
+- **Kill condition:** outcome carriers collapse mathematically different failures, depend on substrate labels, or merely restate candidate identity; in those cases remove the receipt rather than add routing exceptions.
+
+## H-AXIOMPACK-20260712-02 - Fair wave capacity preserves lineage diversity
+
+- **Status:** open / preregistered
+- **Eigenquestion:** does sequential access to a shared hard budget collapse nominally isolated lineages into one funded lineage?
+- **Hypothesis:** allocating the currently available provider-call/turn capacity across lineages before dispatch will preserve independent leaf opportunity without prescribing any mathematical move.
+- **Discriminating test:** resume the same two-lineage campaign with a four-call extension after installing fair wave allocation; each lineage must receive two authorized turns unless it terminates earlier.
+- **Success criterion:** both lineage receipts show nonzero opportunity, total usage stays within the extension, and aggregation remains post-lineage.
+- **Kill condition:** allocation changes candidate content, leaks sibling traces, exceeds the shared cap, or prevents unused capacity from returning to the campaign.
+
+## H-AXIOMPACK-20260712-03 - Branch-preserving resume closes sibling-trace leakage
+
+- **Status:** open / preregistered
+- **Eigenquestion:** did aggregate resume preserve each isolated lineage, or merge sibling requests into a shared restart trace?
+- **Hypothesis:** replaying terminal lineage rows unchanged and resuming only pending branches from their own trace will eliminate sibling leakage and wasted redispatch.
+- **Discriminating test:** resume the current mixed terminal/pending wave. The terminal branch must use zero new calls; the pending branch must receive the extension and see no sibling request.
+- **Success criterion:** aggregate lineage IDs persist, only the pending branch's call count grows, and the terminal branch's receipt is byte-identical.
+- **Kill condition:** any sibling trace appears in the pending prompt projection, a terminal branch is redrawn, or aggregation changes a preserved receipt.
+
+## H-AXIOMPACK-20260712-04 - Resume the interrupted action, not the next lifecycle state
+
+- **Status:** open / preregistered
+- **Eigenquestion:** after synthesis is blocked before dispatch, does resume retry synthesis over frozen lineages or incorrectly open another conjecture wave?
+- **Hypothesis:** preserving every frozen lineage and retaining the wave identity will let one added boundary call retry only synthesis with zero navigator spend.
+- **Discriminating test:** add one boundary call and resume the current synthesis-budget-stop receipt.
+- **Success criterion:** navigator usage is unchanged, the synthesis input digest replays, and exactly one late-synthesis decision materializes.
+- **Kill condition:** any lineage is redrawn, the wave image changes, or the retry consumes navigation capacity.
+
+## H-AXIOMPACK-20260712-05 - Durable leaf interaction changes search depth
+
+- **Status:** open / preregistered
+- **Eigenquestion:** did cold completion-per-action truncate coherent conjectural development in the anonymous compound-theory campaign?
+- **Hypothesis:** keeping one subscription session per isolated lineage and one for late synthesis across search waves will produce longer causally connected probe chains without leaking sibling state or weakening host receipts.
+- **Discriminating test:** repeat the exact epoch-2 functor-image context and frozen blueprint with GPT-5.5 medium under the same 30-call envelope. Compare move-chain depth, repeated probes, representation requests, and frozen compound programs with the prior cold-session attempt.
+- **Success criterion:** at least one lineage uses prior receipts to execute a multi-step discriminator that was absent from the cold run, while session keys remain lineage-local and every scientific claim remains host-receipted.
+- **Kill condition:** the run repeats routine single-law recovery, warm context causes sibling leakage or stale-evidence claims, or interaction depth increases without a new discriminator.
+
+## H-AXIOMPACK-20260712-06 - Observation-algebra surfacing unlocks compound search
+
+- **Status:** open / preregistered
+- **Eigenquestion:** were prior no-candidate runs caused by absence of compound structure, or by hiding the finite context's minimal dependency geometry behind generic node pages?
+- **Hypothesis:** exposing the 1,687 exact bounded minimal presentations with joint-only consequences as an optional paged move card will let a warm Sol-medium lineage construct a baseline-surviving compound prediction or a falsifiable basis-completion probe without prescribing a theory.
+- **Discriminating test:** rerun the existing portable compound-implication campaign on context `d22e5a390…` with unchanged blueprint, budgets, model, baseline pricing, and boundary gates; the mechanism changes are the new dependency card and durable lineage sessions.
+- **Success criterion:** a lineage uses a dependency receipt in a multi-step chain and either freezes a residual compound program or authors a typed formula/language request whose stated test targets a witnessed observational alias.
+- **Kill condition:** dependencies are merely template-explained, the leaf nominates by consequence count without residual evidence, or the card changes no probe path relative to generic node navigation.
+
+## H-ACI-20260712-01 - Authoritative epoch identity removes boundary residuals without pixel heuristics
+
+- **Status:** open / preregistered
+- **Axis:** general-purpose interactive substrate / transition identity
+- **Eigenquestion:** are large post-action residuals at level or episode changes failures of the learned dynamics, or boundary transitions whose identity was discarded between the environment adapter and replay gate?
+- **Hypothesis:** carrying an adapter-authored transition identity with source epoch, target epoch, and boundary kind through the pursuit receipt and episode log will let replay gates exclude boundary transitions without learning a repaint/property heuristic, while retaining all explicitly within-epoch transitions even when their pixel delta is large.
+- **Discriminating test:** construct paired traces with identical grid/action/time values: one adapter-stamped epoch boundary and one adapter-stamped within-epoch dynamics row. Round-trip both through JSONL and the live pursuit-to-log path, then run `env_frame_indices` and replay diagnostics. Re-run legacy fixtures with no identity metadata to measure compatibility.
+- **Success criterion:** only the boundary-stamped row is excluded; the within-epoch row remains score-bearing; identity metadata survives pursuit and JSONL byte semantics; legacy unclassified logs retain their current fallback classification; no color, coordinate, or repaint-size exception is added.
+- **Kill condition:** the implementation infers epoch identity from grid properties, forces correspondence across an unsupported boundary, changes legacy row classification, or permits candidate-authored metadata to excuse replay failures.
+
+## H-ACI-20260712-02 - Producer-consumer closure distinguishes active capability from archival output
+
+- **Status:** open / preregistered
+- **Axis:** self-improvement / receipt topology
+- **Eigenquestion:** are typed receipts and capability artifacts improving the search loop, or accumulating as producers with no active downstream consumer?
+- **Hypothesis:** a phase-scoped bipartite producer-consumer audit will expose inactive capabilities such as unwired compiler outputs and inert K-line receipts; failing active declarations while quarantining archival-only outputs will increase architectural signal without preventing staged development.
+- **Discriminating test:** build the graph from registered ledger schemas, active phase routing, and statically discoverable read/write call sites. Plant one active producer with no consumer, one matched active pair, and one archival producer explicitly excluded from active capability claims.
+- **Success criterion:** the unmatched active producer fails; the matched pair passes; the archival producer is reported as dormant but does not halt; every active consumer names the exact schema and phase it reads.
+- **Kill condition:** the audit relies on filename/string coincidence, treats an import as consumption, lets a prompt mention count as a read, or grants an unmatched producer capability status.
+
+## H-ACI-20260712-03 - Receipt compilation changes search topology without semantic prompt injection
+
+- **Status:** open / preregistered
+- **Axis:** self-improvement / search-policy compilation
+- **Eigenquestion:** can accumulated outcome receipts improve future allocation without teaching candidate nodes the conclusions encoded in those receipts?
+- **Hypothesis:** compiling receipt outcomes into deterministic width, depth, tool, and route weights outside prompt assembly will reduce repeated failed configurations while preserving node-level semantic independence.
+- **Discriminating test:** replay matched search decisions with the same node prompt and candidate model under two allocator states: neutral weights and receipt-compiled weights. Verify prompt digests are identical while allocation decisions differ only where prospective receipts support a route prior.
+- **Success criterion:** prompt digests remain byte-identical; only topology/allocation fields change; prospective success/failure receipts affect a later decision; retrospective or unbound receipts have zero authority.
+- **Kill condition:** receipt text enters a node prompt, a retrospective row changes allocation, candidate semantics are edited, or an unbound receipt affects promotion.
+
+## H-ACI-20260712-04 - Time quotients require carrier certificates
+
+- **Status:** open / preregistered
+- **Axis:** general-purpose interactive substrate / temporal identity
+- **Eigenquestion:** do modulo-time cache and visited-state keys preserve lawful dynamics, or merge distinct temporal states because periodicity happened to hold on a small visible sample?
+- **Hypothesis:** replacing uncertified `t mod k` identities with full adapter time will prevent false transition deduplication and prediction-cache aliasing on lawful-time carriers; a finite quotient may be restored only when the carrier exposes a checked period certificate.
+- **Discriminating test:** use two transitions with identical state/action and times congruent modulo the current hard-coded period but different lawful successors. Exercise evidence growth, planning, and prediction memoization with and without a period certificate.
+- **Success criterion:** uncertified paths preserve both transitions and compute both predictions; a valid certificate permits quotienting; a visible-sample periodicity observation alone has no authority.
+- **Kill condition:** full-time identity causes an unbounded search despite existing depth/node budgets, a quotient is inferred from replay samples, or a period declaration bypasses held-out verification.

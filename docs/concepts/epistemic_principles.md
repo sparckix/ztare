@@ -441,19 +441,19 @@ because every mechanical check is green.
 
 *Why.* An ungoverned diagnostic is a free read of the answer; it proves nothing about what the worker's interface actually supports. The binding discipline is what makes failure factorization legible.
 
-*Evidence.* The GP-250 investigation cycle applies this discipline directly: a conductor assembles the same evidence packet the leaf worker receives, attempts spec abduction under the same admissibility contract, and classifies residuals by which probe outcome they correspond to. Lineage: psychophysics' ideal-observer analysis, bisimulation (Milner), and HCI's cognitive walkthrough converge on the same structure — bind to the agent's information state, run the task, classify the gap.
+*Evidence.* The GP-250 investigation cycle applies this discipline directly: a conductor assembles the same review packet the leaf worker receives, attempts spec abduction under the same admissibility contract, and classifies residuals by which probe outcome they correspond to. Lineage: psychophysics' ideal-observer analysis, bisimulation (Milner), and HCI's cognitive walkthrough converge on the same structure — bind to the agent's information state, run the task, classify the gap.
 
 *How to apply.* Before adjusting a worker's capability, run the probe. If the probe succeeds, the problem is in the worker's affordances or salience — change the interface, not the model. If the probe fails, the problem is upstream in the evidence the interface provides. Record oracle accesses; if you need them to succeed, the interface still owes that access to the worker.
 
 ### P18. Pre-registered adjudication of model-generated conjectures.
 
-*Rule.* Before reading a model-generated conjecture, the reviewer seals their own answer to the same question (content-addressed, with a timestamp receipt). Only then is the conjecture read and classified against one of three verdict classes: novel-and-load-bearing, correct-but-already-known, or coinage (a label without content). A conjecture engine that returns an honest null — naming the question as open rather than confabulating an answer — beats one that always produces an answer.
+*Rule.* Before reading a model-generated conjecture, the reviewer seals their own answer to the same question (content-addressed, with a timestamp receipt). Only then is the conjecture read and classified against one of three verdict classes: novel-and-decision-critical, correct-but-already-known, or coinage (a label without content). A conjecture engine that returns an honest null — naming the question as open rather than confabulating an answer — beats one that always produces an answer.
 
 *Why.* Without pre-registration, every conjecture is post-hoc. The reviewer's sense of novelty is contaminated by having just read the claim; the conjecture gets credit for articulating what the reviewer could already see. Pre-registration separates the reviewer's prior from the conjecture's contribution.
 
 *Evidence.* The same structure that governs theorem-candidate admission in the decision-support kernel: no LLM-minted warrant earns a tier above *unchecked* without a deterministic door. Conjecture outputs enter the disposition queue; they are not adopted directly. This is the ZTARE implementation of the principle that P1 and P4 require.
 
-*How to apply.* Write your own answer before reading the model's output. Record the hash of your answer before opening the conjecture. After reading, classify against the three verdict classes. If the conjecture is novel-and-load-bearing, it enters the disposition queue for independent verification — not direct adoption. Treat an honest null as positive signal about calibration, not as failure.
+*How to apply.* Write your own answer before reading the model's output. Record the hash of your answer before opening the conjecture. After reading, classify against the three verdict classes. If the conjecture is novel-and-decision-critical, it enters the disposition queue for independent verification — not direct adoption. Treat an honest null as positive signal about calibration, not as failure.
 
 ### P19. Order-independence as a master property.
 

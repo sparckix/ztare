@@ -4,7 +4,7 @@ description: "Public claim register for the ZTARE campaigns: what survived, what
 
 # Public Claim Register
 
-Last refreshed: 2026-06-22
+Last refreshed: 2026-07-16
 
 This is the public claim register for the ZTARE campaigns:
 Navier-Stokes, consciousness-ascription governance, modified gravity, neural
@@ -46,17 +46,19 @@ non-claim, and next falsifier are moved into a public document.
 
 ## Current Release Slice
 
-Post-`v0.2.0`, the public release slice is the local claim-governance workbench
-path: first-run value, project intake, source/evidence readiness,
+`v1.2.0` publishes the local claim-governance Workbench path, governed
+AxiomPack theory-program campaigns, and the current ARC-AGI/world-model harness.
+The Workbench slice covers project intake, source/evidence readiness,
 autoresearch trace, report/export support contracts, action-intelligence and
-kernel-health read models, release-slice audit, public positioning, and the
-narrow forensic-workbench prototype.
+kernel-health read models, saved review history, plugins, and the explicit
+public-project serving boundary.
 
-That slice is adoption and inspection work. It does not upgrade any campaign
-claim below. LeanMill proof-search work, forecasting-program findings, paper
-edits, proof-audit artifacts, HBR/roadshow work, and private writing-rubric
-work remain separate lanes unless a bounded public artifact explicitly
-promotes them.
+The AxiomPack slice supports bounded claims about governed campaign execution,
+typed theory-program lineage, finite-model checks, and named Lean artifacts.
+It does not establish general theorem-discovery lift. ARC-AGI remains WIP: the
+release includes harness code and typed contracts, with no benchmark,
+solve-rate, or leaderboard claim. Other campaign findings remain separate
+unless a bounded public artifact explicitly promotes them.
 
 ## Confidence and Retest Discipline
 

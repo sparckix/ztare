@@ -433,7 +433,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Can it run?",
     "Copy detail",
     "Needs support",
-    "holding the report",
+    "what blocks a trustworthy report",
     "issues",
     "Preview source",
     "Review note",
@@ -516,10 +516,11 @@ REQUIRED_PUBLIC_ROADMAP_SNIPPETS = [
     "| Lane | Reach | Impact | Confidence | Effort | Current call |",
     "| First-run value | 5 | 5 | 5 | 2 | Keep green through release. |",
     "| Project brief and evidence readiness | 4 | 5 | 4 | 3 | Treat as the main review-entry path inside the project-to-thesis lane. |",
-    "| Project Workbench app | 4 | 4 | 4 | 3 | Shipped in v1.0 as the local React/server app; v1.1 should deepen the live state it consumes rather than treating UI polish as the whole product. |",
+    "| Project Workbench app | 4 | 4 | 4 | 3 | v1.2 adds the public allowlist, release boundary, responsive decision views, plugins, evidence receipts, and broader governed project flows. |",
     "project brief -> source files and evidence check -> run readiness",
     "`v1.0.0` shipped the Project Workbench release path",
-    "The current planning path is v1.1.",
+    "`v1.2.0` ships the production disclosure boundary",
+    "The post-v1.2 planning path should turn these broader surfaces into smaller",
     "Do not claim general autonomous research performance.",
     "Do not stage release groups broadly while holdbacks remain in the dirty tree.",
 ]
@@ -2571,27 +2572,40 @@ def check_ops_demo_report_support_contract_surfaces_runtime_risk() -> dict[str, 
         "--confirmed",
         "--json",
     ], timeout=90)
-    if proc.returncode != 0:
-        fail(
-            "ops_root_cause_diagnosis_demo report-action should refresh the "
-            f"readiness file and keep runtime risk advisory\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
-        )
     payload = extract_last_json_object(proc.stdout)
-    if payload.get("ok") is not True or payload.get("status") != "attention":
-        fail(f"ops demo report readiness file lost advisory-attention status: {payload}")
     reasons = payload.get("status_reasons") or []
     if "runtime_risks_present" not in reasons:
         fail(f"ops demo report readiness file lost runtime-risk warning: {payload}")
     binding = payload.get("synthesis_input_binding") or {}
-    if not isinstance(binding, dict) or binding.get("status") != "fresh":
-        fail(f"ops demo report readiness file lost fresh input-binding status: {payload}")
+    binding_status = binding.get("status") if isinstance(binding, dict) else ""
+    if binding_status in {"fresh", "not_applicable"}:
+        if proc.returncode != 0 or payload.get("ok") is not True or payload.get("status") != "attention":
+            fail(
+                "ops demo with fresh synthesis inputs should refresh the readiness "
+                f"file and keep runtime risk advisory\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+            )
+        binding_assertion = "synthesis input binding fresh"
+    elif binding_status in {"unbound", "path_mismatch", "digest_mismatch"}:
+        expected_reason = f"synthesis_input_binding_{binding_status}"
+        if (
+            proc.returncode == 0
+            or payload.get("ok") is not False
+            or payload.get("status") != "blocked"
+            or expected_reason not in reasons
+        ):
+            fail(
+                "ops demo with stale ignored synthesis state must fail closed with "
+                f"{expected_reason}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+            )
+        binding_assertion = f"stale synthesis input binding refused ({binding_status})"
+    else:
+        fail(f"ops demo report readiness returned unknown input-binding status: {payload}")
     return {
         "ok": True,
         "checked": [
             "ztare forensic-workbench report-action --project ops_root_cause_diagnosis_demo --action check_readiness --renderer decision_brief --confirmed --json",
-            "zero-exit report-readiness refresh",
             "runtime_risks_present",
-            "synthesis input binding fresh",
+            binding_assertion,
         ],
         "status": payload.get("status"),
         "status_reasons": reasons,

@@ -11,64 +11,70 @@ it is intentionally not backfilled here entry-by-entry.
 
 ## [Unreleased]
 
+No unreleased changes.
+
+## [1.2.0] - 2026-07-16
+
+This release deepens the Project Workbench, advances AxiomPack from a compact
+pack builder into governed theory-program campaigns, and publishes the current
+ARC-AGI harness as work in progress.
+
 ### Added
-- Public first-run and release-stewardship surfaces: `make hello`, a public
-  smoke workflow, and a release checklist that separates governance evidence,
-  benchmark evidence, paper evidence, and maintainer-only planning evidence.
-- Evaluator-hardening frozen-suite checks and review packets for the bounded
-  constraint-memory proof point. The ordinary-review arm remains explicit
-  future work until imported rows are promotion-ready.
-- Public gaming-behavior catalog packaging and audit checks that keep the
-  original-nine paper lineage separate from later mined engineering rows.
-- Project-intake userland: create, validate, falsify, enqueue, and prep-ledger
-  resolve-next paths for bounded project claims before in-loop autoresearch use.
-- Local forensic-workbench prototype: a React/Vite project browser for intake,
-  source/evidence state, run readiness, report blockers, review decisions, and
-  CLI-applied review files.
+- A production Workbench release boundary: explicit public-project allowlist,
+  one-origin frontend/API serving, hidden-project refusal checks, CI coverage,
+  Docker build context, interaction smoke, and a documented release runbook.
+- Workbench evidence-fetch receipts, plugin management, project scenarios,
+  saved decision visits, model briefs, report readiness, and responsive Verdict
+  and LeanMill views.
+- AxiomPack campaign closure, formal-task boundaries, external-science
+  admission, language advancement, compound implication sieves, resumable VPS
+  actions, campaign receipts, and kernel-checked Lean artifacts.
+- ARC-AGI/world-model workbench contracts for transition identity, observation
+  charts, equivariance certificates, factored search, schema routes, compiled
+  planning, and deterministic candidate production.
 
 ### Changed
-- README, quickstart, CLI docs, public roadmap, claim register, and evidence
-  atlas now lead with the local claim-governance path before deeper
-  architecture.
-- Canonical package imports were normalized across runtime modules and tests so
-  package identity matches the installed `ztare` namespace instead of
-  `src.ztare`.
-- Autoresearch routing docs and CLI help now distinguish out-of-loop RD agent
-  execution from in-loop kernel validation, project intake, and source/evidence
-  readiness.
-- Report generation is treated as a support-contract surface: stale or
-  unsupported reports stay blocked until source/evidence, trace, and report
-  bindings are current.
-- Public positioning now frames chat agents, coding agents, proof tools, and
-  observability platforms as adjacent systems that can feed or inspect a local
-  claim lifecycle.
+- AxiomPack campaigns now treat an agent-authored theory program and its lineage
+  as the governed object; compact packs remain one calibrated profile.
+- World-model utilities were consolidated around typed identities and shared
+  primitives, with superseded adapter, causal-compiler, k-line, scene-grammar,
+  and duplicate planning surfaces removed.
+- Provider SDKs and research dependencies moved into optional package extras;
+  the base installation retains the offline public path.
+- Public documentation, architecture indexes, sample-project receipts, and
+  Workbench copy now distinguish mapped files from verified claim support.
 
 ### Fixed
-- Public evidence pack caveats now reflect the current full-suite result
-  instead of the resolved canonical-import guard failure.
-- Release-slice audit now classifies the canonical import cleanup as a separate
-  review group while keeping papers, LeanMill source, proof-audit files, and
-  generated experiment state as holdbacks.
-- Action-intelligence recommendation IDs no longer churn when only
-  materialization timestamps change.
-- Kernel-health source warnings now surface distinct source-health issues
-  instead of duplicated rows.
+- Report-readiness checks refuse stale synthesis bindings while continuing to
+  surface provider and trace risks.
+- Workbench project inventory reports visible and total rows correctly under
+  filtering and pagination.
+- Public artifacts and tests no longer embed maintainer-specific filesystem
+  paths.
+- Undefined-name, seam-metadata, terminology, and responsive-layout failures
+  found by the release gates were repaired.
 
 ### Claim boundaries
-- The evaluator-hardening packet supports a bounded claim about deterministic
-  gates and evaluator primitives on the frozen constraint-memory benchmark. It
-  is not a global autonomous-research benchmark.
-- The forensic workbench is a narrow local prototype over existing CLI and
-  read-model surfaces, not a hosted product or a replacement for filesystem
-  evidence.
-- Action-intelligence and kernel-health rows remain advisory unless source
-  freshness, consumption, and decision-use evidence justify stronger authority.
-- LeanMill post-`v0.2.0` work remains split by evidence class: governance
-  checks, axiom/statement-integrity audits, witness-transport corrections, and
-  benchmark-floor samples are not measured proof-search lift without a matched
-  baseline.
-- The gaming-behavior catalog is an observed mechanism and hardening catalog,
-  not a completeness claim about all model gaming behavior.
+- ARC-AGI remains WIP. This release publishes harness code and typed contracts;
+  it makes no benchmark, solve-rate, or leaderboard claim.
+- AxiomPack campaign and Lean artifacts demonstrate governed execution and
+  bounded formal results; they do not establish general theorem-discovery lift.
+- The Project Workbench remains local-first and filesystem-backed. The public
+  boundary is a disclosure and serving contract, not a hosted multi-user
+  service.
+
+## [1.1.0] - 2026-07-02
+
+The Project Workbench became a first-party local capability with rubric review,
+research-map queries, single-claim falsification, document drafting, sample
+projects, a one-container deployment path, and refreshed public evidence.
+
+## [1.0.0] - 2026-06-25
+
+The initial Project Workbench release added a local React/server app for opening
+projects, inspecting backing files, running checks, recording review status,
+saving next steps, and preserving receipt provenance. It also refreshed public
+roadmap, documentation, terminology gates, and evidence/read-model artifacts.
 
 ## [0.2.0] - 2026-06-14
 
@@ -143,6 +149,9 @@ product — it improves research rigor; it does not guarantee truth.
   verification) and solver telemetry / return-shape defects surfaced by cold
   review.
 
-[Unreleased]: https://github.com/sparckix/ztare/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/sparckix/ztare/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sparckix/ztare/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sparckix/ztare/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/sparckix/ztare/releases/tag/v0.2.0
 [0.1.0]: https://github.com/sparckix/ztare/releases/tag/v0.1.0

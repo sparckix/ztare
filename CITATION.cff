@@ -8,8 +8,8 @@ message: >-
   (for example GitHub's "Cite this repository" widget and Zenodo's DOI
   minting).
 type: software
-version: "0.2.0"
-date-released: "2026-06-14"
+version: "1.2.0"
+date-released: "2026-07-16"
 authors:
   - family-names: Alami
     given-names: Daniel

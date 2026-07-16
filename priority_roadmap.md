@@ -1,6 +1,6 @@
 # ZTARE Public Roadmap
 
-**Last refreshed:** 2026-06-27
+**Last refreshed:** 2026-07-16
 **Planning horizon:** next 4-6 weeks
 **Audience:** public readers, contributors, and future maintainers
 
@@ -63,7 +63,7 @@ effort, while respecting dependency order.
 | Lane | Reach | Impact | Confidence | Effort | Current call |
 |---|---:|---:|---:|---:|---|
 | First-run value | 5 | 5 | 5 | 2 | Keep green through release. |
-| Project-to-thesis path | 5 | 5 | 4 | 4 | Main v1.1 lane: thesis, sources, evidence, checks, report readiness, saved history, and next falsifier agree across CLI, workbench, and saved project files. |
+| Project-to-thesis path | 5 | 5 | 4 | 4 | Shipped in v1.2: thesis, sources, evidence, checks, report readiness, saved history, and next falsifier agree across CLI, Workbench, and saved project files. |
 | Project brief and evidence readiness | 4 | 5 | 4 | 3 | Treat as the main review-entry path inside the project-to-thesis lane. |
 | Core validator reliability | 4 | 5 | 4 | 3 | Keep malformed work out before model calls. |
 | Claim-safe public positioning | 5 | 4 | 5 | 2 | Keep front-door language narrow and inspectable. |
@@ -71,7 +71,7 @@ effort, while respecting dependency order.
 | Report readiness and project files | 3 | 4 | 4 | 3 | Promote only when the report matches the current project files. |
 | Reflexive learning and action intelligence | 3 | 4 | 3 | 4 | Keep advisory until decision-use evidence exists. |
 | Reusable research moves | 2 | 3 | 3 | 4 | Promote only when tied to typed saved history. |
-| Project Workbench app | 4 | 4 | 4 | 3 | Shipped in v1.0 as the local React/server app; v1.1 should deepen the live state it consumes rather than treating UI polish as the whole product. |
+| Project Workbench app | 4 | 4 | 4 | 3 | v1.2 adds the public allowlist, release boundary, responsive decision views, plugins, evidence receipts, and broader governed project flows. |
 
 ## Product Test
 
@@ -107,9 +107,11 @@ decide what a project can safely support after review.
 - `v1.0.0` shipped the Project Workbench release path: local project
   inventory, source-file and evidence checks, readiness and confirmed run controls,
   saved review history, saved project files, public docs, and release checks.
-- The current planning path is v1.1. It should deepen the full
-  project-to-thesis path behind the workbench rather than treating the UI as the
-  whole product.
+- `v1.1.0` added pressure-test and drafting surfaces over the Workbench.
+- `v1.2.0` ships the production disclosure boundary, deeper project-to-thesis
+  flows, governed AxiomPack campaigns, and the ARC-AGI harness as WIP.
+- The post-v1.2 planning path should turn these broader surfaces into smaller,
+  independently reviewable user workflows with explicit evidence levels.
 
 ## Current Release Path
 

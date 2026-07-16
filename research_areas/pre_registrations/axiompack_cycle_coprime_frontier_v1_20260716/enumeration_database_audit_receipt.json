@@ -1,0 +1,126 @@
+{
+  "aggregate": {
+    "coprime_cycle_counterexample_count": 0,
+    "cycle_law_verified_indecomposable_count": 152,
+    "indecomposable_count": 152,
+    "nondegenerate_table_count": 5251733,
+    "raw_table_count": 5251733
+  },
+  "audit_output_receipt_sha256": "0cd344fb0391b449596a890b07ed0f4577f03af5de3b690b1f216768b25cd921",
+  "audit_script": {
+    "path": "research_areas/pre_registrations/axiompack_cycle_coprime_frontier_v1_20260716/enumeration_database_audit.py",
+    "sha256": "18274b81042ca9629408f7f6bdac3b4d8c422db8250950e45b852a59dc852e93"
+  },
+  "authority": "deterministic_campaign_local_external_database_audit",
+  "claim_boundary": "finite database audit only; source completeness is inherited from the authors' enumeration, and no unrestricted implication follows",
+  "elapsed_seconds": 572.527,
+  "orders": [
+    {
+      "carrier_size": 8,
+      "coprime_cycle_counterexample_count": 0,
+      "cycle_profiles": [
+        {
+          "common_prime_divisors": [2],
+          "model_count": 1,
+          "nontrivial_cycle_lengths": [2]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 25,
+          "nontrivial_cycle_lengths": [2, 4]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 24,
+          "nontrivial_cycle_lengths": [2, 4, 8]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 9,
+          "nontrivial_cycle_lengths": [2, 8]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 15,
+          "nontrivial_cycle_lengths": [4]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 5,
+          "nontrivial_cycle_lengths": [4, 8]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 21,
+          "nontrivial_cycle_lengths": [8]
+        }
+      ],
+      "file_manifest_sha256": "3eaffc82443ee05e9cb84e15d08f9d2b9516dc666eff462ee29275a3fbb0ceb6",
+      "indecomposable_count": 100,
+      "raw_table_count": 34530
+    },
+    {
+      "carrier_size": 9,
+      "coprime_cycle_counterexample_count": 0,
+      "cycle_profiles": [
+        {
+          "common_prime_divisors": [3],
+          "model_count": 4,
+          "nontrivial_cycle_lengths": [3]
+        },
+        {
+          "common_prime_divisors": [3],
+          "model_count": 3,
+          "nontrivial_cycle_lengths": [3, 9]
+        },
+        {
+          "common_prime_divisors": [3],
+          "model_count": 9,
+          "nontrivial_cycle_lengths": [9]
+        }
+      ],
+      "file_manifest_sha256": "8ae6f4f81af5b92b43cfd85432a13c8b57ae0772befce7f9f0b2c4b20b3e219c",
+      "indecomposable_count": 16,
+      "raw_table_count": 321931
+    },
+    {
+      "carrier_size": 10,
+      "coprime_cycle_counterexample_count": 0,
+      "cycle_profiles": [
+        {
+          "common_prime_divisors": [2],
+          "model_count": 1,
+          "nontrivial_cycle_lengths": [2]
+        },
+        {
+          "common_prime_divisors": [5],
+          "model_count": 15,
+          "nontrivial_cycle_lengths": [5]
+        },
+        {
+          "common_prime_divisors": [2, 5],
+          "model_count": 20,
+          "nontrivial_cycle_lengths": [10]
+        }
+      ],
+      "file_indecomposable_counts": {
+        "CSsize10_30.g.bz2": 15,
+        "CSsize10_42.g.bz2": 20,
+        "CSsize10_6.g.bz2": 1
+      },
+      "file_manifest_sha256": "3d343e26b6f9a2c3db941480af1d1aca4eeb56b081680f86125cb70079a1713e",
+      "indecomposable_count": 36,
+      "raw_table_count": 4895272
+    }
+  ],
+  "receipt_sha256": "9d9c67c6cc85043d074e075554efd07fe0acc76865f34c07e6d55ab16996e8a4",
+  "result": "no_counterexample_in_selected_database_orders",
+  "schema": "leanmill.cycle_set_enumeration_database_audit_summary.v1",
+  "source": {
+    "citation": "Akgun--Mereb--Vendramin, Math. Comp. 91 (2022), 1469--1481, doi:10.1090/mcom/3696",
+    "commit": "92f85ee118ec73fdb7a397e4fd748f1265f02bc3",
+    "order_8_file_sha256": "5da619c7e2d8ae1a228bd032f72b89d03ae14345c50bdda6ca84274630cd59b9",
+    "order_9_file_sha256": "f4850998a42505305b3cf37769ec16b2e971e529eb9ada0560fcdce1631c3f94",
+    "repository": "https://github.com/vendramin/enumeration.git"
+  }
+}

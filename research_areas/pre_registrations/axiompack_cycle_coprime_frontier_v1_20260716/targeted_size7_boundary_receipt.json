@@ -1,0 +1,127 @@
+{
+  "authority": "deterministic_campaign_local_boundary",
+  "base_theory": {
+    "cycle_set_identity": "(x*y)*(x*z)=(y*x)*(y*z)",
+    "diagonal_bijective": true,
+    "left_rows_bijective": true
+  },
+  "carrier_size": 7,
+  "claim_boundary": "exact only for order 7 under the displayed finite encoding and conjugacy normalization; no unrestricted implication or priority claim",
+  "matched_controls": {
+    "coprime_cycle_without_transitivity": {
+      "elapsed_ms": 1,
+      "permutation": [
+        1,
+        0,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "reason_unknown": "",
+      "smt2_sha256": "642af3e921391c769838d9ab40014815609ca646a4a39d30791b00d3c8357092",
+      "solver_status": "sat",
+      "verification": {
+        "action_orbits": [
+          [
+            0,
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "cycle_law": true,
+        "cycle_type": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "diagonal_bijective": true,
+        "row_bijective": true
+      }
+    },
+    "transitivity_without_coprime_cycle": {
+      "elapsed_ms": 3,
+      "permutation": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0
+      ],
+      "reason_unknown": "",
+      "smt2_sha256": "2ced467b2ae961b02e2ce3fe2d5dd90a2d7eb6b72256f25cc861d656845658f5",
+      "solver_status": "sat",
+      "verification": {
+        "action_orbits": [
+          [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        ],
+        "cycle_law": true,
+        "cycle_type": [
+          7
+        ],
+        "diagonal_bijective": true,
+        "row_bijective": true
+      }
+    }
+  },
+  "receipt_sha256": "62c3b9ad3901878f39e171acf21d4587183a3502a1b16c55a581530067db6d94",
+  "result": "no_order_7_counterexample_two_encodings",
+  "schema": "leanmill.cycle_set_coprime_size7_boundary.v1",
+  "solver": "z3-4.16.0",
+  "target_predicate": {
+    "coprime_cycle_lengths": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "crosscheck_transitivity_encoding": "bounded reachability from 0 in the union of left-row action edges",
+    "normalization": "under simultaneous carrier relabeling, set the witness row to 0; if the row index is on the cycle use 0->1->...->k-1->0, and otherwise use 1->2->...->k->1",
+    "normalization_case_count": 10,
+    "primary_transitivity_encoding": "all proper invariant subset cuts"
+  },
+  "target_queries": {
+    "reachability_crosscheck": {
+      "elapsed_ms": 618035,
+      "reason_unknown": "",
+      "smt2_sha256": "0db63a06c66f06fbc6adf0d40ce108a2e502f6f004b6eb207eb6f41d43e36df3",
+      "solver_status": "unsat"
+    },
+    "subset_cut": {
+      "elapsed_ms": 629894,
+      "reason_unknown": "",
+      "smt2_sha256": "d2dd2fcd89456dbfddc69cb0a666722acbfd6bbb83de1b665907df38754d8e33",
+      "solver_status": "unsat"
+    }
+  },
+  "timeout_ms_per_query": 1200000
+}

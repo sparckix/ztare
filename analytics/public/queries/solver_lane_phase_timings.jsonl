@@ -8645,3 +8645,11 @@
 {"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T16:25:36.338543+00:00"}
 {"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T16:25:51.472406+00:00"}
 {"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T16:25:51.474686+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 0.0, "run_tag": "", "outcome": "", "tags": {"requested_timeout_s": 10, "requested_runtime": "default"}, "ts": "2026-07-16T17:31:55.969294+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 0.0, "run_tag": "", "outcome": "", "tags": {"requested_timeout_s": 10, "requested_runtime": "default"}, "ts": "2026-07-16T17:31:55.969621+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 0.0, "run_tag": "", "outcome": "", "tags": {"requested_timeout_s": 10, "requested_runtime": "default"}, "ts": "2026-07-16T17:31:55.969743+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T17:32:10.681114+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T17:32:10.683509+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T17:32:22.848035+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T17:32:34.426000+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 0.0, "run_tag": "", "outcome": "", "ts": "2026-07-16T17:32:34.428265+00:00"}
