@@ -175,7 +175,7 @@ judge's narrative). Start small; change the kernel only when the JTBD genuinely 
 |---|---|---|---|---|
 | Verdict (report_support_contract: status, weak spots, reasons) | report support check | `project claim-support` / report-action | P0 | Verdict · Thesis (badge) |
 | Report doc | report synthesis | workbench report-synthesis — confirm CLI | P1 | Verdict |
-| Claim card (the shareable deliverable) | claim card | workbench claim-card — confirm CLI | P1 | Verdict |
+| Claim card (the shareable deliverable) | claim card | `ztare card build --format all --record` | P1 | Verdict |
 
 ### Steer (program navigation)
 | Primitive | Source | CLI | Pri | Screen |
@@ -212,9 +212,10 @@ score-trajectory`).
 `autoresearch score-trajectory` (score series + fingerprint), `project evidence-gap` /
 `project evidence-fetch` (gaps), `project claim-support` (backing + report support).
 
-**Deliberately web-only (not CLI, by design):** per-project run config (`/api/run-config`), live
-run-status (`/api/run-status`), research-map *writes*, receipts/history — these are workbench
-session state, not kernel artifacts.
+**Transport-local does not mean writer-local:** live run status may remain an HTTP projection of process/job
+state, but persisted project or Workbench state still needs one CLI-owned write contract. The browser calls
+HTTP; HTTP stages request content and calls `cli.py`; the command validates and writes. Do not maintain a second
+HTTP-only writer for run config, research maps, or saved history.
 
 **P2, only if a screen needs them — add as `--facet`s of `eval-results`, never new verbs:**
 `information_yield, epistemic_coherence, latent_distance, structural_anti_pattern, inverter_review,
@@ -319,8 +320,9 @@ A bare count ("11 provisional constraints") with nowhere to go is the #1 violati
 ### 4.2 Screen map
 
 Left nav, in JTBD order. Each screen is the **home** of one artifact (bold) and hosts summary
-cards of related artifacts. **The Thesis is the project landing** — opening a project lands on the
-Thesis, not a separate dashboard.
+cards of related artifacts. **Overview is the returning-user landing**: a compact read model of the current
+decision, next decisive test, and canonical paths into the project. It owns no second copy of an artifact;
+the Thesis remains the home of the thesis, Verdict the home of reliance, and Open points the home of tests.
 
 **Flat sidebar — the DEFINITIVE list (don't add items ad-hoc; this is the JTBD spine).** Only the
 spine + first-class program views are top-level. Everything else is a sub-tab, a modal, or a prep
@@ -328,8 +330,9 @@ affordance — surfaced *in context*, never as its own menu item:
 
 | Sidebar item | → | Contains / note |
 |---|---|---|
+| **Overview** *(landing)* | projects/Current project | current decision + next decisive test + shortest paths to the owning screens; no duplicate editor or project inventory |
 | **Charter** *(mandate, top)* | overview/Charter | the human mandate the whole project serves — question · working thesis · scope limits · what would change it · run contract; **+ charter-drift findings** from runs (does the evolving thesis still serve the charter?) |
-| **Thesis** *(landing)* | overview/Thesis | the current best answer **tackling the charter**; verdict badge + rail |
+| **Thesis** | overview/Thesis | the current best answer **tackling the charter**; verdict badge + rail |
 | **Assumptions** | overview/Assumptions | the full constraint/axiom ledger; Thesis shows a summary card linking here |
 | **Evidence** | sources/Prepare files | files · compile pipeline · gaps |
 | **Pressure-test** | run/Ready to run | **Run settings + Scoring guide are PREP here** (links on the landing + run sub-tabs), NOT top-level items; findings lead when a run exists; **+ inverter review + charter-drift** in the run payload |
@@ -342,6 +345,12 @@ affordance — surfaced *in context*, never as its own menu item:
 **Plugins** immediately above **Settings**. Plugins is the durable home for defining domain context, scoring guides,
 capabilities, and reusable document shapes; it is not a hidden sub-tab or a document-production action. A plugin
 may not add, reorder, or relabel global navigation.
+
+**Navigation ownership:** **ZTARE Projects** owns inventory, recovery, and project creation. It is active only on
+those surfaces. A loaded project's **Overview** lives under **Selected project** and is the only active item on the
+landing. Overview links perform ordinary navigation to the canonical section; they do not also open that section
+in a modal. Modals are reserved for bounded edits, previews, confirmations, and other tasks that must return to the
+same page.
 
 **Charter is top-level (2026-06-29).** The charter (`projects/<p>/project_charter.md`) is the mandate
 the kernel treats as MANDATORY CONTEXT for every mutation (`autoresearch_loop.py:2368` injects it
@@ -480,12 +489,15 @@ These are the next lovable moves, ordered by consequence rather than novelty:
    change it?” The project home leads with the compiled decision standing and its highest-leverage unresolved
    test, then quietly shows live work and the latest saved move. Generic readiness may fill gaps before a
    decision exists, but must never outrank a compiled next test. This must be answerable without opening six
-   panels.
+   panels. **Standing, live work, the exact define/record action, and a project-keyed prior/current fingerprint
+   comparison across browser visits are live.** The visit comparison reports only observed standing, next-test,
+   or supporting-structure movement; the governed current state and Map-time typed graph diff remain authoritative.
 2. **See the terrain:** “Where is the argument strong, contested, or unsupported, and which test is worth doing
    next?” Map is a presentation over the existing graph and decision state, not a new carrier.
    A saved reference may be compared with the current map as a bounded argument diff: standing, flipped claims,
    next test, and added/removed/reworded nodes or typed links. This is a projection over two governed states,
-   not a replay engine or second history ledger.
+   not a replay engine or second history ledger. **The comparison now preserves both sides of reworded claims
+   and renders added/removed typed links with their warrant instead of flattening the graph into prose.**
 3. **Admit and learn:** “If I add this evidence or execute this decision-test outcome, what changed in the
    decision?” Every write ends in a typed delta and a new fingerprint, not a success toast. The Open-points
    agenda must make the test’s target, plausible outcomes, and computed consequence visible before the write.
@@ -540,7 +552,8 @@ For every core surface, evaluate the operator's likely mental model, not just wh
    generic toast.
 5. **Navigation and scale:** Every persistent configuration surface is reachable from navigation; selected
    project/context is visually first; long source documents show a bounded reading excerpt and open the existing
-   full-reader modal. No active context is left to ordinary alphabetical sorting.
+   full-reader modal. No active context is left to ordinary alphabetical sorting. Every screen has one active
+   navigation owner and every action has one transition: navigate to an owner or open a bounded task, never both.
 6. **Reference-quality check:** Compare density, hierarchy, controls, and modal anatomy against the curated
    Linear/Notion/Origin/Mercury references for that surface. Borrow interaction discipline, never a second visual
    language. Any mismatch is an implementation issue, not polish deferred to a later feature pass.
@@ -642,15 +655,28 @@ checked** — not "looks good":
    subnav fallback (`subnav[0]`) — that is a BUG, not done. List each link → its verified destination.
 2. **No bare count.** Every number has a path to the underlying items (listed inline, or a working
    link to its home). "11 provisional" / "4 alternatives" with nowhere to go = NOT done (anti-pattern #2).
-3. **Labels match the data.** Inspect what each field ACTUALLY contains before labeling it — e.g. packet
+3. **Labels match the data.** Inspect what each field ACTUALLY contains before labeling it — e.g. intake
    `non_claims` are *scope disclaimers*, NOT ruled-out rivals. Mislabeling = NOT done.
 4. **Screenshot-judged against the Mobbin reference.** Put the shot next to Linear/Mercury and name
    what's worse. Dead space / narrow-column-in-a-void = NOT done.
 5. **Data is real and via the CLI** (no direct file-reads in the workbench server). Empty / never-run
    states render sensibly.
 6. **Dead code deleted; `npm run build` green; `make public-adversarial-smoke` failed_count: 0.**
+7. **Runtime payloads reach the exact object.** Route tests and endpoint tests are insufficient on their own.
+   Exercise each rendered action with the path, ID, anchor, or artifact returned by the live CLI. A file action
+   must open readable content; a navigation action must land on the named object; a refused action must explain
+   why. Artifact eligibility comes from the authoritative project-file inventory; an expected filename is not
+   evidence that a file exists. Invalid-path modals, guessed-file actions, containing-page landings, and silent
+   no-ops are failures.
+8. **Every semantic field contains instance-level information.** A field named “what would change your mind”
+   must name an observable project-specific condition, not generic advice to revisit the claim when it is wrong.
+   If the real value is absent, show the absence and the action that creates it; never satisfy a schema with
+   boilerplate. This is the content analogue of exact deep-linking: preserve the specificity promised by the UI.
 
-Only after ALL six pass, say done — and report the checklist, e.g. "links: 4/4 reach built screens;
+Document-review corollary: a matched passage must lead with the actual project claim it matched. Stable graph
+IDs may remain as quiet audit metadata; an internal ID is not a humane answer to “what does this rest on?”
+
+Only after ALL eight pass, say done — and report the checklist, e.g. "links: 4/4 reach built screens;
 counts: constraints + ruled-out both checkable; labels verified against packet". If any item fails,
 it is in-progress, not done.
 
@@ -1227,6 +1253,16 @@ dynamic/cross-family committee judging, auto-evolve/rotating rubric, one-shot ei
 forcing functions (they self-trigger) and *fleet ops* (wrong altitude). Source: capability-gap sweep
 2026-06-30 (#80).
 
+### 9.1 Decision portfolios (bounded roadmap, not a dashboard)
+
+The missing portfolio object is a **program of related governed decisions**, not the existing substrate-ops
+portfolio and not merely portfolio RICE. Each member remains its own project, eigenproblem, change test, and
+run history. A future explicit registry may add typed cross-project relations such as `SUPPLIES`, `BLOCKS`,
+`DUPLICATES`, and `CAN_SHIP_WITHOUT`, plus shared outcomes, sequencing, and portfolio-level stop conditions.
+Never infer membership by scanning `projects/`; never average project scores into a portfolio verdict; never let
+progress on one project mask failure of another. Until a real repeated JTBD justifies a portfolio view, record
+cross-project dependencies bidirectionally in the member charters and keep Projects centered on one decision.
+
 ---
 
 ## §10 LeanMill data audit (#91, 2026-06-30) — data is real but the pipeline is not CLI-master
@@ -1388,14 +1424,106 @@ dead. The run console and global banner expose iteration/budget progress, last r
 history. AxiomPack campaigns expose their existing phase, lease heartbeat, provider-call count, and budget ledger;
 the campaign list/detail refreshes automatically and keeps the attempt-folder handoff visible.
 
+**2026-07-12 (return + boundary pass):** Activity now projects autoresearch, LeanMill, and AxiomPack ledgers with
+terminal campaign state overriding stale leases, browser-local “finished while away” state, and one owning-lane
+resume action. Shared `SectionHeader`, action-button, icon-button, and segmented-control primitives establish one
+34px control baseline across Activity, Plugins, and modal work; domain panels compose these rather than adding
+global domain CSS. The compiled strength ledger now snapshots the decision fingerprint, posture, hinge, and next
+test when the fingerprint moves, and History exposes the latest prior/current decision change. Governed brief and
+decision-test list/register/preview/execute/expire plus evidence recheck now cross the HTTP boundary through
+`ztare scenario ... --json`; the server transports the CLI contract. The project picker moved from duplicated full
+folder records to relevant compact rows plus on-demand recovery detail, reducing its measured response from
+5.55 MB to 0.29 MB while retaining the current-project-first sort.
+
+Project brief, charter, raw-source add/edit, scoring-guide, saved research-map, project-file, global-settings, and
+per-project run-settings mutations now
+follow the same rule: HTTP stages the request, invokes the matching `ztare forensic-workbench ... --json` or
+`ztare project source-file ... --json` command, and refreshes the view from its receipt. CLI rejection becomes
+an HTTP refusal; a no-op can never look like a successful save. Settings values are staged in a private temporary
+JSON file rather than placed in command arguments, so provider credentials do not appear in process listings.
+Portable claim-card generation now follows it too: `ztare card build --format all --record` owns rendering,
+evidence-hash verification, and the receipt used by Verdict.
+
+Project creation no longer has a hidden HTTP-only source writer. Uploaded text, extracted documents and their
+original attachments, and recovered in-project files all pass through `ztare project source-file add`; review
+and next-step inputs pass through `ztare forensic-workbench apply-review` / `save-next-step`; and the wrapper
+receipt for a confirmed evidence fetch passes through `record-evidence-fetch`. The server's only direct durable
+write is the provider-neutral job ledger, which is transport state rather than project reasoning state. After a
+source add/edit, the UI states the exact consequence: **saved, not yet used in the checked decision**. It routes
+the operator to map the file in the project brief and compile evidence, and never equates a valid file with an
+admitted claim-to-source inference.
+
+**2026-07-12 (portable consequence pass):** Open Points and Map now consume one CLI-owned agenda contract;
+Map-time snapshot, status, and typed recompile delta are CLI-owned as well. The graph diff pairs direct identity
+first and normalized semantic identity second in `O(V + E)`, preventing an ID-format migration from appearing as
+research movement. Scenario effect preview, full-set document production, and audience shaping now execute
+through CLI JSON contracts. Verdict document commands use the shared action-button contract; icon-only busy
+controls use a distinct busy state so Activity renders one spinner, not two.
+
+The same pass made the plugin beachhead honest: governed RICE single-project reads, portfolio reads, and bounded
+factor updates now execute through the CLI, including the advertised scalar-factor shorthand. Run attribution,
+document declaration history, deterministic Map query, and the Map's argument overlay are CLI-owned carriers as
+well. Deduplicated decision snapshots now record a canonical research-map hash and node/edge counts; History can
+say when the map changed even if the decision posture held, without adding a second score or persistent warning
+surface.
+
+“Check a draft” and “Promote copy” now share the fingerprinted `scenario reingest --json` contract; the server
+only stages request text for the CLI and a changed base refuses promotion before any write. The Plugins scenario
+catalog likewise comes from `scenario list --json`, so invalid manifests, document designs, and contextual-view
+declarations have one interpretation across CLI and Workbench.
+
+Evidence admission now has the same boundary: `scenario bind` independently resolves a file beneath the project
+raw directory, verifies its `source_evidence` classification, hashes its bytes, checks the selected passage
+verbatim, and names the target claim before appending a proposed support edge. A verified source passage earns
+source authenticity; its inference remains unchecked unless the passage contains the target claim itself. This
+keeps source identity and inferential support as separate properties in both kernel and UI.
+
+Compiled-evidence assumption surfacing and sentence-level draft annotation now execute through `scenario
+surface/annotate --json`; pasted text is staged by transport and never becomes project state. Document actions
+preserve intent without changing the background route: “Revise and trace” opens the shared draft-check modal
+directly on Edited-copy trace, loads the selected artifact before enabling review, and returns to Verdict on
+close. Loading content must never render as an empty file.
+
+Plugin catalog, detail, create/edit, and discovery reload now share the CLI's plugin-management service. The
+Workbench no longer keeps a second scenario/rubric validator in its HTTP process; a manifest that opens in the
+editor is the same manifest the CLI validates and the runtime resolves.
+
+Confirmed evidence recovery now uses the same durable job contract as long research and proof work. Preview is
+read-only and names the exact command and possible file boundary; confirmation launches one provider-neutral
+`evidence_fetch` job, returns immediately, and projects that job into Activity with a return route to Evidence.
+The Evidence surface follows the job to a terminal receipt and refreshes sources and open gaps only then. The
+refresh control has one loading owner: its existing icon rotates while busy, rather than rendering a second
+pseudo-spinner.
+
+Returning-user routing now treats the bare Workbench URL as project home, restores the last successfully loaded
+project, and reflects that project in the URL. Day 0 is reserved for an explicit start route or a genuinely empty
+live project index. Project home is owned by **Selected project / Overview**; **ZTARE Projects** owns inventory and
+setup only. The legacy hybrid detail transition was removed: section actions navigate, bounded tasks open modals,
+and modal history never changes the background route.
+
+The Projects inventory now separates three jobs instead of flattening them into one technical list: resume the
+current project, switch to another connected project, or connect a folder that contains useful work but lacks a
+project brief. The current project is a distinct first band; other projects are compact rows; folder recovery is a
+separate segmented mode. Model-forecast percentages, filesystem paths, receipt counts, and inline write-boundary
+details do not belong in this chooser. Selecting a project lands on its Overview with one navigation transition.
+
+Navigation also preserves object-level intent. A link that names a subsection (for example **Open decision
+tests**) carries a stable target anchor to the canonical owner, waits for asynchronous rendering, focuses and
+briefly emphasizes the target, and never opens a second modal. Decision tests lead Open points because choosing
+what to resolve is that page's primary job; its “On this page” order matches the content order. Suggested tests
+lead with the decision under test, rank, and next action; their repetitive hypothetical outcomes are collapsed
+behind an inspectable disclosure so the default view remains scannable.
+
 ## §16 Roadmap — highest-yield next
 
 Kernel/CLI work is fair game. Ordered by leverage on the jobs, not by ease. Compose the existing
 `research-graph`, `decision_state`, and `eval-results` carriers; do not add a parallel terrain schema:
 1. **Close the decision loop.** ~~Prefill a wager from `decision_state.next_test` or an admitted agenda row;
    make outcome execution a first-class action; refresh graph + strength; and lead with the typed decision delta
-   (standing, hinge, core, next test, fingerprint) instead of a toast.~~ Add a read-only counterfactual overlay over
-   the same simulation path before any optional commit.
+   (standing, hinge, core, next test, fingerprint) instead of a toast. Add a read-only counterfactual over the
+   same simulation path before any optional commit.~~ The shared record-outcome modal requires the operator to
+   choose an observed result, previews its kernel-computed decision delta without writing, and only then enables
+   the explicit record action; Map and Open points open that same owner surface.
 2. **Decision-linked deliverable invalidation.** ~~Decision deltas now persist the prior fingerprint and show
    status, hinge, core, trust-floor, and next-test changes. Next, mark governed deliverables stale until they are
    regenerated from the new decision fingerprint.~~ Keep the binding manifest compatible with remote workers and
@@ -1405,18 +1533,21 @@ Kernel/CLI work is fair game. Ordered by leverage on the jobs, not by ease. Comp
    Open points; free-text alignment prose never becomes a hard metric.
 4. **Map time.** ~~Snapshot the governed carrier on admitted changes; compare two states and explain which typed
    edges changed.~~ The Research map now exposes the existing baseline/recompile carrier as a compact Map time
-   control; extend the diff to typed-edge explanations and history-side-by-side detail. Counterfactual inspection
-   belongs to item 1's read-only overlay, not a second decision carrier.
+   control. The strength ledger now preserves fingerprinted decision snapshots and History shows the latest
+   posture/hinge/next-test change. Extend this to graph-hash snapshots at every admitted write and a side-by-side
+   typed-edge detail. Counterfactual inspection belongs to item 1's read-only overlay, not a second decision carrier.
 5. **Provider-neutral background jobs.** ~~Long research and proof actions need one job/receipt/telemetry contract
    so local, remote, and signed-provider execution have the same Workbench affordances.~~ The local contract is
    shipped for bounded runs; extend it to LeanMill proof-audit dispatch, remote signed receipts, and a compact
    job-history affordance without making provider names part of the core UI.
 6. ~~**LeanMill ratification receipts.** Join completed proof-audit jobs to signed audit receipts in Proof status,
    show the three stage outcomes independently, and distinguish audited from governance-approved proof credit.~~
-7. **PM plugin depth and the generic contribution contract.** ~~Compose fingerprint-bound leadership packets,
-   backed roadmaps, and bet registries from core claim cards and graph carriers.~~ The PM panel now consumes the
-   core standing/agenda and the plugin editor exposes scenario deliverable designs. Finish the shared panel
-   primitives and dogfood the same contract on Bluejay. PM nouns and overlays remain plugin-owned; plugins do not
+7. **PM plugin depth and the generic contribution contract.** ~~Compose fingerprint-bound leadership briefs,
+   backed roadmaps, and decision-test registers from core claim cards and graph carriers.~~ The PM panel now consumes the
+   core standing/agenda and the plugin editor exposes scenario deliverable designs. Its PM handoff list is resolved
+   from those YAML designs and uses the same core actions as Verdict: create a missing checked draft, refresh a stale
+   one, or open a current one in the shared file viewer. Finish dogfooding the same contract on Bluejay. PM nouns and
+   overlays remain plugin-owned; plugins do not
    add sidebar items, core node types, or global CSS. The adapter may add AWS-specific templates and mappings only
    inside the Bluejay project; the kernel stays domain neutral.
 8. **One-shot deliverable composition and editorial handoff.** ~~Let a scenario YAML declare a safe section
@@ -1443,16 +1574,43 @@ to a JTBD and a measurable acceptance bar:
 | “I can hand this to a real audience in good prose.” | **Shape for audience** lets the configured report model propose headings, grouping, and reading order over a checked draft. The deterministic renderer requires every governed slot exactly once and inserts its exact wording; Draft → Current only after fingerprint-bound trace and promotion. | Core + plugin renderer | Unsupported-claim rate remains zero by construction; measure whether ordering/headings improve readability and time-to-handoff against the checked draft and plain-chat baselines. |
 | “I can define a handoff without CSS or Python.” | Use a dedicated document-design editor with governed-kind chips, reading-order controls, a structural reading-shape preview, and auto-declaration. | Core editor | YAML/UI/CLI round-trip is lossless; an editable design always owns its same-named output; unknown kinds fail before write; caps are explicit. |
 | “I can add a domain lens without maintaining chrome.” | `plugin_contribution_contract_v1` is enforced during panel discovery: host, governed carriers, and typed read/write/navigate actions are required; violations appear in existing Plugins health. Shared primitives remain the visual contract. | Core contract + plugin | An invalid panel cannot load; a valid panel declares its host/carriers/actions and passes keyboard/loading/error/route checks without global CSS. |
-| “I can leave a long run or proof and resume later.” | Activity projects existing autoresearch, LeanMill-action, and AxiomPack-campaign ledgers into one shelf; each row returns to its owning lane for recovery. On a later visit, completed ledger entries newer than the prior visit are distinguished as “finished while away”; first visit does not label the backlog as new. Fetch work joins once it has the same durable job contract. | Core jobs | Reload and route changes preserve queued/running/stale/completed/interrupted state and a resume/recover path without inventing a second job authority; idle worker heartbeats never appear as active work. |
+| “I can leave long work running and resume later.” | **BUILT for autoresearch, LeanMill, AxiomPack, and evidence fetch.** Activity projects their existing durable ledgers into one shelf; each row returns to its owning lane for recovery. On a later visit, completed ledger entries newer than the prior visit are distinguished as “finished while away”; first visit does not label the backlog as new. | Core jobs | Reload and route changes preserve queued/running/stale/completed/interrupted state and a resume/recover path without inventing a second job authority; idle worker heartbeats never appear as active work. |
 | “I can turn a draft into governed work.” | Edited-copy trace opens a base-fingerprint re-ingest session, shows traced, omitted, and ungoverned claims, then offers one explicit Promote action. Promotion writes a current rendering and sibling audit receipt; it never mutates the graph. | Core round-trip | Promotion refuses changed base or ungoverned sentences; the UI distinguishes omitted governed claims from inserted ungoverned prose; no pasted prose mutates the graph. |
 | “I can see why this node is a ridge or valley.” | Structural reads focus the corresponding node; the node drawer explains provenance, trust tier, minimal cores, and the cheapest matching test, then routes to the owning decision-test, evidence, or verdict workflow. Counterfactual preview appears only when that node has a real registered wager. | Core map | Every label and action traces to existing research-graph/decision-state fields; no terrain carrier, second ranker, or fake simulation affordance. |
 | “I know whether this is better than ChatGPT.” | Bluejay and non-PM fixtures run as the same-task baseline lane. | Evaluation | Measure time-to-sound-decision, unsupported claims, revision after new evidence, reproducibility, and spend. |
+| “I want the best available model to help without rebuilding or laundering context.” | **Brief another model — BUILT.** Compile the existing governed decision brief into a read-only, fingerprinted context for blind-spot finding, thesis strengthening, next-test planning, or audience handoff. Treat project text as data, separate admitted facts from proposals, and route the response back through Check a draft. | Core interoperability | Copied context names the current fingerprint and preserves the governed brief verbatim; no external response mutates the graph; a changed fingerprint is visible before reuse; compare setup time and unsupported-claim rate with an ordinary pasted chat prompt. |
 
 Do not ship a scalar “confidence” headline, a second agenda/ranker, a `project_terrain_v1` carrier, or reflexive
 ZTARE meta in project maps. Those are explicitly rejected by the Grok review and by the IA/eigenquestion rules.
 
+Contextual panels must invoke the same typed core action as its owning surface. The PM decision kit therefore
+opens the selected agenda row's shared define/record modal; it may not replace that action with generic
+navigation or a PM-specific test editor.
+
+The Plugins page owns an on-demand extension guide rather than permanent instructional copy. It distinguishes
+live data authoring (scenario, rubric, document design), reloadable Python capabilities, and build-time
+contextual views, and names the actual install paths. Frontend discovery/contract validation lives in the
+domain-neutral scenario-panel registry, not the application shell. Domain algorithms may be specific, but
+their panels and dialogs must use reusable scenario/design-system patterns rather than domain-named global CSS.
+
+**2026-07-12 (exact-object pass):** bare-root routing restores the last active project; Overview owns the
+selected-project landing; section actions use one navigation transition and can carry an exact in-page anchor;
+the project inventory leads with the current project and separates ready work from folders needing setup.
+Generated-document paths are repository-relative across CLI, API, viewer, and revise/trace flows. Folder
+recovery no longer invents a generic change test: missing project-specific falsifiers remain visibly missing.
+The interaction smoke opens every generated document path against the real shared viewer contract. Thesis,
+Evidence, History, project-map, and Handoff file actions now require the authoritative project-file inventory;
+expected filenames never earn an Open action. Document provenance has a distinct `not-yet-pinned` state before
+the first pressure-test, because without a baseline “added later” is not a meaningful property.
+
+**2026-07-12 (release boundary):** the production Workbench has one release smoke for the actual adopter
+surface. It builds and serves the frontend from the API origin, starts a public-scope server on an isolated
+loopback port, proves that the tracked manifest is the entire visible inventory, and refuses an unlisted project
+read, file preview, and write before dispatch. Remote use remains a trusted-local-user deployment over an SSH
+tunnel; project scopes and CORS prevent accidental disclosure but are not authentication.
+
 Already live, not roadmap: evidence gap → one-click **fetch**, targeted single-claim falsification, document
-activation, and deterministic Map query.
+activation, deterministic Map query, and portable governed context for external reasoning clients.
 
 Discipline: harden the create→run→verdict spine and freeze before piling more; the above are post-freeze.
 
@@ -1464,14 +1622,21 @@ Every item must pass the surface-review gate (§4.2c) before the next begins.
 1. **Surface correctness and semantic cleanup.** One owner per artifact; remove duplicated/legacy Results
    views; use *Pressure-test* and *decision test* in operator copy; remove implementation nouns from screens;
    keep model forecasts as one conclusion plus a non-additive premise tree. This is in progress.
-2. **Close the move → consequence loop.** From Map/Open points, prefill a decision test for the relevant
-   uncertainty; preview a test outcome; apply it exactly once; then render the decision delta and invalidate
-   affected handoffs. Existing agenda, simulation, recompile, and fingerprint carriers are the source of truth.
-3. **Return-to-work and durable jobs.** Add a compact cross-lane job/receipt shelf and a project return state:
-   standing, changed since last visit, active work, and next decisive move. It must join autoresearch, LeanMill,
-   and fetches instead of adding lane-specific banners.
-4. **Time travel and safe authorship.** Snapshot decision state plus graph hash at runs and admitted writes;
-   expose a side-by-side change read. Make annotate → re-ingest → promote the way an edited draft becomes
-   trustworthy, with a clear draft/current/stale distinction.
+2. **Close the move → consequence loop.** **BUILT for decision tests.** Map and Open points preserve the exact
+   uncertainty when they open the shared define/record modal; the modal previews the kernel-computed outcome
+   delta before one explicit apply; confirmation recompiles the decision; and an open Verdict rechecks handoff
+   freshness from the new decision fingerprint. Existing agenda, simulation, recompile, and fingerprint carriers
+   remain the source of truth. Extend this same consequence contract to other admitted writes rather than adding
+   parallel flows.
+3. **Return-to-work and durable jobs.** **BUILT for autoresearch, LeanMill, AxiomPack, and evidence fetch.** The
+   compact shelf and project return state show standing, changed since last visit, active work, and the next
+   decisive move. Confirmed evidence fetch returns immediately as a provider-neutral job, Activity owns its
+   durable progress and receipt, and Evidence refreshes sources and gaps when the job reaches a terminal state.
+4. **Time travel and safe authorship.** **Fingerprint decision history and full before/after typed-edge detail
+   are live.** Evidence admission, recorded decision-test outcomes, warrant rechecks, and source add/edit now
+   checkpoint through the CLI at their write boundaries; each checkpoint carries the governed graph hash and
+   decision fingerprint. Source edits do not pretend to change the compiled decision before recompile. Audit the
+   remaining admitted-write commands against the same invariant. Make annotate → re-ingest → promote the way an
+   edited draft becomes trustworthy, with a clear draft/current/stale distinction.
 5. **Plugin depth after the core loop holds.** Let domain lenses compose existing carriers and document shapes
    through shared primitives. PM depth should dogfood the contract, not create a parallel PM workbench.

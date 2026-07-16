@@ -32,9 +32,9 @@ def _number(value, default: float = 0.0) -> float:
     return parsed if math.isfinite(parsed) else default
 
 
-def _factor(raw: "dict | None", *, default_warrant: str = "W3") -> dict:
+def _factor(raw: "dict | float | int | str | None", *, default_warrant: str = "W3") -> dict:
     """One bounded factor estimate plus the compiler-derived warrant of its source."""
-    raw = raw or {}
+    raw = raw if isinstance(raw, dict) else ({"value": raw} if raw is not None else {})
     warrant = str(raw.get("warrant") or default_warrant)
     if warrant not in _TIER_NAME:
         warrant = default_warrant

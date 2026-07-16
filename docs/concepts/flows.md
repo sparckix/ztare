@@ -1,3 +1,7 @@
+---
+description: "As-built lifecycle diagrams for the ARC-AGI-3 science loop, grammar reflex, and related control flows."
+---
+
 # Flows
 
 This file records the as-built flow surfaces referenced by the ARC-AGI-3 system doc. Each diagram uses the current code names and the prose stays short so the lifecycle is easy to scan.

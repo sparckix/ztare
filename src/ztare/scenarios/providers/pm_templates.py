@@ -91,12 +91,12 @@ def rice(governed: GovernedState) -> Deliverable:
         ("Kill-criterion (bounds Effort risk)", ("falsifier",))])
 
 
-def leadership_packet(governed: GovernedState) -> Deliverable:
-    """Leadership packet — PM composition of the *same* governed claim/evidence graph that core claim cards
-    summarize. Not a new core primitive: claim cards remain core; this is a persona-facing packet that cites
+def leadership_brief(governed: GovernedState) -> Deliverable:
+    """Leadership brief — PM composition of the *same* governed claim/evidence graph that core claim cards
+    summarize. Not a new core primitive: claim cards remain core; this is a persona-facing brief that cites
     hardened claims as executive claim lines, then the warrant (evidence), open risks, scope constraints, and
     kill-criteria. Firewall-pure: every slot is a governed ref, no free prose, no apparatus meta."""
-    return _compose("leadership_packet", governed, [
+    return _compose("leadership_brief", governed, [
         ("Executive claim (portable claim-card unit)", ("thesis", "claim")),
         ("Warrant / evidence", ("evidence",)),
         ("Scope & non-goals", ("constraint",)),
@@ -136,7 +136,7 @@ for _name, _builder in (
     ("launch_readiness", launch_readiness),
     ("adr", adr),
     ("rice", rice),
-    ("leadership_packet", leadership_packet),
+    ("leadership_brief", leadership_brief),
     ("roadmap_backing", roadmap_backing),
     ("bet_registry", bet_registry),
 ):

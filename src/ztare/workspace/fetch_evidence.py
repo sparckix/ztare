@@ -22,8 +22,6 @@ import time
 from pathlib import Path
 from typing import Any
 
-import anthropic
-
 from ztare.common.paths import PROJECTS_DIR
 from ztare.workspace.evidence_gaps import evidence_gap_recovery_contract
 
@@ -323,6 +321,13 @@ def _fetch_via_anthropic_web_search(
     requested_model: str = "",
 ) -> tuple[str, str]:
     """Fetch via Anthropic's web_search tool (original implementation)."""
+    try:
+        import anthropic
+    except ImportError as exc:
+        raise RuntimeError(
+            "Anthropic evidence search requested but the optional anthropic SDK is not installed. "
+            "Install `ztare[anthropic]` or choose --search-backend openai."
+        ) from exc
     client = anthropic.Anthropic()
     prompt = (
         f"Search for and summarize the most relevant factual information for this query:\n\n"

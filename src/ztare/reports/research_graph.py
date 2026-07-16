@@ -300,13 +300,40 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def attach_argument_overlay(carrier: dict[str, Any]) -> dict[str, Any]:
+    """Add the argument-kernel view to the same carrier the Map renders."""
+    if not isinstance(carrier, dict) or not carrier.get("ok"):
+        return carrier
+    try:
+        from ztare.scenarios.adapters import argument_overlay
+        overlay = argument_overlay(carrier)
+    except Exception:  # noqa: BLE001 - the topology remains useful if its optional decision view fails.
+        return carrier
+    if not overlay:
+        return carrier
+    carrier["argument"] = {key: overlay[key] for key in
+                           ("verdict", "reason", "warrant_ceiling", "cores", "hinge", "strength_status",
+                            "thesis_profile", "node_provenance")
+                           if key in overlay}
+    per_node = overlay.get("nodes") or {}
+    for node in carrier.get("nodes") or []:
+        role = per_node.get(str(node.get("id")))
+        if not role:
+            continue
+        node["grounded"], node["in_core"], node["hinge"] = (
+            role["grounded"], role["in_core"], role["hinge"])
+        if "profile" in role:
+            node["profile"] = role["profile"]
+    return carrier
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="ztare autoresearch research-graph")
     parser.add_argument("--project", required=True)
     parser.add_argument("--repo", type=Path, default=None)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
-    payload = build_research_graph(args.project, args.repo or _repo_root())
+    payload = attach_argument_overlay(build_research_graph(args.project, args.repo or _repo_root()))
     print(json.dumps(payload, indent=2))
     return 0
 

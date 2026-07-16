@@ -134,9 +134,10 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, sort_keys=True) + "\n")
 
 
-def display_path(path: Path) -> str:
+def display_path(path: Path, *, root: Path | None = None) -> str:
+    root = (root or REPO).resolve()
     try:
-        return str(path.relative_to(REPO))
+        return str(path.relative_to(root))
     except ValueError:
         return str(path)
 
@@ -198,19 +199,21 @@ def write_review_receipt(
     project: str,
     ledger: str | None = None,
     latest: str | None = None,
+    root: Path | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
-    workspace = REPO / "projects" / project / "workspace"
+    root = (root or REPO).resolve()
+    workspace = root / "projects" / project / "workspace"
     ledger_path = Path(ledger) if ledger else workspace / "forensic_workbench_reviews.jsonl"
     latest_path = Path(latest) if latest else workspace / "forensic_workbench_latest_review.json"
     if not ledger_path.is_absolute():
-        ledger_path = (REPO / ledger_path).resolve()
+        ledger_path = (root / ledger_path).resolve()
     if not latest_path.is_absolute():
-        latest_path = (REPO / latest_path).resolve()
+        latest_path = (root / latest_path).resolve()
     append_jsonl(ledger_path, receipt)
     latest_path.parent.mkdir(parents=True, exist_ok=True)
     latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return {"ok": True, "ledger": display_path(ledger_path), "latest": display_path(latest_path), "receipt": receipt}
+    return {"ok": True, "ledger": display_path(ledger_path, root=root), "latest": display_path(latest_path, root=root), "receipt": receipt}
 
 
 def receipt_for_action_payload(
@@ -248,19 +251,21 @@ def write_action_receipt(
     project: str,
     ledger: str | None = None,
     latest: str | None = None,
+    root: Path | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
-    workspace = REPO / "projects" / project / "workspace"
+    root = (root or REPO).resolve()
+    workspace = root / "projects" / project / "workspace"
     ledger_path = Path(ledger) if ledger else workspace / "forensic_workbench_row_actions.jsonl"
     latest_path = Path(latest) if latest else workspace / "forensic_workbench_latest_row_action.json"
     if not ledger_path.is_absolute():
-        ledger_path = (REPO / ledger_path).resolve()
+        ledger_path = (root / ledger_path).resolve()
     if not latest_path.is_absolute():
-        latest_path = (REPO / latest_path).resolve()
+        latest_path = (root / latest_path).resolve()
     append_jsonl(ledger_path, receipt)
     latest_path.parent.mkdir(parents=True, exist_ok=True)
     latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return {"ok": True, "ledger": display_path(ledger_path), "latest": display_path(latest_path), "receipt": receipt}
+    return {"ok": True, "ledger": display_path(ledger_path, root=root), "latest": display_path(latest_path, root=root), "receipt": receipt}
 
 
 def apply_review_payload(
@@ -272,6 +277,7 @@ def apply_review_payload(
     ledger: str | None = None,
     latest: str | None = None,
     intake: str | None = None,
+    root: Path | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
     review_file_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -283,7 +289,7 @@ def apply_review_payload(
         review_file_path=review_file_path,
         intake=intake,
     )
-    return write_review_receipt(receipt, project=project, ledger=ledger, latest=latest)
+    return write_review_receipt(receipt, project=project, ledger=ledger, latest=latest, root=root)
 
 
 def apply_action_payload(
@@ -295,6 +301,7 @@ def apply_action_payload(
     ledger: str | None = None,
     latest: str | None = None,
     intake: str | None = None,
+    root: Path | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
     action_file_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -306,43 +313,78 @@ def apply_action_payload(
         action_file_path=action_file_path,
         intake=intake,
     )
-    return write_action_receipt(receipt, project=project, ledger=ledger, latest=latest)
+    return write_action_receipt(receipt, project=project, ledger=ledger, latest=latest, root=root)
+
+
+def persist_prepared_payload(
+    payload_bytes: bytes,
+    *,
+    project: str,
+    item: str,
+    kind: str,
+    root: Path,
+) -> Path:
+    digest = hashlib.sha256(payload_bytes).hexdigest()
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    workspace = root / "projects" / project / "workspace" / "forensic_workbench_applied"
+    workspace.mkdir(parents=True, exist_ok=True)
+    stem = f"{stamp}_{item}_{kind}_{digest[:12]}"
+    path = workspace / f"{stem}.json"
+    suffix = 2
+    while path.exists() and path.read_bytes() != payload_bytes:
+        path = workspace / f"{stem}_{suffix}.json"
+        suffix += 1
+    if not path.exists():
+        path.write_bytes(payload_bytes)
+    return path
 
 
 def apply_review(args: argparse.Namespace) -> dict[str, Any]:
     validate_project_slug(args.project)
     item = getattr(args, "item", None) or getattr(args, "row", None) or ""
+    root = Path(getattr(args, "repo", REPO)).resolve()
     review_file_path = Path(args.review_file_path)
     if not review_file_path.is_absolute():
         review_file_path = (Path.cwd() / review_file_path).resolve()
     payload = read_review_file(review_file_path)
+    prepared_path = persist_prepared_payload(
+        review_file_path.read_bytes(), project=args.project, item=item, kind="review", root=root,
+    )
     receipt = receipt_for_payload(
         payload,
         project=args.project,
         row=item,
-        review_file_bytes=review_file_path.read_bytes(),
-        review_file_path=str(review_file_path),
+        review_file_bytes=prepared_path.read_bytes(),
+        review_file_path=display_path(prepared_path, root=root),
         intake=getattr(args, "intake", None),
     )
-    return write_review_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
+    result = write_review_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest, root=root)
+    result["input_path"] = display_path(prepared_path, root=root)
+    return result
 
 
 def save_action(args: argparse.Namespace) -> dict[str, Any]:
     validate_project_slug(args.project)
     item = getattr(args, "item", None) or getattr(args, "row", None) or ""
+    root = Path(getattr(args, "repo", REPO)).resolve()
     action_file_path = Path(args.action_file_path)
     if not action_file_path.is_absolute():
         action_file_path = (Path.cwd() / action_file_path).resolve()
     payload = read_review_file(action_file_path)
+    prepared_path = persist_prepared_payload(
+        action_file_path.read_bytes(), project=args.project, item=item, kind="action", root=root,
+    )
     receipt = receipt_for_action_payload(
         payload,
         project=args.project,
         row=item,
-        action_file_bytes=action_file_path.read_bytes(),
-        action_file_path=str(action_file_path),
+        action_file_bytes=prepared_path.read_bytes(),
+        action_file_path=display_path(prepared_path, root=root),
         intake=getattr(args, "intake", None),
     )
-    return write_action_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
+    result = write_action_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest, root=root)
+    result["input_path"] = display_path(prepared_path, root=root)
+    return result
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -361,6 +403,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched project files and stamps legacy fields.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
     parser.add_argument("--latest", help="Optional latest-receipt JSON override, mainly for tests.")
+    parser.add_argument("--repo", type=Path, default=REPO, help="Repository/data root.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
     return parser
 
@@ -381,6 +424,7 @@ def build_action_parser() -> argparse.ArgumentParser:
     parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched project files and stamps legacy fields.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
     parser.add_argument("--latest", help="Optional latest next-step JSON override, mainly for tests.")
+    parser.add_argument("--repo", type=Path, default=REPO, help="Repository/data root.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
     return parser
 

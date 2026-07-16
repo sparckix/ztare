@@ -25,7 +25,10 @@ import {
   pendingPathPreview,
   previewFileTitle,
   previewableRepoPath,
-  repoPathCandidate
+  repoPathCandidate,
+  ActionButton,
+  IconButton,
+  SegmentedControl
 } from "./design-system.js";
 import {
   LeanMillPanel,
@@ -45,38 +48,24 @@ import {
   Anchor as MAnchor,
 } from "./workspaces/leanmill-ui.jsx";
 import { DayZeroStartPanel } from "./workspaces/start.jsx";
-import { Thesis } from "./sections/thesis.jsx";
-import { Assumptions } from "./sections/assumptions.jsx";
-import { RunFindings } from "./sections/results.jsx";
-import { Evidence } from "./sections/evidence.jsx";
-import { OpenPoints } from "./sections/openpoints.jsx";
-import { Verdict } from "./sections/verdict.jsx";
-import { ResearchMap } from "./sections/researchmap.jsx";
-import { ScoringGuide } from "./sections/scoringguide.jsx";
-import { Charter } from "./sections/charter.jsx";
-import { History } from "./sections/history.jsx";
-import { RunConsole } from "./sections/runconsole.jsx";
-import { RunHome } from "./sections/runhome.jsx";
-import { ScenarioPanel } from "./sections/scenariopanel.jsx";
-import { RegisterBetForm, ExecuteWagerForm } from "./sections/wagerpanel.jsx";
+import { RegisterBetForm, ExecuteWagerForm, decisionTestContext } from "./sections/wagerpanel.jsx";
 import { BindEvidenceForm } from "./sections/decisionpanel.jsx";
-import { LeanMillCampaignsPanel } from "./sections/leanmillcampaigns.jsx";
-import { PluginManager } from "./sections/pluginmanager.jsx";
-import { JobShelf } from "./sections/jobshelf.jsx";
+import { contributedScenarioPanels, scenarioPanelDiscovery } from "./scenario-panel-registry.jsx";
+import { useDecisionVisit } from "./use-decision-visit.js";
 import { marked } from "marked";
 import markedKatex from "marked-katex-extension";
 import "katex/dist/katex.min.css";
 import {
   ScrollText, Target, FolderOpen, Zap, Workflow, ListChecks, Gavel, Clock,
   LayoutGrid, FunctionSquare, Settings as SettingsIcon, Puzzle, FileText, Beaker, Network,
-  Upload as IconUpload, Rocket, Play, Activity, ArrowLeft, ArrowRight, X,
+  Upload as IconUpload, Rocket, Play, Activity, ArrowLeft, ArrowRight, X, House, Search,
 } from "lucide-react";
 import DOMPurify from "dompurify";
 
 // One quiet line icon per destination (lucide). Keyed by the nav label so it works for top-level and
 // per-section menus alike. 16px, currentColor — reads as wayfinding, not decoration.
 const NAV_ICON = {
-  "Charter": ScrollText, "Thesis": Target, "Evidence": FolderOpen,
+  "Overview": House, "Charter": ScrollText, "Thesis": Target, "Evidence": FolderOpen,
   "Pressure-test the thesis": Zap, "Map": Network, "Open points": ListChecks,
   "Verdict": Gavel, "History": Clock, "ZTARE Projects": LayoutGrid,
   "LeanMill": FunctionSquare, "Activity": Activity, "Plugins": Puzzle, "Settings": SettingsIcon,
@@ -113,64 +102,30 @@ import { useModalBehavior } from "./modal-behavior.js";
 
 const h = React.createElement;
 
-const SCENARIO_PANEL_MODULES = import.meta.glob("./scenario-panels/*.jsx", { eager: true });
-const SCENARIO_PANEL_HOSTS = new Set(["results"]);
-const SCENARIO_PANEL_CONTRACT = "plugin_contribution_contract_v1";
-const SCENARIO_PANEL_ACTION_MODES = new Set(["read", "write", "navigate"]);
-
-function discoverScenarioPanels(modules) {
-  const registry = {};
-  const catalog = [];
-  const diagnostics = [];
-  Object.entries(modules || {}).sort(([left], [right]) => left.localeCompare(right)).forEach(([source, mod]) => {
-    const metadata = (mod && mod.scenarioPanel) || {};
-    const id = String(metadata.id || "").trim();
-    const host = String(metadata.host || "").trim();
-    const Component = mod && mod.default;
-    const contract = metadata.contract && typeof metadata.contract === "object" ? metadata.contract : {};
-    const carriers = Array.isArray(contract.carriers) ? contract.carriers.map((value) => String(value || "").trim()).filter(Boolean) : [];
-    const actions = Array.isArray(contract.actions) ? contract.actions : [];
-    const contractValid = contract.schema === SCENARIO_PANEL_CONTRACT
-      && carriers.length > 0
-      && actions.every((action) => action && /^[a-z0-9][a-z0-9-]*$/.test(String(action.id || ""))
-        && SCENARIO_PANEL_ACTION_MODES.has(String(action.mode || "")));
-    const ref = `${host}:${id}`;
-    if (!/^[a-z0-9][a-z0-9-]*$/.test(id) || !SCENARIO_PANEL_HOSTS.has(host) || typeof Component !== "function" || !contractValid) {
-      diagnostics.push({ source, error: contractValid
-        ? "panel needs a default React component, a kebab-case id, and a supported host"
-        : `panel needs ${SCENARIO_PANEL_CONTRACT}, at least one carrier, and typed read/write/navigate actions` });
-      return;
-    }
-    if (registry[ref]) {
-      diagnostics.push({ source, error: `duplicate panel ref ${ref}` });
-      return;
-    }
-    const entry = {
-      ref, id, host, source,
-      label: String(metadata.label || id),
-      description: String(metadata.description || ""),
-      contract: { schema: contract.schema, carriers, actions },
-      Component,
-    };
-    registry[ref] = entry;
-    catalog.push({ ref, id, host, source, label: entry.label, description: entry.description, contract: entry.contract });
-  });
-  return { registry, catalog, diagnostics };
+function lazyNamed(loader, exportName) {
+  return React.lazy(() => loader().then((module) => ({ default: module[exportName] })));
 }
 
-const SCENARIO_PANEL_DISCOVERY = discoverScenarioPanels(SCENARIO_PANEL_MODULES);
+const Thesis = lazyNamed(() => import("./sections/thesis.jsx"), "Thesis");
+const Assumptions = lazyNamed(() => import("./sections/assumptions.jsx"), "Assumptions");
+const RunFindings = lazyNamed(() => import("./sections/results.jsx"), "RunFindings");
+const Evidence = lazyNamed(() => import("./sections/evidence.jsx"), "Evidence");
+const OpenPoints = lazyNamed(() => import("./sections/openpoints.jsx"), "OpenPoints");
+const Verdict = lazyNamed(() => import("./sections/verdict.jsx"), "Verdict");
+const ResearchMap = lazyNamed(() => import("./sections/researchmap.jsx"), "ResearchMap");
+const ScoringGuide = lazyNamed(() => import("./sections/scoringguide.jsx"), "ScoringGuide");
+const Charter = lazyNamed(() => import("./sections/charter.jsx"), "Charter");
+const History = lazyNamed(() => import("./sections/history.jsx"), "History");
+const RunConsole = lazyNamed(() => import("./sections/runconsole.jsx"), "RunConsole");
+const RunHome = lazyNamed(() => import("./sections/runhome.jsx"), "RunHome");
+const ScenarioPanel = lazyNamed(() => import("./sections/scenariopanel.jsx"), "ScenarioPanel");
+const LeanMillCampaignsPanel = lazyNamed(
+  () => import("./sections/leanmillcampaigns.jsx"),
+  "LeanMillCampaignsPanel"
+);
+const PluginManager = lazyNamed(() => import("./sections/pluginmanager.jsx"), "PluginManager");
+const JobShelf = lazyNamed(() => import("./sections/jobshelf.jsx"), "JobShelf");
 
-function contributedScenarioPanels(scenarios, selectedScenario, host, props) {
-  const scenario = (scenarios || []).find((row) => row && row.name === selectedScenario);
-  return ((scenario && scenario.workbench_panels) || [])
-    .map((panelRef) => {
-      const entry = SCENARIO_PANEL_DISCOVERY.registry[String(panelRef || "")];
-      return entry && entry.host === host
-        ? h(entry.Component, { key: `scenario-panel-${entry.ref}`, scenarioConfig: scenario, ...props })
-        : null;
-    })
-    .filter(Boolean);
-}
 class WorkbenchErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -218,9 +173,9 @@ const WORKSPACE_DETAIL_COPY = {
     body: "The constraints this thesis is committed to — derived by the loop, provisional until they survive repeated pressure-testing."
   },
   "overview:Annotate a doc": {
-    eyebrow: "Draft review",
-    title: "Check a draft",
-    body: "See which passages are backed, contradicted, or still assumptions. This check is read-only."
+    eyebrow: "Document review",
+    title: "Review a document",
+    body: "Inspect what its claims rest on, or verify that an edited decision draft still matches the checked record before saving it."
   },
   "overview:Charter": {
     title: "Charter",
@@ -1228,6 +1183,7 @@ function evidenceGapJustifyWriteEvent(payload) {
 
 function evidenceFetchWriteEvent(payload) {
   if (!payload || !payload.write_boundary) return null;
+  if (["queued", "running"].includes(String(payload.status || "").toLowerCase())) return null;
   const receipt = payload.receipt || {};
   return {
     kind: "evidence_fetch",
@@ -1281,6 +1237,9 @@ function evidenceFetchStatusMessage(payload) {
   const accepted = payload.total_accepted ?? receipt.total_accepted;
   const receiptPath = payload.receipt_path || receipt.receipt_path || "";
   const status = payload.status || (payload.accepted ? "accepted" : "attention");
+  if (["queued", "running"].includes(String(status).toLowerCase())) {
+    return "Evidence fetch is running in the background. You can leave this page and return through Activity.";
+  }
   const countText = attempted !== undefined || accepted !== undefined
     ? ` Accepted ${accepted ?? 0} of ${attempted ?? 0} attempted.`
     : "";
@@ -1974,7 +1933,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             sha256: (sourceImport.receipt || {}).sha256 || "",
             receipt: sourceImport.receipt || {},
             source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted),
-            source_check: sourceCheckDetail(sourceImport)
+            source_check: sourceCheckDetail(sourceImport),
+            decision_checkpoint: sourceImport.decision_checkpoint || null
           }
         : null,
       latest_source_edit: sourceEdit
@@ -1988,7 +1948,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             sha256: (sourceEdit.receipt || {}).sha256 || "",
             receipt: sourceEdit.receipt || {},
             source_check_accepted: Boolean(sourceEdit.source_check && sourceEdit.source_check.accepted),
-            source_check: sourceCheckDetail(sourceEdit)
+            source_check: sourceCheckDetail(sourceEdit),
+            decision_checkpoint: sourceEdit.decision_checkpoint || null
           }
         : null,
       latest_write_receipt: latestWrite
@@ -4239,10 +4200,11 @@ function ServerStatusPanel({ status, liveMode, message, onRefresh }) {
 }
 
 function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snapshot, liveMode, loading, onSelect, onCreate, onPreview, filePreview, filePreviewMessage }) {
+  const pageSize = 24;
   const [projectQuery, setProjectQuery] = useState("");
-  const [pendingFolderLimit, setPendingFolderLimit] = useState(48);
+  const [pendingFolderLimit, setPendingFolderLimit] = useState(pageSize);
   const [inventoryFilter, setInventoryFilter] = useState("ready");
-  useEffect(() => setPendingFolderLimit(48), [projectQuery]);
+  useEffect(() => setPendingFolderLimit(pageSize), [projectQuery]);
   if (!liveMode || (!projects.length && !projectFolders.length)) {
     const message = liveMode
       ? "Project folders are loading from projects/."
@@ -4266,7 +4228,7 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
   const activeProjectName = String(activeKey || "").split("::")[0] || String((snapshot && snapshot.project) || "");
   const normalizedQuery = projectQuery.trim().toLowerCase();
   const entriesByProject = new Map(projects.map((project) => [project.project, project]));
-  const inventoryRows = (projectFolders || [])
+  const allInventoryRows = (projectFolders || [])
     .map((folder) => {
       const readyEntry = entriesByProject.get(folder.project);
       return {
@@ -4293,45 +4255,29 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
         ].join(" ").toLowerCase();
         if (!haystack.includes(normalizedQuery)) return false;
       }
-      if (inventoryFilter === "ready") return row.openable;
-      if (inventoryFilter === "needs_intake_with_files") return !row.openable && row.has_project_files;
       return true;
-    })
-    .sort((a, b) => {
-      const aIsCurrent = projectEntryKey(a) === activeKey || String(a.project || "") === activeProjectName;
-      const bIsCurrent = projectEntryKey(b) === activeKey || String(b.project || "") === activeProjectName;
-      if (aIsCurrent !== bIsCurrent) return aIsCurrent ? -1 : 1;
-      return projectInventorySort(a, b);
     });
+  const currentProject = allInventoryRows.find((row) =>
+    projectEntryKey(row) === activeKey || String(row.project || "") === activeProjectName) || null;
   const readyCount = (projectFolders || []).filter((folder) => entriesByProject.has(folder.project)).length;
   const needsIntakeWithFilesCount = (projectFolders || []).filter((folder) => !entriesByProject.has(folder.project) && folderHasProjectMaterial(folder)).length;
-  const setupCopy =
-    needsIntakeWithFilesCount > 0
-      ? `${needsIntakeWithFilesCount} folder${needsIntakeWithFilesCount === 1 ? "" : "s"} already have useful files. Connect one to review its claim, evidence, runs, and saved history.`
-      : "Every folder with useful files is connected, or the remaining folders are empty generated output.";
+  const showCurrent = inventoryFilter === "ready" && !normalizedQuery && currentProject && currentProject.openable;
+  const inventoryRows = allInventoryRows
+    .filter((row) => inventoryFilter === "ready" ? row.openable : !row.openable && row.has_project_files)
+    .filter((row) => !showCurrent || row !== currentProject)
+    .sort(projectInventorySort);
   const filterOptions = [
-    { id: "ready", label: "Ready", count: readyCount, title: "Projects with a saved project brief" },
-    { id: "needs_intake_with_files", label: "Connect", count: needsIntakeWithFilesCount, title: "Folders with useful files that need a project brief" },
-    { id: "all", label: "All", count: (projectFolders || []).length, title: "Every folder under projects/" }
+    { value: "ready", label: `Projects ${readyCount}` },
+    { value: "needs_intake_with_files", label: `Needs setup ${needsIntakeWithFilesCount}` },
   ];
   const visibleInventoryRows = inventoryRows.slice(0, pendingFolderLimit);
   const remainingRows = Math.max(inventoryRows.length - visibleInventoryRows.length, 0);
-  const filtersActive = Boolean(normalizedQuery || inventoryFilter !== "ready");
-  const projectSummary = normalizedQuery
-    ? `${inventoryRows.length} matching projects`
-    : inventoryFilter === "ready"
-      ? `${readyCount} connected projects`
-      : inventoryFilter === "needs_intake_with_files"
-        ? `${needsIntakeWithFilesCount} folders can connect`
-      : `${inventoryRows.length} projects in view`;
+  const sectionTitle = inventoryFilter === "ready" ? (showCurrent ? "Other projects" : "Projects") : "Folders needing setup";
   const visibleSummary = inventoryRows.length
-    ? `${visibleInventoryRows.length} visible of ${inventoryRows.length} matching`
-    : "No projects match";
-  const resetInventoryView = () => {
-    setProjectQuery("");
-    setInventoryFilter("ready");
-    setPendingFolderLimit(48);
-  };
+    ? remainingRows
+      ? `${visibleInventoryRows.length} visible of ${inventoryRows.length} ${inventoryFilter === "ready" ? "available" : "to connect"}`
+      : `${inventoryRows.length} ${inventoryFilter === "ready" ? "available" : "to connect"}`
+    : normalizedQuery ? "No matches" : "None";
   return h(
     "section",
     { className: "project-switchboard", "aria-label": "Projects" },
@@ -4339,75 +4285,51 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
       "div",
       { className: "project-switchboard-head" },
         h("span", { className: "eyebrow" }, "Projects"),
-        h("h2", null, "Open a project"),
-        h("p", null, "Start with connected projects. Connect an existing folder only when it already has useful files.")
+        h("h2", null, "Your work"),
+        h("p", null, "Return to the current project, switch to another, or connect a folder that already contains useful work.")
       ),
     h(
       "div",
       { className: "project-switchboard-tools" },
       h(
-        "label",
-        null,
-        h("span", null, "Search"),
+        "div",
+        { className: "project-search" },
+        h("label", { className: "sr-only", htmlFor: "project-search-input" }, "Search projects"),
+        h(Search, { size: 17, "aria-hidden": true }),
         h("input", {
+          id: "project-search-input",
           value: projectQuery,
           onInput: (event) => setProjectQuery(event.target.value),
-          placeholder: "billing, ns, forecast, ops"
-        })
+          placeholder: "Search projects"
+        }),
+        projectQuery
+          ? h(IconButton, { label: "Clear project search", onClick: () => setProjectQuery("") },
+              h(X, { size: 15, "aria-hidden": true }))
+          : null
       ),
-      h(
-        "div",
-        { className: "project-switchboard-action-buttons" },
-        h(
-          "button",
-          {
-            type: "button",
-            className: "copy-button",
-            disabled: !filtersActive,
-            onClick: resetInventoryView,
-            title: filtersActive ? "Clear project search and filters" : "No project filters active"
-          },
-          "Clear"
-        ),
-        h(
-          "button",
-          { type: "button", className: "copy-button primary", onClick: () => onCreate && onCreate() },
-          "Create"
-        )
-      ),
-      h(
-        "div",
-        { className: "project-folder-filter", "aria-label": "Project filter" },
-        filterOptions.map((option) =>
-          h(
-            "button",
-            {
-              key: option.id,
-              type: "button",
-              className: inventoryFilter === option.id ? "active" : "",
-              "aria-pressed": inventoryFilter === option.id,
-              title: option.title,
-              onClick: () => {
-                setInventoryFilter(option.id);
-                setPendingFolderLimit(48);
-              }
-            },
-            h("span", null, option.label),
-            h("strong", null, String(option.count))
-          )
-        )
-      )
+      h(SegmentedControl, { label: "Project view", value: inventoryFilter, options: filterOptions,
+        onChange: (value) => { setInventoryFilter(value); setPendingFolderLimit(pageSize); } })
     ),
-    inventoryFilter !== "ready" || needsIntakeWithFilesCount
+    inventoryFilter === "needs_intake_with_files"
       ? h(
           "div",
           { className: "project-switchboard-note" },
-          h("strong", null, inventoryFilter === "ready" ? "Folders ready to connect" : projectSummary),
-          h("span", null, setupCopy)
+          h("strong", null, "Connect existing work"),
+          h("span", null, "These folders contain useful files but no project brief. Connecting one leaves its existing files in place.")
         )
       : null,
     filePreviewMessage || filePreview
       ? h("div", { className: "project-switchboard-preview" }, h(FilePreview, { filePreview, filePreviewMessage }))
+      : null,
+    showCurrent
+      ? h("section", { className: "project-current", "aria-label": "Current project" },
+          h("div", { className: "project-switchboard-section-label" }, h("span", null, "Current project")),
+          h("article", { className: "project-list-row is-current", "aria-current": "page" },
+            h("div", { className: "project-list-copy" },
+              h("strong", null, currentProject.display_label || titleFromSlug(currentProject.project || "Current project")),
+              h("p", null, currentProject.report_contract ? "Project brief ready · has pressure-test results" : "Project brief ready · not pressure-tested yet")),
+            h(ActionButton, { variant: "primary", disabled: loading,
+              onClick: () => onSelect && onSelect(projectEntryKey(currentProject)) }, "Open overview")))
       : null,
     h(
       "div",
@@ -4415,170 +4337,42 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
       h(
         "div",
         { className: "project-switchboard-section-label" },
-        h("span", null, inventoryFilter === "ready" ? "Connected projects" : "Project folders"),
+        h("span", null, sectionTitle),
         h("strong", null, visibleSummary)
       ),
-      visibleInventoryRows.map((project) => {
+      visibleInventoryRows.length ? visibleInventoryRows.map((project) => {
         const projectKey = projectEntryKey(project);
-        const refSummary = project.intake_ref_summary || {};
-        const intakeError = project.intake_error || "";
-        const active = projectKey === activeKey;
         const openable = Boolean(project.openable && project.intake);
         const folderNextAction = project.next_action && typeof project.next_action === "object" ? project.next_action : {};
-        const folderNextActionLabel = folderNextAction.label || (openable ? "Open project" : "Create project brief");
-        const folderNextActionDetail = folderNextAction.detail || "";
-        const intakeMode = intakeError ? "Brief needs attention" : openable ? (project.intake_editable === false ? "Brief is read-only" : "Brief ready to edit") : "No project brief yet";
-        const fileSummary = projectInventoryFileSummary(project, refSummary);
-        const rawPreview = ([
-          ...(project.source_preview_files || []),
-          ...(project.raw_preview_files || []),
-          ...(project.root_preview_files || [])
-        ]).find(isPreviewableRepoPath) || "";
-        const workspacePreview = (project.workspace_preview_files || []).find(isPreviewableRepoPath) || "";
-        const recoveryActions = Array.isArray(project.recovery_actions) ? project.recovery_actions.filter(Boolean) : [];
-        const addIntakeAction = recoveryActions.find((action) => action.id === "add_intake") || recoveryActions[0] || null;
-        const addIntakeBoundary = addIntakeAction && addIntakeAction.write_boundary && typeof addIntakeAction.write_boundary === "object"
-          ? addIntakeAction.write_boundary
-          : {};
-        const addIntakeWritePaths = Array.isArray(addIntakeBoundary.write_paths) ? addIntakeBoundary.write_paths.filter(Boolean) : [];
-        const addIntakeNoChange = String(addIntakeBoundary.no_change_boundary || "").trim();
-        const addIntakeRule = String((addIntakeAction && addIntakeAction.rule) || "").trim();
-        const addIntakeTarget = writeBoundaryTargetSummary(addIntakeBoundary);
-        const addIntakeReceipt = String(addIntakeBoundary.receipt_path || "").trim();
-        const receiptCount = [
-          project.latest_review,
-          project.latest_project_check || project.latest_item_action || project.latest_row_action,
-          project.latest_intake_edit,
-          project.latest_source_import,
-          project.latest_source_edit,
-          project.latest_source_action,
-          project.latest_case_file_write
-        ].filter(Boolean).length;
+        const name = project.display_label || titleFromSlug(project.project || "Local project");
+        const refs = project.intake_ref_summary || {};
+        const totalRefs = Number(refs.total || 0);
+        const presentRefs = Number(refs.present || 0);
+        const referenceText = totalRefs
+          ? `${presentRefs} of ${totalRefs} referenced file${totalRefs === 1 ? "" : "s"} available`
+          : openable ? "Project brief ready" : "Useful files found";
+        const detail = openable
+          ? `${referenceText} · ${project.report_contract ? "has pressure-test results" : "not pressure-tested yet"}`
+          : `${referenceText} · add a project brief to start`;
         return h(
           "article",
-          { key: project.project, className: `project-tile ${active ? "active" : ""} ${openable ? "" : "pending"}`,
-            "aria-current": active ? "page" : undefined },
+          { key: project.project, className: `project-list-row${openable ? "" : " needs-setup"}` },
           h(
             "div",
-            { className: "project-tile-main" },
-            h("div", { className: "project-tile-title" },
-              h("strong", null, project.display_label || titleFromSlug(project.project || "Local project")),
-              active ? h("span", { className: "project-tile-current" }, "Current") : null,
-              // Research standing at a glance — a stress-tested claim with a confidence, not just a folder.
-              project.standing && project.standing.tested
-                ? h("span", { className: `project-tile-standing tier-${project.standing.tier}`,
-                    title: "How likely the champion says the thesis holds (probability, not the judge score)" },
-                    `${project.standing.label} · ${Math.round((project.standing.confidence || 0) * 100)}%`)
-                : null),
-            h("small", null, project.project_dir || `projects/${project.project}`)
+            { className: "project-list-copy" },
+            h("strong", null, name),
+            h("p", null, detail)
           ),
-          h(
-            "div",
-            { className: "project-tile-facts" },
-            // For openable projects the "Open project" button already says it — drop the redundant label.
-            // Keep "Create project brief" for folders that still need connecting (it's the real next step).
-            openable ? null : h("span", { className: "attention" }, folderNextActionLabel),
-            h("span", null, fileSummary)
-          ),
-          h(
-            "details",
-            { className: "project-tile-details" },
-            h("summary", null, "Project details"),
-            h(
-              "div",
-              null,
-              h("span", { className: intakeError ? "attention" : "" }, intakeMode),
-              h("span", null, project.report_contract ? "Pressure-tested · verdict ready" : "Not pressure-tested yet"),
-              h("span", null, receiptCount ? `${receiptCount} recent changes` : recoveryActions.length ? `${recoveryActions.length} setup step${recoveryActions.length === 1 ? "" : "s"}` : "no recent changes"),
-              rawPreview || workspacePreview
-                ? h(
-                    "div",
-                    { className: "project-tile-preview-actions" },
-                    rawPreview
-                      ? h(
-                          "button",
-                          {
-                            type: "button",
-                            className: "copy-button",
-                            disabled: !liveMode,
-                            onClick: () => onPreview && onPreview({ type: "file", value: rawPreview }),
-                            title: "A source you added — open to read it"
-                          },
-                          "View " + (String(rawPreview).split("/").pop() || "a source")
-                        )
-                      : null,
-                    workspacePreview
-                      ? h(
-                          "button",
-                          {
-                            type: "button",
-                            className: "copy-button",
-                            disabled: !liveMode,
-                            onClick: () => onPreview && onPreview({ type: "file", value: workspacePreview }),
-                            title: "A file the workbench built while working — open to read it"
-                          },
-                          "View " + (String(workspacePreview).split("/").pop() || "a built file")
-                        )
-                      : null
-                  )
-                : null
-            )
-          ),
-          intakeError ? h("p", { className: "project-tile-error" }, displayMessage(intakeError)) : null,
-          !openable
-            ? h(
-                "p",
-                { className: "project-tile-error" },
-                displayMessage(
-                  folderNextActionDetail ||
-                    (addIntakeAction && addIntakeAction.detail) ||
-                    "Save a project brief to start working on the thesis, evidence, and runs."
-                )
-              )
-            : null,
-          !openable && addIntakeWritePaths.length
-            ? h(
-                "details",
-                { className: "project-tile-boundary" },
-                h("summary", null, "Show files that will change"),
-                h(
-                  "div",
-                  null,
-                  addIntakeRule ? h("span", null, "Rule") : null,
-                  addIntakeRule ? h("small", null, displayMessage(addIntakeRule)) : null,
-                  h("span", null, "Main file"),
-                  h("code", null, addIntakeTarget),
-                  addIntakeReceipt ? h("span", null, "Project brief path") : null,
-                  addIntakeReceipt ? h("code", null, addIntakeReceipt) : null,
-                  addIntakeWritePaths.length > 1 ? h("small", null, `${addIntakeWritePaths.length} possible changed files or saved-history files`) : null,
-                  addIntakeNoChange ? h("small", null, displayMessage(addIntakeNoChange)) : null
-                )
-              )
-            : null,
-          h(
-            "div",
-            { className: "project-tile-actions" },
-            h(
-              "button",
-              {
-                type: "button",
-                className: active ? "copy-button" : "copy-button primary",
-                disabled: loading || active,
-                onClick: () => {
-                  if (openable) onSelect(projectKey);
-                  else if (onCreate) onCreate(project);
-                },
-                title: !openable
-                  ? folderNextActionDetail || (addIntakeAction && addIntakeAction.detail) || "Connect this project folder"
-                  : active
-                    ? "This project is open"
-                    : `Open ${project.display_label || titleFromSlug(project.project || "Local project")} / ${sourceBasename(project.intake || "") || "project"}`
-              },
-              active ? "Current" : folderNextActionLabel
-            ),
-          )
+          openable
+            ? h(IconButton, { label: `Open ${name}`, disabled: loading,
+                onClick: () => onSelect && onSelect(projectKey) },
+                h(ArrowRight, { size: 17, "aria-hidden": true }))
+            : h(ActionButton, { disabled: loading, title: folderNextAction.detail || "Connect this project folder",
+                onClick: () => onCreate && onCreate(project) }, "Connect folder")
         );
-      }),
+      }) : h("p", { className: "project-list-empty" }, normalizedQuery
+        ? "No projects match this search."
+        : inventoryFilter === "ready" ? "No other projects are connected yet." : "No folders with useful work need setup."),
       remainingRows
         ? h(
             "div",
@@ -4595,9 +4389,9 @@ function ProjectSwitchboard({ projects, projectFolders, selectedProjectKey, snap
               {
                 type: "button",
                 className: "copy-button",
-                onClick: () => setPendingFolderLimit((limit) => limit + 48)
+                onClick: () => setPendingFolderLimit((limit) => limit + pageSize)
               },
-              `Show ${Math.min(48, remainingRows)} more`
+              `Show ${Math.min(pageSize, remainingRows)} more`
             ),
             h(
               "button",
@@ -5165,7 +4959,7 @@ function ProjectAxiomPanel({ axiomsState, onPreview }) {
 }
 
 
-function ProjectResearchMapPanel({ researchMap, liveMode, onPreview, onSave }) {
+function ProjectResearchMapPanel({ researchMap, workflowContext, liveMode, onPreview, onSave }) {
   const map = researchMap && typeof researchMap === "object" ? researchMap : {};
   const sections = Array.isArray(map.sections) ? map.sections : [];
   const nodes = Array.isArray(map.nodes) ? map.nodes : [];
@@ -5174,8 +4968,8 @@ function ProjectResearchMapPanel({ researchMap, liveMode, onPreview, onSave }) {
   const attentionSections = sections.filter((section) => /gap|warning|blocked|missing|needs|attention|review/i.test(`${section.status} ${section.summary}`));
   const nextSection = attentionSections[0] || sections.find((section) => /branch|next|handoff/i.test(`${section.id} ${section.label}`)) || sections[0] || {};
   const fileRefCount = Array.isArray(map.file_refs) ? map.file_refs.length : 0;
-  const targetPath = map.target_path || "";
-  const jsonPath = map.json_path || "";
+  const targetPath = previewableProjectFile(workflowContext, map.target_path);
+  const jsonPath = previewableProjectFile(workflowContext, map.json_path);
   const graphCount = Number(map.graph_summary_count || 0);
   const meaning = map.project_meaning && typeof map.project_meaning === "object" ? map.project_meaning : {};
   const nextAction = map.next_action && typeof map.next_action === "object" ? map.next_action : {};
@@ -5338,7 +5132,16 @@ function projectObjectFailureDetail(contract, fallback) {
   return detail || label || fallback;
 }
 
-function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContext, reportContext, receiptHistory, claimSupport, sourceList, pendingEditorItems, liveMode, activeRunStatus, backgroundJob, decision, onOpenDetail, onInspectItem, onPreview, onDraftFormalTarget, onSaveResearchMap }) {
+const GENERIC_CHANGE_TESTS = new Set([
+  "change or reject this thesis if the listed files do not support it, if a stronger alternative explains the project, or if required source files are missing.",
+]);
+
+function specificChangeTest(value) {
+  const text = String(value || "").trim();
+  return text && !GENERIC_CHANGE_TESTS.has(text.toLowerCase()) ? text : "";
+}
+
+function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContext, reportContext, receiptHistory, claimSupport, sourceList, pendingEditorItems, liveMode, activeRunStatus, backgroundJob, decision, decisionVisit, agenda, wagers, onPrefillDecisionTest, onExecuteDecisionTest, onOpenDetail, onInspectItem, onPreview, onDraftFormalTarget, onSaveResearchMap }) {
   const rows = (snapshot && snapshot.rows) || [];
   const projectState = (workflowContext && workflowContext.project_state) || {};
   const claimRow = rowByLabel(rows, "Bounded claim");
@@ -5374,10 +5177,12 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
   const thesisText = (projectState.thesis && projectState.thesis.text) || (claimRow ? thesisLead(claimRow.detail) : "No thesis is recorded in the project brief.");
   const charterStatus = stateCharter.status || "missing";
   const charterPath = stateCharter.file || (projectSlug ? `projects/${projectSlug}/project_charter.md` : "");
-  const charterExists = stateCharter.exists !== false && charterStatus !== "missing";
-  const changeText =
+  const charterPreviewPath = previewableProjectFile(workflowContext, charterPath);
+  const charterExists = Boolean(charterPreviewPath) && stateCharter.exists !== false && charterStatus !== "missing";
+  const changeText = specificChangeTest(
     (projectState.change_test && projectState.change_test.text) ||
-    (falsifierRow ? falsifierLead(falsifierRow.detail) || itemStatus(falsifierRow) : "No change test recorded.");
+    (falsifierRow ? falsifierLead(falsifierRow.detail) || itemStatus(falsifierRow) : "")
+  );
   const sourceState = stateSources.status || (sourceRow ? itemStatus(sourceRow) : "source missing");
   const sourceHealthIssueCount = Number(stateSourceHealth.issue_count || 0);
   const sourceHealthState = stateSourceHealth.status || "";
@@ -5430,9 +5235,9 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
     latestNextStep.path ||
     "";
   const latestSourceArtifactPath = latestSourceChange.artifact_path || "";
-  const latestSourceArtifactPreviewPath = previewableRepoPath(latestSourceArtifactPath);
-  const latestInspectionPreviewPath = previewableRepoPath(nextInspection.preview_path || "");
-  const substantiveInspectionPreviewPath = previewableRepoPath(substantiveInspection.preview_path || "");
+  const latestSourceArtifactPreviewPath = previewableProjectFile(workflowContext, latestSourceArtifactPath);
+  const latestInspectionPreviewPath = previewableProjectFile(workflowContext, nextInspection.preview_path || "");
+  const substantiveInspectionPreviewPath = previewableProjectFile(workflowContext, substantiveInspection.preview_path || "");
   const showSubstantiveInspection = Boolean(
     substantiveInspectionPreviewPath && substantiveInspectionPreviewPath !== latestInspectionPreviewPath
   );
@@ -5466,7 +5271,7 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       tone: charterExists ? "ready" : "attention",
       action: charterExists ? "Preview charter" : "Open setup",
       onClick: () => {
-        if (charterExists && charterPath && onPreview) onPreview({ type: "file", value: charterPath });
+        if (charterExists && charterPreviewPath && onPreview) onPreview({ type: "file", value: charterPreviewPath });
         else onOpenDetail && onOpenDetail("overview", "Charter");
       }
     },
@@ -5682,14 +5487,19 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
     ? decisionState.reason || "Open the verdict to inspect the checked support and remaining hinge."
     : reportDetail;
   const decisiveTest = decisionState.next_test || {};
-  const decisiveMove = decisiveTest.text || homeNext.title;
-  const decisiveMoveDetail = decisiveTest.text
-    ? decisiveTest.flips_alone
-      ? "Settling this alone can change the current decision."
-      : decisiveTest.in_cores
-        ? `This reaches ${decisiveTest.in_cores} smallest unresolved ${decisiveTest.in_cores === 1 ? "dependency" : "dependencies"}.`
-        : "This is the highest-leverage unresolved test in the current decision state."
-    : "The project workflow selected this as the next useful step."
+  const homeDecisionTest = decisionTestContext(agenda, wagers, decisiveTest.id);
+  const decisiveMove = (homeDecisionTest.row && homeDecisionTest.row.test) || decisiveTest.text || homeNext.title;
+  const decisiveMoveDetail = homeDecisionTest.row
+    ? homeDecisionTest.row.flips_crisp
+      ? "This test could change the current decision. Preview each possible result before recording what happened."
+      : "This is the highest-ranked admitted test for the current decision."
+    : decisiveTest.text
+      ? decisiveTest.flips_alone
+        ? "Settling this alone can change the current decision."
+        : decisiveTest.in_cores
+          ? `This reaches ${decisiveTest.in_cores} smallest unresolved ${decisiveTest.in_cores === 1 ? "dependency" : "dependencies"}.`
+          : "This is the highest-leverage unresolved test in the current decision state."
+      : "The project workflow selected this as the next useful step.";
   const activeWork = activeRunStatus && activeRunStatus.active
     ? activeRunStatus.job_status === "queued"
       ? "Pressure-test queued"
@@ -5709,7 +5519,11 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       h(MText, { c: "dimmed", mt: 6 }, thesisText),
       changeText
         ? h(MText, { c: "dimmed", fz: "sm", mt: 4 }, h(Term, { term: "what would change your mind" }, "What would change your mind"), `: ${changeText}`)
-        : null
+        : h("button", {
+            type: "button",
+            className: "home-change-test-missing",
+            onClick: () => onOpenDetail && onOpenDetail("overview", "Charter")
+          }, "Define what evidence would overturn this thesis \u2192")
     ),
     h(
       "div",
@@ -5735,16 +5549,26 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
           {
             type: "button",
             className: "copy-button primary",
-            onClick: () => onOpenDetail && onOpenDetail(
-              decisiveTest.text ? "review" : homeNext.to[0],
-              decisiveTest.text ? "Things to review" : homeNext.to[1]
-            )
+            onClick: () => homeDecisionTest.mode === "record" && onExecuteDecisionTest
+              ? onExecuteDecisionTest(homeDecisionTest.wager)
+              : homeDecisionTest.mode === "define" && onPrefillDecisionTest
+                ? onPrefillDecisionTest(homeDecisionTest.row)
+                : onOpenDetail && onOpenDetail(
+                  decisiveTest.text ? "review" : homeNext.to[0],
+                  decisiveTest.text ? "Things to review" : homeNext.to[1],
+                  decisiveTest.text ? { anchor: "op-decision-tests" } : undefined
+                )
           },
-          decisiveTest.text ? "Open decision tests" : homeNext.cta
+          homeDecisionTest.mode === "record" ? "Record outcome"
+            : homeDecisionTest.mode === "define" ? "Define this test"
+              : decisiveTest.text ? "Open decision tests" : homeNext.cta
         )
       ),
-      activeWork || receiptCount || runScore !== "none"
+      decisionVisit || activeWork || receiptCount || runScore !== "none"
         ? h("div", { className: "home-return-context" },
+            decisionVisit
+              ? h("span", { className: "home-return-changed" }, h("b", null, "Changed since your last visit: "), displayText(decisionVisit.label))
+              : null,
             activeWork
               ? h("span", { className: "home-return-live" }, h("i", { "aria-hidden": "true" }), activeWork)
               : null,
@@ -5777,7 +5601,7 @@ function ProjectHomeSummary({ snapshot, runHistory, traceContext, workflowContex
       "details",
       { className: "create-disclosure" },
       h("summary", null, "See the research map \u2014 claim, support, and tensions"),
-      h(ProjectResearchMapPanel, { researchMap, liveMode, onPreview, onSave: onSaveResearchMap })
+      h(ProjectResearchMapPanel, { researchMap, workflowContext, liveMode, onPreview, onSave: onSaveResearchMap })
     )
   );
 }
@@ -6591,7 +6415,25 @@ function editableProjectFileTarget(filePreview, snapshot) {
   return null;
 }
 
-function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, project, sourceList, sourceImportContract, onImport, onPreview, onAddToIntake, onOpenIntake, onOpenEvidenceGap }) {
+function SourceDecisionBoundary({ event, onOpenEvidence }) {
+  if (!event) return null;
+  const decisionState = ((event.decision_checkpoint || {}).decision_state) || {};
+  const headline = displayMessage(decisionState.headline || "");
+  return h(
+    "section",
+    { className: "source-decision-boundary", "aria-label": "Effect on the checked decision" },
+    h("div", { className: "source-decision-copy" },
+      h("span", { className: "eyebrow" }, "Effect on the decision"),
+      h("strong", null, "Saved, not yet used in the checked decision"),
+      h("p", null, "This file has not admitted a claim or changed the decision. Map it in the project brief, compile the evidence, then verify the claim-to-source link."),
+      headline ? h("small", null, `Current checked state: ${headline}.`) : null),
+    onOpenEvidence
+      ? h("button", { type: "button", className: "chip", onClick: () => onOpenEvidence() }, "Compile evidence")
+      : null
+  );
+}
+
+function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, project, sourceList, sourceImportContract, onImport, onPreview, onAddToIntake, onOpenIntake, onOpenEvidenceGap, onOpenEvidence }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const filename = String(draft.filename || "").trim();
@@ -6721,7 +6563,7 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
     h(
       "div",
       { className: "source-import-actions" },
-      h("small", { className: "source-import-saveline" }, duplicateFilename ? "" : "Saves the file into your project's evidence, then compile to make it count."),
+      h("small", { className: "source-import-saveline" }, duplicateFilename ? "" : "Saves a project file. It affects the checked decision only after mapping, compilation, and claim verification."),
       h(
         "button",
         {
@@ -6739,6 +6581,7 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
             { className: "source-import-result" },
             h("strong", null, event.source_path || "file saved"),
             h("small", null, `${sourceArtifactKindLabel(event.artifact_kind || "project_note")}; ${sourceTypeLabel(event.source_type || "source")}; ${(event.source_check && event.source_check.accepted) ? "file review passed" : "file review needs attention"}`),
+            h(SourceDecisionBoundary, { event, onOpenEvidence }),
             h("p", null, sourceResultNext),
             h(SourceCheckDetail, { event }),
             h(
@@ -7004,6 +6847,7 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
               { className: "raw-source-result" },
               h("strong", null, event.source_path || "file edited"),
               h("small", null, `${sourceArtifactKindLabel(event.artifact_kind || "project_note")}; ${sourceTypeLabel(event.source_type || "source")}; ${(event.source_check && event.source_check.accepted) ? "file review passed" : "file review needs attention"}`),
+              h(SourceDecisionBoundary, { event, onOpenEvidence: onOpenReadiness }),
               h(SourceCheckDetail, { event }),
               h(
                 "button",
@@ -7012,9 +6856,9 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
                   className: "copy-button",
                   disabled: !liveMode,
                   onClick: () => onOpenReadiness && onOpenReadiness(),
-                  title: "Open file review after this save"
+                  title: "Open the evidence compiler and file readiness checks"
                 },
-                "Open file review"
+                "Review evidence"
               )
             )
           : null
@@ -7887,8 +7731,10 @@ function EvidenceSupportPanel({ claimSupport, message, evidenceGaps, evidenceGap
   const fetchResultStatus = evidenceFetchEvent && evidenceFetchEvent.status && evidenceFetchEvent.status !== "needs_confirmation"
     ? evidenceFetchEvent.status
     : "";
+  const fetchInProgress = ["queued", "running"].includes(String(fetchResultStatus).toLowerCase());
   const fetchAttempted = evidenceFetchEvent ? (evidenceFetchEvent.total_attempted ?? fetchReceipt.total_attempted) : undefined;
   const fetchAccepted = evidenceFetchEvent ? (evidenceFetchEvent.total_accepted ?? fetchReceipt.total_accepted) : undefined;
+  const fetchJobOnly = Boolean(evidenceFetchEvent && evidenceFetchEvent.job && fetchAttempted === undefined && fetchAccepted === undefined);
   const fetchManifestPath = evidenceFetchEvent ? (evidenceFetchEvent.manifest_path || fetchReceipt.manifest_path || "") : "";
   const fetchReceiptPath = evidenceFetchEvent ? (evidenceFetchEvent.receipt_path || fetchReceipt.receipt_path || "") : "";
   const fetchLatestPath = evidenceFetchEvent ? (evidenceFetchEvent.latest || fetchReceipt.latest_path || "") : "";
@@ -8032,10 +7878,14 @@ function EvidenceSupportPanel({ claimSupport, message, evidenceGaps, evidenceGap
       fetchResultStatus
         ? h(
             "section",
-            { className: `evidence-fetch-result ${evidenceFetchEvent.accepted ? "ready" : "attention"}`, "aria-label": "Latest evidence fetch result" },
-            h("span", { className: "eyebrow" }, "Latest fetch"),
+            { className: `evidence-fetch-result ${fetchInProgress ? "in-progress" : evidenceFetchEvent.accepted ? "ready" : "attention"}`, "aria-label": "Latest evidence fetch result" },
+            h("span", { className: "eyebrow" }, fetchInProgress ? "Evidence recovery" : "Latest fetch"),
             h("strong", null, displayText(fetchResultStatus)),
-            h(
+            fetchInProgress
+              ? h("p", { className: "muted" }, "The search continues in the background. Track it in Activity; this page will refresh when it finishes.")
+              : fetchJobOnly
+                ? h("p", { className: "muted" }, "The background job finished. Sources and open gaps were refreshed; Activity keeps its saved output and status.")
+              : h(
               "div",
               { className: "run-history-facts compact" },
               h("div", null, h("span", null, "Accepted"), h("strong", null, `${fetchAccepted ?? 0} / ${fetchAttempted ?? 0}`)),
@@ -8048,7 +7898,7 @@ function EvidenceSupportPanel({ claimSupport, message, evidenceGaps, evidenceGap
               "div",
               { className: "evidence-gap-brief-actions" },
               h("button", { type: "button", className: "copy-button", onClick: () => copyText(evidenceFetchStatusMessage(evidenceFetchEvent)) }, "Copy result"),
-              !evidenceFetchEvent.accepted && onPrepareSource
+              !fetchInProgress && !evidenceFetchEvent.accepted && onPrepareSource
                 ? h("button", { type: "button", className: "copy-button", disabled: !liveMode || !gapRows.length, onClick: () => onPrepareSource(selectedGap, selectedGapIndex) }, "Draft source note")
                 : null,
               fetchManifestPath
@@ -9305,7 +9155,21 @@ function buildAssumptionsView(evalResults) {
 
 // View-model for the Evidence screen (sections/evidence.jsx). Data via /api/sources (files) +
 // claim-support (backing) + snapshot Evidence-readiness (compile freshness) + evidence gaps.
-function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sourceActionRunning, evalResults, sourceListMessage, decision) {
+function projectPreviewableFiles(workflowContext) {
+  const items = (((workflowContext || {}).project_state || {}).files || {}).items || [];
+  return new Set(
+    (Array.isArray(items) ? items : [])
+      .filter((item) => item && item.previewable && item.path)
+      .map((item) => String(item.path))
+  );
+}
+
+function previewableProjectFile(workflowContext, ...candidates) {
+  const files = projectPreviewableFiles(workflowContext);
+  return candidates.map((value) => String(value || "").trim()).find((value) => value && files.has(value)) || "";
+}
+
+function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sourceActionRunning, evalResults, sourceListMessage, decision, workflowContext) {
   const sources = Array.isArray(sourceList && sourceList.sources) ? sourceList.sources.filter(Boolean) : [];
   // Source health: does each COMPILED source still match the file on disk? A mismatch silently
   // invalidates every claim bound to it — the cheapest-fix soundness signal (claim_support.source_context,
@@ -9413,7 +9277,10 @@ function buildEvidenceView(sourceList, claimSupport, snapshot, evidenceGaps, sou
       running: Boolean(sourceActionRunning),
       reason: compileReason,
     },
-    compiledFile: project ? `projects/${project}/compiled_evidence_packet.json` : "",
+    compiledFile: previewableProjectFile(
+      workflowContext,
+      project ? `projects/${project}/compiled_evidence_packet.json` : ""
+    ),
     gaps,
     gapCount,
   };
@@ -9565,8 +9432,9 @@ function _runIso(runId) {
 // meaningful saves (decisions / evidence / charter); the process save-receipts (report-readiness
 // refreshes, file saves) are demoted to a quiet footnote. Activity timeline: day groups + a spine of
 // type-coloured nodes, human verbs + relative time. See PRD §7.8.
-function buildHistoryView(receiptHistory, scoreTrajectory, runHistory, compression) {
+function buildHistoryView(receiptHistory, scoreTrajectory, runHistory, compression, workflowContext) {
   const events = [];
+  const previewableFiles = projectPreviewableFiles(workflowContext);
 
   // 1. RUN events — the investigation's research log. A PE/research lead reading history wants more
   // than a score: did the thesis actually reach a NEW BEST (champion promoted) or just get re-tested;
@@ -9635,12 +9503,15 @@ function buildHistoryView(receiptHistory, scoreTrajectory, runHistory, compressi
     if (detail && verb && detail.toLowerCase().startsWith(verb.toLowerCase())) detail = detail.slice(verb.length).replace(/^[\s:·.-]+/, "").trim();
     if (!detail && target && !/[\/]/.test(String(target))) detail = targetLabel(target);
     const artifactPath = receiptArtifactPath(item);
-    const previewable = isPreviewableRepoPath(artifactPath);
+    const fallbackPath = String(item.path || "");
+    const openValue = previewableFiles.has(artifactPath)
+      ? artifactPath
+      : previewableFiles.has(fallbackPath) ? fallbackPath : "";
     events.push({
       verb, tone, detail: detail || "", iso: item.applied_at || "",
       when: _humaneTime(item.applied_at), day: _dayLabel(item.applied_at),
-      openType: previewable ? "file" : "receipt",
-      openValue: previewable ? artifactPath : (item.path || ""),
+      openType: "file",
+      openValue,
     });
   });
 
@@ -9737,7 +9608,7 @@ const _SUPPORT_LABEL = {
   unsupported_no_sources: "no source",
   unsupported_missing_sources: "source file missing",
 };
-function buildVerdictView(snapshot, reportContext, claimSupport, evalResults) {
+function buildVerdictView(snapshot, reportContext, claimSupport, evalResults, workflowContext) {
   const rc = reportContext || {};
   const cs = claimSupport || {};
   // The score is capped by un-sourceable evidence, not a weak thesis — a different next action.
@@ -9785,6 +9656,10 @@ function buildVerdictView(snapshot, reportContext, claimSupport, evalResults) {
   // The report filename is renderer-dependent (Report.<renderer>.md — decision_brief / founder_memo /
   // research_note / …). Take the renderer from the report context, never hardcode it.
   const renderer = String(rc.renderer || (snapshot && snapshot.renderer) || "decision_brief").trim();
+  const previewableFiles = projectPreviewableFiles(workflowContext);
+  const expectedReportFile = project ? `projects/${project}/Report.${renderer}.md` : "";
+  const expectedCardFile = project ? `projects/${project}/synthesis/claim_card.md` : "";
+  const expectedContractFile = String(rc.report_support_contract || "");
   return {
     status: rc.status || (snapshot && snapshot.report_status) || "unknown",
     tone,
@@ -9795,7 +9670,7 @@ function buildVerdictView(snapshot, reportContext, claimSupport, evalResults) {
     toVerify,
     attentionTotal,
     backing: { total: Number(cs.claim_count || 0), thin: Number(cs.weak_or_unsourced_count || 0) },
-    contractFile: rc.report_support_contract || "",
+    contractFile: previewableFiles.has(expectedContractFile) ? expectedContractFile : "",
     // The loop's probability the thesis holds (probability_dag.outcome) — a confidence read at the verdict.
     confidence: (evalResults && evalResults.ok && evalResults.probability_dag && evalResults.probability_dag.outcome
       && typeof evalResults.probability_dag.outcome.probability === "number")
@@ -9806,8 +9681,10 @@ function buildVerdictView(snapshot, reportContext, claimSupport, evalResults) {
       return String((cr && (cr.detail || cr.display_detail)) || "").trim();
     })(),
     // The actual deliverables — the rendered report doc + the claim card (markdown the file viewer renders).
-    reportFile: project ? `projects/${project}/Report.${renderer}.md` : "",
-    cardFile: project ? `projects/${project}/synthesis/claim_card.md` : "",
+    reportFile: previewableFiles.has(expectedReportFile) ? expectedReportFile : "",
+    cardFile: previewableFiles.has(expectedCardFile) ? expectedCardFile : "",
+    expectedReportFile,
+    expectedCardFile,
   };
 }
 
@@ -9976,7 +9853,7 @@ function claimSupportVerdict(claimSupport, ceilingCapped) {
 // View-model for the Thesis screen (sections/thesis.jsx). main.js owns the data; the section is a
 // pure view. Reuses the snapshot row helpers + claim-support; the run's epistemic payload (score,
 // weakest_point, constraints ledger) comes from the eval-results CLI via /api/eval-results.
-function buildThesisView(snapshot, claimSupport, evalResults) {
+function buildThesisView(snapshot, claimSupport, evalResults, workflowContext) {
   const rows = (snapshot && snapshot.rows) || [];
   const claimRow = rowByLabel(rows, "Bounded claim");
   const falsifierRow = rowByLabel(rows, "Next falsifier");
@@ -10016,6 +9893,16 @@ function buildThesisView(snapshot, claimSupport, evalResults) {
   }
 
   const verdictV = claimSupportVerdict(claimSupport, ceilingCapped);
+  const project = snapshot && snapshot.project;
+  const claimFile = previewableProjectFile(
+    workflowContext,
+    claimRow && (claimRow.file || claimRow.source),
+    project ? `projects/${project}/thesis.md` : ""
+  );
+  const nonClaimFile = previewableProjectFile(
+    workflowContext,
+    nonClaimRow && (nonClaimRow.file || nonClaimRow.source)
+  );
   return {
     score,
     scoreBand,
@@ -10028,13 +9915,13 @@ function buildThesisView(snapshot, claimSupport, evalResults) {
       warn: verdictV.warn,
     },
     claim: (claimRow && (claimRow.detail || claimRow.display_detail)) || "",
-    claimFile: (claimRow && (claimRow.file || claimRow.source)) || (snapshot && snapshot.project ? `projects/${snapshot.project}/thesis.md` : ""),
+    claimFile,
     claimWarning: (claimRow && claimRow.warning) || "",
     falsifierText: (falsifierRow && falsifierRow.detail) || "",
     weakestPoint: (evalOk && String(evalResults.weakest_point || "").trim()) || "",
     weakSpotsMore,
     ruledOut: nonClaimRow
-      ? { summary: nonClaimRow.detail || "", file: nonClaimRow.file || nonClaimRow.source || "" }
+      ? { summary: nonClaimRow.detail || "", file: nonClaimFile }
       : null,
     assumptions: { confirmed, provisional, topConstraint: topProvisional, learnedThisRun },
     backing: {
@@ -10072,6 +9959,7 @@ function Sidebar({
     { label: "Settings", workspace: "projects", subsection: "Settings", body: "Set model and evidence-fetch defaults before running project actions." }
   ];
   const projectTaskItems = day0Mode ? day0TaskItems : [
+    { label: "Overview", workspace: "projects", subsection: "Current project", body: "Return to the current decision, next decisive test, and the shortest paths into this project." },
     { label: "Charter", workspace: "overview", subsection: "Charter", body: "The mandate this project serves — the question, scope limits, and what would change it. Your thesis tackles this." },
     { label: "Thesis", workspace: "overview", subsection: "Thesis", body: "What you're arguing, what would change your mind, where it's weakest, and how it held up." },
     { label: "Evidence", workspace: "sources", subsection: "Prepare files", body: "What backs the thesis. Add files and see what's missing." },
@@ -10115,10 +10003,8 @@ function Sidebar({
                   ? activeWorkspace === "projects" && activeSubsection === "Plugins"
                 : item.id === "settings"
                   ? activeWorkspace === "projects" && activeSubsection === "Settings"
-                  : !leanMillActive
-                    && !(activeWorkspace === "projects" && activeSubsection === "Settings")
-                    && !(activeWorkspace === "projects" && activeSubsection === "Activity")
-                    && !(activeWorkspace === "projects" && activeSubsection === "Plugins")
+                  : activeWorkspace === "projects"
+                    && ["Projects", "Connect project", "Files"].includes(activeSubsection)
             ) ? "active" : "",
             onClick: () => {
               if (onNavigateWorkspace) onNavigateWorkspace(item.workspace, item.subsection);
@@ -10136,8 +10022,8 @@ function Sidebar({
     ),
     h(
       "section",
-      { className: "side-subnav", "aria-label": leanMillActive ? "LeanMill submenu" : "Selected project menu" },
-      h("span", null, leanMillActive ? "Proof work" : "Selected project"),
+    { className: "side-subnav", "aria-label": leanMillActive ? "LeanMill submenu" : day0Mode ? "Get started menu" : "Selected project menu" },
+      h("span", null, leanMillActive ? "Proof work" : day0Mode ? "Get started" : "Selected project"),
       h(
         "div",
         { className: "side-subnav-list" },
@@ -10969,6 +10855,12 @@ function FileViewerModal({ filePreview, message, open, onClose, onPreview, editT
         : null,
       message ? h("p", { className: "file-viewer-message" }, message) : null,
       (() => {
+        if (!filePreview) {
+          return h("div", { className: "file-viewer-read", "aria-busy": "true" },
+            h("div", { className: "file-viewer-loading" },
+              h("span", { className: "runconsole-spinner", "aria-hidden": "true" }),
+              h("span", null, "Loading document…")));
+        }
         const { toc, body } = renderFileBody(filePreview, path);
         const onTocClick = (slug) => (event) => {
           event.preventDefault();
@@ -11021,25 +10913,49 @@ function normalizeWorkspaceTarget(workspace, subsection) {
   return [section.id, normalizedSubsection];
 }
 
+const LAST_PROJECT_STORAGE_KEY = "ztare.workbench.last-project";
+
+function lastOpenedProject() {
+  try { return String(window.localStorage.getItem(LAST_PROJECT_STORAGE_KEY) || "").trim(); }
+  catch (_err) { return ""; }
+}
+
+function rememberOpenedProject(project) {
+  const value = String(project || "").trim();
+  if (!value) return;
+  try { window.localStorage.setItem(LAST_PROJECT_STORAGE_KEY, value); }
+  catch (_err) { /* Returning-user routing still works from the server default when storage is unavailable. */ }
+  try {
+    const url = new URL(window.location.href);
+    const explicitDayZero = url.searchParams.get("day0") === "1" || url.searchParams.get("mode") === "day0";
+    if (explicitDayZero) return;
+    url.searchParams.set("project", value);
+    if (url.toString() !== window.location.href) window.history.replaceState({}, "", url.toString());
+  } catch (_err) {
+    // Project loading remains authoritative if URL reflection is unavailable.
+  }
+}
+
 function readWorkbenchRouteFromUrl() {
   try {
     const params = new URLSearchParams(window.location.search);
     const hasExplicitRoute = ["workspace", "w", "section", "subsection", "s", "day0", "mode"].some((key) => params.has(key));
-    const day0 = params.get("day0") === "1" || params.get("mode") === "day0" || !hasExplicitRoute;
+    const implicitHome = !hasExplicitRoute;
+    const day0 = params.get("day0") === "1" || params.get("mode") === "day0";
     const requestedWorkspace = params.get("workspace") || params.get("w") || "projects";
-    const requestedSubsection = params.get("section") || params.get("subsection") || params.get("s") || (day0 ? "Current project" : "Current project");
+    const requestedSubsection = params.get("section") || params.get("subsection") || params.get("s") || "Current project";
     const requestedStart = String(params.get("start") || "").trim().toLowerCase();
     const start = ["files", "thesis", "folder"].includes(requestedStart) ? requestedStart : "";
     const [workspace, subsection] = normalizeWorkspaceTarget(requestedWorkspace, requestedSubsection);
-    const project = String(params.get("project") || "").trim();
+    const project = String(params.get("project") || (implicitHome ? lastOpenedProject() : "")).trim();
     const scenario = String(params.get("scenario") || "").trim();
-    return { workspace, subsection, day0, start, project, scenario };
+    return { workspace, subsection, day0, start, project, scenario, implicitHome };
   } catch (_err) {
-    return { workspace: "projects", subsection: "Current project", day0: false, start: "", project: "", scenario: "" };
+    return { workspace: "projects", subsection: "Current project", day0: false, start: "", project: "", scenario: "", implicitHome: true };
   }
 }
 
-function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", scenario, replace = false }) {
+function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", scenario, anchor, replace = false }) {
   try {
     const [nextWorkspace, nextSubsection] = normalizeWorkspaceTarget(workspace, subsection);
     const url = new URL(window.location.href);
@@ -11060,6 +10976,7 @@ function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", scen
       if (scenario) url.searchParams.set("scenario", scenario);
       else url.searchParams.delete("scenario");
     }
+    if (anchor !== undefined) url.hash = anchor ? `#${String(anchor).replace(/^#/, "")}` : "";
     const nextUrl = url.toString();
     if (nextUrl === window.location.href) return;
     if (replace) window.history.replaceState({}, "", nextUrl);
@@ -11067,6 +10984,26 @@ function syncWorkbenchRouteToUrl({ workspace, subsection, day0, start = "", scen
   } catch (_err) {
     // URL sync is best effort; state navigation still works.
   }
+}
+
+function focusWorkbenchAnchor(anchor, attempt = 0) {
+  const id = String(anchor || "").replace(/^#/, "");
+  if (!id || typeof document === "undefined") return;
+  const target = document.getElementById(id);
+  if (!target) {
+    if (attempt < 24) window.setTimeout(() => focusWorkbenchAnchor(id, attempt + 1), 100);
+    return;
+  }
+  target.classList.remove("workbench-deeplink-target");
+  target.classList.add("workbench-deeplink-target");
+  target.scrollIntoView({ behavior: attempt ? "auto" : "smooth", block: "start" });
+  const hadTabIndex = target.hasAttribute("tabindex");
+  if (!hadTabIndex) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+  window.setTimeout(() => {
+    target.classList.remove("workbench-deeplink-target");
+    if (!hadTabIndex) target.removeAttribute("tabindex");
+  }, 1600);
 }
 
 function detailCopy(workspace, subsection) {
@@ -11392,6 +11329,7 @@ function App() {
   const [evidenceFetchEvent, setEvidenceFetchEvent] = useState(null);
   const [evidenceFetchPrompt, setEvidenceFetchPrompt] = useState(null);
   const [evidenceFetchRunning, setEvidenceFetchRunning] = useState(false);
+  const [evidenceFetchJobId, setEvidenceFetchJobId] = useState("");
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
   const [reportContractContext, setReportContractContext] = useState(null);
@@ -11414,6 +11352,7 @@ function App() {
   const [wagerPrefill, setWagerPrefill] = useState(null);
   const [wagerExecution, setWagerExecution] = useState(null);
   const [decision, setDecision] = useState(null);
+  const decisionVisit = useDecisionVisit(scoreTrajectoryProject || "", decision);
   const [isomorphism, setIsomorphism] = useState(null);
   const [rubricReview, setRubricReview] = useState(null);
   const [falsify, setFalsify] = useState(null);
@@ -11505,11 +11444,13 @@ function App() {
       .catch(() => {});
     return () => { active = false; };
   }, [liveMode, scoreTrajectoryProject]);
-  // Keep the decision-strength trajectory loaded alongside run-history, so History's sparkline renders
-  // even if the Decision tab was never opened this session.
+  // Keep the governed standing and its exact next action loaded for the return-home banner even when the
+  // operator has not visited Verdict or Open points in this session.
   useEffect(() => {
     if (!liveMode || !scoreTrajectoryProject) return undefined;
     loadDecisionLive();
+    loadAgendaLive();
+    loadWagersLive();
     return undefined;
   }, [liveMode, scoreTrajectoryProject]);
   useEffect(() => {
@@ -11710,6 +11651,13 @@ function App() {
     return () => window.cancelAnimationFrame(frame);
   }, [activeWorkspace, activeSubsection, day0Mode, projectStartIntent]);
 
+  useEffect(() => {
+    const anchor = String(window.location.hash || "").replace(/^#/, "");
+    if (!anchor) return undefined;
+    const timer = window.setTimeout(() => focusWorkbenchAnchor(anchor), 0);
+    return () => window.clearTimeout(timer);
+  }, [activeWorkspace, activeSubsection, snapshot && snapshot.project]);
+
   const defaultSnapshotLabel = (rows) => {
     const firstAttention = rows.find((row) => row.kind === "attention");
     return (firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "";
@@ -11735,6 +11683,7 @@ function App() {
     setSourceActionPrompt(null);
     setEvidenceFetchEvent(null);
     setEvidenceFetchPrompt(null);
+    setEvidenceFetchJobId("");
     setSourceImportEvent(null);
     setSourceEditEvent(null);
     setWriteReceiptEvent(null);
@@ -12049,7 +11998,7 @@ function App() {
       })
       .then((payload) => {
         const projectRows = payload.projects || [];
-        setProjectFolders(payload.all_project_folders || payload.project_folders || []);
+        setProjectFolders(payload.project_folders || payload.all_project_folders || []);
         if (!projectRows.length) throw new Error("project index is empty");
         setProjects(projectRows);
         const activeRow = projectRows.find((row) => projectEntryKey(row) === activeProject) || projectRows.find((row) => row.project === activeProject);
@@ -12699,6 +12648,21 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    if (!evidenceFetchJobId) return;
+    const job = backgroundJobs.find((row) => row && row.id === evidenceFetchJobId);
+    if (!job || !["succeeded", "failed", "canceled", "interrupted"].includes(job.status)) return;
+    const succeeded = job.status === "succeeded";
+    setEvidenceFetchEvent((current) => ({ ...(current || {}), status: job.status,
+      accepted: succeeded, returncode: job.returncode, job }));
+    setEvidenceGapMessage(succeeded
+      ? "Evidence fetch finished. Sources and open gaps are refreshing."
+      : `Evidence fetch ${displayText(job.status)}. Open Activity to inspect its saved output.`);
+    const params = liveProjectParams();
+    if (params && params.project === job.project) refreshLiveContextAfterWrite(params, { sources: true });
+    setEvidenceFetchJobId("");
+  }, [backgroundJobs, evidenceFetchJobId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -12727,6 +12691,7 @@ function App() {
         if (useLiveApi) {
           const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
           setSelectedProjectKey(projectEntryKey(liveParams));
+          rememberOpenedProject(payload.project);
           Promise.allSettled([
             loadTraceContext(liveParams),
             loadWorkflowContext(liveParams),
@@ -12833,8 +12798,13 @@ function App() {
       })
       .then((payload) => {
         const projectRows = payload.projects || [];
-        setProjectFolders(payload.all_project_folders || payload.project_folders || []);
-        if (!projectRows.length) throw new Error("project index is empty");
+        setProjectFolders(payload.project_folders || payload.all_project_folders || []);
+        if (!projectRows.length) {
+          setProjects([]);
+          setLiveMode(true);
+          if (initialRoute.implicitHome) setDayZero(true);
+          return null;
+        }
         setProjects(projectRows);
         setLiveMode(true);
         loadLeanMillContext();
@@ -12853,12 +12823,16 @@ function App() {
   const openProject = (caseKey) => {
     if (!caseKey || !liveMode) return;
     const entry = projects.find((row) => projectEntryKey(row) === caseKey) || projects.find((row) => row.project === caseKey) || { project: caseKey, rubric: caseKey };
+    if (snapshot && entry.project === snapshot.project) {
+      navigateWorkspace("projects", "Current project");
+      return;
+    }
     runAfterPendingEditors(`Opening ${entry.project}`, { sourceImport: true }, () => {
       resetProjectSessionState();
       setModeMessage(`Opening ${entry.project} from local project files.`);
-      loadSnapshot(entry, true).catch((err) =>
-        setModeMessage(`Could not load live project data for ${entry.project}: ${err.message || err}`)
-      );
+      loadSnapshot(entry, true)
+        .then(() => navigateWorkspace("projects", "Current project"))
+        .catch((err) => setModeMessage(`Could not load live project data for ${entry.project}: ${err.message || err}`));
     });
   };
 
@@ -13553,9 +13527,10 @@ function App() {
           return;
         }
         const projectRows = (payload.project_index && payload.project_index.projects) || [];
-        setProjectFolders((payload.project_index && (payload.project_index.all_project_folders || payload.project_index.project_folders)) || []);
+        setProjectFolders((payload.project_index && (payload.project_index.project_folders || payload.project_index.all_project_folders)) || []);
         if (projectRows.length) setProjects(projectRows);
         setSelectedProjectKey(projectEntryKey(payload));
+        rememberOpenedProject(payload.project);
         resetProjectSessionState();
         if (writeEvent) setWriteReceiptEvent(writeEvent);
         if (payload.snapshot) installSnapshot(payload.snapshot);
@@ -13563,6 +13538,13 @@ function App() {
         loadSnapshot({ project: payload.project, rubric: payload.rubric, intake: payload.intake }, true).catch((err) =>
           setProjectCreateMessage(`Created ${payload.project}, but live reload failed: ${err.message || err}`)
         );
+        if (day0Mode) {
+          setDay0Mode(false);
+          setProjectStartIntent("");
+          setActiveWorkspace("projects");
+          setActiveSubsection("Current project");
+          syncWorkbenchRouteToUrl({ workspace: "projects", subsection: "Current project", day0: false, replace: true });
+        }
         setProjectCreateDraft(emptyProjectCreateDraft());
         const writePaths = (((payload.write_boundary || {}).write_paths) || []).filter(Boolean);
         const warning = payload.intake_create_accepted === false && payload.intake_file_exists
@@ -13726,7 +13708,7 @@ function App() {
     });
     setSourceImportEvent(null);
     setSourceImportMessage(`Drafted ${filename} from the active evidence gap. Replace the placeholder with the file details, then save the file.`);
-    openDetail("sources", "Add file");
+    openModal("sources", "Add file");
   };
 
   const reloadSourceList = () => {
@@ -13961,7 +13943,7 @@ function App() {
   const actionRow = (label) => {
     if (!label) return;
     setSelectedLabel(label);
-    openDetail("review", "Save next step");
+    openModal("review", "Save next step");
   };
   const useActionNote = (note, action = "next_step", preferredLabel = "") => {
     if (!snapshot || !note) return;
@@ -14628,6 +14610,11 @@ function App() {
         if (payload.evidence_gaps) setEvidenceGapContext(payload.evidence_gaps);
         if (payload.claim_support) setClaimSupportContext(payload.claim_support);
         setEvidenceFetchEvent(payload);
+        if (payload.job && payload.job.id) {
+          setEvidenceFetchJobId(payload.job.id);
+          setEvidenceGapMessage(evidenceFetchStatusMessage(payload));
+          return null;
+        }
         const writeEvent = evidenceFetchWriteEvent(payload);
         if (writeEvent) setWriteReceiptEvent(writeEvent);
         setEvidenceGapMessage(evidenceFetchStatusMessage(payload));
@@ -14804,14 +14791,14 @@ function App() {
         setFilePreviewMessage(String(err.message || err));
       });
   };
-  const openSourcePacketForTrace = (path) => {
+  const openCheckedDraftForTrace = (path) => {
     const entry = filePreviewEntryFromItem({ type: "file", value: path });
     const previewPath = entry && entry.value;
     const project = (liveProjectParams() || {}).project;
     if (!liveMode || !project || !previewPath) return;
     const token = Date.now();
-    setDraftSeed({ project, path: previewPath, token, loading: true });
-    navigateWorkspace("overview", "Annotate a doc");
+    setDraftSeed({ project, path: previewPath, mode: "trace", token, loading: true });
+    openModal("overview", "Annotate a doc");
     fetch(endpointUrl("/api/file", { path: previewPath }), { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`checked draft could not be opened: ${response.status}`);
@@ -14820,9 +14807,9 @@ function App() {
       .then((payload) => {
         if (payload.ok === false) throw new Error(payload.error || "checked draft could not be opened");
         if (payload.truncated) throw new Error("checked draft is too large to load safely into the editor");
-        setDraftSeed({ project, path: previewPath, text: String(payload.text || ""), token });
+        setDraftSeed({ project, path: previewPath, mode: "trace", text: String(payload.text || ""), token: `${token}:ready` });
       })
-      .catch((error) => setDraftSeed({ project, path: previewPath, error: String(error.message || error), token }));
+      .catch((error) => setDraftSeed({ project, path: previewPath, mode: "trace", error: String(error.message || error), token: `${token}:error` }));
   };
   const navigateFilePreviewHistory = (offset) => {
     const nextIndex = filePreviewHistoryIndex + offset;
@@ -14850,7 +14837,7 @@ function App() {
     .map((n) => ({ id: n.id, label: n.label || n.id }));
   const sourceReadinessPanel = h(Evidence, {
     key: "evidence",
-    view: buildEvidenceView(sourceListContext, claimSupportContext, snapshot, evidenceGapContext, sourceActionRunning, evalResults, sourceListMessage, decision),
+    view: buildEvidenceView(sourceListContext, claimSupportContext, snapshot, evidenceGapContext, sourceActionRunning, evalResults, sourceListMessage, decision, workflowContext),
     onPreview: loadFilePreview,
     onCompile: () => runSourceActionLive("evidence_prepare"),
     onAddFile: () => openModal("sources", "Add file"),
@@ -14897,8 +14884,9 @@ function App() {
         onImport: importSourceLive,
         onPreview: loadFilePreview,
         onAddToIntake: addImportedSourceToIntakeDraft,
-        onOpenIntake: () => openDetail("sources", "Project brief"),
-        onOpenEvidenceGap: () => openDetail("run", "Ready to run")
+        onOpenIntake: () => navigateWorkspace("sources", "Project brief"),
+        onOpenEvidenceGap: () => navigateWorkspace("run", "Ready to run"),
+        onOpenEvidence: () => navigateWorkspace("sources", "Prepare files")
       });
   const rawSourcePanel = h(RawSourceManagerPanel, {
         key: "raw-source",
@@ -14915,7 +14903,7 @@ function App() {
         onSave: saveRawSourceEdit,
         onReload: reloadSourceList,
         onPreview: loadFilePreview,
-        onOpenReadiness: () => openDetail("sources", "Prepare files")
+        onOpenReadiness: () => navigateWorkspace("sources", "Prepare files")
       });
   const projectFilePanel = h(CaseFilePanel, {
         key: "case-file",
@@ -15008,18 +14996,6 @@ function App() {
       return next;
     });
   }
-  function openDetail(workspaceId, subsection) {
-    const [normalizedWorkspace, normalizedSubsection] = normalizeWorkspaceTarget(workspaceId, subsection);
-    setActiveWorkspace(normalizedWorkspace);
-    setActiveSubsection(normalizedSubsection);
-    setProjectStartIntent("");
-    syncWorkbenchRouteToUrl({
-      workspace: normalizedWorkspace,
-      subsection: normalizedSubsection,
-      day0: day0Mode
-    });
-    openDetailKey(detailKey(normalizedWorkspace, normalizedSubsection));
-  }
   // Open the detail modal as a pure OVERLAY — without navigating the background view. Closing it
   // returns you to where you were (e.g. "View the ledger" from the Thesis stays on the Thesis).
   function openModal(workspaceId, subsection) {
@@ -15035,6 +15011,21 @@ function App() {
     const sub = aliases[rawSub] || rawSub;
     openDetailKey(detailKey(section.id, sub));
   }
+  function prefillDecisionTest(row) {
+    if (!row) return;
+    setWagerPrefill({
+      key: `${row.id}:${Date.now()}`,
+      claim_ref: row.claim_ref,
+      test: row.test,
+      outcomes: row.outcome_specs || [],
+    });
+    openModal("review", "Define a decision test");
+  }
+  function executeDecisionTest(wager) {
+    if (!wager) return;
+    setWagerExecution(wager);
+    openModal("review", "Record a test outcome");
+  }
   function navigateWorkspace(workspaceId, subsection, options = {}) {
     const [normalizedWorkspace, normalizedSubsection] = normalizeWorkspaceTarget(workspaceId, subsection);
     const nextStartIntent = String(options.start || "").trim().toLowerCase();
@@ -15047,8 +15038,10 @@ function App() {
       workspace: normalizedWorkspace,
       subsection: normalizedSubsection,
       day0: day0Mode,
-      start: routeStartIntent
+      start: routeStartIntent,
+      anchor: options.anchor || ""
     });
+    if (options.anchor) window.setTimeout(() => focusWorkbenchAnchor(options.anchor), 0);
   }
   function setDayZero(enabled) {
     const nextDay0 = Boolean(enabled);
@@ -15064,18 +15057,13 @@ function App() {
     const nextIndex = detailModalHistoryIndex + offset;
     const nextKey = detailModalHistory[nextIndex];
     if (!nextKey) return;
-    const [workspaceId, subsection] = nextKey.split(":");
-    const [normalizedWorkspace, normalizedSubsection] = normalizeWorkspaceTarget(workspaceId, subsection);
     setDetailModalHistoryIndex(nextIndex);
-    setActiveWorkspace(normalizedWorkspace);
-    setActiveSubsection(normalizedSubsection);
-    setProjectStartIntent("");
-    syncWorkbenchRouteToUrl({
-      workspace: normalizedWorkspace,
-      subsection: normalizedSubsection,
-      day0: day0Mode
-    });
-    openDetailKey(detailKey(normalizedWorkspace, normalizedSubsection), { fromHistory: true });
+    openDetailKey(nextKey, { fromHistory: true });
+  }
+
+  function openPendingEditor(workspaceId, subsection) {
+    if (["Add file", "Edit file"].includes(subsection)) openModal(workspaceId, subsection);
+    else navigateWorkspace(workspaceId, subsection);
   }
   const hydrateProjectCreateSources = (projectOrFolder) => {
     if (!liveMode || !projectOrFolder) return;
@@ -15083,6 +15071,7 @@ function App() {
     const project = String(folder.project || "").trim();
     if (!project) return;
     const previewSourceRefs = uniqueLines([
+      folder.source_preview,
       ...(folder.source_preview_files || []),
       ...(folder.raw_preview_files || []),
       ...(folder.root_preview_files || [])
@@ -15229,7 +15218,7 @@ function App() {
   const workspacePanels = {
     overview: {
       Thesis: [
-        h(Thesis, { key: "thesis", view: buildThesisView(snapshot, claimSupportContext, evalResults), decision, onOpenDetail: navigateWorkspace, onOpenModal: openModal, onPreview: loadFilePreview, onEigenquestion: runEigenquestionLive, eigenquestion })
+        h(Thesis, { key: "thesis", view: buildThesisView(snapshot, claimSupportContext, evalResults, workflowContext), decision, onOpenDetail: navigateWorkspace, onOpenModal: openModal, onPreview: loadFilePreview, onEigenquestion: runEigenquestionLive, eigenquestion })
       ],
       Assumptions: [
         h(Assumptions, { key: "assumptions", view: buildAssumptionsView(evalResults), onOpenDetail: navigateWorkspace })
@@ -15272,7 +15261,9 @@ function App() {
           isomorphism: isomorphism,
           project: (liveProjectParams() || {}).project, liveMode,
           decision, onDecisionRefresh: loadDecisionLive,
-          agenda, onAgendaRefresh: loadAgendaLive,
+          agenda, onAgendaRefresh: loadAgendaLive, wagers, onWagersRefresh: loadWagersLive,
+          onPrefillDecisionTest: prefillDecisionTest,
+          onExecuteDecisionTest: executeDecisionTest,
           onGraphRefresh: refreshMapLive,
           freshness, onSnapshotBaseline: snapshotBaselineLive, onRecompile: recompileDecisionLive
         })
@@ -15327,14 +15318,18 @@ function App() {
               project: (liveProjectParams() || {}).project, liveMode,
               decision,
               agenda,
+              wagers,
               onDecisionRefresh: loadDecisionLive,
               onAgendaRefresh: loadAgendaLive,
+              onPrefillDecisionTest: prefillDecisionTest,
+              onExecuteDecisionTest: executeDecisionTest,
               onOpenDetail: navigateWorkspace,
+              onPreview: loadFilePreview,
             });
         } else {
           // No run yet — readiness console so the user can get the project launch-ready.
           findings = h("div", { id: "run-readiness" }, h(TraceConsolePanel, {
-            key: "trace", traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview, onOpenDetail: openDetail
+            key: "trace", traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview, onOpenDetail: navigateWorkspace
           }));
           anchors.push({ id: "run-readiness", label: "Readiness" });
         }
@@ -15363,10 +15358,10 @@ function App() {
       // The BlockerPanel "Review points" just re-stated the active issue the verdict panel already
       // shows — a confusing duplicate, removed. The verdict panel is the single source here.
       "Report readiness": [
-        h(Verdict, { key: "verdict", view: buildVerdictView(snapshot, reportPanelContext, claimSupportContext, evalResults), onOpenReport: () => navigateWorkspace("save", "Report inputs"), onMakeCard: buildClaimCardLive, onPreview: loadFilePreview, onOpenDetail: navigateWorkspace, onForecast: runForecastScratchLive, forecast: forecastScratch, onExportObsidian: liveMode ? runObsidianExportLive : null, obsidianExport: obsidianExport, onFalsify: liveMode ? runFalsifyLive : null, falsify: falsify, project: (liveProjectParams() || {}).project, liveMode, decision, scenario: selectedScenario, onDecisionRefresh: loadDecisionLive, onCheckDraft: openSourcePacketForTrace })
+        h(Verdict, { key: "verdict", view: buildVerdictView(snapshot, reportPanelContext, claimSupportContext, evalResults, workflowContext), onOpenReport: () => navigateWorkspace("save", "Report inputs"), onMakeCard: buildClaimCardLive, onPreview: loadFilePreview, onOpenDetail: navigateWorkspace, onOpenDraftCheck: () => openModal("overview", "Annotate a doc"), onForecast: runForecastScratchLive, forecast: forecastScratch, onExportObsidian: liveMode ? runObsidianExportLive : null, obsidianExport: obsidianExport, onFalsify: liveMode ? runFalsifyLive : null, falsify: falsify, project: (liveProjectParams() || {}).project, liveMode, decision, scenario: selectedScenario, onDecisionRefresh: loadDecisionLive, onCheckDraft: openCheckedDraftForTrace })
       ],
       "Report inputs": [
-        h(ReportContractPanel, { key: "report", reportContext: reportPanelContext, message: reportContractMessage, running: reportSupportRunning, liveMode, onPreview: loadFilePreview, onRefresh: refreshReportSupportLive, onRerun: requestReportSupportRefreshLive, onRefreshInputs: requestReportSynthesisRefreshLive, onBuildClaimCard: buildClaimCardLive, onRunProjectTest: runProjectTestLive, onOpenDetail: openDetail, onUseActionNote: useActionNote }),
+        h(ReportContractPanel, { key: "report", reportContext: reportPanelContext, message: reportContractMessage, running: reportSupportRunning, liveMode, onPreview: loadFilePreview, onRefresh: refreshReportSupportLive, onRerun: requestReportSupportRefreshLive, onRefreshInputs: requestReportSynthesisRefreshLive, onBuildClaimCard: buildClaimCardLive, onRunProjectTest: runProjectTestLive, onOpenDetail: navigateWorkspace, onUseActionNote: useActionNote }),
         h(MoreDetail, { key: "report-detail", title: "Backing review points" }, h(ProvenanceStrip, { key: "provenance", rows: snapshot.rows || [] }))
       ],
       "Project file": [projectFilePanel]
@@ -15396,16 +15391,9 @@ function App() {
           if (label) setSelectedLabel(label);
           openModal("review", "Save review");
         },
-        onPrefillWager: (row) => {
-          setWagerPrefill({ key: `${row.id}:${Date.now()}`, claim_ref: row.claim_ref, test: row.test,
-            outcomes: row.outcome_specs || [] });
-          openModal("review", "Define a decision test");
-        },
+        onPrefillWager: prefillDecisionTest,
         onNewWager: () => setWagerPrefill(null),
-        onExecuteWager: (wager) => {
-          setWagerExecution(wager);
-          openModal("review", "Record a test outcome");
-        },
+        onExecuteWager: executeDecisionTest,
       })],
       "Define a decision test": [
         h(RegisterBetForm, { key: "register-bet", project: (liveProjectParams() || {}).project, liveMode, wagers, onRefresh: loadWagersLive, onRegister: registerWagerLive, onAgendaRefresh: loadAgendaLive, prefill: wagerPrefill })
@@ -15418,7 +15406,7 @@ function App() {
       "Save review": [reviewMessage ? h("div", { className: "review-message", key: "review-message" }, reviewMessage) : null, reviewWorkspacePanel],
       "Save next step": [rowActionPanel],
       "Saved history": [
-        h(History, { key: "history", view: buildHistoryView(receiptHistory, scoreTrajectory, runHistoryContext, runHistoryContext && runHistoryContext.compression_progress), liveMode, onPreview: loadFilePreview, trajectory: (decision && decision.result && decision.result.trajectory) || null, jobs: backgroundJobs })
+        h(History, { key: "history", view: buildHistoryView(receiptHistory, scoreTrajectory, runHistoryContext, runHistoryContext && runHistoryContext.compression_progress, workflowContext), liveMode, onPreview: loadFilePreview, trajectory: (decision && decision.result && decision.result.trajectory) || null, jobs: backgroundJobs })
       ]
     },
     projects: {
@@ -15449,7 +15437,7 @@ function App() {
           : [dayZeroPanel]
         : [projectCreatePanel],
       Files: [
-        h(ProjectFileInventoryPanel, { key: "inventory", inventory: activeProjectState.files || {}, liveMode, onPreview: loadFilePreview, onOpenDetail: openDetail }),
+        h(ProjectFileInventoryPanel, { key: "inventory", inventory: activeProjectState.files || {}, liveMode, onPreview: loadFilePreview, onOpenDetail: navigateWorkspace }),
         h(MoreDetail, { key: "files-detail", title: "Server and project context" }, [
           h(ServerStatusPanel, { key: "server-status", status: serverStatus, liveMode, message: serverStatusMessage, onRefresh: refreshServerReadiness }),
           h(ProjectContextPanel, { key: "context", projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview })
@@ -15481,8 +15469,8 @@ function App() {
           onInstall: installPluginLive,
           onReload: reloadPluginsLive,
           onFetchDetail: fetchPluginDetail,
-          panelCatalog: SCENARIO_PANEL_DISCOVERY.catalog,
-          panelDiagnostics: SCENARIO_PANEL_DISCOVERY.diagnostics,
+          panelCatalog: scenarioPanelDiscovery.catalog,
+          panelDiagnostics: scenarioPanelDiscovery.diagnostics,
         })
       ]
     }
@@ -15535,7 +15523,7 @@ function App() {
   };
   const openInspectItem = (label) => {
     if (label) setSelectedLabel(label);
-    openDetail("overview", "Thesis");
+    navigateWorkspace("overview", "Thesis");
   };
   const draftProjectFormalTarget = () => {
     const project = (activeProjectState && activeProjectState.project) || (snapshot && snapshot.project) || "";
@@ -15565,7 +15553,12 @@ function App() {
     activeRunStatus: runStatus,
     backgroundJob,
     decision,
-    onOpenDetail: openDetail,
+    decisionVisit,
+    agenda,
+    wagers,
+    onPrefillDecisionTest: prefillDecisionTest,
+    onExecuteDecisionTest: executeDecisionTest,
+    onOpenDetail: navigateWorkspace,
     onInspectItem: openInspectItem,
     onPreview: loadFilePreview,
     onDraftFormalTarget: draftProjectFormalTarget,
@@ -15604,7 +15597,7 @@ function App() {
         else navigateWorkspace("projects", "Projects");
       },
       onNavigateWorkspace: navigateWorkspace,
-      onOpenDetail: openDetail
+      onOpenDetail: navigateWorkspace
     }),
     h(
       "section",
@@ -15640,7 +15633,7 @@ function App() {
                 "ZTARE Projects"
               )
             : null,
-          liveMode && !leanMillWorkspace
+          liveMode && !leanMillWorkspace && !(activeWorkspace === "projects" && activeSubnav === "Projects")
             ? h(
                 "button",
                 {
@@ -15665,7 +15658,7 @@ function App() {
                 "New project"
               )
             : null,
-          liveMode
+          liveMode && !day0Mode
             ? h(
                 "button",
                 {
@@ -15727,9 +15720,9 @@ function App() {
             h("button", { type: "button", className: "chip ghost", onClick: cancelBackgroundJob }, "Cancel")
           )
         : null,
-      modeMessage ? h("div", { key: modeMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
-      actionMessage ? h("div", { key: actionMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, actionMessage) : null,
-      h(PendingEditsStrip, { items: pendingEditorItems, onOpenDetail: openDetail }),
+      !day0Mode && modeMessage ? h("div", { key: modeMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
+      !day0Mode && actionMessage ? h("div", { key: actionMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, actionMessage) : null,
+      h(PendingEditsStrip, { items: pendingEditorItems, onOpenDetail: openPendingEditor }),
       h(
         "section",
         { key: `${activeWorkspace}:${activeSubnav}:${(snapshot && snapshot.project) || "none"}`,
@@ -15752,9 +15745,25 @@ function App() {
             }),
         activeWorkspacePanels.length
           ? h(
-              "section",
-              { className: "active-workspace-panels", "aria-label": `${activeSection.label} ${activeSubnav}` },
-              activeWorkspacePanels
+              React.Suspense,
+              {
+                fallback: h(
+                  "section",
+                  {
+                    className: "active-workspace-panels section-loading-state",
+                    "aria-label": `${activeSection.label} ${activeSubnav}`,
+                    role: "status",
+                    "aria-live": "polite"
+                  },
+                  h("span", { className: "workspace-loading-spinner", "aria-hidden": "true" }),
+                  h("span", null, `Opening ${activeSubnav}…`)
+                )
+              },
+              h(
+                "section",
+                { className: "active-workspace-panels", "aria-label": `${activeSection.label} ${activeSubnav}` },
+                activeWorkspacePanels
+              )
             )
           : null,
         loadingSnapshot

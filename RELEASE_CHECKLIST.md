@@ -75,6 +75,20 @@ from drowning out the repo's actual contribution.
 - [ ] `make gates` has passed before commit and before push.
 - [ ] `make docs-check` has passed after any public-doc or review-packet edit.
 
+## Project Workbench Release Boundary
+
+- [ ] The operator followed `docs/guides/workbench-release.md`; local, public-scope, and remote-tunnel
+      commands in the guide still match the supported runtime.
+- [ ] `forensic-workbench/public-projects.json` is tracked, intentional, and contains only projects safe to disclose.
+- [ ] `make forensic-workbench-release-check` passes after the production frontend build.
+- [ ] `make forensic-workbench-docker-build` passes with Buildx and uses the Workbench-specific build context.
+- [ ] The `workbench-release-boundary` CI job passes on the public checkout.
+- [ ] The public-scope inventory equals the manifest; an unlisted project read, file preview, and write are refused.
+- [ ] The built frontend and API share one loopback origin. Port 8765 is not exposed directly on a remote host.
+- [ ] A remote demo uses an SSH tunnel and `public` or explicit `allowlist` project scope.
+- [ ] `make workbench-interaction-smoke` passes against the release server without model-backed writes.
+- [ ] The new-project, returning-project, pressure-test, decision-test, document, plugin, Activity, and LeanMill routes render without an error boundary.
+
 ## Current Release Notes
 
 - 2026-05-02: release-readiness audit found the conceptual architecture strong

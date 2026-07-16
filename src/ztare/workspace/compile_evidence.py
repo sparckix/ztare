@@ -27,8 +27,8 @@ TEXT_EXTENSIONS = {
     ".markdown",
     ".txt",
     ".json",
-    # JSONL is line-delimited JSON text; interactive-environment episode logs
-    # (GP-250) enter the source surface as raw/episodes/*.jsonl.
+    # These formats remain valid document/data sources. Rubrics whose evidence
+    # carrier is a transition stream bypass this compiler at admission.
     ".jsonl",
     ".csv",
     ".tsv",

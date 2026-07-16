@@ -76,6 +76,20 @@ def test_editable_document_design_owns_a_same_named_output(monkeypatch: pytest.M
     assert result["deliverables"][0]["slots"] == 1
 
 
+def test_generated_document_paths_are_repository_relative(tmp_path) -> None:
+    from ztare.scenarios.production import deliverable_binding_status, produce_scenario_artifacts
+
+    state = GovernedState([GovernedElement("t", "thesis", "Make the call")])
+    out_dir = tmp_path / "projects" / "demo" / "workspace" / "deliverables"
+    produce_scenario_artifacts(declared=["decision_memo"], governed=state, out_dir=str(out_dir))
+
+    status = deliverable_binding_status(state, ["decision_memo"], str(out_dir), root=tmp_path)
+
+    assert status["bindings"]["decision_memo"]["path"] == (
+        "projects/demo/workspace/deliverables/decision_memo.md"
+    )
+
+
 def test_external_capability_reload_removes_deleted_plugins_and_reports_collisions(
     tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

@@ -20,7 +20,7 @@ produces domain **artifacts** with the governance baked in, not just a number.
 
 The line this crosses: from "a rigorous claim checker beside your tools" to "a governed studio that produces
 the deliverable *with* the rigor inside it." A PM scenario doesn't just score a PRD assumption — it can emit a
-spec, a decision memo, a risk register where every load-bearing claim is bounded, evidence-linked, and carries
+spec, a decision memo, a risk register where every decision-critical claim is bounded, evidence-linked, and carries
 a falsifier. The claim-hardener is still the engine; the Scenario is what makes its output a thing you ship.
 
 ## The unit
@@ -161,11 +161,11 @@ canonical transition table with invariants, not scattered branches. A status is 
 |---|---|
 | **BACKED** | aligns to a governed element carrying a SUPPORTS edge |
 | **CONTRADICTED** | aligns to an element carrying a FALSIFIES/CONTRADICTS in-edge |
-| **UNTESTED** | a load-bearing assumption — surfaced, in the queue, no evidence yet |
+| **UNTESTED** | a decision-critical assumption — surfaced, in the queue, no evidence yet |
 | **INERT** | nothing surfaced here (never rendered as "ungoverned rhetoric" — the surfacer has false negatives, so an unmatched sentence is *unknown*, not *bad*) |
 
 The point a naive "let my AI critique the PRD" misses: **a document is input, not a deliverable, so it never
-"fails."** The headline is a count, not a pass/fail — *"14 load-bearing assumptions, 0 tested, 1 contradicts
+"fails."** The headline is a count, not a pass/fail — *"14 decision-critical assumptions, 0 tested, 1 contradicts
 your existing map."* That is triage, not red ink. The statuses are stages of a claim, not verdicts on a page:
 the *same* `annotate` call against a maturing governed state upgrades UNTESTED → BACKED as evidence
 lands — no pre-run/post-run mode switch (an empty graph simply cannot emit BACKED yet). Afforded as
@@ -177,7 +177,7 @@ Domain-neutral kernel capabilities that compound; domain bindings are plugins:
 
 - **Multi-claim verdict** (`artifacts.assemble_verdict`) — a deterministic verdict over the governed argument
   graph: REFUTED (a governed FALSIFIES/CONTRADICTS edge), BLOCKED (an unresolved tension/gap — the governed
-  answer, not a forced verdict), else SUPPORTED. Cites the edges that produced it, and names the **load-bearing
+  answer, not a forced verdict), else SUPPORTED. Cites the edges that produced it, and names the **decision-critical
   hinge** by *counterfactual decision sensitivity* — toggle each assumption holds-vs-fails, rank by how far
   the verdict swings (not graph degree) — with ties and a coverage score.
 - **Assumption-surfacing** (`surfacing.surface_assumptions`) — a doc → bounded claims to test, each anchored to
@@ -197,7 +197,7 @@ ztare scenario show <name>                # resolved rubric / run-config / capab
 ztare scenario validate <name>            # typecheck the manifest (fails loud)
 ztare scenario new <name>                 # scaffold scenarios/<name>.yaml (self-validating)
 ztare scenario run <name> --project X     # → autoresearch run --scenario <name>
-ztare scenario surface <doc> --project X  # doc → its load-bearing assumptions (gated to verbatim spans)
+ztare scenario surface <doc> --project X  # doc → its decision-critical assumptions (gated to verbatim spans)
 ztare scenario annotate <doc> --project X # doc → the same doc back, each sentence lifecycle-tagged
 ztare scenario reingest <polished> --project X [--promote <out.md>]  # diff + promote-if-fully-governed
 ztare scenario brief --project X [--out <file.md>]  # the PM decision brief (hinges + audit drawer) from the map

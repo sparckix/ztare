@@ -180,6 +180,14 @@ export const scenarioPanel = {
   host: "results",
   label: "Governed RICE",
   description: "Prioritization with evidence-derived confidence.",
+  contract: {
+    schema: "plugin_contribution_contract_v1",
+    carriers: ["decision_state", "strength_profile", "rice_inputs"],
+    actions: [
+      { id: "refresh", mode: "read" },
+      { id: "update-estimates", mode: "write" },
+    ],
+  },
 };
 
 export default function GovernedRicePanel({ project, liveMode }) {
@@ -197,6 +205,15 @@ Panels receive a host context and own their domain-specific interaction. They
 must not mutate global navigation. Dialogs should use the shared
 `ModalPortal` and `useModalBehavior` helpers so layering, Escape, focus
 containment, trigger restoration, and background scroll behave consistently.
+Every panel contribution declares the governed carriers it consumes and typed
+`read`, `write`, or `navigate` actions. Discovery refuses incomplete contracts
+instead of loading an extension whose consequences are opaque. Use the shared
+`SectionHeader`, `ActionButton`, `IconButton`, `SegmentedControl`, and
+`Scenario*` primitives from `design-system.js`; a scenario panel must not add
+domain-specific rules to global `styles.css`.
+Workbench actions call bounded HTTP routes whose implementation shells through
+`ztare scenario ... --json` (or another top-level `ztare ... --json` command).
+The HTTP server is transport, not an alternate in-process kernel API.
 The maintainer supports this extension contract, not bespoke domain panels.
 The shipped product-manager bundle is an example of the contract rather than a
 special branch in Workbench chrome.

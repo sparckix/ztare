@@ -182,12 +182,29 @@ function MapTime({ project, liveMode, freshness, onSnapshot, onCompare }) {
   const hasReference = Boolean(reference.exists || result.snapshotted);
   const graphDelta = (compare && compare.graph_delta) || {};
   const deltaGroups = compare ? [
-    { key: "added", label: "Added", rows: graphDelta.nodes_added || [], render: (row) => displayMessage(row.text) },
-    { key: "removed", label: "Removed", rows: graphDelta.nodes_removed || [], render: (row) => displayMessage(row.text) },
-    { key: "changed", label: "Reworded", rows: graphDelta.nodes_changed || [], render: (row) => displayMessage(row.after) },
-    { key: "links-added", label: "New connections", rows: graphDelta.edges_added || [], render: (row) => `${displayMessage(row.from_text)} ${displayText(row.relation)} ${displayMessage(row.to_text)}` },
-    { key: "links-removed", label: "Removed connections", rows: graphDelta.edges_removed || [], render: (row) => `${displayMessage(row.from_text)} ${displayText(row.relation)} ${displayMessage(row.to_text)}` },
+    { key: "added", label: "Added claims", kind: "node", tone: "ok", rows: graphDelta.nodes_added || [] },
+    { key: "removed", label: "Removed claims", kind: "node", tone: "danger", rows: graphDelta.nodes_removed || [] },
+    { key: "changed", label: "Reworded claims", kind: "change", tone: "accent", rows: graphDelta.nodes_changed || [] },
+    { key: "links-added", label: "New connections", kind: "edge", tone: "ok", rows: graphDelta.edges_added || [] },
+    { key: "links-removed", label: "Removed connections", kind: "edge", tone: "danger", rows: graphDelta.edges_removed || [] },
   ].filter((group) => group.rows.length) : [];
+  const renderDelta = (group, row, index) => {
+    if (group.kind === "change") {
+      return h("li", { key: row.id || index, className: "rmap-delta-change" },
+        h("div", null, h(Tag, { tone: "neutral" }, "before"), h("span", null, displayMessage(row.before))),
+        h("div", null, h(Tag, { tone: "accent" }, "now"), h("span", null, displayMessage(row.after))));
+    }
+    if (group.kind === "edge") {
+      return h("li", { key: `${row.from}:${row.relation}:${row.to}:${index}`, className: "rmap-delta-edge" },
+        h("span", null, displayMessage(row.from_text)),
+        h(Tag, { tone: group.tone }, displayText(row.relation)),
+        h("span", null, displayMessage(row.to_text)),
+        row.warrant ? h("small", null, `warrant ${displayText(row.warrant)}`) : null);
+    }
+    return h("li", { key: row.id || index, className: "rmap-delta-node" },
+      row.kind ? h(Tag, { tone: group.tone }, displayText(row.kind)) : null,
+      h("span", null, displayMessage(row.text)));
+  };
   const deltaCount = Object.values(graphDelta.counts || {}).reduce((total, count) => total + Number(count || 0), 0);
   return h("section", { className: "rmap-time", "aria-label": "Map time" },
     h("div", { className: "rmap-time-head" },
@@ -222,7 +239,7 @@ function MapTime({ project, liveMode, freshness, onSnapshot, onCompare }) {
                 h("div", { className: "rmap-time-diff-groups" },
                   deltaGroups.map((group) => h("section", { key: group.key },
                     h("span", { className: "eyebrow" }, `${group.label} · ${group.rows.length}`),
-                    h("ul", null, group.rows.slice(0, 6).map((row, index) => h("li", { key: row.id || `${row.from}:${row.relation}:${row.to}:${index}` }, group.render(row)))))))
+                    h("ul", null, group.rows.slice(0, 6).map((row, index) => renderDelta(group, row, index))))))
               )
             : null)
       : null);
@@ -244,7 +261,8 @@ function Group({ label, hint, items, tone }) {
 // the three things a researcher actually steers by. Pure view.
 export function ResearchMap({
   view, onOpenDetail, onIsomorphism, isomorphism,
-  project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, onGraphRefresh,
+  project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, wagers, onWagersRefresh, onGraphRefresh,
+  onPrefillDecisionTest, onExecuteDecisionTest,
   freshness, onSnapshotBaseline, onRecompile,
 }) {
   const v = view || {};
@@ -271,8 +289,8 @@ export function ResearchMap({
           h(GraphView, {
             nodes: v.graphNodes, edges: v.graphEdges, truncated: v.graphTruncated, argument: v.graphArgument,
             focusId, onFocusHandled: () => setFocusId(null),
-            project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, onRefresh: onGraphRefresh,
-            onOpenDetail,
+            project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, wagers, onWagersRefresh,
+            onRefresh: onGraphRefresh, onOpenDetail, onPrefillDecisionTest, onExecuteDecisionTest,
           }))
       : null,
 

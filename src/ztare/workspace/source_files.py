@@ -19,6 +19,10 @@ from ztare.workspace.compile_evidence import SOURCE_TYPE_MAP_FILENAME, SOURCE_TY
 SOURCE_IMPORT_SCHEMA = "ztare-forensic-workbench-source-import-v1"
 SOURCE_EDIT_SCHEMA = "ztare-forensic-workbench-source-edit-v1"
 SOURCE_IMPORT_FILENAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(md|txt)$")
+DOCUMENT_IMPORT_FILENAME_RE = re.compile(
+    r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(?:md|txt|csv|tsv|json|log|pdf|docx|pptx|xlsx)$",
+    re.IGNORECASE,
+)
 SOURCE_IMPORT_TYPES = set(SOURCE_TYPE_VALUES)
 SOURCE_ARTIFACT_KINDS = {
     "project_note",
@@ -107,6 +111,20 @@ def _write_text(path: Path, text: str, storage: Any = None) -> None:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
+
+
+def _read_bytes(path: Path, storage: Any = None) -> bytes:
+    if storage is not None and hasattr(storage, "read_bytes"):
+        return storage.read_bytes(path)
+    return path.read_bytes()
+
+
+def _write_bytes(path: Path, payload: bytes, storage: Any = None) -> None:
+    if storage is not None and hasattr(storage, "write_bytes"):
+        storage.write_bytes(path, payload)
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(payload)
 
 
 def _append_jsonl(path: Path, row: dict[str, Any], storage: Any = None) -> None:
@@ -216,14 +234,36 @@ def _render_source_text(
     body: str,
     artifact_kind: str = "",
     created_by: str = "",
+    provenance: dict[str, str] | None = None,
 ) -> str:
     frontmatter = ["---", f"source_type: {source_type}"]
     if artifact_kind:
         frontmatter.append(f"artifact_kind: {artifact_kind}")
     if created_by:
         frontmatter.append(f"created_by: {frontmatter_value(created_by)}")
+    for key in ("original_attachment", "original_sha256", "extraction_method", "extraction_truncated"):
+        value = str((provenance or {}).get(key) or "").strip()
+        if value:
+            frontmatter.append(f"{key}: {frontmatter_value(value, limit=240)}")
     frontmatter.append("---")
     return "\n".join(frontmatter) + f"\n\n{body}\n"
+
+
+def _attachment_target(project_root: Path, filename: str, payload: bytes, *, storage: Any = None) -> Path:
+    filename = str(filename or "").strip()
+    if not DOCUMENT_IMPORT_FILENAME_RE.fullmatch(filename):
+        raise ValueError("original filename must be a flat supported document filename")
+    attachments = project_root / "attachments"
+    digest = hashlib.sha256(payload).hexdigest()
+    candidate = attachments / filename
+    index = 2
+    while candidate.exists():
+        if hashlib.sha256(_read_bytes(candidate, storage)).hexdigest() == digest:
+            return candidate
+        candidate = attachments / f"{Path(filename).stem}_{index}{Path(filename).suffix}"
+        index += 1
+    _write_bytes(candidate, payload, storage)
+    return candidate
 
 
 def _source_check_payload(project: str, *, root: Path) -> dict[str, Any]:
@@ -263,6 +303,10 @@ def add_source_file(
     created_by: str = "",
     rubric: str | None = None,
     intake: str | None = None,
+    original_file: Path | None = None,
+    original_filename: str = "",
+    extraction_method: str = "",
+    extraction_truncated: bool = False,
     root: Path = REPO_ROOT,
     storage: Any = None,
 ) -> dict[str, Any]:
@@ -288,10 +332,29 @@ def add_source_file(
     if source_path.exists():
         raise ValueError(f"source file already exists: {repo_rel(source_path, root=root)}")
     created_by = frontmatter_value(created_by)
+    provenance: dict[str, str] = {}
+    attachment_path: Path | None = None
+    attachment_written = False
+    if original_file is not None:
+        original_payload = Path(original_file).read_bytes()
+        if not original_payload:
+            raise ValueError("original document is empty")
+        requested_name = original_filename or Path(original_file).name
+        project_root = paths["project_root"]
+        existing_attachments = set((project_root / "attachments").glob("*")) if (project_root / "attachments").exists() else set()
+        attachment_path = _attachment_target(project_root, requested_name, original_payload, storage=storage)
+        attachment_written = attachment_path not in existing_attachments
+        provenance = {
+            "original_attachment": repo_rel(attachment_path, root=root),
+            "original_sha256": hashlib.sha256(original_payload).hexdigest(),
+            "extraction_method": extraction_method,
+            "extraction_truncated": str(bool(extraction_truncated)).lower(),
+        }
     source_text = _render_source_text(
         source_type=source_type,
         artifact_kind=artifact_kind,
         created_by=created_by,
+        provenance=provenance,
         body=body,
     )
     _write_text(source_path, source_text, storage)
@@ -299,6 +362,8 @@ def add_source_file(
     source_type_map[filename] = source_type
     _write_json(paths["source_type_map"], source_type_map, storage)
     write_paths = source_write_paths(slug, source_path, kind="import", root=root)
+    if attachment_path is not None and attachment_written:
+        write_paths["write_paths"].insert(0, repo_rel(attachment_path, root=root))
     receipt = add_project_context(
         {
             "schema": SOURCE_IMPORT_SCHEMA,
@@ -311,6 +376,7 @@ def add_source_file(
             "chars": len(body),
             "sha256": hashlib.sha256(source_text.encode("utf-8")).hexdigest(),
             "source_type_map": repo_rel(paths["source_type_map"], root=root),
+            **provenance,
         },
         project=slug,
         rubric=rubric,
@@ -454,6 +520,10 @@ def build_parser() -> argparse.ArgumentParser:
     add.add_argument("--created-by", default="")
     add.add_argument("--body", default="")
     add.add_argument("--body-file", type=Path)
+    add.add_argument("--original-file", type=Path)
+    add.add_argument("--original-filename", default="")
+    add.add_argument("--extraction-method", default="")
+    add.add_argument("--extraction-truncated", action="store_true")
     add.add_argument("--repo", type=Path, default=REPO_ROOT)
     add.add_argument("--json", action="store_true")
     edit = sub.add_parser("edit", help="Edit an existing raw source file.")
@@ -492,6 +562,10 @@ def main(argv: list[str] | None = None) -> int:
                 artifact_kind=args.kind,
                 created_by=args.created_by,
                 body=_body_from_args(args),
+                original_file=args.original_file,
+                original_filename=args.original_filename,
+                extraction_method=args.extraction_method,
+                extraction_truncated=args.extraction_truncated,
                 root=args.repo,
             )
         else:

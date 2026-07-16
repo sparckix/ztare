@@ -37,15 +37,39 @@ def terminate(proc: subprocess.Popen[object]) -> None:
         proc.wait(timeout=5)
 
 
-def api_ready(api_url: str, *, timeout: float) -> bool:
+def api_status(api_url: str, *, timeout: float) -> dict | None:
     request = Request(f"{api_url.rstrip('/')}/api/status", headers={"Accept": "application/json"})
     try:
         with urlopen(request, timeout=timeout) as response:  # noqa: S310 - local dev server readiness check.
-            return 200 <= response.status < 500
+            if not 200 <= response.status < 500:
+                return None
+            import json
+            payload = json.loads(response.read().decode("utf-8"))
+            return payload if isinstance(payload, dict) else None
     except HTTPError as exc:
-        return 200 <= exc.code < 500
-    except (OSError, URLError):
-        return False
+        return {} if 200 <= exc.code < 500 else None
+    except (OSError, URLError, ValueError):
+        return None
+
+
+def api_ready(api_url: str, *, timeout: float) -> bool:
+    return api_status(api_url, timeout=timeout) is not None
+
+
+def requested_scope_identity(project_scope: str, projects: str) -> tuple[str, str]:
+    if project_scope != "allowlist":
+        return project_scope, ""
+    import hashlib
+    values = sorted({item.strip() for item in str(projects or "").split(",") if item.strip()})
+    return project_scope, hashlib.sha256("\n".join(values).encode("utf-8")).hexdigest()
+
+
+def api_scope_identity(payload: dict) -> tuple[str, str]:
+    visibility = payload.get("project_visibility") if isinstance(payload.get("project_visibility"), dict) else {}
+    return (
+        str(visibility.get("scope") or payload.get("project_inventory_scope") or "local"),
+        str(visibility.get("allowlist_hash") or ""),
+    )
 
 
 def wait_for_api(api_url: str, proc: subprocess.Popen[object], *, startup_timeout: float, poll_interval: float) -> bool:
@@ -65,8 +89,9 @@ def ensure_web_deps() -> bool:
     fresh clone (no separate install step to remember). No-op once installed."""
     if (REPO / "forensic-workbench" / "node_modules").is_dir():
         return True
-    print("  First run: installing web dependencies (npm install)…", flush=True)
-    result = subprocess.run(["npm", "--prefix", "forensic-workbench", "install"], cwd=REPO)
+    install_action = "ci" if (REPO / "forensic-workbench" / "package-lock.json").is_file() else "install"
+    print(f"  First run: installing locked web dependencies (npm {install_action})…", flush=True)
+    result = subprocess.run(["npm", "--prefix", "forensic-workbench", install_action], cwd=REPO)
     if result.returncode != 0:
         print("  npm install failed — run `make forensic-workbench-install` and retry.", file=sys.stderr, flush=True)
         return False
@@ -83,7 +108,11 @@ def run_live(args: argparse.Namespace) -> int:
         args.api_host,
         "--port",
         str(args.api_port),
+        "--project-scope",
+        args.project_scope,
     ]
+    if args.projects:
+        api_cmd.extend(["--projects", args.projects])
     dev_cmd = ["npm", "--prefix", "forensic-workbench", "run", "dev", "--", "--strictPort"]
     if args.host:
         dev_cmd.extend(["--host", args.host])
@@ -93,12 +122,24 @@ def run_live(args: argparse.Namespace) -> int:
     print("Project Workbench live mode", flush=True)
     print(f"  API: {args.api_url}", flush=True)
     print(f"  App: {args.app_url}", flush=True)
+    print(f"  Projects: {args.project_scope}", flush=True)
     print("  Stop with Ctrl-C.", flush=True)
 
     api_proc: subprocess.Popen[object] | None = None
     try:
-        if api_ready(args.api_url, timeout=min(3.0, max(0.5, args.api_startup_timeout / 3))):
-            print("  Reusing already-running API.", flush=True)
+        existing = api_status(args.api_url, timeout=min(3.0, max(0.5, args.api_startup_timeout / 3)))
+        if existing is not None:
+            running_scope = api_scope_identity(existing)
+            requested_scope = requested_scope_identity(args.project_scope, args.projects)
+            if running_scope != requested_scope:
+                print(
+                    f"API already running with project scope '{running_scope[0]}'; requested '{requested_scope[0]}'. "
+                    "Stop it or choose another --api-port before continuing.",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return 2
+            print(f"  Reusing already-running API ({running_scope[0]} project scope).", flush=True)
         else:
             api_env = os.environ.copy()
             api_env["PYTHONPATH"] = checkout_pythonpath(api_env.get("PYTHONPATH", ""))
@@ -133,6 +174,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--api-port", type=int, default=8765)
     parser.add_argument("--host", default="", help="Optional Vite host override.")
     parser.add_argument("--port", type=int, default=0, help="Optional Vite port override.")
+    parser.add_argument(
+        "--project-scope",
+        choices=("local", "public", "allowlist"),
+        default=str(os.environ.get("ZTARE_WORKBENCH_PROJECT_SCOPE") or "local"),
+        help="Use 'public' for camera-ready or shared deployments.",
+    )
+    parser.add_argument(
+        "--projects",
+        default=str(os.environ.get("ZTARE_WORKBENCH_PROJECTS") or ""),
+        help="Comma-separated project slugs when --project-scope=allowlist.",
+    )
     parser.add_argument("--api-startup-timeout", type=float, default=8.0)
     parser.add_argument("--api-poll-interval", type=float, default=0.2)
     return parser

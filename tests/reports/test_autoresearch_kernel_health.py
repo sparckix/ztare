@@ -1171,10 +1171,10 @@ def test_kernel_health_surfaces_weak_hill_climb_outcomes_as_evidence_gap(
 
     report = health.build_autoresearch_kernel_health(repo=tmp_path)
 
-    assert report["summary"]["overall_status"] == "attention"
-    assert report["summary"]["component_status"] == "ok"
+    assert report["summary"]["overall_status"] == "needs_attention"
+    assert report["summary"]["component_status"] == "needs_attention"
     hill = next(row for row in report["components"] if row["component"] == "hill_climb_controls")
-    assert hill["status"] == "ok"
+    assert hill["status"] == "needs_attention"
     assert hill["summary"]["post_control_no_followup_rate"] == 0.375
     assert hill["summary"]["post_control_observed_no_success_count"] == 19
     assert hill["summary"]["post_control_observed_no_success_rate"] == 0.76
@@ -1250,7 +1250,9 @@ def test_kernel_health_surfaces_high_hill_climb_no_followup_as_evidence_gap(
 
     report = health.build_autoresearch_kernel_health(repo=tmp_path)
 
-    assert report["summary"]["overall_status"] == "attention"
+    assert report["summary"]["overall_status"] == "needs_attention"
+    hill = next(row for row in report["components"] if row["component"] == "hill_climb_controls")
+    assert hill["status"] == "needs_attention"
     gap = report["evidence_gaps"][0]
     assert gap["id"] == "hill_climb_control_outcomes"
     assert gap["summary"]["post_control_no_followup_rate"] == 0.6

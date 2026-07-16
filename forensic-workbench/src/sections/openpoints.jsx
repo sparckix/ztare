@@ -85,14 +85,14 @@ export function OpenPoints({
 
   if (!questions.length && !discriminators.length && !redTeam.length && !logicGaps.length && !checks.length) {
     return h("section", { className: "openpoints", "aria-label": "Open points" },
+      decisionTestsBlock,
       askBlock,
       h("p", { className: "openpoints-empty" },
         v.hasRun
           ? "No open questions flagged in the latest run — the argument has no identified gaps right now."
           : "Pressure-test the thesis and the loop will surface what's still unresolved and what would settle it."),
       h("button", { type: "button", className: "chip primary", onClick: () => onOpenDetail && onOpenDetail("run", "Start run") },
-        "Pressure-test the thesis →"),
-      decisionTestsBlock);
+        "Pressure-test the thesis →"));
   }
 
   // Each stacked Block gets a stable id (passed straight into Block, not a wrapper div — a wrapper would
@@ -167,13 +167,13 @@ export function OpenPoints({
     : null;
 
   const anchors = [
+    decisionTestsBlock && { id: "op-decision-tests", label: "Decision tests" },
     askBlock && { id: "op-ask", label: "Ask the loop" },
     checksBlock && { id: "op-checks", label: "Project checks" },
     redteamSection && { id: "op-redteam", label: "Ways it could be wrong" },
     questionsSection && { id: "op-questions", label: "Open questions" },
     logicSection && { id: "op-logicgaps", label: "Gaps in the reasoning" },
     discSection && { id: "op-discriminators", label: "What would settle it" },
-    decisionTestsBlock && { id: "op-decision-tests", label: "Decision tests" },
   ].filter(Boolean);
 
   return h(
@@ -181,7 +181,7 @@ export function OpenPoints({
     { className: "openpoints", "aria-label": "Open points" },
     h("div", { className: "openpoints-body" },
       h("div", { className: "openpoints-main" },
-        askBlock, checksBlock, redteamSection, questionsSection, logicSection, discSection, footerSection, decisionTestsBlock),
+        decisionTestsBlock, askBlock, checksBlock, redteamSection, questionsSection, logicSection, discSection, footerSection),
       anchors.length > 1
         ? h("nav", { className: "openpoints-rail", "aria-label": "On this page" },
             h("span", { className: "eyebrow" }, "On this page"),

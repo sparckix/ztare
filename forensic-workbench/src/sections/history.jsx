@@ -1,5 +1,5 @@
 import React from "react";
-import { displayText } from "../design-system.js";
+import { displayMessage, displayText, StatusLine } from "../design-system.js";
 
 const h = React.createElement;
 
@@ -46,6 +46,52 @@ function trajectorySparkline(trajectory) {
       : null);
 }
 
+const DECISION_TONE = { SUPPORTED: "ok", BLOCKED: "warn", REFUTED: "danger" };
+const DECISION_WORD = { SUPPORTED: "Ready to rely on", BLOCKED: "Not ready to rely on", REFUTED: "Does not hold" };
+
+function DecisionChange({ trajectory }) {
+  const series = (trajectory && Array.isArray(trajectory.strength_series)) ? trajectory.strength_series : [];
+  const snapshots = series.filter((row) => row && row.decision && row.decision.fingerprint);
+  if (snapshots.length < 2) return null;
+  const previous = snapshots[snapshots.length - 2];
+  const current = snapshots[snapshots.length - 1];
+  const before = previous.decision;
+  const after = current.decision;
+  const statusChanged = before.status !== after.status;
+  const beforeTest = (before.next_test && before.next_test.text) || "No next test recorded";
+  const afterTest = (after.next_test && after.next_test.text) || "No next test recorded";
+  const beforeHinge = (before.hinge && before.hinge.text) || "No hinge recorded";
+  const afterHinge = (after.hinge && after.hinge.text) || "No hinge recorded";
+  const testChanged = beforeTest !== afterTest;
+  const hingeChanged = beforeHinge !== afterHinge;
+  const beforeGraph = previous.graph || {};
+  const afterGraph = current.graph || {};
+  const graphChanged = Boolean(beforeGraph.hash && afterGraph.hash && beforeGraph.hash !== afterGraph.hash);
+  const graphSummary = graphChanged
+    ? `${beforeGraph.nodes || 0} → ${afterGraph.nodes || 0} claims and evidence · ${beforeGraph.edges || 0} → ${afterGraph.edges || 0} relationships`
+    : "";
+  const changeHeadline = statusChanged
+    ? "The decision posture changed"
+    : graphChanged
+      ? "The research map changed; the posture held"
+      : "The posture held; its path changed";
+  return h("section", { className: "history-decision-change", "aria-label": "Latest decision change" },
+    h("div", { className: "history-decision-change-head" },
+      h("div", null,
+        h("span", { className: "eyebrow" }, "Latest decision change"),
+        h("strong", null, changeHeadline)),
+      h("div", { className: "history-decision-status" },
+        h(StatusLine, { tone: DECISION_TONE[before.status] || "neutral" }, DECISION_WORD[before.status] || displayText(before.status)),
+        h("span", { "aria-hidden": "true" }, "→"),
+        h(StatusLine, { tone: DECISION_TONE[after.status] || "neutral" }, DECISION_WORD[after.status] || displayText(after.status)))),
+    after.reason ? h("p", { className: "history-decision-reason" }, displayMessage(after.reason)) : null,
+    h("dl", { className: "history-decision-facts" },
+      hingeChanged ? h("div", null, h("dt", null, "Hinge"), h("dd", null, displayMessage(afterHinge))) : null,
+      testChanged ? h("div", null, h("dt", null, "Next test"), h("dd", null, displayMessage(afterTest))) : null,
+      graphChanged ? h("div", null, h("dt", null, "Research map"), h("dd", null, graphSummary)) : null,
+      h("div", null, h("dt", null, "Recorded"), h("dd", null, displayText(current.timestamp || "now")))));
+}
+
 // History — a reverse-chronological ACTIVITY TIMELINE (Linear/Vercel/GitHub feed): day groups, a
 // vertical spine with a type-coloured dot per event, human verbs + relative time, no raw paths.
 // Repetitive same-kind events within a day collapse to one node ("· 12 times") but stay expandable.
@@ -58,6 +104,7 @@ export function History({ view, liveMode, onPreview, trajectory, jobs = [] }) {
 
   if (!days.length) {
     return h("section", { className: "history", "aria-label": "History" },
+      h(DecisionChange, { trajectory }),
       spark,
       jobRows.length ? h(JobHistory, { jobs: jobRows }) : null,
       h("p", { className: "history-empty" }, liveMode
@@ -134,6 +181,7 @@ export function History({ view, liveMode, onPreview, trajectory, jobs = [] }) {
   return h("section", { className: "history", "aria-label": "History" },
     verdict,
     v.summary ? h("p", { className: "history-summary" }, v.summary) : null,
+    h(DecisionChange, { trajectory }),
     spark,
     jobRows.length ? h(JobHistory, { jobs: jobRows }) : null,
     days.map((day, di) =>

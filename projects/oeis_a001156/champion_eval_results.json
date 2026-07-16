@@ -128,7 +128,7 @@
       "judge_fallback_used": false,
       "dynamic_committee": false,
       "primitive_support": false,
-      "evidence_path": "/Users/daalami/figs_activist_loop/projects/oeis_a001156/evidence.txt",
+      "evidence_path": "projects/oeis_a001156/evidence.txt",
       "evidence_fingerprint": "ba594208de450c2e",
       "project_forecast_type": "unspecified"
     },
@@ -143,7 +143,7 @@
     "rubric_fingerprint": "aa99180a32ff04f6",
     "dynamic_committee": false,
     "primitive_support": false,
-    "evidence_path": "/Users/daalami/figs_activist_loop/projects/oeis_a001156/evidence.txt",
+    "evidence_path": "projects/oeis_a001156/evidence.txt",
     "evidence_fingerprint": "ba594208de450c2e",
     "project_forecast_type": "unspecified",
     "test_suite_status": "pass"

@@ -344,12 +344,12 @@ def _prepare_project_outcome(project: str, wager_id: str, outcome_id: str, repo_
     decision_before = compile_decision_state(governed).to_payload()
     decision_after = compile_decision_state(next_state).to_payload()
     decision_delta = diff_decision_states(decision_before, decision_after)
-    return governed, payloads, wager, outcome, new_elements, new_edges, decision_before, decision_after, decision_delta
+    return next_state, payloads, wager, outcome, new_elements, new_edges, decision_before, decision_after, decision_delta
 
 
 def preview_project_outcome(project: str, wager_id: str, outcome_id: str, repo_root) -> dict:
     """Typed, read-only execution preview for confirmation surfaces."""
-    (_governed, _payloads, wager, outcome, new_elements, new_edges,
+    (_next_state, _payloads, wager, outcome, new_elements, new_edges,
      decision_before, decision_after, decision_delta) = _prepare_project_outcome(
         project, wager_id, outcome_id, repo_root
     )
@@ -370,13 +370,19 @@ def execute_project_outcome(project: str, wager_id: str, outcome_id: str, repo_r
     """Apply one stored outcome through the governed overlay and persist its typed execution receipt."""
     from ztare.scenarios.adapters import append_governed_overlay
 
-    (_governed, payloads, wager, outcome, new_elements, new_edges,
+    (next_state, payloads, wager, outcome, new_elements, new_edges,
      decision_before, decision_after, decision_delta) = _prepare_project_outcome(
         project, wager_id, outcome_id, repo_root
     )
     append_governed_overlay(project, repo_root, new_elements, new_edges)
     executed = execute(wager, outcome.id)
     save_wagers(project, [to_payload(executed) if payload.get("id") == wager.id else payload for payload in payloads])
+    from ztare.scenarios.research_signals import snapshot_strength
+    decision_history = snapshot_strength(
+        project,
+        next_state,
+        repo_root=repo_root,
+    )
     return {
         "ok": True,
         "status": "executed",
@@ -388,6 +394,7 @@ def execute_project_outcome(project: str, wager_id: str, outcome_id: str, repo_r
         "decision_before": decision_before,
         "decision_after": decision_after,
         "decision_delta": decision_delta,
+        "decision_history": decision_history,
     }
 
 

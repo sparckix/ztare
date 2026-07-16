@@ -575,6 +575,28 @@ def parse_key_values(pairs: list[str]) -> dict[str, str]:
     return values
 
 
+def values_from_args(args: argparse.Namespace) -> dict[str, Any]:
+    values: dict[str, Any] = {}
+    values_path = getattr(args, "values_path", None)
+    if values_path:
+        loaded = json.loads(Path(values_path).read_text(encoding="utf-8"))
+        if not isinstance(loaded, dict):
+            raise ValueError("settings input file must contain a JSON object")
+        values.update(loaded)
+    values.update(parse_key_values(getattr(args, "pairs", [])))
+    return values
+
+
+def project_root(root: Path, project: str) -> Path:
+    slug = str(project or "").strip()
+    if not slug or "/" in slug or "\\" in slug or ".." in slug:
+        raise ValueError("project must be a valid slug")
+    path = root.resolve() / "projects" / slug
+    if not path.is_dir():
+        raise FileNotFoundError(f"project does not exist: projects/{slug}")
+    return path
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Inspect or save Project Workbench settings.")
     parser.add_argument("--repo", type=Path, default=REPO_ROOT)
@@ -585,7 +607,18 @@ def build_parser() -> argparse.ArgumentParser:
     save = sub.add_parser("save")
     save.add_argument("--repo", type=Path, default=REPO_ROOT)
     save.add_argument("--set", dest="pairs", action="append", default=[], metavar="KEY=VALUE")
+    save.add_argument("--from", dest="values_path", type=Path, help="JSON object of setting values.")
     save.add_argument("--json", action="store_true")
+    project_get = sub.add_parser("project-get")
+    project_get.add_argument("--repo", type=Path, default=REPO_ROOT)
+    project_get.add_argument("--project", required=True)
+    project_get.add_argument("--json", action="store_true")
+    project_save = sub.add_parser("project-save")
+    project_save.add_argument("--repo", type=Path, default=REPO_ROOT)
+    project_save.add_argument("--project", required=True)
+    project_save.add_argument("--set", dest="pairs", action="append", default=[], metavar="KEY=VALUE")
+    project_save.add_argument("--from", dest="values_path", type=Path, help="JSON object of run-setting overrides.")
+    project_save.add_argument("--json", action="store_true")
     return parser
 
 
@@ -599,14 +632,41 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(f"Settings file: {payload['env_file']} ({'exists' if payload['env_file_exists'] else 'not created yet'})")
             return 0
-        payload = save_settings_payload(parse_key_values(args.pairs), root=args.repo)
+        if args.cmd == "project-get":
+            root = project_root(args.repo, args.project)
+            payload = {
+                "schema": "ztare-forensic-workbench-run-config-v1",
+                "ok": True,
+                "project": args.project,
+                "overrides": read_project_run_overrides(root),
+                "config_path": project_run_config_path(root).resolve().relative_to(args.repo.resolve()).as_posix(),
+            }
+        elif args.cmd == "project-save":
+            root = project_root(args.repo, args.project)
+            overrides = save_project_run_overrides(root, values_from_args(args))
+            payload = {
+                "schema": "ztare-forensic-workbench-run-config-v1",
+                "ok": True,
+                "saved": True,
+                "project": args.project,
+                "overrides": overrides,
+                "updated_keys": sorted(overrides),
+                "config_path": project_run_config_path(root).resolve().relative_to(args.repo.resolve()).as_posix(),
+            }
+        else:
+            payload = save_settings_payload(values_from_args(args), root=args.repo)
     except Exception as exc:  # noqa: BLE001 - concise CLI failure.
         print(f"ztare forensic-workbench settings: {exc}", file=sys.stderr)
         return 2
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
-        print(f"Saved settings: {payload['write_boundary']['write_paths'][0]}")
+        if args.cmd == "project-get":
+            print(f"Project run settings: {payload['config_path']}")
+        elif args.cmd == "project-save":
+            print(f"Saved project run settings: {payload['config_path']}")
+        else:
+            print(f"Saved settings: {payload['write_boundary']['write_paths'][0]}")
     return 0
 
 

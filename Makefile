@@ -131,7 +131,7 @@ endif
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show experiment-loop autoresearch-route autoresearch-projection autoresearch-trace autoresearch-dispatch-validate autoresearch-dispatch-canary autoresearch-dispatch-parity autoresearch-subscription-outcome-audit autoresearch-matched-transport-pair autoresearch-hillclimb-audit autoresearch-consequence-audit autoresearch-rubric-mode-audit autoresearch-evidence-trace autoresearch-kernel-health operations-intelligence autoresearch-substrate-recommend blitz-survival-report inloop-fixture-validate autoresearch-control-demo eigenquestion-propose eigenquestion-validate eigenquestion-status _preflight_eigenquestion_review seal wipe-sandbox \
 	action-intel-smoke action-intel-materialize-dry \
-	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-state forensic-workbench-install forensic-workbench-build forensic-workbench-dev forensic-workbench-api forensic-workbench-live \
+	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-state forensic-workbench-install forensic-workbench-build forensic-workbench-dev forensic-workbench-api forensic-workbench-live forensic-workbench-release-check forensic-workbench-docker-build \
 	leanmill-certify-demo
 
 # LeanMill one-command demo: plain-English rule → z3 finds the adversarial boundary → Lean kernel certifies
@@ -203,6 +203,8 @@ help:
 	@echo "  make forensic-workbench-api                                             # run the Project Workbench server; serves built UI when available"
 	@echo "  make forensic-workbench-dev                                             # run React Project Workbench server"
 	@echo "  make forensic-workbench-live                                            # run the server + React Project Workbench together"
+	@echo "  make forensic-workbench-release-check                                   # build + verify the public disclosure and serving boundary"
+	@echo "  make forensic-workbench-docker-build                                    # build the one-port release image with Buildx"
 	@echo "  make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [NO_MARKDOWN=1]  # build the read-only RD operations report"
 	@echo "  make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]  # RD substrate/workbench recommendation"
 	@echo "  make blitz-survival-report PROJECT=<project> [OUT=<json>] [MD_OUT=<md>] # join blitz winners to downstream eval/gate survival"
@@ -1163,7 +1165,7 @@ forensic-workbench-state:
 		--strict
 
 forensic-workbench-install:
-	npm --prefix forensic-workbench install
+	npm --prefix forensic-workbench ci
 
 forensic-workbench-build:
 	npm --prefix forensic-workbench run build
@@ -1177,9 +1179,17 @@ forensic-workbench-api:
 forensic-workbench-live:
 	PYTHONPATH=src:. $(PYTHON) scripts/public/control/forensic_workbench_live.py
 
-.PHONY: forensic-workbench-docker
+forensic-workbench-release-check: forensic-workbench-build
+	PYTHONPATH=src:. $(PYTHON) scripts/public/control/workbench_release_smoke.py
+
+.PHONY: forensic-workbench-docker forensic-workbench-docker-build
+forensic-workbench-docker-build:  ## Build the one-port release image after verifying Buildx is available
+	docker buildx version
+	docker compose --profile workbench build workbench
+
 forensic-workbench-docker:  ## Build + run the workbench in one container at http://127.0.0.1:8765
-	docker compose up --build workbench
+	docker buildx version
+	docker compose --profile workbench up --build workbench
 
 committee:
 	$(PYTHON) -m src.ztare.validator.generate_committee --project $(PROJECT)

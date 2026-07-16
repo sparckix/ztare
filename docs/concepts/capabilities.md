@@ -92,7 +92,7 @@ artifact, or saved review file. The glossary owns the exact distinction.
   - [Power-aware experimental statistics](#power-aware-experimental-statistics)
   - [Forecasting-program calibration database and Brier/Elo stats](#forecasting-program-calibration-database-and-brierelo-stats)
   - [Lean / formal-verification bridge](#lean--formal-verification-bridge)
-  - [Recent additions tracked through June 2026](#recent-additions-tracked-through-june-2026)
+  - [Recent additions tracked through July 2026](#recent-additions-tracked-through-july-2026)
 - [Current boundaries](#current-boundaries)
 
 ## Fast map for reviewers
@@ -393,7 +393,7 @@ analogy / framer trees referenced in
 
 ### Full-catalog primitive families
 
-The live architecture index is a generated 932-row capability catalog. Each row
+The live architecture index is a generated 1106-row capability catalog. Each row
 now carries two derived taxonomy fields:
 
 - `source_category`: where the implementation lives, such as `research-operator`,
@@ -830,7 +830,7 @@ launch_readiness, adr, rice — `adr` uniquely surfaces the governed `rejected` 
 verdict reports which claim the decision rests on; and **`annotate`** is the *inverse* firewall — a document in,
 the same document back with each sentence tagged by its claim lifecycle (BACKED / CONTRADICTED /
 UNTESTED / INERT) against the governed map. Because a document is *input*, annotation never "fails": the
-headline is a load-bearing-assumption count, and the same call upgrades UNTESTED → BACKED as evidence
+headline is a decision-critical-assumption count, and the same call upgrades UNTESTED → BACKED as evidence
 lands. `annotate` and `reingest_gate` share one `align()` door (a document sentence ↔ a governed element).
 Workbench surface: the "Annotate a doc" view over `POST /api/scenario-{surface,annotate,reingest}` (all
 deterministic; the LLM only proposes spans, the kernel gates them).
@@ -858,7 +858,7 @@ active learning over the existing `information_yield_pricing` primitive (determi
 edges carry **Toulmin warrants** typed by *re-executable checkability* — `W0` kernel certificate (a LeanMill
 proof / `axiom_authority`), `W1` re-executable computation (recomputes from bound data; the gp-ansatz / fit
 gates), `W2` verbatim quote binding, `W3` proposed-unchecked (an LLM edge, admitted but marked) — with the
-verdict **monotone in warrant strength** (a conclusion is never more trusted than its weakest load-bearing
+verdict **monotone in warrant strength** (a conclusion is never more trusted than its weakest decision-critical
 warrant). Also: a humane **`verdict_reason`** — a one-line, actionable reading of the status that separates
 "BLOCKED because nothing is bound yet" (a workflow step, not a failure) from "BLOCKED because a tension is open,"
 so the next action is obvious rather than a cryptic status; **dominators** (which claim sits on every
@@ -913,7 +913,7 @@ Model** (Potyka, KR 2018), a damped forward-Euler iteration. QEM was chosen over
 DF-QuAD (acyclic-only; ZTARE's maps have `CONTRADICTS` 2-cycles) and the h-categoriser
 (attack-only; the graph is bipolar, support and attack both).
 
-The moat-preserving design choice is **warrant filtration, not cardinal weights**.
+The design choice that preserves claim discipline is **warrant filtration, not cardinal weights**.
 Mapping the Toulmin warrant classes `W0..W3` to numbers (0.7, 0.4, …) would smuggle a
 prior — why 0.7? Instead the semantics runs four times over nested strata: stratum *k*
 keeps only edges at least as checkable as tier *k* (`k=0` keeps `W0` only; `k=3` keeps
@@ -939,7 +939,7 @@ The kernel also names **what the decision rests on**: `shapley_support` runs exa
 removal-Shapley over the evidence sources — the characteristic function is thesis
 strength given only that subset of sources present — so each source's contribution sums
 exactly to the thesis strength (Shapley efficiency). On `ai_capex` it names the H100
-price, the TDP figure, the AWS p5 price, and the SOFR rate as the load-bearing sources.
+price, the TDP figure, the AWS p5 price, and the SOFR rate as the decision-critical sources.
 Exact up to 13 sources (2^n); past that it reports the source set and the most-connected
 sources rather than fabricate a partial Shapley value. `shapley_support` is implemented
 and selftested but not yet wired to a CLI or workbench surface — the comment in
@@ -1144,7 +1144,7 @@ builder lives in
 
 The machinery of the kernel is itself a governed object, extending the recursion one level past models and hypothesis language. The substrate-agnostic pieces live in `src/ztare/common/`.
 
-The proposal-card contract carries a `certifier_touched` flag. Cards where the flag is set require conductor disposition before adoption. `MACHINERY_RULES.md` at the repo root records six rules, each instantiating a primitive from the cognitive-firm draft §3 Table 1; the file sha is the version. `attest()` writes a hash receipt at every machinery disposition covering the card sha, rules sha, suite summary, and principal. Institutional independence and liability remain unbuilt by design, not omission.
+The proposal-card contract carries a `certifier_touched` flag. Cards where the flag is set require conductor disposition before adoption. [Machinery Rules](../reference/machinery_rules.md) records the governing rules, each instantiating a primitive from the cognitive-firm draft §3 Table 1; the file sha is the version. `attest()` writes a hash receipt at every machinery disposition covering the card sha, rules sha, suite summary, and principal. Institutional independence and liability remain unbuilt by design, not omission.
 
 `adopt_machinery_patch` follows a backup-apply-test-restore cycle against the frozen test suite. A certifier denylist blocks known bad patches. Only tighten-only changes auto-adopt; others require explicit ratification. An exogenous clock caps machinery proposal cards at three per run, then escalation. Certifier-touched proposals never auto-adopt regardless of content.
 
@@ -1371,8 +1371,14 @@ named axioms (typed infrastructure, not analytic-PDE closure). See
 
 ---
 
-### Recent additions tracked through June 2026
+### Recent additions tracked through July 2026
 
+- Consumer-indexed factored search (`src/ztare/common/factored_search.py` plus
+  `src/ztare/worldmodel/compiled_fiber_planning.py`): accepted carrier effects
+  lower into opaque transition equality, ordered feasibility, terminal-edge,
+  and allocation callbacks. The LS20 normal self-play caller emitted paired
+  compile/first-fire receipts and advanced the adapter task edge; transfer to a
+  different ontology remains untested.
 - Canonical MDL/BIC engine (`src/ztare/fit/mdl.py`): `bic` / `bic_from_loglik` (de-duped from compress_champion's inline copies) + the two-part-code `MDLLibrary` (a Strategy interface). Consumed by autoresearch (compress_champion) and leanmill (lemma-library pruning).
 - LeanMill calibration (`src/ztare/leanmill/solver/move_calibration.py`): recursive self-tuning `selection_priors` shifts each move's estimated close probability from compile-only evidence toward ratified outcomes as governed data accrues. `select_calibration_model` uses BIC to decide split-by-error-class vs pooled calibration. Recorded forecasts carry Brier/Elo statistics.
 - Constraint-to-isomorphism engine (`src/ztare/common/constraint_isomorphism.py`, see §1): provider-flexible isomorphism surfacing for constraint families and proof/search surfaces.
@@ -1393,7 +1399,7 @@ Concrete non-claims, listed so a reader is not left guessing:
   files.
 - No domain-knowledge replacement. ZTARE does not substitute for
   an expert physicist, mathematician, or biologist.
-- No autonomous optimizer or RL routing of governance state. Reward
+- No autonomous optimizer or RL routing of governance state. Outcome
   signals are recorded. Tenant policy decides whether and how to route on
   them.
 - No claim that any single high-variance substrate (NS, gravity, neural,

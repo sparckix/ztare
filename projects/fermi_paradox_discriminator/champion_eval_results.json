@@ -150,7 +150,7 @@
       "judge_fallback_used": false,
       "dynamic_committee": false,
       "primitive_support": false,
-      "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+      "evidence_path": "projects/fermi_paradox_discriminator/evidence.txt",
       "evidence_fingerprint": "ef5484aeae7074fc",
       "project_forecast_type": "unspecified"
     },
@@ -165,7 +165,7 @@
     "rubric_fingerprint": "6773d9bbd196413b",
     "dynamic_committee": false,
     "primitive_support": false,
-    "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+    "evidence_path": "projects/fermi_paradox_discriminator/evidence.txt",
     "evidence_fingerprint": "ef5484aeae7074fc",
     "project_forecast_type": "unspecified",
     "test_suite_status": "fail_assert"

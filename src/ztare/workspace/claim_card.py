@@ -5,6 +5,7 @@ import hashlib
 import html
 import json
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -271,6 +272,71 @@ def verify_card(path: Path, root: Path) -> dict[str, Any]:
     }
 
 
+def build_recorded_card(
+    project: str,
+    root: Path,
+    *,
+    rubric: str = "",
+    intake: str = "",
+) -> dict[str, Any]:
+    project = validate_project_slug(project)
+    card = build_card(project, root)
+    paths = output_paths(project, root)
+    for fmt, path in paths.items():
+        write_card(card, fmt, path)
+    verification = verify_card(paths["json"], root)
+    workspace = root / "projects" / project / "workspace"
+    workspace.mkdir(parents=True, exist_ok=True)
+    ledger_path = workspace / "forensic_workbench_claim_cards.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_claim_card.json"
+    written = [rel_path(str(paths[fmt]), root) for fmt in ("json", "md", "html")]
+    receipt = {
+        "schema": CLAIM_CARD_RECEIPT_SCHEMA,
+        "kind": "claim_card",
+        "project": project,
+        "rubric": rubric or project,
+        "intake": intake,
+        "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "status": "accepted" if verification.get("ok") else "attention",
+        "summary": (
+            "Built portable claim card and verified evidence hashes."
+            if verification.get("ok")
+            else "Built portable claim card, but verification needs attention."
+        ),
+        "card_hash": str((card.get("provenance") or {}).get("card_hash") or ""),
+        "json_path": written[0],
+        "markdown_path": written[1],
+        "html_path": written[2],
+        "receipt_path": rel_path(str(ledger_path), root),
+        "latest_path": rel_path(str(latest_path), root),
+        "verification_ok": bool(verification.get("ok")),
+        "evidence_count": len(verification.get("evidence") or []),
+    }
+    with ledger_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(receipt, sort_keys=True) + "\n")
+    latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_paths = [*written, receipt["receipt_path"], receipt["latest_path"]]
+    return {
+        "ok": bool(verification.get("ok")),
+        "accepted": bool(verification.get("ok")),
+        "schema": CLAIM_CARD_RECEIPT_SCHEMA,
+        "project": project,
+        "rubric": rubric or project,
+        "intake": intake,
+        "card_hash": receipt["card_hash"],
+        "json_path": receipt["json_path"],
+        "markdown_path": receipt["markdown_path"],
+        "html_path": receipt["html_path"],
+        "preview_path": receipt["html_path"],
+        "receipt_path": receipt["receipt_path"],
+        "latest_path": receipt["latest_path"],
+        "written": written,
+        "write_paths": write_paths,
+        "verification": verification,
+        "receipt": receipt,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build or verify portable ZTARE claim cards.")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -278,13 +344,27 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--project", required=True)
     build.add_argument("--format", choices=["json", "md", "html", "all"], default="json")
     build.add_argument("--out")
+    build.add_argument("--repo", type=Path, default=REPO_ROOT)
+    build.add_argument("--rubric", default="")
+    build.add_argument("--intake", default="")
+    build.add_argument("--record", action="store_true", help="Write all formats and a Workbench receipt.")
     verify = sub.add_parser("verify", help="verify a claim-card JSON file and evidence hashes")
     verify.add_argument("--path", required=True)
+    verify.add_argument("--repo", type=Path, default=REPO_ROOT)
     open_cmd = sub.add_parser("open", help="build HTML and print its path")
     open_cmd.add_argument("--project", required=True)
+    open_cmd.add_argument("--repo", type=Path, default=REPO_ROOT)
     args = parser.parse_args(argv)
-    root = repo_root()
+    root = args.repo
     if args.cmd in {"build", "open"}:
+        if args.cmd == "build" and args.record:
+            print(json.dumps(build_recorded_card(
+                args.project,
+                root,
+                rubric=args.rubric,
+                intake=args.intake,
+            ), indent=2, sort_keys=True))
+            return 0
         card = build_card(args.project, root)
         formats = ["html"] if args.cmd == "open" else ["json", "md", "html"] if args.format == "all" else [args.format]
         paths = output_paths(args.project, root)

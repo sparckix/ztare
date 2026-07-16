@@ -1,3 +1,7 @@
+---
+description: "The five-category decision-support decomposition and its governed argument-graph consumers."
+---
+
 # Decision-support primitives — the complete grid
 
 ZTARE's decision-support kernel is not an open-ended pile of features. It is a **closed decomposition**: five
@@ -19,7 +23,7 @@ backing.
 |---|----------|-------------------------|------------|-------------------|
 | 1 | **ADMIT** | What may enter the graph, at what backing tier? | warrant tiers (unchecked / cited / reproducible / proven), quote-binding, the recheck door (the only minter of the *reproducible* tier), the governed-overlay write-back doors | Toulmin, *The Uses of Argument* (1958) — warrants; Gordon & Walton, **Carneades** proof standards (our tiers are a checkability analogue) |
 | 2 | **EVALUATE** | What does the argument conclude, and how firmly? | the crisp grounded `verdict`; the graded `strength_profile` (strength recomputed at each backing cutoff) + the override lattice | Dung (1995) abstract argumentation & **ABA** grounded semantics; **gradual/quantitative** semantics — Potyka (KR 2018, QEM); Baroni, Rago, Toni |
-| 3 | **ATTRIBUTE** | What does the conclusion rest on? ("What would you have to believe?") | `minimal_cores` (the load-bearing assumption sets), `dominators` (conditions on every support path), `shapley_support`, `warrant_ceiling`. **The "beliefs" view is a rendering of this cell — not a separate primitive.** | de Kleer **ATMS** minimal environments; flow-graph dominators; Shapley attribution (Yin, Potyka, Toni, IJCAI 2024); **"what would have to be true"** — Martin & Lafley, *Playing to Win*; Rivkin's classroom form; Dewar **assumption-based planning** (load-bearing + vulnerable assumptions) |
+| 3 | **ATTRIBUTE** | What does the conclusion rest on? ("What would you have to believe?") | `minimal_cores` (the decision-critical assumption sets), `dominators` (conditions on every support path), `shapley_support`, `warrant_ceiling`. **The "beliefs" view is a rendering of this cell — not a separate primitive.** | de Kleer **ATMS** minimal environments; flow-graph dominators; Shapley attribution (Yin, Potyka, Toni, IJCAI 2024); **"what would have to be true"** — Martin & Lafley, *Playing to Win*; Rivkin's classroom form; Dewar **assumption-based planning** (critical + vulnerable assumptions) |
 | 4 | **AGENDA** | What is the cheapest thing that would change my mind? | the unified wager-typed ranking: `identification_bits` (value of information), maximin `severity`, cost, `flips_alone`; loop-proposed experiments enter through the same door | **Value of Information** — Howard (1966); prior-free variant = **query-by-committee** (Seung, Opper, Sompolinsky 1992); **severity** — Mayo, *Error and the Growth of Experimental Knowledge*; **pre-mortem / red-team** — Klein (generative side) |
 | 5 | **MAINTAIN** | Does the conclusion still hold over time? | `recompile` (stale-decision diff), `warrant_recheck` (earn / demote / expire), the wager lifecycle (deadline = option expiry) | TMS label update (Doyle; de Kleer); **signposts** — Dewar; living-evidence half-life; **real options** (a deadline is an option to keep alive by paying) |
 
@@ -48,12 +52,12 @@ whoever authored it; (2) read-time recompute — no persisted rankings; (3) one 
 
 - **Node-level provenance (real gap):** edges default to the *unchecked* tier honestly, but a node minted from
   an LLM-produced carrier carries no tier at all — the determinism starts *after* an LLM-shaped carrier, and
-  nothing marks that. This is the moat's true soft spot; it is tracked, not hidden.
+  nothing marks that. This is the design's principal weak spot; it is tracked, not hidden.
 - **Evidence independence** beyond shared-source lineage: designed (`_lineage_sources`) but the carrier does not
   emit `DERIVED_FROM` yet.
 - **Alternatives / framing:** ZTARE hardens one thesis; only a portfolio compares. A beachhead non-goal for now.
 - **Preferences / utilities (deliberately empty):** ZTARE declares dollars/odds, never computes them. Filling
-  this cell would turn decision-*support* into decision-*making* — which is exactly where the moat dies. This
+  this cell would turn decision-*support* into decision-*making* — which is exactly where claim discipline fails. This
   cell is left empty on purpose.
 
 The worldmodel substrate (`src/ztare/worldmodel/`) independently instantiates the same five categories and the same warrant-tier ladder over interactive-game evidence. The ATTRIBUTE cell's minimal-core math and AGENDA's `identification_bits` (in `src/ztare/common/information_yield_pricing.py`) are, or are becoming, shared modules under the common/ boundary. The hitting-set core used for minimal environments also lives in `src/ztare/common/hitting_sets.py`. That the grid recurs across two independently-built substrates — one over a governed argument graph, one over episode-log transitions — is evidence the decomposition carves the problem at its joints rather than at a design convenience.

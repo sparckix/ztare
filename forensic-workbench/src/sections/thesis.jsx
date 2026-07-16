@@ -107,7 +107,7 @@ export function Thesis({ view, decision, onOpenDetail, onOpenModal, onPreview, o
       "div",
       { className: "thesis-actions" },
       h("button", { type: "button", className: `chip ${hasClaim ? "primary" : ""}`.trim(), onClick: () => go("run", "Start run") }, "Pressure-test"),
-      h("button", { type: "button", className: "chip", onClick: () => go("sources", "Add file") }, "Add evidence"),
+      h("button", { type: "button", className: "chip", onClick: () => peek("sources", "Add file") }, "Add evidence"),
       hasClaim
         ? h("button", { type: "button", className: "chip", onClick: () => peek("overview", "Annotate a doc") }, "Check a draft")
         : null

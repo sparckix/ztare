@@ -45,7 +45,6 @@ from ztare.workspace import scoring_guide as scoring_guide_core
 from ztare.workspace import source_actions as source_actions_core
 from ztare.workspace import source_files as source_files_core
 from ztare.workspace import workbench_settings as settings_core
-from ztare.scenarios import loader as scenarios_loader
 from ztare.workspace import workbench_contracts as workbench_contracts_core
 from ztare.workspace.server_payloads import leanmill as leanmill_payloads
 from ztare.common.storage import FileStorage
@@ -65,6 +64,13 @@ MAX_PREVIEW_BYTES = 200_000
 WORKBENCH_ROOT = snapshot.REPO / "forensic-workbench"
 WORKBENCH_DIST = WORKBENCH_ROOT / "dist"
 WORKBENCH_PUBLIC = WORKBENCH_ROOT / "public"
+PUBLIC_PROJECTS_PATH = WORKBENCH_ROOT / "public-projects.json"
+PROJECT_SCOPE = str(os.environ.get("ZTARE_WORKBENCH_PROJECT_SCOPE") or "local").strip().lower()
+PROJECT_ALLOWLIST = {
+    item.strip()
+    for item in str(os.environ.get("ZTARE_WORKBENCH_PROJECTS") or "").split(",")
+    if item.strip()
+}
 FILE_PREVIEW_ALLOWED_ROOTS = recent_changes_core.FILE_PREVIEW_ALLOWED_ROOTS
 FILE_PREVIEW_ALLOWED_FILES = recent_changes_core.FILE_PREVIEW_ALLOWED_FILES
 FILE_PREVIEW_BLOCKED_PARTS = recent_changes_core.FILE_PREVIEW_BLOCKED_PARTS
@@ -629,11 +635,16 @@ def load_workbench_env() -> dict[str, str]:
     return settings_core.load_workbench_env(root=snapshot.REPO, storage=WORKBENCH_STORE)
 
 
-def run_workbench_command(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+def run_workbench_command(
+    command: list[str],
+    *,
+    timeout: int = 90,
+    cwd: Path | None = None,
+) -> subprocess.CompletedProcess[str]:
     try:
         return subprocess.run(
             command,
-            cwd=snapshot.REPO,
+            cwd=cwd or snapshot.REPO,
             env=load_workbench_env(),
             text=True,
             stdout=subprocess.PIPE,
@@ -661,7 +672,18 @@ def quote_env_value(value: str) -> str:
 
 
 def save_settings_payload(raw_values: Any) -> dict[str, Any]:
-    return settings_core.save_settings_payload(raw_values, root=snapshot.REPO, storage=WORKBENCH_STORE)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(raw_values, staged)
+        staged.flush()
+        payload = ztare_cli_payload([
+            "forensic-workbench", "settings", "save",
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], timeout=90)
+    if payload.get("ok") is False:
+        raise ValueError(str(payload.get("error") or "settings save was refused"))
+    return payload
 
 
 RUN_CONFIG_SCHEMA = "ztare-forensic-workbench-run-config-v1"
@@ -724,9 +746,19 @@ def save_run_config_payload(raw: Any) -> dict[str, Any]:
         raise ValueError("run config request must include a project and values")
     project = snapshot.validate_project_slug(str(raw.get("project") or ""))
     root = project_run_config_root(project)
-    overrides = settings_core.save_project_run_overrides(
-        root, raw.get("values"), storage=WORKBENCH_STORE
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(raw.get("values"), staged)
+        staged.flush()
+        saved = ztare_cli_payload([
+            "forensic-workbench", "settings", "project-save",
+            "--project", project,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=90)
+    if saved.get("ok") is False:
+        raise ValueError(str(saved.get("error") or "run settings save was refused"))
+    overrides = saved.get("overrides") if isinstance(saved.get("overrides"), dict) else {}
     payload = run_config_payload(project)
     config_path = root / settings_core.PROJECT_RUN_CONFIG_FILENAME
     payload.update(
@@ -910,27 +942,6 @@ def static_workbench_path(request_path: str) -> Path | None:
     if request_path.startswith("/assets/"):
         return safe_child_path(WORKBENCH_DIST, request_path)
     return None
-
-
-def persist_live_row_payload(*, project: str, row: str, kind: str, payload: dict[str, Any]) -> tuple[str, bytes]:
-    project = snapshot.validate_project_slug(project)
-    if not re.fullmatch(r"[a-z0-9_]+", row):
-        raise ValueError(f"invalid item slug: {row!r}")
-    if kind not in {"review", "action"}:
-        raise ValueError(f"invalid live project-check payload kind: {kind!r}")
-    payload_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
-    payload_bytes = payload_text.encode("utf-8")
-    digest = hashlib.sha256(payload_bytes).hexdigest()
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    workspace = snapshot.REPO / "projects" / project / "workspace" / "forensic_workbench_applied"
-    stem = f"{stamp}_{row}_{kind}_{digest[:12]}"
-    path = workspace / f"{stem}.json"
-    suffix = 1
-    while path.exists():
-        path = workspace / f"{stem}_{suffix}.json"
-        suffix += 1
-    WORKBENCH_STORE.write_bytes(path, payload_bytes)
-    return repo_rel(path), payload_bytes
 
 
 def live_row_payload_with_case(
@@ -1745,6 +1756,7 @@ def file_preview_reference_item(path: str) -> dict[str, Any]:
 def file_preview_payload(path: str) -> dict[str, Any]:
     if not path:
         raise ValueError("path is required")
+    require_visible_repo_path(path)
     candidate = Path(path)
     if candidate.is_absolute():
         raise ValueError("path must be relative to the repository")
@@ -1772,7 +1784,10 @@ def file_preview_payload(path: str) -> dict[str, Any]:
     preview_lines = text.splitlines()
     line_count = len(preview_lines)
     non_empty_line_count = sum(1 for line in preview_lines if line.strip())
-    referenced_paths = preview_referenced_paths(text, source_path=normalized)
+    referenced_paths = [
+        ref for ref in preview_referenced_paths(text, source_path=normalized)
+        if not project_from_repo_path(ref) or project_is_visible(project_from_repo_path(ref))
+    ]
     return {
         "schema": "ztare-forensic-workbench-file-preview-v1",
         "ok": True,
@@ -2296,6 +2311,19 @@ def project_file_inventory_payload(
                     add(path, role="run", label="Run file", reason="Referenced by a recent run.")
 
     add(report.get("report_support_contract"), role="report", label="Report readiness", reason="Current readiness file for the report.")
+    renderer = str(report.get("renderer") or snapshot.DEFAULT_RENDERER or "decision_brief").strip()
+    add(
+        f"projects/{project}/Report.{renderer}.md",
+        role="report",
+        label="Decision report",
+        reason="Current rendered decision report when one has been generated.",
+    )
+    add(
+        f"projects/{project}/synthesis/claim_card.md",
+        role="report",
+        label="Claim card",
+        reason="Portable claim card when one has been generated.",
+    )
     for backing in report.get("backing_files") or []:
         if isinstance(backing, dict):
             add(backing.get("path"), role="report", label=str(backing.get("label") or "Report backing file"), reason="Report readiness backing file.")
@@ -2733,44 +2761,20 @@ def scenario_surface_payload(project: str) -> dict[str, Any]:
     """Surface a project's assumptions by COMPOSING its compiled evidence packet (the compiler's
     candidate_claims_to_test) + the deterministic span-anchor gate — read-only, no LLM (the compiler already
     ran). The intake view of the round-trip. Returns anchored claims (each a thesis to test)."""
-    from ztare.common.paths import PROJECTS_DIR
-    from ztare.scenarios.surfacing import claims_from_packet, surface_assumptions
-
-    root = PROJECTS_DIR / project
-    packets = list(root.glob("**/compiled_evidence_packet.json")) + list(root.glob("*_packet.json"))
-    if not packets:
-        return {"ok": False, "claims": [], "error": f"no compiled evidence packet for '{project}' — compile evidence first"}
-    try:
-        packet = json.loads(packets[0].read_text(encoding="utf-8"))
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "claims": [], "error": f"unreadable packet: {type(exc).__name__}"}
-    doc = ""
-    for name in ("thesis.md", "current_iteration.md", "evidence.txt"):
-        candidate = root / name
-        if candidate.is_file():
-            doc += candidate.read_text(encoding="utf-8", errors="replace") + "\n"
-    result = surface_assumptions(doc, lambda _d: claims_from_packet(packet))
-    return {"ok": True, "dropped": len(result.rejected),
-            "claims": [{"text": c.text, "span": c.span} for c in result.anchored]}
+    return scenario_cli_payload(["surface", "--project", project, "--json"], project=project)
 
 
 def scenario_reingest_payload(project: str, doc: str) -> dict[str, Any]:
     """Re-gate an AI-polished deliverable against a project's governed research map — every prose sentence must
     align to a governed element or it is flagged UNGOVERNED (fail-closed, no LLM judge). The workbench's
     forged-edit catch. Read-only: computes, writes nothing."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map, open_reingest_session
+    import tempfile
 
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "governed": False, "elements": 0, "ungoverned": [],
-                "error": f"no governed research map for '{project}' — run the project first"}
-    session = open_reingest_session(project, doc or "", governed)
-    return {"ok": True, "governed": session.promotable, "elements": len(governed.elements),
-            "base_hash": session.base_hash, "promotable": session.promotable,
-            "traced_claims": session.diff.traced_claims,
-            "dropped_claims": session.diff.dropped_claims,
-            "ungoverned": session.diff.ungoverned}
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(doc or "")
+        staged.flush()
+        return scenario_cli_payload(["reingest", staged.name, "--project", project, "--json"],
+                                    project=project)
 
 
 def scenario_reingest_promote_payload(project: str, doc: str, base_hash: str,
@@ -2781,29 +2785,20 @@ def scenario_reingest_promote_payload(project: str, doc: str, base_hash: str,
     state refuses the write, and the strict sentence gate is recomputed server-side immediately before the
     artifact and audit receipt are written.
     """
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map, open_reingest_session, promote_reingest
+    import tempfile
 
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "promoted": False,
-                "error": f"no governed research map for '{project}' -- run it first"}
-    session = open_reingest_session(project, doc or "", governed)
-    if not base_hash or base_hash != session.base_hash:
-        return {"ok": False, "promoted": False, "stale": True,
-                "error": "the checked decision changed; check this copy again before promoting"}
+    from ztare.common.paths import REPO_ROOT
+
     source_name = Path(str(source_path or "")).stem or "edited_copy"
     safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", source_name).strip("._-") or "edited_copy"
     out_dir = REPO_ROOT / "projects" / project / "workspace" / "deliverables"
-    out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{safe_name}.current.md"
-    result = promote_reingest(session, doc or "", governed, str(out_path),
-                              at=datetime.now(timezone.utc).isoformat())
-    result["ok"] = bool(result.get("promoted"))
-    if result.get("path"):
-        result["path"] = display_path(result["path"])
-        result["receipt_path"] = display_path(out_path.with_suffix(".reingest.json"))
-    return result
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(doc or "")
+        staged.flush()
+        return scenario_cli_payload(
+            ["reingest", staged.name, "--project", project, "--promote", str(out_path),
+             "--base-hash", str(base_hash or ""), "--json"], project=project)
 
 
 def scenario_annotate_payload(project: str, doc: str, model: str = "") -> dict[str, Any]:
@@ -2812,196 +2807,40 @@ def scenario_annotate_payload(project: str, doc: str, model: str = "") -> dict[s
     INPUT — it never 'fails'; the headline is the load-bearing-assumption COUNT. Spans come from the doc via the
     live proposer when `model` is set, else read-only by composing the project's compiled packet claims (gated
     against this doc). Deterministic annotate; surfacing degrades to []-spans if no LLM/packet."""
-    from ztare.common.paths import PROJECTS_DIR, REPO_ROOT
-    from ztare.scenarios.artifacts import (
-        ANNOTATION_STATUSES,
-        GovernedState,
-        annotate,
-        governed_state_from_research_map,
-        render_annotated,
-    )
-    from ztare.scenarios.surfacing import claims_from_packet, surface_assumptions
-
     if not (doc or "").strip():
         return {"ok": False, "error": "empty document"}
-    governed = governed_state_from_research_map(project, REPO_ROOT) if project else GovernedState()
+    import tempfile
 
-    proposer = None
-    surfaced_from = "none"
-    if model:  # LIVE: surface THIS document's own assumptions (the honest front-door for a fresh doc)
-        from ztare.scenarios.providers.llm_proposer import llm_proposer
-        proposer = lambda d: llm_proposer(d, model=model)  # noqa: E731 — live intake
-        surfaced_from = f"live:{model}"
-    elif project:  # read-only: compose the project's compiled packet, gated against THIS doc
-        root = PROJECTS_DIR / project
-        packets = list(root.glob("**/compiled_evidence_packet.json")) + list(root.glob("*_packet.json"))
-        if packets:
-            try:
-                packet = json.loads(packets[0].read_text(encoding="utf-8"))
-                proposer = lambda _d: claims_from_packet(packet)  # noqa: E731
-                surfaced_from = "packet"
-            except Exception:  # noqa: BLE001 — unreadable packet ⇒ annotate against the map only
-                proposer = None
-
-    spans: list[str] = []
-    dropped = 0
-    if proposer is not None:
-        try:
-            surfaced = surface_assumptions(doc, proposer)
-            spans, dropped = [c.span for c in surfaced.anchored], len(surfaced.rejected)
-        except Exception as exc:  # noqa: BLE001 — surfacing best-effort; annotate still runs on the governed map
-            spans, dropped = [], 0
-            surfaced_from = f"error:{type(exc).__name__}"
-
-    anns = annotate(doc, governed, surfaced_spans=spans)
-    counts = {s: sum(1 for a in anns if a.status == s) for s in ANNOTATION_STATUSES}
-    # Honest note: don't let read-only compose masquerade as fresh-document analysis (the overpromise).
-    note = ""
-    if surfaced_from == "packet" and not spans:
-        note = ("surfaced from the project's compiled evidence, which didn't match this document — "
-                "pass a model to surface THIS document's own assumptions")
-    elif surfaced_from == "none":
-        note = "no model and no compiled packet — annotated against the governed map only (no per-document surfacing)"
-    return {
-        "ok": True,
-        "elements": len(governed.elements),
-        "pre_run": not governed.elements,
-        "surfaced_from": surfaced_from,
-        "note": note,
-        "dropped": dropped,
-        "counts": counts,
-        "annotations": [{"sentence": a.sentence, "status": a.status, "element_id": a.element_id} for a in anns],
-        "rendered": render_annotated("pasted-document", anns),
-    }
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(doc or "")
+        staged.flush()
+        args = ["annotate", staged.name, "--project", project, "--json"]
+        if model:
+            args.extend(["--model", model])
+        return scenario_cli_payload(args, project=project, timeout=180 if model else 30)
 
 
 def scenarios_payload() -> dict[str, Any]:
     """Read-only scenario index for the workbench picker: name + description + resolved rubric / evidence /
     renderer per scenario. Best-effort per row — a broken manifest is flagged, never breaks the endpoint."""
-    rows: list[dict[str, Any]] = []
-    for name in scenarios_loader.list_scenarios():
-        try:
-            sc = scenarios_loader.load_scenario(name)
-            rows.append({
-                "name": sc.name or name,
-                "description": (sc.description or "").strip(),
-                "rubric": sc.rubric,
-                "evidence_sources": list(sc.evidence_sources),
-                "renderer": sc.renderer,
-                "rechecks": list(sc.rechecks),
-                "workbench_panels": list(sc.workbench_panels),
-                "deliverables": list(sc.deliverables),
-                "deliverable_specs": [spec.model_dump(mode="json") for spec in sc.deliverable_specs],
-            })
-        except Exception as exc:  # noqa: BLE001 — one broken manifest must not blank the picker
-            rows.append({"name": name, "description": "", "invalid": f"{type(exc).__name__}: {exc}"})
-    return {"scenarios": rows}
-
-
-def _safe_plugin_name(name: str) -> str:
-    """Sanitize a plugin name to a bare slug — whitespace→dash, drop anything else (no path traversal; this
-    writes a file)."""
-    import re as _re
-    slug = _re.sub(r"\s+", "-", str(name or "").strip().lower())
-    return _re.sub(r"[^a-z0-9_-]", "", slug)[:64]
-
-
-def _decision_baseline_path(project: str):
-    from ztare.common.paths import PROJECTS_DIR
-    return PROJECTS_DIR / project / "workspace" / "decision_baseline.json"
+    return scenario_cli_payload(["list", "--json"])
 
 
 def scenario_baseline_status_payload(project: str) -> dict[str, Any]:
     """Read the saved comparison reference without writing a new one."""
-    path = _decision_baseline_path(project)
-    if not path.is_file():
-        return {"ok": True, "project": project, "exists": False}
-    verdict = ""
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        verdict = str(((payload.get("verdict") or {}).get("status") or ""))
-    except Exception:  # noqa: BLE001 - an unreadable reference is surfaced, never used for a diff.
-        return {"ok": False, "project": project, "exists": True, "error": "saved reference is unreadable"}
-    return {"ok": True, "project": project, "exists": True, "verdict": verdict,
-            "saved_at": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()}
+    return scenario_cli_payload(["baseline", "--project", project, "--status", "--json"], project=project)
 
 
 def scenario_baseline_payload(project: str) -> dict[str, Any]:
     """Snapshot the project's governed state as a DECISION BASELINE (the frozen argument at decision time) so it
     can be recompiled against later. Read-of-map + write-of-snapshot; no LLM."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import assemble_verdict, governed_state_from_research_map, serialize_governed
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed research map for '{project}' — run it first"}
-    path = _decision_baseline_path(project)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    v = assemble_verdict(governed)
-    path.write_text(json.dumps(serialize_governed(governed, verdict=v), indent=2), encoding="utf-8")
-    return {"ok": True, "verdict": v.status, "path": str(path), "elements": len(governed.elements)}
+    return scenario_cli_payload(["baseline", "--project", project, "--json"], project=project)
 
 
 def scenario_recompile_payload(project: str) -> dict[str, Any]:
     """The stale-decision diff (incremental recompile): recompile the CURRENT governed map against the stored
     baseline — did the decision go stale, which claims flipped, what to test next. Deterministic, no LLM."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.adapters import governed_state_from_serialized
-    from ztare.scenarios.argument_kernel import recompile
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-
-    path = _decision_baseline_path(project)
-    if not path.is_file():
-        return {"ok": False, "error": "no decision baseline yet — snapshot one first"}
-    try:
-        old = governed_state_from_serialized(json.loads(path.read_text(encoding="utf-8")))
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "error": f"unreadable baseline: {type(exc).__name__}"}
-    new = governed_state_from_research_map(project, REPO_ROOT)
-    rc = recompile(old, new)
-    text_of = {e.id: e.text for e in new.elements}
-    text_of.update({e.id: e.text for e in old.elements if e.id not in text_of})
-    old_nodes = {element.id: element for element in old.elements}
-    new_nodes = {element.id: element for element in new.elements}
-    added_ids = new_nodes.keys() - old_nodes.keys()
-    removed_ids = old_nodes.keys() - new_nodes.keys()
-    shared_ids = old_nodes.keys() & new_nodes.keys()
-    old_edges = {(edge.src, edge.kind, edge.dst, edge.warrant) for edge in old.edges}
-    new_edges = {(edge.src, edge.kind, edge.dst, edge.warrant) for edge in new.edges}
-
-    def node_row(element) -> dict[str, Any]:
-        return {"id": element.id, "kind": element.kind, "text": element.text}
-
-    def edge_row(edge: tuple[str, str, str, str]) -> dict[str, Any]:
-        src, relation, dst, warrant = edge
-        return {"from": src, "from_text": text_of.get(src, src), "relation": relation,
-                "to": dst, "to_text": text_of.get(dst, dst), "warrant": warrant}
-
-    changed_nodes = [
-        {"id": node_id, "kind": new_nodes[node_id].kind,
-         "before": old_nodes[node_id].text, "after": new_nodes[node_id].text}
-        for node_id in sorted(shared_ids)
-        if old_nodes[node_id].text != new_nodes[node_id].text or old_nodes[node_id].kind != new_nodes[node_id].kind
-    ]
-    graph_delta = {
-        "counts": {
-            "nodes_added": len(added_ids), "nodes_removed": len(removed_ids),
-            "nodes_changed": len(changed_nodes), "edges_added": len(new_edges - old_edges),
-            "edges_removed": len(old_edges - new_edges),
-        },
-        "nodes_added": [node_row(new_nodes[node_id]) for node_id in sorted(added_ids)[:25]],
-        "nodes_removed": [node_row(old_nodes[node_id]) for node_id in sorted(removed_ids)[:25]],
-        "nodes_changed": changed_nodes[:25],
-        "edges_added": [edge_row(edge) for edge in sorted(new_edges - old_edges)[:25]],
-        "edges_removed": [edge_row(edge) for edge in sorted(old_edges - new_edges)[:25]],
-    }
-    return {
-        "ok": True, "was": rc["was"], "now": rc["now"], "decision_stale": rc["decision_stale"],
-        "flipped": [{**f, "text": text_of.get(f["id"], f["id"])} for f in rc["flipped"]],
-        "to_test": [{"assumption": r["assumption"], "text": text_of.get(r["assumption"], r["assumption"])}
-                    for r in rc["agenda"] if r.get("flips_alone") or r.get("in_cores")][:5],
-        "graph_delta": graph_delta,
-    }
+    return scenario_cli_payload(["recompile", "--project", project, "--json"], project=project)
 
 
 def scenario_recheck_payload(project: str, now: str = "", half_life_days: "int | None" = None) -> dict[str, Any]:
@@ -3009,20 +2848,12 @@ def scenario_recheck_payload(project: str, now: str = "", half_life_days: "int |
     capability (e.g. a covenant recompute). Writes the recheck-owned overlay slice; returns the receipts + the
     fresh strength status/profile so the panel can show the profile MOVE. Deterministic, no LLM. Parity with
     `ztare scenario recheck`."""
-    from datetime import date
-
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.strength import strength_profile
-    from ztare.scenarios.warrant_recheck import recheck_project
-
-    now = now or date.today().isoformat()
-    before = strength_profile(governed_state_from_research_map(project, REPO_ROOT))
-    result = recheck_project(project, REPO_ROOT, now=now, half_life_days=half_life_days)
-    after = strength_profile(governed_state_from_research_map(project, REPO_ROOT))
-    return {"ok": True, "project": project, "now": now, "receipts": result.get("receipts", []),
-            "before": {"status": before.get("status"), "profile": before.get("profile")},
-            "after": {"status": after.get("status"), "profile": after.get("profile")}}
+    args = ["recheck", "--project", project, "--json"]
+    if now:
+        args.extend(["--now", now])
+    if half_life_days is not None:
+        args.extend(["--half-life-days", str(half_life_days)])
+    return scenario_cli_payload(args, project=project, timeout=120)
 
 
 def scenario_rice_payload(request: dict[str, Any]) -> dict[str, Any]:
@@ -3030,79 +2861,31 @@ def scenario_rice_payload(request: dict[str, Any]) -> dict[str, Any]:
     typed, and each row names its weakest-backed factor. POST `{items:[{project,label,reach,impact,effort}]}` for
     a portfolio (each item its own decision; Confidence = its thesis strength), or `{project: slug}` to rank the
     claims inside one decision. Deterministic, no LLM. Parity with `ztare scenario rice`."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.rice import load_rice_inputs, portfolio_rice, rice_scores
-
     items = request.get("items")
     if isinstance(items, list) and items:
-        return {"ok": True, "mode": "portfolio", "rows": portfolio_rice(items, REPO_ROOT)}
+        return scenario_cli_payload(["rice", "--items-json", json.dumps(items, separators=(",", ":")), "--json"])
     project = str(request.get("project") or "")
     if not project:
         return {"ok": False, "error": "provide items[] (a portfolio) or a project slug"}
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
-    inputs = load_rice_inputs(project, REPO_ROOT)
-    return {"ok": True, "mode": "single", "project": project,
-            "rows": rice_scores(governed, inputs), "inputs": inputs,
-            "evidence": [{"id": element.id, "text": element.text}
-                         for element in governed.of_kind("evidence")]}
+    return scenario_cli_payload(["rice", "--project", project, "--json"], project=project)
 
 
 def scenario_rice_update_payload(request: dict[str, Any]) -> dict[str, Any]:
     """Persist bounded PM prioritization inputs; warrants are recomputed from the governed graph on read."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.rice import save_rice_inputs
-
     project = str(request.get("project") or "").strip()
     claim_id = str(request.get("claim_id") or "").strip()
     factors = request.get("factors") if isinstance(request.get("factors"), dict) else {}
     if not project or not claim_id:
         return {"ok": False, "error": "choose a project and initiative"}
-    try:
-        saved = save_rice_inputs(project, REPO_ROOT, claim_id, factors)
-    except (OSError, ValueError) as exc:
-        return {"ok": False, "refused": True, "error": str(exc)}
-    payload = scenario_rice_payload({"project": project})
-    payload["saved"] = {"claim_id": claim_id, "factors": saved}
-    return payload
+    update = json.dumps({"claim_id": claim_id, "factors": factors}, separators=(",", ":"))
+    return scenario_cli_payload(["rice", "--project", project, "--update-json", update, "--json"],
+                                project=project)
 
 
 def scenario_next_agenda_payload(project: str) -> dict[str, Any]:
     """The unified 'what to test next' agenda (implicit + declared + loop, Pareto frontier). Parity with the CLI
     `scenario agenda` next-test list. Deterministic, no LLM."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.agenda import project_agenda
-
-    return {"ok": True, "project": project, "agenda": project_agenda(project, REPO_ROOT)}
-
-
-def _required_deliverables_path(project: str):
-    from ztare.common.paths import REPO_ROOT  # module has no global REPO_ROOT; every fn imports it locally
-    return REPO_ROOT / "projects" / project / "workspace" / "required_deliverables.json"
-
-
-def _declared_deliverables(project: str, declared: "list[str] | None") -> "list[str]":
-    """The required-deliverable set: explicit `declared`, else the project's workspace/required_deliverables.json,
-    else the default decision_memo. This is where a user's ADDED required deliverable is remembered per project."""
-    if declared:
-        return [str(d) for d in declared]
-    # ONE source of truth (Fable's B4): the kernel resolver unions the scenario deliverables + the project's
-    # required_deliverables.json (default decision_memo), so the panel, the run-start pin, and the completeness
-    # firewall never diverge on "what must this project produce".
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.production import resolve_declared_set
-    return resolve_declared_set(project, repo_root=REPO_ROOT)
-
-
-def _scenario_deliverable_specs(name: str) -> tuple[list[str], list[Any]]:
-    """Resolve optional scenario metadata for the UI/composer without changing kernel state."""
-    name = str(name or "").strip()
-    if not name:
-        return [], []
-    from ztare.scenarios.production import scenario_contract
-    return scenario_contract(name)
+    return scenario_cli_payload(["agenda", "--project", project, "--json"], project=project)
 
 
 def scenario_deliverables_payload(project: str, declared: "list[str] | None" = None,
@@ -3110,166 +2893,68 @@ def scenario_deliverables_payload(project: str, declared: "list[str] | None" = N
     """The compose-vs-loop deliverable gap map: for each REQUIRED deliverable, can it be composed from the
     current governed state now, or does it need the loop / a template? Read-only, no LLM. (See
     `production.deliverable_gaps`.) A user adds a required deliverable via /api/scenario-deliverable-add."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.production import deliverable_binding_status, deliverable_gaps
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
-    scenario_names, specs = _scenario_deliverable_specs(scenario)
-    names = _declared_deliverables(project, declared or scenario_names)
-    result = deliverable_gaps(governed, names, specs=specs)
-    out_dir = str(REPO_ROOT / "projects" / project / "workspace" / "deliverables")
-    binding = deliverable_binding_status(governed, names, out_dir)
-    for row in result["deliverables"]:
-        row.update(binding["bindings"].get(row["name"], {}))
-    result["decision"] = binding["decision"]
-    return {"ok": True, "project": project, **result}
+    args = ["deliverables", "--project", project, "--json"]
+    if scenario:
+        args.extend(["--scenario", scenario])
+    if declared:
+        args.extend(["--declared", ",".join(str(name) for name in declared if str(name).strip())])
+    return scenario_cli_payload(args, project=project)
 
 
 def scenario_deliverable_add_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
     """Add a required deliverable to a project (the 'add a required deliverable to an existing project' action);
     persists to workspace/required_deliverables.json and returns the fresh gap map so the user sees immediately
     whether it composes now or needs the loop."""
-    name = str(name or "").strip()
-    if not name:
-        return {"ok": False, "error": "deliverable name required"}
-    scenario_names, _ = _scenario_deliverable_specs(scenario)
-    current = _declared_deliverables(project, scenario_names)
-    if name not in current:
-        current.append(name)
-        p = _required_deliverables_path(project)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(current, indent=2), encoding="utf-8")
-    return scenario_deliverables_payload(project, current, scenario)
+    args = ["deliverables", "--project", project, "--add", str(name or "").strip(), "--json"]
+    if scenario:
+        args.extend(["--scenario", scenario])
+    return scenario_cli_payload(args, project=project)
 
 
 def scenario_deliverable_generate_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
     """Generate ONE required deliverable WITH PERMISSION: compose it from the governed state now if it composes
     (no loop, never fabricated), else report that it needs the loop / a template. Writes only a composable,
     firewall-passing artifact to workspace/deliverables/. Never ships ungoverned prose."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.production import deliverable_gaps, produce_scenario_artifacts
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
-    _, specs = _scenario_deliverable_specs(scenario)
-    row = next((r for r in deliverable_gaps(governed, [name], specs=specs)["deliverables"]), None)
-    if not row or row["status"] != "composable":
-        return {"ok": False, "project": project, "name": name, "generated": False,
-                "status": row["status"] if row else "unknown", "action": row["action"] if row else ""}
-    out_dir = str(REPO_ROOT / "projects" / project / "workspace" / "deliverables")
-    report = produce_scenario_artifacts(declared=[name], governed=governed, out_dir=out_dir, specs=specs)
-    return {"ok": True, "project": project, "name": name, "generated": name in report.get("written", []),
-            "path": f"{out_dir}/{name}.md", "verdict": report.get("verdict")}
+    args = ["deliverables", "--project", project, "--generate", name, "--json"]
+    if scenario:
+        args.extend(["--scenario", scenario])
+    return scenario_cli_payload(args, project=project, timeout=120)
 
 
 def scenario_deliverable_editorial_payload(project: str, name: str, scenario: str = "") -> dict[str, Any]:
-    """Shape one governed source packet for its recipient without allowing model-authored claims."""
-    from ztare.common.llm_runtime import LLMRuntime, pick_model_for_tier, resolve_model_id
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.editorial import create_editorial_draft
-    from ztare.scenarios.firewall import provenance_firewall
-    from ztare.scenarios.production import build_scenario_deliverable
-    from ztare.workspace.report_actions import report_model
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed map for '{project}' -- run it first"}
-    _, specs = _scenario_deliverable_specs(scenario)
-    deliverable = build_scenario_deliverable(name, governed, specs=specs)
-    if deliverable.stub_reason:
-        return {"ok": False, "error": deliverable.stub_reason}
-    firewall = provenance_firewall([deliverable], governed, [name])
-    if not firewall.ok:
-        return {"ok": False, "error": "source packet failed the provenance firewall",
-                "violations": firewall.violations}
-    configured = report_model(root=REPO_ROOT)
-    model_id = resolve_model_id(configured) if configured else pick_model_for_tier("balanced")
-    if not model_id:
-        return {"ok": False, "error": "no report model is configured"}
-
-    def call(prompt: str) -> str:
-        response = LLMRuntime().call_text(prompt, model_id=model_id, timeout_seconds=120,
-                                          retries=0, fallback_model_ids=())
-        return str(getattr(response, "text", "") or "")
-
-    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", name).strip("._-") or "document"
-    out_path = REPO_ROOT / "projects" / project / "workspace" / "deliverables" / f"{safe_name}.editorial-draft.md"
-    try:
-        result = create_editorial_draft(deliverable, governed, call=call, out_path=out_path)
-    except Exception as exc:  # noqa: BLE001 - model output is refused, never partially written.
-        return {"ok": False, "error": f"audience shaping refused: {type(exc).__name__}: {exc}"}
-    result.update({"project": project, "name": name, "model": model_id,
-                   "path": display_path(result["path"]),
-                   "receipt_path": display_path(result["receipt_path"])})
-    return result
+    """Shape one checked draft for its audience through the scenario CLI contract."""
+    args = ["deliverables", "--project", project, "--editorial", name, "--json"]
+    if scenario:
+        args.extend(["--scenario", scenario])
+    return scenario_cli_payload(args, project=project, timeout=180)
 
 
 def scenario_agenda_payload(project: str) -> dict[str, Any]:
     """The argument-kernel analysis for a project's governed map — grounded verdict, minimal cores, dominators,
     warrant ceiling, and the test agenda. Workbench parity with `ztare scenario agenda`."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.argument_kernel import argument_analysis
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
-    a = argument_analysis(governed)
-    a["ok"] = True
-    a["text_of"] = {e.id: e.text for e in governed.elements}
-    return a
+    return scenario_cli_payload(["agenda", "--project", project, "--json"], project=project)
 
 
 def scenario_preview_payload(name: str) -> dict[str, Any]:
     """The authoring mirror: what a scenario BINDS (rubric, run config, gate package, capabilities) plus its
     rubric EFFECT (judge dimensions + persona) — the same wiring a real run honors, surfaced before a run so an
     author can see the effect first. Thin wrapper over the resolver's pure `scenario_effect`; no LLM, no run."""
-    from ztare.scenarios.resolver import scenario_effect
-
-    try:
-        payload = scenario_effect(name)
-    except Exception as exc:  # noqa: BLE001 — an unknown/broken scenario name surfaces as an error, not a 500
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
-    payload["ok"] = True
-    return payload
+    return scenario_cli_payload(["show", name, "--effect", "--json"])
 
 
 def scenario_attribution_payload(project: str) -> dict[str, Any]:
     """The authoring mirror's other half: what scenario/rubric actually drove a project's PAST run and its
     score trend — read straight off existing run artifacts, nothing recomputed or fabricated. Thin wrapper over
     the pure `scenario_attribution`."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.attribution import scenario_attribution
-
-    try:
-        payload = scenario_attribution(project, REPO_ROOT)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
-    payload["ok"] = True
-    return payload
+    return scenario_cli_payload(["attribution", "--project", project, "--json"], project=project)
 
 
 def scenario_provenance_payload(project: str) -> dict[str, Any]:
     """The anti-cherry-pick teeth, surfaced: per currently-declared deliverable, whether it was PRE-REGISTERED
     (pinned at a run-start, with the earliest run) or ADDED LATER — a COMPUTED fact off the append-only receipt,
     never self-reported — plus the input-contract drift (charter changed / deliverables added since the last pin)."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.contract_receipts import contract_drift, deliverable_provenance
-    from ztare.scenarios.production import resolve_declared_set
-
-    try:
-        declared = resolve_declared_set(project, repo_root=REPO_ROOT)
-        return {"ok": True, "project": project,
-                "provenance": deliverable_provenance(project, declared, REPO_ROOT),
-                "drift": contract_drift(project, REPO_ROOT)}
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    return scenario_cli_payload(["deliverables", "--project", project, "--provenance", "--json"],
+                                project=project)
 
 
 def scenario_map_query_payload(project: str, question: str) -> dict[str, Any]:
@@ -3277,17 +2962,11 @@ def scenario_map_query_payload(project: str, question: str) -> dict[str, Any]:
     to the graph's relation vocabulary + an anchor node and traverses the edges — deterministic, zero model cost.
     Thin wrapper over `research_graph_query.query_graph` on the built carrier. Surfaces the CLI (`ztare research
     map-query`) into the workbench Ask box the spec described but never wired."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.reports.research_graph import build_research_graph
-    from ztare.reports.research_graph_query import query_graph
-
     if not str(question or "").strip():
         return {"ok": False, "error": "ask a question about the map"}
-    try:
-        carrier = build_research_graph(project, REPO_ROOT)
-        return query_graph(carrier, question)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    return ztare_cli_payload(
+        ["research", "map-query", "--project", project, "--q", str(question).strip(), "--json"],
+        project=project)
 
 
 def scenario_produce_all_payload(project: str, scenario: str = "") -> dict[str, Any]:
@@ -3295,14 +2974,10 @@ def scenario_produce_all_payload(project: str, scenario: str = "") -> dict[str, 
     generate button passes a singleton and can never catch a silent drop). The declared set is the PINNED set when
     a run-start receipt exists, else the current resolved set. Never fabricates — a deliverable that can't compose
     is written as an accounted stub."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.production import produce_all_declared
-
-    try:
-        report = produce_all_declared(project, repo_root=REPO_ROOT, scenario=scenario)
-        return {"ok": report.get("ok", True), **report}
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+    args = ["deliverables", "--project", project, "--produce-all", "--json"]
+    if scenario:
+        args.extend(["--scenario", scenario])
+    return scenario_cli_payload(args, project=project, timeout=120)
 
 
 def charter_lint_payload(project: str) -> dict[str, Any]:
@@ -3341,215 +3016,101 @@ def charter_lint_payload(project: str) -> dict[str, Any]:
     return {"ok": True, "project": project, "has_charter": True, "contracts": contracts}
 
 
+def ztare_cli_payload(args: list[str], *, project: str = "", timeout: int = 30) -> dict[str, Any]:
+    """Run one top-level CLI JSON contract. The HTTP server owns transport only."""
+    command = [SERVER_PYTHON, "-m", "src.ztare.cli", *args]
+    # Code and project data are separate concerns. Tests and remote deployments may
+    # point the data root elsewhere; the CLI must still resolve from this checkout.
+    proc = run_workbench_command(command, timeout=timeout, cwd=_WORKBENCH_REPO)
+    stdout = (proc.stdout or "").strip()
+    if stdout:
+        try:
+            payload = json.loads(stdout)
+            if isinstance(payload, dict):
+                return payload
+        except json.JSONDecodeError:
+            pass
+    return {"ok": False, "project": project,
+            "error": (proc.stderr or stdout or "ZTARE CLI returned no JSON")[:500]}
+
+
+def scenario_cli_payload(args: list[str], *, project: str = "", timeout: int = 30) -> dict[str, Any]:
+    """Run one scenario CLI JSON contract through the shared transport."""
+    return ztare_cli_payload(["scenario", *args], project=project, timeout=timeout)
+
+
 def scenario_strength_payload(project: str) -> dict[str, Any]:
     """The graded DECISION read — strength profile + status, what it rests on (Shapley), independent
     corroboration per warrant tier, hard cruxes, and the challenge queue by drag. Workbench parity with
     `ztare scenario strength`. CLI-first (never a direct kernel-file read), mirroring `research_graph_payload`."""
-    command = [
-        SERVER_PYTHON, "-m", "src.ztare.cli", "scenario", "strength",
-        "--project", project, "--json", "--snapshot",  # deduped write → the history sparkline's strength lane moves
-    ]
-    try:
-        proc = snapshot.run(command, timeout=30)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "project": project, "error": str(exc)[:300]}
-    stdout = (proc.stdout or "").strip()
-    if stdout:
-        try:
-            return json.loads(stdout)
-        except Exception:  # noqa: BLE001
-            pass
-    return {"ok": False, "project": project, "error": (proc.stderr or "scenario strength CLI returned no JSON")[:300]}
+    return scenario_cli_payload(
+        ["strength", "--project", project, "--json", "--snapshot"], project=project)
 
 
 def scenario_bind_payload(request: dict[str, Any]) -> dict[str, Any]:
     """Bind an excerpt from an indexed project source to a claim. Source bytes are loaded and hashed server-side;
     a caller cannot certify text it supplied in the same request. Exact claim text earns W2. A quote that merely
     appears relevant is preserved as W3 until an inference admission checks that connective. No LLM."""
-    import hashlib
-
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.adapters import append_governed_overlay, governed_state_from_research_map
-    from ztare.scenarios.decision_state import compile_decision_state, diff_decision_states
-    from ztare.scenarios.evidence_binding import bind_evidence
-    from ztare.scenarios.governed_types import normalize
+    import tempfile
 
     project = str(request.get("project") or "").strip()
-    source_path = str(request.get("source_path") or request.get("relative_path") or "").strip()
-    excerpt = str(request.get("excerpt") or "")
-    target = str(request.get("target") or request.get("claim_ref") or "").strip()
-    if not (project and source_path and excerpt.strip() and target):
-        return {"ok": False, "error": "choose a project source, quote its exact words, and choose a target claim"}
-    try:
-        source = source_file_payload(project=project, relative_path=source_path)
-    except Exception as exc:  # noqa: BLE001 — path validation failures are a normal refused admission
-        return {"ok": False, "refused": True, "error": f"source is not an indexed project file: {exc}"}
-    if source.get("source_type") != "source_evidence":
-        return {"ok": False, "refused": True,
-                "error": "that file is not typed as source evidence; classify it before citing it"}
-    content = str(source.get("body") or "")
-    source_id = str(source.get("source_path") or source_path)
-    source_file = raw_source_path(project, source_path)
-    source_sha256 = hashlib.sha256(source_file.read_bytes()).hexdigest()
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    target_element = governed.by_id(target)
-    if target_element is None or target_element.kind not in {"claim", "thesis"}:
-        return {"ok": False, "error": f"target claim {target!r} is not in the governed map"}
-    binding = bind_evidence(source_id, content, excerpt, fetched_at=str(request.get("fetched_at") or ""))
-    if binding is None:
-        return {"ok": False, "refused": True,
-                "error": "the excerpt does not appear verbatim in the source — a citation that drifted from its source is refused (fail-closed)"}
-    ev_id = "ev.bound." + hashlib.sha256(f"{source_id}|{binding.excerpt}|{target}".encode()).hexdigest()[:10]
-    direct_claim_quote = normalize(target_element.text) in normalize(binding.excerpt)
-    inference_warrant = "W2" if direct_claim_quote else "W3"
-    element = {"id": ev_id, "kind": "evidence", "text": binding.excerpt,
-               "provenance": "sourced", "source_id": source_id, "source_path": source_id,
-               "source_sha256": source_sha256, "content_sha256": binding.content_sha256}
-    edge = {"src": ev_id, "kind": "SUPPORTS", "dst": target, "warrant": inference_warrant,
-            "source_warrant": "W2",
-            "admission": "exact_claim_quote" if direct_claim_quote else "user_targeted_quote"}
-    decision_before = compile_decision_state(governed).to_payload()
-    append_governed_overlay(project, REPO_ROOT, [element], [edge])
-    governed_after = governed_state_from_research_map(project, REPO_ROOT)
-    decision_after = compile_decision_state(governed_after).to_payload()
-    decision_delta = diff_decision_states(decision_before, decision_after)
-    return {"ok": True,
-            "bound": {"evidence_id": ev_id, "source_id": source_id, "source_path": source_id,
-                      "source_sha256": source_sha256,
-                      "excerpt": binding.excerpt, "target": target,
-                      "source_tier": "cited", "inference_tier": "cited" if direct_claim_quote else "unchecked"},
-            "decision_before": decision_before, "decision_after": decision_after,
-            "decision_delta": decision_delta,
-            # Compatibility fields for older clients; new callers should consume the typed decision payloads.
-            "strength_before": decision_before["strength"]["profile"],
-            "strength_after": decision_after["strength"]["profile"],
-            "status_before": decision_before["status"], "status_after": decision_after["status"]}
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(request, staged)
+        staged.flush()
+        return scenario_cli_payload(["bind", "--spec", staged.name, "--json"], project=project)
 
 
 def scenario_wagers_payload(project: str) -> dict[str, Any]:
     """The project's WAGERS — protected thin-evidence bets on a BLOCKED claim, ranked by what would settle the
     decision (info-yield, then cost). Also returns the BLOCKED claims (candidates for a new wager) and any
     inadmissible bets with the reason. Workbench parity with `ztare scenario wager list`. Read-only, no LLM."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.agenda import unified_agenda
-    from ztare.scenarios.argument_kernel import claim_status
-    from ztare.scenarios.argument_kernel import verdict as _verdict
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.wager import load_wagers, simulate, wager_from_payload
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
-    wagers = [wager_from_payload(p) for p in load_wagers(project)]
-    wmap = {w.id: w for w in wagers}
-    # ranked through the ONE unified agenda (same gate + lenses as every candidate — no separate rankers).
-    rows = [r for r in unified_agenda(governed, declared=wagers) if r["source"] != "implicit"]
-    for r in rows:
-        w = wmap.get(r["id"])
-        r["claim_text"] = governed.by_id(r["claim_ref"]).text if governed.by_id(r["claim_ref"]) else ""
-        r["deadline"], r["lifecycle"] = (w.deadline, w.lifecycle) if w else ("", "")
-        # backward-compatible aliases the existing wager panel reads (alongside the new bits/on_frontier/severity)
-        r["identification_bits"] = r["bits"]
-        r["declared_cost"] = w.declared_cost if w else 0
-        r["stakes"] = w.stakes if w else ""
-        r["outcomes"] = simulate(governed, w).get("outcomes", []) if w else []
-    adm_ids = {r["id"] for r in rows}
-    inadmissible = [{"id": w.id, "reason": simulate(governed, w)["reason"]} for w in wagers if w.id not in adm_ids]
-    blocked = [{"id": c.id, "text": c.text} for c in (governed.of_kind("thesis") + governed.of_kind("claim"))
-               if claim_status(governed, c.id) != "BACKED"]
-    return {"ok": True, "project": project, "verdict": _verdict(governed), "wagers": rows,
-            "inadmissible": inadmissible, "blocked_claims": blocked}
+    return scenario_cli_payload(["wager", "list", "--project", project, "--json"], project=project)
 
 
 def scenario_wager_register_payload(project: str, wager: dict[str, Any]) -> dict[str, Any]:
     """Register a wager (declared JSON from the workbench form). The kernel simulates every outcome; a wager is
     persisted ONLY if admissible (a real test that moves the decision). Returns the receipt either way."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.artifacts import governed_state_from_research_map
-    from ztare.scenarios.wager import load_wagers, save_wagers, simulate, to_payload, wager_from_payload
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
-    try:
-        w = wager_from_payload(wager or {})
-    except Exception as exc:  # noqa: BLE001 — a malformed spec is a bad-request, not a crash
-        return {"ok": False, "error": f"malformed wager: {type(exc).__name__}"}
-    r = simulate(governed, w)
-    if r["admissible"]:
-        save_wagers(project, [p for p in load_wagers(project) if p.get("id") != w.id] + [to_payload(w)])
-    return {"ok": True, "registered": bool(r["admissible"]), "receipt": r}
+    return scenario_cli_payload(
+        ["wager", "add", "--project", project, "--spec-json", json.dumps(wager or {}), "--json"],
+        project=project)
 
 
 def scenario_wager_expire_payload(project: str, now: str = "") -> dict[str, Any]:
     """Sweep: any open wager past its deadline auto-expires to the ordinary BLOCKED backlog (anti-laundering)."""
-    from datetime import date
-
-    from ztare.scenarios.wager import expire_if_due, load_wagers, save_wagers, to_payload, wager_from_payload
-
-    now = now or date.today().isoformat()
-    expired, out = 0, []
-    for p in load_wagers(project):
-        w = expire_if_due(wager_from_payload(p), now)
-        if w.lifecycle == "expired" and p.get("lifecycle") != "expired":
-            expired += 1
-        out.append(to_payload(w))
-    save_wagers(project, out)
-    return {"ok": True, "expired": expired, "now": now}
+    args = ["wager", "expire", "--project", project, "--json"]
+    if now:
+        args.extend(["--now", now])
+    payload = scenario_cli_payload(args, project=project)
+    if payload.get("ok") and "now" not in payload:
+        payload["now"] = now
+    return payload
 
 
 def scenario_wager_execute_payload(request: dict[str, Any]) -> dict[str, Any]:
     """Preview or execute one declared wager outcome. Writes require an explicit confirmed=true boundary."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios.wager import execute_project_outcome, preview_project_outcome
-
     project = str(request.get("project") or "").strip()
     wager_id = str(request.get("wager_id") or request.get("id") or "").strip()
     outcome_id = str(request.get("outcome_id") or request.get("outcome") or "").strip()
     if not (project and wager_id and outcome_id):
         return {"ok": False, "error": "choose a project, wager, and observed outcome"}
-    try:
-        if not bool(request.get("confirmed", False)):
-            return preview_project_outcome(project, wager_id, outcome_id, REPO_ROOT)
-        return execute_project_outcome(project, wager_id, outcome_id, REPO_ROOT)
-    except ValueError as exc:
-        return {"ok": False, "refused": True, "error": str(exc)}
+    action = "execute" if bool(request.get("confirmed", False)) else "preview"
+    return scenario_cli_payload(
+        ["wager", action, "--project", project, "--id", wager_id, "--outcome", outcome_id, "--json"],
+        project=project)
 
 
 def scenario_brief_payload(project: str) -> dict[str, Any]:
-    """The governed decision brief (markdown) via the decision_brief Renderer. Parity with `ztare scenario brief`."""
-    from ztare.common.paths import REPO_ROOT
-    from ztare.scenarios import registry
-    from ztare.scenarios.artifacts import assemble_verdict, governed_state_from_research_map, serialize_governed
-
-    governed = governed_state_from_research_map(project, REPO_ROOT)
-    if not governed.elements:
-        return {"ok": False, "error": f"no governed research map for '{project}' -- run it first"}
-    renderer = registry.get("renderer", "decision_brief")
-    if renderer is None:
-        return {"ok": False, "error": "decision_brief renderer not registered"}
-    text = renderer.render(serialize_governed(governed, verdict=assemble_verdict(governed))).text
-    return {"ok": True, "brief": text}
+    """Return the CLI-owned governed brief; the server is transport, never a second kernel caller."""
+    if not str(project or "").strip():
+        return {"ok": False, "error": "choose a project"}
+    project = str(project).strip()
+    return scenario_cli_payload(["brief", "--project", project, "--json"], project=project)
 
 
 def plugins_payload() -> dict[str, Any]:
     """Everything installed across the three plugin kinds — SCENARIOS (yaml), RUBRICS (json), CAPABILITIES
     (@capability code incl. plugin dirs). The workbench plugin manager reads this; install/reload update it."""
-    from ztare.common.paths import RUBRICS_DIR
-    from ztare.scenarios import registry
-
-    scenario_rows = scenarios_payload()["scenarios"]
-    return {
-        "scenarios": [r.get("name") for r in scenario_rows],
-        # The installed view needs purpose and contribution counts immediately.
-        # Keep this in the index payload instead of issuing one request per row.
-        "scenario_details": {str(r.get("name") or ""): r for r in scenario_rows if r.get("name")},
-        "rubrics": sorted(p.stem for p in RUBRICS_DIR.glob("*.json")),
-        "capabilities": registry.installed(),
-        "capability_details": registry.descriptors(),
-        "plugin_errors": registry.diagnostics().get("load_errors", []),
-        "plugin_dirs": registry.plugin_dirs(),
-    }
+    return scenario_cli_payload(["plugins", "--json"])
 
 
 def install_plugin_payload(kind: str, name: str, spec: "dict[str, Any]", *, overwrite: bool = False) -> dict[str, Any]:
@@ -3557,98 +3118,28 @@ def install_plugin_payload(kind: str, name: str, spec: "dict[str, Any]", *, over
     filesystem registry, then discovery reloaded so it's live. Local-first: the name is slug-sanitized (no path
     traversal) and the content is validated before write. Code plugins are NOT installed via web form (arbitrary
     code) — they drop into a plugin dir + reload."""
-    from ztare.common.paths import RUBRICS_DIR, SCENARIOS_DIR
-    from ztare.scenarios import registry
-    from ztare.scenarios.config import ScenarioConfig
+    import tempfile
 
-    slug = _safe_plugin_name(name)
-    if not slug:
-        return {"ok": False, "error": "invalid name (need [a-z0-9_-])"}
-    try:
-        if kind == "scenario":
-            import yaml
-            body = {
-                "name": slug,
-                "description": str(spec.get("description") or "").strip(),
-                "rubric": _safe_plugin_name(spec.get("rubric") or slug),
-                "iters": int(spec.get("iters") or 8),
-                "dynamic": bool(spec.get("dynamic", True)),
-                "mutator_model": str(spec.get("mutator_model") or ""),
-                "judge_model": str(spec.get("judge_model") or ""),
-                "gate_package": list(spec.get("gate_package") or []),
-                "goal_type": str(spec.get("goal_type") or ""),
-                "solvers": list(spec.get("solvers") or []),
-                "evidence_sources": list(spec.get("evidence_sources") or ["local_files"]),
-                "renderer": str(spec.get("renderer") or "markdown"),
-                "rechecks": list(spec.get("rechecks") or []),
-                "workbench_panels": list(spec.get("workbench_panels") or []),
-                "deliverables": list(spec.get("deliverables") or []),
-                "deliverable_specs": list(spec.get("deliverable_specs") or []),
-            }
-            path = SCENARIOS_DIR / f"{slug}.yaml"
-            if path.exists() and not overwrite:
-                return {"ok": False, "conflict": True,
-                        "error": f"scenario '{slug}' already exists; open it from Installed to edit"}
-            ScenarioConfig(**body)  # validate before touching the installed manifest
-            SCENARIOS_DIR.mkdir(parents=True, exist_ok=True)
-            staged = path.with_name(f".{path.name}.tmp")
-            staged.write_text(yaml.safe_dump(body, sort_keys=False), encoding="utf-8")
-            staged.replace(path)
-        elif kind == "rubric":
-            dims = spec.get("dimensions") or []
-            total = sum(int(d.get("weight", 0)) for d in dims if isinstance(d, dict))
-            if not dims or total != 100:
-                return {"ok": False, "error": f"rubric needs dimensions whose weights sum to 100 (got {total})"}
-            payload = dict(spec)
-            payload.setdefault("rubric_mode", "calibration")
-            path = RUBRICS_DIR / f"{slug}.json"
-            if path.exists() and not overwrite:
-                return {"ok": False, "conflict": True,
-                        "error": f"rubric '{slug}' already exists; open it from Installed to edit"}
-            RUBRICS_DIR.mkdir(parents=True, exist_ok=True)
-            staged = path.with_name(f".{path.name}.tmp")
-            staged.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
-            staged.replace(path)
-        else:
-            return {"ok": False, "error": f"unknown plugin kind '{kind}' (scenario | rubric)"}
-    except Exception as exc:  # noqa: BLE001 — a bad spec surfaces as an error, not a stack trace
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
-    registry.reload()
-    return {"ok": True, "kind": kind, "name": slug, "path": str(path), "installed": plugins_payload()}
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(spec, staged)
+        staged.flush()
+        args = ["plugins", "--install", kind, "--name", name, "--spec", staged.name, "--json"]
+        if overwrite:
+            args.append("--overwrite")
+        return scenario_cli_payload(args, timeout=60)
 
 
 def plugin_detail_payload(kind: str, name: str) -> dict[str, Any]:
     """The current spec of an installed DATA plugin (scenario / rubric) — so the UI can open it in an edit modal
     pre-filled, then save back via /api/plugin-install (which overwrites). Read-only."""
-    from ztare.common.paths import RUBRICS_DIR, SCENARIOS_DIR
-
-    slug = _safe_plugin_name(name)
-    try:
-        if kind == "scenario":
-            from ztare.scenarios.config import ScenarioConfig
-            sc = ScenarioConfig.load(SCENARIOS_DIR / f"{slug}.yaml")
-            spec = {"description": sc.description, "rubric": sc.rubric, "iters": sc.iters,
-                    "dynamic": sc.dynamic, "mutator_model": sc.mutator_model, "judge_model": sc.judge_model,
-                    "gate_package": list(sc.gate_package), "goal_type": sc.goal_type,
-                    "solvers": list(sc.solvers),
-                    "evidence_sources": list(sc.evidence_sources), "renderer": sc.renderer,
-                    "rechecks": list(sc.rechecks), "workbench_panels": list(sc.workbench_panels),
-                    "deliverables": list(sc.deliverables),
-                    "deliverable_specs": [item.model_dump(mode="json") for item in sc.deliverable_specs]}
-        elif kind == "rubric":
-            spec = json.loads((RUBRICS_DIR / f"{slug}.json").read_text(encoding="utf-8"))
-        else:
-            return {"ok": False, "error": f"unknown plugin kind '{kind}'"}
-    except Exception as exc:  # noqa: BLE001 — a missing/unreadable plugin surfaces as an error
-        return {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
-    return {"ok": True, "kind": kind, "name": slug, "spec": spec}
+    return scenario_cli_payload(["plugins", "--detail", kind, "--name", name, "--json"])
 
 
 def plugins_reload_payload() -> dict[str, Any]:
     """Re-run capability discovery (pick up a just-dropped code plugin) and return the fresh installed set."""
-    from ztare.scenarios import registry
-    registry.reload()
-    return {"ok": True, "installed": plugins_payload()}
+    payload = scenario_cli_payload(["plugins", "--reload", "--json"])
+    return {"ok": bool(payload.get("ok")), "installed": payload,
+            **({"error": payload.get("error")} if not payload.get("ok") else {})}
 
 
 def reasoning_capability_payload() -> dict[str, Any]:
@@ -3930,9 +3421,68 @@ def project_research_standing(project: str) -> dict[str, Any]:
             "label": {"verified": "Verified", "usable": "Usable", "thin": "Thin"}[tier]}
 
 
+def public_project_names() -> set[str]:
+    """Projects an intentionally shared Workbench may disclose.
+
+    Local mode remains the operator's full workspace. Public mode is fail-closed and uses a tracked manifest
+    rather than `.gitignore`: ignored local work may exist in a deployment volume, and Git metadata is commonly
+    absent from Docker images.
+    """
+    if PROJECT_ALLOWLIST:
+        return set(PROJECT_ALLOWLIST)
+    try:
+        payload = json.loads(PUBLIC_PROJECTS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    projects = payload.get("projects") if isinstance(payload, dict) else []
+    return {
+        str(project).strip()
+        for project in (projects if isinstance(projects, list) else [])
+        if re.fullmatch(r"[A-Za-z0-9_.-]+", str(project).strip())
+    }
+
+
+def project_is_visible(project: str) -> bool:
+    project = str(project or "").strip()
+    if not project:
+        return True
+    if PROJECT_SCOPE == "local":
+        return True
+    if PROJECT_SCOPE == "public":
+        return project in public_project_names()
+    return project in PROJECT_ALLOWLIST
+
+
+def require_visible_project(project: str) -> None:
+    if not project_is_visible(project):
+        # Do not reveal whether a hidden project exists.
+        raise FileNotFoundError("project is not available in this Workbench")
+
+
+def project_from_repo_path(value: Any) -> str:
+    """Return a project slug only when a repository path addresses projects/<slug>/... ."""
+    text = str(value or "").strip().split("#", 1)[0]
+    if not text:
+        return ""
+    parts = PurePosixPath(text).parts
+    try:
+        index = parts.index("projects")
+    except ValueError:
+        return ""
+    return str(parts[index + 1]) if len(parts) > index + 1 else ""
+
+
+def require_visible_repo_path(value: Any) -> None:
+    project = project_from_repo_path(value)
+    if project:
+        require_visible_project(project)
+
+
 def project_index_payload() -> dict[str, Any]:
     projects = []
-    entries = snapshot.list_project_entries()
+    visible_names = None if PROJECT_SCOPE == "local" else public_project_names()
+    all_entries = snapshot.list_project_entries(project_names=visible_names)
+    entries = [entry for entry in all_entries if project_is_visible(str(entry.get("project") or ""))]
     for entry in entries:
         row = dict(entry)
         row["status"] = project_status_value(row.get("status") or "intake_ready")
@@ -3958,7 +3508,11 @@ def project_index_payload() -> dict[str, Any]:
             row["intake_ref_summary"] = {}
             row["intake_error"] = display_text(exc)
         projects.append(row)
-    project_folders = snapshot.list_project_folders(entries)
+    project_folders = [
+        folder
+        for folder in snapshot.list_project_folders(all_entries, project_names=visible_names)
+        if project_is_visible(str(folder.get("project") or ""))
+    ]
     for folder in project_folders:
         folder["display_label"] = project_display_label(folder.get("display_label") or folder.get("project"))
         folder["project_status"] = project_status_value(folder.get("status"))
@@ -4100,27 +3654,40 @@ def project_index_payload() -> dict[str, Any]:
         if str(row.get("project") or "") not in openable_projects
     ]
     folder_summary = project_folder_summary(project_folders, openable_projects=openable_projects)
+    compact_folders = [
+        compact_project_folder(row)
+        for row in project_folders
+        if bool(row.get("openable")) or not bool(row.get("hidden_by_default"))
+    ]
     return {
         "schema": "ztare-forensic-workbench-project-index-v1",
         "schema_version": "ztare-forensic-workbench-project-index-v1",
         "ok": True,
-        "default_project": snapshot.DEFAULT_PROJECT,
-        "project_inventory_scope": "all_projects_directory",
+        "default_project": snapshot.DEFAULT_PROJECT if project_is_visible(snapshot.DEFAULT_PROJECT)
+        else str(projects[0].get("project") or "") if projects else "",
+        "project_inventory_scope": PROJECT_SCOPE,
+        "project_visibility": {
+            "scope": PROJECT_SCOPE,
+            "manifest": repo_rel(PUBLIC_PROJECTS_PATH) if PROJECT_SCOPE == "public" else "",
+            "operator_local": PROJECT_SCOPE == "local",
+        },
         "inventory_root": "projects/",
-        "inventory_includes_all_project_folders": True,
+        "inventory_includes_all_project_folders": PROJECT_SCOPE == "local",
         "ready_count": len(projects),
         "intake_ready_count": len(projects),
         "project_count": len(project_folders),
         "folder_count": len(project_folders),
+        "visible_folder_count": len(compact_folders),
+        "hidden_folder_count": len(project_folders) - len(compact_folders),
         "pending_folder_count": len(pending_project_folders),
         "folder_summary": folder_summary,
         "project_folder_summary": folder_summary,
-        "intake_ready_projects": projects,
         "projects": projects,
-        "all_project_folders": project_folders,
-        "project_folders": [compact_project_folder(row) for row in project_folders],
+        # Full recovery detail is loaded for one folder on demand through /api/project-recovery-draft instead
+        # of multiplying it across the project picker.
+        "project_folders": compact_folders,
         "project_folders_compact": True,
-        "project_folder_detail_field": "all_project_folders",
+        "project_folder_detail_field": "project_folders",
     }
 
 
@@ -4148,10 +3715,16 @@ def compact_project_folder(row: dict[str, Any]) -> dict[str, Any]:
         "root_source_file_count",
         "workspace_exists",
         "source_type_map_exists",
-        "recovery_actions",
         "next_action",
     ]
-    return {key: row.get(key) for key in keys if key in row}
+    compact = {key: row.get(key) for key in keys if key in row}
+    compact["source_preview"] = next((path for path in [
+        *(row.get("source_preview_files") or []),
+        *(row.get("raw_preview_files") or []),
+        *(row.get("root_preview_files") or []),
+    ] if path), "")
+    compact["workspace_preview"] = next((path for path in (row.get("workspace_preview_files") or []) if path), "")
+    return compact
 
 
 def project_inventory_sort_key(row: dict[str, Any], *, openable_projects: set[str]) -> tuple[int, int, int, int, str]:
@@ -4630,10 +4203,10 @@ def existing_project_recovery_draft(project: str) -> dict[str, Any]:
         "summary": summary_text,
         "task": f"Review {project_display_label(project)}",
         "bounded_claim": bounded_claim,
-        "next_falsifier": (
-            "Change or reject this thesis if the listed files do not support it, "
-            "if a stronger alternative explains the project, or if required source files are missing."
-        ),
+        # A missing change test is setup work, not permission to synthesize one.
+        # Recovery can identify files and draft a claim, but only project-specific
+        # evidence can define what would overturn that claim.
+        "next_falsifier": "",
         "notes": "\n\n".join(line for line in note_lines if line),
         "source_refs": source_refs[:30],
         "evidence_refs": evidence_refs[:30],
@@ -4903,9 +4476,17 @@ def server_status_payload() -> dict[str, Any]:
         "ok": checks["api_ready"],
         "app_name": "Project Workbench",
         "workflow_label": "Project path",
-        "project_inventory_scope": "all_projects_directory",
+        "project_inventory_scope": PROJECT_SCOPE,
+        "project_visibility": {
+            "scope": PROJECT_SCOPE,
+            "visible_project_count": len(projects),
+            "allowlist_hash": (
+                hashlib.sha256("\n".join(sorted(PROJECT_ALLOWLIST)).encode("utf-8")).hexdigest()
+                if PROJECT_SCOPE == "allowlist" else ""
+            ),
+        },
         "inventory_root": "projects/",
-        "inventory_includes_all_project_folders": True,
+        "inventory_includes_all_project_folders": PROJECT_SCOPE == "local",
         "project_count": len(project_folders),
         "intake_ready_count": len(projects),
         "pending_folder_count": pending_folder_count,
@@ -4932,9 +4513,9 @@ def server_status_payload() -> dict[str, Any]:
         "api": {
             "primary_route_count": len(primary_endpoints),
             "compatibility_route_count": len(compatibility_endpoints),
-            "project_inventory_scope": "all_projects_directory",
+            "project_inventory_scope": PROJECT_SCOPE,
             "inventory_root": "projects/",
-            "inventory_includes_all_project_folders": True,
+            "inventory_includes_all_project_folders": PROJECT_SCOPE == "local",
             "project_count": len(project_folders),
             "intake_ready_count": len(projects),
             "pending_folder_count": pending_folder_count,
@@ -5007,9 +4588,9 @@ def server_status_payload() -> dict[str, Any]:
         },
         "projects": {
             "project_count": len(project_folders),
-            "project_inventory_scope": "all_projects_directory",
+            "project_inventory_scope": PROJECT_SCOPE,
             "inventory_root": "projects/",
-            "inventory_includes_all_project_folders": True,
+            "inventory_includes_all_project_folders": PROJECT_SCOPE == "local",
             "ready_count": len(projects),
             "intake_ready_count": len(projects),
             "count": len(project_folders),
@@ -6808,14 +6389,22 @@ def receipt_history_payload(*, project: str, limit: int = 12, intake: str | None
 def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any, rubric: str | None = None) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
-    payload = project_brief_core.edit_project_brief(
-        project=project,
-        rubric=rubric,
-        intake=intake,
-        raw_patch=raw_patch,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(raw_patch, staged)
+        staged.flush()
+        args = [
+            "forensic-workbench", "brief-edit",
+            "--project", project,
+            "--rubric", rubric,
+            "--patch-file", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        if intake:
+            args.extend(["--intake", intake])
+        payload = ztare_cli_payload(args, project=project, timeout=90)
+    if payload.get("ok") is False:
+        raise ValueError(str(payload.get("error") or "project brief edit was refused"))
     intake_rel = str(payload.get("intake_path") or intake or snapshot.default_intake_for_project(project))
     return {
         "ok": True,
@@ -6867,14 +6456,21 @@ def charter_payload_for_project(project: str) -> dict[str, Any]:
 def apply_charter_edit(*, project: str, text: str, rubric: str | None = None, intake: str | None = None) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
-    result = project_charter_core.apply_charter_edit(
-        project=project,
-        rubric=rubric,
-        intake=intake or snapshot.default_intake_for_project(project),
-        text=text,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    intake_value = intake or snapshot.default_intake_for_project(project)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(text)
+        staged.flush()
+        result = ztare_cli_payload([
+            "forensic-workbench", "save-charter",
+            "--project", project,
+            "--rubric", rubric,
+            "--intake", intake_value,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=90)
+    if result.get("ok") is False:
+        raise ValueError(str(result.get("error") or "charter edit was refused"))
     return {
         "ok": True,
         "project": project,
@@ -6987,19 +6583,23 @@ def review_payload_from_request(request: dict[str, Any]) -> dict[str, Any]:
         live_row_payload_with_case(review_file, project=project, rubric=rubric, intake=intake),
         slug=row,
     )
-    review_file_path, _review_file_bytes = persist_live_row_payload(
-        project=project,
-        row=row,
-        kind="review",
-        payload=review_file,
-    )
-    review_result = review.apply_review_payload(
-        review_file,
-        project=project,
-        row=row,
-        review_file_path=review_file_path,
-        intake=intake,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(review_file, staged)
+        staged.flush()
+        args = [
+            "forensic-workbench", "apply-review",
+            "--project", project,
+            "--project-check", row,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        if intake:
+            args.extend(["--intake", intake])
+        review_result = ztare_cli_payload(args, project=project, timeout=90)
+    if review_result.get("ok") is False:
+        raise ValueError(str(review_result.get("error") or "review save was refused"))
+    review_file_path = str(review_result.get("input_path") or (review_result.get("receipt") or {}).get("review_file_path") or "")
     response = {
         "ok": True,
         "review": review_result,
@@ -7044,19 +6644,23 @@ def item_action_payload_from_request(request: dict[str, Any]) -> dict[str, Any]:
         live_row_payload_with_case(action_file, project=project, rubric=rubric, intake=intake),
         slug=row,
     )
-    action_file_path, _action_file_bytes = persist_live_row_payload(
-        project=project,
-        row=row,
-        kind="action",
-        payload=action_file,
-    )
-    action_result = review.apply_action_payload(
-        action_file,
-        project=project,
-        row=row,
-        action_file_path=action_file_path,
-        intake=intake,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(action_file, staged)
+        staged.flush()
+        args = [
+            "forensic-workbench", "save-next-step",
+            "--project", project,
+            "--project-check", row,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        if intake:
+            args.extend(["--intake", intake])
+        action_result = ztare_cli_payload(args, project=project, timeout=90)
+    if action_result.get("ok") is False:
+        raise ValueError(str(action_result.get("error") or "next-step save was refused"))
+    action_file_path = str(action_result.get("input_path") or (action_result.get("receipt") or {}).get("action_file_path") or "")
     response = {
         "ok": True,
         "action": action_result,
@@ -7823,19 +7427,24 @@ def import_source_payload(
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
-    project_intake_path(project, intake, allow_examples=True)
-    payload = source_files_core.add_source_file(
-        project=project,
-        rubric=rubric,
-        intake=intake,
-        filename=filename,
-        source_type=source_type,
-        artifact_kind=artifact_kind,
-        created_by=created_by,
-        body=body,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(body)
+        staged.flush()
+        payload = ztare_cli_payload([
+            "project", "source-file", "add",
+            "--project", project,
+            "--rubric", rubric,
+            "--intake", intake,
+            "--filename", filename,
+            "--source-type", source_type,
+            "--kind", artifact_kind,
+            "--created-by", created_by,
+            "--body-file", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=90)
+    if payload.get("ok") is False:
+        return payload
     source_check = source_check_after_write(
         project=project,
         rubric=rubric,
@@ -7852,6 +7461,7 @@ def import_source_payload(
     payload["source_check"] = source_check
     payload["snapshot"] = source_check.get("snapshot")
     payload["trace"] = source_check.get("trace")
+    payload["decision_checkpoint"] = scenario_strength_payload(project)
     return payload
 
 
@@ -8047,19 +7657,27 @@ def edit_source_payload(
     project = snapshot.validate_project_slug(project)
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
-    project_intake_path(project, intake, allow_examples=True)
-    payload = source_files_core.edit_source_file(
-        project=project,
-        rubric=rubric,
-        intake=intake,
-        relative_path=relative_path,
-        source_type=source_type,
-        artifact_kind=artifact_kind,
-        created_by=created_by,
-        body=body,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged:
+        staged.write(body)
+        staged.flush()
+        args = [
+            "project", "source-file", "edit",
+            "--project", project,
+            "--rubric", rubric,
+            "--intake", intake,
+            "--relative", relative_path,
+            "--source-type", source_type,
+            "--body-file", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        if artifact_kind:
+            args.extend(["--kind", artifact_kind])
+        if created_by is not None:
+            args.extend(["--created-by", created_by])
+        payload = ztare_cli_payload(args, project=project, timeout=90)
+    if payload.get("ok") is False:
+        return payload
     source_check = source_check_after_write(
         project=project,
         rubric=rubric,
@@ -8076,6 +7694,7 @@ def edit_source_payload(
     payload["source_check"] = source_check
     payload["snapshot"] = source_check.get("snapshot")
     payload["trace"] = source_check.get("trace")
+    payload["decision_checkpoint"] = scenario_strength_payload(project)
     return payload
 
 
@@ -8551,38 +8170,10 @@ def research_graph_payload(project: str) -> dict[str, Any]:
     if stdout:
         try:
             carrier = json.loads(stdout)
-            _attach_argument_overlay(carrier)  # decision overlay on the topology the Map already draws
             return carrier
         except Exception:  # noqa: BLE001
             pass
     return {"ok": False, "project": project, "error": (proc.stderr or "research-graph CLI returned no JSON")[:300]}
-
-
-def _attach_argument_overlay(carrier: dict[str, Any]) -> None:
-    """Overlay the argument kernel's analysis onto the research-graph carrier IN PLACE: the verdict + humane
-    reason at top level, and each node's grounded lifecycle / minimal-core membership / load-bearing hinge —
-    so the Map renders the DECISION, not just the typed topology. Best-effort: the map already IS the argument
-    graph (one source of truth), and any overlay failure leaves the plain graph untouched (never blanks it)."""
-    if not isinstance(carrier, dict) or not carrier.get("ok"):
-        return
-    try:
-        from ztare.scenarios.adapters import argument_overlay
-        overlay = argument_overlay(carrier)
-    except Exception:  # noqa: BLE001 — overlay is additive; a bad map must never break the graph payload
-        return
-    if not overlay:
-        return
-    carrier["argument"] = {k: overlay[k] for k in
-                           ("verdict", "reason", "warrant_ceiling", "cores", "hinge", "strength_status",
-                            "thesis_profile", "node_provenance")
-                           if k in overlay}
-    per_node = overlay.get("nodes") or {}
-    for node in carrier.get("nodes") or []:
-        role = per_node.get(str(node.get("id")))
-        if role:
-            node["grounded"], node["in_core"], node["hinge"] = role["grounded"], role["in_core"], role["hinge"]
-            if "profile" in role:  # the geological strata (s0 bedrock … s3 snow) the Map renders per node
-                node["profile"] = role["profile"]
 
 
 def export_obsidian_payload(project: str) -> dict[str, Any]:
@@ -8891,15 +8482,19 @@ def workbench_job_payload(job_id: str) -> dict[str, Any]:
     from ztare.workspace.jobs import read_job
 
     try:
-        return {"ok": True, "job": read_job(_workbench_jobs_root(), job_id)}
+        job = read_job(_workbench_jobs_root(), job_id)
+        require_visible_project(str(job.get("project") or ""))
+        return {"ok": True, "job": job}
     except (OSError, ValueError) as exc:
         return {"ok": False, "error": f"unknown job: {display_text(exc)}"}
 
 
 def workbench_job_cancel_payload(job_id: str) -> dict[str, Any]:
-    from ztare.workspace.jobs import cancel_job
+    from ztare.workspace.jobs import cancel_job, read_job
 
     try:
+        existing = read_job(_workbench_jobs_root(), job_id)
+        require_visible_project(str(existing.get("project") or ""))
         return {"ok": True, "job": cancel_job(_workbench_jobs_root(), job_id)}
     except (OSError, ValueError) as exc:
         return {"ok": False, "error": f"unknown job: {display_text(exc)}"}
@@ -8908,7 +8503,8 @@ def workbench_job_cancel_payload(job_id: str) -> dict[str, Any]:
 def workbench_jobs_payload(project: str = "") -> dict[str, Any]:
     from ztare.workspace.jobs import list_jobs
 
-    return {"ok": True, "jobs": list_jobs(_workbench_jobs_root(), project=project)}
+    jobs = list_jobs(_workbench_jobs_root(), project=project)
+    return {"ok": True, "jobs": [job for job in jobs if project_is_visible(str(job.get("project") or ""))]}
 
 
 def file_sha256_for_display_path(value: Any) -> str:
@@ -9200,8 +8796,27 @@ def evidence_fetch_payload_for_project(
         rubric=rubric,
         intake=intake,
     )
-    append_jsonl(ledger_path, receipt)
-    WORKBENCH_STORE.write_text(latest_path, json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(receipt, staged)
+        staged.flush()
+        receipt_result = ztare_cli_payload([
+            "forensic-workbench", "record-evidence-fetch",
+            "--project", project,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=90)
+    if receipt_result.get("ok") is False:
+        payload.update({
+            "ok": False,
+            "accepted": False,
+            "status": "receipt_failed",
+            "returncode": proc.returncode,
+            "error": str(receipt_result.get("error") or "evidence fetch completed but its receipt could not be recorded"),
+        })
+        return payload
+    ledger_path = snapshot.REPO / str(receipt_result.get("receipt_path"))
+    latest_path = snapshot.REPO / str(receipt_result.get("latest"))
     payload.update(
         {
             "ok": proc.returncode == 0,
@@ -9242,6 +8857,27 @@ def evidence_fetch_payload_for_project(
     except Exception as exc:  # noqa: BLE001 - fetch result should still be inspectable.
         payload["snapshot_error"] = display_text(exc)
     return payload
+
+
+def evidence_fetch_job_payload(*, project: str, rubric: str | None = None, intake: str | None = None,
+                               renderer: str | None = None, target: str = "") -> dict[str, Any]:
+    """Launch a confirmed evidence fetch behind the shared durable job contract."""
+    from ztare.workspace.jobs import launch_job
+
+    preview = evidence_fetch_payload_for_project(
+        project=project, rubric=rubric, intake=intake, renderer=renderer, confirmed=False, target=target)
+    if not preview.get("ok"):
+        return preview
+    command, _display, context = evidence_fetch_command(project, rubric or project, target=target)
+    job = launch_job(
+        root=_workbench_jobs_root(), command=command, cwd=snapshot.REPO, env=load_workbench_env(),
+        kind="evidence_fetch", project=project, label="Evidence fetch",
+        context={"rubric": rubric or project, "intake": intake or "", "renderer": renderer or "",
+                 "target": target, "settings": context,
+                 "write_boundary": preview.get("confirmed_write_boundary") or {}},
+    )
+    return {**preview, "ok": True, "accepted": True, "status": "queued", "job": job,
+            "writes": True, "write_boundary": preview.get("confirmed_write_boundary") or {}}
 
 
 def evidence_gap_list_payload_for_project(
@@ -9556,55 +9192,66 @@ def stage_uploaded_source_rows(project: str, rows: list[dict[str, Any]]) -> tupl
         return [], [], []
     project_root = snapshot.REPO / "projects" / project
     raw_dir = project_root / "raw"
-    WORKBENCH_STORE.ensure_dir(raw_dir)
-    source_type_map_path = raw_dir / "source_type_map.json"
-    source_type_map = read_json_object(source_type_map_path, repo_rel(source_type_map_path)) if source_type_map_path.exists() else {}
+    if not raw_dir.exists():
+        raise FileNotFoundError(f"source file directory does not exist: {repo_rel(raw_dir)}")
     source_refs: list[str] = []
     evidence_refs: list[str] = []
     write_paths: list[str] = []
     for row in rows:
         source_type = row["source_type"]
-        filename = raw_recovery_filename(raw_dir, raw_dir / row["filename"])
+        filename = str(row["filename"])
         target = raw_dir / filename
         body = row["body"].rstrip()
-        metadata_lines = [f"source_type: {source_type}"]
-        original_bytes = row.get("original_bytes")
-        if isinstance(original_bytes, bytes):
-            attachments = project_root / "attachments"
-            WORKBENCH_STORE.ensure_dir(attachments)
-            original_name = raw_recovery_filename(attachments, attachments / str(row["original_filename"]))
-            original_target = attachments / original_name
-            if original_target.exists() and hashlib.sha256(WORKBENCH_STORE.read_bytes(original_target)).hexdigest() != row["original_sha256"]:
-                raise ValueError(f"uploaded document would overwrite a different attachment: {repo_rel(original_target)}")
-            if not original_target.exists():
-                WORKBENCH_STORE.write_bytes(original_target, original_bytes)
-                write_paths.append(repo_rel(original_target))
-            metadata_lines.extend([
-                f"original_attachment: {repo_rel(original_target)}",
-                f"original_sha256: {row['original_sha256']}",
-                f"extraction_method: {row['extraction_method']}",
-                f"extraction_truncated: {str(bool(row.get('extraction_truncated'))).lower()}",
-            ])
-        source_text = "---\n" + "\n".join(metadata_lines) + "\n---\n\n" + f"{body}\n"
         if target.exists():
             existing_type, existing_body = split_source_frontmatter(
                 WORKBENCH_STORE.read_text(target),
                 fallback_source_type=source_type,
             )
-            if existing_body.strip() and existing_body.rstrip() != body:
-                raise ValueError(f"uploaded source would overwrite an existing file: {repo_rel(target)}")
-            source_type = existing_type if existing_type in SOURCE_IMPORT_TYPES else source_type
-        if not target.exists() or WORKBENCH_STORE.read_text(target) != source_text:
-            WORKBENCH_STORE.write_text(target, source_text)
-            write_paths.append(repo_rel(target))
-        source_type_map[filename] = source_type
-        ref = repo_rel(target)
+            if existing_body.rstrip() == body:
+                source_type = existing_type if existing_type in SOURCE_IMPORT_TYPES else source_type
+                ref = repo_rel(target)
+                (evidence_refs if source_type == "source_evidence" else source_refs).append(ref)
+                continue
+            filename = raw_recovery_filename(raw_dir, project_root / "uploads" / filename)
+        args = [
+            "project", "source-file", "add",
+            "--project", project,
+            "--rubric", project,
+            "--intake", snapshot.default_intake_for_project(project),
+            "--filename", filename,
+            "--source-type", source_type,
+            "--kind", "raw_evidence",
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        original_bytes = row.get("original_bytes")
+        if isinstance(original_bytes, bytes):
+            with tempfile.NamedTemporaryFile("wb", suffix=Path(str(row["original_filename"])).suffix) as staged_original, tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged_body:
+                staged_original.write(original_bytes)
+                staged_original.flush()
+                staged_body.write(body)
+                staged_body.flush()
+                result = ztare_cli_payload([
+                    *args,
+                    "--body-file", staged_body.name,
+                    "--original-file", staged_original.name,
+                    "--original-filename", str(row["original_filename"]),
+                    "--extraction-method", str(row.get("extraction_method") or ""),
+                    *(["--extraction-truncated"] if row.get("extraction_truncated") else []),
+                ], project=project, timeout=90)
+        else:
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged_body:
+                staged_body.write(body)
+                staged_body.flush()
+                result = ztare_cli_payload([*args, "--body-file", staged_body.name], project=project, timeout=90)
+        if result.get("ok") is False:
+            raise ValueError(str(result.get("error") or "uploaded source was refused"))
+        ref = str(result.get("source_path") or f"projects/{project}/raw/{filename}")
+        write_paths.extend(str(path) for path in (result.get("write_paths") or []) if path)
         if source_type == "source_evidence":
             evidence_refs.append(ref)
         else:
             source_refs.append(ref)
-    WORKBENCH_STORE.write_text(source_type_map_path, json.dumps(source_type_map, indent=2, sort_keys=True) + "\n")
-    write_paths.append(repo_rel(source_type_map_path))
     return unique_values(source_refs), unique_values(evidence_refs), unique_values(write_paths)
 
 
@@ -9613,9 +9260,8 @@ def stage_recovered_source_refs(project: str, refs: list[str]) -> tuple[list[str
 
     project_root = snapshot.REPO / "projects" / project
     raw_dir = project_root / "raw"
-    WORKBENCH_STORE.ensure_dir(raw_dir)
-    source_type_map_path = raw_dir / "source_type_map.json"
-    source_type_map = read_json_object(source_type_map_path, repo_rel(source_type_map_path)) if source_type_map_path.exists() else {}
+    if not raw_dir.exists():
+        raise FileNotFoundError(f"source file directory does not exist: {repo_rel(raw_dir)}")
     staged_refs: list[str] = []
     write_paths: list[str] = []
     for ref in refs:
@@ -9643,17 +9289,35 @@ def stage_recovered_source_refs(project: str, refs: list[str]) -> tuple[list[str
             continue
         if source_type == "untyped":
             source_type = "source_evidence"
-        filename = raw_recovery_filename(raw_dir, source_path)
+        filename = source_path.name
         target = raw_dir / filename
-        recovered_text = "---\n" f"source_type: {source_type}\n" "---\n\n" f"{body.rstrip()}\n"
-        if not target.exists() or WORKBENCH_STORE.read_text(target) != recovered_text:
-            WORKBENCH_STORE.write_text(target, recovered_text)
-            write_paths.append(repo_rel(target))
-        source_type_map[filename] = source_type
-        staged_refs.append(repo_rel(target))
-    WORKBENCH_STORE.write_text(source_type_map_path, json.dumps(source_type_map, indent=2, sort_keys=True) + "\n")
-    if source_type_map:
-        write_paths.append(repo_rel(source_type_map_path))
+        if target.exists():
+            _existing_type, existing_body = split_source_frontmatter(
+                WORKBENCH_STORE.read_text(target), fallback_source_type=source_type,
+            )
+            if existing_body.rstrip() == body.rstrip():
+                staged_refs.append(repo_rel(target))
+                continue
+            filename = raw_recovery_filename(raw_dir, source_path)
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md") as staged_body:
+            staged_body.write(body)
+            staged_body.flush()
+            result = ztare_cli_payload([
+                "project", "source-file", "add",
+                "--project", project,
+                "--rubric", project,
+                "--intake", snapshot.default_intake_for_project(project),
+                "--filename", filename,
+                "--source-type", source_type,
+                "--kind", "raw_evidence",
+                "--body-file", staged_body.name,
+                "--repo", str(snapshot.REPO),
+                "--json",
+            ], project=project, timeout=90)
+        if result.get("ok") is False:
+            raise ValueError(str(result.get("error") or "recovered source was refused"))
+        staged_refs.append(str(result.get("source_path") or f"projects/{project}/raw/{filename}"))
+        write_paths.extend(str(path) for path in (result.get("write_paths") or []) if path)
     return staged_refs, unique_values(write_paths)
 
 
@@ -9677,14 +9341,23 @@ def save_case_file_payload(
         rubric=rubric,
         intake=intake,
     )
-    result = project_file_core.save_prepared_project_file(
-        project=project,
-        project_file=case_file,
-        rubric=rubric,
-        intake=intake,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(case_file, staged)
+        staged.flush()
+        args = [
+            "forensic-workbench", "save-project-file",
+            "--project", project,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ]
+        if rubric:
+            args.extend(["--rubric", rubric])
+        if intake:
+            args.extend(["--intake", intake])
+        result = ztare_cli_payload(args, project=project, timeout=90)
+    if result.get("ok") is False:
+        raise ValueError(str(result.get("error") or "project file save was refused"))
     content_changed = bool(result.get("content_changed"))
     previous_case_sha256 = str(result.get("project_file_previous_sha256") or "")
     case_sha256 = str(result.get("project_file_sha256") or "")
@@ -10811,15 +10484,20 @@ def save_scoring_guide_payload(
     rubric = rubric or project
     intake = intake or snapshot.default_intake_for_project(project)
     project_intake_path(project, intake, allow_examples=True)
-    result = scoring_guide_core.save_scoring_guide(
-        project=project,
-        rubric=rubric,
-        intake=intake,
-        text=text,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-        run_command=lambda command: run_workbench_command(command, timeout=120),
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        staged.write(str(text or ""))
+        staged.flush()
+        result = ztare_cli_payload([
+            "forensic-workbench", "save-scoring-guide",
+            "--project", project,
+            "--rubric", rubric,
+            "--intake", intake,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=120)
+    if result.get("ok") is False:
+        raise ValueError(str(result.get("error") or "scoring guide save was refused"))
     payload = scoring_guide_payload_for_project(project=project, rubric=rubric, intake=intake)
     payload.update(
         {
@@ -13586,14 +13264,20 @@ def save_research_map_payload(request: dict[str, Any]) -> dict[str, Any]:
     research_map = project_state.get("research_map") if isinstance(project_state.get("research_map"), dict) else {}
     if not research_map:
         raise ValueError("research map is not available for this project")
-    result = research_map_core.save_prepared_research_map(
-        project=project,
-        rubric=rubric,
-        intake=intake,
-        research_map=research_map,
-        root=snapshot.REPO,
-        storage=WORKBENCH_STORE,
-    )
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json") as staged:
+        json.dump(research_map, staged)
+        staged.flush()
+        result = ztare_cli_payload([
+            "forensic-workbench", "save-research-map",
+            "--project", project,
+            "--rubric", rubric,
+            "--intake", intake,
+            "--from", staged.name,
+            "--repo", str(snapshot.REPO),
+            "--json",
+        ], project=project, timeout=90)
+    if result.get("ok") is False:
+        raise ValueError(str(result.get("error") or "research map save was refused"))
     return {
         **result,
         "served_from": "local_api",
@@ -13831,68 +13515,30 @@ def build_claim_card_payload(request: dict[str, Any]) -> dict[str, Any]:
     project = snapshot.validate_project_slug(str(request.get("project") or snapshot.DEFAULT_PROJECT))
     rubric = str(request.get("rubric") or project)
     intake = str(request.get("intake") or snapshot.default_intake_for_project(project))
-    card = claim_card_core.build_card(project, snapshot.REPO)
-    paths = claim_card_core.output_paths(project, snapshot.REPO)
-    WORKBENCH_STORE.write_text(paths["json"], json.dumps(card, indent=2, sort_keys=True) + "\n")
-    WORKBENCH_STORE.write_text(paths["md"], claim_card_core.render_markdown(card))
-    WORKBENCH_STORE.write_text(paths["html"], claim_card_core.render_html(card))
-    verification = claim_card_core.verify_card(paths["json"], snapshot.REPO)
-    workspace = snapshot.REPO / "projects" / project / "workspace"
-    ledger_path = workspace / "forensic_workbench_claim_cards.jsonl"
-    latest_path = workspace / "forensic_workbench_latest_claim_card.json"
-    written_paths = [repo_rel(paths["json"]), repo_rel(paths["md"]), repo_rel(paths["html"])]
-    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    receipt = {
-        "schema": CLAIM_CARD_RECEIPT_SCHEMA,
-        "kind": "claim_card",
-        "project": project,
-        "rubric": rubric,
-        "intake": intake,
-        "applied_at": now,
-        "status": "accepted" if verification.get("ok") else "attention",
-        "summary": "Built portable claim card and verified evidence hashes."
-        if verification.get("ok")
-        else "Built portable claim card, but verification needs attention.",
-        "card_hash": str((card.get("provenance") or {}).get("card_hash") or ""),
-        "json_path": written_paths[0],
-        "markdown_path": written_paths[1],
-        "html_path": written_paths[2],
-        "receipt_path": repo_rel(ledger_path),
-        "latest_path": repo_rel(latest_path),
-        "verification_ok": bool(verification.get("ok")),
-        "evidence_count": len(verification.get("evidence") or []),
-    }
-    append_jsonl(ledger_path, receipt)
-    WORKBENCH_STORE.write_text(latest_path, json.dumps(receipt, indent=2, sort_keys=True) + "\n")
-    write_paths = [*written_paths, receipt["receipt_path"], receipt["latest_path"]]
-    return {
-        "ok": bool(verification.get("ok")),
-        "accepted": bool(verification.get("ok")),
-        "schema": CLAIM_CARD_RECEIPT_SCHEMA,
+    payload = ztare_cli_payload([
+        "card", "build",
+        "--project", project,
+        "--format", "all",
+        "--record",
+        "--rubric", rubric,
+        "--intake", intake,
+        "--repo", str(snapshot.REPO),
+    ], project=project, timeout=90)
+    if payload.get("ok") is False:
+        return payload
+    payload.update({
         "served_from": "local_api",
-        "project": project,
-        "rubric": rubric,
-        "intake": intake,
-        "command": f"ztare card build --project {project} --format all",
-        "card_hash": receipt["card_hash"],
-        "json_path": receipt["json_path"],
-        "markdown_path": receipt["markdown_path"],
-        "html_path": receipt["html_path"],
-        "preview_path": receipt["html_path"],
-        "receipt_path": receipt["receipt_path"],
-        "latest_path": receipt["latest_path"],
-        "written": written_paths,
-        "verification": verification,
-        "receipt": receipt,
+        "command": f"ztare card build --project {project} --format all --record",
         "write_boundary": write_boundary_payload(
             writes_project_files=True,
-            write_paths=write_paths,
-            receipt_path=receipt["receipt_path"],
-            latest_path=receipt["latest_path"],
+            write_paths=list(payload.get("write_paths") or []),
+            receipt_path=str(payload.get("receipt_path") or ""),
+            latest_path=str(payload.get("latest_path") or ""),
             read_only_actions=["preview existing report readiness", "copy card command"],
             no_change_boundary="Previewing report readiness writes no files. Building the claim card writes only the card files and saved claim-card history.",
         ),
-    }
+    })
+    return payload
 
 
 def local_dev_origin(origin: str | None) -> str:
@@ -13987,11 +13633,18 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         payload = json.loads(body.decode("utf-8"))
         if not isinstance(payload, dict):
             raise ValueError("request body must be a JSON object")
+        require_visible_project(str(payload.get("project") or ""))
+        for path_key in ("path", "intake", "source_path", "preview_path"):
+            require_visible_repo_path(payload.get(path_key))
         return payload
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         try:
+            request_params = parse_qs(parsed.query)
+            require_visible_project(first_param(request_params, "project", ""))
+            for path_key in ("path", "intake", "source_path"):
+                require_visible_repo_path(first_param(request_params, path_key, ""))
             if parsed.path == "/api/status":
                 self.send_json(server_status_payload())
                 return
@@ -14689,13 +14342,15 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/evidence-fetch":
                 request = self.read_json_body()
-                response = evidence_fetch_payload_for_project(
+                confirmed = request.get("confirmed") is True
+                handler = evidence_fetch_job_payload if confirmed else evidence_fetch_payload_for_project
+                response = handler(
                     project=str(request.get("project") or ""),
                     rubric=str(request.get("rubric") or "") or None,
                     intake=str(request.get("intake") or "") or None,
                     renderer=str(request.get("renderer") or "") or None,
-                    confirmed=request.get("confirmed") is True,
                     target=str(request.get("target") or ""),
+                    **({"confirmed": False} if not confirmed else {}),
                 )
                 status = 200 if response.get("ok") or response.get("status") == "needs_confirmation" else 400
                 self.send_json(response, status=status)
@@ -14744,7 +14399,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     created_by=str(request.get("created_by") or ""),
                     body=str(request.get("body") or ""),
                 )
-                self.send_json(response)
+                self.send_json(response, status=200 if response.get("ok") else 400)
                 return
             if parsed.path == "/api/source-edit":
                 request = self.read_json_body()
@@ -14759,7 +14414,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     created_by=str(request.get("created_by")) if "created_by" in request else None,
                     body=str(request.get("body") or ""),
                 )
-                self.send_json(response)
+                self.send_json(response, status=200 if response.get("ok") else 400)
                 return
             if parsed.path in {"/api/project-file", "/api/case-file"}:
                 request = self.read_json_body()
@@ -14785,13 +14440,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", default=DEFAULT_HOST)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
+    parser.add_argument(
+        "--project-scope",
+        choices=("local", "public", "allowlist"),
+        default=PROJECT_SCOPE if PROJECT_SCOPE in {"local", "public", "allowlist"} else "local",
+        help="Project inventory boundary. 'public' uses forensic-workbench/public-projects.json.",
+    )
+    parser.add_argument(
+        "--projects",
+        default=",".join(sorted(PROJECT_ALLOWLIST)),
+        help="Comma-separated project allowlist; required with --project-scope allowlist.",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
+    global PROJECT_SCOPE, PROJECT_ALLOWLIST
     args = build_parser().parse_args(argv)
+    PROJECT_SCOPE = args.project_scope
+    PROJECT_ALLOWLIST = {item.strip() for item in str(args.projects or "").split(",") if item.strip()}
+    if PROJECT_SCOPE == "allowlist" and not PROJECT_ALLOWLIST:
+        raise SystemExit("--project-scope allowlist requires --projects <slug,...>")
     server = ThreadingHTTPServer((args.host, args.port), WorkbenchHandler)
-    print(f"Project Workbench server listening on http://{args.host}:{args.port}", flush=True)
+    print(f"Project Workbench server listening on http://{args.host}:{args.port} (projects: {PROJECT_SCOPE})", flush=True)
     if not (WORKBENCH_DIST / "index.html").exists():
         print("  React app not built yet. Run `make forensic-workbench-build` to serve the UI from this server.", flush=True)
     try:

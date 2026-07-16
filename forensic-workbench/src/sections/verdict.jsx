@@ -2,6 +2,7 @@ import React from "react";
 import { displayMessage, Block, Tag } from "../design-system.js";
 import { compiledDecisionState, DecisionPanel } from "./decisionpanel.jsx";
 import { DeliverablesPanel } from "./deliverablespanel.jsx";
+import { ModelBrief } from "./modelbrief.jsx";
 
 const h = React.createElement;
 
@@ -13,7 +14,7 @@ const h = React.createElement;
 // (the graded "how firmly" strength read — lane-labelled "From the governed map:" since it's a DIFFERENT
 // engine from the crisp reliability verdict above and never overrides it) and DeliverablesPanel (merged into
 // the existing "The deliverable" block — report / claim card / templated deliverables, one list).
-export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetail, onForecast, onExportObsidian, obsidianExport, onFalsify, falsify, project, liveMode, decision, scenario, onDecisionRefresh, onCheckDraft }) {
+export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetail, onOpenDraftCheck, onForecast, onExportObsidian, obsidianExport, onFalsify, falsify, project, liveMode, decision, scenario, onDecisionRefresh, onCheckDraft }) {
   const v = view || {};
   const tone = v.tone || "almost";
   const obs = obsidianExport || {};
@@ -75,16 +76,17 @@ export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetai
             : (fxRes ? h("p", { className: "verdict-falsify-empty" }, "The inverter didn't surface a concrete test this time — try again.") : null))
       : null,
 
-    // Where to verify — the claims that aren't directly sourced, each with its plain status + sources.
+    // Where to verify — claims whose support is still insufficient. A mapped
+    // file is not the same property as an admitted claim-to-passage inference.
     shown
-      ? h(Block, { title: "Where to verify", lead: "Claims that aren't directly sourced — check each before you rely on it." },
+      ? h(Block, { title: "Where to verify", lead: "These claims do not yet have enough verified support. Inspect the mapped files where present, then verify the inference in Evidence." },
           h("ul", { className: "verdict-claims" },
             toVerify.slice(0, 12).map((c, i) =>
               h("li", { key: i, className: "verdict-claim" },
                 h("div", { className: "verdict-claim-head" },
                   h("span", { className: "verdict-claim-text" }, displayMessage(c.claim)),
-                  // The whole list IS "not directly sourced" (see the Block lead), so the identical
-                  // "synthesized" tag on every row is noise — flag only the exceptions (unsupported).
+                  // The whole list already carries the same verification need,
+                  // so flag only the stronger exception: no usable source.
                   c.statusTone === "no" ? h(Tag, { tone: "danger" }, c.statusLabel) : null),
                 c.sources.length
                   ? h("div", { className: "verdict-claim-sources" },
@@ -97,7 +99,7 @@ export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetai
           more ? h("p", { className: "verdict-more" }, `+ ${more} more claim${more === 1 ? "" : "s"} to verify`) : null)
       : h(Block, { title: "Where to verify" },
           h("p", { className: "verdict-muted" },
-            tone === "rely" ? "Nothing to verify — every claim is directly sourced." : "No per-claim breakdown available yet — run a backing check.")),
+            tone === "rely" ? "No remaining claim-support gaps." : "No per-claim breakdown is available yet — run a support check.")),
 
     // Handoff is a distinct job from judging. The report is primary; cards, audit, and export are supporting tools.
     h(Block, { title: "Handoff" },
@@ -105,18 +107,22 @@ export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetai
         h("div", { className: "verdict-deliverable-primary" },
           h("div", null,
             h("span", { className: "eyebrow" }, "Current decision"),
-            h("strong", null, "Decision report"),
-            h("p", null, "The full checked account of the decision, its evidence, and what could change it.")),
+            h("strong", null, v.reportFile ? "Decision report" : "Report inputs"),
+            h("p", null, v.reportFile
+              ? "The full checked account of the decision, its evidence, and what could change it."
+              : "No current report exists yet. Review the backing and resolve what blocks a trustworthy report.")),
           h("button", {
             type: "button", className: "chip primary",
             onClick: () => (v.reportFile && onPreview) ? onPreview({ type: "file", value: v.reportFile }) : (onOpenReport && onOpenReport())
-          }, "Open decision report")),
+          }, v.reportFile ? "Open decision report" : "Review report inputs")),
         h("div", { className: "verdict-deliverable-tools", "aria-label": "Supporting handoff tools" },
-          h("button", {
-            type: "button", className: "text-link",
-            onClick: () => (v.cardFile && onPreview) ? onPreview({ type: "file", value: v.cardFile }) : (onMakeCard && onMakeCard())
-          }, "Open claim card"),
-          onMakeCard
+          v.cardFile && onPreview
+            ? h("button", { type: "button", className: "text-link",
+                onClick: () => onPreview({ type: "file", value: v.cardFile }) }, "Open claim card")
+            : onMakeCard
+              ? h("button", { type: "button", className: "text-link", onClick: () => onMakeCard() }, "Create claim card")
+              : null,
+          v.cardFile && onMakeCard
             ? h("button", { type: "button", className: "text-link", onClick: () => onMakeCard() }, "Refresh claim card")
             : null,
           v.contractFile && onPreview
@@ -127,12 +133,14 @@ export function Verdict({ view, onOpenReport, onMakeCard, onPreview, onOpenDetai
             ? h("button", { type: "button", className: "text-link", disabled: obs.running,
                 title: "Export the verified graph as a linked Obsidian vault you write from",
                 onClick: () => onExportObsidian() }, obs.running ? "Exporting…" : "Export to Obsidian")
-            : null)),
+            : null,
+          h(ModelBrief, { project, liveMode, fingerprint: compiled && compiled.fingerprint, onCheckResponse: onOpenDraftCheck }))),
       obsDone
         ? h("p", { className: "verdict-export-done" },
             `Exported ${obsDone.note_count} linked notes to `, h("code", null, obsDone.out_dir), ".")
         : (obs.error ? h("p", { className: "verdict-muted" }, displayMessage(obs.error)) : null),
-      project ? h(DeliverablesPanel, { key: "deliverables", project, liveMode, scenario, onPreview,
+      project ? h(DeliverablesPanel, { key: "deliverables", project, liveMode, scenario,
+        decisionFingerprint: compiled && compiled.fingerprint, onPreview,
         onManageDocuments: () => onOpenDetail && onOpenDetail("projects", "Plugins"), onCheckDraft }) : null),
 
     // On-demand forecasting has ONE home — Open points' "Ask the loop" (Priority 1: this used to duplicate

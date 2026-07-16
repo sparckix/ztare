@@ -57,27 +57,40 @@ def _bind_written_deliverables(governed: GovernedState, out_dir: str, written: "
     return {"fingerprint": state["fingerprint"], "status": state["status"]}
 
 
-def deliverable_binding_status(governed: GovernedState, declared: "list[str]", out_dir: str) -> dict:
+def deliverable_binding_status(
+    governed: GovernedState,
+    declared: "list[str]",
+    out_dir: str,
+    *,
+    root=None,
+) -> dict:
     """Compare artifact receipts with the current decision state without mutating the project."""
     from pathlib import Path
 
+    from ztare.common.paths import REPO_ROOT
     from ztare.scenarios.decision_state import compile_decision_state
 
     current = compile_decision_state(governed).to_payload()
+    repo_root = (root or REPO_ROOT).resolve()
     bindings = _read_bindings(out_dir).get("artifacts", {})
     base = Path(out_dir)
     rows = {}
     for name in declared:
         binding = bindings.get(name) if isinstance(bindings.get(name), dict) else None
-        generated = (base / f"{name}.md").is_file()
+        artifact_path = base / f"{name}.md"
+        generated = artifact_path.is_file()
         bound_fingerprint = str((binding or {}).get("decision_fingerprint") or "")
+        try:
+            display_path = artifact_path.resolve().relative_to(repo_root).as_posix()
+        except ValueError:
+            display_path = str(artifact_path)
         rows[name] = {
             "generated": generated,
             "stale": generated and bound_fingerprint != current["fingerprint"],
             "decision_fingerprint": bound_fingerprint or None,
             "current_fingerprint": current["fingerprint"],
             "generated_at": (binding or {}).get("generated_at"),
-            "path": str(base / f"{name}.md") if generated else None,
+            "path": display_path if generated else None,
         }
     return {"decision": current, "bindings": rows}
 
@@ -288,6 +301,32 @@ def resolve_declared_set(project: str, *, scenario_deliverables: "list[str] | No
     return out or ["decision_memo"]
 
 
+def add_required_deliverable(project: str, name: str, *, repo_root=None) -> "list[str]":
+    """Persist one project-owned handoff requirement; scenario declarations remain read-only inputs."""
+    import json
+
+    from ztare.common.paths import PROJECTS_DIR
+
+    clean = str(name or "").strip()
+    if not clean:
+        raise ValueError("deliverable name required")
+    base = (repo_root / "projects") if repo_root is not None else PROJECTS_DIR
+    path = base / project / "workspace" / "required_deliverables.json"
+    current: "list[str]" = []
+    if path.is_file():
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(payload, list):
+                current = [str(item) for item in payload if str(item).strip()]
+        except (OSError, ValueError):
+            current = []
+    if clean not in current:
+        current.append(clean)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
+    return current
+
+
 def produce_all_declared(project: str, *, repo_root=None, out_dir: "str | None" = None,
                          scenario: str = "") -> dict:
     """Produce the FULL declared set at once, so the set-completeness firewall actually FIRES (the per-deliverable
@@ -295,6 +334,8 @@ def produce_all_declared(project: str, *, repo_root=None, out_dir: "str | None" 
     set is the PINNED set from the run-start receipt when one exists (exogenous by time — the anti-cherry-pick
     teeth), else the current resolved set. A declared deliverable that can't compose is written as an accounted
     stub, never dropped — the firewall verifies the whole set is emitted-or-stubbed."""
+    from pathlib import Path
+
     from ztare.common.paths import PROJECTS_DIR, REPO_ROOT
     from ztare.scenarios.adapters import governed_state_from_research_map
     from ztare.scenarios.contract_receipts import pinned_receipts
@@ -314,6 +355,10 @@ def produce_all_declared(project: str, *, repo_root=None, out_dir: "str | None" 
     base = (repo_root / "projects") if repo_root is not None else PROJECTS_DIR
     out = out_dir or str(base / project / "workspace" / "deliverables")
     report = produce_scenario_artifacts(declared=declared, governed=governed, out_dir=out, specs=specs)
+    try:
+        report["dir"] = Path(out).resolve().relative_to(rr.resolve()).as_posix()
+    except ValueError:
+        report["dir"] = str(out)
     report["scenario"] = scenario_name or None
     report["declared"] = declared
     report["declared_source"] = source

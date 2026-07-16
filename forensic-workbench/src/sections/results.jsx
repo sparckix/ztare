@@ -158,7 +158,7 @@ export function RunFindings({ view, decision, onOpenDetail }) {
 
     compiled
       ? h("div", { id: "run-standing", className: `findings-decision tone-${compiled.status.toLowerCase()}` },
-          h("span", null, "Current decision"),
+          h("span", null, "Decision standing"),
           h("strong", null, compiled.headline),
           h("p", null, displayMessage(compiled.reason)))
       : null,
@@ -176,9 +176,10 @@ export function RunFindings({ view, decision, onOpenDetail }) {
         h("span", { className: "findings-hero-num" }, String(v.score)),
         h("span", { className: "findings-hero-out" }, "/100")),
       h("div", { className: "findings-hero-copy" },
-        h("strong", null, "Run observation"),
+        h("strong", null, "Pressure-test score"),
         h("span", null,
-          trust.mode ? scoreModeLabel(trust.mode) : "scored against the current guide")),
+          trust.mode ? scoreModeLabel(trust.mode) : "scored against the current guide"),
+        h("small", null, "Measures the draft against this guide; it does not admit evidence or make the decision ready.")),
       v.series && v.series.length > 1
         ? h("div", { className: "findings-hero-evolve" },
             h(Sparkline, { series: v.series, band }),
@@ -198,7 +199,7 @@ export function RunFindings({ view, decision, onOpenDetail }) {
       const nodes = Array.isArray(dag.nodes) ? dag.nodes.filter((n) => n && typeof n.probability === "number") : [];
       const weakest = nodes.length ? Math.round(Math.min(...nodes.map((n) => n.probability)) * 100) : null;
       const blocks = [
-        weakest !== null ? { label: "Weakest link", value: `${weakest}%`, tone: weakest < 60 ? "danger" : weakest < 85 ? "warn" : "ok", anchor: "run-argument-path" } : null,
+        weakest !== null ? { label: "Lowest premise estimate", value: `${weakest}%`, tone: weakest < 60 ? "danger" : weakest < 85 ? "warn" : "ok", anchor: "run-argument-path" } : null,
         nodes.length ? { label: "Sub-claims", value: String(nodes.length), anchor: "run-argument-path" } : null,
         { label: "Logic gaps", value: String(logic.length), tone: logic.length ? "warn" : "ok", anchor: logic.length ? "find-logic" : null },
         { label: "Evaluator friction", value: String(friction.length), tone: friction.length ? "warn" : "", anchor: friction.length ? "find-friction" : null },

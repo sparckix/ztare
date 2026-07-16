@@ -2,7 +2,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from ztare.scaffold.source_check import check_source_project, main
+from ztare.scaffold.source_check import check_evidence_project, check_source_project, main
 
 
 def test_source_check_reports_ready_typed_sources(tmp_path: Path) -> None:
@@ -145,3 +145,82 @@ def test_source_check_blocks_invalid_source_type_map_values(tmp_path: Path) -> N
     assert report["ok"] is False
     assert "source_type_map.json has invalid entries" in report["blocking"]
     assert any("primary_fact" in warning for warning in report["warnings"])
+
+
+def test_evidence_admission_selects_transition_carrier_and_ignores_scratch(
+    tmp_path: Path,
+) -> None:
+    episodes = tmp_path / "projects/demo/raw/episodes"
+    episodes.mkdir(parents=True)
+    episode = episodes / "episode_001.jsonl"
+    # A three-dimensional observation proves the carrier does not assume a 2-D grid.
+    episode.write_text(
+        json.dumps({"t": 0, "s": [[[1]]], "a": {"axis": 2}, "s_next": [[[2]]]})
+        + "\n",
+        encoding="utf-8",
+    )
+    digest = hashlib.sha256(episode.read_bytes()).hexdigest()
+    (episodes / "episode_001.identity.json").write_text(
+        json.dumps(
+            {
+                "schema": "ztare-episode-identity-sidecar-v1",
+                "episode_sha256": digest,
+                "bindings": [],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    scratch = episodes / "eval_slices"
+    scratch.mkdir()
+    (scratch / "eval_bad.jsonl").write_text("not-json\n", encoding="utf-8")
+
+    report = check_evidence_project(
+        project="demo",
+        repo=tmp_path,
+        rubric={"substrate_class": "interactive_environment"},
+    )
+
+    assert report["ok"] is True
+    assert report["carrier_kind"] == "transition_stream"
+    assert report["requires_source_index"] is False
+    assert report["requires_compiled_evidence"] is False
+    assert report["source_count"] == 1
+    assert report["sources"][0]["identity_status"] == "bound"
+    assert report["sources"][0]["first_transition"] == {
+        "t": 0,
+        "action_kind": "dict",
+        "state_kind": "list",
+    }
+
+
+def test_transition_carrier_blocks_a_sidecar_bound_to_other_bytes(tmp_path: Path) -> None:
+    episodes = tmp_path / "projects/demo/raw/episodes"
+    episodes.mkdir(parents=True)
+    episode = episodes / "episode_001.jsonl"
+    episode.write_text(
+        json.dumps({"t": 0, "s": [1], "a": 0, "s_next": [2]}) + "\n",
+        encoding="utf-8",
+    )
+    (episodes / "episode_001.identity.json").write_text(
+        json.dumps(
+            {
+                "schema": "ztare-episode-identity-sidecar-v1",
+                "episode_sha256": "0" * 64,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    report = check_evidence_project(
+        project="demo",
+        repo=tmp_path,
+        rubric={"evidence_carrier_kind": "transition_stream"},
+    )
+
+    assert report["ok"] is False
+    assert report["sources"][0]["identity_status"] == "stale"
+    assert report["blocking"] == [
+        "projects/demo/raw/episodes/episode_001.identity.json does not bind the episode bytes"
+    ]

@@ -25,6 +25,9 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      - ZTARE_WORKBENCH_PROJECT_SCOPE=${ZTARE_WORKBENCH_PROJECT_SCOPE:-local}
+      - ZTARE_WORKBENCH_PROJECTS=${ZTARE_WORKBENCH_PROJECTS:-}
     volumes:
       - ./projects:/app/projects
       - ./rubrics:/app/rubrics

@@ -239,13 +239,8 @@ def _annotate_sentence(sentence: str, governed: GovernedState, span_norms: "list
     surfaced-but-unaligned span is UNTESTED (in the queue); nothing surfaced is INERT."""
     element = align(sentence, governed)
     if element is not None:
-        opposed = any(e.dst == element.id and e.kind in ("FALSIFIES", "CONTRADICTS") for e in governed.edges)
-        if opposed:                                                   # counter overrides support (chart precedence)
-            return Annotation(sentence, "CONTRADICTED", element.id)
-        supported = any(e.dst == element.id and e.kind in _SUPPORT_EDGES for e in governed.edges)
-        if supported:
-            return Annotation(sentence, "BACKED", element.id)
-        return Annotation(sentence, "UNTESTED", element.id)           # in the graph but no evidence/counter yet
+        from ztare.scenarios.argument_kernel import claim_status
+        return Annotation(sentence, claim_status(governed, element.id), element.id)
     snorm = normalize(sentence)
     if any(span and span in snorm for span in span_norms):
         return Annotation(sentence, "UNTESTED", "")                   # a surfaced assumption, not yet governed

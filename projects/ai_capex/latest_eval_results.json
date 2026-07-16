@@ -302,7 +302,7 @@
       "judge_fallback_used": false,
       "dynamic_committee": false,
       "primitive_support": false,
-      "evidence_path": "/Users/daalami/figs_activist_loop/projects/ai_capex/evidence.txt",
+      "evidence_path": "projects/ai_capex/evidence.txt",
       "evidence_fingerprint": "f0915f072ffdbe48",
       "project_forecast_type": "unspecified"
     },
@@ -317,7 +317,7 @@
     "rubric_fingerprint": "996e7ace9ae8ce60",
     "dynamic_committee": false,
     "primitive_support": false,
-    "evidence_path": "/Users/daalami/figs_activist_loop/projects/ai_capex/evidence.txt",
+    "evidence_path": "projects/ai_capex/evidence.txt",
     "evidence_fingerprint": "f0915f072ffdbe48",
     "project_forecast_type": "unspecified",
     "test_suite_status": "pass"

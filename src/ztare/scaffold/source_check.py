@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -42,6 +43,210 @@ def _mapped_source_type(source_type_map: dict[str, str], relative_path: str) -> 
 
 def _sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+_TRANSITION_CARRIER_CLASSES = {
+    "grid_world",
+    "interactive_environment",
+    "worldmodel",
+}
+_CANONICAL_EPISODE_RE = re.compile(r"episode_[0-9]{3}\.jsonl$")
+
+
+def _rubric_payload(
+    *,
+    rubric: str | Path | dict[str, Any] | None,
+    project_dir: Path,
+    repo: Path,
+) -> dict[str, Any]:
+    if isinstance(rubric, dict):
+        return dict(rubric)
+    candidates: list[Path] = []
+    if rubric:
+        raw = Path(str(rubric))
+        candidates.extend(
+            [
+                raw,
+                repo / raw,
+                repo / "rubrics" / raw,
+                repo / "rubrics" / f"{raw}.json",
+            ]
+        )
+    candidates.append(repo / "rubrics" / f"{project_dir.name}.json")
+    for candidate in candidates:
+        if not candidate.is_file():
+            continue
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(payload, dict):
+            return payload
+    return {}
+
+
+def _first_transition_row(path: Path) -> tuple[dict[str, Any] | None, str | None]:
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                payload = json.loads(line)
+                if not isinstance(payload, dict):
+                    return None, "first transition is not a JSON object"
+                missing = sorted({"t", "s", "a", "s_next"} - set(payload))
+                if missing:
+                    return None, f"first transition lacks fields: {', '.join(missing)}"
+                return payload, None
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return None, f"could not read first transition: {type(exc).__name__}: {exc}"
+    return None, "episode contains no transition rows"
+
+
+def _check_transition_project(
+    *,
+    project: str,
+    project_dir: Path,
+    repo: Path,
+    rubric_data: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate the transition-stream carrier without compiling it as prose.
+
+    Only canonical episode logs belong to this carrier. Evaluation slices and
+    fleet scratch logs are downstream or provisional artifacts, so their
+    presence cannot create source-typing debt or satisfy admission.
+    """
+    raw_dir = project_dir / "raw"
+    episode_dir = raw_dir / "episodes"
+    blocking: list[str] = []
+    warnings: list[str] = []
+    rows: list[dict[str, Any]] = []
+    if not project_dir.exists():
+        blocking.append("project directory is missing")
+    if not episode_dir.is_dir():
+        blocking.append("canonical episode directory is missing")
+        episodes: list[Path] = []
+    else:
+        episodes = sorted(
+            path
+            for path in episode_dir.iterdir()
+            if path.is_file() and _CANONICAL_EPISODE_RE.fullmatch(path.name)
+        )
+        if not episodes:
+            blocking.append("no canonical episode logs are present")
+
+    for path in episodes:
+        first, error = _first_transition_row(path)
+        if error:
+            blocking.append(f"{_rel(path, repo)}: {error}")
+            continue
+        byte_sha256 = _sha256_file(path)
+        sidecar = path.with_name(f"{path.stem}.identity.json")
+        identity_status = "not_declared"
+        if sidecar.is_file():
+            try:
+                sidecar_payload = json.loads(sidecar.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                blocking.append(
+                    f"{_rel(sidecar, repo)} is unreadable: {type(exc).__name__}: {exc}"
+                )
+                sidecar_payload = {}
+            declared_sha = str(sidecar_payload.get("episode_sha256") or "")
+            if sidecar_payload.get("schema") != "ztare-episode-identity-sidecar-v1":
+                blocking.append(f"{_rel(sidecar, repo)} has an unsupported schema")
+                identity_status = "invalid"
+            elif declared_sha != byte_sha256:
+                blocking.append(f"{_rel(sidecar, repo)} does not bind the episode bytes")
+                identity_status = "stale"
+            else:
+                identity_status = "bound"
+        rows.append(
+            {
+                "path": _rel(path, repo),
+                "relative_raw_path": path.relative_to(raw_dir).as_posix(),
+                "source_type": "source_evidence",
+                "source_type_source": "transition_carrier_contract",
+                "invalid_source_type_declaration": False,
+                "sha256": byte_sha256,
+                "bytes": path.stat().st_size,
+                "identity_status": identity_status,
+                "first_transition": {
+                    "t": first.get("t") if first else None,
+                    "action_kind": type(first.get("a")).__name__ if first else None,
+                    "state_kind": type(first.get("s")).__name__ if first else None,
+                },
+            }
+        )
+
+    ok = not blocking
+    return {
+        "schema": "ztare-evidence-carrier-admission-v1",
+        "ok": ok,
+        "status": "ready_for_kernel" if ok else "blocked",
+        "project": project,
+        "project_slug": project_dir.name,
+        "project_dir": _rel(project_dir, repo),
+        "raw_dir": _rel(raw_dir, repo),
+        "carrier_kind": "transition_stream",
+        "substrate_class": str(rubric_data.get("substrate_class") or ""),
+        "requires_source_index": False,
+        "requires_compiled_evidence": False,
+        "source_count": len(rows),
+        "source_evidence_count": len(rows),
+        "untyped_source_count": 0,
+        "unsupported_file_count": 0,
+        "empty_file_count": 0,
+        "blocking": blocking,
+        "warnings": warnings,
+        "sources": rows,
+        "next_steps": [] if ok else ["Repair the canonical transition carrier before launch."],
+        "next_commands": [],
+        "non_actions": [
+            "does not call an LLM",
+            "does not compile transition rows as prose",
+            "does not inspect evaluation slices as admission evidence",
+            "does not launch autoresearch",
+        ],
+    }
+
+
+def check_evidence_project(
+    *,
+    project: str,
+    repo: Path = REPO,
+    rubric: str | Path | dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Dispatch evidence admission by the carrier's governing identity."""
+    repo = repo.resolve()
+    project_dir = project_dir_for(repo, project)
+    rubric_data = _rubric_payload(
+        rubric=rubric,
+        project_dir=project_dir,
+        repo=repo,
+    )
+    carrier_kind = str(rubric_data.get("evidence_carrier_kind") or "").strip()
+    substrate_class = str(rubric_data.get("substrate_class") or "").strip().lower()
+    if carrier_kind == "transition_stream" or substrate_class in _TRANSITION_CARRIER_CLASSES:
+        return _check_transition_project(
+            project=project,
+            project_dir=project_dir,
+            repo=repo,
+            rubric_data=rubric_data,
+        )
+    report = check_source_project(project=project, repo=repo)
+    report["carrier_kind"] = "source_documents"
+    report["substrate_class"] = substrate_class
+    report["requires_source_index"] = True
+    report["requires_compiled_evidence"] = True
+    return report
 
 
 def check_source_project(
@@ -217,6 +422,13 @@ def render_text(report: dict[str, Any]) -> str:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", required=True, help="Project slug or repo-relative projects/<slug> path.")
+    parser.add_argument(
+        "--rubric",
+        help=(
+            "Optional rubric name/path. When supplied, admission is dispatched "
+            "to the rubric's evidence-carrier contract."
+        ),
+    )
     parser.add_argument("--repo", type=Path, default=REPO, help="Repo root for tests or alternate checkouts.")
     parser.add_argument("--json", action="store_true", help="Emit JSON.")
     parser.add_argument(
@@ -231,7 +443,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        report = check_source_project(project=args.project, repo=args.repo)
+        report = (
+            check_evidence_project(
+                project=args.project,
+                repo=args.repo,
+                rubric=args.rubric,
+            )
+            if args.rubric
+            else check_source_project(project=args.project, repo=args.repo)
+        )
     except ValueError as exc:
         parser.error(str(exc))
     if args.json:

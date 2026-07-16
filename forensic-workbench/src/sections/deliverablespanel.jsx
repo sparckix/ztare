@@ -1,5 +1,5 @@
 import React from "react";
-import { displayText, Tag, EmptyState, StatusLine } from "../design-system.js";
+import { displayText, ActionButton, Tag, EmptyState, StatusLine } from "../design-system.js";
 
 const h = React.createElement;
 
@@ -41,13 +41,7 @@ function artifactState(d) {
 function generateResultLine(res, onPreview, onCheckDraft) {
   if (!res) return null;
   if (res.ok && res.generated) return h("div", { className: "deliverable-generated" },
-    h("span", null, "Checked draft created from the current decision."),
-    res.path && onPreview
-      ? h("button", { type: "button", className: "text-link", onClick: () => onPreview({ type: "file", value: res.path }) }, "Open checked draft")
-      : null,
-    res.path && onCheckDraft
-      ? h("button", { type: "button", className: "text-link", onClick: () => onCheckDraft(res.path) }, "Revise and trace")
-      : null);
+    h("span", null, "Checked draft created from the current decision."));
   if (res.ok) return h("p", { className: "muted" }, displayText(res.verdict || "Done."));
   return h("p", { className: "deliverable-error" }, displayText(res.action || res.status || "Can't generate this yet."));
 }
@@ -96,11 +90,14 @@ function deliverableRow(d, { canRun, busyName, results, onGenerate, busyEditoria
         ? d.generated && !d.stale
           ? h("div", { className: "deliverable-row-buttons" },
               d.path && onPreview
-                ? h("button", { type: "button", className: "chip ghost", onClick: () => onPreview({ type: "file", value: d.path }) }, "Open checked draft")
+                ? h(ActionButton, { variant: "quiet", onClick: () => onPreview({ type: "file", value: d.path }) }, "Open checked draft")
                 : null,
-              h("button", { type: "button", className: `chip primary ${shaping ? "is-busy" : ""}`,
+              d.path && onCheckDraft
+                ? h(ActionButton, { variant: "quiet", onClick: () => onCheckDraft(d.path) }, "Revise and trace")
+                : null,
+              h(ActionButton, { variant: "primary", busy: shaping,
                 disabled: !canRun || shaping, onClick: () => onEditorial(d.name) }, shaping ? "Shaping…" : "Shape for audience"))
-          : h("button", { type: "button", className: `chip ${busy ? "is-busy" : ""}`, disabled: !canRun || busy,
+          : h(ActionButton, { busy, disabled: !canRun || busy,
               onClick: () => onGenerate(d.name) }, busy ? "Creating…" : d.stale ? "Refresh draft" : "Create checked draft")
         : null),
     generateResultLine(results[d.name], onPreview, onCheckDraft),
@@ -118,7 +115,7 @@ function driftLine(drift) {
   return h(StatusLine, { tone: "warn" }, `Contract drift since run ${drift.latest_run_id}: ${clauses.join("; ")}`);
 }
 
-function produceResultLine(produce, onPreview, onCheckDraft) {
+function produceResultLine(produce) {
   if (!produce) return null;
   if (produce.running) return h("p", { className: "muted" }, "Creating the ready drafts…");
   if (produce.error) return h("p", { className: "decision-error" }, displayText(produce.error));
@@ -130,25 +127,12 @@ function produceResultLine(produce, onPreview, onCheckDraft) {
     h("p", { className: "muted" }, written.length
       ? `${written.length} checked draft${written.length === 1 ? "" : "s"} created from the current decision.`
       : "No drafts were ready to create."),
-    written.length && out.dir && onPreview
-      ? h("div", { className: "deliverable-produce-links" }, written.flatMap((name) => {
-          const path = `${out.dir}/${name}.md`;
-          return [
-            h("button", { key: `${name}:open`, type: "button", className: "text-link",
-              onClick: () => onPreview({ type: "file", value: path }) }, `Open ${readableName(name)}`),
-            onCheckDraft
-              ? h("button", { key: `${name}:trace`, type: "button", className: "text-link",
-                onClick: () => onCheckDraft(path) }, "Revise and trace")
-              : null,
-          ].filter(Boolean);
-        }))
-      : null,
     (out.violations || []).length
       ? h("p", { className: "decision-error" }, "Some document designs remain blocked by their backing requirements.")
       : null);
 }
 
-export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview, onManageDocuments, onCheckDraft }) {
+export function DeliverablesPanel({ project, liveMode, scenario = "", decisionFingerprint = "", onPreview, onManageDocuments, onCheckDraft }) {
   const canRun = liveMode && !!project;
   const [state, setState] = React.useState(null);
   const [busyName, setBusyName] = React.useState("");
@@ -176,7 +160,9 @@ export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview,
     } catch (e) { setProvenance({ ok: false, error: String(e) }); }
   }, [project, canRun]);
 
-  React.useEffect(() => { load(); }, [project, liveMode, scenario]);  // eslint-disable-line
+  // A confirmed evidence/test write recompiles the decision in place. Re-read here when that governed
+  // fingerprint moves so an open Verdict immediately marks affected drafts stale.
+  React.useEffect(() => { load(); }, [project, liveMode, scenario, decisionFingerprint]);  // eslint-disable-line
   React.useEffect(() => { loadProvenance(); }, [project, liveMode]);  // eslint-disable-line
 
   const produceAll = async () => {
@@ -195,8 +181,11 @@ export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview,
   const busy = !!(state && state.running);
   const prov = (provenance && provenance.ok && provenance.provenance) || null;
   const provenanceByName = {};
-  ((prov && prov.deliverables) || []).forEach((d) => { provenanceByName[d.name] = d; });
+  if (prov && prov.any_pinned) {
+    (prov.deliverables || []).forEach((d) => { provenanceByName[d.name] = d; });
+  }
   const readyCount = deliverables.filter((d) => d.status === "composable").length;
+  const pendingCount = deliverables.filter((d) => d.status === "composable" && (!d.generated || d.stale)).length;
 
   const generate = async (dname) => {
     if (!canRun) return;
@@ -228,7 +217,11 @@ export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview,
 
   return h(React.Fragment, null,
     h("div", { className: "deliverable-note" },
-      h("strong", null, "Documents from the current decision"),
+      h("div", { className: "deliverable-note-head" },
+        h("strong", null, "Documents from the current decision"),
+        onManageDocuments
+          ? h(ActionButton, { variant: "quiet", onClick: () => onManageDocuments() }, "Manage designs")
+          : null),
       h("p", null, "Each checked draft is bound to the decision state that produced it. A draft can preserve unresolved work; creating it does not make the decision ready to rely on. When the decision changes, refresh the draft before using it.")),
 
     !canRun ? h("p", { className: "muted" }, "Open a project first (documents use its current checked decision).") : null,
@@ -236,7 +229,7 @@ export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview,
     data && data.ok === false ? h("p", { className: "muted" }, displayText(data.error) || "Run this project first.") : null,
 
     prov && !prov.any_pinned
-      ? h("p", { className: "muted" }, "Source history starts with the first checked run — these labels are not a verdict on a project that has not been pressure-tested yet.")
+      ? h("p", { className: "muted" }, "Document provenance begins with the first pressure-test. Until then, designs have no before-or-after status.")
       : null,
     provenance && provenance.ok ? driftLine(provenance.drift) : null,
 
@@ -251,21 +244,16 @@ export function DeliverablesPanel({ project, liveMode, scenario = "", onPreview,
 
     busy ? h("p", { className: "muted" }, "Loading…") : null,
 
-    liveMode
+    liveMode && pendingCount
       ? h("div", { className: "deliverable-actions" },
           h("div", { className: "deliverable-actions-copy" },
-            h("strong", null, "Create the current document set"),
-            h("p", null, readyCount
-              ? `${readyCount} document design${readyCount === 1 ? " can" : "s can"} assemble a checked draft.`
-              : "No document designs are ready to create yet.")),
+            h("strong", null, pendingCount === 1 ? "One draft needs creating" : `${pendingCount} drafts need creating`),
+            h("p", null, `${readyCount} document design${readyCount === 1 ? " is" : "s are"} backed by the current decision.`)),
           h("div", { className: "deliverable-actions-buttons" },
-            onManageDocuments
-              ? h("button", { type: "button", className: "chip ghost", onClick: () => onManageDocuments() }, "Manage document designs")
-              : null,
-            h("button", { type: "button", className: `chip primary ${produce && produce.running ? "is-busy" : ""}`,
+            h(ActionButton, { variant: "primary", busy: Boolean(produce && produce.running),
               disabled: !canRun || !readyCount || (produce && produce.running), onClick: produceAll,
               title: "Create every document that is ready from the same checked decision state" },
-              produce && produce.running ? "Creating…" : "Create ready drafts")),
-          produceResultLine(produce, onPreview, onCheckDraft))
+              produce && produce.running ? "Creating…" : pendingCount === 1 ? "Create draft" : "Create ready drafts")),
+          produceResultLine(produce))
       : null);
 }

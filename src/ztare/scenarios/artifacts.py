@@ -228,7 +228,8 @@ def _selftest() -> int:
     ann_gs = GovernedState(
         [GovernedElement("c1", "claim", "Feature X lifts activation by 3-5% under bounded evidence E."),
          GovernedElement("e1", "evidence", "Interview cohort n=12; 9 cited the missing step."),
-         GovernedElement("c2", "claim", "The migration is a two-way door.")],
+         GovernedElement("c2", "claim", "The migration is a two-way door."),
+         GovernedElement("f9", "evidence", "The migration cannot be rolled back after conversion.")],
         [GovernedEdge("e1", "SUPPORTS", "c1"), GovernedEdge("f9", "CONTRADICTS", "c2")])
     prd = ("Feature X lifts activation by 3-5% under bounded evidence E. "  # aligns c1, SUPPORTS ⇒ BACKED
            "The migration is a two-way door. "                             # aligns c2, CONTRADICTS in-edge ⇒ CONTRADICTED

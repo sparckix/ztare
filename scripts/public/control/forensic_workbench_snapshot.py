@@ -116,7 +116,7 @@ def intake_source_for_path(project: str, intake: str | Path | None) -> str:
     return "unknown_intake_source"
 
 
-def list_project_entries() -> list[dict[str, Any]]:
+def list_project_entries(*, project_names: set[str] | None = None) -> list[dict[str, Any]]:
     entries_by_case: dict[str, dict[str, Any]] = {}
     local_projects: set[str] = set()
 
@@ -265,12 +265,18 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["report_contract"] = rel(report_contract)
 
     for project, path in public_example_intakes():
-        upsert_project_entry(project, rel(path), source="public_example_intake")
+        if project_names is None or project in project_names:
+            upsert_project_entry(project, rel(path), source="public_example_intake")
 
     projects_dir = REPO / "projects"
     if not projects_dir.exists():
         return [entries_by_case[key] for key in sorted(entries_by_case)]
-    for project_dir in sorted(path for path in projects_dir.iterdir() if path.is_dir()):
+    project_dirs = (
+        sorted(path for path in projects_dir.iterdir() if path.is_dir())
+        if project_names is None
+        else [projects_dir / name for name in sorted(project_names) if (projects_dir / name).is_dir()]
+    )
+    for project_dir in project_dirs:
         project = project_dir.name
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", project):
             continue
@@ -288,7 +294,11 @@ def list_project_entries() -> list[dict[str, Any]]:
     ]
 
 
-def list_project_folders(project_entries: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+def list_project_folders(
+    project_entries: list[dict[str, Any]] | None = None,
+    *,
+    project_names: set[str] | None = None,
+) -> list[dict[str, Any]]:
     projects_dir = REPO / "projects"
     if not projects_dir.exists():
         return []
@@ -298,7 +308,12 @@ def list_project_folders(project_entries: list[dict[str, Any]] | None = None) ->
         if entry.get("project")
     }
     folders: list[dict[str, Any]] = []
-    for project_dir in sorted(path for path in projects_dir.iterdir() if path.is_dir()):
+    project_dirs = (
+        sorted(path for path in projects_dir.iterdir() if path.is_dir())
+        if project_names is None
+        else [projects_dir / name for name in sorted(project_names) if (projects_dir / name).is_dir()]
+    )
+    for project_dir in project_dirs:
         project = project_dir.name
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", project):
             continue

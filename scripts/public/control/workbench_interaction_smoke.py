@@ -12,6 +12,7 @@ import argparse
 import json
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 
 
@@ -78,6 +79,23 @@ def main() -> int:
     ]:
         d = _get(base, path)
         ok(name, bool(d.get(field)) or (field == "nodes" and isinstance(d.get("nodes"), list)), d.get("error", ""))
+
+    print("== existing project — document actions ==")
+    documents = _post(base, "/api/scenario-deliverables", {"project": p})
+    ok("document designs load", documents.get("ok") is True, documents.get("error", ""))
+    generated = [row for row in documents.get("deliverables", []) if row.get("generated")]
+    ok("generated documents expose an artifact", bool(generated), "no generated document available to exercise")
+    for row in generated:
+        artifact_path = str(row.get("path") or "")
+        safe_path = bool(artifact_path) and not artifact_path.startswith("/") and ".." not in artifact_path
+        ok(f"{row.get('name')} uses a repository-relative path", safe_path, artifact_path)
+        if safe_path:
+            preview = _get(base, f"/api/file?path={urllib.parse.quote(artifact_path, safe='')}")
+            ok(
+                f"{row.get('name')} opens in the shared viewer",
+                preview.get("ok") is True and bool(preview.get("text")),
+                preview.get("error", "empty preview"),
+            )
 
     print("== existing project — LeanMill reads ==")
     d = _get(base, f"/api/leanmill?project={p}")

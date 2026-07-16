@@ -1,6 +1,7 @@
 import React from "react";
 import { Activity, CheckCircle2, AlertTriangle, Clock3, ArrowRight, RefreshCw } from "lucide-react";
-import { displayMessage, displayText, Tag } from "../design-system.js";
+import { displayMessage, displayText, IconButton, SectionHeader, Tag } from "../design-system.js";
+import { campaignIsLive } from "../campaign-status.js";
 
 const h = React.createElement;
 const LIVE = new Set(["queued", "running", "claimed", "active", "in_progress"]);
@@ -10,8 +11,8 @@ function tone(status) {
   const value = String(status || "").toLowerCase();
   if (LIVE.has(value)) return "accent";
   if (/complete|success|verified|frozen/.test(value)) return "ok";
-  if (/fail|error|unreadable|blocked/.test(value)) return "danger";
-  if (/stop|interrupt|stale|budget/.test(value)) return "warn";
+  if (/fail|error|unreadable/.test(value)) return "danger";
+  if (/block|stop|interrupt|stale|budget/.test(value)) return "warn";
   return "neutral";
 }
 
@@ -42,7 +43,7 @@ function campaignRows(payload) {
     label: row.campaign_id ? `Campaign ${String(row.campaign_id).slice(0, 12)}` : "Axiom discovery campaign",
     detail: row.attempt_dir,
     status: row.status || (row.run && row.run.status) || "unknown",
-    lease_active: Boolean(row.attempt_lease && row.attempt_lease.active),
+    lease_active: campaignIsLive(row),
     updated_at: (row.attempt_lease && (row.attempt_lease.heartbeat_at || row.attempt_lease.queue_updated_at)) || "",
     destination: ["leanmill", "Axiom discovery"],
   }));
@@ -64,14 +65,17 @@ function leanMillRows(payload) {
 }
 
 function projectRows(jobs) {
-  return (Array.isArray(jobs) ? jobs : []).map((row, index) => ({
-    ...row,
-    id: `project:${row.id || index}`,
-    lane: "Autoresearch",
-    label: row.label || displayText(row.kind || "Project run"),
-    detail: row.message || row.project || "Project background job",
-    destination: ["run", "Ready to run"],
-  }));
+  return (Array.isArray(jobs) ? jobs : []).map((row, index) => {
+    const evidenceFetch = row.kind === "evidence_fetch";
+    return {
+      ...row,
+      id: `project:${row.id || index}`,
+      lane: evidenceFetch ? "Evidence" : "Autoresearch",
+      label: row.label || displayText(row.kind || "Project run"),
+      detail: row.message || (row.context && row.context.target) || row.project || "Project background job",
+      destination: evidenceFetch ? ["sources", "Prepare files"] : ["run", "Ready to run"],
+    };
+  });
 }
 
 function JobRow({ row, onOpenDetail, isNew = false }) {
@@ -79,7 +83,7 @@ function JobRow({ row, onOpenDetail, isNew = false }) {
   const rowTone = tone(row.status);
   const Icon = live ? Activity : rowTone === "ok" ? CheckCircle2 : rowTone === "danger" ? AlertTriangle : Clock3;
   return h("li", { className: `job-shelf-row${live ? " is-live" : ""}` },
-    h("span", { className: "job-shelf-icon", "aria-hidden": "true" }, h(Icon, { size: 17, strokeWidth: 1.8 })),
+    h("span", { className: `job-shelf-icon tone-${rowTone}`, "aria-hidden": "true" }, h(Icon, { size: 17, strokeWidth: 1.8 })),
     h("div", { className: "job-shelf-copy" },
       h("div", null,
         h("strong", null, displayMessage(row.label)),
@@ -87,7 +91,7 @@ function JobRow({ row, onOpenDetail, isNew = false }) {
         h(Tag, { tone: rowTone }, live ? "in progress" : displayText(row.status || "unknown"))),
       h("p", null, displayMessage(row.detail)),
       h("small", null, `${row.lane} · ${timeLabel(row)}`)),
-    h("button", { type: "button", className: "icon-button", title: `Open ${row.lane}`, "aria-label": `Open ${row.label || row.lane}`,
+    h(IconButton, { label: `Open ${row.label || row.lane}`,
       onClick: () => onOpenDetail && onOpenDetail(row.destination[0], row.destination[1]) },
       h(ArrowRight, { size: 17, "aria-hidden": "true" })));
 }
@@ -133,17 +137,14 @@ export function JobShelf({ liveMode, projectJobs, onOpenDetail }) {
   const newCount = lastVisit ? recent.filter((row) => timestampMs(row) > lastVisit).length : 0;
 
   return h("section", { className: "job-shelf", "aria-label": "Background activity" },
-    h("header", { className: "job-shelf-head" },
-      h("div", null,
-        h("h2", null, "Background activity"),
-        h("p", null, "Long research and proof work continues outside this page. Return here to see the last durable state and resume in the lane that owns it.")),
-      h("button", { type: "button", className: `icon-button${loading ? " is-busy" : ""}`, disabled: !liveMode || loading,
-        title: "Refresh activity", "aria-label": "Refresh activity", onClick: refresh },
-        h(RefreshCw, { size: 16, "aria-hidden": "true" }))),
+    h(SectionHeader, { className: "job-shelf-head", title: "Background activity",
+      description: "Long research and proof work continues outside this page. Return here to see the last durable state and resume in the lane that owns it.",
+      actions: h(IconButton, { label: "Refresh activity", busy: loading, disabled: !liveMode || loading, onClick: refresh },
+        h(RefreshCw, { size: 16, "aria-hidden": "true" })) }),
     active.length
       ? h("section", { className: "job-shelf-group" }, h("div", { className: "job-shelf-group-head" }, h("h3", null, "In progress"), h("span", null, `${active.length} active`)),
           h("ul", null, active.map((row) => h(JobRow, { key: row.id, row, onOpenDetail }))))
-      : h("div", { className: "job-shelf-empty" }, h(CheckCircle2, { size: 19, "aria-hidden": "true" }), h("div", null, h("strong", null, "No work is currently running"), h("p", null, "New pressure-tests, proof jobs, and discovery campaigns will appear here."))),
+      : h("div", { className: "job-shelf-empty" }, h(CheckCircle2, { size: 19, "aria-hidden": "true" }), h("div", null, h("strong", null, "No work is currently running"), h("p", null, "Research runs, evidence recovery, proof jobs, and discovery campaigns will appear here."))),
     recent.length
       ? h("section", { className: "job-shelf-group" },
           h("div", { className: "job-shelf-group-head" },

@@ -343,7 +343,7 @@
       "judge_fallback_used": false,
       "dynamic_committee": false,
       "primitive_support": false,
-      "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+      "evidence_path": "projects/eu_union_failure_probability_2035/evidence.txt",
       "evidence_fingerprint": "b406c9e9696c7533",
       "project_forecast_type": "probabilistic_forecast"
     },
@@ -358,7 +358,7 @@
     "rubric_fingerprint": "7e20f6dadeee6028",
     "dynamic_committee": false,
     "primitive_support": false,
-    "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+    "evidence_path": "projects/eu_union_failure_probability_2035/evidence.txt",
     "evidence_fingerprint": "b406c9e9696c7533"
   },
   "project_forecast_type": "probabilistic_forecast",

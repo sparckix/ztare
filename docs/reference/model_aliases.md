@@ -11,6 +11,13 @@ internally calls `resolve_model_id()` from
 `src/ztare/common/llm_runtime.py`. If you pass an unrecognised alias the loader
 raises `ValueError: Unsupported model family`.
 
+Subscription-agent dispatch needs no API provider package. Install the
+autoresearch/scientific stack with `ztare[research]`. API calls load their
+transport lazily: install `ztare[google]`, `ztare[anthropic]`, or `ztare[openai]`
+for that provider, or `ztare[providers]` for all three. DeepSeek, Kimi, and Grok
+use the OpenAI-compatible transport and therefore require `ztare[openai]` when
+called through an API.
+
 ## Canonical alias to resolved model ID
 
 | CLI flag value | Resolved model ID (mutator/judge) | Resolved Director ID | Provider |

@@ -2668,7 +2668,7 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         _cmd_autoresearch_router,
     ),
     "forensic-workbench": (
-        "Local project workbench: project-state | brief-edit | source-file | source-action | report-action | run-project-check | apply-review | save-next-step | save-charter | save-project-file | save-research-map | save-scoring-guide | settings.",
+        "Local project workbench: project-state | brief-edit | source-file | source-action | report-action | run-project-check | apply-review | save-next-step | save-charter | save-project-file | save-research-map | save-scoring-guide | record-evidence-fetch | settings.",
         _make_verb_router(
             "forensic-workbench",
             {
@@ -2685,6 +2685,7 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
                 "save-project-file": "forensic_workbench_project_file.py",
                 "save-research-map": "forensic_workbench_research_map.py",
                 "save-scoring-guide": "forensic_workbench_scoring_guide.py",
+                "record-evidence-fetch": "forensic_workbench_evidence_fetch.py",
                 "settings": "forensic_workbench_settings.py",
             },
         ),

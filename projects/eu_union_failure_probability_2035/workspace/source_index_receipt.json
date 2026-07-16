@@ -12,7 +12,7 @@
   "reused_sources": 20,
   "schema": "ztare-source-index-receipt-v1",
   "source_count": 20,
-  "source_index": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/source_index.json",
+  "source_index": "projects/eu_union_failure_probability_2035/workspace/source_index.json",
   "source_index_sha256": "c1c871641fa456d793a6a987ca2955ba06daa4cfc814546b4460fad7ed3b4410",
   "sources": [
     {
@@ -160,6 +160,6 @@
   "warnings": [
     "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped."
   ],
-  "workspace_meta": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/workspace_meta.json",
+  "workspace_meta": "projects/eu_union_failure_probability_2035/workspace/workspace_meta.json",
   "workspace_meta_sha256": "297de5e2446a0f79f1060476d41a4e882f341150f9eeda75ff123008b9ce1e1a"
 }

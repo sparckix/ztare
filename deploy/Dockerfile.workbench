@@ -51,6 +51,7 @@ COPY analytics/public/action_intelligence ./analytics/public/action_intelligence
 
 # Built frontend from stage 1 (dist/ only exists in the web stage).
 COPY --from=web /app/forensic-workbench/dist ./forensic-workbench/dist
+COPY forensic-workbench/public-projects.json ./forensic-workbench/public-projects.json
 
 # Job-state dir the workbench writes into at runtime (its parent tree is not
 # copied in).

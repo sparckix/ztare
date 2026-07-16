@@ -140,9 +140,9 @@ tenant notification provider as part of the generic kernel.
 - [`analysis/`](analysis/) - 1 file(s)
 - [`concepts/`](concepts/) - 43 file(s)
 - [`evidence_atlas/`](evidence_atlas/) - 17 file(s)
-- [`guides/`](guides/) - 15 file(s)
+- [`guides/`](guides/) - 16 file(s)
 - [`landings/`](landings/) - 2 file(s)
-- [`reference/`](reference/) - 5 file(s)
+- [`reference/`](reference/) - 6 file(s)
 
 **Documents**
 

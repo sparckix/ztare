@@ -36,6 +36,7 @@ tenant overlay.
 | `ztare leanmill <verb> …` | LeanMill governed proof search: station control, source review, proof audit, harness runs | `scripts/public/control/leanmill/` |
 | `ztare research <verb> …` | Advisory research scaffold: eigenquestion (the question that matters most), isomorphism (what is this like) | `src/ztare/research_director/` |
 | `ztare rubric <verb> …` | Pre-run rubric critique: gaming-surface coverage, evidence anchors, score-ceiling reachability, criterion independence, persona blind spots | `src/ztare/rubrics/review_rubric.py` |
+| `ztare scenario <verb> …` | Scenario manifests and governed artifact tools: inspect, validate, run, surface, annotate, reingest, and decision-support operations | `src/ztare/scenarios/cli.py` plus the shared autoresearch run route |
 | `ztare bundle <verb> …` | Sealed-bundle run / verify | `bundle_run.py`, `bundle_verify.py` |
 | `ztare charter …` | Project-charter commit | `charter_commit.py` |
 | `ztare routine-review …` | RD routine reviews | `rd_routine_review.py` |
@@ -44,11 +45,12 @@ tenant overlay.
 | `ztare forensic-workbench …` | Local Project Workbench state, review receipts, and saved next steps | `forensic_workbench_state.py`, `forensic_workbench_review.py`, `forensic_workbench_action.py` |
 | `ztare project ...` | Public project userland before run readiness: walkthrough, source files/checks, evidence-output binding, project-local checks, create, prepare, seal, intake, optional prep ledger | `generate_substrate.py` + `Makefile` targets + workspace modules + `substrate_queue.py` |
 | `ztare synth ...` | Build or refresh a project report support contract and synthesis outputs | `src/ztare/synthesis/synthesize.py` |
-| `ztare card build|verify|open ...` | Build or verify a portable project claim card from the synthesis contract | `src/ztare/workspace/claim_card.py`; optional wrapper `scripts/public/control/claim_card.py` |
+| `ztare card build|verify|open ...` | Build or verify a portable project claim card from the synthesis contract; `build --format all --record` also writes its Workbench receipt | `src/ztare/workspace/claim_card.py`; optional wrapper `scripts/public/control/claim_card.py` |
 | `ztare substrate …` | Compatibility namespace for the same project/data surface commands | same implementation as `ztare project …` |
 | `ztare eigenquestion …` | Advisory eigenquestion proposal + explored-class evidence lint | `eigenquestion_generator.py` |
 | `ztare mine …` | Weekly reflexive-mining orchestrator | `reflexive_mining_weekly.py` |
 | `ztare primitive …` | Primitive catalog / amnesia health checks | `Makefile` + `primitive_amnesia` |
+| `ztare pde <verb> …` | PDE subkernel status, requirements, operations, estimates, receipts, gates, work orders, context, knowledge, and formal-surface tools | `src/ztare/pde/cli.py` |
 | `ztare audit …` | Gate, coverage, graph-capability, forecast-capability, and move-card routing audits | selected `Makefile` targets and report modules |
 | `ztare arch-validate …` | Architecture-map drift checks | selected `Makefile` targets |
 | `ztare version` | Version, git commit, and Python version | package metadata + git |

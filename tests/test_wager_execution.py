@@ -52,6 +52,8 @@ def test_project_outcome_preview_then_execute(monkeypatch, tmp_path):
     assert receipt["status"] == "executed"
     assert receipt["wager"]["resolved_outcome"] == "confirmed"
     assert receipt["decision_delta"] == preview["decision_delta"]
+    assert receipt["decision_history"]["graph"]["hash"]
+    assert (tmp_path / "projects" / "demo" / "workspace" / "strength_history.jsonl").is_file()
     assert len(appended) == 1
     assert appended[0][2][0]["id"] == "ev_confirmed"
     assert appended[0][3][0]["kind"] == "SUPPORTS"

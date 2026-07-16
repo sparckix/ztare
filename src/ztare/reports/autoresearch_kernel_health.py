@@ -138,10 +138,12 @@ def _primitive_miss_queue(repo: Path) -> dict[str, Any]:
     )
 
 
-def _source_preflight(*, repo: Path, project: str) -> dict[str, Any]:
-    from ztare.scaffold.source_check import check_source_project
+def _source_preflight(
+    *, repo: Path, project: str, rubric: str | Path | None = None
+) -> dict[str, Any]:
+    from ztare.scaffold.source_check import check_evidence_project
 
-    return check_source_project(project=project, repo=repo)
+    return check_evidence_project(project=project, repo=repo, rubric=rubric)
 
 
 def _project_trace(
@@ -299,6 +301,7 @@ def _kernel_entry_receipt_change_issues(
 
 
 def _evidence_readiness_summary(trace_surfaces: dict[str, Any]) -> dict[str, Any]:
+    ready_statuses = {"", "fresh", "not_required_for_carrier"}
     source_index = (
         trace_surfaces.get("source_index_freshness")
         if isinstance(trace_surfaces.get("source_index_freshness"), dict)
@@ -328,11 +331,11 @@ def _evidence_readiness_summary(trace_surfaces: dict[str, Any]) -> dict[str, Any
     )
     replay_ok = bool(replay.get("ok")) if replay_required else True
     status = "fresh"
-    if str(source_index.get("status") or "") not in {"", "fresh"}:
+    if str(source_index.get("status") or "") not in ready_statuses:
         status = "blocked"
-    if str(compile_freshness.get("status") or "") not in {"", "fresh"}:
+    if str(compile_freshness.get("status") or "") not in ready_statuses:
         status = "blocked"
-    if str(output_binding.get("status") or "") not in {"", "fresh"}:
+    if str(output_binding.get("status") or "") not in ready_statuses:
         status = "blocked"
     if replay_required and not replay_ok:
         status = "blocked"
@@ -446,23 +449,44 @@ def build_autoresearch_kernel_health(
     mechanism_summary = dict(mechanism.get("summary") or {})
     evidence_counts = dict(mechanism_summary.get("evidence_status_counts") or {})
     unobserved = int(evidence_counts.get("unobserved_in_scope") or 0)
+    consequence_counts = dict(
+        mechanism_summary.get("consequence_status_counts") or {}
+    )
+    unverified_consequences = int(
+        consequence_counts.get("artifact_present_unverified") or 0
+    )
     not_triggered = int(evidence_counts.get("not_triggered") or 0)
     placeholder_only = int(mechanism_summary.get("placeholder_only_count") or 0)
     decorative = int(mechanism_summary.get("intrinsic_decorative_count") or 0)
     components.append(
         _component(
             component="mechanism_consequences",
-            status="ok" if unobserved == 0 and placeholder_only == 0 and decorative == 0 else "needs_attention",
+            status=(
+                "ok"
+                if (
+                    unobserved == 0
+                    and unverified_consequences == 0
+                    and placeholder_only == 0
+                    and decorative == 0
+                )
+                else "needs_attention"
+            ),
             summary={
                 "mechanism_count": mechanism_summary.get("mechanism_count", 0),
                 "evidence_status_counts": evidence_counts,
+                "consequence_status_counts": consequence_counts,
+                "unverified_consequence_count": unverified_consequences,
                 "evidence_quality_counts": mechanism_summary.get("evidence_quality_counts", {}),
                 "not_triggered_count": not_triggered,
                 "intrinsic_decorative_count": decorative,
                 "placeholder_only_count": placeholder_only,
             },
-            action="inspect unobserved, placeholder-only, or decorative mechanisms in the consequence audit"
-            if unobserved or placeholder_only or decorative
+            action=(
+                "replace artifact-presence evidence with paired consequence routes"
+                if unverified_consequences
+                else "inspect unobserved, placeholder-only, or decorative mechanisms in the consequence audit"
+            )
+            if unobserved or unverified_consequences or placeholder_only or decorative
             else "no action",
             next_command=_make_command(
                 "autoresearch-consequence-audit",
@@ -576,7 +600,11 @@ def build_autoresearch_kernel_health(
 
     if project:
         try:
-            source_preflight = _source_preflight(repo=repo, project=project)
+            source_preflight = _source_preflight(
+                repo=repo,
+                project=project,
+                rubric=rubric,
+            )
         except Exception as exc:  # noqa: BLE001
             source_preflight = {
                 "ok": False,
@@ -601,6 +629,12 @@ def build_autoresearch_kernel_health(
                 summary={
                     "ok": source_ok,
                     "status": source_preflight.get("status"),
+                    "carrier_kind": source_preflight.get("carrier_kind"),
+                    "substrate_class": source_preflight.get("substrate_class"),
+                    "requires_source_index": source_preflight.get("requires_source_index"),
+                    "requires_compiled_evidence": source_preflight.get(
+                        "requires_compiled_evidence"
+                    ),
                     "source_count": source_preflight.get("source_count", 0),
                     "source_evidence_count": source_preflight.get("source_evidence_count", 0),
                     "untyped_source_count": source_preflight.get("untyped_source_count", 0),
@@ -614,12 +648,18 @@ def build_autoresearch_kernel_health(
                     "source_type_map": source_preflight.get("source_type_map"),
                 },
                 action=(
-                    "fix raw source typing before workspace update or evidence compilation"
+                    "repair the admitted evidence carrier before kernel entry"
                     if not source_ok
                     else "no action"
                 ),
                 next_command=(
-                    f"ztare project source-check --project {shlex.quote(str(project))} --json"
+                    f"ztare project source-check --project {shlex.quote(str(project))}"
+                    + (
+                        f" --rubric {shlex.quote(str(rubric))}"
+                        if rubric
+                        else ""
+                    )
+                    + " --json"
                     if not source_ok
                     else _make_command("evidence-prepare", PROJECT=project, MODEL=os.environ.get("ZTARE_MODEL", ""))
                 ),
@@ -955,10 +995,21 @@ def build_autoresearch_kernel_health(
         if post_control_windows
         else None
     )
+    low_control_success = (
+        control_episode_count >= CONTROL_OUTCOME_MIN_EVENTS
+        and post_control_episode_success_rate is not None
+        and float(post_control_episode_success_rate) < CONTROL_OUTCOME_MIN_SUCCESS_RATE
+    )
+    high_control_no_followup = (
+        control_episode_count >= CONTROL_OUTCOME_MIN_EVENTS
+        and post_control_episode_no_followup_rate is not None
+        and post_control_episode_no_followup_rate > CONTROL_OUTCOME_MAX_NO_FOLLOWUP_RATE
+    )
+    weak_control_outcomes = low_control_success or high_control_no_followup
     components.append(
         _component(
             component="hill_climb_controls",
-            status="needs_attention" if control_due else "ok",
+            status="needs_attention" if control_due or weak_control_outcomes else "ok",
             summary={
                 "workspace_count": hill.get("workspace_count", 0),
                 "stagnant_workspace_count": hill.get("stagnant_workspace_count", 0),
@@ -998,8 +1049,12 @@ def build_autoresearch_kernel_health(
                 ),
                 "control_episode_recovery_queue": control_episode_recovery_queue[:5],
             },
-            action="inspect workspaces where stagnation had no active breadth-control evidence"
-            if control_due
+            action=(
+                "inspect controls whose follow-up consequence rate is below the configured floor"
+                if weak_control_outcomes
+                else "inspect workspaces where stagnation had no active breadth-control evidence"
+            )
+            if control_due or weak_control_outcomes
             else "no action",
             next_command=_make_command(
                 "autoresearch-hillclimb-audit",
@@ -1068,16 +1123,6 @@ def build_autoresearch_kernel_health(
     subscription_outcomes = _subscription_outcomes(repo=repo, project=project)
     evidence_gaps: list[dict[str, Any]] = []
     coverage_opportunities: list[dict[str, Any]] = []
-    low_control_success = (
-        control_episode_count >= CONTROL_OUTCOME_MIN_EVENTS
-        and post_control_episode_success_rate is not None
-        and float(post_control_episode_success_rate) < CONTROL_OUTCOME_MIN_SUCCESS_RATE
-    )
-    high_control_no_followup = (
-        control_episode_count >= CONTROL_OUTCOME_MIN_EVENTS
-        and post_control_episode_no_followup_rate is not None
-        and post_control_episode_no_followup_rate > CONTROL_OUTCOME_MAX_NO_FOLLOWUP_RATE
-    )
     if low_control_success or high_control_no_followup:
         evidence_gaps.append(
             {

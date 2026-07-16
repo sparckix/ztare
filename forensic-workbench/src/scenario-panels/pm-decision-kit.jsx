@@ -1,9 +1,10 @@
 import React from "react";
 import { RefreshCw } from "lucide-react";
 import {
-  displayText, Block, EmptyState, StatusLine,
+  displayText, ActionButton, Block, EmptyState, IconButton, StatusLine,
   ScenarioSurface, ScenarioGrid, ScenarioColumn, ScenarioList, ScenarioListItem,
 } from "../design-system.js";
+import { decisionTestContext } from "../sections/wagerpanel.jsx";
 
 const h = React.createElement;
 
@@ -21,12 +22,14 @@ export const scenarioPanel = Object.freeze({
       { id: "refresh", mode: "read" },
       { id: "open-decision-test", mode: "navigate" },
       { id: "open-handoffs", mode: "navigate" },
+      { id: "create-handoff", mode: "write" },
+      { id: "open-handoff", mode: "read" },
     ],
   },
 });
 
 const ARTIFACTS = [
-  { name: "leadership_packet", label: "Leadership brief", description: "Executive claim, evidence, scope, risks, and what would change the call." },
+  { name: "leadership_brief", label: "Leadership brief", description: "Executive claim, evidence, scope, risks, and what would change the call." },
   { name: "roadmap_backing", label: "Roadmap with backing", description: "Roadmap claims with recorded dependencies, risks, and resequencing triggers." },
   { name: "bet_registry", label: "Decision-test register", description: "Open tests and their settlement conditions from the same decision agenda." },
   { name: "tradeoff_register", label: "Trade-off register", description: "Tensions, constraints, and the claims they put under pressure." },
@@ -65,8 +68,9 @@ function handoffStatus(row, loading) {
   return { tone: "neutral", label: displayText(row.status || "waiting") };
 }
 
-export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioConfig, onDecisionRefresh, onAgendaRefresh, onOpenDetail }) {
+export function PMDecisionKit({ project, liveMode, decision, agenda, wagers, scenarioConfig, onDecisionRefresh, onAgendaRefresh, onOpenDetail, onPrefillDecisionTest, onExecuteDecisionTest, onPreview }) {
   const [state, setState] = React.useState({ running: false, data: null, error: "" });
+  const [handoffAction, setHandoffAction] = React.useState({ name: "", error: "", message: "" });
 
   const scenarioName = String((scenarioConfig && scenarioConfig.name) || "");
   const artifactDescriptors = ((scenarioConfig && scenarioConfig.deliverable_specs) || []).length
@@ -103,6 +107,26 @@ export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioCon
     if (onAgendaRefresh) onAgendaRefresh();
   };
 
+  const createHandoff = async (name, stale) => {
+    if (!liveMode || !project || !name || handoffAction.name) return;
+    setHandoffAction({ name, error: "", message: "" });
+    try {
+      const response = await fetch("/api/scenario-deliverable-generate", {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ project, name, scenario: scenarioName }),
+      });
+      const payload = await response.json();
+      if (!response.ok || payload.ok === false) {
+        throw new Error(payload.action || payload.error || "checked draft could not be created");
+      }
+      setHandoffAction({ name: "", error: "", message: stale ? "Checked draft refreshed from the current decision." : "Checked draft created from the current decision." });
+      await load();
+    } catch (error) {
+      setHandoffAction({ name: "", error: String(error.message || error), message: "" });
+    }
+  };
+
   const stateData = state.data || {};
   const rowsByName = Object.fromEntries((stateData.deliverables || []).map((row) => [row.name, row]));
   const deliverableRows = artifactDescriptors.map((descriptor) => rowsByName[descriptor.name]).filter(Boolean);
@@ -111,19 +135,20 @@ export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioCon
   const readyCount = deliverableRows.filter((row) => row.status === "composable" && !row.stale).length;
   const compiled = coreDecision(decision);
   const next = coreAgenda(agenda).find((row) => row && row.test) || null;
+  const nextAction = decisionTestContext(agenda, wagers, next && next.claim_ref);
   const hasProject = liveMode && !!project;
   const status = String(compiled.status || "").toUpperCase();
   const headline = compiled.headline || compiled.reason || (status ? displayText(status) : "Decision state is loading");
-  const packetDecision = stateData.decision || {};
-  const packetStatus = String(packetDecision.status || "").toUpperCase();
-  const decisionBlocked = packetStatus === "BLOCKED";
+  const handoffDecision = stateData.decision || {};
+  const handoffStatusValue = String(handoffDecision.status || "").toUpperCase();
+  const decisionBlocked = handoffStatusValue === "BLOCKED";
   const handoffTone = staleCount || decisionBlocked ? "warn" : "ok";
 
   return h(Block, {
     title: "PM decision kit",
     lead: "A scenario view over the current decision: see the call, choose the next test, and prepare only current handoffs.",
-    actions: h("button", { type: "button", className: `icon-button ${state.running ? "is-busy" : ""}`, disabled: !hasProject || state.running,
-      onClick: refresh, title: "Refresh the decision kit", "aria-label": "Refresh PM decision kit" }, h(RefreshCw, { size: 16, "aria-hidden": "true" })),
+    actions: h(IconButton, { label: "Refresh PM decision kit", busy: state.running,
+      disabled: !hasProject || state.running, onClick: refresh }, h(RefreshCw, { size: 16, "aria-hidden": "true" })),
   },
     !hasProject ? h(EmptyState, { text: "Open a project to compile the PM decision kit." }) : null,
     state.error ? h("p", { className: "decision-error", role: "alert" }, displayText(state.error)) : null,
@@ -145,12 +170,19 @@ export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioCon
                       next.cost != null ? `declared effort ${next.cost}` : "effort not declared",
                       next.on_frontier ? "best tradeoff" : "",
                     ].filter(Boolean).join(" · ")),
-                    onOpenDetail ? h("button", { type: "button", className: "text-link", onClick: () => onOpenDetail("review", "Things to review") }, "Open the test →") : null)
+                    h("button", { type: "button", className: "text-link",
+                      onClick: () => nextAction.mode === "record" && onExecuteDecisionTest
+                        ? onExecuteDecisionTest(nextAction.wager)
+                        : nextAction.mode === "define" && onPrefillDecisionTest
+                          ? onPrefillDecisionTest(nextAction.row)
+                          : onOpenDetail && onOpenDetail("review", "Things to review") },
+                      nextAction.mode === "record" ? "Record outcome"
+                        : nextAction.mode === "define" ? "Define this test" : "Review this test"))
                 : h("p", { className: "muted" }, "No admitted next test is available yet.")),
             h(ScenarioColumn, {
               eyebrow: "Decision posture",
-              title: !packetDecision.fingerprint ? "Waiting for decision state" : decisionBlocked ? "Decision still blocked" : "Decision current",
-              description: !packetDecision.fingerprint
+              title: !handoffDecision.fingerprint ? "Waiting for decision state" : decisionBlocked ? "Decision still blocked" : "Decision current",
+              description: !handoffDecision.fingerprint
                 ? "Handoffs stay blocked until the decision is readable."
                 : decisionBlocked
                   ? `${(stateData.compose_now || []).length} handoff${(stateData.compose_now || []).length === 1 ? " can" : "s can"} assemble as checked drafts, but unresolved work still prevents a reliance-ready handoff.`
@@ -164,7 +196,7 @@ export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioCon
               ? `${staleCount} handoff${staleCount === 1 ? " is" : "s are"} older than the current decision. Refresh from the Verdict before sharing.`
               : currentCount
                 ? `${currentCount} current handoff${currentCount === 1 ? " is" : "s are"} already composed${readyCount ? `; ${readyCount} more can compose now` : ""}.`
-                : "Assemble the handoff set from the Verdict to capture the current decision record."),
+                : "Create the handoffs you need here; each draft captures the same checked decision record."),
             h(ScenarioList, null,
               artifactDescriptors.map((descriptor) => {
                 const row = rowsByName[descriptor.name];
@@ -174,9 +206,21 @@ export function PMDecisionKit({ project, liveMode, decision, agenda, scenarioCon
                     h("div", { className: "scenario-list-item-title" }, h("strong", null, displayText(descriptor.label))),
                     h(StatusLine, { tone: handoff.tone }, handoff.label)),
                   h("p", null, shortText(descriptor.description, 150)),
-                  descriptor.audience ? h("span", { className: "scenario-list-item-meta" }, `For ${displayText(descriptor.audience)}`) : null);
+                  descriptor.audience ? h("span", { className: "scenario-list-item-meta" }, `For ${displayText(descriptor.audience)}`) : null,
+                  row && row.generated && !row.stale && row.path && onPreview
+                    ? h(ActionButton, { variant: "quiet", className: "scenario-list-item-action",
+                        onClick: () => onPreview({ type: "file", value: row.path }) }, "Open checked draft")
+                    : row && row.status === "composable"
+                      ? h(ActionButton, { variant: "secondary", className: "scenario-list-item-action",
+                          busy: handoffAction.name === descriptor.name,
+                          disabled: Boolean(handoffAction.name),
+                          onClick: () => createHandoff(descriptor.name, Boolean(row.stale)) },
+                          handoffAction.name === descriptor.name ? "Creating…" : row.stale ? "Refresh checked draft" : "Create checked draft")
+                      : null);
               })),
-            onOpenDetail ? h("button", { type: "button", className: "text-link", onClick: () => onOpenDetail("save", "Report readiness") }, "Open handoffs in Verdict →") : null),
+            handoffAction.error ? h("p", { className: "decision-error", role: "alert" }, displayText(handoffAction.error)) : null,
+            handoffAction.message ? h("p", { className: "muted", role: "status" }, displayText(handoffAction.message)) : null,
+            onOpenDetail ? h("button", { type: "button", className: "text-link", onClick: () => onOpenDetail("save", "Report readiness") }, "Manage the full document set in Verdict →") : null),
           state.running ? h("p", { className: "muted" }, "Checking the current handoffs…") : null)
       : null);
 }

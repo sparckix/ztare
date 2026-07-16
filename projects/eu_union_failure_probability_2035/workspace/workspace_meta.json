@@ -8,14 +8,14 @@
   "model_id": "gemini-3.1-pro-preview",
   "project": "eu_union_failure_probability_2035",
   "prompts": {
-    "extract_source_note": "/Users/daalami/figs_activist_loop/config/prompts/extract_source_note.md",
-    "merge_workspace": "/Users/daalami/figs_activist_loop/config/prompts/merge_workspace.md"
+    "extract_source_note": "config/prompts/extract_source_note.md",
+    "merge_workspace": "config/prompts/merge_workspace.md"
   },
-  "raw_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/raw",
+  "raw_dir": "projects/eu_union_failure_probability_2035/raw",
   "reused_sources": 20,
   "source_count": 20,
   "warnings": [
     "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped."
   ],
-  "workspace_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace"
+  "workspace_dir": "projects/eu_union_failure_probability_2035/workspace"
 }

@@ -67,7 +67,7 @@ function AnnotationSummary({ result, onEdit }) {
     h(
       "div",
       { className: "draft-check-summary-copy" },
-      h("span", { className: "eyebrow" }, "Evidence coverage"),
+      h("span", { className: "eyebrow" }, "How this document maps to the project"),
       h(
         "h3",
         null,
@@ -101,8 +101,16 @@ function AnnotationInspector({ annotation, index }) {
       "dl",
       { className: "draft-inspector-facts" },
       h("div", null,
-        h("dt", null, "Project element"),
-        h("dd", null, annotation.element_id ? h("code", null, annotation.element_id) : "No match")),
+        h("dt", null, "Matched project claim"),
+        h("dd", null,
+          annotation.element_text
+            ? h(React.Fragment, null,
+                h("span", null, displayText(annotation.element_text)),
+                annotation.element_id
+                  ? h("small", { className: "draft-inspector-id" },
+                      displayText(annotation.element_kind || "claim"), " · ", h("code", null, annotation.element_id))
+                  : null)
+            : "No matched claim")),
       h("div", null,
         h("dt", null, "Next move"),
         h("dd", null, meta.next))
@@ -351,7 +359,7 @@ export function ScenarioPanel({ project, liveMode, annotate, reingest, promotion
 
   React.useEffect(() => {
     if (!activeSeed) return;
-    setMode("coverage");
+    setMode(activeSeed.mode === "trace" ? "trace" : "coverage");
     setEditing(true);
     if (activeSeed.loading || activeSeed.error) {
       setDoc("");
@@ -390,13 +398,13 @@ export function ScenarioPanel({ project, liveMode, annotate, reingest, promotion
         h("button", {
           type: "button", role: "tab", "aria-selected": mode === "coverage",
           className: mode === "coverage" ? "is-active" : "", onClick: () => switchMode("coverage"),
-        }, "Evidence coverage"),
+        }, "Inspect a document"),
         h("button", {
           type: "button", role: "tab", "aria-selected": mode === "trace",
           className: mode === "trace" ? "is-active" : "", onClick: () => switchMode("trace"),
-        }, "Edited-copy trace")
+        }, "Verify an edited draft")
       ),
-      h("span", { className: "draft-check-readonly" }, mode === "coverage" ? "Does not change the project record" : "Check first; promotion is explicit")
+      h("span", { className: "draft-check-readonly" }, mode === "coverage" ? "Read-only comparison" : "Saving requires a clean trace")
     ),
     activeSeed && activeSeed.loading
       ? h("div", { className: "draft-check-notice" },

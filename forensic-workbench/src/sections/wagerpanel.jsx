@@ -1,5 +1,6 @@
 import React from "react";
-import { displayText, Block, Tag, EmptyState, StatusLine } from "../design-system.js";
+import { CalendarClock, Plus, RefreshCw, X } from "lucide-react";
+import { ActionButton, displayText, Block, Tag, EmptyState, IconButton, StatusLine } from "../design-system.js";
 
 const h = React.createElement;
 
@@ -10,6 +11,21 @@ const h = React.createElement;
 
 const SOURCE_LABEL = { implicit: "untested assumption", declared: "your test", "loop-proposed": "loop-suggested test" };
 const SOURCE_TONE = { implicit: "neutral", declared: "accent", "loop-proposed": "neutral" };
+
+// Resolve the operator action for a decision-state `next_test` or selected map claim. Home, Map, and
+// Open points must agree about whether this test still needs defining or has an outcome ready to record.
+export function decisionTestContext(agenda, wagers, claimRef) {
+  const rows = (agenda && agenda.result && agenda.result.agenda) || [];
+  const wagerRows = (wagers && wagers.result && wagers.result.wagers) || [];
+  const row = rows.find((candidate) => candidate && candidate.claim_ref === claimRef) || null;
+  const wager = row ? wagerRows.find((candidate) => candidate && candidate.id === row.id) || null : null;
+  const mode = row && row.source === "declared" && wager && wager.lifecycle === "open"
+    ? "record"
+    : row && row.source !== "declared"
+      ? "define"
+      : row ? "review" : "none";
+  return { row, wager, mode };
+}
 
 function slug(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 40);
@@ -44,31 +60,35 @@ function agendaRow(r, { wager, onPrefill, onExecute } = {}) {
   // copy uses the same kernel-computed rank instead (equally real, more legible: "best of N" vs "0.34 bits").
   const bitsTitle = `Expected information gain if this test runs: ${(Number(r.bits) || 0).toFixed(2)} bits (Shannon information)`;
   const declaredOpen = r.source === "declared" && wager && wager.lifecycle === "open";
+  const implicit = r.source === "implicit";
+  const primaryText = implicit && r.claim_text ? r.claim_text : r.test;
+  const contextText = implicit ? "Gather evidence" : r.claim_text ? `Decision under test: ${displayText(r.claim_text)}` : "";
   return h("li", { key: r.id, className: "agenda-row" },
     h("div", { className: "agenda-row-head" },
       h(Tag, { tone: SOURCE_TONE[r.source] || "neutral" }, SOURCE_LABEL[r.source] || r.source),
       r.on_frontier ? h(Tag, { tone: "ok" }, "best tradeoff") : null,
-      r.flips_crisp ? h(Tag, { tone: "warn" }, "could flip the verdict") : null),
-    r.status_change && !r.flips_crisp ? h(Tag, { tone: "warn" }, "changes the standing") : null,
-    h("p", { className: "agenda-row-test" }, displayText(r.test)),
-    r.claim_text ? h("p", { className: "agenda-row-claim" },
-      h("span", { className: "muted" }, "Decision under test: "), displayText(r.claim_text)) : null,
+      r.flips_crisp ? h(Tag, { tone: "warn" }, "could flip the verdict") : null,
+      r.status_change && !r.flips_crisp ? h(Tag, { tone: "warn" }, "changes the standing") : null),
+    h("p", { className: "agenda-row-test" }, displayText(primaryText)),
+    contextText ? h("p", { className: "agenda-row-claim" }, displayText(contextText)) : null,
     Array.isArray(r.outcome_specs) && r.outcome_specs.length
-      ? h("ul", { className: "agenda-row-outcomes", "aria-label": "Possible results" },
-          r.outcome_specs.slice(0, 4).map((outcome) => h("li", { key: outcome.id || outcome.label },
-            h("span", null, displayText(outcome.label || outcome.id)),
-            h("small", null, outcome.consequence === "contradict" ? "would weaken it" : outcome.consequence === "support" ? "would strengthen it" : "would leave it open")))
-            .concat(r.outcome_specs.length > 4
-              ? [h("li", { className: "muted", key: "more-outcomes" }, `+${r.outcome_specs.length - 4} more possible result${r.outcome_specs.length - 4 === 1 ? "" : "s"}`)]
-              : []))
+      ? h("details", { className: "agenda-row-outcome-disclosure" },
+          h("summary", null, `${r.outcome_specs.length} possible result${r.outcome_specs.length === 1 ? "" : "s"}`),
+          h("ul", { className: "agenda-row-outcomes", "aria-label": "Possible results" },
+            r.outcome_specs.slice(0, 4).map((outcome) => h("li", { key: outcome.id || outcome.label },
+              h("span", null, displayText(outcome.label || outcome.id)),
+              h("small", null, outcome.consequence === "contradict" ? "would weaken it" : outcome.consequence === "support" ? "would strengthen it" : "would leave it open")))
+              .concat(r.outcome_specs.length > 4
+                ? [h("li", { className: "muted", key: "more-outcomes" }, `+${r.outcome_specs.length - 4} more possible result${r.outcome_specs.length - 4 === 1 ? "" : "s"}`)]
+                : [])))
       : null,
     h("div", { className: "agenda-row-foot" },
       h("p", { className: "agenda-row-meta", title: bitsTitle },
         `Ranked #${r.rank || "—"} for settling this · ${costText}${deadlineText}`),
       declaredOpen
-        ? h("button", { type: "button", className: "chip", onClick: () => onExecute && onExecute(wager) }, "Record outcome")
+        ? h(ActionButton, { onClick: () => onExecute && onExecute(wager) }, "Record outcome")
         : r.source !== "declared"
-          ? h("button", { type: "button", className: "chip", onClick: () => onPrefill && onPrefill(r) }, "Define this test")
+          ? h(ActionButton, { onClick: () => onPrefill && onPrefill(r) }, "Define this test")
           : null));
 }
 
@@ -162,10 +182,12 @@ export function RegisterBetForm({ project, liveMode, wagers, onRefresh, onRegist
         onChange: (e) => setRow(i, { warrant: e.target.value }) },
         [{ v: "W3", label: "unchecked (a stated result)" }, { v: "W2", label: "cited (a source says so)" },
           { v: "W1", label: "reproducible (recomputes from data)" }].map((w) => h("option", { key: w.v, value: w.v }, w.label))),
-      rows.length > 2 ? h("button", { type: "button", className: "chip", disabled: !canRun,
-        onClick: () => setRows(rows.filter((_, j) => j !== i)) }, "×") : null)),
-    h("button", { type: "button", className: "chip", disabled: !canRun,
-      onClick: () => setRows([...rows, { label: "", consequence: "support", warrant: "W3" }]) }, "+ another result"),
+      rows.length > 2 ? h(IconButton, { label: `Remove result ${i + 1}`, disabled: !canRun,
+        onClick: () => setRows(rows.filter((_, j) => j !== i)) },
+        h(X, { size: 16, "aria-hidden": true })) : null)),
+    h(ActionButton, { variant: "quiet", className: "register-bet-add",
+      icon: h(Plus, { size: 16, "aria-hidden": true }), disabled: !canRun,
+      onClick: () => setRows([...rows, { label: "", consequence: "support", warrant: "W3" }]) }, "Another result"),
 
     h("div", { className: "register-bet-inline" },
       h("label", { className: "form-label-inline" }, "Effort / cost ",
@@ -186,7 +208,7 @@ export function RegisterBetForm({ project, liveMode, wagers, onRefresh, onRegist
       ? h("p", { className: "muted register-bet-help" }, "Add at least two plausible results; include an inconclusive result when the test could fail to resolve the question.")
       : null,
 
-    h("button", { type: "button", className: `chip primary ${busy ? "is-busy" : ""}`,
+    h(ActionButton, { variant: "primary", busy, className: "register-bet-submit",
       disabled: !canRun || busy || !claimId || !test.trim() || !exhaustive || filledOutcomeCount < 2,
       onClick: submit }, busy ? "Checking…" : "Check & register test"),
 
@@ -304,10 +326,10 @@ export function ExecuteWagerForm({ project, liveMode, wager, onPreview, onExecut
     wager
       ? h("div", { className: "wager-execute-actions" },
           !preview
-            ? h("button", { type: "button", className: `chip primary ${busy ? "is-busy" : ""}`,
+            ? h(ActionButton, { variant: "primary", busy,
                 disabled: !canRun || !outcomeId || busy, onClick: previewOutcome }, busy ? "Previewing" : "Preview this outcome")
             : !result
-              ? h("button", { type: "button", className: `chip primary ${busy ? "is-busy" : ""}`,
+              ? h(ActionButton, { variant: "primary", busy,
                   disabled: !canRun || busy, onClick: executeOutcome }, busy ? "Recording" : "Record this observed outcome")
               : null)
       : null);
@@ -342,12 +364,13 @@ export function WagerPanel({ project, liveMode, agenda, onAgendaRefresh, onOpenM
     title: "What would settle it",
     lead: "Choose one uncertainty, define what you would observe, and see which result would change the standing.",
     actions: h("div", { className: "decision-actions" },
-      h("button", { type: "button", className: `chip ${busy ? "is-busy" : ""}`,
-        disabled: !canRun || busy, onClick: () => onAgendaRefresh && onAgendaRefresh() }, busy ? "Refreshing…" : "Refresh"),
-      h("button", { type: "button", className: "chip primary", disabled: !canRun,
-        onClick: openNewTest }, "+ Define a test"),
+      h(IconButton, { label: "Refresh decision tests", busy,
+        disabled: !canRun || busy, onClick: () => onAgendaRefresh && onAgendaRefresh() },
+        h(RefreshCw, { size: 16, "aria-hidden": true })),
+      h(ActionButton, { variant: "primary", icon: h(Plus, { size: 16, "aria-hidden": true }),
+        disabled: !canRun, onClick: openNewTest }, "Define a test"),
       onExpire
-        ? h("button", { type: "button", className: `chip ${expiring ? "is-busy" : ""}`, disabled: !canRun || expiring,
+        ? h(ActionButton, { icon: h(CalendarClock, { size: 16, "aria-hidden": true }), disabled: !canRun || expiring,
             title: "Tests past their deadline return to the ordinary open-points backlog",
             onClick: runExpire }, expiring ? "Sweeping…" : "Sweep past-due tests")
         : null),
@@ -367,8 +390,8 @@ export function WagerPanel({ project, liveMode, agenda, onAgendaRefresh, onOpenM
       : (data
           ? h(EmptyState, {
               text: "Nothing is admitted yet. Define a test that could change the standing.",
-              action: h("button", { type: "button", className: "chip primary", disabled: !canRun,
-                onClick: openNewTest }, "+ Define a test"),
+              action: h(ActionButton, { variant: "primary", icon: h(Plus, { size: 16, "aria-hidden": true }),
+                disabled: !canRun, onClick: openNewTest }, "Define a test"),
             })
           : null),
 

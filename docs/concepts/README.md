@@ -8,7 +8,7 @@ _Folder index. Prose may be added above the auto-index block._
 
 **Documents**
 
-- [The Agent-Computer Interface (ACI): a design from the agent's side](aci.md)
+- [The Agent-Computer Interface (ACI): a design from the agent's side](aci.md) - Agent-side interface requirements for general-purpose skill acquisition, evidence transport, and governed self-repair.
 - [Agent-Agnostic Recursive Gain](agent_agnostic_recursive_gain.md) - Why recursive self-improvement here is mining-mediated: the mining layer harvests artifacts from across the whole apparatus, so gain no longer depends on the it
 - [Agentic Engineering Patterns](agentic_engineering_patterns.md) - Engineering patterns for LLM pipelines: replay, contracts, provenance, gates, and failure ledgers.
 - [Anti-Pattern Catalog, Mining-Derived](anti_pattern_catalog.md) - Mining-derived catalogue of epistemic failure modes with cross-LLM validation.
@@ -21,10 +21,10 @@ _Folder index. Prose may be added above the auto-index block._
 - [Workflow: Apparatus Closure-Utility Test (for Codex)](closure_utility_test_workflow.md) - Codex-facing procedure for the apparatus closure-utility test.
 - [Claim review constraint stack](cognitive_gym.md) - How ZTARE decides whether a model proposal has enough source-bound support to become evidence.
 - [Cross-Scale Fractal Map](cross_scale_fractal_map.md) - Empirical observation that the same failure shapes recur across scales in mature LLM systems.
-- [Decision-support primitives — the complete grid](decision_support_primitives.md)
+- [Decision-support primitives — the complete grid](decision_support_primitives.md) - The five-category decision-support decomposition and its governed argument-graph consumers.
 - [Epistemic supervision principles](epistemic_principles.md) - Epistemic supervision principles: the rules the gates enforce and why they exist.
 - [Evaluation failure cases](evaluation_failure_cases.md) - Three compact examples of evaluation checks that pass while missing their intent.
-- [Flows](flows.md)
+- [Flows](flows.md) - As-built lifecycle diagrams for the ARC-AGI-3 science loop, grammar reflex, and related control flows.
 - [Project workbench interface](forensic_workbench_interface.md) - Interface contract for the ZTARE Project Workbench: users, boundaries, controller interfaces, and acceptance tests.
 - [Gaming Behavior Catalog Map](gaming_behavior_catalog_map.md) - Source-of-truth map for gaming behavior lifecycle: incident catalog, vector registry, promotion governance, runtime gates, and primitive precedents.
 - [ZTARE Glossary](glossary.md) - Plain-English definitions for every ZTARE term that matters.

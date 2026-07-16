@@ -32,12 +32,16 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[3]
-from src.ztare.orchestrator.contract_table import get_spec_by_class
-from src.ztare.orchestrator.submission_path_helpers import (
+SRC = REPO / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from ztare.orchestrator.contract_table import get_spec_by_class
+from ztare.orchestrator.submission_path_helpers import (
     requires_i_model_submission,
     submission_contract_kind,
 )
-from src.ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
+from ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
 
 KNOWN_FALSIFICATION_MODES = {
     "numerical_proof",

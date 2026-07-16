@@ -90,22 +90,46 @@ def challenge_queue(governed: GovernedState) -> "list[dict]":
 
 
 # ── B1: strength trajectory (forward-accumulating — "what moved since last run") ────────────────────────────
-def _history_path(project: str):
-    from ztare.common.paths import PROJECTS_DIR
-    return PROJECTS_DIR / project / "workspace" / "strength_history.jsonl"
+def _history_path(project: str, repo_root=None):
+    if repo_root is None:
+        from ztare.common.paths import PROJECTS_DIR
+        projects_dir = PROJECTS_DIR
+    else:
+        from pathlib import Path
+        projects_dir = Path(repo_root) / "projects"
+    return projects_dir / project / "workspace" / "strength_history.jsonl"
 
 
-def snapshot_strength(project: str, governed: GovernedState, *, now: str = "") -> dict:
-    """Append the current thesis strength profile to `workspace/strength_history.jsonl`. The trajectory is built
-    by repeated runs — this is the write side of D3's sparkline."""
+def snapshot_strength(project: str, governed: GovernedState, *, now: str = "", repo_root=None) -> dict:
+    """Append the compiled decision posture to the existing strength ledger when its fingerprint moves."""
+    import hashlib
     import json
-    from datetime import date
+    from datetime import datetime, timezone
 
+    from ztare.scenarios.decision_state import compile_decision_state
     from ztare.scenarios.strength import strength_profile
 
     sp = strength_profile(governed)
-    rec = {"timestamp": now or date.today().isoformat(), "profile": sp["profile"], "status": sp["status"]}
-    p = _history_path(project)
+    decision = compile_decision_state(governed).to_payload()
+    graph_material = {
+        "nodes": sorted((element.id, element.kind, element.text, element.source_key)
+                        for element in governed.elements),
+        "edges": sorted((edge.src, edge.kind, edge.dst, edge.warrant) for edge in governed.edges),
+    }
+    graph_hash = hashlib.sha256(json.dumps(graph_material, ensure_ascii=False, separators=(",", ":"))
+                                .encode("utf-8")).hexdigest()
+    rec = {
+        "timestamp": now or datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "profile": sp["profile"],
+        "status": sp["status"],
+        "graph": {"hash": graph_hash, "nodes": len(governed.elements), "edges": len(governed.edges)},
+        "decision": {
+            key: decision.get(key)
+            for key in ("fingerprint", "status", "headline", "reason", "coverage", "warrant_ceiling",
+                        "hinge", "next_test", "open_test_count")
+        },
+    }
+    p = _history_path(project, repo_root)
     # DEDUP (2026-07-10): skip an unchanged (profile, status) so calling this on every workbench read records a
     # real MOVE (after a wager/recheck/reingest recompile) — never refresh-spam a fabricated series, and never
     # bump the project mtime (which would needlessly invalidate the snapshot cache) when nothing moved.
@@ -114,7 +138,12 @@ def snapshot_strength(project: str, governed: GovernedState, *, now: str = "") -
         if lines:
             try:
                 last = json.loads(lines[-1])
-                if last.get("profile") == rec["profile"] and last.get("status") == rec["status"]:
+                last_fingerprint = ((last.get("decision") or {}).get("fingerprint"))
+                last_graph_hash = ((last.get("graph") or {}).get("hash"))
+                if (last_fingerprint and last_fingerprint == rec["decision"]["fingerprint"]
+                        and (not last_graph_hash or last_graph_hash == graph_hash)):
+                    return last
+                if not last_fingerprint and last.get("profile") == rec["profile"] and last.get("status") == rec["status"]:
                     return last
             except Exception:  # noqa: BLE001
                 pass

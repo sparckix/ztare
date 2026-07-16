@@ -1,12 +1,29 @@
 # Security
 
-ZTARE is a local-first research workbench. In its public form it has no public
-network service, no user accounts, no multi-tenant surface, and no remote
-control plane. Most conventional web-application threat models do not apply.
+ZTARE is a local-first research workbench. Project Workbench includes a loopback
+HTTP service with filesystem-backed, state-changing APIs. It has no user accounts,
+session boundary, multi-tenant surface, or supported public endpoint. Conventional
+web-application threats apply to that local service in proportion to the authority
+of the user running it.
 The threats that *do* apply follow from the system's actual shape: it executes
 agentic code, ingests untrusted text into agent context, and asserts
 correctness through ledgers and pre-registered contracts that depend on
 integrity rather than confidentiality.
+
+### 0. Project Workbench is a trusted-local-user service
+
+The Workbench API can edit project files and launch bounded CLI actions. Treat
+access to port 8765 as access to the repository under the server process's UID.
+It must remain bound to loopback. For a remote host, use the documented SSH
+tunnel; do not publish the port directly.
+
+The `public` and `allowlist` project scopes prevent accidental project disclosure
+in a demo or shared screen. They are fail-closed inventory and path boundaries,
+not authentication. CORS is also not authentication. Run
+`make forensic-workbench-release-check` before a shared deployment to verify the
+built app, manifest boundary, hidden-project refusal, and local-origin policy.
+The supported commands and SSH-tunnel procedure are documented in
+`docs/guides/workbench-release.md`.
 
 This document states the threats taken seriously, the assumptions the
 system already makes about its own integrity, and how to report
@@ -115,10 +132,9 @@ recorded, report it as a defect.
 
 ## Out of scope
 
-- Conventional web-application vulnerabilities — there is no HTTP
-  service, no auth surface, no session handling.
-- Denial of service against a public endpoint — there is no public
-  endpoint.
+- Internet-facing or multi-user deployment of Project Workbench. There is no
+  authentication, authorization, rate limit, or tenant isolation for that use.
+- Denial of service against a public endpoint; exposing one is unsupported.
 - Archived workspaces, working-paper drafts, maintainer-only research state,
   protected directories, maintainer notes, or paths matched by `.gitignore`.
   These are working state, not the publication surface.

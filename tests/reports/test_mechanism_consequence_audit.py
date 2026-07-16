@@ -289,7 +289,10 @@ def test_render_text_names_consequence_and_counterfactual(tmp_path):
     rendered = render_text(report)
 
     assert "Autoresearch mechanism consequence audit" in rendered
-    assert "primitive_amnesia [route/observed/risk=low]" in rendered
+    assert (
+        "primitive_amnesia "
+        "[route/observed/artifact_present_unverified/risk=medium]"
+    ) in rendered
     assert "evidence_quality=" in rendered
     assert "placeholders=" in rendered
     assert "prevents=" in rendered

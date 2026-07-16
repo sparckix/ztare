@@ -1,0 +1,7 @@
+{
+  "schema": "ztare-workbench-public-projects-v1",
+  "projects": [
+    "ops_root_cause_diagnosis_demo",
+    "demo_claims"
+  ]
+}

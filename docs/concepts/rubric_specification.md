@@ -7,18 +7,19 @@ description: "The rubric JSON file format that drives autoresearch_loop.py."
 > Up: [Documentation map](../README.md)
 
 *Status:* living document. Updated whenever the loop's rubric-field vocabulary changes.
-*Last updated:* 2026-04-23.
+*Last updated:* 2026-07-12.
 *Authoritative source:* the actual field names + default values referenced in `src/ztare/validator/autoresearch_loop.py` via `rubric_data.get("<field>", <default>)`. If this doc disagrees with the source, the source wins and this doc should be corrected.
 
 ---
 
 ## 1. Purpose
 
-A rubric is a JSON file at `rubrics/<slug>.json` that tells `autoresearch_loop.py` three things:
+A rubric is a JSON file at `rubrics/<slug>.json` that tells `autoresearch_loop.py` four things:
 
-1. How to judge the mutator's thesis, the persona, the scoring dimensions, and the qualitative criteria.
-2. Which quantitative gates to run, evidence-fit, uniqueness-gap, farther-tail, holdout, named-import.
-3. How to size the run, stagnation thresholds, composition budget, holdout budget, discovery vs falsification mode.
+1. Which evidence carrier enters the kernel and which equality/binding rule governs it.
+2. How to judge the mutator's thesis, the persona, the scoring dimensions, and the qualitative criteria.
+3. Which quantitative gates to run, evidence-fit, uniqueness-gap, farther-tail, holdout, named-import.
+4. How to size the run, stagnation thresholds, composition budget, holdout budget, discovery vs falsification mode.
 
 A rubric that is structurally incoherent, e.g., claims a hidden-holdout gate but provides no `gate_harness.py`, either crashes the loop or silently defaults to a wrong configuration. Both are failure modes this spec exists to prevent.
 
@@ -33,7 +34,7 @@ Every rubric fits ONE of these flavors. Pick one before writing:
 | **Quantitative-discovery (blind GT)** | You have a ground-truth function and want the mutator to recover it blind. Phase B / Phase C per [GP-096](../../research_areas/seams/mission/discovery/GP-096_science_programme_decomposition_seam.md). | `fit_score_mode: "continuous_rmse"` or `"discrete_exact"`; `holdout_hard_gate: true`; `gate_harness.py` present; `evidence_holdout.txt` present. |
 | **Quantitative-calibration (known GT, open)** | You have a GT and want to measure apparatus performance without hidden holdout. Instrument shakedown. | `fit_score_mode: "continuous_l2"` (default) or `"continuous_rmse"`; `holdout_hard_gate: false`; gates mostly default. |
 | **Qualitative-thesis (no GT)** | Exploratory, thesis-driven, no numerical curve to fit. [GP-131](../../research_areas/seams/mission/discovery/GP-131_work_discovery_loop_seam.md) / [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) / ztare_on_ztare class. | `disable_evidence_fit_gate: true` + reason; `disable_uniqueness_gap_gate: true` + reason; `fit_score_mode: "none"`; `holdout_hard_gate: false`; `enable_fit_primitive: false`. |
-| **Worldmodel / interactive environment** | You have state/action transition evidence and want the mutator or deterministic miner to submit an executable transition law. ARC-AGI-3 / GP-250 class. | `substrate_class: "interactive_environment"` or `fit_expression_grammar: "grid_dsl"`; `fit_score_mode: "discrete_exact"`; `require_i_model_in_submission: false`; project-local `gate_harness.py`; carrier is `WORLD_MODEL_SPEC`, `PROGRAM`, or `step(grid, action, t)`. |
+| **Worldmodel / interactive environment** | You have state/action transition evidence and want the mutator or deterministic miner to submit an executable transition law. ARC-AGI-3 / GP-250 class. | `evidence_carrier_kind: "transition_stream"`; `substrate_class: "interactive_environment"` or `fit_expression_grammar: "grid_dsl"`; `fit_score_mode: "discrete_exact"`; `require_i_model_in_submission: false`; project-local `gate_harness.py`; candidate carrier is `WORLD_MODEL_SPEC`, `PROGRAM`, or `step(observation, intervention, t)`. |
 
 If you don't know which flavor you're writing, you are writing a broken rubric.
 
@@ -46,6 +47,29 @@ If you don't know which flavor you're writing, you are writing a broken rubric.
 | `persona` | string | System-prompt persona for the LLM judge. Be specific, adversarial, domain-anchored. Not a placeholder. |
 | `criteria` | object `{name: description}` | Named rubric criteria. Each value is the full scoring prompt for that criterion. |
 | `dimensions` (optional for pure-criteria rubrics, required for weighted-dimension rubrics) | list of `{name, weight, description}` | Weighted rubric dimensions when you need explicit point allocation. Weights should sum to 100. |
+
+### 3.1 Evidence-carrier identity
+
+`evidence_carrier_kind` chooses the admission contract. It does not choose a
+judge persona, candidate grammar, or score function.
+
+| Value | Governing object | Admission and equality rule | Active consumer |
+|---|---|---|---|
+| `source_documents` | typed files under `raw/` | declared source type plus content digest; derived source index and compiled-evidence bindings must be current | document/claim evidence compiler |
+| `transition_stream` | canonical `raw/episodes/episode_NNN.jsonl` logs | each non-empty log begins with a typed transition packet; byte identity binds any identity sidecar; fleet and evaluation slices cannot satisfy admission | episode replay, transition synthesis, worldmodel gates |
+
+`source_documents` is the compatibility default. It includes structured text
+formats such as CSV, TSV, JSON, and YAML, so existing quantitative substrates
+retain their current path. Candidate scoring remains controlled by
+`fit_score_mode` and the project gate; evidence-carrier admission does not turn
+quantitative data into a qualitative substrate.
+
+Existing rubrics with `substrate_class` in `{interactive_environment,
+worldmodel, grid_world}` infer `transition_stream`. New interactive rubrics
+should declare the field explicitly. A new carrier kind is not accepted by
+analogy alone: add it only with a validator, a registered downstream consumer,
+and an end-to-end first-fire test. Until then, tables/tensors/proof artifacts
+continue through their already registered substrate paths.
 
 ---
 
@@ -110,6 +134,7 @@ Interactive worldmodel substrates, such as ARC-AGI-3, are not scalar
 `I_model` submissions and not qualitative assertion suites. Their submitted
 artifact is an executable transition carrier:
 
+- declare `evidence_carrier_kind: "transition_stream"`;
 - declare `substrate_class: "interactive_environment"` or
   `fit_expression_grammar: "grid_dsl"` or `fit_score_mode: "discrete_exact"`;
 - set `require_i_model_in_submission: false`;
@@ -250,6 +275,8 @@ Requires: `projects/<slug>/gate_harness.py` + `projects/<slug>/evidence_holdout.
 7. `persona` is ≥3 sentences, domain-anchored, names specific failure patterns it penalizes.
 8. `dimensions[].weight` sums to 100 (if dimensions are used).
 9. `criteria` names match `dimensions.name` when both are present (no orphan criteria).
+10. `evidence_carrier_kind` names a registered admission contract; new
+    interactive rubrics declare `transition_stream` explicitly.
 
 Run `make validate-rubric PROJECT=<slug> RUBRIC=<slug>` before launch. That same deterministic validator is a prerequisite of `make loop`; it checks JSON structure, project-file presence, mode-specific rules such as Newton `Secondary observable` charter alignment, theorem-packet function exposure, and other launch blockers. Use `python -m json.tool rubrics/<slug>.json` only as a quick syntax check.
 
@@ -266,6 +293,7 @@ Run `make validate-rubric PROJECT=<slug> RUBRIC=<slug>` before launch. That same
 | Model label typed as raw API ID | argparse `choices=` rejects | Use ZTARE alias. |
 | Using `make loop` when rubric has hard-gate | UNDERIDENTIFIED kills the run at iter 3 | Use `make experiment-loop` which auto-sets `--underidentified_after`. |
 | Hand-writing a rubric outside `make generate-gp` | Structural omissions like missing `dimensions` or unpaired reason strings | Use `make generate-gp PROJECT=<slug> BRIEF="..."`. |
+| Treating a transition bank as document prose | Source check scans fleet/evaluation logs, demands document typing, or sends structured state packets to the evidence compiler | Set `evidence_carrier_kind: "transition_stream"`; retain only canonical episode logs at admission. |
 
 ---
 
@@ -281,6 +309,7 @@ Run `make validate-rubric PROJECT=<slug> RUBRIC=<slug>` before launch. That same
 
 - 2026-04-23: Initial version of this specification document. Filed after a hand-rolled rubric with `fit_score_mode: "rubric_only"` caused score-zero hard-fails on the ztare_on_ztare project. Triggering incident: the failure mode table in §13 is a direct post-mortem. (Author: claude_manager.)
 - 2026-04-23 (later): [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4 additions, §§ 16-20 below. Rubric-loader in `autoresearch_loop.py` enforces `py_exec` gates + `rubric_mode` discipline fail-closed. Architectural map updated with new region `rubric_preflight` and new exit `GP133_R4_gate`.
+- 2026-07-12: Added `evidence_carrier_kind` and carrier-indexed admission. Transition streams now bypass the document compiler and enter through episode-log identity/replay contracts; existing document and quantitative rubrics retain the compatibility path.
 
 ---
 

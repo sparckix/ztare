@@ -18,3 +18,23 @@ jobs:
           python -m pip install -e .
       - name: Run public first-run path
         run: make first-run PYTHON=python
+
+  workbench-release-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: forensic-workbench/package-lock.json
+      - name: Install Workbench runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          npm --prefix forensic-workbench ci
+      - name: Verify production Workbench boundary
+        run: make forensic-workbench-release-check PYTHON=python

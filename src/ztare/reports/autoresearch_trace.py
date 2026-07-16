@@ -17,7 +17,7 @@ from ztare.research_director.autoresearch_plan_preview import (
     build_autoresearch_plan_preview,
 )
 from ztare.research_director.graph_carrier_actions import graph_carrier_action_rows
-from ztare.scaffold.source_check import check_source_project
+from ztare.scaffold.source_check import check_evidence_project, check_source_project
 from ztare.scaffold.substrate_queue import (
     load_project_packet,
     validate_project_packet,
@@ -909,14 +909,15 @@ def _trace_evidence_readiness(
     evidence_output_binding: dict[str, Any],
     evidence_replay: dict[str, Any],
 ) -> dict[str, Any]:
+    ready_statuses = {"", "fresh", "not_required_for_carrier"}
     replay_required = bool(evidence_replay.get("required"))
     replay_ok = bool(evidence_replay.get("ok")) if replay_required else True
     status = "fresh"
-    if str(source_index_freshness.get("status") or "") not in {"", "fresh"}:
+    if str(source_index_freshness.get("status") or "") not in ready_statuses:
         status = "blocked"
-    if str(compile_provenance_freshness.get("status") or "") not in {"", "fresh"}:
+    if str(compile_provenance_freshness.get("status") or "") not in ready_statuses:
         status = "blocked"
-    if str(evidence_output_binding.get("status") or "") not in {"", "fresh"}:
+    if str(evidence_output_binding.get("status") or "") not in ready_statuses:
         status = "blocked"
     if replay_required and not replay_ok:
         status = "blocked"
@@ -929,6 +930,18 @@ def _trace_evidence_readiness(
         "replay_required": replay_required,
         "replay_status": evidence_replay.get("status"),
         "replay_ok": replay_ok,
+    }
+
+
+def _carrier_not_required(surface: str) -> dict[str, Any]:
+    return {
+        "checked": False,
+        "ok": True,
+        "verified": True,
+        "status": "not_required_for_carrier",
+        "kernel_entry_ok": True,
+        "surface": surface,
+        "stale_artifacts": [],
     }
 
 
@@ -1478,10 +1491,25 @@ def _prediction_authority_issue_codes(prediction_summary: dict[str, Any]) -> lis
     return codes
 
 
-def _source_preflight_for_trace(*, project_dir: Path, repo: Path) -> dict[str, Any]:
+def _source_preflight_for_trace(
+    *, project_dir: Path, repo: Path, rubric: Path | None = None
+) -> dict[str, Any]:
     project_ref = _rel(project_dir, repo)
     try:
-        return check_source_project(project=project_ref, repo=repo)
+        rubric_data = _read_json(rubric) if rubric is not None else {}
+        substrate_class = str(rubric_data.get("substrate_class") or "").lower()
+        carrier_kind = str(rubric_data.get("evidence_carrier_kind") or "").lower()
+        if not (
+            carrier_kind == "transition_stream"
+            or substrate_class
+            in {"grid_world", "interactive_environment", "worldmodel"}
+        ):
+            return check_source_project(project=project_ref, repo=repo)
+        return check_evidence_project(
+            project=project_ref,
+            repo=repo,
+            rubric=rubric,
+        )
     except Exception as exc:  # noqa: BLE001
         blocker = f"source preflight unavailable for trace path: {type(exc).__name__}: {exc}"
         return {
@@ -2213,6 +2241,7 @@ def _carrier_chain_summary(
             "status": (
                 str(source_index_freshness.get("status") or "present")
                 if source_index
+                or source_index_freshness.get("status") == "not_required_for_carrier"
                 else "missing"
             ),
             "count": len(source_index.get("sources", [])),
@@ -2224,7 +2253,11 @@ def _carrier_chain_summary(
         },
         {
             "surface": "source_index_receipt",
-            "status": source_index_receipt_summary.get("status") or "missing",
+            "status": (
+                "not_required_for_carrier"
+                if source_index_freshness.get("status") == "not_required_for_carrier"
+                else source_index_receipt_summary.get("status") or "missing"
+            ),
             "blocking": "source_index_receipt_stale" in missing_set,
             "next_command": _recovery_command_by_id(recovery_actions, "source_index")
             or (
@@ -2418,29 +2451,49 @@ def build_autoresearch_trace(
     latest_evidence_gaps = workspace / "latest_evidence_gaps.json"
     recent_loop = _recent_loop_summary(workspace, repo=repo)
     raw_file_count = _count_raw_files(raw_dir)
-    source_preflight = _source_preflight_for_trace(project_dir=project_dir, repo=repo)
+    source_preflight = _source_preflight_for_trace(
+        project_dir=project_dir,
+        repo=repo,
+        rubric=rubric_resolved,
+    )
     source_preflight_blocking = _source_preflight_blocks_kernel(source_preflight)
-    source_index_freshness = artifact_source_freshness(
-        source_preflight=source_preflight,
-        artifact_sources=source_index.get("sources", []),
-        artifact_name="workspace/source_index.json",
-        project_dir=project_dir,
-        repo=repo,
+    requires_source_index = bool(source_preflight.get("requires_source_index", True))
+    requires_compiled_evidence = bool(
+        source_preflight.get("requires_compiled_evidence", True)
     )
-    compile_provenance_freshness = artifact_source_freshness(
-        source_preflight=source_preflight,
-        artifact_sources=compile_provenance_payload.get("sources", []),
-        artifact_name=_rel(compile_provenance_read_path, repo),
-        project_dir=project_dir,
-        repo=repo,
+    source_index_freshness = (
+        artifact_source_freshness(
+            source_preflight=source_preflight,
+            artifact_sources=source_index.get("sources", []),
+            artifact_name="workspace/source_index.json",
+            project_dir=project_dir,
+            repo=repo,
+        )
+        if requires_source_index
+        else _carrier_not_required("source_index")
     )
-    evidence_output_binding = _compiled_evidence_output_binding(
-        provenance=compile_provenance_payload,
-        evidence_path=evidence_path,
-        repo=repo,
-        project_dir=project_dir,
-        binding_receipt=evidence_output_binding_receipt,
-        binding_receipt_path=evidence_output_binding_receipt_path,
+    compile_provenance_freshness = (
+        artifact_source_freshness(
+            source_preflight=source_preflight,
+            artifact_sources=compile_provenance_payload.get("sources", []),
+            artifact_name=_rel(compile_provenance_read_path, repo),
+            project_dir=project_dir,
+            repo=repo,
+        )
+        if requires_compiled_evidence
+        else _carrier_not_required("compiled_evidence")
+    )
+    evidence_output_binding = (
+        _compiled_evidence_output_binding(
+            provenance=compile_provenance_payload,
+            evidence_path=evidence_path,
+            repo=repo,
+            project_dir=project_dir,
+            binding_receipt=evidence_output_binding_receipt,
+            binding_receipt_path=evidence_output_binding_receipt_path,
+        )
+        if requires_compiled_evidence
+        else _carrier_not_required("evidence_output")
     )
     evidence_replay, evidence_replay_required = _trace_evidence_replay_report(
         project_dir=project_dir,
@@ -2544,11 +2597,13 @@ def build_autoresearch_trace(
         missing.append("raw_or_evidence")
     elif raw_file_count == 0:
         missing.append("raw_sources")
-    if raw_file_count > 0 and not source_index:
+    if requires_source_index and raw_file_count > 0 and not source_index:
         missing.append("source_index")
-    if source_index and source_index_freshness.get("status") == "stale":
+    if requires_source_index and source_index and source_index_freshness.get("status") == "stale":
         missing.append("source_index_stale")
     if (
+        requires_source_index
+        and
         not source_preflight_blocking
         and source_index
         and source_binding_contract_blocks_kernel(source_index_freshness)
@@ -2556,31 +2611,39 @@ def build_autoresearch_trace(
     ):
         missing.append("source_index_unverified")
     if (
+        requires_source_index
+        and
         source_index_receipt_summary.get("exists")
         and not source_index_receipt_summary.get("verified")
     ):
         missing.append("source_index_receipt_stale")
-    if raw_file_count > 0 and not workspace_meta:
+    if requires_source_index and raw_file_count > 0 and not workspace_meta:
         missing.append("workspace_meta")
-    if evidence_path.exists() and compile_provenance is None:
+    if requires_compiled_evidence and evidence_path.exists() and compile_provenance is None:
         missing.append("evidence_compile_provenance")
     if (
+        requires_compiled_evidence
+        and
         compile_provenance is not None
         and compile_provenance_freshness.get("status") == "stale"
     ):
         missing.append("evidence_compile_stale")
     if (
+        requires_compiled_evidence
+        and
         compile_provenance is not None
         and not source_preflight_blocking
         and source_binding_contract_blocks_kernel(compile_provenance_freshness)
         and "evidence_compile_stale" not in missing
     ):
         missing.append("evidence_compile_unverified")
-    if evidence_output_binding.get("status") == "stale":
+    if requires_compiled_evidence and evidence_output_binding.get("status") == "stale":
         missing.append("evidence_output_stale")
-    if evidence_replay_required and not bool(evidence_replay.get("ok")):
+    if requires_compiled_evidence and evidence_replay_required and not bool(evidence_replay.get("ok")):
         missing.append("evidence_replay_stale")
     if (
+        requires_compiled_evidence
+        and
         compile_provenance is not None
         and not source_preflight_blocking
         and bool(compile_provenance_freshness.get("kernel_entry_ok"))
@@ -2669,7 +2732,7 @@ def build_autoresearch_trace(
                 "next_command": f"ztare project source-check --project {project} --json",
             }
         )
-    if raw_file_count > 0 and (
+    if requires_source_index and raw_file_count > 0 and (
         "source_index" in missing
         or "source_index_stale" in missing
         or "source_index_unverified" in missing
@@ -2697,7 +2760,7 @@ def build_autoresearch_trace(
                 ),
             }
         )
-    if raw_file_count > 0 and (
+    if requires_compiled_evidence and raw_file_count > 0 and (
         "evidence_compile_provenance" in missing
         or "evidence_compile_stale" in missing
         or "evidence_compile_unverified" in missing
@@ -2712,6 +2775,8 @@ def build_autoresearch_trace(
             }
         )
     if (
+        requires_compiled_evidence
+        and
         "evidence_output_unverified" in missing
         and evidence_output_binding.get("status") == "unverified_missing_output_hash"
         and bool(compile_provenance_freshness.get("kernel_entry_ok"))
@@ -2726,7 +2791,7 @@ def build_autoresearch_trace(
                 "next_command": f"ztare project evidence-bind --project {project} --json",
             }
         )
-    if "evidence_replay_stale" in missing:
+    if requires_compiled_evidence and "evidence_replay_stale" in missing:
         recovery_actions.append(
             {
                 "id": "evidence_replay",
@@ -2987,6 +3052,9 @@ def build_autoresearch_trace(
             "evidence_search_backend_selector": evidence_search_backend,
             "source_preflight_ok": bool(source_preflight.get("ok")),
             "source_preflight_status": source_preflight.get("status"),
+            "evidence_carrier_kind": source_preflight.get("carrier_kind"),
+            "evidence_carrier_requires_source_index": requires_source_index,
+            "evidence_carrier_requires_compiled_evidence": requires_compiled_evidence,
             "source_preflight_blocking": source_preflight.get("blocking", []),
             "source_preflight_warnings": source_preflight.get("warnings", []),
             "source_evidence_count": source_preflight.get("source_evidence_count", 0),
@@ -3140,9 +3208,10 @@ def _render_brief(report: dict[str, Any]) -> list[str]:
     )
     claim_support = surfaces.get("claim_support") or {}
     evidence_readiness = "fresh"
-    if evidence_compile_status not in {None, "", "fresh"}:
+    ready_statuses = {None, "", "fresh", "not_required_for_carrier"}
+    if evidence_compile_status not in ready_statuses:
         evidence_readiness = "blocked"
-    if evidence_output_status not in {None, "", "fresh"}:
+    if evidence_output_status not in ready_statuses:
         evidence_readiness = "blocked"
     if evidence_replay_required and evidence_replay_status != "ok":
         evidence_readiness = "blocked"

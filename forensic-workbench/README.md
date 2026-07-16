@@ -11,6 +11,18 @@ Workbench.
 
 ## Start It
 
+### Requirements
+
+Choose one supported path:
+
+- **Container:** Docker Engine or Docker Desktop with Compose and Buildx. No host Python or Node runtime is
+  needed after the image is built.
+- **Source:** the repository Python environment from the root quickstart plus Node 20+ and npm. The launcher
+  installs the locked frontend dependencies with `npm ci` on first use.
+
+The service is a trusted-local-user tool. It has filesystem-backed write actions but no accounts, sessions,
+or tenant authorization. Keep it on loopback; use an SSH tunnel for a remote machine.
+
 Run the live workbench:
 
 ```bash
@@ -18,8 +30,8 @@ make forensic-workbench-live
 ```
 
 The launcher starts the local API at `http://127.0.0.1:8765` and the Vite app at
-`http://127.0.0.1:5174`, and installs the app's web dependencies on the first
-run — so a fresh clone needs only this one command. If the API is already
+`http://127.0.0.1:5174`, and installs the app's locked web dependencies on the first
+run. It assumes the repository's Python environment is already installed. If the API is already
 running, the launcher reuses it. If the Vite port is already taken, it exits
 instead of silently moving the app.
 
@@ -45,6 +57,30 @@ make forensic-workbench-api
 ```
 
 Then open `http://127.0.0.1:8765/`.
+
+Before a shared demo or release, run the release boundary smoke:
+
+```bash
+make forensic-workbench-release-check
+```
+
+It builds the app, starts an isolated public-scope server, verifies that the tracked public-project
+manifest is the entire visible inventory, refuses an unlisted project read/file preview/write, checks the
+local-only browser origin, and confirms the built frontend is served from the API's one-port origin.
+
+Build the same one-port artifact an adopter will run:
+
+```bash
+make forensic-workbench-docker-build
+```
+
+`docker buildx version` is an intentional preflight: Buildx honors
+`deploy/Dockerfile.workbench.dockerignore`, which prevents private projects, research trees, solver corpora,
+and local artifacts from entering the release build context. Start the image with
+`make forensic-workbench-docker` and open `http://127.0.0.1:8765`.
+
+See the [Workbench release guide](../docs/guides/workbench-release.md) for visibility modes, remote access,
+the clean release procedure, expected results, and known deployment limits.
 
 Offline snapshot mode is for audit or review without live edits:
 
@@ -100,13 +136,13 @@ The main areas are:
   Connect project flow drafts from existing thesis/source/evidence files, shows
   the files it found, keeps draft notes concise, and previews the exact brief
   and history paths before saving.
-- **Project:** inspect the thesis, assumptions, caveats, and evidence map. The
+- **Thesis:** inspect the thesis, assumptions, caveats, charter, and research map. The
   evidence map shows support points with the cited source files for each point.
   Run-learned axioms and constraints show their backing files when prior runs
   produced them.
-- **Files:** edit the project brief, add project files, edit existing files,
+- **Evidence:** edit the project brief, add project files, edit existing files,
   and prepare the evidence summary.
-- **Run:** inspect readiness, check readiness, start a confirmed project run,
+- **Pressure-test the thesis:** inspect readiness, check readiness, start a confirmed project run,
   and review scores/warnings. Active evidence gaps open here too, because this
   is where the user can fetch evidence or save a hash-bound justification. The
   selected gap is shown as a brief: what is missing, why it matters, whether
@@ -116,11 +152,11 @@ The main areas are:
   can open the recovery panel instead of leaving the user with only a copied
   shell command. Readiness-check and confirmed-run panels show what files can change
   before the action runs.
-- **Review:** record review status, save next steps, and inspect saved history.
+- **Open points:** record review status, save next steps, and inspect saved history.
   The saved-history view also leads with a "worth another pass?" read — whether
   the program is still compressing its explanation or into diminishing returns
   (advisory, computed from run history, not the judge score).
-- **Report / Verdict:** check report readiness and save the project file, see the
+- **Verdict:** check report readiness and save the project file, see the
   trust verdict and where to verify, and export the verified research graph to an
   Obsidian vault (one linked note per claim, evidence, and falsifier, with the
   weak spots marked) to write an article from.
@@ -151,7 +187,7 @@ the UI and any bounded API route it needs. Use the shared `ModalPortal` and
 `useModalBehavior` helpers for dialogs rather than rendering a fixed overlay
 inside a host panel.
 
-Scenario selection is stored in the `scenario` URL parameter, so Results links
+Scenario selection is stored in the `scenario` URL parameter, so Pressure-test links
 survive refresh and browser Back/Forward navigation.
 
 ## Live Data
@@ -212,9 +248,9 @@ The live status contract groups actions into three buckets: read-only, writes
 files or saved history now, and asks before writing. `/api/status` exposes the
 product-facing `file_change_summary`, keeps `action_summary` for compatibility,
 and includes the per-action `behavior` contract so the UI can show the plain
-split without guessing from route names or booleans. The current split is 9
-read-only actions, 12 direct file/history writes, and 5 ask-first actions;
-`browser_writes=false` across the set.
+split without guessing from route names or booleans. The payload reports the
+current counts; documentation does not pin them because plugin and workflow
+capabilities can change the action set. `browser_writes=false` across the set.
 
 Review and next-step save panels show the selected issue before saving:
 status, evidence-link count, first evidence path, and latest review state. That

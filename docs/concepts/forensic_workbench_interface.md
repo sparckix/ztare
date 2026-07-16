@@ -296,7 +296,7 @@ backend abstractions:
 | Check the live project path | `make forensic-workbench-state WORKBENCH_PROJECT=<project>` |
 | List installed scenarios (use-case bundles) | `ztare scenario list` / `GET /api/scenarios` |
 | Annotate a pasted document against the governed map | `ztare scenario annotate <doc> --project <project>` / `POST /api/scenario-annotate` |
-| Surface a document's load-bearing assumptions | `ztare scenario surface <doc> --project <project>` / `POST /api/scenario-surface` |
+| Surface a document's decision-critical assumptions | `ztare scenario surface <doc> --project <project>` / `POST /api/scenario-surface` |
 | Re-gate AI-polished prose before it ships | `ztare scenario reingest <doc> --project <project>` / `POST /api/scenario-reingest` |
 
 The product coverage target is the normal project job, scoped short of the full
@@ -353,10 +353,10 @@ Thesis opens a focused **Check a draft** modal (`forensic-workbench/src/sections
 for the annotated round-trip. It is an in-context action rather than a workspace page: paste a document
 (a PRD, a proposal), get the same document back with every
 sentence tagged against the project's governed map — **backed** (aligns to a supported governed claim),
-**contradicted** (aligns to a falsified/contradicted one), **surfaced-untested** (a load-bearing assumption,
+**contradicted** (aligns to a falsified/contradicted one), **surfaced-untested** (a decision-critical assumption,
 in the queue, no evidence yet), or **no claim surfaced** (rendered quiet, never as "ungoverned rhetoric" — the
 assumption-surfacer has false negatives, so an unmatched sentence is *unknown*, not *bad*). A document is input,
-so the view never shows a pass/fail — the headline is a load-bearing-assumption count, which is triage. The same
+so the view never shows a pass/fail — the headline is a decision-critical-assumption count, which is triage. The same
 panel carries the **re-check** box (the re-ingest gate): paste an AI-polished deliverable and every sentence is
 re-checked against the governed map before it may wear the stamp, catching an edit that silently inserts an
 unsupported claim. The document stays in reading order; selecting a highlighted passage opens its status,
@@ -390,6 +390,9 @@ Out of scope:
 - team dashboards
 - generic notebook replacement
 
+Supervisor, multi-role, multi-user, hosted, billing, and background-agent
+surfaces remain outside v1.
+
 If a control is motivated by org governance beyond the in-loop
 thesis/evidence lifecycle, it belongs outside v1.
 
@@ -400,12 +403,14 @@ actions through the workbench server, without requiring private cloud state to r
 point uses unavailable private data, it must say so and show the missing path or
 saved work, leaving the gap explicit for the user to resolve.
 
-The server owns a small storage boundary. Today that boundary is a file-backed
-project store rooted in the repository: intake edits, source edits, saved
-project files, settings, and saved works write to local paths and return those
-paths to the UI. The UI should treat the server as the writer and should not
+The server owns transport, confirmation, and job coordination. Durable project
+mutations cross a `ztare ... --json` command before they touch the file-backed
+project store: intake and source edits, project creation, review/next-step
+records, evidence-fetch receipts, project files, settings, maps, and document
+artifacts all use the same CLI-owned writer as non-browser clients. The only
+direct server ledger is provider-neutral background-job state. The UI must not
 invent browser-only project state. Later storage can move behind the same
-boundary, but v1 keeps the product local-first and inspectable.
+command boundary, while v1 remains local-first and inspectable.
 
 ## Project list model
 
@@ -467,7 +472,8 @@ GET /api/charter?project=<project>
 POST /api/charter
 -> update `projects/<project>/project_charter.md`, append the charter saved-history
    record, and return refreshed charter/project state. The endpoint refuses
-   empty text and no-op saves.
+   empty text and no-op saves. The server stages Markdown and delegates the write
+   to `ztare forensic-workbench save-charter --json`.
 
 POST /api/source-import
 -> write one new validated source file, refuse existing filenames, update
@@ -476,7 +482,9 @@ POST /api/source-import
    brief draft, but the brief write still requires Save project brief. Optional
    `artifact_kind` and `created_by` metadata let Codex, Claude Code, notebook,
    search, proof, and report outputs land as project work without changing the
-   evidence filter controlled by `source_type`.
+   evidence filter controlled by `source_type`. The HTTP server stages the body and
+   delegates the write to `ztare project source-file add`; CLI rejection is returned
+   as a non-2xx response rather than a successful-looking no-op.
 
 GET /api/sources?project=<project>
 -> list typed source files using the same source-check read model
@@ -490,7 +498,15 @@ POST /api/source-edit
    kind, or creator label changed; update source_type_map, append a source-edit
    saved work, run source-check, and return refreshed state. Metadata-only
    edits are valid because they change how external notes, searches,
-   computations, proof work, and report drafts appear in the research map.
+   computations, proof work, and report drafts appear in the research map. The
+   mutation runs through `ztare project source-file edit`; the server does not call
+   the source-file kernel directly.
+
+The same prepared-artifact boundary applies to project-brief edits, scoring guides,
+saved research maps, and project files: HTTP prepares or stages the object, the CLI
+owns validation and persistence, and the HTTP response projects the CLI receipt.
+Global settings and per-project run overrides use the same boundary with staged JSON;
+secrets are never interpolated into the CLI argument vector.
 
 GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 -> fresh single-project workbench data bound to the selected intake
@@ -894,9 +910,10 @@ Report readiness should show `report_support_unavailable` and keep
 the rest of the workbench working. A missing report is a reviewable state that
 keeps the project visible.
 
-Writes should stay explicit. Live mode calls the workbench server to persist
-review or next-step file under the project workspace folder before writing the
-saved work. Offline snapshot mode may save a review or next-step file for a CLI handoff.
+Writes should stay explicit. Live mode calls the workbench server, which stages
+the prepared review or next-step input and invokes the matching CLI command;
+the CLI persists both the prepared file and saved work under the project
+workspace. Offline snapshot mode may save a review or next-step file for a CLI handoff.
 Either way, the visible trail is file, saved-history ledger,
 saved history, latest saved work, and refreshed project data.
 Any panel that can write project files should show a visible write boundary

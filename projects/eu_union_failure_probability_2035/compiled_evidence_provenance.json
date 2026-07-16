@@ -1,17 +1,17 @@
 {
-  "audit_copy_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/compiled_evidence.txt",
+  "audit_copy_path": "projects/eu_union_failure_probability_2035/compiled_evidence.txt",
   "audit_copy_sha256": "769176d85728596ed41dbb2e20f3638e8962f70af445b69886ad178b899e9c18",
   "evidence_gap_baseline": "champion",
-  "evidence_gap_brief_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/evidence_gap_brief.md",
+  "evidence_gap_brief_path": "projects/eu_union_failure_probability_2035/workspace/evidence_gap_brief.md",
   "evidence_gap_count": 4,
-  "evidence_gap_source_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/champion_evidence_gaps.json",
+  "evidence_gap_source_path": "projects/eu_union_failure_probability_2035/workspace/champion_evidence_gaps.json",
   "generated_on": "June 21, 2026",
   "mode": "workspace",
-  "output_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+  "output_path": "projects/eu_union_failure_probability_2035/evidence.txt",
   "output_sha256": "769176d85728596ed41dbb2e20f3638e8962f70af445b69886ad178b899e9c18",
-  "packet_output_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/compiled_evidence_packet.json",
+  "packet_output_path": "projects/eu_union_failure_probability_2035/compiled_evidence_packet.json",
   "packet_output_sha256": "ba4e4e5121601f5e5640d84c185af740825046e141385de3f127431487195788",
-  "project_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035",
+  "project_dir": "projects/eu_union_failure_probability_2035",
   "source_count": 20,
   "sources": [
     {
@@ -219,7 +219,7 @@
     "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped.",
     "Untyped sources present (S001). Untyped files are excluded from immutable facts and constraints."
   ],
-  "workspace_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace",
+  "workspace_dir": "projects/eu_union_failure_probability_2035/workspace",
   "workspace_meta": {
     "changed_sources": 0,
     "deleted_sources": [],
@@ -230,15 +230,15 @@
     "model_id": "gemini-3.1-pro-preview",
     "project": "eu_union_failure_probability_2035",
     "prompts": {
-      "extract_source_note": "/Users/daalami/figs_activist_loop/config/prompts/extract_source_note.md",
-      "merge_workspace": "/Users/daalami/figs_activist_loop/config/prompts/merge_workspace.md"
+      "extract_source_note": "config/prompts/extract_source_note.md",
+      "merge_workspace": "config/prompts/merge_workspace.md"
     },
-    "raw_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/raw",
+    "raw_dir": "projects/eu_union_failure_probability_2035/raw",
     "reused_sources": 20,
     "source_count": 20,
     "warnings": [
       "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped."
     ],
-    "workspace_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace"
+    "workspace_dir": "projects/eu_union_failure_probability_2035/workspace"
   }
 }

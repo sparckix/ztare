@@ -89,8 +89,9 @@ def pinned_receipts(project: str, repo_root=None) -> "list[dict]":
 def deliverable_provenance(project: str, current_declared: "list[str]", repo_root=None) -> dict:
     """COMPUTED pre-registration status per currently-declared deliverable — never self-reported. A deliverable is
     `pre-registered` if it appears in some pinned run's declared set (reported with the EARLIEST run_id it was
-    pinned in); otherwise `added_later` (declared after the last pin, so it could be a response to results). This
-    is the ungameable surface the panel labels each deliverable with."""
+    pinned in); `added_later` only if at least one run was pinned before it appeared. Before the first pin its
+    status is `not-yet-pinned`: without a baseline, “later” is not a meaningful property. This is the ungameable
+    surface the panel labels each deliverable with."""
     receipts = pinned_receipts(project, repo_root)
     first_run: "dict[str, object]" = {}
     for rec in receipts:  # chronological → first occurrence wins
@@ -102,7 +103,7 @@ def deliverable_provenance(project: str, current_declared: "list[str]", repo_roo
         pre = name in first_run
         rows.append({"name": name, "pre_registered": pre,
                      "first_run_id": first_run.get(name),
-                     "status": "pre-registered" if pre else "added_later"})
+                     "status": "pre-registered" if pre else ("added_later" if receipts else "not-yet-pinned")})
     return {"deliverables": rows, "pinned_runs": len(receipts), "any_pinned": bool(receipts)}
 
 
@@ -146,9 +147,9 @@ def _selftest() -> int:
         (root / "projects" / proj / "project_charter.md").write_text("# Charter\nCore Question: does X hold?\n",
                                                                      encoding="utf-8")
 
-        ok("no receipts before any pin → empty provenance", deliverable_provenance(proj, ["decision_memo"], root)
+        ok("no receipts before any pin → unpinned provenance", deliverable_provenance(proj, ["decision_memo"], root)
            == {"deliverables": [{"name": "decision_memo", "pre_registered": False, "first_run_id": None,
-                                 "status": "added_later"}], "pinned_runs": 0, "any_pinned": False})
+                                 "status": "not-yet-pinned"}], "pinned_runs": 0, "any_pinned": False})
         ok("no drift before any pin", contract_drift(proj, root) == {"pinned": False})
 
         # run 1 pins {decision_memo, risk_register}
@@ -175,7 +176,7 @@ def _selftest() -> int:
         ok("decision_memo keeps its EARLIEST pin (run 1)", by["decision_memo"]["first_run_id"] == 1)
         ok("risk_register stays pre-registered (it was pinned at run 1, even though run 2 dropped it)",
            by["risk_register"]["pre_registered"] and by["risk_register"]["first_run_id"] == 1)
-        ok("appendix reads added_later (first pinned at run 2 — could be a response to results)",
+        ok("appendix records its first pre-registration at run 2",
            by["appendix"]["first_run_id"] == 2 and by["appendix"]["pre_registered"])
 
         # drift: current set vs the latest pin (run 2)

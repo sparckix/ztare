@@ -1041,6 +1041,21 @@ def test_file_preview_api_reads_repo_relative_text_only(tmp_path: Path, monkeypa
         module.file_preview_payload("papers/cognitive-camouflage/draft.md")
 
 
+def test_public_scope_rejects_unlisted_project_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    monkeypatch.setattr(module, "PROJECT_SCOPE", "public")
+    monkeypatch.setattr(module, "PROJECT_ALLOWLIST", {"shared"})
+    for project in ("shared", "private"):
+        target = tmp_path / "projects" / project / "note.md"
+        target.parent.mkdir(parents=True)
+        target.write_text(f"{project} note\n", encoding="utf-8")
+
+    assert module.file_preview_payload("projects/shared/note.md")["text"] == "shared note\n"
+    with pytest.raises(FileNotFoundError, match="not available"):
+        module.file_preview_payload("projects/private/note.md")
+
+
 def test_file_preview_promotes_saved_project_recent_change_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
@@ -2170,7 +2185,7 @@ def test_live_launcher_reuses_existing_api(monkeypatch: pytest.MonkeyPatch) -> N
         launched_envs.append(env)
         return FakeProcess(command, cwd=cwd)
 
-    monkeypatch.setattr(module, "api_ready", lambda *_args, **_kwargs: True)
+    monkeypatch.setattr(module, "api_status", lambda *_args, **_kwargs: {"project_inventory_scope": "local"})
     monkeypatch.setattr(module.subprocess, "Popen", fake_popen)
 
     rc = module.run_live(
@@ -2183,6 +2198,8 @@ def test_live_launcher_reuses_existing_api(monkeypatch: pytest.MonkeyPatch) -> N
             port=0,
             api_startup_timeout=1.0,
             api_poll_interval=0.1,
+            project_scope="local",
+            projects="",
         )
     )
 
@@ -2200,6 +2217,9 @@ def test_live_launcher_checks_lightweight_status_endpoint(monkeypatch: pytest.Mo
     class FakeResponse:
         status = 200
 
+        def read(self) -> bytes:
+            return b'{"project_inventory_scope":"local"}'
+
         def __enter__(self) -> "FakeResponse":
             return self
 
@@ -2214,6 +2234,34 @@ def test_live_launcher_checks_lightweight_status_endpoint(monkeypatch: pytest.Mo
 
     assert module.api_ready("http://127.0.0.1:8765", timeout=0.1)
     assert seen_urls == ["http://127.0.0.1:8765/api/status"]
+
+
+def test_live_launcher_refuses_to_reuse_a_different_project_scope(monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_live_module()
+    monkeypatch.setattr(module, "ensure_web_deps", lambda: True)
+    monkeypatch.setattr(module, "api_status", lambda *_args, **_kwargs: {"project_inventory_scope": "local"})
+    monkeypatch.setattr(
+        module.subprocess,
+        "Popen",
+        lambda *_args, **_kwargs: pytest.fail("a mismatched API must not launch or reuse the frontend"),
+    )
+
+    rc = module.run_live(
+        Namespace(
+            api_host="127.0.0.1",
+            api_port=8765,
+            api_url="http://127.0.0.1:8765",
+            app_url="http://127.0.0.1:5174",
+            host="",
+            port=0,
+            api_startup_timeout=1.0,
+            api_poll_interval=0.1,
+            project_scope="public",
+            projects="",
+        )
+    )
+
+    assert rc == 2
 
 
 def test_live_launcher_waits_long_enough_for_project_status(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -2787,6 +2835,57 @@ def test_workbench_settings_save_feed_source_action_commands(tmp_path: Path, mon
     )
 
 
+def test_project_run_settings_save_crosses_cli_boundary(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    (tmp_path / "projects" / "demo").mkdir(parents=True)
+
+    payload = module.save_run_config_payload({
+        "project": "demo",
+        "values": {
+            "ZTARE_WORKBENCH_RUN_ITERS": "5",
+            "ZTARE_WORKBENCH_RUN_TRANSPORT": "subscription",
+        },
+    })
+
+    saved = json.loads((tmp_path / payload["config_path"]).read_text(encoding="utf-8"))
+    assert payload["saved"] is True
+    assert payload["updated_keys"] == ["ZTARE_WORKBENCH_RUN_ITERS", "ZTARE_WORKBENCH_RUN_TRANSPORT"]
+    assert saved["values"] == {
+        "ZTARE_WORKBENCH_RUN_ITERS": "5",
+        "ZTARE_WORKBENCH_RUN_TRANSPORT": "subscription",
+    }
+
+
+def test_claim_card_build_and_receipt_cross_cli_boundary(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    synthesis = tmp_path / "projects" / "demo" / "synthesis"
+    synthesis.mkdir(parents=True)
+    (synthesis / "report_support_contract.json").write_text(
+        json.dumps({
+            "status": "supported",
+            "hardest_conclusion": {"claim": "Bounded conclusion"},
+            "claim_strength": {"epistemic_note": "Bounded to the checked sources."},
+            "supported_claims": [{"claim": "Bounded conclusion"}],
+            "source_artifact_paths": [],
+        }),
+        encoding="utf-8",
+    )
+
+    payload = module.build_claim_card_payload({
+        "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/demo_intake.json",
+    })
+
+    assert payload["accepted"] is True
+    assert payload["preview_path"] == "projects/demo/synthesis/claim_card.html"
+    assert (tmp_path / payload["json_path"]).exists()
+    assert (tmp_path / payload["receipt_path"]).exists()
+    assert payload["write_boundary"]["write_paths"] == payload["write_paths"]
+
+
 def test_evidence_fetch_preview_and_confirm_write_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
@@ -2806,8 +2905,21 @@ def test_evidence_fetch_preview_and_confirm_write_receipt(tmp_path: Path, monkey
     (project_root / "demo_intake.json").write_text('{"project": "demo"}\n', encoding="utf-8")
     commands: list[list[str]] = []
 
-    def fake_workbench_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+    def fake_workbench_run(command: list[str], *, timeout: int = 90, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
         commands.append(command)
+        if "record-evidence-fetch" in command:
+            receipt = json.loads(Path(command[command.index("--from") + 1]).read_text(encoding="utf-8"))
+            ledger = workspace / "forensic_workbench_evidence_fetches.jsonl"
+            latest = workspace / "forensic_workbench_latest_evidence_fetch.json"
+            ledger.write_text(json.dumps(receipt) + "\n", encoding="utf-8")
+            latest.write_text(json.dumps(receipt), encoding="utf-8")
+            result = {
+                "ok": True,
+                "receipt_path": "projects/demo/workspace/forensic_workbench_evidence_fetches.jsonl",
+                "latest": "projects/demo/workspace/forensic_workbench_latest_evidence_fetch.json",
+                "receipt": receipt,
+            }
+            return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result), stderr="")
         manifest = {
             "fetched_at": "2026-06-22T00:00:00Z",
             "project": "demo",
@@ -2905,23 +3017,23 @@ def test_evidence_fetch_preview_and_confirm_write_receipt(tmp_path: Path, monkey
     assert recent["next_inspection"]["reason"] == "Open the source or evidence file to see what changed."
     assert recent["substantive_inspection"]["preview_path"] == "projects/demo/workspace/evidence_fetch_manifest_quota.json"
     assert recent["substantive_inspection"]["preview_kind"] == "artifact"
-    assert commands == [
-        [
-            module.SERVER_PYTHON,
-            "-m",
-            "src.ztare.cli",
-            "project",
-            "evidence-fetch",
-            "--project",
-            "demo",
-            "--severity",
-            "degrading",
-            "--max-fetches",
-            "3",
-            "--search-backend",
-            "auto",
-        ]
+    assert commands[0] == [
+        module.SERVER_PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "project",
+        "evidence-fetch",
+        "--project",
+        "demo",
+        "--severity",
+        "degrading",
+        "--max-fetches",
+        "3",
+        "--search-backend",
+        "auto",
     ]
+    assert commands[1][3:5] == ["forensic-workbench", "record-evidence-fetch"]
+    assert commands[1][commands[1].index("--repo") + 1] == str(tmp_path)
 
 
 def test_evidence_gap_list_and_justify_use_cli_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -3850,18 +3962,18 @@ def test_server_status_advertises_real_live_routes(tmp_path: Path, monkeypatch: 
     assert payload["projects_available"] is True
     assert payload["app_name"] == "Project Workbench"
     assert payload["workflow_label"] == "Project path"
-    assert payload["project_inventory_scope"] == "all_projects_directory"
+    assert payload["project_inventory_scope"] == "local"
     assert payload["inventory_includes_all_project_folders"] is True
     assert payload["project_count"] == 2
     assert payload["intake_ready_count"] == 1
     assert payload["pending_folder_count"] == 1
     assert payload["default_project"] == "demo"
     assert payload["projects"]["project_count"] == 2
-    assert payload["projects"]["project_inventory_scope"] == "all_projects_directory"
+    assert payload["projects"]["project_inventory_scope"] == "local"
     assert payload["projects"]["inventory_includes_all_project_folders"] is True
     assert payload["projects"]["pending_folder_count"] == 1
     assert payload["projects"]["folder_summary"]["needs_intake_with_files"] == 1
-    assert payload["api"]["project_inventory_scope"] == "all_projects_directory"
+    assert payload["api"]["project_inventory_scope"] == "local"
     assert payload["api"]["inventory_includes_all_project_folders"] is True
     assert payload["api"]["folder_summary"]["needs_intake_with_files"] == 1
     assert payload["checks"]["api_ready"] is True
@@ -5826,29 +5938,16 @@ def test_project_index_payload_reports_counts(monkeypatch: pytest.MonkeyPatch) -
 
     assert payload["ok"] is True
     assert payload["ready_count"] == 1
-    assert payload["project_inventory_scope"] == "all_projects_directory"
+    assert payload["project_inventory_scope"] == "local"
     assert payload["inventory_root"] == "projects/"
     assert payload["inventory_includes_all_project_folders"] is True
     assert payload["folder_count"] == 3
     assert payload["pending_folder_count"] == 2
     assert payload["folder_summary"] == payload["project_folder_summary"]
-    pending = next(row for row in payload["all_project_folders"] if row["project"] == "pending")
-    add_intake_action = next(row for row in pending["recovery_actions"] if row["id"] == "add_intake")
-    assert "Runs stay blocked until the project brief names the thesis" in add_intake_action["rule"]
-    assert add_intake_action["write_boundary"]["write_paths"] == [
-        "projects/pending",
-        "projects/pending/raw",
-        "projects/pending/workspace",
-        "projects/pending/raw/source_type_map.json",
-        "projects/pending/pending_intake.json",
-    ]
-    assert add_intake_action["write_boundary"]["no_change_boundary"]
-    preview_action = next(row for row in pending["recovery_actions"] if row["id"] == "preview_source")
-    assert preview_action["source"] == "projects/pending/thesis.md"
-    assert preview_action["action_type"] == "project_inspect"
-    assert preview_action["receipt_paths"] == []
-    assert preview_action["write_boundary"]["writes_project_files"] is False
-    assert preview_action["write_boundary"]["write_paths"] == []
+    assert payload["project_folders_compact"] is True
+    pending = next(row for row in payload["project_folders"] if row["project"] == "pending")
+    assert pending["source_preview"] == "projects/pending/thesis.md"
+    assert "recovery_actions" not in pending
     assert payload["project_folder_summary"]["needs_intake"] == 2
     assert payload["project_folder_summary"]["needs_intake_with_files"] == 1
     assert payload["project_folder_summary"]["needs_intake_empty"] == 1
@@ -5861,29 +5960,18 @@ def test_project_index_payload_reports_counts(monkeypatch: pytest.MonkeyPatch) -
     assert payload["projects"][0]["status_label"] == "project brief ready"
     assert payload["projects"][0]["next_action"]["label"] == "Open project"
     assert payload["projects"][0]["latest_project_check"] == "projects/demo/workspace/forensic_workbench_latest_row_action.json"
-    assert payload["intake_ready_projects"] == payload["projects"]
     assert payload["project_folders_compact"] is True
-    assert payload["project_folder_detail_field"] == "all_project_folders"
-    assert [row["project"] for row in payload["project_folders"]] == [row["project"] for row in payload["all_project_folders"]]
+    assert payload["project_folder_detail_field"] == "project_folders"
     assert "raw_preview_files" not in payload["project_folders"][0]
-    assert payload["all_project_folders"][0]["openable"] is True
-    assert payload["all_project_folders"][0]["next_action"]["label"] == "Open project"
-    assert payload["all_project_folders"][0]["project_status"] == "intake_ready"
-    assert payload["all_project_folders"][0]["latest_project_check"] == "projects/demo/workspace/forensic_workbench_latest_row_action.json"
     assert payload["project_folders"][0]["latest_project_check"] == "projects/demo/workspace/forensic_workbench_latest_row_action.json"
-    assert payload["all_project_folders"][1]["display_label"] == "Pending"
-    assert payload["all_project_folders"][1]["project_status"] == "needs_intake"
-    assert payload["all_project_folders"][1]["status_label"] == "needs project brief"
-    assert payload["all_project_folders"][1]["openable"] is False
-    assert payload["all_project_folders"][1]["next_action"]["label"] == "Create project brief"
-    assert payload["all_project_folders"][1]["has_case_material"] is True
-    assert payload["all_project_folders"][1]["has_project_material"] is True
-    assert [row["id"] for row in payload["all_project_folders"][1]["recovery_actions"]] == [
-        "add_intake",
-        "preview_source",
-    ]
-    assert payload["all_project_folders"][1]["hidden_by_default"] is False
-    assert payload["all_project_folders"][2]["hidden_by_default"] is True
+    assert pending["display_label"] == "Pending"
+    assert pending["project_status"] == "needs_intake"
+    assert pending["status_label"] == "needs project brief"
+    assert pending["openable"] is False
+    assert pending["next_action"]["label"] == "Create project brief"
+    assert pending["has_project_material"] is True
+    assert pending["hidden_by_default"] is False
+    assert not any(row["project"] == "_bench_generated" for row in payload["project_folders"])
 
 
 def test_existing_project_recovery_draft_uses_folder_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -5905,7 +5993,7 @@ def test_existing_project_recovery_draft_uses_folder_files(tmp_path: Path, monke
     assert payload["can_add_intake"] is True
     assert payload["summary"] == "needs project brief; found 2 useful files, suggested 2 source files and 1 evidence file."
     assert payload["bounded_claim"] == "The project thesis comes from existing notes."
-    assert "this thesis" in payload["next_falsifier"]
+    assert payload["next_falsifier"] == ""
     assert "Review these files before saving the project brief" in payload["notes"]
     assert "projects/pending/thesis.md" in payload["notes"]
     assert "Evidence file supports part of the thesis" not in payload["notes"]
@@ -6090,7 +6178,10 @@ def test_create_project_payload_runs_source_init_then_intake_create(tmp_path: Pa
     def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
         commands.append(command)
         if "source-init" in command:
-            (tmp_path / "projects" / "fresh").mkdir(parents=True)
+            raw_dir = tmp_path / "projects" / "fresh" / "raw"
+            raw_dir.mkdir(parents=True)
+            (tmp_path / "projects" / "fresh" / "workspace").mkdir()
+            (raw_dir / "source_type_map.json").write_text("{}\n", encoding="utf-8")
         return subprocess.CompletedProcess(command, 0, stdout='{"ok": true}\n', stderr="")
 
     monkeypatch.setattr(module.snapshot, "run", fake_run)
@@ -6178,10 +6269,10 @@ def test_create_project_payload_writes_uploaded_raw_files_into_intake(
 
     raw_dir = tmp_path / "projects" / "fresh" / "raw"
     assert (raw_dir / "evidence.md").read_text(encoding="utf-8") == (
-        "---\nsource_type: source_evidence\n---\n\nEvidence text.\n"
+        "---\nsource_type: source_evidence\nartifact_kind: raw_evidence\n---\n\nEvidence text.\n"
     )
     assert (raw_dir / "context.md").read_text(encoding="utf-8") == (
-        "---\nsource_type: research_question\n---\n\nContext text.\n"
+        "---\nsource_type: research_question\nartifact_kind: raw_evidence\n---\n\nContext text.\n"
     )
     assert json.loads((raw_dir / "source_type_map.json").read_text(encoding="utf-8")) == {
         "context.md": "research_question",
@@ -6241,6 +6332,10 @@ def test_create_project_payload_can_add_intake_to_existing_folder_without_intake
 
     def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
         if "source-init" in command:
+            raw_dir = tmp_path / "projects" / "existing" / "raw"
+            raw_dir.mkdir(parents=True)
+            (tmp_path / "projects" / "existing" / "workspace").mkdir()
+            (raw_dir / "source_type_map.json").write_text("{}\n", encoding="utf-8")
             payload = {
                 "ok": True,
                 "created_dirs": ["projects/existing/raw", "projects/existing/workspace"],
@@ -6269,12 +6364,14 @@ def test_create_project_payload_can_add_intake_to_existing_folder_without_intake
         "projects/existing/workspace",
         "projects/existing/raw/source_type_map.json",
         "projects/existing/raw/thesis.md",
+        "projects/existing/workspace/forensic_workbench_source_imports.jsonl",
+        "projects/existing/workspace/forensic_workbench_latest_source_import.json",
         "projects/existing/project_charter.md",
         "projects/existing/existing_intake.json",
     ]
     assert payload["recovered_source_refs"] == ["projects/existing/raw/thesis.md"]
     assert (tmp_path / "projects/existing/raw/thesis.md").read_text(encoding="utf-8") == (
-        "---\nsource_type: source_evidence\n---\n\nRecovered thesis.\n"
+        "---\nsource_type: source_evidence\nartifact_kind: raw_evidence\n---\n\nRecovered thesis.\n"
     )
 
 
@@ -6352,6 +6449,97 @@ def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, mon
     assert receipt["case_key"] == "demo::projects/demo/demo_intake.json"
     latest = json.loads(latest_path.read_text(encoding="utf-8"))
     assert latest["source_path"] == "projects/demo/raw/source_note.md"
+
+
+def test_project_brief_and_charter_writes_cross_the_cli_boundary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    (project_root / "workspace").mkdir(parents=True)
+    intake_path = project_root / "demo_intake.json"
+    intake_path.write_text(
+        json.dumps({
+            "project": "demo",
+            "bounded_claim": "Original claim",
+            "next_falsifier": "Original test",
+            "notes": "",
+            "non_claims": [],
+            "source_refs": [],
+            "evidence_refs": [],
+        }),
+        encoding="utf-8",
+    )
+    charter_path = project_root / "project_charter.md"
+    charter_path.write_text("# Demo\n\nOriginal mandate.\n", encoding="utf-8")
+
+    brief = module.apply_intake_edit(
+        project="demo",
+        intake="projects/demo/demo_intake.json",
+        raw_patch={"bounded_claim": "Updated claim"},
+    )
+    charter = module.apply_charter_edit(
+        project="demo",
+        intake="projects/demo/demo_intake.json",
+        text="# Demo\n\nUpdated mandate.\n",
+    )
+
+    assert brief["ok"] is True
+    assert brief["receipt"]["updated_fields"] == ["bounded_claim"]
+    assert json.loads(intake_path.read_text(encoding="utf-8"))["bounded_claim"] == "Updated claim"
+    assert charter["ok"] is True
+    assert charter["receipt"]["charter_path"] == "projects/demo/project_charter.md"
+    assert "Updated mandate" in charter_path.read_text(encoding="utf-8")
+
+
+def test_scoring_guide_and_research_map_writes_cross_the_cli_boundary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    (project_root / "workspace").mkdir(parents=True)
+    (tmp_path / "rubrics").mkdir()
+    (project_root / "demo_intake.json").write_text(
+        json.dumps({"project": "demo", "bounded_claim": "Claim", "next_falsifier": "Test"}),
+        encoding="utf-8",
+    )
+    research_map = {
+        "schema": module.RESEARCH_MAP_SCHEMA,
+        "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/demo_intake.json",
+        "summary": "One claim and its next test.",
+        "markdown": "# Research map\n",
+        "sections": [],
+    }
+    monkeypatch.setattr(
+        module,
+        "workflow_payload_for_project",
+        lambda **_kwargs: {"project_state": {"research_map": research_map}},
+    )
+
+    guide = module.save_scoring_guide_payload(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+        text=json.dumps({
+            "persona": "Reviewer",
+            "criteria": "Check the claim.",
+            "dimensions": [{"name": "Backing", "weight": 100, "description": "Evidence is traceable."}],
+        }),
+    )
+    saved_map = module.save_research_map_payload({
+        "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/demo_intake.json",
+    })
+
+    assert guide["saved"] is True
+    assert (tmp_path / "rubrics" / "demo.json").exists()
+    assert saved_map["accepted"] is True
+    assert (project_root / "workspace" / "research_map.json").exists()
 
 
 def test_import_source_payload_preserves_write_when_source_check_fails(
@@ -6491,14 +6679,15 @@ def test_edit_source_payload_rejects_noop_write(tmp_path: Path, monkeypatch: pyt
 
     monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
 
-    with pytest.raises(ValueError, match="no changed fields"):
-        module.edit_source_payload(
-            project="demo",
-            relative_path="source_note.md",
-            source_type="source_evidence",
-            body="Same body.",
-        )
+    payload = module.edit_source_payload(
+        project="demo",
+        relative_path="source_note.md",
+        source_type="source_evidence",
+        body="Same body.",
+    )
 
+    assert payload["ok"] is False
+    assert "no changed fields" in payload["error"]
     assert not (workspace / "forensic_workbench_source_edits.jsonl").exists()
 
 
@@ -6584,15 +6773,19 @@ def test_apply_review_file_rejects_row_mismatch(tmp_path: Path) -> None:
 
 
 def test_citation_binding_uses_indexed_source_and_demotes_when_source_changes(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path
 ) -> None:
-    module = load_server_module()
+    from ztare.scenarios.evidence_admission import admit_source_passage
+
     project_dir = tmp_path / "projects" / "demo"
     raw_dir = project_dir / "raw"
     raw_dir.mkdir(parents=True)
     source_path = raw_dir / "interviews.md"
     source_body = "Customers will adopt it. Nine customers asked for the workflow."
     source_path.write_text(source_body, encoding="utf-8")
+    (raw_dir / "source_type_map.json").write_text(
+        json.dumps({"interviews.md": "source_evidence"}), encoding="utf-8"
+    )
     (project_dir / "latest_eval_results.json").write_text(json.dumps({
         "probability_dag": {
             "outcome": {"label": "Launch the product", "probability": 0.8},
@@ -6600,34 +6793,26 @@ def test_citation_binding_uses_indexed_source_and_demotes_when_source_changes(
         }
     }), encoding="utf-8")
 
-    import ztare.common.paths as paths
-    monkeypatch.setattr(paths, "REPO_ROOT", tmp_path)
-    monkeypatch.setattr(module, "source_file_payload", lambda **_kwargs: {
-        "source_type": "source_evidence",
-        "source_path": "projects/demo/raw/interviews.md",
-        "body": source_body,
-    })
-    monkeypatch.setattr(module, "raw_source_path", lambda *_args: source_path)
-
-    exact = module.scenario_bind_payload({
+    exact = admit_source_passage({
         "project": "demo",
         "source_path": "interviews.md",
         "excerpt": "Customers will adopt it.",
         "target": "claim:demand",
-    })
-    assert exact["ok"] is True
+    }, tmp_path)
+    assert exact["ok"] is True, exact
     assert exact["bound"]["source_tier"] == "cited"
     assert exact["bound"]["inference_tier"] == "cited"
     assert exact["decision_before"]["schema"] == "ztare-decision-state-v1"
     assert exact["decision_after"]["schema"] == "ztare-decision-state-v1"
     assert exact["decision_delta"]["schema"] == "ztare-decision-delta-v1"
+    assert exact["decision_history"]["graph"]["hash"]
 
-    relevant = module.scenario_bind_payload({
+    relevant = admit_source_passage({
         "project": "demo",
         "source_path": "interviews.md",
         "excerpt": "Nine customers asked for the workflow.",
         "target": "claim:demand",
-    })
+    }, tmp_path)
     assert relevant["ok"] is True
     assert relevant["bound"]["source_tier"] == "cited"
     assert relevant["bound"]["inference_tier"] == "unchecked"
@@ -6678,6 +6863,9 @@ def test_document_upload_extracts_and_stages_original_with_receipt(
     assert rows[0]["original_sha256"] == preview["sha256"]
 
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    (tmp_path / "projects" / "demo" / "raw").mkdir(parents=True)
+    (tmp_path / "projects" / "demo" / "workspace").mkdir()
+    (tmp_path / "projects" / "demo" / "raw" / "source_type_map.json").write_text("{}\n", encoding="utf-8")
     source_refs, evidence_refs, writes = module.stage_uploaded_source_rows("demo", rows)
     assert source_refs == []
     assert evidence_refs == ["projects/demo/raw/launch.extracted.md"]

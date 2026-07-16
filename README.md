@@ -23,7 +23,7 @@ Bring a project folder, report, PRD, model output, proof note, dataset, or repo.
 back with **every claim tagged against governed evidence** — backed, contradicted, or an untested assumption —
 then a decision brief that says what the call hinges on.
 
-![The ZTARE Project Workbench, Verdict view: "Can I trust this report?" — a likelihood-to-hold score, how many claims are directly sourced vs synthesized vs unsupported, an adversarial "how could this break" step, and every unsourced claim linked to where to verify it. The left rail walks one project from charter and thesis through evidence and pressure-test to this verdict.](docs/images/workbench.png)
+![The ZTARE Project Workbench Verdict view separates the compiled reliance decision from an uncalibrated run estimate, explains why mapped sources still need inference verification, names the next evidence gap, and links each unresolved claim to its source files. The left rail keeps the project path from thesis and evidence through pressure-test, open points, Verdict, and History.](docs/images/workbench.png)
 
 </div>
 
@@ -58,17 +58,56 @@ Code has compilers; reasoning needs similar discipline. Long term, the aim is to
 
 ## The Project Workbench
 
-A local web app over your projects, backed by an API that relays to the CLI. One container, one port:
+A local web app over your projects, backed by an API that relays to the CLI. The supported one-container
+path needs Docker with Compose and Buildx:
 
 ```bash
-docker compose --profile workbench up --build workbench   # http://127.0.0.1:8765
+make forensic-workbench-docker   # http://127.0.0.1:8765
 ```
 
-or, from a fresh clone without Docker:
+Or use the Python environment installed in the repository quickstart plus Node 20+:
 
 ```bash
 make forensic-workbench-live   # API on :8765, app on :5174, installs web deps on first run
 ```
+
+The default `local` scope is for a trusted operator and lists every project folder on that machine. For a
+demo, shared screen, or camera-ready deployment, use the tracked public-project manifest instead:
+
+```bash
+ZTARE_WORKBENCH_PROJECT_SCOPE=public docker compose --profile workbench up --build workbench
+```
+
+Edit [`forensic-workbench/public-projects.json`](forensic-workbench/public-projects.json) to choose the projects
+that mode can disclose. It is fail-closed: an unlisted project is absent from the inventory and rejected by
+project APIs even if its files exist on the host. For a one-off private allowlist, run
+`python scripts/public/control/forensic_workbench_live.py --project-scope allowlist --projects demo_claims`.
+
+The Workbench does not yet provide multi-user authentication. On a remote machine, keep it bound to loopback
+and use an SSH tunnel rather than exposing port 8765 publicly:
+
+```bash
+# remote host
+ZTARE_WORKBENCH_PROJECT_SCOPE=public docker compose --profile workbench up --build workbench
+
+# your laptop
+ssh -N -L 8765:127.0.0.1:8765 user@remote-host
+```
+
+Then open `http://127.0.0.1:8765`. This preserves the same one-port frontend/API boundary without turning a
+local filesystem tool into an unauthenticated public service.
+
+Before a shared demo or release, run:
+
+```bash
+make forensic-workbench-release-check
+make forensic-workbench-docker-build
+```
+
+This builds the production frontend and verifies the public manifest, hidden-project read/write refusal,
+local-origin policy, and one-port serving path against an isolated server, then proves the same source can
+produce the release image. The full operator procedure, expected results, remote tunnel, and troubleshooting
+are in the [Workbench release guide](docs/guides/workbench-release.md).
 
 Open a project and the workbench walks it from charter and thesis through sources, evidence, pressure-testing, and verdict. It critiques a scoring rubric before you spend a run on it, answers plain-language questions against the research map ("what could falsify the thesis?"), stress-tests a single claim to show how it could break, turns a source document into a bounded starting claim, and exports the verified research graph to an [Obsidian vault](docs/concepts/forensic_workbench_interface.md) to write from. The browser never gets raw filesystem access.
 
@@ -162,9 +201,11 @@ make demo          # three small evaluation-failure reproducers, offline
 
 External review is still sparse, so read each claim at the evidence level its own files support.
 
-## Adding model keys
+## Model access
 
-Keys are only needed for a model-backed loop. Supported providers: `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`/`MOONSHOT_API_KEY`, `XAI_API_KEY`/`GROK_API_KEY`. Subscription-CLI dispatch is supported for wired call sites. Choose a mutator/judge pair from different model families ([model aliases](docs/reference/model_aliases.md)), and set `CROSS_FAMILY=1` to fail closed if the pair shares a provider. The guarded entry blocks before the first model call unless the project brief, evidence state, and launch checks agree. See the [CLI guide](docs/guides/cli.md) for the full sequence.
+Subscription-CLI autoresearch does not require an API key or any provider SDK. Install its scientific runtime with `pip install -e '.[research]'`. Install an API transport only when you select it: `pip install -e '.[google]'`, `pip install -e '.[anthropic]'`, or `pip install -e '.[openai]'`; `.[providers]` installs all three, and extras can be combined as `.[research,providers]`. Supported credentials are `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`/`MOONSHOT_API_KEY`, and `XAI_API_KEY`/`GROK_API_KEY`.
+
+Choose a mutator/judge pair from different model families ([model aliases](docs/reference/model_aliases.md)), and set `CROSS_FAMILY=1` to fail closed if the pair shares a provider. The guarded entry blocks before the first model call unless the project brief, evidence state, and launch checks agree. See the [CLI guide](docs/guides/cli.md) for the full sequence.
 
 ## Papers
 

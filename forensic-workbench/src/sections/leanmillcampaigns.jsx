@@ -2,6 +2,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { displayText, Block, FactRow, Tag, StatusLine, EmptyState } from "../design-system.js";
 import { ModalPortal, useModalBehavior } from "../modal-behavior.js";
+import { campaignIsLive } from "../campaign-status.js";
 
 const h = React.createElement;
 
@@ -60,13 +61,6 @@ function epochAgeText(value) {
   if (age < 60) return `${Math.max(1, age)}s ago`;
   if (age < 3600) return `${Math.floor(age / 60)}m ago`;
   return `${Math.floor(age / 3600)}h ago`;
-}
-
-function campaignIsLive(status) {
-  if (!status) return false;
-  const lease = (status && status.attempt_lease) || {};
-  const run = (status && status.run) || {};
-  return Boolean(lease.active) || run.status === "running" || status.status === "running";
 }
 
 function campaignPhase(status) {

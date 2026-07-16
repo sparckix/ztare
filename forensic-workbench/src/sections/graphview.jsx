@@ -4,6 +4,7 @@ import "reactflow/dist/style.css";
 import { Maximize2, Minimize2, RefreshCw, Search, X } from "lucide-react";
 import { displayMessage, displayText, Block, Tag, FactRow, EmptyState, StatusLine } from "../design-system.js";
 import { governedMapReady, meaningfulRests } from "./decisionpanel.jsx";
+import { decisionTestContext } from "./wagerpanel.jsx";
 import { interpretMapQuestion, layeredLayout, looksLikeMapQuestion } from "./researchgraphmodel.js";
 
 const h = React.createElement;
@@ -228,7 +229,7 @@ function subFor(n) {
 const FIT = { padding: 0.15, maxZoom: 1.1, duration: 300 };
 
 // Decision overlay, inline-only (no CSS file touched): hinge/in_core draw one ring colour at two
-// intensities (hinge = the single load-bearing node, strongest; in_core = lighter, "turns on this too").
+// intensities (hinge = the single decision-critical node, strongest; in_core = lighter, "turns on this too").
 // Chained with the selected ring (box-shadow supports multiple layers) so clicking a hinge node doesn't
 // lose either. untested/contradicted only touch border-style / one edge, so they never fight the
 // existing tone border-colour. All undefined on older payloads → no style object → pure fallback.
@@ -266,7 +267,9 @@ const NODE_TYPES = { map: MapNode };
 // node to interrogate it; switch the lens to project along a dimension. Fed by the typed projection.
 export function GraphView({
   nodes, edges, truncated, argument, focusId, onFocusHandled,
-  project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, onRefresh, onOpenDetail,
+  project, liveMode, decision, onDecisionRefresh, agenda, onAgendaRefresh, wagers, onWagersRefresh,
+  onRefresh, onOpenDetail,
+  onPrefillDecisionTest, onExecuteDecisionTest,
 }) {
   const [selected, setSelected] = useState(null);
   const [hovered, setHovered] = useState(null);
@@ -293,6 +296,7 @@ export function GraphView({
   const canRun = liveMode && !!project;
   useEffect(() => { if (canRun && !decision && onDecisionRefresh) onDecisionRefresh(); }, [project, liveMode]); // eslint-disable-line
   useEffect(() => { if (canRun && !agenda && onAgendaRefresh) onAgendaRefresh(); }, [project, liveMode]); // eslint-disable-line
+  useEffect(() => { if (canRun && !wagers && onWagersRefresh) onWagersRefresh(); }, [project, liveMode]); // eslint-disable-line
   const decisionResult = (decision && decision.result) || null;
   const agendaRows = (agenda && agenda.result && agenda.result.agenda) || [];
   const doRefresh = () => {
@@ -539,10 +543,16 @@ export function GraphView({
 
   if (!allNodes.length) return null;
   const sel = selected ? allNodes.find((n) => n.id === selected) : null;
-  const selectedAgenda = sel ? agendaRows.find((row) => row && row.claim_ref === sel.id) : null;
+  const selectedTest = decisionTestContext(agenda, wagers, sel && sel.id);
+  const selectedAgenda = selectedTest.row;
+  const selectedWager = selectedTest.wager;
   const selectedAction = sel
     ? selectedAgenda
-      ? { label: "Open this decision test", destination: ["review", "Things to review"] }
+      ? selectedTest.mode === "record"
+        ? { label: "Record outcome", run: () => onExecuteDecisionTest && onExecuteDecisionTest(selectedWager) }
+        : selectedTest.mode === "define"
+          ? { label: "Define this test", run: () => onPrefillDecisionTest && onPrefillDecisionTest(selectedAgenda) }
+          : { label: "Review this test", destination: ["review", "Things to review"] }
       : ["gap", "tension", "falsifier", "branch", "candidate"].includes(sel.type)
         ? { label: "Open related questions", destination: ["review", "Things to review"] }
         : sel.type === "evidence" || String(sel.id || "").startsWith("src:")
@@ -769,10 +779,12 @@ export function GraphView({
                       h("span", { className: "gv-rel-verb", style: { color: r.color } }, r.dir === "out" ? r.verb : `← ${r.verb}`),
                       " ", displayText(r.other))))
               : null,
-            selectedAction && onOpenDetail
+            selectedAction && (selectedAction.run || onOpenDetail)
               ? h("div", { className: "gv-detail-actions" },
                   h("button", { type: "button", className: "chip primary",
-                    onClick: () => onOpenDetail(selectedAction.destination[0], selectedAction.destination[1]) },
+                    onClick: () => selectedAction.run
+                      ? selectedAction.run()
+                      : onOpenDetail(selectedAction.destination[0], selectedAction.destination[1]) },
                     selectedAction.label))
               : null)
         : null));

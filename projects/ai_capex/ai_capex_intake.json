@@ -6,7 +6,7 @@
   ],
   "execution_boundary": "in_loop_autoresearch_candidate",
   "expected_command": "ztare autoresearch run --project ai_capex --rubric ai_capex --intake projects/ai_capex/ai_capex_intake.json --iters 1",
-  "next_falsifier": "Change or reject this thesis if the listed files do not support it, if a stronger alternative explains the project, or if required source files are missing.",
+  "next_falsifier": "Reject the thesis if aggregate hyperscaler CapEx grows by more than 15% in FY2027 while AI-segment operating margins expand.",
   "non_claims": [
     "not reviewed against a fresh project intake yet",
     "not ready for a run until source and evidence checks pass"

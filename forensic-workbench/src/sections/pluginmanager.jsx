@@ -1,6 +1,6 @@
 import React from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, FileJson, Layers3, Plus, RefreshCw, X } from "lucide-react";
-import { displayText, Tag, StatusLine, EmptyState } from "../design-system.js";
+import { AlertTriangle, ArrowDown, ArrowUp, FileJson, HelpCircle, Layers3, Plus, RefreshCw, X } from "lucide-react";
+import { ActionButton, displayText, EmptyState, IconButton, SectionHeader, StatusLine, Tag } from "../design-system.js";
 import { ModalPortal, useModalBehavior } from "../modal-behavior.js";
 
 const h = React.createElement;
@@ -539,6 +539,58 @@ function documentDesignModal(documents, busy, onClose, onSave, dialogRef, closeB
           : h(DocumentDesignEditor, { documents, busy, onClose, onSave }))));
 }
 
+function extensionGuideModal(onClose, dialogRef, closeButtonRef) {
+  const paths = [
+    {
+      title: "Scenario",
+      where: "Configured here",
+      body: "Sets the review stance, run defaults, evidence providers, renderer, and optional contextual views. Its effects appear in the existing research loop; it does not create navigation.",
+    },
+    {
+      title: "Document design",
+      where: "Configured here",
+      body: "Selects governed claims, evidence, constraints, and open questions into a reusable reading order. The result appears under Verdict → Handoff and becomes stale when the decision changes.",
+    },
+    {
+      title: "Contextual view",
+      where: "Code contribution",
+      body: "Declares one supported host, the core carriers it reads, and typed actions it invokes. It renders inline through shared Workbench primitives; RICE and the PM decision kit live in Pressure-test results.",
+    },
+    {
+      title: "Runtime capability",
+      where: "Code plugin",
+      body: "Adds a provider or bounded engine such as evidence, rendering, recheck, or solving. A scenario selects it by registered name; Reload makes newly installed capabilities available.",
+    },
+  ];
+  return h("div", { className: "modal-backdrop", role: "presentation",
+    onMouseDown: (event) => event.target === event.currentTarget && onClose() },
+    h("div", { ref: dialogRef, tabIndex: -1, className: "modal-shell plugin-modal", role: "dialog", "aria-modal": "true",
+      "aria-label": "How Workbench extensions work" },
+      h("header", { className: "modal-head plugin-modal-head" },
+        h("div", null,
+          h("span", { className: "eyebrow" }, "Extension guide"),
+          h("h2", null, "How extensions appear in the Workbench"),
+          h("p", null, "Choose the smallest extension that changes the job. Core evidence, decisions, and navigation remain shared.")),
+        h("button", { ref: closeButtonRef, type: "button", className: "icon-button", title: "Close", "aria-label": "Close extension guide", onClick: onClose },
+          h(X, { size: 16, "aria-hidden": true }))),
+      h("div", { className: "modal-body plugin-modal-body" },
+        h("div", { className: "plugin-guide-paths" },
+          paths.map((path) => h("section", { key: path.title, className: "plugin-guide-path" },
+            h("div", null, h("strong", null, path.title), h(Tag, { tone: path.where === "Configured here" ? "ok" : "neutral" }, path.where)),
+            h("p", null, path.body)))),
+        h("section", { className: "plugin-guide-contract" },
+          h("span", { className: "eyebrow" }, "Contribution contract"),
+          h("p", null, "A contextual view must declare a supported host, at least one governed carrier, and typed read, write, or navigate actions. Invalid contributions stay unloaded and appear in Plugins health."),
+          h("p", null, "Use shared panel and modal primitives. A domain view may compose the core record, but it may not add a second verdict, worklist, ranker, or evidence store.")),
+        h("section", { className: "plugin-guide-contract" },
+          h("span", { className: "eyebrow" }, "Install paths"),
+          h("p", null, h("code", null, "scenarios/<name>.yaml"), " for scenarios and document designs; these are editable here and live immediately."),
+          h("p", null, h("code", null, "plugins/scenarios/<name>.py"), " for runtime capabilities registered with ", h("code", null, "@capability(kind, name)"), "; use Reload after changing one."),
+          h("p", null, h("code", null, "forensic-workbench/src/scenario-panels/<id>.jsx"), " for contextual views. These are validated at build time and require a frontend rebuild; arbitrary browser code is intentionally not hot-loaded.")),
+        h("div", { className: "plugin-guide-actions" },
+          h("button", { type: "button", className: "chip primary", onClick: onClose }, "Done")))));
+}
+
 function DocumentDesignEditor({ documents, busy, onClose, onSave }) {
   const original = documents.spec || {};
   const [designs, setDesigns] = React.useState((original.deliverable_specs || []).map(designDraft));
@@ -602,6 +654,7 @@ export function PluginManager({ installed, busy, message, onInstall, onReload, o
   const [editing, setEditing] = React.useState(null);   // {kind, name, spec, loading?, error?}
   const [documents, setDocuments] = React.useState(null); // {name, spec, loading?, error?}
   const [creating, setCreating] = React.useState("");
+  const [guideOpen, setGuideOpen] = React.useState(false);
   const [scenarioDetails, setScenarioDetails] = React.useState(inst.scenario_details || {});
   const modalCloseRef = React.useRef(null);
   const scenarioKey = (inst.scenarios || []).join("|");
@@ -687,17 +740,20 @@ export function PluginManager({ installed, busy, message, onInstall, onReload, o
   };
   const availableExamples = EXAMPLE_SCENARIOS.filter((ex) => (inst.scenarios || []).includes(ex));
   const closeActiveModal = () => {
-    if (creating) setCreating("");
+    if (guideOpen) setGuideOpen(false);
+    else if (creating) setCreating("");
     else if (preview) setPreview(null);
     else if (editing) setEditing(null);
     else if (documents) setDocuments(null);
   };
   const dialogRef = useModalBehavior({
-    open: Boolean(creating || preview || editing || documents),
+    open: Boolean(guideOpen || creating || preview || editing || documents),
     onClose: closeActiveModal,
     initialFocusRef: modalCloseRef,
   });
-  const modal = creating
+  const modal = guideOpen
+    ? extensionGuideModal(() => setGuideOpen(false), dialogRef, modalCloseRef)
+    : creating
     ? createModal({ kind: creating, inst, panelCatalog, busy, example, cloneSpec, cloneBusy, cloneError,
         availableExamples, onExample: loadExample, onClose: () => setCreating(""), onCreate: saveNew,
         dialogRef, closeButtonRef: modalCloseRef })
@@ -711,21 +767,20 @@ export function PluginManager({ installed, busy, message, onInstall, onReload, o
 
   return h(React.Fragment, null,
     h("section", { className: "plugin-manager", "aria-label": "Plugins" },
-      h("div", { className: "plugin-manager-head" },
-        h("div", { className: "plugin-manager-intro" },
-          h("span", { className: "eyebrow" }, "Workbench extensions"),
-          h("h2", null, "Adapt the research loop"),
-          h("p", null, "Set a domain’s review stance, contextual tools, and reusable documents. The core evidence and decision record stay unchanged.")),
-        h("div", { className: "plugin-manager-actions" },
-          h("button", { type: "button", className: "chip primary", disabled: busy,
+      h(SectionHeader, { className: "plugin-manager-head", eyebrow: "Workbench extensions", title: "Adapt the research loop",
+        description: "Set a domain’s review stance, contextual tools, and reusable documents. The core evidence and decision record stay unchanged.",
+        actions: h(React.Fragment, null,
+          h(ActionButton, { variant: "quiet", icon: h(HelpCircle, { size: 15, "aria-hidden": true }), disabled: busy,
+            onClick: () => { setCreating(""); setEditing(null); setDocuments(null); setPreview(null); setGuideOpen(true); } },
+            "How extensions work"),
+          h(ActionButton, { variant: "primary", icon: h(Layers3, { size: 15, "aria-hidden": "true" }), disabled: busy,
             onClick: () => { setEditing(null); setDocuments(null); setPreview(null); loadExample(""); setCreating("scenario"); } },
-            h(Layers3, { size: 15, "aria-hidden": "true" }), "Create scenario"),
-          h("button", { type: "button", className: "chip", disabled: busy,
+            "Create scenario"),
+          h(ActionButton, { icon: h(FileJson, { size: 15, "aria-hidden": "true" }), disabled: busy,
             onClick: () => { setEditing(null); setDocuments(null); setPreview(null); setCreating("rubric"); } },
-            h(FileJson, { size: 15, "aria-hidden": "true" }), "Create scoring guide"),
-          h("button", { type: "button", className: "icon-button", disabled: busy,
-            title: "Reload plugins", "aria-label": "Reload plugins", onClick: () => onReload && onReload() },
-            h(RefreshCw, { size: 16, "aria-hidden": "true" })))),
+            "Create scoring guide"),
+          h(IconButton, { label: "Reload plugins", disabled: busy, onClick: () => onReload && onReload() },
+            h(RefreshCw, { size: 16, "aria-hidden": "true" }))) }),
       message ? h("p", { key: message, className: `plugin-message ${message.startsWith("✓") ? "is-ok" : "is-error"}` },
         displayText(message)) : null,
       installedList(inst, scenarioDetails, panelCatalog, panelDiagnostics, openEdit, openPreview, openDocuments)),

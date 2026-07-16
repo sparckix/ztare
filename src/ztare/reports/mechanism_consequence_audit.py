@@ -56,6 +56,7 @@ class MechanismAuditRow:
     consumer: str
     counterfactual_failure: str
     evidence_status: str
+    consequence_status: str
     evidence_count: int
     usable_evidence_count: int
     placeholder_evidence_count: int
@@ -488,6 +489,7 @@ def audit_mechanism_consequences(
     consequence_counts: dict[str, int] = {}
     evidence_status_counts: dict[str, int] = {}
     evidence_quality_counts: dict[str, int] = {}
+    consequence_status_counts: dict[str, int] = {}
     ceremony_risk_counts: dict[str, int] = {}
 
     for mechanism in MECHANISMS:
@@ -511,22 +513,31 @@ def audit_mechanism_consequences(
         )
         if mechanism.consequence == "decorate":
             status = "decorative_by_definition"
+            consequence_status = "decorative"
             risk = "high"
             quality = "decorative"
         elif usable:
             status = "observed"
-            risk = "low"
+            # These legacy definitions name artifact globs, not a typed
+            # produced-to-consumed transition.  Presence proves instrumentation
+            # only.  A consequence becomes observed through an explicit route
+            # contract and paired first-fire events.
+            consequence_status = "artifact_present_unverified"
+            risk = "medium"
             quality = "usable"
         elif placeholders:
             status = "placeholder_only"
+            consequence_status = "missing"
             risk = "medium"
             quality = "placeholder_only"
         elif activation_hint:
             status = "not_triggered"
+            consequence_status = "not_triggered"
             risk = "low"
             quality = "not_triggered"
         else:
             status = "unobserved_in_scope"
+            consequence_status = "missing"
             risk = "medium"
             quality = "missing"
         row = MechanismAuditRow(
@@ -537,6 +548,7 @@ def audit_mechanism_consequences(
             consumer=mechanism.consumer,
             counterfactual_failure=mechanism.counterfactual_failure,
             evidence_status=status,
+            consequence_status=consequence_status,
             evidence_count=len(deduped),
             usable_evidence_count=len(usable),
             placeholder_evidence_count=len(placeholders),
@@ -549,6 +561,9 @@ def audit_mechanism_consequences(
         consequence_counts[row.consequence] = consequence_counts.get(row.consequence, 0) + 1
         evidence_status_counts[row.evidence_status] = (
             evidence_status_counts.get(row.evidence_status, 0) + 1
+        )
+        consequence_status_counts[row.consequence_status] = (
+            consequence_status_counts.get(row.consequence_status, 0) + 1
         )
         evidence_quality_counts[quality] = evidence_quality_counts.get(quality, 0) + 1
         ceremony_risk_counts[row.ceremony_risk] = (
@@ -567,6 +582,7 @@ def audit_mechanism_consequences(
             "mechanism_count": len(rows),
             "consequence_counts": dict(sorted(consequence_counts.items())),
             "evidence_status_counts": dict(sorted(evidence_status_counts.items())),
+            "consequence_status_counts": dict(sorted(consequence_status_counts.items())),
             "evidence_quality_counts": dict(sorted(evidence_quality_counts.items())),
             "ceremony_risk_counts": dict(sorted(ceremony_risk_counts.items())),
             "intrinsic_decorative_count": consequence_counts.get("decorate", 0),
@@ -584,6 +600,8 @@ def render_text(report: dict[str, Any]) -> str:
         f"scope={scope['scope_root']} mechanisms={summary['mechanism_count']}",
         "consequences=" + json.dumps(summary["consequence_counts"], sort_keys=True),
         "evidence_status=" + json.dumps(summary["evidence_status_counts"], sort_keys=True),
+        "consequence_status="
+        + json.dumps(summary.get("consequence_status_counts", {}), sort_keys=True),
         "evidence_quality=" + json.dumps(summary.get("evidence_quality_counts", {}), sort_keys=True),
         "ceremony_risk=" + json.dumps(summary["ceremony_risk_counts"], sort_keys=True),
     ]
@@ -591,7 +609,7 @@ def render_text(report: dict[str, Any]) -> str:
         activation = str(row.get("activation_hint") or "").strip()
         activation_suffix = f"; activation={activation}" if activation else ""
         lines.append(
-            "- {mechanism_id} [{consequence}/{evidence_status}/risk={ceremony_risk}]: "
+            "- {mechanism_id} [{consequence}/{evidence_status}/{consequence_status}/risk={ceremony_risk}]: "
             "{label}; consumer={consumer}; prevents={counterfactual_failure}; "
             "evidence={evidence}; placeholders={placeholders}{activation_suffix}".format(
                 evidence=", ".join(row["evidence_paths"][:3]) + (

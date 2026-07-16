@@ -232,9 +232,10 @@ def verdict_reason(governed: GovernedState, *, status: "str | None" = None,
                     "conclusion is not fully grounded yet. Verify the remaining claim-to-source inferences.")
     open_findings = _open_findings(governed)
     if open_findings:
-        return (f"{len(open_findings)} open tension/gap still unresolved — see the test agenda for the cheapest "
-                "question to close next.")
-    return ("A claim this decision rests on is not yet evidence-rooted — bind supporting evidence or drop the "
+        count = len(open_findings)
+        noun = "issue remains" if count == 1 else "issues remain"
+        return (f"{count} unresolved {noun} — see the test agenda for the cheapest question to close next.")
+    return ("A claim this decision rests on is not yet evidence-rooted — connect supporting evidence or drop the "
             "claim. See the test agenda.")
 
 

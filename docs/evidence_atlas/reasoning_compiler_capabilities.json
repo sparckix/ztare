@@ -249,7 +249,7 @@
       "label": "Gaming and evaluator compiler",
       "user_problem": "Bound evaluator-hardening claims to reproducible artifacts instead of trusting self-certification.",
       "input_object": "Evaluator claim, gaming pattern, frozen benchmark artifact, benchmark evidence, and non-claim field.",
-      "check_or_transform": "Gaming catalog audit, frozen evaluator check, benchmark evidence check, and evidence packet check.",
+      "check_or_transform": "Gaming catalog audit, frozen evaluator check, benchmark evidence check, and review-packet check.",
       "output_object": "Bounded evidence claim, missing-arm warning, non-claim, and reviewer-safe benchmark artifact.",
       "falsifier": "A public evaluator-hardening claim passes without the frozen artifact or while the ordinary-review arm is still missing.",
       "workbench_requirement": "Public evidence claims must stay outside the project Workbench unless the frozen artifact, missing-arm status, and non-claim boundary are visible.",

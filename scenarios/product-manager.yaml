@@ -28,9 +28,9 @@ deliverables:
   - adr
   - rice
   # PM plugin extensions (2026-07-11): compose core claim/evidence graph into persona deliverables.
-  # Claim cards remain core; leadership_packet is composition only. roadmap_backing / bet_registry are
+  # Claim cards remain core; leadership_brief is composition only. roadmap_backing / bet_registry are
   # deliverable *views* — they do not add sidebar items or change research-map semantics.
-  - leadership_packet
+  - leadership_brief
   - roadmap_backing
   - bet_registry
   - tradeoff_register
@@ -40,7 +40,7 @@ deliverables:
 # cannot invent facts, relations, or a second decision record. The Workbench's
 # Documents action edits these designs directly without CSS or Python.
 deliverable_specs:
-  - name: leadership_packet
+  - name: leadership_brief
     label: Leadership brief
     audience: Executive decision review
     description: The current call, its backing, and the smallest move that could change it.

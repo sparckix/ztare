@@ -449,6 +449,35 @@ export function Block({ id, title, lead, actions, tone, className, children }) {
   );
 }
 
+// Page and major-section heading. Keeps the primary job, supporting sentence, and actions aligned
+// without each surface inventing its own type scale or responsive collapse.
+export function SectionHeader({ eyebrow, title, description, actions, className, as = "h2" }) {
+  return h("header", { className: `ds-section-head ${className || ""}`.trim() },
+    h("div", { className: "ds-section-head-copy" },
+      eyebrow ? h("span", { className: "eyebrow" }, eyebrow) : null,
+      title ? h(as, null, title) : null,
+      description ? h("p", null, description) : null),
+    actions ? h("div", { className: "ds-section-actions" }, actions) : null);
+}
+
+export function ActionButton({ variant = "secondary", icon, busy = false, className, children, ...props }) {
+  return h("button", { type: "button", "aria-busy": busy ? "true" : undefined, ...props,
+    className: `ds-button ${variant}${busy ? " is-busy" : ""} ${className || ""}`.trim() }, icon || null, children);
+}
+
+export function IconButton({ label, busy = false, className, children, ...props }) {
+  return h("button", { type: "button", title: label, "aria-label": label,
+    "aria-busy": busy ? "true" : undefined, "data-busy": busy ? "true" : undefined, ...props,
+    className: `ds-icon-button ${className || ""}`.trim() }, children);
+}
+
+export function SegmentedControl({ label, value, options, onChange, className }) {
+  return h("div", { className: `ds-segmented ${className || ""}`.trim(), role: "tablist", "aria-label": label },
+    (options || []).map((option) => h("button", { key: option.value, type: "button", role: "tab",
+      "aria-selected": value === option.value, className: value === option.value ? "active" : "",
+      onClick: () => onChange && onChange(option.value) }, option.label)));
+}
+
 // Scenario panels are the plugin contract at the visual layer. Plugins supply
 // nouns and composition; these primitives supply the spacing, responsive grid,
 // callout, list, and action affordances from the shared token system.
