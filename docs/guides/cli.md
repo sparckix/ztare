@@ -102,9 +102,13 @@ where the repository root is. It tries, in order:
 3. Current working directory if it contains `scripts/public/control/`.
 
 For a `pip install -e .` checkout this resolves automatically. For a
-plain `pip install ztare` from PyPI, the control scripts live inside
-the installed package data, set `$ZTARE_REPO` to the repository
-checkout where ledgers and `org/` state actually live.
+plain `pip install ztare` from PyPI, package-module commands and the
+`leanmill` entry point are installed, but repository-backed control commands
+still need a source checkout. Set `$ZTARE_REPO` to that checkout so its public
+control scripts, projects, ledgers, and `org/` state can be resolved. The
+[README install matrix](../../README.md#install) distinguishes the base,
+`lean`, `research`, `providers`, `ui`, and `full` Python dependency profiles;
+Lean 4, `lake`, and Mathlib remain external, checkout-pinned prerequisites.
 
 ## Adding a subcommand
 

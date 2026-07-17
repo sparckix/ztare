@@ -6,7 +6,7 @@ openai>=1.0.0
 # Scientific stack — required by validator/orchestrator/substrate paths
 sympy>=1.14
 scipy>=1.14
-z3-solver>=4.12   # SMT: ztare.common.smt_checker (checker-agnostic equivalence + counterexamples) + a
+z3-solver>=4.13.4,<4.15.5  # SMT: ztare.common.smt_checker (checker-agnostic equivalence + counterexamples) + a
                   # general-purpose decidable-fragment solver. Local & deterministic (NOT a metered API).
                   # Lazy-imported (fails CLOSED if absent) so it is not required for `make gates` / smoke.
 cvc5>=1.2         # SMT ABDUCTION (`get-abduct`): the ONLY mainstream solver with native abduction; powers

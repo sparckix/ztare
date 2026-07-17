@@ -27,10 +27,41 @@ then a decision brief that says what the call hinges on.
 
 </div>
 
+## Install
+
+The base package includes the deterministic core and its direct Python
+dependencies, including SymPy and `z3-solver`:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install ztare
+ztare version
+```
+
+Choose an extra by capability rather than installing every optional stack by
+accident:
+
+| Install | Adds |
+|---|---|
+| `pip install "ztare[lean]"` | Python-side LeanMill solvers: SciPy, NumPy, CVC5, and CVXPY |
+| `pip install "ztare[research]"` | The broader scientific, optimization, graph, data, and embedding stack |
+| `pip install "ztare[providers]"` | Google, Anthropic, and OpenAI provider SDKs |
+| `pip install "ztare[ui]"` | Streamlit operator surfaces |
+| `pip install "ztare[full]"` | Every supported Python runtime extra above |
+
+Lean 4, `lake`, and Mathlib are external tools and cannot be installed by a
+Python package extra. Install Lean through
+[elan](https://github.com/leanprover/elan), then use a source checkout so the
+repository's pinned `lean-toolchain`, Mathlib project, control scripts,
+projects, and ledgers are present. The Project Workbench and repo-backed
+`ztare` commands also require that checkout:
+
 ```bash
 git clone https://github.com/sparckix/ztare && cd ztare
 python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt && pip install -e .
+python -m pip install -e ".[full]"
 make hello
 ```
 
@@ -203,7 +234,7 @@ External review is still sparse, so read each claim at the evidence level its ow
 
 ## Model access
 
-Subscription-CLI autoresearch does not require an API key or any provider SDK. Install its scientific runtime with `pip install -e '.[research]'`. Install an API transport only when you select it: `pip install -e '.[google]'`, `pip install -e '.[anthropic]'`, or `pip install -e '.[openai]'`; `.[providers]` installs all three, and extras can be combined as `.[research,providers]`. Supported credentials are `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`/`MOONSHOT_API_KEY`, and `XAI_API_KEY`/`GROK_API_KEY`.
+Subscription-CLI autoresearch does not require an API key or any provider SDK. Install its scientific runtime with `pip install -e '.[research]'`. Install an API transport only when you select it: `pip install -e '.[google]'`, `pip install -e '.[anthropic]'`, or `pip install -e '.[openai]'`; `.[providers]` installs all three, `.[full]` installs every supported Python runtime extra, and extras can be combined as `.[research,providers]`. Supported credentials are `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `KIMI_API_KEY`/`MOONSHOT_API_KEY`, and `XAI_API_KEY`/`GROK_API_KEY`.
 
 Choose a mutator/judge pair from different model families ([model aliases](docs/reference/model_aliases.md)), and set `CROSS_FAMILY=1` to fail closed if the pair shares a provider. The guarded entry blocks before the first model call unless the project brief, evidence state, and launch checks agree. See the [CLI guide](docs/guides/cli.md) for the full sequence.
 

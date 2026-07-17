@@ -13,6 +13,19 @@ it is intentionally not backfilled here entry-by-entry.
 
 No unreleased changes.
 
+## [1.2.4] - 2026-07-16
+
+### Changed
+- The base PyPI install now includes SymPy and `z3-solver`, matching the
+  deterministic symbolic and SMT capabilities advertised by the package.
+- Z3 is constrained to the broadly compatible 4.x wheel line, avoiding the
+  malformed macOS platform tag in the upstream 5.0.0.0 wheel.
+- Added capability-based `lean`, `ui`, and `full` extras while retaining the
+  broader `research` and model-specific provider extras.
+- The public install guide now separates Python extras from the external Lean
+  4/Mathlib toolchain and names the source-checkout requirement for
+  repository-backed commands.
+
 ## [1.2.3] - 2026-07-16
 
 ### Fixed
@@ -179,7 +192,8 @@ product — it improves research rigor; it does not guarantee truth.
   verification) and solver telemetry / return-shape defects surfaced by cold
   review.
 
-[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/sparckix/ztare/compare/v1.2.4...HEAD
+[1.2.4]: https://github.com/sparckix/ztare/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/sparckix/ztare/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/sparckix/ztare/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/sparckix/ztare/compare/v1.2.0...v1.2.1

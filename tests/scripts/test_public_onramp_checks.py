@@ -510,6 +510,24 @@ def test_public_runtime_dependencies_are_packaged() -> None:
 
     assert payload["ok"] is True
     assert "PyYAML>=6.0" in dependencies
+    assert "sympy>=1.14" in dependencies
+    assert "z3-solver>=4.13.4,<4.15.5" in dependencies
+
+
+def test_package_extras_cover_capability_install_profiles() -> None:
+    pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+    extras = {
+        name: set(dependencies)
+        for name, dependencies in pyproject["project"]["optional-dependencies"].items()
+    }
+
+    assert {"lean", "research", "providers", "ui", "full"} <= set(extras)
+    assert extras["lean"] <= extras["research"]
+    assert extras["research"] | extras["providers"] | extras["ui"] <= extras["full"]
+
+    readme = Path("README.md").read_text(encoding="utf-8")
+    for profile in ("lean", "research", "providers", "ui", "full"):
+        assert f'ztare[{profile}]' in readme
 
 
 def test_public_workflow_uses_package_metadata_for_dependencies() -> None:
@@ -808,7 +826,7 @@ def test_public_adversarial_smoke_keeps_first_run_reference_in_sync() -> None:
 
     assert payload["ok"] is True
     assert "docs/guides/quickstart.md" in payload["checked_files"]
-    assert payload["first_run_recipe"]["checked_commands"] == 9
+    assert payload["first_run_recipe"]["checked_commands"] == 10
     assert module.extract_make_target_recipe(
         "first-run:\n\t$(MAKE) hello\n\t$(MAKE) docs-check\n\nhello:\n",
         "first-run",

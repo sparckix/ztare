@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ztare"
-version = "1.2.3"
+version = "1.2.4"
 description = "ZTARE: zero-trust workbench for generating, stress-testing, and auditing research and project claims"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = "MIT"
 authors = [{ name = "Daniel Alami" }]
 keywords = [
   "zero-trust",
@@ -27,7 +27,6 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -37,13 +36,19 @@ classifiers = [
 ]
 dependencies = [
   "PyYAML>=6.0",
+  "sympy>=1.14",
+  "z3-solver>=4.13.4,<4.15.5",
 ]
 
 [project.optional-dependencies]
-research = [
-  "sympy>=1.14",
+lean = [
   "scipy>=1.14",
-  "z3-solver>=4.12",
+  "cvc5>=1.2",
+  "cvxpy>=1.4",
+  "numpy>=2.0",
+]
+research = [
+  "scipy>=1.14",
   "cvc5>=1.2",
   "cvxpy>=1.4",
   "sentence-transformers>=5.0",
@@ -78,6 +83,36 @@ providers = [
   "google-genai>=1.0.0",
   "anthropic>=0.25.0",
   "openai>=1.0.0",
+]
+ui = [
+  "streamlit>=1.30",
+]
+full = [
+  "scipy>=1.14",
+  "cvc5>=1.2",
+  "cvxpy>=1.4",
+  "sentence-transformers>=5.0",
+  "hdbscan>=0.8.40",
+  "umap-learn>=0.5.10",
+  "numpy>=2.0",
+  "networkx>=3.5",
+  "pandas>=2.0",
+  "matplotlib>=3.10",
+  "mpmath>=1.3",
+  "pydantic>=2.0",
+  "python-dotenv>=1.0.0",
+  "cryptography>=42.0",
+  "jsonschema>=4.0",
+  "requests>=2.30",
+  "tenacity>=8.0",
+  "tqdm>=4.60",
+  "click>=8.0",
+  "rich>=13.0",
+  "httpx>=0.27",
+  "google-genai>=1.0.0",
+  "anthropic>=0.25.0",
+  "openai>=1.0.0",
+  "streamlit>=1.30",
 ]
 dev = [
   "pytest>=7.4",

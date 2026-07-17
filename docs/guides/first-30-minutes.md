@@ -14,8 +14,7 @@ One question frames the current public roadmap: can a project move from thesis a
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
+python -m pip install -e ".[full]"
 make hello
 ```
 
