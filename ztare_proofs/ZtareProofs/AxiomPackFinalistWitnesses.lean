@@ -27,24 +27,24 @@ theorem finalistZero_tetrahedron :
     ∀ x y z t p q,
       finalistZero (finalistZero x y z) (finalistZero x t p) q =
         finalistZero x (finalistZero y t q) (finalistZero z p q) := by
-  native_decide
+  decide
 
 theorem finalistZero_middle_injective :
     ∀ x z y y', finalistZero x y z = finalistZero x y' z → y = y' := by
-  native_decide
+  decide
 
 theorem finalistZero_first_law :
     ∀ x₀ x₁ x₂ x₃,
       finalistZero (finalistZero x₀ x₁ x₂) x₁ x₃ = x₁ := by
-  native_decide
+  decide
 
 theorem finalistZero_second_law :
     ∀ x₀ x₁ x₂,
       finalistZero x₀ x₁ (finalistZero x₂ x₁ x₂) = x₁ := by
-  native_decide
+  decide
 
 theorem finalistZero_nonprojection : finalistZero 2 0 2 ≠ 0 := by
-  native_decide
+  decide
 
 theorem finalistZero_nonprojection_exists :
     ∃ x y z, finalistZero x y z ≠ y :=
@@ -54,22 +54,22 @@ theorem finalistOne_tetrahedron :
     ∀ x y z t p q,
       finalistOne (finalistOne x y z) (finalistOne x t p) q =
         finalistOne x (finalistOne y t q) (finalistOne z p q) := by
-  native_decide
+  decide
 
 theorem finalistOne_middle_injective :
     ∀ x z y y', finalistOne x y z = finalistOne x y' z → y = y' := by
-  native_decide
+  decide
 
 theorem finalistOne_first_law :
     ∀ x y, finalistOne x y (finalistOne x x x) = y := by
-  native_decide
+  decide
 
 theorem finalistOne_second_law :
     ∀ x y, finalistOne x x y = finalistOne y x y := by
-  native_decide
+  decide
 
 theorem finalistOne_nonprojection : finalistOne 2 0 0 ≠ 0 := by
-  native_decide
+  decide
 
 theorem finalistOne_nonprojection_exists :
     ∃ x y z, finalistOne x y z ≠ y :=

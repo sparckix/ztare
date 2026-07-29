@@ -21,6 +21,74 @@ CONTINUATION_MODES = frozenset(
 )
 
 
+def _registered_boundary_task_sha256s(
+    program: Mapping[str, Any],
+) -> tuple[str, ...]:
+    """Return unconsumed task identities with an executable frontier consumer."""
+
+    from ztare.common.task_discharge import TaskDischargeContract
+    from ztare.leanmill.theory_task_boundary_registry import (
+        registered_theory_task_boundary_handler,
+    )
+
+    program_row = program.get("theory_program")
+    frozen_program = (
+        program_row if isinstance(program_row, Mapping) else program
+    )
+    program_id = str(frozen_program.get("program_id") or "")
+    feedback = program.get("objective_feedback")
+    disposed_contract_sha256s: set[str] = set()
+    disposed_contract_ids: set[str] = set()
+    if isinstance(feedback, Mapping):
+        if feedback.get("schema") == "leanmill.boundary_search_feedback.v1":
+            discharge = feedback.get("theory_task_discharge")
+            for row in (
+                discharge.get("rows")
+                if isinstance(discharge, Mapping)
+                else ()
+            ) or ():
+                receipt = row.get("receipt") if isinstance(row, Mapping) else None
+                observed = (
+                    receipt.get("observed")
+                    if isinstance(receipt, Mapping)
+                    else None
+                )
+                if (
+                    isinstance(row, Mapping)
+                    and str(row.get("program_id") or "") == program_id
+                    and isinstance(observed, Mapping)
+                    and observed.get("boundary_status")
+                    in {"witness_rejected", "witness_verified"}
+                ):
+                    disposed_contract_sha256s.add(
+                        str(row.get("contract_sha256") or "")
+                    )
+        elif (
+            feedback.get("schema")
+            == "leanmill.recovered_boundary_artifact_feedback.v1"
+            and feedback.get("status")
+            in {"witness_rejected", "witness_verified"}
+        ):
+            disposed_contract_ids.add(str(feedback.get("contract_id") or ""))
+
+    raw_tasks = frozen_program.get("task_discharge_contracts") or ()
+    if not isinstance(raw_tasks, (list, tuple)):
+        raise ValueError("frozen theory-program tasks must be an array")
+    task_sha256s: list[str] = []
+    for raw in raw_tasks:
+        if not isinstance(raw, Mapping):
+            raise ValueError("frozen theory-program task is malformed")
+        contract = TaskDischargeContract.from_dict(raw)
+        if (
+            contract.sha256 not in disposed_contract_sha256s
+            and contract.contract_id not in disposed_contract_ids
+            and registered_theory_task_boundary_handler(contract.adjudicator_id)
+            is not None
+        ):
+            task_sha256s.append(contract.sha256)
+    return tuple(task_sha256s)
+
+
 def lineage_request_matches_context(
     row: Mapping[str, Any],
     *,
@@ -127,9 +195,16 @@ def build_theory_move_portfolio(
     unresolved = sum(
         str(row.get("chart_status") or "")
         in {"holds_on_complete_context", "holds_on_observed_context"}
-        and str(row.get("formula_id") or "") not in reviewed_targets
+        and str(row.get("prediction_formula_id") or "") not in reviewed_targets
         for row in predictions
     )
+    registered_boundary_tasks = {
+        task_sha256
+        for row in programs
+        for task_sha256 in _registered_boundary_task_sha256s(
+            row
+        )
+    }
     residual_prices = [
         float((row.get("residual_information_yield") or {}).get("information_per_cost", 0.0))
         for row in programs
@@ -166,7 +241,7 @@ def build_theory_move_portfolio(
         option(
             "continue_search",
             "current_context",
-            available=objective_available,
+            available=objective_available and growth_kind != "alpha_blind",
             evidence_relation=(
                 f"wave_growth={growth_kind};new_raw={new_raw_count};"
                 f"new_semantic_images={new_image_count}"
@@ -178,7 +253,7 @@ def build_theory_move_portfolio(
         option(
             "continue_search",
             "formula_coordinate",
-            available=objective_available,
+            available=objective_available and growth_kind != "alpha_blind",
             evidence_relation=(
                 f"wave_growth={growth_kind};frozen_formula_requests={formula_requests}"
             ),
@@ -200,7 +275,7 @@ def build_theory_move_portfolio(
         option(
             "admit_formulas",
             "none",
-            available=formula_requests > 0,
+            available=formula_requests > 0 and growth_kind != "alpha_blind",
             evidence_relation=f"frozen_formula_requests={formula_requests}",
             phases=("context",),
             owed_consequence="leanmill.frontier_formula_admission.v1_or_rejection",
@@ -218,13 +293,17 @@ def build_theory_move_portfolio(
         option(
             "proceed_boundary",
             "none",
-            available=objective_available and unresolved > 0,
+            available=objective_available
+            and (unresolved > 0 or bool(registered_boundary_tasks)),
             evidence_relation=(
                 f"unresolved_predictions={unresolved};"
+                f"registered_boundary_tasks={len(registered_boundary_tasks)};"
                 f"max_residual_information_per_cost={max(residual_prices, default=0.0):.8f}"
             ),
             phases=("boundary",),
-            owed_consequence="countermodel_proof_or_unresolved_boundary_receipt",
+            owed_consequence=(
+                "countermodel_proof_or_task_discharge_or_unresolved_boundary_receipt"
+            ),
             reversibility="evidence_append_only",
         ),
         option(
@@ -251,6 +330,7 @@ def build_theory_move_portfolio(
         "residual_state": {
             "frozen_program_count": len(programs),
             "unresolved_prediction_count": unresolved,
+            "registered_boundary_task_count": len(registered_boundary_tasks),
             "max_information_per_cost": max(residual_prices, default=0.0),
         },
         "options": options,
@@ -261,6 +341,105 @@ def build_theory_move_portfolio(
         ),
     }
     return {**core, "receipt_sha256": content_hash(core)}
+
+
+def compose_selected_language_expansion(
+    synthesis: Mapping[str, Any],
+) -> tuple[Any, dict[str, Any] | None]:
+    """Project one successor request from an agent-selected compatible set.
+
+    A context epoch admits one language-transition identity. The synthesizer
+    may still select several independently authored requests when their
+    conjunction is the experiment. This projection adds no mathematical
+    choice: it retains source blind spots and interfaces in selection order,
+    unions evidence, and uses the agent-authored discriminator and kill
+    condition.
+    """
+
+    from ztare.leanmill.theory_language import (
+        TheoryLanguageExpansionRequest,
+        build_theory_language_expansion_request,
+    )
+
+    synthesis_core = {
+        key: value for key, value in synthesis.items() if key != "receipt_sha256"
+    }
+    if (
+        synthesis.get("schema") != "leanmill.lineage_synthesis_decision.v1"
+        or synthesis.get("route") != "escalate_language"
+        or synthesis.get("receipt_sha256") != content_hash(synthesis_core)
+    ):
+        raise ValueError("language composition requires a verified synthesis")
+    selected_rows = list(synthesis.get("selected_requests") or ())
+    if not selected_rows:
+        raise ValueError("language synthesis selected no typed request")
+    requests: list[TheoryLanguageExpansionRequest] = []
+    request_ids: list[str] = []
+    for row in selected_rows:
+        if not isinstance(row, Mapping) or not isinstance(
+            row.get("request"), Mapping
+        ):
+            raise ValueError("language synthesis selected a malformed request")
+        request = TheoryLanguageExpansionRequest.from_json(row["request"])
+        if str(row.get("request_id") or "") != request.request_id:
+            raise ValueError("language synthesis request wrapper changed identity")
+        requests.append(request)
+        request_ids.append(request.request_id)
+    if len(requests) == 1:
+        return requests[0], None
+
+    identity = {
+        (request.source_context_hash, request.source_epoch, request.change_kind)
+        for request in requests
+    }
+    if len(identity) != 1:
+        raise ValueError(
+            "multi-request language synthesis crosses successor identity"
+        )
+    context_hash, source_epoch, change_kind = next(iter(identity))
+    composite = build_theory_language_expansion_request(
+        source_context_hash=context_hash,
+        source_epoch=source_epoch,
+        change_kind=change_kind,
+        blind_spot="\n\n".join(
+            f"[{request.request_id}] {request.blind_spot}"
+            for request in requests
+        ),
+        proposed_interface="\n\n".join(
+            f"[{request.request_id}] {request.proposed_interface}"
+            for request in requests
+        ),
+        evidence_refs=tuple(
+            dict.fromkeys(
+                evidence
+                for request in requests
+                for evidence in request.evidence_refs
+            )
+        ),
+        discriminating_test=str(synthesis.get("next_discriminator") or ""),
+        kill_condition=str(synthesis.get("kill_condition") or ""),
+    )
+    receipt_core = {
+        "schema": "leanmill.theory_language_request_composition.v1",
+        "context_hash": context_hash,
+        "context_epoch": source_epoch,
+        "change_kind": change_kind,
+        "source_synthesis_receipt_sha256": str(
+            synthesis.get("receipt_sha256") or ""
+        ),
+        "source_request_ids": request_ids,
+        "composite_request_id": composite.request_id,
+        "composition_rule": "conjunctive_same_identity_v1",
+        "authority": "deterministic_projection_of_agent_selection",
+        "claim_boundary": (
+            "composes selected requests without admitting the successor language"
+        ),
+    }
+    receipt = {
+        **receipt_core,
+        "receipt_sha256": content_hash(receipt_core),
+    }
+    return composite, receipt
 
 
 def theory_move_consequence_receipt(
@@ -379,6 +558,45 @@ def formula_lineage_request_id(row: Mapping[str, Any]) -> str:
     )
 
 
+def _request_trace_evidence(
+    navigation: Mapping[str, Any], evidence_refs: set[str]
+) -> list[dict[str, Any]]:
+    """Carry only content-verified trace receipts cited by frozen requests."""
+
+    found: dict[str, dict[str, Any]] = {}
+    traces = [navigation.get("trace") or ()]
+    traces.extend(
+        (lineage.get("navigation") or {}).get("trace") or ()
+        for lineage in navigation.get("lineages") or ()
+        if isinstance(lineage, Mapping)
+    )
+    for trace in traces:
+        for event in trace:
+            receipt = event.get("receipt") if isinstance(event, Mapping) else None
+            if not isinstance(receipt, Mapping):
+                continue
+            receipt_id = str(receipt.get("receipt_id") or "")
+            if receipt_id:
+                core = {
+                    key: value for key, value in receipt.items() if key != "receipt_id"
+                }
+                if receipt_id == "sha256:" + content_hash(core):
+                    found[receipt_id] = dict(receipt)
+            receipt_sha = str(receipt.get("receipt_sha256") or "")
+            if receipt_sha:
+                core = {
+                    key: value
+                    for key, value in receipt.items()
+                    if key != "receipt_sha256"
+                }
+                if receipt_sha == content_hash(core):
+                    found[receipt_sha] = dict(receipt)
+    return [
+        {"evidence_ref": ref, "receipt": found[ref]}
+        for ref in sorted(evidence_refs & set(found))
+    ]
+
+
 def lineage_synthesis_input(
     navigation: Mapping[str, Any],
     *,
@@ -462,6 +680,13 @@ def lineage_synthesis_input(
         str(row.get("receipt_sha256") or content_hash(row)): row
         for row in boundary_feedback
     }.values())
+    requested_evidence_refs = {
+        str(evidence_ref)
+        for row in (*formulas, *languages)
+        for payload in (row.get("proposal"), row.get("request"))
+        if isinstance(payload, Mapping)
+        for evidence_ref in payload.get("evidence_refs") or ()
+    }
     core = {
         "schema": "leanmill.lineage_synthesis_input.v1",
         "context_hash": context_hash,
@@ -471,6 +696,9 @@ def lineage_synthesis_input(
         "archived_stale_request_ids": sorted(set(archived_stale_request_ids)),
         "frozen_programs": programs,
         "objective_review_history": review_history,
+        "carried_evidence_receipts": _request_trace_evidence(
+            navigation, requested_evidence_refs
+        ),
         "objective_contract": (
             dict(objective_contract) if objective_contract is not None else None
         ),
@@ -621,6 +849,7 @@ def validate_lineage_synthesis_decision(
         for row in synthesis_input.get("frozen_programs") or ()
         if isinstance(row, Mapping) and row.get("program_id")
     }
+    selected_registered_task_sha256s: tuple[str, ...] = ()
     if len(set(program_ids)) != len(program_ids) or not set(program_ids) <= available_program_ids:
         raise ValueError("lineage synthesis references unknown theory programs")
     if route in {"proceed_boundary", "continue_search"}:
@@ -645,12 +874,21 @@ def validate_lineage_synthesis_decision(
                 )
                 if isinstance(prediction, Mapping)
             ]
-            if not predictions or all(
-                row.get("chart_status") == "refuted_in_context"
+            selected_registered_task_sha256s = tuple(
+                dict.fromkeys(
+                    task_sha256
+                    for row in bound_programs
+                    for task_sha256 in _registered_boundary_task_sha256s(row)
+                )
+            )
+            has_unresolved_prediction = bool(predictions) and any(
+                row.get("chart_status") != "refuted_in_context"
                 for row in predictions
-            ):
+            )
+            if not has_unresolved_prediction and not selected_registered_task_sha256s:
                 raise ValueError(
-                    "boundary route requires a prediction unresolved by the seed context"
+                    "boundary route requires a prediction unresolved by the seed "
+                    "context or a registered task consumer"
                 )
         if route == "continue_search" and available_program_ids and not program_ids:
             raise ValueError("objective review must bind the programs it rejects")
@@ -697,12 +935,49 @@ def validate_lineage_synthesis_decision(
             and row.get("route") == route
             and row.get("continuation_mode") == continuation_mode
         ]
-        if len(matching) != 1 or matching[0].get("availability") != "available":
+        if len(matching) != 1:
             raise ValueError("selected adaptive move is not an available affordance")
+        selected_affordance = matching[0]
+        if selected_affordance.get("availability") != "available":
+            if route != "proceed_boundary" or not selected_registered_task_sha256s:
+                raise ValueError("selected adaptive move is not an available affordance")
+            correction_core = {
+                "schema": "leanmill.theory_move_affordance_correction.v1",
+                "input_sha256": str(synthesis_input.get("input_sha256") or ""),
+                "move_portfolio_receipt_sha256": str(
+                    portfolio.get("receipt_sha256") or ""
+                ),
+                "program_ids": list(program_ids),
+                "registered_task_sha256s": list(
+                    selected_registered_task_sha256s
+                ),
+                "prior_availability": str(
+                    selected_affordance.get("availability") or ""
+                ),
+                "corrected_availability": "available",
+                "authority": "registered_task_consumer_replay",
+            }
+            correction = {
+                **correction_core,
+                "receipt_sha256": content_hash(correction_core),
+            }
+            selected_affordance = {
+                **selected_affordance,
+                "availability": "available",
+                "evidence_relation": (
+                    str(selected_affordance.get("evidence_relation") or "")
+                    + ";registered_boundary_tasks="
+                    + str(len(selected_registered_task_sha256s))
+                ).lstrip(";"),
+                "owed_consequence": (
+                    "countermodel_proof_or_task_discharge_or_unresolved_boundary_receipt"
+                ),
+            }
+            core["move_affordance_correction"] = correction
         core.update(
             {
                 "continuation_mode": continuation_mode,
-                "selected_move_affordance": matching[0],
+                "selected_move_affordance": selected_affordance,
                 "move_portfolio_receipt_sha256": str(
                     portfolio.get("receipt_sha256") or ""
                 ),
@@ -720,6 +995,7 @@ __all__ = [
     "LINEAGE_SYNTHESIS_ROUTES",
     "CONTINUATION_MODES",
     "build_theory_move_portfolio",
+    "compose_selected_language_expansion",
     "theory_move_consequence_receipt",
     "formula_lineage_request_id",
     "lineage_synthesis_input",

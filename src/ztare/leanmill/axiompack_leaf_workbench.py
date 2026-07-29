@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 from ztare.common.leaf_workbench_contract import (
     LeafWorkbenchCapability,
@@ -162,6 +162,7 @@ AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
                 "evidence_refs",
                 "kill_condition",
                 "finite_witness_residual",
+                "witness_construction",
             ],
             [
                 "status",
@@ -210,7 +211,7 @@ AXIOMPACK_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
             ],
         ),
     ),
-    schema="leanmill-axiompack-leaf-workbench-v11",
+    schema="leanmill-axiompack-leaf-workbench-v12",
 )
 
 
@@ -219,7 +220,7 @@ _REVIEWED_AXIOMPACK_WORKBENCH_SUCCESSORS = {
         "leanmill-axiompack-leaf-workbench-v9",
         "46b89dd61e29d18b7b335b52a4b87e87dc332b8893d4c270ff490499b6d814f9",
     ): {
-        "policy_id": "axiompack-workbench-v9-to-v11",
+        "policy_id": "axiompack-workbench-v9-to-v12",
         "source_capability_ids": (
             "list_theory_nodes",
             "list_compound_dependencies",
@@ -232,13 +233,37 @@ _REVIEWED_AXIOMPACK_WORKBENCH_SUCCESSORS = {
             "select_theory_presentation",
             "propose_theory_language_expansion",
         ),
-        "target_schema": "leanmill-axiompack-leaf-workbench-v11",
-        "target_fingerprint": "731d3d18470442800df45d9aaa8d316a6a9f08b1681b937d024ec963c8bd7a04",
+        "target_schema": "leanmill-axiompack-leaf-workbench-v12",
+        "target_fingerprint": "978dc5a99b32b0a20ae2041c32b5912f75fda10c22a4b6cd5c24b487593c282b",
         "added_capability_ids": (
             "inspect_presentation_extent",
             "propose_theory_task",
             "propose_lineage_disposition",
         ),
+    },
+    (
+        "leanmill-axiompack-leaf-workbench-v11",
+        "731d3d18470442800df45d9aaa8d316a6a9f08b1681b937d024ec963c8bd7a04",
+    ): {
+        "policy_id": "axiompack-workbench-v11-to-v12",
+        "source_capability_ids": (
+            "list_theory_nodes",
+            "list_compound_dependencies",
+            "inspect_formula_profiles",
+            "inspect_presentation_extent",
+            "inspect_theory_node",
+            "compare_theory_nodes",
+            "show_separation_models",
+            "show_indistinguishable_objects",
+            "propose_frontier_formula",
+            "select_theory_presentation",
+            "propose_theory_task",
+            "propose_lineage_disposition",
+            "propose_theory_language_expansion",
+        ),
+        "target_schema": "leanmill-axiompack-leaf-workbench-v12",
+        "target_fingerprint": "978dc5a99b32b0a20ae2041c32b5912f75fda10c22a4b6cd5c24b487593c282b",
+        "added_capability_ids": (),
     },
 }
 
@@ -310,7 +335,11 @@ def navigator_decision_output_schema() -> dict[str, Any]:
         return schema
 
     string_array = array(text)
-    formula_id = {"type": "string", "pattern": r"^formula:[0-9a-f]{64}$"}
+    # Formal contexts use content-addressed ``formula:...`` identifiers, while
+    # evidence-induced contexts use adapter-owned hypothesis identifiers such
+    # as ``property:...``.  Membership is checked by the frozen context at the
+    # workbench boundary; the transport schema must admit both identity kinds.
+    formula_id = text
     formula_id_array = array(formula_id)
     variables_schema = array(obj({"name": text, "sort": text}), maximum=16)
     token_array = array(text, maximum=256)
@@ -543,6 +572,44 @@ _FRONTIER_GENERAL_FORMULA_FIELDS = {"formula_tokens"}
 _FRONTIER_DEFINITION_FIELDS = {"definitions"}
 
 
+def _frontier_formula_codec_repair_hint(
+    context: TheoryLandscapeContext,
+    inputs: Mapping[str, Any],
+) -> str:
+    """Describe the executable token scopes after a typed decode failure."""
+
+    if not isinstance(context, FormalTheoryContext):
+        return "typed postfix formulas require a formal finite context"
+    variables = sorted(
+        str(row.get("name") or "")
+        for row in inputs.get("variables") or ()
+        if isinstance(row, Mapping) and str(row.get("name") or "")
+    )
+    operations = [
+        f"op_{index}/{len(row.arg_sorts)}"
+        for index, row in enumerate(context.signature.operations)
+    ]
+    relations = [
+        f"rel_{index}/{len(row.arg_sorts)}"
+        for index, row in enumerate(context.signature.relations)
+    ]
+    definitions = [
+        f"{row.get('name')}/{len(row.get('parameters') or ())}"
+        for row in inputs.get("definitions") or ()
+        if isinstance(row, Mapping) and str(row.get("name") or "")
+    ]
+    return (
+        "typed postfix contract: lhs_tokens, rhs_tokens, and "
+        "definitions[*].body_tokens are term-only; equality, connectives, and "
+        "quantifiers belong only in formula_tokens. formula_tokens writes both "
+        "terms before eq, then appends forall:<variable> or exists:<variable>. "
+        "Each definition body may use only its own declared parameters and the "
+        "listed operations; definitions are term-valued, not predicates. "
+        f"formula_variables={variables}; operations={operations}; "
+        f"relations={relations}; term_definitions={definitions}"
+    )
+
+
 def _decode_frontier_formula_move(
     context: TheoryLandscapeContext,
     inputs: Mapping[str, Any],
@@ -750,8 +817,14 @@ def axiompack_leaf_workbench_action_environment(
     selection_mode: str = "compact_axiom_pack",
     theory_adapter_id: str = "",
     theory_adapter_config: Mapping[str, Any] | None = None,
+    allowed_theory_task_capability_ids: Sequence[str] | None = None,
     campaign_id: str = "",
     lineage_id: str = "",
+    witness_constructor_fn: Callable[
+        [Mapping[str, Any]], Mapping[str, Any]
+    ]
+    | None = None,
+    candidate_outcome_memory: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     if selection_mode not in {"compact_axiom_pack", "theory_program"}:
         raise ValueError("unsupported workbench selection mode")
@@ -787,6 +860,62 @@ def axiompack_leaf_workbench_action_environment(
             schema="leanmill-axiompack-sampled-leaf-workbench-v1",
         )
     )
+    from ztare.leanmill.theory_adapter_registry import (
+        theory_task_capability_catalog,
+    )
+
+    available_task_capability_catalog = (
+        theory_task_capability_catalog(
+            theory_adapter_id,
+            adapter_config=dict(theory_adapter_config or {}),
+        )
+        if theory_adapter_id
+        else ()
+    )
+    scoped_task_capability_ids: tuple[str, ...] | None = None
+    if allowed_theory_task_capability_ids is not None:
+        if isinstance(allowed_theory_task_capability_ids, (str, bytes)):
+            raise ValueError(
+                "allowed theory-task capability IDs must be a sequence"
+            )
+        scoped_task_capability_ids = tuple(
+            str(row) for row in allowed_theory_task_capability_ids
+        )
+        if (
+            any(not row.strip() for row in scoped_task_capability_ids)
+            or len(set(scoped_task_capability_ids))
+            != len(scoped_task_capability_ids)
+        ):
+            raise ValueError(
+                "allowed theory-task capability IDs must be unique and nonempty"
+            )
+        available_ids = {
+            str(row["capability_id"])
+            for row in available_task_capability_catalog
+        }
+        unknown = set(scoped_task_capability_ids) - available_ids
+        if unknown:
+            raise ValueError(
+                "campaign task scope names unavailable capabilities: "
+                + ", ".join(sorted(unknown))
+            )
+        allowed = set(scoped_task_capability_ids)
+        task_capability_catalog = tuple(
+            row
+            for row in available_task_capability_catalog
+            if row["capability_id"] in allowed
+        )
+        if not task_capability_catalog:
+            contract = LeafWorkbenchContract(
+                capabilities=tuple(
+                    capability
+                    for capability in contract.capabilities
+                    if capability.capability_id != "propose_theory_task"
+                ),
+                schema=contract.schema,
+            )
+    else:
+        task_capability_catalog = available_task_capability_catalog
     nodes: dict[str, SemanticTheoryNode] | None = None
     dependencies: list[dict[str, Any]] | None = None
 
@@ -1111,7 +1240,10 @@ def axiompack_leaf_workbench_action_environment(
                 inputs,
                 status="rejected_invalid_typed_formula",
                 error_code=code,
-                error=error,
+                error=(
+                    f"{error}; "
+                    f"{_frontier_formula_codec_repair_hint(context, inputs)}"
+                ),
                 defaults={
                     "formula_id": None,
                     "formula_identity_new": False,
@@ -1409,11 +1541,12 @@ def axiompack_leaf_workbench_action_environment(
             or frozenset(inputs) not in {
                 frozenset(required),
                 frozenset(required | {"finite_witness_residual"}),
+                frozenset(required | {"witness_construction"}),
             }
             or not isinstance(inputs.get("evidence_refs"), list)
         ):
             raise ValueError("theory-task request fields do not match the typed contract")
-        formulas = _ids(inputs["formula_ids"], field="formula_ids")
+        formulas = tuple(sorted(_ids(inputs["formula_ids"], field="formula_ids")))
         request_core = {
             "schema": "leanmill.theory_task_request.v1",
             "context_hash": context.context_hash,
@@ -1456,6 +1589,176 @@ def axiompack_leaf_workbench_action_environment(
             for field in ("goal", "observable", "adjudicator_capability", "kill_condition")
         ) or not request_core["evidence_refs"]:
             raise ValueError("theory-task request text and evidence cannot be empty")
+        if (
+            scoped_task_capability_ids is not None
+            and request_core["adjudicator_capability"]
+            not in scoped_task_capability_ids
+        ):
+            raise ValueError(
+                "theory-task request is outside the campaign capability scope"
+            )
+        witness_construction = inputs.get("witness_construction")
+        interface_rows = [
+            row
+            for row in task_capability_catalog
+            if row["capability_id"] == request_core["adjudicator_capability"]
+            and isinstance(row.get("interface"), Mapping)
+        ]
+        if witness_construction is not None and len(interface_rows) != 1:
+            raise ValueError(
+                "witness construction requires one reviewed visible interface"
+            )
+        if len(interface_rows) == 1:
+            from ztare.leanmill.witness_construction_boundary import (
+                WitnessConstructorUnavailable,
+                build_witness_constructor_request,
+                validate_witness_construction_presentation,
+                validate_witness_constructor_output,
+            )
+
+            interface = dict(interface_rows[0]["interface"])
+            validate_witness_construction_presentation(
+                context=context,
+                presentation_formula_ids=formulas,
+                context_epoch=context_epoch,
+            )
+            public_fields = {
+                "predicate_ir",
+                "witness_schema",
+                "normalizer",
+                "verifier",
+                "discharge_policy",
+                "target_config_sha256",
+                "interface_sha256",
+            }
+            if witness_construction is None:
+                witness_construction = {
+                    **{field: interface[field] for field in public_fields},
+                    "construction_brief": request_core["goal"],
+                }
+            elif (
+                not isinstance(witness_construction, Mapping)
+                or set(witness_construction)
+                != public_fields | {"construction_brief"}
+                or any(
+                    witness_construction.get(field) != interface[field]
+                    for field in public_fields
+                )
+                or not str(
+                    witness_construction.get("construction_brief") or ""
+                ).strip()
+            ):
+                raise ValueError(
+                    "witness request changed its public interface or omitted its brief"
+                )
+            constructor_request = build_witness_constructor_request(
+                context_hash=context.context_hash,
+                adapter_id=theory_adapter_id,
+                construction_interface=interface,
+                task_intent={
+                    "presentation_formula_ids": list(formulas),
+                    "goal": request_core["goal"],
+                    "observable": request_core["observable"],
+                    "evidence_refs": list(request_core["evidence_refs"]),
+                    "kill_condition": request_core["kill_condition"],
+                    "construction_brief": str(
+                        witness_construction["construction_brief"]
+                    ),
+                },
+                candidate_outcome_memory=candidate_outcome_memory,
+            )
+            pending_core = {
+                **request_core,
+                "witness_construction": dict(witness_construction),
+            }
+            pending_request = {
+                **pending_core,
+                "request_id": "theory-task-request:" + content_hash(pending_core),
+            }
+            if witness_constructor_fn is None:
+                return _receipt(
+                    context,
+                    "propose_theory_task",
+                    inputs,
+                    {
+                        "status": "witness_constructor_unavailable",
+                        "request_id": pending_request["request_id"],
+                        "task_request": pending_request,
+                        "task_contract_id": None,
+                        "task_contract_sha256": None,
+                        "task_contract": None,
+                        "missing_capability": "witness_constructor",
+                        "next_route": "retry_propose_theory_task",
+                        "claim_boundary": (
+                            "task intent only; no candidate or stopping authority"
+                        ),
+                    },
+                )
+            try:
+                constructor_output = validate_witness_constructor_output(
+                    constructor_request,
+                    witness_constructor_fn(constructor_request),
+                )
+            except WitnessConstructorUnavailable as exc:
+                return _receipt(
+                    context,
+                    "propose_theory_task",
+                    inputs,
+                    {
+                        "status": "witness_constructor_unavailable",
+                        "request_id": pending_request["request_id"],
+                        "task_request": pending_request,
+                        "task_contract_id": None,
+                        "task_contract_sha256": None,
+                        "task_contract": None,
+                        "missing_capability": str(exc)
+                        or "witness_constructor",
+                        "next_route": "retry_propose_theory_task",
+                        "claim_boundary": (
+                            "task intent only; no candidate or stopping authority"
+                        ),
+                    },
+                )
+            if candidate_outcome_memory is not None:
+                from ztare.leanmill.witness_construction_boundary import (
+                    matching_witness_candidate_outcome,
+                )
+
+                prior_outcome = matching_witness_candidate_outcome(
+                    candidate_outcome_memory,
+                    content_hash(constructor_output["artifact"]),
+                )
+                if prior_outcome is not None:
+                    return _receipt(
+                        context,
+                        "propose_theory_task",
+                        inputs,
+                        {
+                            "status": "candidate_duplicate",
+                            "request_id": pending_request["request_id"],
+                            "task_request": pending_request,
+                            "task_contract_id": None,
+                            "task_contract_sha256": None,
+                            "task_contract": None,
+                            "missing_capability": None,
+                            "next_route": "retry_propose_theory_task",
+                            "claim_boundary": (
+                                "the authored artifact already has a target-scoped "
+                                "boundary outcome; no new task was compiled"
+                            ),
+                        },
+                    )
+            authorship = dict(constructor_output["authorship_receipt"])
+            request_core["evidence_refs"] = list(request_core["evidence_refs"]) + [
+                "witness-constructor-authorship:" + authorship["receipt_sha256"]
+            ]
+            request_core["witness_construction"] = {
+                **{field: interface[field] for field in public_fields},
+                "constructor_request": constructor_request,
+                "artifact": dict(constructor_output["artifact"]),
+                "orientation": dict(constructor_output["orientation"]),
+                "authorship_receipt": authorship,
+            }
         request = {
             **request_core,
             "request_id": "theory-task-request:" + content_hash(request_core),
@@ -1491,6 +1794,9 @@ def axiompack_leaf_workbench_action_environment(
         except KeyError:
             lowered = None
         if not isinstance(lowered, Mapping):
+            registered_ids = [
+                row["capability_id"] for row in task_capability_catalog
+            ]
             return _receipt(
                 context,
                 "propose_theory_task",
@@ -1503,8 +1809,16 @@ def axiompack_leaf_workbench_action_environment(
                     "task_contract_sha256": None,
                     "task_contract": None,
                     "missing_capability": str(inputs["adjudicator_capability"]),
-                    "next_route": "propose_theory_language_expansion",
-                    "claim_boundary": "task request only; no stopping authority",
+                    "next_route": (
+                        "retry_propose_theory_task:"
+                        + registered_ids[0]
+                        if len(registered_ids) == 1
+                        else "propose_theory_language_expansion"
+                    ),
+                    "claim_boundary": (
+                        "task request only; use an exact registered adjudicator ID "
+                        "before claiming a language gap"
+                    ),
                 },
             )
         if set(lowered) != {"adjudicator_id", "parameters"} or not isinstance(
@@ -1614,6 +1928,7 @@ def axiompack_leaf_workbench_action_environment(
         "stateless_actions": frozenset(handlers),
         "candidate_bound_actions": frozenset(),
         "context_hash": context.context_hash,
+        "theory_task_capability_catalog": task_capability_catalog,
     }
 
 

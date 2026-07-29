@@ -409,13 +409,40 @@ def aggregate_host_isolated_theory_lineages(
         **isolation_core,
         "receipt_sha256": content_hash(isolation_core),
     }
-    finalists_by_node: dict[str, dict[str, Any]] = {}
+    finalists_by_candidate: dict[str, dict[str, Any]] = {}
+    finalist_node_ids: list[str] = []
     for row in rows:
         for finalist in row["navigation"].get("finalists") or ():
             node_id = str(finalist.get("node_id") or "")
             if not node_id:
                 raise ValueError("host-isolated finalist is missing its semantic node")
-            finalists_by_node.setdefault(node_id, dict(finalist))
+            if node_id not in finalist_node_ids:
+                finalist_node_ids.append(node_id)
+            program_row = finalist.get("theory_program")
+            if isinstance(program_row, Mapping):
+                program = TheoryProgram.from_json(program_row)
+                candidate_identity = content_hash(
+                    {
+                        "context_hash": program.context_hash,
+                        "context_epoch": program.context_epoch,
+                        "presentation_formula_ids": list(
+                            program.presentation_formula_ids
+                        ),
+                        "prediction_formula_ids": list(
+                            program.prediction_formula_ids
+                        ),
+                        "task_semantics": [
+                            {
+                                "adjudicator_id": contract.adjudicator_id,
+                                "parameters": dict(contract.parameters),
+                            }
+                            for contract in program.task_discharge_contracts
+                        ],
+                    }
+                )
+            else:
+                candidate_identity = node_id
+            finalists_by_candidate.setdefault(candidate_identity, dict(finalist))
     core: dict[str, Any] = {
         "schema": "leanmill.host_isolated_theory_lineages.v1",
         "status": status,
@@ -423,8 +450,8 @@ def aggregate_host_isolated_theory_lineages(
         "context_epoch": epoch,
         "lineage_count": len(rows),
         "lineages": rows,
-        "finalist_node_ids": list(finalists_by_node),
-        "finalists": list(finalists_by_node.values()),
+        "finalist_node_ids": finalist_node_ids,
+        "finalists": list(finalists_by_candidate.values()),
         "theory_program_ids": [program.program_id for program in programs],
         "host_isolated_program_comparisons": comparisons,
         "expansion_proposals": expansions,
@@ -458,6 +485,8 @@ def run_host_isolated_theory_lineages(
     initial_traces: Sequence[Sequence[Mapping[str, Any]]] | None = None,
     preserved_lineage_rows: Mapping[int, Mapping[str, Any]] | None = None,
     budget_phase: str = "navigation",
+    witness_constructor_fns: Sequence[Any] | None = None,
+    candidate_outcome_memory: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run sealed traces, then compare their frozen outputs.
 
@@ -471,6 +500,11 @@ def run_host_isolated_theory_lineages(
     if budget_phase not in {"navigation", "expansion"}:
         raise ValueError("lineage budget phase must be navigation or expansion")
     agents = tuple(agent_fns)
+    constructors = (
+        tuple(witness_constructor_fns)
+        if witness_constructor_fns is not None
+        else (None,) * len(agents)
+    )
     if len(agents) < 2:
         raise ValueError("host-isolated comparison requires at least two lineages")
     rounds_by_lineage = (
@@ -480,6 +514,8 @@ def run_host_isolated_theory_lineages(
     )
     if len(rounds_by_lineage) != len(agents):
         raise ValueError("lineage round budgets must match the lineage count")
+    if len(constructors) != len(agents):
+        raise ValueError("witness-constructor roles must match the lineage count")
     branch_traces = (
         tuple(tuple(dict(row) for row in trace) for trace in initial_traces)
         if initial_traces is not None
@@ -535,6 +571,12 @@ def run_host_isolated_theory_lineages(
             )
         else:
             try:
+                constructor = constructors[index]
+                constructor_role = getattr(constructor, "call_role", None)
+                if constructor_role is not None:
+                    constructor_role.budget_ledger = lineage_budget
+                if constructor is not None:
+                    constructor.budget_phase = budget_phase
                 navigation = run_interactive_theory_navigator(
                     context,
                     blueprint,
@@ -552,6 +594,8 @@ def run_host_isolated_theory_lineages(
                     prior_conflict_rows=tuple(prior_conflict_rows),
                     initial_trace=branch_traces[index],
                     budget_phase=budget_phase,
+                    witness_constructor_fn=constructor,
+                    candidate_outcome_memory=candidate_outcome_memory,
                 )
             except BudgetExceeded as exc:
                 navigation = _budget_exhausted_navigation(

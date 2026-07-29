@@ -427,7 +427,7 @@ theorem finalistZeroWitness_is_hemisemiprojection :
   change
     (∀ x y : Carrier, finalistZeroDifferentialWitness x x y = x) ∧
       (∀ x y : Carrier, finalistZeroDifferentialWitness x y x = x)
-  native_decide
+  decide
 
 theorem finalistZeroWitness_not_semiprojection :
     ¬ SemiprojectionLaws finalistZeroDifferentialWitness := by
@@ -435,7 +435,7 @@ theorem finalistZeroWitness_not_semiprojection :
     ((∀ x y : Carrier, finalistZeroDifferentialWitness x x y = x) ∧
       (∀ x y : Carrier, finalistZeroDifferentialWitness x y x = x)) ∧
         (∀ x y : Carrier, finalistZeroDifferentialWitness x y y = x))
-  native_decide
+  decide
 
 theorem finalistOneWitness_has_source_and_lastPair :
     DifferentialSourceFixed finalistOneDifferentialWitness ∧
@@ -443,13 +443,13 @@ theorem finalistOneWitness_has_source_and_lastPair :
   change
     (∀ x z : Carrier, finalistOneDifferentialWitness x x z = x) ∧
       (∀ x y : Carrier, finalistOneDifferentialWitness x y y = x)
-  native_decide
+  decide
 
 /-- The missing equality pattern is explicit: the first and third inputs agree,
 but the operation does not return that common value. -/
 theorem finalistOneWitness_missing_outer_diagonal :
     finalistOneDifferentialWitness 0 2 0 ≠ 0 := by
-  native_decide
+  decide
 
 theorem finalistOneWitness_not_semiprojection :
     ¬ SemiprojectionLaws finalistOneDifferentialWitness := by
@@ -475,7 +475,7 @@ theorem finalistZeroWitness_is_publishedThreeElementMode :
     ∀ a b c,
       relabel12 (finalistZeroDifferentialWitness a b c) =
         publishedThreeElementMode (relabel12 a) (relabel12 b) (relabel12 c) := by
-  native_decide
+  decide
 
 /-- The published example in the carrier labels where its nonidentity right
 translation is `swap01` at the index pair `(2,2)`. -/
@@ -490,7 +490,7 @@ theorem finalistOneWitness_from_publishedTerm :
       finalistOneDifferentialWitness a b c =
         relabeledPublishedThreeElementMode
           (relabeledPublishedThreeElementMode a b b) b c := by
-  native_decide
+  decide
 
 /-- The converse depth-two interpretation: the relabeled published example is
 a term operation of finalist one.  Together with the preceding theorem this is
@@ -501,6 +501,6 @@ theorem publishedTerm_from_finalistOneWitness :
       relabeledPublishedThreeElementMode a b c =
         finalistOneDifferentialWitness
           (finalistOneDifferentialWitness a b a) b c := by
-  native_decide
+  decide
 
 end AxiomPackDifferentialModeBridge

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from itertools import combinations
 import json
 
 import pytest
@@ -9,6 +8,9 @@ import pytest
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
 from ztare.common.schema_routes import audit_project_schema_routes
 from ztare.common.science_output_policy import INVESTIGATED_STAGNATION_K
+from ztare.leanmill.axiompack_leaf_workbench import (
+    axiompack_leaf_workbench_action_environment,
+)
 from ztare.leanmill.deterministic_frontier_campaign import select_diverse_theory_nodes
 from ztare.leanmill.finite_model_census import enumerate_magma_model_universe
 from ztare.leanmill.finite_table_model_finder import FiniteModelSearchReceipt
@@ -23,6 +25,7 @@ from ztare.leanmill.theory_campaign_journal import TheoryCampaignJournal
 from ztare.leanmill.theory_conflict_ledger import theory_implication_signature
 from ztare.leanmill.theory_navigator import (
     _prompt_trace_projection,
+    _resolve_theory_task_contracts,
     prompt_trace_max_bytes,
     run_interactive_theory_navigator,
 )
@@ -194,19 +197,20 @@ def test_post_boundary_navigation_uses_reserved_expansion_phase(tmp_path):
 def test_navigator_ranks_boundary_questions_and_host_preserves_that_choice(tmp_path):
     context, blueprint = _context_and_blueprint()
     pair, signal = next(
-        (row, signal)
-        for row in combinations(context.formula_ids, 2)
-        if len(
-            (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
-        )
-        >= 2
-        and context.incidence.extent_bits(row).bit_count() >= 2
+        (generator, signal)
+        for node in select_diverse_theory_nodes(context, max_finalists=12)
+        for generator in node.minimal_generators
+        if len(generator) == 2
+        and (
+            signal := theory_residual_information_yield(context, generator)
+        ).residual_consequence_ids
+        and context.incidence.extent_bits(generator).bit_count() >= 2
         and all(
-            context.independence_witness(row, formula) is not None
-            for formula in row
+            context.independence_witness(generator, formula) is not None
+            for formula in generator
         )
     )
-    ranked_targets = list(reversed(signal.residual_consequence_ids[:2]))
+    ranked_targets = list(signal.residual_consequence_ids[:1])
     decisions = iter(
         [
             {
@@ -274,15 +278,15 @@ def test_theory_program_mode_does_not_require_joint_only_pack_synergy(tmp_path):
             "presentation_size": {"minimum": 2, "maximum": 2},
         },
     )
-    pair, program = next(
-        (row, program)
-        for row in combinations(context.formula_ids, 2)
-        if not theory_residual_information_yield(
-            context, row
-        ).residual_consequence_ids
-        and (program := theory_program_information_yield(context, row)).residual_prediction_ids
-        and context.incidence.extent_bits(row).bit_count() > 0
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
     )
+    assert not theory_residual_information_yield(
+        context, pair
+    ).residual_consequence_ids
+    program = theory_program_information_yield(context, pair)
+    assert program.residual_prediction_ids
     target = program.residual_prediction_ids[0]
     decisions = iter(
         [
@@ -343,6 +347,95 @@ def test_theory_program_mode_does_not_require_joint_only_pack_synergy(tmp_path):
     )
 
 
+def test_navigator_surfaces_registered_task_vocabulary_before_request(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+        },
+    )
+
+    def inspect_prompt(prompt):
+        assert "Registered theory-task adjudicator IDs (copy exactly)" in prompt
+        assert "governed_formal_counterexample" in prompt
+        assert "ordinary frozen formula predictions already enter" in prompt
+        return {
+            "decision": "request",
+            "capability_id": "list_theory_nodes",
+            "input_refs": {"offset": 0, "limit": 1},
+            "rationale": "Inspect one bounded node.",
+        }
+
+    run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "task-catalog.events.jsonl"),
+        agent_fn=inspect_prompt,
+        attempt_id="attempt-task-catalog",
+        campaign_id="campaign-task-catalog",
+        max_rounds=1,
+    )
+
+
+def test_theory_program_cannot_freeze_a_cheap_baseline_prediction(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+            "presentation_size": {"minimum": 2, "maximum": 2},
+        },
+    )
+    pair = (
+        "formula:17ca239805e47786efc46bb1cb54c7dfeb59a6a879cdb5da7099d7bb9c662148",
+        "formula:abc9052c5ed9f8f6085aa24933ded16132719e4c65ac1251bc2e02371ae6f87c",
+    )
+    program = theory_program_information_yield(context, pair)
+    assert program.cheap_baseline_consequence_ids
+    assert program.residual_prediction_ids
+    cheap_target = program.cheap_baseline_consequence_ids[0]
+    residual_target = program.residual_prediction_ids[0]
+    decisions = iter(
+        [
+            {
+                "decision": "freeze",
+                "formula_ids": list(pair),
+                "boundary_target_ids": [cheap_target],
+                "rationale": "Try the shallow prediction first.",
+            },
+            {
+                "decision": "freeze",
+                "formula_ids": list(pair),
+                "boundary_target_ids": [residual_target],
+                "rationale": "Retain only a prediction beyond the named baseline.",
+            },
+            {"decision": "finish", "rationale": "The residual program is frozen."},
+        ]
+    )
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "cheap-program.events.jsonl"),
+        agent_fn=lambda _prompt: next(decisions),
+        attempt_id="attempt-cheap-program",
+        campaign_id="campaign-cheap-program",
+        max_rounds=3,
+    )
+
+    assert result["finalists"][0]["boundary_target_ids"] == [residual_target]
+    rejected = next(
+        row["rejection"]
+        for row in result["trace"]
+        if row.get("decision") == "candidate_rejected"
+    )
+    assert rejected["reason"] == "theory_program_boundary_target_not_residual"
+    assert rejected["rejection_authority"] == "deterministic_host_baseline"
+
+
 def test_unknown_prediction_is_rejected_without_terminating_navigation(tmp_path):
     context, blueprint = _context_and_blueprint()
     blueprint = replace(
@@ -353,7 +446,10 @@ def test_unknown_prediction_is_rejected_without_terminating_navigation(tmp_path)
             "presentation_size": {"minimum": 1, "maximum": 2},
         },
     )
-    presentation = (context.formula_ids[0],)
+    presentation = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
+    )
     target = theory_program_information_yield(
         context, presentation
     ).residual_prediction_ids[0]
@@ -392,6 +488,178 @@ def test_unknown_prediction_is_rejected_without_terminating_navigation(tmp_path)
     )
 
 
+def test_predictionless_program_nomination_is_receipted_and_search_continues(
+    tmp_path,
+):
+    context, blueprint = _context_and_blueprint()
+    blueprint = replace(
+        blueprint,
+        navigator_contract={
+            **blueprint.navigator_contract,
+            "selection_mode": "theory_program",
+            "presentation_size": {"minimum": 2, "maximum": 2},
+        },
+    )
+    presentation = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
+    )
+    target = theory_program_information_yield(
+        context, presentation
+    ).residual_prediction_ids[0]
+    decisions = iter(
+        [
+            {
+                "decision": "freeze",
+                "formula_ids": list(presentation),
+                "rationale": "Freeze the premises without choosing a consequence.",
+            },
+            {
+                "decision": "freeze",
+                "formula_ids": list(presentation),
+                "boundary_target_ids": [target],
+                "rationale": "Bind the residual consequence after host feedback.",
+            },
+            {"decision": "finish", "rationale": "The corrected program is frozen."},
+        ]
+    )
+
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "predictionless.events.jsonl"),
+        agent_fn=lambda _prompt: next(decisions),
+        attempt_id="attempt-predictionless",
+        campaign_id="campaign-predictionless",
+        max_rounds=3,
+    )
+
+    assert result["finalists"][0]["boundary_target_ids"] == [target]
+    rejection = next(
+        row for row in result["trace"]
+        if row.get("decision") == "candidate_input_rejected"
+    )
+    assert (
+        rejection["receipt"]["output_summary"]["error"]
+        == "theory-program candidates require a prediction or compiled task"
+    )
+
+
+def test_theory_task_cannot_freeze_superseded_selection_evidence() -> None:
+    context, _blueprint = _context_and_blueprint()
+    campaign_id = "campaign:task-evaluator-binding"
+    lineage_id = "lineage:task-evaluator-binding"
+    presentation = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
+    )
+    target = theory_program_information_yield(
+        context, presentation
+    ).residual_prediction_ids[0]
+    environment = axiompack_leaf_workbench_action_environment(
+        context=context,
+        selection_mode="theory_program",
+        theory_adapter_id="generic_fol_finite.v1",
+        theory_adapter_config={},
+        campaign_id=campaign_id,
+        lineage_id=lineage_id,
+    )
+    selection = environment["action_handlers"]["select_theory_presentation"](
+        ".",
+        {
+            "input_refs": {
+                "formula_ids": list(presentation),
+                "prediction_formula_ids": [target],
+            }
+        },
+        None,
+        environment["contract"],
+    )
+    selection = json.loads(json.dumps(selection))
+    selection["output_summary"]["program_yield"]["coordinates"][
+        "baseline_ref"
+    ] = "leanmill.first_order_logical_deduction.v10"
+    selection_core = {
+        key: value for key, value in selection.items() if key != "receipt_id"
+    }
+    selection["receipt_id"] = "sha256:" + content_hash(selection_core)
+    task_receipt = environment["action_handlers"]["propose_theory_task"](
+        ".",
+        {
+            "input_refs": {
+                "formula_ids": list(presentation),
+                "goal": f"Decide whether the presentation entails {target}.",
+                "observable": "A governed proof or countermodel.",
+                "adjudicator_capability": "governed_formal_counterexample",
+                "evidence_refs": [selection["receipt_id"]],
+                "kill_condition": "The cited evaluator evidence is superseded.",
+            }
+        },
+        None,
+        environment["contract"],
+    )
+    task_id = task_receipt["output_summary"]["task_contract_id"]
+
+    with pytest.raises(ValueError, match="superseded cheap evaluator"):
+        _resolve_theory_task_contracts(
+            ({"receipt": selection}, {"receipt": task_receipt}),
+            (task_id,),
+            context_hash=context.context_hash,
+            adapter_id="generic_fol_finite.v1",
+            campaign_id=campaign_id,
+            lineage_id=lineage_id,
+            presentation_formula_ids=(presentation[0],),
+        )
+
+
+def test_theory_task_cannot_bypass_selection_currency_with_other_evidence() -> None:
+    context, _blueprint = _context_and_blueprint()
+    campaign_id = "campaign:task-selection-required"
+    lineage_id = "lineage:task-selection-required"
+    presentation = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
+    )
+    target = theory_program_information_yield(
+        context, presentation
+    ).residual_prediction_ids[0]
+    environment = axiompack_leaf_workbench_action_environment(
+        context=context,
+        selection_mode="theory_program",
+        theory_adapter_id="generic_fol_finite.v1",
+        theory_adapter_config={},
+        campaign_id=campaign_id,
+        lineage_id=lineage_id,
+    )
+    task_receipt = environment["action_handlers"]["propose_theory_task"](
+        ".",
+        {
+            "input_refs": {
+                "formula_ids": list(presentation),
+                "goal": f"Decide whether the presentation entails {target}.",
+                "observable": "A governed proof or countermodel.",
+                "adjudicator_capability": "governed_formal_counterexample",
+                "evidence_refs": [context.object_ids[0]],
+                "kill_condition": "The selected presentation is not current.",
+            }
+        },
+        None,
+        environment["contract"],
+    )
+    task_id = task_receipt["output_summary"]["task_contract_id"]
+
+    with pytest.raises(ValueError, match="lacks current selection evidence"):
+        _resolve_theory_task_contracts(
+            ({"receipt": task_receipt},),
+            (task_id,),
+            context_hash=context.context_hash,
+            adapter_id="generic_fol_finite.v1",
+            campaign_id=campaign_id,
+            lineage_id=lineage_id,
+            presentation_formula_ids=presentation,
+        )
+
+
 def test_receipted_preview_losslessly_lowers_flattened_theory_program(tmp_path):
     context, blueprint = _context_and_blueprint()
     blueprint = replace(
@@ -402,12 +670,12 @@ def test_receipted_preview_losslessly_lowers_flattened_theory_program(tmp_path):
             "presentation_size": {"minimum": 2, "maximum": 2},
         },
     )
-    pair, program = next(
-        (row, program)
-        for row in combinations(context.formula_ids, 2)
-        if (program := theory_program_information_yield(context, row)).residual_prediction_ids
-        and context.incidence.extent_bits(row).bit_count() > 0
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
     )
+    program = theory_program_information_yield(context, pair)
+    assert program.residual_prediction_ids
     predictions = list(program.residual_prediction_ids[:1])
 
     def navigate(*, flattened: bool, journal_name: str):
@@ -463,12 +731,13 @@ def test_replayed_countermodel_blocks_the_same_program_prediction(tmp_path):
             "presentation_size": {"minimum": 2, "maximum": 2},
         },
     )
-    pair, target = next(
-        (row, program.residual_prediction_ids[0])
-        for row in combinations(context.formula_ids, 2)
-        if (program := theory_program_information_yield(context, row)).residual_prediction_ids
-        and context.incidence.extent_bits(row).bit_count() > 0
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
     )
+    target = theory_program_information_yield(
+        context, pair
+    ).residual_prediction_ids[0]
     decisions = iter(
         [
             {
@@ -702,12 +971,13 @@ def test_theory_program_breadth_comes_from_blueprint_not_size_two_default(tmp_pa
             "presentation_size": {"minimum": 3, "maximum": 3},
         },
     )
-    presentation, program = next(
-        (row, program)
-        for row in combinations(context.formula_ids, 3)
-        if (program := theory_program_information_yield(context, row)).residual_prediction_ids
-        and context.incidence.extent_bits(row).bit_count() > 0
+    presentation = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:6a860f4453a684d98cdc0bcb4525ad891fba32e4079b5b9a8712c47764a75f63",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
     )
+    program = theory_program_information_yield(context, presentation)
+    assert program.residual_prediction_ids
     target = program.residual_prediction_ids[0]
     decisions = iter(
         [
@@ -737,15 +1007,20 @@ def test_theory_program_breadth_comes_from_blueprint_not_size_two_default(tmp_pa
 
 def test_optional_verifier_caps_skip_later_target_without_stopping_campaign(tmp_path):
     context, blueprint = _context_and_blueprint()
-    pair, signal = next(
-        (row, signal)
-        for row in combinations(context.formula_ids, 2)
-        if len(
-            (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
-        )
-        >= 2
+    pair_a = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
     )
-    targets = list(signal.residual_consequence_ids[:2])
+    pair_b = (
+        "formula:cc1ee8ba9eeef2a94ee0aad8ccf99deee5fd0c02b464e215fa922e9f78c31d07",
+        "formula:cd446a88fe81a0ad94f72ec93d73cb44f459a556b2ef0209950ae4a380272bb6",
+    )
+    target_a = theory_residual_information_yield(
+        context, pair_a
+    ).residual_consequence_ids[0]
+    target_b = theory_residual_information_yield(
+        context, pair_b
+    ).residual_consequence_ids[0]
     blueprint = replace(
         blueprint,
         verification_plan={
@@ -784,10 +1059,15 @@ def test_optional_verifier_caps_skip_later_target_without_stopping_campaign(tmp_
         {
             "finalists": [
                 {
-                    "formula_ids": list(pair),
-                    "residual_joint_only_consequence_ids": targets,
-                    "boundary_target_ids": targets,
-                }
+                    "formula_ids": list(pair_a),
+                    "residual_joint_only_consequence_ids": [target_a],
+                    "boundary_target_ids": [target_a],
+                },
+                {
+                    "formula_ids": list(pair_b),
+                    "residual_joint_only_consequence_ids": [target_b],
+                    "boundary_target_ids": [target_b],
+                },
             ]
         },
         TheoryCampaignJournal(tmp_path / "optional-cap.events.jsonl"),
@@ -811,12 +1091,13 @@ def test_optional_verifier_caps_skip_later_target_without_stopping_campaign(tmp_
 
 def test_boundary_resume_reuses_exhausted_strata_and_runs_only_missing_work(tmp_path):
     context, blueprint = _context_and_blueprint()
-    pair, signal = next(
-        (row, signal)
-        for row in combinations(context.formula_ids, 2)
-        if (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
     )
-    target = signal.residual_consequence_ids[0]
+    target = theory_residual_information_yield(
+        context, pair
+    ).residual_consequence_ids[0]
     blueprint = replace(
         blueprint,
         query_budget={**dict(blueprint.query_budget), "larger_model_queries": 1},
@@ -880,14 +1161,70 @@ def test_boundary_resume_reuses_exhausted_strata_and_runs_only_missing_work(tmp_
     assert ledger.state()["usage"]["smt_calls"] == 1
 
 
+def test_boundary_resume_reuses_archived_unknown_stratum(tmp_path):
+    context, blueprint = _context_and_blueprint()
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
+    )
+    target = (
+        "formula:cc1ee8ba9eeef2a94ee0aad8ccf99deee5fd0c02b464e215fa922e9f78c31d07"
+    )
+    blueprint = replace(
+        blueprint,
+        query_budget={**dict(blueprint.query_budget), "larger_model_queries": 1},
+        verification_plan={"larger_carriers": [3], "smt_timeout_ms": 1_000},
+    )
+    prior = FiniteModelSearchReceipt(
+        status="unknown",
+        signature_hash=context.signature.content_hash,
+        sort_sizes=((context.signature.sorts[0].name, 3),),
+        base_formula_ids=tuple(row.formula_id for row in context.base_axioms),
+        premise_formula_ids=tuple(sorted(pair)),
+        target_formula_id=target,
+        solver="z3:test",
+        timeout_ms=1_000,
+        reason="timeout",
+    ).to_json()
+
+    result = run_frontier_boundaries(
+        context,
+        blueprint,
+        {"finalists": [{
+            "formula_ids": list(pair),
+            "residual_joint_only_consequence_ids": [target],
+            "boundary_target_ids": [target],
+        }]},
+        TheoryCampaignJournal(tmp_path / "unknown-resume.events.jsonl"),
+        ExplorationBudgetLedger(
+            tmp_path / "unknown-resume-budget.events.jsonl",
+            budget_preset("smoke_20m"),
+            attempt_id="attempt-unknown-resume",
+        ),
+        attempt_id="attempt-unknown-resume",
+        campaign_id="campaign-unknown-resume",
+        countermodel_fn=lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("archived unknown stratum was rerun")
+        ),
+        prior_query_results=({
+            "premise_formula_ids": list(sorted(pair)),
+            "target_formula_id": target,
+            "countermodel_searches": [prior],
+        },),
+    )
+
+    assert result.query_results[0]["countermodel_searches"] == [prior]
+
+
 def test_kernel_refutation_is_consumed_as_search_feedback(tmp_path, monkeypatch):
     context, blueprint = _context_and_blueprint()
-    pair, signal = next(
-        (row, signal)
-        for row in combinations(context.formula_ids, 2)
-        if (signal := theory_residual_information_yield(context, row)).residual_consequence_ids
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
     )
-    target = signal.residual_consequence_ids[0]
+    target = theory_residual_information_yield(
+        context, pair
+    ).residual_consequence_ids[0]
     blueprint = replace(
         blueprint,
         verification_plan={"conditional_lean": True, "lean_timeout_ms": 1_000},
@@ -1064,20 +1401,28 @@ def test_two_law_campaign_cannot_freeze_a_singleton(tmp_path):
     )
     singleton = context.formula_ids[0]
 
-    with pytest.raises(ValueError, match="campaign presentation size"):
-        run_interactive_theory_navigator(
-            context,
-            blueprint,
-            TheoryCampaignJournal(tmp_path / "arity.events.jsonl"),
-            agent_fn=lambda _prompt: {
-                "decision": "freeze",
-                "formula_ids": [singleton],
-                "rationale": "Try a one-law presentation.",
-            },
-            attempt_id="attempt-arity",
-            campaign_id="campaign-arity",
-            max_rounds=1,
-        )
+    result = run_interactive_theory_navigator(
+        context,
+        blueprint,
+        TheoryCampaignJournal(tmp_path / "arity.events.jsonl"),
+        agent_fn=lambda _prompt: {
+            "decision": "freeze",
+            "formula_ids": [singleton],
+            "rationale": "Try a one-law presentation.",
+        },
+        attempt_id="attempt-arity",
+        campaign_id="campaign-arity",
+        max_rounds=1,
+    )
+
+    assert result["finalists"] == []
+    rejection = next(
+        row for row in result["trace"]
+        if row.get("decision") == "candidate_input_rejected"
+    )
+    assert "campaign presentation size" in (
+        rejection["receipt"]["output_summary"]["error"]
+    )
 
 
 def test_navigator_can_request_a_typed_formula_epoch_instead_of_forcing_a_nomination(
@@ -1219,10 +1564,17 @@ def test_navigator_receipts_unknown_formula_reference_without_campaign_crash(tmp
     )
 
     assert len(result["finalists"]) == 1
-    assert any(
-        row.get("receipt", {}).get("output_summary", {}).get("status")
-        == "rejected_invalid_action"
+    rejected = next(
+        row["receipt"]["output_summary"]
         for row in result["trace"]
+        if row.get("receipt", {}).get("output_summary", {}).get("status")
+        == "rejected_invalid_action"
+    )
+    assert rejected["identity_repair"]["valid_formula_ids"] == list(
+        context.formula_ids
+    )
+    assert rejected["identity_repair"]["formula_identity_owner"] == (
+        "frozen_theory_context"
     )
 
 
@@ -1318,14 +1670,9 @@ def test_navigator_can_request_a_new_theory_language_without_mutating_context(
 
 def test_formula_authored_after_freeze_becomes_outbound_epoch_request(tmp_path):
     context, blueprint = _context_and_blueprint()
-    pair = next(
-        row
-        for row in combinations(context.formula_ids, 2)
-        if (
-            theory_residual_information_yield(context, row).residual_consequence_ids
-            and context.incidence.extent_bits(row).bit_count() >= 2
-            and all(context.independence_witness(row, formula) for formula in row)
-        )
+    pair = (
+        "formula:2e105ba93093a4e85201d41350b1bc32edc2b39c965df45d6517838ba962c0a4",
+        "formula:4eb72b9af83fce02302ea8383da0459113feac5c2eb03a62aa3ded53bf5c5237",
     )
     decisions = iter(
         [
@@ -1432,19 +1779,9 @@ def test_navigator_can_invent_a_coordinate_from_an_anonymous_object_contrast(
 
 def test_navigator_can_receipt_reject_all_without_freezing_junk(tmp_path):
     context, blueprint = _context_and_blueprint()
-    pair = next(
-        row
-        for row in combinations(context.formula_ids, 2)
-        if (
-            (signal := theory_residual_information_yield(context, row))
-            and signal.joint_only_consequence_ids
-            and not signal.residual_consequence_ids
-            and context.incidence.extent_bits(row).bit_count() >= 2
-            and all(
-                context.independence_witness(row, formula) is not None
-                for formula in row
-            )
-        )
+    pair = (
+        "formula:17ca239805e47786efc46bb1cb54c7dfeb59a6a879cdb5da7099d7bb9c662148",
+        "formula:69ac500bf6135cc0b4a28200b57c53beed7e335779f15d657f46128a64a41403",
     )
     expected_baseline_ref = theory_residual_information_yield(
         context, pair
@@ -1568,6 +1905,42 @@ def test_reject_all_receipt_surfaces_shared_stagnation_bound():
             [{**row, "residual_yield": {"identification_bits": 0.0, "residual_ids": []}}],
             reason="test",
         )
+
+
+def test_reject_all_accepts_receipted_nonresidual_program_target():
+    from ztare.leanmill.theory_navigator import _receipted_reject_all
+
+    class Context:
+        context_hash = "context:test"
+
+    profile_core = {
+        "schema": "leanmill.theory_program_prediction_profile.v1",
+        "context_hash": Context.context_hash,
+        "predictions": [{
+            "prediction_formula_id": "formula:nonresidual",
+            "chart_status": "holds_on_complete_context",
+        }],
+        "authority": "host_semantic_diagnostic_only",
+    }
+    profile = {
+        **profile_core,
+        "receipt_sha256": content_hash(profile_core),
+    }
+    row = {
+        "selection_mode": "theory_program",
+        "node_id": "node:test",
+        "selection_receipt_id": "receipt:test",
+        "reason": "theory_program_boundary_target_not_residual",
+        "rejection_authority": "deterministic_host_baseline",
+        "prediction_formula_ids": ["formula:nonresidual"],
+        "residual_prediction_formula_ids": ["formula:other"],
+        "residual_yield": {"baseline_ref": "baseline:test.v1"},
+        "prediction_profile": profile,
+    }
+
+    receipt = _receipted_reject_all(Context(), [row], reason="test")
+
+    assert receipt["rejected_candidate_count"] == 1
 
 
 def test_navigator_prompt_trace_projection_is_bounded_without_mutating_receipts():

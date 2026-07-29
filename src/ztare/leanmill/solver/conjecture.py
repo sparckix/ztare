@@ -999,7 +999,7 @@ class LeanFalsifier:
                  kernel_check=None):
         self.row, self.lean_root, self.timeout_s = row, lean_root, timeout_s
         self.preamble = preamble
-        self._kernel_check = kernel_check   # optional (refute_source)->(passed, detail); runner injects organs
+        self._kernel_check = kernel_check   # optional (source, exact_target)->(passed, detail)
         self._fname = ""
         self._gprop = ""
 
@@ -1024,8 +1024,11 @@ class LeanFalsifier:
         genuine, why = falsification_is_genuine(
             test.candidate, self._fname, self._gprop, self.lean_root, self.timeout_s, preamble=self.preamble)
         if genuine and self._kernel_check is not None:
-            passed, detail = self._kernel_check(test.candidate)
-            if not passed:
+            passed, detail = self._kernel_check(
+                test.candidate,
+                f"{self._fname}_refute",
+            )
+            if passed is not True:
                 return Verdict(falsified=False, arbiter="lean_kernel", witness="",
                                detail=f"anti-laundering organ blocked: {detail}")
         return Verdict(falsified=bool(genuine), arbiter="lean_kernel",

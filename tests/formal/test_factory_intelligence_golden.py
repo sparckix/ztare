@@ -87,6 +87,40 @@ def _check_run_observability_opt_in() -> None:
     assert obs.get("run_tag") == "vtest", obs
 
 
+def test_cycle_time_markdown_uses_launch_to_close_wall(tmp_path: Path) -> None:
+    args = _deterministic_args(tmp_path)
+    payload = fi.build(args)
+    payload["campaign_cycle_time"] = {
+        "by_domain": {
+            "formalization-nonmath": {
+                "avg_time_to_closure_s": 800.0,
+                "closures": 1,
+                "campaigns": 1,
+            }
+        },
+        "campaigns": {
+            "campaign-a": {
+                "domain": "formalization-nonmath",
+                "closures": 1,
+                "wall_s": {"first": 800.0, "mean": 800.0, "p95": 800.0},
+                "time_to_closure_s": {
+                    "first": 200.0,
+                    "mean": 200.0,
+                    "p95": 200.0,
+                },
+                "cost_to_closure_s": {"first": 30.0},
+                "span_s": 800.0,
+            }
+        },
+    }
+    output = tmp_path / "factory.md"
+    fi._write_markdown(output, payload)
+    rendered = output.read_text(encoding="utf-8")
+    assert "| `campaign-a` | formalization-nonmath | 1 | 800.0 | 800.0 | 800.0 |" in rendered
+    assert "first launch-to-close (s)" in rendered
+    assert "| `campaign-a` | formalization-nonmath | 1 | 200.0 |" not in rendered
+
+
 def main() -> int:
     _check_run_observability_opt_in()
     contract_a = _recommendation_contract()

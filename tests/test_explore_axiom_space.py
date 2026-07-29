@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 from itertools import combinations
+import json
 import re
 
 import pytest
@@ -32,6 +33,7 @@ from ztare.leanmill.frontier_blueprint import FrontierExplorationBrief
 from ztare.leanmill.frontier_campaign import sign_frontier_campaign
 from ztare.leanmill.frontier_campaign_definition import FrontierCampaignDefinition
 from ztare.leanmill.finite_theory_context import load_formal_theory_context
+from ztare.leanmill.evidence_theory_context import EvidenceObjectRecord
 from ztare.leanmill.exploration_budget import (
     ExplorationBudgetLedger,
     budget_preset,
@@ -41,6 +43,11 @@ from ztare.leanmill.theory_campaign_journal import TheoryCampaignJournal
 from ztare.leanmill.theory_interest import theory_residual_information_yield
 from ztare.leanmill.theory_ir import content_hash
 from ztare.leanmill.theory_navigator import run_interactive_theory_navigator
+from ztare.leanmill.ratification_policy import (
+    TARGET_GOVERNANCE_AUTHORITIES,
+    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256,
+)
+from ztare.leanmill.solver.closed_artifact import finalize_solver_validation
 
 
 def _draft(adapter_id="magma_equational.v1"):
@@ -141,6 +148,84 @@ def test_language_evidence_rejects_unbound_or_tampered_trace_receipts(tmp_path):
         )
 
 
+def test_language_evidence_binds_trace_and_frozen_context_artifacts(tmp_path):
+    trace_core = {
+        "schema": "leanmill.axiompack_workbench_receipt.v1",
+        "capability_id": "inspect_presentation_extent",
+        "authority": "deterministic_host",
+        "output_summary": {"status": "inspected"},
+    }
+    trace = {
+        **trace_core,
+        "receipt_id": "sha256:" + content_hash(trace_core),
+    }
+    digest = "1" * 64
+    context = type(
+        "FrozenEvidenceContext",
+        (),
+        {
+            "context_hash": "context:frozen",
+            "object_records": (
+                EvidenceObjectRecord(
+                    model_id="control:one",
+                    stratum_id="positive",
+                    payload={
+                        "artifact_ref": "control.json#matrix",
+                        "artifact_sha256": digest,
+                    },
+                ),
+            ),
+        },
+    )()
+    refs = [trace["receipt_id"], "control.json#matrix", "sha256:" + digest]
+
+    evidence = _resolve_workbench_evidence_receipts(
+        tmp_path,
+        {"trace": [{"receipt": trace}]},
+        refs,
+        context=context,
+    )
+    binding = _workbench_evidence_binding(evidence)
+
+    assert binding["schema"] == "leanmill.governed_mixed_evidence_binding.v1"
+    assert binding["receipt_ids"] == refs
+    assert [row["authority"] for row in binding["evidence"]] == [
+        "deterministic_host",
+        "frozen_context_snapshot",
+        "frozen_context_snapshot",
+    ]
+
+
+def test_language_evidence_accepts_content_bound_predecessor_transport(tmp_path):
+    receipt_core = {
+        "schema": "leanmill.axiompack_workbench_receipt.v1",
+        "capability_id": "inspect_presentation_extent",
+        "authority": "deterministic_host",
+        "output_summary": {"status": "inspected"},
+    }
+    receipt = {
+        **receipt_core,
+        "receipt_id": "sha256:" + content_hash(receipt_core),
+    }
+    navigation = {
+        "carried_evidence_receipts": [
+            {"evidence_ref": receipt["receipt_id"], "receipt": receipt}
+        ]
+    }
+
+    resolved = _resolve_workbench_evidence_receipts(
+        tmp_path, navigation, [receipt["receipt_id"]]
+    )
+
+    assert resolved == [receipt]
+
+    navigation["carried_evidence_receipts"][0]["receipt"]["authority"] = "changed"
+    with pytest.raises(ValueError, match="do not resolve"):
+        _resolve_workbench_evidence_receipts(
+            tmp_path, navigation, [receipt["receipt_id"]]
+        )
+
+
 def test_successor_formula_request_preserves_source_finalist_identity(tmp_path):
     navigation = {
         "context_hash": "context:source",
@@ -217,7 +302,11 @@ def _rejecting_navigator():
     return navigator
 
 
-def test_single_public_inlet_builds_and_navigates_structure_first(tmp_path):
+def test_single_public_inlet_builds_and_navigates_structure_first(
+    tmp_path, monkeypatch
+):
+    phase_ledger = tmp_path / "phase_timings.jsonl"
+    monkeypatch.setenv("ZTARE_LEANMILL_PHASE_TIMING_LEDGER", str(phase_ledger))
     brief = FrontierExplorationBrief(
         direction="Explore anonymous finite binary-operation theories.",
         source_mode="structure_first",
@@ -244,6 +333,48 @@ def test_single_public_inlet_builds_and_navigates_structure_first(tmp_path):
     assert inspection["sealed_evidence_visible"] is False
     assert inspection["campaign_manifest_ref"] == "campaign_manifest.json"
     assert replay_frontier_campaign(tmp_path / "attempt-1")["ok"] is True
+    phase_rows = [
+        json.loads(line)
+        for line in phase_ledger.read_text(encoding="utf-8").splitlines()
+    ]
+    launch_rows = [row for row in phase_rows if row.get("phase") == "campaign"]
+    assert len(launch_rows) == 1
+    assert launch_rows[0]["run_tag"] == "attempt-1"
+    frozen_brief = read_json(tmp_path / "attempt-1" / "brief.json", {})
+    assert launch_rows[0]["tags"] == {
+        "target": frozen_brief["brief_id"],
+        "domain": "axiompack-frontier",
+    }
+
+
+def test_attempt_initializer_owns_first_write_after_directory_creation(tmp_path):
+    attempt = tmp_path / "attempt-initialized"
+    observed = []
+
+    def initialize(directory):
+        assert directory == attempt
+        assert directory.is_dir()
+        assert list(directory.iterdir()) == []
+        (directory / "identity.marker").write_text("frozen", encoding="utf-8")
+        observed.append(directory)
+
+    def sign_after_initialization(packet):
+        assert (attempt / "identity.marker").read_text(encoding="utf-8") == "frozen"
+        return _signer()(packet)
+
+    run = explore_axiom_space(
+        FrontierExplorationBrief(
+            direction="Exercise attempt initialization ordering.",
+            source_mode="structure_first",
+        ),
+        attempt_dir=attempt,
+        typed_draft=_draft(),
+        packet_signer=sign_after_initialization,
+        attempt_initializer=initialize,
+    )
+
+    assert observed == [attempt]
+    assert run.provider_calls == 0
 
 
 def test_budget_stop_replay_retains_verified_outer_objective_finalists(tmp_path):
@@ -1123,12 +1254,41 @@ def test_public_campaign_resumes_through_smt_and_matched_lean_boundary(tmp_path)
         assert "sorry -- AXIOMPACK_PROOF" in source_text
         assert goal == ""
         assert kwargs["substrate"] == tmp_path
+        governance = {
+            "governance_kernel": {
+                "available": True,
+                "passed": True,
+                "policy_profile": "target_ratification",
+                "required_authorities": sorted(
+                    TARGET_GOVERNANCE_AUTHORITIES
+                ),
+                "authority_disposition": {
+                    authority: "passed"
+                    for authority in TARGET_GOVERNANCE_AUTHORITIES
+                },
+                "authority_roster_sha256": (
+                    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256
+                ),
+            },
+            "statement_integrity": {"ok": True},
+        }
+        validation = finalize_solver_validation({
+            "credit_ready_at_solver_layer": True,
+            "receipts": {
+                "kernel_compile_receipt": {"available": True, "passed": True},
+                "matched_negative_control_receipt": {
+                    "available": True,
+                    "passed": True,
+                },
+                "axiom_allowlist_receipt": {"available": True, "passed": True},
+            },
+        }, governance)
         return {
             "results": [
                 {
                     "outcome": "closed",
                     "proof_text": "by\n  rfl",
-                    "contract_validation": {"credit_ready_at_solver_layer": True},
+                    "contract_validation": validation,
                 }
             ],
             "closure_certificate": "test-closure-certificate",
@@ -1149,6 +1309,11 @@ def test_public_campaign_resumes_through_smt_and_matched_lean_boundary(tmp_path)
             timeout_s=1,
             compile_fn=compile_fn,
             solve_fn=solve_fn,
+            axiom_audit_fn=lambda _source, _target: (
+                True,
+                False,
+                ("Classical.choice",),
+            ),
         ).to_json()
 
     def certified_single_premise_audit(premises, target):

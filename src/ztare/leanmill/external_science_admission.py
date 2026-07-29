@@ -13,6 +13,7 @@ first-fire route event after inserting that projection into its causal trace.
 from __future__ import annotations
 
 from collections.abc import Mapping
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -36,6 +37,11 @@ from ztare.leanmill.lean_source import (
 )
 from ztare.leanmill.theory_ir import content_hash
 from ztare.leanmill.theory_program import TheoryProgram
+from ztare.leanmill.solver.closed_artifact import finalized_ratification_eligible
+from ztare.leanmill.ratification_policy import (
+    FINAL_RATIFICATION_AUTHORITIES,
+    FINAL_RATIFICATION_AUTHORITY_ROSTER_SHA256,
+)
 
 
 EXTERNAL_SCIENCE_REQUEST_SCHEMA = "leanmill.external_science_recovery_request.v1"
@@ -350,7 +356,11 @@ def _formal_statement(source: str, target: str) -> str:
 
 
 def _receipt_passed(receipt: Any, label: str) -> Mapping[str, Any]:
-    if not isinstance(receipt, Mapping) or receipt.get("passed") is not True:
+    if (
+        not isinstance(receipt, Mapping)
+        or receipt.get("available") is not True
+        or receipt.get("passed") is not True
+    ):
         raise ValueError(f"closure certificate {label} did not pass")
     tail = str(receipt.get("tail") or "").lower()
     if any(word in tail for word in ("fail-open", "error", "skipped", "inconclusive")):
@@ -383,21 +393,25 @@ def _validate_closure_record(
     receipts = validation.get("receipts")
     receipts = receipts if isinstance(receipts, Mapping) else {}
     probe = str(record.get("recompilable_probe") or "")
+    statement_hash = hashlib.sha256(statement.encode("utf-8")).hexdigest()
     if (
         record.get("target") != target
         or record.get("outcome") != "closed"
         or record.get("checker") != "lean_lake"
         or record.get("ratification_only") is not True
+        or kernel.get("available") is not True
         or kernel.get("passed") is not True
         or integrity.get("ok") is not True
         or governance.get("integrity_unverified") is True
         or detail.get("differential") != "confirmed"
         or mnc.get("passed") is not True
-        or validation.get("credit_ready_at_solver_layer") is not True
+        or not finalized_ratification_eligible(dict(validation))
         or validation.get("positive_axiom_receipt_required") is not True
         or validation.get("axiom_tier") != "kernel_pure"
         or not probe
         or not str(record.get("closure_lean") or "")
+        or record.get("posed_target_signature_sha256") != statement_hash
+        or record.get("closed_target_signature_sha256") != statement_hash
     ):
         raise ValueError("closure certificate is not a governed ratification-only record")
     for name in (
@@ -420,10 +434,71 @@ def _validate_kernel_parity_record(record: Mapping[str, Any], *, target: str) ->
         record.get("target") != target
         or hand.get("kc") is not True
         or hand.get("mnc") is not True
+        or kernel.get("available") is not True
         or kernel.get("passed") is not True
         or record.get("kernel_blocked") is not False
     ):
         raise ValueError("kernel parity record does not clear the target")
+    if record.get("schema") == "leanmill.kernel_parity_record.v2":
+        required_text = (
+            "ts",
+            "job_id",
+            "run_tag",
+            "goal_sha256",
+            "source_sha256",
+            "recompilable_probe_sha256",
+            "posed_target_signature_sha256",
+            "closed_target_signature_sha256",
+            "final_authority_roster_sha256",
+            "toolchain_identity_sha256",
+            "record_sha256",
+        )
+        if any(not str(record.get(name) or "").strip() for name in required_text):
+            raise ValueError("kernel parity v2 record is missing identity")
+        disposition = record.get("final_authority_disposition")
+        if (
+            record.get("final_authority_roster_sha256")
+            != FINAL_RATIFICATION_AUTHORITY_ROSTER_SHA256
+            or not isinstance(disposition, Mapping)
+            or set(disposition) != FINAL_RATIFICATION_AUTHORITIES
+            or any(
+                disposition.get(authority) != "passed"
+                for authority in FINAL_RATIFICATION_AUTHORITIES
+            )
+        ):
+            raise ValueError("kernel parity v2 authority roster mismatch")
+        core = {key: value for key, value in record.items() if key != "record_sha256"}
+        if record.get("record_sha256") != content_hash(core):
+            raise ValueError("kernel parity v2 record digest mismatch")
+
+
+def _validate_closure_parity_binding(
+    closure: Mapping[str, Any],
+    parity: Mapping[str, Any],
+) -> None:
+    if parity.get("schema") != "leanmill.kernel_parity_record.v2":
+        raise ValueError("external science requires roster-bound kernel parity v2")
+    if closure.get("kernel_parity_record_sha256") != parity.get("record_sha256"):
+        raise ValueError("closure and kernel parity record hashes do not match")
+    for field in (
+        "target",
+        "job_id",
+        "run_tag",
+        "goal_sha256",
+        "source_sha256",
+        "recompilable_probe_sha256",
+        "posed_target_signature_sha256",
+        "closed_target_signature_sha256",
+    ):
+        if not str(closure.get(field) or "") or closure.get(field) != parity.get(field):
+            raise ValueError(f"closure and kernel parity crossed {field}")
+    validation = closure.get("solver_validation")
+    validation = validation if isinstance(validation, Mapping) else {}
+    if (
+        validation.get("final_authority_roster_sha256")
+        != parity.get("final_authority_roster_sha256")
+    ):
+        raise ValueError("closure and kernel parity crossed authority policy")
 
 
 def _attempt_lease(directory: Path, action: str):
@@ -484,6 +559,20 @@ def materialize_external_science_formal_evidence(
         parity_matches.append(record)
     if not parity_matches:
         raise ValueError("no canonical kernel parity record matches the formal target")
+    selected_pair: tuple[Mapping[str, Any], Mapping[str, Any]] | None = None
+    for closure in reversed(closure_matches):
+        for parity in reversed(parity_matches):
+            try:
+                _validate_closure_parity_binding(closure, parity)
+            except ValueError:
+                continue
+            selected_pair = (closure, parity)
+            break
+        if selected_pair is not None:
+            break
+    if selected_pair is None:
+        raise ValueError("no closure-bound kernel parity record matches the formal target")
+    selected_closure, selected_parity = selected_pair
     core = {
         "schema": EXTERNAL_SCIENCE_FORMAL_EVIDENCE_SCHEMA,
         "source": _artifact_ref(source, attempt_dir=directory, repo_root=repo),
@@ -491,13 +580,13 @@ def materialize_external_science_formal_evidence(
         "formal_statement_sha256": content_hash({"formal_statement": statement}),
         "closure_certificate": _record_ref(
             closure_path,
-            closure_matches[-1],
+            selected_closure,
             attempt_dir=directory,
             repo_root=repo,
         ),
         "kernel_parity": _record_ref(
             parity_path,
-            parity_matches[-1],
+            selected_parity,
             attempt_dir=directory,
             repo_root=repo,
         ),
@@ -849,6 +938,7 @@ def _formal_evidence(
         label="formal evidence.kernel_parity",
     )
     _validate_kernel_parity_record(parity, target=target)
+    _validate_closure_parity_binding(closure, parity)
     return evidence, target, statement, closure, parity
 
 

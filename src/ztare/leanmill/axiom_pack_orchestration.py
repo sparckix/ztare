@@ -13,10 +13,9 @@ import json
 from typing import Any, Callable, Mapping
 
 from ztare.leanmill.axiom_yield import verify_shadow_task_manifest
+from ztare.leanmill.digest_ref import is_sha256_digest
 from ztare.leanmill.formal_verification_provider import sha256_ref
-from ztare.leanmill import prompts
 from ztare.leanmill.typed_axiom_proposal import verify_semantic_fidelity_verdict
-from ztare.leanmill.contracts.axiom_pack_transport import AxiomPackTransportContract
 
 
 ORCHESTRATION_SCHEMA = "leanmill.axiom_pack_typed_orchestration.v1"
@@ -33,98 +32,6 @@ _SENSITIVE_TOKENS = (
     "checker",
     "verifier",
 )
-
-
-def _parse_json_object(raw: Any) -> dict[str, Any]:
-    if isinstance(raw, Mapping):
-        return deepcopy(dict(raw))
-    text = str(raw or "").strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else text
-        text = text.rsplit("```", 1)[0].strip()
-    decoder = json.JSONDecoder()
-    for start, character in enumerate(text):
-        if character != "{":
-            continue
-        try:
-            parsed, _end = decoder.raw_decode(text[start:])
-        except json.JSONDecodeError:
-            continue
-        if isinstance(parsed, dict):
-            return parsed
-    raise ValueError("structured provider returned no JSON object")
-
-
-def render_typed_proposer_prompt(proposer_view: Mapping[str, Any]) -> str:
-    """Render the only prompt a typed proposer needs; callers provide the model."""
-
-    return prompts.AXIOM_PACK_TYPED_PROPOSER_PROMPT.format(
-        proposer_view=json.dumps(
-            dict(proposer_view), sort_keys=True, separators=(",", ":"), ensure_ascii=True
-        )
-    )
-
-
-def make_json_proposer(call: Callable[[str], Any]) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
-    """Adapt an existing generic text dispatcher to the typed proposer callback."""
-
-    def proposer(view: Mapping[str, Any]) -> Mapping[str, Any]:
-        return _parse_json_object(call(render_typed_proposer_prompt(view)))
-
-    return proposer
-
-
-def make_contract_proposer(
-    call: Callable[[str], Any],
-    *,
-    transport_contract: AxiomPackTransportContract,
-) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
-    """Adapt a constrained shallow wire response to canonical proposal inputs."""
-
-    def proposer(view: Mapping[str, Any]) -> Mapping[str, Any]:
-        if _digest(dict(view)) != transport_contract.proposer_view_digest:
-            raise ValueError("proposer view does not match frozen transport contract")
-        return transport_contract.decode(call(transport_contract.render_prompt(view)))
-
-    return proposer
-
-
-def render_semantic_checker_prompt(source_conjecture: Any, typed_axiom_proposal: Any) -> str:
-    return prompts.AXIOM_PACK_SEMANTIC_CHECKER_PROMPT.format(
-        check_input=json.dumps(
-            {"source_conjecture": source_conjecture, "typed_axiom_proposal": typed_axiom_proposal},
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=True,
-        )
-    )
-
-
-def make_signed_semantic_checker(
-    call: Callable[[str], Any],
-    *,
-    private_key_pem: str,
-    verifier_ref: str,
-) -> Callable[[Mapping[str, Any]], Mapping[str, Any]]:
-    """Adapt a generic judge to a code-signed semantic checker callback."""
-
-    from ztare.leanmill.typed_axiom_proposal import build_semantic_fidelity_verdict
-
-    def checker(payload: Mapping[str, Any]) -> Mapping[str, Any]:
-        source = payload["source_conjecture"]
-        proposal = payload["typed_axiom_proposal"]
-        judgment = _parse_json_object(call(render_semantic_checker_prompt(source, proposal)))
-        verdict = build_semantic_fidelity_verdict(
-            proposal,
-            faithful=judgment.get("faithful") is True,
-            rationale=str(judgment.get("rationale") or "").strip(),
-            evidence_refs=[str(ref) for ref in judgment.get("evidence_refs") or []],
-            private_key_pem=private_key_pem,
-            verifier_ref=verifier_ref,
-        )
-        return {"semantic_fidelity_verdict": verdict.to_json()}
-
-    return checker
 
 
 def _canonicalize_proposer_proposal(
@@ -173,7 +80,7 @@ def _sensitive_keys(value: Any, path: str = "") -> list[str]:
     return found
 
 
-def _verify_escalation_packet(packet: Mapping[str, Any]) -> list[str]:
+def verify_axiom_pack_escalation_packet(packet: Mapping[str, Any]) -> list[str]:
     failures: list[str] = []
     if packet.get("schema") != "leanmill.axiom_pack_escalation_eligibility.v1":
         failures.append("escalation_schema")
@@ -218,7 +125,7 @@ def _verify_escalation_packet(packet: Mapping[str, Any]) -> list[str]:
         if digest != _digest(core):
             failures.append("routing_receipt_digest")
     for field in ("base_theory_digest", "substrate_digest", "registered_family_digest"):
-        if not isinstance(packet.get(field), str) or not packet[field].startswith("sha256:"):
+        if not is_sha256_digest(packet.get(field)):
             failures.append(field)
     return failures
 
@@ -269,6 +176,60 @@ def _rejected(
     }
 
 
+def _producer_terminal(
+    *,
+    outcome: str,
+    detail: str,
+    escalation: Mapping[str, Any],
+    manifest_digest: str,
+    proposer_view_digest: str,
+    proposer_output_digest: str,
+) -> dict[str, Any]:
+    if outcome not in {"no_candidate", "language_capability_gap"}:
+        raise ValueError("unsupported typed producer terminal outcome")
+    receipt_status = (
+        "no_candidates" if outcome == "no_candidate" else "language_capability_gap"
+    )
+    receipt = {
+        "schema": RECEIPT_SCHEMA,
+        "status": receipt_status,
+        "mode": "conjecture",
+        "trial_source": "typed_proposer_checker",
+        "canonical_engine": "ztare.leanmill.axiom_pack_orchestration",
+        "result": {
+            "candidate_count": 0,
+            "typed_axiom_proposals": [],
+            "producer_outcome": outcome,
+            "outcome_detail": detail,
+        },
+        "proof_credit_eligible": False,
+        "theorem_campaign_admissible": False,
+        "can_mutate_substrate": False,
+        "allowed_use": "navigation_feedback_only",
+        "orchestration": {
+            "schema": ORCHESTRATION_SCHEMA,
+            "status": receipt_status,
+            "manifest_digest": manifest_digest,
+            "escalation_digest": escalation["routing_receipt_digest"],
+            "proposer_view_digest": proposer_view_digest,
+            "proposer_output_digest": proposer_output_digest,
+            "provider_calls_completed": ["typed_proposer"],
+        },
+    }
+    return {
+        "schema": ORCHESTRATION_SCHEMA,
+        "ok": False,
+        "stage": "producer_terminal",
+        "producer_outcome": outcome,
+        "outcome_detail": detail,
+        "failures": [],
+        "manifest_digest": manifest_digest,
+        "proposer_view_digest": proposer_view_digest,
+        "proposer_output_digest": proposer_output_digest,
+        "receipt": receipt,
+    }
+
+
 def orchestrate_typed_axiom_proposals(
     *,
     escalation: Mapping[str, Any] | None,
@@ -307,7 +268,7 @@ def orchestrate_typed_axiom_proposals(
         )
         failures = [] if valid_calibration_digest else ["calibration_manifest_base_digest"]
     else:
-        failures = _verify_escalation_packet(escalation)
+        failures = verify_axiom_pack_escalation_packet(escalation)
     if failures:
         return _rejected(stage="escalation", failures=failures, escalation=escalation)
     if not isinstance(proposer_view, Mapping):
@@ -323,6 +284,23 @@ def orchestrate_typed_axiom_proposals(
         )
     proposer_view_copy = deepcopy(dict(proposer_view))
     proposer_view_digest = _digest(proposer_view_copy)
+    proposer_base = proposer_view_copy.get("base_theory")
+    proposer_base_digest = (
+        proposer_base.get("base_theory_digest")
+        if isinstance(proposer_base, Mapping)
+        else proposer_view_copy.get("base_theory_digest")
+    )
+    if (
+        isinstance(proposer_base_digest, str)
+        and proposer_base_digest
+        and proposer_base_digest != escalation["base_theory_digest"]
+    ):
+        return _rejected(
+            stage="base_identity",
+            failures=["proposer_view_base_theory_digest"],
+            escalation=escalation,
+            proposer_view_digest=proposer_view_digest,
+        )
     manifest_ok, manifest_failures = verify_shadow_task_manifest(
         task_manifest,
         base_theory_digest=str(escalation["base_theory_digest"]),
@@ -340,6 +318,14 @@ def orchestrate_typed_axiom_proposals(
         )
     try:
         proposer_output = proposer_fn(deepcopy(proposer_view_copy))
+    except (TypeError, ValueError) as exc:
+        return _rejected(
+            stage="proposer",
+            failures=[f"producer_contract:{exc}"],
+            escalation=escalation,
+            manifest_digest=manifest_digest,
+            proposer_view_digest=proposer_view_digest,
+        )
     except Exception as exc:  # noqa: BLE001
         return _rejected(
             stage="proposer", failures=[f"provider_exception:{type(exc).__name__}"],
@@ -360,6 +346,35 @@ def orchestrate_typed_axiom_proposals(
             stage="proposer", failures=[f"sensitive_proposer_output:{','.join(output_sensitive[:8])}"],
             escalation=escalation, manifest_digest=manifest_digest,
             proposer_view_digest=proposer_view_digest, proposer_output_digest=proposer_output_digest,
+        )
+    producer_outcome = proposer_output.get("producer_outcome")
+    if producer_outcome in {"no_candidate", "language_capability_gap"}:
+        detail = str(proposer_output.get("outcome_detail") or "").strip()
+        if not detail or proposer_output.get("typed_axiom_proposals") != []:
+            return _rejected(
+                stage="proposer",
+                failures=["typed_producer_terminal_outcome_inconsistent"],
+                escalation=escalation,
+                manifest_digest=manifest_digest,
+                proposer_view_digest=proposer_view_digest,
+                proposer_output_digest=proposer_output_digest,
+            )
+        return _producer_terminal(
+            outcome=str(producer_outcome),
+            detail=detail,
+            escalation=escalation,
+            manifest_digest=manifest_digest,
+            proposer_view_digest=proposer_view_digest,
+            proposer_output_digest=proposer_output_digest,
+        )
+    if producer_outcome not in {None, "typed_proposals"}:
+        return _rejected(
+            stage="proposer",
+            failures=["typed_producer_outcome_unknown"],
+            escalation=escalation,
+            manifest_digest=manifest_digest,
+            proposer_view_digest=proposer_view_digest,
+            proposer_output_digest=proposer_output_digest,
         )
     submitted = proposer_output.get("typed_axiom_proposals")
     if not isinstance(submitted, list) or not submitted:
@@ -442,7 +457,7 @@ def orchestrate_typed_axiom_proposals(
         "status": "ok",
         "mode": "conjecture",
         "trial_source": "typed_proposer_checker",
-        "canonical_engine": "ztare.research_director.research_isomorphism",
+        "canonical_engine": "ztare.leanmill.axiom_pack_orchestration",
         "result": {
             "candidate_count": len(rows),
             "typed_axiom_proposals": rows,
@@ -539,11 +554,7 @@ def recover_valid_quarantined_rows(
 
 __all__ = [
     "ORCHESTRATION_SCHEMA",
-    "make_contract_proposer",
-    "make_json_proposer",
-    "make_signed_semantic_checker",
     "orchestrate_typed_axiom_proposals",
     "recover_valid_quarantined_rows",
-    "render_semantic_checker_prompt",
-    "render_typed_proposer_prompt",
+    "verify_axiom_pack_escalation_packet",
 ]

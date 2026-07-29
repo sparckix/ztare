@@ -146,7 +146,26 @@ def _head_ident(expr: str) -> str | None:
     return head
 
 
-def head_cited_lemmas(body: str) -> list[str]:
+def _bound_local_names(statement_and_proof: str, body: str = "") -> set[str]:
+    """Collect declaration/tactic locals so projections are not mistaken for library declarations."""
+    head = (statement_and_proof or "").split(":=", 1)[0]
+    names: set[str] = set()
+    for group in re.findall(r"[({\[]([^(){}\[\]]*?:[^(){}\[\]]*)[)}\]]", head):
+        left = group.split(":", 1)[0]
+        names.update(re.findall(r"[A-Za-z_\u0080-\uffff][\w'\u2080-\u2089]*", left))
+    for match in re.finditer(r"(?m)^\s*(?:intro|intros|rintro)\s+([^\n]+)", body or ""):
+        names.update(re.findall(r"[A-Za-z_\u0080-\uffff][\w'\u2080-\u2089]*", match.group(1)))
+    for match in re.finditer(r"\b(?:have|let)\s+([A-Za-z_\u0080-\uffff][\w'\u2080-\u2089]*)", body or ""):
+        names.add(match.group(1))
+    return names
+
+
+def _is_local_reference(name: str, local_names: set[str]) -> bool:
+    root = (name or "").split(".", 1)[0]
+    return root in local_names or bool(re.match(r"^h[\w'\u2080-\u2089]*$", root))
+
+
+def head_cited_lemmas(body: str, local_names: "set[str] | None" = None) -> list[str]:
     """Load-bearing lemmas only: the HEAD identifier of each
     `have/obtain/let ... := EXPR`, `exact EXPR`, `apply EXPR`,
     `refine EXPR`, `simpa ... using EXPR`. Args / bound locals / trivial
@@ -167,14 +186,52 @@ def head_cited_lemmas(body: str) -> list[str]:
     # keep only plausible Mathlib lemma names: contain _ or . , len>4,
     # not a bare local hypothesis (h, h1, hc_mem...), not a pure projection
     out = []
+    local_names = local_names or set()
     for h in heads:
-        if re.match(r"^h[\w']*$", h):           # local hypothesis
+        if _is_local_reference(h, local_names):
             continue
         # Recover the BASE name from a projection rather than discarding it, so a
         # verbatim restatement closed via `.mpr`/`.symm`/`.le` (re-review SEV1-B
         # evasion) still counts as the cited gold lemma.
         base = _PROJ_SUFFIX.sub("", h)
-        if re.match(r"^h[\w']*$", base):
+        if _is_local_reference(base, local_names):
+            continue
+        if (("_" in base) or ("." in base)) and len(base) > 4:
+            out.append(base)
+    return sorted(set(out))
+
+
+def supporting_cited_lemmas(
+    body: str,
+    primary_lemmas: "list[str] | None" = None,
+    local_names: "set[str] | None" = None,
+) -> list[str]:
+    """Nonlocal lemmas used to construct arguments for a primary close.
+
+    A proof such as ``exact outer <| inner h`` composes two declarations even
+    though the line-oriented head detector sees only ``outer``.  Local
+    projections and proposition-packaging projections (``.mpr``, ``.le``,
+    ``.continuousOn``, and siblings in ``_PROJ_SUFFIX``) remain glue rather
+    than independent support.
+    """
+
+    proof_body = re.split(
+        r"(?m)^\s*#(?:print|check|eval|reduce)\b", body, maxsplit=1
+    )[0]
+    local_names = local_names or set()
+    primary = set(primary_lemmas or ())
+    out: list[str] = []
+    for raw in re.findall(r"[A-Za-z_][\w'.]*", proof_body):
+        if raw in (
+            "fun", "by", "if", "then", "else", "match", "with", "let",
+            "do", "exact", "apply", "refine", "intro", "intros", "rintro",
+            "change", "show", "have", "obtain",
+        ):
+            continue
+        if _PROJ_SUFFIX.search(raw):
+            continue
+        base = _PROJ_SUFFIX.sub("", raw)
+        if base in primary or _is_local_reference(base, local_names):
             continue
         if (("_" in base) or ("." in base)) and len(base) > 4:
             out.append(base)
@@ -191,14 +248,15 @@ def _extract_term_body(text: str) -> str:
     return "" if re.match(r"by\b", expr) else expr
 
 
-def _term_named_lemmas(expr: str) -> list[str]:
+def _term_named_lemmas(expr: str, local_names: "set[str] | None" = None) -> list[str]:
     """Distinct plausible-Mathlib-lemma names in a term-mode proof expression."""
     out = []
+    local_names = local_names or set()
     for h in re.findall(r"[A-Za-z_][\w'.]*", expr):
         if h in ("fun", "by", "if", "then", "else", "match", "with", "let", "do"):
             continue
         base = _PROJ_SUFFIX.sub("", h)   # recover base (gold_lemma.symm -> gold_lemma)
-        if re.match(r"^h[\w']*$", base):
+        if _is_local_reference(base, local_names):
             continue
         if (("_" in base) or ("." in base)) and len(base) > 4:
             out.append(base)
@@ -207,13 +265,14 @@ def _term_named_lemmas(expr: str) -> list[str]:
 
 def detect_gold_name_verbatim(statement_and_proof: str) -> dict:
     body = extract_proof_body(statement_and_proof)
+    local_names = _bound_local_names(statement_and_proof, body)
     if not body:
         # SEV1-B: term-mode proof `:= <expr>` (no `by`). A single-lemma term such as
         # `theorem mine : G := Existing.gold_lemma h` is the simplest verbatim
         # restatement and was previously never even suspect.
         term = _extract_term_body(statement_and_proof)
         if term:
-            names = _term_named_lemmas(term)
+            names = _term_named_lemmas(term, local_names)
             # A lambda / arrow construction (`fun x => …`, `λ …`) does real
             # construction, not a bare restatement (re-review SEV1-B false-positive).
             is_construction = ("=>" in term) or bool(re.match(r"(fun\b|λ)", term.strip()))
@@ -235,12 +294,18 @@ def detect_gold_name_verbatim(statement_and_proof: str) -> dict:
     have_heads = [h for h in have_heads if h and (("_" in h) or ("." in h)) and len(h) > 4
                   and not _PROJ_SUFFIX.search(h) and not re.match(r"^h[\w']*$", h)]
     distinct_have_lemmas = sorted(set(have_heads))
-    distinct_cited = head_cited_lemmas(body)
-    has_composition = any(t in body for t in COMPOSITION_TACTICS) and len(have_lemma_lines) >= 2
+    distinct_cited = head_cited_lemmas(body, local_names)
+    supporting_lemmas = supporting_cited_lemmas(
+        body, distinct_cited, local_names
+    )
+    tactic_composition = (
+        any(t in body for t in COMPOSITION_TACTICS) and len(have_lemma_lines) >= 2
+    )
+    has_composition = tactic_composition or bool(supporting_lemmas)
 
     suspect = (
         len(distinct_cited) == 1            # exactly one decision-critical lemma
-        and not has_composition             # no multi-have composition
+        and not tactic_composition          # no multi-have composition
         and len(distinct_have_lemmas) <= 1  # not ≥2 distinct lemma-haves
     )
     # A single cited gold lemma is only a TRIVIAL RESTATEMENT (the laundering signal)
@@ -250,7 +315,7 @@ def detect_gold_name_verbatim(statement_and_proof: str) -> dict:
     # legitimate library-composed proof, not a restatement. Only trivial_restatement
     # should be elevated to a top-level BLOCKER; suspect-but-not-trivial stays advisory.
     work = has_work_tactic(body)
-    trivial_restatement = bool(suspect and not work)
+    trivial_restatement = bool(suspect and not work and not supporting_lemmas)
     return {
         "gold_name_verbatim_suspect": bool(suspect),
         "trivial_restatement": trivial_restatement,
@@ -258,6 +323,7 @@ def detect_gold_name_verbatim(statement_and_proof: str) -> dict:
         "distinct_cited_lemmas": distinct_cited,
         "n_have_lemma_lines": len(have_lemma_lines),
         "distinct_have_lemmas": distinct_have_lemmas,
+        "supporting_cited_lemmas": supporting_lemmas,
         "has_multistep_composition": has_composition,
         "primary_cited": distinct_cited[0] if distinct_cited else None,
         "body_preview": body[:160],

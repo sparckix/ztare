@@ -89,9 +89,18 @@ def govern_via_cage(lean_source: str, lean_path: "Path", ztare_proofs_root: "Pat
         if _routing_err and isinstance(out, dict):
             out.setdefault("detail", {})["cage_routing_error"] = _routing_err
         return out
-    except Exception as e:  # noqa: BLE001 — fail-CLOSED: the anti-laundering kernel could not run ⇒ BLOCK the closure
-        return {"passed": False, "flags": ["anti_laundering_kernel_error"], "confirmed": [],
-                "detail": {"kernel_error": str(e)[:160], "cage_routing_error": _routing_err}}
+    except Exception as e:  # noqa: BLE001 — typed unavailable; preserve candidate and withhold credit
+        return {
+            "available": False,
+            "passed": False,
+            "flags": ["governance_organ_unavailable"],
+            "confirmed": [],
+            "unavailable_organs": ["leanmill_anti_laundering_kernel"],
+            "detail": {
+                "kernel_error": str(e)[:160],
+                "cage_routing_error": _routing_err,
+            },
+        }
 
 
 def _selftest() -> int:

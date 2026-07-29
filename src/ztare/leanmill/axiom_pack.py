@@ -14,6 +14,11 @@ import re
 from pathlib import Path
 from typing import Any
 
+from ztare.leanmill.axiom_pack_semantic_screen import (
+    DEFAULT_FIXED_SIZE_SMT_TIMEOUT_MS,
+    normalize_fixed_size_smt_policy,
+)
+
 
 REPO = Path(__file__).resolve().parents[3]
 DEFAULT_AXIOM_PACK_STORE = REPO / "analytics" / "public" / "queries" / "axiom_pack_candidates.jsonl"
@@ -50,6 +55,7 @@ DEFAULT_CHEAP_FILTER_POLICY: dict[str, Any] = {
     "semantic_min_carrier_size": 2,
     "semantic_max_carrier_size": 2,
     "semantic_max_interpretations": 100_000,
+    "fixed_size_smt_timeout_ms": DEFAULT_FIXED_SIZE_SMT_TIMEOUT_MS,
 }
 
 DEFAULT_DOWNSTREAM_YIELD_POLICY: dict[str, Any] = {
@@ -293,6 +299,29 @@ class AxiomPackBlueprint:
         }
 
 
+def _normalized_cheap_filter_policy(policy: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(policy, dict):
+        raise ValueError("cheap_filter_policy must be an object")
+    merged = {**DEFAULT_CHEAP_FILTER_POLICY, **policy}
+    for key in (
+        "semantic_min_carrier_size",
+        "semantic_max_carrier_size",
+        "semantic_max_interpretations",
+    ):
+        value = merged.get(key)
+        if type(value) is not int or value < 1:
+            raise ValueError(f"{key} must be a positive integer")
+    if merged["semantic_min_carrier_size"] > merged["semantic_max_carrier_size"]:
+        raise ValueError(
+            "semantic_min_carrier_size must not exceed semantic_max_carrier_size"
+        )
+    for key in ("require_countermodel_strata", "prune_before_downstream_yield"):
+        if type(merged.get(key)) is not bool:
+            raise ValueError(f"{key} must be boolean")
+    normalize_fixed_size_smt_policy(merged)
+    return merged
+
+
 def lint_axiom_pack_blueprint(blueprint: AxiomPackBlueprint | dict[str, Any]) -> dict[str, Any]:
     if isinstance(blueprint, dict):
         blueprint = AxiomPackBlueprint.from_json(blueprint)
@@ -331,6 +360,10 @@ def lint_axiom_pack_blueprint(blueprint: AxiomPackBlueprint | dict[str, Any]) ->
         violations.append("downstream_yield_must_not_be_theorem_admissible")
     if not blueprint.cheap_filter_policy.get("prune_before_downstream_yield"):
         violations.append("cheap_filter_must_precede_yield")
+    try:
+        _normalized_cheap_filter_policy(blueprint.cheap_filter_policy)
+    except (TypeError, ValueError) as exc:
+        violations.append(f"cheap_filter_policy:{exc}")
     if blueprint.base_theory_resolved is not True:
         violations.append("base_theory_must_be_resolved_to_typed_axioms_or_explicit_empty_base")
     template_names = [str(t.get("name") or "") for t in blueprint.candidate_axiom_templates]
@@ -558,6 +591,7 @@ def _semantic_dimension_receipt(
     passed: bool,
     suite: dict[str, Any],
     evidence: Any,
+    fixed_size_smt_screen: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     from ztare.leanmill.axiom_authority import pack_digest
     from ztare.leanmill.theory_ir import content_hash
@@ -573,6 +607,10 @@ def _semantic_dimension_receipt(
         "proof_credit_eligible": False,
         "theorem_campaign_admissible": False,
     }
+    if fixed_size_smt_screen is not None:
+        core["fixed_size_smt_screen_digest"] = fixed_size_smt_screen.get(
+            "receipt_sha256"
+        )
     return {**core, "receipt_sha256": content_hash(core)}
 
 
@@ -582,8 +620,9 @@ def run_semantic_cheap_filters(
     min_carrier_size: int = 2,
     max_carrier_size: int = 2,
     max_interpretations: int = 100_000,
+    fixed_size_smt_policy: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    """Run the typed finite-model suite and lower it into stress dimensions."""
+    """Run enumerative semantics plus the optional fixed-size SMT extension."""
 
     from ztare.leanmill.finite_model import (
         CERTIFIED_WITH_WITNESSES,
@@ -607,6 +646,19 @@ def run_semantic_cheap_filters(
         bounds,
         base_axioms=base_axioms,
     ).to_json()
+    fixed_size_smt_screen = None
+    if fixed_size_smt_policy is not None:
+        from ztare.leanmill.axiom_pack_semantic_screen import (
+            run_fixed_size_smt_screen,
+        )
+
+        fixed_size_smt_screen = run_fixed_size_smt_screen(
+            pack=pack,
+            signature=signature,
+            base_axioms=base_axioms,
+            candidate_axioms=candidate_axioms,
+            policy=fixed_size_smt_policy,
+        )
     joint = suite.get("joint_satisfiability") or {}
     witness = joint.get("witness") if isinstance(joint, dict) else None
     model = witness.get("model") if isinstance(witness, dict) else {}
@@ -628,6 +680,21 @@ def run_semantic_cheap_filters(
         }
         for row in witnessed_independence
     ]
+    fixed_summary = (
+        fixed_size_smt_screen.get("summary")
+        if isinstance(fixed_size_smt_screen, dict)
+        else {}
+    ) or {}
+    fixed_countermodel_edges = [
+        row
+        for row in fixed_summary.get("countermodel_edges") or []
+        if isinstance(row, dict)
+    ]
+    fixed_implication_edges = [
+        row
+        for row in fixed_summary.get("fixed_size_implication_edges") or []
+        if isinstance(row, dict)
+    ]
     certified = suite.get("status") == CERTIFIED_WITH_WITNESSES
     receipts = [
         _semantic_dimension_receipt(
@@ -636,6 +703,7 @@ def run_semantic_cheap_filters(
             passed=joint.get("status") == SAT and nontrivial,
             suite=suite,
             evidence={"joint_status": joint.get("status"), "sort_sizes": sort_sizes},
+            fixed_size_smt_screen=fixed_size_smt_screen,
         ),
         _semantic_dimension_receipt(
             pack=pack,
@@ -643,6 +711,7 @@ def run_semantic_cheap_filters(
             passed=joint.get("status") == SAT and bool(witness),
             suite=suite,
             evidence={"joint_receipt_sha256": joint.get("receipt_sha256")},
+            fixed_size_smt_screen=fixed_size_smt_screen,
         ),
         _semantic_dimension_receipt(
             pack=pack,
@@ -650,24 +719,46 @@ def run_semantic_cheap_filters(
             passed=joint.get("status") == SAT and bool(witness),
             suite=suite,
             evidence=witness or {},
+            fixed_size_smt_screen=fixed_size_smt_screen,
         ),
         _semantic_dimension_receipt(
             pack=pack,
             dimension="strength_comparison",
-            passed=bool(separation_edges) and certified,
+            passed=bool(separation_edges or fixed_countermodel_edges),
             suite=suite,
-            evidence={"edges": separation_edges},
+            evidence={
+                "enumerative_edges": separation_edges,
+                "fixed_size_countermodel_edges": fixed_countermodel_edges,
+                "fixed_size_implication_edges": fixed_implication_edges,
+            },
+            fixed_size_smt_screen=fixed_size_smt_screen,
         ),
         _semantic_dimension_receipt(
             pack=pack,
             dimension="separation_or_interpretation",
-            passed=certified and len(witnessed_independence) == len(candidate_axioms),
+            passed=(
+                certified and len(witnessed_independence) == len(candidate_axioms)
+            )
+            or bool(
+                fixed_size_smt_screen
+                and fixed_size_smt_screen.get("status") == "pass"
+            ),
             suite=suite,
             evidence={
                 "witnessed": len(witnessed_independence),
                 "candidate_count": len(candidate_axioms),
                 "receipt_sha256s": [row.get("receipt_sha256") for row in independence],
+                "fixed_size_smt_screen_digest": (
+                    fixed_size_smt_screen.get("receipt_sha256")
+                    if fixed_size_smt_screen
+                    else ""
+                ),
+                "fixed_size_candidate_outcomes": fixed_summary.get(
+                    "candidate_outcomes"
+                )
+                or [],
             },
+            fixed_size_smt_screen=fixed_size_smt_screen,
         ),
     ]
     suite_core = {
@@ -679,6 +770,8 @@ def run_semantic_cheap_filters(
         "proof_credit_eligible": False,
         "theorem_campaign_admissible": False,
     }
+    if fixed_size_smt_screen is not None:
+        suite_core["fixed_size_smt_screen"] = fixed_size_smt_screen
     receipts.append({**suite_core, "receipt_sha256": content_hash(suite_core)})
     return receipts
 
@@ -690,6 +783,7 @@ def _validate_stress_receipt(
     trusted_task_manifest_public_key_pem: str | None,
     trusted_shadow_checker_public_key_pem: str | None,
     semantic_suite_digest: str = "",
+    fixed_size_smt_screen_digest: str = "",
 ) -> tuple[bool, str]:
     from ztare.leanmill.axiom_authority import pack_digest
     from ztare.leanmill.theory_ir import content_hash
@@ -710,6 +804,11 @@ def _validate_stress_receipt(
             return False, "semantic_binding_missing"
         if receipt.get("semantic_suite_digest") != semantic_suite_digest:
             return False, "semantic_suite_digest_mismatch"
+        declared_screen_digest = str(
+            receipt.get("fixed_size_smt_screen_digest") or ""
+        )
+        if declared_screen_digest != fixed_size_smt_screen_digest:
+            return False, "fixed_size_smt_screen_digest_mismatch"
         return True, "validated_semantic_receipt"
     if dimension == "downstream_yield":
         from ztare.leanmill.axiom_yield import (
@@ -802,6 +901,38 @@ def _verified_semantic_suite(
         return None, f"semantic_suite_replay_error:{exc}"
 
 
+def _verified_fixed_size_smt_screen(
+    pack: AxiomPack,
+    receipts: list[dict[str, Any]],
+) -> tuple[dict[str, Any] | None, str]:
+    rows = [row for row in receipts if row.get("dimension") == "semantic_certification"]
+    if len(rows) != 1:
+        return None, "semantic_certification_receipt_count"
+    screen = rows[0].get("fixed_size_smt_screen")
+    if screen is None:
+        return None, "not_present"
+    if not isinstance(screen, dict):
+        return None, "fixed_size_smt_screen_not_object"
+    try:
+        from ztare.leanmill.axiom_pack_semantic_screen import (
+            verify_fixed_size_smt_screen,
+        )
+
+        signature, base_axioms, candidate_axioms = _pack_formal_theory(pack)
+        valid, failures = verify_fixed_size_smt_screen(
+            pack=pack,
+            signature=signature,
+            base_axioms=base_axioms,
+            candidate_axioms=candidate_axioms,
+            receipt=screen,
+        )
+    except (TypeError, ValueError) as exc:
+        return None, f"fixed_size_smt_screen_replay_error:{exc}"
+    if not valid:
+        return None, "fixed_size_smt_screen_replay_failed:" + ",".join(failures)
+    return screen, "validated_fixed_size_smt_screen"
+
+
 def stress_axiom_pack(
     pack: AxiomPack | dict[str, Any],
     *,
@@ -817,6 +948,18 @@ def stress_axiom_pack(
             by_dimension.setdefault(str(receipt.get("dimension") or ""), []).append(receipt)
     semantic_suite, semantic_reason = _verified_semantic_suite(pack, pack.stress_receipts)
     semantic_suite_digest = str((semantic_suite or {}).get("certificate_digest") or "")
+    fixed_size_smt_screen, fixed_size_smt_reason = _verified_fixed_size_smt_screen(
+        pack, pack.stress_receipts
+    )
+    fixed_size_smt_screen_digest = str(
+        (fixed_size_smt_screen or {}).get("receipt_sha256") or ""
+    )
+    fixed_size_smt_declared = any(
+        row.get("dimension") == "semantic_certification"
+        and row.get("fixed_size_smt_screen") is not None
+        for row in pack.stress_receipts
+        if isinstance(row, dict)
+    )
     validated_receipts: list[dict[str, Any]] = []
     valid_dimensions: set[str] = set()
     invalid_receipts: list[dict[str, Any]] = []
@@ -836,9 +979,13 @@ def stress_axiom_pack(
             trusted_task_manifest_public_key_pem=trusted_task_manifest_public_key_pem,
             trusted_shadow_checker_public_key_pem=trusted_shadow_checker_public_key_pem,
             semantic_suite_digest=semantic_suite_digest,
+            fixed_size_smt_screen_digest=fixed_size_smt_screen_digest,
         )
-        if dimension in CHEAP_STRESS_DIMENSIONS and semantic_suite is None:
-            valid, reason = False, semantic_reason
+        if dimension in CHEAP_STRESS_DIMENSIONS:
+            if semantic_suite is None:
+                valid, reason = False, semantic_reason
+            elif fixed_size_smt_declared and fixed_size_smt_screen is None:
+                valid, reason = False, fixed_size_smt_reason
         validation = {
             "dimension": dimension,
             "status": "pass" if valid else "fail",
@@ -896,6 +1043,22 @@ def stress_axiom_pack(
             ),
             "reason": semantic_reason,
             "certificate_digest": semantic_suite_digest,
+        },
+        "fixed_size_smt_screen": {
+            "validation_status": (
+                "pass"
+                if fixed_size_smt_reason == "validated_fixed_size_smt_screen"
+                else "not_present"
+                if fixed_size_smt_reason == "not_present"
+                else "fail"
+            ),
+            "reason": fixed_size_smt_reason,
+            "screen_status": (fixed_size_smt_screen or {}).get("status"),
+            "receipt_sha256": fixed_size_smt_screen_digest,
+            "verdict_counts": (
+                (fixed_size_smt_screen or {}).get("summary") or {}
+            ).get("verdict_counts")
+            or {},
         },
         "compute_route": compute_route,
         "theorem_consumption_gate": theorem_campaign_consumption_gate(pack),
@@ -1382,13 +1545,18 @@ def inverse_semigroup_axiom_blueprint() -> AxiomPackBlueprint:
 
 
 def stress_pack_for_domain(pack: AxiomPack, blueprint: AxiomPackBlueprint | None = None) -> AxiomPack:
-    policy = blueprint.cheap_filter_policy if blueprint else DEFAULT_CHEAP_FILTER_POLICY
     try:
+        policy = _normalized_cheap_filter_policy(
+            blueprint.cheap_filter_policy
+            if blueprint
+            else DEFAULT_CHEAP_FILTER_POLICY
+        )
         cheap = run_semantic_cheap_filters(
             pack,
-            min_carrier_size=int(policy.get("semantic_min_carrier_size") or 2),
-            max_carrier_size=int(policy.get("semantic_max_carrier_size") or 2),
-            max_interpretations=int(policy.get("semantic_max_interpretations") or 100_000),
+            min_carrier_size=policy["semantic_min_carrier_size"],
+            max_carrier_size=policy["semantic_max_carrier_size"],
+            max_interpretations=policy["semantic_max_interpretations"],
+            fixed_size_smt_policy=policy,
         )
     except (TypeError, ValueError) as exc:
         cheap = [
@@ -1665,9 +1833,7 @@ def _templates_from_isomorphism_result(result: dict[str, Any], domain: str) -> l
         })
     if out:
         return out
-    if "inverse" in domain or "partial" in domain:
-        return cached_inverse_agent_isomorphism_receipt()["result"]["candidate_axiom_templates"]
-    return cached_priority_agent_isomorphism_receipt()["result"]["candidate_axiom_templates"]
+    return []
 
 
 def _typed_templates_from_isomorphism_result(
@@ -1923,37 +2089,49 @@ def run_live_axiom_pack_isomorphism(
     *,
     model: str = "codex",
     n: int = 8,
+    typed_producer_runtime: Any | None = None,
 ) -> dict[str, Any]:
-    left = {
-        "constraint_class": blueprint.semantic_intent,
-        "abstract_form": blueprint.nl_statement,
-        "home_field": blueprint.domain,
-        "target_structure_family": blueprint.target_structure_family,
-        "residuals": "; ".join(blueprint.residuals),
-    }
-    right = {
-        "constraint_class": "finite-model countermodel stress for candidate axiom packs",
-        "abstract_form": "propose named axiom templates with kill conditions and strength separators",
-        "home_field": "model checking",
-        "required_outputs": "candidate axiom templates, countermodel strata, strength edges",
-    }
-    try:
-        from ztare.research_director import research_isomorphism as ri
-        result = ri.debug_conjecture_for_seams(left, right, model=model, n=n)
-        status = "ok" if result.get("candidate_count", 0) else "no_candidates"
-    except Exception as exc:  # noqa: BLE001
-        result = {"error": f"{type(exc).__name__}: {exc}"}
-        status = "error"
+    if typed_producer_runtime is None:
+        return {
+            "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+            "status": "language_capability_gap",
+            "mode": "conjecture",
+            "model": model,
+            "canonical_engine": "ztare.leanmill.axiom_pack_orchestration",
+            "trial_source": "live_typed_axiom_pack_producer",
+            "proof_credit_eligible": False,
+            "theorem_campaign_admissible": False,
+            "can_mutate_substrate": False,
+            "provider_calls": 0,
+            "result": {
+                "candidate_count": 0,
+                "typed_axiom_proposals": [],
+                "producer_outcome": "language_capability_gap",
+                "outcome_detail": "live typed producer runtime was not supplied",
+                "missing_capabilities": [
+                    "live_typed_producer_runtime.escalation",
+                    "live_typed_producer_runtime.task_manifest",
+                    "live_typed_producer_runtime.proposer_call",
+                    "live_typed_producer_runtime.semantic_checker_fn",
+                ],
+                "requested_candidate_cap": n,
+            },
+        }
+    from ztare.leanmill.axiom_pack_live_producer import (
+        run_live_typed_axiom_pack_producer,
+    )
+
+    orchestration = run_live_typed_axiom_pack_producer(
+        base_blueprint=blueprint,
+        runtime=typed_producer_runtime,
+    )
+    receipt = orchestration.get("receipt")
+    if not isinstance(receipt, dict):
+        raise ValueError("live typed producer returned no source receipt")
     return {
-        "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
-        "status": status,
-        "mode": "conjecture",
+        **receipt,
         "model": model,
-        "canonical_engine": "ztare.research_director.research_isomorphism",
-        "trial_source": "live_agent_isomorphism",
-        "proof_credit_eligible": False,
-        "can_mutate_substrate": False,
-        "result": result,
+        "requested_candidate_cap": n,
     }
 
 
@@ -1989,22 +2167,69 @@ def _single_domain_discovery_eval(
     n: int = 8,
     trusted_semantic_fidelity_public_key_pem: str | None = None,
     expected_semantic_fidelity_verifier_ref: str | None = None,
+    live_typed_producer_runtime: Any | None = None,
 ) -> dict[str, Any]:
     base = _base_blueprint_for_domain(domain)
+    if live_typed_producer_runtime is not None:
+        if trusted_semantic_fidelity_public_key_pem is None:
+            trusted_semantic_fidelity_public_key_pem = str(
+                live_typed_producer_runtime.trusted_semantic_fidelity_public_key_pem
+            )
+        if expected_semantic_fidelity_verifier_ref is None:
+            expected_semantic_fidelity_verifier_ref = str(
+                live_typed_producer_runtime.expected_semantic_fidelity_verifier_ref
+            )
     if receipt is None:
-        receipt = run_live_axiom_pack_isomorphism(base, model=model, n=n) if live_isomorphism else _cached_receipt_for_domain(base.domain)
-    agent_blueprint_row = blueprint_from_agent_isomorphism_receipt(
-        base,
-        receipt,
-        trusted_semantic_fidelity_public_key_pem=trusted_semantic_fidelity_public_key_pem,
-        expected_semantic_fidelity_verifier_ref=expected_semantic_fidelity_verifier_ref,
+        receipt = (
+            run_live_axiom_pack_isomorphism(
+                base,
+                model=model,
+                n=n,
+                typed_producer_runtime=live_typed_producer_runtime,
+            )
+            if live_isomorphism
+            else _cached_receipt_for_domain(base.domain)
+        )
+    from ztare.leanmill.axiom_pack_candidate_birth import (
+        materialize_typed_axiom_pack_candidate,
     )
-    agent_blueprint = AxiomPackBlueprint.from_json(agent_blueprint_row["blueprint"])
-    pack, generation = generate_candidate_axiom_pack(
-        agent_blueprint,
-        isomorphism_receipt=receipt,
-        trusted_semantic_fidelity_public_key_pem=trusted_semantic_fidelity_public_key_pem,
+
+    candidate_birth = materialize_typed_axiom_pack_candidate(
+        base_blueprint=base,
+        source_receipt=receipt,
+        trusted_semantic_fidelity_public_key_pem=(
+            trusted_semantic_fidelity_public_key_pem
+        ),
+        expected_semantic_fidelity_verifier_ref=(
+            expected_semantic_fidelity_verifier_ref
+        ),
     )
+    if candidate_birth.get("status") == "candidate_born":
+        agent_blueprint_row = dict(candidate_birth["agent_blueprint_trial"])
+        agent_blueprint = AxiomPackBlueprint.from_json(agent_blueprint_row["blueprint"])
+        pack = AxiomPack.from_json(candidate_birth["pack"])
+        generation = dict(candidate_birth["generation"])
+    else:
+        # Preserve rejected prose as a diagnostic trial without persisting it
+        # as a candidate pack.
+        agent_blueprint_row = blueprint_from_agent_isomorphism_receipt(
+            base,
+            receipt,
+            trusted_semantic_fidelity_public_key_pem=(
+                trusted_semantic_fidelity_public_key_pem
+            ),
+            expected_semantic_fidelity_verifier_ref=(
+                expected_semantic_fidelity_verifier_ref
+            ),
+        )
+        agent_blueprint = AxiomPackBlueprint.from_json(agent_blueprint_row["blueprint"])
+        pack, generation = generate_candidate_axiom_pack(
+            agent_blueprint,
+            isomorphism_receipt=receipt,
+            trusted_semantic_fidelity_public_key_pem=(
+                trusted_semantic_fidelity_public_key_pem
+            ),
+        )
     stressed = stress_pack_for_domain(pack, agent_blueprint)
     stress = stress_axiom_pack(stressed)
     usefulness = score_axiom_pack_usefulness(stressed, stress)
@@ -2014,11 +2239,18 @@ def _single_domain_discovery_eval(
         "isomorphism_receipt": receipt,
         "agent_blueprint_trial": agent_blueprint_row,
         "agent_blueprint_lint": agent_blueprint_row["lint"],
+        "candidate_birth": candidate_birth,
         "generation": generation,
         "pack": stressed.to_json(),
         "stress": stress,
         "usefulness_score": usefulness,
-        "ok": bool(agent_blueprint_row.get("ok") and generation.get("ok") and stress.get("ok") and usefulness.get("ok")),
+        "ok": bool(
+            candidate_birth.get("status") == "candidate_born"
+            and agent_blueprint_row.get("ok")
+            and generation.get("ok")
+            and stress.get("ok")
+            and usefulness.get("ok")
+        ),
     }
 
 
@@ -2032,6 +2264,7 @@ def run_axiom_pack_discovery_eval(
     include_second_domain: bool = True,
     trusted_semantic_fidelity_public_key_pem: str | None = None,
     expected_semantic_fidelity_verifier_ref: str | None = None,
+    live_typed_producer_runtime: Any | None = None,
 ) -> dict[str, Any]:
     receipt = _read_receipt(receipt_path)
     primary = _single_domain_discovery_eval(
@@ -2042,6 +2275,7 @@ def run_axiom_pack_discovery_eval(
         n=n,
         trusted_semantic_fidelity_public_key_pem=trusted_semantic_fidelity_public_key_pem,
         expected_semantic_fidelity_verifier_ref=expected_semantic_fidelity_verifier_ref,
+        live_typed_producer_runtime=live_typed_producer_runtime,
     )
     primary_trial_source = str(primary.get("isomorphism_receipt", {}).get("trial_source") or "")
     hand_tooled_risk = primary["domain"] == priority_uncrossed_order_blueprint().domain and primary_trial_source.startswith("cached_")
@@ -2136,7 +2370,31 @@ def append_axiom_pack_event(
     stress: dict[str, Any],
     blueprint: AxiomPackBlueprint | None = None,
     generation: dict[str, Any] | None = None,
+    candidate_birth: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    try:
+        _pack_formal_theory(pack)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(
+            f"candidate store requires an executable typed pack: {exc}"
+        ) from exc
+    agent_origin = bool(
+        {"agent_authored_blueprint_trial", "structural_isomorphism_move_card"}
+        & set(pack.provenance)
+    )
+    if agent_origin and candidate_birth is None:
+        raise ValueError("agent-authored pack requires a candidate-birth receipt")
+    if candidate_birth is not None:
+        from ztare.leanmill.axiom_authority import pack_digest
+        from ztare.leanmill.axiom_pack_candidate_birth import (
+            verify_axiom_pack_candidate_birth,
+        )
+
+        birth_ok, birth_failures = verify_axiom_pack_candidate_birth(candidate_birth)
+        if not birth_ok:
+            raise ValueError(f"candidate-birth receipt rejected: {birth_failures}")
+        if candidate_birth.get("pack_digest") != pack_digest(pack):
+            raise ValueError("candidate-birth receipt names a different pack")
     event = {
         "schema": AXIOM_PACK_STORE_EVENT_SCHEMA,
         "ts": time.time(),
@@ -2144,6 +2402,7 @@ def append_axiom_pack_event(
         "stress": stress,
         "blueprint": blueprint.to_json() if blueprint else None,
         "generation": generation or {},
+        "candidate_birth": candidate_birth,
         "promotion_status": pack.promotion_status,
         "proof_credit_eligible": False,
         "theorem_campaign_admissible": False,
@@ -2181,7 +2440,29 @@ def main(argv: list[str] | None = None) -> int:
         help="configured checker public-key PEM path for typed agent proposals",
     )
     ap.add_argument("--semantic-fidelity-verifier-ref", default="")
-    ap.add_argument("--live-isomorphism", action="store_true", help="spend a live research_isomorphism call")
+    ap.add_argument(
+        "--live-isomorphism",
+        action="store_true",
+        help=(
+            "run the non-calibration typed AxiomPack authoring transition from "
+            "a frozen escalation, task manifest, and separated subscription roles"
+        ),
+    )
+    ap.add_argument("--live-escalation", default="")
+    ap.add_argument("--live-task-manifest", default="")
+    ap.add_argument("--task-manifest-public-key", default="")
+    ap.add_argument("--semantic-fidelity-private-key", default="")
+    ap.add_argument("--live-artifact-dir", default="")
+    ap.add_argument(
+        "--subscription-runtime", choices=("codex", "claude"), default="codex"
+    )
+    ap.add_argument("--subscription-model", default="gpt-5.5")
+    ap.add_argument(
+        "--reasoning-effort",
+        choices=("low", "medium", "high", "ultra"),
+        default="medium",
+    )
+    ap.add_argument("--live-timeout-seconds", type=int, default=900)
     ap.add_argument("--model", default="codex")
     ap.add_argument("--n", type=int, default=8)
     ap.add_argument("--markdown-report", default="")
@@ -2224,6 +2505,85 @@ def main(argv: list[str] | None = None) -> int:
             if args.semantic_fidelity_public_key
             else None
         )
+        live_typed_producer_runtime = None
+        if args.live_isomorphism:
+            if args.receipt:
+                ap.error("--live-isomorphism cannot be combined with --receipt")
+            required_live_artifacts = {
+                "--live-escalation": args.live_escalation,
+                "--live-task-manifest": args.live_task_manifest,
+                "--task-manifest-public-key": args.task_manifest_public_key,
+                "--semantic-fidelity-private-key": (
+                    args.semantic_fidelity_private_key
+                ),
+                "--semantic-fidelity-public-key": (
+                    args.semantic_fidelity_public_key
+                ),
+                "--semantic-fidelity-verifier-ref": (
+                    args.semantic_fidelity_verifier_ref
+                ),
+                "--live-artifact-dir": args.live_artifact_dir,
+            }
+            missing_live_artifacts = [
+                flag for flag, value in required_live_artifacts.items() if not value
+            ]
+            if missing_live_artifacts:
+                ap.error(
+                    "--live-isomorphism requires "
+                    + ", ".join(missing_live_artifacts)
+                )
+            from ztare.leanmill.axiom_pack_live_producer import (
+                build_live_typed_axiom_pack_runtime,
+            )
+            from ztare.leanmill.frontier_agent_runtime import (
+                FrontierAgentConfig,
+                SubscriptionJSONRole,
+            )
+
+            config = FrontierAgentConfig(
+                runtime=args.subscription_runtime,
+                model=args.subscription_model,
+                reasoning_effort=args.reasoning_effort,
+                timeout_seconds=int(args.live_timeout_seconds),
+            )
+            artifact_root = Path(args.live_artifact_dir)
+            domain_slug = _norm_slug(domain)
+            proposer_role = SubscriptionJSONRole(
+                role="axiom_pack_typed_proposer",
+                agent_id=f"axiompack-typed-proposer-{domain_slug}",
+                repo=REPO,
+                artifact_dir=artifact_root / "typed_axiom_proposer",
+                config=config,
+            )
+            semantic_checker_role = SubscriptionJSONRole(
+                role="axiom_pack_semantic_checker",
+                agent_id=f"axiompack-semantic-checker-{domain_slug}",
+                repo=REPO,
+                artifact_dir=artifact_root / "semantic_checker",
+                config=config,
+            )
+            live_typed_producer_runtime = build_live_typed_axiom_pack_runtime(
+                escalation=json.loads(
+                    Path(args.live_escalation).read_text(encoding="utf-8")
+                ),
+                task_manifest=json.loads(
+                    Path(args.live_task_manifest).read_text(encoding="utf-8")
+                ),
+                trusted_manifest_public_key_pem=Path(
+                    args.task_manifest_public_key
+                ).read_text(encoding="utf-8"),
+                semantic_checker_private_key_pem=Path(
+                    args.semantic_fidelity_private_key
+                ).read_text(encoding="utf-8"),
+                trusted_semantic_fidelity_public_key_pem=str(
+                    semantic_fidelity_public_key
+                ),
+                expected_semantic_fidelity_verifier_ref=(
+                    args.semantic_fidelity_verifier_ref
+                ),
+                proposer_call=proposer_role,
+                semantic_checker_call=semantic_checker_role,
+            )
         report = run_axiom_pack_discovery_eval(
             domain=domain,
             receipt_path=args.receipt or None,
@@ -2235,6 +2595,7 @@ def main(argv: list[str] | None = None) -> int:
             expected_semantic_fidelity_verifier_ref=(
                 args.semantic_fidelity_verifier_ref or None
             ),
+            live_typed_producer_runtime=live_typed_producer_runtime,
         )
         if args.out:
             out = Path(args.out)
@@ -2246,22 +2607,35 @@ def main(argv: list[str] | None = None) -> int:
             md.write_text(render_axiom_pack_discovery_eval(report), encoding="utf-8")
         if args.store:
             primary = report.get("primary") or {}
-            if primary.get("pack") and primary.get("stress"):
+            if (
+                primary.get("pack")
+                and primary.get("stress")
+                and primary.get("candidate_birth", {}).get("status")
+                == "candidate_born"
+            ):
                 append_axiom_pack_event(
                     args.store,
                     pack=AxiomPack.from_json(primary["pack"]),
                     stress=primary["stress"],
                     blueprint=AxiomPackBlueprint.from_json(primary["agent_blueprint_trial"]["blueprint"]),
                     generation=primary.get("generation"),
+                    candidate_birth=primary.get("candidate_birth"),
                 )
             second = report.get("second_domain_eval")
-            if isinstance(second, dict) and second.get("pack") and second.get("stress"):
+            if (
+                isinstance(second, dict)
+                and second.get("pack")
+                and second.get("stress")
+                and second.get("candidate_birth", {}).get("status")
+                == "candidate_born"
+            ):
                 append_axiom_pack_event(
                     args.store,
                     pack=AxiomPack.from_json(second["pack"]),
                     stress=second["stress"],
                     blueprint=AxiomPackBlueprint.from_json(second["agent_blueprint_trial"]["blueprint"]),
                     generation=second.get("generation"),
+                    candidate_birth=second.get("candidate_birth"),
                 )
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0 if report.get("ok") else 1

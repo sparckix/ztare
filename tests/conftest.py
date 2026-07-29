@@ -28,6 +28,17 @@ _WORKBENCH_CFG_ROOTS = (
 
 
 @pytest.fixture(autouse=True)
+def _isolate_leanmill_phase_timing(monkeypatch, tmp_path_factory):
+    """Tests may exercise live campaign inlets without appending to analytics."""
+
+    ledger_dir = tmp_path_factory.mktemp("leanmill_phase_timing")
+    monkeypatch.setenv(
+        "ZTARE_LEANMILL_PHASE_TIMING_LEDGER",
+        str(ledger_dir / "phase_timings.jsonl"),
+    )
+
+
+@pytest.fixture(autouse=True)
 def _isolate_workbench_config(request, monkeypatch, tmp_path_factory):
     if not any(name in request.node.nodeid for name in _WORKBENCH_CFG_TESTS):
         return

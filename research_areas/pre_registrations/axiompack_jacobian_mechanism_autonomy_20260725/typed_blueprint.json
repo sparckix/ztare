@@ -1,0 +1,245 @@
+{
+  "mode": "evidence_induced",
+  "eigenquestion": "Do the anonymous exact coefficient records admit a smaller executable mechanism chart than their flat pass/fail predicates?",
+  "signature": {
+    "schema": "leanmill.theory_signature.v1",
+    "name": "AnonymousDeformationEvidence",
+    "sorts": [
+      {
+        "name": "Observation"
+      }
+    ],
+    "operations": [],
+    "relations": []
+  },
+  "primitive_semantics": {
+    "operation_bindings": {},
+    "relation_bindings": {}
+  },
+  "base_axioms": [],
+  "base_theory_status": "explicit_empty",
+  "adapter_id": "rational_polynomial_map.v1",
+  "adapter_config": {
+    "construction_target": {
+      "schema": "leanmill.rational_polynomial_map_target_config.v1",
+      "variables": [
+        "x",
+        "y",
+        "z"
+      ],
+      "jacobian_condition": {
+        "kind": "equals_constant",
+        "constant": "-2"
+      },
+      "minimum_distinct_collision_points": 2,
+      "target_snapshot_sha256": "b5ebde7588aeb613f4154bdb94803209431b342f0b72d301c4eff24e16b5ce4f"
+    },
+    "evidence_panel": {
+      "schema": "leanmill.rational_polynomial_map_evidence_panel.v1",
+      "completeness_scope": "declared_control_panel_only",
+      "completeness_ref": "sha256:ea3065b10c77d13d2e22dadf5d96d5e26ce638ce305b59e1375abb6d61221c30",
+      "objects": [
+        {
+          "object_id": "sample:02",
+          "stratum_id": "coefficient_observation",
+          "payload": {
+            "parameter_order": 2,
+            "component_total_degrees": [
+              11,
+              11
+            ],
+            "component_sha256": [
+              "d56f643a66936bb556d56fa1a93c3ff2ec1204fcaeb46832bbec7748cb11658f",
+              "3f9a0621b96ab1ce4142ab6a2ca7cb260a6dee694ce44e4abb5e4817eef15226"
+            ],
+            "leading_homogeneous_components": [
+              "-3/8*t^4*v^7 + 9/4*t^3*v^8 - 81/16*t^2*v^9 + 81/16*t*v^10 - 243/128*v^11",
+              "3/8*t^5*v^6 - 27/8*t^4*v^7 + 189/16*t^3*v^8 - 81/4*t^2*v^9 + 2187/128*t*v^10 - 729/128*v^11"
+            ],
+            "exact_checks": {
+              "apparent_denominator_cancelled": true,
+              "two_declared_lift_ideals_satisfied": true,
+              "recomposition_residual": "zero"
+            }
+          }
+        },
+        {
+          "object_id": "sample:03",
+          "stratum_id": "coefficient_observation",
+          "payload": {
+            "parameter_order": 3,
+            "component_total_degrees": [
+              13,
+              13
+            ],
+            "component_sha256": [
+              "e204b6a7ae8d61ecc769e55a5e445ed67d94bb9f249bef5e8cf42f163e308090",
+              "28a2a15cc030933c5d1bf6501647504c57315b55b56d83ad7f55476ab26cdde2"
+            ],
+            "exact_checks": {
+              "apparent_denominator_cancelled": true,
+              "two_declared_lift_ideals_satisfied": true,
+              "recomposition_residual": "zero"
+            }
+          }
+        },
+        {
+          "object_id": "sample:04",
+          "stratum_id": "coefficient_observation",
+          "payload": {
+            "parameter_order": 4,
+            "component_total_degrees": [
+              21,
+              21
+            ],
+            "component_sha256": [
+              "3a423c5e8bc563e5d2ac1fba5f6ae2e8faa32d5d42249b3743bb8e0f68d8736a",
+              "6cd957a0e003e7bc8bad5395701be2e4122a84352d99c03599e2c88d105cb969"
+            ],
+            "exact_checks": {
+              "apparent_denominator_cancelled": true,
+              "two_declared_lift_ideals_satisfied": true,
+              "recomposition_residual": "zero"
+            }
+          }
+        },
+        {
+          "object_id": "sample:05",
+          "stratum_id": "coefficient_observation",
+          "payload": {
+            "parameter_order": 5,
+            "component_total_degrees": [
+              23,
+              23
+            ],
+            "component_sha256": [
+              "9bfd713d2a512b21fc663246749955663c2d6822f6215cbcbadcdbabfc4ef371",
+              "a430984efad96d6bb134a987b250e04839b71544d0c759a52ddf287b33ec8d8d"
+            ],
+            "exact_checks": {
+              "apparent_denominator_cancelled": true,
+              "two_declared_lift_ideals_satisfied": true,
+              "recomposition_residual": "zero"
+            }
+          }
+        },
+        {
+          "object_id": "sample:06",
+          "stratum_id": "coefficient_observation",
+          "payload": {
+            "parameter_order": 6,
+            "component_total_degrees": [
+              31,
+              31
+            ],
+            "component_sha256": [
+              "b28f8543f87740a0ba9bd9ef2067fc3f54991538c19c022a3d1caf959f111093",
+              "355860ee36da4bfa122e29b7d124ba7bcfafc7657552051934c5679a814442df"
+            ],
+            "exact_checks": {
+              "apparent_denominator_cancelled": true,
+              "two_declared_lift_ideals_satisfied": true,
+              "recomposition_residual": "zero"
+            }
+          }
+        }
+      ],
+      "hypotheses": [
+        {
+          "hypothesis_id": "check:00",
+          "satisfied_object_ids": [
+            "sample:02",
+            "sample:03",
+            "sample:04",
+            "sample:05",
+            "sample:06"
+          ],
+          "anonymous_shape": {
+            "kind": "exact_symbolic_property",
+            "complexity": 1
+          },
+          "payload": {
+            "checker_ref": "frozen-replay:polynomiality"
+          }
+        },
+        {
+          "hypothesis_id": "check:01",
+          "satisfied_object_ids": [
+            "sample:02",
+            "sample:03",
+            "sample:04",
+            "sample:05",
+            "sample:06"
+          ],
+          "anonymous_shape": {
+            "kind": "exact_symbolic_property",
+            "complexity": 1
+          },
+          "payload": {
+            "checker_ref": "frozen-replay:declared-ideal-membership"
+          }
+        },
+        {
+          "hypothesis_id": "check:02",
+          "satisfied_object_ids": [
+            "sample:02",
+            "sample:03",
+            "sample:04",
+            "sample:05",
+            "sample:06"
+          ],
+          "anonymous_shape": {
+            "kind": "exact_symbolic_property",
+            "complexity": 2
+          },
+          "payload": {
+            "checker_ref": "frozen-replay:coefficientwise-recomposition"
+          }
+        }
+      ]
+    }
+  },
+  "formula_grammar": {
+    "kind": "declared_executable_hypothesis_panel"
+  },
+  "model_or_observation_strata": [
+    {
+      "stratum_id": "coefficient_observation"
+    }
+  ],
+  "pack_arity": 1,
+  "collapse_controls": [],
+  "visible_evidence_manifest": {
+    "domain_labels_visible": false,
+    "known_degree_formula_visible": false,
+    "known_invariant_coordinate_visible": false,
+    "successor_language_visible": false
+  },
+  "sealed_evidence_manifest_digest": "sha256:ea3065b10c77d13d2e22dadf5d96d5e26ce638ce305b59e1375abb6d61221c30",
+  "deanchoring_policy": {
+    "cold_after_signature_compilation": true
+  },
+  "navigator_contract": {
+    "adapter_id": "axiompack",
+    "selection_mode": "theory_program"
+  },
+  "query_budget": {
+    "max_finalists": 2,
+    "max_ranked_queries": 4,
+    "navigator_rounds": 14
+  },
+  "stop_rule": {
+    "freeze_after_finalists": 2
+  },
+  "verification_plan": {
+    "conditional_lean": true,
+    "post_freeze_interpretation": false
+  },
+  "codec_versions": {
+    "evidence": "finite-incidence-v1",
+    "source": "rational-polynomial-map-v1"
+  },
+  "authority_refs": [
+    "campaign-authority"
+  ]
+}

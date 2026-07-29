@@ -1,0 +1,52 @@
+{
+  "schema": "leanmill.result_card_freeze_request.v1",
+  "ledger_ref": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+  "epoch": 0,
+  "objective": "Characterize, with necessary and sufficient conditions, the elementary type-2 solutions whose extracted second tetrahedral 4-groupoid reconstructs the original ternary operation.",
+  "objective_source_refs": [
+    "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+    "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_prior_art_audit.md",
+    "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+    "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md"
+  ],
+  "targets": [
+    {
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_factor_through_orbits",
+      "source_refs": [
+        "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md"
+      ]
+    },
+    {
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_orbit_action_representation",
+      "source_refs": [
+        "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md"
+      ]
+    },
+    {
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_nonprojection_not_reconstructible",
+      "source_refs": [
+        "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md"
+      ]
+    },
+    {
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+      "source_refs": [
+        "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md"
+      ]
+    },
+    {
+      "target_identity": "AxiomPackOrbitAction.orbitAction_reconstruction_iff_label_factorization",
+      "source_refs": [
+        "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+        "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md"
+      ]
+    }
+  ]
+}

@@ -2,21 +2,33 @@
 
 Date: 2026-07-15
 
-## Verdict
+## Verdict (corrected 2026-07-17)
 
 The AxiomPack finalist-one witness gives a kernel-checked negative answer to a
-printed open question.  An independent convention audit found an exact match
-between the source definitions and the Lean definitions.
+printed question, and the independent convention audit still passes. A broad
+priority claim for the counterexample or negative answer is now excluded.
 
-The question appears as Question 9.12 in arXiv:2206.08906 and survives peer
-review as Question 9.69 on page 55 of the 2024 Russian journal version.  A
-bounded forward-citation and exact-identity search found no prior answer.  This
-supports a frontier-novel candidate claim for the counterexample and the
-negative answer.  It does not support novelty for the broader differential-mode
-or orbit-action classification.
+The first audit searched forward citations, reconstruction terminology, and
+the displayed identity. Target-conditioned consequence replay found the missed
+route: known associative-ring tetrahedron maps already fail the published
+reconstruction after its extraction definitions are applied. Igonin proves
+that, on any associative ring,
 
-Database absence cannot establish global priority.  The source-definition gate
-has passed; expert review remains the appropriate external priority check.
+\[
+(X,Y,Z)\longmapsto(X,Y+XMZ,Z)
+\]
+
+is a tetrahedron map. With `M=1`, basepoint zero, and identity unary map, its
+extracted operations reconstruct `Y`, while the original middle coordinate is
+`Y+XZ`. The two disagree whenever `XZ` is nonzero. The scalar family
+`(x,(y-xz)/k,z)` is also explicit in the earlier tetrahedron-map literature.
+
+These sources do not appear to state the consequence for Question 9.12/9.69,
+but the consequence is immediate. Remaining priority candidates are narrower:
+the exact extraction-fiber characterization, the associativity-plus-centroid
+iff for the enlarged affine family, and its additive-conjugacy criterion.
+None has a confirmed priority verdict. The pointed two-element classification
+and minimality statement is excluded by Sadykov's complete two-color catalogue.
 
 ## Printed question
 
@@ -89,6 +101,10 @@ trail is broader but mostly concerns other simplex constructions, quantum
 gates, local Yang--Baxter correspondences, and adjacent n-ary structures; it
 does not change that result.
 
+This paragraph is limited to works citing Bardakov et al. It does not exclude
+older construction families that predate the printed question; those are the
+source of the consequence-replay correction below.
+
 ## Broader exact-source search
 
 Exact title, arXiv-identifier, terminology, and displayed-identity searches
@@ -106,6 +122,32 @@ also inspected retrieved full sources in the following nearby lanes:
 Where Bardakov et al. appeared, it appeared bibliographically.  Searches for
 `T_2-groupoid`, `second tetrahedral 4-groupoid`, `elementary 2-solution`, and
 the reconstruction identity found no proposed answer.
+
+### Consequence-replay correction
+
+The terminology search was insufficient because the relevant earlier sources
+do not use Bardakov's later extraction vocabulary. Directly replaying the
+target predicate against their examples changes the result:
+
+- S. Igonin,
+  [Set-theoretical solutions to the Zamolodchikov tetrahedron equation on
+  associative rings and Liouville integrability](https://arxiv.org/abs/2203.05552),
+  Theorem 1, gives `(X,Y,Z) -> (X,Y+XMZ,Z)` on associative rings.
+- S. Konstantinou-Rizos,
+  [Birational solutions to the set-theoretical 4-simplex
+  equation](https://arxiv.org/abs/2211.16338), equation (17), records the
+  scalar tetrahedron map `(x,y,z) -> (x,(y-xz)/k,z)` and traces it to the
+  Kashaev--Korepanov--Sergeev lane.
+- R. M. Sadykov,
+  [Set-theoretical solutions of the tetrahedron equation](https://arxiv.org/abs/1504.03314),
+  gives a complete two-color catalogue containing the identity, `y+xz`, and
+  its color-complement presentation. The campaign's pointed Boolean dichotomy
+  is a filtered corollary of that catalogue.
+
+Both yield reconstruction failures by elementary substitution into the later
+extraction formulas. Future literature audits for construction/reconstruction
+questions must run retrieved example families through the target predicate,
+in addition to coordinate fingerprints and terminology searches.
 
 ## Mathematical result under audit
 
@@ -129,13 +171,17 @@ under diagonal identity and a faithful action.
 
 ## Claim boundary
 
-Supported after kernel replay and this bounded audit:
+Supported after kernel replay and the corrected audit:
 
-- an explicit three-element counterexample;
-- a negative answer to preprint Question 9.12 / published Question 9.69;
+- an explicit three-element kernel witness discovered independently by the
+  AxiomPack campaign;
+- a valid negative answer to preprint Question 9.12 / published Question 9.69,
+  without a priority claim;
 - a raw no-go theorem for reconstruction in the middle-injective finalist-one
   subclass;
-- the exact orbit-label obstruction inside the orbit-action representation.
+- the exact orbit-label obstruction inside the orbit-action representation;
+- the diagnosis that known associative-ring examples already imply the same
+  negative answer under consequence replay.
 
 The independent definition map and convention result are recorded in
 `t2_reconstruction_convention_audit.md`.
@@ -146,4 +192,7 @@ Not supported by this audit:
 - classification of all elementary 2-solutions or all T2-groupoids;
 - a claim that no unrelated T2-groupoid presentation can generate the same
   ternary operation;
-- global priority without author or subject-expert review.
+- priority for the counterexample or broad negative answer;
+- priority for the narrower extraction-fiber, affine-iff, or
+  additive-conjugacy statements without author or subject-expert review;
+- priority for the pointed two-point classification or minimality statement.

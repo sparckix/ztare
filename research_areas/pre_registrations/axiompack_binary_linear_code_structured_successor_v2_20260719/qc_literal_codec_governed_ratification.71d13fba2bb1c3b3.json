@@ -1,0 +1,576 @@
+{
+  "closure_candidates": 1,
+  "closure_certificate": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+  "closure_certificate_record_sha256": "bb5517d1012989136ccd3c977eeaa90c18283b53d1c908672a90ec25186b0756",
+  "closure_lean": "ztare_proofs/closures/AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten_7086bd0c0aca.lean",
+  "environment_parity": {
+    "attempted": false,
+    "reason": "isolated_ratification_no_environment_mutation"
+  },
+  "governance": {
+    "governance_kernel": {
+      "authority_disposition": {
+        "canonical_reelaboration": "passed",
+        "statement_integrity": "passed",
+        "target_declaration": "passed",
+        "target_identity": "passed",
+        "target_signature": "passed",
+        "v33_consequence_exposure_gate": "passed",
+        "v33_currency_mismatch_gate": "passed",
+        "v33_indirect_leakage_gate": "passed",
+        "v33_paraphrase_gate": "passed",
+        "v33_preflight_risk_detector": "passed",
+        "v33_single_lemma_exact_gate": "passed"
+      },
+      "authority_roster_sha256": "6c278e4c552be6c597d7966f6453d0c8a1c9e98907cb3ebfcf6b5c35a790217f",
+      "available": true,
+      "confirmed": [],
+      "detail": {
+        "canonical_reelaboration": {
+          "detail": "no added instance/notation/macro/set_option/axiom/shadow-decl to strip (nothing to re-elaborate)",
+          "ok": true
+        },
+        "consequence_exposure": {
+          "shape": {
+            "advisory_goalhead": false,
+            "binders": [
+              "BinaryTwoBlockWord",
+              "Finset Position",
+              "Position",
+              "Finset Position",
+              "Position",
+              "Finset Position",
+              "Position",
+              "Position",
+              "Finset Position",
+              "Phase",
+              "Position",
+              "Finset Position",
+              "Position",
+              "Phase",
+              "Fin 20",
+              "Phase",
+              "Phase",
+              "ZMod 5",
+              "Residue",
+              "Phase",
+              "ZMod 5",
+              "Phase",
+              "Residue",
+              "transversalPoint \u03c6 r = transversalPoint \u03c8 s",
+              "Phase",
+              "ZMod 5",
+              "k \u2260 l",
+              "Position",
+              "Finset Position",
+              "Phase",
+              "ZMod 5",
+              "Phase",
+              "Phase",
+              "Phase",
+              "Phase",
+              "Phase",
+              "Fin 20",
+              "Phase",
+              "Fin 20",
+              "Phase"
+            ],
+            "blocking": false,
+            "consequence_exposure_suspect": false,
+            "organ": "v33-consequence-exposure",
+            "reason": "",
+            "smuggled_heads": []
+          }
+        },
+        "currency_mismatch": {
+          "shape": {
+            "conclusion_is_scalar": false,
+            "field_obligation_token": null,
+            "preview": "theorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelected",
+            "scalar_wrapper_suspect": false
+          }
+        },
+        "gold_name_verbatim": {
+          "corpus": {
+            "in_mathlib": false
+          },
+          "detect": {
+            "body_preview": "obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord.xor\n      (literalS",
+            "distinct_cited_lemmas": [
+              "exists_selectedQC_two_row_codeword_weight_le_ten",
+              "xor_two_literalSelectedQCGraphRows_mem"
+            ],
+            "distinct_have_lemmas": [],
+            "gold_name_verbatim_suspect": false,
+            "has_multistep_composition": true,
+            "has_work_tactic": true,
+            "n_have_lemma_lines": 0,
+            "primary_cited": "exists_selectedQC_two_row_codeword_weight_le_ten",
+            "supporting_cited_lemmas": [
+              "BinaryTwoBlockWord.xor",
+              "literalSelectedQCGraphRow_eq"
+            ],
+            "trivial_restatement": false
+          }
+        },
+        "indirect_leakage": {
+          "shape": {
+            "body_preview": "obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord",
+            "closer_tactic": null,
+            "explicit_lemma_args": false,
+            "has_multistep_composition": false,
+            "indirect_leakage_suspect": false,
+            "n_have": 1
+          }
+        },
+        "proof_shape_scope": {
+          "mode": "resolved_target_declaration",
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+        },
+        "single_lemma_exact": {
+          "shape": {
+            "goal_preview": "theorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelected",
+            "len": 743,
+            "n_binders": 1,
+            "n_relations": 7,
+            "single_lemma_exact_suspect": false
+          }
+        },
+        "statement_integrity": {
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+          "kind": "statement_integrity",
+          "ok": true,
+          "violations": []
+        },
+        "target_scope": {
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+        },
+        "vacuity": {
+          "opaque_predicate_present": false,
+          "risk_flags": [],
+          "statement_preview": "(\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 0) (literalSe",
+          "vacuity_suspected": false
+        },
+        "vacuity_scope": {
+          "mode": "resolved_target_signature",
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+          "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+        }
+      },
+      "flags": [],
+      "passed": true,
+      "policy_profile": "target_ratification",
+      "required_authorities": [
+        "canonical_reelaboration",
+        "statement_integrity",
+        "target_declaration",
+        "target_identity",
+        "target_signature",
+        "v33_consequence_exposure_gate",
+        "v33_currency_mismatch_gate",
+        "v33_indirect_leakage_gate",
+        "v33_paraphrase_gate",
+        "v33_preflight_risk_detector",
+        "v33_single_lemma_exact_gate"
+      ],
+      "unavailable_organs": []
+    },
+    "integrity_unverified": false,
+    "margin_of_safety": {
+      "advisory": false,
+      "kind": "proof_margin_of_safety",
+      "target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+      "tests": {
+        "conclusion_discrimination": {
+          "detail": {
+            "admitted_under_policy": true,
+            "available": true,
+            "closure_source_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+            "differential": "confirmed",
+            "discriminating": true,
+            "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+            "kind": "source_aware_conclusion_perturbation",
+            "negative_compiled": false,
+            "negative_probe_sha256": "f2dd4a6f1afb90f908f2b82b7e84a9badeb4d6d0e84d109b28b2e781e05c628b",
+            "passed": true,
+            "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "policy": "require_discriminating_control",
+            "posed_source_sha256": "9ae2a7694cffdb889ef2d5b8441c53890c03cc567b72f0b854413722498ff884",
+            "positive_compiled": true,
+            "positive_probe_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+            "status": "pass",
+            "tail": "positive source compiles and the same proof does not close the negated conclusion",
+            "target_identity": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+            "target_signature_sha256": "b33aedf6fc3a032c5098b17b03877f672b43fea9387665df0d65cfa95806ffb4"
+          },
+          "verdict": "strengthen"
+        }
+      }
+    },
+    "matched_negative_control_binding": {
+      "status": "validated_for_single_execution",
+      "target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+    },
+    "statement_integrity": {
+      "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+      "kind": "statement_integrity",
+      "ok": true,
+      "violations": []
+    }
+  },
+  "governance_ratification_eligible": true,
+  "kernel_parity_record_sha256": "646348fcf90edaaac3bb1392a04fd8fb6edf7414f68d66cdaff1e240ebc01cd8",
+  "outcome": "closed",
+  "provider_calls": 0,
+  "ratification_only": true,
+  "results": [
+    {
+      "compile_ok": true,
+      "compile_tail": "\nwarning: mathlib: repository './ztare_proofs/.lake/packages/mathlib' has local changes\nwarning: batteries: repository './ztare_proofs/.lake/packages/batteries' has local changes\n",
+      "contract_validation": {
+        "authoritative_kernel_deferred": true,
+        "axiom_tier": "kernel_pure",
+        "contract_schema": "leanmill.carried_theorem_ratification.v1",
+        "credit_ready_at_solver_layer": true,
+        "discriminating_mnc_required": true,
+        "final_authority_disposition": {
+          "axiom_allowlist_receipt": "passed",
+          "canonical_reelaboration": "passed",
+          "kernel_compile_receipt": "passed",
+          "matched_negative_control_receipt": "passed",
+          "statement_integrity": "passed",
+          "target_declaration": "passed",
+          "target_identity": "passed",
+          "target_signature": "passed",
+          "v33_consequence_exposure_gate": "passed",
+          "v33_currency_mismatch_gate": "passed",
+          "v33_indirect_leakage_gate": "passed",
+          "v33_paraphrase_gate": "passed",
+          "v33_preflight_risk_detector": "passed",
+          "v33_single_lemma_exact_gate": "passed"
+        },
+        "final_authority_receipts_eligible": true,
+        "final_authority_roster_sha256": "dfe23b3412b575d0868979eed73087257baee696fab06cf07fce18bf6f2bdd82",
+        "final_governance_ratification_eligible": true,
+        "final_ratification_eligible": true,
+        "final_required_authorities": [
+          "axiom_allowlist_receipt",
+          "canonical_reelaboration",
+          "kernel_compile_receipt",
+          "matched_negative_control_receipt",
+          "statement_integrity",
+          "target_declaration",
+          "target_identity",
+          "target_signature",
+          "v33_consequence_exposure_gate",
+          "v33_currency_mismatch_gate",
+          "v33_indirect_leakage_gate",
+          "v33_paraphrase_gate",
+          "v33_preflight_risk_detector",
+          "v33_single_lemma_exact_gate"
+        ],
+        "finalized_at_closed_artifact_boundary": true,
+        "positive_axiom_receipt_required": true,
+        "producer_credit_ready_at_solver_layer": true,
+        "producer_discriminating_mnc_required": true,
+        "producer_positive_axiom_receipt_required": true,
+        "receipts": {
+          "axiom_allowlist_receipt": {
+            "allowed_axioms": [
+              "Classical.choice",
+              "Quot.sound",
+              "propext"
+            ],
+            "available": true,
+            "axioms": [
+              "Classical.choice",
+              "Quot.sound",
+              "propext"
+            ],
+            "passed": true,
+            "status": "pass",
+            "tail": "clean target axiom set"
+          },
+          "governance_kernel_receipt": {
+            "authority": "common_closed_artifact_finalizer",
+            "authority_disposition": {
+              "canonical_reelaboration": "passed",
+              "statement_integrity": "passed",
+              "target_declaration": "passed",
+              "target_identity": "passed",
+              "target_signature": "passed",
+              "v33_consequence_exposure_gate": "passed",
+              "v33_currency_mismatch_gate": "passed",
+              "v33_indirect_leakage_gate": "passed",
+              "v33_paraphrase_gate": "passed",
+              "v33_preflight_risk_detector": "passed",
+              "v33_single_lemma_exact_gate": "passed"
+            },
+            "authority_roster_sha256": "6c278e4c552be6c597d7966f6453d0c8a1c9e98907cb3ebfcf6b5c35a790217f",
+            "available": true,
+            "confirmed": [],
+            "detail": {
+              "canonical_reelaboration": {
+                "detail": "no added instance/notation/macro/set_option/axiom/shadow-decl to strip (nothing to re-elaborate)",
+                "ok": true
+              },
+              "consequence_exposure": {
+                "shape": {
+                  "advisory_goalhead": false,
+                  "binders": [
+                    "BinaryTwoBlockWord",
+                    "Finset Position",
+                    "Position",
+                    "Finset Position",
+                    "Position",
+                    "Finset Position",
+                    "Position",
+                    "Position",
+                    "Finset Position",
+                    "Phase",
+                    "Position",
+                    "Finset Position",
+                    "Position",
+                    "Phase",
+                    "Fin 20",
+                    "Phase",
+                    "Phase",
+                    "ZMod 5",
+                    "Residue",
+                    "Phase",
+                    "ZMod 5",
+                    "Phase",
+                    "Residue",
+                    "transversalPoint \u03c6 r = transversalPoint \u03c8 s",
+                    "Phase",
+                    "ZMod 5",
+                    "k \u2260 l",
+                    "Position",
+                    "Finset Position",
+                    "Phase",
+                    "ZMod 5",
+                    "Phase",
+                    "Phase",
+                    "Phase",
+                    "Phase",
+                    "Phase",
+                    "Fin 20",
+                    "Phase",
+                    "Fin 20",
+                    "Phase"
+                  ],
+                  "blocking": false,
+                  "consequence_exposure_suspect": false,
+                  "organ": "v33-consequence-exposure",
+                  "reason": "",
+                  "smuggled_heads": []
+                }
+              },
+              "currency_mismatch": {
+                "shape": {
+                  "conclusion_is_scalar": false,
+                  "field_obligation_token": null,
+                  "preview": "theorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelected",
+                  "scalar_wrapper_suspect": false
+                }
+              },
+              "gold_name_verbatim": {
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord.xor\n      (literalS",
+                  "distinct_cited_lemmas": [
+                    "exists_selectedQC_two_row_codeword_weight_le_ten",
+                    "xor_two_literalSelectedQCGraphRows_mem"
+                  ],
+                  "distinct_have_lemmas": [],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": true,
+                  "has_work_tactic": true,
+                  "n_have_lemma_lines": 0,
+                  "primary_cited": "exists_selectedQC_two_row_codeword_weight_le_ten",
+                  "supporting_cited_lemmas": [
+                    "BinaryTwoBlockWord.xor",
+                    "literalSelectedQCGraphRow_eq"
+                  ],
+                  "trivial_restatement": false
+                }
+              },
+              "indirect_leakage": {
+                "shape": {
+                  "body_preview": "obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord",
+                  "closer_tactic": null,
+                  "explicit_lemma_args": false,
+                  "has_multistep_composition": false,
+                  "indirect_leakage_suspect": false,
+                  "n_have": 1
+                }
+              },
+              "proof_shape_scope": {
+                "mode": "resolved_target_declaration",
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+              },
+              "single_lemma_exact": {
+                "shape": {
+                  "goal_preview": "theorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelected",
+                  "len": 743,
+                  "n_binders": 1,
+                  "n_relations": 7,
+                  "single_lemma_exact_suspect": false
+                }
+              },
+              "statement_integrity": {
+                "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+                "kind": "statement_integrity",
+                "ok": true,
+                "violations": []
+              },
+              "target_scope": {
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+              },
+              "vacuity": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "(\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 0) (literalSe",
+                "vacuity_suspected": false
+              },
+              "vacuity_scope": {
+                "mode": "resolved_target_signature",
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+                "written_target": "exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+              }
+            },
+            "flags": [],
+            "passed": true,
+            "policy_profile": "target_ratification",
+            "producer_receipt": {
+              "available": false,
+              "passed": null,
+              "status": "deferred_to_closed_artifact_finalizer"
+            },
+            "required_authorities": [
+              "canonical_reelaboration",
+              "statement_integrity",
+              "target_declaration",
+              "target_identity",
+              "target_signature",
+              "v33_consequence_exposure_gate",
+              "v33_currency_mismatch_gate",
+              "v33_indirect_leakage_gate",
+              "v33_paraphrase_gate",
+              "v33_preflight_risk_detector",
+              "v33_single_lemma_exact_gate"
+            ],
+            "status": "finalized_by_closed_artifact_governance",
+            "unavailable_organs": []
+          },
+          "kernel_compile_receipt": {
+            "available": true,
+            "checker": "lean_lake",
+            "passed": true,
+            "status": "pass",
+            "tail": "compiled exact carried artifact"
+          },
+          "l3_anti_pattern_receipt": {
+            "authority": "common_closed_artifact_finalizer",
+            "available": true,
+            "confirmed": [],
+            "passed": true,
+            "producer_receipt": {
+              "available": false,
+              "passed": null,
+              "status": "deferred_to_closed_artifact_finalizer"
+            },
+            "status": "finalized_by_closed_artifact_governance"
+          },
+          "matched_negative_control_receipt": {
+            "admitted_under_policy": true,
+            "available": true,
+            "closure_source_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+            "differential": "confirmed",
+            "discriminating": true,
+            "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+            "kind": "source_aware_conclusion_perturbation",
+            "negative_compiled": false,
+            "negative_probe_sha256": "f2dd4a6f1afb90f908f2b82b7e84a9badeb4d6d0e84d109b28b2e781e05c628b",
+            "passed": true,
+            "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "policy": "require_discriminating_control",
+            "posed_source_sha256": "9ae2a7694cffdb889ef2d5b8441c53890c03cc567b72f0b854413722498ff884",
+            "positive_compiled": true,
+            "positive_probe_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+            "status": "pass",
+            "tail": "positive source compiles and the same proof does not close the negated conclusion",
+            "target_identity": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+            "target_signature_sha256": "b33aedf6fc3a032c5098b17b03877f672b43fea9387665df0d65cfa95806ffb4"
+          }
+        },
+        "required_receipts_all_passed_at_solver_layer": true
+      },
+      "exit_code": 0,
+      "goal": "(\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 0) (literalSelectedQCGraphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10",
+      "matched_negative_control": {
+        "admitted_under_policy": true,
+        "available": true,
+        "closure_source_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+        "differential": "confirmed",
+        "discriminating": true,
+        "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+        "kind": "source_aware_conclusion_perturbation",
+        "negative_compiled": false,
+        "negative_probe_sha256": "f2dd4a6f1afb90f908f2b82b7e84a9badeb4d6d0e84d109b28b2e781e05c628b",
+        "passed": true,
+        "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+        "policy": "require_discriminating_control",
+        "posed_source_sha256": "9ae2a7694cffdb889ef2d5b8441c53890c03cc567b72f0b854413722498ff884",
+        "positive_compiled": true,
+        "positive_probe_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+        "status": "pass",
+        "tail": "positive source compiles and the same proof does not close the negated conclusion",
+        "target_identity": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+        "target_signature_sha256": "b33aedf6fc3a032c5098b17b03877f672b43fea9387665df0d65cfa95806ffb4"
+      },
+      "name": "ratify::axiompack-qc-literal-codec::20260720",
+      "outcome": "closed",
+      "proof_text": "by\n  obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord.xor\n      (literalSelectedQCGraphRow \u03c6 0) (literalSelectedQCGraphRow \u03c6 s) := by\n    simpa only [literalSelectedQCGraphRow_eq] using hw\n  refine \u27e8s, w, hs, ?_, hwLiteral, hleft, hweight\u27e9\n  rw [hwLiteral]\n  exact xor_two_literalSelectedQCGraphRows_mem \u03c6 0 s",
+      "provider": "axiompack_qc_literal_codec_carried_artifact",
+      "provider_wallclock_s": 56.052194,
+      "providers_tried": [
+        {
+          "agent_kind": "preverified_champion",
+          "compile_ok": true,
+          "outcome": "compiled",
+          "provider": "axiompack_qc_literal_codec_carried_artifact",
+          "provider_wallclock_s": 56.052194
+        }
+      ],
+      "row_id": "ratify::axiompack-qc-literal-codec::20260720",
+      "target_name": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+      "target_theorem_name": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+      "winner": "axiompack_qc_literal_codec_carried_artifact"
+    }
+  ],
+  "schema": "leanmill.carried_theorem_ratification.v1",
+  "verified_closure_artifact": {
+    "closed_target_signature_sha256": "aadd4f5afb697accabb39ddfde918030725f69ca611e9ee3b280b10a4df71965",
+    "closure_sha256": "7086bd0c0aca2292672d4007c48276f5a85e0408e7be32e95d185182d7ab937b",
+    "closure_source": "import ZtareProofs.AxiomPackQCTransversalObstruction\n\n/-!\n# Binary graph-codeword codec for the cyclic-transversal obstruction\n\nThis file connects the support theorem to an explicit binary row-span word.\nThe rows are pairs of length-`25` supports and binary addition is symmetric\ndifference.  Rank is deliberately outside this theorem: the obstruction only\nneeds one nonzero word of weight at most `10`.\n-/\n\nnamespace AxiomPackQCTransversalObstruction\n\nopen scoped symmDiff\n\n/-- A binary length-`50` word, split into its two disjoint length-`25` blocks. -/\nstructure BinaryTwoBlockWord where\n  leftSupport : Finset Position\n  rightSupport : Finset Position\nderiving DecidableEq\n\nnamespace BinaryTwoBlockWord\n\n/-- Binary addition, represented by symmetric difference in each block. -/\ndef xor (u v : BinaryTwoBlockWord) : BinaryTwoBlockWord where\n  leftSupport := u.leftSupport \u2206 v.leftSupport\n  rightSupport := u.rightSupport \u2206 v.rightSupport\n\n/-- The all-zero two-block word. -/\ndef zero : BinaryTwoBlockWord where\n  leftSupport := \u2205\n  rightSupport := \u2205\n\n/-- Hamming weight; the two blocks occupy disjoint coordinate ranges. -/\ndef weight (w : BinaryTwoBlockWord) : \u2115 :=\n  w.leftSupport.card + w.rightSupport.card\n\n@[simp]\ntheorem xor_zero (w : BinaryTwoBlockWord) : xor w zero = w := by\n  cases w\n  simp [xor, zero]\n\nend BinaryTwoBlockWord\n\n/-- The second seed support, expressed as the complement of a residue\ntransversal.  For the oracle phase `\u03c6`, this transversal phase is `\u03c6 + 4`. -/\ndef graphSecondSeedSupport (\u03c6 : Phase) : Finset Position :=\n  Finset.univ \\ transversal \u03c6\n\n/-- Generator row `i` of the binary two-block graph presentation. -/\ndef graphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord where\n  leftSupport := translate (i.val : Position) generatorSupport\n  rightSupport := translate (i.val : Position) (graphSecondSeedSupport \u03c6)\n\n/-- XOR a finite list of generator rows.  Lists give a small, literal\nrow-span presentation; repeated indices cancel by binary addition. -/\ndef xorGraphRows (\u03c6 : Phase) : List (Fin 20) \u2192 BinaryTwoBlockWord\n  | [] => BinaryTwoBlockWord.zero\n  | i :: is => BinaryTwoBlockWord.xor (graphRow \u03c6 i) (xorGraphRows \u03c6 is)\n\n/-- Membership in the binary span of the 20 displayed rows. -/\ndef InGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  \u2203 is : List (Fin 20), xorGraphRows \u03c6 is = w\n\ntheorem translate_zero (S : Finset Position) : translate 0 S = S := by\n  ext x\n  simp [translate]\n\ntheorem translate_symmDiff (d : Position) (S T : Finset Position) :\n    translate d (S \u2206 T) = translate d S \u2206 translate d T := by\n  exact Finset.image_symmDiff S T (Equiv.addRight d).injective\n\ntheorem translate_sdiff (d : Position) (S T : Finset Position) :\n    translate d (S \\ T) = translate d S \\ translate d T := by\n  exact Finset.image_sdiff S T (Equiv.addRight d).injective\n\ntheorem translate_univ (d : Position) :\n    translate d (Finset.univ : Finset Position) = Finset.univ := by\n  exact Finset.image_univ_equiv (Equiv.addRight d)\n\ntheorem translate_translate (d e : Position) (S : Finset Position) :\n    translate d (translate e S) = translate (e + d) S := by\n  ext x\n  simp only [translate, Finset.mem_image]\n  constructor\n  \u00b7 rintro \u27e8y, \u27e8z, hz, rfl\u27e9, rfl\u27e9\n    exact \u27e8z, hz, by simp [add_assoc]\u27e9\n  \u00b7 rintro \u27e8z, hz, rfl\u27e9\n    exact \u27e8z + e, \u27e8z, hz, rfl\u27e9, by simp [add_assoc]\u27e9\n\n/-- Translating a complemented transversal and adding it to itself cancels\nthe two all-one supports. -/\ntheorem graphSecondSeed_binomial_support (\u03c6 : Phase) (d : Position) :\n    graphSecondSeedSupport \u03c6 \u2206 translate d (graphSecondSeedSupport \u03c6) =\n      transversal \u03c6 \u2206 translate d (transversal \u03c6) := by\n  rw [graphSecondSeedSupport, translate_sdiff, translate_univ]\n  change (transversal \u03c6)\u1d9c \u2206 (translate d (transversal \u03c6))\u1d9c =\n    transversal \u03c6 \u2206 translate d (transversal \u03c6)\n  exact compl_symmDiff_compl (a := transversal \u03c6) (b := translate d (transversal \u03c6))\n\n/-- Reversing a cyclic binomial shift preserves its support cardinality. -/\ntheorem symmDiff_translate_neg_card_eq (S : Finset Position) (d : Position) :\n    (S \u2206 translate (-d) S).card = (S \u2206 translate d S).card := by\n  calc\n    (S \u2206 translate (-d) S).card =\n        (translate d (S \u2206 translate (-d) S)).card :=\n      (translate_card d (S \u2206 translate (-d) S)).symm\n    _ = (translate d S \u2206 S).card := by\n      rw [translate_symmDiff, translate_translate]\n      simp [translate_zero]\n    _ = (S \u2206 translate d S).card := by rw [symmDiff_comm]\n\n/-- A two-row word is visibly in the displayed binary row span. -/\ntheorem xor_two_graphRows_mem (\u03c6 : Phase) (i j : Fin 20) :\n    InGraphRowSpan \u03c6 (BinaryTwoBlockWord.xor (graphRow \u03c6 i) (graphRow \u03c6 j)) := by\n  refine \u27e8[i, j], ?_\u27e9\n  simp [xorGraphRows]\n\n/-- Literal binary-codeword form of the cyclic-transversal obstruction.\n\nFor every transversal phase there is an admissible nonzero row index\n`1 \u2264 s < 20` such that the XOR of rows `0` and `s` is a graph-codeword of\nweight at most `10`.  The sign branch is the monomial normalization that\nturns a possible shift of degree at least `20` into its negative shift. -/\ntheorem exists_two_row_graph_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  have hdne : d \u2260 0 := by\n    intro hzero\n    subst d\n    norm_num [reduceModFive] at hd\n    exact (by decide : (0 : ZMod 5) \u2260 1) hd\n  by_cases hsmall : d.val < 20\n  \u00b7 let s : Fin 20 := \u27e8d.val, hsmall\u27e9\n    have hspos : (s.val : Position) = d := by\n      exact ZMod.natCast_zmod_val d\n    let w := BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s)\n    refine \u27e8s, w, ?_, xor_two_graphRows_mem \u03c6 0 s, rfl, ?_, ?_\u27e9\n    \u00b7 intro hs0\n      have hsval : s.val = 0 := congrArg Fin.val hs0\n      have hdval : d.val = 0 := by simpa [s] using hsval\n      exact hdne ((ZMod.val_eq_zero d).mp hdval)\n    \u00b7 simp only [w, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change (translate 0 generatorSupport \u2206 translate d generatorSupport).card = 4\n      rw [translate_zero]\n      change (binomialGeneratorSupport d).card = 4\n      exact binomialGeneratorSupport_card hd\n    \u00b7 simp only [w, BinaryTwoBlockWord.weight, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change\n        (translate 0 generatorSupport \u2206 translate d generatorSupport).card +\n            (translate 0 (graphSecondSeedSupport \u03c6) \u2206\n              translate d (graphSecondSeedSupport \u03c6)).card \u2264 10\n      rw [translate_zero generatorSupport, translate_zero (graphSecondSeedSupport \u03c6)]\n      rw [graphSecondSeed_binomial_support]\n      change (binomialGeneratorSupport d).card +\n          (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10\n      rw [binomialGeneratorSupport_card hd]\n      omega\n  \u00b7 have hnegsmall : (-d).val < 20 := by\n      rw [ZMod.neg_val]\n      simp only [if_neg hdne]\n      have hdlt : d.val < 25 := d.val_lt\n      omega\n    let s : Fin 20 := \u27e8(-d).val, hnegsmall\u27e9\n    have hspos : (s.val : Position) = -d := by\n      exact ZMod.natCast_zmod_val (-d)\n    let w := BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s)\n    refine \u27e8s, w, ?_, xor_two_graphRows_mem \u03c6 0 s, rfl, ?_, ?_\u27e9\n    \u00b7 intro hs0\n      have hsval : s.val = 0 := congrArg Fin.val hs0\n      have hnegval : (-d).val = 0 := by simpa [s] using hsval\n      have hnegzero : -d = 0 := (ZMod.val_eq_zero (-d)).mp hnegval\n      exact hdne (neg_eq_zero.mp hnegzero)\n    \u00b7 simp only [w, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change (translate 0 generatorSupport \u2206 translate (-d) generatorSupport).card = 4\n      rw [translate_zero]\n      rw [symmDiff_translate_neg_card_eq]\n      change (binomialGeneratorSupport d).card = 4\n      exact binomialGeneratorSupport_card hd\n    \u00b7 simp only [w, BinaryTwoBlockWord.weight, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change\n        (translate 0 generatorSupport \u2206 translate (-d) generatorSupport).card +\n            (translate 0 (graphSecondSeedSupport \u03c6) \u2206\n              translate (-d) (graphSecondSeedSupport \u03c6)).card \u2264 10\n      rw [translate_zero generatorSupport, translate_zero (graphSecondSeedSupport \u03c6)]\n      rw [symmDiff_translate_neg_card_eq generatorSupport]\n      rw [symmDiff_translate_neg_card_eq (graphSecondSeedSupport \u03c6)]\n      rw [graphSecondSeed_binomial_support]\n      change (binomialGeneratorSupport d).card +\n          (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10\n      rw [binomialGeneratorSupport_card hd]\n      omega\n\n/-- Add a constant quotient-height offset to every residue phase. -/\ndef phaseOffset (\u03c6 : Phase) (k : ZMod 5) : Phase :=\n  fun r \u21a6 \u03c6 r + k\n\n/-- Missing-transversal phase for the oracle multiplier whose two selected\nheights in residue `r` are `\u03c6 r` and `\u03c6 r + 2`. -/\ndef selectedQCMissingPhase (\u03c6 : Phase) : Phase :=\n  phaseOffset \u03c6 4\n\n/-- Multiplication by `5` embeds quotient heights into `ZMod 25`. -/\ntheorem liftHeight_injective : Function.Injective liftHeight := by\n  intro q\u2081 q\u2082 h\n  have hv := congrArg ZMod.val h\n  rw [liftHeight_eq_five_mul_val, liftHeight_eq_five_mul_val] at hv\n  have hval\u2081 : (5 * (q\u2081.val : Position)).val = 5 * q\u2081.val := by\n    have hq := q\u2081.val_lt\n    have hq25 : q\u2081.val < 25 := by omega\n    have hprod : 5 * q\u2081.val < 25 := by omega\n    have hfive : (5 : Position).val = 5 :=\n      ZMod.val_natCast_of_lt (by norm_num)\n    rw [ZMod.val_mul, ZMod.val_natCast_of_lt hq25, hfive,\n      Nat.mod_eq_of_lt hprod]\n  have hval\u2082 : (5 * (q\u2082.val : Position)).val = 5 * q\u2082.val := by\n    have hq := q\u2082.val_lt\n    have hq25 : q\u2082.val < 25 := by omega\n    have hprod : 5 * q\u2082.val < 25 := by omega\n    have hfive : (5 : Position).val = 5 :=\n      ZMod.val_natCast_of_lt (by norm_num)\n    rw [ZMod.val_mul, ZMod.val_natCast_of_lt hq25, hfive,\n      Nat.mod_eq_of_lt hprod]\n  rw [hval\u2081, hval\u2082] at hv\n  apply ZMod.val_injective\n  omega\n\ntheorem transversalPoint_phaseOffset (\u03c6 : Phase) (k : ZMod 5) (r : Residue) :\n    transversalPoint (phaseOffset \u03c6 k) r =\n      transversalPoint \u03c6 r + liftHeight k := by\n  simp only [transversalPoint, phaseOffset]\n  change (r.val : Position) + liftHeightHom (\u03c6 r + k) =\n    (r.val : Position) + liftHeightHom (\u03c6 r) + liftHeightHom k\n  rw [map_add]\n  abel\n\n/-- A quotient-height phase offset is the corresponding translation of the\ntransversal inside `ZMod 25`. -/\ntheorem translate_transversal_liftHeight (\u03c6 : Phase) (k : ZMod 5) :\n    translate (liftHeight k) (transversal \u03c6) = transversal (phaseOffset \u03c6 k) := by\n  rw [translate, transversal, transversal, Finset.image_image]\n  apply Finset.image_congr\n  intro r hr\n  simp only [Function.comp_apply]\n  exact (transversalPoint_phaseOffset \u03c6 k r).symm\n\ntheorem residue_eq_of_transversalPoint_eq\n    (\u03c6 \u03c8 : Phase) {r s : Residue}\n    (h : transversalPoint \u03c6 r = transversalPoint \u03c8 s) : r = s := by\n  have hreduce := congrArg reduceModFive h\n  rw [reduce_transversalPoint, reduce_transversalPoint] at hreduce\n  apply Fin.ext\n  have hval := congrArg ZMod.val hreduce\n  simpa [ZMod.val_natCast, Nat.mod_eq_of_lt r.isLt, Nat.mod_eq_of_lt s.isLt] using hval\n\n/-- Distinct height offsets give disjoint residue transversals. -/\ntheorem phaseOffset_transversal_disjoint (\u03c6 : Phase) {k l : ZMod 5}\n    (hkl : k \u2260 l) :\n    Disjoint (transversal (phaseOffset \u03c6 k)) (transversal (phaseOffset \u03c6 l)) := by\n  rw [Finset.disjoint_left]\n  intro x hxk hxl\n  obtain \u27e8r, -, hrx\u27e9 := Finset.mem_image.mp hxk\n  obtain \u27e8s, -, hsx\u27e9 := Finset.mem_image.mp hxl\n  have hrs : r = s := residue_eq_of_transversalPoint_eq\n    (phaseOffset \u03c6 k) (phaseOffset \u03c6 l) (hrx.trans hsx.symm)\n  subst s\n  have hpoint :\n      transversalPoint (phaseOffset \u03c6 k) r =\n        transversalPoint (phaseOffset \u03c6 l) r := hrx.trans hsx.symm\n  simp only [transversalPoint, phaseOffset] at hpoint\n  have hlift : liftHeight (\u03c6 r + k) = liftHeight (\u03c6 r + l) :=\n    add_left_cancel hpoint\n  have hoffset : \u03c6 r + k = \u03c6 r + l := liftHeight_injective hlift\n  exact hkl (add_left_cancel hoffset)\n\ntheorem translate_union (d : Position) (S T : Finset Position) :\n    translate d (S \u222a T) = translate d S \u222a translate d T := by\n  exact Finset.image_union S T\n\n/-- Translating by `5` advances every phase height by one. -/\ntheorem translate_five_phaseOffset_transversal (\u03c6 : Phase) (k : ZMod 5) :\n    translate 5 (transversal (phaseOffset \u03c6 k)) =\n      transversal (phaseOffset \u03c6 (k + 1)) := by\n  calc\n    translate 5 (transversal (phaseOffset \u03c6 k)) =\n        translate (liftHeight 1) (transversal (phaseOffset \u03c6 k)) := by\n      rw [liftHeight_one]\n    _ = transversal (phaseOffset (phaseOffset \u03c6 k) 1) :=\n      translate_transversal_liftHeight (phaseOffset \u03c6 k) 1\n    _ = transversal (phaseOffset \u03c6 (k + 1)) := by\n      congr 1\n      funext r\n      simp only [phaseOffset]\n      abel\n\n/-- Explicit ten-point support used by the oracle's phase mask. -/\ndef selectedQCPhaseMaskSupport (\u03c6 : Phase) : Finset Position :=\n  transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)\n\ntheorem selectedQCPhaseMaskSupport_card (\u03c6 : Phase) :\n    (selectedQCPhaseMaskSupport \u03c6).card = 10 := by\n  have hdisjoint :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 2)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  rw [selectedQCPhaseMaskSupport, Finset.card_union_of_disjoint hdisjoint,\n    transversal_card, transversal_card]\n\n/-- Binary cyclic support product by `generatorSupport = {0,5}`. -/\ndef productByGeneratorSupport (S : Finset Position) : Finset Position :=\n  S \u2206 translate 5 S\n\n/-- Four phase-offset transversals fill exactly the complement of the fifth. -/\ntheorem four_phaseOffset_transversals_eq_complement (\u03c6 : Phase) :\n    ((transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)) \u222a\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3))) =\n      Finset.univ \\ transversal (phaseOffset \u03c6 4) := by\n  let M0 := transversal (phaseOffset \u03c6 0)\n  let M1 := transversal (phaseOffset \u03c6 1)\n  let M2 := transversal (phaseOffset \u03c6 2)\n  let M3 := transversal (phaseOffset \u03c6 3)\n  let M4 := transversal (phaseOffset \u03c6 4)\n  have h02 : Disjoint M0 M2 := by\n    dsimp [M0, M2]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h13 : Disjoint M1 M3 := by\n    dsimp [M1, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h01 : Disjoint M0 M1 := by\n    dsimp [M0, M1]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h03 : Disjoint M0 M3 := by\n    dsimp [M0, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h21 : Disjoint M2 M1 := by\n    dsimp [M2, M1]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h23 : Disjoint M2 M3 := by\n    dsimp [M2, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h04 : Disjoint M0 M4 := by\n    dsimp [M0, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h24 : Disjoint M2 M4 := by\n    dsimp [M2, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h14 : Disjoint M1 M4 := by\n    dsimp [M1, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h34 : Disjoint M3 M4 := by\n    dsimp [M3, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have hAB : Disjoint (M0 \u222a M2) (M1 \u222a M3) := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_right,\n      Finset.disjoint_union_right]\n    exact \u27e8\u27e8h01, h03\u27e9, h21, h23\u27e9\n  have hU4 : Disjoint ((M0 \u222a M2) \u222a (M1 \u222a M3)) M4 := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_left,\n      Finset.disjoint_union_left]\n    exact \u27e8\u27e8h04, h24\u27e9, h14, h34\u27e9\n  have hAcard : (M0 \u222a M2).card = 10 := by\n    rw [Finset.card_union_of_disjoint h02]\n    dsimp [M0, M2]\n    rw [transversal_card, transversal_card]\n  have hBcard : (M1 \u222a M3).card = 10 := by\n    rw [Finset.card_union_of_disjoint h13]\n    dsimp [M1, M3]\n    rw [transversal_card, transversal_card]\n  have hUcard : ((M0 \u222a M2) \u222a (M1 \u222a M3)).card = 20 := by\n    rw [Finset.card_union_of_disjoint hAB, hAcard, hBcard]\n  have hM4card : M4.card = 5 := by\n    dsimp [M4]\n    exact transversal_card (phaseOffset \u03c6 4)\n  have hallcard : (((M0 \u222a M2) \u222a (M1 \u222a M3)) \u222a M4).card = 25 := by\n    rw [Finset.card_union_of_disjoint hU4, hUcard, hM4card]\n  have hpartition : ((M0 \u222a M2) \u222a (M1 \u222a M3)) \u222a M4 = Finset.univ := by\n    apply Finset.eq_univ_of_card\n    simpa using hallcard\n  have hcomplement : ((M0 \u222a M2) \u222a (M1 \u222a M3)) = Finset.univ \\ M4 := by\n    ext x\n    have hcover : x \u2208 (M0 \u222a M2) \u222a (M1 \u222a M3) \u2228 x \u2208 M4 := by\n      apply Finset.mem_union.mp\n      rw [hpartition]\n      exact Finset.mem_univ x\n    constructor\n    \u00b7 intro hx\n      refine Finset.mem_sdiff.mpr \u27e8Finset.mem_univ x, ?_\u27e9\n      exact Finset.disjoint_left.mp hU4 hx\n    \u00b7 intro hx\n      have hxnot : x \u2209 M4 := (Finset.mem_sdiff.mp hx).2\n      rcases hcover with hU | h4\n      \u00b7 exact hU\n      \u00b7 exact False.elim (hxnot h4)\n  simpa [M0, M1, M2, M3, M4] using hcomplement\n\n/-- The oracle's literal ten-point phase mask, multiplied over `F\u2082` by the\nsupport `{0,5}`, is exactly the complement-transversal second seed used by\nthe graph rows. -/\ntheorem product_selectedQCPhaseMaskSupport_eq_secondSeed (\u03c6 : Phase) :\n    productByGeneratorSupport (selectedQCPhaseMaskSupport \u03c6) =\n      graphSecondSeedSupport (selectedQCMissingPhase \u03c6) := by\n  rw [productByGeneratorSupport, selectedQCPhaseMaskSupport, translate_union]\n  rw [translate_five_phaseOffset_transversal \u03c6 0,\n    translate_five_phaseOffset_transversal \u03c6 2]\n  change\n    ((transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)) \u2206\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3))) =\n      Finset.univ \\ transversal (phaseOffset \u03c6 4)\n  have h01 :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 1)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h03 :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 3)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h21 :\n      Disjoint (transversal (phaseOffset \u03c6 2)) (transversal (phaseOffset \u03c6 1)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h23 :\n      Disjoint (transversal (phaseOffset \u03c6 2)) (transversal (phaseOffset \u03c6 3)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have hdisjoint :\n      Disjoint\n        (transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2))\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3)) := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_right,\n      Finset.disjoint_union_right]\n    exact \u27e8\u27e8h01, h03\u27e9, h21, h23\u27e9\n  rw [Finset.symmDiff_eq_union hdisjoint]\n  exact four_phaseOffset_transversals_eq_complement \u03c6\n\n/-- The selected QC family's generator row, indexed directly by the oracle\nphase rather than by the missing-transversal phase. -/\ndef selectedQCGraphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord :=\n  graphRow (selectedQCMissingPhase \u03c6) i\n\n/-- Binary row-span of the selected QC graph presentation. -/\ndef InSelectedQCGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  InGraphRowSpan (selectedQCMissingPhase \u03c6) w\n\n/-- Direct oracle-phase form: every selected phase presentation contains a\nnonzero XOR of rows `0` and `s`, with `s < 20`, of weight at most `10`. -/\ntheorem exists_selectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor (selectedQCGraphRow \u03c6 0) (selectedQCGraphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  simpa [selectedQCGraphRow, InSelectedQCGraphRowSpan] using\n    exists_two_row_graph_codeword_weight_le_ten (selectedQCMissingPhase \u03c6)\n\n/-- Generator row built from the literal oracle mask and its binary support\nproduct by `{0,5}`. -/\ndef literalSelectedQCGraphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord where\n  leftSupport := translate (i.val : Position) generatorSupport\n  rightSupport := translate (i.val : Position)\n    (productByGeneratorSupport (selectedQCPhaseMaskSupport \u03c6))\n\ntheorem literalSelectedQCGraphRow_eq (\u03c6 : Phase) (i : Fin 20) :\n    literalSelectedQCGraphRow \u03c6 i = selectedQCGraphRow \u03c6 i := by\n  rw [literalSelectedQCGraphRow, selectedQCGraphRow, graphRow,\n    product_selectedQCPhaseMaskSupport_eq_secondSeed]\n\n/-- XOR a finite list of the literal oracle rows. -/\ndef xorLiteralSelectedQCGraphRows (\u03c6 : Phase) : List (Fin 20) \u2192 BinaryTwoBlockWord\n  | [] => BinaryTwoBlockWord.zero\n  | i :: is => BinaryTwoBlockWord.xor\n      (literalSelectedQCGraphRow \u03c6 i) (xorLiteralSelectedQCGraphRows \u03c6 is)\n\n/-- Membership in the binary span of the literal oracle rows. -/\ndef InLiteralSelectedQCGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  \u2203 is : List (Fin 20), xorLiteralSelectedQCGraphRows \u03c6 is = w\n\ntheorem xor_two_literalSelectedQCGraphRows_mem (\u03c6 : Phase) (i j : Fin 20) :\n    InLiteralSelectedQCGraphRowSpan \u03c6\n      (BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 i) (literalSelectedQCGraphRow \u03c6 j)) := by\n  refine \u27e8[i, j], ?_\u27e9\n  simp [xorLiteralSelectedQCGraphRows]\n\n/-- Terminal literal-oracle statement.  The right seed is computed as the\nbinary support product of the explicit ten-point phase mask by `{0,5}`. -/\ntheorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 0) (literalSelectedQCGraphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  obtain \u27e8s, w, hs, -, hw, hleft, hweight\u27e9 :=\n    exists_selectedQC_two_row_codeword_weight_le_ten \u03c6\n  have hwLiteral : w = BinaryTwoBlockWord.xor\n      (literalSelectedQCGraphRow \u03c6 0) (literalSelectedQCGraphRow \u03c6 s) := by\n    simpa only [literalSelectedQCGraphRow_eq] using hw\n  refine \u27e8s, w, hs, ?_, hwLiteral, hleft, hweight\u27e9\n  rw [hwLiteral]\n  exact xor_two_literalSelectedQCGraphRows_mem \u03c6 0 s\n\nend AxiomPackQCTransversalObstruction\n",
+    "posed_sha256": "9ae2a7694cffdb889ef2d5b8441c53890c03cc567b72f0b854413722498ff884",
+    "posed_source": "import ZtareProofs.AxiomPackQCTransversalObstruction\n\n/-!\n# Binary graph-codeword codec for the cyclic-transversal obstruction\n\nThis file connects the support theorem to an explicit binary row-span word.\nThe rows are pairs of length-`25` supports and binary addition is symmetric\ndifference.  Rank is deliberately outside this theorem: the obstruction only\nneeds one nonzero word of weight at most `10`.\n-/\n\nnamespace AxiomPackQCTransversalObstruction\n\nopen scoped symmDiff\n\n/-- A binary length-`50` word, split into its two disjoint length-`25` blocks. -/\nstructure BinaryTwoBlockWord where\n  leftSupport : Finset Position\n  rightSupport : Finset Position\nderiving DecidableEq\n\nnamespace BinaryTwoBlockWord\n\n/-- Binary addition, represented by symmetric difference in each block. -/\ndef xor (u v : BinaryTwoBlockWord) : BinaryTwoBlockWord where\n  leftSupport := u.leftSupport \u2206 v.leftSupport\n  rightSupport := u.rightSupport \u2206 v.rightSupport\n\n/-- The all-zero two-block word. -/\ndef zero : BinaryTwoBlockWord where\n  leftSupport := \u2205\n  rightSupport := \u2205\n\n/-- Hamming weight; the two blocks occupy disjoint coordinate ranges. -/\ndef weight (w : BinaryTwoBlockWord) : \u2115 :=\n  w.leftSupport.card + w.rightSupport.card\n\n@[simp]\ntheorem xor_zero (w : BinaryTwoBlockWord) : xor w zero = w := by\n  cases w\n  simp [xor, zero]\n\nend BinaryTwoBlockWord\n\n/-- The second seed support, expressed as the complement of a residue\ntransversal.  For the oracle phase `\u03c6`, this transversal phase is `\u03c6 + 4`. -/\ndef graphSecondSeedSupport (\u03c6 : Phase) : Finset Position :=\n  Finset.univ \\ transversal \u03c6\n\n/-- Generator row `i` of the binary two-block graph presentation. -/\ndef graphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord where\n  leftSupport := translate (i.val : Position) generatorSupport\n  rightSupport := translate (i.val : Position) (graphSecondSeedSupport \u03c6)\n\n/-- XOR a finite list of generator rows.  Lists give a small, literal\nrow-span presentation; repeated indices cancel by binary addition. -/\ndef xorGraphRows (\u03c6 : Phase) : List (Fin 20) \u2192 BinaryTwoBlockWord\n  | [] => BinaryTwoBlockWord.zero\n  | i :: is => BinaryTwoBlockWord.xor (graphRow \u03c6 i) (xorGraphRows \u03c6 is)\n\n/-- Membership in the binary span of the 20 displayed rows. -/\ndef InGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  \u2203 is : List (Fin 20), xorGraphRows \u03c6 is = w\n\ntheorem translate_zero (S : Finset Position) : translate 0 S = S := by\n  ext x\n  simp [translate]\n\ntheorem translate_symmDiff (d : Position) (S T : Finset Position) :\n    translate d (S \u2206 T) = translate d S \u2206 translate d T := by\n  exact Finset.image_symmDiff S T (Equiv.addRight d).injective\n\ntheorem translate_sdiff (d : Position) (S T : Finset Position) :\n    translate d (S \\ T) = translate d S \\ translate d T := by\n  exact Finset.image_sdiff S T (Equiv.addRight d).injective\n\ntheorem translate_univ (d : Position) :\n    translate d (Finset.univ : Finset Position) = Finset.univ := by\n  exact Finset.image_univ_equiv (Equiv.addRight d)\n\ntheorem translate_translate (d e : Position) (S : Finset Position) :\n    translate d (translate e S) = translate (e + d) S := by\n  ext x\n  simp only [translate, Finset.mem_image]\n  constructor\n  \u00b7 rintro \u27e8y, \u27e8z, hz, rfl\u27e9, rfl\u27e9\n    exact \u27e8z, hz, by simp [add_assoc]\u27e9\n  \u00b7 rintro \u27e8z, hz, rfl\u27e9\n    exact \u27e8z + e, \u27e8z, hz, rfl\u27e9, by simp [add_assoc]\u27e9\n\n/-- Translating a complemented transversal and adding it to itself cancels\nthe two all-one supports. -/\ntheorem graphSecondSeed_binomial_support (\u03c6 : Phase) (d : Position) :\n    graphSecondSeedSupport \u03c6 \u2206 translate d (graphSecondSeedSupport \u03c6) =\n      transversal \u03c6 \u2206 translate d (transversal \u03c6) := by\n  rw [graphSecondSeedSupport, translate_sdiff, translate_univ]\n  change (transversal \u03c6)\u1d9c \u2206 (translate d (transversal \u03c6))\u1d9c =\n    transversal \u03c6 \u2206 translate d (transversal \u03c6)\n  exact compl_symmDiff_compl (a := transversal \u03c6) (b := translate d (transversal \u03c6))\n\n/-- Reversing a cyclic binomial shift preserves its support cardinality. -/\ntheorem symmDiff_translate_neg_card_eq (S : Finset Position) (d : Position) :\n    (S \u2206 translate (-d) S).card = (S \u2206 translate d S).card := by\n  calc\n    (S \u2206 translate (-d) S).card =\n        (translate d (S \u2206 translate (-d) S)).card :=\n      (translate_card d (S \u2206 translate (-d) S)).symm\n    _ = (translate d S \u2206 S).card := by\n      rw [translate_symmDiff, translate_translate]\n      simp [translate_zero]\n    _ = (S \u2206 translate d S).card := by rw [symmDiff_comm]\n\n/-- A two-row word is visibly in the displayed binary row span. -/\ntheorem xor_two_graphRows_mem (\u03c6 : Phase) (i j : Fin 20) :\n    InGraphRowSpan \u03c6 (BinaryTwoBlockWord.xor (graphRow \u03c6 i) (graphRow \u03c6 j)) := by\n  refine \u27e8[i, j], ?_\u27e9\n  simp [xorGraphRows]\n\n/-- Literal binary-codeword form of the cyclic-transversal obstruction.\n\nFor every transversal phase there is an admissible nonzero row index\n`1 \u2264 s < 20` such that the XOR of rows `0` and `s` is a graph-codeword of\nweight at most `10`.  The sign branch is the monomial normalization that\nturns a possible shift of degree at least `20` into its negative shift. -/\ntheorem exists_two_row_graph_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  have hdne : d \u2260 0 := by\n    intro hzero\n    subst d\n    norm_num [reduceModFive] at hd\n    exact (by decide : (0 : ZMod 5) \u2260 1) hd\n  by_cases hsmall : d.val < 20\n  \u00b7 let s : Fin 20 := \u27e8d.val, hsmall\u27e9\n    have hspos : (s.val : Position) = d := by\n      exact ZMod.natCast_zmod_val d\n    let w := BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s)\n    refine \u27e8s, w, ?_, xor_two_graphRows_mem \u03c6 0 s, rfl, ?_, ?_\u27e9\n    \u00b7 intro hs0\n      have hsval : s.val = 0 := congrArg Fin.val hs0\n      have hdval : d.val = 0 := by simpa [s] using hsval\n      exact hdne ((ZMod.val_eq_zero d).mp hdval)\n    \u00b7 simp only [w, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change (translate 0 generatorSupport \u2206 translate d generatorSupport).card = 4\n      rw [translate_zero]\n      change (binomialGeneratorSupport d).card = 4\n      exact binomialGeneratorSupport_card hd\n    \u00b7 simp only [w, BinaryTwoBlockWord.weight, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change\n        (translate 0 generatorSupport \u2206 translate d generatorSupport).card +\n            (translate 0 (graphSecondSeedSupport \u03c6) \u2206\n              translate d (graphSecondSeedSupport \u03c6)).card \u2264 10\n      rw [translate_zero generatorSupport, translate_zero (graphSecondSeedSupport \u03c6)]\n      rw [graphSecondSeed_binomial_support]\n      change (binomialGeneratorSupport d).card +\n          (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10\n      rw [binomialGeneratorSupport_card hd]\n      omega\n  \u00b7 have hnegsmall : (-d).val < 20 := by\n      rw [ZMod.neg_val]\n      simp only [if_neg hdne]\n      have hdlt : d.val < 25 := d.val_lt\n      omega\n    let s : Fin 20 := \u27e8(-d).val, hnegsmall\u27e9\n    have hspos : (s.val : Position) = -d := by\n      exact ZMod.natCast_zmod_val (-d)\n    let w := BinaryTwoBlockWord.xor (graphRow \u03c6 0) (graphRow \u03c6 s)\n    refine \u27e8s, w, ?_, xor_two_graphRows_mem \u03c6 0 s, rfl, ?_, ?_\u27e9\n    \u00b7 intro hs0\n      have hsval : s.val = 0 := congrArg Fin.val hs0\n      have hnegval : (-d).val = 0 := by simpa [s] using hsval\n      have hnegzero : -d = 0 := (ZMod.val_eq_zero (-d)).mp hnegval\n      exact hdne (neg_eq_zero.mp hnegzero)\n    \u00b7 simp only [w, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change (translate 0 generatorSupport \u2206 translate (-d) generatorSupport).card = 4\n      rw [translate_zero]\n      rw [symmDiff_translate_neg_card_eq]\n      change (binomialGeneratorSupport d).card = 4\n      exact binomialGeneratorSupport_card hd\n    \u00b7 simp only [w, BinaryTwoBlockWord.weight, BinaryTwoBlockWord.xor, graphRow]\n      rw [hspos]\n      change\n        (translate 0 generatorSupport \u2206 translate (-d) generatorSupport).card +\n            (translate 0 (graphSecondSeedSupport \u03c6) \u2206\n              translate (-d) (graphSecondSeedSupport \u03c6)).card \u2264 10\n      rw [translate_zero generatorSupport, translate_zero (graphSecondSeedSupport \u03c6)]\n      rw [symmDiff_translate_neg_card_eq generatorSupport]\n      rw [symmDiff_translate_neg_card_eq (graphSecondSeedSupport \u03c6)]\n      rw [graphSecondSeed_binomial_support]\n      change (binomialGeneratorSupport d).card +\n          (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10\n      rw [binomialGeneratorSupport_card hd]\n      omega\n\n/-- Add a constant quotient-height offset to every residue phase. -/\ndef phaseOffset (\u03c6 : Phase) (k : ZMod 5) : Phase :=\n  fun r \u21a6 \u03c6 r + k\n\n/-- Missing-transversal phase for the oracle multiplier whose two selected\nheights in residue `r` are `\u03c6 r` and `\u03c6 r + 2`. -/\ndef selectedQCMissingPhase (\u03c6 : Phase) : Phase :=\n  phaseOffset \u03c6 4\n\n/-- Multiplication by `5` embeds quotient heights into `ZMod 25`. -/\ntheorem liftHeight_injective : Function.Injective liftHeight := by\n  intro q\u2081 q\u2082 h\n  have hv := congrArg ZMod.val h\n  rw [liftHeight_eq_five_mul_val, liftHeight_eq_five_mul_val] at hv\n  have hval\u2081 : (5 * (q\u2081.val : Position)).val = 5 * q\u2081.val := by\n    have hq := q\u2081.val_lt\n    have hq25 : q\u2081.val < 25 := by omega\n    have hprod : 5 * q\u2081.val < 25 := by omega\n    have hfive : (5 : Position).val = 5 :=\n      ZMod.val_natCast_of_lt (by norm_num)\n    rw [ZMod.val_mul, ZMod.val_natCast_of_lt hq25, hfive,\n      Nat.mod_eq_of_lt hprod]\n  have hval\u2082 : (5 * (q\u2082.val : Position)).val = 5 * q\u2082.val := by\n    have hq := q\u2082.val_lt\n    have hq25 : q\u2082.val < 25 := by omega\n    have hprod : 5 * q\u2082.val < 25 := by omega\n    have hfive : (5 : Position).val = 5 :=\n      ZMod.val_natCast_of_lt (by norm_num)\n    rw [ZMod.val_mul, ZMod.val_natCast_of_lt hq25, hfive,\n      Nat.mod_eq_of_lt hprod]\n  rw [hval\u2081, hval\u2082] at hv\n  apply ZMod.val_injective\n  omega\n\ntheorem transversalPoint_phaseOffset (\u03c6 : Phase) (k : ZMod 5) (r : Residue) :\n    transversalPoint (phaseOffset \u03c6 k) r =\n      transversalPoint \u03c6 r + liftHeight k := by\n  simp only [transversalPoint, phaseOffset]\n  change (r.val : Position) + liftHeightHom (\u03c6 r + k) =\n    (r.val : Position) + liftHeightHom (\u03c6 r) + liftHeightHom k\n  rw [map_add]\n  abel\n\n/-- A quotient-height phase offset is the corresponding translation of the\ntransversal inside `ZMod 25`. -/\ntheorem translate_transversal_liftHeight (\u03c6 : Phase) (k : ZMod 5) :\n    translate (liftHeight k) (transversal \u03c6) = transversal (phaseOffset \u03c6 k) := by\n  rw [translate, transversal, transversal, Finset.image_image]\n  apply Finset.image_congr\n  intro r hr\n  simp only [Function.comp_apply]\n  exact (transversalPoint_phaseOffset \u03c6 k r).symm\n\ntheorem residue_eq_of_transversalPoint_eq\n    (\u03c6 \u03c8 : Phase) {r s : Residue}\n    (h : transversalPoint \u03c6 r = transversalPoint \u03c8 s) : r = s := by\n  have hreduce := congrArg reduceModFive h\n  rw [reduce_transversalPoint, reduce_transversalPoint] at hreduce\n  apply Fin.ext\n  have hval := congrArg ZMod.val hreduce\n  simpa [ZMod.val_natCast, Nat.mod_eq_of_lt r.isLt, Nat.mod_eq_of_lt s.isLt] using hval\n\n/-- Distinct height offsets give disjoint residue transversals. -/\ntheorem phaseOffset_transversal_disjoint (\u03c6 : Phase) {k l : ZMod 5}\n    (hkl : k \u2260 l) :\n    Disjoint (transversal (phaseOffset \u03c6 k)) (transversal (phaseOffset \u03c6 l)) := by\n  rw [Finset.disjoint_left]\n  intro x hxk hxl\n  obtain \u27e8r, -, hrx\u27e9 := Finset.mem_image.mp hxk\n  obtain \u27e8s, -, hsx\u27e9 := Finset.mem_image.mp hxl\n  have hrs : r = s := residue_eq_of_transversalPoint_eq\n    (phaseOffset \u03c6 k) (phaseOffset \u03c6 l) (hrx.trans hsx.symm)\n  subst s\n  have hpoint :\n      transversalPoint (phaseOffset \u03c6 k) r =\n        transversalPoint (phaseOffset \u03c6 l) r := hrx.trans hsx.symm\n  simp only [transversalPoint, phaseOffset] at hpoint\n  have hlift : liftHeight (\u03c6 r + k) = liftHeight (\u03c6 r + l) :=\n    add_left_cancel hpoint\n  have hoffset : \u03c6 r + k = \u03c6 r + l := liftHeight_injective hlift\n  exact hkl (add_left_cancel hoffset)\n\ntheorem translate_union (d : Position) (S T : Finset Position) :\n    translate d (S \u222a T) = translate d S \u222a translate d T := by\n  exact Finset.image_union S T\n\n/-- Translating by `5` advances every phase height by one. -/\ntheorem translate_five_phaseOffset_transversal (\u03c6 : Phase) (k : ZMod 5) :\n    translate 5 (transversal (phaseOffset \u03c6 k)) =\n      transversal (phaseOffset \u03c6 (k + 1)) := by\n  calc\n    translate 5 (transversal (phaseOffset \u03c6 k)) =\n        translate (liftHeight 1) (transversal (phaseOffset \u03c6 k)) := by\n      rw [liftHeight_one]\n    _ = transversal (phaseOffset (phaseOffset \u03c6 k) 1) :=\n      translate_transversal_liftHeight (phaseOffset \u03c6 k) 1\n    _ = transversal (phaseOffset \u03c6 (k + 1)) := by\n      congr 1\n      funext r\n      simp only [phaseOffset]\n      abel\n\n/-- Explicit ten-point support used by the oracle's phase mask. -/\ndef selectedQCPhaseMaskSupport (\u03c6 : Phase) : Finset Position :=\n  transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)\n\ntheorem selectedQCPhaseMaskSupport_card (\u03c6 : Phase) :\n    (selectedQCPhaseMaskSupport \u03c6).card = 10 := by\n  have hdisjoint :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 2)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  rw [selectedQCPhaseMaskSupport, Finset.card_union_of_disjoint hdisjoint,\n    transversal_card, transversal_card]\n\n/-- Binary cyclic support product by `generatorSupport = {0,5}`. -/\ndef productByGeneratorSupport (S : Finset Position) : Finset Position :=\n  S \u2206 translate 5 S\n\n/-- Four phase-offset transversals fill exactly the complement of the fifth. -/\ntheorem four_phaseOffset_transversals_eq_complement (\u03c6 : Phase) :\n    ((transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)) \u222a\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3))) =\n      Finset.univ \\ transversal (phaseOffset \u03c6 4) := by\n  let M0 := transversal (phaseOffset \u03c6 0)\n  let M1 := transversal (phaseOffset \u03c6 1)\n  let M2 := transversal (phaseOffset \u03c6 2)\n  let M3 := transversal (phaseOffset \u03c6 3)\n  let M4 := transversal (phaseOffset \u03c6 4)\n  have h02 : Disjoint M0 M2 := by\n    dsimp [M0, M2]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h13 : Disjoint M1 M3 := by\n    dsimp [M1, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h01 : Disjoint M0 M1 := by\n    dsimp [M0, M1]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h03 : Disjoint M0 M3 := by\n    dsimp [M0, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h21 : Disjoint M2 M1 := by\n    dsimp [M2, M1]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h23 : Disjoint M2 M3 := by\n    dsimp [M2, M3]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h04 : Disjoint M0 M4 := by\n    dsimp [M0, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h24 : Disjoint M2 M4 := by\n    dsimp [M2, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h14 : Disjoint M1 M4 := by\n    dsimp [M1, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h34 : Disjoint M3 M4 := by\n    dsimp [M3, M4]\n    exact phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have hAB : Disjoint (M0 \u222a M2) (M1 \u222a M3) := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_right,\n      Finset.disjoint_union_right]\n    exact \u27e8\u27e8h01, h03\u27e9, h21, h23\u27e9\n  have hU4 : Disjoint ((M0 \u222a M2) \u222a (M1 \u222a M3)) M4 := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_left,\n      Finset.disjoint_union_left]\n    exact \u27e8\u27e8h04, h24\u27e9, h14, h34\u27e9\n  have hAcard : (M0 \u222a M2).card = 10 := by\n    rw [Finset.card_union_of_disjoint h02]\n    dsimp [M0, M2]\n    rw [transversal_card, transversal_card]\n  have hBcard : (M1 \u222a M3).card = 10 := by\n    rw [Finset.card_union_of_disjoint h13]\n    dsimp [M1, M3]\n    rw [transversal_card, transversal_card]\n  have hUcard : ((M0 \u222a M2) \u222a (M1 \u222a M3)).card = 20 := by\n    rw [Finset.card_union_of_disjoint hAB, hAcard, hBcard]\n  have hM4card : M4.card = 5 := by\n    dsimp [M4]\n    exact transversal_card (phaseOffset \u03c6 4)\n  have hallcard : (((M0 \u222a M2) \u222a (M1 \u222a M3)) \u222a M4).card = 25 := by\n    rw [Finset.card_union_of_disjoint hU4, hUcard, hM4card]\n  have hpartition : ((M0 \u222a M2) \u222a (M1 \u222a M3)) \u222a M4 = Finset.univ := by\n    apply Finset.eq_univ_of_card\n    simpa using hallcard\n  have hcomplement : ((M0 \u222a M2) \u222a (M1 \u222a M3)) = Finset.univ \\ M4 := by\n    ext x\n    have hcover : x \u2208 (M0 \u222a M2) \u222a (M1 \u222a M3) \u2228 x \u2208 M4 := by\n      apply Finset.mem_union.mp\n      rw [hpartition]\n      exact Finset.mem_univ x\n    constructor\n    \u00b7 intro hx\n      refine Finset.mem_sdiff.mpr \u27e8Finset.mem_univ x, ?_\u27e9\n      exact Finset.disjoint_left.mp hU4 hx\n    \u00b7 intro hx\n      have hxnot : x \u2209 M4 := (Finset.mem_sdiff.mp hx).2\n      rcases hcover with hU | h4\n      \u00b7 exact hU\n      \u00b7 exact False.elim (hxnot h4)\n  simpa [M0, M1, M2, M3, M4] using hcomplement\n\n/-- The oracle's literal ten-point phase mask, multiplied over `F\u2082` by the\nsupport `{0,5}`, is exactly the complement-transversal second seed used by\nthe graph rows. -/\ntheorem product_selectedQCPhaseMaskSupport_eq_secondSeed (\u03c6 : Phase) :\n    productByGeneratorSupport (selectedQCPhaseMaskSupport \u03c6) =\n      graphSecondSeedSupport (selectedQCMissingPhase \u03c6) := by\n  rw [productByGeneratorSupport, selectedQCPhaseMaskSupport, translate_union]\n  rw [translate_five_phaseOffset_transversal \u03c6 0,\n    translate_five_phaseOffset_transversal \u03c6 2]\n  change\n    ((transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2)) \u2206\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3))) =\n      Finset.univ \\ transversal (phaseOffset \u03c6 4)\n  have h01 :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 1)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h03 :\n      Disjoint (transversal (phaseOffset \u03c6 0)) (transversal (phaseOffset \u03c6 3)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h21 :\n      Disjoint (transversal (phaseOffset \u03c6 2)) (transversal (phaseOffset \u03c6 1)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have h23 :\n      Disjoint (transversal (phaseOffset \u03c6 2)) (transversal (phaseOffset \u03c6 3)) :=\n    phaseOffset_transversal_disjoint \u03c6 (by decide)\n  have hdisjoint :\n      Disjoint\n        (transversal (phaseOffset \u03c6 0) \u222a transversal (phaseOffset \u03c6 2))\n        (transversal (phaseOffset \u03c6 1) \u222a transversal (phaseOffset \u03c6 3)) := by\n    rw [Finset.disjoint_union_left, Finset.disjoint_union_right,\n      Finset.disjoint_union_right]\n    exact \u27e8\u27e8h01, h03\u27e9, h21, h23\u27e9\n  rw [Finset.symmDiff_eq_union hdisjoint]\n  exact four_phaseOffset_transversals_eq_complement \u03c6\n\n/-- The selected QC family's generator row, indexed directly by the oracle\nphase rather than by the missing-transversal phase. -/\ndef selectedQCGraphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord :=\n  graphRow (selectedQCMissingPhase \u03c6) i\n\n/-- Binary row-span of the selected QC graph presentation. -/\ndef InSelectedQCGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  InGraphRowSpan (selectedQCMissingPhase \u03c6) w\n\n/-- Direct oracle-phase form: every selected phase presentation contains a\nnonzero XOR of rows `0` and `s`, with `s < 20`, of weight at most `10`. -/\ntheorem exists_selectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor (selectedQCGraphRow \u03c6 0) (selectedQCGraphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  simpa [selectedQCGraphRow, InSelectedQCGraphRowSpan] using\n    exists_two_row_graph_codeword_weight_le_ten (selectedQCMissingPhase \u03c6)\n\n/-- Generator row built from the literal oracle mask and its binary support\nproduct by `{0,5}`. -/\ndef literalSelectedQCGraphRow (\u03c6 : Phase) (i : Fin 20) : BinaryTwoBlockWord where\n  leftSupport := translate (i.val : Position) generatorSupport\n  rightSupport := translate (i.val : Position)\n    (productByGeneratorSupport (selectedQCPhaseMaskSupport \u03c6))\n\ntheorem literalSelectedQCGraphRow_eq (\u03c6 : Phase) (i : Fin 20) :\n    literalSelectedQCGraphRow \u03c6 i = selectedQCGraphRow \u03c6 i := by\n  rw [literalSelectedQCGraphRow, selectedQCGraphRow, graphRow,\n    product_selectedQCPhaseMaskSupport_eq_secondSeed]\n\n/-- XOR a finite list of the literal oracle rows. -/\ndef xorLiteralSelectedQCGraphRows (\u03c6 : Phase) : List (Fin 20) \u2192 BinaryTwoBlockWord\n  | [] => BinaryTwoBlockWord.zero\n  | i :: is => BinaryTwoBlockWord.xor\n      (literalSelectedQCGraphRow \u03c6 i) (xorLiteralSelectedQCGraphRows \u03c6 is)\n\n/-- Membership in the binary span of the literal oracle rows. -/\ndef InLiteralSelectedQCGraphRowSpan (\u03c6 : Phase) (w : BinaryTwoBlockWord) : Prop :=\n  \u2203 is : List (Fin 20), xorLiteralSelectedQCGraphRows \u03c6 is = w\n\ntheorem xor_two_literalSelectedQCGraphRows_mem (\u03c6 : Phase) (i j : Fin 20) :\n    InLiteralSelectedQCGraphRowSpan \u03c6\n      (BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 i) (literalSelectedQCGraphRow \u03c6 j)) := by\n  refine \u27e8[i, j], ?_\u27e9\n  simp [xorLiteralSelectedQCGraphRows]\n\n/-- Terminal literal-oracle statement.  The right seed is computed as the\nbinary support product of the explicit ten-point phase mask by `{0,5}`. -/\ntheorem exists_literalSelectedQC_two_row_codeword_weight_le_ten (\u03c6 : Phase) :\n    \u2203 (s : Fin 20) (w : BinaryTwoBlockWord),\n      s \u2260 0 \u2227\n      InLiteralSelectedQCGraphRowSpan \u03c6 w \u2227\n      w = BinaryTwoBlockWord.xor\n        (literalSelectedQCGraphRow \u03c6 0) (literalSelectedQCGraphRow \u03c6 s) \u2227\n      w.leftSupport.card = 4 \u2227\n      w.weight \u2264 10 := by\n  sorry\n\nend AxiomPackQCTransversalObstruction\n",
+    "posed_target_signature_sha256": "aadd4f5afb697accabb39ddfde918030725f69ca611e9ee3b280b10a4df71965",
+    "schema": "leanmill.verified_closure_artifact.v2",
+    "target_name": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten",
+    "target_qualified_name": "AxiomPackQCTransversalObstruction.exists_literalSelectedQC_two_row_codeword_weight_le_ten"
+  }
+}

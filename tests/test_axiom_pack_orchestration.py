@@ -3,10 +3,13 @@ from __future__ import annotations
 import hashlib
 
 from ztare.leanmill.axiom_pack_orchestration import (
-    make_json_proposer,
-    make_signed_semantic_checker,
     orchestrate_typed_axiom_proposals,
     recover_valid_quarantined_rows,
+    verify_axiom_pack_escalation_packet,
+)
+from ztare.leanmill.axiom_pack_live_producer import (
+    make_json_proposer,
+    make_signed_semantic_checker,
 )
 from ztare.leanmill.solver import prompts
 from ztare.leanmill.axiom_yield import ShadowTask, build_shadow_task_manifest
@@ -47,6 +50,13 @@ def _packet(base_digest: str) -> dict:
     }
     digest = _sha(__import__("json").dumps(core, sort_keys=True, separators=(",", ":")))
     return {**core, "routing_receipt_digest": digest}
+
+
+def test_escalation_accepts_theory_hash_encoding_used_by_signed_manifests() -> None:
+    bare_digest = hashlib.sha256(b"finite-band-base").hexdigest()
+    packet = _packet(bare_digest)
+
+    assert verify_axiom_pack_escalation_packet(packet) == []
 
 
 def _fixture():
@@ -162,17 +172,68 @@ def test_bad_manifest_stops_before_proposer() -> None:
     assert called == []
 
 
-def test_callback_adapters_parse_model_text_and_sign_only_in_code() -> None:
-    _base, _manifest, _manifest_public, _semantic_public, source, proposal, _verdict = _fixture()
-    proposer = make_json_proposer(
-        lambda prompt: '{"typed_axiom_proposals":[{"source_conjecture":'
-        + __import__("json").dumps(source)
-        + ',"typed_axiom_proposal":'
-        + __import__("json").dumps(proposal.to_json())
-        + '}]}',
+def test_proposer_base_identity_mismatch_stops_before_any_callback() -> None:
+    base_digest, manifest, manifest_public, semantic_public, _source, _proposal, _verdict = _fixture()
+    called = []
+    result = orchestrate_typed_axiom_proposals(
+        escalation=_packet(base_digest),
+        proposer_view={
+            "schema": "safe",
+            "base_theory": {"base_theory_digest": _sha("different-base")},
+        },
+        task_manifest=manifest,
+        trusted_manifest_public_key_pem=manifest_public,
+        trusted_semantic_fidelity_public_key_pem=semantic_public,
+        expected_semantic_fidelity_verifier_ref="semantic-checker",
+        proposer_fn=lambda _view: called.append("proposer") or {},
+        semantic_checker_fn=lambda _payload: called.append("checker") or {},
     )
-    proposed = proposer({"schema": "safe"})
-    assert proposed["typed_axiom_proposals"][0]["typed_axiom_proposal"] == proposal.to_json()
+
+    assert result["stage"] == "base_identity"
+    assert result["failures"] == ["proposer_view_base_theory_digest"]
+    assert called == []
+
+
+def test_callback_adapters_parse_model_text_and_sign_only_in_code() -> None:
+    base_digest, _manifest, _manifest_public, _semantic_public, source, proposal, _verdict = _fixture()
+    proposer_view = {
+        "base_theory": {
+            "signature": proposal.to_json()["theory_signature"],
+            "theory_signature_sha256": proposal.theory_signature_sha256,
+            "base_theory_digest": base_digest,
+        }
+    }
+    proposer = make_json_proposer(
+        lambda prompt: {
+            "schema": "leanmill.axiom_pack_typed_producer_output.v1",
+            "outcome": "typed_proposals",
+            "typed_axiom_proposals": [
+                {
+                    "source_conjecture": {
+                        "schema": "leanmill.axiom_pack_structural_conjecture.v1",
+                        "name": "source_1",
+                        "statement": "all carriers satisfy reflexive equality",
+                        "rationale": "equality is the frozen logical surface",
+                        "kill_condition": "an assignment refuting reflexivity",
+                    },
+                    "theory_signature_sha256": proposal.theory_signature_sha256,
+                    "base_theory_digest": base_digest,
+                    "axiom_formula_json": __import__("json").dumps(
+                        proposal.axiom.to_json()
+                    ),
+                    "nl_intent": proposal.nl_intent,
+                    "kill_condition": proposal.kill_condition,
+                }
+            ],
+            "no_candidate_reason": "",
+            "language_capability_gap": "",
+        },
+    )
+    proposed = proposer(proposer_view)
+    assert proposed["producer_outcome"] == "typed_proposals"
+    assert proposed["typed_axiom_proposals"][0]["typed_axiom_proposal"][
+        "axiom"
+    ] == proposal.axiom.to_json()
     private, public = generate_keypair()
     checker = make_signed_semantic_checker(
         lambda _prompt: {"faithful": True, "rationale": "matches", "evidence_refs": [_sha("evidence")]},

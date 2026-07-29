@@ -861,11 +861,10 @@ def cmd_resume(args: argparse.Namespace) -> int:
     from ztare.leanmill.frontier_campaign_actions import frontier_campaign_status
     from ztare.leanmill.frontier_campaign_runner import (
         drive_frontier_campaign,
-        resume_frontier_campaign_navigation,
     )
 
-    directory = (
-        drive_frontier_campaign(
+    if bool(getattr(args, "continuous", False)):
+        directory = drive_frontier_campaign(
             args.attempt_dir,
             model=str(getattr(args, "model", "") or ""),
             lean_root=(getattr(args, "lean_root", "") or None),
@@ -873,14 +872,16 @@ def cmd_resume(args: argparse.Namespace) -> int:
                 getattr(args, "authority_ref", "") or ""
             ),
         )
-        if bool(getattr(args, "continuous", False))
-        else resume_frontier_campaign_navigation(
+    else:
+        directory = drive_frontier_campaign(
             args.attempt_dir,
+            model=str(getattr(args, "model", "") or ""),
+            lean_root=(getattr(args, "lean_root", "") or None),
             workbench_authority_ref=str(
                 getattr(args, "authority_ref", "") or ""
             ),
+            max_transitions=1,
         )
-    )
     print(json.dumps(frontier_campaign_status(directory), sort_keys=True))
     return 0
 
@@ -1118,8 +1119,8 @@ def main(argv: "list[str] | None" = None) -> int:
     p = sub.add_parser(
         "resume",
         help=(
-            "Continue an interrupted AxiomPack campaign from durable calls; "
-            "--continuous drives every registered lifecycle transition."
+            "Advance one registered AxiomPack lifecycle transition from durable "
+            "state; --continuous drives transitions to a terminal or fixed point."
         ),
     )
     p.add_argument("attempt_dir")

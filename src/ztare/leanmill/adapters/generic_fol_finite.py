@@ -30,6 +30,10 @@ from ztare.leanmill.finite_model_universe import finite_model_record_weight
 
 
 ADAPTER_ID = "generic_fol_finite.v1"
+FUNCTOR_APPLICATION_SCHEMA = "leanmill.finite_model_functor_application.v1"
+GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA = (
+    "leanmill.finite_model_functor_application.v2"
+)
 _EXHAUSTIVE_TABLES = "exhaustive_tables"
 _SMT_EXACT = "smt_exact"
 
@@ -202,6 +206,22 @@ def build_fixed_size_countermodel_finder(
     return partial(find_finite_countermodel, signature)
 
 
+THEORY_TASK_CAPABILITIES = (
+    {
+        "capability_id": "governed_formal_counterexample",
+        "purpose": (
+            "independently review and formally adjudicate an agent-authored "
+            "counterexample or generalization task"
+        ),
+        "use_when": (
+            "the stopping object is broader than a catalog formula implication; "
+            "ordinary frozen formula predictions already enter the proof-or-"
+            "countermodel boundary"
+        ),
+    },
+)
+
+
 def adjudicate_formula_prediction_task(
     *,
     contract: TaskDischargeContract,
@@ -326,7 +346,6 @@ def compile_theory_task(
     from ztare.leanmill.formal_task_boundary import (
         compile_governed_formal_counterexample_task,
     )
-
     return compile_governed_formal_counterexample_task(
         request=request,
         context=context,
@@ -790,16 +809,71 @@ def build_context_from_functor_application(
     """Apply a receipted pointwise model functor and build its exact image chart."""
 
     core = {key: value for key, value in application.items() if key != "receipt_sha256"}
+    application_schema = application.get("schema")
     if (
-        application.get("schema") != "leanmill.finite_model_functor_application.v1"
+        application_schema
+        not in {
+            FUNCTOR_APPLICATION_SCHEMA,
+            GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA,
+        }
         or application.get("receipt_sha256") != content_hash(core)
         or application.get("context_hash") != source_context.context_hash
     ):
         raise ValueError("finite-model functor application does not replay")
+    if application_schema == GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA:
+        declared_grammar = application.get("formula_grammar")
+        if (
+            not isinstance(declared_grammar, Mapping)
+            or dict(declared_grammar) != dict(formula_grammar)
+        ):
+            raise ValueError(
+                "finite-model functor application target grammar does not replay"
+            )
     signature = TheorySignature.from_json(application["signature"])
-    source = {row.model_id: row for row in source_context.universe.models}
+    from ztare.leanmill.evidence_theory_context import EvidenceTheoryContext
+    from ztare.leanmill.finite_theory_context import FormalTheoryContext
+
+    if isinstance(source_context, FormalTheoryContext):
+        source_weights = {
+            row.model_id: finite_model_record_weight(row)
+            for row in source_context.universe.models
+        }
+        source_context_owner = "formal_theory"
+        source_context_kind = "formal_model_incidence"
+    elif isinstance(source_context, EvidenceTheoryContext):
+        if application_schema != GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA:
+            raise ValueError(
+                "evidence functor application must declare its target formula grammar"
+            )
+        source_weights = {
+            row.model_id: 1 for row in source_context.object_records
+        }
+        source_context_owner = "evidence_incidence"
+        source_context_kind = "evidence_incidence"
+    else:
+        raise ValueError(
+            "finite-model functor source context category is unsupported"
+        )
+    declared_context_owner = application.get("context_kind")
+    if (
+        (
+            application_schema == GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA
+            and declared_context_owner is None
+        )
+        or (
+            declared_context_owner is not None
+            and declared_context_owner != source_context_owner
+        )
+    ):
+        raise ValueError(
+            "finite-model functor application source category does not replay"
+        )
     rows = application.get("models")
-    if not isinstance(rows, Mapping) or not rows or set(rows) != set(source):
+    if (
+        not isinstance(rows, Mapping)
+        or not rows
+        or set(rows) != set(source_weights)
+    ):
         raise ValueError(
             "finite-model functor image must cover every source object exactly"
         )
@@ -809,7 +883,7 @@ def build_context_from_functor_application(
             (
                 model_id,
                 FiniteModel.from_json(model),
-                finite_model_record_weight(source[model_id]),
+                source_weights[model_id],
             )
             for model_id, model in rows.items()
         ),
@@ -817,6 +891,14 @@ def build_context_from_functor_application(
         functor_id=str(application["functor_id"]),
         application_receipt_sha256=str(application["receipt_sha256"]),
     )
+    transition_core = {
+        key: value for key, value in receipt.items() if key != "receipt_sha256"
+    }
+    transition_core["source_context_kind"] = source_context_kind
+    receipt = {
+        **transition_core,
+        "receipt_sha256": content_hash(transition_core),
+    }
     from ztare.leanmill.finite_theory_context import build_formal_theory_context
 
     formulas = build_formulas(signature, adapter_config={}, formula_grammar=formula_grammar)
@@ -859,6 +941,16 @@ def compile_theory_language_expansion(
         source_application, representation = unpack_generative_application(
             approved_application, source_context
         )
+        if (
+            source_application.get("schema")
+            == GRAMMAR_OWNING_FUNCTOR_APPLICATION_SCHEMA
+        ):
+            target_grammar = source_application.get("formula_grammar")
+            if not isinstance(target_grammar, Mapping):
+                raise ValueError(
+                    "finite-model functor application target grammar is absent"
+                )
+            grammar = dict(target_grammar)
         context, transition = build_context_from_functor_application(
             source_context,
             source_application,
@@ -961,6 +1053,7 @@ CAPABILITIES = {
 __all__ = [
     "ADAPTER_ID", "CAPABILITIES", "GenericFiniteModelRecord", "GenericFiniteModelUniverse",
     "GenericFiniteUniverseReceipt", "IncompleteFiniteModelUniverseError",
+    "THEORY_TASK_CAPABILITIES",
     "build_context_from_functor_application", "build_model_universe_image", "build_model_universe", "load_model_universe",
     "adjudicate_formula_prediction_task", "adjudicate_theory_task",
     "build_fixed_size_countermodel_finder", "compile_theory_task",

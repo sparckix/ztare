@@ -33,6 +33,8 @@ from __future__ import annotations
 import argparse, json, re, subprocess, sys, tempfile, time
 from pathlib import Path
 
+from ztare.leanmill.lean_source import replace_decl_proof
+
 ROOT = Path(__import__("os").environ.get("ZTARE_REPO_ROOT", ".")).resolve()
 DEFAULT_SANDBOX = ROOT / ("analytics/public/leanmill/external_benchmarks/"
                           "sandboxes/v28A_carleson_baseline/carleson")
@@ -84,18 +86,65 @@ def _compile(probe: str, sandbox: Path, timeout: int) -> bool | None:
         return None
 
 
-def independent_verify(row_text: str, closer: str, sandbox: Path, timeout: int = 70) -> dict:
+def build_indirect_probe_sources(
+    row_text: str,
+    closer: str,
+    *,
+    target_name: str | None = None,
+) -> tuple[str, str]:
+    floor_proof = "by first | rfl | trivial | simp only [] | norm_num | decide"
+    automation_proof = f"by {closer}"
+    if target_name:
+        return (
+            replace_decl_proof(row_text, target_name, floor_proof),
+            replace_decl_proof(row_text, target_name, automation_proof),
+        )
+    return (
+        re.sub(
+            r":=\s*by\b.*$",
+            f":= {floor_proof}",
+            row_text.strip(),
+            count=1,
+            flags=re.DOTALL,
+        ),
+        re.sub(
+            r":=\s*by\b.*$",
+            f":= {automation_proof}",
+            row_text.strip(),
+            count=1,
+            flags=re.DOTALL,
+        ),
+    )
+
+
+def independent_verify(
+    row_text: str,
+    closer: str,
+    sandbox: Path,
+    timeout: int = 70,
+    *,
+    target_name: str | None = None,
+) -> dict:
     if not sandbox.exists():
         return {"indirect_leakage_confirmed": None, "error": "sandbox missing"}
-    floor = re.sub(r":=\s*by\b.*$",
-                   ":= by first | rfl | trivial | simp only [] | norm_num | decide",
-                   row_text.strip(), count=1, flags=re.DOTALL)
-    autom = re.sub(r":=\s*by\b.*$", f":= by {closer}",
-                   row_text.strip(), count=1, flags=re.DOTALL)
+    floor, autom = build_indirect_probe_sources(
+        row_text,
+        closer,
+        target_name=target_name,
+    )
+    if not floor or not autom:
+        return {
+            "indirect_leakage_confirmed": None,
+            "error": "selected target unavailable",
+        }
     started = time.time()
     floor_ok = _compile(floor, sandbox, timeout)
     autom_ok = _compile(autom, sandbox, timeout)
-    confirmed = (floor_ok is False) and (autom_ok is True)
+    confirmed = (
+        None
+        if floor_ok is None or autom_ok is None
+        else (floor_ok is False) and (autom_ok is True)
+    )
     return {
         "indirect_leakage_confirmed": confirmed,
         "trivial_floor_closes": floor_ok,

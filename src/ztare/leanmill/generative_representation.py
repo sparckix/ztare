@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
-from ztare.common.artifact_refs import canonical_sha256_ref
+from ztare.common.artifact_refs import canonical_sha256_ref, extract_sha256_refs
 from ztare.leanmill.finite_model import (
     FiniteModel,
     canonicalize_finite_model,
@@ -37,6 +37,16 @@ def _unsigned(value: Mapping[str, Any]) -> dict[str, Any]:
 
 def _signed(core: Mapping[str, Any]) -> dict[str, Any]:
     return {**core, "receipt_sha256": content_hash(core)}
+
+
+def _bind_optional_host_contract(
+    receipt: Mapping[str, Any], contract: str | None
+) -> dict[str, Any]:
+    if contract is None:
+        return dict(receipt)
+    core = _unsigned(receipt)
+    core["host_conformance_contract"] = contract
+    return _signed(core)
 
 
 def _sizes(value: Mapping[str, int]) -> tuple[tuple[str, int], ...]:
@@ -184,7 +194,9 @@ class ReviewedGenerativeRepresentation:
             host.get("receipt_sha256") if isinstance(host, Mapping) else None
         )
         review_refs = {
-            canonical_sha256_ref(ref) for ref in review.get("evidence_refs") or ()
+            digest
+            for ref in review.get("evidence_refs") or ()
+            for digest in extract_sha256_refs(ref)
         } if isinstance(review, Mapping) else set()
         if (
             not isinstance(host, Mapping) or host.get("receipt_sha256") != content_hash(_unsigned(host))
@@ -244,6 +256,13 @@ class ReviewedGenerativeRepresentation:
 
     def validate_source_roundtrip(self, source_context: Any) -> None:
         _candidate_row, expected = _replay_candidate(self.candidate, source_context)
+        host = self.payload["host_conformance"]
+        expected = _bind_optional_host_contract(
+            expected,
+            str(host["host_conformance_contract"])
+            if isinstance(host, Mapping) and host.get("host_conformance_contract")
+            else None,
+        )
         if dict(self.payload["host_conformance"]) != expected:
             raise ValueError("representation host conformance changed after review")
 
@@ -254,9 +273,11 @@ def admit_materialized_generative_representation(
     source_context: Any,
     host_conformance: Mapping[str, Any],
     independent_review: Mapping[str, Any],
+    host_conformance_contract: str | None = None,
 ) -> tuple[ReviewedGenerativeRepresentation, dict[str, Any]]:
     """Bind a host-replayed candidate to the independent Forge review."""
     candidate, expected = _replay_candidate(value, source_context)
+    expected = _bind_optional_host_contract(expected, host_conformance_contract)
     if dict(host_conformance) != expected:
         raise ValueError("generative candidate host receipt changed before admission")
     reviewed = ReviewedGenerativeRepresentation.from_json(_signed({

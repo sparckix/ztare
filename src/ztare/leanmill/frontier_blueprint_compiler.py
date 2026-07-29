@@ -8,12 +8,14 @@ from typing import Any, Callable, Mapping
 from ztare.leanmill.frontier_blueprint import (
     FrontierExplorationBrief,
     FrontierTheoryBlueprint,
+    theory_task_capability_scope,
     validate_navigator_contract,
 )
 from ztare.leanmill.adapter_forge import AdapterGap, AdapterGapRequired
 from ztare.leanmill.theory_adapter_registry import (
     preflight_theory_adapter,
     theory_adapter_capabilities,
+    theory_task_capability_catalog,
 )
 from ztare.leanmill.theory_ir import (
     AxiomFormula,
@@ -219,6 +221,28 @@ def _executable_preflight(
                 missing_capabilities=tuple(sorted(missing_capabilities)),
             )
         )
+    task_scope = theory_task_capability_scope(draft["navigator_contract"])
+    if task_scope is not None:
+        adapter_id = str(draft["adapter_id"])
+        if task_scope["adapter_id"] != adapter_id:
+            raise ValueError(
+                "theory-task capability scope belongs to another adapter"
+            )
+        registered_task_ids = {
+            str(row["capability_id"])
+            for row in theory_task_capability_catalog(
+                adapter_id,
+                adapter_config=dict(draft["adapter_config"]),
+            )
+        }
+        unknown_task_ids = (
+            set(task_scope["allowed_capability_ids"]) - registered_task_ids
+        )
+        if unknown_task_ids:
+            raise ValueError(
+                "theory-task capability scope names unregistered IDs: "
+                + ", ".join(sorted(unknown_task_ids))
+            )
     core = {
         "schema": "leanmill.frontier_blueprint_executable_preflight.v1",
         "ok": True,
@@ -230,6 +254,13 @@ def _executable_preflight(
             theory_adapter_capabilities(str(draft["adapter_id"]))
         ),
     }
+    if task_scope is not None:
+        core["theory_task_capability_scope"] = {
+            **task_scope,
+            "allowed_capability_ids": list(
+                task_scope["allowed_capability_ids"]
+            ),
+        }
     return {**core, "receipt_sha256": content_hash(core)}
 
 
@@ -449,7 +480,12 @@ def compile_frontier_blueprint(
             draft_raw = draft_fn(repair_input)
     draft_digest = content_hash(draft)
     review_raw = semantic_review_fn(
-        {"brief": deepcopy(brief.to_json()), "draft": deepcopy(draft), "draft_digest": draft_digest}
+        {
+            "brief": deepcopy(brief.to_json()),
+            "draft": deepcopy(draft),
+            "draft_digest": draft_digest,
+            "executable_preflight": deepcopy(preflight),
+        }
     )
     if not isinstance(review_raw, Mapping) or review_raw.get("accepted") is not True:
         raise ValueError("independent semantic review rejected frontier blueprint")
@@ -529,6 +565,12 @@ def compile_language_successor_blueprint(
 
     if admission_review.get("accepted") is not True:
         raise ValueError("language successor requires accepted admission authority")
+    from ztare.leanmill.finite_theory_context import FormalTheoryContext
+
+    if not isinstance(target_context, FormalTheoryContext):
+        raise ValueError(
+            "finite-model language successor requires a formal target context"
+        )
     signature = target_context.signature
     source_count = transition.get("source_object_count")
     image_count = transition.get("canonical_image_model_count")
@@ -655,9 +697,20 @@ def compile_language_successor_blueprint(
     relation_bindings = {
         relation.name: binding_authority for relation in signature.relations
     }
+    successor_navigator_contract = dict(source.navigator_contract)
+    source_task_scope = theory_task_capability_scope(
+        successor_navigator_contract
+    )
+    if (
+        source_task_scope is not None
+        and source_task_scope["adapter_id"] != adapter_id
+    ):
+        successor_navigator_contract.pop(
+            "theory_task_capability_scope", None
+        )
     return FrontierTheoryBlueprint(
         brief_digest=source.brief_digest,
-        mode=source.mode,
+        mode="anonymous_signature_census",
         eigenquestion=source.eigenquestion,
         signature=signature.to_json(),
         primitive_semantics={
@@ -678,7 +731,7 @@ def compile_language_successor_blueprint(
         },
         sealed_evidence_manifest_digest=source.sealed_evidence_manifest_digest,
         deanchoring_policy=dict(source.deanchoring_policy),
-        navigator_contract=dict(source.navigator_contract),
+        navigator_contract=successor_navigator_contract,
         query_budget=dict(source.query_budget),
         stop_rule=dict(source.stop_rule),
         verification_plan=verification_plan,

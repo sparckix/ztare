@@ -116,6 +116,7 @@ def subscription_dispatch_provenance_scope(
     model: str,
     reasoning_effort: str,
     config_sha256: str,
+    max_timeout_seconds: int | None = None,
     attempt_input_sha256: str = "",
     record_empty_attempt: bool = False,
 ) -> Iterator[list[dict[str, Any]]]:
@@ -137,6 +138,10 @@ def subscription_dispatch_provenance_scope(
     }
     if any(not value.strip() for value in values.values()):
         raise ValueError("dispatch provenance role identity is incomplete")
+    if max_timeout_seconds is not None and (
+        type(max_timeout_seconds) is not int or max_timeout_seconds < 1
+    ):
+        raise ValueError("dispatch provenance timeout ceiling must be positive")
     root = Path(artifact_dir)
     root.mkdir(parents=True, exist_ok=True)
     collector: list[dict[str, Any]] = []
@@ -144,6 +149,7 @@ def subscription_dispatch_provenance_scope(
         **values,
         "artifact_dir": root,
         "collector": collector,
+        "max_timeout_seconds": max_timeout_seconds,
         "attempt_input_sha256": str(attempt_input_sha256),
     }
     token = _DISPATCH_PROVENANCE_CONTEXT.set(context)
@@ -179,6 +185,7 @@ def subscription_dispatch_role_scope(
     model: str,
     reasoning_effort: str,
     config_sha256: str,
+    max_timeout_seconds: int | None = None,
     attempt_input_sha256: str = "",
     record_empty_attempt: bool = False,
 ) -> Iterator[None]:
@@ -198,6 +205,10 @@ def subscription_dispatch_role_scope(
     }
     if any(not value.strip() for value in values.values()):
         raise ValueError("dispatch provenance role identity is incomplete")
+    if max_timeout_seconds is not None and (
+        type(max_timeout_seconds) is not int or max_timeout_seconds < 1
+    ):
+        raise ValueError("dispatch provenance timeout ceiling must be positive")
     effective_input_sha256 = str(
         attempt_input_sha256 or parent.get("attempt_input_sha256") or ""
     )
@@ -206,6 +217,11 @@ def subscription_dispatch_role_scope(
             **values,
             "artifact_dir": parent["artifact_dir"],
             "collector": parent["collector"],
+            "max_timeout_seconds": (
+                max_timeout_seconds
+                if max_timeout_seconds is not None
+                else parent.get("max_timeout_seconds")
+            ),
             "attempt_input_sha256": effective_input_sha256,
         }
     )
@@ -1166,6 +1182,13 @@ def _run_cli(command: list[str], *, runtime: str, repo: str | Path, timeout_seco
              dispatch_receipt_path: "str | Path | None" = None,
              stdout_path: str = "", stderr_path: str = "",
              agent_id: str = "") -> subprocess.CompletedProcess[str]:
+    provenance_context = _DISPATCH_PROVENANCE_CONTEXT.get() or {}
+    timeout_ceiling = provenance_context.get("max_timeout_seconds")
+    if timeout_ceiling is not None:
+        timeout_seconds = min(timeout_seconds, int(timeout_ceiling))
+    if timeout_seconds <= 0:
+        raise ValueError("subscription dispatch timeout must be positive")
+
     def record_provenance(
         result: subprocess.CompletedProcess[str],
         reservation: Any,

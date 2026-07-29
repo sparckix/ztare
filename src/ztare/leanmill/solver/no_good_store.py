@@ -33,6 +33,7 @@ assignment). Two guards make a recorded no-good unable to suppress a genuinely-c
      positive+negative-controls-through-one-path discipline, before anything consumes the store.
 """
 from __future__ import annotations
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -60,6 +61,226 @@ FAILURE_CLASSES = (
     #                              reformalization against a refuted rendering (2026-06-23, the single ledger).
     "other",
 )
+NO_GOOD_RECORD_SCHEMA = "leanmill.confirmed_no_good.v2"
+INTEGRITY_ARTIFACT_BINDING_SCHEMA = "leanmill.integrity_artifact_binding.v1"
+INTEGRITY_REJECTION_PROVENANCE_SCHEMA = "leanmill.integrity_rejection_provenance.v1"
+
+
+def _sha256_text(text: str) -> str:
+    return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
+
+
+def _canonical_sha256(value: dict) -> str:
+    return hashlib.sha256(json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")).hexdigest()
+
+
+def _artifact_statement_id_json(source: str, target_name: str, signature: str) -> dict:
+    try:
+        from ztare.leanmill.control_plane import StatementId
+
+        return StatementId.from_parts(
+            target_name=target_name,
+            source_text=source,
+            closed_prop=normalize_statement(signature),
+        ).to_json()
+    except Exception:  # noqa: BLE001 - binding hashes remain authoritative
+        return {}
+
+
+def build_integrity_artifact_binding(
+    posed_probe: str,
+    altered_probe: str,
+    target_name: str,
+) -> "dict | None":
+    """Bind one integrity rejection to the two exact artifacts it compared.
+
+    The no-good's operational key still belongs to the posed goal: that is the
+    object future CEGIS attempts should match.  This separate binding owns the
+    training identity, where the negative example is the *altered* source that
+    statement-integrity rejected.  Keeping the identities separate prevents a
+    faithful posed theorem from being relabelled as unfaithful.
+    """
+    posed = str(posed_probe or "")
+    altered = str(altered_probe or "")
+    selector = str(target_name or "").strip()
+    if not posed.strip() or not altered.strip() or not selector or posed == altered:
+        return None
+    try:
+        from ztare.leanmill import lean_source
+
+        posed_identity = lean_source.resolve_theorem_target(posed, selector)
+        altered_identity = lean_source.resolve_theorem_target(altered, selector)
+        if posed_identity is None or altered_identity is None:
+            return None
+        posed_signature = lean_source.extract_signature(
+            posed, posed_identity.qualified_name
+        ).strip()
+        altered_signature = lean_source.extract_signature(
+            altered, altered_identity.qualified_name
+        ).strip()
+        if not posed_signature or not altered_signature:
+            return None
+    except Exception:  # noqa: BLE001 - absent identity cannot be reconstructed
+        return None
+
+    binding = {
+        "schema": INTEGRITY_ARTIFACT_BINDING_SCHEMA,
+        "target_selector": selector,
+        "posed_target_identity": posed_identity.qualified_name,
+        "altered_target_identity": altered_identity.qualified_name,
+        "posed_probe": posed,
+        "altered_probe": altered,
+        "posed_probe_sha256": _sha256_text(posed),
+        "altered_probe_sha256": _sha256_text(altered),
+        "posed_target_signature": posed_signature,
+        "altered_target_signature": altered_signature,
+        "posed_target_signature_sha256": _sha256_text(posed_signature),
+        "altered_target_signature_sha256": _sha256_text(altered_signature),
+        "posed_statement_id": _artifact_statement_id_json(
+            posed, posed_identity.qualified_name, posed_signature
+        ),
+        "altered_statement_id": _artifact_statement_id_json(
+            altered, altered_identity.qualified_name, altered_signature
+        ),
+    }
+    binding["receipt_sha256"] = _canonical_sha256(binding)
+    return binding
+
+
+def validate_integrity_artifact_binding(binding: object) -> str:
+    """Return ``""`` iff an integrity-artifact binding replays exactly."""
+    if not isinstance(binding, dict):
+        return "missing_integrity_artifact_binding"
+    if binding.get("schema") != INTEGRITY_ARTIFACT_BINDING_SCHEMA:
+        return "legacy_integrity_artifact_binding"
+    for field in (
+        "target_selector",
+        "posed_target_identity",
+        "altered_target_identity",
+        "posed_probe",
+        "altered_probe",
+        "posed_target_signature",
+        "altered_target_signature",
+    ):
+        if not str(binding.get(field) or "").strip():
+            return f"missing_{field}"
+    posed = str(binding["posed_probe"])
+    altered = str(binding["altered_probe"])
+    if posed == altered:
+        return "unaltered_probe"
+    hash_fields = {
+        "posed_probe_sha256": posed,
+        "altered_probe_sha256": altered,
+        "posed_target_signature_sha256": str(binding["posed_target_signature"]),
+        "altered_target_signature_sha256": str(binding["altered_target_signature"]),
+    }
+    for field, value in hash_fields.items():
+        if str(binding.get(field) or "") != _sha256_text(value):
+            return f"{field}_mismatch"
+    supplied_receipt = str(binding.get("receipt_sha256") or "")
+    receipt_payload = {
+        key: value for key, value in binding.items() if key != "receipt_sha256"
+    }
+    if supplied_receipt != _canonical_sha256(receipt_payload):
+        return "integrity_artifact_receipt_mismatch"
+    try:
+        from ztare.leanmill import lean_source
+
+        selector = str(binding["target_selector"])
+        posed_identity = lean_source.resolve_theorem_target(posed, selector)
+        altered_identity = lean_source.resolve_theorem_target(altered, selector)
+        if posed_identity is None or altered_identity is None:
+            return "target_identity_unresolved"
+        if posed_identity.qualified_name != binding["posed_target_identity"]:
+            return "posed_target_identity_mismatch"
+        if altered_identity.qualified_name != binding["altered_target_identity"]:
+            return "altered_target_identity_mismatch"
+        posed_signature = lean_source.extract_signature(
+            posed, posed_identity.qualified_name
+        ).strip()
+        altered_signature = lean_source.extract_signature(
+            altered, altered_identity.qualified_name
+        ).strip()
+        if posed_signature != binding["posed_target_signature"]:
+            return "posed_target_signature_mismatch"
+        if altered_signature != binding["altered_target_signature"]:
+            return "altered_target_signature_mismatch"
+    except Exception:  # noqa: BLE001 - validation is fail-closed
+        return "integrity_artifact_replay_error"
+    expected_posed_sid = _artifact_statement_id_json(
+        posed, posed_identity.qualified_name, posed_signature
+    )
+    expected_altered_sid = _artifact_statement_id_json(
+        altered, altered_identity.qualified_name, altered_signature
+    )
+    if expected_posed_sid and binding.get("posed_statement_id") != expected_posed_sid:
+        return "posed_statement_id_mismatch"
+    if expected_altered_sid and binding.get("altered_statement_id") != expected_altered_sid:
+        return "altered_statement_id_mismatch"
+    return ""
+
+
+def build_integrity_rejection_provenance(
+    binding: dict,
+    *,
+    source: str,
+    witness: str,
+    origin: str = "live_statement_integrity",
+    details: "dict | None" = None,
+) -> "dict | None":
+    """Bind the deterministic verdict and its declared origin to one artifact receipt."""
+    if validate_integrity_artifact_binding(binding):
+        return None
+    if not str(source or "").strip() or not str(witness or "").strip():
+        return None
+    provenance = {
+        "schema": INTEGRITY_REJECTION_PROVENANCE_SCHEMA,
+        "origin": str(origin or "live_statement_integrity"),
+        "checker": "ztare.leanmill.solver.statement_integrity.check",
+        "source": str(source),
+        "witness_sha256": _sha256_text(str(witness)),
+        "artifact_binding_receipt_sha256": binding["receipt_sha256"],
+        "details": dict(details or {}),
+    }
+    provenance["receipt_sha256"] = _canonical_sha256(provenance)
+    return provenance
+
+
+def validate_integrity_rejection_provenance(
+    provenance: object,
+    *,
+    binding: dict,
+    source: str,
+    witness: str,
+) -> str:
+    if not isinstance(provenance, dict):
+        return "missing_integrity_rejection_provenance"
+    if provenance.get("schema") != INTEGRITY_REJECTION_PROVENANCE_SCHEMA:
+        return "legacy_integrity_rejection_provenance"
+    if provenance.get("checker") != "ztare.leanmill.solver.statement_integrity.check":
+        return "wrong_integrity_checker"
+    if provenance.get("source") != source:
+        return "integrity_provenance_source_mismatch"
+    if provenance.get("witness_sha256") != _sha256_text(witness):
+        return "integrity_provenance_witness_mismatch"
+    if provenance.get("artifact_binding_receipt_sha256") != binding.get(
+        "receipt_sha256"
+    ):
+        return "integrity_provenance_binding_mismatch"
+    if not str(provenance.get("origin") or "").strip():
+        return "missing_integrity_provenance_origin"
+    if not isinstance(provenance.get("details"), dict):
+        return "invalid_integrity_provenance_details"
+    supplied = str(provenance.get("receipt_sha256") or "")
+    core = {key: value for key, value in provenance.items() if key != "receipt_sha256"}
+    if supplied != _canonical_sha256(core):
+        return "integrity_provenance_receipt_mismatch"
+    return ""
 
 
 def _target_name_from_statement(statement: str) -> str:
@@ -146,7 +367,14 @@ class NoGoodStore:
 
     def _index(self, rec: dict) -> bool:
         key = rec.get("key")
-        sig = (key, rec.get("failure_class"), rec.get("witness"))
+        binding = rec.get("artifact_binding")
+        sig = (
+            key,
+            rec.get("failure_class"),
+            rec.get("witness"),
+            rec.get("record_schema") or "legacy",
+            binding.get("receipt_sha256") if isinstance(binding, dict) else "",
+        )
         if not key or sig in self._seen:
             return False
         self._seen.add(sig)
@@ -154,7 +382,9 @@ class NoGoodStore:
         return True
 
     def record(self, statement: str, failure_class: str, witness: str,
-               *, confirmed: bool, source: str = "") -> bool:
+               *, confirmed: bool, source: str = "",
+               artifact_binding: "dict | None" = None,
+               integrity_provenance: "dict | None" = None) -> bool:
         """Record a CONFIRMED refutation. Returns True if newly added.
 
         `confirmed` is REQUIRED and must be True — a recorded no-good asserts the shape was genuinely
@@ -167,8 +397,23 @@ class NoGoodStore:
         if not key or not (witness or "").strip():
             return False
         fc = failure_class if failure_class in FAILURE_CLASSES else failure_class_of(witness)
-        rec = {"key": key, "statement": statement.strip(), "failure_class": fc,
-               "witness": witness.strip(), "source": source}
+        if artifact_binding is not None and validate_integrity_artifact_binding(artifact_binding):
+            return False
+        if integrity_provenance is not None:
+            if artifact_binding is None or validate_integrity_rejection_provenance(
+                integrity_provenance,
+                binding=artifact_binding,
+                source=source,
+                witness=witness.strip(),
+            ):
+                return False
+        rec = {"record_schema": NO_GOOD_RECORD_SCHEMA,
+               "key": key, "statement": statement.strip(), "failure_class": fc,
+               "witness": witness.strip(), "source": source, "confirmed": True}
+        if artifact_binding is not None:
+            rec["artifact_binding"] = artifact_binding
+        if integrity_provenance is not None:
+            rec["integrity_provenance"] = integrity_provenance
         sid = _statement_id_json(statement)
         if sid:
             rec["statement_id"] = sid
@@ -216,7 +461,7 @@ class NoGoodStore:
                 evidence_card["statement"],
                 str(evidence_card.get("failure_class") or "other"),
                 str(evidence_card.get("witness") or evidence_card.get("witness_summary") or ""),
-                confirmed=bool(evidence_card.get("confirmed", True)),
+                confirmed=evidence_card.get("confirmed") is True,
                 source=str(evidence_card.get("source") or ""),
             )
         return evidence_card
@@ -234,7 +479,18 @@ class NoGoodStore:
                 ))
         return out
 
-    def record_integrity_verdict(self, statement: str, verdict, *, source: str = "") -> int:
+    def record_integrity_verdict(
+        self,
+        statement: str,
+        verdict,
+        *,
+        source: str = "",
+        posed_probe: str = "",
+        altered_probe: str = "",
+        target_name: str = "",
+        provenance_origin: str = "live_statement_integrity",
+        provenance_details: "dict | None" = None,
+    ) -> int:
         """Adapter — turn a FAILED `statement_integrity.IntegrityVerdict` into no-goods. The integrity
         check is deterministic + exogenous (a decl diff, no LLM), so an `ok=False` verdict IS a
         confirmed refutation; each violation string becomes one no-good. Returns the count recorded.
@@ -247,9 +503,34 @@ class NoGoodStore:
             ok, violations = verdict.get("ok"), verdict.get("violations")
         if ok is not False:                      # ok True OR unknown ⇒ record nothing (fail-open)
             return 0
+        binding = build_integrity_artifact_binding(
+            posed_probe, altered_probe, target_name
+        )
         n = 0
         for v in (violations or []):
-            if self.record(statement, failure_class_of(v), v, confirmed=True, source=source):
+            failure_class = failure_class_of(v)
+            row_binding = binding if failure_class in {
+                "definition_altered", "target_signature_altered"
+            } else None
+            row_provenance = (
+                build_integrity_rejection_provenance(
+                    row_binding,
+                    source=source,
+                    witness=v,
+                    origin=provenance_origin,
+                    details=provenance_details,
+                )
+                if row_binding is not None else None
+            )
+            if self.record(
+                statement,
+                failure_class,
+                v,
+                confirmed=True,
+                source=source,
+                artifact_binding=row_binding,
+                integrity_provenance=row_provenance,
+            ):
                 n += 1
         return n
 

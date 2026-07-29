@@ -1,0 +1,47 @@
+{
+  "all_source_fields_satisfy_quotient_lift_ideals": true,
+  "claim_boundary": "The uniqueness statement is within the target scaling lane K=a(s)*P*Q. The degree-nine decomposition is defined over Q(s) but is not an s-adically regular formal gauge at s=0.",
+  "family_source_degrees": [
+    6,
+    8
+  ],
+  "pole_residue": {
+    "seed_contact_stabilizer_identity": true,
+    "source_degrees": [
+      7,
+      7
+    ],
+    "source_sha256": [
+      "dc664ac394f61528c9877d56082a08a6b48d6a313ae994cbeda722fd70a2faa4",
+      "8cd574840a9b7736acd1e6df38bccc5190451c180fea1a2d87dd0cb4011592c3"
+    ]
+  },
+  "punctured_scaling_connection": {
+    "forced_scaling": "4*(2*s**2 - 11*s + 6)/(7*s*(s - 6)*(s - 4))",
+    "hamiltonian": "a(s)*P*Q",
+    "scaling_residue_at_s_zero": "1/7",
+    "source_degrees": [
+      9,
+      9
+    ],
+    "source_has_simple_pole_at_s_zero": true,
+    "source_sha256": [
+      "4c7f1482903a0decd7861fc290225924d05aac8da4115894d85a187331fc6831",
+      "dad0679b5d1dc1735f69985dfa634ac16d2ad03e4e3c096d4143f0982b1398fe"
+    ]
+  },
+  "quotient_jacobian": "-(2*t - 3*v + 2)**2/4",
+  "regular_source_only_connection": {
+    "regular_at_s_zero": true,
+    "sha256": [
+      "5e39d74caaa6dc7eaa29428fd3ce43efea7917565ea6397ed504aa6f575d7589",
+      "e32aa670553f64c7985141125b8d5d9359dd7e675b6de006ba1242f634cdb273"
+    ],
+    "source_degrees": [
+      11,
+      11
+    ]
+  },
+  "schema": "axiompack.jacobian_regular_singular_connection.v1",
+  "top_shell_forces_scaling": "531441*s*(s - 4)**7*(7*a*s**3 - 70*a*s**2 + 168*a*s - 8*s**2 + 44*s - 24)"
+}

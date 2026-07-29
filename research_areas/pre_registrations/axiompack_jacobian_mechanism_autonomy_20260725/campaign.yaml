@@ -1,0 +1,95 @@
+schema: leanmill.frontier_campaign_definition.v1
+direction: >-
+  Study the frozen exact coefficient observations as an anonymous deformation
+  chart. Determine whether their current pass/fail predicates conceal a
+  smaller generative coordinate, recurrence, quotient, or mechanism. Inspect
+  the records, author an executable successor language when the current chart
+  is blind, and formulate a falsifiable structural task. Do not construct a
+  new source object, use domain names, or consult outside interpretation
+  before the theory is frozen.
+source_mode: structure_first
+requested_mode: evidence_induced
+evidence_refs:
+  - research_areas/pre_registrations/axiompack_jacobian_mechanism_autonomy_20260725/typed_blueprint.json
+  - research_areas/pre_registrations/axiompack_jacobian_field_parametric_20260720/equivariant_formal_contact_depth.py
+deanchoring_intent: cold_anonymous_mechanism_inference_after_source_compilation
+forbidden_shortcuts:
+  - receiving a parity split or affine degree formula from the host
+  - receiving an invariant coordinate, flow mechanism, target grammar, or functor image from the host
+  - treating a finite coefficient pattern as an all-order theorem
+  - treating a source-injective lookup table as a compressed representation
+  - mutating the global adapter registry from a campaign leaf
+  - treating a finite successor law as a historical-priority result
+created_by: user
+profile: overnight
+budget:
+  wall_clock: 6h
+  provider_calls: 40
+  agent_turns: 60
+  input_tokens: 1500000
+  output_tokens: 600000
+  metered_api_usd: "0"
+  workbench_actions: 240
+  adapter_forge_attempts: 3
+  context:
+    models: 1000
+    truth_cells: 100000
+  boundary:
+    queries: 30
+    smt_calls: 0
+    smt_time: 0ms
+    formal_peer_attempts: 6
+    formal_peer_time: 7200000ms
+    lean_attempts: 6
+    lean_time: 7200000ms
+stop:
+  max_finalists: 2
+  low_yield_patience: 3
+  min_marginal_information_per_cost: "0.02"
+  coverage_target: "0.9"
+runtime:
+  transport: subscription_agent_runtime
+  profile: frontier
+  role_overrides:
+    navigator:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 3600
+    lineage_synthesizer:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 3600
+    adapter_forge:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 3600
+    adapter_reviewer:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 1800
+    formalizer:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 3600
+      visible_workbench: true
+    faithfulness_reviewer:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 1800
+    lean_solver:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 3600
+      visible_workbench: true
+    post_freeze_interpreter:
+      runtime: codex
+      model: gpt-5.5
+      reasoning_effort: ultra
+      timeout_seconds: 1800

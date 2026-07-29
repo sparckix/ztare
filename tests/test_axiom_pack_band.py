@@ -16,6 +16,7 @@ from ztare.leanmill.axiom_pack_band import (
     rank_band_heldout_tasks,
 )
 from ztare.leanmill.axiom_yield import verify_shadow_task_manifest
+from ztare.leanmill.contracts.axiom_pack_transport import AxiomPackTransportContract
 from ztare.leanmill.finite_model import (
     SAT,
     FiniteModel,
@@ -117,6 +118,41 @@ def test_band_proposer_brief_excludes_every_operator_only_surface() -> None:
             )
 
     assert all(value and value not in serialized for value in forbidden)
+
+
+def test_band_transport_prompt_does_not_seed_frozen_candidate_surfaces() -> None:
+    design = finite_band_pilot_design()
+    proposer_view = design.proposer_brief()
+    encoded_view = json.dumps(
+        proposer_view, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    transport = AxiomPackTransportContract(
+        proposer_view_digest="sha256:" + hashlib.sha256(encoded_view).hexdigest(),
+        source_catalog={
+            source_ref: {
+                "schema": "leanmill.axiom_pack_structural_conjecture.v1",
+                "name": source_ref,
+            }
+            for source_ref in proposer_view["proposal_source_refs"]
+        },
+    )
+    prompt = transport.render_prompt(proposer_view)
+
+    def term_word(term: dict) -> str:
+        if term["kind"] == "var":
+            return str(term["name"])
+        assert term["kind"] == "app"
+        return "".join(term_word(arg) for arg in term["args"])
+
+    forbidden_surfaces: set[str] = set()
+    for candidate in design.candidate_axioms:
+        body = candidate.formula.to_json()["body"]
+        forbidden_surfaces.update(
+            {candidate.name, term_word(body["left"]), term_word(body["right"])}
+        )
+    forbidden_surfaces.update(task.task_id for task in design.heldout_tasks)
+
+    assert all(surface not in prompt for surface in forbidden_surfaces)
 
 
 def test_band_pilot_requires_a_size_three_model_outside_collapse_controls() -> None:

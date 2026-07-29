@@ -35,6 +35,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from ztare.gates.lean_compile_primitives import AXIOM_ALLOWLIST  # F3: single source of truth (was a local literal)
+from ztare.leanmill.lean_source import ensure_import_header
 _AXIOM_LINE = re.compile(r"depends on axioms:\s*\[([^\]]*)\]")
 
 # Phase-timing seam (cycle/lead-time observability) — the AGENT DISPATCH is the documented "dominant cost" yet
@@ -705,22 +706,6 @@ def _leaf_prompt(target: str, goal: str, probe_name: str, *, mode: str = "direct
         gap_fb = _p.LEAF_DECOMPOSE_GAP_FB.format(gap=prior_gap) if prior_gap else ""
         return _p.LEAF_DECOMPOSE_PREFIX.format(target=target, goal=goal, probe=probe_name, gap_fb=gap_fb) + common
     return _p.LEAF_DIRECT_PREFIX.format(target=target, goal=goal, probe=probe_name) + common
-
-
-def ensure_import_header(text: str, *, header: str = "import Mathlib") -> str:
-    """Guarantee a Lean file is SELF-CONTAINED for a STANDALONE compile — the permanent fix for the
-    warm-vs-verify import asymmetry (RCA 2026-06-12). The agent iterates against the WARM checker
-    (`lean_check_server` / `PersistentLean` run in a REPL session with Mathlib PRE-LOADED), so its final probe
-    frequently OMITS `import Mathlib` — harmless in the warm session, but a STANDALONE `lake env lean` +
-    `#print axioms` verify then fails to PARSE and FALSE-`compile_error`s a kernel-valid proof. (Observed: a
-    complete 466-line RatFunc-antiderivative proof — sorry-free, axioms ⊆ allowlist once the header is present —
-    was recorded `compile_error` and the closure was discarded.) Prepend the substrate header iff NO `import`
-    line is present. Idempotent (any existing `import` ⇒ untouched). SOUND: the header is a pure SUPERSET — it
-    can never make an unsound proof pass (the kernel + `#print axioms` audit still gate); it only stops a VALID
-    proof from being thrown away. Use at EVERY standalone-compile choke point so the bug cannot recur."""
-    if re.search(r"(?m)^\s*import\s+\w", text or ""):
-        return text
-    return f"{header}\n\n{text}"
 
 
 def _probe_text(defs: str, goal: str, target: str) -> str:

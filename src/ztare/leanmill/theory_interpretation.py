@@ -1,6 +1,7 @@
 """Evidence-bound interpretation of a verified theory candidate."""
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, Mapping
 
 from ztare.common.constraint_isomorphism import ConstraintFingerprint
@@ -8,6 +9,11 @@ from ztare.leanmill.theory_ir import content_hash
 
 
 THEORY_INTERPRETATION_SCHEMA = "leanmill.theory_interpretation.v1"
+
+_POST_FREEZE_PACKET_SCHEMAS = {
+    "leanmill.post_freeze_result_packet.v4",
+    "leanmill.post_freeze_result_packet.v5",
+}
 
 _EXTERNAL_STATUS = {
     "known_implication": "catalogued",
@@ -34,7 +40,7 @@ def _validate_formula_equivalence_metadata(
     result_packet: Mapping[str, Any],
     formula_matches: list[dict[str, Any]],
 ) -> None:
-    if result_packet.get("schema") != "leanmill.post_freeze_result_packet.v4":
+    if result_packet.get("schema") not in _POST_FREEZE_PACKET_SCHEMAS:
         return
     expected = {
         str(row.get("formula_id") or "")
@@ -81,7 +87,7 @@ def _validated_finite_witness_checks(
         if isinstance(row, Mapping)
     }
     raw_checks = literature_receipt.get("finite_witness_host_checks") or ()
-    if result_packet.get("schema") == "leanmill.post_freeze_result_packet.v4" and (
+    if result_packet.get("schema") in _POST_FREEZE_PACKET_SCHEMAS and (
         len(raw_checks) != len(proposals)
     ):
         raise ValueError("finite-witness proposals lack deterministic host checks")
@@ -138,6 +144,174 @@ def _validated_finite_witness_checks(
             raise ValueError("verified finite-witness check lacks an executable match")
         checks.append(check)
     return checks
+
+
+def _validated_target_predicate_replay(
+    result_packet: Mapping[str, Any],
+    literature_receipt: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Replay every target receipt before it can change prior-art state."""
+
+    frozen = result_packet.get("target_predicate_contract")
+    replay = literature_receipt.get("target_predicate_replay")
+    if not isinstance(frozen, Mapping):
+        if replay is not None:
+            raise ValueError("target-predicate replay has no frozen packet contract")
+        return None
+    if not isinstance(replay, Mapping):
+        raise ValueError("frozen target predicate lacks its typed replay outcome")
+    required = {
+        "schema", "packet_sha256", "contract_sha256", "outcome",
+        "receipt_count", "receipts", "transitions", "failures",
+        "claim_boundary", "replay_sha256",
+    }
+    if set(replay) != required:
+        raise ValueError("target-predicate review replay fields differ from its contract")
+    replay_core = {key: value for key, value in replay.items() if key != "replay_sha256"}
+    if replay.get("replay_sha256") != content_hash(replay_core):
+        raise ValueError("target-predicate review replay digest mismatch")
+    if replay.get("packet_sha256") != result_packet.get("packet_sha256"):
+        raise ValueError("target-predicate replay belongs to another result packet")
+    from ztare.common.target_predicate import (
+        TargetPredicateContract,
+        TargetPredicateReceipt,
+    )
+
+    frozen_core = dict(frozen)
+    frozen_contract_sha = str(frozen_core.pop("contract_sha256", ""))
+    frozen_contract = TargetPredicateContract.from_dict(frozen_core)
+    if (
+        frozen_contract.sha256 != frozen_contract_sha
+        or frozen_contract.context_hash
+        != str(result_packet.get("context_hash") or "")
+    ):
+        raise ValueError("result packet target-predicate identity mismatch")
+    if replay.get("contract_sha256") != frozen_contract_sha:
+        raise ValueError("target-predicate replay belongs to another contract")
+    receipts = replay.get("receipts")
+    transitions = replay.get("transitions")
+    if not isinstance(receipts, list) or not isinstance(transitions, list):
+        raise TypeError("target-predicate replay receipts and transitions must be lists")
+    if len(receipts) != len(transitions) or replay.get("receipt_count") != len(receipts):
+        raise ValueError("target-predicate replay receipt count mismatch")
+
+    from ztare.leanmill.target_predicate_replay import (
+        consume_target_predicate_consequence,
+    )
+
+    outcomes: list[str] = []
+    for raw_receipt, stored_transition in zip(receipts, transitions, strict=True):
+        if not isinstance(raw_receipt, Mapping) or not isinstance(
+            stored_transition, Mapping
+        ):
+            raise TypeError("target-predicate replay rows must be objects")
+        bound = TargetPredicateReceipt.from_dict(raw_receipt)
+        if bound.contract.sha256 != frozen_contract_sha:
+            raise ValueError("target-predicate receipt changed frozen contract")
+        expected_transition = consume_target_predicate_consequence(bound)
+        if dict(stored_transition) != expected_transition:
+            raise ValueError("target-predicate state transition does not replay")
+        outcomes.append(bound.adjudication.outcome)
+    expected_outcome = "overlap" if "overlap" in outcomes else "unknown"
+    if replay.get("outcome") != expected_outcome:
+        raise ValueError("target-predicate aggregate outcome mismatch")
+    return dict(replay)
+
+
+def _validate_temporal_search_coverage(
+    result_packet: Mapping[str, Any], review: Mapping[str, Any]
+) -> dict[str, Any] | None:
+    """Require chronology coverage before a v5 review may report no match."""
+
+    if result_packet.get("schema") != "leanmill.post_freeze_result_packet.v5":
+        return None
+    protocol = result_packet.get("literature_search_protocol")
+    coverage = review.get("search_coverage")
+    if not isinstance(protocol, Mapping) or not isinstance(coverage, Mapping):
+        raise ValueError("v5 literature review lacks temporal search coverage")
+    required_legs = tuple(str(row) for row in protocol.get("required_search_legs") or ())
+    legs = [
+        dict(row)
+        for row in coverage.get("search_legs") or ()
+        if isinstance(row, Mapping)
+    ]
+    leg_ids = tuple(str(row.get("leg_id") or "") for row in legs)
+    if (
+        not required_legs
+        or len(leg_ids) != len(required_legs)
+        or set(leg_ids) != set(required_legs)
+        or len(set(leg_ids)) != len(leg_ids)
+    ):
+        raise ValueError("literature review does not cover each required search leg")
+    if coverage.get("review_as_of_date") != protocol.get("review_as_of_date"):
+        raise ValueError("literature review chronology differs from its frozen cutoff")
+    try:
+        cutoff = date.fromisoformat(str(coverage["review_as_of_date"]))
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("literature review cutoff is not an ISO date") from exc
+    for row in legs:
+        queries = row.get("queries")
+        if not isinstance(queries, list) or not queries or any(
+            not str(query).strip() for query in queries
+        ):
+            raise ValueError("literature search leg lacks an executed query")
+        if row.get("status") == "unavailable" and not str(
+            row.get("limitation") or ""
+        ).strip():
+            raise ValueError("unavailable literature search leg lacks its limitation")
+    anchors = [
+        dict(row)
+        for row in coverage.get("anchor_sources") or ()
+        if isinstance(row, Mapping)
+    ]
+    dated_values = [
+        str(value)
+        for row in anchors
+        for value in (row.get("source_date"), row.get("latest_revision_date"))
+        if value is not None
+    ]
+    latest_value = coverage.get("latest_relevant_source_date")
+    if latest_value is not None:
+        dated_values.append(str(latest_value))
+    for value in dated_values:
+        try:
+            source_date = date.fromisoformat(value)
+        except ValueError as exc:
+            raise ValueError("literature source date is not an ISO date") from exc
+        if source_date > cutoff:
+            raise ValueError("literature source date is later than the frozen cutoff")
+    evidence_urls = {
+        str(url)
+        for row in legs
+        for url in row.get("evidence_urls") or ()
+        if str(url).strip()
+    } | {
+        str(row.get("source_url") or "")
+        for row in anchors
+        if str(row.get("source_url") or "").strip()
+    }
+    status_urls = {
+        str(url) for url in coverage.get("status_evidence_urls") or ()
+        if str(url).strip()
+    }
+    if not status_urls <= evidence_urls:
+        raise ValueError("problem-status evidence is outside the executed search graph")
+    problem_status = str(coverage.get("problem_status") or "")
+    novelty = str(review.get("novelty_assessment") or "")
+    if problem_status in {"resolved", "open_as_of_cutoff"} and (
+        not status_urls or not str(coverage.get("latest_relevant_source_date") or "").strip()
+    ):
+        raise ValueError("current problem status lacks dated primary-source evidence")
+    if problem_status == "resolved" and novelty not in {
+        "known_implication", "likely_elementary_or_known",
+    }:
+        raise ValueError("resolved prior art cannot be assessed as unmapped")
+    if novelty == "not_located_in_bounded_review":
+        if any(row.get("status") != "completed" for row in legs):
+            raise ValueError("unmapped assessment requires complete temporal search legs")
+        if problem_status not in {"open_as_of_cutoff", "not_an_open_problem"}:
+            raise ValueError("unmapped assessment has inconclusive problem currentness")
+    return dict(coverage)
 
 
 def interpretation_isomorphism_fingerprint(
@@ -200,7 +374,7 @@ def compose_theory_interpretation(
     review = literature_receipt.get("review")
     if not literature_sha or not isinstance(review, Mapping):
         raise ValueError("interpretation requires a receipted source review")
-    if result_packet.get("schema") == "leanmill.post_freeze_result_packet.v4":
+    if result_packet.get("schema") in _POST_FREEZE_PACKET_SCHEMAS:
         literature_core = {
             key: value
             for key, value in literature_receipt.items()
@@ -214,8 +388,29 @@ def compose_theory_interpretation(
     bounded = result_packet.get("bounded_context")
     bounded = dict(bounded) if isinstance(bounded, Mapping) else {}
     novelty = str(review.get("novelty_assessment") or "")
-    external_status = _EXTERNAL_STATUS.get(novelty, "unavailable")
-    if external_status in {"catalogued", "likely_catalogued"}:
+    target_predicate_replay = _validated_target_predicate_replay(
+        result_packet, literature_receipt
+    )
+    target_predicate_outcome = (
+        str(target_predicate_replay.get("outcome") or "")
+        if isinstance(target_predicate_replay, Mapping)
+        else ""
+    )
+    if target_predicate_outcome == "overlap":
+        external_status = "target_overlap"
+    elif (
+        target_predicate_outcome == "unknown"
+        and novelty == "not_located_in_bounded_review"
+    ):
+        external_status = "unavailable"
+    else:
+        external_status = _EXTERNAL_STATUS.get(novelty, "unavailable")
+    if (
+        target_predicate_outcome == "unknown"
+        and novelty == "not_located_in_bounded_review"
+    ):
+        interpretation_status = "inconclusive"
+    elif external_status in {"catalogued", "likely_catalogued", "target_overlap"}:
         interpretation_status = "mapped_to_recorded_knowledge"
     elif lean.get("status") == "proved_attributed":
         interpretation_status = "mechanically_characterized_unmapped"
@@ -237,6 +432,7 @@ def compose_theory_interpretation(
         if isinstance(row, Mapping)
     ]
     _validate_formula_equivalence_metadata(result_packet, formula_matches)
+    search_coverage = _validate_temporal_search_coverage(result_packet, review)
     finite_witness_checks = _validated_finite_witness_checks(
         result_packet, literature_receipt, review
     )
@@ -250,13 +446,16 @@ def compose_theory_interpretation(
         source_rows
         or review.get("recognized_theory_connections")
         or verified_finite_recurrences
+        or target_predicate_outcome == "overlap"
         or any(
             row.get("match_status") in {"exact", "equivalent"}
             for row in formula_matches
         )
     )
     origin_disposition = (
-        "catalogued_recovery"
+        "retrieved_target_overlap"
+        if external_status == "target_overlap"
+        else "catalogued_recovery"
         if external_status == "catalogued"
         else "likely_routine_reconstruction"
         if external_status == "likely_catalogued"
@@ -388,6 +587,8 @@ def compose_theory_interpretation(
             "recognized_connections": [
                 str(row) for row in review.get("recognized_theory_connections") or ()
             ],
+            "search_coverage": search_coverage,
+            "target_predicate_replay": target_predicate_replay,
             "structural_recurrence": {
                 "status": (
                     "verified_finite_recurrence"

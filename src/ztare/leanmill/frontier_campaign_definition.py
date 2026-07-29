@@ -15,26 +15,14 @@ from ztare.leanmill.exploration_budget import (
     budget_to_user_mapping,
 )
 from ztare.leanmill.frontier_blueprint import CAMPAIGN_MODES, SOURCE_MODES, FrontierExplorationBrief
+from ztare.leanmill.frontier_campaign_roles import (
+    FRONTIER_RUNTIME_ROLES,
+    validate_frontier_runtime_role,
+)
 from ztare.leanmill.theory_ir import content_hash
 
 
 CAMPAIGN_DEFINITION_SCHEMA = "leanmill.frontier_campaign_definition.v1"
-_RUNTIME_ROLES = frozenset(
-    {
-        "budget_compiler",
-        "blueprint_compiler",
-        "semantic_reviewer",
-        "navigator",
-        "lineage_synthesizer",
-        "adapter_forge",
-        "adapter_reviewer",
-        "formalizer",
-        "faithfulness_reviewer",
-        "lean_solver",
-        "post_freeze_interpreter",
-        "external_science_reviewer",
-    }
-)
 
 
 @dataclass(frozen=True)
@@ -69,8 +57,15 @@ class FrontierCampaignDefinition:
         if self.runtime.get("transport") != "subscription_agent_runtime":
             raise ValueError("frontier campaign model work must use subscription_agent_runtime")
         overrides = self.runtime.get("role_overrides") or {}
-        if not isinstance(overrides, Mapping) or set(overrides) - _RUNTIME_ROLES:
+        if not isinstance(overrides, Mapping):
             raise ValueError("campaign runtime contains unknown role overrides")
+        try:
+            for role in overrides:
+                validate_frontier_runtime_role(role)
+        except ValueError as exc:
+            raise ValueError(
+                "campaign runtime contains unknown role overrides"
+            ) from exc
         for role, config in overrides.items():
             if not isinstance(config, Mapping):
                 raise ValueError(f"runtime override for {role} must be a mapping")
@@ -244,6 +239,6 @@ def load_frontier_campaign_definition(source: str | Path) -> FrontierCampaignDef
 
 
 __all__ = [
-    "CAMPAIGN_DEFINITION_SCHEMA", "FrontierCampaignDefinition",
+    "CAMPAIGN_DEFINITION_SCHEMA", "FRONTIER_RUNTIME_ROLES", "FrontierCampaignDefinition",
     "load_frontier_campaign_definition",
 ]

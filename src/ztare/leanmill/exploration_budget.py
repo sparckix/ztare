@@ -4,15 +4,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from decimal import Decimal
 import json
+import os
 from pathlib import Path
 import re
+import stat
 import time
 import uuid
 from typing import Any, Callable, Mapping, Sequence
 
 import yaml
 
-from ztare.leanmill.common import append_jsonl_locked
 from ztare.leanmill.campaign_profile import frontier_budget_preset_for_profile
 from ztare.leanmill.theory_ir import content_hash
 
@@ -21,6 +22,11 @@ BUDGET_SCHEMA = "leanmill.exploration_budget.v1"
 BUDGET_EVENT_SCHEMA = "leanmill.exploration_budget_event.v1"
 STOP_RECEIPT_SCHEMA = "leanmill.budget_stop_receipt.v1"
 USER_BUDGET_SCHEMA = "leanmill.exploration_budget_user.v1"
+_MAX_AUTHORITY_LEDGER_BYTES = 64_000_000
+_MAX_AUTHORITY_LEDGER_ROWS = 200_000
+_MAX_AUTHORITY_LEDGER_LINE_CHARACTERS = 1_000_000
+_AUTHORITY_LEDGER_TERMINAL_HEADROOM_BYTES = 4_096
+_AUTHORITY_LEDGER_TERMINAL_HEADROOM_ROWS = 1
 
 PHASES = (
     "compilation",
@@ -687,6 +693,16 @@ class BudgetExceeded(RuntimeError):
         self.reason = reason
 
 
+class BudgetLedgerResourceUnavailable(RuntimeError):
+    """A strict authority replay exceeded its deterministic read ceiling."""
+
+    def __init__(self, reason_code: str, *, observed: int, ceiling: int) -> None:
+        self.reason_code = str(reason_code)
+        self.observed = int(observed)
+        self.ceiling = int(ceiling)
+        super().__init__(self.reason_code)
+
+
 @dataclass(frozen=True)
 class BudgetReservation:
     reservation_id: str
@@ -726,6 +742,33 @@ class BudgetStopReceipt:
         }
         return {**core, "receipt_sha256": content_hash(core)}
 
+    @classmethod
+    def from_json(cls, value: Mapping[str, Any]) -> "BudgetStopReceipt":
+        receipt = cls(
+            reason=str(value["reason"]),
+            budget_digest=str(value["budget_digest"]),
+            elapsed_ms=int(value["elapsed_ms"]),
+            usage=dict(value["usage"]),
+            phase_usage={
+                str(key): dict(row)
+                for key, row in dict(value["phase_usage"]).items()
+            },
+            outstanding_reservations=tuple(
+                dict(row) for row in value["outstanding_reservations"]
+            ),
+            attempt_id=str(value["attempt_id"]),
+            context_hash=str(value.get("context_hash") or ""),
+            last_information_observation=(
+                dict(value["last_information_observation"])
+                if isinstance(value.get("last_information_observation"), Mapping)
+                else None
+            ),
+            schema=str(value.get("schema") or STOP_RECEIPT_SCHEMA),
+        )
+        if receipt.to_json() != dict(value):
+            raise ValueError("budget stop receipt does not replay")
+        return receipt
+
 
 class ExplorationBudgetLedger:
     """Append-only reservation ledger. The host is the only writer."""
@@ -760,16 +803,96 @@ class ExplorationBudgetLedger:
             )
 
     def _rows(self) -> list[dict[str, Any]]:
-        if not self.path.is_file():
+        return self._bounded_rows(strict=False)
+
+    def _strict_rows(self) -> list[dict[str, Any]]:
+        """Read authority-bearing ledger rows without legacy error recovery."""
+
+        return self._bounded_rows(strict=True)
+
+    def _bounded_rows(self, *, strict: bool) -> list[dict[str, Any]]:
+        """Stream the ledger under fixed resource ceilings."""
+
+        flags = os.O_RDONLY
+        if hasattr(os, "O_CLOEXEC"):
+            flags |= os.O_CLOEXEC
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        try:
+            fd = os.open(self.path, flags)
+        except FileNotFoundError:
             return []
+        except OSError as exc:
+            raise ValueError(
+                "budget ledger authority path is unavailable"
+            ) from exc
         rows: list[dict[str, Any]] = []
-        for line in self.path.read_text(errors="ignore").splitlines():
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(row, dict):
-                rows.append(row)
+        observed_rows = 0
+        streamed_bytes = 0
+        try:
+            metadata = os.fstat(fd)
+            if not stat.S_ISREG(metadata.st_mode):
+                raise ValueError(
+                    "budget ledger authority path is not a regular file"
+                )
+            if metadata.st_size > _MAX_AUTHORITY_LEDGER_BYTES:
+                raise BudgetLedgerResourceUnavailable(
+                    "budget_ledger_byte_limit_exhausted",
+                    observed=metadata.st_size,
+                    ceiling=_MAX_AUTHORITY_LEDGER_BYTES,
+                )
+            with os.fdopen(fd, "rb", buffering=0) as handle:
+                fd = -1
+                while True:
+                    line_bytes = handle.readline(
+                        _MAX_AUTHORITY_LEDGER_LINE_CHARACTERS + 1
+                    )
+                    if not line_bytes:
+                        break
+                    streamed_bytes += len(line_bytes)
+                    if streamed_bytes > _MAX_AUTHORITY_LEDGER_BYTES:
+                        raise BudgetLedgerResourceUnavailable(
+                            "budget_ledger_byte_limit_exhausted",
+                            observed=streamed_bytes,
+                            ceiling=_MAX_AUTHORITY_LEDGER_BYTES,
+                        )
+                    if len(line_bytes) > _MAX_AUTHORITY_LEDGER_LINE_CHARACTERS:
+                        raise BudgetLedgerResourceUnavailable(
+                            "budget_ledger_line_limit_exhausted",
+                            observed=len(line_bytes),
+                            ceiling=_MAX_AUTHORITY_LEDGER_LINE_CHARACTERS,
+                        )
+                    try:
+                        line = line_bytes.decode("utf-8", errors="strict")
+                    except UnicodeDecodeError as exc:
+                        raise ValueError(
+                            "budget ledger contains invalid UTF-8"
+                        ) from exc
+                    if not line.strip():
+                        continue
+                    observed_rows += 1
+                    if observed_rows > _MAX_AUTHORITY_LEDGER_ROWS:
+                        raise BudgetLedgerResourceUnavailable(
+                            "budget_ledger_row_limit_exhausted",
+                            observed=observed_rows,
+                            ceiling=_MAX_AUTHORITY_LEDGER_ROWS,
+                        )
+                    try:
+                        row = json.loads(line)
+                    except json.JSONDecodeError as exc:
+                        if strict:
+                            raise ValueError(
+                                "budget ledger contains malformed JSON"
+                            ) from exc
+                        continue
+                    if not isinstance(row, dict):
+                        if strict:
+                            raise ValueError("budget ledger row is not an object")
+                        continue
+                    rows.append(row)
+        finally:
+            if fd >= 0:
+                os.close(fd)
         return rows
 
     def _append(self, event_type: str, **payload: Any) -> dict[str, Any]:
@@ -780,20 +903,139 @@ class ExplorationBudgetLedger:
             **payload,
         }
         row = {**core, "event_sha256": content_hash(core)}
-        if not append_jsonl_locked(self.path, row, ensure_ascii=True):
-            if not self.path.is_file():
-                raise OSError("budget ledger append failed")
+        encoded = (json.dumps(row, ensure_ascii=True) + "\n").encode("utf-8")
+        if len(encoded) > _MAX_AUTHORITY_LEDGER_LINE_CHARACTERS:
+            raise BudgetLedgerResourceUnavailable(
+                "budget_ledger_write_line_limit_exhausted",
+                observed=len(encoded),
+                ceiling=_MAX_AUTHORITY_LEDGER_LINE_CHARACTERS,
+            )
+        if (
+            event_type == "wall_clock_frozen"
+            and len(encoded) > _AUTHORITY_LEDGER_TERMINAL_HEADROOM_BYTES
+        ):
+            raise BudgetLedgerResourceUnavailable(
+                "budget_ledger_terminal_event_limit_exhausted",
+                observed=len(encoded),
+                ceiling=_AUTHORITY_LEDGER_TERMINAL_HEADROOM_BYTES,
+            )
+
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        flags = os.O_RDWR | os.O_APPEND | os.O_CREAT
+        if hasattr(os, "O_CLOEXEC"):
+            flags |= os.O_CLOEXEC
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        fd = os.open(self.path, flags, 0o600)
+        try:
+            import fcntl
+
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            try:
+                metadata = os.fstat(fd)
+                if not stat.S_ISREG(metadata.st_mode):
+                    raise ValueError(
+                        "budget ledger authority path is not a regular file"
+                    )
+                observed_bytes = int(metadata.st_size)
+                if observed_bytes > _MAX_AUTHORITY_LEDGER_BYTES:
+                    raise BudgetLedgerResourceUnavailable(
+                        "budget_ledger_byte_limit_exhausted",
+                        observed=observed_bytes,
+                        ceiling=_MAX_AUTHORITY_LEDGER_BYTES,
+                    )
+
+                observed_rows = 0
+                reader_fd = os.dup(fd)
+                try:
+                    with os.fdopen(reader_fd, "rb", buffering=0) as handle:
+                        reader_fd = -1
+                        handle.seek(0)
+                        while True:
+                            line = handle.readline(
+                                _MAX_AUTHORITY_LEDGER_LINE_CHARACTERS + 1
+                            )
+                            if not line:
+                                break
+                            if len(line) > _MAX_AUTHORITY_LEDGER_LINE_CHARACTERS:
+                                raise BudgetLedgerResourceUnavailable(
+                                    "budget_ledger_line_limit_exhausted",
+                                    observed=len(line),
+                                    ceiling=_MAX_AUTHORITY_LEDGER_LINE_CHARACTERS,
+                                )
+                            line.decode("utf-8", errors="strict")
+                            if line.strip():
+                                observed_rows += 1
+                                if observed_rows > _MAX_AUTHORITY_LEDGER_ROWS:
+                                    raise BudgetLedgerResourceUnavailable(
+                                        "budget_ledger_row_limit_exhausted",
+                                        observed=observed_rows,
+                                        ceiling=_MAX_AUTHORITY_LEDGER_ROWS,
+                                    )
+                finally:
+                    if reader_fd >= 0:
+                        os.close(reader_fd)
+
+                terminal_event = event_type == "wall_clock_frozen"
+                reserved_bytes = (
+                    0
+                    if terminal_event
+                    else _AUTHORITY_LEDGER_TERMINAL_HEADROOM_BYTES
+                )
+                reserved_rows = (
+                    0
+                    if terminal_event
+                    else _AUTHORITY_LEDGER_TERMINAL_HEADROOM_ROWS
+                )
+                projected_bytes = observed_bytes + len(encoded) + reserved_bytes
+                if projected_bytes > _MAX_AUTHORITY_LEDGER_BYTES:
+                    raise BudgetLedgerResourceUnavailable(
+                        "budget_ledger_write_byte_headroom_exhausted",
+                        observed=projected_bytes,
+                        ceiling=_MAX_AUTHORITY_LEDGER_BYTES,
+                    )
+                projected_rows = observed_rows + 1 + reserved_rows
+                if projected_rows > _MAX_AUTHORITY_LEDGER_ROWS:
+                    raise BudgetLedgerResourceUnavailable(
+                        "budget_ledger_write_row_headroom_exhausted",
+                        observed=projected_rows,
+                        ceiling=_MAX_AUTHORITY_LEDGER_ROWS,
+                    )
+
+                pending = memoryview(encoded)
+                while pending:
+                    written = os.write(fd, pending)
+                    if written < 1:
+                        raise OSError("budget ledger append made no progress")
+                    pending = pending[written:]
+                os.fsync(fd)
+            finally:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+        finally:
+            os.close(fd)
         return row
 
     @staticmethod
-    def _validated_resources(resources: Mapping[str, int]) -> dict[str, int]:
-        values = {str(key): int(value) for key, value in resources.items() if int(value) != 0}
-        if set(values) - RESOURCE_KINDS or any(value < 0 for value in values.values()):
-            raise ValueError("invalid budget reservation resources")
-        return values
+    def _validated_resources(
+        resources: Mapping[str, int],
+        *,
+        allow_zero: bool = False,
+        require_nonempty: bool = False,
+    ) -> dict[str, int]:
+        values: dict[str, int] = {}
+        for key, value in resources.items():
+            if type(key) is not str or key not in RESOURCE_KINDS:
+                raise ValueError("invalid budget reservation resource key")
+            if type(value) is not int or value < 0 or (value == 0 and not allow_zero):
+                raise ValueError("invalid budget reservation resource value")
+            if value:
+                values[key] = value
+        if require_nonempty and not values:
+            raise ValueError("budget reservation resources cannot be empty")
+        return {key: values[key] for key in sorted(values)}
 
-    def elapsed_ms(self) -> int:
-        for row in reversed(self._rows()):
+    def _elapsed_ms_from_rows(self, rows: Sequence[Mapping[str, Any]]) -> int:
+        for row in reversed(rows):
             event_type = row.get("event_type")
             if event_type == "wall_clock_frozen":
                 return max(0, int(row["elapsed_ms"]))
@@ -805,6 +1047,9 @@ class ExplorationBudgetLedger:
                     - int(row["at_ms"]),
                 )
         return max(0, self._clock_ms() - self.started_at_ms)
+
+    def elapsed_ms(self) -> int:
+        return self._elapsed_ms_from_rows(self._rows())
 
     def wall_clock_cap_s(self) -> int:
         """Return the campaign cap including explicit, receipted extensions."""
@@ -845,7 +1090,7 @@ class ExplorationBudgetLedger:
         authority_ref: str,
         reason: str,
     ) -> dict[str, int]:
-        values = self._validated_resources(resources)
+        values = self._validated_resources(resources, require_nonempty=True)
         if phase not in PHASES or not values:
             raise ValueError("resource extension requires a phase and resources")
         if not str(authority_ref).strip() or not str(reason).strip():
@@ -960,16 +1205,19 @@ class ExplorationBudgetLedger:
         )
         return elapsed
 
-    def state(self) -> dict[str, Any]:
+    def _state_from_rows(
+        self, rows: Sequence[Mapping[str, Any]]
+    ) -> dict[str, Any]:
         usage = {key: 0 for key in RESOURCE_KINDS}
         phase_usage = {phase: {key: 0 for key in RESOURCE_KINDS} for phase in PHASES}
         reservations: dict[str, dict[str, Any]] = {}
         information: list[dict[str, Any]] = []
         user_stop = False
-        for row in self._rows():
+        wall_clock_cap_s = self.budget.wall_clock_s
+        for row in rows:
             event_type = row.get("event_type")
             if event_type == "resources_reserved":
-                reservations[str(row["reservation_id"])] = row
+                reservations[str(row["reservation_id"])] = dict(row)
             elif event_type in {"reservation_committed", "reservation_released"}:
                 reservation = reservations.pop(str(row["reservation_id"]), None)
                 if event_type == "reservation_committed" and reservation is not None:
@@ -978,9 +1226,11 @@ class ExplorationBudgetLedger:
                         usage[str(key)] += int(value)
                         phase_usage[phase][str(key)] += int(value)
             elif event_type == "information_observed":
-                information.append(row)
+                information.append(dict(row))
             elif event_type in {"user_stop_requested", "operator_stop_requested"}:
                 user_stop = True
+            elif event_type == "wall_clock_extended":
+                wall_clock_cap_s += int(row.get("extra_s", 0))
         return {
             "usage": usage,
             "phase_usage": phase_usage,
@@ -988,15 +1238,184 @@ class ExplorationBudgetLedger:
             "information": information,
             "user_stop": user_stop,
             "operator_stop": user_stop,
-            "wall_clock_cap_s": self.wall_clock_cap_s(),
+            "wall_clock_cap_s": wall_clock_cap_s,
         }
 
-    def _admission_failure(self, phase: str, resources: Mapping[str, int]) -> str | None:
+    def state(self) -> dict[str, Any]:
+        return self._state_from_rows(self._rows())
+
+    def committed_action_resources(
+        self,
+        action_id: str,
+        *,
+        phase: str | None = None,
+    ) -> dict[str, int]:
+        """Return committed usage owned by one exact durable action identity."""
+
+        if phase is not None and phase not in PHASES:
+            raise ValueError(f"unknown exploration phase: {phase!r}")
+        reservations: dict[str, Mapping[str, Any]] = {}
+        totals = {key: 0 for key in RESOURCE_KINDS}
+        for row in self._rows():
+            event_type = row.get("event_type")
+            reservation_id = str(row.get("reservation_id") or "")
+            if event_type == "resources_reserved":
+                reservations[reservation_id] = row
+                continue
+            if event_type != "reservation_committed":
+                continue
+            reserved = reservations.get(reservation_id)
+            if (
+                not isinstance(reserved, Mapping)
+                or str(reserved.get("action_id") or "") != str(action_id)
+                or phase is not None
+                and str(reserved.get("phase") or "") != phase
+            ):
+                continue
+            for resource, amount in dict(
+                row.get("actual_resources") or {}
+            ).items():
+                if resource in RESOURCE_KINDS:
+                    totals[str(resource)] += int(amount)
+        return totals
+
+    def has_committed_action_resources(
+        self,
+        action_id: str,
+        *,
+        phase: str,
+        minimum_resources: Mapping[str, int],
+    ) -> bool:
+        """Recognize one authentic reservation/commit pair for an action.
+
+        Replay authority is indivisible: several smaller charges for the same
+        action cannot be summed into authority for one larger execution.
+        """
+
         if phase not in PHASES:
             raise ValueError(f"unknown exploration phase: {phase!r}")
-        if self.elapsed_ms() >= self.wall_clock_cap_s() * 1_000:
+        minimum = self._validated_resources(
+            minimum_resources, require_nonempty=True
+        )
+        exact_action_id = str(action_id)
+        if not exact_action_id:
+            raise ValueError("committed-action recognition requires an action id")
+
+        reservations: dict[str, tuple[dict[str, Any], dict[str, int]]] = {}
+        terminal_reservations: set[str] = set()
+        found = False
+        for raw in self._strict_rows():
+            row = dict(raw)
+            event_sha256 = row.pop("event_sha256", None)
+            if event_sha256 != content_hash(row):
+                raise ValueError("budget ledger event digest mismatch")
+            if row.get("schema") != BUDGET_EVENT_SCHEMA:
+                raise ValueError("budget ledger event schema mismatch")
+            event_type = str(row.get("event_type") or "")
+            if event_type not in {
+                "resources_reserved",
+                "reservation_committed",
+                "reservation_released",
+            }:
+                continue
+            if (
+                row.get("budget_digest") != self.budget.digest
+                or row.get("attempt_id") != self.attempt_id
+            ):
+                raise ValueError("budget ledger resource event identity mismatch")
+            reservation_id = str(row.get("reservation_id") or "")
+            if not reservation_id:
+                raise ValueError("budget ledger resource event lacks a reservation id")
+
+            if event_type == "resources_reserved":
+                if reservation_id in reservations or reservation_id in terminal_reservations:
+                    raise ValueError("budget ledger repeats a reservation identity")
+                if row.get("phase") not in PHASES:
+                    raise ValueError("budget ledger reservation has an invalid phase")
+                raw_resources = row.get("resources")
+                if not isinstance(raw_resources, Mapping):
+                    raise ValueError("budget ledger reservation resources are malformed")
+                resources = self._validated_resources(
+                    raw_resources, require_nonempty=True
+                )
+                if dict(raw_resources) != resources:
+                    raise ValueError("budget ledger reservation resources are noncanonical")
+                reservations[reservation_id] = (row, resources)
+                continue
+
+            reserved = reservations.pop(reservation_id, None)
+            if reserved is None or reservation_id in terminal_reservations:
+                raise ValueError("budget ledger has an unbound reservation outcome")
+            terminal_reservations.add(reservation_id)
+            if event_type == "reservation_released":
+                continue
+
+            raw_actual = row.get("actual_resources")
+            if not isinstance(raw_actual, Mapping):
+                raise ValueError("budget ledger committed resources are malformed")
+            actual = self._validated_resources(raw_actual, allow_zero=True)
+            if dict(raw_actual) != actual:
+                raise ValueError("budget ledger committed resources are noncanonical")
+            reservation, reserved_resources = reserved
+            if any(
+                amount > int(reserved_resources.get(resource, 0))
+                for resource, amount in actual.items()
+            ):
+                raise ValueError("budget ledger commit exceeds its reservation")
+            if (
+                str(reservation.get("action_id") or "") == exact_action_id
+                and str(reservation.get("phase") or "") == phase
+                and all(
+                    int(actual.get(resource, 0)) >= amount
+                    for resource, amount in minimum.items()
+                )
+            ):
+                found = True
+        return found
+
+    def _capacity_snapshot(self) -> dict[str, Any]:
+        """Read one immutable projection for a complete capacity calculation."""
+
+        rows = self._rows()
+        resource_caps = {
+            key: int(self.budget.hard_caps[key]) for key in RESOURCE_KINDS
+        }
+        phase_caps = {
+            phase: {
+                key: int(self.budget.phase_caps[phase][key])
+                for key in RESOURCE_KINDS
+            }
+            for phase in PHASES
+        }
+        for row in rows:
+            if row.get("event_type") != "resources_extended":
+                continue
+            phase = str(row.get("phase") or "")
+            for key, value in dict(row.get("resources") or {}).items():
+                resource = str(key)
+                if resource not in RESOURCE_KINDS:
+                    continue
+                resource_caps[resource] += int(value)
+                if phase in PHASES:
+                    phase_caps[phase][resource] += int(value)
+        return {
+            "state": self._state_from_rows(rows),
+            "elapsed_ms": self._elapsed_ms_from_rows(rows),
+            "resource_caps": resource_caps,
+            "phase_caps": phase_caps,
+        }
+
+    def _admission_failure_against_snapshot(
+        self,
+        phase: str,
+        resources: Mapping[str, int],
+        snapshot: Mapping[str, Any],
+    ) -> str | None:
+        if phase not in PHASES:
+            raise ValueError(f"unknown exploration phase: {phase!r}")
+        state = snapshot["state"]
+        if int(snapshot["elapsed_ms"]) >= int(state["wall_clock_cap_s"]) * 1_000:
             return "hard_cap_reached:wall_clock_s"
-        state = self.state()
         if state["user_stop"]:
             return "user_stop"
         reserved_total = {key: 0 for key in RESOURCE_KINDS}
@@ -1012,19 +1431,22 @@ class ExplorationBudgetLedger:
                 if row["phase"] in active_phases:
                     reserved_active[str(key)] += int(value)
         for key, value in resources.items():
-            if state["usage"][key] + reserved_total[key] + value > self.resource_cap(key):
+            if (
+                state["usage"][key] + reserved_total[key] + value
+                > snapshot["resource_caps"][key]
+            ):
                 return f"blocked_before_action:{key}"
             if self.budget.allocation_policy == "global_cap":
                 continue
             if self.budget.allocation_policy == "strict_phase_caps":
                 if (
                     state["phase_usage"][phase][key] + reserved_phase[key] + value
-                    > self.phase_cap(phase, key)
+                    > snapshot["phase_caps"][phase][key]
                 ):
                     return f"blocked_before_action:{phase}:{key}"
                 continue
             cumulative_cap = sum(
-                self.phase_cap(item, key) for item in active_phases
+                snapshot["phase_caps"][item][key] for item in active_phases
             )
             # AdapterForge is the only consumer of the expansion agent slice.
             # When the frozen campaign disables forge attempts, that slice is
@@ -1033,14 +1455,14 @@ class ExplorationBudgetLedger:
             if (
                 phase_index < PHASES.index("expansion")
                 and key in _EXPANSION_AGENT_RESOURCES
-                and self.budget.hard_caps["adapter_forge_attempts"] == 0
+                and snapshot["resource_caps"]["adapter_forge_attempts"] == 0
             ):
-                cumulative_cap += self.budget.phase_caps["expansion"][key]
+                cumulative_cap += snapshot["phase_caps"]["expansion"][key]
                 if key in _BOUNDARY_CALL_RESOURCES:
-                    boundary_cap = self.budget.phase_caps["boundary"][key]
+                    boundary_cap = snapshot["phase_caps"]["boundary"][key]
                     protected_boundary = min(
                         boundary_cap,
-                        self.budget.hard_caps["lean_attempts"],
+                        snapshot["resource_caps"]["lean_attempts"],
                     )
                     cumulative_cap += boundary_cap - protected_boundary
             cumulative_usage = sum(
@@ -1053,33 +1475,78 @@ class ExplorationBudgetLedger:
                 return f"blocked_before_action:{phase}:{key}"
         return None
 
-    def remaining_capacity(self, phase: str, resource: str) -> int:
-        """Return exact immediately admissible units without reserving them."""
+    def _admission_failure(
+        self, phase: str, resources: Mapping[str, int]
+    ) -> str | None:
+        return self._admission_failure_against_snapshot(
+            phase, resources, self._capacity_snapshot()
+        )
 
+    def _remaining_capacity_against_snapshot(
+        self,
+        phase: str,
+        resource: str,
+        snapshot: Mapping[str, Any],
+    ) -> int:
         if resource not in RESOURCE_KINDS:
             raise ValueError(f"unknown budget resource: {resource!r}")
-        state = self.state()
+        state = snapshot["state"]
         reserved = sum(
             int(dict(row.get("resources") or {}).get(resource, 0))
             for row in state["reservations"].values()
         )
         high = max(
             0,
-            self.resource_cap(resource)
+            int(snapshot["resource_caps"][resource])
             - state["usage"][resource]
             - reserved,
         )
         low = 0
         while low < high:
             middle = (low + high + 1) // 2
-            if self._admission_failure(phase, {resource: middle}) is None:
+            if (
+                self._admission_failure_against_snapshot(
+                    phase, {resource: middle}, snapshot
+                )
+                is None
+            ):
                 low = middle
             else:
                 high = middle - 1
         return low
 
+    def remaining_capacity(self, phase: str, resource: str) -> int:
+        """Return exact immediately admissible units without reserving them."""
+
+        return self._remaining_capacity_against_snapshot(
+            phase, resource, self._capacity_snapshot()
+        )
+
+    def remaining_capacities(
+        self,
+        *,
+        phases: Sequence[str] = PHASES,
+        resources: Sequence[str] = tuple(sorted(RESOURCE_KINDS)),
+    ) -> dict[str, dict[str, int]]:
+        """Project many capacities from one ledger snapshot."""
+
+        unknown_phases = set(phases) - set(PHASES)
+        unknown_resources = set(resources) - RESOURCE_KINDS
+        if unknown_phases or unknown_resources:
+            raise ValueError("unknown exploration phase or resource")
+        snapshot = self._capacity_snapshot()
+        return {
+            phase: {
+                resource: self._remaining_capacity_against_snapshot(
+                    phase, resource, snapshot
+                )
+                for resource in resources
+            }
+            for phase in phases
+        }
+
     def reserve(self, action_id: str, phase: str, resources: Mapping[str, int]) -> BudgetReservation:
-        requested = self._validated_resources(resources)
+        requested = self._validated_resources(resources, require_nonempty=True)
         failure = self._admission_failure(phase, requested)
         if failure is not None:
             raise BudgetExceeded(failure)
@@ -1101,7 +1568,12 @@ class ExplorationBudgetLedger:
         return reservation
 
     def commit(self, reservation: BudgetReservation, actual_resources: Mapping[str, int] | None = None) -> None:
-        actual = self._validated_resources(actual_resources or reservation.resources)
+        actual = self._validated_resources(
+            reservation.resources
+            if actual_resources is None
+            else actual_resources,
+            allow_zero=True,
+        )
         for key, value in actual.items():
             if value > int(reservation.resources.get(key, 0)):
                 raise ValueError(f"actual {key} exceeds its host reservation")
@@ -1174,10 +1646,9 @@ class ExplorationBudgetLedger:
         if information_start_index < 0:
             raise ValueError("information start index must be nonnegative")
         state = self.state()
-        if state["user_stop"]:
-            return "user_stop"
-        if self.elapsed_ms() >= self.wall_clock_cap_s() * 1_000:
-            return "hard_cap_reached:wall_clock_s"
+        hard_stop = self.hard_stop_reason(state=state)
+        if hard_stop is not None:
+            return hard_stop
         information = state["information"][information_start_index:]
         if (
             allow_coverage_target
@@ -1204,8 +1675,62 @@ class ExplorationBudgetLedger:
                 return "marginal_yield_below_threshold"
         return None
 
+    def hard_stop_reason(
+        self, *, state: Mapping[str, Any] | None = None
+    ) -> str | None:
+        """Return campaign-wide stops that may cancel a frozen obligation."""
+
+        current = self.state() if state is None else state
+        if current["user_stop"]:
+            return "user_stop"
+        if self.elapsed_ms() >= self.wall_clock_cap_s() * 1_000:
+            return "hard_cap_reached:wall_clock_s"
+        return None
+
+    def latest_stop_receipt(self) -> BudgetStopReceipt | None:
+        """Return the latest authenticated stop carried by this ledger."""
+
+        latest: BudgetStopReceipt | None = None
+        for raw in self._strict_rows():
+            if raw.get("event_type") != "budget_stopped":
+                continue
+            row = dict(raw)
+            event_sha256 = row.pop("event_sha256", None)
+            if event_sha256 != content_hash(row):
+                raise ValueError("budget ledger event digest mismatch")
+            if row.get("schema") != BUDGET_EVENT_SCHEMA:
+                raise ValueError("budget ledger event schema mismatch")
+            if (
+                row.get("budget_digest") != self.budget.digest
+                or row.get("attempt_id") != self.attempt_id
+            ):
+                raise ValueError("budget ledger stop event identity mismatch")
+            raw_receipt = row.get("receipt")
+            if not isinstance(raw_receipt, Mapping):
+                raise ValueError("budget ledger stop receipt is malformed")
+            receipt = BudgetStopReceipt.from_json(raw_receipt)
+            if (
+                receipt.budget_digest != self.budget.digest
+                or receipt.attempt_id != self.attempt_id
+            ):
+                raise ValueError("budget ledger stop receipt identity mismatch")
+            latest = receipt
+        return latest
+
     def stop_receipt(self, reason: str, *, context_hash: str = "") -> BudgetStopReceipt:
-        state = self.state()
+        rows = self._rows()
+        if rows and rows[-1].get("event_type") == "budget_stopped":
+            prior = rows[-1].get("receipt")
+            if isinstance(prior, Mapping):
+                replayed = BudgetStopReceipt.from_json(prior)
+                if (
+                    replayed.reason == str(reason)
+                    and replayed.context_hash == str(context_hash)
+                    and replayed.budget_digest == self.budget.digest
+                    and replayed.attempt_id == self.attempt_id
+                ):
+                    return replayed
+        state = self._state_from_rows(rows)
         outstanding = tuple(
             {
                 "reservation_id": row["reservation_id"],
@@ -1219,7 +1744,7 @@ class ExplorationBudgetLedger:
         receipt = BudgetStopReceipt(
             reason=str(reason),
             budget_digest=self.budget.digest,
-            elapsed_ms=self.elapsed_ms(),
+            elapsed_ms=self._elapsed_ms_from_rows(rows),
             usage=state["usage"],
             phase_usage=state["phase_usage"],
             outstanding_reservations=outstanding,

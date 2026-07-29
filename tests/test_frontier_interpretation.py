@@ -23,6 +23,7 @@ from ztare.leanmill.frontier_campaign_runner import (
     run_post_freeze_literature_review,
 )
 from ztare.common.schema_routes import audit_project_schema_routes
+from ztare.common.target_predicate import TargetPredicateContract
 from ztare.leanmill.magma_law_universe import (
     anonymous_magma_signature,
     magma_laws_through_order,
@@ -41,6 +42,51 @@ from ztare.leanmill.theory_ir import (
     operation_argument_permutation_variants,
     render_formula_plain,
 )
+
+
+def _temporal_search_coverage(
+    *,
+    review_as_of_date: str = "2026-07-16",
+    problem_status: str = "not_an_open_problem",
+    unavailable_leg: str | None = None,
+) -> dict:
+    leg_ids = (
+        "formula_and_coordinate",
+        "problem_statement",
+        "citation_backward",
+        "citation_forward",
+        "latest_version",
+    )
+    source_url = "https://example.test/current-primary-source"
+    status_has_source = problem_status in {"resolved", "open_as_of_cutoff"}
+    return {
+        "review_as_of_date": review_as_of_date,
+        "anchor_sources": ([{
+            "source_title": "Current primary source",
+            "source_url": source_url,
+            "source_date": "2026-05-07",
+            "latest_revision_date": "2026-05-07",
+            "relationship": "current status evidence",
+        }] if status_has_source else []),
+        "search_legs": [
+            {
+                "leg_id": leg_id,
+                "status": "unavailable" if leg_id == unavailable_leg else "completed",
+                "queries": [f"query:{leg_id}"],
+                "evidence_urls": ([source_url] if status_has_source else []),
+                "limitation": (
+                    "citation graph unavailable" if leg_id == unavailable_leg else None
+                ),
+            }
+            for leg_id in leg_ids
+        ],
+        "problem_status": problem_status,
+        "status_evidence_urls": [source_url] if status_has_source else [],
+        "latest_relevant_source_date": (
+            "2026-05-07" if status_has_source else None
+        ),
+        "limitations": [],
+    }
 
 
 def test_operation_coordinate_variants_are_typed_and_executable() -> None:
@@ -85,6 +131,7 @@ def test_post_freeze_literature_schema_accepts_source_bound_review() -> None:
         "recognized_theory_connections": [],
         "finite_witness_matches": [],
         "novelty_assessment": "not_located_in_bounded_review",
+        "search_coverage": _temporal_search_coverage(),
         "mechanism_analysis": {
             "key_idea": "The premises combine two independently checked roles.",
             "recombination": "One role exposes a term and the other rewrites it.",
@@ -109,6 +156,7 @@ def test_post_freeze_literature_schema_accepts_source_bound_review() -> None:
     schema = post_freeze_literature_output_schema(
         premise_formula_ids=[row.formula_id for row in laws[:2]]
     )
+    assert "uniqueItems" not in json.dumps(schema)
     Draft202012Validator(schema).validate(value)
 
     wrong = deepcopy(value)
@@ -121,6 +169,84 @@ def test_post_freeze_literature_schema_tracks_singleton_presentation() -> None:
     matches = schema["properties"]["formula_matches"]
     assert matches["minItems"] == 2
     assert matches["maxItems"] == 2
+
+
+def test_v5_interpretation_requires_currentness_before_unmapped_status() -> None:
+    packet = {
+        "schema": "leanmill.post_freeze_result_packet.v5",
+        "packet_sha256": "packet:test",
+        "context_hash": "context:test",
+        "formulas": [
+            {"role": "premise", "formula_id": "f1"},
+            {"role": "target", "formula_id": "f2"},
+        ],
+        "structural_source_search": {
+            "operation_coordinate_variants": [],
+            "finite_witnesses": [],
+        },
+        "unrestricted_lean": {"status": "proved_attributed"},
+        "literature_search_protocol": {
+            "review_as_of_date": "2026-07-16",
+            "required_search_legs": [
+                "formula_and_coordinate",
+                "problem_statement",
+                "citation_backward",
+                "citation_forward",
+                "latest_version",
+            ],
+        },
+    }
+
+    def literature(novelty: str, coverage: dict) -> dict:
+        core = {
+            "schema": "leanmill.post_freeze_interpretation.v1",
+            "packet_sha256": "packet:test",
+            "finite_witness_host_checks": [],
+            "review": {
+                "novelty_assessment": novelty,
+                "formula_matches": [
+                    {
+                        "formula_id": formula_id,
+                        "match_status": "not_found",
+                        "equivalence_kind": "none",
+                        "coordinate_variant_id": None,
+                    }
+                    for formula_id in ("f1", "f2")
+                ],
+                "implication_prior_art": [],
+                "recognized_theory_connections": [],
+                "finite_witness_matches": [],
+                "search_coverage": coverage,
+                "mechanism_analysis": {},
+                "summary": "test",
+                "limitations": ["bounded"],
+                "next_checks": ["none"],
+            },
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
+    incomplete = literature(
+        "not_located_in_bounded_review",
+        _temporal_search_coverage(unavailable_leg="citation_forward"),
+    )
+    with pytest.raises(ValueError, match="complete temporal search legs"):
+        compose_theory_interpretation(packet, incomplete)
+
+    stale_open_claim = literature(
+        "not_located_in_bounded_review",
+        _temporal_search_coverage(problem_status="resolved"),
+    )
+    with pytest.raises(ValueError, match="resolved prior art"):
+        compose_theory_interpretation(packet, stale_open_claim)
+
+    mapped = literature(
+        "known_implication",
+        _temporal_search_coverage(problem_status="resolved"),
+    )
+    result = compose_theory_interpretation(packet, mapped)
+    assert result["external_alignment"]["search_coverage"]["problem_status"] == (
+        "resolved"
+    )
 
 
 def test_interpretation_ladder_keeps_gloss_bound_to_verifier_and_sources() -> None:
@@ -777,6 +903,20 @@ def test_post_freeze_packet_reveals_only_frozen_query(monkeypatch, tmp_path) -> 
     write_json_atomic(tmp_path / "boundary_result.json", boundary)
     write_json_atomic(tmp_path / "boundary_governance_recheck.json", recheck)
     write_json_atomic(tmp_path / "blueprint.json", {"frozen": True})
+    target_predicate = TargetPredicateContract(
+        contract_id="fixture:post-freeze-target",
+        owner="fixture objective epoch",
+        lifecycle_scope="context:test",
+        context_hash="context:test",
+        adapter_id="magma_equational.v1",
+        evaluator_capability="fixture_target_evaluator",
+        predicate_ir={"kind": "fixture_derived_consequence"},
+        input_schema={"type": "object", "minProperties": 1},
+    )
+    write_json_atomic(
+        tmp_path / "target_predicate_contract.json",
+        target_predicate.to_dict(),
+    )
     monkeypatch.setattr(
         "ztare.leanmill.frontier_interpretation.FrontierTheoryBlueprint.from_json",
         lambda _row: SimpleNamespace(
@@ -818,8 +958,12 @@ def test_post_freeze_packet_reveals_only_frozen_query(monkeypatch, tmp_path) -> 
         premises[0].formula_id, premises[1].formula_id, target.formula_id,
     ]
     assert all(row["formula"] for row in packet["formulas"])
-    assert packet["schema"] == "leanmill.post_freeze_result_packet.v4"
+    assert packet["schema"] == "leanmill.post_freeze_result_packet.v5"
     assert packet["interpretation_context"]["visibility"] == "post_freeze_only"
+    assert packet["target_predicate_contract"] == {
+        **target_predicate.to_dict(),
+        "contract_sha256": target_predicate.sha256,
+    }
     assert packet["structural_source_search"]["coordinate_variant_receipt"][
         "status"
     ] == "available"

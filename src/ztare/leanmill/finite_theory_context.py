@@ -420,8 +420,12 @@ def save_formal_theory_context(context: FormalTheoryContext, path: str | Path) -
     return write_json_atomic(path, formal_theory_context_snapshot(context))
 
 
-def load_formal_theory_context(path: str | Path) -> FormalTheoryContext:
-    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+def formal_theory_context_from_snapshot(
+    value: Mapping[str, Any],
+) -> FormalTheoryContext:
+    """Replay a context from bytes already frozen by its ingress owner."""
+
+    raw = dict(value)
     if not isinstance(raw, Mapping) or raw.get("schema") != "leanmill.formal_theory_context_snapshot.v1":
         raise ValueError("unsupported formal theory context snapshot")
     unsigned = dict(raw)
@@ -475,6 +479,13 @@ def load_formal_theory_context(path: str | Path) -> FormalTheoryContext:
     return context
 
 
+def load_formal_theory_context(path: str | Path) -> FormalTheoryContext:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(raw, Mapping):
+        raise ValueError("unsupported formal theory context snapshot")
+    return formal_theory_context_from_snapshot(raw)
+
+
 __all__ = [
     "FORMAL_CONTEXT_SCHEMA",
     "FORMULA_PROFILE_SCHEMA",
@@ -484,6 +495,7 @@ __all__ = [
     "SemanticTheoryNode",
     "build_formal_theory_context",
     "formal_theory_context_snapshot",
+    "formal_theory_context_from_snapshot",
     "load_formal_theory_context",
     "save_formal_theory_context",
 ]

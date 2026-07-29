@@ -21,6 +21,7 @@ from ztare.research_signals import (
     evaluate_information_yield,
     price_experiment,
 )
+from ztare.leanmill.digest_ref import is_sha256_digest
 from ztare.leanmill.formal_verification_provider import (
     attach_signature,
     build_payload,
@@ -44,13 +45,6 @@ def _digest(value: Any) -> str:
 
 def _is_sha256_ref(value: object) -> bool:
     if not isinstance(value, str) or not value.startswith("sha256:"):
-        return False
-    digest = value.removeprefix("sha256:")
-    return len(digest) == 64 and all(character in "0123456789abcdef" for character in digest)
-
-
-def _is_digest(value: object) -> bool:
-    if not isinstance(value, str):
         return False
     digest = value.removeprefix("sha256:")
     return len(digest) == 64 and all(character in "0123456789abcdef" for character in digest)
@@ -181,7 +175,7 @@ def build_shadow_task_manifest(
     if not verifier_ref:
         raise ValueError("verifier_ref is required")
     for name, value in (("base_theory_digest", base_theory_digest),):
-        if not _is_digest(value):
+        if not is_sha256_digest(value):
             raise ValueError(f"{name} must be a canonical digest")
     if not _is_sha256_ref(manifest_evidence_ref):
         raise ValueError("manifest_evidence_ref must be a sha256 content reference")
@@ -203,7 +197,9 @@ def build_shadow_task_manifest(
     }
     if set(normalized_admissions) != seen:
         raise ValueError("admission_digests must match the frozen task ids exactly")
-    if not all(_is_digest(value) for value in normalized_admissions.values()):
+    if not all(
+        is_sha256_digest(value) for value in normalized_admissions.values()
+    ):
         raise ValueError("every admission digest must be canonical")
     if len(set(normalized_admissions.values())) != len(normalized_admissions):
         raise ValueError("shadow tasks must have distinct admission digests")
@@ -299,7 +295,9 @@ def _validate_shadow_task_manifest(
     )
     if set(admission_digests) != {task.task_id for task in tasks}:
         failures.append("admission_task_ids")
-    if not admission_digests or not all(_is_digest(value) for value in admission_digests.values()):
+    if not admission_digests or not all(
+        is_sha256_digest(value) for value in admission_digests.values()
+    ):
         failures.append("admission_digests")
     if len({task.input_digest for task in tasks}) != len(tasks):
         failures.append("duplicate_task_inputs")
@@ -532,7 +530,7 @@ def _attempt_index(
             })
         if item.status not in {"solved", "failed", "timeout"}:
             violations.append({"type": "attempt_status", "arm": arm, "task_id": item.task_id})
-        if not _is_digest(item.admission_digest):
+        if not is_sha256_digest(item.admission_digest):
             violations.append({"type": "attempt_admission_digest", "arm": arm, "task_id": item.task_id})
         if not _is_sha256_ref(item.environment_ref):
             violations.append({"type": "attempt_environment_ref", "arm": arm, "task_id": item.task_id})
@@ -658,7 +656,7 @@ def build_shadow_attempt_verification(
         ("base_theory_digest", base_theory_digest),
         ("admission_digest", attempt.admission_digest),
     ):
-        if not _is_digest(value):
+        if not is_sha256_digest(value):
             raise ValueError(f"{name} must be a canonical digest")
     for name, value in (
         ("environment_ref", attempt.environment_ref),

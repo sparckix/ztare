@@ -14,7 +14,8 @@ SCP="scp $O"
 
 echo "[remote_run] target ubuntu@$IP  model=$MODEL"
 $SSH 'mkdir -p ~/void_sft_run/scripts ~/void_sft_run/data'
-$SCP "$here"/format_corpus.py "$here"/train_lora.py "$here"/eval_completion.py "$here"/bootstrap.sh ubuntu@"$IP":~/void_sft_run/scripts/
+python3 "$here"/verify_split_receipt.py --data "$DATA"
+$SCP "$here"/format_corpus.py "$here"/verify_split_receipt.py "$here"/train_lora.py "$here"/eval_completion.py "$here"/bootstrap.sh ubuntu@"$IP":~/void_sft_run/scripts/
 $SCP "$DATA"/sft_train.jsonl "$DATA"/sft_eval.jsonl ubuntu@"$IP":~/void_sft_run/data/
 
 $SSH 'bash ~/void_sft_run/scripts/bootstrap.sh ~/void_sft_run'

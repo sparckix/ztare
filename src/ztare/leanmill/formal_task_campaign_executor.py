@@ -25,6 +25,10 @@ from ztare.leanmill.formalization_admission import (
     formalize_only,
 )
 from ztare.leanmill.lean_source import has_sorry, replace_decl_proof
+from ztare.leanmill.solver.closed_artifact import (
+    finalized_ratification_eligible,
+    governance_ratification_eligible,
+)
 from ztare.leanmill.theory_ir import content_hash
 
 
@@ -923,20 +927,28 @@ def _kernel_replay_receipt(
         receipts.get("matched_negative_control_receipt")
         if isinstance(receipts, Mapping) else None
     )
+    axiom_receipt = (
+        receipts.get("axiom_allowlist_receipt")
+        if isinstance(receipts, Mapping) else None
+    )
     closure_certificate = raw.get("closure_certificate")
     governance = raw.get("governance")
     if (
         primary.get("outcome") != "closed"
         or not proof_text
         or not isinstance(validation, Mapping)
-        or validation.get("credit_ready_at_solver_layer") is not True
+        or not finalized_ratification_eligible(dict(validation))
         or not isinstance(kernel_receipt, Mapping)
         or kernel_receipt.get("passed") is not True
         or not isinstance(mnc_receipt, Mapping)
         or mnc_receipt.get("passed") is not True
+        or not isinstance(axiom_receipt, Mapping)
+        or axiom_receipt.get("passed") is not True
+        or validation.get("positive_axiom_receipt_required") is not True
+        or validation.get("axiom_tier") != "kernel_pure"
         or not closure_certificate
         or not isinstance(governance, Mapping)
-        or not governance
+        or not governance_ratification_eligible(dict(governance))
     ):
         raise FormalTaskAttemptDidNotClose(
             "solver_result_lacks_ratified_closure_evidence"
@@ -1207,11 +1219,14 @@ def _validate_kernel_receipt(
         != content_hash({"lean_source": proved_source})
         or proved_imports.get("status") != "mathlib_only"
         or not isinstance(validation, Mapping)
-        or validation.get("credit_ready_at_solver_layer") is not True
+        or not finalized_ratification_eligible(dict(validation))
         or not isinstance(receipts, Mapping)
         or (receipts.get("kernel_compile_receipt") or {}).get("passed") is not True
         or (receipts.get("matched_negative_control_receipt") or {}).get("passed")
         is not True
+        or (receipts.get("axiom_allowlist_receipt") or {}).get("passed") is not True
+        or validation.get("positive_axiom_receipt_required") is not True
+        or validation.get("axiom_tier") != "kernel_pure"
         or row.get("independent_compile_passed") is not True
         or (row.get("statement_integrity") or {}).get("ok") is not True
         or row.get("status") != "kernel_verified"
@@ -1412,6 +1427,7 @@ def make_formalization_campaign_task_executor(
             model=str(formalizer_config["model"]),
             reasoning_effort=role_native_efforts["formalizer"],
             config_sha256=str(formalizer_descriptor["config_sha256"]),
+            max_timeout_seconds=int(formalizer_config["timeout_seconds"]),
             attempt_input_sha256=attempt_input_sha256,
             record_empty_attempt=True,
         ) as dispatch_calls:
@@ -1523,6 +1539,7 @@ def make_formalization_campaign_task_executor(
                     model=str(solver_config["model"]),
                     reasoning_effort=role_native_efforts["lean_solver"],
                     config_sha256=str(solver_descriptor["config_sha256"]),
+                    max_timeout_seconds=int(solver_config["timeout_seconds"]),
                     attempt_input_sha256=attempt_input_sha256,
                     record_empty_attempt=True,
                 ), _isolated_formal_task_proof_world():
@@ -1534,6 +1551,7 @@ def make_formalization_campaign_task_executor(
                             substrate=substrate_path,
                             timeout_s=solve_timeout,
                             notes=notes,
+                            require_positive_axiom_receipt=True,
                         )
                     else:
                         raw_solver = admitted_solver_fn(
@@ -1541,6 +1559,7 @@ def make_formalization_campaign_task_executor(
                             substrate=substrate_path,
                             timeout_s=solve_timeout,
                             notes=notes,
+                            require_positive_axiom_receipt=True,
                         )
             except (RuntimeError, TimeoutError, OSError) as exc:
                 return _build_formal_task_attempt_outcome(

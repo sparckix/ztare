@@ -22,11 +22,23 @@ CAMPAIGN_MODES = frozenset(
     {"anonymous_signature_census", "evidence_induced", "domain_conditioned", "proof_gap_conditioned"}
 )
 NAVIGATOR_SELECTION_MODES = frozenset({"compact_axiom_pack", "theory_program"})
+THEORY_TASK_CAPABILITY_SCOPE_SCHEMA = (
+    "leanmill.theory_task_capability_scope.v1"
+)
 _CANDIDATE_FIELDS = frozenset(
     {
         "candidate_axioms", "candidate_axiom_templates", "axiom_templates",
         "named_axiom_list", "formula_universe",
     }
+)
+
+_BLUEPRINT_DRAFT_FIELDS = (
+    "mode", "eigenquestion", "signature", "primitive_semantics", "base_axioms",
+    "base_theory_status", "adapter_id", "adapter_config", "formula_grammar",
+    "model_or_observation_strata", "pack_arity", "collapse_controls",
+    "visible_evidence_manifest", "sealed_evidence_manifest_digest",
+    "deanchoring_policy", "navigator_contract", "query_budget", "stop_rule",
+    "verification_plan", "codec_versions", "authority_refs",
 )
 
 
@@ -137,6 +149,14 @@ class FrontierTheoryBlueprint:
         if not self.adapter_id or type(self.pack_arity) is not int or self.pack_arity < 1:
             raise ValueError("blueprint adapter and pack arity are required")
         validate_navigator_contract(self.pack_arity, self.navigator_contract)
+        task_scope = theory_task_capability_scope(self.navigator_contract)
+        if (
+            task_scope is not None
+            and task_scope["adapter_id"] != self.adapter_id
+        ):
+            raise ValueError(
+                "theory-task capability scope belongs to another adapter"
+            )
         frontier_objective_contract(self)
         if not self.sealed_evidence_manifest_digest.startswith("sha256:"):
             raise ValueError("sealed evidence must be represented by a digest")
@@ -267,6 +287,41 @@ def validate_navigator_contract(
     if selection_mode not in NAVIGATOR_SELECTION_MODES:
         raise ValueError("unsupported navigator selection mode")
     _host_isolated_lineage_count(navigator_contract)
+    theory_task_capability_scope(navigator_contract)
+
+
+def theory_task_capability_scope(
+    navigator_contract: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Return the optional adapter-scoped task envelope."""
+
+    raw = navigator_contract.get("theory_task_capability_scope")
+    if raw is None:
+        return None
+    required = {"schema", "adapter_id", "allowed_capability_ids"}
+    if not isinstance(raw, Mapping) or set(raw) != required:
+        raise ValueError(
+            "theory-task capability scope fields differ from its contract"
+        )
+    if raw.get("schema") != THEORY_TASK_CAPABILITY_SCOPE_SCHEMA:
+        raise ValueError("unsupported theory-task capability scope schema")
+    adapter_id = raw.get("adapter_id")
+    allowed = raw.get("allowed_capability_ids")
+    if not isinstance(adapter_id, str) or not adapter_id.strip():
+        raise ValueError("theory-task capability scope requires an adapter")
+    if (
+        not isinstance(allowed, (list, tuple))
+        or any(not isinstance(row, str) or not row.strip() for row in allowed)
+        or len(set(allowed)) != len(allowed)
+    ):
+        raise ValueError(
+            "theory-task capability scope requires unique string IDs"
+        )
+    return {
+        "schema": THEORY_TASK_CAPABILITY_SCOPE_SCHEMA,
+        "adapter_id": adapter_id,
+        "allowed_capability_ids": tuple(allowed),
+    }
 
 
 def presentation_size_bounds(blueprint: FrontierTheoryBlueprint) -> tuple[int, int]:
@@ -344,6 +399,87 @@ def frontier_objective_contract(
     }
 
 
+def frontier_blueprint_draft_payload(
+    blueprint: FrontierTheoryBlueprint,
+) -> dict[str, Any]:
+    """Reconstruct the exact compiler draft governed by the review receipts."""
+
+    payload: dict[str, Any] = {}
+    for field_name in _BLUEPRINT_DRAFT_FIELDS:
+        value = getattr(blueprint, field_name)
+        if isinstance(value, Mapping):
+            payload[field_name] = dict(value)
+        elif isinstance(value, tuple):
+            payload[field_name] = [
+                dict(item) if isinstance(item, Mapping) else item for item in value
+            ]
+        else:
+            payload[field_name] = value
+    return payload
+
+
+def validate_frontier_blueprint_authority_receipts(
+    blueprint: FrontierTheoryBlueprint,
+) -> dict[str, Any]:
+    """Replay compiler, semantic-review, and executable-preflight identity.
+
+    Historical blueprint loading remains schema-compatible, while transitions
+    that grant terminal scientific credit can require this stronger replay.
+    """
+
+    draft_digest = content_hash(frontier_blueprint_draft_payload(blueprint))
+    compiler = dict(blueprint.compiler_receipt)
+    review = dict(blueprint.semantic_review_receipt)
+    preflight = dict(blueprint.executable_preflight_receipt)
+    compiler_core = {
+        key: value for key, value in compiler.items() if key != "receipt_sha256"
+    }
+    review_core = {
+        key: value for key, value in review.items() if key != "receipt_sha256"
+    }
+    preflight_core = {
+        key: value for key, value in preflight.items() if key != "receipt_sha256"
+    }
+    if (
+        compiler.get("schema")
+        != "leanmill.frontier_blueprint_compiler_receipt.v1"
+        or compiler.get("authority_role") != "frontier_blueprint_compiler"
+        or compiler.get("brief_id") != blueprint.brief_digest
+        or compiler.get("draft_digest") != draft_digest
+        or compiler.get("receipt_sha256") != content_hash(compiler_core)
+        or review.get("schema")
+        != "leanmill.frontier_blueprint_semantic_review.v1"
+        or review.get("authority_role")
+        != "frontier_blueprint_semantic_reviewer"
+        or review.get("accepted") is not True
+        or review.get("substrate_constraints_executable") is not True
+        or review.get("draft_digest") != draft_digest
+        or review.get("receipt_sha256") != content_hash(review_core)
+        or preflight.get("schema")
+        != "leanmill.frontier_blueprint_executable_preflight.v1"
+        or preflight.get("authority_role") != "deterministic_executable_preflight"
+        or preflight.get("ok") is not True
+        or preflight.get("adapter_id") != blueprint.adapter_id
+        or preflight.get("receipt_sha256") != content_hash(preflight_core)
+        or (
+            frontier_objective_contract(blueprint) is not None
+            and review.get("stop_rule_aligned") is not True
+        )
+    ):
+        raise ValueError("frontier blueprint authority receipts do not replay")
+    core = {
+        "schema": "leanmill.frontier_blueprint_authority_replay.v1",
+        "blueprint_id": blueprint.blueprint_id,
+        "brief_digest": blueprint.brief_digest,
+        "draft_digest": draft_digest,
+        "compiler_receipt_sha256": str(compiler["receipt_sha256"]),
+        "semantic_review_receipt_sha256": str(review["receipt_sha256"]),
+        "executable_preflight_receipt_sha256": str(preflight["receipt_sha256"]),
+        "authority": "deterministic_blueprint_receipt_replay",
+    }
+    return {**core, "receipt_sha256": content_hash(core)}
+
+
 def cold_navigator_manifest(blueprint: FrontierTheoryBlueprint) -> dict[str, Any]:
     signature = TheorySignature.from_json(blueprint.signature)
     minimum, maximum = presentation_size_bounds(blueprint)
@@ -410,8 +546,11 @@ def cold_navigator_manifest(blueprint: FrontierTheoryBlueprint) -> dict[str, Any
 __all__ = [
     "BLUEPRINT_SCHEMA", "BRIEF_SCHEMA", "CAMPAIGN_MODES",
     "NAVIGATOR_SELECTION_MODES", "SOURCE_MODES",
+    "THEORY_TASK_CAPABILITY_SCOPE_SCHEMA",
     "FrontierExplorationBrief", "FrontierTheoryBlueprint", "cold_navigator_manifest",
-    "frontier_objective_contract", "host_isolated_lineage_count", "navigator_selection_mode",
+    "frontier_blueprint_draft_payload", "frontier_objective_contract",
+    "host_isolated_lineage_count", "navigator_selection_mode",
     "presentation_size_bounds", "topology_presentation_size",
-    "validate_navigator_contract",
+    "theory_task_capability_scope",
+    "validate_frontier_blueprint_authority_receipts", "validate_navigator_contract",
 ]

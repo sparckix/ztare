@@ -7,8 +7,16 @@ import json
 from ztare.leanmill.common import write_json_atomic
 from ztare.leanmill.exploration_budget import ExplorationBudgetLedger, budget_preset
 from ztare.leanmill.theory_interest import theory_program_information_yield
-from ztare.leanmill.theory_lineage_runner import run_host_isolated_theory_lineages
-from ztare.leanmill.theory_program import derive_context_lineage_id
+from ztare.common.task_discharge import TaskDischargeContract
+from ztare.leanmill.theory_lineage_runner import (
+    aggregate_host_isolated_theory_lineages,
+    run_host_isolated_theory_lineages,
+)
+from ztare.leanmill.theory_program import (
+    THEORY_PROGRAM_V2,
+    TheoryProgram,
+    derive_context_lineage_id,
+)
 from test_theory_navigator import _context_and_blueprint
 
 
@@ -132,6 +140,60 @@ def test_host_isolated_lineages_compare_only_after_freeze(tmp_path):
     )
     assert len(converged["theory_program_ids"]) == 2
     assert converged["finalist_node_ids"] == [converged["finalists"][0]["node_id"]]
+
+
+def test_same_semantic_node_preserves_distinct_executable_task_artifacts():
+    from ztare.leanmill.witness_construction_boundary import (
+        GOVERNED_WITNESS_CONSTRUCTION_ADJUDICATOR,
+    )
+
+    context, _blueprint = _context_and_blueprint()
+    rows = []
+    for index, artifact_sha256 in enumerate(("artifact:a", "artifact:b")):
+        lineage_id = f"lineage:{index}"
+        task = TaskDischargeContract(
+            contract_id=f"theory-task:{index}",
+            adjudicator_id=GOVERNED_WITNESS_CONSTRUCTION_ADJUDICATOR,
+            lifecycle_scope="campaign:task-artifacts",
+            owner=lineage_id,
+            parameters={"artifact_sha256": artifact_sha256},
+        )
+        program = TheoryProgram(
+            schema=THEORY_PROGRAM_V2,
+            campaign_id="campaign:task-artifacts",
+            lineage_id=lineage_id,
+            context_hash=context.context_hash,
+            context_epoch=0,
+            presentation_formula_ids=(context.formula_ids[0],),
+            prediction_formula_ids=(),
+            selection_receipt_id=f"selection:{index}",
+            task_discharge_contracts=(task,),
+        )
+        rows.append(
+            {
+                "branch_index": index,
+                "lineage_id": lineage_id,
+                "agent_identity": f"agent:{index}",
+                "navigation": {
+                    "context_hash": context.context_hash,
+                    "finalists": [
+                        {
+                            "node_id": "node:same-presentation",
+                            "theory_program": program.to_json(),
+                            "theory_program_id": program.program_id,
+                        }
+                    ],
+                    "trace": [],
+                    "provider_calls": 0,
+                },
+            }
+        )
+
+    result = aggregate_host_isolated_theory_lineages(context, rows, epoch=0)
+
+    assert result["finalist_node_ids"] == ["node:same-presentation"]
+    assert len(result["finalists"]) == 2
+    assert len(result["theory_program_ids"]) == 2
 
 
 def test_resume_preserves_terminal_sibling_without_calling_it(tmp_path):

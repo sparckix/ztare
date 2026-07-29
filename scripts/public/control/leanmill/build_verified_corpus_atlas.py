@@ -25,8 +25,10 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 REPO = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(REPO / "src"))
 _DEFAULT_CORPUS = REPO / "analytics" / "public" / "leanmill" / "training_corpus" / "prover_corpus.jsonl"
 _DEFAULT_OUT = REPO / "analytics" / "public" / "leanmill" / "training_corpus" / "atlas"
 _ATLAS_NAME = "verified_corpus"
@@ -162,9 +164,16 @@ def main(argv=None) -> int:
     ap.add_argument("--corpus", default=str(_DEFAULT_CORPUS))
     ap.add_argument("--out", default=str(_DEFAULT_OUT))
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--allow-legacy-diagnostic", action="store_true")
     ns = ap.parse_args(argv)
     if ns.selftest:
         return _selftest()
+    from ztare.leanmill.training_corpus_contract import validate_training_corpus_directory
+    validate_training_corpus_directory(
+        Path(ns.corpus).parent,
+        required_files=(Path(ns.corpus).name,),
+        allow_legacy_diagnostic=ns.allow_legacy_diagnostic,
+    )
     man = build_atlas(ns.corpus, ns.out, embed_fn=_real_embedder())
     print(json.dumps(man, indent=2))
     print("\nRegister under policy.operations.semantic_premise_shelf.domain_atlases:")

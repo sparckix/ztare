@@ -121,9 +121,15 @@ def _replay_selection(
     formulas = [str(value) for value in candidate.get("formula_ids") or ()]
     inputs: dict[str, Any] = {"formula_ids": formulas}
     if selection_mode == "theory_program":
-        inputs["prediction_formula_ids"] = [
+        predictions = [
             str(value) for value in candidate.get(prediction_field) or ()
         ]
+        # Match the live navigator's typed input exactly.  A v2 theory program
+        # may carry only a host-compiled task, in which case an absent
+        # prediction field and an explicitly empty prediction list are not the
+        # same selector request.
+        if predictions:
+            inputs["prediction_formula_ids"] = predictions
     receipt = handler(
         ".",
         {"input_refs": inputs},
@@ -160,13 +166,16 @@ def _budget_status(directory: Path) -> dict[str, Any]:
             str(value.get("reservation_id") or ""),
         ),
     )
+    capacity_projection = ledger.remaining_capacities(
+        phases=("navigation", "expansion", "boundary", "interpretation")
+    )
     remaining = {
         phase: {
-            resource: ledger.remaining_capacity(phase, resource)
-            for resource in sorted(RESOURCE_KINDS)
-            if ledger.remaining_capacity(phase, resource)
+            resource: value
+            for resource, value in values.items()
+            if value
         }
-        for phase in ("navigation", "expansion", "boundary", "interpretation")
+        for phase, values in capacity_projection.items()
     }
     return {
         "budget_digest": budget.digest,
@@ -207,10 +216,27 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
     governance_recheck = read_json(directory / "boundary_governance_recheck.json", {})
     interpretation_rows = _interpretations(directory)
     interpretation = interpretation_rows[-1] if interpretation_rows else {}
-    forge = read_json(directory / "adapter_forge_completion.json", {})
-    forge_conformance = read_json(
-        directory / "adapter_forge_host_conformance.json", {}
-    )
+    forge: dict[str, Any] = {}
+    forge_conformance: dict[str, Any] = {}
+    gap_row = run.get("adapter_gap") or read_json(directory / "adapter_gap.json", {})
+    if isinstance(gap_row, Mapping) and gap_row:
+        from ztare.leanmill.adapter_forge import (
+            AdapterGap,
+            adapter_forge_attempt_directory,
+            read_adapter_forge_completion,
+        )
+
+        try:
+            gap = AdapterGap.from_json(gap_row)
+            forge = read_adapter_forge_completion(directory, gap) or {}
+            forge_conformance = read_json(
+                adapter_forge_attempt_directory(directory, gap.gap_id)
+                / "adapter_forge_host_conformance.json",
+                {},
+            )
+        except (KeyError, TypeError, ValueError):
+            forge = {}
+            forge_conformance = {}
     sieve_paths = sorted(
         directory.glob("compound_implication_sieve_completion.stratum-*.json")
     )
@@ -230,6 +256,13 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
     )
     workbench_transition = (
         read_json(workbench_transitions[-1], {}) if workbench_transitions else {}
+    )
+    boundary_supersession_paths = sorted(
+        directory.glob("boundary_attempt_supersession.*.json")
+    )
+    boundary_supersession = (
+        read_json(boundary_supersession_paths[-1], {})
+        if boundary_supersession_paths else {}
     )
     run_status = str(run.get("status") or "missing")
     status = (
@@ -306,6 +339,9 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
             boundary_result.get("query_results") or ()
         ),
         stop_reason=boundary_result.get("stop_reason"),
+        stop_policy=(
+            boundary.get("stop_policy") or boundary_result.get("stop_policy")
+        ),
         governance_recheck=_project(
             governance_recheck,
             ("status", "receipt_sha256"),
@@ -329,6 +365,14 @@ def frontier_campaign_status(attempt_dir: str | Path) -> dict[str, Any]:
             ),
         ),
         "boundary_completion": boundary_summary,
+        "boundary_attempt_supersession": _project(
+            boundary_supersession,
+            (
+                "supersession_kind", "source_stop_reason",
+                "prior_stop_policy", "current_stop_policy",
+                "superseded_completion_sha256", "receipt_sha256",
+            ),
+        ),
         "adapter_forge_completion": forge_summary,
         "adapter_forge_conformance": _project(
             forge_conformance,
@@ -399,9 +443,10 @@ def inspect_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         raise ValueError("campaign budget ledger is missing")
     run = read_json(directory / "run.json", {})
     interpretations = _interpretations(directory)
+    campaign_status = frontier_campaign_status(directory)
     return {
         "schema": "leanmill.frontier_campaign_inspection.v1",
-        "status": frontier_campaign_status(directory)["status"],
+        "status": campaign_status["status"],
         "campaign_definition_ref": (
             "campaign_definition.yaml"
             if (directory / "campaign_definition.yaml").is_file() else None
@@ -420,13 +465,8 @@ def inspect_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
         "theory_task_discharge_consumption": read_json(
             directory / "theory_task_discharge_consumption.json", None
         ),
-        "adapter_forge_conformance": _project(
-            read_json(directory / "adapter_forge_host_conformance.json", {}),
-            (
-                "receipt_sha256", "coordinate_receipt_sha256",
-                "coordinate_class_count", "retained_identity_fraction",
-                "compression_bits",
-            ),
+        "adapter_forge_conformance": campaign_status.get(
+            "adapter_forge_conformance", {}
         ),
         "boundary_governance_recheck": read_json(
             directory / "boundary_governance_recheck.json", None
@@ -519,6 +559,12 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
             except (TypeError, ValueError):
                 program_ok = False
             else:
+                program_task_ids = _string_ids(
+                    row.contract_id for row in program.task_discharge_contracts
+                )
+                finalist_task_ids = _string_ids(
+                    finalist.get("task_contract_ids")
+                )
                 program_ok = bool(
                     program.program_id == finalist.get("theory_program_id")
                     and program.context_hash == context.context_hash
@@ -527,6 +573,11 @@ def replay_frontier_campaign(attempt_dir: str | Path) -> dict[str, Any]:
                     and program.prediction_formula_ids
                     == tuple(finalist.get("boundary_target_ids") or ())
                     and program.selection_receipt_id == receipt["receipt_id"]
+                    and program_task_ids == finalist_task_ids
+                    and bool(
+                        program.prediction_formula_ids
+                        or program.task_discharge_contracts
+                    )
                     and (
                         not isinstance(finalist.get("prediction_profile"), Mapping)
                         or finalist["prediction_profile"].get("receipt_sha256")

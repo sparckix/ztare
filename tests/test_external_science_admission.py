@@ -9,6 +9,12 @@ import subprocess
 
 import pytest
 
+from ztare.leanmill.ratification_policy import (
+    TARGET_GOVERNANCE_AUTHORITIES,
+    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256,
+)
+from ztare.leanmill.solver.closed_artifact import finalize_solver_validation
+
 from ztare.common.schema_routes import audit_project_schema_routes
 from ztare.leanmill.axiompack_leaf_workbench import AXIOMPACK_LEAF_WORKBENCH_CONTRACT
 from ztare.leanmill.common import (
@@ -50,6 +56,7 @@ from ztare.leanmill.frontier_agent_runtime import (
     SubscriptionJSONRole,
 )
 from ztare.leanmill.theory_ir import content_hash
+from ztare.leanmill.theory_interest import CHEAP_CONSEQUENCE_EVALUATOR_REF
 from ztare.leanmill.theory_program import TheoryProgram
 
 from test_theory_navigator import _context_and_blueprint
@@ -389,6 +396,7 @@ def _request_fixture(tmp_path: Path) -> tuple[Path, dict, dict]:
                 {
                     "theory_program_id": program.program_id,
                     "theory_program": program.to_json(),
+                    "baseline_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
                 }
             ],
         },
@@ -418,20 +426,52 @@ def _request_fixture(tmp_path: Path) -> tuple[Path, dict, dict]:
         theorem_target=theorem_target,
         formal_statement=statement,
     )
-    receipt_bundle = {
+    governance = {
+        "governance_kernel": {
+            "available": True,
+            "passed": True,
+            "policy_profile": "target_ratification",
+            "required_authorities": sorted(TARGET_GOVERNANCE_AUTHORITIES),
+            "authority_disposition": {
+                authority: "passed"
+                for authority in TARGET_GOVERNANCE_AUTHORITIES
+            },
+            "authority_roster_sha256": (
+                TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256
+            ),
+        },
+        "statement_integrity": {"ok": True},
+        "integrity_unverified": False,
+        "margin_of_safety": {
+            "tests": {
+                "conclusion_discrimination": {
+                    "detail": {"differential": "confirmed"},
+                    "verdict": "strengthen",
+                }
+            }
+        },
+    }
+    receipt_bundle = finalize_solver_validation({
         "contract_schema": "leanmill.proof_contract.v1",
         "receipts": {
-            "kernel_compile_receipt": {"passed": True, "tail": "compiled"},
+            "kernel_compile_receipt": {
+                "available": True,
+                "passed": True,
+                "tail": "compiled",
+            },
             "matched_negative_control_receipt": {
+                "available": True,
                 "passed": True,
                 "tail": "stripped control rejected",
             },
             "governance_kernel_receipt": {
+                "available": True,
                 "passed": True,
                 "confirmed": [],
                 "flags": [],
             },
             "axiom_allowlist_receipt": {
+                "available": True,
                 "passed": True,
                 "axioms": ["propext"],
                 "tail": "clean ['propext']",
@@ -441,36 +481,61 @@ def _request_fixture(tmp_path: Path) -> tuple[Path, dict, dict]:
         "required_receipts_all_passed_at_solver_layer": True,
         "axiom_tier": "kernel_pure",
         "positive_axiom_receipt_required": True,
+        "discriminating_mnc_required": True,
         "downstream_required": "leanmill_proof_audit",
+    }, governance)
+    job_id = "attempt-recovery-formal-1"
+    run_tag = "run-recovery-formal-1"
+    goal_hash = hashlib.sha256(b"").hexdigest()
+    source_hash = hashlib.sha256(source.encode()).hexdigest()
+    probe_hash = source_hash
+    signature_hash = hashlib.sha256(statement.encode("utf-8")).hexdigest()
+    parity_core = {
+        "schema": "leanmill.kernel_parity_record.v2",
+        "ts": "2026-07-18T00:00:00Z",
+        "target": theorem_target,
+        "job_id": job_id,
+        "run_tag": run_tag,
+        "goal_sha256": goal_hash,
+        "source_sha256": source_hash,
+        "recompilable_probe_sha256": probe_hash,
+        "posed_target_signature_sha256": signature_hash,
+        "closed_target_signature_sha256": signature_hash,
+        "final_authority_roster_sha256": receipt_bundle[
+            "final_authority_roster_sha256"
+        ],
+        "final_authority_disposition": receipt_bundle[
+            "final_authority_disposition"
+        ],
+        "hand_wired": {"kc": True, "mnc": True},
+        "kernel": {"available": True, "passed": True, "confirmed": []},
+        "kernel_blocked": False,
+        "toolchain_identity_sha256": "a" * 64,
+        "environment_parity": {"attempted": False, "reason": "fixture"},
+    }
+    parity = {
+        **parity_core,
+        "record_sha256": content_hash(parity_core),
     }
     closure = {
+        "certificate_schema": "leanmill.governed_closure.v2",
         "target": theorem_target,
+        "job_id": job_id,
+        "run_tag": run_tag,
+        "goal_sha256": goal_hash,
+        "source_sha256": source_hash,
+        "recompilable_probe_sha256": probe_hash,
         "outcome": "closed",
         "checker": "lean_lake",
         "ratification_only": True,
         "recompilable_probe": source,
         "closure_lean": "evidence/result.lean",
-        "matched_negative_control": {"passed": True},
+        "matched_negative_control": {"available": True, "passed": True},
+        "posed_target_signature_sha256": signature_hash,
+        "closed_target_signature_sha256": signature_hash,
+        "kernel_parity_record_sha256": parity["record_sha256"],
         "solver_validation": receipt_bundle,
-        "governance": {
-            "governance_kernel": {"passed": True},
-            "statement_integrity": {"ok": True},
-            "integrity_unverified": False,
-            "margin_of_safety": {
-                "tests": {
-                    "conclusion_discrimination": {
-                        "detail": {"differential": "confirmed"},
-                        "verdict": "strengthen",
-                    }
-                }
-            },
-        },
-    }
-    parity = {
-        "target": theorem_target,
-        "hand_wired": {"kc": True, "mnc": True},
-        "kernel": {"passed": True, "confirmed": []},
-        "kernel_blocked": False,
+        "governance": governance,
     }
     closure_path = _write_jsonl(
         attempt, "evidence/adhoc_closure_certificates.jsonl", [closure]
@@ -673,6 +738,44 @@ def test_external_science_admission_rejects_forged_canonical_receipt(tmp_path) -
 
     with pytest.raises(ValueError, match="canonical record"):
         admit_external_science_recovery(attempt, request, repo_root=tmp_path)
+
+
+def test_formal_evidence_rejects_independently_valid_crossed_parity_row(
+    tmp_path,
+) -> None:
+    attempt, _request, fixture = _request_fixture(tmp_path)
+    parity = json.loads(
+        fixture["parity_path"].read_text(encoding="utf-8").strip()
+    )
+    crossed_core = {
+        key: value for key, value in parity.items() if key != "record_sha256"
+    }
+    crossed_core["job_id"] = "attempt-crossed-parity"
+    crossed_core["run_tag"] = "run-crossed-parity"
+    crossed = {
+        **crossed_core,
+        "record_sha256": content_hash(crossed_core),
+    }
+    _write_jsonl(
+        attempt,
+        "evidence/crossed_kernel_parity.jsonl",
+        [crossed],
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="no closure-bound kernel parity record",
+    ):
+        materialize_external_science_formal_evidence(
+            attempt,
+            source_path=attempt / fixture["source_path"],
+            theorem_target=fixture["theorem_target"],
+            closure_ledger_path=fixture["closure_path"],
+            kernel_parity_ledger_path=(
+                attempt / "evidence/crossed_kernel_parity.jsonl"
+            ),
+            repo_root=tmp_path,
+        )
 
 
 def test_external_science_admission_rejects_self_review(tmp_path) -> None:

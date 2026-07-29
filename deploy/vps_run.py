@@ -23,6 +23,15 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 LOCAL_REPO = SCRIPT_DIR.parent
+LOCAL_SRC = LOCAL_REPO / "src"
+if str(LOCAL_SRC) not in sys.path:
+    sys.path.insert(0, str(LOCAL_SRC))
+
+from ztare.leanmill.frontier_campaign_roles import (  # noqa: E402
+    FRONTIER_RUNTIME_ROLES,
+    validate_frontier_runtime_role,
+)
+
 VPS = os.environ.get("ZTARE_VPS_SSH")
 KEY = Path(os.environ.get("ZTARE_VPS_KEY", ""))
 REMOTE_REPO = os.environ.get("ZTARE_VPS_REPO", "/home/ztare/figs_activist_loop")
@@ -42,8 +51,10 @@ SSH_CONTROL_PATH = os.environ.get(
     f"/tmp/ztare-vps-{os.getuid()}-{os.getpid()}-%C",
 )
 
+_FRONTIER_ROLE_CHOICES = "|".join(sorted(FRONTIER_RUNTIME_ROLES))
 
-USAGE = """\
+
+USAGE = f"""\
 Usage:
   bash deploy/vps_run.sh membrane-state <tick_id> <forecast_contract_id> [owner]
   bash deploy/vps_run.sh posttick-check [owner] [window_hours]
@@ -62,7 +73,7 @@ Usage:
   bash deploy/vps_run.sh rd-brief [owner]
   bash deploy/vps_run.sh start-tick <tick_id> <forecast_contract_id> <substrate> <residual_target> <goal> [owner] [new_target_justification]
   bash deploy/vps_run.sh pretick <tick_id> <forecast_contract_id> <substrate> <residual_target> <universal_ops> <scopes> <anchor_files> <goal> [owner]
-  bash deploy/vps_run.sh posttick <tick_id> <forecast_contract_id> <substrate> <goal> [owner] [artifact_path] [--decision-changed]
+  bash deploy/vps_run.sh posttick <tick_id> <forecast_contract_id> <substrate> <goal> [owner] [artifact_path] [--decision-changed] [--thesis-path <repo-relative .lean>] [--project-slug <slug>]
   bash deploy/vps_run.sh deploy-update [--dry-run]
   bash deploy/vps_run.sh toolchain-smoke
   bash deploy/vps_run.sh isabelle-smoke
@@ -80,8 +91,8 @@ Usage:
   bash deploy/vps_run.sh leanmill-source-fetch <https-url> <sha256> </tmp/leanmill_source_snapshots/file>
   bash deploy/vps_run.sh leanmill-campaign <allowlisted campaign.md> <remote-output-root> [--detach]
   bash deploy/vps_run.sh leanmill-latest <remote-output-root>
-  bash deploy/vps_run.sh leanmill-agent-output <remote-attempt-dir> <blueprint_compiler|semantic_reviewer|navigator|lineage_synthesizer|lean_solver> <call-index> [stdout|stderr|call|result|schema|dispatch]
-  bash deploy/vps_run.sh leanmill-agent-results <remote-attempt-dir> <blueprint_compiler|semantic_reviewer|navigator|lineage_synthesizer|lean_solver>
+  bash deploy/vps_run.sh leanmill-agent-output <remote-attempt-dir> <{_FRONTIER_ROLE_CHOICES}> <call-index> [stdout|stderr|call|result|schema|dispatch]
+  bash deploy/vps_run.sh leanmill-agent-results <remote-attempt-dir> <{_FRONTIER_ROLE_CHOICES}>
   bash deploy/vps_run.sh leanmill-status <remote-attempt-dir>
   bash deploy/vps_run.sh leanmill-inspect <remote-attempt-dir>
   bash deploy/vps_run.sh leanmill-verify <remote-attempt-dir> [--with-isabelle] [--with-lean] [--lean-root <remote-lean-root>] [--detach]
@@ -426,10 +437,8 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def sync_one_allowlisted(path: str) -> None:
+def _sync_repo_file(path: str, *, receipt_label: str) -> None:
     safe_repo_path(path)
-    if not is_sync_allowlisted(path):
-        die(f"path is not allowlisted in deploy/vps_sync_files.txt: {path}")
     local = LOCAL_REPO / path
     if not local.is_file():
         die(f"local file missing: {path}")
@@ -443,12 +452,60 @@ def sync_one_allowlisted(path: str) -> None:
     ).strip()
     if local_sha != remote_sha:
         die(f"hash mismatch after sync: {path} local={local_sha} remote={remote_sha}", 1)
-    print(f"OK sync-listed {path} {local_sha}")
+    print(f"OK {receipt_label} {path} {local_sha}")
+
+
+def sync_one_allowlisted(path: str) -> None:
+    safe_repo_path(path)
+    if not is_sync_allowlisted(path):
+        die(f"path is not allowlisted in deploy/vps_sync_files.txt: {path}")
+    _sync_repo_file(path, receipt_label="sync-listed")
 
 
 def validate_lake_target(target: str) -> None:
     if not target or re.search(r"[^A-Za-z0-9_.:-]", target):
         die(f"unsafe Lake target: {target}")
+
+
+def lean_import_source_closure(source_path: str) -> list[str]:
+    """Return local ``ZtareProofs`` imports in dependency-first order.
+
+    Lake can materialize an import closure only from the source bytes present
+    on the VPS. Syncing the selected file while leaving an imported campaign
+    module stale can compile a different theory—or fail before ratification.
+    The canonical Lean comment stripper prevents commented import examples
+    from becoming deployment edges.
+    """
+    src_root = str(LOCAL_REPO / "src")
+    if src_root not in sys.path:
+        sys.path.insert(0, src_root)
+    from ztare.leanmill.lean_source import strip_comments
+
+    seen: set[str] = set()
+    ordered: list[str] = []
+
+    def visit(repo_path: str) -> None:
+        if repo_path in seen:
+            return
+        seen.add(repo_path)
+        local_path = LOCAL_REPO / repo_path
+        if not local_path.is_file():
+            die(f"local Lean source missing while resolving import closure: {repo_path}")
+        visible = strip_comments(local_path.read_text(encoding="utf-8"))
+        for match in re.finditer(r"(?m)^\s*import\s+([^\n]+)$", visible):
+            for module in match.group(1).split():
+                if not module.startswith("ZtareProofs."):
+                    continue
+                dependency = (
+                    Path("ztare_proofs")
+                    / Path(*module.split("."))
+                ).with_suffix(".lean").as_posix()
+                if (LOCAL_REPO / dependency).is_file():
+                    visit(dependency)
+        ordered.append(repo_path)
+
+    visit(source_path)
+    return ordered
 
 
 def validate_remote_tmp_or_repo(path: str, label: str) -> None:
@@ -993,12 +1050,32 @@ def action_pretick(args: list[str]) -> None:
 
 def action_posttick(args: list[str]) -> None:
     decision_changed = False
+    thesis_path = ""
+    project_slug = ""
     filtered: list[str] = []
-    for arg in args:
+    index = 0
+    while index < len(args):
+        arg = args[index]
         if arg == "--decision-changed":
             decision_changed = True
+            index += 1
+            continue
+        if arg in {"--thesis-path", "--project-slug"}:
+            if index + 1 >= len(args):
+                usage()
+            value = args[index + 1]
+            if arg == "--thesis-path":
+                safe_repo_path(value)
+                thesis_path = value
+            else:
+                if not re.fullmatch(r"[A-Za-z0-9_.:-]+", value):
+                    die(f"unsafe project slug: {value}")
+                project_slug = value
+            index += 2
+            continue
         else:
             filtered.append(arg)
+        index += 1
     if len(filtered) < 4 or len(filtered) > 6:
         usage()
     tick_id, contract_id, substrate, goal = filtered[:4]
@@ -1021,6 +1098,10 @@ def action_posttick(args: list[str]) -> None:
     if artifact_path:
         safe_repo_path(artifact_path)
         cmd += ["--artifact-path", artifact_path]
+    if thesis_path:
+        cmd += ["--thesis-path", thesis_path]
+    if project_slug:
+        cmd += ["--project-slug", project_slug]
     if decision_changed:
         cmd.append("--decision-changed")
     remote_cmd(cmd, owner=owner, membrane=True)
@@ -1200,7 +1281,17 @@ def action_leanmill_ratify_existing(args: list[str]) -> None:
         target,
     ) is None:
         die("leanmill-ratify-existing target must be a qualified Lean identifier")
-    sync_one_allowlisted(source_path)
+    for closure_source in lean_import_source_closure(source_path):
+        sync_one_allowlisted(closure_source)
+    # The scratch proof imports the target module's dependencies through their
+    # `.olean` files. On a cold VPS, syncing the source alone leaves those
+    # objects absent and misclassifies the carried proof as `failed_compile`.
+    # Reuse the named Lake-build owner on this exact source module; Lake then
+    # materializes the complete transitive import closure before ratification.
+    source_module = ".".join(
+        Path(source_path).relative_to("ztare_proofs").with_suffix("").parts
+    )
+    action_lean_build([source_module])
     remote_cmd([
         "./venv/bin/python",
         "scripts/public/control/leanmill/solve_adhoc.py",
@@ -1331,12 +1422,41 @@ def _campaign_input_paths(campaign_path: str) -> list[str]:
                 die(f"{label} must be inside the repository")
         declared.append(artifact_path.as_posix())
 
+    evidence_refs = metadata.get("evidence_refs") or []
+    if not isinstance(evidence_refs, list) or any(
+        not isinstance(ref, str) or not ref.strip() for ref in evidence_refs
+    ):
+        die("campaign evidence_refs must be a list of repository-relative files")
+    for ref in evidence_refs:
+        artifact_path = Path(ref)
+        if artifact_path.is_absolute():
+            try:
+                artifact_path = artifact_path.relative_to(LOCAL_REPO)
+            except ValueError:
+                die("campaign evidence must be inside the repository")
+        declared.append(artifact_path.as_posix())
+
     ordered: list[str] = []
     for declared_path in declared:
         safe_repo_path(declared_path)
         if declared_path not in ordered:
             ordered.append(declared_path)
     return ordered
+
+
+def sync_campaign_inputs(campaign_path: str) -> list[str]:
+    """Sync the allowlisted manifest and exactly the files it declares."""
+
+    safe_repo_path(campaign_path)
+    if not is_sync_allowlisted(campaign_path):
+        die(
+            "campaign manifest is not allowlisted in deploy/vps_sync_files.txt: "
+            + campaign_path
+        )
+    inputs = _campaign_input_paths(campaign_path)
+    for path in inputs:
+        _sync_repo_file(path, receipt_label="sync-campaign-input")
+    return inputs
 
 
 def action_leanmill_campaign(args: list[str]) -> None:
@@ -1350,9 +1470,7 @@ def action_leanmill_campaign(args: list[str]) -> None:
     if not campaign_path.endswith(".md"):
         die("leanmill-campaign expects a Markdown campaign")
     validate_remote_tmp_or_repo(output_root, "LeanMill output root")
-    campaign_inputs = _campaign_input_paths(campaign_path)
-    for path in campaign_inputs:
-        sync_one_allowlisted(path)
+    sync_campaign_inputs(campaign_path)
     # The campaign inlet compiles the typed blueprint and constructs the
     # complete frozen context before navigation can reserve a provider turn.
     # Re-running ``preflight`` here would materialize an exact SMT census
@@ -1435,8 +1553,7 @@ def action_leanmill_preflight(args: list[str]) -> None:
     campaign_path = args[0]
     if not campaign_path.endswith(".md"):
         die("leanmill-preflight expects a Markdown campaign")
-    for path in _campaign_input_paths(campaign_path):
-        sync_one_allowlisted(path)
+    sync_campaign_inputs(campaign_path)
     remote_cmd(
         [
             "./venv/bin/python",
@@ -1515,17 +1632,10 @@ def action_leanmill_agent_output(args: list[str]) -> None:
         usage()
     attempt_dir, role, index_text = args[:3]
     validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
-    if role not in {
-        "blueprint_compiler",
-        "semantic_reviewer",
-        "navigator",
-        "lineage_synthesizer",
-        "lean_solver",
-        "post_freeze_interpreter",
-        "adapter_forge",
-        "adapter_reviewer",
-    }:
-        die(f"unsupported LeanMill role: {role}")
+    try:
+        role = validate_frontier_runtime_role(role)
+    except ValueError as exc:
+        die(str(exc))
     if not index_text.isdigit() or int(index_text) > 999:
         die(f"invalid LeanMill call index: {index_text}")
     kind = args[3] if len(args) == 4 else "stdout"
@@ -1547,8 +1657,10 @@ def action_leanmill_agent_output(args: list[str]) -> None:
             "python3",
             "-c",
             (
-                "from pathlib import Path; import sys; root=Path(sys.argv[1]); "
-                "role,suffix=sys.argv[2:]; dirs=[d for d in root.glob(role+'*') if d.is_dir()]; "
+                "from pathlib import Path; import sys; "
+                "from ztare.leanmill.frontier_campaign_roles import frontier_role_artifact_directories; "
+                "root=Path(sys.argv[1]); role,suffix=sys.argv[2:]; "
+                "dirs=frontier_role_artifact_directories(root,role); "
                 "paths=[d/suffix for d in dirs if (d/suffix).is_file()]; "
                 "p=max(paths,key=lambda x:x.stat().st_mtime_ns) if paths else None; "
                 "print(p.read_text(encoding='utf-8') if p else 'MISSING')"
@@ -1565,25 +1677,20 @@ def action_leanmill_agent_results(args: list[str]) -> None:
         usage()
     attempt_dir, role = args
     validate_remote_tmp_or_repo(attempt_dir, "LeanMill attempt directory")
-    if role not in {
-        "blueprint_compiler",
-        "semantic_reviewer",
-        "navigator",
-        "lineage_synthesizer",
-        "lean_solver",
-        "post_freeze_interpreter",
-        "adapter_forge",
-        "adapter_reviewer",
-    }:
-        die(f"unsupported LeanMill role: {role}")
+    try:
+        role = validate_frontier_runtime_role(role)
+    except ValueError as exc:
+        die(str(exc))
     calls_root = f"{attempt_dir}/agent_calls"
     remote_cmd(
         [
             "python3",
             "-c",
             (
-                "from pathlib import Path; import json,sys; root=Path(sys.argv[1]); role=sys.argv[2]; rows=[]; "
-                "dirs=[d for d in root.glob(role+'*') if d.is_dir()]; "
+                "from pathlib import Path; import json,sys; "
+                "from ztare.leanmill.frontier_campaign_roles import frontier_role_artifact_directories; "
+                "root=Path(sys.argv[1]); role=sys.argv[2]; rows=[]; "
+                "dirs=frontier_role_artifact_directories(root,role); "
                 "calls=sorted([p for d in dirs for p in d.glob('*.call.json')]); "
                 "[(lambda p,r: rows.append({'index':p.name.split('.')[0],"
                 "'role_dir':p.parent.name,"
@@ -1650,7 +1757,15 @@ def action_leanmill_resume(args: list[str]) -> None:
     if authority_ref:
         resume_args.extend(["--authority-ref", authority_ref])
     if not detached:
-        _leanmill_attempt_action("resume", resume_args)
+        remote_cmd(
+            [
+                "./venv/bin/python",
+                "-m",
+                "ztare.leanmill.cli",
+                "resume",
+                *resume_args,
+            ]
+        )
         return
     command = [
         "./venv/bin/python", "-m", "ztare.leanmill.cli", "resume", *resume_args,

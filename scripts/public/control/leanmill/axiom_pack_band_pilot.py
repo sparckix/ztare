@@ -32,10 +32,12 @@ from ztare.leanmill.axiom_pack_band import (
     validate_band_candidate_axiom,
 )
 from ztare.leanmill.axiom_pack_orchestration import (
-    make_contract_proposer,
-    make_signed_semantic_checker,
     orchestrate_typed_axiom_proposals,
     recover_valid_quarantined_rows,
+)
+from ztare.leanmill.axiom_pack_live_producer import (
+    make_contract_proposer,
+    make_signed_semantic_checker,
     render_typed_proposer_prompt,
 )
 from ztare.leanmill.contracts.axiom_pack_transport import (

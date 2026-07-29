@@ -284,12 +284,27 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
     doms = _domains_from_ledger(ledger)
     starts = _campaign_starts_from_ledger(ledger)   # run_tag → LAUNCH epoch (marker); enables the formalize/prove split
     consolidates = _consolidate_from_ledger(ledger)   # run_tag → consolidate seconds; splits the formalize window
+
+    def campaign_owner(run_tag: str) -> str:
+        if run_tag in starts:
+            return run_tag
+        # Frontier task attempts retain their task/role suffix for diagnostics,
+        # while cycle time belongs to the enclosing attempt.  Match only the
+        # two registered suffix families and prefer the longest marker.
+        owners = [
+            owner
+            for owner in starts
+            if run_tag.startswith(owner + "-boundary-")
+            or run_tag.startswith(owner + "-theory-task-")
+        ]
+        return max(owners, key=len) if owners else run_tag
+
     by_run: "dict[str, list[dict]]" = {}
     for r in attempt_rows or []:
         g = r if isinstance(r, dict) else dict(r)
         rt = str(g.get("run_tag") or "")
         if rt:
-            by_run.setdefault(rt, []).append(g)
+            by_run.setdefault(campaign_owner(rt), []).append(g)
 
     campaigns: "dict[str, dict]" = {}
     for rt, rows in by_run.items():
@@ -342,8 +357,8 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
         agg = by_domain.setdefault(c["domain"], {"campaigns": 0, "closures": 0, "_ttc": []})
         agg["campaigns"] += 1
         agg["closures"] += c["closures"]
-        if c["time_to_closure_s"]["mean"] is not None:
-            agg["_ttc"].append(c["time_to_closure_s"]["mean"])
+        if c["wall_s"]["mean"] is not None:
+            agg["_ttc"].append(c["wall_s"]["mean"])
     for _d, agg in by_domain.items():
         ttcs = agg.pop("_ttc")
         agg["avg_time_to_closure_s"] = round(sum(ttcs) / len(ttcs), 2) if ttcs else None
@@ -360,7 +375,7 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
             "attempts": c["attempts"],
             "closures": c["closures"],
             "total_wall_s": c["cost_to_closure_s"]["total_wall_s"],
-            "first_time_to_closure_s": c["time_to_closure_s"]["first"],
+            "first_time_to_closure_s": c["wall_s"]["first"],
         }
         agg["combined_wall_s"] = round(agg["combined_wall_s"] + c["cost_to_closure_s"]["total_wall_s"], 2)
         agg["combined_closures"] += c["closures"]

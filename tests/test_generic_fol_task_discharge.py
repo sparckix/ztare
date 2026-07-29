@@ -44,6 +44,8 @@ from ztare.leanmill.formal_task_boundary import (
     build_formal_task_faithfulness_receipt,
 )
 from ztare.leanmill.formal_task_campaign_executor import (
+    FormalTaskAttemptDidNotClose,
+    _kernel_replay_receipt,
     _mathlib_only_import_receipt,
     build_formal_task_role_registry_receipt,
     make_formalization_campaign_task_executor,
@@ -51,8 +53,14 @@ from ztare.leanmill.formal_task_campaign_executor import (
 )
 from ztare.leanmill.frontier_agent_runtime import FrontierAgentConfig
 from ztare.leanmill.formalization_admission import FormalizationAdmission
+from ztare.leanmill.ratification_policy import (
+    TARGET_GOVERNANCE_AUTHORITIES,
+    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256,
+)
+from ztare.leanmill.solver.closed_artifact import finalize_solver_validation
 from ztare.leanmill.lean_source import has_sorry
 from ztare.leanmill.frontier_campaign_runner import (
+    _active_lineage_disposition_rows,
     _consume_theory_task_discharge,
     _open_terminal_obligation_feedback,
     drive_frontier_campaign,
@@ -71,6 +79,7 @@ from ztare.leanmill.theory_ir import (
     content_hash,
 )
 from ztare.leanmill.theory_program import THEORY_PROGRAM_V2, TheoryProgram
+from ztare.leanmill.theory_interest import CHEAP_CONSEQUENCE_EVALUATOR_REF
 from test_theory_navigator import _context_and_blueprint
 
 
@@ -323,6 +332,63 @@ def test_generic_fol_formal_task_has_a_live_workbench_producer() -> None:
     assert summary["task_contract"]["adjudicator_id"] == (
         GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR
     )
+
+
+def test_formal_task_kernel_replay_requires_positive_axiom_receipt() -> None:
+    context = _context()
+    contract = _contract(context)
+    admission = FormalizationAdmission(
+        task_digest="sha256:" + content_hash({
+            "contract_sha256": contract.sha256,
+            "task_specification": contract.parameters["task_specification"],
+        }),
+        intent_text="test task",
+        context_digest="sha256:" + context.context_hash,
+        status="ADMITTED",
+        target_name="formal_task_axiom_gate",
+        source_text="theorem formal_task_axiom_gate : True := by\n  sorry\n",
+        target_signature=": True",
+        faithfulness_reason="fixture",
+        faithfulness_checks_json=json.dumps({"fixture": True}),
+        refine_trace_json="[]",
+        advisory_audits_json="{}",
+    )
+    raw_solver = {
+        "results": [{
+            "outcome": "closed",
+            "proof_text": "by trivial",
+            "contract_validation": {
+                "credit_ready_at_solver_layer": True,
+                "receipts": {
+                    "kernel_compile_receipt": {
+                        "available": True,
+                        "passed": True,
+                    },
+                    "matched_negative_control_receipt": {
+                        "available": True,
+                        "passed": True,
+                    },
+                },
+            },
+        }],
+        "governance": {"status": "ratified"},
+        "closure_certificate": "closure:test:missing-axiom-receipt",
+    }
+
+    with pytest.raises(
+        FormalTaskAttemptDidNotClose,
+        match="lacks_ratified_closure_evidence",
+    ):
+        _kernel_replay_receipt(
+            contract,
+            admission,
+            raw_solver,
+            compile_fn=lambda _source: True,
+            attempt_id="attempt:missing-axiom-receipt",
+            campaign_id=contract.lifecycle_scope,
+            context_hash=context.context_hash,
+            lean_solver_ref="solver:test",
+        )
 
 
 def test_navigator_schema_accepts_typed_finite_residual_and_rejects_null() -> None:
@@ -584,24 +650,49 @@ def test_formalization_campaign_factory_first_fires_with_separate_fake_roles(
     def solve(target_name, source_text, goal, **_kwargs):
         calls["solve"] += 1
         _test_transport_call(tmp_path, "solve the admitted Lean target")
+        assert _kwargs["require_positive_axiom_receipt"] is True
         assert target_name == "campaign_reconstruction_counterexample"
         assert has_sorry(source_text)
         assert goal == ""
+        governance = {
+            "governance_kernel": {
+                "available": True,
+                "passed": True,
+                "policy_profile": "target_ratification",
+                "required_authorities": sorted(TARGET_GOVERNANCE_AUTHORITIES),
+                "authority_disposition": {
+                    authority: "passed"
+                    for authority in TARGET_GOVERNANCE_AUTHORITIES
+                },
+                "authority_roster_sha256": (
+                    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256
+                ),
+            },
+            "statement_integrity": {"ok": True},
+        }
+        validation = finalize_solver_validation({
+            "credit_ready_at_solver_layer": True,
+            "positive_axiom_receipt_required": True,
+            "discriminating_mnc_required": True,
+            "axiom_tier": "kernel_pure",
+            "receipts": {
+                "kernel_compile_receipt": {"available": True, "passed": True},
+                "matched_negative_control_receipt": {
+                    "available": True,
+                    "passed": True,
+                },
+                "axiom_allowlist_receipt": {"available": True, "passed": True},
+            },
+        }, governance)
         return {
             "results": [
                 {
                     "outcome": "closed",
                     "proof_text": "by trivial",
-                    "contract_validation": {
-                        "credit_ready_at_solver_layer": True,
-                        "receipts": {
-                            "kernel_compile_receipt": {"passed": True},
-                            "matched_negative_control_receipt": {"passed": True},
-                        },
-                    },
+                    "contract_validation": validation,
                 }
             ],
-            "governance": {"status": "ratified"},
+            "governance": governance,
             "closure_certificate": "closure:test:first-fire",
         }
 
@@ -688,7 +779,9 @@ def test_formalization_campaign_factory_first_fires_with_separate_fake_roles(
             theory_task_executor_fn=executor,
         ).to_json()
     assert len(committed) == 3
-    assert calls == {"formalize": 1, "solve": 1, "compile": 1}
+    assert calls == {"formalize": 1, "solve": 1, "compile": 1}, json.dumps(
+        boundary, indent=2, sort_keys=True
+    )
     assert boundary["query_results"][0]["status"] == (
         "kernel_verified_independently_reviewed"
     )
@@ -763,9 +856,21 @@ def test_formalization_campaign_factory_first_fires_with_separate_fake_roles(
                     "proof_text": "by trivial",
                     "contract_validation": {
                         "credit_ready_at_solver_layer": True,
+                        "positive_axiom_receipt_required": True,
+                        "axiom_tier": "kernel_pure",
                         "receipts": {
-                            "kernel_compile_receipt": {"passed": True},
-                            "matched_negative_control_receipt": {"passed": True},
+                            "kernel_compile_receipt": {
+                                "available": True,
+                                "passed": True,
+                            },
+                            "matched_negative_control_receipt": {
+                                "available": True,
+                                "passed": True,
+                            },
+                            "axiom_allowlist_receipt": {
+                                "available": True,
+                                "passed": True,
+                            },
                         },
                     },
                 }
@@ -1533,6 +1638,7 @@ def test_two_lineage_driver_consumes_leaf_authored_sibling_supersession(
         {
             "theory_program_id": program.program_id,
             "theory_program": program.to_json(),
+            "baseline_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
             "formula_ids": list(program.presentation_formula_ids),
             "boundary_target_ids": [],
         }
@@ -1562,6 +1668,7 @@ def test_two_lineage_driver_consumes_leaf_authored_sibling_supersession(
             verification_plan={"post_freeze_interpretation": False},
         ).to_json(),
     )
+    write_json_atomic(tmp_path / "budget.json", {"budget_digest": "budget:test"})
     monkeypatch.setattr(
         runner, "_boundary_completion_covers", lambda *_args, **_kwargs: True
     )
@@ -1581,6 +1688,112 @@ def test_two_lineage_driver_consumes_leaf_authored_sibling_supersession(
     )
     gate = json.loads((tmp_path / "campaign_closure_gate.json").read_text())
     assert gate["ready"] is True
+
+
+def test_terminal_gate_ignores_historical_context_dispositions(
+    tmp_path,
+) -> None:
+    context = _context()
+    contract = _contract(context)
+    program = TheoryProgram(
+        campaign_id="campaign:test",
+        lineage_id="lineage:current",
+        context_hash=context.context_hash,
+        context_epoch=2,
+        presentation_formula_ids=context.formula_ids,
+        prediction_formula_ids=(),
+        selection_receipt_id="selection:current",
+        schema=THEORY_PROGRAM_V2,
+        task_discharge_contracts=(contract,),
+    )
+    run_core = {
+        "status": "budget_stopped",
+        "context_hash": context.context_hash,
+        "navigation": {
+            "finalists": [
+                {
+                    "candidate_kind": "theory_program",
+                    "formula_ids": list(program.presentation_formula_ids),
+                    "boundary_target_ids": [],
+                    "theory_program_id": program.program_id,
+                    "theory_program": program.to_json(),
+                }
+            ]
+        },
+    }
+    run = {**run_core, "run_digest": content_hash(run_core)}
+    write_json_atomic(tmp_path / "run.json", run)
+    write_json_atomic(
+        tmp_path / "budget_stop_receipt.json",
+        _budget_stop_receipt(context.context_hash),
+    )
+    historical = lineage_disposition_from_terminal_transition(
+        context_hash="context:prior",
+        lineage_id="lineage:prior",
+        transition_receipt=_budget_stop_receipt("context:prior"),
+    )
+    write_json_atomic(
+        tmp_path / "lineage_disposition.historical.json", historical
+    )
+
+    assert next_frontier_campaign_action(tmp_path) == "complete"
+    gate = json.loads((tmp_path / "campaign_closure_gate.json").read_text())
+    assert gate["ready"] is True
+    assert gate["frozen_lineage_ids"] == [program.lineage_id]
+    assert len(list(tmp_path.glob("lineage_disposition.*.json"))) == 2
+
+
+def test_budget_reopen_supersedes_same_lineage_stop_disposition(
+    tmp_path,
+) -> None:
+    context_hash = "context:reopened"
+    lineage_id = "lineage:reopened"
+    budget = budget_preset("smoke_20m")
+    ledger = ExplorationBudgetLedger(
+        tmp_path / "budget.events.jsonl",
+        budget,
+        attempt_id=tmp_path.name,
+    )
+    stop = ledger.stop_receipt(
+        "blocked_before_action:smt_calls",
+        context_hash=context_hash,
+    ).to_json()
+    disposition = lineage_disposition_from_terminal_transition(
+        context_hash=context_hash,
+        lineage_id=lineage_id,
+        transition_receipt=stop,
+    )
+    write_json_atomic(
+        tmp_path / "lineage_disposition.stopped.json", disposition
+    )
+    ledger.extend_resources(
+        phase="boundary",
+        resources={"smt_calls": 1},
+        authority_ref="user:continue:test",
+        reason="resume the same frozen lineage",
+    )
+    extension = json.loads(
+        (tmp_path / "budget.events.jsonl").read_text().splitlines()[-1]
+    )
+    reopen_core = {
+        "schema": "leanmill.boundary_budget_extension_reopen.v1",
+        "context_hash": context_hash,
+        "prior_run_digest": "run:stopped",
+        "boundary_completion_sha256": "completion:stopped",
+        "superseded_budget_stop_receipt": stop,
+        "extension_event_sha256": extension["event_sha256"],
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    write_json_atomic(
+        tmp_path / "boundary_budget_extension_reopen.test.json",
+        {**reopen_core, "receipt_sha256": content_hash(reopen_core)},
+    )
+
+    assert _active_lineage_disposition_rows(
+        tmp_path,
+        context_hash=context_hash,
+        lineage_ids=(lineage_id,),
+    ) == ()
 
 
 def test_stopped_campaign_blocks_on_unadjudicated_finite_generalization(

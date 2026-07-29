@@ -1,0 +1,303 @@
+{
+  "archived_stale_request_ids": [],
+  "boundary_stage": {
+    "admission_semantics": "authorizes_discriminating_tests_not_outer_success",
+    "capabilities": [
+      "larger_carrier_countermodel_search",
+      "formal_verification",
+      "post_freeze_literature_review"
+    ],
+    "feedback_receipt_sha256s": [],
+    "status": "not_yet_run"
+  },
+  "carried_evidence_receipts": [
+    {
+      "evidence_ref": "sha256:5f45a1f0ca5df968da6f55c2411a71fe63ac335072638c76239acc25af40db65",
+      "receipt": {
+        "authority": "deterministic_host",
+        "capability_id": "inspect_presentation_extent",
+        "claim_bindings": [
+          "inspect_presentation_extent"
+        ],
+        "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+        "input_hashes": {
+          "formula_ids": "sha256:94349c1351f25ea54d7733a488830cc952b9cb591c3e12551db42dafe12eda97",
+          "limit": "sha256:4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+          "offset": "sha256:5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+        },
+        "output_summary": {
+          "claim_boundary": "displayed objects satisfy the selected formulas only in the current bounded or sampled chart; extent separation does not certify that the formula language compresses structure, generates a representation, or extrapolates",
+          "context_exact": true,
+          "extent_size": 1,
+          "next_offset": null,
+          "object_identity_policy": "declared_evidence_object_identity.v1",
+          "objects": [
+            {
+              "object_id": "control:extended-51-20-14",
+              "object_kind": "evidence_record",
+              "payload": {
+                "artifact_ref": "binary_code_control_replay.json#extended_matrix",
+                "artifact_sha256": "213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e",
+                "verification_receipt_sha256": "e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+              },
+              "stratum_id": "matched_positive"
+            }
+          ]
+        },
+        "receipt_id": "sha256:5f45a1f0ca5df968da6f55c2411a71fe63ac335072638c76239acc25af40db65",
+        "schema": "leanmill.axiompack_workbench_receipt.v1"
+      }
+    },
+    {
+      "evidence_ref": "sha256:74cea3b148316b965bc538bb3e3e1d1f9bffe4fe5a2d647b8f2dc9c0a03a399f",
+      "receipt": {
+        "authority": "deterministic_host",
+        "capability_id": "inspect_presentation_extent",
+        "claim_bindings": [
+          "inspect_presentation_extent"
+        ],
+        "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+        "input_hashes": {
+          "formula_ids": "sha256:94349c1351f25ea54d7733a488830cc952b9cb591c3e12551db42dafe12eda97",
+          "limit": "sha256:6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+          "offset": "sha256:5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+        },
+        "output_summary": {
+          "claim_boundary": "displayed objects satisfy the selected formulas only in the current bounded or sampled chart; extent separation does not certify that the formula language compresses structure, generates a representation, or extrapolates",
+          "context_exact": true,
+          "extent_size": 1,
+          "next_offset": null,
+          "object_identity_policy": "declared_evidence_object_identity.v1",
+          "objects": [
+            {
+              "object_id": "control:extended-51-20-14",
+              "object_kind": "evidence_record",
+              "payload": {
+                "artifact_ref": "binary_code_control_replay.json#extended_matrix",
+                "artifact_sha256": "213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e",
+                "verification_receipt_sha256": "e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+              },
+              "stratum_id": "matched_positive"
+            }
+          ]
+        },
+        "receipt_id": "sha256:74cea3b148316b965bc538bb3e3e1d1f9bffe4fe5a2d647b8f2dc9c0a03a399f",
+        "schema": "leanmill.axiompack_workbench_receipt.v1"
+      }
+    },
+    {
+      "evidence_ref": "sha256:a5ea7dbd9dbb9db437eb127ddc60ff53fcfe696d4c29d801e50a76784cdf4470",
+      "receipt": {
+        "authority": "deterministic_host",
+        "capability_id": "propose_theory_task",
+        "claim_bindings": [
+          "propose_theory_task"
+        ],
+        "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+        "input_hashes": {
+          "adjudicator_capability": "sha256:f4b8105937f9423142583f06a56003ea07d08c340b924704e2454870293d2010",
+          "evidence_refs": "sha256:ad92d8a2ffe4908c4644892d35aa624840a48d0649b2d29126f91dd679468e69",
+          "formula_ids": "sha256:961483321470c55f57ebf6e078cd2eb414d398e77d742becc98edd02fbb5d641",
+          "goal": "sha256:0cbb4fd05effcb8fd2c6a40748d26e1a270e18552dad53a411750c1d9e4d0148",
+          "kill_condition": "sha256:67a0407ef425ebae19c40aec97781d7acbd2a6fe58b31276c6f53d02e011c459",
+          "observable": "sha256:0c0a7942e659559c3f398c059ff2b36669ad0c53e7d05a8adebda5a2db55aa07"
+        },
+        "output_summary": {
+          "claim_boundary": "task intent only; no candidate or stopping authority",
+          "missing_capability": "witness_constructor",
+          "next_route": "retry_propose_theory_task",
+          "request_id": "theory-task-request:f3830f74303713e5e489cec4fb009b1a23164101a5636f9ceb0dc126a83cc67a",
+          "status": "witness_constructor_unavailable",
+          "task_contract": null,
+          "task_contract_id": null,
+          "task_contract_sha256": null,
+          "task_request": {
+            "adjudicator_capability": "governed_witness_construction",
+            "authority": "leaf_request_host_bound",
+            "context_epoch": 0,
+            "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+            "evidence_refs": [
+              "sha256:5f45a1f0ca5df968da6f55c2411a71fe63ac335072638c76239acc25af40db65",
+              "binary_code_control_replay.json#extended_matrix",
+              "sha256:213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e",
+              "sha256:e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+            ],
+            "goal": "Attempt the consequential lowering suggested by the singleton verified length-51 positive control: produce a concrete rank-20 length-50 binary generator matrix, preferably by coordinate deletion or shortening from binary_code_control_replay.json#extended_matrix, and submit it for current-policy construction-artifact ratification.",
+            "kill_condition": "Kill this task if no explicit length-50 rows_hex witness can be produced under the reviewed witness schema, or if exact exhaustive verification of every submitted candidate returns rank below 20 or minimum distance below 14; this kills only the attempted lowering route, not global existence.",
+            "observable": "A normalized witness_construction satisfying leanmill.binary_linear_generator_matrix.v1 with field_order=2, length=50, dimension=20, coordinate_convention=bit_i_is_coordinate_i, plus exact verifier replay over all nonzero messages reporting rank 20 and minimum distance at least 14.",
+            "presentation_formula_ids": [
+              "property:length-50",
+              "property:minimum-distance-at-least-14"
+            ],
+            "request_id": "theory-task-request:f3830f74303713e5e489cec4fb009b1a23164101a5636f9ceb0dc126a83cc67a",
+            "schema": "leanmill.theory_task_request.v1",
+            "witness_construction": {
+              "construction_brief": "Attempt the consequential lowering suggested by the singleton verified length-51 positive control: produce a concrete rank-20 length-50 binary generator matrix, preferably by coordinate deletion or shortening from binary_code_control_replay.json#extended_matrix, and submit it for current-policy construction-artifact ratification.",
+              "discharge_policy": "construction_artifact_ratification_required",
+              "interface_sha256": "f981556d966fa75f98df174a41f9b9bef742e9b9cb7e661c94fc7e7d4dea2808",
+              "normalizer": {
+                "capability_id": "binary_generator_row_basis_normalizer",
+                "contract": {
+                  "kind": "canonical_row_basis",
+                  "preserve_coordinate_order": true
+                }
+              },
+              "predicate_ir": {
+                "dimension": 20,
+                "field_order": 2,
+                "length": 50,
+                "required_minimum_distance": 14,
+                "required_rank": 20,
+                "schema": "leanmill.binary_linear_code_predicate.v1",
+                "target_snapshot_sha256": "sha256:0f36cee319812676886248f82ab34c2e55707c9699e3b6803b95781a4f144e3a"
+              },
+              "target_config_sha256": "993219035d380ce8a4e4645163c456c323c58cca0bc02cb68abc69ef81632db6",
+              "verifier": {
+                "capability_id": "binary_linear_code_exact_verifier",
+                "contract": {
+                  "kind": "exhaustive_nonzero_message_replay",
+                  "max_nonzero_messages": 1048575
+                }
+              },
+              "witness_schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "coordinate_convention": {
+                    "const": "bit_i_is_coordinate_i",
+                    "type": "string"
+                  },
+                  "dimension": {
+                    "const": 20,
+                    "type": "integer"
+                  },
+                  "field_order": {
+                    "const": 2,
+                    "type": "integer"
+                  },
+                  "length": {
+                    "const": 50,
+                    "type": "integer"
+                  },
+                  "rows_hex": {
+                    "items": {
+                      "pattern": "^0x[0-9a-f]{13}$",
+                      "type": "string"
+                    },
+                    "maxItems": 20,
+                    "minItems": 20,
+                    "type": "array"
+                  },
+                  "schema": {
+                    "const": "leanmill.binary_linear_generator_matrix.v1",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "schema",
+                  "field_order",
+                  "length",
+                  "dimension",
+                  "coordinate_convention",
+                  "rows_hex"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "receipt_id": "sha256:a5ea7dbd9dbb9db437eb127ddc60ff53fcfe696d4c29d801e50a76784cdf4470",
+        "schema": "leanmill.axiompack_workbench_receipt.v1"
+      }
+    }
+  ],
+  "context_epoch": 0,
+  "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+  "formula_requests": [],
+  "frozen_programs": [],
+  "host_isolated_program_comparisons": [],
+  "input_sha256": "2a898467dba20c9d25038272dfe3de91716b4dd380230a33e9589cacaab71f0a",
+  "isolation_receipt": {
+    "agent_identities": [
+      "durable:navigator.lineage-000",
+      "durable:navigator.lineage-001"
+    ],
+    "authority": "deterministic_host_orchestration",
+    "claim_boundary": "host orchestration noninterference only; no claim of distinct model priors or statistical independence",
+    "context_epoch": 0,
+    "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+    "lineage_ids": [
+      "theory-lineage:f9fb05ba7e9f56833306d10197333ef7cea16f7e18cb310c0c4caf5149d416a1",
+      "theory-lineage:670f98bcc6940f0031ecf2203baa23f5b12e00595fb303ed044df78b314d1032"
+    ],
+    "receipt_sha256": "15a9e06e35d80c937f9a22812210d94dff3a3b673cde099ca8e1c0114ab3c1fe",
+    "schema": "leanmill.theory_lineage_isolation.v1",
+    "shared_input_classes": [
+      "frozen_blueprint",
+      "frozen_context",
+      "host_receipted_prior_conflicts"
+    ],
+    "withheld_between_lineages": [
+      "action_trace",
+      "candidate_presentations",
+      "formula_or_language_requests",
+      "navigator_rationales"
+    ]
+  },
+  "objective_contract": {
+    "authority": "independent_leaf_choice_host_receipt_validation",
+    "instruction": "Stop after an exact rank-20 length-50 generator reaches minimum distance at least 14 and enters current-policy construction-artifact ratification; one campaign-authored finite construction family is completely enumerated with replayable member-level rejection receipts and a typed next representation; the remaining split expires; or a typed runtime failure prevents the family from becoming executable. Never infer global code nonexistence from a family result.",
+    "review_stage": "post_lineage_freeze_pre_boundary",
+    "schema": "leanmill.frontier_objective_contract.v1"
+  },
+  "objective_review_history": [],
+  "schema": "leanmill.lineage_synthesis_input.v1",
+  "search_wave_image_receipt": {},
+  "theory_language_requests": [
+    {
+      "lineage_id": "theory-lineage:f9fb05ba7e9f56833306d10197333ef7cea16f7e18cb310c0c4caf5149d416a1",
+      "request": {
+        "authority": "proposal_only",
+        "blind_spot": "LOWERABILITY_BLOCKED: the current workbench can verify a supplied binary generator matrix through governed_witness_construction, but the prior task receipt reports missing_capability=witness_constructor. The finite evidence contains a verified length-51 rank-20 distance-14 control artifact, yet the carrier has no registered morphism that attempts coordinate deletion, shortening, or parity-derived lowering into an explicit length-50 rows_hex witness with member-level rejection receipts.",
+        "change_kind": "new_operation",
+        "discriminating_test": "Given binary_code_control_replay.json#extended_matrix and the governed witness schema, enumerate each admissible one-coordinate deletion or shortening/lowering candidate, normalize row basis with coordinate order preserved, exhaustively verify all nonzero messages, and return either one accepted length-50 rank-20 distance-at-least-14 witness or replayable rejection receipts for every enumerated member. The test succeeds only if its output can be consumed unchanged by governed_witness_construction or proves the finite family exhausted without inferring global nonexistence.",
+        "evidence_refs": [
+          "sha256:5f45a1f0ca5df968da6f55c2411a71fe63ac335072638c76239acc25af40db65",
+          "sha256:a5ea7dbd9dbb9db437eb127ddc60ff53fcfe696d4c29d801e50a76784cdf4470",
+          "binary_code_control_replay.json#extended_matrix",
+          "sha256:213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e"
+        ],
+        "kill_condition": "Kill this expansion if the operation cannot bind the verified length-51 artifact as input, cannot emit schema-valid length-50 rows_hex candidates plus exact verifier receipts, or cannot distinguish accepted witness from complete finite-family exhaustion.",
+        "proposed_interface": "operation binary_length51_to_length50_lowering@v1: input current_state={verified length-51 binary generator artifact_ref, artifact_sha256, target length=50, dimension=20, required_minimum_distance=14, coordinate_convention=bit_i_is_coordinate_i}; output desired_state={accepted witness_construction for governed_witness_construction OR exhausted_family_rejection_receipts with one receipt per admissible deletion/shortening member}; admissibility_witness={normalizer receipt, exhaustive verifier receipt, enumeration coverage receipt}.",
+        "request_id": "theory-language-request:6006693347fb9df51e4bd051ab73c7c02876adc408830ccdf561672c0efa2187",
+        "required_transition": "new_reviewed_blueprint_or_adapter_capability",
+        "schema": "leanmill.theory_language_expansion_request.v1",
+        "source_context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+        "source_epoch": 0
+      },
+      "request_id": "theory-language-request:6006693347fb9df51e4bd051ab73c7c02876adc408830ccdf561672c0efa2187"
+    },
+    {
+      "lineage_id": "theory-lineage:670f98bcc6940f0031ecf2203baa23f5b12e00595fb303ed044df78b314d1032",
+      "request": {
+        "authority": "proposal_only",
+        "blind_spot": "The bounded chart identifies a single minimum-distance-at-least-14 survivor, but its object identity is `control:extended-51-20-14` with artifact `binary_code_control_replay.json#extended_matrix`, while the objective requires an exact rank-20 length-50 generator. The current unary property panel can say the survivor is strong-distance, but cannot express or test the coordinate deletion, puncturing, shortening, or normalization morphism needed to ask whether this length-51 control yields a length-50 witness or only a boundary obstruction.",
+        "change_kind": "new_operation",
+        "discriminating_test": "Apply the operation interface to `control:extended-51-20-14` across all coordinate deletions preserving rank 20, normalize each resulting length-50 generator, and exhaustively verify minimum distance. Success produces at least one governed witness-construction input for the registered length-50 rank-20 distance-14 adjudicator; failure returns replayable per-coordinate rejection receipts and separates parity-extension success from target-length construction.",
+        "evidence_refs": [
+          "sha256:74cea3b148316b965bc538bb3e3e1d1f9bffe4fe5a2d647b8f2dc9c0a03a399f",
+          "binary_code_control_replay.json#extended_matrix",
+          "sha256:e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+        ],
+        "kill_condition": "Reject this expansion if the carrier already exposes a selectable coordinate-deletion or puncturing morphism from anonymous evidence objects to normalized length-50 generator witnesses, or if the extended matrix lacks enough coordinate-level structure to define deletion with preserve-coordinate-order semantics.",
+        "proposed_interface": "operation puncture_coordinate(evidence_object, coordinate_index) -> binary_generator_matrix_candidate with metadata {source_object_id, deleted_coordinate, preserve_coordinate_order=true, rank_after_puncture, normalized_rows_hex}; observable exhaustive_distance_verdict(candidate) -> {rank, length, minimum_distance, rejecting_message_or_success_receipt}.",
+        "request_id": "theory-language-request:54104e94c5cad5353f77381f58cf3235015405ef3e164dd1db269c619f752323",
+        "required_transition": "new_reviewed_blueprint_or_adapter_capability",
+        "schema": "leanmill.theory_language_expansion_request.v1",
+        "source_context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+        "source_epoch": 0
+      },
+      "request_id": "theory-language-request:54104e94c5cad5353f77381f58cf3235015405ef3e164dd1db269c619f752323"
+    }
+  ],
+  "visibility": "post_lineage_freeze_anonymous_only"
+}

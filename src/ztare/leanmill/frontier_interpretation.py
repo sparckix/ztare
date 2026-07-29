@@ -1,6 +1,7 @@
 """Post-freeze literature packet and strict result contract for AxiomPack."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -14,7 +15,15 @@ from ztare.leanmill.theory_ir import content_hash, render_formula_plain
 from ztare.leanmill.theory_ir import operation_argument_permutation_variants
 
 
-POST_FREEZE_RESULT_PACKET_SCHEMA = "leanmill.post_freeze_result_packet.v4"
+POST_FREEZE_RESULT_PACKET_SCHEMA = "leanmill.post_freeze_result_packet.v5"
+
+LITERATURE_SEARCH_LEGS = (
+    "formula_and_coordinate",
+    "problem_statement",
+    "citation_backward",
+    "citation_forward",
+    "latest_version",
+)
 
 
 def _coordinate_search_rows(
@@ -407,6 +416,89 @@ def post_freeze_literature_output_schema(
             },
         },
     }
+    search_leg = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "leg_id", "status", "queries", "evidence_urls", "limitation",
+        ],
+        "properties": {
+            "leg_id": {"enum": list(LITERATURE_SEARCH_LEGS)},
+            "status": {"enum": ["completed", "unavailable"]},
+            "queries": {
+                "type": "array", "minItems": 1, "maxItems": 12,
+                "items": {"type": "string", "minLength": 1},
+            },
+            "evidence_urls": {
+                "type": "array", "maxItems": 24,
+                "items": {"type": "string", "minLength": 8},
+            },
+            "limitation": {"type": ["string", "null"]},
+        },
+    }
+    anchor_source = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "source_title", "source_url", "source_date",
+            "latest_revision_date", "relationship",
+        ],
+        "properties": {
+            "source_title": {"type": "string", "minLength": 1},
+            "source_url": {"type": "string", "minLength": 8},
+            "source_date": {
+                "type": ["string", "null"],
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            },
+            "latest_revision_date": {
+                "type": ["string", "null"],
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            },
+            "relationship": {"type": "string", "minLength": 1},
+        },
+    }
+    search_coverage = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "review_as_of_date", "anchor_sources", "search_legs",
+            "problem_status", "status_evidence_urls",
+            "latest_relevant_source_date", "limitations",
+        ],
+        "properties": {
+            "review_as_of_date": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            },
+            "anchor_sources": {
+                "type": "array", "maxItems": 24, "items": anchor_source,
+            },
+            "search_legs": {
+                "type": "array",
+                "minItems": len(LITERATURE_SEARCH_LEGS),
+                "maxItems": len(LITERATURE_SEARCH_LEGS),
+                "items": search_leg,
+            },
+            "problem_status": {
+                "enum": [
+                    "resolved", "open_as_of_cutoff",
+                    "not_an_open_problem", "inconclusive",
+                ]
+            },
+            "status_evidence_urls": {
+                "type": "array", "maxItems": 24,
+                "items": {"type": "string", "minLength": 8},
+            },
+            "latest_relevant_source_date": {
+                "type": ["string", "null"],
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            },
+            "limitations": {
+                "type": "array", "maxItems": 12,
+                "items": {"type": "string", "minLength": 1},
+            },
+        },
+    }
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -415,7 +507,7 @@ def post_freeze_literature_output_schema(
             "status", "formula_matches", "implication_prior_art",
             "recognized_theory_connections", "finite_witness_matches",
             "novelty_assessment",
-            "mechanism_analysis", "summary",
+            "mechanism_analysis", "search_coverage", "summary",
             "limitations", "next_checks",
         ],
         "properties": {
@@ -435,6 +527,7 @@ def post_freeze_literature_output_schema(
                 "type": "array", "maxItems": 12, "items": finite_witness_match,
             },
             "mechanism_analysis": mechanism_analysis,
+            "search_coverage": search_coverage,
             "novelty_assessment": {
                 "enum": [
                     "known_implication", "likely_elementary_or_known",
@@ -499,6 +592,25 @@ def build_post_freeze_result_packet(
     context = load_formal_theory_context(directory / "formal_context.json")
     if context.context_hash != boundary.get("context_hash"):
         raise ValueError("post-freeze context differs from the boundary result")
+    target_predicate_contract: dict[str, Any] | None = None
+    target_predicate_path = directory / "target_predicate_contract.json"
+    if target_predicate_path.is_file():
+        from ztare.common.target_predicate import TargetPredicateContract
+
+        target_predicate_row = read_json(target_predicate_path, None)
+        if not isinstance(target_predicate_row, Mapping):
+            raise ValueError("target-predicate contract artifact is not an object")
+        bound_target_predicate = TargetPredicateContract.from_dict(
+            target_predicate_row
+        )
+        if bound_target_predicate.context_hash != context.context_hash:
+            raise ValueError("target-predicate contract belongs to another context")
+        if bound_target_predicate.adapter_id != str(blueprint.adapter_id):
+            raise ValueError("target-predicate contract differs from blueprint adapter")
+        target_predicate_contract = {
+            **bound_target_predicate.to_dict(),
+            "contract_sha256": bound_target_predicate.sha256,
+        }
     formulas = {row.formula_id: row.axiom for row in context.formula_profiles}
     if (
         type(query_index) is not int
@@ -600,6 +712,7 @@ def build_post_freeze_result_packet(
             "base_theory": base_theory,
             "visibility": "post_freeze_only",
         },
+        "target_predicate_contract": target_predicate_contract,
         "structural_source_search": {
             "operation_coordinate_variants": coordinate_variants,
             "coordinate_variant_receipt": coordinate_receipt,
@@ -691,12 +804,27 @@ def build_post_freeze_result_packet(
             "official source catalogs named by verifier receipts",
             "secondary sources only as routes to primary sources",
         ],
+        "literature_search_protocol": {
+            "schema": "leanmill.temporal_literature_search_protocol.v1",
+            "review_as_of_date": datetime.now(timezone.utc).date().isoformat(),
+            "required_search_legs": list(LITERATURE_SEARCH_LEGS),
+            "open_problem_currentness_rule": (
+                "a source calling a question open is an historical anchor; "
+                "current status requires forward-citation and latest-version "
+                "search through the review date"
+            ),
+            "unmapped_admission_rule": (
+                "not_located_in_bounded_review requires every search leg to "
+                "complete; unavailable chronology yields review_unavailable"
+            ),
+        },
     }
     return {**core, "packet_sha256": content_hash(core)}
 
 
 __all__ = [
     "POST_FREEZE_RESULT_PACKET_SCHEMA", "build_post_freeze_result_packet",
+    "LITERATURE_SEARCH_LEGS",
     "post_freeze_literature_output_schema",
     "validate_post_freeze_finite_witness_matches",
 ]

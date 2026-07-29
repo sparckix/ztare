@@ -42,6 +42,7 @@ import sys
 import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any
 
 # scripts/public/ is not on sys.path by default; we depend on verify_lean_stub for
@@ -54,10 +55,42 @@ for _cand in (_REPO_ROOT / "scripts" / "public" / "lean", _REPO_ROOT / "scripts"
         sys.path.insert(0, str(_cand))
 
 import verify_lean_stub  # noqa: E402  (sys.path manipulation above)
+from ztare.gates import (  # noqa: E402
+    v33_consequence_exposure_gate,
+    v33_currency_mismatch_gate,
+    v33_indirect_leakage_gate,
+    v33_paraphrase_gate,
+    v33_preflight_risk_detector,
+    v33_single_lemma_exact_gate,
+)
+from ztare.leanmill.ratification_policy import (  # noqa: E402
+    ANTI_LAUNDERING_ORGAN_NAMES,
+    TARGET_GOVERNANCE_AUTHORITIES,
+    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256,
+)
 
 
 GATE_ID = "G-LEAN-PROOF"
 GATE_NAME = "lean_proof_gate"
+
+ANTI_LAUNDERING_ORGANS = MappingProxyType({
+    "v33_consequence_exposure_gate": v33_consequence_exposure_gate,
+    "v33_currency_mismatch_gate": v33_currency_mismatch_gate,
+    "v33_indirect_leakage_gate": v33_indirect_leakage_gate,
+    "v33_paraphrase_gate": v33_paraphrase_gate,
+    "v33_preflight_risk_detector": v33_preflight_risk_detector,
+    "v33_single_lemma_exact_gate": v33_single_lemma_exact_gate,
+})
+if frozenset(ANTI_LAUNDERING_ORGANS) != ANTI_LAUNDERING_ORGAN_NAMES:
+    raise RuntimeError("anti-laundering implementation diverged from policy roster")
+
+# Compatibility names for existing consumers.  The owner is the lightweight
+# policy module above, so the executable map and the certificate policy cannot
+# drift into separate lists.
+TARGET_RATIFICATION_AUTHORITIES = TARGET_GOVERNANCE_AUTHORITIES
+TARGET_RATIFICATION_AUTHORITY_ROSTER_SHA256 = (
+    TARGET_GOVERNANCE_AUTHORITY_ROSTER_SHA256
+)
 
 # Match ```lean ... ``` fenced blocks (the language tag is required so we don't
 # accidentally pick up a bare ``` block that contains ASCII-art or Python).
@@ -504,6 +537,100 @@ def compute_secondary_observables(lean_path: Path) -> dict[str, Any]:
 # `statement_integrity.check` (we just pass `lean_root`). No copy to hand-sync, no sibling to forget.
 
 
+def _resolved_target_identity(
+    lean_source: str, target_name: str | None
+) -> tuple[Any | None, dict[str, Any]]:
+    """Resolve one carried selector for every target-scoped kernel organ."""
+
+    selector = (target_name or "").strip()
+    if not selector:
+        return None, {
+            "mode": "full_source_fallback",
+            "reason": "target_name_absent",
+            "selector": "",
+        }
+    try:
+        from ztare.leanmill.lean_source import resolve_theorem_target
+
+        identity = resolve_theorem_target(lean_source, selector)
+        if identity is None:
+            return None, {
+                "mode": "full_source_fallback",
+                "reason": "target_identity_unresolved",
+                "selector": selector,
+            }
+        return identity, {
+            "selector": selector,
+            "qualified_target": identity.qualified_name,
+            "written_target": identity.written_name,
+        }
+    except Exception as exc:  # noqa: BLE001 - legacy callers retain full-source behavior
+        return None, {
+            "mode": "full_source_fallback",
+            "reason": "target_scope_error",
+            "selector": selector,
+            "error": repr(exc)[:160],
+        }
+
+
+def _statement_shape_scope(lean_source: str, target_name: str | None) -> tuple[str, dict[str, Any]]:
+    """Return the proof-free theorem type owned by ``target_name``.
+
+    The v33 vacuity/circularity detector is a *statement-shape* organ: its
+    input contract is one Lean type, without a proof.  Passing a complete
+    multi-declaration module lets a hypothesis from one declaration compare
+    equal to the conclusion of another.  Resolve the carried theorem identity
+    first and fence the detector to that declaration's signature.
+
+    A caller that does not carry a target, or a selector that cannot be
+    resolved, retains the prior full-source behavior.  That fallback preserves
+    detector strength for legacy module-level callers; target-aware LeanMill
+    routes get the precise statement scope.
+    """
+    identity, scope = _resolved_target_identity(lean_source, target_name)
+    if identity is None:
+        return lean_source, scope
+    try:
+        from ztare.leanmill.lean_source import extract_signature
+
+        signature = (extract_signature(lean_source, identity.qualified_name) or "").strip()
+        if not signature:
+            return lean_source, {
+                **scope,
+                "mode": "full_source_fallback",
+                "reason": "target_signature_empty",
+            }
+        return signature, {
+            **scope,
+            "mode": "resolved_target_signature",
+        }
+    except Exception as exc:  # noqa: BLE001 — retain the prior stronger fallback on a parser/import fault
+        return lean_source, {
+            **scope,
+            "mode": "full_source_fallback",
+            "reason": "target_scope_error",
+            "error": repr(exc)[:160],
+        }
+
+
+def _proof_shape_scope(
+    lean_source: str, target_name: str | None
+) -> tuple[str, dict[str, Any]]:
+    """Return the exact proof-carrying declaration selected by ``target_name``."""
+
+    identity, scope = _resolved_target_identity(lean_source, target_name)
+    if identity is None:
+        return lean_source, scope
+    declaration = lean_source[identity.decl_start:identity.decl_end]
+    if not declaration.strip():
+        return lean_source, {
+            **scope,
+            "mode": "full_source_fallback",
+            "reason": "target_declaration_empty",
+        }
+    return declaration, {**scope, "mode": "resolved_target_declaration"}
+
+
 def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
                                ztare_proofs_root: Path,
                                deep_verify: bool = False,
@@ -529,52 +656,125 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
     see). This is a GENERAL-PURPOSE organ of the ONE kernel: every solving mode that passes the
     original (factory C-rows, ad-hoc, validator) gets it — not an ad-hoc special case.
 
-    Returns {passed, flags, detail}. passed=False iff any organ confirms a false-closure class.
+    Returns a typed availability and verdict record. ``passed`` is true only
+    when every required organ was available and no organ confirmed a
+    false-closure class.
     """
-    import importlib.util as _ilu
-    ctl = ztare_proofs_root.parent.parent / "scripts/public/control"
-    if not ctl.exists():
-        ctl = Path(__import__("os").environ.get("ZTARE_REPO_ROOT", ".")).resolve() / "scripts/public/control"
+    def _required_organ(modname: str) -> Any:
+        """Resolve one member of the fixed, import-time governance set."""
 
-    # DUAL-PATH (2026-05-16): loop-executed v33 organs belong in src/
-    # (scripts/ = one-shot operator tools per convention). Resolve
-    # src/ztare/gates/ (this dir) FIRST, then the legacy
-    # scripts/public/control/ fallback — so the family can migrate to
-    # src/ one organ at a time with zero breakage (no big-bang refactor
-    # of cross-agent infra). v33_consequence_exposure_gate migrated
-    # 2026-05-16; siblings still load from the scripts/ fallback.
-    _src_gates = Path(__file__).resolve().parent
-
-    def _load(modname: str):
-        for base in (_src_gates, ctl):
-            p = base / f"{modname}.py"
-            if p.exists():
-                spec = _ilu.spec_from_file_location(modname, p)
-                m = _ilu.module_from_spec(spec)
-                try:
-                    spec.loader.exec_module(m)  # type: ignore[attr-defined]
-                    return m
-                except Exception:
-                    return None
-        return None
+        return ANTI_LAUNDERING_ORGANS[modname]
 
     flags: list[str] = []
     detail: dict[str, Any] = {}
+    unavailable_organs: list[str] = []
 
-    vac = _load("v33_preflight_risk_detector")
+    def _finish() -> dict[str, Any]:
+        confirmed = [
+            flag for flag in flags
+            if flag.endswith("_confirmed") or flag == "vacuity_suspect"
+        ]
+        unavailable = list(dict.fromkeys(unavailable_organs))
+        available = not unavailable
+        if not available and "governance_organ_unavailable" not in flags:
+            flags.append("governance_organ_unavailable")
+        profile = (
+            "target_ratification"
+            if selector and original_source
+            else "target_inspection"
+            if selector
+            else "module_audit"
+        )
+        required = set(ANTI_LAUNDERING_ORGANS)
+        if selector:
+            required.update({
+                "target_identity",
+                "target_declaration",
+                "target_signature",
+            })
+        if profile == "target_ratification":
+            required.update({"statement_integrity", "canonical_reelaboration"})
+        rejected_by = {
+            "v33_preflight_risk_detector": {"vacuity_suspect"},
+            "v33_paraphrase_gate": {"gold_name_verbatim_confirmed"},
+            "v33_single_lemma_exact_gate": {"single_lemma_exact_confirmed"},
+            "v33_indirect_leakage_gate": {"indirect_leakage_confirmed"},
+            "v33_consequence_exposure_gate": {"consequence_exposure_confirmed"},
+            "statement_integrity": {"statement_altered_confirmed"},
+            "canonical_reelaboration": {"context_hijack_confirmed"},
+        }
+        disposition: dict[str, str] = {}
+        for authority in sorted(TARGET_RATIFICATION_AUTHORITIES):
+            if authority not in required:
+                disposition[authority] = "inapplicable"
+            elif authority in unavailable:
+                disposition[authority] = "unavailable"
+            elif rejected_by.get(authority, set()).intersection(confirmed):
+                disposition[authority] = "rejected"
+            else:
+                disposition[authority] = "passed"
+        return {
+            "available": available,
+            "passed": available and not confirmed,
+            "flags": flags,
+            "detail": detail,
+            "confirmed": confirmed,
+            "unavailable_organs": unavailable,
+            "policy_profile": profile,
+            "required_authorities": sorted(required),
+            "authority_disposition": disposition,
+            "authority_roster_sha256": (
+                TARGET_RATIFICATION_AUTHORITY_ROSTER_SHA256
+            ),
+        }
+
+    selector = (target_name or "").strip()
+    target_identity, target_scope = _resolved_target_identity(
+        lean_source,
+        target_name,
+    )
+    detail["target_scope"] = target_scope
+    if selector and target_identity is None:
+        unavailable_organs.append("target_identity")
+        return _finish()
+
+    target_work_source = lean_source
+    if target_identity is not None:
+        from ztare.leanmill.lean_source import close_open_scopes, source_through_target
+
+        target_work_source = close_open_scopes(
+            source_through_target(lean_source, target_identity.qualified_name)
+        )
+    proof_shape_source, proof_shape_scope = _proof_shape_scope(
+        lean_source, target_name
+    )
+    detail["proof_shape_scope"] = proof_shape_scope
+    statement_shape_source, statement_shape_scope = _statement_shape_scope(
+        lean_source, target_name
+    )
+    detail["vacuity_scope"] = statement_shape_scope
+    if selector and proof_shape_scope.get("mode") != "resolved_target_declaration":
+        unavailable_organs.append("target_declaration")
+    if selector and statement_shape_scope.get("mode") != "resolved_target_signature":
+        unavailable_organs.append("target_signature")
+    if unavailable_organs:
+        return _finish()
+
+    vac = _required_organ("v33_preflight_risk_detector")
     if vac is not None:
         try:
-            r = vac.detect_risks(lean_source)
+            r = vac.detect_risks(statement_shape_source)
             detail["vacuity"] = r
             if r.get("vacuity_suspected"):
                 flags.append("vacuity_suspect")
         except Exception as e:
             detail["vacuity"] = {"error": str(e)}
+            unavailable_organs.append("v33_preflight_risk_detector")
 
-    para = _load("v33_paraphrase_gate")
+    para = _required_organ("v33_paraphrase_gate")
     if para is not None:
         try:
-            d = para.detect_gold_name_verbatim(lean_source)
+            d = para.detect_gold_name_verbatim(proof_shape_source)
             prim = d.get("primary_cited")
             corp = para.independent_corpus_confirm(prim) if (d.get("gold_name_verbatim_suspect") and prim) else {"in_mathlib": False}
             detail["gold_name_verbatim"] = {"detect": d, "corpus": corp}
@@ -586,40 +786,58 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
                 flags.append("gold_name_verbatim_library_close_advisory")
         except Exception as e:
             detail["gold_name_verbatim"] = {"error": str(e)}
+            unavailable_organs.append("v33_paraphrase_gate")
 
-    sle = _load("v33_single_lemma_exact_gate")
+    sle = _required_organ("v33_single_lemma_exact_gate")
     if sle is not None:
         try:
-            s = sle.detect_shape(lean_source)
+            s = sle.detect_shape(proof_shape_source)
             detail["single_lemma_exact"] = {"shape": s}
             if s.get("single_lemma_exact_suspect"):
                 if deep_verify:
                     from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: independent_verify defaults to the prior 70)
-                    v = sle.independent_exact_verify_rowfile(lean_source, ztare_proofs_root, timeout=timeout_s("independent_verify"))
+                    v = sle.independent_exact_verify_rowfile(
+                        target_work_source,
+                        ztare_proofs_root,
+                        timeout=timeout_s("independent_verify"),
+                        target_name=target_name,
+                    )
                     detail["single_lemma_exact"]["verify"] = v
-                    if v.get("single_lemma_exact_confirmed"):
+                    if v.get("single_lemma_exact_confirmed") is None:
+                        unavailable_organs.append("v33_single_lemma_exact_gate")
+                    elif v.get("single_lemma_exact_confirmed"):
                         flags.append("single_lemma_exact_confirmed")
                 else:
                     flags.append("single_lemma_exact_shape_suspect_advisory")
         except Exception as e:
             detail["single_lemma_exact"] = {"error": str(e)}
+            unavailable_organs.append("v33_single_lemma_exact_gate")
 
-    ind = _load("v33_indirect_leakage_gate")
+    ind = _required_organ("v33_indirect_leakage_gate")
     if ind is not None:
         try:
-            s = ind.detect_shape(lean_source)
+            s = ind.detect_shape(proof_shape_source)
             detail["indirect_leakage"] = {"shape": s}
             if s.get("indirect_leakage_suspect"):
                 if deep_verify:
                     from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: independent_verify defaults to the prior 70)
-                    v = ind.independent_verify(lean_source, s.get("closer_tactic"), ztare_proofs_root, timeout=timeout_s("independent_verify"))
+                    v = ind.independent_verify(
+                        target_work_source,
+                        s.get("closer_tactic"),
+                        ztare_proofs_root,
+                        timeout=timeout_s("independent_verify"),
+                        target_name=target_name,
+                    )
                     detail["indirect_leakage"]["verify"] = v
-                    if v.get("indirect_leakage_confirmed"):
+                    if v.get("indirect_leakage_confirmed") is None:
+                        unavailable_organs.append("v33_indirect_leakage_gate")
+                    elif v.get("indirect_leakage_confirmed"):
                         flags.append("indirect_leakage_confirmed")
                 else:
                     flags.append("indirect_leakage_shape_suspect_advisory")
         except Exception as e:
             detail["indirect_leakage"] = {"error": str(e)}
+            unavailable_organs.append("v33_indirect_leakage_gate")
 
     # GP-188 Q3 v3.1: consequence-exposure organ. Parses the claimed-
     # closure SIGNATURE binders (object distinct from every other v33
@@ -628,10 +846,10 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
     # descent. `hard_target_heads` is substrate-supplied & narrow via a
     # sidecar; ABSENT ⇒ the blocking rule is inert (advisory-only) — the
     # correct staged-blocking default, never false-FAIL on the live loop.
-    cex = _load("v33_consequence_exposure_gate")
+    cex = _required_organ("v33_consequence_exposure_gate")
     if cex is not None:
         try:
-            s = cex.detect_shape(lean_source)
+            s = cex.detect_shape(target_work_source)
             detail["consequence_exposure"] = {"shape": s}
             if s.get("blocking"):
                 flags.append("consequence_exposure_confirmed")
@@ -639,20 +857,22 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
                 flags.append("consequence_exposure_shape_suspect_advisory")
         except Exception as e:
             detail["consequence_exposure"] = {"error": str(e)}
+            unavailable_organs.append("v33_consequence_exposure_gate")
 
     # currency-mismatch organ (scalar-wrapper smuggle). ADVISORY — added 2026-06-06 to make THIS kernel
     # the canonical SUPERSET so `proof_audit` (which ran currency but not statement_integrity) can reuse
     # the kernel without losing an organ. Advisory flag ⇒ does NOT change any existing caller's pass/fail
     # (only `_confirmed` flags + `vacuity_suspect` block), so this addition is byte-parity for `passed`.
-    cur = _load("v33_currency_mismatch_gate")
+    cur = _required_organ("v33_currency_mismatch_gate")
     if cur is not None:
         try:
-            s = cur.detect_shape(lean_source)
+            s = cur.detect_shape(proof_shape_source)
             detail["currency_mismatch"] = {"shape": s}
             if s.get("scalar_wrapper_suspect"):
                 flags.append("currency_mismatch_shape_suspect_advisory")
         except Exception as e:
             detail["currency_mismatch"] = {"error": str(e)}
+            unavailable_organs.append("v33_currency_mismatch_gate")
 
     # statement-integrity organ (two-input: original vs probe) — the def-alteration channel the
     # single-file organs above cannot see. Runs whenever the caller supplies the posed statement.
@@ -673,26 +893,24 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
             if not iv.ok:
                 flags.append("statement_altered_confirmed")
         except Exception as e:
-            # FAIL-CLOSED (soundness #84/F5, 2026-06-12; ZTARE_STATEMENT_INTEGRITY_FAILOPEN=1 reverts):
-            # statement_integrity is PURE-PYTHON (a decl-block parse, no Lean tooling), so a crash is a parser
-            # bug or ADVERSARIAL input crafted to crash the parser — NOT a tooling flake. Failing OPEN here would
-            # let such a probe BYPASS the def-alteration check, so treat an organ crash as a CONFIRMED suspect.
-            # (canonical_reelaboration still independently backstops the hijack class; this closes the one
-            # remaining pure-python fail-open. The Lean-recompile organs below stay fail-open — a compile-infra
-            # flake there is NOT adversarial.)
+            # A parser/runtime fault is verifier unavailability, not evidence
+            # that the submitted theorem belongs to a false-closure class.
+            # It still withholds credit through the common availability bit.
             detail["statement_integrity"] = {"error": str(e)}
-            import os as _os_si
-            if _os_si.environ.get("ZTARE_STATEMENT_INTEGRITY_FAILOPEN") != "1":
-                flags.append("statement_integrity_error_confirmed")
+            unavailable_organs.append("statement_integrity")
 
     # canonical re-elaboration organ (2026-06-06): the airtight backstop for the WHOLE context-semantic-
     # hijack class (added instance / notation / macro / set_option that hijacks a verbatim statement — the
     # FALSIFY false-statement control's instance-shadowing was the seed). Strips the ADDED elaboration-
     # context from the probe (KEEPS opens / lemmas) and RE-COMPILES; if the target no longer closes
     # sorry-free, the proof DEPENDED on the manipulation. Recompiles ONLY when there is hijack-context to
-    # strip (else a fast pass) ⇒ cost paid only on suspect probes. Default-ON; ZTARE_CANONICAL_REELAB=0 off.
+    # strip (else a fast pass) ⇒ cost paid only on suspect probes. Default-ON;
+    # disabling it is diagnostic-only and makes governance unavailable.
     import os as _os_reelab
-    if (original_source and target_name and ztare_proofs_root is not None
+    _canonical_reelab_applicable = bool(
+        original_source and target_name and ztare_proofs_root is not None
+    )
+    if (_canonical_reelab_applicable
             and _os_reelab.environ.get("ZTARE_CANONICAL_REELAB", "1") != "0"):
         try:
             from ztare.leanmill.solver.canonical_reelaboration import check as _reelab
@@ -718,15 +936,28 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
                 pass
             _ok_re, _d_re = _reelab(_reelab_orig, lean_source, target_name, ztare_proofs_root)
             detail["canonical_reelaboration"] = {"ok": _ok_re, "detail": _d_re}
-            if not _ok_re:
+            if _ok_re is None:
+                unavailable_organs.append("canonical_reelaboration")
+            elif _ok_re is False:
                 flags.append("context_hijack_confirmed")
-        except Exception as e:  # noqa: BLE001 — fail-OPEN on a compile-infra error (never block on tooling)
+        except Exception as e:  # noqa: BLE001 — typed unavailable; do not award closure on tooling failure
             detail["canonical_reelaboration"] = {"error": str(e)}
+            unavailable_organs.append("canonical_reelaboration")
+    elif (_canonical_reelab_applicable
+          and _os_reelab.environ.get("ZTARE_CANONICAL_REELAB", "1") == "0"):
+        detail["canonical_reelaboration"] = {
+            "status": "unavailable",
+            "reason": "disabled_by_environment",
+        }
+        unavailable_organs.append("canonical_reelaboration")
+    elif original_source and target_name and ztare_proofs_root is None:
+        detail["canonical_reelaboration"] = {
+            "status": "unavailable",
+            "reason": "lean_root_missing",
+        }
+        unavailable_organs.append("canonical_reelaboration")
 
-    # A CONFIRMED organ (not merely advisory shape-suspect) fails the layer.
-    confirmed = [f for f in flags if f.endswith("_confirmed") or f == "vacuity_suspect"]
-    return {"passed": len(confirmed) == 0, "flags": flags,
-            "detail": detail, "confirmed": confirmed}
+    return _finish()
 
 
 # Back-compat alias: the kernel was `_run_v33_anti_laundering` before the 2026-06-06 rename. External
@@ -804,8 +1035,11 @@ def run_lean_proof_gate(
             result.v33_organ_flags = list(v33["flags"])
             result.v33_organ_detail = v33["detail"]
         except Exception as e:
-            result.anti_laundering_passed = True  # fail-open: never block on organ-layer crash
-            result.v33_organ_flags = [f"organ_layer_error:{e}"]
+            result.anti_laundering_passed = False
+            result.v33_organ_flags = ["governance_kernel_unavailable"]
+            result.v33_organ_detail = {
+                "kernel": {"status": "unavailable", "error": str(e)}
+            }
 
     base_pass = bool(
         result.compiled

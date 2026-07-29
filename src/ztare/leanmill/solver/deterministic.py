@@ -16,19 +16,50 @@ several module-level worker helpers (`_build_solver_context`, `_verify_compile`,
 `_NATIVE_HAMMER_TACTICS`, `_strip_proof_text`) that themselves close over the
 worker's `REPO` constant and the semantic-premise-shelf import. Moving the pure
 function here would drag those module-level deps along and risk breaking the
-worker's many existing references. So this is a thin WRAPPER: the caller passes
-the worker's `_native_hammer_probe` callable in, and we adapt its
-`(bool, str, str)` tuple to the structured `dict` contract. Behavior is
-byte-identical to the inline Layer 2 dispatch.
+worker's many existing references. So this is a thin wrapper: the caller passes
+the worker's `_native_hammer_probe` callable in and receives the typed outcome
+without duplicating the cascade implementation.
 """
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Literal
 
-# The native-hammer probe signature: (row, lean_root, timeout_s) -> (ok, proof, tail).
-NativeHammerProbe = Callable[[dict, Path, int], "tuple[bool, str, str]"]
+
+NativeHammerDisposition = Literal["closed", "exhausted", "unavailable"]
+
+
+@dataclass(frozen=True)
+class NativeHammerProbeResult:
+    """Typed outcome of one deterministic tactic-cascade invocation.
+
+    ``exhausted`` is the only admissible miss: every tactic ran and returned a
+    normal non-close.  A cap, timeout, checker fault, or assembly fault is
+    ``unavailable`` and must not enter move calibration as mathematical
+    counterevidence.
+    """
+
+    disposition: NativeHammerDisposition
+    proof: str = ""
+    transcript: str = ""
+
+    @property
+    def closed(self) -> bool:
+        return self.disposition == "closed"
+
+    @property
+    def admissible_negative(self) -> bool:
+        return self.disposition == "exhausted"
+
+    @property
+    def available(self) -> bool:
+        return self.disposition != "unavailable"
+
+
+# The native-hammer probe signature: (row, lean_root, timeout_s) -> typed result.
+NativeHammerProbe = Callable[[dict, Path, int], NativeHammerProbeResult]
 
 
 def run_deterministic_layer(
@@ -48,7 +79,7 @@ def run_deterministic_layer(
         native_hammer_probe: the worker's `_native_hammer_probe` callable. Passed
             in (rather than imported) to avoid a heavy worker-module import and
             its `REPO`/semantic-shelf side effects at import time. Returns
-            `(compile_ok, proof_text, transcript_tail)`.
+            a :class:`NativeHammerProbeResult`.
 
     Returns:
         dict with:
@@ -63,11 +94,24 @@ def run_deterministic_layer(
     unchanged). This function only owns the deterministic attack itself.
     """
     start = time.time()
-    compile_ok, proof, tail = native_hammer_probe(row, lean_root, timeout_s)
+    result = native_hammer_probe(row, lean_root, timeout_s)
+    # Compatibility for injected third-party/test probes while the production
+    # owner uses the typed result above.  A legacy false cannot prove that the
+    # full cascade was available and exhausted, so it is unavailable.
+    if not isinstance(result, NativeHammerProbeResult):
+        compile_ok, proof, tail = result
+        result = NativeHammerProbeResult(
+            "closed" if compile_ok else "unavailable",
+            proof or "",
+            tail or "",
+        )
     return {
-        "closed": bool(compile_ok),
-        "proof": proof or "",
-        "tail": tail or "",
+        "closed": result.closed,
+        "proof": result.proof,
+        "tail": result.transcript,
+        "disposition": result.disposition,
+        "available": result.available,
+        "admissible_negative": result.admissible_negative,
         "layer": "native_hammer",
         "wallclock_s": round(time.time() - start, 2),
     }

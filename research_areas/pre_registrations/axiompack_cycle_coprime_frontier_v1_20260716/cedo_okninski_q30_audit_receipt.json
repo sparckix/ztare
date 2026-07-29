@@ -1,0 +1,95 @@
+{
+  "authority": "deterministic_reconstruction_plus_lean_kernel_check",
+  "checks": {
+    "all_left_translations_bijective": true,
+    "cycle_set_law": "pass",
+    "displacement_action_transitive": true,
+    "left_action_two_step_transitive": true,
+    "paper_ybe_sigma_identity": "pass",
+    "squaring_map_bijective": true
+  },
+  "claim_boundary": "This is an independently checked 49-point instance of a published construction and a connection to an already-resolved decomposition question. It is not a novel counterexample or a new theorem family.",
+  "construction_audit": {
+    "receipt_sha256": "0180b5e390d6ab960b5df1f386a0a395c6aab4c1c060c126e6966d89a6938d22",
+    "script_sha256": "48f1bf3204bf5b8dad0bd68c55409e57220ff7091911a55413228895739e98f3"
+  },
+  "cycle_profile": {
+    "all_49_left_translations": [
+      1,
+      3,
+      3,
+      21,
+      21
+    ],
+    "coprime_cycle_witness": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        5
+      ]
+    ],
+    "cycle_length": 3,
+    "gcd_with_carrier_size": 1,
+    "left_translation_source": [
+      0,
+      0
+    ]
+  },
+  "lean_certificate": {
+    "compile_status": "pass",
+    "path": "ztare_proofs/ZtareProofs/AxiomPackCycleCoprimeCounterexample.lean",
+    "sha256": "703b2456879cf67a3f6071cce2ecf699266cbb996eaba04d0a0f31da39becde8",
+    "theorem": "ZtareProofs.AxiomPackCycleCoprimeCounterexample.question30CounterexampleCertificate"
+  },
+  "literature_status": {
+    "assessment": "catalogued_problem_with_published_counterexamples",
+    "current_primary_source": {
+      "date": "2026-05-07",
+      "result": "Example 63 gives simple counterexamples of size p^p; p=3 gives size 27",
+      "title": "Involutive (simple) latin solutions of the Yang-Baxter equation and related (left) quasigroups, v3",
+      "url": "https://arxiv.org/pdf/2501.03660"
+    },
+    "earlier_resolution": {
+      "date": "2024",
+      "result": "published family of counterexamples, smallest reported size 256",
+      "title": "A decomposition problem for involutive solutions to the Yang-Baxter equation",
+      "url": "https://doi.org/10.36045/j.bbms.240803"
+    },
+    "historical_open_question": {
+      "date": "2024-05-10",
+      "title": "On the indecomposable involutive solutions of the Yang-Baxter equation of finite primitive level",
+      "url": "https://ddd.uab.cat/pub/pubmat/pubmat_a2025v69n2/pubmat_a2025v69n2p429.pdf"
+    },
+    "source_construction": {
+      "date": "2024-06-29",
+      "title": "Simple solutions of the Yang-Baxter equation of cardinality p^n",
+      "url": "https://arxiv.org/pdf/2407.07907"
+    }
+  },
+  "parameters": {
+    "carrier_size": 49,
+    "j_family": [
+      1,
+      0,
+      6,
+      4,
+      4,
+      6,
+      0
+    ],
+    "n": 1,
+    "p": 7,
+    "q": 3,
+    "t_multiplier": 2
+  },
+  "receipt_sha256": "449804e527ef90febc63d8e8dde3a0fe2ca465a9d72877ac4ffa77f12b2a3e8f",
+  "result": "valid_recovery_not_novel",
+  "schema": "leanmill.cedo_okninski_question30_recovery.v1"
+}

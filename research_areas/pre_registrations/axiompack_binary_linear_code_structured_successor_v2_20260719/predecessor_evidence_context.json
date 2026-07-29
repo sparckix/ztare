@@ -1,0 +1,207 @@
+{
+  "adapter_id": "binary_linear_code.v1",
+  "completeness_receipt_digest": "sha256:65363aa5bdfc86e328d03ee4f0a6cc45e84f528bf466ef19b65b6c11a1bf30f1",
+  "context_hash": "cea626fbdabe2c53ebdb61966a32ce9ab5161d9349a8a802874efa9442bedab9",
+  "formula_profiles": [
+    {
+      "anonymous_shape": {
+        "complexity": 1,
+        "kind": "exact_binary_code_property"
+      },
+      "hypothesis_id": "property:full-rank-20",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#rank"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x7"
+    },
+    {
+      "anonymous_shape": {
+        "complexity": 1,
+        "kind": "exact_binary_code_parameter"
+      },
+      "hypothesis_id": "property:length-50",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#length"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x5"
+    },
+    {
+      "anonymous_shape": {
+        "complexity": 2,
+        "kind": "exact_binary_code_property"
+      },
+      "hypothesis_id": "property:minimum-distance-at-least-13",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#minimum-distance"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x3"
+    },
+    {
+      "anonymous_shape": {
+        "complexity": 2,
+        "kind": "exact_binary_code_property"
+      },
+      "hypothesis_id": "property:minimum-distance-at-least-14",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#minimum-distance"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x2"
+    },
+    {
+      "anonymous_shape": {
+        "complexity": 1,
+        "kind": "checked_construction_trace"
+      },
+      "hypothesis_id": "trace:one-coordinate-perturbation-of-current",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#coordinate-toggle",
+        "source_object_id": "control:current-50-20-13"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x4"
+    },
+    {
+      "anonymous_shape": {
+        "complexity": 1,
+        "kind": "checked_construction_trace"
+      },
+      "hypothesis_id": "trace:parity-extension-of-current",
+      "payload": {
+        "checker_ref": "binary_linear_code.v1#extend-with-parity",
+        "source_object_id": "control:current-50-20-13"
+      },
+      "schema": "leanmill.evidence_hypothesis_profile.v1",
+      "truth_bits_hex": "0x2"
+    }
+  ],
+  "incidence": {
+    "base_mask_hex": "0x7",
+    "completeness_ref": "sha256:65363aa5bdfc86e328d03ee4f0a6cc45e84f528bf466ef19b65b6c11a1bf30f1",
+    "context_hash": "sha256:d9ab2ed85578d5a934311dff230567d3f80be500b97160f2ba9830056d12ad3a",
+    "exact": true,
+    "object_ids": [
+      "control:current-50-20-13",
+      "control:extended-51-20-14",
+      "control:perturbed-50-20-12"
+    ],
+    "profiles": [
+      {
+        "attribute_id": "property:full-rank-20",
+        "provenance_ref": "hypothesis:e20260a19c19960fb9494800ed0a0f2a67fa757eb44ae94122e2c6e070412340",
+        "truth_bits_hex": "0x7"
+      },
+      {
+        "attribute_id": "property:length-50",
+        "provenance_ref": "hypothesis:95c4d69f119e3e1f73a5fb61800c4c6719ae03c746ec2e1a15aa817ca6a39a3e",
+        "truth_bits_hex": "0x5"
+      },
+      {
+        "attribute_id": "property:minimum-distance-at-least-13",
+        "provenance_ref": "hypothesis:72f9641a5c97fb668d4659eed8262f80db66a213687262f6a73e323bc5ec1d26",
+        "truth_bits_hex": "0x3"
+      },
+      {
+        "attribute_id": "property:minimum-distance-at-least-14",
+        "provenance_ref": "hypothesis:72f9641a5c97fb668d4659eed8262f80db66a213687262f6a73e323bc5ec1d26",
+        "truth_bits_hex": "0x2"
+      },
+      {
+        "attribute_id": "trace:one-coordinate-perturbation-of-current",
+        "provenance_ref": "hypothesis:b2990e0079d2ada1526c355bb87c3342db0df48c1fa09f78e3beb81f68e3c5a0",
+        "truth_bits_hex": "0x4"
+      },
+      {
+        "attribute_id": "trace:parity-extension-of-current",
+        "provenance_ref": "hypothesis:0229356f410857d51ebf6cee6ec4c86311b5a7e214807315027093adb6e82774",
+        "truth_bits_hex": "0x2"
+      }
+    ],
+    "schema": "ztare.finite_incidence_context.v1"
+  },
+  "object_records": [
+    {
+      "object_id": "control:current-50-20-13",
+      "payload": {
+        "artifact_ref": "binary_code_control_replay.json#current_matrix",
+        "artifact_sha256": "10cc0bd5943299d7a8a237fdc896a1cc71a09c40951abadbc32a6a064ef5e7e9",
+        "verification_receipt_sha256": "e376d4d42767bac7b879847c0df2591339af2cd590bedcc29eecd08013756ef4"
+      },
+      "schema": "leanmill.evidence_object_record.v1",
+      "stratum_id": "matched_positive"
+    },
+    {
+      "object_id": "control:extended-51-20-14",
+      "payload": {
+        "artifact_ref": "binary_code_control_replay.json#extended_matrix",
+        "artifact_sha256": "213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e",
+        "verification_receipt_sha256": "e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+      },
+      "schema": "leanmill.evidence_object_record.v1",
+      "stratum_id": "matched_positive"
+    },
+    {
+      "object_id": "control:perturbed-50-20-12",
+      "payload": {
+        "artifact_ref": "binary_code_control_replay.json#perturbation.matrix",
+        "artifact_sha256": "0b32991d3fa8c3a7da7a931f5cb2c50990f7d63a428ce9b54dfdef250011ef8b",
+        "verification_receipt_sha256": "432c0564c426ebc75cdf710acac9d6b2b13898360014c2d6348a6cc84e594615"
+      },
+      "schema": "leanmill.evidence_object_record.v1",
+      "stratum_id": "matched_negative"
+    }
+  ],
+  "schema": "leanmill.evidence_theory_context.v1",
+  "signature": {
+    "name": "binary_linear_code_construction_observation",
+    "operations": [],
+    "relations": [
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "full_rank_20"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "length_50"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "minimum_distance_at_least_13"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "minimum_distance_at_least_14"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "one_coordinate_perturbation_of_current"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "parity_extension_of_current"
+      }
+    ],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "Observation"
+      }
+    ]
+  },
+  "snapshot_sha256": "f256b6793486004299403ba77440a9064ce4ebbd9ec69b104f808a3393d4f15d"
+}

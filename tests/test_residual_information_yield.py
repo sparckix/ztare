@@ -15,6 +15,9 @@ from ztare.leanmill.finite_theory_context import (
     build_formal_theory_context,
     load_formal_theory_context,
 )
+from ztare.leanmill.first_order_baseline import (
+    existential_witness_transport_witness,
+)
 from ztare.leanmill.magma_law_universe import magma_laws_through_order
 from ztare.leanmill.theory_interest import (
     profile_theory_program_predictions,
@@ -50,6 +53,89 @@ def test_residual_information_yield_subtracts_named_baseline() -> None:
     assert coordinates.residual_ids == ("residual",)
     assert coordinates.identification_bits == 1.0
     assert coordinates.information_per_cost == 1 / 3
+
+
+def test_existential_witness_transport_is_a_cheap_logical_baseline() -> None:
+    signature = TheorySignature(
+        "WitnessTransportBaseline",
+        (SortDecl("S"),),
+        (
+            OperationSymbol("d", ("S",), "S"),
+            OperationSymbol("mul", ("S", "S"), "S"),
+        ),
+    )
+    x, y, e = (Term.var(name) for name in ("x", "y", "e"))
+    fixed_x = Formula.eq(Term.app("d", x), x)
+    bridge = AxiomFormula(
+        "fixed_is_left_identity",
+        Formula.forall(
+            (Binder("y", "S"), Binder("x", "S")),
+            Formula.implies(
+                fixed_x,
+                Formula.eq(Term.app("mul", x, y), y),
+            ),
+        ),
+    )
+    fixed_point = AxiomFormula(
+        "has_fixed_point",
+        Formula.exists(
+            (Binder("e", "S"),),
+            Formula.eq(Term.app("d", e), e),
+        ),
+    )
+    target = AxiomFormula(
+        "has_left_identity",
+        Formula.exists(
+            (Binder("e", "S"),),
+            Formula.forall(
+                (Binder("y", "S"),),
+                Formula.eq(Term.app("mul", e, y), y),
+            ),
+        ),
+    )
+
+    witness = existential_witness_transport_witness(
+        (bridge, fixed_point), target
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.existential_witness_transport.v1"
+    assert witness.bridge_witness_positions == (1,)
+    wrong_target = AxiomFormula(
+        "has_right_identity",
+        Formula.exists(
+            (Binder("e", "S"),),
+            Formula.forall(
+                (Binder("y", "S"),),
+                Formula.eq(Term.app("mul", y, e), y),
+            ),
+        ),
+    )
+    assert existential_witness_transport_witness(
+        (bridge, fixed_point), wrong_target
+    ) is None
+    universe = build_model_universe(
+        signature,
+        strata=({"sort_sizes": {"S": 2}},),
+        adapter_config={"isomorphism_quotient": False},
+    )
+    context = build_formal_theory_context(
+        signature=signature,
+        formulas=(bridge, fixed_point, target),
+        universe=universe,
+    )
+    presentation = (
+        "formula:" + bridge.semantic_hash,
+        "formula:" + fixed_point.semantic_hash,
+    )
+    target_id = "formula:" + target.semantic_hash
+    signal = theory_residual_information_yield(context, presentation)
+    assert target_id in signal.joint_only_consequence_ids
+    assert signal.cheap_baseline_consequence_ids == (target_id,)
+    assert signal.residual_consequence_ids == ()
+    assert signal.cheap_baseline_witnesses[target_id]["proof_rule"] == (
+        "exists_elim_forall_implies_exists_intro"
+    )
 
 
 def test_direct_rewrite_baseline_catches_first_science_candidate() -> None:
@@ -283,6 +369,137 @@ def test_bounded_baseline_instantiates_expansion_only_variables() -> None:
     assert {step["premise_hash"] for step in witness.steps} == {
         formulas[row].semantic_hash for row in premise_ids
     }
+
+
+def test_closed_baseline_instantiates_erased_parameters_from_target_variables() -> None:
+    x, y = Term.var("x"), Term.var("y")
+    op0 = lambda left, right: Term.app("op0", left, right)
+    op1 = lambda left, right: Term.app("op1", left, right)
+    binders = (Binder("x", "S"), Binder("y", "S"))
+
+    def equation(name, left, right):
+        return AxiomFormula(name, Formula.forall(binders, Formula.eq(left, right)))
+
+    inverse01 = equation("inverse01", op0(x, op1(x, y)), y)
+    inverse10 = equation("inverse10", op1(x, op0(x, y)), y)
+    op0_involutive = equation("op0_involutive", op0(x, op0(x, y)), y)
+    target = equation("op1_involutive", op1(x, op1(x, y)), y)
+
+    witness = direct_equational_consequence_witness(
+        (inverse01, inverse10, op0_involutive), target
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.bounded_equational_reduction.v3"
+    assert witness.growth_policy == "root_or_direct_child_with_target_variables"
+    assert len(witness.steps) <= 8
+
+
+def test_goal_directed_baseline_transfers_to_single_binary_operation() -> None:
+    x, y = Term.var("x"), Term.var("y")
+    op = lambda left, right: Term.app("op", left, right)
+
+    def equation(name, binders, left, right):
+        return AxiomFormula(name, Formula.forall(binders, Formula.eq(left, right)))
+
+    absorb_diagonal = equation(
+        "absorb_diagonal",
+        (Binder("x", "S"),),
+        x,
+        op(x, op(x, x)),
+    )
+    nested_absorption = equation(
+        "nested_absorption",
+        (Binder("x", "S"), Binder("y", "S")),
+        x,
+        op(op(x, op(y, x)), y),
+    )
+    target = equation(
+        "target",
+        (Binder("x", "S"), Binder("y", "S")),
+        op(x, y),
+        op(x, op(y, y)),
+    )
+
+    witness = direct_equational_consequence_witness(
+        (absorb_diagonal, nested_absorption), target
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.goal_directed_equational_reduction.v1"
+    assert len(witness.steps) == 3
+
+
+def test_goal_directed_baseline_allows_closed_deep_context_growth() -> None:
+    x, y = Term.var("x"), Term.var("y")
+    op0 = lambda left, right: Term.app("op0", left, right)
+    op1 = lambda left, right: Term.app("op1", left, right)
+    unary = lambda value: Term.app("u", value)
+
+    def equation(name, binders, left, right):
+        return AxiomFormula(name, Formula.forall(binders, Formula.eq(left, right)))
+
+    inverse10 = equation(
+        "inverse10",
+        (Binder("x", "S"), Binder("y", "S")),
+        op1(x, op0(x, y)),
+        y,
+    )
+    diagonal_inverse = equation(
+        "diagonal_inverse",
+        (Binder("x", "S"),),
+        unary(op0(x, x)),
+        x,
+    )
+    unary_involutive = equation(
+        "unary_involutive",
+        (Binder("x", "S"),),
+        unary(unary(x)),
+        x,
+    )
+    selector = equation(
+        "selector",
+        (Binder("x", "S"),),
+        op0(x, unary(x)),
+        x,
+    )
+    target = equation(
+        "target",
+        (Binder("x", "S"),),
+        op1(x, op1(x, x)),
+        x,
+    )
+
+    witness = direct_equational_consequence_witness(
+        (inverse10, diagonal_inverse, unary_involutive, selector), target
+    )
+
+    assert witness is not None
+    assert witness.schema == "leanmill.goal_directed_equational_reduction.v1"
+    assert witness.growth_policy == "closed_context_goal_beam"
+    assert len(witness.steps) == 5
+    assert {step["premise_hash"] for step in witness.steps} <= {
+        row.semantic_hash
+        for row in (inverse10, diagonal_inverse, unary_involutive, selector)
+    }
+
+
+def test_equational_reflexivity_is_a_zero_step_cheap_consequence() -> None:
+    x = Term.var("x")
+    target = AxiomFormula(
+        "reflexive",
+        Formula.forall(
+            (Binder("x", "S"),),
+            Formula.eq(x, x),
+        ),
+    )
+
+    witness = direct_equational_consequence_witness((), target)
+
+    assert witness is not None
+    assert witness.schema == "leanmill.bounded_equational_reduction.v3"
+    assert witness.steps == ()
+    assert witness.normal_form == x.to_json()
 
 
 def test_program_baseline_composes_already_receipted_consequences() -> None:

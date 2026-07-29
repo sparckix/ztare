@@ -1,0 +1,51 @@
+{
+  "schema": "axiompack.external_frontier_target_snapshot.v1",
+  "snapshot_date": "2026-07-17",
+  "status": "candidate_source_snapshot_not_campaign_freeze",
+  "source": {
+    "authority": "Grassl best-known linear-code table",
+    "url": "https://codetables.de/BKLC/BKLC.php?k=20&n=50&q=2",
+    "retrieved_response_sha256": "5c51e55da6137717f22f20fd90b0d7b8a3d1adab50f7007dbfacd8587ccc14fc",
+    "retrieved_response_bytes": 3227
+  },
+  "parameter": {
+    "field_order": 2,
+    "length": 50,
+    "dimension": 20,
+    "lower_bound": 13,
+    "upper_bound": 14,
+    "target_minimum_distance": 14
+  },
+  "current_lower_bound_construction": {
+    "parameters": [50, 20, 13],
+    "construction_type": "ChubenkoKurz",
+    "family": "quasicyclic",
+    "quasicyclic_degree": 5,
+    "stack_height": 2,
+    "last_modified": "2025-05-14",
+    "generating_polynomials_over_gf2": [
+      "1",
+      "0",
+      "x^9 + x^8 + x^7 + x^6 + x^5 + x^3 + x^2 + x",
+      "x^9 + x^3 + x^2 + x",
+      "x^9 + x^6 + x^3",
+      "0",
+      "1",
+      "x^8 + x^7 + x^6 + x + 1",
+      "x^6 + x^5 + x^3 + x",
+      "x^9 + x^8 + x^3"
+    ]
+  },
+  "executable_success_predicate": {
+    "witness_kind": "binary_generator_matrix",
+    "matrix_shape": [20, 50],
+    "required_rank_over_gf2": 20,
+    "required_minimum_nonzero_codeword_weight": 14,
+    "message_count_for_exhaustive_distance_check": 1048575
+  },
+  "claim_boundary": {
+    "witness_effect": "improves the recorded lower bound from 13 to 14 and meets the recorded upper bound",
+    "bounded_search_failure_effect": "no nonexistence or optimality claim",
+    "priority_effect": "requires a fresh table, derived-code, and primary-literature replay after a witness is found"
+  }
+}

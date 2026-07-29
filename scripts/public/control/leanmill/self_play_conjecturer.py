@@ -9,8 +9,8 @@ REUSES the leanmill apparatus end-to-end rather than reinventing it:
   • PROVER            = solver_core.solve_adhoc (the governed best-of-N cascade; API prover, so this runs WITHOUT a GPU)
   • VERIFIER / reward = the Lean kernel (solve_adhoc only returns kernel-checked, sorry-free closures)
   • NOVELTY gate      = export_training_corpus._akey (α-equivalence — a proposal α-equal to a known theorem is not new)
-  • SOUNDNESS gates   = autoformalize.default_triviality (reject `simp`/`rfl`-trivial) + a well-formed `:= by sorry` compile
-  • CORPUS growth      = a self_play_corpus.jsonl the exporter folds in (same schema as a campaign closure)
+  • SOUNDNESS gates   = statement elaboration + a warm cheap-tactic/non-vacuity probe
+  • CORPUS growth      = the governed closure-certificate ledger (the exporter's existing authority)
 
 PROPOSAL STRATEGIES (a verified seed theorem → candidate NEW statements). The conjecturer mutates the seed's
 self-contained probe (defs kept, the target theorem's SIGNATURE transformed), so every candidate stays well-formed:
@@ -33,6 +33,9 @@ the full loop. Best-effort + fail-closed at the kernel — a bad proposal can ne
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import hashlib
 import json
 import os
 import re
@@ -80,15 +83,21 @@ def _akey(stmt: str) -> str:
 def _split_probe(probe: str, target: str) -> "tuple[str, str, str] | None":
     """(preamble_defs, signature, proof_tail) for the target theorem in its self-contained probe — canonical
     lean_source parsing, no ad-hoc regex on structure."""
-    from ztare.leanmill.lean_source import extract_signature, decl_blocks, split_at_proof
-    blk = dict(decl_blocks(probe)).get(target)
-    if not blk:
+    from ztare.leanmill.lean_source import (
+        extract_signature,
+        preamble_before_target,
+        resolve_theorem_target,
+    )
+
+    identity = resolve_theorem_target(probe, target)
+    if identity is None:
         return None
     sig = extract_signature(probe, target)
     if not sig.strip():
         return None
-    pre = re.split(r"(?m)^\s*(?:theorem|lemma)\s+" + re.escape(target) + r"\b", probe, maxsplit=1)[0].rstrip()
-    return pre, sig, blk
+    pre = preamble_before_target(probe, target)
+    block = probe[identity.decl_start:identity.decl_end]
+    return pre, sig, block
 
 
 def _emit(pre: str, name: str, sig: str) -> str:
@@ -160,25 +169,103 @@ def propose_compose(seeds: "list[dict]", a: dict) -> "list[tuple[str, str, dict]
 
 
 # ── GATES ─────────────────────────────────────────────────────────────────────────────────────────────
-def gate(probe: str, name: str, sig: str, corpus_keys: set, lean_root: Path, timeout: int = 90) -> "tuple[bool, str]":
+def gate(
+    probe: str,
+    name: str,
+    sig: str,
+    corpus_keys: set,
+    lean_root: Path,
+    timeout: int = 90,
+    *,
+    compile_fn=None,
+    nondegenerate_probe_fn=None,
+) -> "tuple[bool, str]":
     """Cheap pre-prover gates: NOVEL (α-key not in corpus) · WELL-FORMED (compiles as `:= by sorry`) · NON-TRIVIAL."""
     stmt = f"theorem {name} {sig} := by sorry"
     if _akey(stmt) in corpus_keys:
         return False, "not novel (α-equal to a corpus theorem)"
     try:
-        from ztare.formal.repl_compile import compile_probe_via_repl
-        r = compile_probe_via_repl(probe, lean_root, timeout=timeout, reject_sorry=False)  # sorry OK: gating the STATEMENT
+        if compile_fn is None:
+            from ztare.formal.repl_compile import compile_probe_via_repl
+            compile_fn = compile_probe_via_repl
+        r = compile_fn(probe, lean_root, timeout=timeout, reject_sorry=False)  # sorry OK: gating the STATEMENT
         if not (isinstance(r, tuple) and r[0]):
             return False, "statement not well-formed (probe does not elaborate)"
     except Exception as e:  # noqa: BLE001
         return False, f"well-formedness probe unavailable: {e!r}"[:80]
     try:
-        from ztare.leanmill.solver.autoformalize import default_triviality
-        if default_triviality(probe, lean_root):
-            return False, "trivial (closes by simp/rfl/decide alone — no training signal)"
-    except Exception:  # noqa: BLE001 — triviality is advisory; a probe error ⇒ keep (the prover will decide)
-        pass
+        from ztare.gates.v33_preflight_risk_detector import detect_risks, nondegenerate_instance_probe
+        from ztare.leanmill.lean_source import swap_sorry
+
+        if detect_risks(sig).get("vacuity_suspected") is True:
+            return False, "vacuous statement (lexical risk gate)"
+        cheap = swap_sorry(
+            probe,
+            "by first | trivial | rfl | simp_all | omega | decide | tauto | norm_num",
+        )
+        if not cheap.strip():
+            return False, "non-triviality probe could not be constructed"
+        r = compile_fn(cheap, lean_root, timeout=timeout, reject_sorry=True)
+        if not (isinstance(r, tuple) and r):
+            return False, "non-triviality probe unavailable (cheap compile returned no verdict)"
+        if r[0]:
+            return False, "trivial (closes by the cheap tactic cascade)"
+        nondegenerate_probe_fn = nondegenerate_probe_fn or nondegenerate_instance_probe
+        vacuity = nondegenerate_probe_fn(sig, lean_root, timeout=timeout)
+        if isinstance(vacuity, dict) and vacuity.get("vacuity_confirmed") is True:
+            return False, "vacuous statement (no non-degenerate instance)"
+    except Exception as e:  # noqa: BLE001 — a dead quality instrument cannot admit training data
+        return False, f"non-triviality probe unavailable: {e!r}"[:120]
     return True, "novel · well-formed · non-trivial"
+
+
+@contextmanager
+def _direct_fallback_solver():
+    """Keep the optional blind-corpus fallback bounded to direct proof adaptation."""
+    names = ("ZTARE_LEANMILL_ISO_ROUTE", "ZTARE_LEANMILL_DECOMPOSE_FIRST")
+    previous = {name: os.environ.get(name) for name in names}
+    try:
+        for name in names:
+            os.environ[name] = "0"
+        yield
+    finally:
+        for name, value in previous.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+
+
+def _checkpoint(path: Path, row: dict) -> None:
+    """Append a resumable run view. The governed certificate ledger remains the proof authority."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as stream:
+        stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def _ratified_closure_receipt(result: object) -> "tuple[str, str] | None":
+    """Return the proof and exact certificate record only for a governed, durable closure.
+
+    ``outcome == closed`` is the kernel verdict, not permission for self-play to
+    claim trainable output.  The solver owns governance eligibility and the
+    canonical ledger append; this consumer requires both receipts.
+    """
+    if not isinstance(result, dict):
+        return None
+    rows = result.get("results")
+    primary = rows[0] if isinstance(rows, list) and rows else None
+    if not isinstance(primary, dict) or primary.get("outcome") != "closed":
+        return None
+    proof = str(primary.get("proof_text") or "").strip()
+    if not proof or "sorry" in proof or "admit" in proof:
+        return None
+    if result.get("governance_ratification_eligible") is not True:
+        return None
+    ledger = str(result.get("closure_certificate") or "").strip()
+    record_sha = str(result.get("closure_certificate_record_sha256") or "").strip()
+    if not ledger or re.fullmatch(r"[0-9a-f]{64}", record_sha) is None:
+        return None
+    return proof, record_sha
 
 
 def main() -> int:
@@ -189,13 +276,17 @@ def main() -> int:
     ap.add_argument("--seeds", type=int, default=8, help="verified theorems to extend this pass")
     ap.add_argument("--per-seed", type=int, default=6, help="cap on gated proposals routed to the prover per seed")
     ap.add_argument("--modes", default="instance_vary,drop_hypothesis,compose")
-    ap.add_argument("--out", type=Path, default=REPO / "ztare_proofs/.solver_scratch/self_play_corpus.jsonl")
+    ap.add_argument("--out", type=Path, default=REPO / "ztare_proofs/.solver_scratch/self_play_trajectory.jsonl",
+                    help="append-only run checkpoint; governed closures enter the canonical certificate ledger")
+    ap.add_argument("--run-tag", default="", help="explicit campaign identity (default: inherited or timestamped)")
     ap.add_argument("--lean-root", type=Path, default=REPO / "ztare_proofs")
     ap.add_argument("--dry-run", action="store_true", help="propose + gate only; do NOT invoke the prover (no API/GPU)")
     ap.add_argument("--codex-fallback", action="store_true",
                     help="after proof-transfer, ADAPT non-transferable variants with codex (default OFF — transfer-"
                          "only is fast + free; codex measured 0-yield on false weakenings, use only when worth it)")
     ap.add_argument("--timeout", type=int, default=400, help="per-conjecture prover budget (s)")
+    ap.add_argument("--allow-legacy-diagnostic", action="store_true",
+                    help="explicitly permit a legacy corpus for diagnostics; rows cannot be treated as release training data")
     a = ap.parse_args()
 
     # LAKE ON PATH (the canonical mechanized fix solver_core.main applies): a DIRECT solve_adhoc caller — like this
@@ -207,15 +298,39 @@ def main() -> int:
     except Exception:  # noqa: BLE001
         pass
 
-    pc = a.prover_corpus or (a.corpus / ".." / ".." / "analytics_placeholder")
+    run_tag = (a.run_tag or os.environ.get("ZTARE_SOLVER_RUN_TAG") or
+               f"selfplay_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}")
+    os.environ["ZTARE_SOLVER_RUN_TAG"] = run_tag
+    try:
+        from ztare.leanmill.phase_timing import record_campaign
+        record_campaign("self-play", run_tag=run_tag, target="blind-corpus-topup")
+    except Exception:  # noqa: BLE001 — telemetry cannot block the governed loop
+        pass
+
+    from ztare.leanmill.training_corpus_contract import validate_training_corpus_directory
+
     rows = []
-    for cand in [a.prover_corpus, REPO / "scripts/public/models/void_sft" / "corpus_fresh/prover_corpus.jsonl",
+    corpus_errors = []
+    for cand in [a.prover_corpus, REPO / "analytics/public/leanmill/training_corpus/prover_corpus.jsonl",
+                 REPO / "scripts/public/models/void_sft" / "corpus_fresh/prover_corpus.jsonl",
                  Path.home() / "void_sft_artifacts/corpus_fresh/prover_corpus.jsonl"]:
         if cand and Path(cand).exists():
+            try:
+                validate_training_corpus_directory(
+                    Path(cand).parent,
+                    required_files=(Path(cand).name,),
+                    allow_legacy_diagnostic=a.allow_legacy_diagnostic,
+                )
+            except ValueError as exc:
+                corpus_errors.append(f"{cand}: {exc}")
+                if a.prover_corpus is not None and Path(cand) == a.prover_corpus:
+                    break
+                continue
             rows = [json.loads(l) for l in Path(cand).read_text().splitlines() if l.strip()]
             break
     if not rows:
-        print("no prover_corpus.jsonl found — pass --prover-corpus", file=sys.stderr)
+        detail = "; ".join(corpus_errors) or "no prover_corpus.jsonl found"
+        print(detail, file=sys.stderr)
         return 2
     corpus_keys = {_akey(r.get("statement") or "") for r in rows if r.get("statement")}
     modes = set(a.modes.split(","))
@@ -228,6 +343,7 @@ def main() -> int:
           f"{'DRY-RUN' if a.dry_run else 'PROVE'}", flush=True)
 
     proposals, kept = [], []
+    checkpointed = 0
     for s in seeds:
         sp = _split_probe(s["recompilable_probe"], s["target"])
         if not sp:
@@ -255,30 +371,90 @@ def main() -> int:
             corpus_keys.add(_akey(f"theorem {cname} {new_sig} := by sorry"))   # don't re-propose within the pass
             if a.dry_run:
                 continue
-            # PROOF-TRANSFER FIRST (cheap, no codex — the big yield lever): a STRUCTURAL variant's proof is usually
-            # the seed's proof VERBATIM (a strengthening compiles as-is; a weaken/drop often does too). Splice the
-            # seed's kernel-checked proof and compile it via the warm REPL (~seconds). If it closes ⇒ an instant
-            # verified new theorem at ZERO codex cost. Only when the original proof does NOT transfer do we spend
-            # codex to ADAPT it (the genuinely-harder variants). This is what turns low-yield/slow into high-yield/fast.
+            # PROOF-TRANSFER FIRST: route the carried proof through solve_adhoc's provider-free ratification-only
+            # door. It performs the same kernel, axiom, statement-integrity, governance, and certificate steps as
+            # every other closure; direct REPL compilation is not an authority or a second persistence path.
             _op = (s.get("proof") or "").strip()
             if _op:
-                _tp = (pre if pre.lstrip().startswith("import") else "import Mathlib\n\n" + pre) + \
-                    f"\n\ntheorem {cname} {new_sig} := {_op}\n"
                 try:
-                    from ztare.formal.repl_compile import compile_probe_via_repl
-                    _r = compile_probe_via_repl(_tp, a.lean_root, timeout=90, reject_sorry=True)
-                    if isinstance(_r, tuple) and _r[0]:
-                        rec = {"target": cname, "statement": new_sig, "proof": _op, "recompilable_probe": _tp,
-                               "source": "self_play", "seed": s["target"], "mode": mode + ":proof_transfer",
-                               "checker": "lean_lake"}
+                    from ztare.leanmill.solver.solver_core import solve_adhoc
+                    _sub = a.lean_root
+                    res = solve_adhoc(
+                        cname,
+                        probe,
+                        "",
+                        substrate=_sub,
+                        timeout_s=min(a.timeout, 180),
+                        preverified_proof=_op,
+                        preverified_provider="self_play_proof_transfer",
+                        preverified_only=True,
+                        require_positive_axiom_receipt=True,
+                    ) or {}
+                    r0 = (res.get("results") or [{}])[0]
+                    receipt = _ratified_closure_receipt(res)
+                    if receipt is not None:
+                        proof, certificate_record_sha256 = receipt
+                        rec = {
+                            "ts": datetime.now(timezone.utc).isoformat(),
+                            "run_tag": run_tag,
+                            "target": cname,
+                            "seed": s["target"],
+                            "mode": mode + ":proof_transfer",
+                            "outcome": "closed",
+                            "statement_sha256": hashlib.sha256(new_sig.encode()).hexdigest(),
+                            "probe_sha256": hashlib.sha256(probe.encode()).hexdigest(),
+                            "proof_sha256": hashlib.sha256(proof.encode()).hexdigest(),
+                            "closure_certificate": res.get("closure_certificate"),
+                            "closure_certificate_record_sha256": certificate_record_sha256,
+                        }
                         kept.append(rec)
-                        Path(a.out).parent.mkdir(parents=True, exist_ok=True)   # CHECKPOINT immediately: transfer
-                        with Path(a.out).open("a", encoding="utf-8") as _f:     # closures skip solve_adhoc's cert
-                            _f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                        _checkpoint(a.out, rec)
+                        checkpointed += 1
                         print(f"[self-play] ✓ TRANSFER {mode} from {s['target']} (seed proof, no codex)", flush=True)
                         continue
-                except Exception:  # noqa: BLE001 — transfer is best-effort; fall to codex
-                    pass
+                    transfer_failure = {
+                        "ts": datetime.now(timezone.utc).isoformat(),
+                        "run_tag": run_tag,
+                        "target": cname,
+                        "seed": s["target"],
+                        "mode": mode + ":proof_transfer",
+                        "outcome": str(r0.get("outcome") or "no_result"),
+                        "reason": str(
+                            r0.get("failure_reason")
+                            or r0.get("reason")
+                            or res.get("reason")
+                            or "carried proof did not ratify for the candidate statement"
+                        )[:500],
+                        "statement_sha256": hashlib.sha256(new_sig.encode()).hexdigest(),
+                        "probe_sha256": hashlib.sha256(probe.encode()).hexdigest(),
+                        "seed_proof_sha256": hashlib.sha256(_op.encode()).hexdigest(),
+                        "closure_certificate": res.get("closure_certificate"),
+                        "closure_certificate_record_sha256": res.get(
+                            "closure_certificate_record_sha256"
+                        ),
+                    }
+                    _checkpoint(a.out, transfer_failure)
+                    checkpointed += 1
+                except Exception as e:  # noqa: BLE001 — transfer failure can fall to the optional adapter
+                    _checkpoint(
+                        a.out,
+                        {
+                            "ts": datetime.now(timezone.utc).isoformat(),
+                            "run_tag": run_tag,
+                            "target": cname,
+                            "seed": s["target"],
+                            "mode": mode + ":proof_transfer",
+                            "outcome": "infrastructure_failure",
+                            "reason": repr(e)[:500],
+                            "statement_sha256": hashlib.sha256(new_sig.encode()).hexdigest(),
+                            "probe_sha256": hashlib.sha256(probe.encode()).hexdigest(),
+                            "seed_proof_sha256": hashlib.sha256(_op.encode()).hexdigest(),
+                            "closure_certificate": None,
+                            "closure_certificate_record_sha256": None,
+                        },
+                    )
+                    checkpointed += 1
+                    print(f"[self-play] transfer unavailable for {s['target']}: {e!r}", flush=True)
             if not a.codex_fallback:
                 # TRANSFER-ONLY (default): the codex ADAPT fallback measured 0-yield + ~2-3 min/candidate on false
                 # weakenings — pure throttle. DEFER non-transferable variants to a later round (skip-if-hard, the STP
@@ -291,30 +467,78 @@ def main() -> int:
             # substrate at the LAKE-ROOT (next to lakefile), NOT .solver_scratch — a subdir has no lakefile, so
             # native_hammer's `lake` can't find the project ⇒ its positive control fails ⇒ the cheap tactic move
             # goes DEAD and everything falls to codex (the slow path). Root-level = native_hammer live. 2026-07-02.
-            _sub = a.lean_root / f"_sp_{cname}.lean"
+            _sub = a.lean_root
             # SEED-PROOF HINT (the STP lever): a `mode` variant's proof is usually the ORIGINAL proof adapted, not a
             # from-scratch rederivation. Hand codex the seed's kernel-checked proof as `notes` so it ADAPTS it to the
             # changed hypothesis/instance — turns "prove a hard theorem cold" into "tweak a known proof" (yield ↑↑).
             _hint = (f"This target is a `{mode}` variant of the ALREADY-PROVEN theorem `{s['target']}`. Its "
                      f"kernel-checked proof is below — ADAPT it to close this variant (the argument is usually the "
                      f"same up to the changed hypothesis / typeclass instance):\n\n{(s.get('proof') or '').strip()}")
-            res = solve_adhoc(cname, probe, "", substrate=_sub, timeout_s=a.timeout, notes=_hint) or {}
+            with _direct_fallback_solver():
+                res = solve_adhoc(
+                    cname,
+                    probe,
+                    "",
+                    substrate=_sub,
+                    timeout_s=a.timeout,
+                    notes=_hint,
+                    require_positive_axiom_receipt=True,
+                ) or {}
             r0 = (res.get("results") or [{}])[0]
-            proof = r0.get("proof_text") or ""
-            if r0.get("outcome") == "closed" and proof.strip() and "sorry" not in proof:
-                rec = {"target": cname, "statement": new_sig, "proof": proof, "recompilable_probe": probe,
-                       "source": "self_play", "seed": s["target"], "mode": mode, "checker": "lean_lake"}
+            receipt = _ratified_closure_receipt(res)
+            if receipt is not None:
+                proof, certificate_record_sha256 = receipt
+                rec = {
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "run_tag": run_tag,
+                    "target": cname,
+                    "seed": s["target"],
+                    "mode": mode,
+                    "outcome": "closed",
+                    "statement_sha256": hashlib.sha256(new_sig.encode()).hexdigest(),
+                    "probe_sha256": hashlib.sha256(probe.encode()).hexdigest(),
+                    "proof_sha256": hashlib.sha256(proof.encode()).hexdigest(),
+                    "closure_certificate": res.get("closure_certificate"),
+                    "closure_certificate_record_sha256": certificate_record_sha256,
+                }
                 kept.append(rec)
-                Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-                with Path(a.out).open("a", encoding="utf-8") as _f:   # incremental (same as transfer) — no end-of-run
-                    _f.write(json.dumps(rec, ensure_ascii=False) + "\n")   # re-write ⇒ no double-write bug
+                _checkpoint(a.out, rec)
+                checkpointed += 1
                 print(f"[self-play] ✓ CLOSED {mode} from {s['target']}", flush=True)
             else:
+                _checkpoint(
+                    a.out,
+                    {
+                        "ts": datetime.now(timezone.utc).isoformat(),
+                        "run_tag": run_tag,
+                        "target": cname,
+                        "seed": s["target"],
+                        "mode": mode,
+                        "outcome": str(r0.get("outcome") or "no_result"),
+                        "reason": str(
+                            r0.get("failure_reason")
+                            or r0.get("reason")
+                            or res.get("reason")
+                            or "governed prover did not close the candidate"
+                        )[:500],
+                        "statement_sha256": hashlib.sha256(new_sig.encode()).hexdigest(),
+                        "probe_sha256": hashlib.sha256(probe.encode()).hexdigest(),
+                        "closure_certificate": res.get("closure_certificate"),
+                        "closure_certificate_record_sha256": res.get(
+                            "closure_certificate_record_sha256"
+                        ),
+                    },
+                )
+                checkpointed += 1
                 print(f"[self-play] ✗ {mode} from {s['target']} → {r0.get('outcome') or 'no-result'}", flush=True)
 
     n_gated = sum(1 for p in proposals if "novel" in p["gate"])
     print(json.dumps({"seeds_extended": len(seeds), "proposals": len(proposals), "passed_gates": n_gated,
-                      "proven_new_theorems": len(kept), "appended_to": str(a.out) if kept else None}, indent=2))
+                      "proven_new_theorems": len(kept),
+                      "governed_certificate_ledger": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+                      "checkpoint_rows": checkpointed,
+                      "checkpoint": str(a.out) if checkpointed else None,
+                      "run_tag": run_tag}, indent=2))
     if a.dry_run:
         print("\n[self-play] DRY-RUN proposals that PASSED the gates (the prover would attack these):")
         for p in proposals:

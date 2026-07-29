@@ -574,7 +574,9 @@ def _frontier_journal_projection(
     paths = [("root", directory / "events.jsonl")]
     paths.extend(
         (f"lineage:{path.stem}", path)
-        for path in sorted((directory / "lineage_journals").glob("*.events.jsonl"))
+        for path in sorted(
+            (directory / "lineage_journals").glob("lineage-*.events.jsonl")
+        )
     )
     rows: list[tuple[str, list[Any]]] = []
     invalid = False

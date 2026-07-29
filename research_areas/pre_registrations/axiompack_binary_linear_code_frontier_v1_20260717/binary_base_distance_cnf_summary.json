@@ -1,0 +1,18 @@
+{
+  "13": {
+    "clause_count": 2227,
+    "cnf": "binary_base_distance_13.cnf",
+    "cnf_sha256": "cfc73acb5af9b422729fa75a057eed79494d7a91912cb4cc98bb341ff8b5c32b",
+    "metadata": "binary_base_distance_13.cnf.json",
+    "variable_count": 880
+  },
+  "14": {
+    "clause_count": 2325,
+    "cnf": "binary_base_distance_14.cnf",
+    "cnf_sha256": "f05d13a9a3f84901be96090354bfd0030432da8717bdd95c89425a3aa9baf900",
+    "metadata": "binary_base_distance_14.cnf.json",
+    "variable_count": 930
+  },
+  "coordinate_convention": "bit_i_is_coordinate_i",
+  "schema": "leanmill.binary_base_distance_cnf_probe_set.v1"
+}

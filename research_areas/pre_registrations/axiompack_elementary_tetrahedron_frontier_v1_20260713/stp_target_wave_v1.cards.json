@@ -1,0 +1,410 @@
+{
+  "schema": "leanmill.result_card_deck.v1",
+  "ledger_ref": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+  "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+  "objective": "Characterize, with necessary and sufficient conditions, the elementary type-2 solutions whose extracted second tetrahedral 4-groupoid reconstructs the original ternary operation.",
+  "objective_sha256": "3e9a62d93a7432a609f6a7ed3d5159edff476eef1408dac84c0891cf1301cfdb",
+  "objective_source_receipts": [
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+      "sha256": "f15546b3fbb87fc394e06fd4ce098b532ee149a2806b2392c7a7d2c1df9a5304"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_prior_art_audit.md",
+      "sha256": "4ed83c70efa7647837bba558c00610d581344f0537e18ef34bfd4d33b19de5e1"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+      "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+      "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+    }
+  ],
+  "context_sha256": "11abedbc5f0872a5e76d0d1e2bb0b1b13f89e1e63fce2ce524bd874f00dfa664",
+  "epoch": 0,
+  "cards": [
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:da1af1fb1f15902a481b8287a2b7b73cc8dcf1dcd0e8f35136cf3d4820d32bc4",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        }
+      ],
+      "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_factor_through_orbits",
+      "context_sha256": "ef72666feb219cb8900a1f54ba983dcba97b33705d1319a273bee8263deb6bfd",
+      "epoch": 0,
+      "lean_statement": "(translation : X → X → Equiv.Perm X)\n    (tetrahedron : ∀ x y z t p q,\n      translation (translation x z y) q (translation x p t) =\n        translation x (translation z q p) (translation y q t))\n    (source_fixed : ∀ x z, translation x z x = x)\n    (commute : ∀ x z u v a,\n      translation x z (translation u v a) =\n        translation u v (translation x z a)) :\n    (∀ x z q p,\n        translation x (translation z q p) = translation x p) ∧\n      (∀ x z y q,\n        translation (translation x z y) q = translation y q)",
+      "statement_sha256": "2435c3e8c8b72126cb5f7d1e74cb7dc416ece1bc97a699e57fa489224045f9de",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 762,
+        "certificate_sha256": "0d9376657103581fbdc117e237cc7c861c9923bcd7a5b61a61ebdc879fc50b6f"
+      },
+      "proof_sha256": "e9272d296f7ea3f02188d0548c9653eba53590f3c72830f73d9766e393d49ce6",
+      "recompilable_probe_sha256": "72524ba74cb523787fc4dc020cc0bbe2fc1642ac407f91da5acab3f29f35c30d",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "0d9376657103581fbdc117e237cc7c861c9923bcd7a5b61a61ebdc879fc50b6f",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "context_stripped",
+          "executed_at": "solver_layer",
+          "passed": true
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "1f0a77af678ae320e8606b5e7f42b3ab049fc7a684223194f7c96c2e96ec834f"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:0907ec009137c0542022f0a341ff2983d660a2360255e0fce5567852651bde89",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        }
+      ],
+      "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_orbit_action_representation",
+      "context_sha256": "93cc78f59cb00a0bfa0dfc203983f28e4916280959ff8fe58e9bbe76d7de259a",
+      "epoch": 0,
+      "lean_statement": "(translation : X → X → Equiv.Perm X)\n    (tetrahedron : ∀ x y z t p q,\n      translation (translation x z y) q (translation x p t) =\n        translation x (translation z q p) (translation y q t))\n    (source_fixed : ∀ x z, translation x z x = x)\n    (commute : ∀ x z u v a,\n      translation x z (translation u v a) =\n        translation u v (translation x z a)) :\n    ∃ label : TranslationOrbit translation →\n        TranslationOrbit translation → translationSubgroup translation,\n      (∀ x z,\n        (label (Quotient.mk'' x) (Quotient.mk'' z) : Equiv.Perm X) =\n          translation x z) ∧\n      (∀ x y z,\n        translation x z y =\n          (label (Quotient.mk'' x) (Quotient.mk'' z) : Equiv.Perm X) y)",
+      "statement_sha256": "030c13ecf8b4e3aa0dcd53330a1dcd521af1e6f18b9d21ee43856bcc9c840e21",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 765,
+        "certificate_sha256": "4644533a42f1a0af86712436eddf4301531c8887e67f8c1aa4b914d17b722025"
+      },
+      "proof_sha256": "9d313e4e9ee2d2575f475b368ce57e7f73391cfb81571a0e27480b89d0d299fe",
+      "recompilable_probe_sha256": "310ad6838cf38cbf13e275753d8cf42a840e3d6f7985a4f23c99ce006a3b7fb5",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "4644533a42f1a0af86712436eddf4301531c8887e67f8c1aa4b914d17b722025",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [
+            "consequence_exposure_shape_suspect_advisory"
+          ],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "context_stripped",
+          "executed_at": "solver_layer",
+          "passed": true
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "dd1a338a0cd9749db507307ec985dc23657c1f9fcb19896c0704c447cf8d9ec5"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:2f5d5822a52c8eb2abe2c99288c1b35f8cd177e4fc92109e3fd1a97e514ec557",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+          "sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+          "sha256": "f15546b3fbb87fc394e06fd4ce098b532ee149a2806b2392c7a7d2c1df9a5304"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_nonprojection_not_reconstructible",
+      "context_sha256": "7c09d24942a6c43b2a93dea196775e9edfcb629c79278bfe3d4a2707b69558f4",
+      "epoch": 0,
+      "lean_statement": "(T : X → X → X → X)\n    (tetrahedron : TetrahedronEquation T)\n    (middle_injective : ∀ x z, Function.Injective (fun y => T x y z))\n    (diagonal_inverse : ∀ x y, T x y (T x x x) = y)\n    (cross_diagonal : ∀ x y, T x x y = T y x y)\n    (nonprojection : ¬ ∀ x y z, T x y z = y) :\n    ¬ ∃ (c : X) (brace : X → X),\n      ExtractionHypotheses T c brace ∧\n        ∀ x y z, T x y z = reconstructed T c brace x y z",
+      "statement_sha256": "8ee7346b4d4b9193dc8066d2bf3da4001638a842d50ebb5edbb0176d45e0d74c",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 771,
+        "certificate_sha256": "b94df2dc568e8dee37caedace7e2fbad8809cc5ffaed7193afb2a78311e7c151"
+      },
+      "proof_sha256": "863a71063fbeba2dc9f4f5c897472bfc69d6fa7dd7aec42fd7934eaa4feab37c",
+      "recompilable_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "b94df2dc568e8dee37caedace7e2fbad8809cc5ffaed7193afb2a78311e7c151",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_nonprojection_not_reconstructible",
+          "target_signature_sha256": "8ee7346b4d4b9193dc8066d2bf3da4001638a842d50ebb5edbb0176d45e0d74c",
+          "positive_probe_sha256": "cef4bab1d4d834ae085c3f912fde2b76e8aba3a21b271ee828ccc65c219f51f9",
+          "negative_probe_sha256": "c21ff1937cd40abf22bf45201f8ad4afd09cab7b72372e6c91092c3ba7465297",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "a6a23813dc7052c7ae639eef27ef35358050ce4eaea22c476f3447484ffedfd1",
+          "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "f615ece91522dfa7734a8751c7606856bae653f6402fb70d5a513f09af63d6a2"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:1cd268ee946266bb3bf9d7886caf21e05252422a0f329e604bea04e33457fee1",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+          "sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+          "sha256": "f15546b3fbb87fc394e06fd4ce098b532ee149a2806b2392c7a7d2c1df9a5304"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+      "context_sha256": "9a450a86dcfc6e9f8d0eafe013af443fa80e079526b86da2e468fd9e4d276fb1",
+      "epoch": 0,
+      "lean_statement": ":\n    ElementaryTwoSolution finalistOne ∧\n      (∀ c, ExtractionHypotheses finalistOne c (fun x => x)) ∧\n      (∀ c,\n        T2GroupoidLaws\n          (extractedStar finalistOne c)\n          (extractedCircle finalistOne c)\n          (extractedLeft finalistOne c (fun x => x))\n          (extractedRight finalistOne c (fun x => x))) ∧\n      ¬ ∃ (c : Carrier) (brace : Carrier → Carrier),\n        ExtractionHypotheses finalistOne c brace ∧\n          ∀ x y z,\n            finalistOne x y z = reconstructed finalistOne c brace x y z",
+      "statement_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 777,
+        "certificate_sha256": "98be631877f91c876176157d628b3ea79d0011dd0907bd3d759ae99d56500bbc"
+      },
+      "proof_sha256": "584b35f36dad0d22ba154364417635214acc20157c6be2f2c9f1037f688d442f",
+      "recompilable_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "98be631877f91c876176157d628b3ea79d0011dd0907bd3d759ae99d56500bbc",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+          "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+          "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
+          "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "6bd8b0a6e24d4c5e65dba834790c9e827f7653adfa98e0359e265d43dba8b36e"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:85e076e9702d882d7d37973a78c7c540b9d04f4af0970a21a94cdfaa0e8c34e1",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "26eccca07c1d973adca26704733a0639ae99c969bbfea3fcac7cf9f77dff273a",
+      "target_identity": "AxiomPackOrbitAction.orbitAction_reconstruction_iff_label_factorization",
+      "context_sha256": "ec0a9f50ad74cabfb1c437966fb83cdd20863eaf823b47ea7ec8fe20c7666049",
+      "epoch": 0,
+      "lean_statement": "[CommGroup G] [MulAction G X] [FaithfulSMul G X]\n    (orbit : X → O) (label : O → O → G)\n    (c : X) :\n    (∀ (x y z : X),\n      orbitActionOp orbit label x y z =\n        orbitActionOp orbit label x\n          (orbitActionOp orbit label c y z) c) ↔\n      ∀ (x z : X),\n        label (orbit x) (orbit z) =\n          label (orbit x) (orbit c) * label (orbit c) (orbit z)",
+      "statement_sha256": "4ea40f16f1883bb7985864d0d30bec9f54ef59e4ac27179649f3495a92d17829",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 775,
+        "certificate_sha256": "18a913b6c819a9414c451a6f9da5923b3495aa4c52b9113b62737229eec2be18"
+      },
+      "proof_sha256": "3a36cdfc6dc7fe7b5fecec562a716d7f43321bc143c6aff21aac18ebdfc29bcf",
+      "recompilable_probe_sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "26eccca07c1d973adca26704733a0639ae99c969bbfea3fcac7cf9f77dff273a",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "18a913b6c819a9414c451a6f9da5923b3495aa4c52b9113b62737229eec2be18",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [
+            "consequence_exposure_shape_suspect_advisory"
+          ],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackOrbitAction.orbitAction_reconstruction_iff_label_factorization",
+          "target_signature_sha256": "4ea40f16f1883bb7985864d0d30bec9f54ef59e4ac27179649f3495a92d17829",
+          "positive_probe_sha256": "3c0d65c84646d438730bc0bbb4c8b40670ca15937a24a30ee685c680b8b3a0fa",
+          "negative_probe_sha256": "5e3e1a24d1311136f4a7702d872b58ca3b7502eea0deb9ffb22b815902bc76f2",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "357e73033ae9091312fc44bbd08dd5b37634c2527a483ae24067719f31ff6907",
+          "closure_source_sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "42158431aab57d27e47dcd661ea314fbf8b9a2dc07abe7ebf12bc04cd6aec271"
+    }
+  ],
+  "proof_visibility": "hidden_by_default_resolvable_only_from_frozen_ledger",
+  "deck_sha256": "5bc3c72302d2ba100c135fa4ac4ff5d1d1d1dbc3afc5cf0a1b62f028e867af93"
+}

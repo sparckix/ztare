@@ -26,6 +26,8 @@ from __future__ import annotations
 import argparse, json, os, re, subprocess, sys, tempfile, time
 from pathlib import Path
 
+from ztare.leanmill.lean_source import replace_decl_proof
+
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SANDBOX = ROOT / ("analytics/public/leanmill/external_benchmarks/"
                           "sandboxes/v28A_carleson_baseline/carleson")
@@ -37,6 +39,18 @@ LEAN_ERR_RE = re.compile(r"^\S*\.lean:\d+:\d+: error:", re.MULTILINE)
 # success.
 EXACT_SUCCESS_RE = re.compile(r"Try this:\s*\n?\s*(?:\[[a-z]+\]\s*)?(.+)", re.DOTALL)
 EXACT_FAIL_RE = re.compile(r"`?exact\?`? could not close the goal")
+
+
+def classify_exact_output(output: str) -> tuple[bool | None, re.Match[str] | None]:
+    """Classify only explicit tactic outcomes; all other output is unavailable."""
+
+    suggested = EXACT_SUCCESS_RE.search(output or "")
+    failed = EXACT_FAIL_RE.search(output or "")
+    if suggested is not None and failed is None:
+        return True, suggested
+    if failed is not None and suggested is None:
+        return False, None
+    return None, suggested
 
 
 def detect_shape(goal: str) -> dict:
@@ -78,16 +92,12 @@ def independent_exact_verify(goal: str, imports: list[str], sandbox: Path,
             cwd=str(sandbox), text=True, capture_output=True, timeout=timeout, check=False,
         )
         out = (proc.stdout or "") + "\n" + (proc.stderr or "")
-        suggested = EXACT_SUCCESS_RE.search(out)
-        failed = EXACT_FAIL_RE.search(out)
-        # CONFIRMED iff exact? produced a suggestion AND did not report failure.
-        # (The example itself always errors — exact? only suggests, never closes.)
-        confirmed = (suggested is not None) and (failed is None)
+        confirmed, suggested = classify_exact_output(out)
         return {
             "single_lemma_exact_confirmed": confirmed,
             "exact_hint": (suggested.group(1).strip()[:160] if suggested else None),
             "elapsed_s": round(time.time() - started, 2),
-            "error_tail": "" if confirmed else out[-250:],
+            "error_tail": "" if confirmed is True else out[-250:],
         }
     except subprocess.TimeoutExpired:
         return {"single_lemma_exact_confirmed": None, "timed_out": True, "elapsed_s": timeout}
@@ -95,17 +105,50 @@ def independent_exact_verify(goal: str, imports: list[str], sandbox: Path,
         return {"single_lemma_exact_confirmed": None, "error": str(e)}
 
 
-def independent_exact_verify_rowfile(row_text: str, sandbox: Path, timeout: int = 70) -> dict:
+def build_exact_probe_source(
+    row_text: str,
+    *,
+    target_name: str | None = None,
+) -> str:
+    proof = "by\n  intros\n  exact?"
+    if target_name:
+        return replace_decl_proof(row_text, target_name, proof)
+    probe = re.sub(
+        r":=\s*by\b.*$",
+        ":= by\n  intros\n  exact?",
+        row_text.strip(),
+        count=1,
+        flags=re.DOTALL,
+    )
+    if ":= by" not in probe:
+        probe = re.sub(
+            r":=.*$",
+            ":= by\n  intros\n  exact?",
+            row_text.strip(),
+            count=1,
+            flags=re.DOTALL,
+        )
+    return probe
+
+
+def independent_exact_verify_rowfile(
+    row_text: str,
+    sandbox: Path,
+    timeout: int = 70,
+    *,
+    target_name: str | None = None,
+) -> dict:
     """Robust variant: take the ORIGINAL row statement and substitute its
     trailing `:= by <proof>` with `:= by intros; exact?`. Guaranteed
     well-formed (original binders/types preserved). Same detection."""
     if not sandbox.exists():
         return {"single_lemma_exact_confirmed": None, "error": "sandbox missing"}
-    probe = re.sub(r":=\s*by\b.*$", ":= by\n  intros\n  exact?",
-                   row_text.strip(), count=1, flags=re.DOTALL)
-    if ":= by" not in probe:
-        probe = re.sub(r":=.*$", ":= by\n  intros\n  exact?", row_text.strip(),
-                       count=1, flags=re.DOTALL)
+    probe = build_exact_probe_source(row_text, target_name=target_name)
+    if not probe:
+        return {
+            "single_lemma_exact_confirmed": None,
+            "error": "selected target unavailable",
+        }
     tmpdir = sandbox / "V33ExactProbe"
     tmpdir.mkdir(exist_ok=True)
     tf = tempfile.NamedTemporaryFile(mode="w", suffix=".lean", dir=str(tmpdir), delete=False)
@@ -118,14 +161,12 @@ def independent_exact_verify_rowfile(row_text: str, sandbox: Path, timeout: int 
                                cwd=str(sandbox), text=True, capture_output=True,
                                timeout=timeout, check=False)
         out = (proc.stdout or "") + "\n" + (proc.stderr or "")
-        suggested = EXACT_SUCCESS_RE.search(out)
-        failed = EXACT_FAIL_RE.search(out)
-        confirmed = (suggested is not None) and (failed is None)
+        confirmed, suggested = classify_exact_output(out)
         return {
             "single_lemma_exact_confirmed": confirmed,
             "exact_hint": (suggested.group(1).strip()[:160] if suggested else None),
             "elapsed_s": round(time.time() - started, 2),
-            "error_tail": "" if confirmed else out[-250:],
+            "error_tail": "" if confirmed is True else out[-250:],
         }
     except subprocess.TimeoutExpired:
         return {"single_lemma_exact_confirmed": None, "timed_out": True}

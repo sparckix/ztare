@@ -38,6 +38,9 @@ import re
 from pathlib import Path
 
 
+FAITHFULNESS_RECORD_SCHEMA = "leanmill.faithfulness_record.v2"
+
+
 def nl_key(nl: str) -> str:
     """The retrieval key for a natural-language claim — lowercase, whitespace-collapsed, stripped of
     surrounding punctuation (so a trivial paraphrase still hits). Coarse ON PURPOSE: the firewall re-checks
@@ -126,7 +129,13 @@ class FaithfulnessStore:
 
     def _index(self, rec: dict) -> bool:
         key = rec.get("key")
-        sig = (key, rec.get("kind"), rec.get("statement") or rec.get("distinguishing"))
+        sig = (
+            key,
+            rec.get("kind"),
+            rec.get("statement") or rec.get("distinguishing"),
+            rec.get("evidence_tier") or "reviewed",
+            rec.get("record_schema") or "legacy",
+        )
         if not key or sig in self._seen:
             return False
         self._seen.add(sig)
@@ -141,13 +150,26 @@ class FaithfulnessStore:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         return True
 
-    def record(self, nl: str, statement: str, *, confirmed: bool, fingerprint=None, source: str = "") -> bool:
+    def record(
+        self,
+        nl: str,
+        statement: str,
+        *,
+        confirmed: bool,
+        fingerprint=None,
+        source: str = "",
+        evidence_tier: str = "reviewed",
+        verdict_provenance: "dict | None" = None,
+    ) -> bool:
         """Record a CONFIRMED faithful correspondence NL→statement (the firewall ADMITTED it). CONFIRMED-only —
         a flaky/advisory admit is INADMISSIBLE. `fingerprint` is the agreed statement's structural fingerprint
         (for the load-bearing reference check). Returns whether newly stored."""
         if not confirmed or not (nl or "").strip() or not (statement or "").strip():
             return False
-        rec = {"key": _scoped_key(nl), "kind": "faithful", "nl": (nl or "")[:400],
+        if evidence_tier not in {"reviewed", "certified"}:
+            raise ValueError("faithfulness evidence tier is unsupported")
+        rec = {"record_schema": FAITHFULNESS_RECORD_SCHEMA,
+               "key": _scoped_key(nl), "kind": "faithful", "nl": (nl or "").strip(),
                # STORE THE STATEMENT WHOLE — NO raw-char cap (2026-07-03). A Lean statement is a bounded
                # semantic object; a char budget (was 4000/600) is an ARBITRARY line that bisects a
                # def-heavy target's THEOREM, so the formalizer anchor (`prompt_block`) and the
@@ -160,7 +182,9 @@ class FaithfulnessStore:
                # single door `confirms()` matches on. Survives both the formalizer's theorem-name
                # non-determinism AND the 4000-char truncation (the normalized theorem is small).
                "norm": _stmt_identity(statement),
-               "fingerprint": fingerprint, "source": source}
+               "fingerprint": fingerprint, "source": source,
+               "evidence_tier": evidence_tier,
+               "verdict_provenance": dict(verdict_provenance or {})}
         sid = _statement_id_json(nl, statement)
         if sid:
             rec["statement_id"] = sid
@@ -172,7 +196,7 @@ class FaithfulnessStore:
         confirmation, so no separate `confirmed` flag is needed."""
         if not (nl or "").strip():
             return False
-        return self._append({"key": _scoped_key(nl), "kind": "conflict", "nl": (nl or "")[:400],
+        return self._append({"key": _scoped_key(nl), "kind": "conflict", "nl": (nl or "").strip(),
                              "substrates": list(substrates or []), "distinguishing": (distinguishing or "")[:300],
                              "source": source})
 
@@ -212,7 +236,13 @@ class FaithfulnessStore:
                 continue
             if _refuted and _kf and _kf(_s) in _refuted:
                 continue
-            return {"statement": _s, "fingerprint": r.get("fingerprint"), "exact": True}
+            return {
+                "statement": _s,
+                "fingerprint": r.get("fingerprint"),
+                "exact": True,
+                "evidence_tier": r.get("evidence_tier") or "reviewed",
+                "verdict_provenance": dict(r.get("verdict_provenance") or {}),
+            }
         return None
 
     def _substrate_drift_pred(self):
@@ -260,7 +290,20 @@ class FaithfulnessStore:
             return None
         _refuted = self._refuted_keys()
         _drift = self._substrate_drift_pred()   # same ONE door as reference() — a semantic hit must be substrate-faithful too
-        cands = [r for recs in self._mem.values() for r in recs
+        query_scope = _scoped_key(nl).partition("\x00")
+        scoped_items = (
+            (
+                recs
+                for key, recs in self._mem.items()
+                if key.partition("\x00")[1] == query_scope[1]
+                and key.partition("\x00")[0] == query_scope[0]
+            )
+            if query_scope[1]
+            else (
+                recs for key, recs in self._mem.items() if "\x00" not in key
+            )
+        )
+        cands = [r for recs in scoped_items for r in recs
                  if r.get("kind") == "faithful" and (r.get("nl") or "").strip() and (r.get("statement") or "").strip()
                  and _stmt_identity(r.get("statement") or "") not in _refuted and not _drift(r.get("statement") or "")]
         if not cands:
@@ -284,6 +327,8 @@ class FaithfulnessStore:
                 best, best_sim = r, s
         if best is not None and best_sim >= threshold:
             return {"statement": best.get("statement"), "fingerprint": best.get("fingerprint"),
+                    "evidence_tier": best.get("evidence_tier") or "reviewed",
+                    "verdict_provenance": dict(best.get("verdict_provenance") or {}),
                     "semantic_sim": round(best_sim, 3), "semantic_nl": (best.get("nl") or "")[:140]}
         return None
 
@@ -298,12 +343,22 @@ class FaithfulnessStore:
         cand = _stmt_identity(statement)
         if not cand:
             return False
+        refuted = self._refuted_keys()
+        try:
+            from ztare.leanmill.solver.proof_cache import _key_for as _kf
+        except Exception:  # noqa: BLE001
+            _kf = None
         for r in self._mem.get(_scoped_key(nl), []):
-            if r.get("kind") != "faithful":
+            if (
+                r.get("kind") != "faithful"
+                or r.get("evidence_tier") != "certified"
+            ):
                 continue
             # RECOMPUTE from the stored statement (do NOT trust the stored `norm` — old records were keyed with the
             # weaker name-only normalizer; recomputing puts both sides through the CURRENT α-tolerant door).
             ident = _stmt_identity(r.get("statement") or "") or r.get("norm")
+            if refuted and _kf and _kf(r.get("statement") or "") in refuted:
+                continue
             if ident and ident == cand:
                 return True
         return False
@@ -398,7 +453,14 @@ def _selftest() -> int:
 
         # POSITIVE control: a CONFIRMED correspondence is recorded + recalled
         ok("records a confirmed faithful correspondence",
-           store.record(NL, STMT, confirmed=True, fingerprint={"conclusion_op": "eq"}, source="firewall"))
+           store.record(
+               NL,
+               STMT,
+               confirmed=True,
+               fingerprint={"conclusion_op": "eq"},
+               source="certificate_fixture",
+               evidence_tier="certified",
+           ))
         ref = store.reference(NL)
         ok("reference() recalls the agreed statement + fingerprint (the load-bearing feed)",
            ref is not None and ref["statement"] == STMT and ref["fingerprint"] == {"conclusion_op": "eq"})
@@ -437,7 +499,13 @@ def _selftest() -> int:
         store2 = FaithfulnessStore(Path(d) / "fs.jsonl")
         ok("reloads from JSONL (persistent across process)", store2.reference(NL) is not None)
         ok("dedup: re-recording the same correspondence is a no-op",
-           not store2.record(NL, STMT, confirmed=True, fingerprint={"conclusion_op": "eq"}))
+           not store2.record(
+               NL,
+               STMT,
+               confirmed=True,
+               fingerprint={"conclusion_op": "eq"},
+               evidence_tier="certified",
+           ))
         ok("stats: 1 faithful + 1 conflict", store2.stats()["faithful"] == 1 and store2.stats()["conflict"] == 1)
 
         # SEMANTIC reference (2026-07-04 reuse-churn fix): a PARAPHRASED NL — different words, same intent — that
@@ -464,7 +532,12 @@ def _selftest() -> int:
         _saved = _rc.current_substrate_fingerprint
         try:
             _rc.current_substrate_fingerprint = lambda: "FP_A"
-            store.record("scoped claim", "theorem sc : Q := by sorry", confirmed=True)
+            store.record(
+                "scoped claim",
+                "theorem sc : Q := by sorry",
+                confirmed=True,
+                evidence_tier="certified",
+            )
             ok("same-substrate fingerprint → reference HITS", store.reference("scoped claim") is not None)
             _rc.current_substrate_fingerprint = lambda: "FP_B"          # a meaning-bearing def changed
             ok("changed-substrate fingerprint → reference MISSES (stale reuse invalidated)",

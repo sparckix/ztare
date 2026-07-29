@@ -246,6 +246,49 @@ def test_continuous_resume_enters_the_lifecycle_driver(
     assert '"status": "campaign_complete"' in capsys.readouterr().out
 
 
+def test_one_step_resume_uses_the_same_lifecycle_driver_with_a_bound(
+    tmp_path, monkeypatch, capsys
+):
+    import ztare.leanmill.frontier_campaign_actions as actions
+    import ztare.leanmill.frontier_campaign_runner as runner
+
+    seen = {}
+
+    def fake_drive(
+        attempt,
+        *,
+        model,
+        lean_root=None,
+        workbench_authority_ref="",
+        max_transitions=None,
+    ):
+        seen.update(
+            attempt=attempt,
+            model=model,
+            lean_root=lean_root,
+            workbench_authority_ref=workbench_authority_ref,
+            max_transitions=max_transitions,
+        )
+        return pathlib.Path(attempt)
+
+    monkeypatch.setattr(runner, "drive_frontier_campaign", fake_drive)
+    monkeypatch.setattr(
+        actions,
+        "frontier_campaign_status",
+        lambda attempt: {"status": "blocked_adapter_gap", "attempt_dir": str(attempt)},
+    )
+
+    assert cli.main(["resume", str(tmp_path / "attempt-1")]) == 0
+    assert seen == {
+        "attempt": str(tmp_path / "attempt-1"),
+        "model": "",
+        "lean_root": None,
+        "workbench_authority_ref": "",
+        "max_transitions": 1,
+    }
+    assert '"status": "blocked_adapter_gap"' in capsys.readouterr().out
+
+
 def test_formalization_frontmatter_uses_shared_budget_without_changing_solver_door(
     tmp_path, monkeypatch, capsys
 ):

@@ -5,12 +5,16 @@ from pathlib import Path
 import pytest
 
 from ztare.leanmill.adapters import generic_fol_finite
+from ztare.leanmill.adapters.generic_finite_evidence import (
+    build_evidence_context,
+)
 from ztare.leanmill.adapters.generic_fol_finite import build_model_universe
 from ztare.leanmill.common import read_json
 from ztare.leanmill.equational_formula_universe import (
     EQUATIONAL_GRAMMAR_SCHEMA,
     enumerate_universal_equations,
 )
+from ztare.leanmill.evidence_theory_context import EvidenceTheoryContext
 from ztare.leanmill.explore_axiom_space import (
     execute_frontier_boundaries,
     explore_axiom_space,
@@ -39,6 +43,11 @@ from ztare.leanmill.theory_ir import (
     SortDecl,
     Term,
     TheorySignature,
+    content_hash,
+)
+from ztare.leanmill.theory_language import (
+    TheoryLanguageExpansionRequest,
+    compile_theory_language_expansion,
 )
 
 
@@ -94,6 +103,184 @@ def test_generic_adapter_builds_non_magma_context_and_replays(tmp_path):
     assert context.incidence.exact
     path = save_formal_theory_context(context, tmp_path / "generic.json")
     assert load_formal_theory_context(path).context_hash == context.context_hash
+
+
+def test_reviewed_functor_image_compiles_from_evidence_incidence_context():
+    source_signature = TheorySignature(
+        name="ExactObservations",
+        sorts=(SortDecl("Observation"),),
+    )
+    source = build_evidence_context(
+        source_signature,
+        adapter_config={
+            "completeness_ref": "fixture:three-observations",
+            "objects": [
+                {"object_id": "o0", "payload": {"order": 0}},
+                {"object_id": "o1", "payload": {"order": 1}},
+                {"object_id": "o2", "payload": {"order": 2}},
+            ],
+            "hypotheses": [
+                {
+                    "hypothesis_id": "h0",
+                    "satisfied_object_ids": ["o0", "o1", "o2"],
+                    "anonymous_shape": {"kind": "exact_observation"},
+                }
+            ],
+        },
+        strata=(),
+    )
+    target_signature = TheorySignature(
+        name="MechanismCoordinate",
+        sorts=(SortDecl("S"),),
+        operations=(OperationSymbol("step", ("S",), "S"),),
+    )
+    identity = FiniteModel(
+        sort_sizes=(("S", 2),),
+        operations=(("step", (0, 1)),),
+    )
+    constant_zero = FiniteModel(
+        sort_sizes=(("S", 2),),
+        operations=(("step", (0, 0)),),
+    )
+    target_grammar = _equation_grammar(2)
+    application_core = {
+        "schema": "leanmill.finite_model_functor_application.v2",
+        "gap_id": "gap:evidence-mechanism",
+        "context_hash": source.context_hash,
+        "context_kind": "evidence_incidence",
+        "functor_id": "fixture:evidence-mechanism-coordinate",
+        "signature": target_signature.to_json(),
+        "formula_grammar": target_grammar,
+        "models": {
+            "o0": identity.to_json(),
+            "o1": constant_zero.to_json(),
+            "o2": constant_zero.to_json(),
+        },
+    }
+    application = {
+        **application_core,
+        "receipt_sha256": content_hash(application_core),
+    }
+
+    compiled = generic_fol_finite.compile_theory_language_expansion(
+        request=object(),
+        source_context=source,
+        formula_grammar={},
+        approved_application=application,
+    )
+
+    assert compiled["status"] == "compiled"
+    transition = compiled["transition"]
+    assert transition["source_context_hash"] == source.context_hash
+    assert transition["source_context_kind"] == "evidence_incidence"
+    assert transition["source_object_count"] == 3
+    assert transition["canonical_image_model_count"] == 2
+    assert sum(
+        row.multiplicity for row in compiled["context"].universe.models
+    ) == 3
+    assert transition["successor_formula_grammar"] == target_grammar
+
+    polynomial_source = EvidenceTheoryContext(
+        signature=source.signature,
+        adapter_id="rational_polynomial_map.v1",
+        incidence=source.incidence,
+        formula_profiles=source.formula_profiles,
+        object_records=source.object_records,
+        completeness_receipt_digest=source.completeness_receipt_digest,
+        base_axioms=source.base_axioms,
+    )
+    polynomial_application_core = {
+        **application_core,
+        "context_hash": polynomial_source.context_hash,
+    }
+    polynomial_application = {
+        **polynomial_application_core,
+        "receipt_sha256": content_hash(polynomial_application_core),
+    }
+    request = TheoryLanguageExpansionRequest(
+        source_context_hash=polynomial_source.context_hash,
+        source_epoch=0,
+        change_kind="quotient_or_coordinate_change",
+        blind_spot="Exact polynomial observations alias in the current chart.",
+        proposed_interface="A reviewed finite mechanism coordinate.",
+        evidence_refs=("fixture:polynomial-observation-receipt",),
+        discriminating_test="The target chart separates the aliased observations.",
+        kill_condition="The image is partial or lacks a target grammar.",
+    )
+
+    dispatched = compile_theory_language_expansion(
+        request,
+        source_context=polynomial_source,
+        source_adapter_id="rational_polynomial_map.v1",
+        formula_grammar={},
+        approved_application=polynomial_application,
+    )
+
+    assert dispatched.status == "compiled"
+    assert dispatched.adapter_id == "generic_fol_finite.v1"
+    assert dispatched.attempts[0] == {
+        "adapter_id": "rational_polynomial_map.v1",
+        "status": "unavailable",
+        "reason": "compiler_capability_absent",
+    }
+
+
+def test_evidence_functor_image_without_target_grammar_is_rejected():
+    source_signature = TheorySignature(
+        name="ExactObservations",
+        sorts=(SortDecl("Observation"),),
+    )
+    source = build_evidence_context(
+        source_signature,
+        adapter_config={
+            "completeness_ref": "fixture:one-observation",
+            "objects": [{"object_id": "o0", "payload": {"order": 0}}],
+            "hypotheses": [
+                {
+                    "hypothesis_id": "h0",
+                    "satisfied_object_ids": ["o0"],
+                    "anonymous_shape": {"kind": "exact_observation"},
+                }
+            ],
+        },
+        strata=(),
+    )
+    target_signature = TheorySignature(
+        name="MechanismCoordinate",
+        sorts=(SortDecl("S"),),
+        operations=(OperationSymbol("step", ("S",), "S"),),
+    )
+    identity = FiniteModel(
+        sort_sizes=(("S", 2),),
+        operations=(("step", (0, 1)),),
+    )
+    application_core = {
+        "schema": "leanmill.finite_model_functor_application.v1",
+        "gap_id": "gap:missing-target-grammar",
+        "context_hash": source.context_hash,
+        "context_kind": "evidence_incidence",
+        "functor_id": "fixture:missing-target-grammar",
+        "signature": target_signature.to_json(),
+        "models": {"o0": identity.to_json()},
+    }
+    application = {
+        **application_core,
+        "receipt_sha256": content_hash(application_core),
+    }
+
+    compiled = generic_fol_finite.compile_theory_language_expansion(
+        request=object(),
+        source_context=source,
+        formula_grammar=_equation_grammar(2),
+        approved_application=application,
+    )
+
+    assert compiled == {
+        "status": "rejected",
+        "reason": (
+            "evidence functor application must declare its target formula grammar"
+        ),
+    }
 
 
 def test_exact_smt_census_matches_exhaustive_isomorphism_classes(tmp_path) -> None:

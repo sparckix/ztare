@@ -81,6 +81,50 @@ def test_sampled_workbench_exposes_prediction_profiles_without_exact_closure():
     )
 
 
+def test_exact_opaque_evidence_profiles_without_equational_axioms():
+    completeness_ref = "sha256:exact-opaque-test"
+    incidence = build_incidence_context(
+        object_ids=("o0", "o1"),
+        attribute_truth_bits={"h0": 0b01, "h1": 0b01},
+        exact=True,
+        completeness_ref=completeness_ref,
+    )
+    context = EvidenceTheoryContext(
+        signature=TheorySignature(name="Evidence", sorts=(SortDecl("Observation"),)),
+        adapter_id="exact-opaque-test.v1",
+        incidence=incidence,
+        formula_profiles=tuple(
+            EvidenceHypothesisProfile(
+                formula_id=row.attribute_id,
+                truth_bits=row.truth_bits,
+                anonymous_shape={"slot": index},
+                payload={},
+            )
+            for index, row in enumerate(incidence.profiles)
+        ),
+        object_records=(
+            EvidenceObjectRecord("o0", "exact", {}),
+            EvidenceObjectRecord("o1", "exact", {}),
+        ),
+        completeness_receipt_digest=completeness_ref,
+    )
+    env = resolve_leaf_workbench_environment(
+        "axiompack", context=context, selection_mode="theory_program"
+    )
+
+    selected = _run(
+        env,
+        "select_theory_presentation",
+        {"formula_ids": ["h0"], "prediction_formula_ids": ["h1"]},
+    )["output_summary"]
+
+    assert selected["prediction_profile"]["context_exact"] is True
+    assert selected["prediction_profile"]["equational_targeting_available"] is False
+    assert selected["prediction_profile"]["predictions"][0]["chart_status"] == (
+        "holds_on_complete_context"
+    )
+
+
 def test_static_environment_resolver_supports_worldmodel_and_axiompack():
     assert leaf_workbench_environment_ids() == ("axiompack", "worldmodel")
     env = resolve_leaf_workbench_environment("axiompack", context=_context())
@@ -88,6 +132,73 @@ def test_static_environment_resolver_supports_worldmodel_and_axiompack():
     assert set(env["action_handlers"]) == set(env["contract"].registry())
     assert env["contract"].resolve_capability_ref("list_theory_nodes@v1") == (
         "list_theory_nodes"
+    )
+
+
+def test_empty_task_scope_removes_theory_task_action_from_the_epoch():
+    unrestricted = resolve_leaf_workbench_environment(
+        "axiompack",
+        context=_context(),
+        theory_adapter_id="magma_equational.v1",
+        theory_adapter_config={"max_total_operation_order": 2},
+    )
+    scoped = resolve_leaf_workbench_environment(
+        "axiompack",
+        context=_context(),
+        theory_adapter_id="magma_equational.v1",
+        theory_adapter_config={"max_total_operation_order": 2},
+        allowed_theory_task_capability_ids=(),
+    )
+
+    assert "propose_theory_task" in unrestricted["contract"].registry()
+    assert "propose_theory_task" not in scoped["contract"].registry()
+    assert "propose_theory_task" not in scoped["action_handlers"]
+    assert scoped["theory_task_capability_catalog"] == ()
+
+
+def test_theory_task_catalog_routes_unknown_vocabulary_to_registered_id():
+    context = _context()
+    env = resolve_leaf_workbench_environment(
+        "axiompack",
+        context=context,
+        selection_mode="theory_program",
+        theory_adapter_id="generic_fol_finite.v1",
+        theory_adapter_config={},
+        campaign_id="campaign:task-catalog",
+        lineage_id="lineage:task-catalog",
+    )
+    assert env["theory_task_capability_catalog"] == (
+        {
+            "capability_id": "governed_formal_counterexample",
+            "purpose": (
+                "independently review and formally adjudicate an agent-authored "
+                "counterexample or generalization task"
+            ),
+            "use_when": (
+                "the stopping object is broader than a catalog formula implication; "
+                "ordinary frozen formula predictions already enter the proof-or-"
+                "countermodel boundary"
+            ),
+        },
+    )
+    result = _run(
+        env,
+        "propose_theory_task",
+        {
+            "formula_ids": [context.formula_ids[1], context.formula_ids[0]],
+            "goal": "Decide a broader generalization task.",
+            "observable": "A reviewed proof or counterexample.",
+            "adjudicator_capability": "proof_or_countermodel",
+            "evidence_refs": [context.context_hash],
+            "kill_condition": "A counterexample is found.",
+        },
+    )["output_summary"]
+    assert result["status"] == "adjudicator_capability_unavailable"
+    assert result["next_route"] == (
+        "retry_propose_theory_task:governed_formal_counterexample"
+    )
+    assert result["task_request"]["presentation_formula_ids"] == sorted(
+        context.formula_ids[:2]
     )
 
 
@@ -114,6 +225,15 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
             "offset": 0,
             "limit": 2,
         },
+        "formula_ids": None,
+        "boundary_target_ids": None,
+        "task_contract_ids": None,
+    })
+    validator.validate({
+        "decision": "request",
+        "rationale": "Inspect an adapter-owned evidence hypothesis.",
+        "capability_id": "inspect_formula_profiles",
+        "input_refs": {"formula_ids": ["property:minimum-distance-at-least-14"]},
         "formula_ids": None,
         "boundary_target_ids": None,
         "task_contract_ids": None,
@@ -190,10 +310,10 @@ def test_navigator_result_schema_is_strict_and_accepts_typed_envelopes():
     })
     assert list(validator.iter_errors({
         "decision": "freeze",
-        "rationale": "Malformed formula reference.",
+        "rationale": "Empty hypothesis reference.",
         "capability_id": None,
         "input_refs": {},
-        "formula_ids": ["formula:" + "a" * 63],
+        "formula_ids": [""],
         "boundary_target_ids": ["formula:" + "c" * 64],
         "task_contract_ids": None,
     }))
@@ -576,6 +696,8 @@ def test_malformed_typed_formula_is_receipted_instead_of_escaping_the_action_bou
     output = receipt["output_summary"]
     assert output["status"] == "rejected_invalid_typed_formula"
     assert output["error_code"] == "typed_formula_decode_failed"
+    assert "definitions[*].body_tokens are term-only" in output["error"]
+    assert "formula_tokens writes both terms before eq" in output["error"]
     assert output["formula_id"] is None
     assert output["typed_proposal_sha256"] == ""
     assert output["claim_boundary"].startswith("malformed model proposal rejected")

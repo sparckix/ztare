@@ -81,7 +81,11 @@ def _reference_gate_inputs(reference: object) -> tuple[object | None, str]:
     identity of this claim.  Letting its fingerprint or statement enter the
     structural/defeq gates turns similarity into a false theorem constraint.
     """
-    if not isinstance(reference, dict) or reference.get("exact") is not True:
+    if (
+        not isinstance(reference, dict)
+        or reference.get("exact") is not True
+        or reference.get("evidence_tier") != "certified"
+    ):
         return None, ""
     return reference.get("fingerprint"), str(reference.get("statement") or "")
 
@@ -965,6 +969,9 @@ def _roundtrip_cli_text(
         config_sha256 = os.environ.get(
             "ZTARE_LEANMILL_ROUNDTRIP_CONFIG_SHA256", ""
         ).strip()
+        timeout_ceiling = int(
+            os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_TIMEOUT_S", "0") or 0
+        )
         run_tag = os.environ.get(
             "ZTARE_LEANMILL_ROUNDTRIP_RUN_TAG", ""
         ).strip()
@@ -976,6 +983,7 @@ def _roundtrip_cli_text(
             model=model,
             reasoning_effort=effort,
             config_sha256=config_sha256,
+            max_timeout_seconds=timeout_ceiling or None,
             record_empty_attempt=True,
         ):
             yield
@@ -1378,7 +1386,13 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", time
     # falls through to single-shot if it returns empty.
     if (mode == "oneshot" and lean_root is not None and (runtime or "") in _SUBSCRIPTION_RUNTIMES
             and _formalize_interactive_on()):
-        _iv = formalize_interactive(nl, lean_root=lean_root, timeout_s=max(int(timeout_s), 360),
+        # ``timeout_s`` is the caller's execution ceiling.  In particular, a
+        # governed campaign role freezes this value in its runtime registry and
+        # validates every nested transport receipt against it.  Expanding a
+        # smaller ceiling here used to let the interactive implementation fire
+        # a 360-second subprocess under a 300-second role contract, so the
+        # completed work could not be admitted by its provenance validator.
+        _iv = formalize_interactive(nl, lean_root=lean_root, timeout_s=int(timeout_s),
                                     context=context, runtime=runtime)
         if (_iv or "").strip():
             return _iv
@@ -1513,20 +1527,55 @@ def _roundtrip_model() -> str:
 
 
 def _claim_signature(lean_statement: str) -> str:
-    """The FINAL theorem/lemma SIGNATURE (binders + conclusion, proof stripped) from a possibly self-contained
-    probe — the CLAIM the back-translator should render. RCA 2026-07-05 (CLOB `rejected_by_firewall` on proven
-    axiom-clean lemmas): the faithfulness `stmt` is frequently the WHOLE probe (every substrate def — `inductive
-    Side`, `structure Order`/`Book`, `def betterPrice`, … — plus the one theorem, ~1k lines), so a one-sentence
-    back-translator describes the def/instance SETUP ("for any types K,T with a zero, a linear order …") or
-    returns EMPTY on the oversized input, and the round-trip judge then false-rejects a faithful statement. The
-    target is the LAST named decl (assemblers append it last — see solve_adhoc `dedup_decl_keep_last`). '' if
-    unparseable ⇒ caller falls back to the whole text (byte-parity for a bare signature that has no preamble)."""
+    """Meaning surface for the final claim and its referenced local definitions.
+
+    Rendering the complete substrate makes the back-translator describe setup
+    rather than the target.  Rendering only the theorem signature hides a
+    locally defined predicate whose body may have changed the problem.  Keep
+    the final signature plus the transitive, token-referenced definition
+    blocks that give its local names meaning.
+    """
     try:
-        from ztare.leanmill.lean_source import decl_blocks, signature_before_proof
+        from ztare.leanmill.lean_source import (
+            decl_blocks,
+            decl_kind,
+            identifier_token_mentions,
+            signature_before_proof,
+        )
         named = [(n, b) for n, b in decl_blocks(lean_statement or "") if n]
         if len(named) <= 1:                       # already a bare statement (or nothing) ⇒ leave it to the caller
             return ""
-        return (signature_before_proof(named[-1][1]) or "").strip()
+        claim = (signature_before_proof(named[-1][1]) or "").strip()
+        if not claim:
+            return ""
+        meaning_kinds = {
+            "def", "abbrev", "structure", "inductive", "class", "opaque",
+        }
+        selected: set[str] = set()
+        surface = claim
+        changed = True
+        while changed:
+            changed = False
+            for name, block in named[:-1]:
+                if name in selected or decl_kind(block) not in meaning_kinds:
+                    continue
+                short = name.rsplit(".", 1)[-1]
+                if not (
+                    identifier_token_mentions(surface, name)
+                    or identifier_token_mentions(surface, short)
+                ):
+                    continue
+                selected.add(name)
+                surface += "\n" + block
+                changed = True
+        if not selected:
+            return claim
+        definitions = [
+            block.strip() for name, block in named[:-1] if name in selected
+        ]
+        return "\n\n".join(
+            ["-- Referenced local definitions", *definitions, "-- Target claim", claim]
+        )
     except Exception:  # noqa: BLE001 — extraction is best-effort; the whole text is the sound fallback
         return ""
 
@@ -1536,8 +1585,8 @@ def default_backtranslate(lean_statement: str, *, model: "Optional[str]" = None)
     (a DIFFERENT family from a codex formalizer; model is env-overridable via `_roundtrip_model`). Returns ''
     on any failure ⇒ the gate's non-empty guard fails-closed (no admission on a dead back-translator)."""
     primary = model or _roundtrip_model()
-    # Render only the CLAIM (final theorem signature), never the whole def-preamble probe (the CLOB oversized-
-    # input false-reject, 2026-07-05). Falls back to the full text when it is already a bare statement.
+    # Render the target meaning surface: its signature and only the local
+    # definitions it references. Falls back to the full text for a bare item.
     _claim = _claim_signature(lean_statement)
     prompt = prompts.BACKTRANSLATE_PROMPT.format(lean_statement=(_claim or lean_statement or ""))
     back = (_api_text(prompt, model=primary, label="autoformalize_backtranslate") or "").strip()
@@ -2542,7 +2591,8 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
                             def_faithfulness: bool = False, notes: "str | None" = None,
                             extra_context: str = "", reformulate_budget: "int | None" = None,
                             shelf_prelude: str = "", _literal_first_done: bool = False,
-                            _strengthening_mode: bool = False) -> dict:
+                            _strengthening_mode: bool = False,
+                            _trusted_refutation_memory: "bool | None" = None) -> dict:
     """THE END-TO-END LINK: NL → autoformalize (faithfulness firewall) → if admitted, solve_adhoc
     (solver + governance kernel). The firewall GATES the solver — an unfaithful / vacuous / trivial
     statement is rejected BEFORE any solve, which is what prevents the worst laundering (an opaque or
@@ -2571,6 +2621,8 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
     _literal_first_done = cfg.literal_first_done
     _strengthening_mode = cfg.strengthening_mode
     substrate = substrate or sandbox
+    if _trusted_refutation_memory is None:
+        _trusted_refutation_memory = solve_fn is None
     _caller_formalize_fn = formalize_fn   # PRESERVE the caller's value (None in prod) for the reformulate recursion,
     #                                       so the re-entry rebuilds formalize_fn with the NEW refutation context.
     _caller_structural_fn = structural_fn  # PRESERVE the caller's structural_fn (None in prod) so a RE-ENTRY rebuilds
@@ -2852,7 +2904,8 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
                     judge_fn=judge_fn, structural_fn=_caller_structural_fn, solve_fn=solve_fn, timeout_s=timeout_s,
                     max_refines=max_refines, def_faithfulness=def_faithfulness, notes=notes,
                     extra_context=extra_context + _lp.LITERAL_FIRST_CUE,
-                    reformulate_budget=reformulate_budget, _literal_first_done=True)
+                    reformulate_budget=reformulate_budget, _literal_first_done=True,
+                    _trusted_refutation_memory=_trusted_refutation_memory)
             except Exception:  # noqa: BLE001 — recovery is best-effort; the original rejection stands on failure
                 _lf = None
             if isinstance(_lf, dict) and _lf.get("faithful") and _lf.get("solved") == "closed":
@@ -2889,7 +2942,14 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
     if _fstore is not None:
         try:
             _fstore.record(nl, af.lean_statement, confirmed=True,
-                           fingerprint=statement_fingerprint(af.lean_statement), source="firewall_admit")
+                           fingerprint=statement_fingerprint(af.lean_statement),
+                           source="firewall_admit",
+                           evidence_tier="reviewed",
+                           verdict_provenance={
+                               "method": "firewall_roundtrip_review",
+                               "reason": str(af.verdict.reason or ""),
+                               "checks": dict(af.verdict.checks or {}),
+                           })
         except Exception:  # noqa: BLE001
             pass
     # TYPECLASS-GENERALITY audit (advisory, 2026-06-24): the statement passed NL↔Lean faithfulness, but that is
@@ -2978,10 +3038,11 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
         # whose ¬G did not pass the gate). Both may guide a governed re-entry that re-passes the firewall; only the
         # kernel-confirmed path may enter cross-run `NoGoodStore` memory as `statement_false`. That keeps the
         # faithfulness `reference()` filter tied to confirmed refutations, not useful-but-unverified hints.
-        _record_statement_false_no_good(
-            af.lean_statement, _refutation,
-            confirmed=_refutation_confirmed_for_memory,
-            source="reformulation_refutation")
+        if _trusted_refutation_memory:
+            _record_statement_false_no_good(
+                af.lean_statement, _refutation,
+                confirmed=_refutation_confirmed_for_memory,
+                source="reformulation_refutation")
     if _refutation and reformulate_budget > 0 and r0.get("outcome") != "closed":
         # ROUTE THE AGENT'S OWN CORRECTION: the consolidation pass often already PROVED the corrected (strong)
         # theorem; surface those proven substrate results so the fresh re-formalizer ADOPTS + CITES one instead of
@@ -2998,6 +3059,7 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
             max_refines=max_refines, def_faithfulness=def_faithfulness, notes=notes,
             extra_context=extra_context + _reformulate_feedback(af.lean_statement, _refutation, _proven_shelf),
             reformulate_budget=reformulate_budget - 1,
+            _trusted_refutation_memory=_trusted_refutation_memory,
             _strengthening_mode=True)   # the literal was kernel-refuted ⇒ a round-trip mismatch on the correction is EXPECTED
         re_out["reformulated_from"] = af.lean_statement
         re_out["prior_refutation"] = _refutation

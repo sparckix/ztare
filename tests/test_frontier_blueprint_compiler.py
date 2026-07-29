@@ -7,6 +7,7 @@ from ztare.leanmill.adapters import magma_equational
 from ztare.leanmill.axiompack_leaf_workbench import AXIOMPACK_LEAF_WORKBENCH_CONTRACT
 from ztare.leanmill.frontier_blueprint import (
     FrontierExplorationBrief,
+    THEORY_TASK_CAPABILITY_SCOPE_SCHEMA,
     cold_navigator_manifest,
     host_isolated_lineage_count,
     navigator_selection_mode,
@@ -65,6 +66,47 @@ def test_structure_first_compiles_without_model_call_and_cold_view_hides_names()
     assert cold["interpretation_labels_visible"] is False
     assert cold["signature_shape"]["operations"][0]["id"] == "op_0"
     assert "AnonymousMagma" not in str(cold)
+
+
+def test_blueprint_can_freeze_an_empty_adapter_scoped_task_catalog():
+    brief = FrontierExplorationBrief(
+        direction="Explore one anonymous binary operation without task calls.",
+        source_mode="structure_first",
+    )
+    draft = _draft()
+    draft["navigator_contract"] = {
+        **draft["navigator_contract"],
+        "theory_task_capability_scope": {
+            "schema": THEORY_TASK_CAPABILITY_SCOPE_SCHEMA,
+            "adapter_id": "magma_equational.v1",
+            "allowed_capability_ids": [],
+        },
+    }
+
+    blueprint = compile_structure_first_blueprint(brief, draft)
+
+    assert blueprint.executable_preflight_receipt[
+        "theory_task_capability_scope"
+    ]["allowed_capability_ids"] == []
+
+
+def test_blueprint_task_scope_rejects_unregistered_capability_ids():
+    brief = FrontierExplorationBrief(
+        direction="Explore one anonymous binary operation.",
+        source_mode="structure_first",
+    )
+    draft = _draft()
+    draft["navigator_contract"] = {
+        **draft["navigator_contract"],
+        "theory_task_capability_scope": {
+            "schema": THEORY_TASK_CAPABILITY_SCOPE_SCHEMA,
+            "adapter_id": "magma_equational.v1",
+            "allowed_capability_ids": ["invented_task"],
+        },
+    }
+
+    with pytest.raises(ValueError, match="unregistered IDs: invented_task"):
+        compile_structure_first_blueprint(brief, draft)
 
 
 def test_blueprint_container_types_fail_with_field_name():
@@ -373,6 +415,10 @@ def test_nl_compiler_repairs_candidate_width_before_semantic_review():
 
     assert len(compiler_inputs) == 2
     assert len(review_inputs) == 1
+    assert review_inputs[0]["executable_preflight"]["ok"] is True
+    assert review_inputs[0]["executable_preflight"]["adapter_id"] == (
+        "magma_equational.v1"
+    )
     assert blueprint.navigator_contract["presentation_size"] == {
         "minimum": 1,
         "maximum": 2,

@@ -1,0 +1,429 @@
+{
+  "schema": "leanmill.result_card_deck.v1",
+  "ledger_ref": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+  "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+  "objective": "Characterize the exact information forgotten by the second tetrahedral 4-groupoid extraction, including necessary and sufficient reconstruction conditions, and determine which affine-fiber and pointed two-point classification statements extend beyond the published construction families.",
+  "objective_sha256": "f214307a9df4ba4a18eda7549decaf8994d246e899d113593d9076a687671c8f",
+  "objective_source_receipts": [
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_affine_hidden_fiber_pencil.md",
+      "sha256": "87e5ca0e16a6101c2bb93cff6bc97067cf839d7cf32ff63d9dff036f1b2eb882",
+      "content": "# T2 reconstruction: affine hidden-fiber pencil\n\nDate: 2026-07-17\n\n## Recording status\n\nTarget-conditioned self-play proposed the affine family below after the\nfive-card result deck had been frozen. This document records exploratory\noutput, its adversarial corrections, and the formal kill tests. It is not a\nretroactive pre-registration. The surrounding `stp_target_wave_v1.md` is the\npre-registered experiment that generated the candidate.\n\n## Eigenquestion\n\nWhat information can the extraction of Bardakov et al. lose while still\nproducing a second tetrahedral 4-groupoid, and can that loss be characterized\nas an exact fiber rather than by isolated finite counterexamples?\n\n## Candidate family\n\nLet `A` be an additive abelian group, let `a : A -> A` be additive, let\n`mu : A -> A -> A` be biadditive, and fix `c : A`. Define\n\n\\[\nT_{a,\\mu,c}(x,y,z)\n  =c+a(y-c)+\\mu(x-c,z-c).\n\\]\n\nAfter translating `c` to zero, the two sides of the tetrahedron equation\nexpand respectively to\n\n\\[\na^2t+a\\mu(x,p)+\\mu(ay,q)+\\mu(\\mu(x,z),q)\n\\]\n\nand\n\n\\[\na^2t+a\\mu(y,q)+\\mu(x,ap)+\\mu(x,\\mu(z,q)).\n\\]\n\nThe proposed exact criterion is\n\n\\[\n\\operatorname{TE}(T_{a,\\mu,c})\n\\iff\n\\begin{cases}\n\\mu(\\mu(x,z),q)=\\mu(x,\\mu(z,q)),\\\\\na(\\mu(x,z))=\\mu(ax,z),\\\\\na(\\mu(x,z))=\\mu(x,az)\n\\end{cases}\n\\quad\\text{for all }x,z,q.\n\\]\n\nThe three necessary identities are isolated by setting variables to zero:\n\n1. `y=t=p=0` gives associativity;\n2. `y=z=q=t=0` gives the right centroid law\n   `a(mu(x,p)) = mu(x,a(p))`;\n3. `x=z=p=t=0` gives the left centroid law\n   `mu(a(y),q) = a(mu(y,q))`.\n\nSubstitution of the same three identities proves sufficiency. No\ncommutativity or unit law for `mu` is proposed.\n\n## Extraction and forgotten fiber\n\nNow require `a` to be an additive automorphism and define\n\n\\[\n\\beta(u)=c+a^{-1}(u-c).\n\\]\n\nBiadditivity gives the five published extraction hypotheses:\n\n\\[\nT(c,c,c)=c,\n\\qquad \\beta(T(c,x,c))=x,\n\\qquad T(c,\\beta(x),c)=x,\n\\]\n\n\\[\nT(\\beta(x),\\beta(y),c)=\\beta(T(x,y,c)),\n\\qquad\nT(c,\\beta(x),\\beta(y))=\\beta(T(c,x,y)).\n\\]\n\nThe extracted operations, in the source orientation, are\n\n\\[\nx\\star y=c+a(y-c),\\qquad\nx\\circ y=c+a(x-c),\n\\]\n\n\\[\nx\\mathbin{\\lhd}y=x,\\qquad\nx\\mathbin{\\rhd}y=y.\n\\]\n\nThey do not depend on `mu`. Hence every compatible associative `mu` lies in\none extraction fiber, and the published reconstruction is\n\n\\[\nx\\mathbin{\\rhd}(y\\circ z)=c+a(y-c).\n\\]\n\nIt equals `T(x,y,z)` for all arguments exactly when `mu=0`. The elementary\nmap is bijective because, for fixed `x,z`, its middle inverse is\n\n\\[\nw\\longmapsto\nc+a^{-1}\\bigl(w-c-\\mu(x-c,z-c)\\bigr).\n\\]\n\n## Minimal two-point residual\n\nOn the pointed two-element carrier, identify `c=0` and the carrier with\n`F_2`. Middle-slice bijectivity forces\n\n\\[\nT(x,y,z)=y+f(x,z).\n\\]\n\nThe fixed-point condition gives `f(0,0)=0`. Two tetrahedron-equation\nspecializations force `f(0,1)=f(1,0)=0`, leaving only `f(1,1)`. Thus the two\npointed normal forms are\n\n\\[\nT(x,y,z)=y\n\\quad\\text{and}\\quad\nT(x,y,z)=y+xz.\n\\]\n\nThe second form is the smallest possible reconstruction failure:\n\n\\[\nT(1,0,1)=1,\n\\qquad\n\\widehat T(1,0,1)=0.\n\\]\n\nThe exact assumption is a **bijective** elementary map, equivalently every\nmiddle slice is bijective. Dropping it kills the dichotomy: Boolean\n`T(x,y,z)=xyz`, with `c=1` and identity brace, satisfies the tetrahedron\nequation and all five extraction hypotheses but is in neither normal form.\n\nAn exhaustive exploratory attack over all 256 Boolean ternary tables, both\nbasepoints, and all four unary maps found four admissible bijective rows and\nexactly the two pointed forms above. This finite enumeration is orientation\nevidence, not the terminal proof.\n\n## Prior-art boundary after consequence replay\n\nThe associative-ring map\n\n\\[\n(X,Y,Z)\\longmapsto(X,Y+XMZ,Z)\n\\]\n\nwas proved to be a tetrahedron map by Igonin in 2022. Taking `M=1`\nalready includes the `Y+XZ` family over arbitrary associative rings. The\nscalar map\n\n\\[\n(x,y,z)\\longmapsto\n\\left(x,\\frac{y-xz}{k},z\\right)\n\\]\n\nis also published tetrahedron-map prior art. It is the specialization\n`a(y)=k^{-1}y`, `mu(x,z)=-k^{-1}xz`, `c=0`. Applying Bardakov's extraction\nwith `beta(u)=ku` gives reconstruction `y/k`, so the known map already has the\ncounterexample consequence whenever `xz != 0`.\n\nConsequences for claim scope:\n\n- the associative-product map and a broad first-counterexample claim are\n  excluded;\n- the existing `Fin 3` theorem remains a valid independent kernel witness;\n- live priority candidates are the explicit extraction-fiber theorem, the\n  exact associativity-plus-centroid characterization, and the pointed\n  cardinality-two classification/minimality result;\n- those narrower candidates still require primary-source comparison and\n  expert priority review.\n\nThis corrects the earlier forward-citation audit. Searching reconstruction\nterminology alone was insufficient: retrieved example families must be run\nthrough the target extraction predicate to expose implicit answers.\n\n## Attack vectors and kill conditions\n\n- **Expansion error:** a direct symbolic expansion or Lean normalization\n  produces an additional term. Kill or correct the iff before using it.\n- **Necessity conflation:** the tetrahedron equation may imply only a combined\n  identity if zero specializations were invalid. The additive zero laws must\n  be explicit in the formal proof.\n- **Centroid omission:** associativity alone is false. Componentwise\n  multiplication on `F_2^2` with coordinate-swap `a` violates a centroid law\n  and the tetrahedron equation.\n- **Extraction orientation:** every one of the five source equations must\n  reduce under the displayed `beta`; a left/right or brace mismatch kills the\n  extraction theorem.\n- **Bijectivity leakage:** invertibility of `a` belongs only to the elementary\n  map and extraction results, not to the tetrahedron iff.\n- **Two-point overreach:** the dichotomy must retain global middle-slice\n  bijectivity and a fixed basepoint. The `xyz` example is the declared\n  negative control.\n- **Known-family absorption:** if associative-ring tetrahedron literature\n  already states the same iff or extraction fiber, demote those portions and\n  retain only any demonstrably new consequence.\n\n## Intended formal surface\n\nThe first Lean module should use the centered form\n\n\\[\nT(x,y,z)=a(y)+\\mu(x,z)\n\\]\n\nover an additive commutative group. It should prove, in this order:\n\n1. the exact tetrahedron-equation iff;\n2. bijectivity of the elementary map when `a` is an additive equivalence;\n3. all five extraction hypotheses at basepoint zero with brace `a.symm`;\n4. the four extracted-operation formulas and reconstruction formula;\n5. reconstruction iff `mu` is identically zero;\n6. an explicit `ZMod 2` instance `T(x,y,z)=y+x*z` if the abstract theorem\n   makes the instance concise.\n\nThe translated-center theorem and complete two-point uniqueness theorem are\nseparate extensions. They should not be claimed from finite enumeration alone.\n\n## Stop rule\n\nContinue to kernel ratification if the abstract iff and extraction-fiber\ntheorems compile without extra mathematical hypotheses. Stop or narrow the\nlane if primary literature already contains the same characterization, if the\nsource extraction fails, or if kernel normalization exposes a missing term.\n"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_prior_art_audit.md",
+      "sha256": "b08a0e3d901fa0bbeb02d5f14c5f5f8b55200885e8c989616e0b7767a64cb867",
+      "content": "# T2 reconstruction question: prior-art and forward-citation audit\n\nDate: 2026-07-15\n\n## Verdict (corrected 2026-07-17)\n\nThe AxiomPack finalist-one witness gives a kernel-checked negative answer to a\nprinted question, and the independent convention audit still passes. A broad\npriority claim for the counterexample or negative answer is now excluded.\n\nThe first audit searched forward citations, reconstruction terminology, and\nthe displayed identity. Target-conditioned consequence replay found the missed\nroute: known associative-ring tetrahedron maps already fail the published\nreconstruction after its extraction definitions are applied. Igonin proves\nthat, on any associative ring,\n\n\\[\n(X,Y,Z)\\longmapsto(X,Y+XMZ,Z)\n\\]\n\nis a tetrahedron map. With `M=1`, basepoint zero, and identity unary map, its\nextracted operations reconstruct `Y`, while the original middle coordinate is\n`Y+XZ`. The two disagree whenever `XZ` is nonzero. The scalar family\n`(x,(y-xz)/k,z)` is also explicit in the earlier tetrahedron-map literature.\n\nThese sources do not appear to state the consequence for Question 9.12/9.69,\nbut the consequence is immediate. Remaining priority candidates are narrower:\nthe exact extraction-fiber characterization, the associativity-plus-centroid\niff for the enlarged affine family, and the pointed two-element\nclassification/minimality theorem. None has a confirmed priority verdict.\n\n## Printed question\n\nBardakov et al. begin with an elementary 2-solution\n\n\\[\nR(x,y,z)=(x,[x,y,z],z)\n\\]\n\nand, under a basepoint `c` and unary inverse-slice map `{·}`, extract four\nbinary operations forming a second tetrahedral 4-groupoid.  They then ask\nwhether the solution reconstructed from those operations is always the\noriginal one:\n\n\\[\n[x,y,z]=x\\mathbin{\\mR}(y\\mathbin{\\mc}z).\n\\]\n\nThe displayed extracted operations make the right side\n\n\\[\n[x,\\{[c,y,z]\\},c].\n\\]\n\nThe formal artifact uses this exact argument order and quantifier scope.\n\n## Primary publication records\n\n- V. G. Bardakov, B. B. Chuzinov, I. A. Emelyanenkov, M. E. Ivanov,\n  T. A. Kozlovskaya, V. E. Leshkov,\n  [Set-theoretical solutions of simplex equations](https://arxiv.org/abs/2206.08906),\n  preprint Question 9.12.\n- The peer-reviewed Russian version,\n  [MathNet record and full text](https://www.mathnet.ru/eng/mt697),\n  *Matematicheskie Trudy* 27(1), 2024, 5--72,\n  [DOI 10.25205/1560-750X-2024-27-1-5-72](https://doi.org/10.25205/1560-750X-2024-27-1-5-72),\n  published Question 9.69.\n- English translation, *Siberian Advances in Mathematics* 34(1), 2024,\n  1--40,\n  [DOI 10.1134/S1055134424010012](https://doi.org/10.1134/S1055134424010012).\n\n## Forward citations\n\nMathNet and Crossref each expose three distinct forward citations as of the\naudit date.  OpenAlex returns a fourth record only by duplicating the\nRussian/English versions of one paper.  The merged Google Scholar cluster,\nwhich joins six versions of the source paper, reports 17 citing records.  The\ntwo result pages were inspected separately; after collapsing evident\nRussian/English and bibliographic duplicates, roughly 15 substantive works\nremain.  No inspected source states or resolves Question 9.12/9.69, uses its\nreconstruction identity, or supplies an equivalent counterexample.\n\n1. V. G. Bardakov, T. A. Kozlovskaya, D. V. Talalaev,\n   [n-valued quandles and associated bialgebras](https://arxiv.org/abs/2312.12007),\n   *Theoretical and Mathematical Physics* 220(1), 2024, 1080--1096,\n   DOI 10.1134/S0040577924070031.  Full-source search contains no\n   T2-groupoid, elementary-2, tetrahedron-reconstruction, or displayed-identity\n   discussion.\n2. A. Pourkia,\n   [Unitary and entangling solutions to the parametric Yang--Baxter equation in all dimensions](https://doi.org/10.1016/j.physo.2025.100263),\n   *Physics Open* 23, 2025, 100263.  The paper concerns matrix parametric\n   Yang--Baxter solutions and does not discuss the reconstruction question.\n3. A. Pourkia,\n   [Novel unitary and entangling solutions to the parameter-dependent Yang--Baxter equation in all dimensions](https://doi.org/10.1007/s11128-025-05039-3),\n   *Quantum Information Processing* 25(1), 2026.  Exact terminology and\n   identity searches found no discussion of the reconstruction question.\n\nNone of the indexed forward citations proposes an answer.  The larger Scholar\ntrail is broader but mostly concerns other simplex constructions, quantum\ngates, local Yang--Baxter correspondences, and adjacent n-ary structures; it\ndoes not change that result.\n\nThis paragraph is limited to works citing Bardakov et al. It does not exclude\nolder construction families that predate the printed question; those are the\nsource of the consequence-replay correction below.\n\n## Broader exact-source search\n\nExact title, arXiv-identifier, terminology, and displayed-identity searches\nalso inspected retrieved full sources in the following nearby lanes:\n\n- deformations through n-Lie algebra cohomology;\n- Clifford-algebra solutions of Yang--Baxter, tetrahedron, and higher simplex\n  equations;\n- Majorana-fermion and unitary tetrahedron gates;\n- formal-language constructions for quasicrystals;\n- local Zamolodchikov tetrahedron equations;\n- universal-algebra approaches to set-theoretic Yang--Baxter equations;\n- local Yang--Baxter correspondences and Lax constructions.\n\nWhere Bardakov et al. appeared, it appeared bibliographically.  Searches for\n`T_2-groupoid`, `second tetrahedral 4-groupoid`, `elementary 2-solution`, and\nthe reconstruction identity found no proposed answer.\n\n### Consequence-replay correction\n\nThe terminology search was insufficient because the relevant earlier sources\ndo not use Bardakov's later extraction vocabulary. Directly replaying the\ntarget predicate against their examples changes the result:\n\n- S. Igonin,\n  [Set-theoretical solutions to the Zamolodchikov tetrahedron equation on\n  associative rings and Liouville integrability](https://arxiv.org/abs/2203.05552),\n  Theorem 1, gives `(X,Y,Z) -> (X,Y+XMZ,Z)` on associative rings.\n- S. Konstantinou-Rizos,\n  [Birational solutions to the set-theoretical 4-simplex\n  equation](https://arxiv.org/abs/2211.16338), equation (17), records the\n  scalar tetrahedron map `(x,y,z) -> (x,(y-xz)/k,z)` and traces it to the\n  Kashaev--Korepanov--Sergeev lane.\n\nBoth yield reconstruction failures by elementary substitution into the later\nextraction formulas. Future literature audits for construction/reconstruction\nquestions must run retrieved example families through the target predicate,\nin addition to coordinate fingerprints and terminology searches.\n\n## Mathematical result under audit\n\nThe `Fin 3` finalist-one operation satisfies the tetrahedron equation, has\nbijective elementary map, satisfies every extraction hypothesis at every\nbasepoint with the identity unary map, and yields all five T2-groupoid laws.\nEvery admissible unary map is forced to be the identity, while reconstruction\nfails for every basepoint.\n\nThe stronger raw theorem states that, in the middle-injective finalist-one\nclass, reconstruction through one basepoint is equivalent to\n`T(x,y,z)=y`.  Thus every nonprojection member supplies a counterexample.  An\norbit-label theorem identifies the obstruction as failure of basepoint\nfactorization\n\n\\[\n\\kappa(A,B)=\\kappa(A,C)\\kappa(C,B)\n\\]\n\nunder diagonal identity and a faithful action.\n\n## Claim boundary\n\nSupported after kernel replay and the corrected audit:\n\n- an explicit three-element kernel witness discovered independently by the\n  AxiomPack campaign;\n- a valid negative answer to preprint Question 9.12 / published Question 9.69,\n  without a priority claim;\n- a raw no-go theorem for reconstruction in the middle-injective finalist-one\n  subclass;\n- the exact orbit-label obstruction inside the orbit-action representation;\n- the diagnosis that known associative-ring examples already imply the same\n  negative answer under consequence replay.\n\nThe independent definition map and convention result are recorded in\n`t2_reconstruction_convention_audit.md`.\n\nNot supported by this audit:\n\n- novelty of differential modes or their orbit decomposition;\n- classification of all elementary 2-solutions or all T2-groupoids;\n- a claim that no unrelated T2-groupoid presentation can generate the same\n  ternary operation;\n- priority for the counterexample or broad negative answer;\n- priority for the narrower extraction-fiber, affine-iff, or two-point\n  classification statements without author or subject-expert review.\n"
+    },
+    {
+      "ref": "ztare_proofs/ZtareProofs/AxiomPackT2AffineHiddenFiber.lean",
+      "sha256": "268593bd7acc93cc10cf5802dc965f60755c733b585278262e25bcd70afc5cd6",
+      "content": "import Mathlib.Data.ZMod.Basic\nimport ZtareProofs.AxiomPackT2ReconstructionCounterexample\n\n/-!\nThe centered affine hidden fiber for the second-tetrahedral-groupoid\nreconstruction question.\n\nFor an additive endomorphism `a` and a biadditive operation `mu`, the ternary\noperation studied here is\n\n`T x y z = a y + mu x z`.\n\nThe tetrahedron equation is equivalent to associativity of `mu` together\nwith the two centroid laws relating `a` and `mu`.  When `a` is an additive\nequivalence, the published extraction at basepoint zero sees only `a`; it\nforgets `mu` completely.\n-/\n\nnamespace AxiomPackT2AffineHiddenFiber\n\nopen AxiomPackFinalistOrbitClassification\nopen AxiomPackT2ReconstructionCounterexample\n\nuniverse u\n\nvariable {A : Type u} [AddCommGroup A]\n\n/-- A biadditive binary operation, curried as an additive homomorphism in\neach argument. -/\nabbrev BiadditiveOp (A : Type u) [AddCommGroup A] := A →+ A →+ A\n\n/-- The centered affine elementary operation `T(x,y,z) = a(y) + mu(x,z)`. -/\ndef affineOp (a : A →+ A) (mu : BiadditiveOp A) (x y z : A) : A :=\n  a y + mu x z\n\n/-- Associativity of the possibly noncommutative, nonunital operation `mu`. -/\ndef AssociativeMu (mu : BiadditiveOp A) : Prop :=\n  ∀ x z q, mu (mu x z) q = mu x (mu z q)\n\n/-- `a` commutes with applying `mu` in its first argument. -/\ndef LeftCentroid (a : A →+ A) (mu : BiadditiveOp A) : Prop :=\n  ∀ x z, mu (a x) z = a (mu x z)\n\n/-- `a` commutes with applying `mu` in its second argument. -/\ndef RightCentroid (a : A →+ A) (mu : BiadditiveOp A) : Prop :=\n  ∀ x z, a (mu x z) = mu x (a z)\n\n/-- The affine operation satisfies the tetrahedron equation exactly when\n`mu` is associative and `a` satisfies both centroid laws.  No invertibility\nof `a`, commutativity of `mu`, or unit for `mu` is used. -/\ntheorem affineOp_tetrahedron_iff\n    (a : A →+ A) (mu : BiadditiveOp A) :\n    TetrahedronEquation (affineOp a mu) ↔\n      AssociativeMu mu ∧ LeftCentroid a mu ∧ RightCentroid a mu := by\n  constructor\n  · intro tetrahedron\n    constructor\n    · intro x z q\n      simpa [affineOp] using tetrahedron x 0 z 0 0 q\n    · constructor\n      · intro y q\n        simpa [affineOp] using tetrahedron 0 y 0 0 0 q\n      · intro x p\n        simpa [affineOp] using tetrahedron x 0 0 0 p 0\n  · rintro ⟨associative, left_centroid, right_centroid⟩\n    intro x y z t p q\n    simp only [affineOp, map_add, AddMonoidHom.add_apply]\n    rw [right_centroid x p, left_centroid y q, associative x z q]\n    abel\n\n/-- The inverse of the affine elementary map when the middle linear part is\nan additive equivalence. -/\ndef affineElementaryInverse (a : A ≃+ A) (mu : BiadditiveOp A) :\n    A × A × A → A × A × A\n  | (x, w, z) => (x, a.symm (w - mu x z), z)\n\ntheorem affineElementaryInverse_leftInverse\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    Function.LeftInverse (affineElementaryInverse a mu)\n      (elementaryMap (affineOp a.toAddMonoidHom mu)) := by\n  rintro ⟨x, y, z⟩\n  simp [affineElementaryInverse, elementaryMap, affineOp]\n\ntheorem affineElementaryInverse_rightInverse\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    Function.RightInverse (affineElementaryInverse a mu)\n      (elementaryMap (affineOp a.toAddMonoidHom mu)) := by\n  rintro ⟨x, w, z⟩\n  simp [affineElementaryInverse, elementaryMap, affineOp]\n\n/-- Invertibility of `a` makes the elementary map bijective, independently\nof the tetrahedron and centroid laws. -/\ntheorem affine_elementaryMap_bijective\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    Function.Bijective (elementaryMap (affineOp a.toAddMonoidHom mu)) := by\n  exact ⟨(affineElementaryInverse_leftInverse a mu).injective,\n    (affineElementaryInverse_rightInverse a mu).surjective⟩\n\n/-- The five extraction hypotheses of Bardakov et al. at basepoint zero,\nwith the inverse-slice map `a.symm`, in the published orientation. -/\ntheorem affine_extraction_hypotheses\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    ExtractionHypotheses (affineOp a.toAddMonoidHom mu) 0 a.symm := by\n  refine ⟨?_, ?_, ?_, ?_, ?_⟩\n  · simp [affineOp]\n  · intro x\n    simp [affineOp]\n  · intro x\n    simp [affineOp]\n  · intro x y\n    simp [affineOp]\n  · intro x y\n    simp [affineOp]\n\n@[simp]\ntheorem affine_extractedStar\n    (a : A ≃+ A) (mu : BiadditiveOp A) (x y : A) :\n    extractedStar (affineOp a.toAddMonoidHom mu) 0 x y = a y := by\n  simp [extractedStar, affineOp]\n\n@[simp]\ntheorem affine_extractedCircle\n    (a : A ≃+ A) (mu : BiadditiveOp A) (x y : A) :\n    extractedCircle (affineOp a.toAddMonoidHom mu) 0 x y = a x := by\n  simp [extractedCircle, affineOp]\n\n@[simp]\ntheorem affine_extractedLeft\n    (a : A ≃+ A) (mu : BiadditiveOp A) (x y : A) :\n    extractedLeft (affineOp a.toAddMonoidHom mu) 0 a.symm x y = x := by\n  simp [extractedLeft, affineOp]\n\n@[simp]\ntheorem affine_extractedRight\n    (a : A ≃+ A) (mu : BiadditiveOp A) (x y : A) :\n    extractedRight (affineOp a.toAddMonoidHom mu) 0 a.symm x y = y := by\n  simp [extractedRight, affineOp]\n\n/-- The extracted second tetrahedral 4-groupoid depends on `a` and forgets\n`mu`. -/\ntheorem affine_extracted_t2_groupoid\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    T2GroupoidLaws\n      (extractedStar (affineOp a.toAddMonoidHom mu) 0)\n      (extractedCircle (affineOp a.toAddMonoidHom mu) 0)\n      (extractedLeft (affineOp a.toAddMonoidHom mu) 0 a.symm)\n      (extractedRight (affineOp a.toAddMonoidHom mu) 0 a.symm) := by\n  simp [T2GroupoidLaws, extractedStar, extractedCircle, extractedLeft,\n    extractedRight, affineOp]\n\n@[simp]\ntheorem affine_reconstructed\n    (a : A ≃+ A) (mu : BiadditiveOp A) (x y z : A) :\n    reconstructed (affineOp a.toAddMonoidHom mu) 0 a.symm x y z = a y := by\n  simp [reconstructed, extractedRight, extractedCircle, affineOp]\n\n/-- Reconstruction holds for the affine family exactly when the forgotten\nbiadditive operation is identically zero. -/\ntheorem affine_reconstruction_iff_mu_eq_zero\n    (a : A ≃+ A) (mu : BiadditiveOp A) :\n    (∀ x y z,\n      affineOp a.toAddMonoidHom mu x y z =\n        reconstructed (affineOp a.toAddMonoidHom mu) 0 a.symm x y z) ↔\n      mu = 0 := by\n  constructor\n  · intro reconstructs\n    ext x z\n    simpa [affineOp, reconstructed, extractedRight, extractedCircle] using\n      reconstructs x 0 z\n  · rintro rfl\n    intro x y z\n    simp [affineOp, reconstructed, extractedRight, extractedCircle]\n\n/-- Combining the exact tetrahedron criterion with elementary-map\nbijectivity. -/\ntheorem affine_is_elementaryTwoSolution\n    (a : A ≃+ A) (mu : BiadditiveOp A)\n    (associative : AssociativeMu mu)\n    (left_centroid : LeftCentroid a.toAddMonoidHom mu)\n    (right_centroid : RightCentroid a.toAddMonoidHom mu) :\n    ElementaryTwoSolution (affineOp a.toAddMonoidHom mu) := by\n  exact ⟨(affineOp_tetrahedron_iff a.toAddMonoidHom mu).2\n      ⟨associative, left_centroid, right_centroid⟩,\n    affine_elementaryMap_bijective a mu⟩\n\nsection ZModTwo\n\n/-- Multiplication on `ZMod 2`, packaged as a biadditive operation. -/\ndef zmodTwoMul : BiadditiveOp (ZMod 2) where\n  toFun x :=\n    { toFun := fun z => x * z\n      map_zero' := mul_zero x\n      map_add' := fun y z => mul_add x y z }\n  map_zero' := by\n    ext z\n    exact zero_mul z\n  map_add' := by\n    intro x y\n    ext z\n    exact add_mul x y z\n\n/-- The cardinality-two affine operation `T(x,y,z) = y + x*z`. -/\ndef zmodTwoAffine (x y z : ZMod 2) : ZMod 2 :=\n  affineOp (AddMonoidHom.id (ZMod 2)) zmodTwoMul x y z\n\n@[simp]\ntheorem zmodTwoAffine_apply (x y z : ZMod 2) :\n    zmodTwoAffine x y z = y + x * z :=\n  rfl\n\ntheorem zmodTwoMul_associative : AssociativeMu zmodTwoMul := by\n  intro x z q\n  exact mul_assoc x z q\n\ntheorem zmodTwoMul_leftCentroid :\n    LeftCentroid (AddMonoidHom.id (ZMod 2)) zmodTwoMul := by\n  intro x z\n  rfl\n\ntheorem zmodTwoMul_rightCentroid :\n    RightCentroid (AddMonoidHom.id (ZMod 2)) zmodTwoMul := by\n  intro x z\n  rfl\n\ntheorem zmodTwoAffine_tetrahedron :\n    TetrahedronEquation zmodTwoAffine := by\n  exact (affineOp_tetrahedron_iff (AddMonoidHom.id (ZMod 2)) zmodTwoMul).2\n    ⟨zmodTwoMul_associative, zmodTwoMul_leftCentroid,\n      zmodTwoMul_rightCentroid⟩\n\ntheorem zmodTwoAffine_elementaryMap_bijective :\n    Function.Bijective (elementaryMap zmodTwoAffine) := by\n  simpa [zmodTwoAffine] using\n    (affine_elementaryMap_bijective (AddEquiv.refl (ZMod 2)) zmodTwoMul)\n\ntheorem zmodTwoAffine_is_elementaryTwoSolution :\n    ElementaryTwoSolution zmodTwoAffine :=\n  ⟨zmodTwoAffine_tetrahedron, zmodTwoAffine_elementaryMap_bijective⟩\n\ntheorem zmodTwoAffine_extraction_hypotheses :\n    ExtractionHypotheses zmodTwoAffine 0 (fun x => x) := by\n  simpa [zmodTwoAffine] using\n    (affine_extraction_hypotheses (AddEquiv.refl (ZMod 2)) zmodTwoMul)\n\ntheorem zmodTwoAffine_extracted_t2_groupoid :\n    T2GroupoidLaws\n      (extractedStar zmodTwoAffine 0)\n      (extractedCircle zmodTwoAffine 0)\n      (extractedLeft zmodTwoAffine 0 (fun x => x))\n      (extractedRight zmodTwoAffine 0 (fun x => x)) := by\n  simpa [zmodTwoAffine] using\n    (affine_extracted_t2_groupoid (AddEquiv.refl (ZMod 2)) zmodTwoMul)\n\ntheorem zmodTwoAffine_reconstruction_failure :\n    zmodTwoAffine 1 0 1 ≠\n      reconstructed zmodTwoAffine 0 (fun x => x) 1 0 1 := by\n  norm_num [zmodTwoAffine, affineOp, reconstructed, extractedRight,\n    extractedCircle, zmodTwoMul]\n\n/-- A complete two-element counterexample certificate in the exact published\norientation. -/\ntheorem zmodTwoAffine_t2_reconstruction_counterexample :\n    ElementaryTwoSolution zmodTwoAffine ∧\n      ExtractionHypotheses zmodTwoAffine 0 (fun x => x) ∧\n      T2GroupoidLaws\n        (extractedStar zmodTwoAffine 0)\n        (extractedCircle zmodTwoAffine 0)\n        (extractedLeft zmodTwoAffine 0 (fun x => x))\n        (extractedRight zmodTwoAffine 0 (fun x => x)) ∧\n      ¬ ∀ x y z,\n        zmodTwoAffine x y z =\n          reconstructed zmodTwoAffine 0 (fun x => x) x y z := by\n  refine ⟨zmodTwoAffine_is_elementaryTwoSolution,\n    zmodTwoAffine_extraction_hypotheses,\n    zmodTwoAffine_extracted_t2_groupoid, ?_⟩\n  intro reconstructs\n  exact zmodTwoAffine_reconstruction_failure (reconstructs 1 0 1)\n\nend ZModTwo\n\nend AxiomPackT2AffineHiddenFiber\n"
+    },
+    {
+      "ref": "ztare_proofs/ZtareProofs/AxiomPackT2TwoPointClassification.lean",
+      "sha256": "20f132ad8709a048157c1f8dd315c39c36f335fff41bed7fd11b912856369e90",
+      "content": "import ZtareProofs.AxiomPackT2ReconstructionCounterexample\n\n/-!\nThe pointed two-element classification at the reconstruction boundary.\n\nThis module keeps the exact bijective elementary-map convention used by the\ncampaign.  Without middle-slice bijectivity, the classification is false.\n-/\n\nnamespace AxiomPackT2TwoPointClassification\n\nopen AxiomPackT2ReconstructionCounterexample\nopen AxiomPackFinalistOrbitClassification\n\n/-- The two-element translation selected by a Boolean label. -/\ndef boolTranslation (flag y : Bool) : Bool :=\n  if flag then !y else y\n\n/-- The unique nonprojection pointed two-element normal form. -/\ndef booleanProductT (x y z : Bool) : Bool :=\n  boolTranslation (x && z) y\n\ntheorem middle_injective_of_elementaryMap_injective\n    (T : Bool → Bool → Bool → Bool)\n    (elementary_injective : Function.Injective (elementaryMap T)) :\n    ∀ x z, Function.Injective (fun y => T x y z) := by\n  intro x z y y' equality\n  have map_equality :\n      elementaryMap T (x, y, z) = elementaryMap T (x, y', z) := by\n    simp [elementaryMap, equality]\n  have tuple_equality := elementary_injective map_equality\n  exact congrArg (fun xyz : Bool × Bool × Bool => xyz.2.1) tuple_equality\n\ntheorem bool_bijective_row_is_translation\n    (T : Bool → Bool → Bool → Bool)\n    (middle_injective : ∀ x z, Function.Injective (fun y => T x y z)) :\n    ∀ x z, T x true z = !(T x false z) := by\n  intro x z\n  have distinct : T x false z ≠ T x true z := by\n    intro equality\n    exact Bool.false_ne_true (middle_injective x z equality)\n  cases hfalse : T x false z <;> cases htrue : T x true z <;>\n    simp_all\n\ntheorem bool_middle_translation_normal_form\n    (T : Bool → Bool → Bool → Bool)\n    (middle_injective : ∀ x z, Function.Injective (fun y => T x y z)) :\n    ∀ x y z, T x y z = boolTranslation (T x false z) y := by\n  intro x y z\n  cases y\n  · cases T x false z <;> simp [boolTranslation]\n  · rw [bool_bijective_row_is_translation T middle_injective x z]\n    cases T x false z <;> simp [boolTranslation]\n\n/-- Every pointed bijective elementary two-solution on `Bool` is either the\nmiddle projection or the associative-ring normal form `y + xz` over `F₂`.\nOnly the tetrahedron equation, elementary-map injectivity, and the pointed\nfixed-value condition are needed. -/\ntheorem pointed_bool_elementaryTwoSolution_classification\n    (T : Bool → Bool → Bool → Bool)\n    (tetrahedron : TetrahedronEquation T)\n    (elementary_injective : Function.Injective (elementaryMap T))\n    (pointed : T false false false = false) :\n    (∀ x y z, T x y z = y) ∨\n      ∀ x y z, T x y z = booleanProductT x y z := by\n  have middle_injective :=\n    middle_injective_of_elementaryMap_injective T elementary_injective\n  let f : Bool → Bool → Bool := fun x z => T x false z\n  have normal_form : ∀ x y z, T x y z = boolTranslation (f x z) y := by\n    intro x y z\n    simpa only [f] using\n      bool_middle_translation_normal_form T middle_injective x y z\n  have f00 : f false false = false := by\n    simpa only [f] using pointed\n  have f01 : f false true = false := by\n    cases h01 : f false true\n    · rfl\n    · have constraint :=\n        tetrahedron false false false false false true\n      simp [normal_form, boolTranslation, f00, h01] at constraint\n  have f10 : f true false = false := by\n    cases h10 : f true false\n    · rfl\n    · have constraint :=\n        tetrahedron true false false false false false\n      simp [normal_form, boolTranslation, f00, h10] at constraint\n  cases h11 : f true true\n  · left\n    intro x y z\n    rw [normal_form]\n    cases x <;> cases z <;>\n      simp [boolTranslation, f00, f01, f10, h11]\n  · right\n    intro x y z\n    rw [normal_form]\n    cases x <;> cases z <;>\n      simp [booleanProductT, boolTranslation, f00, f01, f10, h11]\n\ntheorem pointed_bool_elementaryTwoSolution_classification_of_bijective\n    (T : Bool → Bool → Bool → Bool)\n    (solution : ElementaryTwoSolution T)\n    (pointed : T false false false = false) :\n    (∀ x y z, T x y z = y) ∨\n      ∀ x y z, T x y z = booleanProductT x y z :=\n  pointed_bool_elementaryTwoSolution_classification\n    T solution.1 solution.2.1 pointed\n\ntheorem booleanProductT_tetrahedron :\n    TetrahedronEquation booleanProductT := by\n  intro x y z t p q\n  cases x <;> cases y <;> cases z <;> cases t <;> cases p <;> cases q <;>\n    decide\n\ntheorem booleanProductT_elementaryMap_involutive :\n    Function.Involutive (elementaryMap booleanProductT) := by\n  rintro ⟨x, y, z⟩\n  cases x <;> cases y <;> cases z <;> rfl\n\ntheorem booleanProductT_is_elementaryTwoSolution :\n    ElementaryTwoSolution booleanProductT :=\n  ⟨booleanProductT_tetrahedron,\n    booleanProductT_elementaryMap_involutive.bijective⟩\n\ntheorem booleanProductT_identity_extraction :\n    ExtractionHypotheses booleanProductT false (fun x => x) := by\n  refine ⟨rfl, ?_, ?_, ?_, ?_⟩\n  · intro x\n    cases x <;> rfl\n  · intro x\n    cases x <;> rfl\n  · intro x y\n    cases x <;> cases y <;> rfl\n  · intro x y\n    cases x <;> cases y <;> rfl\n\ntheorem booleanProductT_reconstruction_formula :\n    ∀ x y z,\n      reconstructed booleanProductT false (fun x => x) x y z = y := by\n  intro x y z\n  cases x <;> cases y <;> cases z <;> rfl\n\ntheorem booleanProductT_reconstruction_fails :\n    booleanProductT true false true ≠\n      reconstructed booleanProductT false (fun x => x) true false true := by\n  decide\n\n/-- A two-element kernel witness, proving that cardinality two is enough for\nfailure of the published reconstruction. -/\ntheorem booleanProductT_t2_reconstruction_counterexample :\n    ElementaryTwoSolution booleanProductT ∧\n      ExtractionHypotheses booleanProductT false (fun x => x) ∧\n      ¬ ∀ x y z,\n        booleanProductT x y z =\n          reconstructed booleanProductT false (fun x => x) x y z := by\n  refine ⟨booleanProductT_is_elementaryTwoSolution,\n    booleanProductT_identity_extraction, ?_⟩\n  intro reconstructs\n  exact booleanProductT_reconstruction_fails (reconstructs true false true)\n\nend AxiomPackT2TwoPointClassification\n"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+      "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d",
+      "content": "# T2 reconstruction question: independent convention audit\n\nDate: 2026-07-15\n\n## Verdict\n\nPass.  The finite Lean counterexample uses the same operation orientation,\nbasepoint convention, unary inverse-slice map, extracted binary operations,\nfive T2-groupoid laws, and reconstruction term as published Question 9.69.\nNo coordinate or argument-order mismatch was found.\n\nThe public description should say **bijective elementary 2-solution**.  The\npaper permits elementary set-theoretic solutions without requiring\nbijectivity, whereas the formal predicate used here additionally requires the\nelementary map to be bijective.  This is a stronger witness condition and does\nnot weaken the negative answer.\n\n## Definition map\n\nFor the ternary operation `T`, the paper's elementary map\n\n\\[\nR(x,y,z)=(x,T(x,y,z),z)\n\\]\n\nis `elementaryMap T`.  The elementary type-2 simplex equation is the exact\n`TetrahedronEquation` imported by the counterexample module.\n\nFor a basepoint `c` and unary map `brace`, the five assumptions of published\nProposition 9.68 are `ExtractionHypotheses T c brace`, in the published order:\n\n\\[\nT(c,c,c)=c,\n\\quad \\{T(c,x,c)\\}=x,\n\\quad T(c,\\{x\\},c)=x,\n\\]\n\n\\[\nT(\\{x\\},\\{y\\},c)=\\{T(x,y,c)\\},\n\\quad\nT(c,\\{x\\},\\{y\\})=\\{T(c,x,y)\\}.\n\\]\n\nThe four extracted operations are represented without reorientation:\n\n\\[\nx\\star y=T(x,y,c),\\qquad x\\circ y=T(c,x,y),\n\\]\n\n\\[\nx\\mathbin{\\lhd}y=T(c,\\{x\\},y),\\qquad\nx\\mathbin{\\rhd}y=T(x,\\{y\\},c).\n\\]\n\n`T2GroupoidLaws` contains the five identities of Proposition 9.68\nterm-for-term.  The reconstruction asked about in Question 9.69 is\n\n\\[\nx\\mathbin{\\rhd}(y\\circ z)\n=T(x,\\{T(c,y,z)\\},c),\n\\]\n\nwhich is exactly `reconstructed T c brace x y z`.\n\n## Witness checks\n\nOn `Fin 3`, the finalist-one operation is\n\n\\[\nT(x,y,z)=\n\\begin{cases}\n(0\\;1)\\cdot y,&x=2\\text{ and }z\\in\\{0,1\\},\\\\\ny,&\\text{otherwise}.\n\\end{cases}\n\\]\n\nThe kernel artifact verifies:\n\n- the elementary type-2 simplex equation;\n- bijectivity of `R` by proving that it is involutive;\n- all five extraction assumptions for every basepoint with the identity unary\n  map;\n- all five extracted T2-groupoid laws;\n- failure of reconstruction for every basepoint;\n- uniqueness of the admissible unary map for this witness, so another choice\n  of `brace` cannot repair reconstruction.\n\nThe finalist-one bridge identities are used only to shorten the proof of the\ndiagonal slice law.  They are separately checked on the finite operation and\nare not assumptions in the terminal counterexample theorem.\n\n## Audited artifacts\n\n- `ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean`\n- `ztare_proofs/ZtareProofs/AxiomPackFinalistOneBridge.lean`\n- published Proposition 9.68 and Question 9.69 in Bardakov et al.,\n  *Set-Theoretical Solutions of Simplex Equations*\n"
+    },
+    {
+      "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+      "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336",
+      "content": "# T2 reconstruction: orbit-label obstruction pencil\n\nDate: 2026-07-15\n\n## Eigenquestion\n\nOnce an elementary type-2 tetrahedron operation has the orbit-action form\n\n\\[\nT(x,y,z)=\\kappa(o(x),o(z))\\mathbin{\\cdot}y,\n\\]\n\nwhat additional condition is exactly equivalent to the reconstruction in\npreprint Question 9.12 / published Question 9.69 of Bardakov et al.?\n\n## Candidate statement\n\nLet an abelian group `G` act on `X`, let `o : X -> O` be invariant under the\naction, and let `kappa : O -> O -> G`.  Assume the diagonal labels act as the\nidentity, as they do for finalist one.  Fix `c : X`.  With the identity unary\nextraction, the paper's reconstructed operation is\n\n\\[\n\\widehat T_c(x,y,z)\n =T(x,T(c,y,z),c)\n =\\bigl(\\kappa(o(x),o(c))\\kappa(o(c),o(z))\\bigr)\\mathbin{\\cdot}y.\n\\]\n\nTherefore reconstruction at `c` is equivalent, at action level, to\n\n\\[\n\\kappa(o(x),o(z))\\mathbin{\\cdot}y\n =\\bigl(\\kappa(o(x),o(c))\\kappa(o(c),o(z))\\bigr)\\mathbin{\\cdot}y\n\\]\n\nfor all `x,y,z`.  If the action is faithful, this is equivalent on every\nindexed orbit pair to the label factorization\n\n\\[\n\\kappa(o(x),o(z))\n =\\kappa(o(x),o(c))\\kappa(o(c),o(z)).\n\\]\n\nThus the reconstruction question asks whether the extraction hypotheses force\nthe label matrix to factor through one chosen orbit.  The T2-groupoid laws do\nnot force that condition.\n\n## Stronger raw finalist-one corollary\n\nThe orbit syntax can be eliminated.  Suppose `T` has injective middle slices\nand the finalist-one consequences\n\n\\[\nT(x,x,z)=x,\\qquad T(x,y,x)=y.\n\\]\n\nIf reconstruction holds through one basepoint `c`, then\n\n\\[\nT(x,T(c,x,z),c)=T(x,x,z)=x=T(x,x,c).\n\\]\n\nInjectivity of `T(x,-,c)` gives `T(c,x,z)=x`.  Substitution back into the\nreconstruction identity gives\n\n\\[\nT(x,y,z)=T(x,y,c).\n\\]\n\nTaking `z=x` and using `T(x,y,x)=y` shows `T(x,y,z)=y` everywhere.  The\nconverse is immediate.  Consequently, within the middle-injective\nfinalist-one class, reconstruction through one basepoint is equivalent to the\nmiddle projection law.  Every nonprojection member of this class answers the\npublished question negatively.\n\n## Finite witness specialization\n\nFor finalist one, the translation group is `C2 = {1,s}` acting by swapping\n`0` and `1` and fixing `2`.  Its two orbits are\n\n\\[\nA=\\{0,1\\},\\qquad B=\\{2\\},\n\\]\n\nand the label matrix is\n\n\\[\n\\kappa(B,A)=s,\\qquad\n\\kappa(A,A)=\\kappa(A,B)=\\kappa(B,B)=1.\n\\]\n\n- If `o(c)=A`, the pair `(B,B)` violates factorization:\n  `1 = kappa(B,B) != kappa(B,A) kappa(A,B) = s`.\n- If `o(c)=B`, the pair `(A,A)` violates factorization:\n  `1 = kappa(A,A) != kappa(A,B) kappa(B,A) = s`.\n\nThis explains why every basepoint fails and recovers the explicit mismatches\nalready checked by the finite certificate.\n\n## Proof skeleton\n\n1. Expand both occurrences of the orbit-action operation.\n2. Rewrite the orbit of the inner action using orbit invariance.\n3. Combine the two actions with `smul_smul`.\n4. Use commutativity only to match the selected product orientation.\n5. For the reverse implication from equality of reconstructed operations to\n   label equality, quantify over `y` and use faithfulness of the action.\n6. Instantiate the abstract criterion with the finalist-one orbit map and\n   label, or retain the existing direct finite mismatch theorem as the small\n   counterexample certificate.\n7. Prove the raw finalist-one corollary directly from middle injectivity,\n   source fixing, and diagonal identity, without orbit-action assumptions.\n\n## Attack vectors and counterattacks\n\n- **Unary extraction is not the identity.**  For finalist one,\n  `T(c,x,c)=x`; the paper's inverse-slice hypothesis forces every admissible\n  unary map to be the identity.  If this derivation fails under the published\n  orientation, the criterion must be generalized to a nontrivial diagonal\n  inverse rather than asserted as written.\n- **Action is not faithful.**  Equality of labels is then too strong.  Retain\n  the action-level iff, and state group-element factorization only under\n  `FaithfulSMul`.\n- **The orbit map is not action invariant.**  Then the inner label need not\n  retain `o(z)`.  The orbit-action representation supplies invariance; without\n  it, this theorem does not apply.\n- **The paper reconstructs with the other extracted operation or argument\n  order.**  Compare directly against Proposition 9.11 / published Proposition\n  9.68 before formalization.  The displayed formula is\n  `x R (y circle z) = T(x,{T(c,y,z)},c)`, matching the expansion above.\n- **A later source already gives the same obstruction or counterexample.**\n  This removes the originality claim but does not affect the theorem.\n\n## Recurrence check\n\nThe 2008 differential-mode sources classify orbit/block structure and\ncommuting translations.  The current bounded review has not located this\nspecific basepoint-factorization criterion in the elementary type-2\ntetrahedron literature.  Forward-citation review of the 2024 published paper\nis still in progress.\n\n## Intended formal surface\n\nAdd general lemmas near the orbit-action definitions:\n\n1. an expansion theorem for `T(x,T(c,y,z),c)`;\n2. an action-level reconstruction iff;\n3. a faithful-action label-factorization iff.\n\nThe finite counterexample remains a separate theorem.  The general criterion\nmust not import or depend on that witness.\n\nAlso add a raw theorem to the finalist-one bridge stating that, under the\nalready proved finalist-one hypotheses, the basepoint reconstruction identity\nis equivalent to the middle projection law.  This theorem must not depend on\nfiniteness, the orbit quotient, or the explicit witness.\n\n## Kill conditions\n\n- Any source-orientation mismatch changes the reconstructed term.\n- A missing orbit-invariance or faithfulness hypothesis is used silently.\n- The action-level equality fails to be equivalent to the original universal\n  reconstruction statement.\n- The factorization condition follows automatically from the exact T2 laws;\n  this would contradict the finite witness and indicate a formalization bug.\n"
+    }
+  ],
+  "context_sha256": "b6a7004ee223789cd1f3a4277ef3eb5a912647320f00e5f993f7d3ebbe415081",
+  "epoch": 1,
+  "cards": [
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:1896dca2ac5bedf4c900cdb9b0298e51aa2284f3cf287e6ac6f74a878e9f2d01",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        }
+      ],
+      "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_factor_through_orbits",
+      "context_sha256": "ef72666feb219cb8900a1f54ba983dcba97b33705d1319a273bee8263deb6bfd",
+      "epoch": 1,
+      "lean_statement": "(translation : X → X → Equiv.Perm X)\n    (tetrahedron : ∀ x y z t p q,\n      translation (translation x z y) q (translation x p t) =\n        translation x (translation z q p) (translation y q t))\n    (source_fixed : ∀ x z, translation x z x = x)\n    (commute : ∀ x z u v a,\n      translation x z (translation u v a) =\n        translation u v (translation x z a)) :\n    (∀ x z q p,\n        translation x (translation z q p) = translation x p) ∧\n      (∀ x z y q,\n        translation (translation x z y) q = translation y q)",
+      "statement_sha256": "2435c3e8c8b72126cb5f7d1e74cb7dc416ece1bc97a699e57fa489224045f9de",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 762,
+        "certificate_sha256": "0d9376657103581fbdc117e237cc7c861c9923bcd7a5b61a61ebdc879fc50b6f"
+      },
+      "proof_sha256": "e9272d296f7ea3f02188d0548c9653eba53590f3c72830f73d9766e393d49ce6",
+      "recompilable_probe_sha256": "72524ba74cb523787fc4dc020cc0bbe2fc1642ac407f91da5acab3f29f35c30d",
+      "hidden_replay_probe_sha256": "25c94619f74ebd5b72a3f8e290ad7119300ef77ede0e90877c3b155ed4e0ad80",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "0d9376657103581fbdc117e237cc7c861c9923bcd7a5b61a61ebdc879fc50b6f",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "context_stripped",
+          "executed_at": "solver_layer",
+          "passed": true
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "a68bb5527ecf207da10d5ba0cf0192fe275a7b0385aa416b599ad6fc02678c63"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:3c8dffb7c8f01471d5f2e41001da063f4a972b0a5fd0bf2fe96d539ecb7e8bb9",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        }
+      ],
+      "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+      "target_identity": "AxiomPackOrbitAction.commutingTranslations_orbit_action_representation",
+      "context_sha256": "93cc78f59cb00a0bfa0dfc203983f28e4916280959ff8fe58e9bbe76d7de259a",
+      "epoch": 1,
+      "lean_statement": "(translation : X → X → Equiv.Perm X)\n    (tetrahedron : ∀ x y z t p q,\n      translation (translation x z y) q (translation x p t) =\n        translation x (translation z q p) (translation y q t))\n    (source_fixed : ∀ x z, translation x z x = x)\n    (commute : ∀ x z u v a,\n      translation x z (translation u v a) =\n        translation u v (translation x z a)) :\n    ∃ label : TranslationOrbit translation →\n        TranslationOrbit translation → translationSubgroup translation,\n      (∀ x z,\n        (label (Quotient.mk'' x) (Quotient.mk'' z) : Equiv.Perm X) =\n          translation x z) ∧\n      (∀ x y z,\n        translation x z y =\n          (label (Quotient.mk'' x) (Quotient.mk'' z) : Equiv.Perm X) y)",
+      "statement_sha256": "030c13ecf8b4e3aa0dcd53330a1dcd521af1e6f18b9d21ee43856bcc9c840e21",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 765,
+        "certificate_sha256": "4644533a42f1a0af86712436eddf4301531c8887e67f8c1aa4b914d17b722025"
+      },
+      "proof_sha256": "9d313e4e9ee2d2575f475b368ce57e7f73391cfb81571a0e27480b89d0d299fe",
+      "recompilable_probe_sha256": "310ad6838cf38cbf13e275753d8cf42a840e3d6f7985a4f23c99ce006a3b7fb5",
+      "hidden_replay_probe_sha256": "c4d71375b955a27e2288733b02ca04126134c97071f65b491d0e318c125f7c67",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "3b676eb1b485be6bd2a7431a847c6e820ad16ffa5d3a846b21228e23b62014fa",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "4644533a42f1a0af86712436eddf4301531c8887e67f8c1aa4b914d17b722025",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [
+            "consequence_exposure_shape_suspect_advisory"
+          ],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "context_stripped",
+          "executed_at": "solver_layer",
+          "passed": true
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "b4c3b1917bcce0e5925a01778aeec8f459a30cba7ad2607cba2a5637e4b7dca4"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:d248165819beadf7cc5264319aac8201462cedccc600e611e724667bf0eeaa67",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+          "sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+          "sha256": "f15546b3fbb87fc394e06fd4ce098b532ee149a2806b2392c7a7d2c1df9a5304"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_nonprojection_not_reconstructible",
+      "context_sha256": "7c09d24942a6c43b2a93dea196775e9edfcb629c79278bfe3d4a2707b69558f4",
+      "epoch": 1,
+      "lean_statement": "(T : X → X → X → X)\n    (tetrahedron : TetrahedronEquation T)\n    (middle_injective : ∀ x z, Function.Injective (fun y => T x y z))\n    (diagonal_inverse : ∀ x y, T x y (T x x x) = y)\n    (cross_diagonal : ∀ x y, T x x y = T y x y)\n    (nonprojection : ¬ ∀ x y z, T x y z = y) :\n    ¬ ∃ (c : X) (brace : X → X),\n      ExtractionHypotheses T c brace ∧\n        ∀ x y z, T x y z = reconstructed T c brace x y z",
+      "statement_sha256": "8ee7346b4d4b9193dc8066d2bf3da4001638a842d50ebb5edbb0176d45e0d74c",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 771,
+        "certificate_sha256": "b94df2dc568e8dee37caedace7e2fbad8809cc5ffaed7193afb2a78311e7c151"
+      },
+      "proof_sha256": "863a71063fbeba2dc9f4f5c897472bfc69d6fa7dd7aec42fd7934eaa4feab37c",
+      "recompilable_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+      "hidden_replay_probe_sha256": "87464c8ba0beb0929bfde9614105bc4d31f434b927ae1d7aee3333601effb72e",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "b94df2dc568e8dee37caedace7e2fbad8809cc5ffaed7193afb2a78311e7c151",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_nonprojection_not_reconstructible",
+          "target_signature_sha256": "8ee7346b4d4b9193dc8066d2bf3da4001638a842d50ebb5edbb0176d45e0d74c",
+          "positive_probe_sha256": "cef4bab1d4d834ae085c3f912fde2b76e8aba3a21b271ee828ccc65c219f51f9",
+          "negative_probe_sha256": "c21ff1937cd40abf22bf45201f8ad4afd09cab7b72372e6c91092c3ba7465297",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "a6a23813dc7052c7ae639eef27ef35358050ce4eaea22c476f3447484ffedfd1",
+          "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "f1bdd673b085d5829daaf24202e00a88d33915991a57e9bc2898db1aac2d987d"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:8ef49aa982b55a73055fd45a588d6c1ebe41f9682b0f5dd2fbe512ac93ebd7b7",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackT2ReconstructionCounterexample.lean",
+          "sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_question_pencil.md",
+          "sha256": "f15546b3fbb87fc394e06fd4ce098b532ee149a2806b2392c7a7d2c1df9a5304"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+      "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+      "context_sha256": "9a450a86dcfc6e9f8d0eafe013af443fa80e079526b86da2e468fd9e4d276fb1",
+      "epoch": 1,
+      "lean_statement": ":\n    ElementaryTwoSolution finalistOne ∧\n      (∀ c, ExtractionHypotheses finalistOne c (fun x => x)) ∧\n      (∀ c,\n        T2GroupoidLaws\n          (extractedStar finalistOne c)\n          (extractedCircle finalistOne c)\n          (extractedLeft finalistOne c (fun x => x))\n          (extractedRight finalistOne c (fun x => x))) ∧\n      ¬ ∃ (c : Carrier) (brace : Carrier → Carrier),\n        ExtractionHypotheses finalistOne c brace ∧\n          ∀ x y z,\n            finalistOne x y z = reconstructed finalistOne c brace x y z",
+      "statement_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 777,
+        "certificate_sha256": "98be631877f91c876176157d628b3ea79d0011dd0907bd3d759ae99d56500bbc"
+      },
+      "proof_sha256": "584b35f36dad0d22ba154364417635214acc20157c6be2f2c9f1037f688d442f",
+      "recompilable_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+      "hidden_replay_probe_sha256": "c6d18d5be17bb3ef621b144b380ea919861571df2c63b3c47b59407e70555206",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "886add80d6ac844848827ecec12ef71a0c1711259292e8a7991edee054e84855",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "98be631877f91c876176157d628b3ea79d0011dd0907bd3d759ae99d56500bbc",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+          "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
+          "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
+          "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "3c118c196c2a1bf31676921f72f71e29d4eb739b753ea0b8cd8e0da740e4cbad"
+    },
+    {
+      "card_schema": "leanmill.result_card.v1",
+      "card_id": "result-card:38ee7435a9622fb88978f52a563a2696ade38f24c2fc07a6c32cc56f20b9692f",
+      "source_kind": "source_bound",
+      "source_receipts": [
+        {
+          "ref": "ztare_proofs/ZtareProofs/AxiomPackOrbitAction.lean",
+          "sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_obstruction_pencil.md",
+          "sha256": "e2f6426d4d9dfb144cc97eda7b2b75143b7d07fef0edc2e69433f8096086e336"
+        },
+        {
+          "ref": "research_areas/pre_registrations/axiompack_elementary_tetrahedron_frontier_v1_20260713/t2_reconstruction_convention_audit.md",
+          "sha256": "ecffb295fc17d93b8f7c15962381dc4b5306a4781034b9abbc29d240cb2f5c4d"
+        }
+      ],
+      "source_sha256": "26eccca07c1d973adca26704733a0639ae99c969bbfea3fcac7cf9f77dff273a",
+      "target_identity": "AxiomPackOrbitAction.orbitAction_reconstruction_iff_label_factorization",
+      "context_sha256": "ec0a9f50ad74cabfb1c437966fb83cdd20863eaf823b47ea7ec8fe20c7666049",
+      "epoch": 1,
+      "lean_statement": "[CommGroup G] [MulAction G X] [FaithfulSMul G X]\n    (orbit : X → O) (label : O → O → G)\n    (c : X) :\n    (∀ (x y z : X),\n      orbitActionOp orbit label x y z =\n        orbitActionOp orbit label x\n          (orbitActionOp orbit label c y z) c) ↔\n      ∀ (x z : X),\n        label (orbit x) (orbit z) =\n          label (orbit x) (orbit c) * label (orbit c) (orbit z)",
+      "statement_sha256": "4ea40f16f1883bb7985864d0d30bec9f54ef59e4ac27179649f3495a92d17829",
+      "hidden_proof_ref": {
+        "ledger_sha256": "05711c5f22e5562ad879a5754dd6427fa31cb2eff378ce33d4814c2a51776825",
+        "line_number": 775,
+        "certificate_sha256": "18a913b6c819a9414c451a6f9da5923b3495aa4c52b9113b62737229eec2be18"
+      },
+      "proof_sha256": "3a36cdfc6dc7fe7b5fecec562a716d7f43321bc143c6aff21aac18ebdfc29bcf",
+      "recompilable_probe_sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685",
+      "hidden_replay_probe_sha256": "46559f0be7cd6204214800af55ffbc708878670839a1c03f33bfe862cfeb5889",
+      "statement_faithfulness_receipt": {
+        "status": "source_bound_for_independent_review",
+        "source_sha256": "26eccca07c1d973adca26704733a0639ae99c969bbfea3fcac7cf9f77dff273a",
+        "claim_boundary": "binds the formal card to frozen sources; it does not certify novelty"
+      },
+      "kernel_receipt": {
+        "checker": "lean_lake",
+        "certificate_schema": "legacy_governed_closure",
+        "certificate_sha256": "18a913b6c819a9414c451a6f9da5923b3495aa4c52b9113b62737229eec2be18",
+        "governance_kernel": {
+          "passed": true,
+          "flags": [
+            "consequence_exposure_shape_suspect_advisory"
+          ],
+          "confirmed": []
+        },
+        "statement_integrity": {
+          "ok": true,
+          "violations": [],
+          "kind": "statement_integrity",
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved"
+        },
+        "matched_negative_control": {
+          "kind": "source_aware_conclusion_perturbation",
+          "target_identity": "AxiomPackOrbitAction.orbitAction_reconstruction_iff_label_factorization",
+          "target_signature_sha256": "4ea40f16f1883bb7985864d0d30bec9f54ef59e4ac27179649f3495a92d17829",
+          "positive_probe_sha256": "3c0d65c84646d438730bc0bbb4c8b40670ca15937a24a30ee685c680b8b3a0fa",
+          "negative_probe_sha256": "5e3e1a24d1311136f4a7702d872b58ca3b7502eea0deb9ffb22b815902bc76f2",
+          "positive_compiled": true,
+          "perturbation": "target conclusion C replaced by ¬(C); same proof body",
+          "negative_compiled": false,
+          "status": "pass",
+          "passed": true,
+          "discriminating": true,
+          "differential": "confirmed",
+          "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+          "posed_source_sha256": "357e73033ae9091312fc44bbd08dd5b37634c2527a483ae24067719f31ff6907",
+          "closure_source_sha256": "f697785e7397606f688a8cd4156e6659a9b6039d242c0aee167418d711ba2685",
+          "admitted_under_policy": true,
+          "policy": "require_discriminating_control",
+          "tail": "positive source compiles and the same proof does not close the negated conclusion",
+          "executed_at": "solver_layer"
+        }
+      },
+      "difficulty_receipt": {
+        "status": "pending_hidden_proof_replay",
+        "attempts": []
+      },
+      "usefulness_receipt": {
+        "status": "pending_target_replay"
+      },
+      "golf_variants": [],
+      "card_sha256": "96d8c2e770e1eaa2d978482865d1aa03d29f0d98b2166f38c3d8bf4bf9c5ceac"
+    }
+  ],
+  "proof_visibility": "hidden_by_default_resolvable_only_from_frozen_ledger",
+  "deck_sha256": "3fcb1bbce2240dd43130f288de9a5c9e18002bac9de951e207681a97ff506d35"
+}

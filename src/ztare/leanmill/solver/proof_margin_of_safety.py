@@ -77,77 +77,61 @@ def _prop_hypotheses(block: str) -> "list[tuple[str, str]]":
     return out
 
 
-def conclusion_discrimination_control(
+def build_conclusion_discrimination_probes(
     lean_source: str,
     target_name: str,
-    lean_root: Path,
-    *,
-    timeout_s: int = 90,
-) -> dict[str, Any]:
-    """Run one calibrated, source-aware matched conclusion control.
-
-    The positive and negative probes share the exact inherited declaration
-    context, target identity, binders, and proof body.  The only semantic edit
-    is ``C`` to ``¬ C`` in the target conclusion.  A control passes only when
-    the positive probe compiles and the negative probe does not.  Tool errors,
-    parser uncertainty, and a malformed source prefix are typed abstentions.
-
-    This is also the implementation used by the post-close margin battery;
-    ratification and advisory reporting therefore cannot drift into two
-    different notions of conclusion discrimination.
-    """
+) -> tuple[dict[str, Any], str, str]:
+    """Build the exact positive/negative probe pair without compiling it."""
 
     import hashlib
-
-    from ztare.gates.v33_preflight_risk_detector import _compile_probe
     from ztare.leanmill import lean_source as _ls
 
     source = lean_source or ""
     identity = _ls.resolve_theorem_target(source, target_name)
     if identity is None:
-        return {
+        return ({
             "kind": "source_aware_conclusion_perturbation",
             "status": "inconclusive",
             "passed": None,
             "discriminating": False,
             "reason": "target identity is absent or ambiguous",
-        }
+        }, "", "")
     work_item = _ls.source_through_target(source, target_name)
     work_identity = _ls.resolve_theorem_target(work_item, target_name)
     if (
         work_identity is None
         or work_identity.qualified_name != identity.qualified_name
     ):
-        return {
+        return ({
             "kind": "source_aware_conclusion_perturbation",
             "status": "inconclusive",
             "passed": None,
             "discriminating": False,
             "reason": "target identity did not survive context fencing",
-        }
+        }, "", "")
     signature = _ls.extract_signature(work_item, target_name)
     colon = _ls.top_level_colon(signature) if signature else -1
     block = work_item[work_identity.decl_start:work_identity.decl_end]
     _head, assigned = _ls.split_at_proof(block)
     proof_assignment = assigned[2:] if assigned.startswith(":=") else ""
     if colon < 0 or not proof_assignment.strip():
-        return {
+        return ({
             "kind": "source_aware_conclusion_perturbation",
             "status": "inconclusive",
             "passed": None,
             "discriminating": False,
             "reason": "canonical parser could not split target signature/proof",
-        }
+        }, "", "")
     binders = signature[:colon].strip()
     conclusion = signature[colon + 1:].strip()
     if not conclusion:
-        return {
+        return ({
             "kind": "source_aware_conclusion_perturbation",
             "status": "inconclusive",
             "passed": None,
             "discriminating": False,
             "reason": "target conclusion is empty",
-        }
+        }, "", "")
 
     declaration_prefix = work_item[
         work_identity.decl_start:work_identity.name_end
@@ -171,12 +155,6 @@ def conclusion_discrimination_control(
     positive_probe = _ls.close_open_scopes(work_item)
     negative_probe = _ls.close_open_scopes(negative_work_item)
 
-    # The builder itself is calibrated before its negative is interpreted.
-    # Without this positive leg, a namespace/parser/tool failure would be
-    # indistinguishable from conclusion sensitivity.
-    positive_compiled = _compile_probe(
-        positive_probe, lean_root, "MoS_discrimination_positive", timeout_s
-    )
     evidence = {
         "kind": "source_aware_conclusion_perturbation",
         "target_identity": identity.qualified_name,
@@ -189,9 +167,115 @@ def conclusion_discrimination_control(
         "negative_probe_sha256": hashlib.sha256(
             negative_probe.encode("utf-8")
         ).hexdigest(),
-        "positive_compiled": positive_compiled,
         "perturbation": "target conclusion C replaced by ¬(C); same proof body",
     }
+    return evidence, positive_probe, negative_probe
+
+
+def validate_conclusion_discrimination_receipt(
+    receipt: object,
+    lean_source: str,
+    target_name: str,
+    *,
+    posed_source: str,
+) -> dict[str, Any] | None:
+    """Validate one executed control against independently rebuilt identities."""
+
+    import hashlib
+
+    if not isinstance(receipt, dict):
+        return None
+    expected, positive_probe, negative_probe = (
+        build_conclusion_discrimination_probes(lean_source, target_name)
+    )
+    if not positive_probe or not negative_probe:
+        return None
+    exact_fields = (
+        "kind",
+        "target_identity",
+        "target_signature_sha256",
+        "positive_probe_sha256",
+        "negative_probe_sha256",
+    )
+    if any(receipt.get(field) != expected.get(field) for field in exact_fields):
+        return None
+    if (
+        receipt.get("posed_source_sha256")
+        != hashlib.sha256((posed_source or "").encode("utf-8")).hexdigest()
+        or receipt.get("closure_source_sha256")
+        != hashlib.sha256((lean_source or "").encode("utf-8")).hexdigest()
+        or receipt.get("status") != "pass"
+        or receipt.get("available") is not True
+        or receipt.get("passed") is not True
+        or receipt.get("discriminating") is not True
+        or receipt.get("differential") != "confirmed"
+        or receipt.get("positive_compiled") is not True
+        or receipt.get("negative_compiled") is not False
+        or receipt.get("admitted_under_policy") is not True
+        or receipt.get("policy") != "require_discriminating_control"
+    ):
+        return None
+    return dict(receipt)
+
+
+def bind_conclusion_discrimination_receipt(
+    control: object,
+    lean_source: str,
+    target_name: str,
+    *,
+    posed_source: str,
+) -> dict[str, Any] | None:
+    """Attach source identities to one freshly executed positive control."""
+
+    import hashlib
+
+    if not isinstance(control, dict):
+        return None
+    receipt = {
+        **control,
+        "available": control.get("passed") is not None,
+        "posed_source_sha256": hashlib.sha256(
+            (posed_source or "").encode("utf-8")
+        ).hexdigest(),
+        "closure_source_sha256": hashlib.sha256(
+            (lean_source or "").encode("utf-8")
+        ).hexdigest(),
+        "admitted_under_policy": True,
+        "policy": "require_discriminating_control",
+        "tail": str(control.get("interpretation") or "")[-300:],
+    }
+    return validate_conclusion_discrimination_receipt(
+        receipt,
+        lean_source,
+        target_name,
+        posed_source=posed_source,
+    )
+
+
+def conclusion_discrimination_control(
+    lean_source: str,
+    target_name: str,
+    lean_root: Path,
+    *,
+    timeout_s: int = 90,
+) -> dict[str, Any]:
+    """Run one calibrated, source-aware matched conclusion control."""
+
+    from ztare.gates.v33_preflight_risk_detector import _compile_probe
+
+    evidence, positive_probe, negative_probe = (
+        build_conclusion_discrimination_probes(lean_source, target_name)
+    )
+    if not positive_probe or not negative_probe:
+        return evidence
+
+    # The builder itself is calibrated before its negative is interpreted.
+    # Without this positive leg, a namespace/parser/tool failure would be
+    # indistinguishable from conclusion sensitivity.
+    positive_compiled = _compile_probe(
+        positive_probe, lean_root, "MoS_discrimination_positive", timeout_s
+    )
+    evidence["positive_compiled"] = positive_compiled
     if positive_compiled is not True:
         return {
             **evidence,
@@ -240,18 +324,28 @@ def conclusion_discrimination_control(
 
 def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path | None" = None,
                            *, timeout_s: int = 90, deep: bool = True,
-                           original_source: "str | None" = None) -> dict:
+                           original_source: "str | None" = None,
+                           soundness_kernel_receipt: "dict | None" = None,
+                           conclusion_discrimination_receipt: "dict | None" = None) -> dict:
     """Run the post-closure robustness battery on a CLOSED proof. `deep` (needs lake) runs the
     load-bearing hypothesis perturbation; static tests (soundness shape-organs + surveyability) always
     run. Returns RobustnessReport.to_dict() — ADVISORY (strengthen/weaken/inconclusive), never a reject."""
     rep = RobustnessReport(target=target_name)
 
-    # 1. SOUNDNESS re-confirmation — REUSE the ONE kernel (shape organs; deep_verify off ⇒ no recompile).
+    # 1. SOUNDNESS — reuse the finalizer receipt when supplied.
     try:
-        from ztare.gates.lean_proof_gate import run_anti_laundering_kernel
-        k = run_anti_laundering_kernel(lean_source, (lean_root or Path(".")) / "_mos.lean",
-                                       (lean_root or Path(".")), deep_verify=False,
-                                       original_source=original_source, target_name=target_name)
+        if soundness_kernel_receipt is None:
+            from ztare.gates.lean_proof_gate import run_anti_laundering_kernel
+            k = run_anti_laundering_kernel(
+                lean_source,
+                (lean_root or Path(".")) / "_mos.lean",
+                (lean_root or Path(".")),
+                deep_verify=False,
+                original_source=original_source,
+                target_name=target_name,
+            )
+        else:
+            k = dict(soundness_kernel_receipt)
         confirmed = k.get("confirmed") or []
         _record(rep, "soundness", "weaken" if confirmed else "strengthen",
                 {"passed": k.get("passed"), "confirmed": confirmed, "flags": k.get("flags")})
@@ -310,12 +404,19 @@ def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path 
         _record(rep, "conclusion_discrimination", "inconclusive", {"note": "deep/lake not run"})
     else:
         try:
-            control = conclusion_discrimination_control(
+            control = validate_conclusion_discrimination_receipt(
+                conclusion_discrimination_receipt,
                 lean_source,
                 target_name,
-                lean_root,
-                timeout_s=timeout_s,
-            )
+                posed_source=original_source or "",
+            ) if conclusion_discrimination_receipt is not None else None
+            if control is None:
+                control = conclusion_discrimination_control(
+                    lean_source,
+                    target_name,
+                    lean_root,
+                    timeout_s=timeout_s,
+                )
             if control.get("status") == "pass":
                 _record(rep, "conclusion_discrimination", "strengthen", control)
             elif control.get("status") == "fail":
@@ -335,8 +436,9 @@ def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path 
 # accumulate toward G instead of being one-offs. SOUND: a fabricated/unrelated bound fails the B-compiles or
 # B⇒G' leg and is never banked; the kernel is the arbiter (reuses conjecture.specialization_is_genuine, the
 # SAME gate shape, no new gate logic). This lives HERE (the quantitative-slack home), not a parallel store.
-# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
-from ztare.leanmill.solver.prompts import RUNG_TIGHTEN_PROMPT as _RUNG_TIGHTEN_PROMPT
+# Prompt lives in the canonical registry (prompts.py). Import it only when
+# this provider-backed move runs: carried-artifact ratification uses the
+# discrimination controls above and must not acquire the solver prompt graph.
 
 
 def rung_tighten(rung_block: str, rung_conclusion: str, sname: str, lean_root: "Path",
@@ -346,9 +448,10 @@ def rung_tighten(rung_block: str, rung_conclusion: str, sname: str, lean_root: "
     banked). Reuses `conjecture.specialization_is_genuine` for the gate: B compiles sorry-free AND `B ⇒ G'`
     typechecks sorry-free (genuine strengthening) AND B's conclusion ≠ G''s (a real tightening)."""
     from ztare.leanmill.solver.conjecture import specialization_is_genuine, _lemma_conclusion
+    from ztare.leanmill.solver.prompts import RUNG_TIGHTEN_PROMPT
     bname = f"tight_{re.sub(r'[^A-Za-z0-9_]', '', sname or 'rung')[:24] or 'rung'}"
     pre = ("\nPREAMBLE:\n" + preamble.strip() + "\n") if preamble.strip() else ""
-    prompt = _RUNG_TIGHTEN_PROMPT.format(bname=bname, rung=rung_block, pre=pre)
+    prompt = RUNG_TIGHTEN_PROMPT.format(bname=bname, rung=rung_block, pre=pre)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
         raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""

@@ -217,8 +217,12 @@ def save_evidence_theory_context(
     return write_json_atomic(path, context.to_json())
 
 
-def load_evidence_theory_context(path: str | Path) -> EvidenceTheoryContext:
-    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+def evidence_theory_context_from_snapshot(
+    value: Mapping[str, Any],
+) -> EvidenceTheoryContext:
+    """Replay a context from bytes already frozen by its ingress owner."""
+
+    raw = dict(value)
     if not isinstance(raw, Mapping) or raw.get("schema") != EVIDENCE_CONTEXT_SCHEMA:
         raise ValueError("unsupported evidence theory snapshot")
     unsigned = dict(raw)
@@ -258,8 +262,16 @@ def load_evidence_theory_context(path: str | Path) -> EvidenceTheoryContext:
     return context
 
 
+def load_evidence_theory_context(path: str | Path) -> EvidenceTheoryContext:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(raw, Mapping):
+        raise ValueError("unsupported evidence theory snapshot")
+    return evidence_theory_context_from_snapshot(raw)
+
+
 __all__ = [
     "EVIDENCE_CONTEXT_SCHEMA", "EvidenceHypothesisProfile",
     "EvidenceObjectRecord", "EvidenceTheoryContext",
+    "evidence_theory_context_from_snapshot",
     "load_evidence_theory_context", "save_evidence_theory_context",
 ]

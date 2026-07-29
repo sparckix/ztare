@@ -20,6 +20,7 @@ reformatting/comment edits don't trip it, while a changed structure field / weak
 from __future__ import annotations
 
 import re
+import hashlib
 from dataclasses import dataclass
 from typing import Callable, Optional   # used in string annotations (pyflakes F821 / get_type_hints hygiene)
 
@@ -92,11 +93,15 @@ def decl_blocks(text: str) -> "list[tuple[str, str]]":
     """NAMESPACE-QUALIFIED (name, block) pairs for every decl. Decl starts are detected on a
     comment-blanked copy (docstrings never register), with namespace nesting tracked so `A.foo` and
     `B.foo` are DISTINCT (review false-closure: dup unqualified names collapsed). Indented decls are
-    seen; anonymous instances get a synthetic `<ns>.instance@<line>` name."""
+    seen. Anonymous declarations get a synthetic identity derived from their normalized full
+    declaration and occurrence within that namespace/declaration class. Source line numbers
+    are locations, so using them as identities makes an unchanged downstream instance look deleted
+    and re-added whenever an earlier target proof changes length. The implementation participates in
+    identity because two anonymous instances with the same signature can change elaboration differently."""
     lines = text.splitlines(keepends=True)
     blines = _blank_comments(text).splitlines(keepends=True)
     ns: list[str] = []
-    starts: list[tuple[int, str]] = []
+    starts: list[tuple[int, str, str, "str | None"]] = []
     for i, ln in enumerate(blines):
         mo = _NS_OPEN.match(ln)
         if mo:
@@ -109,12 +114,11 @@ def decl_blocks(text: str) -> "list[tuple[str, str]]":
             continue
         md = _DECL_START.match(ln)
         if md:
-            nm = md.group(2) or f"instance@{i}"
             prefix = ".".join(ns)
-            starts.append((i, f"{prefix}.{nm}" if prefix else nm))
-    out = []
+            starts.append((i, prefix, md.group(1), md.group(2)))
+    raw: "list[tuple[str, str, str | None]]" = []
     from ztare.leanmill.lean_source import DECL_TERMINATORS as _DT   # the ONE canonical scope/terminator list
-    for k, (i, name) in enumerate(starts):
+    for k, (i, prefix, kind, explicit_name) in enumerate(starts):
         end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
         # SCOPE/TERMINATOR FENCE (2026-07-02 — the drifted-sibling ROOT fix): a decl's block ENDS at the next decl
         # OR at a top-level scope command (`variable`/`open`/`section`/`end`/`#…`/`set_option`/notation/…) that
@@ -127,7 +131,27 @@ def decl_blocks(text: str) -> "list[tuple[str, str]]":
             if _DT.match(blines[j]):
                 end = j
                 break
-        out.append((name, "".join(lines[i:end]).rstrip()))
+        raw.append((prefix, "".join(lines[i:end]).rstrip(), explicit_name))
+
+    out: "list[tuple[str, str]]" = []
+    anonymous_occurrences: "dict[tuple[str, str], int]" = {}
+    for prefix, block, explicit_name in raw:
+        if explicit_name:
+            leaf = explicit_name
+        else:
+            stable_declaration = _norm(block)
+            digest = hashlib.sha256(stable_declaration.encode("utf-8")).hexdigest()[:16]
+            occurrence_key = (prefix, stable_declaration)
+            occurrence = anonymous_occurrences.get(occurrence_key, 0)
+            anonymous_occurrences[occurrence_key] = occurrence + 1
+            # `@` deliberately marks this as synthetic/unaddressable; kernel_structure omits such
+            # names from `#print axioms` probes.
+            # Keep the occurrence suffix inside the synthetic leaf. A dot would look like a
+            # namespace separator to consumers using `name.split(".")[-1]`, collapsing every
+            # anonymous declaration's short name to the same occurrence number.
+            leaf = f"instance@{digest}_{occurrence}"
+        name = f"{prefix}.{leaf}" if prefix else leaf
+        out.append((name, block))
     return out
 
 

@@ -399,6 +399,34 @@ def test_soft_refutation_does_not_pollute_statement_false_memory(tmp_path, monke
     assert '"source": "unit_confirmed"' in txt
 
 
+def test_injected_solver_cannot_write_statement_false_memory(tmp_path, monkeypatch):
+    from ztare.leanmill.solver import autoformalize, solver_core
+
+    monkeypatch.setattr(solver_core, "OUT_DIR", tmp_path)
+    nl = "the intended statement"
+    outcome = autoformalize.autoformalize_and_solve(
+        nl,
+        sandbox=tmp_path,
+        formalize_fn=lambda _nl: "theorem t : FalseRender := by sorry",
+        compile_fn=lambda _source: True,
+        triviality_fn=lambda _source: False,
+        backtranslate_fn=lambda _source: nl,
+        judge_fn=lambda _original, _backtranslation: True,
+        structural_fn=lambda _original, _source: True,
+        solve_fn=lambda _name, _source: {
+            "results": [{
+                "outcome": "falsified",
+                "falsifier": "counterexample at x=0",
+            }],
+        },
+        max_refines=0,
+        reformulate_budget=0,
+    )
+
+    assert outcome["outcome"] == "admitted_and_falsified"
+    assert not (tmp_path / "solver_lane_no_good_store.jsonl").exists()
+
+
 def test_strategy_falsify_uses_shared_statement_false_gate():
     """The strategist falsify/corroborate sink should not bypass the shared ¬G verdict door."""
     import inspect
@@ -938,9 +966,13 @@ def test_axiom_pack_priority_pilot_is_quarantined_and_observable(tmp_path):
     stress = stress_axiom_pack(stressed)
 
     assert stress["ok"] is False
-    assert {"strength_comparison", "separation_or_interpretation", "downstream_yield"} <= set(
-        stress["missing_stress_receipts"]
-    )
+    assert stress["missing_stress_receipts"] == ["downstream_yield"]
+    assert stress["fixed_size_smt_screen"]["validation_status"] == "pass"
+    assert stress["fixed_size_smt_screen"]["verdict_counts"] == {
+        "SAT": 3,
+        "UNSAT": 1,
+        "UNKNOWN": 0,
+    }
     assert stressed.to_json()["proof_credit_eligible"] is False
     assert stressed.to_json()["theorem_campaign_admissible"] is False
     assert theorem_campaign_consumption_gate(stressed)["allowed"] is False
@@ -1034,6 +1066,13 @@ def test_inverse_semigroup_cheap_stress_surfaces_second_domain():
     )
     assert semantic["suite"]["joint_satisfiability"]["status"] == "SAT"
     assert semantic["suite"]["status"] == "SAT_WITHOUT_COMPLETE_INDEPENDENCE_WITNESSES"
+    fixed_screen = semantic["fixed_size_smt_screen"]
+    assert fixed_screen["scheduled_query_count"] == 4
+    assert fixed_screen["filter_budget_used"] == 4
+    assert all(
+        row["sort_sizes"] == {"Element": 7} for row in fixed_screen["queries"]
+    )
+    assert sum(fixed_screen["summary"]["verdict_counts"].values()) == 4
 
 
 def test_state_convergence_conflicts_include_statement_false(tmp_path):
@@ -1132,7 +1171,14 @@ def test_faithfulness_rows_carry_statement_id_and_legacy_rows_still_load(tmp_pat
     nl = "addition on natural numbers commutes"
     stmt = "theorem faithful_target (a b : Nat) : a + b = b + a := by sorry"
     store = FaithfulnessStore(path)
-    assert store.record(nl, stmt, confirmed=True, fingerprint={"conclusion_op": "eq"}, source="unit")
+    assert store.record(
+        nl,
+        stmt,
+        confirmed=True,
+        fingerprint={"conclusion_op": "eq"},
+        source="unit_certificate",
+        evidence_tier="certified",
+    )
     row = json.loads(path.read_text(encoding="utf-8").strip())
     assert row["statement_id"]["target_name"] == "faithful_target"
     assert row["statement_id"]["closed_prop_hash"]
@@ -1150,7 +1196,38 @@ def test_faithfulness_rows_carry_statement_id_and_legacy_rows_still_load(tmp_pat
     }) + "\n", encoding="utf-8")
     legacy_store = FaithfulnessStore(legacy)
     assert (legacy_store.reference(nl) or {}).get("statement") == stmt
-    assert legacy_store.confirms(nl, "theorem renamed_target (a b : Nat) : a + b = b + a := by sorry")
+    assert not legacy_store.confirms(
+        nl,
+        "theorem renamed_target (a b : Nat) : a + b = b + a := by sorry",
+    )
+
+
+def test_reviewed_faithfulness_is_hint_only_and_preserves_full_nl(tmp_path):
+    import json
+
+    from ztare.leanmill.solver.autoformalize import _reference_gate_inputs
+    from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore
+
+    path = tmp_path / "solver_lane_faithfulness_store.jsonl"
+    nl = "a" * 700
+    statement = "theorem reviewed_target : True := by sorry"
+    store = FaithfulnessStore(path)
+    assert store.record(
+        nl,
+        statement,
+        confirmed=True,
+        source="firewall_admit",
+        evidence_tier="reviewed",
+        verdict_provenance={"method": "single_family_vote", "votes": [True, True, False]},
+    )
+
+    row = json.loads(path.read_text(encoding="utf-8"))
+    reference = store.reference(nl)
+    assert row["nl"] == nl
+    assert row["verdict_provenance"]["method"] == "single_family_vote"
+    assert reference and reference["evidence_tier"] == "reviewed"
+    assert _reference_gate_inputs(reference) == (None, "")
+    assert not store.confirms(nl, statement)
 
 
 def test_except_audit_catches_swallowed_nameerror():
@@ -1995,7 +2072,14 @@ def test_faithfulness_reference_consults_single_refutation_ledger():
         fs = FaithfulnessStore(dd / "solver_lane_faithfulness_store.jsonl")
         NL = "f single-crossing implies the argmax set is monotone"
         WEAK = "theorem t (h : SC f) : Mono := by sorry"
-        fs.record(NL, WEAK, confirmed=True, fingerprint={"n_explicit_binders": 1}, source="firewall")
+        fs.record(
+            NL,
+            WEAK,
+            confirmed=True,
+            fingerprint={"n_explicit_binders": 1},
+            source="certificate_fixture",
+            evidence_tier="certified",
+        )
         assert (fs.reference(NL) or {}).get("statement") == WEAK     # weak is the reference (faithful-but-false)
         # the kernel ¬G is recorded to the ONE ledger (same dir, canonical key) — not a parallel store
         ng = NoGoodStore(dd / "solver_lane_no_good_store.jsonl")
@@ -2003,6 +2087,7 @@ def test_faithfulness_reference_consults_single_refutation_ledger():
         assert WEAK and ng.statement_false_keys(), "NoGoodStore must expose the statement_false keys for the consult"
         fs2 = FaithfulnessStore(dd / "solver_lane_faithfulness_store.jsonl")   # fresh instance (drops the cache)
         assert fs2.reference(NL) is None, "reference() must DROP a rendering the ONE ledger marked statement_false"
+        assert not fs2.confirms(NL, WEAK), "confirms() must also DROP a kernel-refuted rendering"
 
 
 def test_disclosed_strengthening_override_is_non_gamable():
@@ -2098,8 +2183,11 @@ def test_literal_first_recovery_closes_the_loop_end_to_end(monkeypatch):
     with tempfile.TemporaryDirectory() as d:
         dd = Path(d); monkeypatch.setattr(solver_core, "OUT_DIR", dd)
         f, c, t, b, j, s = make_mocks(literal_refutable=True)
+        # This injected solver stands in for the kernel boundary. Ordinary
+        # injected callbacks remain unable to persist refutation memory.
         out = A.autoformalize_and_solve(NL, sandbox=dd, formalize_fn=f, compile_fn=c, triviality_fn=t,
-                                        backtranslate_fn=b, judge_fn=j, solve_fn=s, structural_fn=None, max_refines=0)
+                                        backtranslate_fn=b, judge_fn=j, solve_fn=s, structural_fn=None, max_refines=0,
+                                        _trusted_refutation_memory=True)
         assert out.get("faithful") is True and out.get("solved") == "closed", \
             f"recovery must CLOSE the corrected theorem e2e, got faithful={out.get('faithful')} solved={out.get('solved')}"
         assert (out.get("faithfulness_checks") or {}).get("licensed_strengthening"), \
@@ -2114,13 +2202,29 @@ def test_literal_first_recovery_closes_the_loop_end_to_end(monkeypatch):
         dd = Path(d); monkeypatch.setattr(solver_core, "OUT_DIR", dd)
         f, c, t, b, j, s = make_mocks(literal_refutable=False)
         out = A.autoformalize_and_solve(NL, sandbox=dd, formalize_fn=f, compile_fn=c, triviality_fn=t,
-                                        backtranslate_fn=b, judge_fn=j, solve_fn=s, structural_fn=None, max_refines=0)
+                                        backtranslate_fn=b, judge_fn=j, solve_fn=s, structural_fn=None, max_refines=0,
+                                        _trusted_refutation_memory=True)
         assert not (out.get("faithful") is True and out.get("solved") == "closed"), \
             "with NO kernel ¬G the over-strengthened theorem must NOT be admitted+closed (no laundering)"
         assert not (out.get("faithfulness_checks") or {}).get("licensed_strengthening"), \
             "no license ⇒ the disclosed-strengthening override must NOT fire"
         assert not NG.NoGoodStore(dd / "solver_lane_no_good_store.jsonl").statement_false_keys(), \
             "no kernel ¬G ⇒ nothing recorded statement_false (no fabricated license)"
+
+    # (3) An injected callback has no persistence authority by default. This
+    # keeps a caller-fabricated `falsified` result out of the shared ledger.
+    with tempfile.TemporaryDirectory() as d:
+        dd = Path(d); monkeypatch.setattr(solver_core, "OUT_DIR", dd)
+        f, c, t, b, j, s = make_mocks(literal_refutable=True)
+        out = A.autoformalize_and_solve(
+            NL, sandbox=dd, formalize_fn=f, compile_fn=c,
+            triviality_fn=t, backtranslate_fn=b, judge_fn=j,
+            solve_fn=s, structural_fn=None, max_refines=0,
+        )
+        assert not (out.get("faithful") is True and out.get("solved") == "closed")
+        assert not NG.NoGoodStore(
+            dd / "solver_lane_no_good_store.jsonl"
+        ).statement_false_keys()
 
 
 def test_reformulation_refine_hint_does_not_fight_strengthening():
@@ -2640,6 +2744,28 @@ def test_all_decl_start_parsers_share_one_kind_list():
     assert not si._DECL_START.match("example : T := t"), "firewall parser must NOT recognise `example` (false `deleted`)"
 
 
+def test_backtranslation_surface_includes_referenced_definition_bodies():
+    from ztare.leanmill.solver.autoformalize import _claim_signature
+
+    source = """
+def unrelated (n : Nat) : Nat := n + 99
+
+def intendedPredicate (n : Nat) : Prop := n % 2 = 0
+
+def wrapper (n : Nat) : Prop := intendedPredicate n
+
+theorem target (n : Nat) : wrapper n ↔ n % 2 = 0 := by sorry
+"""
+
+    surface = _claim_signature(source)
+
+    assert "def intendedPredicate" in surface
+    assert "def wrapper" in surface
+    assert "n % 2 = 0" in surface
+    assert "theorem target" in surface
+    assert "def unrelated" not in surface
+
+
 def test_oneshot_formalize_extract_does_not_span_theorems():
     """AUTOFORMALIZE oneshot extractor (2026-07-01 audit). `_extract_lean_from_dispatch(..., 'oneshot')` grabs the
     LAST `theorem|lemma … := (by) sorry`. Bug: the body `.*?` could cross a `theorem`/`lemma` keyword, so a
@@ -2676,6 +2802,27 @@ def test_campaign_cycle_time_splits_formalize_and_prove(tmp_path):
     assert c["wall_s"]["first"] == 800.0, c                # launch→closure == formalize + prove
     assert c["time_to_closure_s"]["first"] == 200.0, c     # backward-compat alias == proving window
     assert abs(c["time_to_formalize_s"] + c["time_to_close_s"]["first"] - c["wall_s"]["first"]) < 0.01, "must sum"
+    # Frontier formal-task rows keep a diagnostic suffix but inherit the
+    # enclosing campaign marker for launch-to-close reporting.
+    subrun_rows = [
+        {
+            "run_tag": "camp-theory-task-deadbeef-solve",
+            "attempt_at": "1600",
+            "outcome": "failed_compile",
+            "wallclock_s": 10,
+        },
+        {
+            "run_tag": "camp-theory-task-deadbeef-solve",
+            "attempt_at": "1800",
+            "outcome": "closed",
+            "wallclock_s": 20,
+        },
+    ]
+    subrun_summary = pt.summarize_campaign_cycle_time(
+        subrun_rows, ledger=str(led)
+    )["campaigns"]
+    assert set(subrun_summary) == {"camp"}
+    assert subrun_summary["camp"]["wall_s"]["first"] == 800.0
     # NO marker (old run) → fall back to first-attempt start: formalize 0, wall == prove
     rows2 = [{"run_tag": "nomark", "attempt_at": "1600", "outcome": "closed", "wallclock_s": 5}]
     c2 = pt.summarize_campaign_cycle_time(rows2, ledger=str(led))["campaigns"]["nomark"]

@@ -1,0 +1,55 @@
+{
+  "aggregate": {
+    "coprime_cycle_counterexample_count": 0,
+    "displacement_transitive_count": 33,
+    "singular_hard_regime_count": 0
+  },
+  "authority": "deterministic_campaign_local_group_audit",
+  "claim_boundary": "Complete only for the pinned displacement-transitive order-8/9 database stratum. Order 10 has no displacement-transitive examples. No unrestricted nonexistence claim follows.",
+  "full_run_receipt_sha256": "bea2b80b612a6b1cf1c16d807349ffa7f5cc890bf39db3be409c6158aeb6f86e",
+  "independent_group_order_engines": [
+    "explicit_cayley_bfs",
+    "sympy_schreier_sims"
+  ],
+  "orders": [
+    {
+      "carrier_size": 8,
+      "displacement_group_order_distribution": {
+        "8": 12,
+        "16": 8,
+        "32": 8,
+        "64": 2
+      },
+      "displacement_transitive_count": 30,
+      "file_manifest_sha256": "3eaffc82443ee05e9cb84e15d08f9d2b9516dc666eff462ee29275a3fbb0ceb6",
+      "permutation_group_order_distribution": {
+        "16": 4,
+        "32": 16,
+        "64": 8,
+        "128": 2
+      },
+      "singular_hard_regime_count": 0
+    },
+    {
+      "carrier_size": 9,
+      "displacement_group_order_distribution": {
+        "27": 3
+      },
+      "displacement_transitive_count": 3,
+      "file_manifest_sha256": "8ae6f4f81af5b92b43cfd85432a13c8b57ae0772befce7f9f0b2c4b20b3e219c",
+      "permutation_group_order_distribution": {
+        "81": 3
+      },
+      "singular_hard_regime_count": 0
+    }
+  ],
+  "receipt_sha256": "1c528699499c2187eac17c650292d89294da66858f34d5d599aad55d7e59e593",
+  "result": "no_singular_example_in_published_displacement_transitive_stratum_through_order_10",
+  "schema": "leanmill.cycle_set_singular_hard_regime_summary.v1",
+  "source": {
+    "audit_script_sha256": "2d2bf7015177e6f22efe0819b5cb5f008f0bec61c532eb7cf03d386601cab674",
+    "commit": "92f85ee118ec73fdb7a397e4fd748f1265f02bc3",
+    "pencil_sha256": "0d141292df668f8c63d17db7375446cee9ad5b9a5776685c20a586bd5117c33b",
+    "repository": "https://github.com/vendramin/enumeration.git"
+  }
+}

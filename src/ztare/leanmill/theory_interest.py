@@ -11,6 +11,9 @@ from ztare.leanmill.equational_baseline import (
     direct_equational_consequence_analysis,
 )
 from ztare.leanmill.finite_structure_baseline import STRUCTURAL_BASELINE_REF
+from ztare.leanmill.first_order_baseline import (
+    existential_witness_transport_witness,
+)
 from ztare.leanmill.theory_context import TheoryLandscapeContext
 from ztare.leanmill.theory_ir import (
     AxiomFormula,
@@ -22,11 +25,22 @@ from ztare.leanmill.theory_ir import (
 from ztare.research_signals import ResidualYieldCoordinates, residual_information_yield
 
 
-DIRECT_EQUATIONAL_BASELINE_REF = "leanmill.bidirectional_equational_deduction.v8"
+CHEAP_CONSEQUENCE_EVALUATOR_REF = "leanmill.cheap_consequence_evaluator.v11"
+DIRECT_FIRST_ORDER_BASELINE_REF = "leanmill.first_order_logical_deduction.v11"
+# Compatibility export for callers that treat the baseline identity as opaque.
+DIRECT_EQUATIONAL_BASELINE_REF = DIRECT_FIRST_ORDER_BASELINE_REF
 COMBINED_EQUATIONAL_STRUCTURAL_BASELINE_REF = (
-    "leanmill.bidirectional_equational_plus_finite_structure.v6"
+    "leanmill.first_order_logical_plus_finite_structure.v9"
 )
 NO_CHEAP_BASELINE_REF = "leanmill.no_declared_cheap_baseline.v1"
+CURRENT_CHEAP_BASELINE_REFS = frozenset(
+    {
+        DIRECT_FIRST_ORDER_BASELINE_REF,
+        COMBINED_EQUATIONAL_STRUCTURAL_BASELINE_REF,
+        STRUCTURAL_BASELINE_REF,
+        NO_CHEAP_BASELINE_REF,
+    }
+)
 _TARGETED_BRIDGE_STEPS = 6
 _TARGETED_BRIDGE_STATES = 1_024
 _TARGETED_BRIDGE_LIMIT = 1
@@ -221,6 +235,12 @@ def _theory_consequence_yield(
             )
             if analysis.witness is not None:
                 witnesses[target_id] = analysis.witness.to_json()
+            elif (
+                logical_witness := existential_witness_transport_witness(
+                    premises, axiom_map[target_id]
+                )
+            ) is not None:
+                witnesses[target_id] = logical_witness.to_json()
             elif (
                 analysis.bounded_search is not None
                 and analysis.bounded_search.status == "state_cap_saturated"
@@ -514,62 +534,76 @@ def profile_theory_program_predictions(
         set(program_yield.cheap_baseline_inconclusive_ids) if program_yield else set()
     )
     targeted_cheap: dict[str, Mapping[str, object]] = {}
+    equational_targeting_available = False
     if program_yield is not None:
         formulas = {
             str(row.formula_id): row.axiom
             for row in context.formula_profiles
             if isinstance(getattr(row, "axiom", None), AxiomFormula)
         }
-        premises = tuple(context.base_axioms) + tuple(
-            formulas[formula_id] for formula_id in hypotheses
+        equational_targeting_available = all(
+            formula_id in formulas for formula_id in hypotheses + predictions
         )
-        for target_id in predictions:
-            if target_id not in residual:
-                continue
-            bridge_ids = sorted(
-                program_yield.cheap_baseline_consequence_ids,
-                key=lambda formula_id: (
-                    str(
-                        program_yield.cheap_baseline_witnesses[formula_id].get(
-                            "schema", ""
-                        )
-                    ).startswith("leanmill.composed_"),
-                    _formula_units(formulas[formula_id].formula),
-                    formula_id,
-                ),
+        if equational_targeting_available:
+            premises = tuple(context.base_axioms) + tuple(
+                formulas[formula_id] for formula_id in hypotheses
             )
-            for bridge_id in bridge_ids[:_TARGETED_BRIDGE_LIMIT]:
-                bridge_witness = program_yield.cheap_baseline_witnesses.get(
-                    bridge_id, {}
-                )
-                if str(bridge_witness.get("schema") or "").startswith(
-                    "leanmill.finite_structure_"
-                ):
+            for target_id in predictions:
+                if target_id not in residual:
                     continue
-                analysis = bounded_equational_reduction_analysis(
-                    premises + (formulas[bridge_id],),
-                    formulas[target_id],
-                    max_steps=_TARGETED_BRIDGE_STEPS,
-                    max_states_per_side=_TARGETED_BRIDGE_STATES,
-                )
-                if analysis.witness is None:
-                    continue
-                local = analysis.witness.to_json()
-                if formulas[bridge_id].semantic_hash not in _witness_premise_hashes(local):
-                    continue
-                core = {
-                    "schema": "leanmill.targeted_composed_equational_baseline.v1",
-                    "dependency_formula_id": bridge_id,
-                    "dependency_witness_receipt": str(
-                        bridge_witness.get("receipt_sha256") or ""
+                bridge_ids = sorted(
+                    (
+                        formula_id
+                        for formula_id in program_yield.cheap_baseline_consequence_ids
+                        if formula_id in formulas
+                        and _witness_premise_hashes(
+                            program_yield.cheap_baseline_witnesses[formula_id]
+                        )
                     ),
-                    "local_witness": local,
-                }
-                targeted_cheap[target_id] = {
-                    **core,
-                    "receipt_sha256": content_hash(core),
-                }
-                break
+                    key=lambda formula_id: (
+                        str(
+                            program_yield.cheap_baseline_witnesses[formula_id].get(
+                                "schema", ""
+                            )
+                        ).startswith("leanmill.composed_"),
+                        _formula_units(formulas[formula_id].formula),
+                        formula_id,
+                    ),
+                )
+                for bridge_id in bridge_ids[:_TARGETED_BRIDGE_LIMIT]:
+                    bridge_witness = program_yield.cheap_baseline_witnesses.get(
+                        bridge_id, {}
+                    )
+                    if str(bridge_witness.get("schema") or "").startswith(
+                        "leanmill.finite_structure_"
+                    ):
+                        continue
+                    analysis = bounded_equational_reduction_analysis(
+                        premises + (formulas[bridge_id],),
+                        formulas[target_id],
+                        max_steps=_TARGETED_BRIDGE_STEPS,
+                        max_states_per_side=_TARGETED_BRIDGE_STATES,
+                    )
+                    if analysis.witness is None:
+                        continue
+                    local = analysis.witness.to_json()
+                    if formulas[bridge_id].semantic_hash not in _witness_premise_hashes(
+                        local
+                    ):
+                        continue
+                    core = {
+                        "schema": "leanmill.targeted_composed_equational_baseline.v1",
+                        "dependency_formula_id": bridge_id,
+                        "dependency_witness_receipt": str(
+                            bridge_witness.get("receipt_sha256") or ""
+                        ),
+                        "local_witness": local,
+                    }
+                    targeted_cheap[target_id] = {
+                        **core,
+                        "receipt_sha256": content_hash(core),
+                    }
+                    break
     rows: list[dict[str, Any]] = []
     for target_id in predictions:
         counterexample_id = context.incidence.implication_counterexample_object_id(
@@ -635,6 +669,7 @@ def profile_theory_program_predictions(
         "presentation_formula_ids": list(hypotheses),
         "prediction_formula_ids": list(predictions),
         "extent_size": extent_bits.bit_count(),
+        "equational_targeting_available": equational_targeting_available,
         "predictions": rows,
         "claim_boundary": (
             "support and refutation are exact only over the frozen context"
@@ -647,8 +682,11 @@ def profile_theory_program_predictions(
 
 
 __all__ = [
+    "CHEAP_CONSEQUENCE_EVALUATOR_REF",
     "COMBINED_EQUATIONAL_STRUCTURAL_BASELINE_REF",
+    "CURRENT_CHEAP_BASELINE_REFS",
     "DIRECT_EQUATIONAL_BASELINE_REF",
+    "DIRECT_FIRST_ORDER_BASELINE_REF",
     "NO_CHEAP_BASELINE_REF",
     "TheoryProgramYield",
     "TheoryResidualYield",

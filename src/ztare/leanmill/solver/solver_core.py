@@ -87,10 +87,23 @@ import subprocess
 import sys
 import tempfile
 import time
-from dataclasses import asdict, dataclass, is_dataclass
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
+
+from ztare.leanmill.solver.closed_artifact import (
+    build_kernel_parity_record as _build_kernel_parity_record,
+    build_verified_closure_artifact as _verified_closure_artifact,
+    closure_certificate_identity as _closure_certificate_identity,
+    closure_toolchain_identity as _closure_toolchain_identity,
+    dag_governance_axes as _dag_governance_axes,
+    finalize_solver_validation as _finalize_solver_validation,
+    finalized_ratification_eligible as _finalized_ratification_eligible,
+    governance_ratification_eligible as _governance_ratification_eligible,
+    unavailable_finalized_validation as _unavailable_finalized_validation,
+    validate_verified_closure_artifact as _validate_verified_closure_artifact,
+)
 
 REPO = Path(__file__).resolve().parents[4]
 CONTROL = REPO / "scripts" / "public" / "control"
@@ -619,20 +632,32 @@ def _native_campaign_context(enriched: str, name: str) -> str:
         return enriched
 
 
+_NATIVE_HAMMER_CONTROL_SOURCE = (
+    "import Mathlib\n\n"
+    "theorem nh_smoke : (0 : Nat) = 0 :=\n"
+    "sorry\n"
+)
+
+
 def _native_hammer_self_test(lean_root: Path, timeout_s: int = 300) -> tuple[bool, str]:
-    """POSITIVE CONTROL: native_hammer must close a trivial target through the FULL probe path
-    (stub-build + verify). If it can't compile `: True := by trivial`, the probe-assembly harness is
-    broken (not the math) and every native_hammer NEGATIVE is inadmissible. Run before trusting a 0/N.
+    """Exercise the production probe path on one isolated ``rfl`` control.
+
+    The control has its own target identity and tactic roster.  It establishes
+    carrier availability only; it is never governed as, or attributed to, a
+    campaign theorem.
     """
     import tempfile as _tf
     with _tf.TemporaryDirectory() as _td:
         sp = Path(_td) / "NhSmoke.lean"
-        sp.write_text("import Mathlib\n\ntheorem nh_smoke : True :=\nsorry\n", encoding="utf-8")
+        sp.write_text(_NATIVE_HAMMER_CONTROL_SOURCE, encoding="utf-8")
         row = {"row_id": "native_hammer::selftest", "target_theorem_name": "nh_smoke",
-               "goal": ": True", "source_file": str(sp), "sorried_file": str(sp)}
-        ok, _proof, tail = _native_hammer_probe(row, lean_root, timeout_s)
-    if not ok:
-        return ok, f"native_hammer probe path BROKEN — cannot close a trivial control: {tail[-200:]}"
+               "goal": ": (0 : Nat) = 0", "source_file": str(sp), "sorried_file": str(sp)}
+        result = _native_hammer_probe(row, lean_root, timeout_s, tactics=("rfl",))
+    if not result.closed:
+        return False, (
+            "native_hammer probe path BROKEN — cannot close the isolated rfl control: "
+            + result.transcript[-200:]
+        )
     # CAMPAIGN-CONTEXT leg (the Book-class single door, 2026-07-05): a prover path that drops the substrate makes a
     # goal referencing substrate defs `unknown identifier` + autoImplicit-mangle → the move is silently dead on
     # EVERY data-structure campaign (CLOB native_hammer 0/69 for a whole run). Assert native_hammer's REAL probe
@@ -652,17 +677,20 @@ def _native_hammer_self_test(lean_root: Path, timeout_s: int = 300) -> tuple[boo
                 # `(_h : @D = @D) : True` only ELABORATES if D resolves — provability is irrelevant; we look for
                 # `unknown identifier`. Routes through _native_hammer_probe so it exercises the SAME prepend path.
                 _crow = {"row_id": "native_hammer::ctx", "target_theorem_name": "nh_ctx_probe",
-                         "goal": f"(_h : @{_d} = @{_d}) : True"}
-                _cok, _cp, _ctail = _native_hammer_probe(_crow, lean_root, timeout_s)
-                if "unknown identifier" in (_ctail or "").lower():
+                         "goal": f": @{_d} = @{_d}"}
+                _cres = _native_hammer_probe(
+                    _crow, lean_root, timeout_s, tactics=("rfl",)
+                )
+                if "unknown identifier" in (_cres.transcript or "").lower():
                     print(f"[preflight] ⚠️ native_hammer CONTEXT WARNING — substrate def `{_d}` reads as unknown "
-                          f"in the probe path (campaign context may not be carried): {_ctail[-160:]}", flush=True)
+                          f"in the probe path (campaign context may not be carried): "
+                          f"{_cres.transcript[-160:]}", flush=True)
                     ctx = f"; ⚠️ campaign context leg FAILED on `{_d}` (unknown identifier)"
                 else:
                     ctx = f"; campaign context resolves (`{_d}`)"
     except Exception:  # noqa: BLE001 — best-effort; the trivial control already passed
         ctx = "; campaign context leg errored (best-effort)"
-    return ok, "native_hammer probe path OK (closed trivial control)" + ctx
+    return True, "native_hammer probe path OK (closed isolated rfl control)" + ctx
 
 
 # ── Strategist-gate positive control (the dead-instrument lesson, one level up) ──────────────────────
@@ -724,6 +752,52 @@ def _strategist_gates_self_test(lean_root: Path, timeout_s: int = 60) -> dict:
 _PREFLIGHT_CACHE: dict = {}
 
 
+def _preflight_cache_key(
+    lean_root: Path,
+    strategist_on: bool,
+    effective_timeout_s: "int | None" = None,
+) -> tuple:
+    """Identity of the carrier whose positive-control verdict is reusable."""
+    import hashlib
+
+    root = Path(lean_root).resolve()
+    tactic_roster = tuple(_NATIVE_HAMMER_TACTICS)
+    try:
+        checker = active_proof_checker_name()
+    except Exception:  # module initialization / injected minimal checker
+        checker = type(globals().get("_PROOF_CHECKER")).__name__
+    substrate_identity = ""
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        campaign = get_campaign_substrate()
+        if campaign:
+            cp = Path(campaign).resolve()
+            substrate_identity = (
+                f"{cp}:" + hashlib.sha256(cp.read_bytes()).hexdigest()
+            )
+    except Exception:
+        substrate_identity = "campaign_substrate_unreadable"
+    toolchain_identity = ""
+    try:
+        toolchain = root / "lean-toolchain"
+        toolchain_identity = hashlib.sha256(toolchain.read_bytes()).hexdigest()
+    except Exception:
+        toolchain_identity = "lean_toolchain_unreadable"
+    return (
+        str(root),
+        bool(strategist_on),
+        checker,
+        hashlib.sha256(repr(tactic_roster).encode("utf-8")).hexdigest(),
+        hashlib.sha256(_NATIVE_HAMMER_CONTROL_SOURCE.encode("utf-8")).hexdigest(),
+        int(_NATIVE_HAMMER_PER_TACTIC_FLOOR_S),
+        int(effective_timeout_s or 0),
+        id(globals().get("_native_hammer_probe")),
+        id(globals().get("_strategist_gates_self_test")) if strategist_on else 0,
+        substrate_identity,
+        toolchain_identity,
+    )
+
+
 def _preflight_dead_loud_record(move: str, lean_root, detail: str, until_clause: str,
                                 kind: str = "DEAD MOVE") -> None:
     """Loud banner + an attempts-DB row when a move/gate fails its positive control — so a dead carrier
@@ -731,15 +805,20 @@ def _preflight_dead_loud_record(move: str, lean_root, detail: str, until_clause:
     bar = "=" * 70
     print(f"\n{bar}\n⚠ {kind} — {move} failed its positive control on {lean_root}\n"
           f"  {detail}\n  Negatives from {move} are INADMISSIBLE until {until_clause}.\n{bar}\n", flush=True)
-    try:
-        with _attempts_conn() as _c:
-            _c.execute(
-                "INSERT INTO attempts (row_id, attempt_at, provider, outcome, compile_ok, notes, move) "
-                "VALUES (?,?,?,?,?,?,?)",
-                (f"preflight::{move}", datetime.now(timezone.utc).isoformat(),
-                 move, "harness_dead", 0, _public_text(str(detail))[:300], move))
-    except Exception:
-        pass
+    _record_attempt(
+        f"preflight::{move}",
+        move,
+        "inadmissible_harness_dead",
+        False,
+        _public_text(str(detail))[:300],
+        proof_state={
+            "goals_remaining": 1,
+            "error_class": "capability_unavailable",
+            "progress": 0.0,
+        },
+        move=move,
+        carrier_live=False,
+    )
 
 
 def preflight_moves_alive(lean_root, timeout_s: int = 120) -> dict:
@@ -762,12 +841,12 @@ def preflight_moves_alive(lean_root, timeout_s: int = 120) -> dict:
                  or any(os.environ.get(f) == "1" for f in
                         ("ZTARE_CONJECTURE_DECOMPOSE", "ZTARE_LEANMILL_GENERALIZE",
                          "ZTARE_LEANMILL_SPECIALIZE", "ZTARE_LEANMILL_COMPOSITE_RATIFY")))
-    key = (str(lean_root), _strat_on)
-    if key in _PREFLIGHT_CACHE:
-        return _PREFLIGHT_CACHE[key]
     from ztare.leanmill.cold_calibration import cold_safe_timeout
     timeout_s = cold_safe_timeout(timeout_s, lean_root)   # self-measured cold-Mathlib floor — kills the hand-
     #   guessed cold-false-fail that wrongly marked native_hammer dead (the bug class, mechanized away).
+    key = _preflight_cache_key(Path(lean_root), _strat_on, timeout_s)
+    if key in _PREFLIGHT_CACHE:
+        return _PREFLIGHT_CACHE[key]
     try:
         ok, msg = _native_hammer_self_test(Path(lean_root), timeout_s)
     except Exception as e:  # noqa: BLE001
@@ -888,7 +967,13 @@ def _campaign_env_fingerprint() -> str:
 _LAST_CALIB_FP: "list[str | None]" = [None]
 
 
-def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bool, str, str]:
+def _native_hammer_probe(
+    row: dict,
+    lean_root: Path,
+    timeout_s: int,
+    *,
+    tactics: "tuple[str, ...] | None" = None,
+) -> NativeHammerProbeResult:
     """Layer 2 — try the cheap deterministic tactic cascade on the goal.
 
     For each tactic in _NATIVE_HAMMER_TACTICS, write a probe file with the
@@ -896,8 +981,19 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
     compile via `lake env lean`. First tactic that closes wins. ~5-30 s per
     probe; total cap by per-tactic timeout = timeout_s / len(tactics).
 
-    Returns (compile_ok, proof_text, transcript_tail).
+    ``exhausted`` means every selected tactic ran to a normal non-close.
+    Timeouts, total-cap clipping, checker faults, and malformed inputs are
+    typed ``unavailable`` so they cannot become mathematical counterevidence.
     """
+    if row.get("_native_hammer_capability_available") is False:
+        return NativeHammerProbeResult(
+            "unavailable", transcript="native_hammer: preflight capability unavailable"
+        )
+    selected_tactics = tuple(tactics or _NATIVE_HAMMER_TACTICS)
+    if not selected_tactics:
+        return NativeHammerProbeResult(
+            "unavailable", transcript="native_hammer: empty tactic roster"
+        )
     base_goal = (row.get("goal") or "").strip()
     name = row.get("target_theorem_name") or ""
     # COMPILE the REAL source (statement verbatim, proof swapped) — NOT a reconstructed goal. The old
@@ -908,16 +1004,30 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
     # TYPED CONTRACT (contracts.ProofTarget): the source/sorried fallback lives in ONE place now
     # (`source_path()`) instead of being re-spelled at each call-site where it can drift — behaviour-identical
     # here (source_file ?: sorried_file). First adoption of the kernel-wide typed-contract migration (#49).
-    _sp = ProofTarget.from_row(row).source_path()
+    try:
+        _sp = ProofTarget.from_row(row).source_path()
+    except Exception as exc:
+        return NativeHammerProbeResult(
+            "unavailable",
+            transcript=f"native_hammer: invalid proof target: {exc!r}",
+        )
     if _sp and Path(_sp).exists():
         try:
             src_text = Path(_sp).read_text(encoding="utf-8", errors="replace")
         except Exception:
             src_text = ""
-    enriched = _native_compile_stub(src_text, name)
+    try:
+        enriched = _native_compile_stub(src_text, name)
+    except Exception as exc:  # malformed source/assembly is carrier-unavailable
+        return NativeHammerProbeResult(
+            "unavailable",
+            transcript=f"native_hammer: probe assembly exception: {exc!r}",
+        )
     if not enriched:                         # fallback: wrap the bare signature into a valid stub
         if not base_goal:
-            return False, "", "native_hammer: missing goal/source"
+            return NativeHammerProbeResult(
+                "unavailable", transcript="native_hammer: missing goal/source"
+            )
         if base_goal.lstrip().startswith(("theorem", "lemma", "example")):
             _cs = base_goal.rstrip()
             if not _cs.endswith(":= by"):
@@ -949,13 +1059,20 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
     _dedup_on = os.environ.get("ZTARE_LEANMILL_NATIVE_DEDUP", "1") != "0"
     _memo_key = (os.environ.get("ZTARE_SOLVER_RUN_TAG", ""),
                  _campaign_env_fingerprint(),   # bank-a-rung-mid-run invalidates stale failures (within-run compounding)
-                 _hl_nh.sha256(f"{enriched}|{_NATIVE_HAMMER_TACTICS}".encode()).hexdigest())
+                 _hl_nh.sha256(f"{enriched}|{selected_tactics}".encode()).hexdigest())
     if _dedup_on and _memo_key in _NATIVE_CASCADE_FAILED_MEMO:
-        return False, "", ("[native_hammer] in-run dedup: identical goal already FAILED the full cascade "
-                           "this run (deterministic; re-run is waste) | prior: "
-                           + _NATIVE_CASCADE_FAILED_MEMO[_memo_key][-160:])
+        return NativeHammerProbeResult(
+            "exhausted",
+            transcript=(
+                "[native_hammer] in-run dedup: identical goal already exhausted the full cascade "
+                "this run | prior: " + _NATIVE_CASCADE_FAILED_MEMO[_memo_key][-160:]
+            ),
+        )
     # Per-tactic budget: prefer cheap, abort the cascade as soon as one closes.
-    per_tactic_timeout = max(_NATIVE_HAMMER_PER_TACTIC_FLOOR_S, int(timeout_s / max(1, len(_NATIVE_HAMMER_TACTICS))))
+    per_tactic_timeout = max(
+        _NATIVE_HAMMER_PER_TACTIC_FLOOR_S,
+        int(timeout_s / max(1, len(selected_tactics))),
+    )
     # PER-MOVE CAP (ZTARE_LEANMILL_PERMOVE_CAPS=1, default-off=parity): the legacy per_tactic = timeout_s/N
     # is a FRACTION of the total that, summed over the 18-tactic cascade, runs ~400s and lets native_hammer
     # monopolise the whole per-target wallclock (the starvation leak — _cap on the outer arg was divided away
@@ -971,10 +1088,17 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
         # trivial it can close: the recurring cold-false-fail, here at the cascade level). The self-measured
         # floor lifts it to the box's baseline; a WARM tactic still finishes in ~5-30s (the floor is a budget
         # ceiling, not a forced wait); the cumulative deadline below still bounds the TOTAL cascade time.
-        per_tactic_timeout = cold_safe_timeout(30, lean_root)
+        try:
+            per_tactic_timeout = cold_safe_timeout(30, lean_root)
+        except Exception as exc:
+            return NativeHammerProbeResult(
+                "unavailable",
+                transcript=f"native_hammer: cold calibration unavailable: {exc!r}",
+            )
     transcript = []
+    unavailable_seen = False
     _clipped = False   # a cap-clipped cascade is NOT memoized (retry under a bigger budget may differ)
-    for tactic in _NATIVE_HAMMER_TACTICS:
+    for tactic in selected_tactics:
         if _caps_on:
             _rem = timeout_s - (_t_nh.time() - _nh_start)
             if _rem <= 5:
@@ -988,19 +1112,47 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
         tac_timeout = max(60, per_tactic_timeout) if tactic in ("exact?", "apply?") else per_tactic_timeout
         if _caps_on:
             tac_timeout = min(tac_timeout, max(10, int(_rem)))   # clip the slice to the remaining cap
-        compile_ok, tail = _verify_compile(
-            row.get("row_id", "anon"),
-            enriched or base_goal,
-            tactic,
-            lean_root,
-            tac_timeout,
-        )
+        try:
+            compile_ok, tail = _verify_compile(
+                row.get("row_id", "anon"),
+                enriched or base_goal,
+                tactic,
+                lean_root,
+                tac_timeout,
+            )
+        except Exception as exc:
+            transcript.append(
+                f"[{tactic}] checker exception: {type(exc).__name__}: {exc}"
+            )
+            unavailable_seen = True
+            continue
         transcript.append(f"[{tactic}] {'OK' if compile_ok else 'no'}  {(tail or '')[-180:]}")
         if compile_ok:
-            return True, tactic, "\n".join(transcript[-3:])
-    if _dedup_on and not _clipped:
+            return NativeHammerProbeResult(
+                "closed", tactic, "\n".join(transcript[-3:])
+            )
+        normalized_tail = (tail or "").lower()
+        if any(marker in normalized_tail for marker in (
+            "verify_compile_timeout",
+            "lake_not_on_path",
+            "verify_compile_exception",
+            "timed out",
+            "timeout expired",
+            "no such file or directory",
+            "unknown identifier",
+            "unexpected token",
+            "parser error",
+        )):
+            unavailable_seen = True
+    if _clipped or unavailable_seen:
+        return NativeHammerProbeResult(
+            "unavailable", transcript="\n".join(transcript[-3:])
+        )
+    if _dedup_on:
         _NATIVE_CASCADE_FAILED_MEMO[_memo_key] = transcript[-1] if transcript else "all tactics failed"
-    return False, "", "\n".join(transcript[-3:])
+    return NativeHammerProbeResult(
+        "exhausted", transcript="\n".join(transcript[-3:])
+    )
 
 
 # ── Upstream typed solver action contract ─────────────────────────────────
@@ -1019,10 +1171,7 @@ def _native_hammer_probe(row: dict, lean_root: Path, timeout_s: int) -> tuple[bo
 sys.path.insert(0, str(REPO / "src"))
 from ztare.leanmill.solver.contract import (  # noqa: E402
     SOLVER_CONTRACT_SCHEMA,
-    DEFAULT_PROVER_CHAIN as _DEFAULT_PROVER_CHAIN,
-    DEFAULT_ANTI_PATTERNS as _DEFAULT_ANTI_PATTERNS,
     build_solver_action_contract as _canonical_build_solver_action_contract,
-    ratification_mnc_contract_projection as _ratification_mnc_contract_projection,
     source_cue_check as _canonical_source_cue_check,
 )  # (`validate_against_contract` / `verify_matched_negative_control` removed 2026-06-23 — dead siblings)
 
@@ -1040,7 +1189,10 @@ except Exception:  # noqa: BLE001
 # (LLM, expensive) so a caller can run the free layer first and only escalate to
 # the expensive LLM provers if a gate (the Agentic Circuit Breaker, F108/task #74)
 # allows. solve() passes gate=None by default → behavior-preserving.
-from ztare.leanmill.solver.deterministic import run_deterministic_layer  # noqa: E402
+from ztare.leanmill.solver.deterministic import (  # noqa: E402
+    NativeHammerProbeResult,
+    run_deterministic_layer,
+)
 from ztare.leanmill.solver.llm_provers import run_llm_layers  # noqa: E402
 from ztare.gates.lean_compile_primitives import run_lake_subprocess, _is_compile_ok  # noqa: E402
 from ztare.leanmill.contracts import ProofTarget, SolveResult, primary_result  # noqa: E402 — typed-contract migration (#49)
@@ -1052,187 +1204,9 @@ def _source_cue_check(row: dict) -> dict:
 
 
 def _build_solver_action_contract(row: dict, lean_root: Path) -> dict:
-    """Build the upstream typed action contract for one solver row.
+    """Delegate contract identity to the canonical contract owner."""
 
-    Structure mirrors the upstream pattern_action_contract.py (H30 / H32-H34 evidence
-    basis): scope + goal_excerpt + pattern_chain + anti_patterns +
-    required_receipts + executable action_program with program_counter_rule
-    and stop_condition + source_cue_check + downstream_consumer_check.
-
-    The contract is the dispatch plan. Layer dispatch in solve() advances
-    the program counter ONE LAYER per cycle, respects the stop_condition,
-    and validates each receipt named in required_receipts before declaring
-    a closure credit-ready at the solver layer (final credit decision is
-    deferred to leanmill_proof_audit).
-    """
-    target_name = row.get("target_theorem_name") or ""
-    goal_excerpt = (row.get("goal") or "").strip()[:480]
-    cue_result = _source_cue_check(row)
-    ratification_only = bool(row.get("_preverified_only"))
-    ratification_mnc = (
-        _ratification_mnc_contract_projection() if ratification_only else None
-    )
-    # Lower the residual class to an executable action program per H30.
-    # Each step is a named layer the dispatcher will run, in order, until
-    # either credit_ready or the stop_condition fires.
-    action_program = [
-        "layer2_native_hammer_cascade",
-        "layer3_warm_agent_iterate",
-        "layer4_cold_shot_multi_provider",
-        "layer5_validate_against_contract",
-    ]
-    # Try the RD pattern_action_contract for richer pattern_chain selection;
-    # fall back to the local default if the RD module isn't importable.
-    pattern_chain: list[str] = list(_DEFAULT_PROVER_CHAIN)
-    rd_evidence_basis = "local_default"
-    try:
-        sys.path.insert(0, str(REPO / "src"))
-        from ztare.research_director.pattern_action_contract import (  # type: ignore
-            build_pattern_action_contract,
-        )
-        rd_contract = build_pattern_action_contract(
-            scope="solver_lane_no_positive_family_template",
-            goal_excerpt=goal_excerpt,
-        )
-        rd_dict = asdict(rd_contract) if is_dataclass(rd_contract) else (
-            rd_contract if isinstance(rd_contract, dict) else {})
-        rd_pattern_chain = list(rd_dict.get("pattern_chain") or [])
-        if rd_pattern_chain:
-            pattern_chain = rd_pattern_chain
-            rd_evidence_basis = "rd_pattern_action_contract"
-    except Exception:
-        pass
-
-    # ── RD primitive_tick_surface query: pull the top-relevance primitives
-    # (gates, patterns, ops) matched to the goal text. This is the apparatus's
-    # in-built relevance retrieval — same surface RD uses pre-tick. Exposes
-    # which gates / mining ops the solver should consult when a layer fails.
-    rd_primitive_hits: list[dict] = []
-    try:
-        sys.path.insert(0, str(REPO / "src"))
-        from ztare.research_director.primitive_tick_surface import (  # type: ignore
-            build_primitive_tick_surface,
-        )
-        # Tokenize the goal text + target name + sub_area into query terms.
-        raw = f"{target_name} {goal_excerpt} {row.get('sub_area') or ''}".lower()
-        tokens = [
-            t for t in
-            "".join(ch if ch.isalnum() else " " for ch in raw).split()
-            if len(t) >= 3
-        ]
-        # Deduplicate while preserving order; cap to 16 most-informative.
-        seen = set()
-        query_terms = []
-        for t in tokens:
-            if t not in seen:
-                seen.add(t)
-                query_terms.append(t)
-            if len(query_terms) >= 16:
-                break
-        if query_terms:
-            surface = build_primitive_tick_surface(
-                query_terms=query_terms, top_n=6, per_bucket=2,
-            )
-            for hit in (surface.top_hits or []):
-                rd_primitive_hits.append({
-                    "id": hit.id,
-                    "kind": hit.kind,
-                    "score": hit.score,
-                    "why": hit.why,
-                    "description": hit.description,
-                })
-    except Exception:
-        pass
-    return {
-        "schema": SOLVER_CONTRACT_SCHEMA,
-        "generated_at_epoch": int(time.time()),
-        "row_id": row.get("row_id"),
-        "target_theorem_name": target_name,
-        "ratification_only": ratification_only,
-        "matched_negative_control_mode": (
-            ratification_mnc["mode"] if ratification_mnc else "context_stripped"
-        ),
-        "source_file": row.get("source_file"),
-        "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": goal_excerpt,
-        "requested_residual_class": "no_positive_family_template_closure",
-        "accepted_residual_class": (
-            "no_positive_family_template_closure"
-            if cue_result["source_cue_check_status"] == "passed"
-            else "outside_menu_source_cues_missing"
-        ),
-        "source_cue_check_status": cue_result["source_cue_check_status"],
-        "source_cue_receipts": cue_result["source_cue_receipts"],
-        "missing_source_cues": cue_result["missing_source_cues"],
-        "rejected_nearest_confuser": "pde_estimate_or_carrier_residual (rejected: target is not a PDE inequality; routes to PDE workbench instead)",
-        "pattern_chain": pattern_chain,
-        "anti_patterns": list(_DEFAULT_ANTI_PATTERNS),
-        "evidence_basis": rd_evidence_basis,
-        "rd_primitive_hits": rd_primitive_hits,
-        # Executable program per H30: every action is named, ordered, and
-        # advanced by the program counter rule after the previous action
-        # emits its receipt.
-        "action_program": action_program,
-        "current_action_index": 0,
-        "required_next_action": action_program[0],
-        "program_counter_rule": (
-            "advance current_action_index only after the current action has emitted "
-            "its receipt; if the receipt is `closed` AND "
-            + (
-                ratification_mnc["program_counter_condition"]
-                if ratification_mnc else
-                "matched_negative_control passes"
-            )
-            + ", stop (credit_ready_at_solver_layer = true). Otherwise continue "
-            "to the next action_program step until exhausted or stop_condition fires."
-        ),
-        "stop_condition": (
-            "stop on first credit_ready_at_solver_layer = true; or when "
-            "action_program is exhausted (last action's receipt recorded); or when "
-            "the row exceeds MAX_FAILED_ATTEMPTS_PER_ROW across cycles (cooldown)."
-        ),
-        "required_receipts": [
-            {
-                "name": "kernel_compile_receipt",
-                "required": True,
-                "acceptance_check": "lake env lean over the enriched probe (prelude + semantic shelf + proof body) returns exit 0 with no error: lines.",
-            },
-            {
-                "name": "matched_negative_control_receipt",
-                "required": True,
-                "acceptance_check": (
-                    ratification_mnc["acceptance_check"]
-                    if ratification_mnc else
-                    "the same proof_text under bare `import Mathlib` (gold-bearing prelude STRIPPED) FAILS to compile. A negative-control PASS = the proof was a single-Mathlib-lookup; that is leakage and forces rejection."
-                ),
-            },
-            {
-                "name": "axiom_allowlist_receipt",
-                "required": True,
-                "acceptance_check": "`#print axioms <target>` shows axioms ⊆ {propext, Classical.choice, Quot.sound}.",
-                "deferred_to": "leanmill_proof_audit",
-            },
-            {
-                "name": "l3_anti_pattern_receipt",
-                "required": True,
-                "acceptance_check": "the v33 deep verifier (single-lemma `by exact?`, indirect leakage, currency mismatch, paraphrase) returns no confirmed blocker.",
-                "deferred_to": "leanmill_proof_audit",
-            },
-        ],
-        "reject_or_repair_behavior": {
-            "kernel_compile_fail": "advance to next action_program step; if exhausted, mark row failed_compile and record attempt.",
-            **(
-                ratification_mnc["reject_or_repair_behavior"]
-                if ratification_mnc else
-                {"matched_negative_control_pass": "REJECT closure as leakage/laundering; mark row rejected_negative_control; do not credit."}
-            ),
-            "axiom_outside_allowlist": "REJECT closure; mark row rejected_axiom_outside_allowlist.",
-            "l3_confirmed_blocker": "REJECT closure; mark row rejected_l3; record the specific blocker class.",
-            "clean_proceed_condition": "all required_receipts at solver_layer must pass AND downstream_consumer_check must accept; only then upgrade to unratified_closure_candidate typed exit.",
-        },
-        "downstream_consumer_check": "leanmill_proof_audit emits a typed receipt that the governance worker consumes; only payloads with all receipts passing become unratified_closure_candidate typed exits.",
-        "credit_boundary": "advisory_only_no_factory_credit; the contract names the receipts that must pass before any credit-ready upgrade.",
-    }
+    return _canonical_build_solver_action_contract(row, lean_root, REPO)
 
 
 def _verify_matched_negative_control(target_name: str, proof_text: str,
@@ -1342,6 +1316,7 @@ def _validate_against_contract(
     posed_source: "str | None" = None,
     require_positive_axiom_receipt: bool = False,
     require_discriminating_mnc: bool = False,
+    defer_authoritative_kernel: bool = False,
 ) -> dict:
     """Run every required receipt named in the contract and return a structured
     verdict. A closure is credit-ready iff every required receipt passes.
@@ -1352,6 +1327,7 @@ def _validate_against_contract(
     """
     receipts: dict[str, dict] = {}
     receipts["kernel_compile_receipt"] = {
+        "available": True,
         "passed": bool(kernel_compile_ok),
         "tail": (kernel_compile_tail or "")[-400:],
     }
@@ -1447,6 +1423,7 @@ def _validate_against_contract(
         receipts["matched_negative_control_receipt"] = {
             **mnc_evidence,
             "kind": mnc_kind,
+            "available": mnc_ok is not None,
             "passed": mnc_ok,
             "status": mnc_status,
             "discriminating": mnc_ok is True,
@@ -1469,6 +1446,7 @@ def _validate_against_contract(
         }
     else:
         receipts["matched_negative_control_receipt"] = {
+            "available": False,
             "passed": False,
             "status": "skipped",
             "discriminating": False,
@@ -1479,22 +1457,24 @@ def _validate_against_contract(
     # axiom allowlist + L3 are deferred to the canonical proof_audit (run by
     # governance) — the solver-side contract just records that they're required.
     receipts["axiom_allowlist_receipt"] = {
+        "available": False,
         "passed": None,
         "tail": "deferred to governance: leanmill_proof_audit emits #print axioms",
     }
     receipts["l3_anti_pattern_receipt"] = {
+        "available": False,
         "passed": None,
         "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit",
     }
-    # ── AUTHORITATIVE KERNEL (2026-06-06; default ON, ZTARE_KERNEL_AUTHORITATIVE=0 reverts to kc∧mnc) ──
+    # ── AUTHORITATIVE KERNEL ──
     # The solver-lane gate used to ratify on kernel-compile ∧ MNC and DEFER the anti-laundering organ stack
     # (vacuity / gold-name / single-lemma / leakage / consequence / currency / statement-integrity) to the
     # downstream worker — the deferral that let the warm-path statement-alteration through. We now fold the
     # ONE canonical kernel (`run_anti_laundering_kernel` — the SAME stack solve_adhoc uses; NO reduced
     # per-mode reimplementation) into solve-time `credit_ready`, so a CONFIRMED laundering organ blocks at
     # the solver lane. De-risked by the observe corpus (6/6 real closures → kernel_would_block=False).
-    # FAIL-OPEN on an organ crash (a tooling error must NOT block a valid closure); fail-CLOSED only on a
-    # CONFIRMED organ flag (kernel.passed=False). Reversible to the pre-flip behavior via the env escape.
+    # A runtime fault or diagnostic disablement is typed unavailable and
+    # cannot contribute closure credit.
     # Build the closure source ONCE (the SAME _src feeds both the anti-laundering kernel below AND the axiom audit).
     # Canonical proof-splice (NO hand-rolled `head + body` — RCA 2026-06-18: the mathd_algebra_302 drop was a
     # local splice that doubled `by` for a `by\n` body → silent `sorry`). `lean_source.attach_proof` is the
@@ -1509,8 +1489,16 @@ def _validate_against_contract(
     if not _src.lstrip().startswith("import"):
         _src = "import Mathlib\n\n" + _src
 
-    kernel_passed = True
-    if kernel_compile_ok and os.environ.get("ZTARE_KERNEL_AUTHORITATIVE", "1") != "0":
+    kernel_passed: bool | None = None
+    if defer_authoritative_kernel:
+        # The outer exact-artifact finalizer owns the authoritative kernel leg.
+        receipts["governance_kernel_receipt"] = {
+            "available": False,
+            "passed": None,
+            "status": "deferred_to_closed_artifact_finalizer",
+            "tail": "the common closed-artifact finalizer owns the authoritative kernel invocation",
+        }
+    elif kernel_compile_ok and os.environ.get("ZTARE_KERNEL_AUTHORITATIVE", "1") != "0":
         try:
             import json as _json
             from ztare.gates.lean_proof_gate import run_anti_laundering_kernel as _kernel
@@ -1553,23 +1541,58 @@ def _validate_against_contract(
             else:
                 _k = _kernel(_src, lean_root / "_kernel.lean", lean_root,
                              original_source=_orig_for_gate, target_name=target_name)
-            kernel_passed = bool(_k.get("passed"))
+            kernel_passed = (
+                True
+                if _k.get("available") is True and _k.get("passed") is True
+                else (
+                    False
+                    if _k.get("passed") is False
+                    and _k.get("available") is True
+                    else None
+                )
+            )
             receipts["governance_kernel_receipt"] = {
-                "passed": kernel_passed, "confirmed": _k.get("confirmed"), "flags": _k.get("flags"),
-                "interpretation": ("PASS = no CONFIRMED anti-laundering organ fired"
-                                   if kernel_passed else f"FAIL = confirmed: {_k.get('confirmed')}")}
+                "available": kernel_passed is not None,
+                "passed": kernel_passed,
+                "status": (
+                    "pass" if kernel_passed is True
+                    else "rejected" if kernel_passed is False
+                    else "unavailable"
+                ),
+                "confirmed": _k.get("confirmed"),
+                "flags": _k.get("flags"),
+                "unavailable_organs": _k.get("unavailable_organs", []),
+                "interpretation": (
+                    "PASS = no confirmed anti-laundering organ fired"
+                    if kernel_passed is True
+                    else f"FAIL = confirmed: {_k.get('confirmed')}"
+                    if kernel_passed is False
+                    else "UNAVAILABLE = at least one required governance organ did not run"
+                ),
+            }
             with (OUT_DIR / "kernel_parity.jsonl").open("a", encoding="utf-8") as _f:
                 _f.write(_json.dumps({"target": target_name,
                                       "hand_wired": {"kc": receipts["kernel_compile_receipt"]["passed"],
                                                      "mnc": receipts["matched_negative_control_receipt"]["passed"]},
-                                      "kernel": {"passed": kernel_passed, "confirmed": _k.get("confirmed")},
+                                      "kernel": {"passed": kernel_passed,
+                                                 "available": _k.get("available"),
+                                                 "confirmed": _k.get("confirmed")},
                                       "kernel_blocked": (kernel_passed is False)}) + "\n")
-        except Exception as _e:  # noqa: BLE001 — FAIL-OPEN: an organ crash must not block a valid closure
-            receipts["governance_kernel_receipt"] = {"passed": True,
-                                                     "tail": f"fail-open (organ error): {repr(_e)[:120]}"}
+        except Exception as _e:  # noqa: BLE001 — preserve candidate; withhold credit
+            kernel_passed = None
+            receipts["governance_kernel_receipt"] = {
+                "available": False,
+                "passed": None,
+                "status": "unavailable",
+                "tail": f"governance organ error: {repr(_e)[:120]}",
+            }
     else:
-        receipts["governance_kernel_receipt"] = {"passed": None,
-                                                 "tail": "skipped (no compile, or ZTARE_KERNEL_AUTHORITATIVE=0)"}
+        receipts["governance_kernel_receipt"] = {
+            "available": False,
+            "passed": None,
+            "status": "unavailable",
+            "tail": "unavailable (no compile, or diagnostic kernel disablement)",
+        }
 
     # AXIOM AUDIT (soundness #84 F1/F2, 2026-06-11): the cascade + composite closure paths credited closures
     # WITHOUT `#print axioms` (only the warm leaf ran it), so a `native_decide` proof (Lean.ofReduceBool) compiled
@@ -1591,6 +1614,7 @@ def _validate_against_contract(
                 _clean, axiom_confirmed_bad, _axs = _aax(
                     _src, target_name, lean_root / "_axiom_audit.lean", lean_root, timeout_s=_budget("axiom_audit"))
             receipts["axiom_allowlist_receipt"] = {
+                "available": _clean or axiom_confirmed_bad,
                 "passed": (True if _clean else (False if axiom_confirmed_bad else None)),
                 "axioms": _axs,
                 "tail": ("clean " + str(_axs) if _clean
@@ -1605,17 +1629,24 @@ def _validate_against_contract(
             axiom_tier = ("kernel_pure" if _clean
                           else ("true_modulo_banned_axioms" if axiom_confirmed_bad else "inconclusive"))
         except Exception as _e:  # noqa: BLE001 — tooling error ⇒ fail-OPEN (must not block a valid closure)
-            receipts["axiom_allowlist_receipt"] = {"passed": None, "tail": f"axiom audit error (fail-open): {repr(_e)[:100]}"}
+            receipts["axiom_allowlist_receipt"] = {
+                "available": False,
+                "passed": None,
+                "tail": f"axiom audit error (fail-open): {repr(_e)[:100]}",
+            }
 
     all_required_pass = all(
-        bool(receipts[r["name"]]["passed"]) is True
+        receipts[r["name"]]["passed"] is True
         for r in contract.get("required_receipts", [])
-        if r.get("required") and receipts[r["name"]]["passed"] is not None
+        if r.get("required")
     )
     credit_ready = (
         kernel_compile_ok
         and receipts["matched_negative_control_receipt"]["admitted_under_policy"] is True
-        and kernel_passed  # AUTHORITATIVE: a confirmed anti-laundering organ blocks the closure at solve-time
+        and (
+            kernel_passed is True
+            or defer_authoritative_kernel
+        )
         and not axiom_confirmed_bad  # SOUNDNESS #84 F1: a CONFIRMED banned axiom (e.g. native_decide) blocks closure
         and (
             receipts["axiom_allowlist_receipt"]["passed"] is True
@@ -1630,6 +1661,7 @@ def _validate_against_contract(
         "axiom_tier": axiom_tier,   # #104: kernel_pure | true_modulo_banned_axioms (native_decide) | inconclusive
         "positive_axiom_receipt_required": bool(require_positive_axiom_receipt),
         "discriminating_mnc_required": bool(require_discriminating_mnc),
+        "authoritative_kernel_deferred": bool(defer_authoritative_kernel),
         "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit",
     }
 
@@ -1689,7 +1721,11 @@ def _ratification_receipt_blockers(governance: dict) -> list[str]:
         .get("conclusion_discrimination") or {})
     differential = (conclusion.get("detail") or {}).get("differential")
     blockers: list[str] = []
-    if kernel.get("passed") is not True or integrity.get("ok") is not True:
+    if (
+        kernel.get("available") is not True
+        or kernel.get("passed") is not True
+        or integrity.get("ok") is not True
+    ):
         blockers.append("kernel:ratification_receipt_unverified")
     if differential != "confirmed":
         blockers.append("margin:differential_unverified")
@@ -1742,7 +1778,8 @@ _campaign_type_equiv_fn = _target_type_equiv_fn
 
 def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_root: Path, timeout_s: int,
                                    diag_out: "list | None" = None,
-                                   target_name: "str | None" = None) -> bool:
+                                   target_name: "str | None" = None,
+                                   proof_is_term: bool = False) -> bool:
     """Does `proof_text` close the target decl in `target_source`? THE shared campaign-aware verify seam
     (2026-06-20): when a campaign substrate is registered it routes through the theory ENV (defs + `namespace`
     + fresh-name + #print-axioms audit) — the SAME path the warm leaf uses — else a standalone `_compile_probe`.
@@ -1761,7 +1798,12 @@ def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_roo
     # the opened target, so that splice would discard their bytes (including a namespace terminator).  When the
     # producer carries target identity, use the named replacement and verify the complete artifact.
     probe = (
-        replace_decl_proof(target_source, target_name, proof_text)
+        replace_decl_proof(
+            target_source,
+            target_name,
+            proof_text,
+            proof_is_term=proof_is_term,
+        )
         if target_name
         else swap_sorry(target_source, proof_text)
     )
@@ -1779,7 +1821,11 @@ def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_roo
                 _sig = extract_signature(target_source, _name)
                 if _sig.strip():
                     _fresh = f"{_name}_zwv"
-                    _fresh_probe = attach_proof(f"theorem {_fresh} {_sig} :=", proof_text)
+                    _fresh_probe = attach_proof(
+                        f"theorem {_fresh} {_sig} :=",
+                        proof_text,
+                        proof_is_term=proof_is_term,
+                    )
                     _cw = warm_verify_campaign(_fresh_probe, _fresh, lean_root, timeout_s, env=_env)
                     if _cw is not None:
                         # surface the verify REASON to callers that want it (2026-07-02: the pool recorded bare
@@ -1801,6 +1847,19 @@ def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_roo
     if diag_out is not None and _cold is not True:
         diag_out.append(" ".join(str(_cold).split())[:200])
     return bool(_cold is True)
+
+
+def _preverified_proof_is_term(preverified_only: bool, proof_text: str) -> bool:
+    """Classify carried ratification proofs before source reinsertion."""
+
+    import re as _re
+
+    proof = (proof_text or "").strip()
+    return bool(
+        preverified_only
+        and proof
+        and not _re.match(r"by(?:\s|\Z)", proof)
+    )
 
 
 def _campaign_aware_axioms(target_source: str, proof_text: str, target_name: str, lean_root: Path, timeout_s: int):
@@ -2183,7 +2242,13 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
                 try:
                     from ztare.leanmill.solver.no_good_store import NoGoodStore as _NGS
                     _NGS(OUT_DIR / "solver_lane_no_good_store.jsonl").record_integrity_verdict(
-                        goal, _verdict, source=f"agentic_leaf:{target}")
+                        goal,
+                        _verdict,
+                        source=f"agentic_leaf:{target}",
+                        posed_probe=_orig_src,
+                        altered_probe=ptxt,
+                        target_name=target,
+                    )
                     from ztare.leanmill.solver import obstruction_to_conjecture as _o2c
                     _seeds = _o2c.seeds_from_refutation(_orig_src, ptxt, target)
                     if _seeds:  # stash on the row so a later MOVE_CONJECTURE on this node targets the obstruction
@@ -2676,6 +2741,45 @@ def dag_move_dispatch_contract() -> dict:
     }
 
 
+def _govern_falsifier_source(
+    refute_block: str,
+    preamble: str,
+    lean_root: Path,
+    target_name: str,
+) -> "tuple[bool | None, str]":
+    """Run one refutation through the common policy without fail-open credit."""
+
+    try:
+        from ztare.gates.lean_proof_gate import run_anti_laundering_kernel
+
+        source = ((preamble.strip() + "\n\n") if preamble.strip() else "")
+        source += refute_block.strip()
+        if not source.lstrip().startswith("import"):
+            source = "import Mathlib\n\n" + source
+        exact_target = str(target_name or "").strip()
+        if not exact_target:
+            return None, "governance unavailable: refutation target unresolved"
+        verdict = run_anti_laundering_kernel(
+            source,
+            lean_root / "_falsify_kernel.lean",
+            lean_root,
+            original_source=None,
+            target_name=exact_target,
+        )
+        if verdict.get("available") is not True or verdict.get("passed") is None:
+            return (
+                None,
+                "governance unavailable: "
+                + repr(verdict.get("unavailable_organs", []))[:160],
+            )
+        return (
+            verdict.get("passed") is True,
+            f"organs confirmed={verdict.get('confirmed')}",
+        )
+    except Exception as exc:  # noqa: BLE001 — preserve candidate; withhold falsification credit
+        return None, f"governance unavailable: {repr(exc)[:100]}"
+
+
 def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                            verify_timeout: int, provider: str, fallbacks: list[str],
                            invoke_with_routing, providers_tried: list[dict], lean_root=None):
@@ -2737,10 +2841,10 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
     def _govern(effective_row: dict, effective_goal: str, proof_text: str,
                 compile_ok: bool, compile_tail: str, *,
                 closure_source: "str | None" = None,
-                posed_source: "str | None" = None) -> tuple[bool, bool]:
+                posed_source: "str | None" = None) -> tuple[bool, bool, bool]:
         """Govern a proof against the exact target whose move produced it."""
         if not compile_ok or not proof_text.strip():
-            return False, False
+            return False, False, False
         effective_target = effective_row.get("target_theorem_name") or target_name
         if not closure_source:
             exact_target = effective_row.get("_verified_closure_target")
@@ -2763,12 +2867,36 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             timeout_s=verify_timeout, kernel_compile_ok=compile_ok,
             kernel_compile_tail=compile_tail, goal_type=effective_row.get("goal"),
             closure_source=closure_source or None, posed_source=posed_source or None,
+            require_positive_axiom_receipt=bool(
+                effective_row.get("_preverified_only")
+                or effective_row.get("_require_positive_axiom_receipt")
+            ),
+            require_discriminating_mnc=bool(
+                effective_row.get("_preverified_only")
+            ),
+            defer_authoritative_kernel=bool(
+                r.get("_closed_artifact_finalizer_owns_governance")
+                and effective_row.get("row_id") == r.get("row_id")
+                and effective_target == target_name
+            ),
         )
-        kc = validation["receipts"]["kernel_compile_receipt"]["passed"]
-        mnc = validation["receipts"]["matched_negative_control_receipt"].get(
-            "admitted_under_policy"
-        )
-        return bool(kc), bool(mnc)
+        kc, mnc, governance_ready = _dag_governance_axes(validation)
+        if governance_ready:
+            artifact = _verified_closure_artifact(
+                effective_target,
+                closure_source or "",
+                posed_source or "",
+            )
+            if artifact is None:
+                governance_ready = False
+                validation["credit_ready_at_solver_layer"] = False
+                validation["closure_artifact_error"] = (
+                    "exact target-bound closure artifact unavailable"
+                )
+            else:
+                effective_row["_verified_closure_artifact"] = artifact
+        effective_row["_closed_artifact_contract_validation"] = validation
+        return bool(kc), bool(mnc), governance_ready
 
     def move_runner(node, move, budget):
         start = time.time()
@@ -2786,16 +2914,29 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
         # re-prove the root goal G — the inertness fix (adversarial review w1162vqnh found every generator
         # re-proved G, so the conjecture move was a no-op). Default off ⇒ _eff_goal/_eff_row collapse to
         # the current (G / r) values BYTE-IDENTICALLY; the ON-path needs real decomposition validation.
-        _spawned = bool(os.environ.get("ZTARE_CONJECTURE_DECOMPOSE") == "1"
+        _calibration = node.kind == "calibration_control"
+        _spawned = bool(not _calibration
+                        and os.environ.get("ZTARE_CONJECTURE_DECOMPOSE") == "1"
                         and node.kind == "sub_goal" and node.node_id != "n0_root"
                         and (node.goal_text or "").strip())
-        _eff_goal = node.goal_text if _spawned else (enriched_goal or node.goal_text)
+        _eff_goal = (
+            node.goal_text
+            if (_spawned or _calibration)
+            else (enriched_goal or node.goal_text)
+        )
 
         _effective_row: dict | None = None
 
         def _eff_row():
             nonlocal _effective_row
             if _effective_row is not None:
+                return _effective_row
+            if _calibration:
+                _effective_row = {
+                    "row_id": "native_hammer::spike",
+                    "target_theorem_name": "_spike_internal_standard",
+                    "goal": node.goal_text,
+                }
                 return _effective_row
             if not _spawned:
                 _effective_row = r
@@ -2824,21 +2965,58 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                 return False, f"child_source_verify_exception: {exc!r}"[:300]
 
         def _h_native_hammer():
-            ok, proof, tail = _native_hammer_probe(
+            probe = _native_hammer_probe(
                 _eff_row(), (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
                 _cap("native_hammer", min(180, verify_timeout)),
+                tactics=(("rfl",) if _calibration else None),
             )
+            if _calibration:
+                return MoveResult(
+                    move=move,
+                    calibration_available=probe.closed,
+                    tail=(probe.transcript or "")[-300:],
+                    wallclock_s=round(time.time() - start, 2),
+                    error_class=(
+                        "clean" if probe.closed else "capability_unavailable"
+                    ),
+                )
+            ok, proof, tail = probe.closed, probe.proof, probe.transcript
             proof_text = f"by {proof}" if proof else ""
-            kc, mnc = _govern(_eff_row(), _eff_goal, proof_text, ok, tail) if ok else (False, False)
-            _record_attempt(r["row_id"], "native_hammer",
-                            "closed" if (kc and mnc) else "failed_compile", kc and mnc, tail,
-                            est_p_close=fc, wallclock_s=round(time.time() - start, 2))
+            kc, mnc, gov = (
+                _govern(_eff_row(), _eff_goal, proof_text, ok, tail)
+                if ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
+            native_outcome = (
+                "closed" if admitted
+                else (
+                    "failed_compile" if probe.admissible_negative
+                    else "inadmissible_native_hammer_unavailable"
+                )
+            )
+            _record_attempt(
+                r["row_id"], "native_hammer", native_outcome, admitted, tail,
+                proof_state=(
+                    None if probe.available else {
+                        "goals_remaining": 1,
+                        "error_class": "capability_unavailable",
+                        "progress": 0.0,
+                    }
+                ),
+                est_p_close=fc,
+                wallclock_s=round(time.time() - start, 2),
+                carrier_live=probe.available,
+            )
             providers_tried.append({"provider": "native_hammer",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                    "outcome": native_outcome,
                                     "compile_ok": kc, "mnc_passed": mnc,
+                                    "governance_ready": gov,
+                                    "carrier_available": probe.available,
+                                    "admissible_negative": probe.admissible_negative,
                                     "node_id": node.node_id, "move": move,
                                     "agent_kind": "native_hammer_cascade"})
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov,
                               proof_text=proof_text, tail=(tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(ok, tail))
         def _h_claude_warm():
@@ -2868,17 +3046,18 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                 }
 
             def _warm_verify(_a):
-                _kc, _mnc = (_govern(
+                _kc, _mnc, _gov = (_govern(
                     _warm_row, _warm_goal, _a["proof"], _a["ok"], _a["tail"],
                     closure_source=_a.get("closure_source"), posed_source=_a.get("posed_source"),
                 )
-                             if _a["ok"] else (False, False))
+                             if _a["ok"] else (False, False, False))
                 _pp = _ps(_a["ok"], _a["tail"])
-                return SimpleNamespace(accepted=bool(_kc and _mnc), kc=_kc, mnc=_mnc,
+                return SimpleNamespace(accepted=bool(_kc and _mnc and _gov), kc=_kc, mnc=_mnc, gov=_gov,
                                        progress=_pp.get("progress") or 0.0,
                                        goals=_pp.get("goals_remaining") or 0,
-                                       checks={"kernel_clean": _kc, "mnc_passed": _mnc},
-                                       reason="closed" if (_kc and _mnc) else "failed_compile")
+                                       checks={"kernel_clean": _kc, "mnc_passed": _mnc,
+                                               "governance_ready": _gov},
+                                       reason="closed" if (_kc and _mnc and _gov) else "failed_compile")
 
             def _warm_refine_ctx(_a, _v, _ctx):
                 if not (_v.goals >= 1 or _v.progress >= 0.4):
@@ -2905,18 +3084,21 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                                  max_refines=0 if os.environ.get("ZTARE_GAP_REFINE") == "0" else 1)
             _art, _ver, _trace = _rh.run({"row": _warm_row})
             ok, proof_text, tail = _art["ok"], _art["proof"], _art["tail"]
-            kc, mnc = _ver.kc, _ver.mnc
+            kc, mnc, gov = _ver.kc, _ver.mnc, _ver.gov
+            admitted = bool(kc and mnc and gov)
             refined = len(_trace) > 1
             _lbl = _warm_provider_label(tail, refined)   # ACTUAL provider (codex under the pin), not hardcoded claude
             _record_attempt(r["row_id"], _lbl,
-                            "closed" if (kc and mnc) else "failed_compile", kc and mnc, tail,
+                            "closed" if admitted else "failed_compile", admitted, tail,
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": _lbl,
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                    "outcome": "closed" if admitted else "failed_compile",
                                     "compile_ok": kc, "mnc_passed": mnc,
+                                    "governance_ready": gov,
                                     "node_id": node.node_id, "move": move,
                                     "agent_kind": "warm_agent_gap_refine" if refined else "warm_agent"})
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov,
                               proof_text=proof_text, tail=(tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(ok, tail))
         if move in (MOVE_COLD_SHOT, MOVE_FRONTIER):
@@ -2947,21 +3129,26 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                 compile_ok, compile_tail = (False, "no provider proof")
                 if res is not None and res.ok and proof_text.strip():
                     compile_ok, compile_tail = _verify_node(_eff_row(), _eff_goal, proof_text)
-                kc, mnc = (_govern(_eff_row(), _eff_goal, proof_text, compile_ok, compile_tail)
-                           if compile_ok else (False, False))
+                kc, mnc, gov = (
+                    _govern(_eff_row(), _eff_goal, proof_text, compile_ok, compile_tail)
+                    if compile_ok else (False, False, False)
+                )
+                admitted = bool(kc and mnc and gov)
                 label = decision.chosen_provider or prov_name
                 _record_attempt(r["row_id"], label,
-                                "closed" if (kc and mnc) else ("failed_compile" if (res and res.ok) else "failed"),
-                                kc and mnc, compile_tail, est_p_close=fc, wallclock_s=round(time.time() - start, 2))
+                                "closed" if admitted else ("failed_compile" if (res and res.ok) else "failed"),
+                                admitted, compile_tail, est_p_close=fc, wallclock_s=round(time.time() - start, 2))
                 providers_tried.append({"provider": label,
-                                        "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                        "outcome": "closed" if admitted else "failed_compile",
                                         "compile_ok": kc, "mnc_passed": mnc,
+                                        "governance_ready": gov,
                                         "node_id": node.node_id, "move": move})
-                best = (proof_text, kc, mnc, compile_tail)
-                if kc and mnc:
+                best = (proof_text, kc, mnc, gov, compile_tail)
+                if admitted:
                     break
-            proof_text, kc, mnc, compile_tail = best or ("", False, False, "")
+            proof_text, kc, mnc, gov, compile_tail = best or ("", False, False, False, "")
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov,
                               proof_text=proof_text, tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(kc, compile_tail))
         def _h_conjecture():
@@ -3134,15 +3321,19 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             compile_ok, compile_tail = (False, "no generalize proof")
             if _gproof.strip():
                 compile_ok, compile_tail = _verify_node(_row, _gt, _gproof)
-            kc, mnc = _govern(_row, _gt, _gproof, compile_ok, compile_tail) if compile_ok else (False, False)
+            kc, mnc, gov = (
+                _govern(_row, _gt, _gproof, compile_ok, compile_tail)
+                if compile_ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
             _record_attempt(r["row_id"], "generalize",
-                            "closed" if (kc and mnc) else "failed_compile", kc and mnc, compile_tail,
+                            "closed" if admitted else "failed_compile", admitted, compile_tail,
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "generalize",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "outcome": "closed" if admitted else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc, "governance_ready": gov,
                                     "node_id": node.node_id, "move": move, "agent_kind": "generalize"})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, governance_ready=gov,
                               proof_text=_gproof, tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
         def _h_tactic_step():
@@ -3168,15 +3359,21 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             compile_ok, compile_tail = (False, "no tactic-step proof")
             if _pb.strip():
                 compile_ok, compile_tail = _verify_node(_row, _gt, _pb)
-            kc, mnc = _govern(_row, _gt, _pb, compile_ok, compile_tail) if compile_ok else (False, False)
-            _record_attempt(r["row_id"], "tactic_step", "closed" if (kc and mnc) else "failed_compile",
-                            kc and mnc, compile_tail, est_p_close=fc, wallclock_s=round(time.time() - start, 2))
+            kc, mnc, gov = (
+                _govern(_row, _gt, _pb, compile_ok, compile_tail)
+                if compile_ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
+            _record_attempt(r["row_id"], "tactic_step", "closed" if admitted else "failed_compile",
+                            admitted, compile_tail, est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "tactic_step",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc, "node_id": node.node_id,
+                                    "outcome": "closed" if admitted else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc, "governance_ready": gov,
+                                    "node_id": node.node_id,
                                     "move": move, "agent_kind": "tactic_step",
                                     "steps": _info.get("steps")})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_pb,
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov, proof_text=_pb,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
         def _h_witness_transport():
@@ -3202,16 +3399,22 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                                   wallclock_s=round(time.time() - start, 2), **_ps(False, ""))
             _wt_tac, _wt_meta = _wt_sol
             compile_ok, compile_tail = _verify_node(_row, _wt_goal, _wt_tac)
-            kc, mnc = _govern(_row, _wt_goal, _wt_tac, compile_ok, compile_tail) if compile_ok else (False, False)
+            kc, mnc, gov = (
+                _govern(_row, _wt_goal, _wt_tac, compile_ok, compile_tail)
+                if compile_ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
             _record_attempt(r["row_id"], "witness_transport",
-                            "closed" if (kc and mnc) else "failed_compile", kc and mnc,
+                            "closed" if admitted else "failed_compile", admitted,
                             (_wt_meta.get("path", "") + " :: " + (compile_tail or ""))[-200:],
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "witness_transport",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc, "node_id": node.node_id,
+                                    "outcome": "closed" if admitted else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc, "governance_ready": gov,
+                                    "node_id": node.node_id,
                                     "move": move, "agent_kind": f"witness_transport:{_wt_meta.get('path')}"})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_wt_tac,
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov, proof_text=_wt_tac,
                               tail=(compile_tail or "")[-300:], wallclock_s=round(time.time() - start, 2),
                               **_ps(compile_ok, compile_tail))
         def _h_sledgehammer():
@@ -3232,7 +3435,11 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             compile_ok, compile_tail = (False, "no sledgehammer injection (" + str(_sh_info.get("stage")) + ")")
             if _sh_tac.strip():
                 compile_ok, compile_tail = _verify_node(_row, _sh_goal, _sh_tac)
-            kc, mnc = _govern(_row, _sh_goal, _sh_tac, compile_ok, compile_tail) if compile_ok else (False, False)
+            kc, mnc, gov = (
+                _govern(_row, _sh_goal, _sh_tac, compile_ok, compile_tail)
+                if compile_ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
             _sh_drop = _sh_info.get("dropped_hallucinations") or []
             _sh_val = _sh_info.get("validated_names") or []
             # CROSS-SUBSTRATE CONSENSUS (#85): reconcile Isabelle (ATP found a proof) ⇄ Lean (the mapped
@@ -3253,19 +3460,21 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             except Exception:  # noqa: BLE001 — telemetry is best-effort, never breaks the move
                 _sh_xsub = "error"
             _record_attempt(r["row_id"], "sledgehammer",
-                            "closed" if (kc and mnc) else ("no_server" if _sh_info.get("stage") == "no_server"
+                            "closed" if admitted else ("no_server" if _sh_info.get("stage") == "no_server"
                                                            else "failed_compile"),
-                            kc and mnc,
+                            admitted,
                             (f"stage={_sh_info.get('stage')} validated={_sh_val} dropped={_sh_drop} "
                              f"xsub={_sh_xsub} :: " + (compile_tail or ""))[-200:],
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "sledgehammer",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc, "node_id": node.node_id,
+                                    "outcome": "closed" if admitted else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "governance_ready": gov, "node_id": node.node_id,
                                     "move": move, "agent_kind": "sledgehammer_smuggle",
                                     "validated_premises": _sh_val, "dropped_hallucinations": _sh_drop,
                                     "cross_substrate": _sh_xsub})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_sh_tac,
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov, proof_text=_sh_tac,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
         def _h_reflection():
@@ -3285,15 +3494,21 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             if _rf_cbody.strip():
                 _rf_gth = ((_rf_helper.rstrip() + "\n\n") if _rf_helper.strip() else "") + _rf_gt
                 compile_ok, compile_tail = _verify_node(_row, _rf_gth, _rf_cbody)
-            kc, mnc = _govern(_row, _rf_gt, _rf_cbody, compile_ok, compile_tail) if compile_ok else (False, False)
-            _record_attempt(r["row_id"], "reflection", "closed" if (kc and mnc) else "failed_compile",
-                            kc and mnc, (str(_rf_reason) + " :: " + (compile_tail or ""))[-200:],
+            kc, mnc, gov = (
+                _govern(_row, _rf_gt, _rf_cbody, compile_ok, compile_tail)
+                if compile_ok else (False, False, False)
+            )
+            admitted = bool(kc and mnc and gov)
+            _record_attempt(r["row_id"], "reflection", "closed" if admitted else "failed_compile",
+                            admitted, (str(_rf_reason) + " :: " + (compile_tail or ""))[-200:],
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "reflection",
-                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc, "node_id": node.node_id,
+                                    "outcome": "closed" if admitted else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "governance_ready": gov, "node_id": node.node_id,
                                     "move": move, "agent_kind": "reflection"})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_rf_cbody,
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov, proof_text=_rf_cbody,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
         def _h_abduce():
@@ -3362,23 +3577,28 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                     preamble=_fl_pre, spectral=_fl_spec)
             # leg (2): re-verify the leaf's BODY (the RHS after the first top-level `:=` — goal_head carries
             # no `:=`) under the ORIGINAL goal stub, then govern. This is the closure-crediting kernel call.
-            kc, mnc, compile_ok, compile_tail = False, False, False, _fl_reason
+            kc, mnc, gov, compile_ok, compile_tail = False, False, False, False, _fl_reason
             from ztare.leanmill.lean_source import split_at_proof as _sap_fl
             _fl_body = _sap_fl(_fl_proof)[1][2:].strip() if _fl_adv else ""   # proof body, binder-safe ([2:] drops `:=`)
             if _fl_body:
                 compile_ok, compile_tail = _verify_node(_row, _fl_gt, _fl_body)
-                kc, mnc = _govern(_row, _fl_gt, _fl_body, compile_ok, compile_tail) if compile_ok else (False, False)
-            _fl_credit = bool(kc and mnc)
+                kc, mnc, gov = (
+                    _govern(_row, _fl_gt, _fl_body, compile_ok, compile_tail)
+                    if compile_ok else (False, False, False)
+                )
+            _fl_credit = bool(kc and mnc and gov)
             _record_attempt(r["row_id"], "functor_lift", "closed" if _fl_credit else "failed_compile",
                             _fl_credit,
                             (f"adv={_fl_adv} :: {_fl_reason} bridge={_fl_bridge} :: " + (compile_tail or ""))[-200:],
                             est_p_close=fc, wallclock_s=round(time.time() - start, 2))
             providers_tried.append({"provider": "functor_lift",
                                     "outcome": "closed" if _fl_credit else "failed_compile",
-                                    "compile_ok": kc, "mnc_passed": mnc, "node_id": node.node_id,
+                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "governance_ready": gov, "node_id": node.node_id,
                                     "move": move, "agent_kind": "functor_lift", "bridge": _fl_bridge,
                                     "spectral_advanced": _fl_adv})
-            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=(_fl_body or _fl_proof),
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              governance_ready=gov, proof_text=(_fl_body or _fl_proof),
                               tail=(compile_tail or _fl_reason or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
         def _h_falsify_corroborate():
@@ -3405,23 +3625,21 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             _pre = _preamble_from_source(_row)
             _lr = lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY
 
-            def _falsify_organs(refute_block: str) -> "tuple[bool, str]":
+            def _falsify_organs(
+                refute_block: str,
+                exact_target: str,
+            ) -> "tuple[bool | None, str]":
                 """The exogenous arbiter's anti-laundering leg: route the ¬G source through the ONE kernel
                 (vacuity / gold-name / leakage / consequence). statement_integrity is N/A here (the refute
                 theorem is ¬G under OUR fixed signature, not a re-statement of the named target), so
-                original_source=None. FAIL-OPEN on an organ crash (never block a real falsifier)."""
-                try:
-                    import re as _re_f
-                    from ztare.gates.lean_proof_gate import run_anti_laundering_kernel as _kernel
-                    _src = ((_pre.strip() + "\n\n") if _pre.strip() else "") + refute_block.strip()
-                    if not _src.lstrip().startswith("import"):
-                        _src = "import Mathlib\n\n" + _src
-                    _fm = _re_f.search(r"theorem\s+(\w+_refute)\b", refute_block)
-                    _k = _kernel(_src, _lr / "_falsify_kernel.lean", _lr,
-                                 original_source=None, target_name=(_fm.group(1) if _fm else None))
-                    return bool(_k.get("passed")), f"organs confirmed={_k.get('confirmed')}"
-                except Exception as _e:  # noqa: BLE001 — FAIL-OPEN
-                    return True, f"organs fail-open: {repr(_e)[:80]}"
+                original_source=None. Runtime unavailability preserves the
+                candidate but cannot certify a falsification."""
+                return _govern_falsifier_source(
+                    refute_block,
+                    _pre,
+                    _lr,
+                    exact_target,
+                )
 
             _lf = _inv_cls(_eff_row(), _lr, _cap(_mkey, max(180, verify_timeout)), preamble=_pre,
                            kernel_check=_falsify_organs)
@@ -3499,6 +3717,8 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             pass
         return _res
 
+    # Cache replay and root propagation reuse the generated-move governance door.
+    _mr_logged._govern = _govern  # type: ignore[attr-defined]
     return _mr_logged
 
 
@@ -3542,7 +3762,10 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
     # A ratification-only row already carries the proof artifact.  Forecasting its derivation value has no
     # lifecycle meaning and, when the diverse-forecaster switch is enabled, can dispatch a provider before
     # governance sees the artifact.  Keep this door mechanically provider-free under every ambient policy.
-    _ratification_only_batch = bool(rows) and all(bool(r.get("_preverified_only")) for r in rows)
+    _ratification_only_batch = bool(rows) and all(
+        bool(r.get("_preverified_only") or r.get("_preverified_attempt_only"))
+        for r in rows
+    )
     if not _ratification_only_batch:
         try:
             from ztare.leanmill.solver.forecast_router import rank_rows as _frank
@@ -3619,6 +3842,31 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
             verify_timeout = max(60, timeout_s // 2)
             providers_tried: list[dict] = []
             final = None
+
+            # Ratify a carried candidate provider-free before DAG dispatch.
+            _preverified_phase = None
+            if (
+                mode == "dag_search"
+                and (r.get("_preverified_proof") or "").strip()
+                and not r.get("_preverified_attempt_only")
+            ):
+                _phase_row = dict(r)
+                _phase_row["_preverified_attempt_only"] = True
+                _preverified_phase = solve(
+                    provider=provider,
+                    limit=1,
+                    dry_run=False,
+                    timeout_s=timeout_s,
+                    mode="cascade",
+                    rows=[_phase_row],
+                    skip_cue_check=skip_cue_check,
+                    lean_root=lean_root,
+                )
+                _phase_result = primary_result(_preverified_phase)
+                if _phase_result.get("outcome") == "closed":
+                    _phase_result["mode"] = "preverified_before_dag"
+                    results.append(_phase_result)
+                    continue
 
             # ── GP-246 governed DAG proof-search (additive, opt-in via --mode
             # dag_search). The cascade path below is byte-unchanged on the
@@ -3736,15 +3984,38 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                         _target = _node_target(_node)
                         _source = _node_source(_target)
                         if _source:
-                            return _campaign_aware_proof_compiles(
+                            _compile_ok = _campaign_aware_proof_compiles(
                                 _source, _proof, (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY), verify_timeout,
+                                target_name=_target.get("target_theorem_name") or "",
                             )
-                        return _verify_compile(
-                            r["row_id"], _target.get("goal") or _node.goal_text, _proof,
-                            (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY), verify_timeout,
-                        )[0]
+                            _compile_tail = "cached proof recompiled in exact source context"
+                        else:
+                            _compile_ok, _compile_tail = _verify_compile(
+                                r["row_id"], _target.get("goal") or _node.goal_text, _proof,
+                                (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY), verify_timeout,
+                            )
+                        if not _compile_ok:
+                            return False
+                        _dag_govern = getattr(move_runner, "_govern", None)
+                        if _dag_govern is None:
+                            return False
+                        _kc, _mnc, _gov = _dag_govern(
+                            _target,
+                            _target.get("goal") or _node.goal_text,
+                            _proof,
+                            True,
+                            _compile_tail,
+                            posed_source=_source or None,
+                        )
+                        return bool(_kc and _mnc and _gov)
 
                     def _cache_put_node(_node, _proof):
+                        if (
+                            r.get("_closed_artifact_finalizer_owns_governance")
+                            and getattr(_node, "node_id", "") == "n0_root"
+                        ):
+                            # The ad-hoc root is cached only after finalization.
+                            return
                         _target = _node_target(_node)
                         _cache.put(_target.get("goal") or _node.goal_text, _proof,
                                    source=f"dag:{_node.node_id}", context_source=_node_source(_target))
@@ -3794,6 +4065,52 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                           f"kernel-verified proof) ***", flush=True)
                     root_closed = False
                     dag_res["root_resolution"] = "closed_without_proof_text_gap"
+                # Propagated proofs still owe the exact root contract.
+                _root_receipt_ready = bool(
+                    (r.get("_closed_artifact_contract_validation") or {}).get(
+                        "credit_ready_at_solver_layer"
+                    )
+                    and r.get("_verified_closure_artifact")
+                )
+                if root_closed and not _root_receipt_ready:
+                    _root_proof = dag_res.get("root_proof_text") or ""
+                    try:
+                        _root_path = ProofTarget.from_row(r).source_path()
+                        _root_source = (
+                            Path(_root_path).read_text(encoding="utf-8", errors="replace")
+                            if _root_path else ""
+                        )
+                    except Exception:  # noqa: BLE001 — missing exact source fails into the goal-stub verifier
+                        _root_source = ""
+                    if _root_source:
+                        _root_compile = _campaign_aware_proof_compiles(
+                            _root_source,
+                            _root_proof,
+                            (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
+                            verify_timeout,
+                            target_name=r.get("target_theorem_name") or "",
+                        )
+                        _root_tail = "DAG root proof recompiled after propagation"
+                    else:
+                        _root_compile, _root_tail = _verify_compile(
+                            r["row_id"], r.get("goal") or enriched_goal, _root_proof,
+                            (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY), verify_timeout,
+                        )
+                    _root_govern = getattr(move_runner, "_govern", None)
+                    _rkc, _rmnc, _rgov = (
+                        _root_govern(
+                            r, r.get("goal") or enriched_goal, _root_proof,
+                            bool(_root_compile), _root_tail,
+                            posed_source=_root_source or None,
+                        )
+                        if _root_govern is not None and _root_compile
+                        else (False, False, False)
+                    )
+                    if not (_rkc and _rmnc and _rgov):
+                        root_closed = False
+                        dag_res["root_resolution"] = "propagated_proof_failed_root_governance"
+                _root_validation = r.get("_closed_artifact_contract_validation")
+                _root_artifact = r.get("_verified_closure_artifact")
                 _dag_terminal = dag_res.get("terminal_signal") or {}
                 results.append({
                     "name": r["row_id"],
@@ -3809,6 +4126,12 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     "provider": "governed_dag_search",
                     "providers_tried": providers_tried,
                     "solver_action_contract": contract,
+                    "contract_validation": _root_validation,
+                    "verified_closure_artifact": _root_artifact,
+                    "preverified_phase": (
+                        primary_result(_preverified_phase)
+                        if isinstance(_preverified_phase, dict) else None
+                    ),
                     "dag_search": {
                         "root_status": dag_res["root_status"],
                         "root_resolution": dag_res["root_resolution"],
@@ -3820,10 +4143,15 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                         "terminal_signal": _dag_terminal,
                         "trace": dag_res["trace"],
                     },
-                    "matched_negative_control": {
+                    "matched_negative_control": ({
+                        **((_root_validation or {}).get("receipts", {}).get(
+                            "matched_negative_control_receipt", {}
+                        )),
+                        "executed_at": "solver_layer",
+                    } if root_closed else {
                         "kind": "context_stripped",
-                        "executed_at": "solver_layer" if root_closed else "skipped",
-                    },
+                        "executed_at": "skipped",
+                    }),
                 })
                 continue
 
@@ -3848,11 +4176,31 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                 champion is governed as the proposer verified it (not re-forced into `:= by`)."""
                 if not compile_ok or not proof_text.strip():
                     return None
+                effective_target = r.get("target_theorem_name") or ""
+                closure_source = closure_source or r.get("_verified_closure_source") or None
+                posed_source = posed_source or r.get("_verified_posed_source") or None
+                if not posed_source:
+                    try:
+                        _candidate_path = ProofTarget.from_row(r).source_path()
+                        if _candidate_path:
+                            posed_source = Path(_candidate_path).read_text(
+                                encoding="utf-8", errors="replace"
+                            )
+                    except Exception:  # noqa: BLE001 — missing exact carrier is rejected by the outer finalizer
+                        posed_source = None
+                if posed_source and not closure_source:
+                    try:
+                        from ztare.leanmill.lean_source import replace_decl_proof
+                        closure_source = replace_decl_proof(
+                            posed_source, effective_target, proof_text
+                        )
+                    except Exception:  # noqa: BLE001
+                        closure_source = None
                 validation = _validate_against_contract(
                     contract=contract,
                     proof_text=proof_text,
                     enriched_goal=enriched_goal,
-                    target_name=r.get("target_theorem_name") or "",
+                    target_name=effective_target,
                     lean_root=(lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
                     timeout_s=verify_timeout,
                     kernel_compile_ok=compile_ok,
@@ -3862,11 +4210,28 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     posed_source=posed_source,
                     require_positive_axiom_receipt=bool(
                         r.get("_preverified_only")
+                        or r.get("_require_positive_axiom_receipt")
                     ),
                     require_discriminating_mnc=bool(
                         r.get("_preverified_only")
                     ),
+                    defer_authoritative_kernel=bool(
+                        r.get("_closed_artifact_finalizer_owns_governance")
+                    ),
                 )
+                _verified_artifact = _verified_closure_artifact(
+                    effective_target,
+                    closure_source or "",
+                    posed_source or "",
+                )
+                if (
+                    validation.get("credit_ready_at_solver_layer")
+                    and _verified_artifact is None
+                ):
+                    validation["credit_ready_at_solver_layer"] = False
+                    validation["closure_artifact_error"] = (
+                        "exact target-bound closure artifact unavailable"
+                    )
                 providers_tried[-1]["contract_validation"] = validation
                 if not validation["credit_ready_at_solver_layer"]:
                     # TRUTHFUL labeling (RCA 2026-06-18): derive WHY credit was blocked from the receipt that
@@ -3905,22 +4270,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                                 [tn], REPO, str((lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY)))]
                     except Exception as _e:  # observability must never block a closure
                         ref_check_error = repr(_e)[:160]
-                _verified_artifact = None
-                if closure_source and posed_source:
-                    import hashlib as _artifact_hash
-                    _verified_artifact = {
-                        "schema": "leanmill.verified_closure_artifact.v1",
-                        "target_name": r.get("target_theorem_name") or "",
-                        "target_qualified_name": (
-                            r.get("_verified_closure_qualified_target")
-                            or r.get("target_theorem_name")
-                            or ""
-                        ),
-                        "closure_source": closure_source,
-                        "posed_source": posed_source,
-                        "closure_sha256": _artifact_hash.sha256(closure_source.encode()).hexdigest(),
-                        "posed_sha256": _artifact_hash.sha256(posed_source.encode()).hexdigest(),
-                    }
+                if _verified_artifact is not None:
                     r["_verified_closure_artifact"] = _verified_artifact
                 return {
                     "name": r["row_id"],
@@ -3937,6 +4287,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     "provider_wallclock_s": round(time.time() - start_t, 2),
                     "solver_action_contract": contract,
                     "contract_validation": validation,
+                    "verified_closure_artifact": _verified_artifact,
                     "matched_negative_control": {
                         **validation["receipts"]["matched_negative_control_receipt"],
                         "executed_at": "solver_layer",
@@ -3970,6 +4321,10 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
             if _pvp:
                 _pv_prov = r.get("_preverified_provider") or "proposer_pool"
                 _pv_start = time.time()
+                _pv_is_term = _preverified_proof_is_term(
+                    bool(r.get("_preverified_only")),
+                    _pvp,
+                )
                 # Splice + verify the champion at the carried target identity.  Named replacement handles a
                 # TERM proof (placed after `:=`) AND a tactic `by` body without mistaking a later sibling's
                 # `sorry` for this target; the layered
@@ -4003,12 +4358,14 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                         _pv_srctext,
                         r.get("target_theorem_name") or "",
                         _pvp,
+                        proof_is_term=_pv_is_term,
                     )
                     if _pv_srctext else ""
                 )
                 _pv_ok = bool(_pv_full) and "sorry" not in _pv_full and _campaign_aware_proof_compiles(
                     _pv_srctext, _pvp, _pv_root, verify_timeout,
                     target_name=r.get("target_theorem_name") or "",
+                    proof_is_term=_pv_is_term,
                 )
                 providers_tried.append({
                     "provider": _pv_prov,
@@ -4042,7 +4399,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     _record_attempt(
                         r["row_id"], _pv_prov, "failed_compile", False,
                         "pre-verified champion did not recompile (mode-agnostic) in solve context")
-                if r.get("_preverified_only"):
+                if r.get("_preverified_only") or r.get("_preverified_attempt_only"):
                     # Ratification-only is a bounded control contract: inspect the supplied artifact once and
                     # return its governed verdict.  A rejection must not silently purchase a new derivation.
                     _pv_last = providers_tried[-1]
@@ -4058,7 +4415,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                         "providers_tried": providers_tried,
                         "solver_action_contract": contract,
                         "contract_validation": _pv_last.get("contract_validation"),
-                        "stderr_excerpt": "preverified_only: no derivation fallback was permitted",
+                        "stderr_excerpt": "preverified artifact phase: no derivation fallback was permitted",
                     })
                     continue
 
@@ -4076,14 +4433,31 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
             hammer_ok = det["closed"]
             hammer_proof = det["proof"]
             hammer_tail = det["tail"]
-            hammer_outcome = "closed" if hammer_ok else "failed_compile"
+            hammer_available = det["available"]
+            hammer_outcome = (
+                "closed" if hammer_ok
+                else (
+                    "failed_compile" if det["admissible_negative"]
+                    else "inadmissible_native_hammer_unavailable"
+                )
+            )
             _record_attempt(
                 r["row_id"], "native_hammer", hammer_outcome, hammer_ok, hammer_tail,
+                proof_state=(
+                    None if hammer_available else {
+                        "goals_remaining": 1,
+                        "error_class": "capability_unavailable",
+                        "progress": 0.0,
+                    }
+                ),
+                carrier_live=hammer_available,
             )
             providers_tried.append({
                 "provider": "native_hammer",
                 "outcome": hammer_outcome,
                 "compile_ok": hammer_ok,
+                "carrier_available": hammer_available,
+                "admissible_negative": det["admissible_negative"],
                 "compile_tail": (hammer_tail or "")[-300:],
                 "provider_wallclock_s": round(time.time() - hammer_start, 2),
                 "agent_kind": "native_hammer_cascade",
@@ -4284,7 +4658,13 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
             inv = reg.invoke(provider, goal_text=str(goal), timeout_s=timeout_s)
         except SystemExit as e:
             inv = {"proof_nonempty": False, "error": str(e), "proof_text": ""}
-        outcome = "closed" if inv.get("proof_nonempty") else "failed"
+        # A legacy wrapper exposes bytes, not the compile/MNC/axiom/
+        # anti-laundering receipts required for closure.  Keep the candidate
+        # inspectable without minting a false direct ``closed`` result.
+        outcome = (
+            "unverified_provider_candidate"
+            if inv.get("proof_nonempty") else "failed"
+        )
         results.append({
             "name": r["row_id"],
             "target_name": r.get("target_theorem_name"),
@@ -4430,7 +4810,7 @@ def _reconstruct_recompilable_probe(source_text: str, goal: str, target_name: st
     artifact, and any bank of it is re-verified by the kernel (reverted on failure)."""
     import re   # LOCAL (module has no top-level `re`) — the missing-name silent-no-op lesson (2026-06-11)
     from ztare.leanmill.lean_source import swap_sorry, attach_proof, has_sorry
-    from ztare.leanmill.solver.agentic_leaf import ensure_import_header
+    from ztare.leanmill.lean_source import ensure_import_header
     proof = (proof_text or "").strip()
     if not proof:
         return ""
@@ -4478,9 +4858,76 @@ def _lift_decomposition_closure(res: dict, iso_result) -> bool:
         return False
     _rows = res.get("results") or [{}]
     if _rows and isinstance(_rows[0], dict) and _rows[0].get("outcome") != "closed":
+        _row = _rows[0]
+        _target = (
+            _row.get("target_theorem_name")
+            or _row.get("target_name")
+            or _comp.get("target")
+            or ""
+        )
+        _closure_source = _comp.get("composite_source") or ""
+        _posed_source = _comp.get("posed_source") or ""
+        _artifact = _verified_closure_artifact(
+            _target, _closure_source, _posed_source
+        )
+        if _artifact is None:
+            return False
+        try:
+            from ztare.leanmill.lean_source import (
+                resolve_theorem_target as _resolve_decomp_target,
+                split_at_proof as _split_decomp_proof,
+            )
+            _identity = _resolve_decomp_target(_closure_source, _target)
+            if _identity is None:
+                return False
+            _decl = _closure_source[_identity.decl_start:_identity.decl_end]
+            _proof_assign = _split_decomp_proof(_decl)[1]
+            _proof_body = (
+                _proof_assign[2:].strip()
+                if _proof_assign.startswith(":=") else ""
+            )
+        except Exception:  # noqa: BLE001 — a proof-less composite cannot enter the finalizer
+            return False
+        if not _proof_body:
+            return False
+        _kernel_receipt = _comp.get("governance_kernel_receipt") or {}
+        _axiom_receipt = _comp.get("axiom_allowlist_receipt") or {}
+        _validation = {
+            "schema": "leanmill.solver_contract_validation.v1",
+            "credit_ready_at_solver_layer": bool(
+                _kernel_receipt.get("passed") is True
+                and _axiom_receipt.get("passed") is True
+            ),
+            "authoritative_kernel_deferred": False,
+            "receipts": {
+                "kernel_compile_receipt": {
+                    "available": True,
+                    "passed": True,
+                    "tail": "composite source compiled sorry-free",
+                },
+                "matched_negative_control_receipt": {
+                    "available": False,
+                    "passed": True,
+                    "admitted_under_policy": True,
+                    "executed": False,
+                    "kind": "composite_assembly",
+                    "reason": "the parent is assembled only from governed subproofs and the exact chain",
+                },
+                "governance_kernel_receipt": _kernel_receipt,
+                "axiom_allowlist_receipt": _axiom_receipt,
+            },
+        }
+        if not _validation["credit_ready_at_solver_layer"]:
+            return False
         _rows[0]["outcome"] = "closed"
         _rows[0]["closed_by"] = "decomposition"
-        _rows[0]["proof_text"] = _comp["composite_source"]
+        _rows[0]["provider"] = "decomposition_composite"
+        _rows[0]["proof_text"] = _proof_body
+        _rows[0]["verified_closure_artifact"] = _artifact
+        _rows[0]["contract_validation"] = _validation
+        _rows[0]["matched_negative_control"] = _validation["receipts"][
+            "matched_negative_control_receipt"
+        ]
         res["results"] = _rows
         res["closed_by_decomposition"] = True
         return True
@@ -4491,9 +4938,40 @@ def _decomposition_closed_result(target_name: str, goal: str, iso_result: dict) 
     """A solve_adhoc result reporting a GOVERNED decomposition closure as SOLVED (for the decompose-FIRST
     pre-pass, where there is no cascade `res` to lift into). Same soundness basis as `_lift_decomposition_closure`."""
     res = {"results": [{"row_id": f"adhoc::{target_name}", "target_theorem_name": target_name, "goal": goal}],
-           "iso_route": iso_result, "quarantined_references": [], "closure_certificate": None}
+           "iso_route": iso_result, "closure_certificate": None}
     _lift_decomposition_closure(res, iso_result)
     return SolveResult.from_dict(res).as_dict()
+
+
+def _environment_parity_decision(
+    target_name: str,
+    closure_source: str,
+    lean_root: Path,
+) -> dict:
+    """Check-and-bank one finalized declaration in its consumption env.
+
+    This runs before certificates, verdicts, attempt stamps, and proof-cache
+    deposits.  ``bank_decl_to_env`` is itself a guarded check-and-commit: a
+    non-porting candidate is reverted before this function returns.
+    """
+    if (
+        not closure_source.strip()
+        or os.environ.get("ZTARE_LEANMILL_BANK_RUNGS_TO_THEORY", "1") == "0"
+    ):
+        return {"attempted": False, "reason": "not_required"}
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        from ztare.leanmill.solver import family_lemma_library
+
+        environment = get_campaign_substrate()
+        if not environment:
+            return {"attempted": False, "reason": "no_campaign_environment"}
+        receipt = family_lemma_library.bank_decl_to_env(
+            environment, target_name, closure_source, lean_root
+        )
+        return {"attempted": True, **receipt}
+    except Exception as exc:  # noqa: BLE001 — compounding infra is typed, never a finalizer crash
+        return {"attempted": True, "reason": "error", "error": repr(exc)[:120]}
 
 
 def _agent_strategy_verdict(goal: str, source_text: str, lean_root, timeout_s: int) -> str:
@@ -4624,8 +5102,10 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
         # cost discipline: a goal the FREE native cascade closes needs no portfolio (don't burn k models).
         if os.environ.get("ZTARE_LEANMILL_POOL_NATIVE_GATE", "1") != "0":
             with _phase_timer("native", target=target_name):
-                ok_nh, _, _ = _native_hammer_probe(row, sub, min(int(timeout_s), 120))
-            if ok_nh:
+                native = _native_hammer_probe(
+                    row, sub, min(int(timeout_s), 120)
+                )
+            if native.closed:
                 return None
         from ztare.leanmill.solver.proposer_pool import attack_node, model_priors
         tcap = min(int(timeout_s), 180)
@@ -4716,7 +5196,8 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 notes: "str | None" = None, _iso_depth: "int | None" = None,
                 preverified_proof: "str | None" = None,
                 preverified_provider: "str | None" = None,
-                preverified_only: bool = False) -> dict:
+                preverified_only: bool = False,
+                require_positive_axiom_receipt: bool = False) -> dict:
     """Ad-hoc-target entry — run a ONE-OFF lemma through the FULL governed pipeline (the gap that
     bred the bespoke harnesses). `source_text` is a complete .lean file whose `target_name`
     declaration ends in `sorry`; it is written into `substrate`, wrapped in the reference-leakage
@@ -4728,6 +5209,26 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     directly. Advisory (the kernel still audits every lemma). This is the entry that lets an ALREADY-
     formalized Lean target (no autoformalize step) also carry blueprint notes into the planner.
     ``preverified_only=True`` performs governance only: rejection returns without invoking a proposer."""
+    if preverified_only:
+        _adhoc_routing_provider(provider, preverified_only=True)
+        if not (preverified_proof or "").strip():
+            raise ValueError(
+                "preverified_only requires a non-empty preverified_proof"
+            )
+        from ztare.leanmill.carried_theorem_ratification import (
+            ratify_carried_theorem,
+        )
+
+        return ratify_carried_theorem(
+            target_name,
+            source_text,
+            preverified_proof or "",
+            goal,
+            lean_root=(Path(substrate) if substrate else DEFAULT_LEAN_ROOT_FOR_VERIFY),
+            timeout_s=timeout_s,
+            provider_label=preverified_provider or "external",
+            run_id=os.environ.get("ZTARE_SOLVER_RUN_TAG"),
+        )
     from ztare.leanmill.solver import reference_leakage_gate as _gate
     from ztare.leanmill.solver import family_lemma_library as _lib
     prov = _adhoc_routing_provider(
@@ -4759,10 +5260,19 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             source_text = _st2
     except Exception:  # noqa: BLE001 — dedup is best-effort; never block the solve
         pass
-    try:
-        preflight_moves_alive(sub)      # standing positive control (cached per root); loud if a move is dead
-    except Exception:
-        pass
+    # Ratification consumes caller-owned proof bytes and never invokes a proof
+    # search carrier.  Its availability therefore cannot depend on the native
+    # hammer's positive control.  Search mode records that control as typed
+    # input so a dead carrier is skipped and its null is inadmissible.
+    _native_hammer_capability_available: "bool | None" = None
+    if not preverified_only:
+        try:
+            _preflight = preflight_moves_alive(sub)
+            _native_hammer_capability_available = (
+                _preflight.get("native_hammer") is True
+            )
+        except Exception:
+            _native_hammer_capability_available = False
     _run_start = datetime.now(timezone.utc).isoformat()  # scope the ratification stamp to THIS run
     from ztare.leanmill.solver.agentic_leaf import probe_dir   # shared scratch dir (probes out of the project root)
     # CONTENT-ADDRESSED AdHoc (2026-07-02 RCA — the Basel `target_signature_altered` false-reject): the planner's
@@ -4794,9 +5304,19 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                   f"(2026-06-23 iso_lemma1 RCA). Re-formalize WITHOUT the bare binder.", flush=True)
     except Exception:  # noqa: BLE001 — advisory only; never block a solve
         _redundant_instances = []
-    row = {"row_id": f"adhoc::{target_name}", "target_theorem_name": target_name,
+    _attempt_row_id = f"adhoc::{target_name}::{_run_start}"
+    row = {"row_id": _attempt_row_id, "target_theorem_name": target_name,
            "source_file": str(src), "sorried_file": str(src), "goal": goal, "notes": notes,
            "rejection_reasons": ["no_positive_family_template"], "target_resolution_ok": True}
+    if _native_hammer_capability_available is not None:
+        row["_native_hammer_capability_available"] = (
+            _native_hammer_capability_available
+        )
+    # All producers hand one exact candidate to the solve_adhoc epilogue.
+    row["_closed_artifact_finalizer_owns_governance"] = True
+    row["_require_positive_axiom_receipt"] = bool(
+        require_positive_axiom_receipt
+    )
     # EXTERNALLY-PRODUCED PROOF (operator hand-off / recovered artifact): route a COMPLETE compiling proof
     # STRAIGHT to governance via the SAME `_preverified_proof` seam the proposer-pool champion uses — kernel
     # compile + MNC + axiom audit + statement_integrity + closure cert, with NO re-derivation. The proof is
@@ -4906,11 +5426,13 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             return False
         try:
             with _phase_timer("native", target=target_name):
-                ok_nh, _tac, _tail = _native_hammer_probe(row, sub, min(int(timeout_s), 300))
-            if ok_nh:
+                native = _native_hammer_probe(
+                    row, sub, min(int(timeout_s), 300)
+                )
+            if native.closed:
                 print("[solve_adhoc] native pre-filter CLOSED the goal — skipping the agent "
                       "strategy-ask + planner (the cascade mints it through full governance)", flush=True)
-            return bool(ok_nh)
+            return native.closed
         except Exception:  # noqa: BLE001 — a pre-filter error must never block the strategy path
             return False
 
@@ -4996,25 +5518,51 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                       "proceeding to prove", flush=True)
             except Exception:  # noqa: BLE001 — falsify-route error ⇒ normal cascade (never block a solve)
                 pass
-        if _decomp_first:
-            try:
-                from ztare.leanmill.solver.isomorphism_decompose import route_and_solve as _ras_pre
-                print(f"[solve_adhoc] decompose-first ({'top+blueprint' if _is_top else 'agent-judged (sub-lemma, fresh)'}) → planner BEFORE the direct cascade", flush=True)
-                _iso_pre = _ras_pre(source_text, target_name, goal, lean_root=sub,
-                                    timeout_s=timeout_s, substrate=sub, notes=(notes if _is_top else None),
-                                    _depth=_iso_depth)
-                if ((_iso_pre.get("solution") or {}).get("parent_closed")):
-                    return _decomposition_closed_result(target_name, goal, _iso_pre)
-            except Exception as _e:  # noqa: BLE001 — best-effort; fall through to the direct cascade
-                _iso_pre = {"error": repr(_e)[:160]}
         with _gate.clean_capability([target_name], REPO, str(sub)) as quarantined:
-            # Ratification is a governance lifecycle, not a proof-search mode.  The preverified door currently
-            # lives in the canonical cascade before any proposer layer; DAG mode otherwise enters move search
-            # first and can dispatch despite ``preverified_only``.  Force the governance door regardless of the
-            # caller's search-mode default.  Rejection still returns immediately at the existing bounded check.
-            _execution_mode = "cascade" if preverified_only else mode
-            res = solve(prov, limit=0, dry_run=False, timeout_s=timeout_s, mode=_execution_mode,
-                        rows=[row], skip_cue_check=True, lean_root=sub)
+            res = None
+            if _decomp_first:
+                try:
+                    from ztare.leanmill.solver.isomorphism_decompose import route_and_solve as _ras_pre
+                    print(f"[solve_adhoc] decompose-first ({'top+blueprint' if _is_top else 'agent-judged (sub-lemma, fresh)'}) → planner BEFORE the direct cascade", flush=True)
+                    _iso_pre = _ras_pre(source_text, target_name, goal, lean_root=sub,
+                                        timeout_s=timeout_s, substrate=sub, notes=(notes if _is_top else None),
+                                        _depth=_iso_depth)
+                    if ((_iso_pre.get("solution") or {}).get("parent_closed")):
+                        res = _decomposition_closed_result(target_name, goal, _iso_pre)
+                except Exception as _e:  # noqa: BLE001 — best-effort; fall through to the direct cascade
+                    _iso_pre = {"error": repr(_e)[:160]}
+            if res is None:
+                # Ratification is a governance lifecycle, not a proof-search mode.  The preverified door currently
+                # lives in the canonical cascade before any proposer layer; DAG mode otherwise enters move search
+                # first and can dispatch despite ``preverified_only``.  Force the governance door regardless of the
+                # caller's search-mode default.  Rejection still returns immediately at the existing bounded check.
+                _execution_mode = "cascade" if preverified_only else mode
+                res = solve(prov, limit=0, dry_run=False, timeout_s=timeout_s, mode=_execution_mode,
+                            rows=[row], skip_cue_check=True, lean_root=sub)
+
+            # Both decomposition orderings converge inside the quarantine.
+            _routed_r0 = primary_result(res)
+            if _decomp_first:
+                res["iso_route"] = _iso_pre
+                _lift_decomposition_closure(res, _iso_pre)
+            elif (
+                not preverified_only
+                and os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0"
+                and _routed_r0.get("outcome") in (
+                    "exact_gap", "rung", "new_sub_target",
+                    "open", "failed", "failed_compile",
+                )
+            ):
+                try:
+                    from ztare.leanmill.solver.isomorphism_decompose import route_and_solve as _ras
+                    res["iso_route"] = _ras(
+                        source_text, target_name, goal, lean_root=sub,
+                        timeout_s=timeout_s, substrate=sub, notes=notes,
+                        _depth=_iso_depth,
+                    )
+                    _lift_decomposition_closure(res, res["iso_route"])
+                except Exception as _e:  # noqa: BLE001 — routing is best-effort; never break the solve
+                    res["iso_route"] = {"error": repr(_e)[:160]}
     finally:
         if _prev_refchk is None:
             os.environ.pop("ZTARE_CLOSURE_REF_CHECK", None)
@@ -5035,43 +5583,19 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     #   (3) statement_integrity — diff winning probe vs ORIGINAL defs (the axis v33 LACKS: it audits
     #       the probe in isolation, so it cannot see a depended-on definition being altered — this is
     #       the channel the mollifier_rate def-edit cheat used; empirically v33 returns clean on it).
-    # Fail-OPEN on an organ crash (never block a closure on a gate bug); a CONFIRMED blocker is
-    # fail-CLOSED (reject → outcome `rejected_governance`).
+    # A confirmed finding rejects the candidate.  A runtime fault preserves it
+    # as governance-unavailable and withholds every positive side effect.
     if r0.get("outcome") == "closed":
         gov: dict = {}
         try:
-            import hashlib as _artifact_hash
-            from ztare.leanmill.lean_source import resolve_theorem_target as _resolve_target
-            _artifact = row.pop("_verified_closure_artifact", None)
-            _artifact_map = _artifact if isinstance(_artifact, dict) else {}
-            _artifact_identity = str(
-                _artifact_map.get("target_qualified_name")
-                or _artifact_map.get("target_name")
-                or ""
+            _artifact = _validate_verified_closure_artifact(
+                (
+                    r0.get("verified_closure_artifact")
+                    or row.pop("_verified_closure_artifact", None)
+                ),
+                target_name,
             )
-            _posed_identity = (
-                _resolve_target(_artifact_map.get("posed_source") or "", _artifact_identity)
-                if _artifact_identity else None
-            )
-            _closure_identity = (
-                _resolve_target(_artifact_map.get("closure_source") or "", _artifact_identity)
-                if _artifact_identity else None
-            )
-            _artifact_ok = bool(
-                isinstance(_artifact, dict)
-                and _artifact.get("schema") == "leanmill.verified_closure_artifact.v1"
-                and _artifact.get("target_name") == target_name
-                and _posed_identity is not None
-                and _closure_identity is not None
-                and _posed_identity.qualified_name == _artifact_identity
-                and _closure_identity.qualified_name == _artifact_identity
-                and _artifact.get("closure_source")
-                and _artifact.get("posed_source")
-                and _artifact_hash.sha256(_artifact["closure_source"].encode()).hexdigest()
-                    == _artifact.get("closure_sha256")
-                and _artifact_hash.sha256(_artifact["posed_source"].encode()).hexdigest()
-                    == _artifact.get("posed_sha256")
-            )
+            _artifact_ok = _artifact is not None
             if _artifact_ok:
                 # The producing verifier already supplied the exact closure and posed baseline.  Identity is
                 # carried, not rediscovered from mutable scratch recency.
@@ -5081,22 +5605,39 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 _probe_mk = "carried_exact_artifact"
                 _probe_root = sub
             else:
-                if _artifact is not None:
-                    gov["artifact_carrier_error"] = "invalid target/schema/hash; used legacy probe discovery"
-                # Legacy producers did not carry an artifact. Search both possible roots, then require the
-                # candidate body to match the winning proof before governance consumes it.
-                _roots = list(dict.fromkeys([sub, DEFAULT_LEAN_ROOT_FOR_VERIFY]))
-                cand = sorted([p for r in _roots for p in probe_dir(r).glob("RobustProbe_*.lean")]
-                              + [p for r in _roots for p in probe_dir(r).glob(f"AdHoc_{target_name}*.lean")],
-                              key=lambda p: p.stat().st_mtime if p.exists() else 0, reverse=True)
-                _pt = (r0.get("proof_text") or "").strip()
-                _cand_pairs = [(p, p.read_text(encoding="utf-8", errors="replace")) for p in cand if p.exists()]
-                probe_path, probe_txt, _probe_mk = _match_closing_probe(_cand_pairs, target_name, _pt)
+                # Mutable scratch recency cannot substitute for this carrier.
+                gov["artifact_carrier_error"] = "missing or invalid exact closure artifact"
+                probe_path, probe_txt, _probe_mk = src, None, "withheld_invalid_artifact"
                 _posed_for_governance = source_text
-                _probe_root = probe_path.parent if probe_path is not None else sub
+                _probe_root = sub
             gov["probe_match"] = _probe_mk
             gov["verify_root"] = _public_path(_probe_root)
             blockers: list[str] = []
+            unavailable: list[str] = []
+            if not _artifact_ok:
+                blockers.append("artifact:invalid_exact_carrier")
+            _producer_validation = r0.get("contract_validation") or {}
+            _producer_receipts = _producer_validation.get("receipts") or {}
+            if not _producer_validation.get("credit_ready_at_solver_layer"):
+                blockers.append("producer_validation:not_credit_ready")
+            _producer_axiom = (
+                _producer_receipts.get("axiom_allowlist_receipt") or {}
+            )
+            _producer_mnc = (
+                _producer_receipts.get("matched_negative_control_receipt") or {}
+            )
+            if _producer_axiom.get("available") is not True:
+                unavailable.append("producer_validation:axiom_receipt_unavailable")
+            elif _producer_axiom.get("passed") is False:
+                blockers.append("producer_validation:axiom_receipt_failed")
+            elif _producer_axiom.get("passed") is not True:
+                unavailable.append("producer_validation:axiom_receipt_unavailable")
+            if _producer_mnc.get("available") is not True:
+                unavailable.append("producer_validation:matched_control_unavailable")
+            elif _producer_mnc.get("passed") is False:
+                blockers.append("producer_validation:matched_control_failed")
+            elif _producer_mnc.get("passed") is not True:
+                unavailable.append("producer_validation:matched_control_unavailable")
             if probe_txt is not None:
                 # AXIOM allowlist is ALREADY gated by the leaf (verify_lean_proof runs `#print axioms
                 # ⊆ {propext,Classical.choice,Quot.sound}` BEFORE a closure is recorded) — so a closure
@@ -5112,21 +5653,48 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 # (laundering + vacuity + statement-integrity); passing `original_source` activates the
                 # statement-integrity organ (def-alteration). ONE call, no bolted-on per-mode copies.
                 try:
+                    # The outer finalizer owns this decision. Producer receipts
+                    # are retained as provenance but cannot substitute for a
+                    # target-bound replay of the exact carried artifact.
                     from ztare.gates.lean_proof_gate import run_anti_laundering_kernel as _kernel
                     k = _kernel(probe_txt, probe_path, _probe_root,
                                 original_source=_posed_for_governance, target_name=target_name)
-                    gov["governance_kernel"] = {"passed": bool(k.get("passed")), "flags": k.get("flags"),
-                                                "confirmed": k.get("confirmed")}
+                    _kernel_available = k.get("available") is True
+                    gov["governance_kernel"] = {
+                        "available": _kernel_available,
+                        "passed": k.get("passed") if _kernel_available else None,
+                        "flags": k.get("flags"),
+                        "confirmed": k.get("confirmed"),
+                        "unavailable_organs": k.get("unavailable_organs", []),
+                        "detail": k.get("detail"),
+                        "policy_profile": k.get("policy_profile"),
+                        "required_authorities": k.get("required_authorities"),
+                        "authority_disposition": k.get("authority_disposition"),
+                        "authority_roster_sha256": k.get(
+                            "authority_roster_sha256"
+                        ),
+                    }
                     gov["statement_integrity"] = (k.get("detail") or {}).get("statement_integrity")
-                    if k.get("passed") is False:
+                    if not _kernel_available:
+                        unavailable.append("kernel:governance_organs_unavailable")
+                    elif k.get("passed") is False:
                         blockers.append("kernel:" + ",".join(k.get("confirmed") or k.get("flags") or []))
                 except Exception as _e:
                     # FAIL-CLOSED on a kernel crash (2026-06-13 audit): the anti-laundering + statement-
                     # integrity organs did NOT run on this found probe, so the closure is COMPILED but
                     # INTEGRITY-UNVERIFIED (cert/notes layers must not ratify it as integrity-clean — same
                     # signal as the no-probe branch). The proof itself stays kernel-valid (leaf pre-closure).
-                    gov["governance_kernel"] = {"passed": None, "error": repr(_e)[:120]}
+                    k = {
+                        "available": False,
+                        "passed": None,
+                        "unavailable_organs": ["leanmill_anti_laundering_kernel"],
+                    }
+                    gov["governance_kernel"] = {
+                        **k,
+                        "error": repr(_e)[:120],
+                    }
                     gov["integrity_unverified"] = True
+                    unavailable.append("kernel:governance_organs_unavailable")
                 gov["axiom_allowlist"] = "gated by leaf verify_lean_proof (#print axioms) pre-closure"
                 # POST-CLOSURE ROBUSTNESS + DIFFERENTIAL RE-VERIFICATION (DEFAULT-ON 2026-06-12; =0 reverts;
                 # was opt-in advisory-only). The battery annotates the kernel-verified closure with
@@ -5139,23 +5707,79 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 # context, never a genuine win. Cost: ~1-2 warm compiles, only on closures.
                 if os.environ.get("ZTARE_PROOF_MARGIN", "1") != "0":
                     try:
-                        from ztare.leanmill.solver.proof_margin_of_safety import proof_margin_of_safety
+                        from ztare.leanmill.solver.proof_margin_of_safety import (
+                            bind_conclusion_discrimination_receipt,
+                            proof_margin_of_safety,
+                            validate_conclusion_discrimination_receipt,
+                        )
                         from ztare.common.timeouts import timeout_s as _budget   # central factory (byte-parity: margin_probe defaults to the prior 90)
+                        _bound_mnc_receipt = (
+                            validate_conclusion_discrimination_receipt(
+                                _producer_receipts.get(
+                                    "matched_negative_control_receipt"
+                                ),
+                                probe_txt,
+                                target_name,
+                                posed_source=_posed_for_governance,
+                            )
+                        )
+                        gov["matched_negative_control_binding"] = {
+                            "status": (
+                                "validated_for_single_execution"
+                                if _bound_mnc_receipt is not None
+                                else "outer_replay_required"
+                            ),
+                            "target": target_name,
+                        }
                         gov["margin_of_safety"] = proof_margin_of_safety(
                             probe_txt, target_name, _probe_root, timeout_s=_budget("margin_probe"), deep=True,
-                            original_source=_posed_for_governance)
+                            original_source=_posed_for_governance,
+                            soundness_kernel_receipt=k,
+                            conclusion_discrimination_receipt=(
+                                _bound_mnc_receipt
+                            ),
+                        )
                         _disc = (((gov["margin_of_safety"] or {}).get("tests") or {})
                                  .get("conclusion_discrimination") or {})
-                        if (_disc.get("detail") or {}).get("differential") == "zero":
+                        _disc_detail = _disc.get("detail") or {}
+                        _replacement_mnc = (
+                            bind_conclusion_discrimination_receipt(
+                                _disc_detail,
+                                probe_txt,
+                                target_name,
+                                posed_source=_posed_for_governance,
+                            )
+                            if _bound_mnc_receipt is None
+                            else None
+                        )
+                        if _replacement_mnc is not None:
+                            _producer_receipts[
+                                "matched_negative_control_receipt"
+                            ] = _replacement_mnc
+                            _producer_validation["receipts"] = _producer_receipts
+                            r0["contract_validation"] = _producer_validation
+                            gov["matched_negative_control_binding"]["status"] = (
+                                "replayed_and_rebound_at_outer_boundary"
+                            )
+                        if _disc_detail.get("differential") == "zero":
                             blockers.append("margin:zero_differential_vacuous_context")
-                    except Exception as _e:  # noqa: BLE001 — a battery error never breaks governance (fail-open
-                        gov["margin_of_safety"] = {"error": repr(_e)[:120]}   # on ORGAN crash, per the gov contract)
+                        elif (
+                            _disc_detail.get("status") != "pass"
+                            or _disc_detail.get("passed") is not True
+                        ):
+                            unavailable.append(
+                                "margin:conclusion_discrimination_unavailable"
+                            )
+                    except Exception as _e:  # noqa: BLE001 — preserve the candidate without authority credit
+                        gov["margin_of_safety"] = {"error": repr(_e)[:120]}
+                        unavailable.append("margin:governance_probe_unavailable")
                 if preverified_only:
                     # A carried theorem is being promoted as an audit artifact,
                     # not merely used as a search hint.  Every trust receipt is
                     # therefore positive evidence: an organ crash/disabled
                     # differential cannot mint a ratification certificate.
-                    blockers.extend(_ratification_receipt_blockers(gov))
+                    if not unavailable:
+                        blockers.extend(_ratification_receipt_blockers(gov))
             else:
                 # No probe to diff → the statement-integrity organ could not run. The leaf's axiom
                 # gate + MNC DID run (so it's not ungoverned), but def-alteration is UNVERIFIED here —
@@ -5194,15 +5818,99 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                         _wit = (r0.get("proof_text") or "").strip() or "; ".join(blockers)
                         _siv = gov.get("statement_integrity")
                         if _siv is not None:  # typed decl-diff violations (definition_altered, …)
-                            _ngs.record_integrity_verdict(goal, _siv, source=f"adhoc:{target_name}")
+                            _ngs.record_integrity_verdict(
+                                goal,
+                                _siv,
+                                source=f"adhoc:{target_name}",
+                                posed_probe=_posed_for_governance,
+                                altered_probe=probe_txt,
+                                target_name=target_name,
+                            )
                         for _flag in ((gov.get("governance_kernel") or {}).get("confirmed")
                                       or (gov.get("governance_kernel") or {}).get("flags") or []):
                             _ngs.record(goal, _fco(_flag), _wit, confirmed=True,
                                         source=f"adhoc:{target_name}")
                     except Exception:  # noqa: BLE001 — recording is best-effort; never fail the solve
                         pass
+            elif unavailable:
+                gov["unavailable_reasons"] = list(dict.fromkeys(unavailable))
+                r0["outcome"] = "governance_unavailable"
+                r0["governance_unavailable_reasons"] = gov[
+                    "unavailable_reasons"
+                ]
+                res["outcome"] = "governance_unavailable"
+                res["closure_candidates"] = 0
+                res["rejected_reason"] = (
+                    "governance unavailable: "
+                    + "; ".join(gov["unavailable_reasons"])
+                )
         except Exception as _e:
-            res["governance"] = {"error": repr(_e)[:160]}
+            res["governance"] = {
+                "error": repr(_e)[:160],
+                "integrity_unverified": True,
+                "governance_kernel": {
+                    "available": False,
+                    "passed": None,
+                    "unavailable_organs": ["closed_artifact_finalizer"],
+                },
+            }
+            r0["outcome"] = "governance_unavailable"
+            r0["governance_unavailable_reasons"] = [
+                "closed_artifact_finalizer:unavailable"
+            ]
+            res["outcome"] = "governance_unavailable"
+            res["closure_candidates"] = 0
+        # Replace the producer's provisional validation before any consumer,
+        # certificate, cache, or training side effect sees this result.
+        try:
+            _final_solver_validation = _finalize_solver_validation(
+                r0.get("contract_validation"),
+                res.get("governance"),
+            )
+        except Exception as _finalizer_error:  # noqa: BLE001 — typed authority outage
+            _final_solver_validation = _unavailable_finalized_validation(
+                repr(_finalizer_error)
+            )
+            r0["outcome"] = "governance_unavailable"
+            r0["governance_unavailable_reasons"] = [
+                "closed_artifact_finalizer:unavailable"
+            ]
+            res["outcome"] = "governance_unavailable"
+            res["closure_candidates"] = 0
+        r0["contract_validation"] = _final_solver_validation
+        if (
+            r0.get("outcome") == "closed"
+            and not _finalized_ratification_eligible(
+                _final_solver_validation
+            )
+        ):
+            r0["outcome"] = "governance_unavailable"
+            r0["governance_unavailable_reasons"] = [
+                "closed_artifact_finalization:authority_receipt_unavailable"
+            ]
+            res["outcome"] = "governance_unavailable"
+            res["closure_candidates"] = 0
+        # Check the consuming environment before durable positive effects.
+        _probe_full = locals().get("probe_txt") or ""
+        if not _probe_full.strip() and isinstance(locals().get("_artifact"), dict):
+            _probe_full = _artifact.get("closure_source") or ""
+        _environment_parity = (
+            _environment_parity_decision(target_name, _probe_full, sub)
+            if (
+                r0.get("outcome") == "closed"
+                and _governance_ratification_eligible(res.get("governance"))
+            )
+            else {"attempted": False, "reason": "candidate_not_final"}
+        )
+        res["environment_parity"] = _environment_parity
+        if (
+            _environment_parity.get("reason") == "reverted_noncompile"
+            and os.environ.get("ZTARE_LEANMILL_BANK_ENV_RATIFY", "1") != "0"
+        ):
+            r0["outcome"] = "reverted_noncompile"
+            res["outcome"] = "reverted_noncompile"
+            res["env_parity_retracted"] = True
+            res["closure_candidates"] = 0
         # Stamp the RATIFICATION verdict onto this run's attempts: ratified=1 iff governance accepted
         # the closure, 0 if rejected (a gamed compile_ok=1 → ratified=0). The rating layer scores
         # `ratified`, so cheats stop counting as wins (the false-positive fix).
@@ -5213,7 +5921,13 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         # the leaf's axiom gate ran); only the GOVERNED-win credit is withheld. With the checker now
         # persisting every verified probe, integrity_unverified marks an apparatus anomaly, not a norm.
         try:
-            _gov_verified = not (res.get("governance") or {}).get("integrity_unverified")
+            _gov_verified = _governance_ratification_eligible(
+                res.get("governance")
+            )
+            # Governance rejection withholds ratified/training credit.
+            res["governance_ratification_eligible"] = bool(
+                r0.get("outcome") == "closed" and _gov_verified
+            )
             n_stamped = _record_governance_verdict(
                 row["row_id"], ratified=(r0.get("outcome") == "closed" and _gov_verified),
                 since=_run_start)
@@ -5250,13 +5964,43 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 _cdir.mkdir(parents=True, exist_ok=True)
                 _closure_lean = _cdir / f"{target_name}.lean"
                 _closure_lean.write_text(_probe_full, encoding="utf-8")
-            import hashlib as _hl   # local: best-effort block (the NameError-silent-no-op lesson)
+            _certificate_identity = _closure_certificate_identity(
+                row_id=r0.get("row_id") or row["row_id"],
+                run_tag=os.environ.get("ZTARE_SOLVER_RUN_TAG"),
+                target=target_name,
+                goal=goal or "",
+                source=source_text or "",
+                probe=_probe_full or "",
+                proof=r0.get("proof_text") or "",
+            )
+            _toolchain_identity = _closure_toolchain_identity(sub)
+            _kernel_parity_record = _build_kernel_parity_record(
+                target=target_name,
+                timestamp=_run_start,
+                certificate_identity=_certificate_identity,
+                solver_validation=_final_solver_validation,
+                governance=res.get("governance"),
+                toolchain_identity=_toolchain_identity,
+                environment_parity=_environment_parity,
+            )
+            _kernel_parity_persisted = False
+            try:
+                from ztare.leanmill.common import append_jsonl_locked
+
+                append_jsonl_locked(
+                    OUT_DIR / "kernel_parity.jsonl",
+                    _public_sanitize(_kernel_parity_record),
+                )
+                _kernel_parity_persisted = True
+            except Exception as _parity_error:  # noqa: BLE001 — proof credit is independent of telemetry persistence
+                res["kernel_parity_record_error"] = repr(_parity_error)[:120]
             _cert = {
+                "certificate_schema": "leanmill.governed_closure.v2",
                 "ts": _run_start,
+                **_certificate_identity,
                 "target": target_name,
                 # Planner DAG node names are GENERIC (iso_lemma1 …) and collide ACROSS runs — the goal
                 # hash is the stable statement identity (v3 RCA: three same-named certs, three statements).
-                "goal_sha": _hl.sha256((goal or "").encode()).hexdigest()[:16],
                 "outcome": r0.get("outcome"),
                 "provider": r0.get("provider") or r0.get("winner"),
                 "proof_text": r0.get("proof_text") or "",
@@ -5266,16 +6010,22 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 "recompilable_probe_reconstructed": _probe_reconstructed,
                 "closure_lean": _public_path(_closure_lean) if _closure_lean else None,  # in-substrate copy
                 "governance": _public_sanitize(res.get("governance")),
-                # Preserve the producing solver-layer receipt bundle verbatim.
-                # The post-closure governance summary cannot substitute for
-                # the exact kernel/MNC/axiom decision that admitted the proof.
+                # Resolve the producer's deferred governance receipts at the
+                # one boundary that owns the authoritative kernel decision.
+                # The producer receipts remain nested for auditability.
                 "solver_validation": _public_sanitize(
-                    r0.get("contract_validation")
+                    _final_solver_validation
                 ),
                 "matched_negative_control": r0.get("matched_negative_control"),
                 "ratification_only": bool(preverified_only),
                 "substrate": _public_path(sub),
                 "checker": active_proof_checker_name(),    # WHICH checker ratified — auditable across substrates
+                "toolchain_identity": _toolchain_identity,
+                "kernel_parity_record_sha256": _kernel_parity_record[
+                    "record_sha256"
+                ],
+                "kernel_parity_record_persisted": _kernel_parity_persisted,
+                "environment_parity": _public_sanitize(_environment_parity),
                 "wall_s": r0.get("provider_wallclock_s"),
                 # INFER-VIA-USE compounding provenance (2026-06-24): True ⇒ the proof-cache/pool pre-attack SERVED
                 # this closure (cited a banked rung, re-verified in-context) instead of re-deriving — the direct,
@@ -5285,8 +6035,10 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             # (b) tracked, durable, append-only audit ledger (survives even if the substrate is wiped). Cross-
             # process-safe append (2026-07-05 audit): certs embed proof_text + the full recompilable probe (35 KB
             # records > PIPE_BUF) — a torn interleave would corrupt a PUBLISHED artifact. Route through the flock'd door.
-            from ztare.leanmill.common import append_jsonl_locked
-            append_jsonl_locked(ADHOC_CLOSURE_CERTIFICATES, _public_sanitize(_cert))
+            _public_cert = _public_sanitize(_cert)
+            append_jsonl_locked(ADHOC_CLOSURE_CERTIFICATES, _public_cert)
+            from ztare.leanmill.theory_ir import content_hash as _certificate_content_hash
+            _certificate_record_sha256 = _certificate_content_hash(_public_cert)
             try:
                 from ztare.leanmill.control_plane import StatementId, Verdict, VerdictKind
                 from ztare.leanmill.verdict_store import emit_verdict
@@ -5305,6 +6057,7 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                     detail=str((res.get("governance") or {}).get("blockers") or r0.get("outcome") or "")[:500],
                     artifacts={
                         "closure_certificate": _public_path(ADHOC_CLOSURE_CERTIFICATES),
+                        "closure_certificate_record_sha256": _certificate_record_sha256,
                         "closure_lean": _public_path(_closure_lean) if _closure_lean else "",
                         "goal_sha": _cert.get("goal_sha") or "",
                     },
@@ -5312,6 +6065,7 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             except Exception:  # noqa: BLE001 — typed verdict telemetry is best-effort
                 pass
             res["closure_certificate"] = _public_path(ADHOC_CLOSURE_CERTIFICATES)
+            res["closure_certificate_record_sha256"] = _certificate_record_sha256
             res["closure_lean"] = _public_path(_closure_lean) if _closure_lean else None
         except Exception as _e:
             res["closure_certificate_error"] = repr(_e)[:120]
@@ -5320,7 +6074,8 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     # CITES it instead of re-deriving. THE single deposit door — native-pre-filter / warm-direct / decompose all
     # flow through here, where the scattered dag-search-only deposit missed them (the banked APR lemmas were in the
     # cert ledger but NEVER in the proof_cache → zero reuse). Dual-indexed (Expr key + text key); re-verified on use.
-    if (r0.get("outcome") == "closed" and (r0.get("proof_text") or "").strip()
+    if (res.get("governance_ratification_eligible")
+            and r0.get("outcome") == "closed" and (r0.get("proof_text") or "").strip()
             and os.environ.get("ZTARE_PROOF_CACHE", "1") != "0"):
         try:
             from ztare.leanmill.solver.proof_cache import ProofCache as _PCdep
@@ -5332,79 +6087,23 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     # compounding: on a clean closure, bank the proof's invented helpers for siblings. Bank from the
     # closure's PROOF_TEXT (the leaf proves in its own probe file; the original `src` keeps its
     # `sorry`, so re-reading src banked nothing — cold-review-adjacent catch 2026-06-03).
-    if r0.get("outcome") == "closed" and (r0.get("proof_text") or "").strip():
+    if (res.get("governance_ratification_eligible")
+            and r0.get("outcome") == "closed" and (r0.get("proof_text") or "").strip()):
         fam = sub / f"family_context_{target_name.split('_')[0]}.lean"
         if not fam.exists():
             _lib.init_context(fam, source_text.split(f"theorem {target_name}")[0])
         res["banked_helpers"] = _lib.bank(fam, r0.get("proof_text") or "")
-        # CROSS-RUN COMPOUNDING (the amnesia fix, 2026-06-19): also bank the closed RUNG ITSELF into the
-        # CAMPAIGN warm-env file (registered by the notes run via set_campaign_substrate) so the cascade
-        # `exact?`/`aesop`-cites it BY TYPE next run instead of re-deriving it. INCREMENTAL (here, at the
-        # kernel-ratify site) ⇒ a run that dies before its epilogue still compounds what it proved — the RCA
-        # was that the epilogue-only bank NEVER fired (long runs die first). Reuses family_lemma_library's
-        # canonical engine (content-stable name dodges the planner's generic-name collision; reverify+revert
-        # keeps the shared env compiling). Best-effort + flag-gated; never blocks the closure.
-        _pf = locals().get("_probe_full") or ""   # set in the cert-write block above; NameError-safe
-        if _pf.strip() and os.environ.get("ZTARE_LEANMILL_BANK_RUNGS_TO_THEORY", "1") != "0":
-            try:
-                from ztare.formal.repl_compile import get_campaign_substrate as _gcs
-                _env = _gcs()
-                if _env:
-                    # lean_root MUST be the campaign theory's LAKE PROJECT (`sub` = ztare_proofs), NOT
-                    # `_probe_root`: that is the closure probe's scratch PARENT (…/.solver_scratch/closures),
-                    # which has no `lean-toolchain` ⇒ `_toolchain_ok` is False ⇒ `campaign_file_env` returns
-                    # None ⇒ the reverify "fails" and EVERY rung reverts as `reverted_noncompile`. This was
-                    # THE amnesia banking-never-fires RCA (2026-06-20): banking fired for no run because the
-                    # reverify root was a toolchain-less scratch dir. The theory file lives in `sub`; reverify
-                    # it against `sub`'s warm REPL.
-                    _br = _lib.bank_decl_to_env(_env, target_name, _pf, sub)
-                    res["rung_banked_to_env"] = _br.get("banked_as")
-                    res["rung_bank_reason"] = _br.get("reason")
-                    if _br.get("banked_as"):
-                        _hb = _br.get("helpers_banked") or []
-                        print(f"[compounding] LIBRARY grew — rung '{target_name}' banked to the campaign env "
-                              f"as {_br['banked_as']}"
-                              + (f" (+{len(_hb)} helper lemma(s) carried)" if _hb else "")
-                              + " (now exact?/aesop-citable, cross-run)", flush=True)
-                    elif (_br.get("reason") == "reverted_noncompile"
-                          and os.environ.get("ZTARE_LEANMILL_BANK_ENV_RATIFY", "1") != "0"):
-                        # SINGLE DOOR — env-parity / TOCTOU (RCA 2026-07-04, the RBAC `reverted_noncompile` cascade).
-                        # The proof passed warm-verify (a self-contained probe vs BASE Mathlib, `warm_verify_campaign`
-                        # PATH A) but does NOT compile appended to the SUBSTRATE — the env it will be USED in. A `closed`
-                        # granted in one environment and banked in another is a PHANTOM closure: the DAG cites a rung the
-                        # env lacks, so the composite never assembles and every dependent leaf false-fails a ~2s
-                        # `unknown_identifier` (20/23 of this run). The soundness invariant a lemma library relies on —
-                        # "the env holds only decls checked by the kernel, so their use in later proofs is valid" — holds
-                        # ONLY if checked in the SAME env they are added to (the kernel's own addDecl = check-and-commit;
-                        # the DB commit-time-validation that kills write-skew). So the FULL-FILE substrate compile (bank's
-                        # own reverify) is the authoritative ratification: closed ⟺ kernel-verified IN THE TARGET ENV.
-                        # RETRACT the phantom closure → the rung is an honest gap the DAG re-attacks in-context, never a
-                        # phantom the composite is built over. `reverify_unavailable` (dead infra) is NOT retracted — only
-                        # a genuine parity failure (the `before` file still reverifies). The proof_cache/cert deposits
-                        # above are re-verified-on-use (sound), so a stale entry can only waste a reuse, never launder.
-                        # ZTARE_LEANMILL_BANK_ENV_RATIFY=0 restores the prior "closed-but-not-banked" behaviour (A/B).
-                        res["outcome"] = "reverted_noncompile"
-                        res["env_parity_retracted"] = True
-                        try:
-                            r0["outcome"] = "reverted_noncompile"
-                        except Exception:  # noqa: BLE001 — r0 shape guard; res is the returned contract
-                            pass
-                        print(f"⚠️  [single-door] rung '{target_name}' RETRACTED from `closed` — passed warm-verify but "
-                              f"FAILED the substrate-append compile (env-parity: it was checked in a different env than "
-                              f"it banks into). Reported as a GAP; the DAG re-attacks it in-context.", flush=True)
-                    elif _br.get("reason") in ("already", "dedup_or_excluded"):
-                        print(f"[compounding] bank-env unchanged for rung '{target_name}' "
-                              f"(reason={_br.get('reason')}); closure remains reusable through proof_cache/certs, "
-                              f"and bank_attempts records the substrate before/after hash.", flush=True)
-                    elif _br.get("reason") not in ("already", None):
-                        # LOUD non-bank (anti-regression 2026-06-24): a SILENT revert hid the helper-drop banking
-                        # bug across many runs (reuse=0, the pari-passu AP gap). Surface every non-trivial non-bank
-                        # so a reverted_noncompile / reverify_unavailable can't masquerade as "no banking happened".
-                        print(f"[compounding] rung '{target_name}' NOT banked (reason={_br.get('reason')}) — "
-                              f"check bank_attempts before/after hash and reverify reason before treating this "
-                              f"as a lost-reuse event.", flush=True)
-            except Exception as _e:  # noqa: BLE001 — compounding is best-effort; never blocks the closure
-                res["rung_bank_error"] = repr(_e)[:120]
+        # Surface the earlier consuming-environment check-and-bank receipt.
+        _environment_parity = res.get("environment_parity") or {}
+        res["rung_banked_to_env"] = _environment_parity.get("banked_as")
+        res["rung_bank_reason"] = _environment_parity.get("reason")
+        if _environment_parity.get("reason") in ("already", "dedup_or_excluded"):
+            print(
+                f"[compounding] bank-env unchanged for rung '{target_name}' "
+                f"(reason={_environment_parity.get('reason')}); "
+                "closure remains reusable through proof_cache/certs",
+                flush=True,
+            )
     # MECHANIZED apparatus-vs-math tag on EVERY non-closure (convergent eigenquestion, gemini+codex
     # 2026-06-05): never again launder a gated/budget/toolchain failure as "math-hard". The decompose
     # move being OFF (ZTARE_CONJECTURE_DECOMPOSE!=1) is the apparatus signal that bit the P1 runs.
@@ -5468,23 +6167,8 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     # cascade-only `open`/`failed`/`failed_compile`), so the recursion silently UNDER-FIRED on rung/new_sub_target
     # — exactly the rung-style non-closures it exists to re-decompose. `falsifier` (target may be false),
     # `retired_impossible` (genuine wall), and `rejected_governance` (caught cheat) correctly stay OUT.
-    if _decomp_first:
-        # The decompose-FIRST pre-pass already ran route_and_solve (it did NOT close — else we'd have returned).
-        # Reuse its result (no double-dispatch) and lift any closure (defensive; normally not closed here).
-        res["iso_route"] = _iso_pre
-        _lift_decomposition_closure(res, _iso_pre)
-    elif (os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0"
-            and r0.get("outcome") in ("exact_gap", "rung", "new_sub_target",
-                                      "open", "failed", "failed_compile")):
-        try:
-            from ztare.leanmill.solver.isomorphism_decompose import route_and_solve as _ras
-            res["iso_route"] = _ras(source_text, target_name, goal, lean_root=sub,
-                                    timeout_s=timeout_s, substrate=sub, notes=notes, _depth=_iso_depth)
-            # LIFT a kernel-RATIFIED parent closure into "solved" (#106): without this the cascade's miss
-            # (r0) shadowed a genuine composite_ratify closure and the caller reported "not solved".
-            _lift_decomposition_closure(res, res["iso_route"])
-        except Exception as _e:  # noqa: BLE001 — routing is best-effort; never break the solve
-            res["iso_route"] = {"error": repr(_e)[:160]}
+    # The autonomous decomposition route already ran inside the capability
+    # quarantine and before the common closed-artifact finalizer above.
     res["notes_used"] = bool(notes and notes.strip())   # #81 exit-point: record blueprint provenance on the result
     # SOFT reformulation signal: surface the agent's OWN `-- STATEMENT-FALSE:` refutation (the target is
     # mis-formalized, not merely hard) so the governed re-entry in `autoformalize_and_solve` can re-formalize the

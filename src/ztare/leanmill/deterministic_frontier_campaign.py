@@ -10,6 +10,7 @@ from ztare.leanmill.finite_theory_context import SemanticTheoryNode
 from ztare.leanmill.theory_context import TheoryLandscapeContext
 from ztare.leanmill.theory_campaign_journal import TheoryCampaignEvent, TheoryCampaignJournal
 from ztare.leanmill.theory_interest import (
+    CHEAP_CONSEQUENCE_EVALUATOR_REF,
     TheoryResidualYield,
     theory_residual_information_yield,
 )
@@ -247,6 +248,7 @@ def run_deterministic_frontier_campaign(
         finalist_rows.append(
             {
                 "node_id": node.node_id,
+                "baseline_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
                 "formula_ids": list(presentation),
                 "joint_only_consequence_ids": list(synergy_ids),
                 "cheap_baseline_consequence_ids": list(

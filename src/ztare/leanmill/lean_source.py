@@ -25,6 +25,22 @@ from bisect import bisect_right
 from dataclasses import dataclass
 import re
 
+
+def ensure_import_header(
+    text: str, *, header: str = "import Mathlib"
+) -> str:
+    """Make a standalone Lean source import-complete, idempotently.
+
+    This is a source-normalization primitive, independent of any proof-search
+    carrier.  Keeping it beside the canonical Lean text utilities prevents
+    audit and ratification code from importing the agentic solver merely to
+    prepare a file for compilation.
+    """
+
+    if re.search(r"(?m)^\s*import\s+\w", text or ""):
+        return text
+    return f"{header}\n\n{text}"
+
 _DECL_PREFIX = r"(?:noncomputable\s+|private\s+|protected\s+)*(?:theorem|lemma)\s+"
 
 # Any top-level declaration keyword at COLUMN 0 — the boundary of a decl's span. Anchored to col 0
@@ -62,7 +78,7 @@ DECL_START = re.compile(r"^" + _DECL_MODS + r"(" + "|".join(_DECL_KINDS) + r")\b
 # closed preventively (no substrate declares notation yet, but a vocabulary-building campaign is exactly where
 # it would appear). These are COMMANDS, not named decls, so they bound a span but are never themselves banked.
 DECL_TERMINATORS = re.compile(
-    r"^(end\b|#|namespace\b|section\b|open\b|variable\b|set_option\b|import\b|mutual\b"
+    r"^(end\b|#|namespace\b|section\b|noncomputable\s+section\b|open\b|variable\b|set_option\b|import\b|mutual\b"
     r"|include\b|omit\b|universe(?:s)?\b|export\b|local\b"
     r"|notation\b|notation3\b|macro\b|macro_rules\b|syntax\b|declare_syntax_cat\b|elab\b|elab_rules\b"
     r"|infix\b|infixl\b|infixr\b|prefix\b|postfix\b|attribute\b)")
@@ -343,8 +359,10 @@ def strip_scope_commands(text: str) -> str:
     clean = blank_comments(text or "").splitlines()
     out = []
     for i, ln in enumerate(orig):
-        head = (clean[i] if i < len(clean) else ln).split()[:1]
-        if head and head[0] in ("namespace", "section", "end"):
+        tokens = (clean[i] if i < len(clean) else ln).split()
+        if (
+            tokens[:1] and tokens[0] in ("namespace", "section", "end")
+        ) or tokens[:2] == ["noncomputable", "section"]:
             continue
         out.append(ln)
     return "\n".join(out)
@@ -606,7 +624,9 @@ def _scope_index(
     namespace_at_line: "list[tuple[str, ...]]" = []
     active_declaration_indent: "int | None" = None
     namespace_re = re.compile(r"^namespace\s+([A-Za-z_][\w'.]*)\s*$")
-    section_re = re.compile(r"^section(?:\s+([A-Za-z_][\w']*))?\s*$")
+    section_re = re.compile(
+        r"^(?:noncomputable\s+)?section(?:\s+([A-Za-z_][\w']*))?\s*$"
+    )
     end_re = re.compile(r"^end(?:\s+[A-Za-z_][\w'.]*)?\s*$")
     for line in scan_lines:
         namespace_at_line.append(tuple(
@@ -1022,7 +1042,12 @@ def wrapped_goal_stub(source: str, name: str, fallback_signature: str = "") -> s
     return f"theorem {name or 'adhoc_probe'} {bg} := by"
 
 
-def attach_proof(head: str, proof_body: str) -> str:
+def attach_proof(
+    head: str,
+    proof_body: str,
+    *,
+    proof_is_term: bool = False,
+) -> str:
     """Splice `proof_body` onto a decl `head` ending `:=` or `:= by` → a compilable `theorem … := <proof>`.
     THE canonical proof-splicer — callers MUST NOT hand-roll `head + body`.
 
@@ -1033,6 +1058,14 @@ def attach_proof(head: str, proof_body: str) -> str:
     `by` block), preserves the body's internal indentation VERBATIM, and never doubles `by`."""
     h = (head or "").rstrip()
     body = (proof_body or "").strip()
+    if proof_is_term:
+        # A carried declaration whose original body did not begin with `by`
+        # already supplied a Lean term after `:=`. Preserve that declaration
+        # category. Wrapping it under `by` turns constructors such as
+        # `⟨leftProof, rightProof⟩` into invalid tactic syntax.
+        if h.endswith(":= by"):
+            h = h[:-2].rstrip()
+        return (h + " " + body + "\n") if h.endswith(":=") else (h + "\n" + body + "\n")
     body_is_by_block = bool(re.match(r"by(?:\s|\Z)", body))   # `by` + whitespace/EOS, NOT `by_cases`
     if h.endswith(":= by"):
         # stub already opened the block: bare tactics go UNDER it; a body that carries its OWN `by` block
@@ -1088,7 +1121,13 @@ def _unclosed_scope_closers(text: str) -> "tuple[str, ...]":
     )
 
 
-def replace_decl_proof(source: str, target_name: str, proof_body: str) -> str:
+def replace_decl_proof(
+    source: str,
+    target_name: str,
+    proof_body: str,
+    *,
+    proof_is_term: bool = False,
+) -> str:
     """Replace exactly one named theorem's proof, preserving every sibling.
 
     The target is resolved by :func:`resolve_theorem_target`, including its
@@ -1106,7 +1145,9 @@ def replace_decl_proof(source: str, target_name: str, proof_body: str) -> str:
     if assign < 0:
         return ""
     replacement = attach_proof(
-        declaration[:assign].rstrip() + " :=", proof_body
+        declaration[:assign].rstrip() + " :=",
+        proof_body,
+        proof_is_term=proof_is_term,
     ).rstrip()
     # Keep a declaration separator when the original span had one.  The
     # following bytes (next declaration / namespace terminator) remain exact.
@@ -1128,7 +1169,7 @@ def open_decl_for_ratification(
     outside the selected declaration's proof is preserved by
     :func:`replace_decl_proof`; target resolution is namespace-aware and fails
     closed on absence or ambiguity.  This is the canonical bridge from an
-    already compiled artifact to ``solve_adhoc(..., preverified_only=True)``.
+    already compiled artifact to the bounded carried-theorem ratifier.
     """
 
     identity = resolve_theorem_target(source or "", target_name)

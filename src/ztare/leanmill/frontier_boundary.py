@@ -25,6 +25,12 @@ from ztare.leanmill.theory_interest import (
 )
 from ztare.leanmill.theory_ir import AxiomFormula, TheorySignature, content_hash
 from ztare.leanmill.theory_program import TheoryProgram
+from ztare.leanmill.theory_task_boundary_registry import (
+    registered_theory_task_boundary_handler,
+    theory_task_journal_projection,
+    theory_task_work_reservation,
+    validate_registered_theory_task_boundary_result,
+)
 
 
 LeanExecutorFn = Callable[..., Mapping[str, Any]]
@@ -38,6 +44,9 @@ SinglePremiseAuditFn = Callable[[tuple[str, ...], str], Mapping[str, Any]]
 TheoryTaskExecutorFn = Callable[..., Mapping[str, Any]]
 
 
+FROZEN_BOUNDARY_STOP_POLICY = "leanmill.frozen_boundary_stop_policy.v2"
+
+
 @dataclass(frozen=True)
 class FrontierBoundaryResult:
     context_hash: str
@@ -49,6 +58,7 @@ class FrontierBoundaryResult:
     def to_json(self) -> dict[str, Any]:
         core = {
             "schema": self.schema,
+            "stop_policy": FROZEN_BOUNDARY_STOP_POLICY,
             "context_hash": self.context_hash,
             "query_results": [dict(row) for row in self.query_results],
             "stop_reason": self.stop_reason,
@@ -204,7 +214,7 @@ def run_frontier_boundaries(
         if contract_ref in prior_task_results:
             raise ValueError("archived boundary duplicated a theory-task result")
         prior_task_results[contract_ref] = dict(prior_row)
-    prior_exhaustions: dict[
+    prior_finite_searches: dict[
         tuple[tuple[str, ...], str, tuple[tuple[str, int], ...]], dict[str, Any]
     ] = {}
     for prior_row in prior_query_results:
@@ -218,7 +228,12 @@ def run_frontier_boundaries(
             if (
                 not isinstance(receipt, Mapping)
                 or receipt.get("schema") != "leanmill.finite_model_search.v1"
-                or receipt.get("status") != "no_countermodel_at_fixed_size"
+                or receipt.get("status")
+                not in {
+                    "no_countermodel_at_fixed_size",
+                    "no_premise_model_at_fixed_size",
+                    "unknown",
+                }
             ):
                 continue
             receipt_core = {
@@ -234,10 +249,10 @@ def run_frontier_boundaries(
                 )
             )
             key = (prior_premises, prior_target, sizes)
-            saved = prior_exhaustions.get(key)
+            saved = prior_finite_searches.get(key)
             if saved is not None and saved != dict(receipt):
                 raise ValueError("archived fixed-size exhaustion changed identity")
-            prior_exhaustions[key] = dict(receipt)
+            prior_finite_searches[key] = dict(receipt)
     context_epoch = max(
         (
             event.epoch
@@ -393,27 +408,34 @@ def run_frontier_boundaries(
                 if contract.sha256 in seen_task_contracts:
                     continue
                 seen_task_contracts.add(contract.sha256)
+                handler = registered_theory_task_boundary_handler(
+                    contract.adjudicator_id
+                )
                 prior_task = prior_task_results.get(contract.sha256)
                 if prior_task is not None:
-                    from ztare.leanmill.formal_task_boundary import (
-                        validate_formal_task_boundary_result,
-                    )
-
+                    if handler is None:
+                        raise ValueError(
+                            "archived theory-task result has no registered handler: "
+                            + contract.adjudicator_id
+                        )
                     results.append(
-                        validate_formal_task_boundary_result(
+                        validate_registered_theory_task_boundary_result(
                             contract, prior_task
                         )
                     )
+                    continue
+                if handler is None:
+                    # Unknown contracts remain available to their adapter's
+                    # typed adjudication path, but no boundary executor may
+                    # infer how to run or validate them.
                     continue
                 if theory_task_executor_fn is None:
                     continue
                 if boundary_queries_used >= query_limit:
                     break
-                soft_stop = budget_ledger.soft_stop_reason(
-                    allow_coverage_target=False
-                )
-                if soft_stop is not None:
-                    stop_reason = soft_stop
+                hard_stop = budget_ledger.hard_stop_reason()
+                if hard_stop is not None:
+                    stop_reason = hard_stop
                     task_boundary_stopped = True
                     break
                 try:
@@ -426,28 +448,23 @@ def run_frontier_boundaries(
                     stop_reason = exc.reason
                     task_boundary_stopped = True
                     break
-                task_timeout_ms = int(
-                    plan.get("formal_task_timeout_ms", 180_000)
-                )
-                try:
-                    task_work_reservation = budget_ledger.reserve(
-                        f"boundary:theory-task:{contract.sha256[:16]}:formal-work",
-                        "boundary",
-                        {
-                            "formal_peer_attempts": 1,
-                            "formal_peer_millis": task_timeout_ms,
-                            "lean_attempts": 1,
-                            "lean_millis": task_timeout_ms,
-                        },
-                    )
-                except BudgetExceeded as exc:
-                    budget_ledger.release(
-                        task_reservation,
-                        reason="theory_task_formal_work_budget_unavailable",
-                    )
-                    stop_reason = exc.reason
-                    task_boundary_stopped = True
-                    break
+                task_work_reservation = None
+                task_work_costs = theory_task_work_reservation(contract, plan)
+                if task_work_costs:
+                    try:
+                        task_work_reservation = budget_ledger.reserve(
+                            f"boundary:theory-task:{contract.sha256[:16]}:formal-work",
+                            "boundary",
+                            task_work_costs,
+                        )
+                    except BudgetExceeded as exc:
+                        budget_ledger.release(
+                            task_reservation,
+                            reason="theory_task_formal_work_budget_unavailable",
+                        )
+                        stop_reason = exc.reason
+                        task_boundary_stopped = True
+                        break
                 try:
                     task_row = dict(
                         theory_task_executor_fn(
@@ -457,11 +474,7 @@ def run_frontier_boundaries(
                             budget_ledger=budget_ledger,
                         )
                     )
-                    from ztare.leanmill.formal_task_boundary import (
-                        validate_formal_task_boundary_result,
-                    )
-
-                    task_row = validate_formal_task_boundary_result(
+                    task_row = validate_registered_theory_task_boundary_result(
                         contract, task_row
                     )
                 except Exception:
@@ -469,15 +482,20 @@ def run_frontier_boundaries(
                         task_reservation,
                         reason="theory_task_executor_or_contract_failure",
                     )
-                    budget_ledger.release(
-                        task_work_reservation,
-                        reason="theory_task_executor_or_contract_failure",
-                    )
+                    if task_work_reservation is not None:
+                        budget_ledger.release(
+                            task_work_reservation,
+                            reason="theory_task_executor_or_contract_failure",
+                        )
                     raise
                 budget_ledger.commit(task_reservation)
-                budget_ledger.commit(task_work_reservation)
+                if task_work_reservation is not None:
+                    budget_ledger.commit(task_work_reservation)
                 boundary_queries_used += 1
                 results.append(task_row)
+                journal_projection = theory_task_journal_projection(
+                    contract, task_row
+                )
                 _journal(
                     journal,
                     attempt_id=attempt_id,
@@ -493,14 +511,8 @@ def run_frontier_boundaries(
                         )
                     ),
                     output_ref=str(task_row["receipt_sha256"]),
-                    evidence_status=(
-                        "proved"
-                        if str(task_row.get("status") or "").startswith(
-                            "kernel_verified"
-                        )
-                        else "unresolved"
-                    ),
-                    authority="frontier_boundary_formal_task_join",
+                    evidence_status=journal_projection["evidence_status"],
+                    authority=journal_projection["authority"],
                 )
                 budget_ledger.observe_information(
                     action_id=f"boundary:theory-task:{contract.sha256[:16]}",
@@ -619,11 +631,9 @@ def run_frontier_boundaries(
                 )
                 results.append(row)
                 continue
-            soft_stop = budget_ledger.soft_stop_reason(
-                allow_coverage_target=False
-            )
-            if soft_stop is not None:
-                stop_reason = soft_stop
+            hard_stop = budget_ledger.hard_stop_reason()
+            if hard_stop is not None:
+                stop_reason = hard_stop
                 break
             seed_prediction = seed_prediction_rows.get(target_id)
             if (
@@ -842,21 +852,21 @@ def run_frontier_boundaries(
                 timeout_ms = int(plan.get("smt_timeout_ms", 30_000))
                 for size_vector in larger_strata:
                     sizes = dict(size_vector)
-                    cached_exhaustion = prior_exhaustions.get(
+                    cached_search = prior_finite_searches.get(
                         (premises, target_id, tuple(size_vector))
                     )
-                    if cached_exhaustion is not None:
+                    if cached_search is not None:
                         if (
-                            cached_exhaustion.get("signature_sha256")
+                            cached_search.get("signature_sha256")
                             != context.signature.content_hash
-                            or tuple(cached_exhaustion.get("premise_formula_ids") or ())
+                            or tuple(cached_search.get("premise_formula_ids") or ())
                             != premises
-                            or cached_exhaustion.get("target_formula_id") != target_id
+                            or cached_search.get("target_formula_id") != target_id
                         ):
                             raise ValueError(
-                                "archived fixed-size exhaustion crossed query identity"
+                                "archived fixed-size search crossed query identity"
                             )
-                        row["countermodel_searches"].append(cached_exhaustion)
+                        row["countermodel_searches"].append(cached_search)
                         continue
                     stratum_ref = content_hash({"sort_sizes": sizes})[:16]
                     smt_reservation = None

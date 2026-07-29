@@ -17,6 +17,7 @@ from ztare.leanmill.frontier_blueprint import (
     cold_navigator_manifest,
     navigator_selection_mode,
     presentation_size_bounds,
+    theory_task_capability_scope,
     topology_presentation_size,
     frontier_objective_contract,
 )
@@ -25,6 +26,10 @@ from ztare.leanmill.theory_context import TheoryLandscapeContext
 from ztare.leanmill.theory_campaign_journal import TheoryCampaignEvent, TheoryCampaignJournal
 from ztare.leanmill.theory_conflict_ledger import theory_implication_signature
 from ztare.leanmill.theory_ir import content_hash
+from ztare.leanmill.theory_interest import (
+    CHEAP_CONSEQUENCE_EVALUATOR_REF,
+    CURRENT_CHEAP_BASELINE_REFS,
+)
 from ztare.leanmill.theory_program import (
     THEORY_PROGRAM_V1,
     THEORY_PROGRAM_V2,
@@ -41,6 +46,7 @@ if TYPE_CHECKING:
 
 
 NavigatorAgent = Callable[[str], Mapping[str, Any] | str]
+WitnessConstructor = Callable[[Mapping[str, Any]], Mapping[str, Any]]
 
 def prompt_trace_max_bytes() -> int:
     """Resolve the navigator trace projection cap from the factory policy."""
@@ -284,6 +290,63 @@ def _resolve_theory_task_contracts(
     requested = tuple(str(value) for value in contract_ids)
     if len(set(requested)) != len(requested):
         raise ValueError("theory-program task contract IDs must be unique")
+
+    def validate_selection_evidence(request: Mapping[str, Any]) -> None:
+        evidence_refs = {
+            str(value) for value in request.get("evidence_refs") or ()
+        }
+        matched_selection = False
+        for evidence_turn in trace:
+            evidence = (
+                evidence_turn.get("receipt")
+                if isinstance(evidence_turn, Mapping)
+                else None
+            )
+            if (
+                not isinstance(evidence, Mapping)
+                or evidence.get("capability_id")
+                != "select_theory_presentation"
+                or str(evidence.get("receipt_id") or "") not in evidence_refs
+            ):
+                continue
+            matched_selection = True
+            evidence_core = {
+                key: value
+                for key, value in evidence.items()
+                if key != "receipt_id"
+            }
+            if evidence.get("receipt_id") != "sha256:" + content_hash(
+                evidence_core
+            ):
+                raise ValueError("theory-task selection evidence digest mismatch")
+            summary = evidence.get("output_summary")
+            if not isinstance(summary, Mapping):
+                raise ValueError("theory-task selection evidence lost its summary")
+            program_yield = summary.get("program_yield")
+            coordinates = (
+                program_yield.get("coordinates")
+                if isinstance(program_yield, Mapping)
+                else None
+            )
+            residual_yield = summary.get("residual_yield")
+            baseline_refs = {
+                str(row.get("baseline_ref") or "")
+                for row in (coordinates, residual_yield)
+                if isinstance(row, Mapping) and row.get("baseline_ref")
+            }
+            if not baseline_refs:
+                raise ValueError(
+                    "theory-task selection evidence lacks evaluator identity"
+                )
+            if not baseline_refs <= CURRENT_CHEAP_BASELINE_REFS:
+                raise ValueError(
+                    "theory-task selection evidence uses a superseded cheap evaluator"
+                )
+        if not matched_selection:
+            raise ValueError(
+                "theory-task request lacks current selection evidence"
+            )
+
     available: dict[str, TaskDischargeContract] = {}
     for turn in trace:
         receipt = turn.get("receipt") if isinstance(turn, Mapping) else None
@@ -315,18 +378,43 @@ def _resolve_theory_task_contracts(
         }
         if (
             not isinstance(request, Mapping)
-            or set(request) not in (
-                request_fields,
-                request_fields | {"finite_witness_residual"},
-            )
+            or not request_fields <= set(request)
             or request.get("request_id")
             != "theory-task-request:" + content_hash(request_core)
             or request.get("context_hash") != context_hash
-            or tuple(request.get("presentation_formula_ids") or ())
-            != presentation_formula_ids
+        ):
+            raise ValueError("theory-task request failed its host binding")
+        contract = TaskDischargeContract.from_dict(summary.get("task_contract") or {})
+        # A lineage may compile several alternative tasks before choosing one.
+        # Presentation compatibility belongs to the requested contract, not
+        # to every historical option in the trace.  Keep enough identity here
+        # to ensure a requested/mismatched declaration still fails below.
+        if (
+            str(summary.get("task_contract_id") or "") not in requested
+            and contract.contract_id not in requested
+        ):
+            continue
+        from ztare.leanmill.theory_task_boundary_registry import (
+            theory_task_request_extension_contract,
+            theory_task_requires_selection_evidence,
+        )
+
+        required_extensions, optional_extensions = (
+            theory_task_request_extension_contract(contract)
+        )
+        request_extensions = set(request) - request_fields
+        if (
+            not required_extensions <= request_extensions
+            or not request_extensions
+            <= required_extensions | optional_extensions
+        ):
+            raise ValueError("theory-task request extension crossed its adjudicator")
+        if theory_task_requires_selection_evidence(contract):
+            validate_selection_evidence(request)
+        if tuple(sorted(request.get("presentation_formula_ids") or ())) != tuple(
+            sorted(presentation_formula_ids)
         ):
             raise ValueError("theory-task request crossed its presentation")
-        contract = TaskDischargeContract.from_dict(summary.get("task_contract") or {})
         expected_contract_id = "theory-task:" + content_hash(
             {
                 "adapter_id": adapter_id,
@@ -398,8 +486,28 @@ def _receipted_reject_all(
                     ),
                 }
             )
+            host_baseline = (
+                rejection_authority == "deterministic_host_baseline"
+                and (
+                    (
+                        row.get("reason")
+                        == "cheap_baseline_exhausts_predictions"
+                        and not row.get("residual_prediction_formula_ids")
+                    )
+                    or (
+                        row.get("reason")
+                        == "theory_program_boundary_target_not_residual"
+                        and not set(row.get("prediction_formula_ids") or ())
+                        <= set(row.get("residual_prediction_formula_ids") or ())
+                    )
+                    or (
+                        row.get("reason") == "cheap_baseline_inconclusive"
+                        and bool(row.get("cheap_baseline_inconclusive_ids"))
+                    )
+                )
+            )
             if (
-                not (agent_refusal or host_counterexample)
+                not (agent_refusal or host_counterexample or host_baseline)
                 or not row.get("prediction_formula_ids")
                 or not isinstance(profile, Mapping)
                 or profile.get("authority") != "host_semantic_diagnostic_only"
@@ -440,6 +548,7 @@ def _invalid_capability_action_receipt(
     boundary.  Unexpected exceptions are deliberately not routed here.
     """
 
+    valid_formula_ids = [str(value) for value in context.formula_ids]
     core = {
         "schema": "leanmill.axiompack_invalid_action_receipt.v1",
         "capability_id": capability_id,
@@ -452,6 +561,16 @@ def _invalid_capability_action_receipt(
             "status": "rejected_invalid_action",
             "error_code": "host_input_validation_failed",
             "error": str(error),
+            "identity_repair": {
+                "formula_identity_owner": "frozen_theory_context",
+                "valid_formula_ids": valid_formula_ids[:64],
+                "valid_formula_id_count": len(valid_formula_ids),
+                "valid_formula_ids_truncated": len(valid_formula_ids) > 64,
+                "instruction": (
+                    "copy exact IDs from valid_formula_ids; do not translate, "
+                    "hash, rename, or change their namespace"
+                ),
+            },
             "claim_boundary": (
                 "malformed model action rejected by the host; the context is "
                 "unchanged and no semantic or promotion claim is made"
@@ -554,6 +673,8 @@ def run_interactive_theory_navigator(
     prior_conflict_rows: tuple[Mapping[str, Any], ...] = (),
     replay_decisions: tuple[Mapping[str, Any], ...] = (),
     budget_phase: str = "navigation",
+    witness_constructor_fn: WitnessConstructor | None = None,
+    candidate_outcome_memory: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     if max_rounds < 1 or max_finalists < 1:
         raise ValueError("navigator budgets must be positive")
@@ -564,6 +685,7 @@ def run_interactive_theory_navigator(
         str(lineage_id).strip()
         or derive_lineage_id(campaign_id=campaign_id, attempt_id=attempt_id)
     )
+    task_scope = theory_task_capability_scope(blueprint.navigator_contract)
     environment = resolve_leaf_workbench_environment(
         "axiompack",
         context=context,
@@ -573,8 +695,15 @@ def run_interactive_theory_navigator(
         topology_presentation_size=topology_presentation_size(blueprint),
         theory_adapter_id=blueprint.adapter_id,
         theory_adapter_config=blueprint.adapter_config,
+        allowed_theory_task_capability_ids=(
+            task_scope["allowed_capability_ids"]
+            if task_scope is not None
+            else None
+        ),
         campaign_id=campaign_id,
         lineage_id=active_lineage_id,
+        witness_constructor_fn=witness_constructor_fn,
+        candidate_outcome_memory=candidate_outcome_memory,
     )
     handlers = environment["action_handlers"]
     if prior_agent_turns < 0 or round_offset < 0:
@@ -622,6 +751,17 @@ def run_interactive_theory_navigator(
     language_expansion_request: dict[str, Any] | None = None
     agent_turn_failure: dict[str, Any] | None = None
     agent_turns_used = prior_agent_turns
+    constructor_role = getattr(witness_constructor_fn, "call_role", None)
+    constructor_calls_before = int(
+        getattr(constructor_role, "provider_call_count", 0)
+    )
+
+    def provider_calls_used() -> int:
+        return agent_turns_used + max(
+            0,
+            int(getattr(constructor_role, "provider_call_count", 0))
+            - constructor_calls_before,
+        )
     low_yield_threshold_ppm = (
         budget_ledger.budget.stop_rule.min_marginal_information_per_cost_ppm
         if budget_ledger is not None
@@ -631,11 +771,79 @@ def run_interactive_theory_navigator(
     minimum_presentation_size, maximum_presentation_size = presentation_size_bounds(
         blueprint
     )
+
+    def reject_candidate_input(
+        *,
+        round_index: int,
+        rationale: str,
+        inputs: Mapping[str, Any],
+        error: Exception,
+    ) -> None:
+        receipt = _invalid_capability_action_receipt(
+            context,
+            "select_theory_presentation",
+            inputs,
+            error,
+        )
+        trace.append(
+            {
+                "round": round_index,
+                "decision": "candidate_input_rejected",
+                "rationale": rationale,
+                "receipt": receipt,
+            }
+        )
+        formulas = inputs.get("formula_ids")
+        journal.append(
+            TheoryCampaignEvent(
+                attempt_id=attempt_id,
+                campaign_id=campaign_id,
+                epoch=epoch,
+                context_hash=context.context_hash,
+                event_type="navigator_action_executed",
+                subject_ids=(str(receipt["receipt_id"]),),
+                input_refs=tuple(
+                    str(row)
+                    for row in (
+                        formulas if isinstance(formulas, list) else ()
+                    )
+                ),
+                output_refs=(str(receipt["receipt_id"]),),
+                evidence_status="witnessed",
+                authority="deterministic_workbench_executor",
+            )
+        )
+
     contract_text = render_leaf_workbench_contract_prompt(environment["contract"])
+    task_catalog = tuple(environment.get("theory_task_capability_catalog") or ())
+    if task_catalog:
+        catalog_lines = [
+            "- Registered theory-task adjudicator IDs (copy exactly):"
+        ]
+        for row in task_catalog:
+            catalog_lines.append(
+                "  - {capability_id}: {purpose}; use when {use_when}.".format(
+                    **row
+                )
+            )
+            if isinstance(row.get("interface"), Mapping):
+                catalog_lines.append(
+                    "    host_carried_reviewed_interface_json="
+                    + json.dumps(
+                        row["interface"],
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    )
+                )
+        contract_text += "\n" + "\n".join(catalog_lines)
 
     for round_index in range(round_offset, max_rounds):
         replay_index = round_index - round_offset
         replaying = replay_index < len(replay_decisions)
+        if witness_constructor_fn is not None:
+            witness_constructor_fn.continuation_turn_available = (  # type: ignore[attr-defined]
+                round_index + 1 < max_rounds
+            )
         if budget_ledger is not None and not replaying:
             soft_stop = budget_ledger.soft_stop_reason(
                 allow_coverage_target=frontier_objective_contract(blueprint) is None
@@ -679,6 +887,21 @@ def run_interactive_theory_navigator(
                         else max(0, max_rounds - round_index)
                     ),
                     "rounds_remaining": max(0, max_rounds - round_index),
+                    "provider_backed_action_chain_available": (
+                        round_index + 1 < max_rounds
+                        and (
+                            budget_ledger is None
+                            or min(
+                                budget_ledger.remaining_capacity(
+                                    budget_phase, "provider_calls"
+                                ),
+                                budget_ledger.remaining_capacity(
+                                    budget_phase, "agent_turns"
+                                ),
+                            )
+                            >= 3
+                        )
+                    ),
                     "context_epoch": epoch,
                     "context_hash": context.context_hash,
                     "budget_phase": budget_phase,
@@ -963,12 +1186,34 @@ def run_interactive_theory_navigator(
         if kind in {"freeze", "reject_candidate"}:
             formulas_raw = decision.get("formula_ids")
             if not isinstance(formulas_raw, list):
-                raise ValueError(f"{kind} requires formula_ids")
+                reject_candidate_input(
+                    round_index=round_index,
+                    rationale=rationale,
+                    inputs={"formula_ids": formulas_raw},
+                    error=ValueError(f"{kind} requires formula_ids"),
+                )
+                continue
             formulas = tuple(sorted(str(row) for row in formulas_raw))
             if len(set(formulas)) != len(formulas):
-                raise ValueError("candidate presentation formula IDs must be unique")
+                reject_candidate_input(
+                    round_index=round_index,
+                    rationale=rationale,
+                    inputs={"formula_ids": list(formulas)},
+                    error=ValueError(
+                        "candidate presentation formula IDs must be unique"
+                    ),
+                )
+                continue
             if not minimum_presentation_size <= len(formulas) <= maximum_presentation_size:
-                raise ValueError("frozen presentation violates campaign presentation size")
+                reject_candidate_input(
+                    round_index=round_index,
+                    rationale=rationale,
+                    inputs={"formula_ids": list(formulas)},
+                    error=ValueError(
+                        "frozen presentation violates campaign presentation size"
+                    ),
+                )
+                continue
             boundary_targets_raw = decision.get("boundary_target_ids")
             task_contract_ids_raw = decision.get("task_contract_ids")
             if selection_mode == "theory_program":
@@ -977,32 +1222,93 @@ def run_interactive_theory_navigator(
                 elif isinstance(boundary_targets_raw, list):
                     boundary_target_ids = tuple(str(row) for row in boundary_targets_raw)
                 else:
-                    raise ValueError("theory-program prediction IDs must be an array or null")
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "prediction_formula_ids": boundary_targets_raw,
+                        },
+                        error=ValueError(
+                            "theory-program prediction IDs must be an array or null"
+                        ),
+                    )
+                    continue
                 if task_contract_ids_raw is None:
                     task_contract_ids = ()
                 elif isinstance(task_contract_ids_raw, list):
                     task_contract_ids = tuple(str(row) for row in task_contract_ids_raw)
                 else:
-                    raise ValueError("theory-program task IDs must be an array or null")
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "task_contract_ids": task_contract_ids_raw,
+                        },
+                        error=ValueError(
+                            "theory-program task IDs must be an array or null"
+                        ),
+                    )
+                    continue
                 if not boundary_target_ids and not task_contract_ids:
-                    raise ValueError(
-                        "theory-program candidates require a prediction or compiled task"
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={"formula_ids": list(formulas)},
+                        error=ValueError(
+                            "theory-program candidates require a prediction or compiled task"
+                        ),
                     )
+                    continue
                 if len(set(boundary_target_ids)) != len(boundary_target_ids):
-                    raise ValueError("theory-program prediction IDs must be unique")
-                if set(boundary_target_ids) & set(formulas):
-                    raise ValueError(
-                        "theory-program predictions must be outside its presentation"
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "prediction_formula_ids": list(boundary_target_ids),
+                        },
+                        error=ValueError(
+                            "theory-program prediction IDs must be unique"
+                        ),
                     )
-                task_contracts = _resolve_theory_task_contracts(
-                    trace,
-                    task_contract_ids,
-                    context_hash=context.context_hash,
-                    adapter_id=blueprint.adapter_id,
-                    campaign_id=campaign_id,
-                    lineage_id=active_lineage_id,
-                    presentation_formula_ids=formulas,
-                )
+                    continue
+                if set(boundary_target_ids) & set(formulas):
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "prediction_formula_ids": list(boundary_target_ids),
+                        },
+                        error=ValueError(
+                            "theory-program predictions must be outside its presentation"
+                        ),
+                    )
+                    continue
+                try:
+                    task_contracts = _resolve_theory_task_contracts(
+                        trace,
+                        task_contract_ids,
+                        context_hash=context.context_hash,
+                        adapter_id=blueprint.adapter_id,
+                        campaign_id=campaign_id,
+                        lineage_id=active_lineage_id,
+                        presentation_formula_ids=formulas,
+                    )
+                except (KeyError, TypeError, ValueError) as exc:
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "prediction_formula_ids": list(boundary_target_ids),
+                            "task_contract_ids": list(task_contract_ids),
+                        },
+                        error=exc,
+                    )
+                    continue
                 selection_inputs = {"formula_ids": list(formulas)}
                 if boundary_target_ids:
                     selection_inputs["prediction_formula_ids"] = list(
@@ -1021,11 +1327,28 @@ def run_interactive_theory_navigator(
                 boundary_selection_authority = "anonymous_theory_navigator"
             else:
                 if task_contract_ids_raw is not None:
-                    raise ValueError("compact-pack candidates cannot carry theory tasks")
-                if kind == "reject_candidate":
-                    raise ValueError(
-                        "reject_candidate is reserved for open theory-program judgments"
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={
+                            "formula_ids": list(formulas),
+                            "task_contract_ids": task_contract_ids_raw,
+                        },
+                        error=ValueError(
+                            "compact-pack candidates cannot carry theory tasks"
+                        ),
                     )
+                    continue
+                if kind == "reject_candidate":
+                    reject_candidate_input(
+                        round_index=round_index,
+                        rationale=rationale,
+                        inputs={"formula_ids": list(formulas)},
+                        error=ValueError(
+                            "reject_candidate is reserved for open theory-program judgments"
+                        ),
+                    )
+                    continue
                 boundary_target_ids = ()
                 task_contract_ids = ()
                 task_contracts = ()
@@ -1199,13 +1522,29 @@ def run_interactive_theory_navigator(
                     rejection_reason = (
                         "theory_program_prediction_refuted_by_replayed_countermodel"
                     )
-                elif isinstance(prediction_profile, Mapping) and any(
+                elif boundary_target_ids and isinstance(
+                    prediction_profile, Mapping
+                ) and any(
                     row.get("chart_status")
                     in {"refuted_in_context", "vacuous_on_empty_extent"}
                     for row in prediction_profile.get("predictions") or ()
                     if isinstance(row, Mapping)
                 ):
                     rejection_reason = "theory_program_prediction_refuted_in_context"
+                elif (
+                    context.complete
+                    and boundary_target_ids
+                    and not residual_ids
+                    and baseline_inconclusive_ids
+                ):
+                    rejection_reason = "cheap_baseline_inconclusive"
+                elif context.complete and boundary_target_ids and not residual_ids:
+                    rejection_reason = "cheap_baseline_exhausts_predictions"
+                elif context.complete and boundary_target_ids and any(
+                    target_id not in residual_ids
+                    for target_id in boundary_target_ids
+                ):
+                    rejection_reason = "theory_program_boundary_target_not_residual"
             if rejection_reason is not None:
                 rejected = {
                     "formula_ids": list(formulas),
@@ -1235,6 +1574,13 @@ def run_interactive_theory_navigator(
                     "rejection_authority": (
                         "host_witness_replay"
                         if replayed_prediction_conflicts
+                        else "deterministic_host_baseline"
+                        if rejection_reason
+                        in {
+                            "cheap_baseline_exhausts_predictions",
+                            "cheap_baseline_inconclusive",
+                            "theory_program_boundary_target_not_residual",
+                        }
                         else "deterministic_host_counterexample"
                     ),
                     "residual_synergy_formula_ids": list(residual_ids),
@@ -1251,6 +1597,7 @@ def run_interactive_theory_navigator(
                             in {
                                 "cheap_baseline_exhausts_joint_consequences",
                                 "cheap_baseline_exhausts_predictions",
+                                "theory_program_boundary_target_not_residual",
                                 "zero_residual_information",
                                 "theory_program_prediction_refuted_in_context",
                                 "theory_program_prediction_refuted_by_replayed_countermodel",
@@ -1277,6 +1624,7 @@ def run_interactive_theory_navigator(
                 if rejection_reason in {
                     "cheap_baseline_exhausts_joint_consequences",
                     "cheap_baseline_exhausts_predictions",
+                    "theory_program_boundary_target_not_residual",
                     "zero_residual_information",
                     "theory_program_prediction_refuted_in_context",
                     "theory_program_prediction_refuted_by_replayed_countermodel",
@@ -1363,6 +1711,7 @@ def run_interactive_theory_navigator(
             finalist = {
                 "node_id": summary["node_id"],
                 "candidate_kind": selection_mode,
+                "baseline_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
                 "context_hash": context.context_hash,
                 "context_epoch": epoch,
                 "formula_ids": list(formulas),
@@ -1528,7 +1877,7 @@ def run_interactive_theory_navigator(
             "finalists": [],
             "trace": trace,
             "expansion_proposal": expansion_proposal,
-            "provider_calls": agent_turns_used,
+            "provider_calls": provider_calls_used(),
             "prior_conflict_count": len(conflict_rows),
             "cold_view": True,
         }
@@ -1541,7 +1890,7 @@ def run_interactive_theory_navigator(
             "finalists": [],
             "trace": trace,
             "language_expansion_request": language_expansion_request,
-            "provider_calls": agent_turns_used,
+            "provider_calls": provider_calls_used(),
             "prior_conflict_count": len(conflict_rows),
             "cold_view": True,
         }
@@ -1573,7 +1922,7 @@ def run_interactive_theory_navigator(
                     **pending_core,
                     "receipt_sha256": content_hash(pending_core),
                 },
-                "provider_calls": agent_turns_used,
+                "provider_calls": provider_calls_used(),
                 "prior_conflict_count": len(conflict_rows),
                 "cold_view": True,
             }
@@ -1643,7 +1992,7 @@ def run_interactive_theory_navigator(
                 "finalists": [],
                 "trace": trace,
                 "pending_leaf_decision": pending,
-                "provider_calls": agent_turns_used,
+                "provider_calls": provider_calls_used(),
                 "prior_conflict_count": len(conflict_rows),
                 "cold_view": True,
             }
@@ -1689,7 +2038,7 @@ def run_interactive_theory_navigator(
                 "finalists": [],
                 "trace": trace,
                 "navigation_exhausted_receipt": exhaustion,
-                "provider_calls": agent_turns_used,
+                "provider_calls": provider_calls_used(),
                 "prior_conflict_count": len(conflict_rows),
                 "cold_view": True,
             }
@@ -1704,7 +2053,7 @@ def run_interactive_theory_navigator(
             "reject_all_receipt": explicit,
             "reject_all_sequence_receipt": sequence,
             "stagnation_pressure": bool(sequence["stagnation_pressure"]),
-            "provider_calls": agent_turns_used,
+            "provider_calls": provider_calls_used(),
             "prior_conflict_count": len(conflict_rows),
             "cold_view": True,
         }
@@ -1715,7 +2064,7 @@ def run_interactive_theory_navigator(
         "finalist_node_ids": [row["node_id"] for row in finalists],
         "finalists": finalists,
         "trace": trace,
-        "provider_calls": agent_turns_used,
+        "provider_calls": provider_calls_used(),
         "prior_conflict_count": len(conflict_rows),
         "cold_view": True,
     }

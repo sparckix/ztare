@@ -16,10 +16,12 @@ from ztare.leanmill.theory_ir import (
     lower_conditional_pack_to_lean,
     render_formula_to_lean,
 )
+from ztare.leanmill.solver.closed_artifact import finalized_ratification_eligible
 
 
 CompileFn = Callable[[str], bool | None]
 GovernedSolveFn = Callable[..., Mapping[str, Any]]
+AxiomAuditFn = Callable[[str, str], tuple[bool, bool, Sequence[str]]]
 
 
 def _normalized_proof_text(value: str) -> str:
@@ -33,6 +35,77 @@ def _normalized_proof_text(value: str) -> str:
         or fenced_block(proof, "")
         or proof
     ).strip()
+
+
+def _materialize_consequence_source(
+    task: "LeanConsequenceTask", proof_text: str
+) -> tuple[str, str]:
+    marker = "  sorry -- AXIOMPACK_PROOF"
+    if task.source_with_hole.count(marker) != 1:
+        raise ValueError("proof marker is not unique")
+    head, tail = task.source_with_hole.split(marker, 1)
+    source = lean_source.attach_proof(head.rstrip(), proof_text) + tail
+    return source, content_hash({"lean_source": source})
+
+
+def audit_lean_consequence_axioms(
+    source: str,
+    target_name: str,
+    *,
+    lean_root: str | Path,
+    timeout_s: int,
+) -> tuple[bool, bool, Sequence[str]]:
+    from tempfile import TemporaryDirectory
+
+    from ztare.gates.lean_compile_primitives import audit_axioms_subset
+
+    with TemporaryDirectory(prefix="leanmill_consequence_axioms_") as directory:
+        return audit_axioms_subset(
+            source,
+            target_name,
+            Path(directory) / "Probe.lean",
+            Path(lean_root),
+            timeout_s=max(1, int(timeout_s)),
+        )
+
+
+def _axiom_allowlist_receipt(
+    task: "LeanConsequenceTask",
+    proof: str,
+    *,
+    axiom_audit_fn: AxiomAuditFn | None,
+) -> dict[str, Any]:
+    try:
+        source, source_digest = _materialize_consequence_source(task, proof)
+    except ValueError as exc:
+        source, source_digest = "", ""
+        result: tuple[bool, bool, Sequence[str]] = (False, False, ())
+        error = str(exc)
+    else:
+        error = ""
+        if axiom_audit_fn is None:
+            result = (False, False, ())
+            error = "positive axiom audit unavailable"
+        else:
+            try:
+                result = axiom_audit_fn(source, task.target_name)
+            except Exception as exc:  # noqa: BLE001 - audit failure withholds credit
+                result = (False, False, ())
+                error = f"axiom_audit:{type(exc).__name__}"
+    clean, confirmed_bad, axioms = result
+    passed = bool(clean is True and confirmed_bad is False)
+    core = {
+        "schema": "leanmill.lean_consequence_axiom_allowlist.v1",
+        "task_id": task.task_id,
+        "target_name": task.target_name,
+        "source_digest": source_digest,
+        "passed": passed,
+        "confirmed_bad": bool(confirmed_bad),
+        "axioms": sorted(str(value) for value in axioms),
+        "error": error,
+        "authority": "target_specific_kernel_axiom_probe",
+    }
+    return {**core, "receipt_sha256": content_hash(core)}
 
 
 @dataclass(frozen=True)
@@ -154,9 +227,14 @@ def render_lean_consequence_task(
         "target_hash": target.semantic_hash,
     }
     target_name = "axiompack_consequence_" + content_hash(identity).split(":")[-1][:16]
+    # ``solve_adhoc`` canonicalizes theorem goals as a closed ``∀`` proposition.
+    # Keep this task on that same binder surface so the exact proof bytes it
+    # returns replay here.  Explicit theorem parameters are propositionally the
+    # same, but a solver proof beginning ``intro S0 ...`` does not elaborate
+    # when those parameters have already entered the local context.
     theorem = (
-        f"theorem {target_name} {sort_params} [{signature_class} {sort_args}]"
-        f"{nonempty}{base_instance} [{pack_class} {sort_args}] : {goal} := by\n"
+        f"theorem {target_name} : ∀ {sort_params} [{signature_class} {sort_args}]"
+        f"{nonempty}{base_instance} [{pack_class} {sort_args}], {goal} := by\n"
         "  sorry -- AXIOMPACK_PROOF"
     )
     source = "import Mathlib\n\n" + lowered + "\n" + theorem
@@ -184,14 +262,12 @@ def check_lean_consequence_proof(
     proof = _normalized_proof_text(proof_text)
     if not proof:
         return LeanConsequenceAttempt(task.task_id, "unresolved", False, "", "", "empty proof")
-    marker = "  sorry -- AXIOMPACK_PROOF"
-    if task.source_with_hole.count(marker) != 1:
+    try:
+        source, digest = _materialize_consequence_source(task, proof)
+    except ValueError as exc:
         return LeanConsequenceAttempt(
-            task.task_id, "invalid", False, "", proof, "proof marker is not unique"
+            task.task_id, "invalid", False, "", proof, str(exc)
         )
-    head, tail = task.source_with_hole.split(marker, 1)
-    source = lean_source.attach_proof(head.rstrip(), proof) + tail
-    digest = content_hash({"lean_source": source})
     if lean_source.has_sorry(source) or any(
         lean_source.decl_kind(block) == "axiom" for _name, block in lean_source.decl_blocks(source)
     ):
@@ -206,11 +282,23 @@ def check_lean_consequence_proof(
         )
     return LeanConsequenceAttempt(
         task.task_id,
-        "proved" if checked is True else "refuted_by_kernel" if checked is False else "unresolved",
+        (
+            "proved"
+            if checked is True
+            else "proof_rejected_by_kernel"
+            if checked is False
+            else "unresolved"
+        ),
         checked is True,
         digest,
         proof,
-        "" if checked is not None else "compiler unavailable",
+        (
+            "submitted proof does not elaborate under the frozen task"
+            if checked is False
+            else "compiler unavailable"
+            if checked is None
+            else ""
+        ),
     )
 
 
@@ -259,6 +347,7 @@ def recheck_governed_lean_consequence(
     proof_text: str,
     *,
     compile_fn: CompileFn,
+    axiom_audit_fn: AxiomAuditFn | None = None,
     generic_solver_outcome: str = "rejected_banned_axiom",
     solver_entry: str = (
         "ztare.leanmill.lean_consequence_bridge.recheck_governed_lean_consequence"
@@ -268,8 +357,17 @@ def recheck_governed_lean_consequence(
 
     proof = _normalized_proof_text(proof_text)
     full_attempt = check_lean_consequence_proof(task, proof, compile_fn=compile_fn)
+    axiom_receipt = _axiom_allowlist_receipt(
+        task,
+        proof,
+        axiom_audit_fn=axiom_audit_fn,
+    )
     attribution: Mapping[str, Any] | None = None
-    if full_attempt.status == "proved" and full_attempt.kernel_checked:
+    if (
+        full_attempt.status == "proved"
+        and full_attempt.kernel_checked
+        and axiom_receipt["passed"] is True
+    ):
         attribution = matched_proof_attribution(
             task.signature,
             task.premises,
@@ -294,6 +392,14 @@ def recheck_governed_lean_consequence(
         )
         verdict = "completed"
         reason = "premise-aware full/empty/leave-one-out kernel replay"
+    elif axiom_receipt["confirmed_bad"] is True:
+        status = "rejected_banned_axiom"
+        verdict = "rejected"
+        reason = "target theorem depends on a non-allowlisted axiom"
+    elif full_attempt.status == "proved" and full_attempt.kernel_checked:
+        status = "axiom_audit_inconclusive"
+        verdict = "gap"
+        reason = axiom_receipt["error"] or "target-specific axiom audit was inconclusive"
     else:
         status = full_attempt.status
         verdict = "rejected" if full_attempt.status == "invalid" else "gap"
@@ -307,6 +413,7 @@ def recheck_governed_lean_consequence(
             "outcome": status,
             "credit_ready": status == "proved_attributed",
             "closure_certificate": None,
+            "axiom_allowlist_receipt": axiom_receipt,
             "attribution_ref": (
                 attribution.get("receipt_sha256") if attribution is not None else None
             ),
@@ -322,6 +429,7 @@ def recheck_governed_lean_consequence(
                 "generic_solver_outcome": generic_solver_outcome,
                 "proof_text": proof,
                 "full_source_digest": full_attempt.source_digest,
+                "axiom_allowlist_receipt": axiom_receipt["receipt_sha256"],
             }
         ),
         attribution=attribution,
@@ -337,6 +445,7 @@ def execute_governed_lean_consequence(
     timeout_s: int,
     compile_fn: CompileFn,
     solve_fn: GovernedSolveFn | None = None,
+    axiom_audit_fn: AxiomAuditFn | None = None,
     notes: str = "",
 ) -> GovernedLeanConsequenceAttempt:
     """Solve the full arm through LeanMill, then replay identical proof bytes."""
@@ -401,7 +510,7 @@ def execute_governed_lean_consequence(
     credited = (
         outcome == "closed"
         and bool(proof)
-        and validation.get("credit_ready_at_solver_layer") is True
+        and finalized_ratification_eligible(dict(validation))
     )
     reason = str(
         primary.get("compile_tail") or primary.get("provider_error_detail") or ""
@@ -430,10 +539,19 @@ def execute_governed_lean_consequence(
     attribution: Mapping[str, Any] | None = None
     refutation: Mapping[str, Any] | None = None
     if credited or (outcome == "rejected_banned_axiom" and proof):
+        audit_fn = axiom_audit_fn or (
+            lambda source, target_name: audit_lean_consequence_axioms(
+                source,
+                target_name,
+                lean_root=substrate,
+                timeout_s=timeout_s,
+            )
+        )
         scoped = recheck_governed_lean_consequence(
             task,
             proof,
             compile_fn=compile_fn,
+            axiom_audit_fn=audit_fn,
             generic_solver_outcome=outcome,
             solver_entry="ztare.leanmill.solver.solver_core.solve_adhoc",
         )
@@ -503,6 +621,7 @@ def execute_governed_lean_consequence(
     )
 __all__ = [
     "GovernedLeanConsequenceAttempt", "LeanConsequenceAttempt", "LeanConsequenceTask",
+    "audit_lean_consequence_axioms",
     "check_lean_consequence_proof", "execute_governed_lean_consequence",
     "matched_proof_attribution", "recheck_governed_lean_consequence",
     "render_lean_consequence_task",

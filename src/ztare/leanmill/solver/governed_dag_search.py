@@ -396,6 +396,8 @@ class MoveResult:
     move: str
     kernel_clean: bool = False      # kernel-clean per _is_compile_ok (no sorry/admit/error, allowlisted axioms)
     mnc_passed: bool = False        # matched-negative-control passed (NOT leakage)
+    # Full governance in addition to compile and MNC; omission fails closed.
+    governance_ready: bool = False
     proof_text: str = ""
     residual: Optional[str] = None  # diagnostic / remaining obligation; never an executable theorem by itself
     new_sub_goal_text: Optional[str] = None  # text for the new sub_goal node, if any
@@ -412,11 +414,16 @@ class MoveResult:
     goals_remaining: Optional[int] = None
     progress: float = 0.0           # 0..1; closed≈1, 1-goal-left≈0.5, broken-name≈0.05
     error_class: str = ""           # clean|unsolved_goals|tactic_failed|unknown_identifier|...
+    # Disposable carrier control.  Set only for an isolated calibration node;
+    # it cannot satisfy theorem-governance axes or earn move attribution.
+    calibration_available: Optional[bool] = None
 
     @property
     def ratified_close(self) -> bool:
-        """no-false-closure: a close is ratified ONLY if kernel-clean AND MNC."""
-        return bool(self.kernel_clean and self.mnc_passed)
+        """A close needs compile, MNC, and the complete governance contract."""
+        return bool(
+            self.kernel_clean and self.mnc_passed and self.governance_ready
+        )
 
 
 # The move_runner the search calls. Signature: (node, move, budget_remaining) ->
@@ -1145,26 +1152,35 @@ def _luby_restart_unit(base_units: float, restart_n: int) -> float:
 # is live. Default OFF ⇒ no spike target is ever injected (byte-identical move stream).
 DEFAULT_SPIKE_EVERY = 8   # inject a spike once per this many real moves (calibration cadence; ≥1)
 
-# The known-answer standard: a target ANY live move runner must close. `True := by trivial` is the canonical
-# positive control already used by preflight_carriers / preflight_moves_alive — reused verbatim so "spike live"
-# means the SAME thing across the apparatus (one definition of a trivially-closeable goal).
-SPIKE_GOAL_TEXT = "theorem _spike_internal_standard : True := by trivial"
+# The known-answer standard has an isolated target identity and a single
+# deterministic closer.  It is posed with ``sorry`` because the production
+# probe replaces that proof with the selected ``rfl`` tactic.
+SPIKE_GOAL_TEXT = (
+    "theorem _spike_internal_standard (n : Nat) : n + 0 = n := by sorry"
+)
 
 
 def spike_probe() -> DagNode:
     """A KNOWN-closeable calibration target (the analytical-chemistry internal standard): a fresh disposable
-    DagNode carrying `True := by trivial` — the same trivial positive control the carrier preflight uses. NOT
-    part of the real DAG; the search runs ONE move on it purely to confirm the apparatus is live, then discards
-    it. Returns a new node each call (no shared mutable state across spikes)."""
-    return DagNode(node_id="_spike", kind="root_goal", goal_text=SPIKE_GOAL_TEXT)
+    DagNode carrying an isolated natural-number reflexivity target. It is outside the campaign DAG; the search
+    runs one native-hammer move on it solely to confirm carrier availability, then discards it. Returns a new
+    node each call (no shared mutable state across spikes)."""
+    return DagNode(
+        node_id="_spike",
+        kind="calibration_control",
+        goal_text=SPIKE_GOAL_TEXT,
+    )
 
 
 def spike_closed(result: "MoveResult") -> bool:
-    """The spike CHECKER: did the move actually close the known-answer standard? True iff the runner ratified
-    the close (kernel-clean AND MNC) — the exact bar a real closure must clear. A False here means the move ran
-    but did NOT close a goal that is closeable by `trivial`, i.e. the apparatus is dead (probe never
-    parsed/compiled) — the dead-instrument signature."""
-    return bool(result is not None and result.ratified_close)
+    """Read only the disposable carrier-control field.
+
+    Calibration never passes through theorem governance and therefore cannot
+    mint a ratified close for either the control or the campaign target.
+    """
+    return bool(
+        result is not None and result.calibration_available is True
+    )
 
 
 def _spike_dead_loud(restart_detail: str) -> None:
@@ -1491,7 +1507,8 @@ def run_governed_dag_search(
                 # the cache-hit `continue` below skips the normal move_attribution.append + move_runner record.
                 move_attribution.append({
                     "node_id": node.node_id, "node_kind": node.kind, "move": MOVE_CACHE_REUSE,
-                    "kernel_clean": True, "mnc_passed": True, "ratified_close": True,
+                    "kernel_clean": True, "mnc_passed": True, "governance_ready": True,
+                    "ratified_close": True,
                     "falsifier": None, "rung": None, "residual": None, "progress": 1.0,
                     "goals_remaining": 0, "error_class": "", "wallclock_s": time.time() - start,
                     "reverified": cache_verify_node is not None or cache_verify is not None,
@@ -1538,7 +1555,7 @@ def run_governed_dag_search(
                 _spike_detail = f"move_runner raised on the spike: {type(_se).__name__}: {_se}"
             else:
                 _spike_detail = ("apparatus live (standard closed)" if _live
-                                 else "move ran but did NOT ratify a close of `True := by trivial`")
+                                 else "move ran but did not close the isolated rfl control")
             _spikes_done += 1
             if _live:
                 _spikes_live += 1
@@ -1554,6 +1571,7 @@ def run_governed_dag_search(
             "move": move,
             "kernel_clean": result.kernel_clean,
             "mnc_passed": result.mnc_passed,
+            "governance_ready": result.governance_ready,
             "ratified_close": result.ratified_close,
             "falsifier": result.falsifier,
             "rung": result.rung,
@@ -1640,6 +1658,8 @@ def run_governed_dag_search(
                 kind="sub_goal",
                 goal_text=result.new_sub_goal_text,
                 parent_id=node.node_id,
+                # A conjectured theorem cannot stand in for its parent proof.
+                composition_required=True,
             )
             # Record that this open node spawned a sub-target (lever), without
             # finishing it — it still has remaining moves.
@@ -1855,7 +1875,7 @@ def _selftest() -> int:
     def runner_children_only(node: DagNode, move: str, budget: float) -> MoveResult:
         if node.kind == "root_goal":
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, governance_ready=True,
                           proof_text=f"by exact proof_for_{node.node_id}")
     res4 = run_governed_dag_search(contract_decomp, "root goal", runner_children_only,
                                    max_moves=20)
@@ -1872,7 +1892,7 @@ def _selftest() -> int:
     def runner_conj_children(node: DagNode, move: str, budget: float) -> MoveResult:
         if node.kind == "root_goal":
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, governance_ready=True,
                           proof_text=f"by proof_of_{node.node_id}")
     import os as _os4b   # _selftest binds a function-local `os` (line ~2180 `import tempfile, os`) ⇒ alias
     _prev_decomp = _os4b.environ.pop("ZTARE_CONJECTURE_DECOMPOSE", None)   # exercise the DEFAULT (flag-off) config
@@ -1892,7 +1912,8 @@ def _selftest() -> int:
     def runner_premise_reproves(node: DagNode, move: str, budget: float) -> MoveResult:
         if node.kind == "root_goal":
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by exact le_trans h1 h2")
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by exact le_trans h1 h2")
     res4c = run_governed_dag_search({}, "theorem t (x y : Real) : x <= y := by", runner_premise_reproves,
                                     premise_shelf=shelf4c, max_moves=20)
     ok("premise_reprove_propagation_closes_root", res4c["root_status"] == "closed")
@@ -1908,7 +1929,7 @@ def _selftest() -> int:
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False,
                               residual="missing_lemma_X",
                               new_sub_goal_text="lemma X : ...")
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, governance_ready=True,
                           proof_text="by closed")
     res5 = run_governed_dag_search({}, "root goal", runner_residual_then_close,
                                    max_moves=20)
@@ -1955,6 +1976,17 @@ def _selftest() -> int:
                           proof_text="by exact SomeMathlibLemma")
     res7c = run_governed_dag_search({}, "g", runner_leakage, max_moves=20)
     ok("no_false_closure_requires_mnc", res7c["root_status"] != "closed")
+    # Compile+MNC alone cannot override the complete contract.
+    def runner_governance_reject(node: DagNode, move: str, budget: float) -> MoveResult:
+        return MoveResult(
+            move=move,
+            kernel_clean=True,
+            mnc_passed=True,
+            governance_ready=False,
+            proof_text="by exact candidate",
+        )
+    res7d = run_governed_dag_search({}, "g", runner_governance_reject, max_moves=20)
+    ok("no_false_closure_requires_full_governance", res7d["root_status"] != "closed")
 
     # --- Test 8: residual_to_lever resolves EVERY finished node (no silent death) ---
     res8 = run_governed_dag_search(contract_decomp, "root goal", runner_always_fail,
@@ -2182,7 +2214,8 @@ def _selftest() -> int:
         if calls["n"] == 1:
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False,
                               goals_remaining=2, progress=0.33, error_class="unsolved_goals")
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by ok")
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by ok")
     res10 = run_governed_dag_search({}, "theorem T : P := by", runner_progress_then_close,
                                     max_moves=20)
     ok("gradient_recorded_and_closed",
@@ -2190,9 +2223,7 @@ def _selftest() -> int:
        and any(a.get("progress") == 0.33 for a in res10["move_attribution"])
        and res10["nodes"]["n0_root"]["min_goals_remaining"] == 2)
 
-    # --- Test 11 (INVERT): a conjecture move spawns a sub-lemma child, then closes ---
-    # Root can't be proved directly; a conjecture proposes a helper lemma; once the
-    # helper (child) closes and the root-given-helper closes, the root closes.
+    # --- Test 11: a conjectured child does not close its parent. ---
     cstate = {"conjectured": False}
     def runner_conjecture(node: DagNode, move: str, budget: float) -> MoveResult:
         if node.kind == "root_goal":
@@ -2200,13 +2231,17 @@ def _selftest() -> int:
                 cstate["conjectured"] = True
                 return MoveResult(move=move, new_sub_goal_text="lemma helper_needed : H")
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False)  # direct attempts fail
-        # the conjectured helper child closes → root closes by propagation
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by ok")
+        # the conjectured helper child closes; root composition is still owed
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by ok")
     res11 = run_governed_dag_search({}, "theorem T : P := by", runner_conjecture,
                                     max_moves=30, defer_threshold=0.0)
     ok("conjecture_spawns_sub_lemma",
        any(e.get("event") == "conjectured_sub_lemma" for e in res11["trace"]))
-    ok("conjecture_path_closes_root", res11["root_status"] == "closed")
+    ok("conjecture_child_does_not_launder_parent_closure",
+       res11["root_status"] != "closed"
+       and any(e.get("event") == "parent_close_withheld_pending_composite_ratification"
+               for e in res11["trace"]))
 
     # --- Test 12 (COMPRESS+SCALE): cache reuse closes a node with zero moves; closing banks ---
     import tempfile, os
@@ -2234,7 +2269,8 @@ def _selftest() -> int:
     # closing banks to cache
     db2 = tempfile.mktemp(suffix=".jsonl"); pc2 = ProofCache(db2)
     def runner_close(node, move, budget):
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by banked")
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by banked")
     run_governed_dag_search({}, "theorem U : Q := by", runner_close, max_moves=20, cache=pc2)
     ok("close_banks_to_cache", pc2.get("theorem U : Q := by") == "by banked")
     for f in (db, db2):
@@ -2511,15 +2547,22 @@ def _selftest() -> int:
     # ── (S) INTERNAL-STANDARD SPIKING (#116) — known-answer probe + dead-apparatus detection + parity ──
     ok("spike_probe_is_known_closeable_target",
        spike_probe().goal_text == SPIKE_GOAL_TEXT and spike_probe().goal_text != "")
-    ok("spike_closed_true_on_ratified",
-       spike_closed(MoveResult(move="m", kernel_clean=True, mnc_passed=True)) is True)
-    ok("spike_closed_false_on_dead", spike_closed(MoveResult(move="m", kernel_clean=False, mnc_passed=False))
+    ok("spike_closed_true_on_calibration",
+       spike_closed(MoveResult(move="m", calibration_available=True)) is True)
+    ok("spike_closed_ignores_theorem_credit",
+       spike_closed(MoveResult(move="m", kernel_clean=True, mnc_passed=True,
+                               governance_ready=True)) is False)
+    ok("spike_closed_false_on_dead",
+       spike_closed(MoveResult(move="m", calibration_available=False))
        is False and spike_closed(None) is False)
 
     # A LIVE apparatus: the runner closes the spike (and any real move). Spikes register LIVE, apparatus_live
     # stays True, and (parity) the spike does NOT spend budget or count toward moves_made.
     def _runner_live(node: DagNode, move: str, budget: float) -> MoveResult:
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by trivial")
+        if node.kind == "calibration_control":
+            return MoveResult(move=move, calibration_available=True)
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by trivial")
     _os_h.environ["ZTARE_LEANMILL_SPIKE"] = "1"
     _os_h.environ["ZTARE_LEANMILL_SPIKE_EVERY"] = "1"
     res_spike_live = run_governed_dag_search(
@@ -2535,9 +2578,11 @@ def _selftest() -> int:
     # False, and a `spike` event with live=False in the trace. This is the whole point: a silent 0/N becomes a
     # LOUD inadmissibility flag.
     def _runner_dead_on_spike(node: DagNode, move: str, budget: float) -> MoveResult:
-        if node.goal_text == SPIKE_GOAL_TEXT:           # the standard fails to close ⇒ apparatus dead
-            return MoveResult(move=move, kernel_clean=False, mnc_passed=False, error_class="parse_error")
-        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by ok")
+        if node.kind == "calibration_control":
+            return MoveResult(move=move, calibration_available=False,
+                              error_class="parse_error")
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          governance_ready=True, proof_text="by ok")
     res_spike_dead = run_governed_dag_search(
         {"decomposition": [{"kind": "sub_goal", "goal_text": "a"}, {"kind": "sub_goal", "goal_text": "b"}]},
         "root", _runner_dead_on_spike, max_moves=10, move_budget_units=100.0)

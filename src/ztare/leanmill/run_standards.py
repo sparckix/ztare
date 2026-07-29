@@ -44,7 +44,7 @@ def _default_positive(lean_root: "Path | str") -> "tuple[bool, str]":
         import tempfile
         scratch = Path(lean_root) / ".solver_scratch"
         scratch.mkdir(exist_ok=True)
-        from ztare.leanmill.solver.agentic_leaf import ensure_import_header
+        from ztare.leanmill.lean_source import ensure_import_header
         with tempfile.NamedTemporaryFile("w", suffix=".lean", dir=scratch, delete=False) as f:
             f.write(ensure_import_header(_POSITIVE_PROBE))
             tmp = f.name

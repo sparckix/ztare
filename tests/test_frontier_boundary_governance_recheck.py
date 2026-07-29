@@ -9,6 +9,7 @@ from ztare.leanmill.finite_theory_context import (
     save_formal_theory_context,
 )
 from ztare.leanmill.frontier_boundary import FrontierBoundaryResult
+from ztare.leanmill import frontier_campaign_runner
 from ztare.leanmill.frontier_campaign_runner import (
     recheck_frontier_boundary_governance,
 )
@@ -80,6 +81,15 @@ def test_boundary_proof_is_rechecked_without_an_agent_call(
         "_compile_probe",
         lambda source, *_args, **_kwargs: all(
             f"  {name} :" in source for name in required_names
+        ),
+    )
+    monkeypatch.setattr(
+        frontier_campaign_runner,
+        "audit_lean_consequence_axioms",
+        lambda _source, _target, **_kwargs: (
+            True,
+            False,
+            ("Classical.choice",),
         ),
     )
     lean_root = tmp_path / "lean"

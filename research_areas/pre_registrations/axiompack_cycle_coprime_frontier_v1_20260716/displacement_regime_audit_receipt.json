@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "coprime_cycle_counterexample_count": 0,
+    "displacement_transitive_count": 33,
+    "finite_primitive_level_count": 119,
+    "indecomposable_count": 152,
+    "raw_table_count": 5251733
+  },
+  "authority": "deterministic_campaign_local_displacement_audit",
+  "claim_boundary": "Complete only for the pinned published order-8/9/10 database. The 33 displacement-transitive examples supply bounded evidence and no unrestricted implication.",
+  "criterion": "Castelli Theorem 22: a finite indecomposable cycle set has finite primitive level iff its displacement group is intransitive.",
+  "orders": [
+    {
+      "carrier_size": 8,
+      "coprime_cycle_counterexample_count": 0,
+      "displacement_transitive_count": 30,
+      "file_manifest_sha256": "3eaffc82443ee05e9cb84e15d08f9d2b9516dc666eff462ee29275a3fbb0ceb6",
+      "finite_primitive_level_count": 70,
+      "hard_regime_cycle_profiles": [
+        {
+          "common_prime_divisors": [2],
+          "model_count": 8,
+          "nontrivial_cycle_lengths": [2, 4]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 8,
+          "nontrivial_cycle_lengths": [2, 4, 8]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 9,
+          "nontrivial_cycle_lengths": [2, 8]
+        },
+        {
+          "common_prime_divisors": [2],
+          "model_count": 5,
+          "nontrivial_cycle_lengths": [4, 8]
+        }
+      ],
+      "indecomposable_count": 100,
+      "raw_table_count": 34530,
+      "run_receipt_sha256": "c78a3448236a6a4713e29f9325a8fc590a09edf9d8e36b920ad7c1b989e389ba"
+    },
+    {
+      "carrier_size": 9,
+      "coprime_cycle_counterexample_count": 0,
+      "displacement_transitive_count": 3,
+      "file_manifest_sha256": "8ae6f4f81af5b92b43cfd85432a13c8b57ae0772befce7f9f0b2c4b20b3e219c",
+      "finite_primitive_level_count": 13,
+      "hard_regime_cycle_profiles": [
+        {
+          "common_prime_divisors": [3],
+          "model_count": 3,
+          "nontrivial_cycle_lengths": [3, 9]
+        }
+      ],
+      "indecomposable_count": 16,
+      "raw_table_count": 321931,
+      "run_receipt_sha256": "51563af5a8d2a614beeec27200b5de7a770ca6aa8df6144cb9c92b9af84da108"
+    },
+    {
+      "carrier_size": 10,
+      "coprime_cycle_counterexample_count": 0,
+      "displacement_transitive_count": 0,
+      "file_manifest_sha256": "3d343e26b6f9a2c3db941480af1d1aca4eeb56b081680f86125cb70079a1713e",
+      "finite_primitive_level_count": 36,
+      "hard_regime_cycle_profiles": [],
+      "indecomposable_count": 36,
+      "raw_table_count": 4895272,
+      "run_receipt_sha256": "59b0fb15113f54752a9dc21dcf4e6e89be58746b8d829a56d91c86e683d61354"
+    }
+  ],
+  "receipt_sha256": "419ba15be918c17929eabca6d1648479ca20bd7700bc65fb883560324bcb9798",
+  "result": "common_prime_pattern_survives_every_published_displacement_transitive_example_through_order_10",
+  "schema": "leanmill.cycle_set_displacement_regime_summary.v1",
+  "source": {
+    "audit_script_sha256": "032ecee5dbb09633a1719a9cfed0d303732851a2cd5f0def28d51b6c11432e4b",
+    "commit": "92f85ee118ec73fdb7a397e4fd748f1265f02bc3",
+    "pencil_sha256": "0c206cde43f6d01b2c7f8c9326c09f234053084210f496c6a076b52da9a11c06",
+    "repository": "https://github.com/vendramin/enumeration.git"
+  }
+}

@@ -124,61 +124,129 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
     ratification_mnc = (
         ratification_mnc_contract_projection() if ratification_only else None
     )
-    action_program = [
-        "layer2_native_hammer_cascade",
-        "layer3_warm_agent_iterate",
-        "layer4_cold_shot_multi_provider",
-        "layer5_validate_against_contract",
-    ]
-    pattern_chain: list[str] = list(DEFAULT_PROVER_CHAIN)
-    rd_evidence_basis = "local_default"
-    try:
-        if str(repo / "src") not in sys.path:
-            sys.path.insert(0, str(repo / "src"))
-        from ztare.research_director.pattern_action_contract import (  # type: ignore
-            build_pattern_action_contract,
-        )
-        rd_contract = build_pattern_action_contract(
-            scope="solver_lane_no_positive_family_template",
-            goal_excerpt=goal_excerpt,
-        )
-        rd_dict = asdict(rd_contract) if is_dataclass(rd_contract) else (
-            rd_contract if isinstance(rd_contract, dict) else {})
-        rd_pattern_chain = list(rd_dict.get("pattern_chain") or [])
-        if rd_pattern_chain:
-            pattern_chain = rd_pattern_chain
-            rd_evidence_basis = "rd_pattern_action_contract"
-    except Exception:
-        pass
-
-    # RD primitive_tick_surface query: pull relevance-ranked primitives.
-    rd_primitive_hits: list[dict] = []
-    try:
-        if str(repo / "src") not in sys.path:
-            sys.path.insert(0, str(repo / "src"))
-        from ztare.research_director.primitive_tick_surface import (  # type: ignore
-            build_primitive_tick_surface,
-        )
-        raw = f"{target_name} {goal_excerpt} {row.get('sub_area') or ''}".lower()
-        tokens = [
-            t for t in "".join(ch if ch.isalnum() else " " for ch in raw).split()
-            if len(t) >= 3
+    if ratification_only:
+        # Ratification consumes one already-carried proof.  Its state machine
+        # contains no proof-producing transition and must not consult the RD
+        # retrieval surface or a provider roster merely to describe itself.
+        action_program = [
+            "bind_exact_carried_artifact",
+            "compile_exact_target",
+            "run_source_aware_matched_control",
+            "run_finite_ratification_authorities",
+            "finalize_content_addressed_certificate",
         ]
-        seen, query_terms = set(), []
-        for t in tokens:
-            if t not in seen:
-                seen.add(t); query_terms.append(t)
-            if len(query_terms) >= 16:
-                break
-        if query_terms:
-            surface = build_primitive_tick_surface(query_terms=query_terms, top_n=6, per_bucket=2)
-            for hit in (surface.top_hits or []):
-                rd_primitive_hits.append({
-                    "id": hit.id, "kind": hit.kind, "score": hit.score,
-                    "why": hit.why, "description": hit.description,
-                })
-    except Exception:
-        pass
+        pattern_chain = [
+            "carried_artifact_binding",
+            "kernel_reelaboration",
+            "source_aware_conclusion_discrimination",
+            "finite_authority_ratification",
+            "certificate_finalization",
+        ]
+        rd_evidence_basis = "finite_ratification_policy"
+        rd_primitive_hits: list[dict] = []
+        scope = "carried_theorem_ratification"
+        requested_residual_class = "carried_theorem_ratification"
+        accepted_residual_class = (
+            requested_residual_class
+            if cue_result["source_cue_check_status"] == "passed"
+            else "outside_ratification_source_cues_missing"
+        )
+        rejected_nearest_confuser = (
+            "proof_search_or_theory_generation (rejected: carried theorem "
+            "ratification cannot produce proof bytes)"
+        )
+        compile_acceptance = (
+            "lake env lean over the exact target-bound carried artifact "
+            "returns exit 0 with no error or sorry diagnostics."
+        )
+        receipt_owner = "carried_theorem_ratification.finalizer"
+        kernel_compile_fail = (
+            "REJECT this exact carried artifact as failed_compile; do not "
+            "advance into a proof-producing transition."
+        )
+        downstream_consumer = (
+            "the closed-artifact finalizer resolves the fixed authority roster; "
+            "only a complete positive algebra can mint a content-addressed certificate."
+        )
+        credit_boundary = "finite_closed_artifact_ratification_authority"
+    else:
+        action_program = [
+            "layer2_native_hammer_cascade",
+            "layer3_warm_agent_iterate",
+            "layer4_cold_shot_multi_provider",
+            "layer5_validate_against_contract",
+        ]
+        pattern_chain = list(DEFAULT_PROVER_CHAIN)
+        rd_evidence_basis = "local_default"
+        try:
+            if str(repo / "src") not in sys.path:
+                sys.path.insert(0, str(repo / "src"))
+            from ztare.research_director.pattern_action_contract import (  # type: ignore
+                build_pattern_action_contract,
+            )
+            rd_contract = build_pattern_action_contract(
+                scope="solver_lane_no_positive_family_template",
+                goal_excerpt=goal_excerpt,
+            )
+            rd_dict = asdict(rd_contract) if is_dataclass(rd_contract) else (
+                rd_contract if isinstance(rd_contract, dict) else {})
+            rd_pattern_chain = list(rd_dict.get("pattern_chain") or [])
+            if rd_pattern_chain:
+                pattern_chain = rd_pattern_chain
+                rd_evidence_basis = "rd_pattern_action_contract"
+        except Exception:
+            pass
+
+        # RD primitive_tick_surface query: pull relevance-ranked primitives.
+        rd_primitive_hits = []
+        try:
+            if str(repo / "src") not in sys.path:
+                sys.path.insert(0, str(repo / "src"))
+            from ztare.research_director.primitive_tick_surface import (  # type: ignore
+                build_primitive_tick_surface,
+            )
+            raw = f"{target_name} {goal_excerpt} {row.get('sub_area') or ''}".lower()
+            tokens = [
+                t for t in "".join(ch if ch.isalnum() else " " for ch in raw).split()
+                if len(t) >= 3
+            ]
+            seen, query_terms = set(), []
+            for t in tokens:
+                if t not in seen:
+                    seen.add(t); query_terms.append(t)
+                if len(query_terms) >= 16:
+                    break
+            if query_terms:
+                surface = build_primitive_tick_surface(query_terms=query_terms, top_n=6, per_bucket=2)
+                for hit in (surface.top_hits or []):
+                    rd_primitive_hits.append({
+                        "id": hit.id, "kind": hit.kind, "score": hit.score,
+                        "why": hit.why, "description": hit.description,
+                    })
+        except Exception:
+            pass
+        scope = "solver_lane_no_positive_family_template"
+        requested_residual_class = "no_positive_family_template_closure"
+        accepted_residual_class = (
+            requested_residual_class
+            if cue_result["source_cue_check_status"] == "passed"
+            else "outside_menu_source_cues_missing"
+        )
+        rejected_nearest_confuser = (
+            "pde_estimate_or_carrier_residual (rejected: target is not a PDE inequality)"
+        )
+        compile_acceptance = (
+            "lake env lean over the enriched probe returns exit 0 with no error lines."
+        )
+        receipt_owner = "leanmill_proof_audit"
+        kernel_compile_fail = (
+            "advance to next action_program step; if exhausted, mark row failed_compile."
+        )
+        downstream_consumer = (
+            "leanmill_proof_audit emits a typed receipt that governance consumes; "
+            "only payloads with all receipts passing become unratified_closure_candidate typed exits."
+        )
+        credit_boundary = "advisory_only_no_factory_credit"
 
     return {
         "schema": SOLVER_CONTRACT_SCHEMA,
@@ -190,20 +258,14 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
             ratification_mnc["mode"] if ratification_mnc else "context_stripped"
         ),
         "source_file": row.get("source_file"),
-        "scope": "solver_lane_no_positive_family_template",
+        "scope": scope,
         "goal_excerpt": goal_excerpt,
-        "requested_residual_class": "no_positive_family_template_closure",
-        "accepted_residual_class": (
-            "no_positive_family_template_closure"
-            if cue_result["source_cue_check_status"] == "passed"
-            else "outside_menu_source_cues_missing"
-        ),
+        "requested_residual_class": requested_residual_class,
+        "accepted_residual_class": accepted_residual_class,
         "source_cue_check_status": cue_result["source_cue_check_status"],
         "source_cue_receipts": cue_result["source_cue_receipts"],
         "missing_source_cues": cue_result["missing_source_cues"],
-        "rejected_nearest_confuser": (
-            "pde_estimate_or_carrier_residual (rejected: target is not a PDE inequality)"
-        ),
+        "rejected_nearest_confuser": rejected_nearest_confuser,
         "pattern_chain": pattern_chain,
         "anti_patterns": list(DEFAULT_ANTI_PATTERNS),
         "evidence_basis": rd_evidence_basis,
@@ -223,6 +285,9 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
             "to the next action_program step until exhausted or stop_condition fires."
         ),
         "stop_condition": (
+            "stop after the exact carried artifact is either finalized or rejected; "
+            "never enter proof search"
+            if ratification_only else
             "stop on first credit_ready_at_solver_layer = true; or when "
             "action_program is exhausted (last action's receipt recorded); or when "
             "the row exceeds MAX_FAILED_ATTEMPTS_PER_ROW across cycles (cooldown)."
@@ -231,7 +296,7 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
             {
                 "name": "kernel_compile_receipt",
                 "required": True,
-                "acceptance_check": "lake env lean over the enriched probe returns exit 0 with no error: lines.",
+                "acceptance_check": compile_acceptance,
             },
             {
                 "name": "matched_negative_control_receipt",
@@ -246,17 +311,17 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
                 "name": "axiom_allowlist_receipt",
                 "required": True,
                 "acceptance_check": "axioms ⊆ {propext, Classical.choice, Quot.sound}.",
-                "deferred_to": "leanmill_proof_audit",
+                "deferred_to": receipt_owner,
             },
             {
                 "name": "l3_anti_pattern_receipt",
                 "required": True,
                 "acceptance_check": "v33 deep verifier returns no confirmed blocker.",
-                "deferred_to": "leanmill_proof_audit",
+                "deferred_to": receipt_owner,
             },
         ],
         "reject_or_repair_behavior": {
-            "kernel_compile_fail": "advance to next action_program step; if exhausted, mark row failed_compile.",
+            "kernel_compile_fail": kernel_compile_fail,
             **(
                 ratification_mnc["reject_or_repair_behavior"]
                 if ratification_mnc else
@@ -266,11 +331,8 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
             "l3_confirmed_blocker": "REJECT closure; record the specific blocker class.",
             "clean_proceed_condition": "all required_receipts at solver_layer must pass AND downstream_consumer_check must accept.",
         },
-        "downstream_consumer_check": (
-            "leanmill_proof_audit emits a typed receipt that governance consumes; "
-            "only payloads with all receipts passing become unratified_closure_candidate typed exits."
-        ),
-        "credit_boundary": "advisory_only_no_factory_credit",
+        "downstream_consumer_check": downstream_consumer,
+        "credit_boundary": credit_boundary,
     }
 
 

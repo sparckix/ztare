@@ -1,0 +1,36 @@
+{
+  "schema": "axiompack.external_frontier_source_replay.v1",
+  "replay_date": "2026-07-17",
+  "target_snapshot_ref": "external_target_snapshot.json",
+  "target_source_url": "https://codetables.de/BKLC/BKLC.php?k=20&n=50&q=2",
+  "target_source_sha256": "5c51e55da6137717f22f20fd90b0d7b8a3d1adab50f7007dbfacd8587ccc14fc",
+  "direct_source_replay": {
+    "lower_bound": 13,
+    "upper_bound": 14,
+    "displayed_best_construction": [50, 20, 13],
+    "displayed_construction_last_modified": "2025-05-14"
+  },
+  "exact_search_queries": [
+    "binary linear code length 50 dimension 20 minimum distance 14",
+    "\"50 20 14\" \"linear code\" GF(2)",
+    "\"[50, 20, 14]\" \"Linear Code\"",
+    "site:arxiv.org \"50,20,14\" code"
+  ],
+  "result": {
+    "status": "no_primary_construction_located_in_bounded_replay",
+    "target_still_displayed_as_open_gap": true,
+    "search_completeness_claimed": false,
+    "absence_or_nonexistence_claimed": false
+  },
+  "source_anchors": [
+    {
+      "title": "Grassl best-known linear-code table: [50,20]",
+      "url": "https://codetables.de/BKLC/BKLC.php?k=20&n=50&q=2"
+    },
+    {
+      "title": "Chubenko--Kurz, Divisible minimal codes, v3",
+      "url": "https://arxiv.org/abs/2312.00885"
+    }
+  ],
+  "launch_rule": "repeat the direct table and exact-construction replay after any successful witness and before a priority statement"
+}

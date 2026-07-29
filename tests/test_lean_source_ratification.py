@@ -4,9 +4,12 @@ import pytest
 
 from ztare.leanmill.lean_source import (
     _decl_body,
+    close_open_scopes,
     has_sorry,
     open_decl_for_ratification,
     replace_decl_proof,
+    source_through_target,
+    strip_scope_commands,
 )
 
 
@@ -71,3 +74,27 @@ end Right
         source, "Right.sibling"
     )
     assert replace_decl_proof(opened, "Right.target", proof) == source
+
+
+def test_context_fence_closes_noncomputable_section_before_namespace() -> None:
+    source = """import Mathlib
+namespace Demo
+noncomputable section
+
+def witness : Set Nat := {0}
+
+theorem target : 0 ∈ witness := by
+  simp [witness]
+
+end
+end Demo
+"""
+
+    prefix = source_through_target(source, "Demo.target")
+    closed = close_open_scopes(prefix)
+
+    assert closed.endswith("end\nend Demo\n")
+    assert closed.count("\nend\n") == 1
+    assert strip_scope_commands("noncomputable section\ntheorem t : True := by trivial\nend") == (
+        "theorem t : True := by trivial"
+    )

@@ -9,11 +9,17 @@ from ztare.leanmill.theory_ir import AxiomFormula, Term, content_hash
 
 
 _GROWTH_POLICY = "root_or_direct_child_with_target_subterms"
+_TARGET_VARIABLE_GROWTH_POLICY = "root_or_direct_child_with_target_variables"
 _CLOSED_GROWTH_POLICY = "root_or_direct_child"
 _MAX_FRESH_VARIABLES_PER_REWRITE = 2
 _MAX_INSTANTIATION_TERMS = 16
 _SHALLOW_INSTANTIATION_STEPS = 2
 _SHALLOW_INSTANTIATION_STATES = 256
+_TARGET_VARIABLE_STEPS = 5
+_TARGET_VARIABLE_STATES = 2_048
+_GOAL_DIRECTED_STEPS = 6
+_GOAL_DIRECTED_BEAM_WIDTH = 64
+_GOAL_DIRECTED_GROWTH_POLICY = "closed_context_goal_beam"
 
 
 @dataclass(frozen=True)
@@ -86,6 +92,35 @@ class BoundedRewriteReductionWitness:
 
 
 @dataclass(frozen=True)
+class GoalDirectedRewriteWitness:
+    target_hash: str
+    steps: tuple[Mapping[str, object], ...]
+    normal_form: Mapping[str, object]
+    max_steps: int
+    beam_width: int
+    max_term_units: int
+    explored_states: int
+    generated_states: int
+    growth_policy: str = _GOAL_DIRECTED_GROWTH_POLICY
+    schema: str = "leanmill.goal_directed_equational_reduction.v1"
+
+    def to_json(self) -> dict[str, object]:
+        core = {
+            "schema": self.schema,
+            "target_hash": self.target_hash,
+            "steps": [dict(row) for row in self.steps],
+            "normal_form": dict(self.normal_form),
+            "max_steps": self.max_steps,
+            "beam_width": self.beam_width,
+            "max_term_units": self.max_term_units,
+            "explored_states": self.explored_states,
+            "generated_states": self.generated_states,
+            "growth_policy": self.growth_policy,
+        }
+        return {**core, "receipt_sha256": content_hash(core)}
+
+
+@dataclass(frozen=True)
 class BoundedRewriteSearchReceipt:
     target_hash: str
     status: str
@@ -125,6 +160,7 @@ class EquationalConsequenceAnalysis:
         SubstitutionInstanceWitness
         | DirectRewriteWitness
         | BoundedRewriteReductionWitness
+        | GoalDirectedRewriteWitness
         | None
     )
     bounded_search: BoundedRewriteSearchReceipt | None = None
@@ -190,6 +226,23 @@ def _subterms(*terms: Term) -> tuple[Term, ...]:
     for term in terms:
         visit(term)
     return tuple(values)[:_MAX_INSTANTIATION_TERMS]
+
+
+def _target_variables(*terms: Term) -> tuple[Term, ...]:
+    """Finite sound instantiation pool for variables erased by one rule side."""
+
+    values: dict[Term, None] = {}
+
+    def visit(value: Term) -> None:
+        if value.kind == "var":
+            values.setdefault(value, None)
+            return
+        for child in value.args:
+            visit(child)
+
+    for term in terms:
+        visit(term)
+    return tuple(values)
 
 
 def _instantiate_variants(
@@ -373,6 +426,166 @@ def _term_units(term: Term) -> int:
     return 1 + sum(_term_units(child) for child in term.args)
 
 
+def _term_distance(left: Term, right: Term) -> int:
+    """Deterministic search heuristic; proof credit still comes from rewrites."""
+
+    if left == right:
+        return 0
+    if left.kind != right.kind:
+        return _term_units(left) + _term_units(right)
+    if left.kind == "var":
+        return 1
+    if left.name != right.name or len(left.args) != len(right.args):
+        return _term_units(left) + _term_units(right)
+    return 1 + sum(
+        _term_distance(left_child, right_child)
+        for left_child, right_child in zip(left.args, right.args, strict=True)
+    )
+
+
+def _term_order_key(term: Term) -> tuple[object, ...]:
+    return (
+        term.kind,
+        term.name,
+        tuple(_term_order_key(child) for child in term.args),
+    )
+
+
+def goal_directed_equational_reduction_witness(
+    premises: Sequence[AxiomFormula],
+    target: AxiomFormula,
+    *,
+    max_steps: int = _GOAL_DIRECTED_STEPS,
+    beam_width: int = _GOAL_DIRECTED_BEAM_WIDTH,
+) -> GoalDirectedRewriteWitness | None:
+    """Search closed contextual rewrites omitted by the breadth-first lane.
+
+    Every admitted step is a direct instance of an original premise. The beam
+    changes search order only. An empty instantiation pool excludes rewrite
+    orientations whose replacement introduces unmatched variables; the
+    target-variable lane owns that separate capability.
+    """
+
+    if max_steps < 1 or beam_width < 1:
+        raise ValueError("goal-directed equational reduction requires positive bounds")
+    target_equation = _equation(target)
+    parsed = tuple((premise, _equation(premise)) for premise in premises)
+    if target_equation is None or any(
+        equation is None for _premise, equation in parsed
+    ):
+        return None
+    target_left, target_right, target_sorts = target_equation
+    declared_sorts = set(target_sorts.values())
+    for _premise, equation in parsed:
+        assert equation is not None
+        declared_sorts.update(equation[2].values())
+    if len(declared_sorts) != 1:
+        return None
+
+    InternalStep = tuple[str, str, tuple[int, ...], Term]
+    frontier: dict[Term, tuple[InternalStep, ...]] = {target_left: ()}
+    seen = {target_left}
+    generated_states = 1
+    max_term_units = max(
+        24,
+        _term_units(target_left) + _term_units(target_right) + 4 * max_steps,
+    )
+    if target_left == target_right:
+        return GoalDirectedRewriteWitness(
+            target_hash=target.semantic_hash,
+            steps=(),
+            normal_form=_term_json(target_right),
+            max_steps=max_steps,
+            beam_width=beam_width,
+            max_term_units=max_term_units,
+            explored_states=1,
+            generated_states=1,
+        )
+
+    for _depth in range(max_steps):
+        candidates: dict[
+            Term,
+            tuple[tuple[object, ...], tuple[InternalStep, ...]],
+        ] = {}
+        for value, prefix in frontier.items():
+            value_units = _term_units(value)
+            for premise, equation in parsed:
+                assert equation is not None
+                rule_left, rule_right, _rule_sorts = equation
+                for orientation, pattern, replacement in (
+                    ("left_to_right", rule_left, rule_right),
+                    ("right_to_left", rule_right, rule_left),
+                ):
+                    for rewritten, path in _one_step_rewrites(
+                        value,
+                        pattern,
+                        replacement,
+                        instantiation_terms=(),
+                    ):
+                        rewritten_units = _term_units(rewritten)
+                        if rewritten in seen or rewritten_units > max_term_units:
+                            continue
+                        step_path = prefix + (
+                            (
+                                premise.semantic_hash,
+                                orientation,
+                                path,
+                                rewritten,
+                            ),
+                        )
+                        priority: tuple[object, ...] = (
+                            _term_distance(rewritten, target_right),
+                            max(0, rewritten_units - value_units),
+                            rewritten_units,
+                            len(path),
+                            premise.semantic_hash,
+                            orientation,
+                            path,
+                            _term_order_key(rewritten),
+                        )
+                        prior = candidates.get(rewritten)
+                        if prior is None or priority < prior[0]:
+                            candidates[rewritten] = (priority, step_path)
+        generated_states += len(candidates)
+        admitted = sorted(
+            candidates.items(), key=lambda item: item[1][0]
+        )[:beam_width]
+        frontier = {term: candidate[1] for term, candidate in admitted}
+        seen.update(frontier)
+        proof = frontier.get(target_right)
+        if proof is None:
+            if not frontier:
+                break
+            continue
+        left = target_left
+        receipt_steps: list[Mapping[str, object]] = []
+        for premise_hash, orientation, subterm_path, rewritten in proof:
+            left = rewritten
+            receipt_steps.append(
+                {
+                    "premise_hash": premise_hash,
+                    "rewritten_side": "left",
+                    "rewrite_orientation": orientation,
+                    "subterm_path": list(subterm_path),
+                    "result_left": _term_json(left),
+                    "result_right": _term_json(target_right),
+                }
+            )
+        if left != target_right:
+            return None
+        return GoalDirectedRewriteWitness(
+            target_hash=target.semantic_hash,
+            steps=tuple(receipt_steps),
+            normal_form=_term_json(target_right),
+            max_steps=max_steps,
+            beam_width=beam_width,
+            max_term_units=max_term_units,
+            explored_states=len(seen),
+            generated_states=generated_states,
+        )
+    return None
+
+
 def bounded_equational_reduction_analysis(
     premises: Sequence[AxiomFormula],
     target: AxiomFormula,
@@ -380,6 +593,7 @@ def bounded_equational_reduction_analysis(
     max_steps: int = 8,
     max_states_per_side: int = 4_096,
     instantiate_fresh_variables: bool = True,
+    instantiate_target_variables: bool = False,
 ) -> EquationalConsequenceAnalysis:
     """Join target sides or receipt why the bounded search is inconclusive."""
 
@@ -405,6 +619,7 @@ def bounded_equational_reduction_analysis(
     right_paths: dict[Term, tuple[InternalStep, ...]] = {target_right: ()}
     left_frontier: tuple[Term, ...] = (target_left,)
     right_frontier: tuple[Term, ...] = (target_right,)
+    closed_instantiation_terms = _target_variables(target_left, target_right)
 
     def expand(
         frontier: tuple[Term, ...],
@@ -423,6 +638,8 @@ def bounded_equational_reduction_analysis(
             term_pool = (
                 _subterms(target_left, target_right, value)
                 if instantiate_fresh_variables
+                else closed_instantiation_terms
+                if instantiate_target_variables
                 else ()
             )
             for premise, equation in parsed:
@@ -520,6 +737,8 @@ def bounded_equational_reduction_analysis(
         growth_policy=(
             _GROWTH_POLICY
             if instantiate_fresh_variables
+            else _TARGET_VARIABLE_GROWTH_POLICY
+            if instantiate_target_variables
             else _CLOSED_GROWTH_POLICY
         ),
     )
@@ -547,7 +766,7 @@ def bounded_equational_reduction_analysis(
                     "result_right": _term_json(right),
                 }
             )
-    if not receipt_steps or left != right:
+    if left != right:
         return EquationalConsequenceAnalysis(None, search_receipt)
     witness = BoundedRewriteReductionWitness(
         target_hash=target.semantic_hash,
@@ -560,6 +779,8 @@ def bounded_equational_reduction_analysis(
         growth_policy=(
             _GROWTH_POLICY
             if instantiate_fresh_variables
+            else _TARGET_VARIABLE_GROWTH_POLICY
+            if instantiate_target_variables
             else _CLOSED_GROWTH_POLICY
         ),
     )
@@ -610,11 +831,34 @@ def direct_equational_consequence_analysis(
     )
     if shallow.witness is not None:
         return shallow
-    return bounded_equational_reduction_analysis(
+    closed = bounded_equational_reduction_analysis(
         equations,
         target,
         instantiate_fresh_variables=False,
     )
+    if closed.witness is not None:
+        return closed
+    goal_directed = goal_directed_equational_reduction_witness(
+        equations, target
+    )
+    if goal_directed is not None:
+        return EquationalConsequenceAnalysis(goal_directed)
+    target_variables = bounded_equational_reduction_analysis(
+        equations,
+        target,
+        max_steps=_TARGET_VARIABLE_STEPS,
+        max_states_per_side=_TARGET_VARIABLE_STATES,
+        instantiate_fresh_variables=False,
+        instantiate_target_variables=True,
+    )
+    if target_variables.witness is not None:
+        return target_variables
+    if (
+        target_variables.bounded_search is not None
+        and target_variables.bounded_search.status == "state_cap_saturated"
+    ):
+        return target_variables
+    return closed
 
 
 def direct_equational_consequence_witness(
@@ -624,6 +868,7 @@ def direct_equational_consequence_witness(
     SubstitutionInstanceWitness
     | DirectRewriteWitness
     | BoundedRewriteReductionWitness
+    | GoalDirectedRewriteWitness
     | None
 ):
     """Compatibility wrapper returning only a positive consequence witness."""
@@ -636,11 +881,13 @@ __all__ = [
     "BoundedRewriteSearchReceipt",
     "DirectRewriteWitness",
     "EquationalConsequenceAnalysis",
+    "GoalDirectedRewriteWitness",
     "SubstitutionInstanceWitness",
     "bounded_equational_reduction_analysis",
     "bounded_equational_reduction_witness",
     "direct_equational_consequence_analysis",
     "direct_equational_consequence_witness",
     "direct_joint_rewrite_witness",
+    "goal_directed_equational_reduction_witness",
     "substitution_instance_witness",
 ]

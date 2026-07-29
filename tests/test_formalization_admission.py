@@ -140,3 +140,31 @@ def test_closed_or_provider_dead_output_is_not_admitted() -> None:
     )
     assert dead.status == INADMISSIBLE_PROVIDER_DEAD
     assert dead.admitted is False
+
+
+def test_interactive_formalizer_preserves_explicit_timeout_ceiling(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    """Nested transport may not widen its governing role's time budget."""
+
+    from ztare.leanmill.solver import autoformalize
+
+    observed: dict[str, int] = {}
+
+    def interactive(_nl: str, **kwargs) -> str:
+        observed["timeout_s"] = int(kwargs["timeout_s"])
+        return "theorem bounded_formalizer : True := by sorry"
+
+    monkeypatch.setattr(autoformalize, "_formalize_interactive_on", lambda: True)
+    monkeypatch.setattr(autoformalize, "formalize_interactive", interactive)
+
+    rendered = autoformalize.default_formalize(
+        "State a theorem within the registered role budget.",
+        runtime="codex",
+        timeout_s=17,
+        lean_root=tmp_path,
+    )
+
+    assert observed == {"timeout_s": 17}
+    assert "bounded_formalizer" in rendered

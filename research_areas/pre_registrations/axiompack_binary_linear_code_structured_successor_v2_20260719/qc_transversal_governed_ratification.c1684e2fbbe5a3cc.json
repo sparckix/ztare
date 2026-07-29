@@ -1,0 +1,558 @@
+{
+  "closure_candidates": 1,
+  "closure_certificate": "analytics/public/queries/adhoc_closure_certificates.jsonl",
+  "closure_certificate_record_sha256": "0dbfd72331ecb1bc1676a1a921b0b6a3a566655f401a9c5b21724f78139c0622",
+  "closure_lean": "ztare_proofs/closures/AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten_e1f86ed81b5f.lean",
+  "environment_parity": {
+    "attempted": false,
+    "reason": "isolated_ratification_no_environment_mutation"
+  },
+  "governance": {
+    "governance_kernel": {
+      "authority_disposition": {
+        "canonical_reelaboration": "passed",
+        "statement_integrity": "passed",
+        "target_declaration": "passed",
+        "target_identity": "passed",
+        "target_signature": "passed",
+        "v33_consequence_exposure_gate": "passed",
+        "v33_currency_mismatch_gate": "passed",
+        "v33_indirect_leakage_gate": "passed",
+        "v33_paraphrase_gate": "passed",
+        "v33_preflight_risk_detector": "passed",
+        "v33_single_lemma_exact_gate": "passed"
+      },
+      "authority_roster_sha256": "6c278e4c552be6c597d7966f6453d0c8a1c9e98907cb3ebfcf6b5c35a790217f",
+      "available": true,
+      "confirmed": [],
+      "detail": {
+        "canonical_reelaboration": {
+          "detail": "no added instance/notation/macro/set_option/axiom/shadow-decl to strip (nothing to re-elaborate)",
+          "ok": true
+        },
+        "consequence_exposure": {
+          "shape": {
+            "advisory_goalhead": false,
+            "binders": [
+              "ZMod 5",
+              "ZMod 5",
+              "ZMod 5",
+              "Phase",
+              "Residue",
+              "Phase",
+              "Residue",
+              "Phase",
+              "Phase",
+              "Residue",
+              "Phase",
+              "Phase",
+              "Phase",
+              "Phase",
+              "Residue",
+              "Phase",
+              "Position",
+              "Finset Position",
+              "Finset Position",
+              "S.card = 5",
+              "T.card = 5",
+              "2 \u2264 (S \u2229 T).card",
+              "Phase",
+              "Phase",
+              "Position",
+              "x \u2208 generatorSupport",
+              "Position",
+              "reduceModFive d = 1",
+              "Position",
+              "reduceModFive d = 1",
+              "Phase"
+            ],
+            "blocking": false,
+            "consequence_exposure_suspect": false,
+            "organ": "v33-consequence-exposure",
+            "reason": "",
+            "smuggled_heads": []
+          }
+        },
+        "currency_mismatch": {
+          "shape": {
+            "conclusion_is_scalar": false,
+            "field_obligation_token": null,
+            "preview": "theorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n      ",
+            "scalar_wrapper_suspect": false
+          }
+        },
+        "gold_name_verbatim": {
+          "corpus": {
+            "in_mathlib": false,
+            "match_kind": "none",
+            "queried": "exists_shift_symmDiff_card_le_six"
+          },
+          "detect": {
+            "body_preview": "obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega",
+            "distinct_cited_lemmas": [
+              "exists_shift_symmDiff_card_le_six"
+            ],
+            "distinct_have_lemmas": [],
+            "gold_name_verbatim_suspect": true,
+            "has_multistep_composition": true,
+            "has_work_tactic": true,
+            "n_have_lemma_lines": 0,
+            "primary_cited": "exists_shift_symmDiff_card_le_six",
+            "supporting_cited_lemmas": [
+              "binomialGeneratorSupport_card"
+            ],
+            "trivial_restatement": false
+          }
+        },
+        "indirect_leakage": {
+          "shape": {
+            "body_preview": "obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega",
+            "closer_tactic": null,
+            "explicit_lemma_args": false,
+            "has_multistep_composition": false,
+            "indirect_leakage_suspect": false,
+            "n_have": 0
+          }
+        },
+        "proof_shape_scope": {
+          "mode": "resolved_target_declaration",
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "written_target": "exists_graph_word_support_weight_le_ten"
+        },
+        "single_lemma_exact": {
+          "shape": {
+            "goal_preview": "theorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n      ",
+            "len": 360,
+            "n_binders": 1,
+            "n_relations": 4,
+            "single_lemma_exact_suspect": false
+          }
+        },
+        "statement_integrity": {
+          "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+          "kind": "statement_integrity",
+          "ok": true,
+          "violations": []
+        },
+        "target_scope": {
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "written_target": "exists_graph_word_support_weight_le_ten"
+        },
+        "vacuity": {
+          "opaque_predicate_present": false,
+          "risk_flags": [],
+          "statement_preview": "(\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n            (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10",
+          "vacuity_suspected": false
+        },
+        "vacuity_scope": {
+          "mode": "resolved_target_signature",
+          "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+          "written_target": "exists_graph_word_support_weight_le_ten"
+        }
+      },
+      "flags": [],
+      "passed": true,
+      "policy_profile": "target_ratification",
+      "required_authorities": [
+        "canonical_reelaboration",
+        "statement_integrity",
+        "target_declaration",
+        "target_identity",
+        "target_signature",
+        "v33_consequence_exposure_gate",
+        "v33_currency_mismatch_gate",
+        "v33_indirect_leakage_gate",
+        "v33_paraphrase_gate",
+        "v33_preflight_risk_detector",
+        "v33_single_lemma_exact_gate"
+      ],
+      "unavailable_organs": []
+    },
+    "integrity_unverified": false,
+    "margin_of_safety": {
+      "advisory": false,
+      "kind": "proof_margin_of_safety",
+      "target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+      "tests": {
+        "conclusion_discrimination": {
+          "detail": {
+            "admitted_under_policy": true,
+            "available": true,
+            "closure_source_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+            "differential": "confirmed",
+            "discriminating": true,
+            "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+            "kind": "source_aware_conclusion_perturbation",
+            "negative_compiled": false,
+            "negative_probe_sha256": "5a9caae3a6ee0dfe4ad52d2ffecb236d068d7249af3e6a6dacb9c58a258a3f85",
+            "passed": true,
+            "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "policy": "require_discriminating_control",
+            "posed_source_sha256": "c3ab7afedf3086f86771808eae717c61b31076da1443e8feae6b54ba00607a01",
+            "positive_compiled": true,
+            "positive_probe_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+            "status": "pass",
+            "tail": "positive source compiles and the same proof does not close the negated conclusion",
+            "target_identity": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+            "target_signature_sha256": "c2af0a7ca6d01bd9fe2b3a71078ac7f5394594a233a20c98347647cde0f92f79"
+          },
+          "verdict": "strengthen"
+        }
+      }
+    },
+    "matched_negative_control_binding": {
+      "status": "validated_for_single_execution",
+      "target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten"
+    },
+    "statement_integrity": {
+      "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+      "kind": "statement_integrity",
+      "ok": true,
+      "violations": []
+    }
+  },
+  "governance_ratification_eligible": true,
+  "kernel_parity_record_sha256": "4639ed8dafbf1c8b5ffd6d7e58e31285c6e5eab08cb54a1c5b43468600f46ae4",
+  "outcome": "closed",
+  "provider_calls": 0,
+  "ratification_only": true,
+  "results": [
+    {
+      "compile_ok": true,
+      "compile_tail": "\nwarning: mathlib: repository './ztare_proofs/.lake/packages/mathlib' has local changes\nwarning: batteries: repository './ztare_proofs/.lake/packages/batteries' has local changes\n",
+      "contract_validation": {
+        "authoritative_kernel_deferred": true,
+        "axiom_tier": "kernel_pure",
+        "contract_schema": "leanmill.carried_theorem_ratification.v1",
+        "credit_ready_at_solver_layer": true,
+        "discriminating_mnc_required": true,
+        "final_authority_disposition": {
+          "axiom_allowlist_receipt": "passed",
+          "canonical_reelaboration": "passed",
+          "kernel_compile_receipt": "passed",
+          "matched_negative_control_receipt": "passed",
+          "statement_integrity": "passed",
+          "target_declaration": "passed",
+          "target_identity": "passed",
+          "target_signature": "passed",
+          "v33_consequence_exposure_gate": "passed",
+          "v33_currency_mismatch_gate": "passed",
+          "v33_indirect_leakage_gate": "passed",
+          "v33_paraphrase_gate": "passed",
+          "v33_preflight_risk_detector": "passed",
+          "v33_single_lemma_exact_gate": "passed"
+        },
+        "final_authority_receipts_eligible": true,
+        "final_authority_roster_sha256": "dfe23b3412b575d0868979eed73087257baee696fab06cf07fce18bf6f2bdd82",
+        "final_governance_ratification_eligible": true,
+        "final_ratification_eligible": true,
+        "final_required_authorities": [
+          "axiom_allowlist_receipt",
+          "canonical_reelaboration",
+          "kernel_compile_receipt",
+          "matched_negative_control_receipt",
+          "statement_integrity",
+          "target_declaration",
+          "target_identity",
+          "target_signature",
+          "v33_consequence_exposure_gate",
+          "v33_currency_mismatch_gate",
+          "v33_indirect_leakage_gate",
+          "v33_paraphrase_gate",
+          "v33_preflight_risk_detector",
+          "v33_single_lemma_exact_gate"
+        ],
+        "finalized_at_closed_artifact_boundary": true,
+        "positive_axiom_receipt_required": true,
+        "producer_credit_ready_at_solver_layer": true,
+        "producer_discriminating_mnc_required": true,
+        "producer_positive_axiom_receipt_required": true,
+        "receipts": {
+          "axiom_allowlist_receipt": {
+            "allowed_axioms": [
+              "Classical.choice",
+              "Quot.sound",
+              "propext"
+            ],
+            "available": true,
+            "axioms": [
+              "Classical.choice",
+              "Quot.sound",
+              "propext"
+            ],
+            "passed": true,
+            "status": "pass",
+            "tail": "clean target axiom set"
+          },
+          "governance_kernel_receipt": {
+            "authority": "common_closed_artifact_finalizer",
+            "authority_disposition": {
+              "canonical_reelaboration": "passed",
+              "statement_integrity": "passed",
+              "target_declaration": "passed",
+              "target_identity": "passed",
+              "target_signature": "passed",
+              "v33_consequence_exposure_gate": "passed",
+              "v33_currency_mismatch_gate": "passed",
+              "v33_indirect_leakage_gate": "passed",
+              "v33_paraphrase_gate": "passed",
+              "v33_preflight_risk_detector": "passed",
+              "v33_single_lemma_exact_gate": "passed"
+            },
+            "authority_roster_sha256": "6c278e4c552be6c597d7966f6453d0c8a1c9e98907cb3ebfcf6b5c35a790217f",
+            "available": true,
+            "confirmed": [],
+            "detail": {
+              "canonical_reelaboration": {
+                "detail": "no added instance/notation/macro/set_option/axiom/shadow-decl to strip (nothing to re-elaborate)",
+                "ok": true
+              },
+              "consequence_exposure": {
+                "shape": {
+                  "advisory_goalhead": false,
+                  "binders": [
+                    "ZMod 5",
+                    "ZMod 5",
+                    "ZMod 5",
+                    "Phase",
+                    "Residue",
+                    "Phase",
+                    "Residue",
+                    "Phase",
+                    "Phase",
+                    "Residue",
+                    "Phase",
+                    "Phase",
+                    "Phase",
+                    "Phase",
+                    "Residue",
+                    "Phase",
+                    "Position",
+                    "Finset Position",
+                    "Finset Position",
+                    "S.card = 5",
+                    "T.card = 5",
+                    "2 \u2264 (S \u2229 T).card",
+                    "Phase",
+                    "Phase",
+                    "Position",
+                    "x \u2208 generatorSupport",
+                    "Position",
+                    "reduceModFive d = 1",
+                    "Position",
+                    "reduceModFive d = 1",
+                    "Phase"
+                  ],
+                  "blocking": false,
+                  "consequence_exposure_suspect": false,
+                  "organ": "v33-consequence-exposure",
+                  "reason": "",
+                  "smuggled_heads": []
+                }
+              },
+              "currency_mismatch": {
+                "shape": {
+                  "conclusion_is_scalar": false,
+                  "field_obligation_token": null,
+                  "preview": "theorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n      ",
+                  "scalar_wrapper_suspect": false
+                }
+              },
+              "gold_name_verbatim": {
+                "corpus": {
+                  "in_mathlib": false,
+                  "match_kind": "none",
+                  "queried": "exists_shift_symmDiff_card_le_six"
+                },
+                "detect": {
+                  "body_preview": "obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega",
+                  "distinct_cited_lemmas": [
+                    "exists_shift_symmDiff_card_le_six"
+                  ],
+                  "distinct_have_lemmas": [],
+                  "gold_name_verbatim_suspect": true,
+                  "has_multistep_composition": true,
+                  "has_work_tactic": true,
+                  "n_have_lemma_lines": 0,
+                  "primary_cited": "exists_shift_symmDiff_card_le_six",
+                  "supporting_cited_lemmas": [
+                    "binomialGeneratorSupport_card"
+                  ],
+                  "trivial_restatement": false
+                }
+              },
+              "indirect_leakage": {
+                "shape": {
+                  "body_preview": "obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega",
+                  "closer_tactic": null,
+                  "explicit_lemma_args": false,
+                  "has_multistep_composition": false,
+                  "indirect_leakage_suspect": false,
+                  "n_have": 0
+                }
+              },
+              "proof_shape_scope": {
+                "mode": "resolved_target_declaration",
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "written_target": "exists_graph_word_support_weight_le_ten"
+              },
+              "single_lemma_exact": {
+                "shape": {
+                  "goal_preview": "theorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n      ",
+                  "len": 360,
+                  "n_binders": 1,
+                  "n_relations": 4,
+                  "single_lemma_exact_suspect": false
+                }
+              },
+              "statement_integrity": {
+                "invariant": "agent may only ADD helper decls + replace the TARGET proof body; every other original decl + the target signature must be preserved",
+                "kind": "statement_integrity",
+                "ok": true,
+                "violations": []
+              },
+              "target_scope": {
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "written_target": "exists_graph_word_support_weight_le_ten"
+              },
+              "vacuity": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "(\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n            (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10",
+                "vacuity_suspected": false
+              },
+              "vacuity_scope": {
+                "mode": "resolved_target_signature",
+                "qualified_target": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "selector": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+                "written_target": "exists_graph_word_support_weight_le_ten"
+              }
+            },
+            "flags": [],
+            "passed": true,
+            "policy_profile": "target_ratification",
+            "producer_receipt": {
+              "available": false,
+              "passed": null,
+              "status": "deferred_to_closed_artifact_finalizer"
+            },
+            "required_authorities": [
+              "canonical_reelaboration",
+              "statement_integrity",
+              "target_declaration",
+              "target_identity",
+              "target_signature",
+              "v33_consequence_exposure_gate",
+              "v33_currency_mismatch_gate",
+              "v33_indirect_leakage_gate",
+              "v33_paraphrase_gate",
+              "v33_preflight_risk_detector",
+              "v33_single_lemma_exact_gate"
+            ],
+            "status": "finalized_by_closed_artifact_governance",
+            "unavailable_organs": []
+          },
+          "kernel_compile_receipt": {
+            "available": true,
+            "checker": "lean_lake",
+            "passed": true,
+            "status": "pass",
+            "tail": "compiled exact carried artifact"
+          },
+          "l3_anti_pattern_receipt": {
+            "authority": "common_closed_artifact_finalizer",
+            "available": true,
+            "confirmed": [],
+            "passed": true,
+            "producer_receipt": {
+              "available": false,
+              "passed": null,
+              "status": "deferred_to_closed_artifact_finalizer"
+            },
+            "status": "finalized_by_closed_artifact_governance"
+          },
+          "matched_negative_control_receipt": {
+            "admitted_under_policy": true,
+            "available": true,
+            "closure_source_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+            "differential": "confirmed",
+            "discriminating": true,
+            "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+            "kind": "source_aware_conclusion_perturbation",
+            "negative_compiled": false,
+            "negative_probe_sha256": "5a9caae3a6ee0dfe4ad52d2ffecb236d068d7249af3e6a6dacb9c58a258a3f85",
+            "passed": true,
+            "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "policy": "require_discriminating_control",
+            "posed_source_sha256": "c3ab7afedf3086f86771808eae717c61b31076da1443e8feae6b54ba00607a01",
+            "positive_compiled": true,
+            "positive_probe_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+            "status": "pass",
+            "tail": "positive source compiles and the same proof does not close the negated conclusion",
+            "target_identity": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+            "target_signature_sha256": "c2af0a7ca6d01bd9fe2b3a71078ac7f5394594a233a20c98347647cde0f92f79"
+          }
+        },
+        "required_receipts_all_passed_at_solver_layer": true
+      },
+      "exit_code": 0,
+      "goal": "(\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n            (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10",
+      "matched_negative_control": {
+        "admitted_under_policy": true,
+        "available": true,
+        "closure_source_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+        "differential": "confirmed",
+        "discriminating": true,
+        "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
+        "kind": "source_aware_conclusion_perturbation",
+        "negative_compiled": false,
+        "negative_probe_sha256": "5a9caae3a6ee0dfe4ad52d2ffecb236d068d7249af3e6a6dacb9c58a258a3f85",
+        "passed": true,
+        "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+        "policy": "require_discriminating_control",
+        "posed_source_sha256": "c3ab7afedf3086f86771808eae717c61b31076da1443e8feae6b54ba00607a01",
+        "positive_compiled": true,
+        "positive_probe_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+        "status": "pass",
+        "tail": "positive source compiles and the same proof does not close the negated conclusion",
+        "target_identity": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+        "target_signature_sha256": "c2af0a7ca6d01bd9fe2b3a71078ac7f5394594a233a20c98347647cde0f92f79"
+      },
+      "name": "ratify::axiompack-qc-transversal-obstruction::20260719",
+      "outcome": "closed",
+      "proof_text": "by\n  obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega",
+      "provider": "axiompack_qc_transversal_carried_artifact",
+      "provider_wallclock_s": 23.242779,
+      "providers_tried": [
+        {
+          "agent_kind": "preverified_champion",
+          "compile_ok": true,
+          "outcome": "compiled",
+          "provider": "axiompack_qc_transversal_carried_artifact",
+          "provider_wallclock_s": 23.242779
+        }
+      ],
+      "row_id": "ratify::axiompack-qc-transversal-obstruction::20260719",
+      "target_name": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+      "target_theorem_name": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+      "winner": "axiompack_qc_transversal_carried_artifact"
+    }
+  ],
+  "schema": "leanmill.carried_theorem_ratification.v1",
+  "verified_closure_artifact": {
+    "closed_target_signature_sha256": "43149440c75e579e38a449c9fda938f7585875e651cac2ff48de0e666fb80aa9",
+    "closure_sha256": "e1f86ed81b5f3c391100599e086377d9b7b717c32c337c8431b76a51efd7b71c",
+    "closure_source": "import Mathlib.Tactic\n\n/-!\n# Cyclic-transversal obstruction for the `[50,20,14]` QC graph family\n\nThis file isolates the combinatorial core of the obstruction.  A transversal\nof the five residue classes modulo `5` is encoded by an arbitrary phase\nfunction `Fin 5 \u2192 ZMod 5`.  The five cyclic edge differences cannot all be\ndifferent: their quotient heights sum to `-1`, whereas a permutation of\n`ZMod 5` sums to `0`.\n-/\n\nnamespace AxiomPackQCTransversalObstruction\n\nopen scoped BigOperators symmDiff\n\nabbrev Residue := Fin 5\nabbrev Phase := Residue \u2192 ZMod 5\nabbrev Position := ZMod 25\n\n/-- Cyclic successor on the five residue classes. -/\ndef nextResidue (r : Residue) : Residue :=\n  \u27e8(r.val + 1) % 5, Nat.mod_lt _ (by norm_num)\u27e9\n\n/-- The carry introduced when the chosen representatives cycle from `4` to `0`. -/\ndef carry (r : Residue) : ZMod 5 :=\n  if r.val = 4 then 1 else 0\n\n/-- Quotient height of the cyclic difference between consecutive transversal points. -/\ndef quotientDifference (\u03c6 : Phase) (r : Residue) : ZMod 5 :=\n  \u03c6 (nextResidue r) - \u03c6 r - carry r\n\n/-- Integer multiplication by `5`, viewed additively in `ZMod 25`. -/\ndef integerTimesFive : \u2124 \u2192+ Position where\n  toFun z := (z : Position) * 5\n  map_zero' := by simp\n  map_add' x y := by push_cast; ring\n\ntheorem integerTimesFive_five : integerTimesFive 5 = 0 := by\n  decide\n\n/-- The additive embedding of quotient heights into the `5`-torsion subgroup\nof `ZMod 25`. -/\ndef liftHeightHom : ZMod 5 \u2192+ Position :=\n  ZMod.lift 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9\n\n/-- Multiplication by `5` lifts a quotient height into the kernel of reduction\nmodulo `5`. -/\ndef liftHeight (q : ZMod 5) : Position :=\n  liftHeightHom q\n\ntheorem liftHeight_eq_five_mul_val (q : ZMod 5) :\n    liftHeight q = 5 * (q.val : Position) := by\n  calc\n    liftHeight q = liftHeight (((q.val : \u2124) : ZMod 5)) := by\n      congr 1\n      change q = (q.val : ZMod 5)\n      exact q.natCast_zmod_val.symm\n    _ = integerTimesFive (q.val : \u2124) := by\n      exact ZMod.lift_coe 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9 (q.val : \u2124)\n    _ = 5 * (q.val : Position) := by\n      simp [integerTimesFive, mul_comm]\n\n@[simp]\ntheorem liftHeight_sub (q\u2081 q\u2082 : ZMod 5) :\n    liftHeight (q\u2081 - q\u2082) = liftHeight q\u2081 - liftHeight q\u2082 :=\n  liftHeightHom.map_sub q\u2081 q\u2082\n\n@[simp]\ntheorem liftHeight_one : liftHeight (1 : ZMod 5) = (5 : Position) := by\n  change ZMod.lift 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9 ((1 : \u2124) : ZMod 5) = 5\n  rw [ZMod.lift_coe]\n  norm_num [integerTimesFive]\n\n/-- Reduction from positions modulo `25` to residues modulo `5`. -/\ndef reduceModFive : Position \u2192+* ZMod 5 :=\n  ZMod.castHom (by norm_num : 5 \u2223 25) (ZMod 5)\n\n@[simp]\ntheorem reduce_liftHeight (q : ZMod 5) : reduceModFive (liftHeight q) = 0 := by\n  rw [liftHeight_eq_five_mul_val]\n  rw [map_mul]\n  have hfive : reduceModFive (5 : Position) = 0 := by decide\n  rw [hfive, zero_mul]\n\n/-- The point in `ZMod 25` selected by residue `r` and phase `\u03c6 r`. -/\ndef transversalPoint (\u03c6 : Phase) (r : Residue) : Position :=\n  (r.val : Position) + liftHeight (\u03c6 r)\n\n@[simp]\ntheorem reduce_transversalPoint (\u03c6 : Phase) (r : Residue) :\n    reduceModFive (transversalPoint \u03c6 r) = (r.val : ZMod 5) := by\n  simp only [transversalPoint, map_add, map_natCast, reduce_liftHeight, add_zero]\n\n/-- Cyclic edge difference between consecutive selected points. -/\ndef cyclicDifference (\u03c6 : Phase) (r : Residue) : Position :=\n  transversalPoint \u03c6 (nextResidue r) - transversalPoint \u03c6 r\n\ntheorem cyclicDifference_eq (\u03c6 : Phase) (r : Residue) :\n    cyclicDifference \u03c6 r = 1 + liftHeight (quotientDifference \u03c6 r) := by\n  fin_cases r <;>\n    simp [cyclicDifference, transversalPoint, nextResidue, quotientDifference, carry,\n      liftHeight_sub, liftHeight_one] <;> ring\n\ntheorem transversalPoint_injective (\u03c6 : Phase) :\n    Function.Injective (transversalPoint \u03c6) := by\n  intro r s hrs\n  have hreduce := congrArg reduceModFive hrs\n  rw [reduce_transversalPoint, reduce_transversalPoint] at hreduce\n  apply Fin.ext\n  have hval := congrArg ZMod.val hreduce\n  simpa [ZMod.val_natCast, Nat.mod_eq_of_lt r.isLt, Nat.mod_eq_of_lt s.isLt] using hval\n\n@[simp]\ntheorem reduce_cyclicDifference (\u03c6 : Phase) (r : Residue) :\n    reduceModFive (cyclicDifference \u03c6 r) = 1 := by\n  rw [cyclicDifference_eq]\n  simp only [map_add, map_one, reduce_liftHeight, add_zero]\n\ntheorem nextResidue_bijective : Function.Bijective nextResidue := by\n  decide\n\ntheorem sum_carry : \u2211 r : Residue, carry r = (1 : ZMod 5) := by\n  decide\n\ntheorem sum_all_zmod_five : \u2211 q : ZMod 5, q = 0 := by\n  decide\n\ntheorem sum_quotientDifference (\u03c6 : Phase) :\n    \u2211 r : Residue, quotientDifference \u03c6 r = (-1 : ZMod 5) := by\n  have hshift : (\u2211 r : Residue, \u03c6 (nextResidue r)) = \u2211 r : Residue, \u03c6 r :=\n    nextResidue_bijective.sum_comp \u03c6\n  simp only [quotientDifference, Finset.sum_sub_distrib]\n  rw [hshift, sum_carry]\n  abel\n\n/-- Two distinct cyclic edges of every residue transversal have the same\nquotient height.  This is the non-enumerative pigeonhole at the center of the\nQC-family obstruction. -/\ntheorem exists_distinct_equal_quotientDifference (\u03c6 : Phase) :\n    \u2203 r s : Residue, r \u2260 s \u2227 quotientDifference \u03c6 r = quotientDifference \u03c6 s := by\n  have hnot : \u00ac Function.Injective (quotientDifference \u03c6) := by\n    intro hinj\n    have hbij : Function.Bijective (quotientDifference \u03c6) :=\n      (Fintype.bijective_iff_injective_and_card _).2 \u27e8hinj, by simp\u27e9\n    have hperm : (\u2211 r : Residue, quotientDifference \u03c6 r) = \u2211 q : ZMod 5, q :=\n      hbij.sum_comp (fun q : ZMod 5 \u21a6 q)\n    rw [sum_quotientDifference, sum_all_zmod_five] at hperm\n    have hminus : (-1 : ZMod 5) \u2260 0 := by decide\n    exact hminus hperm\n  rw [Function.not_injective_iff] at hnot\n  obtain \u27e8r, s, hrs, hne\u27e9 := hnot\n  exact \u27e8r, s, hne, hrs\u27e9\n\n/-- The repetition of quotient heights is a repetition of the corresponding\nnonzero, non-`5\u2124` shifts in `ZMod 25`. -/\ntheorem exists_distinct_equal_cyclicDifference (\u03c6 : Phase) :\n    \u2203 r s : Residue, r \u2260 s \u2227 cyclicDifference \u03c6 r = cyclicDifference \u03c6 s := by\n  obtain \u27e8r, s, hne, hquot\u27e9 := exists_distinct_equal_quotientDifference \u03c6\n  refine \u27e8r, s, hne, ?_\u27e9\n  rw [cyclicDifference_eq, cyclicDifference_eq, hquot]\n\n/-- The five selected points of a phase transversal. -/\ndef transversal (\u03c6 : Phase) : Finset Position :=\n  Finset.univ.image (transversalPoint \u03c6)\n\n/-- Translate a finite set of positions by a shift. -/\ndef translate (d : Position) (S : Finset Position) : Finset Position :=\n  S.image (fun x \u21a6 x + d)\n\ntheorem transversalPoint_mem (\u03c6 : Phase) (r : Residue) :\n    transversalPoint \u03c6 r \u2208 transversal \u03c6 := by\n  exact Finset.mem_image.mpr \u27e8r, Finset.mem_univ r, rfl\u27e9\n\ntheorem transversal_card (\u03c6 : Phase) : (transversal \u03c6).card = 5 := by\n  rw [transversal, Finset.card_image_of_injective _ (transversalPoint_injective \u03c6),\n    Finset.card_univ, Fintype.card_fin]\n\ntheorem translate_card (d : Position) (S : Finset Position) :\n    (translate d S).card = S.card := by\n  rw [translate, Finset.card_image_of_injective]\n  intro x y hxy\n  exact add_right_cancel hxy\n\ntheorem card_symmDiff_le_six_of_five_of_two_inter\n    (S T : Finset Position)\n    (hS : S.card = 5)\n    (hT : T.card = 5)\n    (hinter : 2 \u2264 (S \u2229 T).card) :\n    (S \u2206 T).card \u2264 6 := by\n  have hdisj : Disjoint (S \\ T) (T \\ S) := by\n    rw [Finset.disjoint_left]\n    intro x hxS hxT\n    exact (Finset.mem_sdiff.mp hxT).2 (Finset.mem_sdiff.mp hxS).1\n  change ((S \\ T) \u222a (T \\ S)).card \u2264 6\n  rw [Finset.card_union_of_disjoint hdisj, Finset.card_sdiff,\n    Finset.card_sdiff]\n  have hinter_comm : (T \u2229 S).card = (S \u2229 T).card := by\n    rw [Finset.inter_comm]\n  rw [hS, hT, hinter_comm]\n  omega\n\n/-- Every residue transversal has a shift outside `5\u2124` for which the\ntransversal and its translate meet in at least two points. -/\ntheorem exists_shift_two_le_intersection (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        2 \u2264 (transversal \u03c6 \u2229 translate d (transversal \u03c6)).card := by\n  obtain \u27e8r, s, hrs, hdiff\u27e9 := exists_distinct_equal_cyclicDifference \u03c6\n  let d := cyclicDifference \u03c6 r\n  have hrd : transversalPoint \u03c6 (nextResidue r) \u2208 translate d (transversal \u03c6) := by\n    refine Finset.mem_image.mpr \u27e8transversalPoint \u03c6 r, transversalPoint_mem \u03c6 r, ?_\u27e9\n    dsimp [d]\n    simp only [cyclicDifference]\n    abel\n  have hsd : transversalPoint \u03c6 (nextResidue s) \u2208 translate d (transversal \u03c6) := by\n    refine Finset.mem_image.mpr \u27e8transversalPoint \u03c6 s, transversalPoint_mem \u03c6 s, ?_\u27e9\n    dsimp [d]\n    rw [hdiff]\n    simp only [cyclicDifference]\n    abel\n  have hpoints :\n      transversalPoint \u03c6 (nextResidue r) \u2260 transversalPoint \u03c6 (nextResidue s) := by\n    intro hpoint\n    have hnext := transversalPoint_injective \u03c6 hpoint\n    exact hrs (nextResidue_bijective.1 hnext)\n  refine \u27e8d, reduce_cyclicDifference \u03c6 r, ?_\u27e9\n  exact Finset.one_lt_card_iff.mpr\n    \u27e8transversalPoint \u03c6 (nextResidue r), transversalPoint \u03c6 (nextResidue s),\n      Finset.mem_inter.mpr \u27e8transversalPoint_mem \u03c6 (nextResidue r), hrd\u27e9,\n      Finset.mem_inter.mpr \u27e8transversalPoint_mem \u03c6 (nextResidue s), hsd\u27e9,\n      hpoints\u27e9\n\n/-- The repeated shift makes the symmetric difference of the transversal and\nits translate have size at most `6`. -/\ntheorem exists_shift_symmDiff_card_le_six (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 6 := by\n  obtain \u27e8d, hd, hinter\u27e9 := exists_shift_two_le_intersection \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  exact card_symmDiff_le_six_of_five_of_two_inter\n    (transversal \u03c6) (translate d (transversal \u03c6))\n    (transversal_card \u03c6) ((translate_card d (transversal \u03c6)).trans (transversal_card \u03c6)) hinter\n\n/-- Support of `g = 1 + x\u2075` in the cyclic ring. -/\ndef generatorSupport : Finset Position :=\n  {0, 5}\n\ntheorem generatorSupport_card : generatorSupport.card = 2 := by\n  decide\n\ntheorem reduce_of_mem_generatorSupport {x : Position} (hx : x \u2208 generatorSupport) :\n    reduceModFive x = 0 := by\n  have hx' : x = 0 \u2228 x = 5 := by\n    simpa [generatorSupport] using hx\n  rcases hx' with rfl | rfl <;> decide\n\ntheorem generatorSupport_disjoint_translate {d : Position}\n    (hd : reduceModFive d = 1) :\n    Disjoint generatorSupport (translate d generatorSupport) := by\n  rw [Finset.disjoint_left]\n  intro x hx hxt\n  obtain \u27e8y, hy, hyx\u27e9 := Finset.mem_image.mp hxt\n  have hxzero := reduce_of_mem_generatorSupport hx\n  have hyzero := reduce_of_mem_generatorSupport hy\n  have hxone : reduceModFive x = 1 := by\n    rw [\u2190 hyx, map_add, hyzero, hd, zero_add]\n  rw [hxzero] at hxone\n  have hzeroone : (0 : ZMod 5) \u2260 1 := by decide\n  exact hzeroone hxone\n\n/-- Support of the first graph-code block `g(1+x\u1d48)`. -/\ndef binomialGeneratorSupport (d : Position) : Finset Position :=\n  generatorSupport \u2206 translate d generatorSupport\n\ntheorem binomialGeneratorSupport_card {d : Position}\n    (hd : reduceModFive d = 1) :\n    (binomialGeneratorSupport d).card = 4 := by\n  have hdisj := generatorSupport_disjoint_translate hd\n  rw [binomialGeneratorSupport, Finset.symmDiff_eq_union hdisj,\n    Finset.card_union_of_disjoint hdisj, translate_card,\n    generatorSupport_card]\n\n/-- Exact support-level form of the weight-`10` consequence.  The first\nsummand is the support of `g(1+x\u1d48)`; the second is the support of\n`b(1+x\u1d48)` after replacing the complement-transversal support of `b` by its\nsymmetric difference. -/\ntheorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n            (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10 := by\n  obtain \u27e8d, hd, hright\u27e9 := exists_shift_symmDiff_card_le_six \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  rw [binomialGeneratorSupport_card hd]\n  omega\n\nend AxiomPackQCTransversalObstruction\n",
+    "posed_sha256": "c3ab7afedf3086f86771808eae717c61b31076da1443e8feae6b54ba00607a01",
+    "posed_source": "import Mathlib.Tactic\n\n/-!\n# Cyclic-transversal obstruction for the `[50,20,14]` QC graph family\n\nThis file isolates the combinatorial core of the obstruction.  A transversal\nof the five residue classes modulo `5` is encoded by an arbitrary phase\nfunction `Fin 5 \u2192 ZMod 5`.  The five cyclic edge differences cannot all be\ndifferent: their quotient heights sum to `-1`, whereas a permutation of\n`ZMod 5` sums to `0`.\n-/\n\nnamespace AxiomPackQCTransversalObstruction\n\nopen scoped BigOperators symmDiff\n\nabbrev Residue := Fin 5\nabbrev Phase := Residue \u2192 ZMod 5\nabbrev Position := ZMod 25\n\n/-- Cyclic successor on the five residue classes. -/\ndef nextResidue (r : Residue) : Residue :=\n  \u27e8(r.val + 1) % 5, Nat.mod_lt _ (by norm_num)\u27e9\n\n/-- The carry introduced when the chosen representatives cycle from `4` to `0`. -/\ndef carry (r : Residue) : ZMod 5 :=\n  if r.val = 4 then 1 else 0\n\n/-- Quotient height of the cyclic difference between consecutive transversal points. -/\ndef quotientDifference (\u03c6 : Phase) (r : Residue) : ZMod 5 :=\n  \u03c6 (nextResidue r) - \u03c6 r - carry r\n\n/-- Integer multiplication by `5`, viewed additively in `ZMod 25`. -/\ndef integerTimesFive : \u2124 \u2192+ Position where\n  toFun z := (z : Position) * 5\n  map_zero' := by simp\n  map_add' x y := by push_cast; ring\n\ntheorem integerTimesFive_five : integerTimesFive 5 = 0 := by\n  decide\n\n/-- The additive embedding of quotient heights into the `5`-torsion subgroup\nof `ZMod 25`. -/\ndef liftHeightHom : ZMod 5 \u2192+ Position :=\n  ZMod.lift 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9\n\n/-- Multiplication by `5` lifts a quotient height into the kernel of reduction\nmodulo `5`. -/\ndef liftHeight (q : ZMod 5) : Position :=\n  liftHeightHom q\n\ntheorem liftHeight_eq_five_mul_val (q : ZMod 5) :\n    liftHeight q = 5 * (q.val : Position) := by\n  calc\n    liftHeight q = liftHeight (((q.val : \u2124) : ZMod 5)) := by\n      congr 1\n      change q = (q.val : ZMod 5)\n      exact q.natCast_zmod_val.symm\n    _ = integerTimesFive (q.val : \u2124) := by\n      exact ZMod.lift_coe 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9 (q.val : \u2124)\n    _ = 5 * (q.val : Position) := by\n      simp [integerTimesFive, mul_comm]\n\n@[simp]\ntheorem liftHeight_sub (q\u2081 q\u2082 : ZMod 5) :\n    liftHeight (q\u2081 - q\u2082) = liftHeight q\u2081 - liftHeight q\u2082 :=\n  liftHeightHom.map_sub q\u2081 q\u2082\n\n@[simp]\ntheorem liftHeight_one : liftHeight (1 : ZMod 5) = (5 : Position) := by\n  change ZMod.lift 5 \u27e8integerTimesFive, integerTimesFive_five\u27e9 ((1 : \u2124) : ZMod 5) = 5\n  rw [ZMod.lift_coe]\n  norm_num [integerTimesFive]\n\n/-- Reduction from positions modulo `25` to residues modulo `5`. -/\ndef reduceModFive : Position \u2192+* ZMod 5 :=\n  ZMod.castHom (by norm_num : 5 \u2223 25) (ZMod 5)\n\n@[simp]\ntheorem reduce_liftHeight (q : ZMod 5) : reduceModFive (liftHeight q) = 0 := by\n  rw [liftHeight_eq_five_mul_val]\n  rw [map_mul]\n  have hfive : reduceModFive (5 : Position) = 0 := by decide\n  rw [hfive, zero_mul]\n\n/-- The point in `ZMod 25` selected by residue `r` and phase `\u03c6 r`. -/\ndef transversalPoint (\u03c6 : Phase) (r : Residue) : Position :=\n  (r.val : Position) + liftHeight (\u03c6 r)\n\n@[simp]\ntheorem reduce_transversalPoint (\u03c6 : Phase) (r : Residue) :\n    reduceModFive (transversalPoint \u03c6 r) = (r.val : ZMod 5) := by\n  simp only [transversalPoint, map_add, map_natCast, reduce_liftHeight, add_zero]\n\n/-- Cyclic edge difference between consecutive selected points. -/\ndef cyclicDifference (\u03c6 : Phase) (r : Residue) : Position :=\n  transversalPoint \u03c6 (nextResidue r) - transversalPoint \u03c6 r\n\ntheorem cyclicDifference_eq (\u03c6 : Phase) (r : Residue) :\n    cyclicDifference \u03c6 r = 1 + liftHeight (quotientDifference \u03c6 r) := by\n  fin_cases r <;>\n    simp [cyclicDifference, transversalPoint, nextResidue, quotientDifference, carry,\n      liftHeight_sub, liftHeight_one] <;> ring\n\ntheorem transversalPoint_injective (\u03c6 : Phase) :\n    Function.Injective (transversalPoint \u03c6) := by\n  intro r s hrs\n  have hreduce := congrArg reduceModFive hrs\n  rw [reduce_transversalPoint, reduce_transversalPoint] at hreduce\n  apply Fin.ext\n  have hval := congrArg ZMod.val hreduce\n  simpa [ZMod.val_natCast, Nat.mod_eq_of_lt r.isLt, Nat.mod_eq_of_lt s.isLt] using hval\n\n@[simp]\ntheorem reduce_cyclicDifference (\u03c6 : Phase) (r : Residue) :\n    reduceModFive (cyclicDifference \u03c6 r) = 1 := by\n  rw [cyclicDifference_eq]\n  simp only [map_add, map_one, reduce_liftHeight, add_zero]\n\ntheorem nextResidue_bijective : Function.Bijective nextResidue := by\n  decide\n\ntheorem sum_carry : \u2211 r : Residue, carry r = (1 : ZMod 5) := by\n  decide\n\ntheorem sum_all_zmod_five : \u2211 q : ZMod 5, q = 0 := by\n  decide\n\ntheorem sum_quotientDifference (\u03c6 : Phase) :\n    \u2211 r : Residue, quotientDifference \u03c6 r = (-1 : ZMod 5) := by\n  have hshift : (\u2211 r : Residue, \u03c6 (nextResidue r)) = \u2211 r : Residue, \u03c6 r :=\n    nextResidue_bijective.sum_comp \u03c6\n  simp only [quotientDifference, Finset.sum_sub_distrib]\n  rw [hshift, sum_carry]\n  abel\n\n/-- Two distinct cyclic edges of every residue transversal have the same\nquotient height.  This is the non-enumerative pigeonhole at the center of the\nQC-family obstruction. -/\ntheorem exists_distinct_equal_quotientDifference (\u03c6 : Phase) :\n    \u2203 r s : Residue, r \u2260 s \u2227 quotientDifference \u03c6 r = quotientDifference \u03c6 s := by\n  have hnot : \u00ac Function.Injective (quotientDifference \u03c6) := by\n    intro hinj\n    have hbij : Function.Bijective (quotientDifference \u03c6) :=\n      (Fintype.bijective_iff_injective_and_card _).2 \u27e8hinj, by simp\u27e9\n    have hperm : (\u2211 r : Residue, quotientDifference \u03c6 r) = \u2211 q : ZMod 5, q :=\n      hbij.sum_comp (fun q : ZMod 5 \u21a6 q)\n    rw [sum_quotientDifference, sum_all_zmod_five] at hperm\n    have hminus : (-1 : ZMod 5) \u2260 0 := by decide\n    exact hminus hperm\n  rw [Function.not_injective_iff] at hnot\n  obtain \u27e8r, s, hrs, hne\u27e9 := hnot\n  exact \u27e8r, s, hne, hrs\u27e9\n\n/-- The repetition of quotient heights is a repetition of the corresponding\nnonzero, non-`5\u2124` shifts in `ZMod 25`. -/\ntheorem exists_distinct_equal_cyclicDifference (\u03c6 : Phase) :\n    \u2203 r s : Residue, r \u2260 s \u2227 cyclicDifference \u03c6 r = cyclicDifference \u03c6 s := by\n  obtain \u27e8r, s, hne, hquot\u27e9 := exists_distinct_equal_quotientDifference \u03c6\n  refine \u27e8r, s, hne, ?_\u27e9\n  rw [cyclicDifference_eq, cyclicDifference_eq, hquot]\n\n/-- The five selected points of a phase transversal. -/\ndef transversal (\u03c6 : Phase) : Finset Position :=\n  Finset.univ.image (transversalPoint \u03c6)\n\n/-- Translate a finite set of positions by a shift. -/\ndef translate (d : Position) (S : Finset Position) : Finset Position :=\n  S.image (fun x \u21a6 x + d)\n\ntheorem transversalPoint_mem (\u03c6 : Phase) (r : Residue) :\n    transversalPoint \u03c6 r \u2208 transversal \u03c6 := by\n  exact Finset.mem_image.mpr \u27e8r, Finset.mem_univ r, rfl\u27e9\n\ntheorem transversal_card (\u03c6 : Phase) : (transversal \u03c6).card = 5 := by\n  rw [transversal, Finset.card_image_of_injective _ (transversalPoint_injective \u03c6),\n    Finset.card_univ, Fintype.card_fin]\n\ntheorem translate_card (d : Position) (S : Finset Position) :\n    (translate d S).card = S.card := by\n  rw [translate, Finset.card_image_of_injective]\n  intro x y hxy\n  exact add_right_cancel hxy\n\ntheorem card_symmDiff_le_six_of_five_of_two_inter\n    (S T : Finset Position)\n    (hS : S.card = 5)\n    (hT : T.card = 5)\n    (hinter : 2 \u2264 (S \u2229 T).card) :\n    (S \u2206 T).card \u2264 6 := by\n  have hdisj : Disjoint (S \\ T) (T \\ S) := by\n    rw [Finset.disjoint_left]\n    intro x hxS hxT\n    exact (Finset.mem_sdiff.mp hxT).2 (Finset.mem_sdiff.mp hxS).1\n  change ((S \\ T) \u222a (T \\ S)).card \u2264 6\n  rw [Finset.card_union_of_disjoint hdisj, Finset.card_sdiff,\n    Finset.card_sdiff]\n  have hinter_comm : (T \u2229 S).card = (S \u2229 T).card := by\n    rw [Finset.inter_comm]\n  rw [hS, hT, hinter_comm]\n  omega\n\n/-- Every residue transversal has a shift outside `5\u2124` for which the\ntransversal and its translate meet in at least two points. -/\ntheorem exists_shift_two_le_intersection (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        2 \u2264 (transversal \u03c6 \u2229 translate d (transversal \u03c6)).card := by\n  obtain \u27e8r, s, hrs, hdiff\u27e9 := exists_distinct_equal_cyclicDifference \u03c6\n  let d := cyclicDifference \u03c6 r\n  have hrd : transversalPoint \u03c6 (nextResidue r) \u2208 translate d (transversal \u03c6) := by\n    refine Finset.mem_image.mpr \u27e8transversalPoint \u03c6 r, transversalPoint_mem \u03c6 r, ?_\u27e9\n    dsimp [d]\n    simp only [cyclicDifference]\n    abel\n  have hsd : transversalPoint \u03c6 (nextResidue s) \u2208 translate d (transversal \u03c6) := by\n    refine Finset.mem_image.mpr \u27e8transversalPoint \u03c6 s, transversalPoint_mem \u03c6 s, ?_\u27e9\n    dsimp [d]\n    rw [hdiff]\n    simp only [cyclicDifference]\n    abel\n  have hpoints :\n      transversalPoint \u03c6 (nextResidue r) \u2260 transversalPoint \u03c6 (nextResidue s) := by\n    intro hpoint\n    have hnext := transversalPoint_injective \u03c6 hpoint\n    exact hrs (nextResidue_bijective.1 hnext)\n  refine \u27e8d, reduce_cyclicDifference \u03c6 r, ?_\u27e9\n  exact Finset.one_lt_card_iff.mpr\n    \u27e8transversalPoint \u03c6 (nextResidue r), transversalPoint \u03c6 (nextResidue s),\n      Finset.mem_inter.mpr \u27e8transversalPoint_mem \u03c6 (nextResidue r), hrd\u27e9,\n      Finset.mem_inter.mpr \u27e8transversalPoint_mem \u03c6 (nextResidue s), hsd\u27e9,\n      hpoints\u27e9\n\n/-- The repeated shift makes the symmetric difference of the transversal and\nits translate have size at most `6`. -/\ntheorem exists_shift_symmDiff_card_le_six (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 6 := by\n  obtain \u27e8d, hd, hinter\u27e9 := exists_shift_two_le_intersection \u03c6\n  refine \u27e8d, hd, ?_\u27e9\n  exact card_symmDiff_le_six_of_five_of_two_inter\n    (transversal \u03c6) (translate d (transversal \u03c6))\n    (transversal_card \u03c6) ((translate_card d (transversal \u03c6)).trans (transversal_card \u03c6)) hinter\n\n/-- Support of `g = 1 + x\u2075` in the cyclic ring. -/\ndef generatorSupport : Finset Position :=\n  {0, 5}\n\ntheorem generatorSupport_card : generatorSupport.card = 2 := by\n  decide\n\ntheorem reduce_of_mem_generatorSupport {x : Position} (hx : x \u2208 generatorSupport) :\n    reduceModFive x = 0 := by\n  have hx' : x = 0 \u2228 x = 5 := by\n    simpa [generatorSupport] using hx\n  rcases hx' with rfl | rfl <;> decide\n\ntheorem generatorSupport_disjoint_translate {d : Position}\n    (hd : reduceModFive d = 1) :\n    Disjoint generatorSupport (translate d generatorSupport) := by\n  rw [Finset.disjoint_left]\n  intro x hx hxt\n  obtain \u27e8y, hy, hyx\u27e9 := Finset.mem_image.mp hxt\n  have hxzero := reduce_of_mem_generatorSupport hx\n  have hyzero := reduce_of_mem_generatorSupport hy\n  have hxone : reduceModFive x = 1 := by\n    rw [\u2190 hyx, map_add, hyzero, hd, zero_add]\n  rw [hxzero] at hxone\n  have hzeroone : (0 : ZMod 5) \u2260 1 := by decide\n  exact hzeroone hxone\n\n/-- Support of the first graph-code block `g(1+x\u1d48)`. -/\ndef binomialGeneratorSupport (d : Position) : Finset Position :=\n  generatorSupport \u2206 translate d generatorSupport\n\ntheorem binomialGeneratorSupport_card {d : Position}\n    (hd : reduceModFive d = 1) :\n    (binomialGeneratorSupport d).card = 4 := by\n  have hdisj := generatorSupport_disjoint_translate hd\n  rw [binomialGeneratorSupport, Finset.symmDiff_eq_union hdisj,\n    Finset.card_union_of_disjoint hdisj, translate_card,\n    generatorSupport_card]\n\n/-- Exact support-level form of the weight-`10` consequence.  The first\nsummand is the support of `g(1+x\u1d48)`; the second is the support of\n`b(1+x\u1d48)` after replacing the complement-transversal support of `b` by its\nsymmetric difference. -/\ntheorem exists_graph_word_support_weight_le_ten (\u03c6 : Phase) :\n    \u2203 d : Position,\n      reduceModFive d = 1 \u2227\n        (binomialGeneratorSupport d).card +\n            (transversal \u03c6 \u2206 translate d (transversal \u03c6)).card \u2264 10 := by\n  sorry\n\nend AxiomPackQCTransversalObstruction\n",
+    "posed_target_signature_sha256": "43149440c75e579e38a449c9fda938f7585875e651cac2ff48de0e666fb80aa9",
+    "schema": "leanmill.verified_closure_artifact.v2",
+    "target_name": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten",
+    "target_qualified_name": "AxiomPackQCTransversalObstruction.exists_graph_word_support_weight_le_ten"
+  }
+}

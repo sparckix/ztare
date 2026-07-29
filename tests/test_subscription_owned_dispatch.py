@@ -21,6 +21,7 @@ from ztare.common.subscription_agent_runtime import (
     cancel_owned_dispatch_receipt,
     current_subscription_dispatch_agent_id,
     subscription_dispatch_budget_scope,
+    subscription_dispatch_provenance_scope,
 )
 
 
@@ -147,6 +148,45 @@ def test_subscription_dispatch_budget_scope_wraps_the_existing_runtime(tmp_path:
         ("before", "claude", "print('bounded')"),
         ("after", "reservation-1"),
     ]
+
+
+def test_provenance_role_ceiling_bounds_every_nested_transport(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: list[float] = []
+
+    def fake_unbudgeted(command, **kwargs):
+        observed.append(kwargs["timeout_seconds"])
+        return subprocess.CompletedProcess(command, 0, stdout="bounded", stderr="")
+
+    monkeypatch.setattr(
+        "ztare.common.subscription_agent_runtime._run_cli_unbudgeted",
+        fake_unbudgeted,
+    )
+    with subscription_dispatch_provenance_scope(
+        artifact_dir=tmp_path / "provenance",
+        role="formalizer",
+        agent_id="formalizer:test",
+        run_tag="attempt:test:formalizer",
+        runtime="claude",
+        model="claude-test",
+        reasoning_effort="high",
+        config_sha256="a" * 64,
+        max_timeout_seconds=7,
+    ) as calls:
+        result = _run_cli(
+            ["provider", "prompt"],
+            runtime="claude",
+            repo=tmp_path,
+            timeout_seconds=99,
+            agent_id="formalizer:test",
+        )
+
+    assert result.returncode == 0
+    assert observed == [7]
+    assert len(calls) == 1
+    assert calls[0]["timeout_seconds"] == 7
 
 
 def test_budget_hook_observes_logical_agent_identity(tmp_path: Path):

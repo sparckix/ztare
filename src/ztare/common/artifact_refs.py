@@ -21,6 +21,9 @@ PROMPT_PACK_FILE_REFS: frozenset[str] = frozenset(
 )
 
 _SHA256_REF_RE = re.compile(r"(?:sha256:)?([0-9a-fA-F]{64})\Z")
+_EMBEDDED_SHA256_REF_RE = re.compile(
+    r"(?<![0-9a-fA-F])(?:sha256:)?([0-9a-fA-F]{64})(?![0-9a-fA-F])"
+)
 _TYPED_FRAGMENT_RE = re.compile(r"\A(.+\.(?:jsonl?|md|py|txt)):[^/].*\Z")
 
 
@@ -31,6 +34,19 @@ def canonical_sha256_ref(value: object) -> str:
     if match is None:
         raise ValueError("value is not a SHA-256 identity")
     return "sha256:" + match.group(1).lower()
+
+
+def extract_sha256_refs(value: object) -> tuple[str, ...]:
+    """Extract canonical digest identities from a scalar typed evidence ref."""
+
+    return tuple(
+        dict.fromkeys(
+            "sha256:" + match.group(1).lower()
+            for match in _EMBEDDED_SHA256_REF_RE.finditer(
+                str(value or "").strip()
+            )
+        )
+    )
 
 
 def normalize_artifact_ref(ref: object) -> str:

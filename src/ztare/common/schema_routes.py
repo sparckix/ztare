@@ -531,6 +531,11 @@ CONSEQUENCE_CONTRACTS: tuple[ConsequenceContract, ...] = (
                 "bounded_search_fallback",
             ),
             OutcomeTransition(
+                "depth_bound_exhausted",
+                "ztare.worldmodel.planner:pursue_goal",
+                "depth_bound_fallback",
+            ),
+            OutcomeTransition(
                 "projected_frontier_exhausted",
                 "ztare.worldmodel.planner:pursue_goal",
                 "projection_frontier_exhausted_fallback",
@@ -634,6 +639,45 @@ CONSEQUENCE_CONTRACTS: tuple[ConsequenceContract, ...] = (
             compatibility_relation=(
                 "every task outcome reaches success, continued search, or an "
                 "explicit adapter diagnostic"
+            ),
+        ),
+    ),
+    ConsequenceContract(
+        contract_id="target_predicate_replay_outcome_totality.v1",
+        producer_symbol=(
+            "ztare.leanmill.target_predicate_replay:"
+            "evaluate_target_predicate_consequence"
+        ),
+        outcomes=tuple(
+            OutcomeTransition(
+                outcome,
+                "ztare.leanmill.target_predicate_replay:"
+                "consume_target_predicate_consequence",
+                target_state,
+            )
+            for outcome, target_state in (
+                ("overlap", "prior_art_overlap_detected"),
+                ("unknown", "prior_art_target_status_unknown"),
+            )
+        ),
+        identity=GoverningIdentity(
+            job=(
+                "replay a frozen objective predicate on one source-bound "
+                "retrieved example"
+            ),
+            owner="post-freeze prior-art interpretation boundary",
+            lifecycle="one objective epoch and one retrieved example identity",
+            authority=(
+                "example-level overlap or unknown only; no corpus completeness, "
+                "objective credit, task discharge, or campaign-closing authority"
+            ),
+            equality_relation=(
+                "target-predicate contract digest, retrieved-example digest, "
+                "and deterministic adapter receipt"
+            ),
+            compatibility_relation=(
+                "contract and example name one registered adapter; every result "
+                "enters overlap or unknown interpretation state"
             ),
         ),
     ),

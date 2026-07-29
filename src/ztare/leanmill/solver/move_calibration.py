@@ -162,7 +162,21 @@ def _score_ratified_default() -> bool:
 # are inadmissible for est_p_close. This is the `apparatus_certificate` rule — "a negative is inadmissible
 # without calibration" — applied to the LEARNING DATA itself, forward AND retroactively. Default-ON (a poisoned
 # prior is a bug); `ZTARE_LEANMILL_CALIBRATION_ADMISSIBLE=0` reverts to the legacy count-everything aggregation.
-_APPARATUS_FAILURE_CLASSES = ("parse_error", "timeout")
+_APPARATUS_FAILURE_CLASSES = (
+    "parse_error",
+    "timeout",
+    "capability_unavailable",
+    "checker_unavailable",
+    "toolchain_unavailable",
+)
+
+# Carrier availability is an identity boundary, independent of the particular
+# telemetry consumer.  Modern writers stamp ``carrier_live=0`` or an
+# ``inadmissible*`` outcome.  Older positive-control failures predate that
+# column discipline and survive as ``outcome=harness_dead`` with NULL health.
+# All of those rows describe an unavailable instrument rather than an observed
+# move miss, so every calibration reader must apply this one predicate.
+_CARRIER_UNAVAILABLE_OUTCOMES = ("harness_dead", "carrier_dead", "provider_dead")
 
 # RE-BASELINE CUTOFF (operator: "the cutoff is essentially from yesterday when we fixed the bug"). The apparatus
 # materially changed at the carrier-probe fix (2026-06-08) + the REPL-toolchain / cold-Mathlib-timeout fix
@@ -189,6 +203,29 @@ def _has_column(con: "sqlite3.Connection", table: str, col: str) -> bool:
         return False
 
 
+def _carrier_admissibility_terms(con: "sqlite3.Connection") -> "tuple[list[str], list]":
+    """SQL terms selecting attempts made by an available carrier.
+
+    The predicate is schema-tolerant for legacy databases.  Explicit health is
+    authoritative when present; typed inadmissible outcomes and the legacy
+    ``harness_dead`` spelling cover rows whose health field was left NULL.
+    """
+    where: list[str] = []
+    params: list = []
+    if _has_column(con, "attempts", "error_class"):
+        where.append("COALESCE(error_class,'none') NOT IN (%s)" %
+                     ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
+        params.extend(_APPARATUS_FAILURE_CLASSES)
+    if _has_column(con, "attempts", "carrier_live"):
+        where.append("COALESCE(carrier_live, 1) != 0")
+    if _has_column(con, "attempts", "outcome"):
+        where.append("LOWER(COALESCE(outcome,'')) NOT LIKE 'inadmissible%'")
+        where.append("LOWER(COALESCE(outcome,'')) NOT IN (%s)" %
+                     ",".join("?" * len(_CARRIER_UNAVAILABLE_OUTCOMES)))
+        params.extend(_CARRIER_UNAVAILABLE_OUTCOMES)
+    return where, params
+
+
 def _admissibility_clause(con: "sqlite3.Connection", effective: bool) -> "tuple[list[str], list, bool]":
     """The ONE attempts-DB admissibility WHERE (re-baseline date + apparatus-failure hygiene + dynamic
     carrier-liveness). Returns (where_terms, params, effective_after_migration_check) — shared by the per-move
@@ -199,10 +236,10 @@ def _admissibility_clause(con: "sqlite3.Connection", effective: bool) -> "tuple[
     params: "list" = []
     if _admissible_filter_on() and _has_column(con, "attempts", "attempt_at"):
         where.append("attempt_at >= ?"); params.append(_admissible_since())
-        where.append("COALESCE(error_class,'none') NOT IN (%s)" % ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
-        params.extend(_APPARATUS_FAILURE_CLASSES)
-    if _admissible_filter_on() and _has_column(con, "attempts", "carrier_live"):
-        where.append("COALESCE(carrier_live, 1) != 0")
+    if _admissible_filter_on():
+        carrier_where, carrier_params = _carrier_admissibility_terms(con)
+        where.extend(carrier_where)
+        params.extend(carrier_params)
     return where, params, effective
 
 
@@ -556,6 +593,10 @@ def exogenous_move_telemetry(db_path: str | Path, run_tag: str | None = None,
         with sqlite3.connect(str(db_path)) as con:
             if not _has_column(con, "attempts", "move"):
                 return {"by_move": {}, "headline": {"promotable": [], "tripwire_false_ratifications": []}}
+            if _admissible_filter_on():
+                carrier_where, carrier_params = _carrier_admissibility_terms(con)
+                where.extend(carrier_where)
+                params.extend(carrier_params)
             rat_sel = "COALESCE(ratified,-1)" if _has_column(con, "attempts", "ratified") else "-1"
             wc_sel = "COALESCE(wallclock_s,0)" if _has_column(con, "attempts", "wallclock_s") else "0"
             rows = con.execute(

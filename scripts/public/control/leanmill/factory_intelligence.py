@@ -4771,12 +4771,12 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
                          f"over `{d.get('closures')}` closure(s) across `{d.get('campaigns')}` campaign(s)")
         lines.extend([
             "",
-            "| campaign | domain | closures | first TTC (s) | mean TTC (s) | p95 TTC (s) | first cost-to-close (s) | span (s) |",
+            "| campaign | domain | closures | first launch-to-close (s) | mean launch-to-close (s) | p95 launch-to-close (s) | first cost-to-close (s) | span (s) |",
             "| --- | --- | --- | --- | --- | --- | --- | --- |",
         ])
         for rt in sorted(cct["campaigns"]):
             c = cct["campaigns"][rt]
-            ttc = c.get("time_to_closure_s") or {}
+            ttc = c.get("wall_s") or {}
             ctc = c.get("cost_to_closure_s") or {}
             lines.append(f"| `{rt}` | {c.get('domain')} | {c.get('closures')} | {ttc.get('first')} | "
                          f"{ttc.get('mean')} | {ttc.get('p95')} | {ctc.get('first')} | {c.get('span_s')} |")

@@ -1,0 +1,165 @@
+{
+  "schema": "axiompack.jacobian_gauge_minimal_second_jet.v1",
+  "status": {
+    "mathematical": "proved",
+    "kernel_certificate": "closed",
+    "historical_priority": "unconfirmed"
+  },
+  "claim": {
+    "family": "normalized degree-three to degree-four quotient family",
+    "equation": "R2 = DF0*Y + X_K(F0)",
+    "source_lift_ideals": [
+      "U in (v,t)",
+      "V in (t,v^2)"
+    ],
+    "target_gauge": "arbitrary polynomial Hamiltonian field",
+    "minimum_source_component_degree": 5,
+    "scope": "second parameter jet"
+  },
+  "filtered_coordinate": {
+    "C": "4*P^3-P^2-18*P*Q+27*Q^2+4*Q",
+    "pullback": "4*gamma^3-9*gamma^2*w^2+6*gamma^2*w-gamma^2",
+    "pullback_sha256": "226c80a1fc899b5c746b7d57119145bf8c26d77447bf6a6aec11cab27239e367",
+    "quadratic_relation": "27*Q^2=C+(18*P-4)*Q-4*P^3+P^2",
+    "normal_form": "A(P,C)+Q*B(P,C)",
+    "normal_degrees": {
+      "P^a*C^c": "4*a+6*c",
+      "Q*P^a*C^c": "6+4*a+6*c"
+    },
+    "scalar_window_8": [
+      "1",
+      "P",
+      "P^2",
+      "Q",
+      "C"
+    ],
+    "scalar_window_10": [
+      "1",
+      "P",
+      "P^2",
+      "Q",
+      "P*Q",
+      "C",
+      "P*C"
+    ],
+    "hamiltonian_basis_mod_constants": [
+      "P",
+      "Q",
+      "P^2",
+      "P*Q",
+      "Q^2",
+      "P^3",
+      "P^2*Q"
+    ]
+  },
+  "lower_certificate": {
+    "source_column_count": 27,
+    "target_column_count": 7,
+    "matrix_rank": 34,
+    "augmented_rank": 35,
+    "coefficient_row_count": 98,
+    "matrix_sha256": "3e1f80cf7ae3de60b4586ca2345d639b6f6162ac09201dc843f32365d05fa082",
+    "rhs_sha256": "6d8f4e16b758e28f2089d52f0bcdcbcc904bb3e7c8e958f87cbd12cd92e825e6",
+    "dual_residual_pairing": 18,
+    "dual_support": [
+      {
+        "component": 0,
+        "v_degree": 0,
+        "t_degree": 4,
+        "coefficient": -18
+      },
+      {
+        "component": 0,
+        "v_degree": 0,
+        "t_degree": 5,
+        "coefficient": 3
+      },
+      {
+        "component": 0,
+        "v_degree": 0,
+        "t_degree": 6,
+        "coefficient": -2
+      },
+      {
+        "component": 0,
+        "v_degree": 4,
+        "t_degree": 4,
+        "coefficient": 42
+      },
+      {
+        "component": 1,
+        "v_degree": 0,
+        "t_degree": 1,
+        "coefficient": -18
+      },
+      {
+        "component": 1,
+        "v_degree": 0,
+        "t_degree": 2,
+        "coefficient": 18
+      },
+      {
+        "component": 1,
+        "v_degree": 0,
+        "t_degree": 3,
+        "coefficient": -18
+      },
+      {
+        "component": 1,
+        "v_degree": 0,
+        "t_degree": 4,
+        "coefficient": 18
+      }
+    ]
+  },
+  "upper_witness": {
+    "hamiltonian": "-P^2*Q/168-179*P*Q/1680+131*Q^2/672",
+    "hamiltonian_field": [
+      "-P^2/168-179*P/1680+131*Q/336",
+      "P*Q/84+179*Q/1680"
+    ],
+    "source_component_degrees": [
+      5,
+      5
+    ],
+    "source_component_sha256": [
+      "2e936a9a6b4b9117b4eb636e1364222001b71180387310993a80b28599868821",
+      "60caa10d8d8c8189361b39e1309dfa5b666146ffb97d0d829adf635ea998da2f"
+    ],
+    "hamiltonian_sha256": "90b22df6e648d680d2d5b886f5c1380094b512c4a4266b8f7bc22ea88f82f7db",
+    "direct_matrix_sha256": "1631a99f591e3da7ed9ab89c7e35cb4347a840c4cd4057ae3bbf88b2066813c2",
+    "direct_rhs_sha256": "0bd7f021f34267b63c6fa48803df15fceca1e66c1ab2f2237fd8500b9c3a1ed0"
+  },
+  "replay": {
+    "script": "gauge_minimal_second_jet.py",
+    "script_sha256": "68210adb74bf34ac57e3224a9509076cb192a805ac4dd6ac933a704c2ac1cfb4",
+    "pencil": "gauge_filtered_coordinate_pencil.md",
+    "pencil_sha256": "8ceefce852990f98150965058ff5be51d8775893cb7ce68ad711b186b5c3eae2"
+  },
+  "ratification": {
+    "target": "AxiomPackJacobianGaugeMinimum.complete_gauge_minimal_second_jet_certificate",
+    "provider_calls": 0,
+    "outcome": "closed",
+    "source_sha256": "dd0d8e17eba75aec9b42b58299f580d862d005ec07a65f2db9bce5f50f988a47",
+    "closure_source_sha256": "dd0d8e17eba75aec9b42b58299f580d862d005ec07a65f2db9bce5f50f988a47",
+    "closure_record_sha256": "198fff79881d699197cfb8e1a808cf247491c1d51153cb55527f4ed9966e4972",
+    "kernel_parity_record_sha256": "2e0e2fc730912ec891ae9b4f99bec80154b69cc139ddd561bc684113adba73ef",
+    "target_signature_sha256": "f69d7fe46b540c0dc463b2711137ea779c1e73b2986e5c51402d027934221230",
+    "closure_file": "ztare_proofs/closures/AxiomPackJacobianGaugeMinimum.complete_gauge_minimal_second_jet_certificate_dd0d8e17eba7.lean",
+    "matched_negated_conclusion_control": "passed",
+    "axiom_allowlist": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "claim_boundary": {
+    "excludes": [
+      "another Jacobian counterexample",
+      "all-order gauge-minimized growth law",
+      "resolution of the two-dimensional Jacobian problem",
+      "historical priority"
+    ],
+    "formalization_note": "Lean checks the component certificate. The arbitrary-normal-form filtration step uses the leading-monomial argument in the pencil rather than one packaged Mathlib multivariate-leading-term theorem."
+  }
+}

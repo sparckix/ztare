@@ -1,7 +1,8 @@
-"""Solver lane library — contract + dispatch + validation primitives.
+"""Namespace for LeanMill proof-search components.
 
-The CLI worker at `scripts/public/control/leanmill/solver_lane_worker.py`
-is a thin dispatcher over this library. New code imports from here.
+Import concrete submodules directly.  The package initializer is deliberately
+inert so governance utilities under this namespace do not import proof-search
+carriers, provider routing, or research orchestration as a side effect.
 
 Public API:
     from ztare.leanmill.solver.contract import (
@@ -26,12 +27,3 @@ low-confidence goals. The CLI worker still owns validation / MNC / ledger / DB
 writes; the split modules own only the layer dispatch boundary.
 """
 from __future__ import annotations
-from ztare.leanmill.solver.contract import (  # noqa: F401
-    SOLVER_CONTRACT_SCHEMA,
-    DEFAULT_PROVER_CHAIN,
-    DEFAULT_ANTI_PATTERNS,
-    build_solver_action_contract,
-    source_cue_check,
-)
-from ztare.leanmill.solver.deterministic import run_deterministic_layer  # noqa: F401
-from ztare.leanmill.solver.llm_provers import run_llm_layers  # noqa: F401

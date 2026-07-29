@@ -8,11 +8,13 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
+import stat
 import sys
 import threading
 import time
 import uuid
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Sequence
 
 from ztare.common.subscription_agent_runtime import subscription_dispatch_budget_scope
 from ztare.common.leaf_workbench_environment import resolve_leaf_workbench_environment
@@ -28,6 +30,7 @@ from ztare.leanmill.common import (
 )
 from ztare.leanmill.explore_axiom_space import (
     _boundary_completion_covers,
+    _registered_boundary_task_contracts,
     _freeze_theory_conflict_memory,
     _learn_navigation_conflicts,
     _resolve_workbench_evidence_receipts,
@@ -44,6 +47,7 @@ from ztare.leanmill.explore_axiom_space import (
 )
 from ztare.leanmill.exploration_budget import (
     BudgetExceeded,
+    BudgetLedgerResourceUnavailable,
     BudgetReservation,
     ExplorationBudget,
     ExplorationBudgetLedger,
@@ -55,6 +59,7 @@ from ztare.leanmill.frontier_agent_runtime import (
     make_subscription_adapter_reviewer,
     make_subscription_frontier_compiler_roles,
     make_subscription_theory_navigator,
+    make_subscription_witness_constructor,
     scoped_frontier_agent_environment,
 )
 from ztare.leanmill.frontier_campaign import (
@@ -75,11 +80,13 @@ from ztare.leanmill.frontier_blueprint_compiler import (
 )
 from ztare.leanmill.frontier_campaign_definition import load_frontier_campaign_definition
 from ztare.leanmill.lean_consequence_bridge import (
+    audit_lean_consequence_axioms,
     execute_governed_lean_consequence,
     recheck_governed_lean_consequence,
     render_lean_consequence_task,
 )
 from ztare.leanmill.theory_ir import content_hash
+from ztare.leanmill.theory_interest import CHEAP_CONSEQUENCE_EVALUATOR_REF
 from ztare.leanmill.theory_language import TheoryLanguageExpansionRequest
 from ztare.leanmill.theory_lineage_runner import (
     aggregate_host_isolated_theory_lineages,
@@ -89,6 +96,7 @@ from ztare.leanmill.theory_lineage_runner import (
 )
 from ztare.leanmill.theory_lineage_synthesis import (
     build_theory_move_portfolio,
+    compose_selected_language_expansion,
     lineage_request_matches_context,
     lineage_synthesis_input,
     lineage_synthesis_output_schema,
@@ -104,6 +112,14 @@ from ztare.leanmill.theory_campaign_journal import (
 from ztare.leanmill.theory_navigator import run_interactive_theory_navigator
 from ztare.leanmill.typed_axiom_proposal import TypedAxiomProposal
 from ztare.leanmill import work_queue
+from ztare.leanmill.reviewed_construction_campaign import (
+    ReviewedConstructionHooks,
+    advance_reviewed_construction_campaign,
+    bind_recovered_boundary_artifact_feedback as _bind_recovered_boundary_artifact_feedback,
+    pending_cold_witness_boundary_recovery,
+    recovered_boundary_feedback_disposition_program_id,
+    recover_cold_witness_boundary,
+)
 
 
 def _read_durable_navigator_decisions(
@@ -140,17 +156,60 @@ def _durable_navigator_segment(
     call_dir: Path,
     *,
     receipt_index: Mapping[str, Mapping[str, Any]] | None = None,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], tuple[dict[str, Any], ...]]:
-    """Load one immutable call segment with its causal prompt trace."""
+) -> tuple[
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    tuple[dict[str, Any], ...],
+    int,
+    int,
+]:
+    """Load the smallest causally complete suffix of one immutable segment.
+
+    Prompt traces are compact views: a later freeze may name a compiled task
+    whose full contract existed in the host trace but was deliberately
+    truncated before the next model call.  Replaying every decision from the
+    first prompt loses that contract.  Start instead at the last task request
+    needed by the terminal decision, then replay its suffix so the host
+    deterministically reconstructs every full receipt.
+    """
 
     calls, decisions = _read_durable_navigator_decisions(call_dir)
     if not decisions:
-        return calls, decisions, ()
-    prompt_path = call_dir / "000.prompt.txt"
+        return calls, decisions, (), 0, 0
+    successful_calls = [
+        call for call in calls if int(call.get("returncode", 1)) == 0
+    ]
+    if len(successful_calls) != len(decisions):
+        raise ValueError("durable navigator calls and decisions lost alignment")
+
+    start = len(decisions) - 1
+    terminal = decisions[-1]
+    task_ids = terminal.get("task_contract_ids")
+    if terminal.get("decision") == "freeze" and isinstance(task_ids, list) and task_ids:
+        start = next(
+            (
+                index
+                for index in range(len(decisions) - 2, -1, -1)
+                if decisions[index].get("decision") == "request"
+                and str(decisions[index].get("capability_id") or "").split(
+                    "@", 1
+                )[0]
+                == "propose_theory_task"
+            ),
+            start,
+        )
+
+    call_index = int(successful_calls[start]["artifact_index"])
+    prompt_path = call_dir / f"{call_index:03d}.prompt.txt"
     if not prompt_path.is_file():
-        return calls, decisions, ()
+        # Compatibility for old synthetic call archives that predate frozen
+        # prompts. They can replay only from the beginning of the segment.
+        return calls, decisions, (), 0, 0
     marker = "\nCURRENT TRACE:\n"
     prompt = prompt_path.read_text(encoding="utf-8")
+    prompt_digest = str(successful_calls[start].get("prompt_digest") or "")
+    if prompt_digest and prompt_digest != content_hash({"prompt": prompt}):
+        raise ValueError("durable navigator prompt digest mismatch")
     if marker not in prompt:
         raise ValueError("durable navigator prompt has no causal trace")
     trace = json.loads(prompt.rsplit(marker, 1)[1].strip())
@@ -170,7 +229,21 @@ def _durable_navigator_segment(
             if receipt_id in indexed
             else row
         )
-    return calls, decisions, tuple(hydrated)
+    round_offset = max(
+        (
+            int(row["round"]) + 1
+            for row in hydrated
+            if type(row.get("round")) is int
+        ),
+        default=start,
+    )
+    return (
+        calls,
+        decisions[start:],
+        tuple(hydrated),
+        start,
+        round_offset,
+    )
 
 
 def _navigator_receipt_index(run: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
@@ -224,6 +297,8 @@ def _replay_navigator_decisions(
     initial_trace: tuple[Mapping[str, Any], ...] = (),
     prior_agent_turns: int = 0,
     round_offset: int = 0,
+    witness_constructor_fn: Any | None = None,
+    candidate_outcome_memory: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not decisions:
         raise ValueError("durable navigation replay requires a decision")
@@ -250,6 +325,131 @@ def _replay_navigator_decisions(
         prior_agent_turns=prior_agent_turns,
         round_offset=round_offset,
         replay_decisions=tuple(decisions),
+        witness_constructor_fn=witness_constructor_fn,
+        candidate_outcome_memory=candidate_outcome_memory,
+    )
+
+
+def _durable_witness_constructor_for_navigator_segment(
+    definition: FrontierCampaignDefinition,
+    directory: Path,
+    call_dir: Path,
+) -> Any | None:
+    """Rebind one completed sibling constructor to deterministic recovery.
+
+    Directory proximity is only a discovery aid.  The subscription role and
+    constructor wrapper still verify the frozen prompt, result digest, role,
+    agent identity, request identity, and output schema before returning the
+    authored artifact.
+    """
+
+    name = call_dir.name
+    if name == "navigator":
+        instance_id = ""
+    elif name.startswith("navigator."):
+        instance_id = name.removeprefix("navigator.")
+    else:
+        return None
+    sibling_name = (
+        "witness_constructor"
+        if not instance_id
+        else f"witness_constructor.{instance_id}"
+    )
+    sibling = directory / "agent_calls" / sibling_name
+    completed: list[tuple[int, dict[str, Any]]] = []
+    for index in range(1_000):
+        prefix = sibling / f"{index:03d}"
+        call = read_json(prefix.with_suffix(".call.json"), None)
+        if not isinstance(call, Mapping):
+            break
+        if (
+            int(call.get("returncode", 1)) == 0
+            and prefix.with_suffix(".prompt.txt").is_file()
+            and prefix.with_suffix(".stdout.txt").is_file()
+            and prefix.with_suffix(".result.json").is_file()
+        ):
+            completed.append((index, dict(call)))
+    if not completed:
+        return None
+    role = frontier_agent_role(
+        definition,
+        role_name="witness_constructor",
+        repo=directory,
+        artifact_dir=directory / "agent_calls",
+        instance_id=instance_id,
+    )
+    constructor = make_subscription_witness_constructor(role)
+    consumed: set[int] = set()
+
+    def prompt_indexed_replay(request: Mapping[str, Any]) -> Mapping[str, Any]:
+        from ztare.leanmill.witness_construction_boundary import (
+            validate_witness_constructor_request,
+        )
+
+        frozen = validate_witness_constructor_request(request)
+        prompt = prompts.AXIOMPACK_WITNESS_CONSTRUCTOR_PROMPT.format(
+            construction_request_json=json.dumps(
+                frozen, sort_keys=True, separators=(",", ":")
+            )
+        )
+        prompt_digest = content_hash({"prompt": prompt})
+        target = next(
+            (
+                index
+                for index, call in completed
+                if index not in consumed
+                and call.get("prompt_digest") == prompt_digest
+            ),
+            None,
+        )
+        if target is None:
+            raise ValueError(
+                "durable witness constructor has no exact prompt-bound result"
+            )
+        if target < len(role.calls):
+            raise ValueError("durable witness constructor replay order changed")
+        while len(role.calls) < target:
+            skipped_index = len(role.calls)
+            skipped = read_json(
+                sibling / f"{skipped_index:03d}.call.json", {}
+            )
+            role.calls.append(
+                {
+                    **dict(skipped),
+                    "replayed": True,
+                    "skipped_by_prompt_indexed_recovery": True,
+                }
+            )
+        output = constructor(frozen)
+        consumed.add(target)
+        return output
+
+    prompt_indexed_replay.call_role = role  # type: ignore[attr-defined]
+    return prompt_indexed_replay
+
+
+def _navigator_recovery_journal(
+    directory: Path,
+    call_dir: Path,
+    *,
+    epoch: int,
+    context_hash: str,
+) -> IdempotentReplayJournal:
+    """Return the context-owned journal for one derived navigation replay.
+
+    Durable call artifacts authorize reconstruction, but the events emitted
+    while replaying them are a projection rather than campaign history. A
+    context-scoped owner prevents a sparse set of replayed epochs from being
+    mistaken for one contiguous authoritative lineage journal.
+    """
+
+    return IdempotentReplayJournal(
+        directory
+        / "recovery_journals"
+        / (
+            f"{call_dir.name}.epoch-{epoch:03d}."
+            f"{context_hash[:16]}.causal-v2.events.jsonl"
+        )
     )
 
 
@@ -279,7 +479,12 @@ def frontier_agent_role(
             definition.budget.wall_clock_s,
             int(values.get("timeout_seconds") or 300),
         ),
-        visible_workbench=bool(values.get("visible_workbench", False)),
+        visible_workbench=bool(
+            values.get(
+                "visible_workbench",
+                role_name == "witness_constructor",
+            )
+        ),
         web_research=bool(
             values.get("web_research", role_name == "post_freeze_interpreter")
         ),
@@ -944,6 +1149,163 @@ def _record_host_isolated_navigation(
         )
 
 
+def _campaign_construction_candidate_memory(
+    directory: Path,
+    blueprint: FrontierTheoryBlueprint,
+) -> dict[str, Any] | None:
+    """Project all prior exact construction outcomes for the active interface."""
+
+    from ztare.leanmill.theory_adapter_registry import (
+        theory_task_capability_catalog,
+    )
+    from ztare.leanmill.witness_construction_boundary import (
+        GOVERNED_WITNESS_CONSTRUCTION_CAPABILITY,
+        GOVERNED_WITNESS_CONSTRUCTION_ADJUDICATOR,
+        WitnessConstructionCandidateEnvelope,
+        build_witness_candidate_outcome_memory,
+        validate_governed_witness_construction_task_receipt,
+        validate_witness_construction_interface,
+        witness_construction_parameters,
+    )
+
+    interfaces = [
+        row.get("interface")
+        for row in theory_task_capability_catalog(
+            blueprint.adapter_id,
+            adapter_config=dict(blueprint.adapter_config or {}),
+        )
+        if row.get("capability_id")
+        == GOVERNED_WITNESS_CONSTRUCTION_CAPABILITY
+        and isinstance(row.get("interface"), Mapping)
+    ]
+    if not interfaces:
+        return None
+    if len(interfaces) != 1:
+        raise ValueError("active adapter has ambiguous construction interfaces")
+    interface = validate_witness_construction_interface(interfaces[0])
+
+    paths = {
+        path
+        for path in directory.glob("theory_task_discharge*.json")
+        if "consumption" not in path.name
+    }
+    paths.update(
+        directory.glob("boundary_attempts/*/theory_task_discharge.json")
+    )
+    outcomes: dict[tuple[str, str], dict[str, Any]] = {}
+    for path in sorted(paths):
+        bundle = read_json(path, None)
+        if not isinstance(bundle, Mapping):
+            continue
+        bundle_core = {
+            key: item for key, item in bundle.items() if key != "receipt_sha256"
+        }
+        if (
+            bundle.get("schema") != "leanmill.theory_task_discharge.v1"
+            or bundle.get("authority")
+            != "registered_adapter_receipts_host_aggregation"
+            or bundle.get("receipt_sha256") != content_hash(bundle_core)
+            or not isinstance(bundle.get("rows"), list)
+        ):
+            raise ValueError("construction outcome source bundle failed replay")
+        for raw in bundle["rows"]:
+            row = dict(raw)
+            row_core = {
+                key: item for key, item in row.items() if key != "receipt_sha256"
+            }
+            if row.get("receipt_sha256") != content_hash(row_core):
+                raise ValueError("construction outcome row failed replay")
+            contract, receipt = validate_governed_witness_construction_task_receipt(
+                row.get("contract") or {}, row.get("receipt") or {}
+            )
+            if (
+                row.get("source") != "explicit_task"
+                or row.get("contract_sha256") != contract.sha256
+                or contract.adjudicator_id
+                != GOVERNED_WITNESS_CONSTRUCTION_ADJUDICATOR
+            ):
+                continue
+            parameters = witness_construction_parameters(contract)
+            candidate = WitnessConstructionCandidateEnvelope.from_json(
+                parameters["candidate_envelope"]
+            )
+            candidate_row = candidate.to_json()
+            if (
+                candidate.adapter_id != blueprint.adapter_id
+                or candidate.interface_sha256 != interface["interface_sha256"]
+                or candidate.target_config_sha256
+                != interface["target_config_sha256"]
+                or candidate_row["predicate_sha256"]
+                != content_hash(interface["predicate_ir"])
+            ):
+                continue
+            observed = receipt.observed
+            verifier = (
+                observed.get("verifier_observed")
+                if isinstance(observed, Mapping)
+                else None
+            )
+            status = str(
+                observed.get("boundary_status")
+                if isinstance(observed, Mapping)
+                else ""
+            )
+            if status not in {
+                "witness_rejected",
+                "witness_verified",
+                "witness_unavailable",
+            }:
+                continue
+            if not isinstance(verifier, Mapping):
+                raise ValueError("construction outcome lost verifier observations")
+            outcome = {
+                "source_artifact_sha256": candidate_row["artifact_sha256"],
+                "normalized_artifact_sha256": str(
+                    observed.get("normalized_artifact_sha256") or ""
+                ),
+                "boundary_status": status,
+                "verifier_status": str(verifier.get("status") or ""),
+                "observed": dict(verifier),
+                "evidence_refs": list(
+                    dict.fromkeys((contract.sha256, receipt.sha256, *receipt.evidence_refs))
+                ),
+            }
+            key = (
+                outcome["source_artifact_sha256"],
+                outcome["normalized_artifact_sha256"],
+            )
+            prior = outcomes.get(key)
+            if prior is not None:
+                if (
+                    prior["boundary_status"] != outcome["boundary_status"]
+                    or prior["observed"] != outcome["observed"]
+                ):
+                    raise ValueError("construction artifact has conflicting outcomes")
+                prior["evidence_refs"] = list(
+                    dict.fromkeys(prior["evidence_refs"] + outcome["evidence_refs"])
+                )
+            else:
+                outcomes[key] = outcome
+    memory = build_witness_candidate_outcome_memory(
+        adapter_id=blueprint.adapter_id,
+        construction_interface=interface,
+        outcomes=tuple(outcomes.values()),
+    )
+    if not memory["outcomes"]:
+        return None
+    path = directory / (
+        "witness_candidate_outcome_memory."
+        f"{memory['receipt_sha256'][:16]}.json"
+    )
+    prior = read_json(path, None)
+    if isinstance(prior, Mapping):
+        if dict(prior) != memory:
+            raise ValueError("construction candidate memory changed after first fire")
+    else:
+        write_json_atomic(path, memory)
+    return memory
+
+
 def _make_campaign_theory_navigator(
     definition: FrontierCampaignDefinition,
     *,
@@ -953,6 +1315,12 @@ def _make_campaign_theory_navigator(
 ) -> Any:
     """Bind either one warm trace or explicitly host-isolated lineages."""
 
+    active_campaign = read_json(directory / "campaign.json", None)
+    stable_campaign_id = (
+        str((active_campaign.get("packet") or {}).get("campaign_id") or "")
+        if isinstance(active_campaign, Mapping)
+        else ""
+    )
     # A search wave can consist only of a late synthesis call (for example,
     # when a carried boundary survivor needs a new disposition but no leaf is
     # queried).  Navigator call directories therefore do not by themselves
@@ -988,13 +1356,24 @@ def _make_campaign_theory_navigator(
             artifact_dir=directory / "agent_calls",
             instance_id=wave_instance(),
         )
+        constructor_role = frontier_agent_role(
+            definition,
+            role_name="witness_constructor",
+            repo=directory,
+            artifact_dir=directory / "agent_calls",
+            instance_id=wave_instance(),
+        )
+        constructor = make_subscription_witness_constructor(constructor_role)
         return role, make_subscription_theory_navigator(
             role,
             attempt_id=attempt_id,
+            campaign_id=stable_campaign_id,
+            witness_constructor_fn=constructor,
         )
 
     single_role, single = make_single()
     lineage_roles: dict[int, SubscriptionJSONRole] = {}
+    witness_constructor_roles: dict[int, SubscriptionJSONRole] = {}
     synthesis_role: SubscriptionJSONRole | None = None
     reactivated_consumed = False
 
@@ -1007,6 +1386,9 @@ def _make_campaign_theory_navigator(
     ) -> Mapping[str, Any]:
         nonlocal synthesis_role, reactivated_consumed
         count = host_isolated_lineage_count(blueprint)
+        candidate_outcome_memory = _campaign_construction_candidate_memory(
+            directory, blueprint
+        )
         if count == 1:
             for name in (
                 "initial_trace",
@@ -1014,15 +1396,18 @@ def _make_campaign_theory_navigator(
                 "round_offset",
                 "epoch",
                 "prior_conflict_rows",
+                "replay_decisions",
             ):
                 if hasattr(navigator, name):
                     setattr(single, name, getattr(navigator, name))
-            return single(
+            single.candidate_outcome_memory = candidate_outcome_memory  # type: ignore[attr-defined]
+            result = single(
                 context,
                 blueprint,
                 journal,
                 budget_ledger=budget_ledger,
             )
+            return {**dict(result), "search_wave": search_wave}
         if navigator_selection_mode(blueprint) != "theory_program":
             raise ValueError(
                 "host-isolated conjectural lineages require theory_program mode"
@@ -1053,7 +1438,13 @@ def _make_campaign_theory_navigator(
             if row.get("decision") == "deferred_request_reactivated"
             and isinstance(row.get("request"), Mapping)
         ]
-        if reactivated and not reactivated_consumed:
+        if (
+            reactivated
+            and not reactivated_consumed
+            and not isinstance(
+                getattr(navigator, "objective_feedback", None), Mapping
+            )
+        ):
             reactivated_consumed = True
             result = {
                 "schema": "leanmill.reactivated_lineage_requests.v1",
@@ -1073,6 +1464,7 @@ def _make_campaign_theory_navigator(
             }
         else:
             roles: list[SubscriptionJSONRole] = []
+            witness_constructors: list[Any] = []
             for index in range(count):
                 role = lineage_roles.get(index)
                 if role is None:
@@ -1086,6 +1478,20 @@ def _make_campaign_theory_navigator(
                     lineage_roles[index] = role
                 role.budget_ledger = budget_ledger
                 roles.append(role)
+                constructor_role = witness_constructor_roles.get(index)
+                if constructor_role is None:
+                    constructor_role = frontier_agent_role(
+                        definition,
+                        role_name="witness_constructor",
+                        repo=directory,
+                        artifact_dir=directory / "agent_calls",
+                        instance_id=wave_instance(f"lineage-{index:03d}"),
+                    )
+                    witness_constructor_roles[index] = constructor_role
+                constructor_role.budget_ledger = budget_ledger
+                witness_constructors.append(
+                    make_subscription_witness_constructor(constructor_role)
+                )
             preserved_rows = dict(
                 getattr(navigator, "preserved_lineage_rows", {})
             )
@@ -1093,9 +1499,9 @@ def _make_campaign_theory_navigator(
                 index for index in range(count) if index not in preserved_rows
             ]
             lineage_budget_phase = (
-                "expansion"
-                if isinstance(getattr(navigator, "objective_feedback", None), Mapping)
-                else "navigation"
+                _objective_feedback_search_phase(
+                    getattr(navigator, "objective_feedback", None)
+                )
             )
             rounds_by_lineage: int | tuple[int, ...] = max(1, total_rounds // count)
             if budget_ledger is not None:
@@ -1160,7 +1566,11 @@ def _make_campaign_theory_navigator(
                 agent_fns=roles,
                 journal_root=directory / "lineage_journals",
                 attempt_id=attempt_id,
-                campaign_id="campaign:" + blueprint.blueprint_id.split(":", 1)[1][:24],
+                campaign_id=(
+                    stable_campaign_id
+                    or "campaign:"
+                    + blueprint.blueprint_id.split(":", 1)[1][:24]
+                ),
                 max_rounds=rounds_by_lineage,
                 max_finalists_per_lineage=max(1, total_finalists // count),
                 budget_ledger=budget_ledger,
@@ -1170,6 +1580,8 @@ def _make_campaign_theory_navigator(
                 initial_traces=branch_traces,
                 preserved_lineage_rows=preserved_rows,
                 budget_phase=lineage_budget_phase,
+                witness_constructor_fns=witness_constructors,
+                candidate_outcome_memory=candidate_outcome_memory,
             )
             recovered_requests = tuple(
                 getattr(navigator, "recovered_lineage_requests", ())
@@ -1354,6 +1766,13 @@ def _make_campaign_theory_navigator(
                     result, objective_contract=objective_contract
                 )
                 write_json_atomic(synthesis_input_path, synthesis_input)
+            _persist_bounded_reviewed_construction_artifact(
+                _lineage_synthesis_input_owner_path(
+                    directory, synthesis_input.get("input_sha256")
+                ),
+                synthesis_input,
+                label="lineage synthesis input",
+            )
             if synthesis_role is None:
                 synthesis_role = frontier_agent_role(
                     definition,
@@ -1367,7 +1786,7 @@ def _make_campaign_theory_navigator(
             before_calls = synthesis_role.provider_call_count
             used = 0
             synthesis_phase = (
-                "expansion"
+                _objective_feedback_search_phase(objective_feedback)
                 if isinstance(objective_feedback, Mapping)
                 else (
                     "boundary"
@@ -1471,8 +1890,22 @@ def _make_campaign_theory_navigator(
                     synthesis,
                 )
                 result = {
-                    **result,
+                    **{
+                        key: value
+                        for key, value in result.items()
+                        if key
+                        not in {
+                            "lineage_synthesis_budget_stop",
+                            "lineage_synthesis_failure",
+                        }
+                    },
                     "lineage_synthesis": synthesis,
+                    "lineage_synthesis_search_wave": search_wave,
+                    "lineage_synthesis_frozen_program_ids": [
+                        str(row.get("program_id") or "")
+                        for row in synthesis_input.get("frozen_programs") or ()
+                        if isinstance(row, Mapping) and row.get("program_id")
+                    ],
                     "provider_calls": int(result.get("provider_calls", 0)) + used,
                 }
             else:
@@ -1530,9 +1963,11 @@ def _make_campaign_theory_navigator(
         nonlocal search_wave, single_role, single, synthesis_role
         search_wave += 1
         lineage_roles.clear()
+        witness_constructor_roles.clear()
         synthesis_role = None
         clear_transient_lineage_state()
         single_role, single = make_single()
+        navigator.call_role = single_role  # type: ignore[attr-defined]
         navigator.search_wave = search_wave  # type: ignore[attr-defined]
 
     navigator.begin_search_wave = begin_search_wave  # type: ignore[attr-defined]
@@ -1543,7 +1978,18 @@ def _make_campaign_theory_navigator(
         nonlocal search_wave, single_role, single, synthesis_role
         if target_epoch != source_epoch + 1:
             raise ValueError("navigator context epochs must advance by one")
-        roles = [single_role, *lineage_roles.values()]
+        single_constructor = getattr(single, "witness_constructor_fn", None)
+        single_constructor_role = getattr(single_constructor, "call_role", None)
+        roles = [
+            single_role,
+            *(
+                [single_constructor_role]
+                if single_constructor_role is not None
+                else []
+            ),
+            *lineage_roles.values(),
+            *witness_constructor_roles.values(),
+        ]
         if synthesis_role is not None:
             roles.append(synthesis_role)
         for role in roles:
@@ -1556,9 +2002,11 @@ def _make_campaign_theory_navigator(
             role.calls.clear()
         search_wave += 1
         lineage_roles.clear()
+        witness_constructor_roles.clear()
         synthesis_role = None
         clear_transient_lineage_state()
         single_role, single = make_single()
+        navigator.call_role = single_role  # type: ignore[attr-defined]
         navigator.search_wave = search_wave  # type: ignore[attr-defined]
         navigator.epoch = target_epoch  # type: ignore[attr-defined]
 
@@ -1665,6 +2113,9 @@ def _prepend_predecessor_synthesis(
             "theory_language_expansion_requests": list(
                 synthesis_input.get("theory_language_requests") or ()
             ),
+            "carried_evidence_receipts": list(
+                synthesis_input.get("carried_evidence_receipts") or ()
+            ),
             "lineage_synthesis": synthesis,
             "provider_calls": used,
             "cold_view": True,
@@ -1729,6 +2180,13 @@ def run_frontier_campaign_definition(
             synthesis_input=predecessor_input,
             synthesis_role=predecessor_role,
         )
+
+    def initialize_attempt_signer(attempt: Path) -> None:
+        """Persist recovery authority before any campaign artifact or call."""
+
+        _write_secret(attempt / "private" / "campaign_signer.pem", private)
+        write_text_atomic(attempt / "campaign_signer_public.pem", public)
+
     try:
         explore_axiom_space(
             definition,
@@ -1746,6 +2204,7 @@ def run_frontier_campaign_definition(
             navigator_fn=navigator,
             campaign_manifest=campaign_manifest,
             navigation_ownership_fn=_initial_frontier_attempt_owner,
+            attempt_initializer=initialize_attempt_signer,
         )
     finally:
         budget_row = read_json(directory / "budget.json", None)
@@ -1762,6 +2221,1038 @@ def run_frontier_campaign_definition(
         if directory.is_dir() and not public_path.exists():
             write_text_atomic(public_path, public)
     return directory
+
+
+def _validated_adapter_forge_completion_row(
+    value: Mapping[str, Any], *, gap_id: str
+) -> dict[str, Any]:
+    """Replay one base or subordinate Forge completion."""
+
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_CONSTRUCTION_HOST_CONFORMANCE_CONTRACT,
+        ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+        _validated_adapter_forge_completion,
+    )
+
+    row = dict(value)
+    host_contract = str(row.get("host_conformance_contract") or "")
+    if "recovery_attempt_index" not in row:
+        if host_contract not in {
+            ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+            ADAPTER_FORGE_CONSTRUCTION_HOST_CONFORMANCE_CONTRACT,
+        }:
+            raise ValueError("AdapterForge completion has an unknown host contract")
+        return _validated_adapter_forge_completion(
+            row,
+            gap_id=gap_id,
+            host_conformance_contract=host_contract,
+        )
+    core = {
+        key: item for key, item in row.items() if key != "completion_sha256"
+    }
+    if (
+        row.get("schema") != "leanmill.adapter_forge_completion.v1"
+        or row.get("gap_id") != gap_id
+        or host_contract != ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT
+        or row.get("completion_sha256") != content_hash(core)
+    ):
+        raise ValueError("AdapterForge recovery completion crossed gap identity")
+    return row
+
+
+def _adapter_forge_recovery_root(directory: Path, gap_id: str) -> Path:
+    from ztare.leanmill.adapter_forge import adapter_forge_attempt_directory
+
+    return adapter_forge_attempt_directory(directory, gap_id) / "recovery_attempts"
+
+
+def _read_adapter_forge_lifecycle_completion(
+    directory: Path,
+    gap: Any,
+    *,
+    migrate_legacy: bool = False,
+) -> dict[str, Any] | None:
+    """Read the latest causally chained completion for one gap.
+
+    The AdapterForge module owns the base gap/host-contract evaluation.  The
+    campaign runner owns subordinate recovery attempts because their identity
+    also includes the source epoch, workspace policy, and agent-session policy.
+    """
+
+    from ztare.leanmill.adapter_forge import read_adapter_forge_completion
+
+    current = read_adapter_forge_completion(
+        directory, gap, migrate_legacy=migrate_legacy
+    )
+    root = _adapter_forge_recovery_root(directory, gap.gap_id)
+    candidates: dict[
+        int, tuple[Path, dict[str, Any], dict[str, Any] | None]
+    ] = {}
+    recovery_read_budget = {"files": 0, "bytes": 0}
+    directory_flags = os.O_RDONLY
+    if hasattr(os, "O_DIRECTORY"):
+        directory_flags |= os.O_DIRECTORY
+    if hasattr(os, "O_CLOEXEC"):
+        directory_flags |= os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        directory_flags |= os.O_NOFOLLOW
+    try:
+        root_fd = os.open(root, directory_flags)
+    except FileNotFoundError:
+        root_fd = None
+    except OSError as exc:
+        raise ValueError("AdapterForge recovery root is unavailable") from exc
+    if root_fd is not None:
+        try:
+            visited = 0
+            with os.scandir(root_fd) as entries:
+                for entry in entries:
+                    visited += 1
+                    if visited > _MAX_REVIEWED_CONSTRUCTION_DIRECTORY_ENTRIES:
+                        raise ValueError(
+                            "AdapterForge recovery directory-entry ceiling exceeded"
+                        )
+                    match = re.fullmatch(r"attempt-(\d+)", entry.name)
+                    if match is None:
+                        continue
+                    if entry.is_symlink() or not entry.is_dir(follow_symlinks=False):
+                        raise ValueError(
+                            "AdapterForge recovery owner is not a directory"
+                        )
+                    if (
+                        len(candidates)
+                        >= _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES
+                    ):
+                        raise ValueError(
+                            "AdapterForge recovery candidate ceiling exceeded"
+                        )
+                    try:
+                        attempt_fd = os.open(
+                            entry.name,
+                            directory_flags,
+                            dir_fd=root_fd,
+                        )
+                    except OSError as exc:
+                        raise ValueError(
+                            "AdapterForge recovery owner is unavailable"
+                        ) from exc
+                    try:
+                        row = _read_bounded_reviewed_construction_artifact_at(
+                            attempt_fd,
+                            "adapter_forge_completion.json",
+                            label="AdapterForge recovery completion",
+                            aggregate_budget=recovery_read_budget,
+                        )
+                        transition = _read_bounded_reviewed_construction_artifact_at(
+                            attempt_fd,
+                            "adapter_forge_recovery_transition.json",
+                            label="AdapterForge recovery transition",
+                            aggregate_budget=recovery_read_budget,
+                        )
+                    finally:
+                        os.close(attempt_fd)
+                    if row is None:
+                        continue
+                    completion = _validated_adapter_forge_completion_row(
+                        row, gap_id=gap.gap_id
+                    )
+                    index = int(match.group(1))
+                    if int(completion.get("recovery_attempt_index", -1)) != index:
+                        raise ValueError(
+                            "AdapterForge recovery index changed identity"
+                        )
+                    path = root / entry.name / "adapter_forge_completion.json"
+                    owner = str(completion.get("artifact_owner") or "")
+                    if owner != str(path.parent.relative_to(directory)):
+                        raise ValueError(
+                            "AdapterForge recovery artifact owner changed"
+                        )
+                    if index in candidates:
+                        raise ValueError(
+                            "AdapterForge recovery attempt index is ambiguous"
+                        )
+                    candidates[index] = (path, completion, transition)
+        finally:
+            os.close(root_fd)
+    if current is None:
+        if candidates:
+            raise ValueError("AdapterForge recovery completion has no base attempt")
+        return None
+    current = _validated_adapter_forge_completion_row(
+        current, gap_id=gap.gap_id
+    )
+    remaining = dict(candidates)
+    while True:
+        successors = [
+            (index, path, candidate, transition)
+            for index, (path, candidate, transition) in remaining.items()
+            if candidate.get("predecessor_completion_sha256")
+            == current.get("completion_sha256")
+        ]
+        if len(successors) > 1:
+            raise ValueError("AdapterForge recovery predecessor has multiple successors")
+        if not successors:
+            break
+        index, path, candidate, transition = successors[0]
+        owner = path.parent
+        if not isinstance(transition, Mapping):
+            raise ValueError("AdapterForge recovery transition is missing")
+        transition, _workspace = _validate_adapter_forge_recovery_transition(
+            directory,
+            owner=owner,
+            transition=transition,
+            gap=gap,
+            predecessor=current,
+            recovery_attempt_index=index,
+            require_workspace=False,
+        )
+        if (
+            candidate.get("recovery_transition_receipt_sha256")
+            != transition.get("receipt_sha256")
+            or candidate.get("recovery_transition") != transition
+        ):
+            raise ValueError("AdapterForge recovery transition does not replay")
+        recovery_input = candidate.get("recovery_input")
+        if not isinstance(recovery_input, Mapping):
+            raise ValueError("AdapterForge recovery input is missing")
+        input_core = {
+            key: item
+            for key, item in recovery_input.items()
+            if key != "receipt_sha256"
+        }
+        if (
+            recovery_input.get("receipt_sha256") != content_hash(input_core)
+            or recovery_input.get("gap_id") != gap.gap_id
+            or recovery_input.get("recovery_transition_receipt_sha256")
+            != transition.get("receipt_sha256")
+        ):
+            raise ValueError("AdapterForge recovery input does not replay")
+        current = candidate
+        remaining.pop(index)
+    return current
+
+
+def _adapter_forge_artifact_owner(
+    directory: Path, completion: Mapping[str, Any]
+) -> Path:
+    """Resolve the immutable artifact owner named by one Forge completion."""
+
+    from ztare.leanmill.adapter_forge import adapter_forge_attempt_directory
+
+    gap_id = str(completion.get("gap_id") or "")
+    host_contract = str(completion.get("host_conformance_contract") or "")
+    base = adapter_forge_attempt_directory(
+        directory,
+        gap_id,
+        host_conformance_contract=host_contract,
+    ).resolve()
+    supplied = str(completion.get("artifact_owner") or "")
+    if not supplied:
+        return base
+    owner = (directory / supplied).resolve()
+    recovery_root = (base / "recovery_attempts").resolve()
+    if not owner.is_relative_to(recovery_root):
+        raise ValueError("AdapterForge artifact owner escaped its gap attempt")
+    persisted = _read_bounded_reviewed_construction_artifact(
+        owner / "adapter_forge_completion.json",
+        label="AdapterForge artifact-owner completion",
+    )
+    if persisted is None or persisted != dict(completion):
+        raise ValueError("AdapterForge artifact owner lacks the exact completion")
+    return owner
+
+
+def _adapter_workspace_input_manifest(workspace: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for path in sorted(workspace.rglob("*")):
+        if path.is_symlink():
+            raise ValueError("AdapterForge recovery workspace contains a symlink")
+        if not path.is_file():
+            continue
+        rows.append(
+            {
+                "path": str(path.relative_to(workspace)),
+                "bytes_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+        )
+    return rows
+
+
+def _adapter_forge_frozen_input_manifest(
+    workspace: Path,
+) -> list[dict[str, Any]]:
+    """Bind host-owned staged inputs that a coding leaf may only read."""
+
+    frozen_names = {
+        "adapter_gap.json",
+        "blueprint.json",
+        "context_fixture.json",
+        "evidence_context.json",
+        "evidence_materialization.json",
+        "formal_context.json",
+    }
+
+    def is_host_contract(label: str) -> bool:
+        path = Path(label)
+        return (
+            len(path.parts) == 1
+            and path.name.endswith(("_contract.json", "_interface.json"))
+        )
+
+    return [
+        row
+        for row in _adapter_workspace_input_manifest(workspace)
+        if (
+            row["path"] in frozen_names
+            or str(row["path"]).startswith("evidence/")
+            or is_host_contract(str(row["path"]))
+        )
+    ]
+
+
+def _verify_adapter_forge_frozen_inputs(
+    workspace: Path, manifest: Sequence[Mapping[str, Any]]
+) -> None:
+    expected = {
+        str(row.get("path") or ""): str(row.get("bytes_sha256") or "")
+        for row in manifest
+        if isinstance(row, Mapping)
+    }
+    if not expected:
+        raise ValueError("AdapterForge frozen input manifest is empty")
+    observed: dict[str, str] = {}
+    for label in expected:
+        candidate = workspace / label
+        path = candidate.resolve()
+        if (
+            Path(label).is_absolute()
+            or ".." in Path(label).parts
+            or candidate.is_symlink()
+            or not path.is_relative_to(workspace.resolve())
+            or not path.is_file()
+        ):
+            raise ValueError("AdapterForge frozen input escaped or disappeared")
+        observed[label] = hashlib.sha256(path.read_bytes()).hexdigest()
+    if observed != expected:
+        raise ValueError("AdapterForge coding leaf changed a frozen host input")
+
+
+def _copy_adapter_workspace(source: Path, target: Path) -> None:
+    """Copy an allowed workspace snapshot without carrying filesystem links."""
+
+    if not source.is_dir():
+        raise ValueError("AdapterForge structural repair workspace is absent")
+    if target.exists() and any(target.iterdir()):
+        raise ValueError("AdapterForge recovery workspace is already populated")
+    target.mkdir(parents=True, exist_ok=True)
+    for path in sorted(source.rglob("*")):
+        if path.is_symlink():
+            raise ValueError("AdapterForge source workspace contains a symlink")
+        destination = target / path.relative_to(source)
+        if path.is_dir():
+            destination.mkdir(parents=True, exist_ok=True)
+        elif path.is_file():
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(path, destination)
+
+
+def _next_adapter_forge_agent_instance(directory: Path) -> str:
+    indices = []
+    for role in ("adapter_forge", "adapter_reviewer"):
+        for path in (directory / "agent_calls").glob(f"{role}.attempt-*"):
+            suffix = path.name.rsplit("-", 1)[-1]
+            if suffix.isdigit():
+                indices.append(int(suffix))
+    return f"attempt-{1 + max(indices, default=0):03d}"
+
+
+def _adapter_forge_rejection_receipt(
+    completion: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    receipt = completion.get("quarantine_receipt")
+    if not isinstance(receipt, Mapping):
+        return None
+    receipt_core = {
+        key: item for key, item in receipt.items() if key != "receipt_sha256"
+    }
+    host = receipt.get("host_conformance")
+    if (
+        receipt.get("receipt_sha256") != content_hash(receipt_core)
+        or not isinstance(host, Mapping)
+        or host.get("ok") is not False
+    ):
+        return None
+    host_core = {
+        key: item for key, item in host.items() if key != "receipt_sha256"
+    }
+    if host.get("receipt_sha256") != content_hash(host_core):
+        raise ValueError("AdapterForge host rejection receipt changed")
+    return dict(host)
+
+
+def _validate_adapter_forge_recovery_transition(
+    directory: Path,
+    *,
+    owner: Path,
+    transition: Mapping[str, Any],
+    gap: Any,
+    predecessor: Mapping[str, Any],
+    recovery_attempt_index: int,
+    require_workspace: bool = True,
+) -> tuple[dict[str, Any], Path]:
+    """Replay the gap/epoch, workspace, and session policy of one transition."""
+
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_REJECTION_PRE_REVIEW_LEAKAGE,
+        ADAPTER_FORGE_REJECTION_REPAIRABLE_CONTRACT,
+    )
+
+    rejection = _adapter_forge_rejection_receipt(predecessor)
+    if rejection is None:
+        raise ValueError("AdapterForge recovery predecessor is not a host rejection")
+    rejection_class = str(rejection.get("rejection_class") or "")
+    if rejection_class == ADAPTER_FORGE_REJECTION_PRE_REVIEW_LEAKAGE:
+        recovery_mode = "fresh_cold_reauthor"
+        prior_workspace_reused = False
+    elif rejection_class == ADAPTER_FORGE_REJECTION_REPAIRABLE_CONTRACT:
+        recovery_mode = "typed_structural_repair"
+        prior_workspace_reused = True
+    else:
+        raise ValueError("AdapterForge rejection has no automatic recovery route")
+    row = dict(transition)
+    core = {key: item for key, item in row.items() if key != "receipt_sha256"}
+    request = gap.primitive_semantics_contract.get("theory_language_request") or {}
+    workspace_label = str(row.get("workspace") or "")
+    workspace = (directory / workspace_label).resolve()
+    owner_resolved = owner.resolve()
+    def valid_manifest(value: Any) -> bool:
+        valid = isinstance(value, list) and bool(value)
+        seen: set[str] = set()
+        for artifact in value if isinstance(value, list) else ():
+            if not isinstance(artifact, Mapping):
+                valid = False
+                break
+            label = str(artifact.get("path") or "")
+            digest = str(artifact.get("bytes_sha256") or "")
+            if (
+                not label
+                or label in seen
+                or Path(label).is_absolute()
+                or ".." in Path(label).parts
+                or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+            ):
+                valid = False
+                break
+            seen.add(label)
+        return valid
+
+    manifest = row.get("workspace_input_manifest")
+    frozen_manifest = row.get("frozen_input_manifest")
+    manifest_ok = valid_manifest(manifest)
+    frozen_manifest_ok = valid_manifest(frozen_manifest) and {
+        (str(item["path"]), str(item["bytes_sha256"]))
+        for item in frozen_manifest
+    }.issubset(
+        {
+            (str(item["path"]), str(item["bytes_sha256"]))
+            for item in manifest
+        }
+        if isinstance(manifest, list)
+        else set()
+    )
+    if (
+        row.get("schema") != "leanmill.adapter_forge_recovery_transition.v1"
+        or row.get("receipt_sha256") != content_hash(core)
+        or row.get("gap_id") != gap.gap_id
+        or row.get("request_id") != str(request.get("request_id") or "")
+        or row.get("context_hash")
+        != str(request.get("source_context_hash") or "")
+        or int(row.get("source_epoch", -1))
+        != int(request.get("source_epoch", 0))
+        or row.get("predecessor_completion_sha256")
+        != predecessor.get("completion_sha256")
+        or row.get("host_rejection_receipt_sha256")
+        != rejection.get("receipt_sha256")
+        or row.get("rejection_class") != rejection_class
+        or row.get("recovery_mode") != recovery_mode
+        or int(row.get("recovery_attempt_index", -1))
+        != int(recovery_attempt_index)
+        or not workspace_label
+        or not workspace.is_relative_to(owner_resolved)
+        or (require_workspace and not workspace.is_dir())
+        or row.get("prior_proposal_bytes_available")
+        is not prior_workspace_reused
+        or row.get("prior_proposal_resubmission_allowed") is not False
+        or row.get("prior_workspace_reused") is not prior_workspace_reused
+        or row.get("prior_agent_identity_reused") is not False
+        or row.get("prior_agent_calls_replayed") is not False
+        or re.fullmatch(r"attempt-\d+", str(row.get("agent_instance_id") or ""))
+        is None
+        or row.get("budget_phase") != "expansion"
+        or row.get("authority") != "deterministic_campaign_lifecycle"
+        or not manifest_ok
+        or not frozen_manifest_ok
+        or (
+            require_workspace
+            and frozen_manifest != _adapter_forge_frozen_input_manifest(workspace)
+        )
+    ):
+        raise ValueError("AdapterForge recovery transition changed identity")
+    return row, workspace
+
+
+def _adapter_forge_completion_from_receipt(
+    *,
+    directory: Path,
+    gap_id: str,
+    receipt: Mapping[str, Any],
+    provider_calls: int,
+    artifact_owner: Path,
+    recovery_attempt_index: int,
+    predecessor_completion_sha256: str,
+    recovery_transition: Mapping[str, Any],
+    recovery_input: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Materialize a subordinate completion using the base completion algebra."""
+
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+    )
+
+    host = receipt.get("host_conformance") or {}
+    review = receipt.get("independent_review") or {}
+    host_unavailable = bool(
+        isinstance(host, Mapping)
+        and host.get("ok") is False
+        and host.get("outcome") == "unavailable"
+    )
+    if host_unavailable:
+        reason = "host_capability_unavailable:" + str(
+            host.get("reason_code") or "unspecified_host_resource"
+        )
+    elif isinstance(host, Mapping) and host.get("ok") is False:
+        reason = "host_conformance_rejected:" + str(
+            host.get("reason") or "unspecified_host_rejection"
+        )
+    elif isinstance(review, Mapping) and review.get("outcome") == "unavailable":
+        reason = "independent_review_capability_unavailable:" + str(
+            review.get("reason_code") or "unspecified_review_failure"
+        )
+    elif isinstance(review, Mapping) and review.get("accepted") is False:
+        reason = "independent_review_rejected:" + str(
+            review.get("rationale") or "unspecified_review_rejection"
+        )
+    else:
+        reason = str(
+            (review.get("rationale") if isinstance(review, Mapping) else "")
+            or receipt.get("status")
+            or ""
+        )
+    accepted = receipt.get("status") == "quarantined_registry_proposal"
+    next_step = str(receipt.get("next_step") or "")
+    status = (
+        "unavailable"
+        if receipt.get("status") == "quarantined_capability_unavailable"
+        else "reviewed_campaign_local_construction_parameterization_available"
+        if accepted and next_step == "execute_reviewed_construction_parameterization"
+        else "reviewed_campaign_local_finite_family_available"
+        if accepted and next_step == "execute_reviewed_finite_construction_family"
+        else "reviewed_campaign_local_functor_image_available"
+        if accepted and next_step == "compile_campaign_local_functor_image_successor"
+        else "quarantined_adapter_proposal_requires_authority_and_new_attempt"
+        if accepted
+        else "adapter_proposal_rejected_return_to_search"
+    )
+    core = {
+        "schema": "leanmill.adapter_forge_completion.v1",
+        "status": status,
+        "attempt_dir": str(directory),
+        "gap_id": gap_id,
+        "host_conformance_contract": ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+        "quarantine_receipt": dict(receipt),
+        "reason": reason,
+        "rejection_class": (
+            str(host.get("rejection_class") or "")
+            if isinstance(host, Mapping) and host.get("ok") is False
+            else ""
+        ),
+        "recovery_route": (
+            next_step
+            if receipt.get("status") in {
+                "quarantined_capability_rejected",
+                "quarantined_capability_unavailable",
+            }
+            else ""
+        ),
+        "evidence_refs": [
+            str(receipt["receipt_sha256"]),
+            str(recovery_transition["receipt_sha256"]),
+            str(recovery_input["receipt_sha256"]),
+        ],
+        "provider_calls": int(provider_calls),
+        "artifact_owner": str(artifact_owner.relative_to(directory)),
+        "recovery_attempt_index": int(recovery_attempt_index),
+        "predecessor_completion_sha256": predecessor_completion_sha256,
+        "recovery_transition_receipt_sha256": str(
+            recovery_transition["receipt_sha256"]
+        ),
+        "recovery_transition": dict(recovery_transition),
+        "recovery_input": dict(recovery_input),
+    }
+    return {**core, "completion_sha256": content_hash(core)}
+
+
+def _execute_frontier_adapter_forge_recovery(
+    directory: Path,
+    *,
+    definition: FrontierCampaignDefinition,
+    gap: Any,
+    predecessor: Mapping[str, Any],
+    source_repo: Path,
+    model: str,
+    reasoning_effort: str,
+) -> dict[str, Any]:
+    """Execute one receipt-authorized subordinate Forge attempt."""
+
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_REJECTION_PRE_REVIEW_LEAKAGE,
+        ADAPTER_FORGE_REJECTION_REPAIRABLE_CONTRACT,
+        adapter_forge_agent_output_schema,
+        adapter_forge_gap_directory,
+        adapter_review_output_schema,
+        bind_adapter_review_evidence,
+        host_capability_conformance,
+        run_adapter_forge,
+        stage_adapter_forge_workspace,
+    )
+
+    rejection = _adapter_forge_rejection_receipt(predecessor)
+    if rejection is None:
+        return dict(predecessor)
+    rejection_class = str(rejection.get("rejection_class") or "")
+    if rejection_class == ADAPTER_FORGE_REJECTION_PRE_REVIEW_LEAKAGE:
+        if (
+            rejection.get("same_agent_repair_allowed") is not False
+            or rejection.get("workspace_reuse_allowed") is not False
+            or rejection.get("recovery_route")
+            != "reauthor_in_fresh_cold_workspace_with_new_agent_identity"
+        ):
+            raise ValueError("AdapterForge leakage receipt permits forbidden reuse")
+        recovery_mode = "fresh_cold_reauthor"
+    elif rejection_class == ADAPTER_FORGE_REJECTION_REPAIRABLE_CONTRACT:
+        if (
+            rejection.get("same_agent_repair_allowed") is not True
+            or rejection.get("workspace_reuse_allowed") is not True
+            or rejection.get("recovery_route")
+            != "return_typed_structural_repair_to_campaign"
+        ):
+            raise ValueError("AdapterForge structural repair lacks reuse authority")
+        recovery_mode = "typed_structural_repair"
+    else:
+        return dict(predecessor)
+
+    recovery_root = _adapter_forge_recovery_root(directory, gap.gap_id)
+    recovery_root.mkdir(parents=True, exist_ok=True)
+    pending: list[tuple[Path, dict[str, Any]]] = []
+    occupied_indices: list[int] = []
+    for path in sorted(recovery_root.glob("attempt-*")):
+        match = re.fullmatch(r"attempt-(\d+)", path.name)
+        if match is None or not path.is_dir():
+            continue
+        if path.is_symlink() or not path.resolve().is_relative_to(
+            recovery_root.resolve()
+        ):
+            raise ValueError("AdapterForge recovery owner escaped its gap")
+        index = int(match.group(1))
+        occupied_indices.append(index)
+        transition = read_json(
+            path / "adapter_forge_recovery_transition.json", None
+        )
+        completion = read_json(path / "adapter_forge_completion.json", None)
+        if (
+            isinstance(transition, Mapping)
+            and not isinstance(completion, Mapping)
+            and transition.get("predecessor_completion_sha256")
+            == predecessor.get("completion_sha256")
+        ):
+            pending.append((path, dict(transition)))
+    if len(pending) > 1:
+        raise ValueError("AdapterForge has multiple pending recovery attempts")
+
+    if pending:
+        owner, transition = pending[0]
+        match = re.fullmatch(r"attempt-(\d+)", owner.name)
+        if match is None:
+            raise ValueError("AdapterForge recovery owner has no attempt identity")
+        index = int(match.group(1))
+        transition, workspace = _validate_adapter_forge_recovery_transition(
+            directory,
+            owner=owner,
+            transition=transition,
+            gap=gap,
+            predecessor=predecessor,
+            recovery_attempt_index=index,
+        )
+        instance_id = str(transition["agent_instance_id"])
+    else:
+        index = 1 + max(occupied_indices, default=0)
+        owner = recovery_root / f"attempt-{index:03d}"
+        owner.mkdir(parents=True, exist_ok=False)
+        instance_id = _next_adapter_forge_agent_instance(directory)
+        if recovery_mode == "fresh_cold_reauthor":
+            cold_input = owner / "cold_input_attempt"
+            cold_input.mkdir(parents=True)
+            for name in (
+                "campaign_manifest.json",
+                "formal_context.json",
+                "evidence_context.json",
+                "blueprint.json",
+            ):
+                source = directory / name
+                if source.is_file():
+                    shutil.copy2(source, cold_input / name)
+            workspace = stage_adapter_forge_workspace(
+                cold_input, gap, source_repo=source_repo
+            )
+            prior_workspace_reused = False
+        else:
+            workspace = owner / "workspace"
+            _copy_adapter_workspace(
+                adapter_forge_gap_directory(directory, gap.gap_id) / "workspace",
+                workspace,
+            )
+            prior_workspace_reused = True
+        request = gap.primitive_semantics_contract.get(
+            "theory_language_request"
+        ) or {}
+        transition_core = {
+            "schema": "leanmill.adapter_forge_recovery_transition.v1",
+            "gap_id": gap.gap_id,
+            "request_id": str(request.get("request_id") or ""),
+            "context_hash": str(request.get("source_context_hash") or ""),
+            "source_epoch": int(request.get("source_epoch", 0)),
+            "predecessor_completion_sha256": str(
+                predecessor["completion_sha256"]
+            ),
+            "host_rejection_receipt_sha256": str(
+                rejection["receipt_sha256"]
+            ),
+            "rejection_class": rejection_class,
+            "recovery_mode": recovery_mode,
+            "recovery_attempt_index": index,
+            "workspace": str(workspace.relative_to(directory)),
+            "workspace_input_manifest": _adapter_workspace_input_manifest(
+                workspace
+            ),
+            "frozen_input_manifest": _adapter_forge_frozen_input_manifest(
+                workspace
+            ),
+            "prior_proposal_bytes_available": prior_workspace_reused,
+            "prior_proposal_resubmission_allowed": False,
+            "prior_workspace_reused": prior_workspace_reused,
+            "prior_agent_identity_reused": False,
+            "prior_agent_calls_replayed": False,
+            "agent_instance_id": instance_id,
+            "budget_phase": "expansion",
+            "authority": "deterministic_campaign_lifecycle",
+            "claim_boundary": (
+                "authorizes one bounded conformance attempt and grants no "
+                "adapter, registry, review, or exactness authority"
+            ),
+        }
+        transition = {
+            **transition_core,
+            "receipt_sha256": content_hash(transition_core),
+        }
+        write_json_atomic(
+            owner / "adapter_forge_recovery_transition.json", transition
+        )
+
+    transition, workspace = _validate_adapter_forge_recovery_transition(
+        directory,
+        owner=owner,
+        transition=transition,
+        gap=gap,
+        predecessor=predecessor,
+        recovery_attempt_index=index,
+    )
+    if recovery_mode == "typed_structural_repair":
+        repair_core = {
+            "schema": "leanmill.adapter_forge_structural_repair_input.v1",
+            "gap_id": gap.gap_id,
+            "recovery_transition_receipt_sha256": str(
+                transition["receipt_sha256"]
+            ),
+            "host_rejection_receipt_sha256": str(
+                rejection["receipt_sha256"]
+            ),
+            "forbidden_proposal_digest": str(
+                (predecessor.get("quarantine_receipt") or {}).get(
+                    "proposal_digest"
+                )
+                or ""
+            ),
+            "violations": [dict(row) for row in rejection.get("violations") or ()],
+            "allowed_reuse": {
+                "workspace_snapshot": True,
+                "agent_identity": False,
+                "prior_proposal_as_output": False,
+                "prior_review": False,
+            },
+            "required_output": "new_proposal_bytes_under_the_frozen_gap",
+            "authority": "repair_input_only",
+            "claim_boundary": "carries host defects and grants no capability authority",
+        }
+        repair = {**repair_core, "receipt_sha256": content_hash(repair_core)}
+        repair_path = workspace / "adapter_forge_structural_repair_input.json"
+        prior_repair = read_json(repair_path, None)
+        if isinstance(prior_repair, Mapping) and dict(prior_repair) != repair:
+            raise ValueError("AdapterForge structural repair input changed")
+        if not isinstance(prior_repair, Mapping):
+            write_json_atomic(repair_path, repair)
+        recovery_input = repair
+        recovery_instruction = (
+            "\n\nTYPED STRUCTURAL REPAIR INPUT:\n"
+            + json.dumps(repair, sort_keys=True, separators=(",", ":"))
+            + "\nReturn newly authored proposal bytes. The prior proposal has no authority."
+        )
+    else:
+        cold_core = {
+            "schema": "leanmill.adapter_forge_cold_reauthor_input.v1",
+            "gap_id": gap.gap_id,
+            "recovery_transition_receipt_sha256": str(
+                transition["receipt_sha256"]
+            ),
+            "prior_proposal_available": False,
+            "prior_workspace_available": False,
+            "prior_agent_session_available": False,
+            "required_order": (
+                "author construction bytes and construction-only self-checks "
+                "before host target evaluation and independent review"
+            ),
+            "authority": "cold_input_only",
+        }
+        cold = {**cold_core, "receipt_sha256": content_hash(cold_core)}
+        cold_path = workspace / "adapter_forge_cold_reauthor_input.json"
+        prior_cold = read_json(cold_path, None)
+        if isinstance(prior_cold, Mapping) and dict(prior_cold) != cold:
+            raise ValueError("AdapterForge cold reauthor input changed")
+        if not isinstance(prior_cold, Mapping):
+            write_json_atomic(cold_path, cold)
+        recovery_input = cold
+        recovery_instruction = (
+            "\n\nFRESH COLD REAUTHOR INPUT:\n"
+            + json.dumps(cold, sort_keys=True, separators=(",", ":"))
+            + "\nDo not seek or reconstruct any prior proposal, workspace, or session."
+        )
+
+    coding = frontier_agent_role(
+        definition,
+        role_name="adapter_forge",
+        repo=workspace,
+        artifact_dir=directory / "agent_calls",
+        instance_id=instance_id,
+    )
+    review = frontier_agent_role(
+        definition,
+        role_name="adapter_reviewer",
+        repo=workspace,
+        artifact_dir=directory / "agent_calls",
+        instance_id=instance_id,
+    )
+    for role, schema, visible in (
+        (coding, adapter_forge_agent_output_schema(), True),
+        (review, adapter_review_output_schema(), False),
+    ):
+        role.repo = workspace
+        role.output_schema = schema
+        role.config = replace(
+            role.config,
+            model=model or role.config.model,
+            reasoning_effort=reasoning_effort or role.config.reasoning_effort,
+            visible_workbench=visible,
+            web_research=False,
+        )
+    if (
+        sys.platform.startswith("linux")
+        and coding.config.runtime == "codex"
+        and os.environ.get("ZTARE_CODEX_NESTED_SANDBOX") != "0"
+    ):
+        raise ValueError(
+            "Linux AdapterForge requires the VPS launcher execution boundary"
+        )
+
+    def coding_with_recovery(prompt: str) -> Mapping[str, Any]:
+        return coding(prompt + recovery_instruction)
+
+    coding_with_recovery.call_role = coding  # type: ignore[attr-defined]
+
+    def has_durable_success(role: Any) -> bool:
+        for call_path in sorted(role.artifact_dir.glob("*.call.json")):
+            prefix = call_path.name.removesuffix(".call.json")
+            call = read_json(call_path, None)
+            if (
+                isinstance(call, Mapping)
+                and int(call.get("returncode", 1)) == 0
+                and (role.artifact_dir / f"{prefix}.stdout.txt").is_file()
+                and (
+                    role.config.runtime != "codex"
+                    or (role.artifact_dir / f"{prefix}.result.json").is_file()
+                )
+            ):
+                return True
+        return False
+
+    if (
+        pending
+        and has_durable_success(coding)
+    ):
+        # This replays only the current subordinate attempt. The predecessor
+        # agent directory has a different transition-bound instance identity.
+        coding_with_recovery.recovered_proposal = True  # type: ignore[attr-defined]
+
+    live_reviewing = make_subscription_adapter_reviewer(review)
+    recovered_reviews: list[dict[str, Any]] = []
+    if pending:
+        for result_path in sorted(review.artifact_dir.glob("*.result.json")):
+            call = read_json(
+                result_path.with_name(
+                    result_path.name.removesuffix(".result.json") + ".call.json"
+                ),
+                None,
+            )
+            candidate = read_json(result_path, None)
+            if (
+                isinstance(call, Mapping)
+                and int(call.get("returncode", 1)) == 0
+                and isinstance(candidate, Mapping)
+                and type(candidate.get("accepted")) is bool
+            ):
+                recovered_reviews.append(dict(candidate))
+
+    def recover_review_for_host(
+        host_receipt: Mapping[str, Any],
+    ) -> Mapping[str, Any] | None:
+        for candidate in recovered_reviews:
+            try:
+                bind_adapter_review_evidence(candidate, host_receipt)
+            except ValueError:
+                continue
+            return candidate
+        return None
+
+    live_reviewing.recover_for_host_receipt = (  # type: ignore[attr-defined]
+        recover_review_for_host
+    )
+    if pending and has_durable_success(review):
+        live_reviewing.recovered_review = True  # type: ignore[attr-defined]
+
+    registry_path = source_repo / "src/ztare/leanmill/theory_adapter_registry.py"
+    registry_digest = content_hash(
+        {"bytes": registry_path.read_text(encoding="utf-8")}
+    )
+
+    def conformance(
+        proposal: Mapping[str, Any], typed_gap: Any
+    ) -> Mapping[str, Any]:
+        _verify_adapter_forge_frozen_inputs(
+            workspace, transition["frozen_input_manifest"]
+        )
+        if (
+            content_hash({"bytes": registry_path.read_text(encoding="utf-8")})
+            != registry_digest
+        ):
+            raise ValueError("AdapterForge changed the live adapter registry")
+        if typed_gap.gap_id != gap.gap_id:
+            raise ValueError("AdapterForge recovery crossed the active gap")
+        result = host_capability_conformance(
+            proposal,
+            typed_gap,
+            workspace=workspace,
+            output_path=owner / "theory_language_coordinates.json",
+        )
+        write_json_atomic(owner / "adapter_forge_host_conformance.json", result)
+        return result
+
+    budget = ExplorationBudget.from_json(read_json(directory / "budget.json", {}))
+    ledger = ExplorationBudgetLedger(
+        directory / "budget.events.jsonl",
+        budget,
+        attempt_id=directory.name,
+    )
+    ledger.recover_interrupted_wall_clock()
+    ledger.recover_interrupted_reservations()
+    ledger.resume_wall_clock()
+    try:
+        receipt = run_adapter_forge(
+            gap,
+            coding_agent_fn=coding_with_recovery,
+            host_conformance_fn=conformance,
+            independent_review_fn=live_reviewing,
+            budget_ledger=ledger,
+        )
+    except BudgetExceeded as exc:
+        unavailable_receipt_core = {
+            "schema": "leanmill.adapter_forge_recovery_unavailable.v1",
+            "gap_id": gap.gap_id,
+            "recovery_attempt_index": index,
+            "recovery_transition_receipt_sha256": str(
+                transition["receipt_sha256"]
+            ),
+            "reason": "adapter_forge_recovery_budget_unavailable:" + exc.reason,
+            "authority": "exploration_budget_ledger",
+        }
+        unavailable_receipt = {
+            **unavailable_receipt_core,
+            "receipt_sha256": content_hash(unavailable_receipt_core),
+        }
+        unavailable = {
+            "schema": "leanmill.adapter_forge_recovery_outcome.v1",
+            "status": "unavailable",
+            "gap_id": gap.gap_id,
+            "reason": unavailable_receipt["reason"],
+            "evidence_refs": [
+                str(transition["receipt_sha256"]),
+                str(unavailable_receipt["receipt_sha256"]),
+                str(recovery_input["receipt_sha256"]),
+            ],
+            "unavailability_receipt": unavailable_receipt,
+            "recovery_transition": dict(transition),
+            "recovery_input": dict(recovery_input),
+        }
+        write_json_atomic(
+            owner / "adapter_forge_recovery_unavailable.json", unavailable
+        )
+        return unavailable
+    finally:
+        ledger.freeze_wall_clock(reason="adapter_forge_recovery_exit")
+
+    if (
+        content_hash({"bytes": registry_path.read_text(encoding="utf-8")})
+        != registry_digest
+    ):
+        raise ValueError("AdapterForge changed the live adapter registry")
+    write_json_atomic(owner / "adapter_forge_receipt.json", receipt)
+    completion = _adapter_forge_completion_from_receipt(
+        directory=directory,
+        gap_id=gap.gap_id,
+        receipt=receipt,
+        provider_calls=(
+            int(ledger.state()["usage"]["provider_calls"])
+            + int(
+                read_json(directory / "run.json", {}).get(
+                    "preparation_provider_calls", 0
+                )
+            )
+        ),
+        artifact_owner=owner,
+        recovery_attempt_index=index,
+        predecessor_completion_sha256=str(predecessor["completion_sha256"]),
+        recovery_transition=transition,
+        recovery_input=recovery_input,
+    )
+    write_json_atomic(owner / "adapter_forge_completion.json", completion)
+    return completion
 
 
 def execute_frontier_adapter_forge(
@@ -1786,8 +3277,10 @@ def execute_frontier_adapter_forge(
             )
     from ztare.leanmill.adapter_forge import (
         AdapterGap,
-        adapter_forge_output_schema,
+        adapter_forge_agent_output_schema,
+        adapter_forge_attempt_directory,
         adapter_review_output_schema,
+        bind_adapter_review_evidence,
         execute_adapter_forge_attempt,
         host_capability_conformance,
         stage_adapter_forge_workspace,
@@ -1824,8 +3317,33 @@ def execute_frontier_adapter_forge(
             directory / "run.json",
             {**run_core, "run_digest": content_hash(run_core)},
         )
-    workspace = stage_adapter_forge_workspace(directory, gap)
     source_repo = Path.cwd() if repo is None else Path(repo)
+    forge_owner = adapter_forge_attempt_directory(
+        directory, gap.gap_id, create=True
+    )
+    latest = _read_adapter_forge_lifecycle_completion(
+        directory, gap, migrate_legacy=True
+    )
+    if latest is not None:
+        rejection = _adapter_forge_rejection_receipt(latest)
+        if rejection is None:
+            return latest
+        recovered = _execute_frontier_adapter_forge_recovery(
+            directory,
+            definition=definition,
+            gap=gap,
+            predecessor=latest,
+            source_repo=source_repo,
+            model=model,
+            reasoning_effort=reasoning_effort,
+        )
+        if recovered != latest:
+            return recovered
+        return latest
+    workspace = stage_adapter_forge_workspace(
+        directory, gap, source_repo=source_repo
+    )
+    frozen_input_manifest = _adapter_forge_frozen_input_manifest(workspace)
     prior_indices = [
         int(path.name.rsplit("-", 1)[1])
         for role in ("adapter_forge", "adapter_reviewer")
@@ -1849,7 +3367,7 @@ def execute_frontier_adapter_forge(
         instance_id=instance_id,
     )
     for role, schema, visible in (
-        (coding, adapter_forge_output_schema(), True),
+        (coding, adapter_forge_agent_output_schema(), True),
         (review, adapter_review_output_schema(), False),
     ):
         role.repo = workspace
@@ -1894,7 +3412,7 @@ def execute_frontier_adapter_forge(
     recovered_coding.provider_call_count = 0  # type: ignore[attr-defined]
     recovered_coding.recovered_proposal = True  # type: ignore[attr-defined]
 
-    recovered_review = None
+    recovered_reviews: list[dict[str, Any]] = []
     for result_path in sorted(
         (directory / "agent_calls").glob("adapter_reviewer*/000.result.json"),
         key=lambda path: path.stat().st_mtime_ns,
@@ -1907,17 +3425,27 @@ def execute_frontier_adapter_forge(
             and isinstance(candidate, Mapping)
             and type(candidate.get("accepted")) is bool
         ):
-            recovered_review = dict(candidate)
-            break
+            recovered_reviews.append(dict(candidate))
 
-    def recovered_reviewing(_packet: Mapping[str, Any]) -> Mapping[str, Any]:
-        assert recovered_review is not None
-        return recovered_review
+    live_reviewing = make_subscription_adapter_reviewer(review)
 
-    recovered_reviewing.provider_call_count = 0  # type: ignore[attr-defined]
-    recovered_reviewing.recovered_review = True  # type: ignore[attr-defined]
+    def recover_for_host_receipt(
+        host_receipt: Mapping[str, Any],
+    ) -> Mapping[str, Any] | None:
+        for candidate in recovered_reviews:
+            try:
+                bind_adapter_review_evidence(candidate, host_receipt)
+            except ValueError:
+                continue
+            return candidate
+        return None
+
+    live_reviewing.recover_for_host_receipt = (  # type: ignore[attr-defined]
+        recover_for_host_receipt
+    )
 
     def conformance(proposal: Mapping[str, Any], typed_gap: AdapterGap) -> Mapping[str, Any]:
+        _verify_adapter_forge_frozen_inputs(workspace, frozen_input_manifest)
         if content_hash({"bytes": registry_path.read_text(encoding="utf-8")}) != registry_digest:
             raise ValueError("AdapterForge changed the live adapter registry")
         if typed_gap.gap_kind != "capability_missing":
@@ -1926,22 +3454,449 @@ def execute_frontier_adapter_forge(
             proposal,
             typed_gap,
             workspace=workspace,
-            output_path=directory / "theory_language_coordinates.json",
+            output_path=forge_owner / "theory_language_coordinates.json",
         )
-        write_json_atomic(directory / "adapter_forge_host_conformance.json", result)
+        write_json_atomic(forge_owner / "adapter_forge_host_conformance.json", result)
         return result
 
     completion = execute_adapter_forge_attempt(
         directory,
         coding_agent_fn=recovered_coding if recovered_proposal is not None else coding,
         host_conformance_fn=conformance,
-        independent_review_fn=(
-            recovered_reviewing
-            if recovered_review is not None
-            else make_subscription_adapter_reviewer(review)
-        ),
+        independent_review_fn=live_reviewing,
     )
-    return completion
+    if (
+        content_hash({"bytes": registry_path.read_text(encoding="utf-8")})
+        != registry_digest
+    ):
+        raise ValueError("AdapterForge changed the live adapter registry")
+    rejection = _adapter_forge_rejection_receipt(completion)
+    if rejection is None:
+        return completion
+    recovered = _execute_frontier_adapter_forge_recovery(
+        directory,
+        definition=definition,
+        gap=gap,
+        predecessor=completion,
+        source_repo=source_repo,
+        model=model,
+        reasoning_effort=reasoning_effort,
+    )
+    return recovered
+
+
+def _approved_finite_family_candidate(
+    directory: Path, completion: Mapping[str, Any]
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Admit one reviewed family after schema checks and before any outcomes."""
+
+    from ztare.leanmill.finite_construction_family import (
+        FINITE_CONSTRUCTION_FAMILY_SCHEMA,
+        construction_witness_interface,
+        validate_finite_construction_family,
+    )
+    completion = _validated_adapter_forge_completion_row(
+        completion, gap_id=str(completion.get("gap_id") or "")
+    )
+    receipt = completion.get("quarantine_receipt")
+    if not isinstance(receipt, Mapping):
+        raise ValueError("AdapterForge completion lacks its quarantine receipt")
+    conformance = receipt.get("host_conformance")
+    if not isinstance(conformance, Mapping) or conformance.get(
+        "interface"
+    ) != FINITE_CONSTRUCTION_FAMILY_SCHEMA:
+        return None, None
+    receipt_core = {
+        key: value for key, value in receipt.items() if key != "receipt_sha256"
+    }
+    review = receipt.get("independent_review")
+    conformance_core = {
+        key: value for key, value in conformance.items() if key != "receipt_sha256"
+    }
+    if (
+        completion.get("status")
+        != "reviewed_campaign_local_finite_family_available"
+        or receipt.get("receipt_sha256") != content_hash(receipt_core)
+        or receipt.get("status") != "quarantined_registry_proposal"
+        or receipt.get("live_registry_mutated") is not False
+        or not isinstance(review, Mapping)
+        or review.get("accepted") is not True
+        or conformance.get("ok") is not True
+        or conformance.get("outcomes_evaluated") is not False
+        or conformance.get("receipt_sha256") != content_hash(conformance_core)
+    ):
+        raise ValueError("campaign-local finite family lacks accepted pre-outcome review")
+    owner = _adapter_forge_artifact_owner(directory, completion)
+    candidate = _read_bounded_reviewed_construction_artifact(
+        owner / "theory_language_finite_family_candidate.json",
+        label="reviewed finite family candidate",
+    )
+    blueprint = _read_bounded_reviewed_construction_artifact(
+        directory / "blueprint.json",
+        label="reviewed finite family blueprint",
+    )
+    if candidate is None or blueprint is None:
+        raise ValueError("reviewed finite family artifact is missing")
+    interface = construction_witness_interface(
+        str(blueprint.get("adapter_id") or ""),
+        dict(blueprint.get("adapter_config") or {}),
+    )
+    gap_row = _read_bounded_reviewed_construction_artifact(
+        directory / "adapter_gap.json",
+        label="reviewed finite family adapter gap",
+    )
+    if gap_row is None:
+        raise ValueError("reviewed finite family adapter gap is missing")
+    family = validate_finite_construction_family(
+        candidate,
+        request_id=str(
+            gap_row.get("primitive_semantics_contract", {})
+            .get("theory_language_request", {})
+            .get("request_id", "")
+        ),
+        gap_id=str(completion.get("gap_id") or ""),
+        context_hash=str(conformance.get("context_hash") or ""),
+        adapter_id=str(blueprint.get("adapter_id") or ""),
+        witness_interface=interface,
+    )
+    if family["receipt_sha256"] != conformance.get(
+        "finite_family_receipt_sha256"
+    ):
+        raise ValueError("reviewed finite family crossed host conformance")
+    return family, dict(receipt)
+
+
+def _approved_construction_parameterization_candidate(
+    directory: Path, completion: Mapping[str, Any]
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Recover one AdapterForge-reviewed data-only construction problem."""
+
+    from ztare.leanmill.adapter_forge import (
+        validate_reviewed_construction_parameterization_authority,
+    )
+    from ztare.leanmill.construction_parameterization import (
+        CONSTRUCTION_PARAMETERIZATION_SCHEMA,
+    )
+    from ztare.leanmill.finite_construction_family import (
+        construction_witness_interface,
+    )
+
+    receipt = completion.get("quarantine_receipt")
+    host = receipt.get("host_conformance") if isinstance(receipt, Mapping) else None
+    if not isinstance(host, Mapping) or host.get("interface") != (
+        CONSTRUCTION_PARAMETERIZATION_SCHEMA
+    ):
+        return None, None
+    completion = _validated_adapter_forge_completion_row(
+        completion, gap_id=str(completion.get("gap_id") or "")
+    )
+    if (
+        completion.get("status")
+        != "reviewed_campaign_local_construction_parameterization_available"
+    ):
+        raise ValueError("construction AdapterForge completion does not replay")
+    owner = _adapter_forge_artifact_owner(directory, completion)
+    candidate = _read_bounded_reviewed_construction_artifact(
+        owner / "theory_language_construction_parameterization_candidate.json",
+        label="reviewed construction parameterization candidate",
+    )
+    blueprint = _read_bounded_reviewed_construction_artifact(
+        directory / "blueprint.json",
+        label="reviewed construction parameterization blueprint",
+    )
+    if candidate is None or blueprint is None:
+        raise ValueError("reviewed construction parameterization is missing")
+    interface = construction_witness_interface(
+        str(blueprint.get("adapter_id") or ""),
+        dict(blueprint.get("adapter_config") or {}),
+    )
+    frozen, forge = validate_reviewed_construction_parameterization_authority(
+        candidate,
+        receipt,
+        witness_interface=interface,
+    )
+    return frozen, forge
+
+
+def _persist_reviewed_family_member_ratification_admissions(
+    directory: Path,
+    *,
+    family: Mapping[str, Any],
+    execution: Mapping[str, Any],
+    forge_quarantine_receipt: Mapping[str, Any],
+    witness_interface: Mapping[str, Any],
+    construction_origin: Mapping[str, Any] | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Freeze one formal-ratification admission per distinct verified artifact."""
+
+    from ztare.leanmill.finite_construction_family import (
+        validate_finite_construction_family_execution,
+    )
+    from ztare.leanmill.reviewed_family_member_ratification import (
+        build_reviewed_family_member_ratification_admission,
+    )
+
+    result = validate_finite_construction_family_execution(
+        execution,
+        family=family,
+        witness_interface=witness_interface,
+        construction_origin=construction_origin,
+    )
+    if result.get("status") != "witness_found":
+        raise ValueError("family ratification admission requires a verified member")
+    first_parameter_by_normalized_artifact: dict[str, str] = {}
+    for member in result.get("member_results") or ():
+        registered = (
+            member.get("registered_witness_execution")
+            if isinstance(member, Mapping)
+            else None
+        )
+        if not isinstance(registered, Mapping) or registered.get("status") != "verified":
+            continue
+        normalized_sha = str(registered.get("normalized_artifact_sha256") or "")
+        if not normalized_sha:
+            raise ValueError("verified family member lacks normalized identity")
+        first_parameter_by_normalized_artifact.setdefault(
+            normalized_sha, str(member.get("parameter_id") or "")
+        )
+    if not first_parameter_by_normalized_artifact:
+        raise ValueError("witness-found family execution has no verified member")
+
+    admissions: list[dict[str, Any]] = []
+    for parameter_id in first_parameter_by_normalized_artifact.values():
+        admission = build_reviewed_family_member_ratification_admission(
+            family=family,
+            family_execution=result,
+            forge_quarantine_receipt=forge_quarantine_receipt,
+            witness_interface=witness_interface,
+            parameter_id=parameter_id,
+            construction_origin=construction_origin,
+        )
+        path = directory / (
+            "reviewed_family_member_ratification_admission."
+            + str(admission["receipt_sha256"])[:16]
+            + ".json"
+        )
+        existing = read_json(path, None)
+        if isinstance(existing, Mapping) and dict(existing) != admission:
+            raise ValueError("family-member ratification admission path conflicts")
+        if existing is None:
+            write_json_atomic(path, admission)
+        admissions.append(admission)
+    return tuple(admissions)
+
+
+def _replay_reviewed_family_member_ratification_admissions(
+    directory: Path,
+    *,
+    execution: Mapping[str, Any],
+    request: TheoryLanguageExpansionRequest,
+    witness_interface: Mapping[str, Any],
+    admissions: Sequence[Mapping[str, Any]],
+    budget_ledger: ExplorationBudgetLedger,
+) -> tuple[dict[str, Any], ...]:
+    """Rebuild persisted admissions from their family and Forge authorities."""
+
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_CONSTRUCTION_HOST_CONFORMANCE_CONTRACT,
+        ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+        adapter_forge_attempt_directory,
+        read_scoped_adapter_forge_completion,
+    )
+    from ztare.leanmill.finite_construction_family import (
+        FiniteConstructionFamilyResourceUnavailable,
+        execute_finite_construction_family,
+        validate_finite_construction_family,
+        validate_finite_construction_family_execution,
+    )
+    from ztare.leanmill.reviewed_family_member_ratification import (
+        build_reviewed_family_member_ratification_admission,
+        validate_reviewed_family_member_ratification_admission,
+    )
+
+    result = validate_finite_construction_family_execution(execution)
+    origin_hashes = result["construction_origin_sha256s"]
+    parameterized = bool(origin_hashes["parameterization_sha256"])
+    host_contract = (
+        ADAPTER_FORGE_CONSTRUCTION_HOST_CONFORMANCE_CONTRACT
+        if parameterized
+        else ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT
+    )
+    expected_forge_refs = {
+        str(row.get("forge_quarantine_receipt_sha256") or "")
+        for row in admissions
+    }
+    if len(expected_forge_refs) != 1 or "" in expected_forge_refs:
+        raise ValueError("family ratification recovery has ambiguous Forge authority")
+    expected_forge_ref = next(iter(expected_forge_refs))
+    completion = read_scoped_adapter_forge_completion(
+        directory,
+        gap_id=str(result["gap_id"]),
+        host_conformance_contract=host_contract,
+        quarantine_receipt_sha256=expected_forge_ref,
+    )
+    if not isinstance(completion, Mapping):
+        raise ValueError("family ratification recovery lost its scoped Forge completion")
+    expected_completion_status = (
+        "reviewed_campaign_local_construction_parameterization_available"
+        if parameterized
+        else "reviewed_campaign_local_finite_family_available"
+    )
+    if completion.get("status") != expected_completion_status:
+        raise ValueError("family ratification recovery crossed Forge outcome")
+    receipt = completion.get("quarantine_receipt")
+    if not isinstance(receipt, Mapping):
+        raise ValueError("family ratification recovery lost its Forge receipt")
+    forge_rows = {expected_forge_ref: dict(receipt)}
+
+    raw_families: dict[str, dict[str, Any]] = {}
+    family_ref = str(result["family_receipt_sha256"])
+    forge_owner = adapter_forge_attempt_directory(
+        directory,
+        str(result["gap_id"]),
+        host_conformance_contract=host_contract,
+    )
+    family_paths = (
+        directory / ("finite_construction_family." + family_ref[:16] + ".json"),
+        forge_owner / "theory_language_finite_family_candidate.json",
+    )
+    family_read_budget = {"files": 0, "bytes": 0}
+    for path in family_paths:
+        raw = _read_bounded_reviewed_construction_artifact(
+            path,
+            label="family ratification source",
+            aggregate_budget=family_read_budget,
+        )
+        if raw is None:
+            continue
+        if raw.get("receipt_sha256") != family_ref:
+            raise ValueError("family ratification source slot crossed identity")
+        raw_families[content_hash(dict(raw))] = dict(raw)
+    if len(raw_families) != 1:
+        raise ValueError("family ratification recovery lost its authored family")
+    raw_family = next(iter(raw_families.values()))
+
+    construction_origin = None
+    if origin_hashes["parameterization_sha256"]:
+        forge = forge_rows.get(
+            str(origin_hashes["adapter_forge_quarantine_receipt_sha256"])
+        )
+        if forge is None:
+            raise ValueError("family ratification recovery lost construction origin")
+        from ztare.leanmill.reviewed_construction_campaign import (
+            admit_persisted_construction_origin_for_campaign,
+        )
+
+        construction_origin = admit_persisted_construction_origin_for_campaign(
+            directory,
+            parameterization_sha256=str(
+                origin_hashes["parameterization_sha256"]
+            ),
+            parameterization_execution_sha256=str(
+                origin_hashes["parameterization_execution_sha256"]
+            ),
+            forge_quarantine_receipt=forge,
+            witness_interface=witness_interface,
+            budget_ledger=budget_ledger,
+        )
+    family = validate_finite_construction_family(
+        raw_family,
+        request_id=request.request_id,
+        gap_id=str(result["gap_id"]),
+        context_hash=str(result["context_hash"]),
+        adapter_id=str(result["adapter_id"]),
+        witness_interface=witness_interface,
+        construction_origin=construction_origin,
+    )
+
+    def capability(*, descriptor, **kwargs):
+        from ztare.leanmill.theory_adapter_registry import (
+            materialize_theory_adapter_capability,
+        )
+
+        return materialize_theory_adapter_capability(
+            str(descriptor["adapter_id"]),
+            str(descriptor["capability_id"]),
+            descriptor=dict(descriptor),
+            **kwargs,
+        )
+
+    family_action_id = "finite-family:" + str(family["receipt_sha256"])
+    expected_queries = int(result["unique_source_artifact_count"])
+    family_already_charged = budget_ledger.has_committed_action_resources(
+        family_action_id,
+        phase="boundary",
+        minimum_resources={"boundary_queries": expected_queries},
+    )
+    family_reservation = (
+        None
+        if family_already_charged
+        else budget_ledger.reserve(
+            family_action_id,
+            "boundary",
+            {"boundary_queries": expected_queries},
+        )
+    )
+    try:
+        replayed_execution = execute_finite_construction_family(
+            family,
+            witness_interface=witness_interface,
+            capability_fn=capability,
+            construction_origin=construction_origin,
+        )
+    except FiniteConstructionFamilyResourceUnavailable as exc:
+        if family_reservation is not None:
+            attempted_artifacts = {
+                str(member.get("artifact_sha256") or "")
+                for member in list(family.get("members") or ())[
+                    : int(exc.attempted_members)
+                ]
+                if isinstance(member, Mapping)
+            }
+            budget_ledger.commit(
+                family_reservation,
+                {"boundary_queries": len(attempted_artifacts)},
+            )
+        raise
+    except Exception:
+        if family_reservation is not None:
+            budget_ledger.commit(
+                family_reservation,
+                {"boundary_queries": expected_queries},
+            )
+        raise
+    else:
+        if family_reservation is not None:
+            budget_ledger.commit(
+                family_reservation,
+                {"boundary_queries": expected_queries},
+            )
+    if replayed_execution != result:
+        raise ValueError("persisted family execution changed registered outcomes")
+    result = validate_finite_construction_family_execution(
+        result,
+        family=family,
+        witness_interface=witness_interface,
+        construction_origin=construction_origin,
+    )
+
+    replayed: list[dict[str, Any]] = []
+    for raw in admissions:
+        admission = validate_reviewed_family_member_ratification_admission(raw)
+        rebuilt = build_reviewed_family_member_ratification_admission(
+            family=family,
+            family_execution=result,
+            forge_quarantine_receipt=forge_rows[
+                str(admission["forge_quarantine_receipt_sha256"])
+            ],
+            witness_interface=witness_interface,
+            parameter_id=str(admission["primary_parameter_id"]),
+            construction_origin=construction_origin,
+        )
+        if rebuilt != admission:
+            raise ValueError("family ratification admission does not rebuild")
+        replayed.append(rebuilt)
+    return tuple(replayed)
 
 
 def _approved_functor_application(
@@ -1957,6 +3912,7 @@ def _approved_functor_application(
         or completion.get("completion_sha256") != content_hash(completion_core)
     ):
         raise ValueError("AdapterForge completion does not replay")
+    forge_owner = _adapter_forge_artifact_owner(directory, completion)
     receipt = completion.get("quarantine_receipt")
     if not isinstance(receipt, Mapping):
         raise ValueError("AdapterForge completion lacks its quarantine receipt")
@@ -1987,11 +3943,14 @@ def _approved_functor_application(
             CANDIDATE_SCHEMA,
             admit_materialized_generative_representation,
         )
+        from ztare.leanmill.adapter_forge import (
+            ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+        )
 
         if conformance.get("interface") != CANDIDATE_SCHEMA:
             raise ValueError("generative candidate crossed its Forge interface")
         candidate = read_json(
-            directory / "theory_language_generative_candidate.json", None
+            forge_owner / "theory_language_generative_candidate.json", None
         )
         if (
             not isinstance(candidate, Mapping)
@@ -2005,12 +3964,13 @@ def _approved_functor_application(
             source_context=source_context,
             host_conformance=conformance,
             independent_review=review,
+            host_conformance_contract=ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
         )
         write_json_atomic(
-            directory / "theory_language_generative_application.json", application
+            forge_owner / "theory_language_generative_application.json", application
         )
         return application, dict(receipt)
-    application = read_json(directory / "theory_language_functor_image.json", None)
+    application = read_json(forge_owner / "theory_language_functor_image.json", None)
     if not isinstance(application, Mapping):
         if not conformance.get("functor_image_receipt_sha256"):
             return None, dict(receipt)
@@ -2037,10 +3997,9 @@ def _language_request_from_run(run: Mapping[str, Any]) -> TheoryLanguageExpansio
         return TheoryLanguageExpansionRequest.from_json(row)
     synthesis = navigation.get("lineage_synthesis")
     selected = synthesis.get("selected_requests") if isinstance(synthesis, Mapping) else None
-    if isinstance(selected, list) and len(selected) == 1 and isinstance(
-        selected[0], Mapping
-    ) and isinstance(selected[0].get("request"), Mapping):
-        return TheoryLanguageExpansionRequest.from_json(selected[0]["request"])
+    if isinstance(selected, list) and selected:
+        request, _composition = compose_selected_language_expansion(synthesis)
+        return request
     gap = run.get("adapter_gap")
     contract = gap.get("primitive_semantics_contract") if isinstance(gap, Mapping) else None
     request = contract.get("theory_language_request") if isinstance(contract, Mapping) else None
@@ -2160,6 +4119,7 @@ def _language_outcome_feedback(
     outcome: str,
     reason: str,
     evidence_refs: tuple[str, ...],
+    evidence_receipts: tuple[Mapping[str, Any], ...] = (),
 ) -> dict[str, Any]:
     """Return rejected/unavailable compiler outcomes to the navigator."""
 
@@ -2183,11 +4143,29 @@ def _language_outcome_feedback(
     history = list(navigation.get("objective_review_history") or ())
     history.append(feedback)
     navigation["objective_review_history"] = history
+    navigation["carried_evidence_receipts"] = _merge_carried_evidence_receipts(
+        navigation.get("carried_evidence_receipts") or (),
+        tuple(
+            {
+                "evidence_ref": _content_bound_receipt_ref(receipt),
+                "receipt": dict(receipt),
+            }
+            for receipt in evidence_receipts
+        ),
+    )
+    if any(
+        str(row["evidence_ref"]) not in evidence_refs
+        for row in navigation["carried_evidence_receipts"]
+        if row["receipt"] in evidence_receipts
+    ):
+        raise ValueError("language feedback carried evidence outside its refs")
     for stale in (
         "adapter_gap",
         "language_expansion_request",
         "theory_language_expansion_requests",
         "lineage_synthesis",
+        "finite_construction_family_execution",
+        "reviewed_family_member_ratification_admission_sha256s",
     ):
         navigation.pop(stale, None)
     run_core = {
@@ -2206,6 +4184,200 @@ def _language_outcome_feedback(
     )
     write_json_atomic(directory / "theory_language_compilation_feedback.json", feedback)
     return feedback
+
+
+def _content_bound_receipt_ref(receipt: Mapping[str, Any]) -> str:
+    """Return the verified identity of one inert campaign evidence receipt."""
+
+    row = dict(receipt)
+    receipt_id = str(row.get("receipt_id") or "")
+    receipt_sha = str(row.get("receipt_sha256") or "")
+    if receipt_id:
+        core = {key: value for key, value in row.items() if key != "receipt_id"}
+        if receipt_id != "sha256:" + content_hash(core):
+            raise ValueError("carried evidence receipt_id does not replay")
+        return receipt_id
+    if receipt_sha:
+        core = {
+            key: value for key, value in row.items() if key != "receipt_sha256"
+        }
+        if receipt_sha != content_hash(core):
+            raise ValueError("carried evidence receipt_sha256 does not replay")
+        return receipt_sha
+    raise ValueError("carried evidence has no content identity")
+
+
+def _merge_carried_evidence_receipts(
+    *groups: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Merge receipt transport without changing identity or masking conflict."""
+
+    merged: list[dict[str, Any]] = []
+    by_ref: dict[str, dict[str, Any]] = {}
+    for group in groups:
+        for carried in group:
+            if not isinstance(carried, Mapping) or not isinstance(
+                carried.get("receipt"), Mapping
+            ):
+                raise ValueError("carried language evidence is malformed")
+            row = {
+                "evidence_ref": str(carried.get("evidence_ref") or ""),
+                "receipt": dict(carried["receipt"]),
+            }
+            verified_ref = _content_bound_receipt_ref(row["receipt"])
+            if not row["evidence_ref"] or row["evidence_ref"] != verified_ref:
+                raise ValueError("carried language evidence changed identity")
+            prior = by_ref.get(verified_ref)
+            if prior is not None:
+                if prior != row:
+                    raise ValueError("carried language evidence conflicts")
+                continue
+            by_ref[verified_ref] = row
+            merged.append(row)
+    return merged
+
+
+def _is_language_execution_feedback(
+    feedback: Mapping[str, Any],
+    *,
+    context_hash: str,
+) -> bool:
+    """Recognize the shared causal contract of language/execution feedback."""
+
+    if (
+        feedback.get("route") != "continue_search"
+        or feedback.get("repeat_requires_new_evidence") is not True
+        or not str(feedback.get("request_id") or "")
+    ):
+        return False
+    core = {
+        key: item for key, item in feedback.items() if key != "receipt_sha256"
+    }
+    evidence_refs = feedback.get("evidence_refs")
+    if (
+        not str(feedback.get("schema") or "").startswith("leanmill.")
+        or "feedback" not in str(feedback.get("schema") or "")
+        or feedback.get("receipt_sha256") != content_hash(core)
+        or feedback.get("context_hash") != context_hash
+        or not isinstance(evidence_refs, list)
+        or any(not isinstance(ref, str) or not ref for ref in evidence_refs)
+        or len(set(evidence_refs)) != len(evidence_refs)
+        or not str(feedback.get("authority") or "")
+    ):
+        raise ValueError("language/execution feedback changed causal identity")
+    return True
+
+
+def _objective_feedback_trace_rows(
+    navigation: Mapping[str, Any],
+    feedback: Mapping[str, Any],
+    *,
+    context_hash: str,
+) -> tuple[dict[str, Any], ...]:
+    """Materialize one feedback receipt and its carried typed evidence for a leaf."""
+
+    rows: list[dict[str, Any]] = [
+        {
+            "decision": "objective_feedback",
+            "receipt": dict(feedback),
+            "host_finalized": True,
+        }
+    ]
+    if not _is_language_execution_feedback(
+        feedback, context_hash=context_hash
+    ):
+        return tuple(rows)
+    admitted_refs = {str(ref) for ref in feedback.get("evidence_refs") or ()}
+    carried = _merge_carried_evidence_receipts(
+        navigation.get("carried_evidence_receipts") or ()
+    )
+    for item in carried:
+        if item["evidence_ref"] not in admitted_refs:
+            continue
+        rows.append(
+            {
+                "decision": "objective_feedback_evidence",
+                "evidence_ref": item["evidence_ref"],
+                "receipt": dict(item["receipt"]),
+                "source_feedback_receipt_sha256": str(
+                    feedback["receipt_sha256"]
+                ),
+                "host_finalized": True,
+            }
+        )
+    return tuple(rows)
+
+
+def _language_feedback_wave_binding(
+    directory: Path,
+    feedback: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Resolve the immutable search-wave consumer of one language outcome."""
+
+    feedback_ref = str(feedback.get("receipt_sha256") or "")
+    rows = []
+    for path in directory.glob(
+        f"theory_language_feedback_wave_binding.{feedback_ref[:16]}.wave-*.json"
+    ):
+        row = read_json(path, None)
+        if not isinstance(row, Mapping):
+            continue
+        core = {
+            key: item for key, item in row.items() if key != "receipt_sha256"
+        }
+        if (
+            row.get("schema")
+            != "leanmill.theory_language_feedback_wave_binding.v1"
+            or row.get("feedback_receipt_sha256") != feedback_ref
+            or row.get("receipt_sha256") != content_hash(core)
+        ):
+            raise ValueError("language-feedback wave binding changed identity")
+        rows.append(dict(row))
+    if not rows:
+        return None
+    return max(rows, key=lambda row: int(row.get("search_wave", -1)))
+
+
+def _bind_language_feedback_to_search_wave(
+    directory: Path,
+    *,
+    feedback: Mapping[str, Any],
+    context_hash: str,
+    context_epoch: int,
+    search_wave: int,
+) -> dict[str, Any]:
+    """Freeze the causal input identity of a newly opened search wave."""
+
+    try:
+        admissible = _is_language_execution_feedback(
+            feedback, context_hash=context_hash
+        )
+    except ValueError as exc:
+        raise ValueError(
+            "language feedback cannot bind this search wave"
+        ) from exc
+    if not admissible or search_wave < 1:
+        raise ValueError("language feedback cannot bind this search wave")
+    core = {
+        "schema": "leanmill.theory_language_feedback_wave_binding.v1",
+        "context_hash": context_hash,
+        "context_epoch": context_epoch,
+        "request_id": str(feedback.get("request_id") or ""),
+        "feedback_receipt_sha256": str(feedback["receipt_sha256"]),
+        "search_wave": search_wave,
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    path = directory / (
+        "theory_language_feedback_wave_binding."
+        f"{str(feedback['receipt_sha256'])[:16]}.wave-{search_wave:03d}.json"
+    )
+    existing = read_json(path, None)
+    if isinstance(existing, Mapping) and dict(existing) != receipt:
+        raise ValueError("language-feedback wave binding changed identity")
+    if not isinstance(existing, Mapping):
+        write_json_atomic(path, receipt)
+    return receipt
 
 
 def _admit_language_successor(
@@ -2245,12 +4417,60 @@ def _admit_language_successor(
     blueprint_archive = directory / f"blueprint.epoch-{source_epoch:03d}.json"
     if not blueprint_archive.is_file():
         write_json_atomic(blueprint_archive, blueprint.to_json())
-    from ztare.leanmill.finite_theory_context import save_formal_theory_context
+    from ztare.leanmill.evidence_theory_context import (
+        EvidenceTheoryContext,
+        load_evidence_theory_context,
+        save_evidence_theory_context,
+    )
+    from ztare.leanmill.finite_theory_context import (
+        FormalTheoryContext,
+        load_formal_theory_context,
+        save_formal_theory_context,
+    )
+
+    if isinstance(source_context, FormalTheoryContext):
+        source_context_archive = (
+            directory / f"formal_context.epoch-{source_epoch:03d}.json"
+        )
+        source_context_payload = source_context.to_json()
+        if source_context_archive.is_file():
+            if (
+                load_formal_theory_context(source_context_archive).to_json()
+                != source_context_payload
+            ):
+                raise ValueError(
+                    "source formal-context epoch archive conflicts"
+                )
+        else:
+            save_formal_theory_context(
+                source_context, source_context_archive
+            )
+    elif isinstance(source_context, EvidenceTheoryContext):
+        source_context_archive = (
+            directory / f"evidence_context.epoch-{source_epoch:03d}.json"
+        )
+        source_context_payload = source_context.to_json()
+        if source_context_archive.is_file():
+            if (
+                load_evidence_theory_context(source_context_archive).to_json()
+                != source_context_payload
+            ):
+                raise ValueError(
+                    "source evidence-context epoch archive conflicts"
+                )
+        else:
+            save_evidence_theory_context(
+                source_context, source_context_archive
+            )
+    else:
+        raise ValueError("source language context category is unsupported")
 
     save_formal_theory_context(target_context, directory / "formal_context.json")
     save_formal_theory_context(
         target_context, directory / f"formal_context.epoch-{target_epoch:03d}.json"
     )
+    if isinstance(source_context, EvidenceTheoryContext):
+        (directory / "evidence_context.json").unlink(missing_ok=True)
     write_json_atomic(directory / "blueprint.json", target_blueprint.to_json())
     write_json_atomic(
         directory / f"blueprint.epoch-{target_epoch:03d}.json",
@@ -2291,12 +4511,9 @@ def _admit_language_successor(
         "typed_formula_proposal_sha256s": [],
     }
     write_json_atomic(directory / "navigation_epoch_checkpoint.json", checkpoint)
-    calls = directory / "agent_calls" / "navigator"
-    archived_calls = directory / "agent_calls" / f"navigator.epoch-{source_epoch:03d}"
-    if calls.exists():
-        if archived_calls.exists():
-            raise ValueError("source language navigator archive already exists")
-        os.replace(calls, archived_calls)
+    _archive_navigation_agent_calls_for_epoch(
+        directory, source_epoch=source_epoch
+    )
     consumption_core = {
         "schema": "leanmill.theory_language_successor_consumption.v1",
         "request_id": request.request_id,
@@ -2435,6 +4652,9 @@ def _recover_language_successor_commit(
     attempt_lease.bind_epoch(
         epoch=target_epoch, context_hash=target_context.context_hash
     )
+    _archive_navigation_agent_calls_for_epoch(
+        directory, source_epoch=int(commit["source_epoch"])
+    )
     if resume_fn is not None:
         resume_fn(directory, _attempt_lease=attempt_lease)
         (directory / "theory_language_successor_commit.json").unlink()
@@ -2448,6 +4668,906 @@ def _recover_language_successor_commit(
         "consumption_receipt_sha256": commit["consumption_receipt_sha256"],
         "commit_receipt_sha256": commit["receipt_sha256"],
     }
+
+
+def _archive_navigation_agent_calls_for_epoch(
+    directory: Path,
+    *,
+    source_epoch: int,
+) -> None:
+    """Move every context-bound navigation role out of the successor namespace."""
+
+    root = directory / "agent_calls"
+    if not root.is_dir():
+        return
+    suffix = f".epoch-{source_epoch:03d}"
+    prefixes = ("navigator", "witness_constructor", "lineage_synthesizer")
+    for source in sorted(root.iterdir()):
+        if (
+            source.is_symlink()
+            or not source.is_dir()
+            or source.name.endswith(suffix)
+            or not source.name.startswith(prefixes)
+        ):
+            continue
+        target = source.with_name(source.name + suffix)
+        if target.exists():
+            raise ValueError(
+                "source language navigation archive already exists"
+            )
+        os.replace(source, target)
+
+
+def _adapter_gap_request_id(value: Mapping[str, Any]) -> str:
+    contract = value.get("primitive_semantics_contract") or {}
+    request = contract.get("theory_language_request") or {}
+    return str(request.get("request_id") or "")
+
+
+def _phase_extensions_after_stop(
+    directory: Path,
+    run: Mapping[str, Any],
+    *,
+    phase: str,
+) -> tuple[dict[str, Any], ...]:
+    """Return every validated phase grant after this run's stop."""
+
+    stop = run.get("budget_stop_receipt")
+    if not isinstance(stop, Mapping):
+        stop = read_json(directory / "budget_stop_receipt.json", None)
+    if not isinstance(stop, Mapping):
+        return ()
+    stop_core = {
+        key: value for key, value in stop.items() if key != "receipt_sha256"
+    }
+    if stop.get("receipt_sha256") != content_hash(stop_core):
+        return ()
+    rows = []
+    path = directory / "budget.events.jsonl"
+    for line in (
+        path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        if path.is_file()
+        else ()
+    ):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(row, Mapping):
+            continue
+        core = {key: value for key, value in row.items() if key != "event_sha256"}
+        if (
+            row.get("event_sha256") == content_hash(core)
+            and row.get("attempt_id") == stop.get("attempt_id")
+            and row.get("budget_digest") == stop.get("budget_digest")
+        ):
+            rows.append(dict(row))
+    stop_indices = [
+        index
+        for index, row in enumerate(rows)
+        if row.get("event_type") == "budget_stopped"
+        and (row.get("receipt") or {}).get("receipt_sha256")
+        == stop.get("receipt_sha256")
+    ]
+    if not stop_indices:
+        return ()
+    blocked_resource = str(stop.get("reason") or "").rsplit(":", maxsplit=1)[-1]
+    extensions = []
+    for row in rows[stop_indices[-1] + 1 :]:
+        resources = row.get("resources")
+        if (
+            row.get("event_type") == "resources_extended"
+            and row.get("phase") == phase
+            and str(row.get("authority_ref") or "").strip()
+            and str(row.get("reason") or "").strip()
+            and isinstance(resources, Mapping)
+            and int(resources.get(blocked_resource, 0)) > 0
+        ):
+            extensions.append(row)
+    return tuple(extensions)
+
+
+def _phase_extension_after_stop(
+    directory: Path,
+    run: Mapping[str, Any],
+    *,
+    phase: str,
+) -> dict[str, Any] | None:
+    """Return the latest validated phase grant after this run's stop."""
+
+    extensions = _phase_extensions_after_stop(directory, run, phase=phase)
+    return extensions[-1] if extensions else None
+
+
+def _pending_extended_adapter_gap(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find an unconsumed gap made runnable by a later resource grant."""
+
+    extension = _phase_extension_after_stop(
+        directory, run, phase="expansion"
+    )
+    gap_row = read_json(directory / "adapter_gap.json", None)
+    if extension is None or not isinstance(gap_row, Mapping):
+        return None
+    from ztare.leanmill.adapter_forge import (
+        AdapterGap,
+        read_adapter_forge_completion,
+    )
+
+    try:
+        gap = AdapterGap.from_json(gap_row)
+    except (KeyError, TypeError, ValueError):
+        return None
+    request = (gap.primitive_semantics_contract.get("theory_language_request") or {})
+    if (
+        str(request.get("source_context_hash") or "")
+        != str(run.get("context_hash") or "")
+        or read_adapter_forge_completion(directory, gap) is not None
+    ):
+        return None
+    return {"gap": gap.to_json(), "extension": extension}
+
+
+def _unconsumed_expansion_extension(
+    directory: Path,
+    *,
+    resource: str,
+) -> dict[str, Any] | None:
+    """Return a runnable, authority-receipted grant for one expansion resource."""
+
+    consumed = {
+        str(row.get("extension_event_sha256") or "")
+        for path in directory.glob(
+            "adapter_forge_recovery_budget_extension_reopen.*.json"
+        )
+        for row in (read_json(path, None),)
+        if isinstance(row, Mapping)
+    }
+    candidates: list[dict[str, Any]] = []
+    events_path = directory / "budget.events.jsonl"
+    for line in (
+        events_path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        if events_path.is_file()
+        else ()
+    ):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(row, Mapping):
+            continue
+        core = {
+            key: value for key, value in row.items() if key != "event_sha256"
+        }
+        resources = row.get("resources")
+        if (
+            row.get("event_sha256") == content_hash(core)
+            and row.get("event_type") == "resources_extended"
+            and row.get("phase") == "expansion"
+            and str(row.get("authority_ref") or "").strip()
+            and str(row.get("reason") or "").strip()
+            and isinstance(resources, Mapping)
+            and int(resources.get(resource, 0)) > 0
+            and row.get("event_sha256") not in consumed
+        ):
+            candidates.append(dict(row))
+    if not candidates:
+        return None
+    budget_row = read_json(directory / "budget.json", None)
+    if not isinstance(budget_row, Mapping):
+        return None
+    ledger = ExplorationBudgetLedger(
+        directory / "budget.events.jsonl",
+        ExplorationBudget.from_json(budget_row),
+        attempt_id=directory.name,
+    )
+    if ledger.remaining_capacity("expansion", resource) <= 0:
+        return None
+    return candidates[-1]
+
+
+def _pending_extended_adapter_recovery(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find a typed Forge recovery made runnable by a later budget grant."""
+
+    if str(run.get("status") or "") not in {
+        "frontier_objective_unmet",
+        "frontier_leaf_decision_pending",
+    }:
+        return None
+    from ztare.leanmill.adapter_forge import AdapterGap
+
+    gap_row = read_json(directory / "adapter_gap.json", None)
+    navigation = run.get("navigation")
+    if not isinstance(gap_row, Mapping) or not isinstance(navigation, Mapping):
+        return None
+    try:
+        gap = AdapterGap.from_json(gap_row)
+    except (KeyError, TypeError, ValueError):
+        return None
+    request = gap.primitive_semantics_contract.get(
+        "theory_language_request"
+    )
+    if (
+        not isinstance(request, Mapping)
+        or str(request.get("source_context_hash") or "")
+        != str(run.get("context_hash") or "")
+    ):
+        return None
+    feedback = next(
+        (
+            dict(row)
+            for row in reversed(
+                navigation.get("objective_review_history") or ()
+            )
+            if isinstance(row, Mapping)
+            and row.get("schema")
+            == "leanmill.theory_language_compilation_feedback.v1"
+            and row.get("request_id") == request.get("request_id")
+            and str(row.get("reason") or "").startswith(
+                "adapter_forge_recovery_budget_unavailable:"
+            )
+        ),
+        None,
+    )
+    if feedback is None:
+        return None
+    evidence_refs = {
+        str(row) for row in feedback.get("evidence_refs") or ()
+    }
+    carried = {
+        str(row.get("evidence_ref") or ""): dict(row.get("receipt") or {})
+        for row in navigation.get("carried_evidence_receipts") or ()
+        if isinstance(row, Mapping)
+        and isinstance(row.get("receipt"), Mapping)
+    }
+    receipts = [carried.get(ref) for ref in evidence_refs]
+    if any(not isinstance(row, Mapping) for row in receipts):
+        return None
+    for receipt in receipts:
+        core = {
+            key: value
+            for key, value in receipt.items()
+            if key != "receipt_sha256"
+        }
+        if receipt.get("receipt_sha256") != content_hash(core):
+            return None
+    unavailable = next(
+        (
+            dict(row)
+            for row in receipts
+            if row.get("schema")
+            == "leanmill.adapter_forge_recovery_unavailable.v1"
+        ),
+        None,
+    )
+    transition = next(
+        (
+            dict(row)
+            for row in receipts
+            if row.get("schema")
+            == "leanmill.adapter_forge_recovery_transition.v1"
+        ),
+        None,
+    )
+    if (
+        unavailable is None
+        or transition is None
+        or unavailable.get("gap_id") != gap.gap_id
+        or transition.get("gap_id") != gap.gap_id
+        or unavailable.get("recovery_transition_receipt_sha256")
+        != transition.get("receipt_sha256")
+        or transition.get("request_id") != request.get("request_id")
+        or transition.get("context_hash") != run.get("context_hash")
+    ):
+        return None
+    reason = str(unavailable.get("reason") or "")
+    resource = reason.rsplit(":", maxsplit=1)[-1]
+    extension = _unconsumed_expansion_extension(
+        directory, resource=resource
+    )
+    if extension is None:
+        return None
+    completion = _read_adapter_forge_lifecycle_completion(directory, gap)
+    if (
+        not isinstance(completion, Mapping)
+        or completion.get("completion_sha256")
+        != transition.get("predecessor_completion_sha256")
+    ):
+        return None
+    return {
+        "gap": gap.to_json(),
+        "feedback": feedback,
+        "unavailability": unavailable,
+        "transition": transition,
+        "extension": extension,
+        "predecessor": dict(completion),
+    }
+
+
+def _active_reopened_adapter_recovery(
+    run: Mapping[str, Any],
+    *,
+    gap_id: str,
+    predecessor_completion_sha256: str,
+) -> dict[str, Any] | None:
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping):
+        return None
+    return next(
+        (
+            dict(row)
+            for row in reversed(
+                navigation.get("objective_review_history") or ()
+            )
+            if isinstance(row, Mapping)
+            and row.get("schema")
+            == "leanmill.adapter_forge_recovery_budget_extension_reopen.v1"
+            and row.get("gap_id") == gap_id
+            and row.get("predecessor_completion_sha256")
+            == predecessor_completion_sha256
+        ),
+        None,
+    )
+
+
+def _reopen_extended_adapter_recovery(attempt_dir: str | Path) -> Path:
+    """Restore a budget-blocked subordinate Forge recovery to its gap state."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("adapter recovery reopen requires an active run")
+    pending = _pending_extended_adapter_recovery(directory, run)
+    if pending is None:
+        return directory
+    gap = pending["gap"]
+    transition = pending["transition"]
+    unavailable = pending["unavailability"]
+    extension = pending["extension"]
+    core = {
+        "schema": (
+            "leanmill.adapter_forge_recovery_budget_extension_reopen.v1"
+        ),
+        "context_hash": str(run.get("context_hash") or ""),
+        "gap_id": str(gap["gap_id"]),
+        "request_id": _adapter_gap_request_id(gap),
+        "prior_run_digest": str(run.get("run_digest") or ""),
+        "predecessor_completion_sha256": str(
+            transition["predecessor_completion_sha256"]
+        ),
+        "recovery_transition_receipt_sha256": str(
+            transition["receipt_sha256"]
+        ),
+        "unavailability_receipt_sha256": str(
+            unavailable["receipt_sha256"]
+        ),
+        "extension_event_sha256": str(extension["event_sha256"]),
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(
+        directory
+        / (
+            "adapter_forge_recovery_budget_extension_reopen."
+            f"{receipt['receipt_sha256'][:16]}.json"
+        ),
+        receipt,
+    )
+    navigation = dict(run.get("navigation") or {})
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    history.append(receipt)
+    navigation["objective_review_history"] = history
+    navigation["adapter_gap"] = gap
+    run_core = {
+        **{
+            key: value
+            for key, value in run.items()
+            if key not in {"run_digest", "adapter_gap"}
+        },
+        "status": "blocked_adapter_gap",
+        "navigation": navigation,
+        "adapter_gap": gap,
+    }
+    write_json_atomic(
+        directory / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    return directory
+
+
+def _pending_adapter_gap_conformance_supersession(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find a gap whose rejection belongs to an older host contract."""
+
+    if str(run.get("status") or "") != "frontier_objective_unmet":
+        return None
+    from ztare.leanmill.adapter_forge import (
+        ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT,
+        AdapterGap,
+        _validated_adapter_forge_completion,
+        adapter_forge_gap_directory,
+        read_adapter_forge_completion,
+    )
+
+    gap_row = read_json(directory / "adapter_gap.json", None)
+    feedback = read_json(directory / "theory_language_compilation_feedback.json", None)
+    if not isinstance(gap_row, Mapping) or not isinstance(feedback, Mapping):
+        return None
+    try:
+        gap = AdapterGap.from_json(gap_row)
+    except (KeyError, TypeError, ValueError):
+        return None
+    request = gap.primitive_semantics_contract.get("theory_language_request") or {}
+    feedback_core = {
+        key: item for key, item in feedback.items() if key != "receipt_sha256"
+    }
+    if (
+        str(request.get("source_context_hash") or "")
+        != str(run.get("context_hash") or "")
+        or feedback.get("schema")
+        != "leanmill.theory_language_compilation_feedback.v1"
+        or feedback.get("receipt_sha256") != content_hash(feedback_core)
+        or feedback.get("outcome") != "rejected"
+        or feedback.get("request_id") != request.get("request_id")
+        or read_adapter_forge_completion(directory, gap) is not None
+    ):
+        return None
+    evidence_refs = {str(row) for row in feedback.get("evidence_refs") or ()}
+    gap_owner = adapter_forge_gap_directory(directory, gap.gap_id)
+    if gap_owner.is_symlink():
+        raise ValueError("historical AdapterForge gap owner is a symlink")
+    candidate_paths: list[Path] = [
+        gap_owner / "adapter_forge_completion.json",
+        directory / "adapter_forge_completion.json",
+    ]
+    conformance_root = gap_owner / "conformance_attempts"
+    if conformance_root.is_symlink():
+        raise ValueError("historical AdapterForge conformance root is a symlink")
+    if conformance_root.is_dir():
+        visited = 0
+        with os.scandir(conformance_root) as entries:
+            for entry in entries:
+                visited += 1
+                if visited > _MAX_REVIEWED_CONSTRUCTION_DIRECTORY_ENTRIES:
+                    raise ValueError(
+                        "historical AdapterForge directory-entry ceiling exceeded"
+                    )
+                if entry.is_symlink():
+                    raise ValueError(
+                        "historical AdapterForge conformance owner is a symlink"
+                    )
+                if not entry.is_dir(follow_symlinks=False):
+                    continue
+                candidate_paths.append(
+                    Path(entry.path) / "adapter_forge_completion.json"
+                )
+                if (
+                    len(candidate_paths)
+                    > _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES
+                ):
+                    raise ValueError(
+                        "historical AdapterForge candidate ceiling exceeded"
+                    )
+    read_budget = {"files": 0, "bytes": 0}
+    for path in candidate_paths:
+        completion = _read_bounded_reviewed_construction_artifact(
+            path,
+            label="historical AdapterForge completion",
+            aggregate_budget=read_budget,
+        )
+        if completion is None:
+            continue
+        historical_contract = str(
+            completion.get("host_conformance_contract") or ""
+        )
+        completion = _validated_adapter_forge_completion(
+            completion,
+            gap_id=gap.gap_id,
+            host_conformance_contract=historical_contract,
+        )
+        if (
+            historical_contract == ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT
+            or not evidence_refs.intersection(
+                str(row) for row in completion.get("evidence_refs") or ()
+            )
+        ):
+            continue
+        return {
+            "gap": gap.to_json(),
+            "feedback": dict(feedback),
+            "historical_completion": dict(completion),
+            "historical_completion_path": str(path.relative_to(directory)),
+            "current_host_conformance_contract": (
+                ADAPTER_FORGE_HOST_CONFORMANCE_CONTRACT
+            ),
+        }
+    return None
+
+
+def _reopen_superseded_adapter_gap(attempt_dir: str | Path) -> Path:
+    """Restore a gap after its prior host verdict loses compatibility."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("adapter-gap supersession requires an active run")
+    pending = _pending_adapter_gap_conformance_supersession(directory, run)
+    if pending is None:
+        return directory
+    gap = pending["gap"]
+    feedback = pending["feedback"]
+    historical = pending["historical_completion"]
+    core = {
+        "schema": "leanmill.adapter_forge_host_contract_supersession.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "gap_id": str(gap["gap_id"]),
+        "request_id": _adapter_gap_request_id(gap),
+        "prior_run_digest": str(run.get("run_digest") or ""),
+        "prior_feedback_receipt_sha256": str(feedback["receipt_sha256"]),
+        "historical_completion_sha256": str(
+            historical["completion_sha256"]
+        ),
+        "historical_completion_path": pending["historical_completion_path"],
+        "historical_host_conformance_contract": str(
+            historical.get("host_conformance_contract") or "unversioned_v1"
+        ),
+        "current_host_conformance_contract": pending[
+            "current_host_conformance_contract"
+        ],
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(
+        directory
+        / f"adapter_forge_host_contract_supersession.{receipt['receipt_sha256'][:16]}.json",
+        receipt,
+    )
+    navigation = dict(run.get("navigation") or {})
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    history.append(receipt)
+    navigation["objective_review_history"] = history
+    navigation["adapter_gap"] = gap
+    run_core = {
+        **{
+            key: value
+            for key, value in run.items()
+            if key not in {"run_digest", "adapter_gap"}
+        },
+        "status": "blocked_adapter_gap",
+        "navigation": navigation,
+        "adapter_gap": gap,
+    }
+    write_json_atomic(
+        directory / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    return directory
+
+
+def _reopen_extended_adapter_gap(attempt_dir: str | Path) -> Path:
+    """Project a validated resource grant back onto its pending gap."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("adapter-gap reopen requires an active run")
+    pending = _pending_extended_adapter_gap(directory, run)
+    if pending is None:
+        return directory
+    gap = pending["gap"]
+    extension = pending["extension"]
+    stop = run.get("budget_stop_receipt")
+    if not isinstance(stop, Mapping):
+        stop = read_json(directory / "budget_stop_receipt.json", None)
+    if not isinstance(stop, Mapping):
+        raise ValueError("adapter-gap reopen lost its budget-stop identity")
+    core = {
+        "schema": "leanmill.budget_extension_pending_action_reopen.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "gap_id": str(gap["gap_id"]),
+        "request_id": _adapter_gap_request_id(gap),
+        "prior_run_digest": str(run.get("run_digest") or ""),
+        "superseded_budget_stop_receipt": dict(stop),
+        "extension_event_sha256": str(extension["event_sha256"]),
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(
+        directory / f"budget_extension_reopen.{receipt['receipt_sha256'][:16]}.json",
+        receipt,
+    )
+    navigation = dict(run.get("navigation") or {})
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    history.append(receipt)
+    navigation["objective_review_history"] = history
+    navigation["adapter_gap"] = gap
+    run_core = {
+        **{
+            key: value
+            for key, value in run.items()
+            if key not in {"run_digest", "adapter_gap", "budget_stop_receipt"}
+        },
+        "status": "blocked_adapter_gap",
+        "navigation": navigation,
+        "adapter_gap": gap,
+        "budget_stop_receipt": None,
+    }
+    write_json_atomic(
+        directory / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    return directory
+
+
+def _boundary_hard_stop_reason(completion: Any) -> str:
+    """Return a typed terminal resource stop from one boundary completion."""
+
+    if not isinstance(completion, Mapping):
+        return ""
+    completion_core = {
+        key: value
+        for key, value in completion.items()
+        if key != "completion_sha256"
+    }
+    boundary = completion.get("boundary_result")
+    stop = completion.get("budget_stop_receipt")
+    if (
+        completion.get("completion_sha256") != content_hash(completion_core)
+        or not isinstance(boundary, Mapping)
+        or not isinstance(stop, Mapping)
+    ):
+        return ""
+    boundary_core = {
+        key: value for key, value in boundary.items() if key != "result_sha256"
+    }
+    stop_core = {
+        key: value for key, value in stop.items() if key != "receipt_sha256"
+    }
+    reason = str(boundary.get("stop_reason") or "")
+    if (
+        boundary.get("result_sha256") != content_hash(boundary_core)
+        or stop.get("receipt_sha256") != content_hash(stop_core)
+        or str(stop.get("reason") or "") != reason
+        or not reason.startswith((
+            "blocked_before_action",
+            "hard_cap_reached",
+            "user_stop",
+            "operator_stop",
+        ))
+    ):
+        return ""
+    return reason
+
+
+def _materialize_boundary_budget_stop(
+    directory: Path,
+    run: Mapping[str, Any],
+    completion: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Turn a partial boundary hard stop into a resumable campaign state."""
+
+    reason = _boundary_hard_stop_reason(completion)
+    if not reason:
+        raise ValueError("boundary budget-stop transition lacks a hard stop")
+    if run.get("status") not in {
+        "frontier_candidates_frozen_awaiting_boundary_approval",
+        "frontier_objective_discharged",
+    }:
+        raise ValueError("boundary budget-stop transition crossed run state")
+    boundary = dict(completion["boundary_result"])
+    stop = dict(completion["budget_stop_receipt"])
+    if str(run.get("context_hash") or "") != str(
+        boundary.get("context_hash") or ""
+    ):
+        raise ValueError("boundary budget stop crossed context identity")
+    transition_core = {
+        "schema": "leanmill.boundary_budget_stop_transition.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "source_run_digest": str(run.get("run_digest") or ""),
+        "boundary_result_sha256": str(boundary["result_sha256"]),
+        "boundary_completion_sha256": str(completion["completion_sha256"]),
+        "budget_stop_receipt_sha256": str(stop["receipt_sha256"]),
+        "reason": reason,
+        "authority": "boundary_resource_lifecycle",
+    }
+    transition = {
+        **transition_core,
+        "receipt_sha256": content_hash(transition_core),
+    }
+    transition_path = directory / (
+        "boundary_budget_stop_transition."
+        + str(transition["receipt_sha256"])[:16]
+        + ".json"
+    )
+    prior = read_json(transition_path, None)
+    if isinstance(prior, Mapping) and dict(prior) != transition:
+        raise ValueError("boundary budget-stop transition changed identity")
+    if prior is None:
+        write_json_atomic(transition_path, transition)
+    navigation = dict(run.get("navigation") or {})
+    navigation["boundary_budget_stop_transition"] = transition
+    run_core = {
+        **{key: value for key, value in run.items() if key != "run_digest"},
+        "status": "budget_stopped",
+        "navigation": navigation,
+        "budget_stop_receipt": stop,
+    }
+    updated = {**run_core, "run_digest": content_hash(run_core)}
+    write_json_atomic(directory / "run.json", updated)
+    return updated
+
+
+def _pending_extended_boundary(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find a stopped frozen boundary made runnable by a resource grant."""
+
+    if run.get("status") != "budget_stopped":
+        return None
+    navigation = run.get("navigation")
+    completion = read_json(directory / "boundary_completion.json", None)
+    if (
+        not isinstance(navigation, Mapping)
+        or not navigation.get("finalists")
+        or not _boundary_hard_stop_reason(completion)
+    ):
+        return None
+    extension = _phase_extension_after_stop(
+        directory, run, phase="boundary"
+    )
+    return (
+        {"completion": dict(completion), "extension": extension}
+        if extension is not None
+        else None
+    )
+
+
+def _pending_extended_navigation(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find a stopped navigator made runnable by a later resource grant."""
+
+    if run.get("status") != "budget_stopped":
+        return None
+    stop = run.get("budget_stop_receipt")
+    if not isinstance(stop, Mapping):
+        stop = read_json(directory / "budget_stop_receipt.json", None)
+    if (
+        not isinstance(stop, Mapping)
+        or not str(stop.get("reason") or "").startswith(
+            "blocked_before_action:navigation:"
+        )
+        or stop.get("context_hash") != run.get("context_hash")
+    ):
+        return None
+    extension = _phase_extension_after_stop(
+        directory, run, phase="navigation"
+    )
+    return (
+        {"stop": dict(stop), "extension": extension}
+        if extension is not None
+        else None
+    )
+
+
+def _reopen_extended_navigation(attempt_dir: str | Path) -> Path:
+    """Restore the active context after its navigation resource is extended."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("navigation reopen requires an active run")
+    pending = _pending_extended_navigation(directory, run)
+    if pending is None:
+        return directory
+    stop = pending["stop"]
+    extension = pending["extension"]
+    core = {
+        "schema": "leanmill.navigation_budget_extension_reopen.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "prior_run_digest": str(run.get("run_digest") or ""),
+        "superseded_budget_stop_receipt": stop,
+        "extension_event_sha256": str(extension["event_sha256"]),
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(
+        directory
+        / (
+            "navigation_budget_extension_reopen."
+            f"{receipt['receipt_sha256'][:16]}.json"
+        ),
+        receipt,
+    )
+    navigation = dict(run.get("navigation") or {})
+    navigation["navigation_budget_extension_reopen"] = receipt
+    run_core = {
+        **{
+            key: value
+            for key, value in run.items()
+            if key not in {"run_digest", "budget_stop_receipt"}
+        },
+        "status": "frontier_objective_unmet",
+        "navigation": navigation,
+        "budget_stop_receipt": None,
+    }
+    write_json_atomic(
+        directory / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    return directory
+
+
+def _reopen_extended_boundary(attempt_dir: str | Path) -> Path:
+    """Restore a frozen boundary after its blocked resource is extended."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("boundary reopen requires an active run")
+    pending = _pending_extended_boundary(directory, run)
+    if pending is None:
+        return directory
+    completion = pending["completion"]
+    extension = pending["extension"]
+    stop = run.get("budget_stop_receipt")
+    if not isinstance(stop, Mapping):
+        stop = read_json(directory / "budget_stop_receipt.json", None)
+    if not isinstance(stop, Mapping):
+        raise ValueError("boundary reopen lost its budget-stop identity")
+    core = {
+        "schema": "leanmill.boundary_budget_extension_reopen.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "prior_run_digest": str(run.get("run_digest") or ""),
+        "boundary_completion_sha256": str(completion["completion_sha256"]),
+        "superseded_budget_stop_receipt": dict(stop),
+        "extension_event_sha256": str(extension["event_sha256"]),
+        "authority": "deterministic_campaign_lifecycle",
+    }
+    receipt = {**core, "receipt_sha256": content_hash(core)}
+    write_json_atomic(
+        directory
+        / f"boundary_budget_extension_reopen.{receipt['receipt_sha256'][:16]}.json",
+        receipt,
+    )
+    navigation = dict(run.get("navigation") or {})
+    navigation["boundary_budget_extension_reopen"] = receipt
+    run_core = {
+        **{
+            key: value
+            for key, value in run.items()
+            if key not in {"run_digest", "budget_stop_receipt"}
+        },
+        "status": "frontier_candidates_frozen_awaiting_boundary_approval",
+        "navigation": navigation,
+        "budget_stop_receipt": None,
+    }
+    write_json_atomic(
+        directory / "run.json",
+        {**run_core, "run_digest": content_hash(run_core)},
+    )
+    return directory
 
 
 def advance_frontier_language_expansion(
@@ -2586,18 +5706,58 @@ def advance_frontier_language_expansion(
             "attempt_dir": str(directory),
         }
 
-    completion = read_json(directory / "adapter_forge_completion.json", None)
-    if not isinstance(completion, Mapping):
+    from ztare.leanmill.adapter_forge import AdapterGap
+
+    active_gap = AdapterGap.from_json(
+        run.get("adapter_gap") or read_json(directory / "adapter_gap.json", {})
+    )
+    completion = _read_adapter_forge_lifecycle_completion(
+        directory, active_gap, migrate_legacy=True
+    )
+    recovery_reopened = (
+        _active_reopened_adapter_recovery(
+            run,
+            gap_id=active_gap.gap_id,
+            predecessor_completion_sha256=str(
+                completion.get("completion_sha256") or ""
+            ),
+        )
+        if isinstance(completion, Mapping)
+        else None
+    )
+    if completion is None or recovery_reopened is not None:
         if forge_fn is None:
             return {
                 "schema": "leanmill.theory_language_advancement.v1",
                 "status": "adapter_forge_required",
-                "gap_id": str((run.get("adapter_gap") or {}).get("gap_id") or ""),
+                "gap_id": active_gap.gap_id,
                 "attempt_dir": str(directory),
             }
-        completion = forge_fn(directory, _attempt_lease=_attempt_lease)
+        try:
+            completion = forge_fn(directory, _attempt_lease=_attempt_lease)
+        except BudgetExceeded as exc:
+            feedback = _language_outcome_feedback(
+                directory,
+                run,
+                outcome="unavailable",
+                reason="adapter_forge_budget_unavailable:" + exc.reason,
+                evidence_refs=(),
+            )
+            if resume_fn is not None:
+                resume_fn(directory, _attempt_lease=_attempt_lease)
+            return {
+                "schema": "leanmill.theory_language_advancement.v1",
+                "status": "unavailable",
+                "feedback_receipt_sha256": feedback["receipt_sha256"],
+                "attempt_dir": str(directory),
+            }
     if not isinstance(completion, Mapping):
         raise ValueError("language advancement forge returned no typed outcome")
+    if (
+        completion.get("schema") == "leanmill.adapter_forge_completion.v1"
+        and str(completion.get("gap_id") or "") != active_gap.gap_id
+    ):
+        raise ValueError("adapter forge completion crossed gap identity")
     if completion.get("status") in {
         "adapter_proposal_rejected_return_to_search",
         "frontier_objective_unmet",
@@ -2605,6 +5765,20 @@ def advance_frontier_language_expansion(
     }:
         if read_json(directory / "run.json", {}).get("status") == "blocked_adapter_gap":
             reason = str(completion.get("reason") or completion.get("status") or "")
+            quarantine = completion.get("quarantine_receipt")
+            unavailable = completion.get("unavailability_receipt")
+            recovery_transition = completion.get("recovery_transition")
+            recovery_input = completion.get("recovery_input")
+            evidence_receipts = tuple(
+                dict(row)
+                for row in (
+                    quarantine,
+                    unavailable,
+                    recovery_transition,
+                    recovery_input,
+                )
+                if isinstance(row, Mapping)
+            )
             _language_outcome_feedback(
                 directory,
                 run,
@@ -2617,6 +5791,7 @@ def advance_frontier_language_expansion(
                 evidence_refs=tuple(
                     str(row) for row in completion.get("evidence_refs") or ()
                 ),
+                evidence_receipts=evidence_receipts,
             )
         if resume_fn is not None:
             resume_fn(directory, _attempt_lease=_attempt_lease)
@@ -2626,6 +5801,34 @@ def advance_frontier_language_expansion(
             "attempt_dir": str(directory),
         }
 
+    construction_result = advance_reviewed_construction_campaign(
+        directory,
+        completion=completion,
+        run=run,
+        blueprint=blueprint,
+        resume_fn=resume_fn,
+        _attempt_lease=_attempt_lease,
+        hooks=ReviewedConstructionHooks(
+            approved_parameterization=(
+                _approved_construction_parameterization_candidate
+            ),
+            language_outcome_feedback=_language_outcome_feedback,
+            approved_family=_approved_finite_family_candidate,
+            persist_ratification_admissions=(
+                _persist_reviewed_family_member_ratification_admissions
+            ),
+            family_synthesis_provenance=(
+                _reviewed_family_synthesis_provenance
+            ),
+            frozen_terminal_lineage_ids=_frozen_terminal_lineage_ids,
+            language_request_from_run=_language_request_from_run,
+            current_family_exhaustion_discharge=(
+                _current_reviewed_family_exhaustion_discharge
+            ),
+        ),
+    )
+    if construction_result is not None:
+        return construction_result
     application, forge_receipt = _approved_functor_application(directory, completion)
     if application is None:
         feedback = _language_outcome_feedback(
@@ -2701,7 +5904,90 @@ _BOUNDARY_FAILURE_STATUSES = {
     "source_known_single_premise_consequence",
     "refuted_by_larger_model",
     "refuted_by_kernel",
+    "proof_rejected_by_governance",
 }
+
+
+def _boundary_governance_recheck_state(
+    completion: Mapping[str, Any],
+    recheck: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Bind saved proof bytes to their deterministic governance replay."""
+
+    boundary = completion.get("boundary_result")
+    if not isinstance(boundary, Mapping):
+        return {"required": False, "complete": True, "statuses": {}}
+    expected: dict[tuple[tuple[str, ...], str], str] = {}
+    for row in boundary.get("query_results") or ():
+        if not isinstance(row, Mapping):
+            continue
+        lean = row.get("lean")
+        governed = lean.get("governed_attempt") if isinstance(lean, Mapping) else None
+        proof = str(
+            governed.get("proof_text") if isinstance(governed, Mapping) else ""
+        ).strip()
+        if not proof:
+            continue
+        key = (
+            tuple(str(value) for value in row.get("premise_formula_ids") or ()),
+            str(row.get("target_formula_id") or ""),
+        )
+        if key in expected:
+            raise ValueError("saved Lean proof identity is duplicated")
+        expected[key] = content_hash({"proof_text": proof})
+    if not expected:
+        return {"required": False, "complete": True, "statuses": {}}
+    if not isinstance(recheck, Mapping):
+        return {"required": True, "complete": False, "statuses": {}}
+
+    core = {
+        key: value for key, value in recheck.items() if key != "receipt_sha256"
+    }
+    boundary_core = {
+        key: value for key, value in boundary.items() if key != "result_sha256"
+    }
+    if (
+        recheck.get("schema")
+        != "leanmill.frontier_boundary_governance_recheck.v1"
+        or recheck.get("receipt_sha256") != content_hash(core)
+        or boundary.get("result_sha256") != content_hash(boundary_core)
+        or recheck.get("boundary_result_sha256")
+        != boundary.get("result_sha256")
+    ):
+        raise ValueError("boundary governance recheck crossed boundary identity")
+    statuses: dict[tuple[tuple[str, ...], str], str] = {}
+    for raw in recheck.get("query_rechecks") or ():
+        if not isinstance(raw, Mapping):
+            raise ValueError("boundary governance recheck row is malformed")
+        key = (
+            tuple(str(value) for value in raw.get("premise_formula_ids") or ()),
+            str(raw.get("target_formula_id") or ""),
+        )
+        governed = raw.get("recheck")
+        governed_core = {
+            name: value
+            for name, value in dict(governed or {}).items()
+            if name != "receipt_sha256"
+        }
+        if (
+            key not in expected
+            or key in statuses
+            or raw.get("proof_digest") != expected[key]
+            or not isinstance(governed, Mapping)
+            or governed.get("schema")
+            != "leanmill.governed_consequence_attempt.v1"
+            or governed.get("receipt_sha256") != content_hash(governed_core)
+        ):
+            raise ValueError("boundary governance recheck row changed proof identity")
+        statuses[key] = str(governed.get("status") or "unresolved")
+    if set(statuses) != set(expected):
+        raise ValueError("boundary governance recheck omitted a saved proof")
+    return {
+        "required": True,
+        "complete": True,
+        "statuses": statuses,
+        "receipt_sha256": str(recheck["receipt_sha256"]),
+    }
 
 
 def _consume_theory_task_discharge(
@@ -2714,6 +6000,11 @@ def _consume_theory_task_discharge(
     from ztare.common.schema_routes import append_consequence_event
     from ztare.common.task_discharge import bind_task_discharge_receipt
     from ztare.leanmill.theory_program import TheoryProgram
+    from ztare.leanmill.theory_task_discharge_successor import (
+        CONSTRUCTION_RATIFICATION_TRANSITION_KEY,
+        construction_ratification_predecessor_ref,
+        validate_construction_ratification_successor_bundle,
+    )
 
     boundary = completion.get("boundary_result")
     if not isinstance(boundary, Mapping):
@@ -2739,7 +6030,29 @@ def _consume_theory_task_discharge(
     ):
         raise ValueError("theory-task discharge bundle does not replay")
 
+    predecessor_bundle_ref = construction_ratification_predecessor_ref(bundle)
+    if CONSTRUCTION_RATIFICATION_TRANSITION_KEY in bundle:
+        bundle = validate_construction_ratification_successor_bundle(
+            bundle, boundary
+        )
+
     navigation = dict(run.get("navigation") or {})
+    current_consumption = navigation.get("theory_task_discharge")
+    current_bundle_ref = (
+        str(current_consumption.get("bundle_receipt_sha256") or "")
+        if isinstance(current_consumption, Mapping)
+        else ""
+    )
+    if current_bundle_ref and current_bundle_ref != bundle_ref:
+        current_predecessor_ref = str(
+            current_consumption.get("predecessor_bundle_receipt_sha256") or ""
+        )
+        if current_predecessor_ref == bundle_ref:
+            # A stale replay of the immutable predecessor cannot move campaign
+            # state backward after its successor has already been consumed.
+            return dict(run)
+        if predecessor_bundle_ref != current_bundle_ref:
+            raise ValueError("theory-task discharge successor crossed state history")
     expected: dict[tuple[str, str], tuple[str, dict[str, Any]]] = {}
     for finalist in navigation.get("finalists") or ():
         if not isinstance(finalist, Mapping) or not isinstance(
@@ -2869,12 +6182,30 @@ def _consume_theory_task_discharge(
         "authorized_program_ids": sorted(authorized_ids),
         "consumed_task_count": len(verified_rows),
         "authority": "frontier_campaign_state_machine",
+        **(
+            {
+                "predecessor_bundle_receipt_sha256": predecessor_bundle_ref,
+                "successor_task_discharge": dict(bundle),
+            }
+            if predecessor_bundle_ref
+            else {}
+        ),
     }
     consumption = {
         **consumption_core,
         "receipt_sha256": content_hash(consumption_core),
     }
-    consumption_path = directory / "theory_task_discharge_consumption.json"
+    canonical_consumption_path = (
+        directory / "theory_task_discharge_consumption.json"
+    )
+    canonical_consumption = read_json(canonical_consumption_path, None)
+    consumption_path = (
+        canonical_consumption_path
+        if not isinstance(canonical_consumption, Mapping)
+        or dict(canonical_consumption) == consumption
+        else directory
+        / f"theory_task_discharge_consumption.{bundle_ref[:16]}.json"
+    )
     prior_consumption = read_json(consumption_path, None)
     if isinstance(prior_consumption, Mapping):
         if dict(prior_consumption) != consumption:
@@ -2994,10 +6325,1663 @@ def _consume_theory_task_discharge(
             _persist_terminal_obligation_receipt(
                 directory,
                 prefix="lineage_disposition",
-                identity=str(disposition["lineage_id"]),
+                identity=_lineage_disposition_storage_identity(disposition),
                 receipt=disposition,
             )
     return updated
+
+
+def _pending_reviewed_family_member_ratifications(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> tuple[dict[str, Any], ...]:
+    """Read immutable family-origin admissions owned by the active run."""
+
+    from ztare.leanmill.finite_construction_family import (
+        validate_finite_construction_family_execution,
+    )
+    from ztare.leanmill.reviewed_family_member_ratification import (
+        validate_reviewed_family_member_ratification_admission,
+    )
+
+    if run.get("status") != "frontier_objective_witness_found_pending_ratification":
+        return ()
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping):
+        raise ValueError("family ratification run lacks frozen navigation")
+    refs = navigation.get(
+        "reviewed_family_member_ratification_admission_sha256s"
+    )
+    if not isinstance(refs, list) or not refs or any(
+        not isinstance(ref, str) or not ref for ref in refs
+    ) or len(refs) != len(set(refs)):
+        raise ValueError("family ratification run lacks exact admission identities")
+    execution_raw = navigation.get("finite_construction_family_execution")
+    if not isinstance(execution_raw, Mapping):
+        raise ValueError("family ratification run lacks its family execution")
+    execution = validate_finite_construction_family_execution(execution_raw)
+    if execution.get("status") != "witness_found":
+        raise ValueError("family ratification run carries no verified witness")
+    request = _language_request_from_run(run)
+    blueprint = FrontierTheoryBlueprint.from_json(
+        read_json(directory / "blueprint.json", {})
+    )
+    from ztare.leanmill.finite_construction_family import (
+        construction_witness_interface,
+    )
+
+    interface = construction_witness_interface(
+        blueprint.adapter_id, dict(blueprint.adapter_config)
+    )
+    if (
+        execution.get("context_hash") != run.get("context_hash")
+        or execution.get("request_id") != request.request_id
+        or execution.get("adapter_id") != blueprint.adapter_id
+        or execution.get("target_interface_sha256")
+        != interface.get("interface_sha256")
+    ):
+        raise ValueError("family ratification execution crossed campaign identity")
+
+    by_ref: dict[str, dict[str, Any]] = {}
+    for ref in refs:
+        if re.fullmatch(r"[0-9a-f]{64}", ref) is None:
+            raise ValueError("family ratification admission identity is malformed")
+        path = directory / (
+            "reviewed_family_member_ratification_admission."
+            + ref[:16]
+            + ".json"
+        )
+        raw = _read_bounded_reviewed_construction_artifact(
+            path,
+            label="family ratification admission",
+        )
+        if raw is None:
+            raise ValueError("family ratification admission artifact is missing")
+        admission = validate_reviewed_family_member_ratification_admission(raw)
+        if admission["receipt_sha256"] != ref:
+            raise ValueError("family ratification admission slot crossed identity")
+        by_ref[ref] = admission
+    admissions = tuple(by_ref[ref] for ref in refs)
+    for admission in admissions:
+        if (
+            admission.get("request_id") != request.request_id
+            or admission.get("context_hash") != run.get("context_hash")
+            or admission.get("family_execution_receipt_sha256")
+            != execution.get("receipt_sha256")
+            or admission.get("family_receipt_sha256")
+            != execution.get("family_receipt_sha256")
+            or admission.get("adapter_id") != execution.get("adapter_id")
+            or admission.get("interface_sha256")
+            != execution.get("target_interface_sha256")
+        ):
+            raise ValueError("family ratification admission crossed active execution")
+    # Action selection is structural and read-only.  Backend admission and
+    # target replay belong to the leased ratification execution below.
+    return admissions
+
+
+_MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES = 64_000_000
+_MAX_REVIEWED_CONSTRUCTION_LEGACY_TOTAL_BYTES = 128_000_000
+_MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES = 64
+_MAX_REVIEWED_CONSTRUCTION_DIRECTORY_ENTRIES = 20_000
+
+
+def _reviewed_construction_identity(value: Any, *, label: str) -> str:
+    identity = str(value or "")
+    if re.fullmatch(r"[0-9a-f]{64}", identity) is None:
+        raise ValueError(f"{label} identity is malformed")
+    return identity
+
+
+def _read_bounded_reviewed_construction_artifact(
+    path: Path,
+    *,
+    label: str,
+    aggregate_budget: dict[str, int] | None = None,
+) -> dict[str, Any] | None:
+    """Read one exact authority slot without following links or over-reading."""
+
+    flags = os.O_RDONLY
+    if hasattr(os, "O_CLOEXEC"):
+        flags |= os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        fd = os.open(path, flags)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise ValueError(f"{label} authority slot is unavailable") from exc
+    try:
+        metadata = os.fstat(fd)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError(f"{label} authority slot is not a regular file")
+        if metadata.st_size > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+            raise ValueError(f"{label} exceeds its byte ceiling")
+        chunks: list[bytes] = []
+        observed = 0
+        while True:
+            chunk = os.read(
+                fd,
+                min(
+                    1_048_576,
+                    _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES + 1 - observed,
+                ),
+            )
+            if not chunk:
+                break
+            chunks.append(chunk)
+            observed += len(chunk)
+            if observed > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+                raise ValueError(f"{label} exceeds its byte ceiling")
+        if aggregate_budget is not None:
+            files = int(aggregate_budget.get("files", 0)) + 1
+            total_bytes = int(aggregate_budget.get("bytes", 0)) + observed
+            if files > _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES:
+                raise ValueError(f"{label} candidate ceiling exceeded")
+            if total_bytes > _MAX_REVIEWED_CONSTRUCTION_LEGACY_TOTAL_BYTES:
+                raise ValueError(f"{label} aggregate byte ceiling exceeded")
+            aggregate_budget["files"] = files
+            aggregate_budget["bytes"] = total_bytes
+        try:
+            raw = json.loads(b"".join(chunks))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ValueError(f"{label} is malformed") from exc
+        if not isinstance(raw, Mapping):
+            raise ValueError(f"{label} is not an object")
+        return dict(raw)
+    finally:
+        os.close(fd)
+
+
+def _read_bounded_reviewed_construction_artifact_at(
+    directory_fd: int,
+    filename: str,
+    *,
+    label: str,
+    aggregate_budget: dict[str, int] | None = None,
+) -> dict[str, Any] | None:
+    """Read one frozen child of an already-open authority directory."""
+
+    if Path(filename).name != filename or filename in {"", ".", ".."}:
+        raise ValueError(f"{label} filename is malformed")
+    flags = os.O_RDONLY
+    if hasattr(os, "O_CLOEXEC"):
+        flags |= os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        fd = os.open(filename, flags, dir_fd=directory_fd)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise ValueError(f"{label} authority slot is unavailable") from exc
+    try:
+        metadata = os.fstat(fd)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError(f"{label} authority slot is not a regular file")
+        if metadata.st_size > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+            raise ValueError(f"{label} exceeds its byte ceiling")
+        chunks: list[bytes] = []
+        observed = 0
+        while True:
+            chunk = os.read(
+                fd,
+                min(
+                    1_048_576,
+                    _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES + 1 - observed,
+                ),
+            )
+            if not chunk:
+                break
+            chunks.append(chunk)
+            observed += len(chunk)
+            if observed > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+                raise ValueError(f"{label} exceeds its byte ceiling")
+        if aggregate_budget is not None:
+            files = int(aggregate_budget.get("files", 0)) + 1
+            total_bytes = int(aggregate_budget.get("bytes", 0)) + observed
+            if files > _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES:
+                raise ValueError(f"{label} candidate ceiling exceeded")
+            if total_bytes > _MAX_REVIEWED_CONSTRUCTION_LEGACY_TOTAL_BYTES:
+                raise ValueError(f"{label} aggregate byte ceiling exceeded")
+            aggregate_budget["files"] = files
+            aggregate_budget["bytes"] = total_bytes
+        try:
+            raw = json.loads(b"".join(chunks))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ValueError(f"{label} is malformed") from exc
+        if not isinstance(raw, Mapping):
+            raise ValueError(f"{label} is not an object")
+        return dict(raw)
+    finally:
+        os.close(fd)
+
+
+def _bounded_reviewed_construction_legacy_paths(
+    directory: Path,
+    *,
+    filename_pattern: re.Pattern[str],
+    label: str,
+) -> tuple[Path, ...]:
+    """Enumerate only a bounded flat set of pre-owner-slot artifacts."""
+
+    if directory.is_symlink() or not directory.is_dir():
+        raise ValueError(f"{label} campaign directory is unavailable")
+    paths: list[Path] = []
+    total_bytes = 0
+    visited = 0
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            visited += 1
+            if visited > _MAX_REVIEWED_CONSTRUCTION_DIRECTORY_ENTRIES:
+                raise ValueError(f"{label} directory-entry ceiling exceeded")
+            if filename_pattern.fullmatch(entry.name) is None:
+                continue
+            if entry.is_symlink() or not entry.is_file(follow_symlinks=False):
+                raise ValueError(f"{label} legacy artifact is not a regular file")
+            size = int(entry.stat(follow_symlinks=False).st_size)
+            if size > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+                raise ValueError(f"{label} legacy artifact exceeds its byte ceiling")
+            total_bytes += size
+            if total_bytes > _MAX_REVIEWED_CONSTRUCTION_LEGACY_TOTAL_BYTES:
+                raise ValueError(f"{label} legacy aggregate byte ceiling exceeded")
+            paths.append(Path(entry.path))
+            if len(paths) > _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES:
+                raise ValueError(f"{label} legacy candidate ceiling exceeded")
+    return tuple(sorted(paths))
+
+
+def _persist_bounded_reviewed_construction_artifact(
+    path: Path,
+    row: Mapping[str, Any],
+    *,
+    label: str,
+) -> None:
+    existing = _read_bounded_reviewed_construction_artifact(path, label=label)
+    if existing is not None and existing != dict(row):
+        raise ValueError(f"{label} authority slot conflicts")
+    if existing is None:
+        payload = json.dumps(dict(row), indent=2, sort_keys=True) + "\n"
+        if len(payload.encode("utf-8")) > _MAX_REVIEWED_CONSTRUCTION_ARTIFACT_BYTES:
+            raise ValueError(f"{label} exceeds its byte ceiling")
+        write_json_atomic(path, dict(row))
+
+
+def _lineage_synthesis_input_owner_path(
+    directory: Path,
+    input_sha256: Any,
+) -> Path:
+    identity = _reviewed_construction_identity(
+        input_sha256, label="lineage synthesis input"
+    )
+    return directory / f"lineage_synthesis_input.by-digest.{identity}.json"
+
+
+def _family_member_ratification_owner_path(
+    directory: Path,
+    admission_sha256: Any,
+) -> Path:
+    identity = _reviewed_construction_identity(
+        admission_sha256, label="family-member ratification admission"
+    )
+    return directory / (
+        f"reviewed_family_member_ratification.by-admission.{identity}.json"
+    )
+
+
+def _family_exhaustion_observation_owner_path(
+    directory: Path,
+    execution_sha256: Any,
+) -> Path:
+    identity = _reviewed_construction_identity(
+        execution_sha256, label="family exhaustion execution"
+    )
+    return directory / (
+        f"reviewed_family_exhaustion_observation.by-family-execution.{identity}.json"
+    )
+
+
+def _construction_ratification_owner_path(
+    directory: Path,
+    *,
+    contract: Any,
+    boundary: Mapping[str, Any],
+    prior_open_receipt: Any,
+) -> Path:
+    owner_identity = content_hash(
+        {
+            "schema": "leanmill.construction_ratification_owner.v1",
+            "task_contract_sha256": str(contract.sha256),
+            "outer_boundary_result_sha256": str(
+                boundary.get("result_sha256") or ""
+            ),
+            "prior_open_receipt_sha256": content_hash(
+                prior_open_receipt.to_dict()
+            ),
+        }
+    )
+    return directory / (
+        f"construction_artifact_ratification.by-action.{owner_identity}.json"
+    )
+
+
+def _reviewed_family_synthesis_provenance(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]] | None:
+    """Resolve the exact persisted synthesis input for the active request."""
+
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping):
+        raise ValueError("family discharge has no frozen navigation")
+    raw_decision = navigation.get("lineage_synthesis")
+    if not isinstance(raw_decision, Mapping):
+        return None
+    decision = dict(raw_decision)
+    if (
+        decision.get("schema") != "leanmill.lineage_synthesis_decision.v1"
+        or decision.get("route") != "escalate_language"
+    ):
+        return None
+    input_ref = str(decision.get("input_sha256") or "")
+    if not input_ref:
+        return None
+    input_ref = _reviewed_construction_identity(
+        input_ref, label="family discharge synthesis input"
+    )
+    matches: dict[str, dict[str, Any]] = {}
+    owner_path = _lineage_synthesis_input_owner_path(directory, input_ref)
+    owner = _read_bounded_reviewed_construction_artifact(
+        owner_path, label="family discharge synthesis input"
+    )
+    candidate_rows: list[tuple[Path, dict[str, Any]]] = []
+    if owner is not None:
+        candidate_rows.append((owner_path, owner))
+    else:
+        epoch = int(decision.get("context_epoch", -1))
+        if epoch < 0:
+            raise ValueError("family discharge synthesis epoch is malformed")
+        legacy_pattern = re.compile(
+            rf"lineage_synthesis_input\.epoch-{epoch:03d}"
+            rf"(?:\.wave-[0-9]{{3}})?\.json"
+        )
+        for path in _bounded_reviewed_construction_legacy_paths(
+            directory,
+            filename_pattern=legacy_pattern,
+            label="family discharge synthesis input",
+        ):
+            raw = _read_bounded_reviewed_construction_artifact(
+                path, label="family discharge synthesis input"
+            )
+            if raw is not None and raw.get("input_sha256") == input_ref:
+                candidate_rows.append((path, raw))
+    for _path, row in candidate_rows:
+        core = {key: value for key, value in row.items() if key != "input_sha256"}
+        if (
+            row.get("schema") != "leanmill.lineage_synthesis_input.v1"
+            or row.get("input_sha256") != content_hash(core)
+        ):
+            raise ValueError("family discharge synthesis input changed identity")
+        matches[content_hash(row)] = row
+    if not matches:
+        return None
+    if len(matches) != 1:
+        raise ValueError("family discharge synthesis input has conflicting copies")
+    synthesis_input = next(iter(matches.values()))
+    _persist_bounded_reviewed_construction_artifact(
+        owner_path,
+        synthesis_input,
+        label="family discharge synthesis input",
+    )
+    return synthesis_input, decision
+
+
+def _existing_reviewed_family_member_ratification_aggregate(
+    directory: Path,
+    admission: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    from ztare.leanmill.reviewed_family_member_ratification import (
+        validate_reviewed_family_member_ratification_aggregate,
+    )
+
+    admission_ref = _reviewed_construction_identity(
+        admission.get("receipt_sha256"),
+        label="family-member ratification admission",
+    )
+    matches: dict[str, dict[str, Any]] = {}
+    owner_path = _family_member_ratification_owner_path(directory, admission_ref)
+    owner = _read_bounded_reviewed_construction_artifact(
+        owner_path, label="family-member ratification aggregate"
+    )
+    candidates: list[dict[str, Any]] = []
+    if owner is not None:
+        candidates.append(owner)
+    else:
+        legacy_pattern = re.compile(
+            r"reviewed_family_member_ratification\.[0-9a-f]{16}\.json"
+        )
+        for path in _bounded_reviewed_construction_legacy_paths(
+            directory,
+            filename_pattern=legacy_pattern,
+            label="family-member ratification aggregate",
+        ):
+            raw = _read_bounded_reviewed_construction_artifact(
+                path, label="family-member ratification aggregate"
+            )
+            if raw is not None and raw.get("admission_sha256") == admission_ref:
+                candidates.append(raw)
+    for raw in candidates:
+        if raw.get("admission_sha256") != admission_ref:
+            raise ValueError("family-member ratification owner crossed admission")
+        if not isinstance(raw, Mapping):
+            continue
+        aggregate = validate_reviewed_family_member_ratification_aggregate(raw)
+        matches[str(aggregate["aggregate_sha256"])] = aggregate
+    if len(matches) > 1:
+        raise ValueError("family-member ratification has conflicting first fires")
+    aggregate = next(iter(matches.values()), None)
+    if aggregate is not None:
+        _persist_bounded_reviewed_construction_artifact(
+            owner_path,
+            aggregate,
+            label="family-member ratification aggregate",
+        )
+    return aggregate
+
+
+def _current_reviewed_family_objective_discharge(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Replay the family-origin terminal transition from its immutable inputs."""
+
+    navigation = run.get("navigation")
+    raw = (
+        navigation.get("reviewed_family_objective_discharge")
+        if isinstance(navigation, Mapping)
+        else None
+    )
+    if not isinstance(raw, Mapping):
+        return None
+    blueprint = FrontierTheoryBlueprint.from_json(
+        read_json(directory / "blueprint.json", {})
+    )
+    from ztare.leanmill.reviewed_family_objective_discharge import (
+        validate_reviewed_family_objective_discharge,
+    )
+
+    discharge = validate_reviewed_family_objective_discharge(
+        raw, current_blueprint=blueprint
+    )
+    if discharge.get("source_run_digest") == run.get("run_digest"):
+        raise ValueError("terminal family run replaced its pending source digest")
+    expected_path = directory / (
+        "reviewed_family_objective_discharge."
+        + str(discharge["receipt_sha256"])[:16]
+        + ".json"
+    )
+    persisted = _read_bounded_reviewed_construction_artifact(
+        expected_path,
+        label="family objective discharge",
+    )
+    if persisted != discharge:
+        raise ValueError("family objective discharge lost its immutable artifact")
+    return discharge
+
+
+def _pending_reviewed_family_exhaustion_observation(
+    directory: Path,
+    *,
+    current_blueprint: FrontierTheoryBlueprint | None = None,
+    execution_refs: Sequence[str] = (),
+) -> tuple[dict[str, Any], ...]:
+    """Read immutable family-null observations owned by the current blueprint."""
+
+    from ztare.leanmill.reviewed_family_exhaustion_discharge import (
+        validate_reviewed_family_exhaustion_observation,
+    )
+
+    exact_refs = tuple(
+        sorted(
+            {
+                str(ref)
+                for ref in execution_refs
+                if re.fullmatch(r"[0-9a-f]{64}", str(ref)) is not None
+            }
+        )
+    )
+    if len(exact_refs) > _MAX_REVIEWED_CONSTRUCTION_LEGACY_CANDIDATES:
+        raise ValueError("family exhaustion execution-reference ceiling exceeded")
+    candidates: list[tuple[Path, dict[str, Any]]] = []
+    for execution_ref in exact_refs:
+        path = _family_exhaustion_observation_owner_path(
+            directory, execution_ref
+        )
+        raw = _read_bounded_reviewed_construction_artifact(
+            path, label="family exhaustion observation"
+        )
+        if raw is not None:
+            candidates.append((path, raw))
+    if not candidates:
+        legacy_pattern = re.compile(
+            r"reviewed_family_exhaustion_observation\.[0-9a-f]{16}\.json"
+        )
+        for path in _bounded_reviewed_construction_legacy_paths(
+            directory,
+            filename_pattern=legacy_pattern,
+            label="family exhaustion observation",
+        ):
+            raw = _read_bounded_reviewed_construction_artifact(
+                path, label="family exhaustion observation"
+            )
+            if raw is not None:
+                candidates.append((path, raw))
+
+    rows: dict[str, dict[str, Any]] = {}
+    for _path, raw in candidates:
+        row = validate_reviewed_family_exhaustion_observation(raw)
+        execution_ref = _reviewed_construction_identity(
+            row.get("finite_family_execution_sha256"),
+            label="family exhaustion execution",
+        )
+        if exact_refs and execution_ref not in set(exact_refs):
+            continue
+        if (
+            current_blueprint is not None
+            and row.get("blueprint_id") != current_blueprint.blueprint_id
+        ):
+            continue
+        _persist_bounded_reviewed_construction_artifact(
+            _family_exhaustion_observation_owner_path(directory, execution_ref),
+            row,
+            label="family exhaustion observation",
+        )
+        rows[str(row["receipt_sha256"])] = row
+    return tuple(rows[key] for key in sorted(rows))
+
+
+def _current_reviewed_family_exhaustion_discharge(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Replay a completed family-null transition from its immutable artifact."""
+
+    navigation = run.get("navigation")
+    raw = (
+        navigation.get("reviewed_family_exhaustion_discharge")
+        if isinstance(navigation, Mapping)
+        else None
+    )
+    if not isinstance(raw, Mapping):
+        return None
+    blueprint = FrontierTheoryBlueprint.from_json(
+        read_json(directory / "blueprint.json", {})
+    )
+    from ztare.leanmill.reviewed_family_exhaustion_discharge import (
+        validate_reviewed_family_exhaustion_discharge,
+    )
+
+    discharge = validate_reviewed_family_exhaustion_discharge(
+        raw, current_blueprint=blueprint
+    )
+    if discharge.get("next_representation_run_digest") == run.get("run_digest"):
+        raise ValueError("terminal family-null run replaced its successor source")
+    path = directory / (
+        "reviewed_family_exhaustion_discharge."
+        + str(discharge["receipt_sha256"])[:16]
+        + ".json"
+    )
+    persisted = _read_bounded_reviewed_construction_artifact(
+        path,
+        label="family exhaustion discharge",
+    )
+    if persisted != discharge:
+        raise ValueError("family exhaustion discharge lost its immutable artifact")
+    return discharge
+
+
+def _maybe_finalize_reviewed_family_exhaustion(
+    directory: Path,
+    *,
+    blueprint: FrontierTheoryBlueprint,
+) -> dict[str, Any] | None:
+    """Close only after a later leaf authors an execution-bound representation."""
+
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        return None
+    if _current_reviewed_family_exhaustion_discharge(directory, run) is not None:
+        return dict(run)
+    navigation = run.get("navigation")
+    if (
+        run.get("status") != "frontier_language_expansion_requested"
+        or not isinstance(navigation, Mapping)
+        or not isinstance(navigation.get("language_expansion_request"), Mapping)
+        or not isinstance(navigation.get("lineage_synthesis"), Mapping)
+    ):
+        return None
+    next_request = TheoryLanguageExpansionRequest.from_json(
+        navigation["language_expansion_request"]
+    )
+    observations = tuple(
+        row
+        for row in _pending_reviewed_family_exhaustion_observation(
+            directory,
+            current_blueprint=blueprint,
+            execution_refs=tuple(str(ref) for ref in next_request.evidence_refs),
+        )
+        if row["finite_family_execution_sha256"]
+        in set(next_request.evidence_refs)
+    )
+    if not observations:
+        return None
+    if len(observations) != 1:
+        raise ValueError(
+            "next representation ambiguously cites multiple exhausted families"
+        )
+    observation = observations[0]
+    feedback_matches = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+        and row.get("schema")
+        == "leanmill.theory_language_compilation_feedback.v1"
+        and row.get("request_id") == observation["language_request_id"]
+        and observation["finite_family_execution_sha256"]
+        in set(row.get("evidence_refs") or ())
+    ]
+    if len(feedback_matches) != 1:
+        return None
+    feedback = feedback_matches[0]
+    wave = _language_feedback_wave_binding(directory, feedback)
+    if wave is None:
+        return None
+    required_refs = {
+        str(observation["finite_family_execution_sha256"]),
+        str(feedback["receipt_sha256"]),
+    }
+    if not required_refs <= set(next_request.evidence_refs):
+        return None
+
+    from ztare.leanmill.reviewed_family_exhaustion_discharge import (
+        build_reviewed_family_exhaustion_discharge,
+    )
+
+    discharge = build_reviewed_family_exhaustion_discharge(
+        observation=observation,
+        feedback=feedback,
+        feedback_wave_binding=wave,
+        next_representation_run=run,
+    )
+    path = directory / (
+        "reviewed_family_exhaustion_discharge."
+        + str(discharge["receipt_sha256"])[:16]
+        + ".json"
+    )
+    _persist_bounded_reviewed_construction_artifact(
+        path,
+        discharge,
+        label="family exhaustion discharge",
+    )
+
+    from ztare.leanmill.campaign_closure_gate import (
+        lineage_dispositions_from_reviewed_family_exhaustion_discharge,
+    )
+
+    dispositions = lineage_dispositions_from_reviewed_family_exhaustion_discharge(
+        discharge, current_blueprint=blueprint
+    )
+    for disposition in dispositions:
+        _persist_terminal_obligation_receipt(
+            directory,
+            prefix="lineage_disposition",
+            identity=_lineage_disposition_storage_identity(disposition),
+            receipt=disposition,
+        )
+    terminal_navigation = dict(navigation)
+    terminal_navigation["reviewed_family_exhaustion_discharge"] = discharge
+    core = {
+        **{key: value for key, value in run.items() if key != "run_digest"},
+        "status": "frontier_objective_discharged",
+        "navigation": terminal_navigation,
+    }
+    updated = {**core, "run_digest": content_hash(core)}
+    write_json_atomic(directory / "run.json", updated)
+    return updated
+
+
+def _pending_construction_artifact_ratifications(
+    directory: Path,
+    run: Mapping[str, Any],
+    completion: Mapping[str, Any] | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Read construction obligations whose intermediate bundle was consumed."""
+
+    from ztare.common.task_discharge import bind_task_discharge_receipt
+    from ztare.leanmill.construction_artifact_ratification import (
+        CONSTRUCTION_ARTIFACT_RATIFICATION_CAPABILITY,
+    )
+    from ztare.leanmill.theory_task_discharge_successor import (
+        CONSTRUCTION_RATIFICATION_TRANSITION_KEY,
+    )
+
+    completion = (
+        dict(completion)
+        if isinstance(completion, Mapping)
+        else read_json(directory / "boundary_completion.json", None)
+    )
+    if not isinstance(completion, Mapping):
+        return ()
+    if not completion:
+        # The lifecycle reader uses an empty mapping to represent an absent
+        # boundary completion.  Only non-empty, signed rows enter replay.
+        return ()
+    completion_core = {
+        key: item for key, item in completion.items() if key != "completion_sha256"
+    }
+    if completion.get("completion_sha256") != content_hash(completion_core):
+        raise ValueError("construction ratification completion digest mismatch")
+    boundary = completion.get("boundary_result")
+    bundle = completion.get("theory_task_discharge")
+    if not isinstance(boundary, Mapping) or not isinstance(bundle, Mapping):
+        return ()
+    boundary_core = {
+        key: item for key, item in boundary.items() if key != "result_sha256"
+    }
+    bundle_core = {
+        key: item for key, item in bundle.items() if key != "receipt_sha256"
+    }
+    boundary_ref = str(boundary.get("result_sha256") or "")
+    bundle_ref = str(bundle.get("receipt_sha256") or "")
+    if (
+        boundary_ref != content_hash(boundary_core)
+        or bundle_ref != content_hash(bundle_core)
+        or bundle.get("boundary_result_sha256") != boundary_ref
+        or CONSTRUCTION_RATIFICATION_TRANSITION_KEY in bundle
+    ):
+        raise ValueError("construction ratification predecessor does not replay")
+    navigation = run.get("navigation")
+    consumption = (
+        navigation.get("theory_task_discharge")
+        if isinstance(navigation, Mapping)
+        else None
+    )
+    if (
+        not isinstance(consumption, Mapping)
+        or consumption.get("bundle_receipt_sha256") != bundle_ref
+    ):
+        return ()
+
+    pending: list[dict[str, Any]] = []
+    for raw in bundle.get("rows") or ():
+        if not isinstance(raw, Mapping):
+            raise ValueError("construction ratification predecessor row is malformed")
+        row = dict(raw)
+        row_core = {
+            key: item for key, item in row.items() if key != "receipt_sha256"
+        }
+        contract, receipt = bind_task_discharge_receipt(
+            row.get("contract") or {}, row.get("receipt") or {}
+        )
+        observed = receipt.observed if isinstance(receipt.observed, Mapping) else {}
+        if (
+            row.get("receipt_sha256") != content_hash(row_core)
+            or row.get("contract_sha256") != contract.sha256
+        ):
+            raise ValueError("construction ratification predecessor row changed")
+        if (
+            row.get("source") == "explicit_task"
+            and receipt.status == "open"
+            and observed.get("next_obligation")
+            == CONSTRUCTION_ARTIFACT_RATIFICATION_CAPABILITY
+        ):
+            pending.append(
+                {
+                    "program_id": str(row.get("program_id") or ""),
+                    "contract": contract,
+                    "prior_open_receipt": receipt,
+                    "predecessor_row_receipt_sha256": str(
+                        row["receipt_sha256"]
+                    ),
+                }
+            )
+    return tuple(pending)
+
+
+def _existing_construction_ratification_aggregate(
+    directory: Path,
+    *,
+    contract: Any,
+    boundary: Mapping[str, Any],
+    prior_open_receipt: Any,
+) -> dict[str, Any] | None:
+    from ztare.leanmill.construction_artifact_ratification import (
+        validate_construction_artifact_ratification_aggregate,
+    )
+
+    owner_path = _construction_ratification_owner_path(
+        directory,
+        contract=contract,
+        boundary=boundary,
+        prior_open_receipt=prior_open_receipt,
+    )
+    owner = _read_bounded_reviewed_construction_artifact(
+        owner_path, label="construction ratification aggregate"
+    )
+    matches: dict[str, dict[str, Any]] = {}
+    candidates: list[dict[str, Any]] = []
+    if owner is not None:
+        candidates.append(owner)
+    else:
+        legacy_pattern = re.compile(
+            r"construction_artifact_ratification\.[0-9a-f]{16}\.json"
+        )
+        for path in _bounded_reviewed_construction_legacy_paths(
+            directory,
+            filename_pattern=legacy_pattern,
+            label="construction ratification aggregate",
+        ):
+            raw = _read_bounded_reviewed_construction_artifact(
+                path, label="construction ratification aggregate"
+            )
+            if raw is not None:
+                candidates.append(raw)
+    for raw in candidates:
+        if raw.get("task_contract_sha256") != contract.sha256:
+            if owner is not None:
+                raise ValueError("construction ratification owner crossed task")
+            continue
+        formal_input = (raw.get("ratification_result") or {}).get("formal_input")
+        if (
+            not isinstance(formal_input, Mapping)
+            or formal_input.get("outer_boundary_result_sha256")
+            != boundary.get("result_sha256")
+        ):
+            if owner is not None:
+                raise ValueError("construction ratification owner crossed boundary")
+            continue
+        aggregate = validate_construction_artifact_ratification_aggregate(
+            contract, boundary, prior_open_receipt, raw
+        )
+        matches[str(aggregate["aggregate_sha256"])] = aggregate
+    if len(matches) > 1:
+        raise ValueError("construction ratification action has conflicting first fires")
+    aggregate = next(iter(matches.values()), None)
+    if aggregate is not None:
+        _persist_bounded_reviewed_construction_artifact(
+            owner_path,
+            aggregate,
+            label="construction ratification aggregate",
+        )
+    return aggregate
+
+
+def _classified_reviewed_family_unavailability(exc: Exception) -> dict[str, Any]:
+    """Project one typed execution failure without discarding its coordinates."""
+
+    from ztare.leanmill.construction_parameterization import (
+        ConstructionBackendCapabilityUnavailable,
+        ConstructionResourceCeilingExceeded,
+    )
+    from ztare.leanmill.finite_construction_family import (
+        FiniteConstructionFamilyResourceUnavailable,
+    )
+
+    row: dict[str, Any] = {
+        "reason_code": str(getattr(exc, "reason_code", str(exc))),
+        "error_type": type(exc).__name__,
+    }
+    if isinstance(exc, ConstructionResourceCeilingExceeded):
+        row.update(
+            {
+                "resource": str(exc.resource),
+                "observed": int(exc.observed),
+                "ceiling": int(exc.ceiling),
+                "counters": dict(exc.counters),
+                "certified_assignment_count": int(
+                    exc.certified_assignment_count
+                ),
+                "attempted_assignment_count": int(
+                    exc.attempted_assignment_count
+                ),
+            }
+        )
+    elif isinstance(exc, ConstructionBackendCapabilityUnavailable):
+        row.update(
+            {
+                "operation": str(exc.operation),
+                "adapter_id": str(exc.adapter_id),
+                "capability_id": str(exc.capability_id),
+                "cause_error_type": str(exc.error_type),
+                "certified_assignment_count": int(
+                    exc.certified_assignment_count
+                ),
+                "attempted_assignment_count": int(
+                    exc.attempted_assignment_count
+                ),
+            }
+        )
+    elif isinstance(exc, FiniteConstructionFamilyResourceUnavailable):
+        row.update(
+            {
+                "resource": "finite_construction_family_execution_bytes",
+                "observed": int(exc.observed),
+                "ceiling": int(exc.ceiling),
+                "counters": {
+                    "completed_members": int(exc.completed_members),
+                    "attempted_members": int(exc.attempted_members),
+                },
+            }
+        )
+    elif isinstance(exc, BudgetLedgerResourceUnavailable):
+        row.update(
+            {
+                "resource": "exploration_budget_ledger_bytes",
+                "observed": int(exc.observed),
+                "ceiling": int(exc.ceiling),
+                "counters": {},
+            }
+        )
+    return row
+
+
+def _execute_reviewed_family_member_ratifications(
+    directory: Path,
+    run: Mapping[str, Any],
+    admissions: Sequence[Mapping[str, Any]],
+    *,
+    lean_root: str | Path | None,
+    timeout_s: int | None,
+    ratify_fn: Callable[..., Mapping[str, Any]] | None,
+) -> dict[str, Any]:
+    """Advance family-origin verified artifacts without relabeling authorship."""
+
+    from ztare.leanmill.finite_construction_family import (
+        FiniteConstructionFamilyResourceUnavailable,
+        construction_witness_interface,
+        validate_finite_construction_family_execution,
+    )
+    from ztare.leanmill.construction_parameterization import (
+        ConstructionBackendCapabilityUnavailable,
+        ConstructionResourceCeilingExceeded,
+    )
+    from ztare.leanmill.reviewed_family_member_ratification import (
+        ratify_reviewed_family_member_action,
+        validate_reviewed_family_member_ratification_aggregate,
+    )
+
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping):
+        raise ValueError("family ratification requires frozen navigation")
+    execution = validate_finite_construction_family_execution(
+        navigation.get("finite_construction_family_execution") or {}
+    )
+    blueprint = FrontierTheoryBlueprint.from_json(
+        read_json(directory / "blueprint.json", {})
+    )
+    request = _language_request_from_run(run)
+    witness_interface = construction_witness_interface(
+        blueprint.adapter_id, dict(blueprint.adapter_config)
+    )
+    root = (
+        Path(lean_root)
+        if lean_root is not None
+        else Path(__file__).resolve().parents[3] / "ztare_proofs"
+    )
+    selected_timeout_s = (
+        int(timeout_s)
+        if timeout_s is not None
+        else max(
+            1,
+            int(
+                blueprint.verification_plan.get(
+                    "formal_task_timeout_ms",
+                    blueprint.verification_plan.get("lean_timeout_ms", 500_000),
+                )
+            )
+            // 1_000,
+        )
+    )
+    if selected_timeout_s < 1:
+        raise ValueError("family construction ratification timeout must be positive")
+    family_ratifier = ratify_fn or ratify_reviewed_family_member_action
+
+    budget_row = read_json(directory / "budget.json", None)
+    ledger = None
+    ledger_open_error: BudgetLedgerResourceUnavailable | None = None
+    if isinstance(budget_row, Mapping):
+        try:
+            ledger = ExplorationBudgetLedger(
+                directory / "budget.events.jsonl",
+                ExplorationBudget.from_json(budget_row),
+                attempt_id=directory.name,
+            )
+            ledger.recover_interrupted_wall_clock()
+            ledger.recover_interrupted_reservations()
+            ledger.resume_wall_clock()
+        except BudgetLedgerResourceUnavailable as exc:
+            ledger_open_error = exc
+            ledger = None
+
+    aggregates: list[dict[str, Any]] = []
+    budget_error: BudgetExceeded | None = None
+    cold_replay_error: dict[str, Any] | None = None
+    formal_stage_error: dict[str, Any] | None = None
+    replay_stage = "cold_replay"
+    provider_calls_before = (
+        int(ledger.state()["usage"]["provider_calls"])
+        if ledger is not None
+        else 0
+    )
+    try:
+        if ledger_open_error is not None:
+            raise ledger_open_error
+        if ledger is None:
+            raise BudgetExceeded("missing_exploration_budget")
+        admissions = _replay_reviewed_family_member_ratification_admissions(
+            directory,
+            execution=execution,
+            request=request,
+            witness_interface=witness_interface,
+            admissions=admissions,
+            budget_ledger=ledger,
+        )
+        replay_stage = "formal_ratification"
+        for admission in admissions:
+            aggregate = _existing_reviewed_family_member_ratification_aggregate(
+                directory, admission
+            )
+            if aggregate is None:
+                admission_ref = str(admission.get("receipt_sha256") or "")
+                reservation = (
+                    ledger.reserve(
+                        f"boundary:family-construction-ratification:{admission_ref}",
+                        "boundary",
+                        {
+                            "lean_attempts": 1,
+                            "lean_millis": selected_timeout_s * 1_000,
+                        },
+                    )
+                    if ledger is not None
+                    else None
+                )
+                started_ns = time.monotonic_ns()
+                try:
+                    aggregate = validate_reviewed_family_member_ratification_aggregate(
+                        dict(
+                            family_ratifier(
+                                admission,
+                                substrate=root,
+                                timeout_s=selected_timeout_s,
+                            )
+                        )
+                    )
+                except Exception:
+                    if ledger is not None and reservation is not None:
+                        ledger.commit(reservation)
+                    raise
+                result = aggregate["ratification_result"]
+                if ledger is not None and reservation is not None:
+                    if result.get("stage") in {"formal_interface", "formal_certificate"}:
+                        ledger.release(
+                            reservation,
+                            reason="family_construction_ratification_pre_kernel_unavailable",
+                        )
+                    else:
+                        elapsed_ms = max(
+                            1, (time.monotonic_ns() - started_ns) // 1_000_000
+                        )
+                        ledger.commit(
+                            reservation,
+                            {
+                                "lean_attempts": 1,
+                                "lean_millis": min(
+                                    selected_timeout_s * 1_000, elapsed_ms
+                                ),
+                            },
+                        )
+                aggregate_path = _family_member_ratification_owner_path(
+                    directory,
+                    admission_ref,
+                )
+                _persist_bounded_reviewed_construction_artifact(
+                    aggregate_path,
+                    aggregate,
+                    label="family-member ratification aggregate",
+                )
+            else:
+                aggregate = validate_reviewed_family_member_ratification_aggregate(
+                    aggregate
+                )
+            aggregates.append(aggregate)
+            if aggregate.get("status") == "ratified":
+                break
+    except BudgetExceeded as exc:
+        if replay_stage == "cold_replay":
+            cold_replay_error = {
+                "reason_code": exc.reason,
+                "error_type": type(exc).__name__,
+            }
+        else:
+            budget_error = exc
+    except BudgetLedgerResourceUnavailable as exc:
+        classified = _classified_reviewed_family_unavailability(exc)
+        if replay_stage == "cold_replay":
+            cold_replay_error = classified
+        else:
+            formal_stage_error = classified
+    except (
+        ConstructionBackendCapabilityUnavailable,
+        ConstructionResourceCeilingExceeded,
+        FiniteConstructionFamilyResourceUnavailable,
+    ) as exc:
+        cold_replay_error = _classified_reviewed_family_unavailability(exc)
+    finally:
+        if ledger is not None:
+            provider_calls_changed = (
+                int(ledger.state()["usage"]["provider_calls"])
+                != provider_calls_before
+            )
+            ledger.freeze_wall_clock(reason="family_construction_ratification_runner_exit")
+            if provider_calls_changed:
+                raise ValueError("family cold replay consumed provider calls")
+
+    attempted_refs = [str(row["aggregate_sha256"]) for row in aggregates]
+    ratified = next(
+        (row for row in aggregates if row.get("status") == "ratified"), None
+    )
+    feedback_override: tuple[str, str] | None = None
+    cold_replay_receipt: dict[str, Any] | None = None
+    formal_stage_receipt: dict[str, Any] | None = None
+    if cold_replay_error is not None:
+        reason_code = str(cold_replay_error["reason_code"])
+        replay_core = {
+            "schema": "leanmill.reviewed_family_cold_replay_unavailable.v1",
+            "family_execution_receipt_sha256": str(execution["receipt_sha256"]),
+            "family_receipt_sha256": str(execution["family_receipt_sha256"]),
+            "context_hash": str(execution["context_hash"]),
+            "adapter_id": str(execution["adapter_id"]),
+            "stage": "cold_replay",
+            **cold_replay_error,
+            "provider_calls_before": provider_calls_before,
+            "provider_calls_after": (
+                int(ledger.state()["usage"]["provider_calls"])
+                if ledger is not None
+                else 0
+            ),
+            "outcome": "unavailable",
+            "authority": "frontier_campaign_state_machine",
+        }
+        cold_replay_receipt = {
+            **replay_core,
+            "receipt_sha256": content_hash(replay_core),
+        }
+        replay_path = directory / (
+            "reviewed_family_cold_replay_unavailable."
+            + cold_replay_receipt["receipt_sha256"][:16]
+            + ".json"
+        )
+        _persist_bounded_reviewed_construction_artifact(
+            replay_path,
+            cold_replay_receipt,
+            label="family cold-replay unavailable receipt",
+        )
+        feedback_override = (
+            "unavailable",
+            "reviewed_family_cold_replay_unavailable:" + reason_code,
+        )
+    if budget_error is not None:
+        feedback_override = (
+            "unavailable",
+            "reviewed_family_member_ratification_budget_unavailable:"
+            + budget_error.reason,
+        )
+    if formal_stage_error is not None:
+        reason_code = str(formal_stage_error["reason_code"])
+        formal_core = {
+            "schema": "leanmill.reviewed_family_formal_stage_unavailable.v1",
+            "family_execution_receipt_sha256": str(execution["receipt_sha256"]),
+            "family_receipt_sha256": str(execution["family_receipt_sha256"]),
+            "context_hash": str(execution["context_hash"]),
+            "adapter_id": str(execution["adapter_id"]),
+            "stage": "formal_ratification",
+            **formal_stage_error,
+            "provider_calls_before": provider_calls_before,
+            "provider_calls_after": (
+                int(ledger.state()["usage"]["provider_calls"])
+                if ledger is not None
+                else 0
+            ),
+            "outcome": "unavailable",
+            "authority": "frontier_campaign_state_machine",
+        }
+        formal_stage_receipt = {
+            **formal_core,
+            "receipt_sha256": content_hash(formal_core),
+        }
+        _persist_bounded_reviewed_construction_artifact(
+            directory
+            / (
+                "reviewed_family_formal_stage_unavailable."
+                + formal_stage_receipt["receipt_sha256"][:16]
+                + ".json"
+            ),
+            formal_stage_receipt,
+            label="family formal-stage unavailable receipt",
+        )
+        feedback_override = (
+            "unavailable",
+            "reviewed_family_formal_stage_unavailable:" + reason_code,
+        )
+    if ratified is not None and feedback_override is None:
+        admission_by_ref = {
+            str(row.get("receipt_sha256") or ""): dict(row) for row in admissions
+        }
+        ratified_admission = admission_by_ref.get(
+            str(ratified.get("admission_sha256") or "")
+        )
+        if ratified_admission is None:
+            raise ValueError("ratified family aggregate lost its admission")
+        request = _language_request_from_run(run)
+        provenance = _reviewed_family_synthesis_provenance(directory, run)
+        frozen_lineages = _frozen_terminal_lineage_ids(navigation)
+        if provenance is None or not frozen_lineages:
+            feedback_override = (
+                "unavailable",
+                "reviewed_family_objective_discharge_provenance_unavailable",
+            )
+        else:
+            synthesis_input, synthesis_decision = provenance
+            from ztare.leanmill.reviewed_family_objective_discharge import (
+                build_reviewed_family_objective_discharge,
+            )
+
+            discharge = build_reviewed_family_objective_discharge(
+                source_pending_run=run,
+                blueprint=blueprint,
+                active_request=request,
+                synthesis_input=synthesis_input,
+                synthesis_decision=synthesis_decision,
+                family_execution=execution,
+                admission=ratified_admission,
+                ratification_aggregate=ratified,
+                attempted_ratification_aggregate_sha256s=attempted_refs,
+                frozen_lineage_ids=frozen_lineages,
+            )
+    if ratified is not None and feedback_override is None:
+        discharge_path = directory / (
+            "reviewed_family_objective_discharge."
+            + str(discharge["receipt_sha256"])[:16]
+            + ".json"
+        )
+        _persist_bounded_reviewed_construction_artifact(
+            discharge_path,
+            discharge,
+            label="family objective discharge",
+        )
+        from ztare.leanmill.campaign_closure_gate import (
+            lineage_dispositions_from_reviewed_family_objective_discharge,
+        )
+
+        dispositions = lineage_dispositions_from_reviewed_family_objective_discharge(
+            discharge, current_blueprint=blueprint
+        )
+        for disposition in dispositions:
+            _persist_terminal_obligation_receipt(
+                directory,
+                prefix="lineage_disposition",
+                identity=_lineage_disposition_storage_identity(disposition),
+                receipt=disposition,
+            )
+        current_navigation = dict(navigation)
+        current_navigation["reviewed_family_objective_discharge"] = discharge
+        current_navigation["reviewed_family_member_ratification_aggregate_sha256s"] = (
+            attempted_refs
+        )
+        run_core = {
+            **{key: value for key, value in run.items() if key != "run_digest"},
+            "status": "frontier_objective_discharged",
+            "navigation": current_navigation,
+        }
+        updated = {**run_core, "run_digest": content_hash(run_core)}
+        write_json_atomic(directory / "run.json", updated)
+        completion_status = "objective_discharged"
+        feedback_ref = ""
+    else:
+        results = [dict(row["ratification_result"]) for row in aggregates]
+        unavailable = (
+            feedback_override is not None and feedback_override[0] == "unavailable"
+        ) or (
+            bool(results)
+            and all(row.get("status") == "unavailable" for row in results)
+        )
+        reason = (
+            feedback_override[1]
+            if feedback_override is not None
+            else ";".join(
+                dict.fromkeys(str(row.get("reason_code") or "") for row in results)
+            )
+            or "family_ratification_returned_no_result"
+        )
+        evidence_receipts: tuple[Mapping[str, Any], ...] = (
+            execution,
+            *tuple(dict(row) for row in admissions),
+            *tuple(results),
+            *((cold_replay_receipt,) if cold_replay_receipt is not None else ()),
+            *((formal_stage_receipt,) if formal_stage_receipt is not None else ()),
+        )
+        evidence_refs = tuple(
+            dict.fromkeys(
+                [
+                    str(execution["receipt_sha256"]),
+                    *[str(row["receipt_sha256"]) for row in admissions],
+                    *[str(row["receipt_sha256"]) for row in results],
+                    *attempted_refs,
+                    *(
+                        [str(cold_replay_receipt["receipt_sha256"])]
+                        if cold_replay_receipt is not None
+                        else []
+                    ),
+                    *(
+                        [str(formal_stage_receipt["receipt_sha256"])]
+                        if formal_stage_receipt is not None
+                        else []
+                    ),
+                ]
+            )
+        )
+        feedback = _language_outcome_feedback(
+            directory,
+            run,
+            outcome="unavailable" if unavailable else "rejected",
+            reason=(
+                reason
+                if feedback_override is not None
+                else "reviewed_family_member_ratification:" + reason
+            ),
+            evidence_refs=evidence_refs,
+            evidence_receipts=evidence_receipts,
+        )
+        updated = read_json(directory / "run.json", {})
+        completion_status = "returned_to_navigation"
+        feedback_ref = str(feedback["receipt_sha256"])
+
+    core = {
+        "schema": "leanmill.reviewed_family_member_ratification_completion.v1",
+        "status": completion_status,
+        "attempt_dir": str(directory),
+        "family_execution_receipt_sha256": str(execution["receipt_sha256"]),
+        "admission_sha256s": [
+            str(row.get("receipt_sha256") or "") for row in admissions
+        ],
+        "aggregate_sha256s": attempted_refs,
+        "feedback_receipt_sha256": feedback_ref,
+        "run_digest": str(updated.get("run_digest") or ""),
+        "authority": "frontier_campaign_state_machine",
+    }
+    completion = {**core, "receipt_sha256": content_hash(core)}
+    path = directory / (
+        "reviewed_family_member_ratification_completion."
+        + str(completion["receipt_sha256"])[:16]
+        + ".json"
+    )
+    existing = read_json(path, None)
+    if isinstance(existing, Mapping) and dict(existing) != completion:
+        raise ValueError("family ratification completion path conflicts")
+    if existing is None:
+        write_json_atomic(path, completion)
+    return completion
+
+
+def execute_frontier_construction_artifact_ratification(
+    attempt_dir: str | Path,
+    *,
+    lean_root: str | Path | None = None,
+    timeout_s: int | None = None,
+    ratify_fn: Callable[..., Mapping[str, Any]] | None = None,
+    family_ratify_fn: Callable[..., Mapping[str, Any]] | None = None,
+    _attempt_lease: _FrontierAttemptLease | None = None,
+) -> dict[str, Any]:
+    """Advance verified construction tasks through provider-free governance."""
+
+    directory = Path(attempt_dir)
+    if _attempt_lease is None:
+        with frontier_attempt_lease(
+            directory, action="construction_artifact_ratification"
+        ) as lease:
+            return execute_frontier_construction_artifact_ratification(
+                directory,
+                lean_root=lean_root,
+                timeout_s=timeout_s,
+                ratify_fn=ratify_fn,
+                family_ratify_fn=family_ratify_fn,
+                _attempt_lease=lease,
+            )
+    _bind_active_attempt_epoch(_attempt_lease, directory)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("construction ratification requires an active run")
+    family_pending = _pending_reviewed_family_member_ratifications(
+        directory, run
+    )
+    if family_pending:
+        return _execute_reviewed_family_member_ratifications(
+            directory,
+            run,
+            family_pending,
+            lean_root=lean_root,
+            timeout_s=timeout_s,
+            ratify_fn=family_ratify_fn,
+        )
+    if _current_reviewed_family_objective_discharge(directory, run) is not None:
+        return {
+            "schema": "leanmill.construction_artifact_ratification_completion.v1",
+            "status": "no_pending_construction_ratification",
+            "attempt_dir": str(directory),
+            "run_digest": str(run.get("run_digest") or ""),
+        }
+    completion = read_json(directory / "boundary_completion.json", None)
+    if not isinstance(completion, Mapping):
+        raise ValueError("construction ratification requires a completed boundary")
+    pending = _pending_construction_artifact_ratifications(
+        directory, run, completion
+    )
+    if not pending:
+        return {
+            "schema": "leanmill.construction_artifact_ratification_completion.v1",
+            "status": "no_pending_construction_ratification",
+            "attempt_dir": str(directory),
+            "run_digest": str(run.get("run_digest") or ""),
+        }
+
+    boundary = dict(completion["boundary_result"])
+    predecessor = dict(completion["theory_task_discharge"])
+    root = (
+        Path(lean_root)
+        if lean_root is not None
+        else Path(__file__).resolve().parents[3] / "ztare_proofs"
+    )
+    blueprint = FrontierTheoryBlueprint.from_json(
+        read_json(directory / "blueprint.json", {})
+    )
+    selected_timeout_s = (
+        int(timeout_s)
+        if timeout_s is not None
+        else max(
+            1,
+            int(
+                blueprint.verification_plan.get(
+                    "formal_task_timeout_ms",
+                    blueprint.verification_plan.get("lean_timeout_ms", 500_000),
+                )
+            )
+            // 1_000,
+        )
+    )
+    if selected_timeout_s < 1:
+        raise ValueError("construction ratification timeout must be positive")
+    if ratify_fn is None:
+        from ztare.leanmill.construction_artifact_ratification import (
+            ratify_construction_artifact_action,
+        )
+
+        ratify_fn = ratify_construction_artifact_action
+
+    budget_row = read_json(directory / "budget.json", None)
+    ledger = None
+    if isinstance(budget_row, Mapping):
+        ledger = ExplorationBudgetLedger(
+            directory / "budget.events.jsonl",
+            ExplorationBudget.from_json(budget_row),
+            attempt_id=directory.name,
+        )
+        ledger.recover_interrupted_wall_clock()
+        ledger.recover_interrupted_reservations()
+        ledger.resume_wall_clock()
+
+    replacements: list[dict[str, Any]] = []
+    aggregate_refs: list[str] = []
+    try:
+        for row in pending:
+            contract = row["contract"]
+            prior = row["prior_open_receipt"]
+            aggregate = _existing_construction_ratification_aggregate(
+                directory,
+                contract=contract,
+                boundary=boundary,
+                prior_open_receipt=prior,
+            )
+            if aggregate is None:
+                from ztare.leanmill.construction_artifact_ratification import (
+                    validate_construction_artifact_ratification_aggregate,
+                )
+
+                reservation = (
+                    ledger.reserve(
+                        f"boundary:construction-ratification:{contract.sha256}",
+                        "boundary",
+                        {
+                            "lean_attempts": 1,
+                            "lean_millis": selected_timeout_s * 1_000,
+                        },
+                    )
+                    if ledger is not None
+                    else None
+                )
+                started_ns = time.monotonic_ns()
+                try:
+                    aggregate = validate_construction_artifact_ratification_aggregate(
+                        contract,
+                        boundary,
+                        prior,
+                        dict(
+                            ratify_fn(
+                                contract,
+                                boundary,
+                                prior,
+                                substrate=root,
+                                timeout_s=selected_timeout_s,
+                            )
+                        )
+                    )
+                except Exception:
+                    if ledger is not None and reservation is not None:
+                        ledger.commit(reservation)
+                    raise
+                result = aggregate.get("ratification_result") or {}
+                stage = str(result.get("stage") or "")
+                if ledger is not None and reservation is not None:
+                    if stage in {"formal_interface", "formal_certificate"}:
+                        ledger.release(
+                            reservation,
+                            reason="construction_ratification_pre_kernel_unavailable",
+                        )
+                    else:
+                        elapsed_ms = max(
+                            1, (time.monotonic_ns() - started_ns) // 1_000_000
+                        )
+                        ledger.commit(
+                            reservation,
+                            {
+                                "lean_attempts": 1,
+                                "lean_millis": min(
+                                    selected_timeout_s * 1_000, elapsed_ms
+                                ),
+                            },
+                        )
+                aggregate_path = _construction_ratification_owner_path(
+                    directory,
+                    contract=contract,
+                    boundary=boundary,
+                    prior_open_receipt=prior,
+                )
+                _persist_bounded_reviewed_construction_artifact(
+                    aggregate_path,
+                    aggregate,
+                    label="construction ratification aggregate",
+                )
+            replacements.append(
+                {
+                    "program_id": row["program_id"],
+                    "task_contract_sha256": contract.sha256,
+                    "aggregate": aggregate,
+                }
+            )
+            aggregate_refs.append(str(aggregate["aggregate_sha256"]))
+    finally:
+        if ledger is not None:
+            ledger.freeze_wall_clock(reason="construction_ratification_runner_exit")
+
+    from ztare.leanmill.theory_task_discharge_successor import (
+        build_construction_ratification_successor_bundle,
+    )
+
+    successor = build_construction_ratification_successor_bundle(
+        predecessor, boundary, replacements
+    )
+    successor_path = directory / (
+        "theory_task_discharge."
+        + str(successor["receipt_sha256"])[:16]
+        + ".json"
+    )
+    existing_successor = read_json(successor_path, None)
+    if isinstance(existing_successor, Mapping) and dict(existing_successor) != successor:
+        raise ValueError("construction ratification successor path conflicts")
+    if existing_successor is None:
+        write_json_atomic(successor_path, successor)
+
+    updated = _consume_theory_task_discharge(
+        directory,
+        read_json(directory / "run.json", run),
+        {"boundary_result": boundary, "theory_task_discharge": successor},
+    )
+    core = {
+        "schema": "leanmill.construction_artifact_ratification_completion.v1",
+        "status": (
+            "objective_discharged"
+            if updated.get("status") == "frontier_objective_discharged"
+            else "successor_consumed_open"
+        ),
+        "attempt_dir": str(directory),
+        "predecessor_bundle_receipt_sha256": str(predecessor["receipt_sha256"]),
+        "successor_bundle_receipt_sha256": str(successor["receipt_sha256"]),
+        "aggregate_sha256s": sorted(aggregate_refs),
+        "run_digest": str(updated.get("run_digest") or ""),
+        "authority": "frontier_campaign_state_machine",
+    }
+    result = {**core, "receipt_sha256": content_hash(core)}
+    result_path = directory / (
+        "construction_artifact_ratification_completion."
+        + str(result["receipt_sha256"])[:16]
+        + ".json"
+    )
+    existing_result = read_json(result_path, None)
+    if isinstance(existing_result, Mapping) and dict(existing_result) != result:
+        raise ValueError("construction ratification completion path conflicts")
+    if existing_result is None:
+        write_json_atomic(result_path, result)
+    return result
 
 
 def _restore_durable_search_transition(
@@ -3084,6 +8068,118 @@ def _candidate_matches_context(
         bound_hash == context_hash and bound_epoch == context_epoch
         for bound_hash, bound_epoch in bindings
     )
+
+
+def _candidate_matches_evaluation_contract(candidate: Mapping[str, Any]) -> bool:
+    """Bind active theory programs to the evaluator that certified residuality."""
+
+    if not isinstance(candidate.get("theory_program"), Mapping):
+        # Historical compact packs have no executable program identity.  Their
+        # deterministic replay remains the compatibility boundary.
+        return True
+    if (
+        str(candidate.get("baseline_evaluator_ref") or "")
+        != CHEAP_CONSEQUENCE_EVALUATOR_REF
+    ):
+        return False
+    targets = {
+        str(row) for row in candidate.get("boundary_target_ids") or ()
+    }
+    residual_targets = {
+        str(row)
+        for row in candidate.get("residual_prediction_formula_ids") or ()
+    }
+    return not targets or targets <= residual_targets
+
+
+def _archive_stale_evaluation_candidates(
+    directory: Path,
+    run: Any,
+) -> dict[str, Any] | Any:
+    """Demote programs selected under a superseded consequence evaluator."""
+
+    if not isinstance(run, Mapping) or not isinstance(run.get("navigation"), Mapping):
+        return run
+    navigation = dict(run["navigation"])
+    archived: list[dict[str, Any]] = []
+    for field in ("finalists", "objective_survivors"):
+        rows = navigation.get(field)
+        if not isinstance(rows, (list, tuple)):
+            continue
+        current: list[dict[str, Any]] = []
+        for raw in rows:
+            if not isinstance(raw, Mapping):
+                continue
+            row = dict(raw)
+            if _candidate_matches_evaluation_contract(row):
+                current.append(row)
+                continue
+            residual = row.get("residual_information_yield")
+            archived.append(
+                {
+                    "collection": field,
+                    "node_id": str(row.get("node_id") or ""),
+                    "theory_program_id": str(row.get("theory_program_id") or ""),
+                    "source_evaluator_ref": str(
+                        row.get("baseline_evaluator_ref") or "legacy_unbound"
+                    ),
+                    "source_baseline_ref": str(
+                        residual.get("baseline_ref")
+                        if isinstance(residual, Mapping)
+                        else ""
+                    ),
+                }
+            )
+        navigation[field] = current
+    if not archived:
+        return run
+    archive_core = {
+        "schema": "leanmill.candidate_evaluation_contract_supersession.v1",
+        "status": "archived_superseded_evaluation_only",
+        "current_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
+        "context_hash": str(run.get("context_hash") or ""),
+        "context_epoch": int(
+            navigation.get(
+                "context_epoch",
+                (run.get("context_summary") or {}).get("context_epoch", 0),
+            )
+        ),
+        "archived_candidates": archived,
+        "route": "continue_search",
+        "continuation_budget_phase": "navigation",
+        "authority": "host_evaluation_identity_transition",
+    }
+    archive = {**archive_core, "receipt_sha256": content_hash(archive_core)}
+    archive_path = directory / (
+        "candidate_evaluation_contract_supersession."
+        + str(archive["receipt_sha256"])[:16]
+        + ".json"
+    )
+    prior = read_json(archive_path, None)
+    if isinstance(prior, Mapping) and dict(prior) != archive:
+        raise ValueError("candidate evaluation supersession changed identity")
+    if not isinstance(prior, Mapping):
+        write_json_atomic(archive_path, archive)
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    if not any(
+        row.get("receipt_sha256") == archive["receipt_sha256"] for row in history
+    ):
+        history.append(archive)
+    navigation["objective_review_history"] = history
+    navigation.pop("lineage_synthesis", None)
+    navigation.pop("pending_leaf_decision", None)
+    run_core = {
+        **{key: value for key, value in run.items() if key != "run_digest"},
+        "status": "frontier_objective_unmet",
+        "navigation": navigation,
+    }
+    updated = {**run_core, "run_digest": content_hash(run_core)}
+    write_json_atomic(directory / "run.json", updated)
+    return updated
 
 
 def _archive_cross_context_active_candidates(
@@ -3471,7 +8567,10 @@ def execute_frontier_compound_sieve(
 
 
 def _boundary_search_feedback(
-    run: Any, completion: Any
+    run: Any,
+    completion: Any,
+    *,
+    governance_recheck: Mapping[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Return compact boundary evidence owed to the next objective review."""
 
@@ -3495,10 +8594,35 @@ def _boundary_search_feedback(
     )
     task_discharge = completion.get("theory_task_discharge")
     task_consumption = navigation.get("theory_task_discharge")
+    if (
+        isinstance(task_consumption, Mapping)
+        and isinstance(task_consumption.get("successor_task_discharge"), Mapping)
+    ):
+        task_discharge = task_consumption["successor_task_discharge"]
     objective_task_status = str(
         task_consumption.get("objective_status") or "not_declared"
     ) if isinstance(task_consumption, Mapping) else "not_declared"
     typed_task_pending = objective_task_status in {"open", "unavailable"}
+    governance_state = _boundary_governance_recheck_state(
+        completion, governance_recheck
+    )
+    governance_statuses = governance_state["statuses"]
+
+    def effective_status(row: Mapping[str, Any]) -> str:
+        key = (
+            tuple(str(value) for value in row.get("premise_formula_ids") or ()),
+            str(row.get("target_formula_id") or ""),
+        )
+        replayed = governance_statuses.get(key)
+        if (
+            str(row.get("program_prediction_status") or "")
+            == "kernel_verified_attributed"
+            and replayed is not None
+            and replayed != "proved_attributed"
+        ):
+            return "proof_rejected_by_governance"
+        return str(row.get("program_prediction_status") or "")
+
     has_theory_rows = any(
         isinstance(row, Mapping) and row.get("candidate_kind") == "theory_program"
         for row in rows or ()
@@ -3506,7 +8630,7 @@ def _boundary_search_feedback(
     failed = any(
         isinstance(row, Mapping)
         and row.get("candidate_kind") == "theory_program"
-        and row.get("program_prediction_status") in _BOUNDARY_FAILURE_STATUSES
+        and effective_status(row) in _BOUNDARY_FAILURE_STATUSES
         for row in rows or ()
     )
     if (
@@ -3537,6 +8661,12 @@ def _boundary_search_feedback(
             receipt = envelope.get(child) if child is not None else envelope
             if isinstance(receipt, Mapping) and receipt.get("receipt_sha256"):
                 refs.append(str(receipt["receipt_sha256"]))
+        key = (
+            tuple(str(value) for value in row.get("premise_formula_ids") or ()),
+            str(row.get("target_formula_id") or ""),
+        )
+        if key in governance_statuses and governance_state.get("receipt_sha256"):
+            refs.append(str(governance_state["receipt_sha256"]))
         return [value for value in dict.fromkeys(refs) if value]
 
     program_bindings: dict[tuple[tuple[str, ...], str], set[str]] = {}
@@ -3560,7 +8690,7 @@ def _boundary_search_feedback(
         prediction_outcomes.append({
             "premise_formula_ids": list(row.get("premise_formula_ids") or ()),
             "target_formula_id": target,
-            "status": str(row.get("program_prediction_status") or ""),
+            "status": effective_status(row),
             "program_ids": sorted(value for value in program_bindings.get(key, ()) if value),
             "evidence_refs": evidence_refs(row),
         })
@@ -3676,6 +8806,7 @@ def _active_objective_finalists(
         dict(row)
         for row in navigation.get("objective_review_history") or ()
         if isinstance(row, Mapping)
+        and type(row.get("schema")) is str
         and row.get("schema")
         in {
             "leanmill.boundary_search_feedback.v1",
@@ -3818,31 +8949,1046 @@ def _objective_navigation_phase(run: Mapping[str, Any] | None) -> str:
     """Choose the campaign allocation owned by the active search obligation."""
 
     navigation = (run or {}).get("navigation") or {}
-    return (
-        "expansion"
-        if navigation.get("objective_review_history")
-        else "navigation"
-    )
+    history = navigation.get("objective_review_history") or ()
+    latest = history[-1] if history and isinstance(history[-1], Mapping) else None
+    return _objective_feedback_search_phase(latest)
 
 
-def _lineage_synthesis_retry_required(run: Mapping[str, Any] | None) -> bool:
+def _objective_feedback_search_phase(feedback: Any) -> str:
+    """Route continuation budget by the typed feedback transition."""
+
+    if not isinstance(feedback, Mapping):
+        return "navigation"
+    declared = str(feedback.get("continuation_budget_phase") or "")
+    if declared in {"navigation", "expansion"}:
+        return declared
+    if (
+        feedback.get("schema")
+        == "leanmill.candidate_evaluation_contract_supersession.v1"
+    ):
+        # Compatibility for receipts minted before the phase became explicit.
+        return "navigation"
+    return "expansion"
+
+
+def _objective_resume_has_turn_capacity(
+    ledger: ExplorationBudgetLedger,
+    run: Mapping[str, Any] | None,
+) -> bool:
+    """Whether opening another objective search wave can fund one leaf turn."""
+
+    if not isinstance(run, Mapping) or run.get("status") != "frontier_objective_unmet":
+        return True
+    phase = _objective_navigation_phase(run)
+    return min(
+        ledger.remaining_capacity(phase, "provider_calls"),
+        ledger.remaining_capacity(phase, "agent_turns"),
+    ) > 0
+
+
+def _lineage_synthesis_retry_required(
+    directory: Path,
+    run: Mapping[str, Any] | None,
+) -> bool:
     """A frozen synthesis input remains the next job until it is disposed."""
 
     navigation = (run or {}).get("navigation") or {}
     return bool(
-        (run or {}).get("status") == "frontier_objective_unmet"
-        and isinstance(
-            navigation.get("lineage_synthesis_budget_stop"), Mapping
+        not isinstance(navigation.get("lineage_synthesis"), Mapping)
+        and (
+            (
+                (run or {}).get("status") == "frontier_objective_unmet"
+                and isinstance(
+                    navigation.get("lineage_synthesis_budget_stop"), Mapping
+                )
+            )
+            or _recovered_lineage_synthesis_required(directory, run)
         )
     )
 
 
-def _objective_synthesis_budget_exhausted(
+def _recovered_lineage_synthesis_required(
+    directory: Path,
+    run: Mapping[str, Any] | None,
+) -> bool:
+    """Whether a recovered finalist still lacks a dispositive boundary row."""
+
+    navigation = (run or {}).get("navigation") or {}
+    if (
+        (run or {}).get("status") != "budget_stopped"
+        or navigation.get("recovered_from_durable_results") is not True
+        or isinstance(navigation.get("lineage_synthesis"), Mapping)
+    ):
+        return False
+    finalist_program_ids = {
+        str(row.get("theory_program_id") or "")
+        for row in navigation.get("finalists") or ()
+        if isinstance(row, Mapping)
+        and str(row.get("theory_program_id") or "")
+    }
+    if not finalist_program_ids:
+        return False
+    context_hash = str((run or {}).get("context_hash") or "")
+    disposition_program_ids = [
+        program_id
+        for row in navigation.get("objective_review_history") or ()
+        for program_id in [
+            recovered_boundary_feedback_disposition_program_id(
+                directory,
+                row,
+                context_hash=context_hash,
+            )
+        ]
+        if program_id in finalist_program_ids
+    ]
+    disposed_program_ids = {
+        program_id
+        for program_id in finalist_program_ids
+        if disposition_program_ids.count(program_id) == 1
+    }
+    return bool(finalist_program_ids - disposed_program_ids)
+
+
+def _durable_synthesis_search_wave(path: Path) -> int:
+    match = re.search(r"\.wave-(\d+)\.json$", path.name)
+    return int(match.group(1)) if match else 0
+
+
+def _empty_capacity_wave_projection(navigation: Mapping[str, Any]) -> bool:
+    """Whether a read model contains only unfunded lineage placeholders."""
+
+    lineages = navigation.get("lineages") or ()
+    if not isinstance(lineages, (list, tuple)) or not lineages:
+        return False
+    if any(
+        navigation.get(field)
+        for field in (
+            "finalists",
+            "objective_survivors",
+            "expansion_proposals",
+            "theory_language_expansion_requests",
+            "pending_leaf_decisions",
+        )
+    ):
+        return False
+    if int(navigation.get("wave_provider_calls", 0) or 0) != 0:
+        return False
+    return all(
+        isinstance(row, Mapping)
+        and isinstance(row.get("navigation"), Mapping)
+        and (
+            row["navigation"].get("navigation_exhausted_receipt") or {}
+        ).get("reason")
+        == "host_fair_share_has_no_turn_capacity"
+        for row in lineages
+    )
+
+
+def _durable_synthesis_decision_for_input(
+    directory: Path,
+    input_path: Path,
+    synthesis_input: Mapping[str, Any],
+) -> tuple[dict[str, Any], Path] | None:
+    """Revalidate a completed synthesis call against its immutable input."""
+
+    wave = _durable_synthesis_search_wave(input_path)
+    call_dir = directory / "agent_calls" / f"lineage_synthesizer.wave-{wave:03d}"
+    expected_prompt = prompts.AXIOMPACK_LINEAGE_SYNTHESIS_PROMPT.format(
+        synthesis_input_json=json.dumps(
+            synthesis_input,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+    expected_prompt_digest = content_hash({"prompt": expected_prompt})
+    rows: list[tuple[int, dict[str, Any], Path]] = []
+    for call_path in call_dir.glob("*.call.json"):
+        try:
+            index = int(call_path.name.split(".", 1)[0])
+        except ValueError:
+            continue
+        call = read_json(call_path, None)
+        prefix = call_path.with_suffix("").with_suffix("")
+        prompt_path = prefix.with_suffix(".prompt.txt")
+        result_path = prefix.with_suffix(".result.json")
+        schema_path = prefix.with_suffix(".schema.json")
+        if (
+            not isinstance(call, Mapping)
+            or call.get("schema") != "leanmill.frontier_subscription_role_call.v1"
+            or call.get("role") != "lineage_synthesizer"
+            or int(call.get("returncode", 1)) != 0
+            or call.get("prompt_digest") != expected_prompt_digest
+            or not prompt_path.is_file()
+            or prompt_path.read_text(encoding="utf-8") != expected_prompt
+            or not result_path.is_file()
+        ):
+            continue
+        result_text = result_path.read_text(encoding="utf-8")
+        if (
+            call.get("result_digest")
+            and call.get("result_digest")
+            != content_hash({"result": result_text})
+        ):
+            raise ValueError("durable synthesis result digest mismatch")
+        if call.get("output_schema_digest"):
+            schema = read_json(schema_path, None)
+            if (
+                not isinstance(schema, Mapping)
+                or content_hash(dict(schema)) != call["output_schema_digest"]
+            ):
+                raise ValueError("durable synthesis schema digest mismatch")
+        decision = read_json(result_path, None)
+        if not isinstance(decision, Mapping):
+            raise ValueError("durable synthesis result is not an object")
+        synthesis = validate_lineage_synthesis_decision(
+            synthesis_input, decision
+        )
+        rows.append((index, synthesis, call_path))
+    if not rows:
+        return None
+    _index, synthesis, call_path = max(rows, key=lambda row: row[0])
+    return synthesis, call_path
+
+
+def _latest_durable_synthesis_input(
+    directory: Path,
+    *,
+    context_epoch: int,
+    context_hash: str = "",
+) -> tuple[int, Path, dict[str, Any]] | None:
+    rows: list[tuple[int, Path, dict[str, Any]]] = []
+    for input_path in directory.glob(
+        f"lineage_synthesis_input.epoch-{context_epoch:03d}.wave-*.json"
+    ):
+        row = read_json(input_path, None)
+        if not isinstance(row, Mapping):
+            continue
+        core = {
+            key: value for key, value in row.items() if key != "input_sha256"
+        }
+        if (
+            row.get("schema") != "leanmill.lineage_synthesis_input.v1"
+            or row.get("input_sha256") != content_hash(core)
+            or int(row.get("context_epoch", -1)) != context_epoch
+            or (
+                context_hash
+                and str(row.get("context_hash") or "") != context_hash
+            )
+        ):
+            continue
+        rows.append(
+            (_durable_synthesis_search_wave(input_path), input_path, dict(row))
+        )
+    return max(rows, key=lambda item: item[0]) if rows else None
+
+
+def _durable_synthesis_can_project(
+    navigation: Mapping[str, Any], synthesis_path: Path
+) -> bool:
+    """Keep synthesis recovery inside the search wave that owns it."""
+
+    active_search_wave = (
+        0
+        if _empty_capacity_wave_projection(navigation)
+        else int(navigation.get("search_wave", 0) or 0)
+    )
+    synthesis_search_wave = _durable_synthesis_search_wave(synthesis_path)
+    epoch_match = re.search(r"\.epoch-(\d+)\.", synthesis_path.name)
+    synthesis_epoch = int(epoch_match.group(1)) if epoch_match else -1
+    context_hash = str(navigation.get("context_hash") or "")
+    latest_input = (
+        _latest_durable_synthesis_input(
+            synthesis_path.parent,
+            context_epoch=synthesis_epoch,
+            context_hash=context_hash,
+        )
+        if synthesis_epoch >= 0
+        else None
+    )
+    latest_owned_wave = max(
+        active_search_wave,
+        int(latest_input[0]) if latest_input is not None else 0,
+    )
+    return not (
+        latest_owned_wave > 0
+        and synthesis_search_wave > 0
+        and synthesis_search_wave < latest_owned_wave
+    )
+
+
+def _pending_durable_lineage_synthesis(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find a validated synthesis successor before consulting a stale stop."""
+
+    if run.get("status") != "frontier_objective_unmet":
+        return None
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping) or isinstance(
+        navigation.get("lineage_synthesis"), Mapping
+    ):
+        return None
+    context_hash = str(run.get("context_hash") or "")
+    context_epoch = int(
+        navigation.get(
+            "context_epoch",
+            (run.get("context_summary") or {}).get("context_epoch", 0),
+        )
+    )
+    empty_capacity_projection = _empty_capacity_wave_projection(navigation)
+    superseded_synthesis_refs = {
+        str(row.get("source_synthesis_receipt_sha256") or "")
+        for row in (
+            list(navigation.get("objective_review_history") or ())
+            + [navigation.get("superseded_lineage_synthesis")]
+        )
+        if isinstance(row, Mapping)
+        and row.get("schema")
+        == "leanmill.lineage_synthesis_semantic_supersession.v1"
+    }
+    current_request_ids = {
+        str(row.get("request_id") or "")
+        for field in (
+            "expansion_proposals",
+            "theory_language_expansion_requests",
+        )
+        for row in navigation.get(field) or ()
+        if isinstance(row, Mapping) and row.get("request_id")
+    }
+    candidate_rows = [
+        row
+        for field in ("finalists", "objective_survivors", "deferred_finalists")
+        for row in navigation.get(field) or ()
+        if isinstance(row, Mapping)
+    ]
+    candidate_rows.extend(
+        row
+        for lineage in navigation.get("lineages") or ()
+        if isinstance(lineage, Mapping)
+        for row in (lineage.get("navigation") or {}).get("finalists") or ()
+        if isinstance(row, Mapping)
+    )
+    current_program_ids = {
+        str(
+            row.get("theory_program_id")
+            or (row.get("theory_program") or {}).get("program_id")
+            or ""
+        )
+        for row in candidate_rows
+    }
+    current_program_ids.discard("")
+    for synthesis_path in reversed(
+        sorted(directory.glob(f"lineage_synthesis.epoch-{context_epoch:03d}*.json"))
+    ):
+        synthesis = read_json(synthesis_path, None)
+        if not isinstance(synthesis, Mapping):
+            continue
+        synthesis_core = {
+            key: value for key, value in synthesis.items() if key != "receipt_sha256"
+        }
+        if (
+            synthesis.get("schema") != "leanmill.lineage_synthesis_decision.v1"
+            or synthesis.get("receipt_sha256") != content_hash(synthesis_core)
+            or str(synthesis.get("context_hash") or "") != context_hash
+            or int(synthesis.get("context_epoch", -1)) != context_epoch
+        ):
+            continue
+        if str(synthesis.get("receipt_sha256") or "") in superseded_synthesis_refs:
+            continue
+        input_path = directory / synthesis_path.name.replace(
+            "lineage_synthesis.", "lineage_synthesis_input.", 1
+        )
+        synthesis_input = read_json(input_path, None)
+        if not isinstance(synthesis_input, Mapping):
+            continue
+        input_core = {
+            key: value
+            for key, value in synthesis_input.items()
+            if key != "input_sha256"
+        }
+        if (
+            synthesis_input.get("input_sha256") != content_hash(input_core)
+            or synthesis.get("input_sha256") != synthesis_input.get("input_sha256")
+            or str(synthesis_input.get("context_hash") or "") != context_hash
+            or int(synthesis_input.get("context_epoch", -1)) != context_epoch
+        ):
+            continue
+        decision_fields = (
+            "route",
+            "selected_request_ids",
+            "deferred_request_ids",
+            "rationale",
+            "next_discriminator",
+            "kill_condition",
+            "program_ids",
+            "next_discriminator_request_ids",
+        )
+        raw_decision = {field: synthesis.get(field) for field in decision_fields}
+        if "continuation_mode" in synthesis:
+            raw_decision["continuation_mode"] = synthesis.get("continuation_mode")
+        if validate_lineage_synthesis_decision(
+            synthesis_input, raw_decision
+        ) != dict(synthesis):
+            raise ValueError("durable lineage synthesis failed semantic replay")
+        frozen_request_ids = {
+            str(row.get("request_id") or "")
+            for field in ("formula_requests", "theory_language_requests")
+            for row in synthesis_input.get(field) or ()
+            if isinstance(row, Mapping) and row.get("request_id")
+        }
+        selected_program_ids = {
+            str(row) for row in synthesis.get("program_ids") or ()
+        }
+        if (
+            (
+                not empty_capacity_projection
+                and current_request_ids != frozen_request_ids
+            )
+            or not selected_program_ids
+            or (
+                not empty_capacity_projection
+                and not selected_program_ids <= current_program_ids
+            )
+        ):
+            continue
+        # A later search wave has already consumed or superseded every synthesis
+        # decision from an earlier wave.  Recovering one of those decisions can
+        # resurrect a boundary finalist after its outcome has been fed back.
+        if not _durable_synthesis_can_project(navigation, synthesis_path):
+            continue
+        return {
+            "synthesis": dict(synthesis),
+            "synthesis_input": dict(synthesis_input),
+            "synthesis_path": synthesis_path,
+            "input_path": input_path,
+            "search_wave": _durable_synthesis_search_wave(synthesis_path),
+        }
+    if empty_capacity_projection:
+        latest_input = _latest_durable_synthesis_input(
+            directory,
+            context_epoch=context_epoch,
+            context_hash=context_hash,
+        )
+        if latest_input is not None:
+            search_wave, input_path, synthesis_input = latest_input
+            failure_path = directory / (
+                "lineage_synthesis_failure."
+                f"epoch-{context_epoch:03d}.wave-{search_wave:03d}.json"
+            )
+            failure = read_json(failure_path, None)
+            failure_core = {
+                key: value
+                for key, value in (failure or {}).items()
+                if key != "receipt_sha256"
+            }
+            durable = _durable_synthesis_decision_for_input(
+                directory, input_path, synthesis_input
+            )
+            if (
+                isinstance(failure, Mapping)
+                and failure.get("schema")
+                == "leanmill.lineage_synthesis_failure.v1"
+                and failure.get("receipt_sha256") == content_hash(failure_core)
+                and durable is not None
+            ):
+                synthesis, call_path = durable
+                synthesis_path = directory / (
+                    "lineage_synthesis."
+                    f"epoch-{context_epoch:03d}.wave-{search_wave:03d}.json"
+                )
+                return {
+                    "synthesis": synthesis,
+                    "synthesis_input": synthesis_input,
+                    "synthesis_path": synthesis_path,
+                    "input_path": input_path,
+                    "search_wave": search_wave,
+                    "revalidated_failure": dict(failure),
+                    "durable_call_path": call_path,
+                }
+    return None
+
+
+def _candidate_rows_from_synthesis_input(
+    directory: Path,
+    synthesis_input: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Restore boundary candidates from the host-frozen synthesis payload."""
+
+    node_by_program: dict[str, str] = {}
+    for journal_path in sorted(
+        (directory / "lineage_journals").glob("lineage-*.events.jsonl")
+    ):
+        for event in TheoryCampaignJournal(journal_path).replay():
+            if event.event_type != "finalist_frozen" or len(event.subject_ids) < 2:
+                continue
+            node_id = str(event.subject_ids[0])
+            for program_id in event.subject_ids[1:]:
+                prior = node_by_program.setdefault(str(program_id), node_id)
+                if prior != node_id:
+                    raise ValueError("frozen theory program crossed semantic nodes")
+
+    candidates: list[dict[str, Any]] = []
+    for raw in synthesis_input.get("frozen_programs") or ():
+        if not isinstance(raw, Mapping):
+            raise ValueError("frozen synthesis program is malformed")
+        program_fields = {
+            "schema",
+            "campaign_id",
+            "lineage_id",
+            "context_hash",
+            "context_epoch",
+            "presentation_formula_ids",
+            "prediction_formula_ids",
+            "selection_receipt_id",
+            "authority",
+            "program_id",
+        }
+        if raw.get("schema") == "leanmill.theory_program.v2":
+            program_fields.add("task_discharge_contracts")
+        program_row = {
+            key: raw[key] for key in program_fields if key in raw
+        }
+        program = TheoryProgram.from_json(program_row)
+        node_id = node_by_program.get(program.program_id, "")
+        if not node_id:
+            raise ValueError("frozen synthesis program lacks its journaled node")
+        candidates.append(
+            {
+                "node_id": node_id,
+                "candidate_kind": "theory_program",
+                "baseline_evaluator_ref": CHEAP_CONSEQUENCE_EVALUATOR_REF,
+                "context_hash": program.context_hash,
+                "context_epoch": program.context_epoch,
+                "formula_ids": list(program.presentation_formula_ids),
+                "joint_only_consequence_ids": [],
+                "cheap_baseline_consequence_ids": [],
+                "residual_joint_only_consequence_ids": [],
+                "consequence_formula_ids": [],
+                "residual_prediction_formula_ids": list(
+                    program.prediction_formula_ids
+                ),
+                "boundary_target_ids": list(program.prediction_formula_ids),
+                "task_contract_ids": [
+                    contract.contract_id
+                    for contract in program.task_discharge_contracts
+                ],
+                "boundary_selection_authority": "frozen_synthesis_input_replay",
+                "prediction_profile": (
+                    dict(raw.get("prediction_profile") or {})
+                    if program.prediction_formula_ids
+                    else None
+                ),
+                "residual_information_yield": dict(
+                    raw.get("residual_information_yield") or {}
+                ),
+                "structural_baseline": raw.get("structural_baseline"),
+                "navigator_rationale": str(raw.get("navigator_rationale") or ""),
+                "selection_receipt_id": program.selection_receipt_id,
+                "theory_program": program.to_json(),
+                "theory_program_id": program.program_id,
+            }
+        )
+    return candidates
+
+
+def _recover_durable_lineage_synthesis(
+    directory: Path,
+    run: Mapping[str, Any],
+    pending: Mapping[str, Any],
+) -> Path:
+    """Project a validated synthesis artifact without replaying navigator turns."""
+
+    definition, blueprint, budget_row, campaign_row, context = (
+        _load_campaign_attempt(directory)
+    )
+    synthesis = dict(pending["synthesis"])
+    synthesis_input = dict(pending["synthesis_input"])
+    navigation = dict(run.get("navigation") or {})
+    if not _durable_synthesis_can_project(
+        navigation, Path(pending["synthesis_path"])
+    ):
+        raise ValueError("durable synthesis crossed its search-wave owner")
+    if _empty_capacity_wave_projection(navigation) or navigation.get("schema") == (
+        "leanmill.recovered_lineage_synthesis_projection.v1"
+    ):
+        restored_candidates = _candidate_rows_from_synthesis_input(
+            directory, synthesis_input
+        )
+        navigation = {
+            "schema": "leanmill.recovered_lineage_synthesis_projection.v1",
+            "status": "programs_frozen",
+            "context_hash": str(synthesis_input["context_hash"]),
+            "context_epoch": int(synthesis_input["context_epoch"]),
+            "search_wave": int(pending["search_wave"]),
+            "wave_provider_calls": 0,
+            "lineages": [],
+            "finalist_node_ids": list(
+                dict.fromkeys(str(row["node_id"]) for row in restored_candidates)
+            ),
+            "finalists": restored_candidates,
+            "theory_program_ids": [
+                str(row["theory_program_id"]) for row in restored_candidates
+            ],
+            "host_isolated_program_comparisons": list(
+                synthesis_input.get("host_isolated_program_comparisons") or ()
+            ),
+            "expansion_proposals": list(
+                synthesis_input.get("formula_requests") or ()
+            ),
+            "theory_language_expansion_requests": list(
+                synthesis_input.get("theory_language_requests") or ()
+            ),
+            "objective_review_history": list(
+                synthesis_input.get("objective_review_history") or ()
+            ),
+            "isolation_receipt": dict(
+                synthesis_input.get("isolation_receipt") or {}
+            ),
+            "search_wave_image_receipt": dict(
+                synthesis_input.get("search_wave_image_receipt") or {}
+            ),
+            "adaptive_move_portfolio": dict(
+                synthesis_input.get("adaptive_move_portfolio") or {}
+            ),
+            "provider_calls": int(
+                (run.get("navigation") or {}).get("provider_calls", 0) or 0
+            ),
+            "cold_view": True,
+        }
+    superseded_stop = navigation.pop("lineage_synthesis_budget_stop", None)
+    superseded_failure = navigation.pop("lineage_synthesis_failure", None)
+    navigation["lineage_synthesis"] = synthesis
+    navigation["lineage_synthesis_search_wave"] = int(pending["search_wave"])
+    navigation["lineage_synthesis_frozen_program_ids"] = [
+        str(row.get("program_id") or "")
+        for row in synthesis_input.get("frozen_programs") or ()
+        if isinstance(row, Mapping) and row.get("program_id")
+    ]
+    synthesis_path = Path(pending["synthesis_path"])
+    prior_synthesis = read_json(synthesis_path, None)
+    if isinstance(prior_synthesis, Mapping):
+        if dict(prior_synthesis) != synthesis:
+            raise ValueError("durable synthesis recovery changed its decision")
+    else:
+        write_json_atomic(synthesis_path, synthesis)
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    if synthesis.get("route") == "continue_search" and not any(
+        row.get("receipt_sha256") == synthesis.get("receipt_sha256")
+        for row in history
+    ):
+        history.append(synthesis)
+        navigation["objective_review_history"] = history
+    recovery_core = {
+        "schema": "leanmill.durable_lineage_synthesis_recovery.v1",
+        "context_hash": context.context_hash,
+        "context_epoch": int(synthesis["context_epoch"]),
+        "search_wave": int(pending["search_wave"]),
+        "source_run_digest": str(run.get("run_digest") or ""),
+        "synthesis_ref": Path(pending["synthesis_path"]).name,
+        "synthesis_receipt_sha256": str(synthesis["receipt_sha256"]),
+        "synthesis_input_ref": Path(pending["input_path"]).name,
+        "synthesis_input_sha256": str(synthesis_input["input_sha256"]),
+        "superseded_stop_receipt_sha256": str(
+            (superseded_stop or {}).get("receipt_sha256") or ""
+        ),
+        "superseded_failure_receipt_sha256": str(
+            (
+                superseded_failure
+                or pending.get("revalidated_failure")
+                or {}
+            ).get("receipt_sha256")
+            or ""
+        ),
+        "durable_call_ref": (
+            Path(pending["durable_call_path"]).relative_to(directory).as_posix()
+            if pending.get("durable_call_path")
+            else ""
+        ),
+        "authority": "frozen_input_and_host_validated_decision_replay",
+    }
+    recovery = {**recovery_core, "receipt_sha256": content_hash(recovery_core)}
+    recovery_path = directory / (
+        "durable_lineage_synthesis_recovery."
+        + str(recovery["receipt_sha256"])[:16]
+        + ".json"
+    )
+    prior_recovery = read_json(recovery_path, None)
+    if isinstance(prior_recovery, Mapping) and dict(prior_recovery) != recovery:
+        raise ValueError("durable synthesis recovery changed identity")
+    if prior_recovery is None:
+        write_json_atomic(recovery_path, recovery)
+    budget = ExplorationBudget.from_json(budget_row)
+    ledger = ExplorationBudgetLedger(
+        directory / "budget.events.jsonl",
+        budget,
+        attempt_id=directory.name,
+    )
+    usage = ledger.state()["usage"]
+    adapter_preflight = dict(
+        blueprint.executable_preflight_receipt.get("adapter_preflight") or {}
+    )
+    finish_frontier_navigation(
+        directory,
+        brief_id=definition.to_brief().brief_id,
+        blueprint=blueprint,
+        context=context,
+        context_epoch=int(synthesis["context_epoch"]),
+        campaign_id=str(campaign_row["packet"]["campaign_id"]),
+        packet_digest=str(
+            run.get("packet_digest") or campaign_row.get("packet_digest") or ""
+        ),
+        navigation=navigation,
+        provider_calls=int(usage["provider_calls"]),
+        preparation_provider_calls=0,
+        budget_digest=budget.digest,
+        formula_proposal_count=len(
+            tuple(directory.glob("typed_formula_proposal.epoch-*.json"))
+        ),
+        semantically_new_formula_count=_semantic_profile_admission_count(directory),
+        labeled_object_count=int(adapter_preflight.get("labeled_model_count", 0)),
+    )
+    return directory
+
+
+def _stale_durable_synthesis_projection(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Find an older synthesis decision projected across a newer frozen input."""
+
+    navigation = run.get("navigation")
+    if not isinstance(navigation, Mapping):
+        return None
+    synthesis = navigation.get("lineage_synthesis")
+    if not isinstance(synthesis, Mapping):
+        return None
+    context_hash = str(run.get("context_hash") or "")
+    context_epoch = int(
+        navigation.get(
+            "context_epoch",
+            (run.get("context_summary") or {}).get("context_epoch", 0),
+        )
+    )
+    synthesis_ref = str(synthesis.get("receipt_sha256") or "")
+    synthesis_rows = []
+    for path in directory.glob(
+        f"lineage_synthesis.epoch-{context_epoch:03d}.wave-*.json"
+    ):
+        row = read_json(path, None)
+        if isinstance(row, Mapping) and row.get("receipt_sha256") == synthesis_ref:
+            synthesis_rows.append(path)
+    if not synthesis_rows:
+        return None
+    synthesis_path = max(
+        synthesis_rows, key=_durable_synthesis_search_wave
+    )
+    if _durable_synthesis_can_project(navigation, synthesis_path):
+        return None
+    latest_input = _latest_durable_synthesis_input(
+        directory,
+        context_epoch=context_epoch,
+        context_hash=context_hash,
+    )
+    if latest_input is None:
+        return None
+    search_wave, input_path, synthesis_input = latest_input
+    outcomes: list[tuple[str, Path, dict[str, Any]]] = []
+    for field, schema in (
+        (
+            "lineage_synthesis_budget_stop",
+            "leanmill.lineage_synthesis_budget_stop.v1",
+        ),
+        ("lineage_synthesis_failure", "leanmill.lineage_synthesis_failure.v1"),
+    ):
+        path = directory / (
+            f"{field}.epoch-{context_epoch:03d}.wave-{search_wave:03d}.json"
+        )
+        row = read_json(path, None)
+        if not isinstance(row, Mapping):
+            continue
+        core = {
+            key: value for key, value in row.items() if key != "receipt_sha256"
+        }
+        if (
+            row.get("schema") != schema
+            or row.get("receipt_sha256") != content_hash(core)
+            or str(row.get("context_hash") or "") != context_hash
+            or int(row.get("context_epoch", -1)) != context_epoch
+        ):
+            raise ValueError("successor synthesis outcome failed replay")
+        outcomes.append((field, path, dict(row)))
+    if len(outcomes) != 1:
+        return None
+    outcome_field, outcome_path, outcome = outcomes[0]
+    return {
+        "synthesis": dict(synthesis),
+        "synthesis_path": synthesis_path,
+        "synthesis_input": synthesis_input,
+        "input_path": input_path,
+        "search_wave": search_wave,
+        "outcome_field": outcome_field,
+        "outcome": outcome,
+        "outcome_path": outcome_path,
+    }
+
+
+def _invalid_active_lineage_synthesis(
+    directory: Path,
+    run: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Detect a projected move invalidated by stronger host semantics."""
+
+    navigation = run.get("navigation")
+    synthesis = (
+        navigation.get("lineage_synthesis")
+        if isinstance(navigation, Mapping)
+        else None
+    )
+    if not isinstance(synthesis, Mapping):
+        return None
+    input_sha256 = str(synthesis.get("input_sha256") or "")
+    matches: list[tuple[Path, dict[str, Any]]] = []
+    for path in directory.glob("lineage_synthesis_input.epoch-*.json"):
+        row = read_json(path, None)
+        if isinstance(row, Mapping) and row.get("input_sha256") == input_sha256:
+            matches.append((path, dict(row)))
+    for path in directory.glob("lineage_synthesis_input.epoch-*.wave-*.json"):
+        row = read_json(path, None)
+        if isinstance(row, Mapping) and row.get("input_sha256") == input_sha256:
+            matches.append((path, dict(row)))
+    unique = {
+        str(path): (path, row) for path, row in matches
+    }
+    if len(unique) != 1:
+        return None
+    input_path, synthesis_input = next(iter(unique.values()))
+    input_core = {
+        key: value
+        for key, value in synthesis_input.items()
+        if key != "input_sha256"
+    }
+    if synthesis_input.get("input_sha256") != content_hash(input_core):
+        raise ValueError("active lineage synthesis input digest mismatch")
+    decision_fields = {
+        "route",
+        "continuation_mode",
+        "selected_request_ids",
+        "deferred_request_ids",
+        "rationale",
+        "next_discriminator",
+        "kill_condition",
+        "program_ids",
+        "next_discriminator_request_ids",
+    }
+    raw_decision = {
+        key: synthesis[key] for key in decision_fields if key in synthesis
+    }
+    try:
+        replayed = validate_lineage_synthesis_decision(
+            synthesis_input, raw_decision
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        return {
+            "synthesis": dict(synthesis),
+            "synthesis_input": synthesis_input,
+            "input_path": input_path,
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+        }
+    if replayed != dict(synthesis):
+        return {
+            "synthesis": dict(synthesis),
+            "synthesis_input": synthesis_input,
+            "input_path": input_path,
+            "error_type": "ProjectionMismatch",
+            "error": "active lineage synthesis no longer replays byte-for-byte",
+        }
+    return None
+
+
+def _unwind_invalid_active_lineage_synthesis(
+    attempt_dir: str | Path,
+) -> Path:
+    """Return a superseded late move to search without replaying inference."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("invalid synthesis unwind requires an active run")
+    invalid = _invalid_active_lineage_synthesis(directory, run)
+    if invalid is None:
+        raise ValueError("active lineage synthesis is still valid")
+    navigation = dict(run.get("navigation") or {})
+    synthesis = invalid["synthesis"]
+    receipt_core = {
+        "schema": "leanmill.lineage_synthesis_semantic_supersession.v1",
+        "context_hash": str(run.get("context_hash") or ""),
+        "context_epoch": int(navigation.get("context_epoch", 0)),
+        "source_run_digest": str(run.get("run_digest") or ""),
+        "source_synthesis_receipt_sha256": str(
+            synthesis.get("receipt_sha256") or ""
+        ),
+        "source_input_sha256": str(synthesis.get("input_sha256") or ""),
+        "source_input_ref": str(Path(invalid["input_path"]).name),
+        "error_type": str(invalid["error_type"]),
+        "error": str(invalid["error"]),
+        "route": "continue_search",
+        "authority": "host_semantic_contract_supersession",
+        "claim_boundary": (
+            "retires one invalid move projection; preserves all authored "
+            "programs and boundary evidence"
+        ),
+    }
+    receipt = {
+        **receipt_core,
+        "receipt_sha256": content_hash(receipt_core),
+    }
+    path = directory / (
+        "lineage_synthesis_semantic_supersession."
+        f"{receipt['receipt_sha256'][:16]}.json"
+    )
+    prior = read_json(path, None)
+    if isinstance(prior, Mapping) and dict(prior) != receipt:
+        raise ValueError("lineage synthesis supersession changed identity")
+    if not isinstance(prior, Mapping):
+        write_json_atomic(path, receipt)
+    history = [
+        dict(row)
+        for row in navigation.get("objective_review_history") or ()
+        if isinstance(row, Mapping)
+    ]
+    if not any(
+        row.get("receipt_sha256") == receipt["receipt_sha256"]
+        for row in history
+    ):
+        history.append(receipt)
+    navigation["objective_review_history"] = history
+    for key in (
+        "lineage_synthesis",
+        "lineage_synthesis_program_selection",
+        "lineage_synthesis_frozen_program_ids",
+        "lineage_synthesis_search_wave",
+    ):
+        navigation.pop(key, None)
+    navigation["superseded_lineage_synthesis"] = receipt
+    run_core = {
+        **{key: value for key, value in run.items() if key != "run_digest"},
+        "status": "frontier_objective_unmet",
+        "navigation": navigation,
+        "budget_stop_receipt": None,
+    }
+    updated = {**run_core, "run_digest": content_hash(run_core)}
+    write_json_atomic(directory / "run.json", updated)
+    return directory
+
+
+def _unwind_stale_durable_synthesis_projection(
+    attempt_dir: str | Path,
+) -> Path:
+    """Restore the newer synthesis outcome without replaying provider work."""
+
+    directory = Path(attempt_dir)
+    run = read_json(directory / "run.json", None)
+    if not isinstance(run, Mapping):
+        raise ValueError("stale synthesis unwind requires an active run")
+    pending = _stale_durable_synthesis_projection(directory, run)
+    if pending is None:
+        return directory
+    definition, blueprint, budget_row, campaign_row, context = (
+        _load_campaign_attempt(directory)
+    )
+    navigation = dict(run.get("navigation") or {})
+    stale_selection = navigation.pop("lineage_synthesis_program_selection", None)
+    navigation.pop("lineage_synthesis", None)
+    navigation.pop("lineage_synthesis_search_wave", None)
+    navigation.pop("lineage_synthesis_frozen_program_ids", None)
+    navigation.pop("lineage_synthesis_budget_stop", None)
+    navigation.pop("lineage_synthesis_failure", None)
+    navigation[pending["outcome_field"]] = dict(pending["outcome"])
+    navigation["search_wave"] = max(
+        int(navigation.get("search_wave", 0) or 0),
+        int(pending["search_wave"]),
+    )
+    receipt_core = {
+        "schema": "leanmill.stale_durable_synthesis_unwind.v1",
+        "context_hash": context.context_hash,
+        "context_epoch": int(pending["synthesis_input"]["context_epoch"]),
+        "search_wave": int(pending["search_wave"]),
+        "source_run_digest": str(run.get("run_digest") or ""),
+        "stale_synthesis_ref": Path(pending["synthesis_path"]).name,
+        "stale_synthesis_receipt_sha256": str(
+            pending["synthesis"].get("receipt_sha256") or ""
+        ),
+        "stale_selection_receipt_sha256": str(
+            (stale_selection or {}).get("receipt_sha256") or ""
+        ),
+        "successor_input_ref": Path(pending["input_path"]).name,
+        "successor_input_sha256": str(
+            pending["synthesis_input"]["input_sha256"]
+        ),
+        "successor_outcome_ref": Path(pending["outcome_path"]).name,
+        "successor_outcome_receipt_sha256": str(
+            pending["outcome"]["receipt_sha256"]
+        ),
+        "authority": "search_wave_owned_synthesis_recovery",
+    }
+    receipt = {**receipt_core, "receipt_sha256": content_hash(receipt_core)}
+    write_json_atomic(
+        directory
+        / (
+            "stale_durable_synthesis_unwind."
+            + str(receipt["receipt_sha256"])[:16]
+            + ".json"
+        ),
+        receipt,
+    )
+    budget = ExplorationBudget.from_json(budget_row)
+    ledger = ExplorationBudgetLedger(
+        directory / "budget.events.jsonl",
+        budget,
+        attempt_id=directory.name,
+    )
+    usage = ledger.state()["usage"]
+    adapter_preflight = dict(
+        blueprint.executable_preflight_receipt.get("adapter_preflight") or {}
+    )
+    finish_frontier_navigation(
+        directory,
+        brief_id=definition.to_brief().brief_id,
+        blueprint=blueprint,
+        context=context,
+        context_epoch=int(pending["synthesis_input"]["context_epoch"]),
+        campaign_id=str(campaign_row["packet"]["campaign_id"]),
+        packet_digest=str(
+            run.get("packet_digest") or campaign_row.get("packet_digest") or ""
+        ),
+        navigation=navigation,
+        provider_calls=int(usage["provider_calls"]),
+        preparation_provider_calls=0,
+        budget_digest=budget.digest,
+        formula_proposal_count=len(
+            tuple(directory.glob("typed_formula_proposal.epoch-*.json"))
+        ),
+        semantically_new_formula_count=_semantic_profile_admission_count(directory),
+        labeled_object_count=int(adapter_preflight.get("labeled_model_count", 0)),
+    )
+    return directory
+
+
+def _objective_continuation_budget_exhausted(
     directory: Path, run: Mapping[str, Any]
 ) -> bool:
-    """Whether the frozen synthesis job has no allocation left to retry."""
+    """Whether an active objective transition has no leaf allocation left."""
 
-    if not _lineage_synthesis_retry_required(run):
+    if run.get("status") not in {
+        "frontier_leaf_decision_pending",
+        "frontier_objective_unmet",
+    }:
         return False
     budget_row = read_json(directory / "budget.json", None)
     if not isinstance(budget_row, Mapping):
@@ -3967,6 +10113,7 @@ def _refresh_conflict_memory_after_feedback(
             row
             for row in reversed(navigation.get("objective_review_history") or ())
             if isinstance(row, Mapping)
+            and type(row.get("schema")) is str
             and row.get("schema")
             in {
                 "leanmill.boundary_search_feedback.v1",
@@ -4020,14 +10167,23 @@ def resume_frontier_campaign_navigation(
     """Continue an interrupted navigator from immutable durable role calls."""
 
     directory = Path(attempt_dir)
-    existing = _restore_durable_search_transition(
-        directory, read_json(directory / "run.json", None)
-    )
-    existing = _archive_cross_context_active_candidates(directory, existing)
-    existing = _restore_nested_objective_feedback_history(directory, existing)
-    existing = _repair_stale_boundary_disposition_status(directory, existing)
+    # Reviewed recovery artifacts are bound to the exact current run.  Consume
+    # them before any host-side replay, evaluator supersession, or boundary
+    # status repair can legitimately advance that run digest.
+    existing = read_json(directory / "run.json", None)
     boundary_completion = read_json(directory / "boundary_completion.json", None)
-    boundary_feedback = _boundary_search_feedback(existing, boundary_completion)
+    governance_recheck = read_json(
+        directory / "boundary_governance_recheck.json", None
+    )
+    pre_delivery_boundary_feedback = _boundary_search_feedback(
+        existing,
+        boundary_completion,
+        governance_recheck=(
+            governance_recheck
+            if isinstance(governance_recheck, Mapping)
+            else None
+        ),
+    )
     pending_external_science = _pending_external_science_admission(
         directory, existing if isinstance(existing, Mapping) else None
     )
@@ -4042,6 +10198,74 @@ def resume_frontier_campaign_navigation(
     ):
         raise ValueError("conflicting external science recovery outcomes are pending")
     if (
+        _attempt_lease is None
+        and (
+            pending_external_science is not None
+            or pending_external_science_negative is not None
+        )
+    ):
+        with frontier_attempt_lease(
+            directory, action="resume_frontier_navigation"
+        ) as lease:
+            return resume_frontier_campaign_navigation(
+                directory,
+                repo=repo,
+                workbench_authority_ref=workbench_authority_ref,
+                _attempt_lease=lease,
+            )
+    if pending_external_science is not None:
+        deliver_external_science_resume_context(
+            directory,
+            pending_external_science,
+            _attempt_lease=_attempt_lease,
+        )
+        existing = read_json(directory / "run.json", None)
+        if not isinstance(existing, Mapping):
+            raise ValueError("external science delivery lost the campaign run")
+    if pending_external_science_negative is not None:
+        deliver_external_science_negative_disposition(
+            directory,
+            pending_external_science_negative,
+            _attempt_lease=_attempt_lease,
+        )
+        existing = read_json(directory / "run.json", None)
+        if not isinstance(existing, Mapping):
+            raise ValueError("external science negative delivery lost the campaign run")
+
+    existing = _restore_durable_search_transition(directory, existing)
+    existing = _archive_stale_evaluation_candidates(directory, existing)
+    existing = _archive_cross_context_active_candidates(directory, existing)
+    existing = _restore_nested_objective_feedback_history(directory, existing)
+    existing = _repair_stale_boundary_disposition_status(directory, existing)
+    boundary_feedback = (
+        pre_delivery_boundary_feedback
+        if (
+            pending_external_science is not None
+            or pending_external_science_negative is not None
+        )
+        else _boundary_search_feedback(
+            existing,
+            boundary_completion,
+            governance_recheck=(
+                governance_recheck
+                if isinstance(governance_recheck, Mapping)
+                else None
+            ),
+        )
+    )
+    if (
+        isinstance(existing, Mapping)
+        and existing.get("status") == "frontier_language_expansion_requested"
+    ):
+        frozen_blueprint = FrontierTheoryBlueprint.from_json(
+            read_json(directory / "blueprint.json", {})
+        )
+        finalized_family_null = _maybe_finalize_reviewed_family_exhaustion(
+            directory, blueprint=frozen_blueprint
+        )
+        if finalized_family_null is not None:
+            return directory
+    if (
         isinstance(existing, dict)
         and existing.get("status")
         in {
@@ -4049,9 +10273,11 @@ def resume_frontier_campaign_navigation(
             "frontier_no_candidate",
             "frontier_navigation_exhausted",
             "frontier_language_expansion_requested",
+            "frontier_objective_witness_found_pending_ratification",
             "frontier_objective_discharged",
             "budget_stopped",
         }
+        and not _recovered_lineage_synthesis_required(directory, existing)
         and boundary_feedback is None
         and pending_external_science is None
         and pending_external_science_negative is None
@@ -4073,24 +10299,6 @@ def resume_frontier_campaign_navigation(
     definition, blueprint, budget_row, campaign_row, context = (
         _load_campaign_attempt(directory)
     )
-    if pending_external_science is not None:
-        deliver_external_science_resume_context(
-            directory,
-            pending_external_science,
-            _attempt_lease=_attempt_lease,
-        )
-        existing = read_json(directory / "run.json", None)
-        if not isinstance(existing, Mapping):
-            raise ValueError("external science delivery lost the campaign run")
-    if pending_external_science_negative is not None:
-        deliver_external_science_negative_disposition(
-            directory,
-            pending_external_science_negative,
-            _attempt_lease=_attempt_lease,
-        )
-        existing = read_json(directory / "run.json", None)
-        if not isinstance(existing, Mapping):
-            raise ValueError("external science negative delivery lost the campaign run")
     deliver_post_freeze_mechanism_feedback(
         directory, existing or {}, context_hash=context.context_hash
     )
@@ -4147,6 +10355,12 @@ def resume_frontier_campaign_navigation(
     ):
         ledger.freeze_wall_clock(reason="pending_leaf_has_no_search_capacity")
         return directory
+    if not _objective_resume_has_turn_capacity(ledger, existing):
+        # A wave owns an actual allocation, not merely a later sequence number.
+        # Keep the last scientific projection active until budget or evidence
+        # creates a consuming transition.
+        ledger.freeze_wall_clock(reason="objective_unmet_has_no_search_capacity")
+        return directory
     campaign_id = str(campaign_row["packet"]["campaign_id"])
     events = TheoryCampaignJournal(directory / "events.jsonl").replay()
     context_epoch = max((event.epoch for event in events), default=0)
@@ -4184,10 +10398,17 @@ def resume_frontier_campaign_navigation(
                 for row in checkpoint.get("trace") or ()
                 if isinstance(row, Mapping)
             )
-        if isinstance(existing, Mapping) and existing.get("status") in {
-            "frontier_leaf_decision_pending",
-            "frontier_objective_unmet",
-        }:
+        recovered_synthesis = _recovered_lineage_synthesis_required(
+            directory, existing
+        )
+        if isinstance(existing, Mapping) and (
+            existing.get("status")
+            in {
+                "frontier_leaf_decision_pending",
+                "frontier_objective_unmet",
+            }
+            or recovered_synthesis
+        ):
             seed = (
                 []
                 if existing.get("status") == "frontier_objective_unmet"
@@ -4198,7 +10419,8 @@ def resume_frontier_campaign_navigation(
             objective_survivors = tuple(
                 row
                 for row in _active_objective_finalists(prior_navigation)
-                if _candidate_matches_context(
+                if _candidate_matches_evaluation_contract(row)
+                and _candidate_matches_context(
                     row,
                     context_hash=context.context_hash,
                     context_epoch=context_epoch,
@@ -4206,28 +10428,59 @@ def resume_frontier_campaign_navigation(
             )
             if objective_survivors:
                 navigator.objective_survivors = objective_survivors  # type: ignore[attr-defined]
-            if history and isinstance(history[-1], Mapping):
-                latest_feedback = dict(history[-1])
-                if not any(
-                    row.get("decision") == "objective_feedback"
-                    and row.get("receipt") == latest_feedback
-                    for row in seed
+            opened_wave = False
+            latest_feedback: dict[str, Any] | None = None
+            actionable_feedback = next(
+                (
+                    row
+                    for row in reversed(history)
                     if isinstance(row, Mapping)
+                    and row.get("schema")
+                    != "leanmill.lineage_synthesis_semantic_supersession.v1"
+                ),
+                None,
+            )
+            if isinstance(actionable_feedback, Mapping):
+                latest_feedback = dict(actionable_feedback)
+                for feedback_row in _objective_feedback_trace_rows(
+                    prior_navigation,
+                    latest_feedback,
+                    context_hash=context.context_hash,
                 ):
-                    seed.append(
-                        {
-                            "decision": "objective_feedback",
-                            "receipt": latest_feedback,
-                            "host_finalized": True,
-                        }
-                    )
+                    if feedback_row not in seed:
+                        seed.append(feedback_row)
                 navigator.objective_feedback = latest_feedback  # type: ignore[attr-defined]
+                if (
+                    _is_language_execution_feedback(
+                        latest_feedback,
+                        context_hash=context.context_hash,
+                    )
+                    and _language_feedback_wave_binding(
+                        directory, latest_feedback
+                    )
+                    is None
+                ):
+                    navigator.begin_search_wave()  # type: ignore[attr-defined]
+                    opened_wave = True
+                    _bind_language_feedback_to_search_wave(
+                        directory,
+                        feedback=latest_feedback,
+                        context_hash=context.context_hash,
+                        context_epoch=context_epoch,
+                        search_wave=int(getattr(navigator, "search_wave", 0)),
+                    )
             unmaterialized_wave = int(
                 getattr(navigator, "search_wave", 0)
             ) > int(prior_navigation.get("search_wave", 0))
-            opened_wave = False
-            retry_synthesis = _lineage_synthesis_retry_required(existing)
+            retry_synthesis = _lineage_synthesis_retry_required(
+                directory, existing
+            )
             if retry_synthesis:
+                if recovered_synthesis:
+                    # The recovered candidate set differs from every frozen
+                    # historical synthesis input. Give its new late review a
+                    # fresh wave identity while preserving every leaf row.
+                    navigator.begin_search_wave()  # type: ignore[attr-defined]
                 rows = list(prior_navigation.get("lineages") or ())
                 navigator.preserved_lineage_rows = {  # type: ignore[attr-defined]
                     index: dict(row) for index, row in enumerate(rows)
@@ -4400,12 +10653,6 @@ def resume_frontier_campaign_navigation(
                 navigator.begin_search_wave()  # type: ignore[attr-defined]
 
     else:
-        role = frontier_agent_role(
-            definition,
-            role_name="navigator",
-            repo=repo,
-            artifact_dir=directory / "agent_calls",
-        )
         if isinstance(checkpoint, Mapping):
             if checkpoint.get("context_hash") != context.context_hash:
                 raise ValueError(
@@ -4429,21 +10676,85 @@ def resume_frontier_campaign_navigation(
             checkpoint_calls = 0
             checkpoint_trace = ()
 
+        navigator = _make_campaign_theory_navigator(
+            definition,
+            directory=directory,
+            repo=repo,
+            attempt_id=directory.name,
+        )
+        navigator.epoch = context_epoch  # type: ignore[attr-defined]
+        seed = (
+            []
+            if isinstance(existing, Mapping)
+            and existing.get("status") == "frontier_objective_unmet"
+            else list(checkpoint_trace)
+        )
+        prior_navigation = (
+            existing.get("navigation")
+            if isinstance(existing, Mapping)
+            and isinstance(existing.get("navigation"), Mapping)
+            else {}
+        )
+        if isinstance(existing, Mapping) and existing.get("status") in {
+            "frontier_leaf_decision_pending",
+            "frontier_objective_unmet",
+        }:
+            actionable_feedback = next(
+                (
+                    row
+                    for row in reversed(
+                        prior_navigation.get("objective_review_history") or ()
+                    )
+                    if isinstance(row, Mapping)
+                    and row.get("schema")
+                    != "leanmill.lineage_synthesis_semantic_supersession.v1"
+                ),
+                None,
+            )
+            if isinstance(actionable_feedback, Mapping):
+                feedback = dict(actionable_feedback)
+                for feedback_row in _objective_feedback_trace_rows(
+                    prior_navigation,
+                    feedback,
+                    context_hash=context.context_hash,
+                ):
+                    if feedback_row not in seed:
+                        seed.append(feedback_row)
+                navigator.objective_feedback = feedback  # type: ignore[attr-defined]
+                if (
+                    _is_language_execution_feedback(
+                        feedback,
+                        context_hash=context.context_hash,
+                    )
+                    and _language_feedback_wave_binding(directory, feedback)
+                    is None
+                ):
+                    navigator.begin_search_wave()  # type: ignore[attr-defined]
+                    _bind_language_feedback_to_search_wave(
+                        directory,
+                        feedback=feedback,
+                        context_hash=context.context_hash,
+                        context_epoch=context_epoch,
+                        search_wave=int(getattr(navigator, "search_wave", 0)),
+                    )
+        navigator.initial_trace = tuple(seed)  # type: ignore[attr-defined]
+        role = navigator.call_role  # type: ignore[attr-defined]
+        base_role_dir = (directory / "agent_calls" / "navigator").resolve()
+        checkpoint_calls_for_role = (
+            checkpoint_calls
+            if role.artifact_dir.resolve() == base_role_dir
+            else 0
+        )
         prior_calls, durable_decisions = _read_durable_navigator_decisions(
-            directory / "agent_calls" / "navigator"
+            role.artifact_dir
         )
-        replay_decisions = durable_decisions[checkpoint_calls:]
+        replay_decisions = durable_decisions[checkpoint_calls_for_role:]
         role.calls.extend(prior_calls)
-        navigator = make_subscription_theory_navigator(
-            role, attempt_id=directory.name
-        )
-        navigator.initial_trace = checkpoint_trace  # type: ignore[attr-defined]
-        navigator.prior_agent_turns = checkpoint_calls  # type: ignore[attr-defined]
-        navigator.round_offset = checkpoint_calls  # type: ignore[attr-defined]
+        navigator.prior_agent_turns = checkpoint_calls_for_role  # type: ignore[attr-defined]
+        navigator.round_offset = checkpoint_calls_for_role  # type: ignore[attr-defined]
         navigator.replay_decisions = tuple(  # type: ignore[attr-defined]
             replay_decisions
         )
-        navigator.epoch = context_epoch  # type: ignore[attr-defined]
 
     _attempt_lease.bind_epoch(
         epoch=context_epoch,
@@ -4519,6 +10830,7 @@ def resume_frontier_campaign_navigation(
             )
             has_dispositive_feedback = any(
                 isinstance(row, Mapping)
+                and type(row.get("schema")) is str
                 and row.get("schema")
                 in {
                     "leanmill.boundary_search_feedback.v1",
@@ -4568,6 +10880,12 @@ def resume_frontier_campaign_navigation(
         ):
             if key in prior_navigation and key not in navigation:
                 navigation[key] = prior_navigation[key]
+        carried = _merge_carried_evidence_receipts(
+            prior_navigation.get("carried_evidence_receipts") or (),
+            navigation.get("carried_evidence_receipts") or (),
+        )
+        if carried:
+            navigation["carried_evidence_receipts"] = carried
 
         usage = ledger.state()["usage"]
         adapter_preflight = dict(
@@ -4593,6 +10911,9 @@ def resume_frontier_campaign_navigation(
             labeled_object_count=int(
                 adapter_preflight.get("labeled_model_count", 0)
             ),
+        )
+        _maybe_finalize_reviewed_family_exhaustion(
+            directory, blueprint=blueprint
         )
     finally:
         ledger.freeze_wall_clock(reason="navigation_resume_exit")
@@ -4856,14 +11177,33 @@ def materialize_frontier_navigation_from_journal(
     definition, blueprint, budget_row, campaign_row, context = (
         _load_campaign_attempt(directory)
     )
+    candidate_outcome_memory = _campaign_construction_candidate_memory(
+        directory, blueprint
+    )
 
     root_journal = TheoryCampaignJournal(directory / "events.jsonl")
     all_events = list(root_journal.replay())
     for path in sorted(
-        (directory / "lineage_journals").glob("*.events.jsonl")
+        (directory / "lineage_journals").glob("lineage-*.events.jsonl")
     ):
         all_events.extend(TheoryCampaignJournal(path).replay())
-    epoch = max((event.epoch for event in all_events), default=0)
+    journal_epoch = max((event.epoch for event in all_events), default=0)
+    checkpoint = read_json(
+        directory / "navigation_epoch_checkpoint.json", None
+    )
+    if isinstance(checkpoint, Mapping):
+        if checkpoint.get("context_hash") != context.context_hash:
+            raise ValueError(
+                "navigation epoch checkpoint targets a stale context"
+            )
+        checkpoint_epoch = int(checkpoint.get("context_epoch", -1))
+        if checkpoint_epoch < journal_epoch:
+            raise ValueError(
+                "navigation epoch checkpoint trails the campaign journal"
+            )
+        epoch = checkpoint_epoch
+    else:
+        epoch = journal_epoch
     _attempt_lease.bind_epoch(epoch=epoch, context_hash=context.context_hash)
     campaign_id = str(campaign_row["packet"]["campaign_id"])
     _conflicts, prior_conflicts = _freeze_theory_conflict_memory(
@@ -4886,20 +11226,30 @@ def materialize_frontier_navigation_from_journal(
     }
 
     if lineage_count == 1:
-        calls, decisions = _read_durable_navigator_decisions(
-            directory / "agent_calls" / "navigator"
-        )
+        call_dir = directory / "agent_calls" / "navigator"
+        calls, decisions = _read_durable_navigator_decisions(call_dir)
         navigation = (
             _replay_navigator_decisions(
                 context,
                 blueprint,
                 decisions,
-                IdempotentReplayJournal(root_journal),
+                _navigator_recovery_journal(
+                    directory,
+                    directory / "agent_calls" / "navigator",
+                    epoch=epoch,
+                    context_hash=context.context_hash,
+                ),
                 attempt_id=directory.name,
                 campaign_id=campaign_id,
                 epoch=epoch,
                 max_finalists=configured_finalists,
                 prior_conflict_rows=prior_conflicts,
+                witness_constructor_fn=(
+                    _durable_witness_constructor_for_navigator_segment(
+                        definition, directory, call_dir
+                    )
+                ),
+                candidate_outcome_memory=candidate_outcome_memory,
             )
             if decisions
             else None
@@ -4926,7 +11276,13 @@ def materialize_frontier_navigation_from_journal(
             )
             replayed_segments: list[tuple[Path, dict[str, Any]]] = []
             for call_dir in call_dirs:
-                branch_calls, decisions, initial_trace = _durable_navigator_segment(
+                (
+                    branch_calls,
+                    decisions,
+                    initial_trace,
+                    prior_agent_turns,
+                    round_offset,
+                ) = _durable_navigator_segment(
                     call_dir,
                     receipt_index=receipt_index,
                 )
@@ -4940,10 +11296,11 @@ def materialize_frontier_navigation_from_journal(
                             context,
                             blueprint,
                             decisions,
-                            IdempotentReplayJournal(
-                                directory
-                                / "lineage_journals"
-                                / f"recovery-{call_dir.name}.events.jsonl"
+                            _navigator_recovery_journal(
+                                directory,
+                                call_dir,
+                                epoch=epoch,
+                                context_hash=context.context_hash,
                             ),
                             attempt_id=f"{directory.name}:lineage:{branch}",
                             campaign_id=campaign_id,
@@ -4952,6 +11309,14 @@ def materialize_frontier_navigation_from_journal(
                             max_finalists=per_lineage_finalists,
                             prior_conflict_rows=prior_conflicts,
                             initial_trace=initial_trace,
+                            prior_agent_turns=prior_agent_turns,
+                            round_offset=round_offset,
+                            witness_constructor_fn=(
+                                _durable_witness_constructor_for_navigator_segment(
+                                    definition, directory, call_dir
+                                )
+                            ),
+                            candidate_outcome_memory=candidate_outcome_memory,
                         ),
                     )
                 )
@@ -5031,6 +11396,9 @@ def materialize_frontier_navigation_from_journal(
                 "cold_view": True,
             }
     navigation = dict(navigation)
+    navigation = _bind_recovered_boundary_artifact_feedback(
+        directory, navigation
+    )
     if "result_sha256" in navigation:
         navigation.pop("result_sha256")
         navigation["recovered_from_durable_results"] = True
@@ -5061,6 +11429,8 @@ def materialize_frontier_navigation_from_journal(
     for synthesis_path in reversed(
         sorted(directory.glob(f"lineage_synthesis.epoch-{epoch:03d}*.json"))
     ):
+        if not _durable_synthesis_can_project(navigation, synthesis_path):
+            continue
         synthesis = read_json(synthesis_path, {})
         synthesis_core = {
             key: value for key, value in synthesis.items() if key != "receipt_sha256"
@@ -5072,7 +11442,17 @@ def materialize_frontier_navigation_from_journal(
         )
         if synthesis.get("input_sha256") != replay_input.get("input_sha256"):
             continue
+        navigation.pop("lineage_synthesis_budget_stop", None)
+        navigation.pop("lineage_synthesis_failure", None)
         navigation["lineage_synthesis"] = synthesis
+        navigation["lineage_synthesis_search_wave"] = (
+            _durable_synthesis_search_wave(synthesis_path)
+        )
+        navigation["lineage_synthesis_frozen_program_ids"] = [
+            str(row.get("program_id") or "")
+            for row in replay_input.get("frozen_programs") or ()
+            if isinstance(row, Mapping) and row.get("program_id")
+        ]
         if synthesis.get("route") == "continue_search":
             navigation["objective_review_history"] = [synthesis]
         break
@@ -5137,34 +11517,62 @@ def materialize_frontier_navigation_from_journal(
     )
     return directory
 
-def _registered_formal_task_executor_required(
+def _registered_task_executor_kinds(
     navigation: Mapping[str, Any],
-) -> bool:
-    """Whether a frozen program owns an executable formal-task adjudicator.
+) -> frozenset[str]:
+    """Return exact registered executor kinds owned by frozen task contracts.
 
     Prediction-level Lean checks remain controlled by the blueprint's
     ``conditional_lean`` flag.  A leaf-authored task contract is a different
-    lifecycle object: once frozen, its registered adjudicator must be
-    available even when the original prediction plan did not request Lean.
+    lifecycle object and is activated only by its adjudicator's registered
+    boundary handler.
     """
 
-    from ztare.leanmill.formal_task_boundary import (
-        GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR,
+    from ztare.leanmill.theory_task_boundary_registry import (
+        registered_theory_task_boundary_handler,
     )
 
-    for candidate in _objective_candidate_lineages(navigation):
-        representative = candidate.get("representative") or {}
-        program_row = representative.get("theory_program")
+    kinds: set[str] = set()
+    for candidate in navigation.get("finalists") or ():
+        if not isinstance(candidate, Mapping):
+            continue
+        program_row = candidate.get("theory_program")
         if not isinstance(program_row, Mapping):
             continue
         program = TheoryProgram.from_json(program_row)
-        if any(
-            contract.adjudicator_id
-            == GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR
-            for contract in program.task_discharge_contracts
-        ):
-            return True
-    return False
+        for contract in program.task_discharge_contracts:
+            handler = registered_theory_task_boundary_handler(
+                contract.adjudicator_id
+            )
+            if handler is not None:
+                kinds.add(handler.executor_kind)
+    return frozenset(kinds)
+
+
+def _registered_formal_task_executor_required(
+    navigation: Mapping[str, Any],
+) -> bool:
+    """Compatibility predicate for the existing formal-task first fire."""
+
+    from ztare.leanmill.theory_task_boundary_registry import (
+        FORMALIZATION_CAMPAIGN_EXECUTOR,
+    )
+
+    return FORMALIZATION_CAMPAIGN_EXECUTOR in _registered_task_executor_kinds(
+        navigation
+    )
+
+
+def _registered_witness_task_executor_required(
+    navigation: Mapping[str, Any],
+) -> bool:
+    from ztare.leanmill.theory_task_boundary_registry import (
+        DATA_ONLY_WITNESS_EXECUTOR,
+    )
+
+    return DATA_ONLY_WITNESS_EXECUTOR in _registered_task_executor_kinds(
+        navigation
+    )
 
 
 def execute_frontier_campaign_verification(
@@ -5201,12 +11609,19 @@ def execute_frontier_campaign_verification(
         and isinstance(activation_run.get("navigation"), Mapping)
         else {}
     )
-    formal_task_requested = _registered_formal_task_executor_required(
-        activation_navigation
+    task_executor_kinds = _registered_task_executor_kinds(activation_navigation)
+    from ztare.leanmill.theory_task_boundary_registry import (
+        DATA_ONLY_WITNESS_EXECUTOR,
+        FORMALIZATION_CAMPAIGN_EXECUTOR,
     )
+
+    formal_task_requested = FORMALIZATION_CAMPAIGN_EXECUTOR in task_executor_kinds
+    witness_task_requested = DATA_ONLY_WITNESS_EXECUTOR in task_executor_kinds
     lean_executor = None
     isabelle_executor = None
     theory_task_executor = None
+    formal_theory_task_executor = None
+    witness_theory_task_executor = None
     governance_root: Path | None = None
     governance_timeout_s = 0
     if with_isabelle:
@@ -5350,7 +11765,7 @@ def execute_frontier_campaign_verification(
             )
             return result
 
-        def theory_task_executor(
+        def formal_theory_task_executor(
             contract,
             *,
             context,
@@ -5493,11 +11908,106 @@ def execute_frontier_campaign_verification(
                     budget_ledger=budget_ledger,
                 )
 
+    if witness_task_requested:
+        _definition, witness_blueprint, _budget, _campaign, _context = (
+            _load_campaign_attempt(directory)
+        )
+        witness_adapter_id = str(witness_blueprint.adapter_id)
+
+        def witness_capability_call(*, descriptor, **kwargs):
+            from ztare.leanmill.theory_adapter_registry import (
+                materialize_theory_adapter_capability,
+                theory_adapter_capabilities,
+            )
+            from ztare.leanmill.witness_construction_boundary import (
+                WitnessConstructionCapabilityUnavailable,
+            )
+
+            if (
+                not isinstance(descriptor, Mapping)
+                or str(descriptor.get("adapter_id") or "")
+                != witness_adapter_id
+            ):
+                raise ValueError(
+                    "witness task capability crossed the active adapter"
+                )
+            capability_id = str(descriptor.get("capability_id") or "")
+            capability_contract = descriptor.get("contract")
+            if (
+                not capability_id
+                or not isinstance(capability_contract, Mapping)
+                or capability_id
+                not in theory_adapter_capabilities(witness_adapter_id)
+            ):
+                raise WitnessConstructionCapabilityUnavailable(
+                    "adapter_capability_unavailable:" + capability_id
+                )
+            return materialize_theory_adapter_capability(
+                witness_adapter_id,
+                capability_id,
+                descriptor=dict(descriptor),
+                **kwargs,
+            )
+
+        def witness_theory_task_executor(
+            contract,
+            *,
+            context,
+            verification_plan,
+            budget_ledger,
+        ):
+            del verification_plan, budget_ledger
+            from ztare.leanmill.witness_construction_boundary import (
+                execute_governed_witness_construction_task,
+            )
+
+            if getattr(context, "context_hash", None) != contract.parameters.get(
+                "context_hash"
+            ):
+                raise ValueError("witness task executor crossed campaign context")
+            return execute_governed_witness_construction_task(
+                contract,
+                normalizer_fn=witness_capability_call,
+                verifier_fn=witness_capability_call,
+            )
+
+    if task_executor_kinds:
+        from ztare.leanmill.theory_task_boundary_registry import (
+            theory_task_executor_kind,
+        )
+
+        def theory_task_executor(
+            contract,
+            *,
+            context,
+            verification_plan,
+            budget_ledger,
+        ):
+            executor_kind = theory_task_executor_kind(contract)
+            executor = (
+                formal_theory_task_executor
+                if executor_kind == FORMALIZATION_CAMPAIGN_EXECUTOR
+                else witness_theory_task_executor
+                if executor_kind == DATA_ONLY_WITNESS_EXECUTOR
+                else None
+            )
+            if executor is None:
+                raise ValueError(
+                    "registered theory-task executor is unavailable: "
+                    + executor_kind
+                )
+            return executor(
+                contract,
+                context=context,
+                verification_plan=verification_plan,
+                budget_ledger=budget_ledger,
+            )
+
     # Do not widen an optional prediction-level referee merely because a
     # distinct task adjudicator needed the same Lean runtime.
     if not with_lean:
         lean_executor = None
-    if not formal_task_requested:
+    if not task_executor_kinds:
         theory_task_executor = None
 
     budget_row = read_json(directory / "budget.json", None)
@@ -5544,7 +12054,26 @@ def execute_frontier_campaign_verification(
         source_run = _consume_theory_task_discharge(
             directory, source_run, completion
         )
-    feedback = _boundary_search_feedback(source_run, completion)
+    if (
+        isinstance(source_run, Mapping)
+        and _boundary_hard_stop_reason(completion)
+    ):
+        _materialize_boundary_budget_stop(
+            directory, source_run, completion
+        )
+        return completion
+    governance_recheck = read_json(
+        directory / "boundary_governance_recheck.json", None
+    )
+    feedback = _boundary_search_feedback(
+        source_run,
+        completion,
+        governance_recheck=(
+            governance_recheck
+            if isinstance(governance_recheck, Mapping)
+            else None
+        ),
+    )
     if feedback is not None and resume_search:
         resume_frontier_campaign_navigation(
             directory,
@@ -5662,6 +12191,14 @@ def recheck_frontier_boundary_governance(
             task,
             proof,
             compile_fn=compile_fn,
+            axiom_audit_fn=lambda source, target_name: (
+                audit_lean_consequence_axioms(
+                    source,
+                    target_name,
+                    lean_root=root,
+                    timeout_s=int(timeout_s),
+                )
+            ),
             generic_solver_outcome=str(governed.get("status") or "unknown"),
         ).to_json()
         rows.append(
@@ -5812,9 +12349,24 @@ def _post_freeze_research_disposition(
         "not_located_in_bounded_review": "unresolved",
         "conflicting_evidence": "conflicting",
     }
+    target_replay = alignment.get("target_predicate_replay")
+    literature_target_replay = literature_receipt.get("target_predicate_replay")
+    if target_replay != literature_target_replay:
+        raise ValueError("post-freeze target replay changed after interpretation")
+    target_outcome = (
+        str(target_replay.get("outcome") or "")
+        if isinstance(target_replay, Mapping)
+        else ""
+    )
     external_status = str(alignment.get("status") or "unavailable")
-    expected_external_status = external_status_by_assessment.get(
-        str(review.get("novelty_assessment") or ""), "unavailable"
+    novelty_assessment = str(review.get("novelty_assessment") or "")
+    expected_external_status = (
+        "target_overlap"
+        if target_outcome == "overlap"
+        else "unavailable"
+        if target_outcome == "unknown"
+        and novelty_assessment == "not_located_in_bounded_review"
+        else external_status_by_assessment.get(novelty_assessment, "unavailable")
     )
     if external_status != expected_external_status:
         raise ValueError("post-freeze source disposition changed after interpretation")
@@ -5882,6 +12434,7 @@ def _post_freeze_research_disposition(
         review.get("implication_prior_art")
         or review.get("recognized_theory_connections")
         or verified_relations
+        or target_outcome == "overlap"
         or any(
             isinstance(row, Mapping)
             and row.get("match_status") in {"exact", "equivalent"}
@@ -5889,7 +12442,9 @@ def _post_freeze_research_disposition(
         )
     )
     expected_origin = (
-        "catalogued_recovery"
+        "retrieved_target_overlap"
+        if external_status == "target_overlap"
+        else "catalogued_recovery"
         if external_status == "catalogued"
         else "likely_routine_reconstruction"
         if external_status == "likely_catalogued"
@@ -5903,7 +12458,9 @@ def _post_freeze_research_disposition(
     if origin_disposition != expected_origin:
         raise ValueError("post-freeze origin disposition changed after interpretation")
 
-    if external_status == "catalogued":
+    if external_status == "target_overlap":
+        residual = "distinguish_from_retrieved_target_overlap_or_change_objective"
+    elif external_status == "catalogued":
         residual = "distinguish_from_catalogued_result_or_change_objective"
     elif external_status == "likely_catalogued":
         residual = "adjudicate_likely_recurrence_before_terminal_credit"
@@ -5912,7 +12469,7 @@ def _post_freeze_research_disposition(
     else:
         residual = "transport_grounded_mechanism_under_destination_replay"
     recurrence_pressure = bool(
-        external_status in {"catalogued", "likely_catalogued"}
+        external_status in {"catalogued", "likely_catalogued", "target_overlap"}
         or verified_relations
     )
     return {
@@ -6022,6 +12579,7 @@ def consume_post_freeze_interpretation_for_search(
             dict(row)
             for row in reversed(navigation.get("objective_review_history") or ())
             if isinstance(row, Mapping)
+            and type(row.get("schema")) is str
             and row.get("schema") in _POST_FREEZE_FEEDBACK_SCHEMAS
             and row.get("interpretation_sha256") == interpretation_sha
         ),
@@ -6232,6 +12790,7 @@ def deliver_post_freeze_mechanism_feedback(
             dict(row)
             for row in reversed(navigation.get("objective_review_history") or ())
             if isinstance(row, Mapping)
+            and type(row.get("schema")) is str
             and row.get("schema") in _POST_FREEZE_FEEDBACK_SCHEMAS
         ),
         None,
@@ -7116,6 +13675,7 @@ def run_external_science_recovery_admission(
                 model=role.config.model,
                 reasoning_effort=native_effort,
                 config_sha256=config_sha,
+                max_timeout_seconds=role.config.timeout_seconds,
             ) as dispatch_calls, subscription_dispatch_budget_scope(
                 before_dispatch=before_dispatch,
                 after_dispatch=unused_after_dispatch,
@@ -7441,6 +14001,7 @@ def run_post_freeze_literature_review(
     )
 
     from ztare.leanmill.frontier_interpretation import (
+        LITERATURE_SEARCH_LEGS,
         POST_FREEZE_RESULT_PACKET_SCHEMA,
         build_post_freeze_result_packet,
         post_freeze_literature_output_schema,
@@ -7554,6 +14115,15 @@ def run_post_freeze_literature_review(
         )
 
     def unavailable_review(reason: str) -> dict[str, Any]:
+        search_protocol = packet.get("literature_search_protocol")
+        search_protocol = (
+            dict(search_protocol) if isinstance(search_protocol, Mapping) else {}
+        )
+        required_search_legs = tuple(
+            str(row)
+            for row in search_protocol.get("required_search_legs")
+            or LITERATURE_SEARCH_LEGS
+        )
         return {
             "status": "inconclusive",
             "formula_matches": [
@@ -7577,6 +14147,26 @@ def run_post_freeze_literature_review(
             "recognized_theory_connections": [],
             "finite_witness_matches": [],
             "novelty_assessment": "review_unavailable",
+            "search_coverage": {
+                "review_as_of_date": str(
+                    search_protocol.get("review_as_of_date") or "unavailable"
+                ),
+                "anchor_sources": [],
+                "search_legs": [
+                    {
+                        "leg_id": leg_id,
+                        "status": "unavailable",
+                        "queries": [f"unavailable:{leg_id}"],
+                        "evidence_urls": [],
+                        "limitation": str(reason),
+                    }
+                    for leg_id in required_search_legs
+                ],
+                "problem_status": "inconclusive",
+                "status_evidence_urls": [],
+                "latest_relevant_source_date": None,
+                "limitations": [str(reason)],
+            },
             "mechanism_analysis": {
                 "key_idea": "",
                 "recombination": "",
@@ -7637,11 +14227,29 @@ def run_post_freeze_literature_review(
         {},
     )
     from ztare.leanmill.theory_interpretation import compose_theory_interpretation
+    from ztare.leanmill.target_predicate_replay import (
+        replay_review_target_predicates,
+    )
+
+    retrieved_target_examples = read_json(
+        directory / "retrieved_target_examples.json", None
+    )
+    retrieved_target_examples = (
+        dict(retrieved_target_examples)
+        if isinstance(retrieved_target_examples, Mapping)
+        else None
+    )
 
     def receipt_for(
         review: Mapping[str, Any],
         finite_witness_host_checks: list[dict[str, Any]],
     ) -> dict[str, Any]:
+        target_predicate_replay = replay_review_target_predicates(
+            packet,
+            review,
+            retrieved_target_examples,
+            receipts_dir=directory / "workspace",
+        )
         core = {
             "schema": "leanmill.post_freeze_interpretation.v1",
             "status": (
@@ -7668,6 +14276,7 @@ def run_post_freeze_literature_review(
                 "output_schema_digest": call_receipt.get("output_schema_digest"),
             },
             "finite_witness_host_checks": finite_witness_host_checks,
+            "target_predicate_replay": target_predicate_replay,
             "review": dict(review),
         }
         return {**core, "receipt_sha256": content_hash(core)}
@@ -7765,6 +14374,7 @@ def _current_post_freeze_interpretation(
         history = (run.get("navigation") or {}).get("objective_review_history") or ()
         return any(
             isinstance(row, Mapping)
+            and type(row.get("schema")) is str
             and row.get("schema") in _POST_FREEZE_FEEDBACK_SCHEMAS
             and row.get("interpretation_sha256") == interpretation_sha
             for row in history
@@ -7793,20 +14403,156 @@ def _persist_terminal_obligation_receipt(
 
 
 def _terminal_obligation_rows(
-    directory: Path, *, prefix: str, schema: str
+    directory: Path,
+    *,
+    prefix: str,
+    schema: str,
+    context_hash: str | None = None,
+    lineage_ids: Sequence[str] | None = None,
 ) -> tuple[dict[str, Any], ...]:
+    lineage_set = (
+        {str(value) for value in lineage_ids}
+        if lineage_ids is not None
+        else None
+    )
     rows: list[dict[str, Any]] = []
     for path in sorted(directory.glob(f"{prefix}.*.json")):
         row = read_json(path, None)
         if not isinstance(row, Mapping) or row.get("schema") != schema:
             raise ValueError(f"{prefix} artifact has the wrong schema")
+        core = {
+            key: value for key, value in row.items() if key != "receipt_sha256"
+        }
+        if row.get("receipt_sha256") != content_hash(core):
+            raise ValueError(f"{prefix} artifact digest mismatch")
+        if context_hash is not None and row.get("context_hash") != context_hash:
+            continue
+        if lineage_set is not None and str(row.get("lineage_id") or "") not in lineage_set:
+            continue
         rows.append(dict(row))
     return tuple(rows)
+
+
+def _superseded_budget_stop_receipt_refs(
+    directory: Path, *, context_hash: str
+) -> frozenset[str]:
+    """Replay resource-grant reopen receipts that invalidate prior stops."""
+
+    refs: set[str] = set()
+    patterns = (
+        (
+            "budget_extension_reopen.*.json",
+            "leanmill.budget_extension_pending_action_reopen.v1",
+            "expansion",
+        ),
+        (
+            "boundary_budget_extension_reopen.*.json",
+            "leanmill.boundary_budget_extension_reopen.v1",
+            "boundary",
+        ),
+    )
+    for pattern, schema, phase in patterns:
+        for path in sorted(directory.glob(pattern)):
+            row = read_json(path, None)
+            if not isinstance(row, Mapping) or row.get("schema") != schema:
+                raise ValueError("budget reopen artifact has the wrong schema")
+            core = {
+                key: value
+                for key, value in row.items()
+                if key != "receipt_sha256"
+            }
+            if row.get("receipt_sha256") != content_hash(core):
+                raise ValueError("budget reopen artifact digest mismatch")
+            # Legacy receipts predate disposition supersession and therefore
+            # remain historical only; they cannot silently invalidate a stop.
+            stop = row.get("superseded_budget_stop_receipt")
+            if not isinstance(stop, Mapping):
+                continue
+            stop_core = {
+                key: value
+                for key, value in stop.items()
+                if key != "receipt_sha256"
+            }
+            stop_ref = str(stop.get("receipt_sha256") or "")
+            if (
+                row.get("context_hash") != context_hash
+                or stop.get("schema") != "leanmill.budget_stop_receipt.v1"
+                or stop.get("context_hash") != context_hash
+                or stop_ref != content_hash(stop_core)
+            ):
+                raise ValueError("budget reopen crossed its stopped campaign")
+            extensions = _phase_extensions_after_stop(
+                directory,
+                {"budget_stop_receipt": dict(stop)},
+                phase=phase,
+            )
+            if str(row.get("extension_event_sha256") or "") not in {
+                str(extension.get("event_sha256") or "")
+                for extension in extensions
+            }:
+                raise ValueError("budget reopen does not replay its resource grant")
+            refs.add(stop_ref)
+    return frozenset(refs)
+
+
+def _active_lineage_disposition_rows(
+    directory: Path,
+    *,
+    context_hash: str,
+    lineage_ids: Sequence[str],
+) -> tuple[dict[str, Any], ...]:
+    """Project immutable disposition history into the current frozen set."""
+
+    superseded_stops = _superseded_budget_stop_receipt_refs(
+        directory, context_hash=context_hash
+    )
+    return tuple(
+        row
+        for row in _terminal_obligation_rows(
+            directory,
+            prefix="lineage_disposition",
+            schema="leanmill.frozen_lineage_disposition.v2",
+            context_hash=context_hash,
+            lineage_ids=lineage_ids,
+        )
+        if not (
+            row.get("terminal_state") == "retired_unresolved"
+            and row.get("authority")
+            == "frontier_campaign_budget_or_retirement_transition"
+            and superseded_stops.intersection(
+                str(value) for value in row.get("evidence_refs") or ()
+            )
+        )
+    )
+
+
+def _lineage_disposition_storage_identity(
+    receipt: Mapping[str, Any],
+) -> str:
+    """Keep each immutable disposition generation under a distinct path."""
+
+    return (
+        str(receipt.get("lineage_id") or "")
+        + ":"
+        + str(receipt.get("receipt_sha256") or "")
+    )
 
 
 def _frozen_terminal_lineage_ids(
     navigation: Mapping[str, Any],
 ) -> tuple[str, ...]:
+    exhaustion = navigation.get("reviewed_family_exhaustion_discharge")
+    if isinstance(exhaustion, Mapping):
+        observation = exhaustion.get("observation")
+        frozen = (
+            observation.get("frozen_lineage_ids")
+            if isinstance(observation, Mapping)
+            else None
+        )
+        if isinstance(frozen, list) and frozen and all(
+            isinstance(value, str) and value for value in frozen
+        ) and len(set(frozen)) == len(frozen):
+            return tuple(frozen)
     return tuple(
         str(
             candidate.get("lineage_id")
@@ -7839,10 +14585,10 @@ def _materialize_leaf_terminal_dispositions(
     frozen = set(_frozen_terminal_lineage_ids(navigation))
     if not frozen:
         return
-    existing_rows = _terminal_obligation_rows(
+    existing_rows = _active_lineage_disposition_rows(
         directory,
-        prefix="lineage_disposition",
-        schema=LINEAGE_DISPOSITION_SCHEMA,
+        context_hash=context_hash,
+        lineage_ids=tuple(frozen),
     )
     existing_by_lineage = {
         str(row["lineage_id"]): dict(row) for row in existing_rows
@@ -7948,7 +14694,7 @@ def _materialize_leaf_terminal_dispositions(
         _persist_terminal_obligation_receipt(
             directory,
             prefix="lineage_disposition",
-            identity=lineage_id,
+            identity=_lineage_disposition_storage_identity(disposition),
             receipt=disposition,
         )
         existing_by_lineage[lineage_id] = disposition
@@ -7973,6 +14719,10 @@ def _materialize_declared_generalization_residuals(
             directory,
             prefix="generalization_residual",
             schema=GENERALIZATION_RESIDUAL_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=_frozen_terminal_lineage_ids(
+                (run.get("navigation") or {})
+            ),
         )
     }
     navigation = run.get("navigation") or {}
@@ -8029,10 +14779,10 @@ def _materialize_unresolved_terminal_dispositions(
         return
     existing = {
         str(row["lineage_id"])
-        for row in _terminal_obligation_rows(
+        for row in _active_lineage_disposition_rows(
             directory,
-            prefix="lineage_disposition",
-            schema=LINEAGE_DISPOSITION_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=lineages,
         )
     }
     for lineage_id in lineages:
@@ -8051,7 +14801,7 @@ def _materialize_unresolved_terminal_dispositions(
         _persist_terminal_obligation_receipt(
             directory,
             prefix="lineage_disposition",
-            identity=lineage_id,
+            identity=_lineage_disposition_storage_identity(receipt),
             receipt=receipt,
         )
 
@@ -8076,20 +14826,24 @@ def _campaign_terminal_obligation_gate(
     receipt = campaign_closure_gate(
         context_hash=str(run.get("context_hash") or ""),
         frozen_lineage_ids=lineages,
-        lineage_dispositions=_terminal_obligation_rows(
+        lineage_dispositions=_active_lineage_disposition_rows(
             directory,
-            prefix="lineage_disposition",
-            schema=LINEAGE_DISPOSITION_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=lineages,
         ),
         generalization_residuals=_terminal_obligation_rows(
             directory,
             prefix="generalization_residual",
             schema=GENERALIZATION_RESIDUAL_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=lineages,
         ),
         generalization_adjudications=_terminal_obligation_rows(
             directory,
             prefix="generalization_adjudication",
             schema=GENERALIZATION_ADJUDICATION_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=lineages,
         ),
     )
     write_json_atomic(directory / "campaign_closure_gate.json", receipt)
@@ -8113,10 +14867,12 @@ def _open_terminal_obligation_feedback(
             "receipt_sha256": str(row["receipt_sha256"]),
             "authority": str(row["authority"]),
         }
-        for row in _terminal_obligation_rows(
+        for row in _active_lineage_disposition_rows(
             directory,
-            prefix="lineage_disposition",
-            schema=LINEAGE_DISPOSITION_SCHEMA,
+            context_hash=str(run.get("context_hash") or ""),
+            lineage_ids=_frozen_terminal_lineage_ids(
+                (run.get("navigation") or {})
+            ),
         )
     ]
     navigation = dict(run.get("navigation") or {})
@@ -8173,10 +14929,39 @@ def next_frontier_campaign_action(attempt_dir: str | Path) -> str:
     directory = Path(attempt_dir)
     run = read_json(directory / "run.json", None)
     if not isinstance(run, Mapping):
+        if (
+            directory / "theory_language_successor_commit.json"
+        ).is_file():
+            return "recover_language_successor"
         raise ValueError("frontier lifecycle requires an active run")
     run_core = {key: value for key, value in run.items() if key != "run_digest"}
     if run.get("run_digest") != content_hash(run_core):
         raise ValueError("frontier lifecycle run digest mismatch")
+    cold_construction_recovery = pending_cold_witness_boundary_recovery(
+        directory, run
+    )
+    raw_navigation = run.get("navigation")
+    malformed_navigation = (
+        raw_navigation is not None
+        and bool(raw_navigation)
+        and not isinstance(raw_navigation, Mapping)
+    )
+    raw_history = (
+        raw_navigation.get("objective_review_history")
+        if isinstance(raw_navigation, Mapping)
+        else None
+    )
+    malformed_history = (
+        raw_history is not None
+        and bool(raw_history)
+        and not isinstance(raw_history, (list, tuple))
+    )
+    if malformed_navigation or malformed_history:
+        if cold_construction_recovery:
+            return "recover_construction_boundary"
+        raise ValueError(
+            "frontier lifecycle navigation control fields are malformed"
+        )
     retirement = read_json(directory / "retirement.json", None)
     if isinstance(retirement, Mapping):
         _materialize_unresolved_terminal_dispositions(
@@ -8202,18 +14987,77 @@ def next_frontier_campaign_action(attempt_dir: str | Path) -> str:
         or pending_external_science_negative is not None
     ):
         return "resume_navigation"
+    if _invalid_active_lineage_synthesis(directory, run) is not None:
+        return "unwind_invalid_lineage_synthesis"
+    if _stale_durable_synthesis_projection(directory, run) is not None:
+        return "unwind_stale_synthesis_projection"
     status = str(run.get("status") or "")
+    if cold_construction_recovery:
+        return "recover_construction_boundary"
+    if _pending_adapter_gap_conformance_supersession(directory, run) is not None:
+        return "reopen_superseded_adapter_gap"
+    if _pending_extended_adapter_recovery(directory, run) is not None:
+        return "reopen_extended_adapter_recovery"
+    if status == "budget_stopped" and _pending_extended_adapter_gap(
+        directory, run
+    ) is not None:
+        return "reopen_extended_adapter_gap"
+    if status == "budget_stopped" and _pending_extended_navigation(
+        directory, run
+    ) is not None:
+        return "reopen_extended_navigation"
+    if status == "budget_stopped" and _pending_extended_boundary(
+        directory, run
+    ) is not None:
+        return "reopen_extended_boundary"
+    if status == "frontier_objective_witness_found_pending_ratification":
+        if _pending_reviewed_family_member_ratifications(directory, run):
+            return "ratify_construction_artifact"
+        raise ValueError(
+            "family witness is pending ratification without a replayable admission"
+        )
+    if (
+        status == "frontier_objective_discharged"
+        and (
+            _current_reviewed_family_objective_discharge(directory, run) is not None
+            or _current_reviewed_family_exhaustion_discharge(directory, run)
+            is not None
+        )
+    ):
+        terminal = _campaign_terminal_obligation_gate(directory, run)
+        return (
+            "complete"
+            if not isinstance(terminal, Mapping) or terminal.get("ready") is True
+            else "resolve_terminal_obligations"
+        )
+    if _recovered_lineage_synthesis_required(directory, run):
+        return "resume_navigation"
     if status in {"frontier_leaf_decision_pending", "frontier_objective_unmet"}:
-        if (
-            status == "frontier_objective_unmet"
-            and _objective_synthesis_budget_exhausted(directory, run)
-        ):
+        if _pending_durable_lineage_synthesis(directory, run) is not None:
+            return "recover_lineage_synthesis"
+        if _objective_continuation_budget_exhausted(directory, run):
             return "finalize_budget_stop"
         return "resume_navigation"
     if status in {
         "frontier_language_expansion_requested",
         "blocked_adapter_gap",
     }:
+        gap = run.get("adapter_gap") or read_json(
+            directory / "adapter_gap.json", {}
+        )
+        if (
+            status == "blocked_adapter_gap"
+            and isinstance(gap, Mapping)
+            and gap.get("gap_kind") == "adapter_missing"
+            and not str(run.get("blueprint_id") or "")
+            and not str(run.get("context_hash") or "")
+            and not (directory / "blueprint.json").is_file()
+        ):
+            # A missing adapter discovered while compiling the campaign has no
+            # frozen source context on which capability expansion can operate.
+            # The typed gap is the terminal artifact for this attempt; a
+            # reviewed adapter identity must enter through a new campaign.
+            return "bootstrap_adapter_authority_required"
         if (
             status == "frontier_language_expansion_requested"
             and _stale_boundary_disposition_needs_fresh_wave(run)
@@ -8266,7 +15110,8 @@ def next_frontier_campaign_action(attempt_dir: str | Path) -> str:
         navigation,
         lean_requested=plan.get("conditional_lean") is True,
         isabelle_requested=plan.get("conditional_isabelle") is True,
-        theory_task_requested=_registered_formal_task_executor_required(
+        theory_task_requested=bool(_registered_task_executor_kinds(navigation)),
+        theory_task_requested_contracts=_registered_boundary_task_contracts(
             navigation
         ),
     ):
@@ -8274,15 +15119,37 @@ def next_frontier_campaign_action(attempt_dir: str | Path) -> str:
     boundary_rows = (completion.get("boundary_result") or {}).get(
         "query_results"
     ) or ()
+    governance_recheck = read_json(
+        directory / "boundary_governance_recheck.json", None
+    )
+    governance_state = _boundary_governance_recheck_state(
+        completion,
+        governance_recheck
+        if isinstance(governance_recheck, Mapping)
+        else None,
+    )
+    if governance_state["required"] and not governance_state["complete"]:
+        return "verify_boundary"
     if (
         boundary_rows
         and plan.get("post_freeze_interpretation") is True
         and not _current_post_freeze_interpretation(directory, run, blueprint)
     ):
         return "interpret_boundary"
+    if _pending_construction_artifact_ratifications(directory, run, completion):
+        return "ratify_construction_artifact"
     if (
         status != "frontier_objective_discharged"
-        and _boundary_search_feedback(run, completion) is not None
+        and _boundary_search_feedback(
+            run,
+            completion,
+            governance_recheck=(
+                governance_recheck
+                if isinstance(governance_recheck, Mapping)
+                else None
+            ),
+        )
+        is not None
     ):
         return "resume_navigation"
     terminal = _campaign_terminal_obligation_gate(directory, run)
@@ -8318,6 +15185,23 @@ def _frontier_lifecycle_marker(directory: Path, action: str) -> str:
         "generalization_adjudication.*.json",
         "terminal_obligation_feedback.*.json",
         "campaign_workbench_successor.*.json",
+        "budget_extension_reopen.*.json",
+        "boundary_budget_stop_transition.*.json",
+        "boundary_budget_extension_reopen.*.json",
+        "boundary_attempt_supersession.*.json",
+        "durable_lineage_synthesis_recovery.*.json",
+        "stale_durable_synthesis_unwind.*.json",
+        "adapter_forge_attempts/**/*.json",
+        "construction_artifact_ratification.*.json",
+        "construction_artifact_ratification_completion.*.json",
+        "reviewed_family_member_ratification_admission.*.json",
+        "reviewed_family_member_ratification.*.json",
+        "reviewed_family_member_ratification_completion.*.json",
+        "reviewed_family_objective_discharge.*.json",
+        "reviewed_family_exhaustion_observation.*.json",
+        "reviewed_family_exhaustion_discharge.*.json",
+        "theory_task_discharge.*.json",
+        "theory_task_discharge_consumption.*.json",
     ):
         paths.extend(directory.glob(pattern))
     paths.extend(
@@ -8344,14 +15228,32 @@ def drive_frontier_campaign(
     model: str = "",
     lean_root: str | Path | None = None,
     workbench_authority_ref: str = "",
+    max_transitions: int | None = None,
 ) -> Path:
     """Advance a campaign until a terminal state or semantic fixed point."""
 
     directory = Path(attempt_dir)
+    if max_transitions is not None and max_transitions < 1:
+        raise ValueError("frontier lifecycle transition bound must be positive")
     seen: set[str] = set()
+    transitions = 0
     while True:
         run = read_json(directory / "run.json", None)
         if isinstance(run, Mapping) and isinstance(run.get("navigation"), Mapping):
+            if any(
+                not _candidate_matches_evaluation_contract(row)
+                for field in ("finalists", "objective_survivors")
+                for row in run["navigation"].get(field) or ()
+                if isinstance(row, Mapping)
+            ):
+                with frontier_attempt_lease(
+                    directory, action="archive_stale_evaluation_candidates"
+                ):
+                    _archive_stale_evaluation_candidates(
+                        directory,
+                        read_json(directory / "run.json", None),
+                    )
+                continue
             navigation = run["navigation"]
             context_hash = str(run.get("context_hash") or "")
             context_epoch = int(
@@ -8384,7 +15286,11 @@ def drive_frontier_campaign(
                 continue
         action = next_frontier_campaign_action(directory)
         marker = _frontier_lifecycle_marker(directory, action)
-        if action in {"complete", "terminal_obligations_blocked"} or marker in seen:
+        if action in {
+            "complete",
+            "terminal_obligations_blocked",
+            "bootstrap_adapter_authority_required",
+        } or marker in seen:
             return directory
         seen.add(marker)
         if action == "resume_navigation":
@@ -8392,6 +15298,27 @@ def drive_frontier_campaign(
                 directory,
                 workbench_authority_ref=workbench_authority_ref,
             )
+        elif action == "recover_language_successor":
+            with frontier_attempt_lease(
+                directory, action="recover_language_successor"
+            ) as lease:
+                recovered = _recover_language_successor_commit(
+                    directory,
+                    resume_fn=lambda path, _attempt_lease: (
+                        resume_frontier_campaign_navigation(
+                            path,
+                            workbench_authority_ref=(
+                                workbench_authority_ref
+                            ),
+                            _attempt_lease=_attempt_lease,
+                        )
+                    ),
+                    attempt_lease=lease,
+                )
+                if recovered is None:
+                    raise ValueError(
+                        "language successor recovery lost its commit"
+                    )
         elif action == "advance_language":
             advance_frontier_language_expansion(
                 directory,
@@ -8408,17 +15335,45 @@ def drive_frontier_campaign(
                     )
                 ),
             )
+        elif action == "reopen_extended_adapter_gap":
+            directory = _reopen_extended_adapter_gap(directory)
+        elif action == "reopen_extended_adapter_recovery":
+            directory = _reopen_extended_adapter_recovery(directory)
+        elif action == "reopen_extended_navigation":
+            directory = _reopen_extended_navigation(directory)
+        elif action == "reopen_extended_boundary":
+            directory = _reopen_extended_boundary(directory)
+        elif action == "reopen_superseded_adapter_gap":
+            directory = _reopen_superseded_adapter_gap(directory)
         elif action == "continue_epoch":
             directory = continue_frontier_campaign_epoch(directory)
         elif action == "finalize_budget_stop":
-            stop = (read_json(directory / "run.json", {}).get("navigation") or {}).get(
+            current = read_json(directory / "run.json", {})
+            stop = (current.get("navigation") or {}).get(
                 "lineage_synthesis_budget_stop"
             ) or {}
-            reason = str(stop.get("reason") or "blocked_before_action:provider_calls")
+            reason = str(
+                stop.get("reason")
+                or "blocked_before_action:"
+                + _objective_navigation_phase(current)
+                + ":provider_calls"
+            )
             directory = materialize_frontier_navigation_from_journal(
                 directory,
                 budget_stop_reason=reason,
             )
+        elif action == "recover_lineage_synthesis":
+            current = read_json(directory / "run.json", {})
+            pending = _pending_durable_lineage_synthesis(directory, current)
+            if pending is None:
+                raise ValueError("durable synthesis recovery lost its input")
+            directory = _recover_durable_lineage_synthesis(
+                directory, current, pending
+            )
+        elif action == "unwind_stale_synthesis_projection":
+            directory = _unwind_stale_durable_synthesis_projection(directory)
+        elif action == "unwind_invalid_lineage_synthesis":
+            directory = _unwind_invalid_active_lineage_synthesis(directory)
         elif action == "verify_boundary":
             blueprint = FrontierTheoryBlueprint.from_json(
                 read_json(directory / "blueprint.json", {})
@@ -8431,6 +15386,26 @@ def drive_frontier_campaign(
                 ),
                 lean_root=lean_root,
                 resume_search=False,
+            )
+        elif action == "recover_construction_boundary":
+            recover_cold_witness_boundary(
+                directory,
+                materialize_fn=lambda path, reason: (
+                    materialize_frontier_navigation_from_journal(
+                        path, budget_stop_reason=reason
+                    )
+                ),
+                verify_fn=lambda path: execute_frontier_campaign_verification(
+                    path,
+                    with_lean=False,
+                    with_isabelle=False,
+                    resume_search=False,
+                ),
+            )
+        elif action == "ratify_construction_artifact":
+            execute_frontier_construction_artifact_ratification(
+                directory,
+                lean_root=lean_root,
             )
         elif action == "interpret_boundary":
             definition = load_frontier_campaign_definition(
@@ -8454,6 +15429,9 @@ def drive_frontier_campaign(
             _open_terminal_obligation_feedback(directory, run)
         else:  # pragma: no cover - the action algebra above is closed
             raise ValueError(f"unknown frontier lifecycle action: {action}")
+        transitions += 1
+        if max_transitions is not None and transitions >= max_transitions:
+            return directory
 
 
 __all__ = [
@@ -8468,6 +15446,7 @@ __all__ = [
     "drive_frontier_campaign",
     "execute_frontier_adapter_forge",
     "execute_frontier_campaign_verification",
+    "execute_frontier_construction_artifact_ratification",
     "frontier_agent_role",
     "frontier_attempt_lease",
     "frontier_attempt_work_id",

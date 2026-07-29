@@ -50,7 +50,7 @@ def _default_compile(src: str, project: str) -> dict:
         pass
     import subprocess
     import tempfile
-    from ztare.leanmill.solver.agentic_leaf import ensure_import_header
+    from ztare.leanmill.lean_source import ensure_import_header
     with tempfile.NamedTemporaryFile("w", suffix=".lean", dir=Path(project) / ".solver_scratch",
                                      delete=False) as f:
         f.write(ensure_import_header(src))
@@ -65,7 +65,7 @@ def audit_external(lean_path: "Path | None", *, claim_nl: str = "", project: str
     injectable so the pipeline is hermetically testable without Lean."""
     from ztare.common.claim_audit import from_lean_gate_result, render_markdown
     from ztare.leanmill.solver.statement_integrity import decl_blocks
-    from ztare.formal.lean_axiom_audit import parse_axioms
+    from ztare.gates.lean_compile_primitives import parse_axiom_output
     src = source if source is not None else Path(lean_path).read_text(encoding="utf-8")
     compile_fn = compile_fn or _default_compile
     decls = [n for n, _ in decl_blocks(src)]
@@ -75,21 +75,28 @@ def audit_external(lean_path: "Path | None", *, claim_nl: str = "", project: str
     compiled = bool(c.get("success"))
     # 2. axiom audit per decl (appended #print axioms — the same channel the kernel's F1/F2 audit reads)
     extra_axioms: "list[str]" = []
-    axiom_ok = compiled
+    missing_axiom_probes: "list[str]" = []
+    axiom_ok = False
     if compiled and decls:
         probe = src + "\n" + "\n".join(f"#print axioms {d}" for d in decls)
         a = compile_fn(probe, project)
         if a.get("success"):
-            extra_axioms = sorted(set(parse_axioms(a.get("output") or "")) - ALLOWED_AXIOMS)
-            axiom_ok = not extra_axioms
-        else:
-            axiom_ok = False   # fail-closed: an unauditable artifact is not a trusted artifact
+            axiom_map = parse_axiom_output(a.get("output") or "")
+            missing_axiom_probes = sorted(set(decls) - set(axiom_map))
+            extra_axioms = sorted({
+                axiom
+                for name in decls
+                for axiom in axiom_map.get(name, ())
+                if axiom not in ALLOWED_AXIOMS
+            })
+            axiom_ok = not missing_axiom_probes and not extra_axioms
     gate_shaped = {"compiled": compiled,
                    "gate_passed": compiled and axiom_ok and not lexical_flags,
                    "axiom_audit_passed": axiom_ok,
                    "anti_laundering_passed": not lexical_flags,
                    "v33_organ_flags": [f"lexical_ban:{f}" for f in lexical_flags],
                    "extra_axioms": extra_axioms,
+                   "missing_axiom_probes": missing_axiom_probes,
                    "theorem_statement_hashes": [{"name": d} for d in decls]}
     audit = from_lean_gate_result(gate_shaped, claim_nl=claim_nl, checker="lean:external-audit")
     md = render_markdown(audit)
@@ -129,6 +136,12 @@ def _selftest() -> int:
     ok("sorry ⇒ lexical ban trips regardless of compile", t is False and "lexical_ban" in md)
     t, _ = audit_external(None, source=GOOD, compile_fn=lambda s, p: {"success": False, "output": "err"})
     ok("non-compiling artifact ⇒ NOT trustworthy", t is False)
+    t, _ = audit_external(
+        None,
+        source="theorem ext_silenced : True := by native_decide\n#exit\n",
+        compile_fn=lambda _s, _p: {"success": True, "output": ""},
+    )
+    ok("silenced axiom probe ⇒ NOT trustworthy", t is False)
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1
 

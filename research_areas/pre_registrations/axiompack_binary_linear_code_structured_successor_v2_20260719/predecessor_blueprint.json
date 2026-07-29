@@ -1,0 +1,336 @@
+{
+  "adapter_config": {
+    "construction_target": {
+      "dimension": 20,
+      "field_order": 2,
+      "length": 50,
+      "max_nonzero_messages": 1048575,
+      "minimum_distance": 14,
+      "schema": "leanmill.binary_linear_code_target_config.v1",
+      "target_snapshot_sha256": "0f36cee319812676886248f82ab34c2e55707c9699e3b6803b95781a4f144e3a"
+    },
+    "evidence_panel": {
+      "completeness_ref": "sha256:65363aa5bdfc86e328d03ee4f0a6cc45e84f528bf466ef19b65b6c11a1bf30f1",
+      "completeness_scope": "declared_control_panel_only",
+      "field_order": 1,
+      "hypotheses": [
+        {
+          "anonymous_shape": {
+            "complexity": 1,
+            "kind": "exact_binary_code_property"
+          },
+          "hypothesis_id": "property:full-rank-20",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#rank"
+          },
+          "satisfied_object_ids": [
+            "control:current-50-20-13",
+            "control:extended-51-20-14",
+            "control:perturbed-50-20-12"
+          ]
+        },
+        {
+          "anonymous_shape": {
+            "complexity": 1,
+            "kind": "exact_binary_code_parameter"
+          },
+          "hypothesis_id": "property:length-50",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#length"
+          },
+          "satisfied_object_ids": [
+            "control:current-50-20-13",
+            "control:perturbed-50-20-12"
+          ]
+        },
+        {
+          "anonymous_shape": {
+            "complexity": 2,
+            "kind": "exact_binary_code_property"
+          },
+          "hypothesis_id": "property:minimum-distance-at-least-13",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#minimum-distance"
+          },
+          "satisfied_object_ids": [
+            "control:current-50-20-13",
+            "control:extended-51-20-14"
+          ]
+        },
+        {
+          "anonymous_shape": {
+            "complexity": 2,
+            "kind": "exact_binary_code_property"
+          },
+          "hypothesis_id": "property:minimum-distance-at-least-14",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#minimum-distance"
+          },
+          "satisfied_object_ids": [
+            "control:extended-51-20-14"
+          ]
+        },
+        {
+          "anonymous_shape": {
+            "complexity": 1,
+            "kind": "checked_construction_trace"
+          },
+          "hypothesis_id": "trace:parity-extension-of-current",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#extend-with-parity",
+            "source_object_id": "control:current-50-20-13"
+          },
+          "satisfied_object_ids": [
+            "control:extended-51-20-14"
+          ]
+        },
+        {
+          "anonymous_shape": {
+            "complexity": 1,
+            "kind": "checked_construction_trace"
+          },
+          "hypothesis_id": "trace:one-coordinate-perturbation-of-current",
+          "payload": {
+            "checker_ref": "binary_linear_code.v1#coordinate-toggle",
+            "source_object_id": "control:current-50-20-13"
+          },
+          "satisfied_object_ids": [
+            "control:perturbed-50-20-12"
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "object_id": "control:current-50-20-13",
+          "payload": {
+            "artifact_ref": "binary_code_control_replay.json#current_matrix",
+            "artifact_sha256": "10cc0bd5943299d7a8a237fdc896a1cc71a09c40951abadbc32a6a064ef5e7e9",
+            "verification_receipt_sha256": "e376d4d42767bac7b879847c0df2591339af2cd590bedcc29eecd08013756ef4"
+          },
+          "stratum_id": "matched_positive"
+        },
+        {
+          "object_id": "control:extended-51-20-14",
+          "payload": {
+            "artifact_ref": "binary_code_control_replay.json#extended_matrix",
+            "artifact_sha256": "213c591c8870333c54944c011f15e035ee1baa56ab451897ace39bc671588d4e",
+            "verification_receipt_sha256": "e8a08481154ab904a368dd22105cd97f97350ecf807dd12f54e9d2bc3e363d0b"
+          },
+          "stratum_id": "matched_positive"
+        },
+        {
+          "object_id": "control:perturbed-50-20-12",
+          "payload": {
+            "artifact_ref": "binary_code_control_replay.json#perturbation.matrix",
+            "artifact_sha256": "0b32991d3fa8c3a7da7a931f5cb2c50990f7d63a428ce9b54dfdef250011ef8b",
+            "verification_receipt_sha256": "432c0564c426ebc75cdf710acac9d6b2b13898360014c2d6348a6cc84e594615"
+          },
+          "stratum_id": "matched_negative"
+        }
+      ],
+      "schema": "leanmill.binary_linear_code_evidence_panel.v1"
+    }
+  },
+  "adapter_id": "binary_linear_code.v1",
+  "authority_refs": [
+    "brief:e14680e0d738ca228149f78e6ff4b507365d6fdbeb91372ca06d72276c8a3f86"
+  ],
+  "base_axioms": [],
+  "base_theory_status": "explicit_empty",
+  "codec_versions": {
+    "adapter_config_evidence_panel": "leanmill.binary_linear_code_evidence_panel.v1",
+    "adapter_config_target": "leanmill.binary_linear_code_target_config.v1",
+    "base_axiom": "leanmill.axiom_formula.v1",
+    "budget": "leanmill.exploration_budget.v1",
+    "formula_grammar": "declared_executable_hypothesis_panel",
+    "primitive_semantics": "leanmill.primitive_semantics.v1",
+    "signature": "leanmill.theory_signature.v1",
+    "stop_rule": "leanmill.scientific_stop_rule.v1",
+    "verification_plan": "leanmill.verification_plan.v1",
+    "witness": "leanmill.binary_linear_generator_matrix.v1"
+  },
+  "collapse_controls": [],
+  "deanchoring_policy": {
+    "construction_family_labels": "control_metadata_only",
+    "controls_visible": true,
+    "failure_scope": "family_scoped_reject_receipts_only",
+    "host_construction_policy": "host_may_normalize_and_verify_but_not_author_generator_rows_or_compositions",
+    "intent": "target_visible_construction_family_deanchored",
+    "representation_policy": "navigator_may_choose_any_representation_or_composition",
+    "success_claim_boundary": "exact_acceptance_pending_kernel_certificate_and_fresh_external_replay",
+    "target_visible": true
+  },
+  "eigenquestion": "Can a navigator-authored theory program and a distinct visible-workbench witness constructor produce an explicit binary 20 by 50 generator matrix whose registered binary_linear_code.v1 verifier confirms rank 20 and minimum nonzero codeword weight at least 14, while failures remain family-scoped and representation-successor requests stay typed?",
+  "formula_grammar": {
+    "kind": "declared_executable_hypothesis_panel"
+  },
+  "mode": "evidence_induced",
+  "model_or_observation_strata": [
+    {
+      "stratum_id": "declared_controls"
+    }
+  ],
+  "navigator_contract": {
+    "adapter_id": "binary_linear_code.v1",
+    "host_isolated_lineages": 4,
+    "presentation_size": {
+      "maximum": 6,
+      "minimum": 1
+    },
+    "selection_mode": "theory_program"
+  },
+  "pack_arity": 6,
+  "primitive_semantics": {
+    "operation_bindings": {},
+    "relation_bindings": {
+      "full_rank_20": {
+        "checker_ref": "binary_linear_code.v1#rank",
+        "observation_role": "declared_control_hypothesis",
+        "panel_hypothesis_id": "property:full-rank-20"
+      },
+      "length_50": {
+        "checker_ref": "binary_linear_code.v1#length",
+        "observation_role": "declared_control_hypothesis",
+        "panel_hypothesis_id": "property:length-50"
+      },
+      "minimum_distance_at_least_13": {
+        "checker_ref": "binary_linear_code.v1#minimum-distance",
+        "observation_role": "declared_control_hypothesis",
+        "panel_hypothesis_id": "property:minimum-distance-at-least-13"
+      },
+      "minimum_distance_at_least_14": {
+        "checker_ref": "binary_linear_code.v1#minimum-distance",
+        "observation_role": "declared_control_hypothesis",
+        "panel_hypothesis_id": "property:minimum-distance-at-least-14"
+      },
+      "one_coordinate_perturbation_of_current": {
+        "checker_ref": "binary_linear_code.v1#coordinate-toggle",
+        "observation_role": "declared_control_trace",
+        "panel_hypothesis_id": "trace:one-coordinate-perturbation-of-current"
+      },
+      "parity_extension_of_current": {
+        "checker_ref": "binary_linear_code.v1#extend-with-parity",
+        "observation_role": "declared_control_trace",
+        "panel_hypothesis_id": "trace:parity-extension-of-current"
+      }
+    }
+  },
+  "query_budget": {
+    "adapter_forge_attempts": 8,
+    "agent_turns": 180,
+    "boundary_queries": 120,
+    "budget_digest": "budget:7023b9f01558c534590691ae74437da19f3df49afe99600217c088e1e59c3cb2",
+    "context_models": 100000,
+    "coverage_target_ppm": 900000,
+    "formal_peer_attempts": 24,
+    "formal_peer_millis": 21600000,
+    "input_tokens": 5000000,
+    "lean_attempts": 24,
+    "lean_millis": 21600000,
+    "low_yield_patience": 4,
+    "max_finalists": 12,
+    "metered_usd_micros": 0,
+    "min_marginal_information_per_cost_ppm": 20000,
+    "navigator_rounds": 51,
+    "output_tokens": 1800000,
+    "provider_calls": 120,
+    "smt_calls": 0,
+    "smt_millis": 0,
+    "truth_cells": 10000000,
+    "wall_clock_s": 43200,
+    "workbench_actions": 720
+  },
+  "sealed_evidence_manifest_digest": "sha256:aa0021fd9fb6675958637e6ed2837880b9fa5e65376ad4e8c9153e033995327b",
+  "signature": {
+    "name": "binary_linear_code_construction_observation",
+    "operations": [],
+    "relations": [
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "full_rank_20"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "length_50"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "minimum_distance_at_least_13"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "minimum_distance_at_least_14"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "one_coordinate_perturbation_of_current"
+      },
+      {
+        "arg_sorts": [
+          "Observation"
+        ],
+        "name": "parity_extension_of_current"
+      }
+    ],
+    "schema": "leanmill.theory_signature.v1",
+    "sorts": [
+      {
+        "name": "Observation"
+      }
+    ]
+  },
+  "stop_rule": {
+    "executable_condition": {
+      "kind": "late_lineage_objective_review"
+    },
+    "user_instruction": "Stop after an exact rank-20 length-50 generator reaches minimum distance at least 14 and enters current-policy construction-artifact ratification; one campaign-authored finite construction family is completely enumerated with replayable member-level rejection receipts and a typed next representation; the remaining split expires; or a typed runtime failure prevents the family from becoming executable. Never infer global code nonexistence from a family result."
+  },
+  "verification_plan": {
+    "construction_check": "normalize explicit binary generator matrices by canonical row basis preserving coordinate order, verify shape 20 by 50 over F2, compute GF2 rank, and enumerate all 1048575 nonzero messages when rank is 20",
+    "context_exactness": "three declared control objects by six declared executable hypotheses; no census over binary linear codes or construction families",
+    "failure_observation": "rank deficiency returns a dependency message; distance failure returns a low-weight message and codeword; unavailable message budget gives no distance credit",
+    "failure_policy": [
+      "bounded family failure is not a nonexistence result",
+      "deterministic host verification is not kernel ratification",
+      "search stagnation preserves family-scoped failures and may request a reviewed successor capability"
+    ],
+    "heldout_strata": [],
+    "post_success_replay": "after certificate success, rerun the external code table, derived-code relations, and primary-source replay before any priority statement",
+    "ratification": "registered exact verifier acceptance remains pending until a separately bound kernel-pure construction certificate passes LeanMill governance",
+    "registered_adapter_preflight": "binary_linear_code.v1 over declared_control_panel_only with the frozen construction_target and evidence_panel configuration",
+    "success_criteria": [
+      "one explicit length-50 dimension-20 binary generator matrix has observed rank 20",
+      "the exhaustive nonzero-message replay reports minimum distance at least 14",
+      "the accepted matrix enters construction-artifact ratification rather than being treated as a final certificate"
+    ]
+  },
+  "visible_evidence_manifest": {
+    "brief_id": "brief:e14680e0d738ca228149f78e6ff4b507365d6fdbeb91372ca06d72276c8a3f86",
+    "evidence_refs": [
+      "research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/external_target_snapshot.json",
+      "research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/fresh_source_replay.json",
+      "research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/binary_code_control_replay.json",
+      "research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/campaign_adapter_config.json"
+    ],
+    "forbidden_shortcuts": [
+      "treating a bounded family failure as nonexistence of a binary linear code",
+      "crediting a matrix before exact rank and all-nonzero-message distance replay",
+      "crediting deterministic host verification as kernel ratification",
+      "allowing the host to select generator rows, polynomials, or a construction composition",
+      "mutating the global adapter registry from a campaign leaf",
+      "claiming priority without a fresh table, derived-code, and primary-source replay"
+    ],
+    "schema": "leanmill.frontier_visible_evidence_manifest.v1",
+    "source_mode": "residual_directed"
+  }
+}

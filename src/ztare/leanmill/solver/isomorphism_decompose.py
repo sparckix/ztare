@@ -1183,26 +1183,43 @@ def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: 
     gname = _ls.first_theorem_name(chain) or None
     if not gname:
         return {"parent_closed": False, "reason": "could not locate the chain's goal theorem name"}
-    # DEFENSE-IN-DEPTH (do NOT trust the upstream audit for a default-ON parent-closure path): re-check that
-    # the chain actually proves the ORIGINAL goal's conclusion — a chain that silently proves a WEAKER G must
-    # never ratify the parent, even if it compiles. (statement_integrity in the kernel keys on the original
-    # NAME, which the chain renames, so this conclusion-match is the load-bearing statement check here.)
-    _chain_concl = _norm_ws(_lemma_conclusion(chain))
-    _goal_concl = _norm_ws(_gc or "")
-    if _goal_concl and _chain_concl and _chain_concl != _goal_concl:
+    # Bind the whole target type, including every binder and hypothesis. A
+    # conclusion-only comparison lets a chain silently delete premises while
+    # retaining the same final proposition.
+    from ztare.leanmill.governed_ratification import normalized_target_signature
+    _chain_signature = normalized_target_signature(chain, gname)
+    _goal_signature = normalized_target_signature(
+        original_source or source,
+        target_name,
+    )
+    if (
+        not _goal_signature
+        or not _chain_signature
+        or _chain_signature != _goal_signature
+    ):
         return {"parent_closed": False, "composite_source": composite, "target": gname,
-                "reason": f"chain proves a DIFFERENT statement than G (got {_chain_concl[:60]!r} vs "
-                          f"goal {_goal_concl[:60]!r}) — refusing the parent closure"}
+                "reason": f"chain proves a DIFFERENT statement than G (got {_chain_signature[:80]!r} vs "
+                          f"goal {_goal_signature[:80]!r}) — refusing the parent closure"}
     src = composite if composite.lstrip().startswith("import") else ("import Mathlib\n\n" + composite)
     try:
         from ztare.gates.v33_preflight_risk_detector import _compile_probe
         if _compile_probe(src, lean_root, "Composite", max(120, timeout_s)) is not True:
-            return {"parent_closed": False, "composite_source": composite, "target": gname,
+            return {"parent_closed": False, "composite_source": src, "target": gname,
                     "reason": "composite does NOT compile sorry-free (a sub-proof did not port into the chain)"}
         from ztare.gates.lean_proof_gate import run_anti_laundering_kernel
         k = run_anti_laundering_kernel(src, Path(lean_root) / "_composite_kernel.lean", Path(lean_root),
                                        original_source=original_source, target_name=gname)
-        passed = bool(k.get("passed"))
+        if k.get("available") is not True:
+            return {
+                "parent_closed": False,
+                "composite_source": src,
+                "posed_source": original_source or source,
+                "target": gname,
+                "governance_kernel_receipt": k,
+                "status": "governance_unavailable",
+                "reason": "composite governance unavailable",
+            }
+        passed = k.get("passed") is True
         _axs: "list[str]" = []
         if passed:
             # AXIOM AUDIT (soundness #84 F2): the parent / open-problem closure must be axiom-CLEAN too — a
@@ -1212,14 +1229,58 @@ def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: 
             from ztare.gates.lean_compile_primitives import audit_axioms_subset as _aax
             _ax_clean, _ax_bad, _axs = _aax(src, gname, Path(lean_root) / "_composite_axiom_audit.lean",
                                             Path(lean_root), timeout_s=max(120, timeout_s))
-            if _ax_bad:
-                return {"parent_closed": False, "composite_source": composite, "target": gname,
-                        "reason": f"BAD_AXIOMS in composite: {_axs} (native_decide?) — refusing parent closure"}
-        return {"parent_closed": passed, "composite_source": composite, "target": gname,
-                "reason": f"compile_ok + kernel passed={passed} confirmed={k.get('confirmed')} axioms={_axs}"}
+            if _ax_clean is not True:
+                return {
+                    "parent_closed": False,
+                    "composite_source": src,
+                    "posed_source": original_source or source,
+                    "target": gname,
+                    "governance_kernel_receipt": k,
+                    "axiom_allowlist_receipt": {
+                        "passed": False,
+                        "available": bool(_ax_bad),
+                        "bad_axioms": list(_axs) if _ax_bad else [],
+                        "axioms": _axs,
+                    },
+                    "status": (
+                        "rejected_banned_axiom"
+                        if _ax_bad
+                        else "axiom_audit_unavailable"
+                    ),
+                    "reason": (
+                        f"BAD_AXIOMS in composite: {_axs} — refusing parent closure"
+                        if _ax_bad
+                        else "composite axiom audit unavailable"
+                    ),
+                }
+        return {
+            "parent_closed": passed,
+            "composite_source": src,
+            "posed_source": original_source or source,
+            "target": gname,
+            "governance_kernel_receipt": k,
+            "axiom_allowlist_receipt": {
+                "passed": passed,
+                "available": passed,
+                "bad_axioms": [],
+                "axioms": _axs,
+            },
+            "status": "ratified" if passed else "rejected_governance",
+            "reason": f"compile_ok + kernel passed={passed} confirmed={k.get('confirmed')} axioms={_axs}",
+        }
     except Exception as e:  # noqa: BLE001
-        return {"parent_closed": False, "composite_source": composite, "target": gname,
-                "reason": f"kernel error: {repr(e)[:120]}"}
+        return {
+            "parent_closed": False,
+            "composite_source": composite,
+            "target": gname,
+            "status": "governance_unavailable",
+            "governance_kernel_receipt": {
+                "available": False,
+                "passed": None,
+                "unavailable_organs": ["composite_ratification"],
+            },
+            "reason": f"kernel error: {repr(e)[:120]}",
+        }
 
 
 def _assembly_repair(result: dict, source: str, target_name: str, proofs: dict, *,

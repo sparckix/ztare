@@ -94,10 +94,11 @@ def _strip_hijack_context(probe_source: str, original_source: str,
 
 
 def check(original_source: str, probe_source: str, target_name: str, lean_root: "Path",
-          timeout_s: int = 120) -> "tuple[bool, str]":
+          timeout_s: int = 120) -> "tuple[bool | None, str]":
     """The gate. (ok, detail). ok=True (genuine) iff: nothing hijack-class was stripped (fast pass), OR the
     target still COMPILES sorry-free in the stripped context. ok=False ⇒ the proof needed the stripped
-    context-manipulation (laundering). Fail-OPEN on a compile-infra error (never block on tooling)."""
+    context-manipulation (laundering). A compile-infrastructure fault returns
+    ``None`` so the caller can preserve the candidate without awarding credit."""
     # target-signature identifier tokens (names the statement USES) — to detect abbrev/def SHADOWING.
     from ztare.leanmill.solver.statement_integrity import decl_blocks, _signature as _si_sig
     _pd = dict(decl_blocks(probe_source))
@@ -122,7 +123,7 @@ def check(original_source: str, probe_source: str, target_name: str, lean_root: 
     if res is False:
         return False, (f"context-hijack: target FAILS to compile once {removed} are stripped — the proof "
                        "DEPENDED on added context-elaboration to make the verbatim statement provable")
-    return True, f"fail-open (compile infra error, not a real negative); stripped={removed}"
+    return None, f"unavailable (compile infrastructure error); stripped={removed}"
 
 
 def _selftest() -> int:

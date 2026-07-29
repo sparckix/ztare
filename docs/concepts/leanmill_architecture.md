@@ -1746,6 +1746,22 @@ A witnessed countermodel is usable; failure to find one remains `unknown`
 because finite replay does not certify generator exhaustiveness. Authority
 comes from the staged artifact, host receipt, and review chain rather than a
 caller-supplied label.
+
+A reviewed finite construction family has a separate positive-result
+lifecycle. AdapterForge remains the author of the data-only family; the host
+replays normalization and the frozen predicate without relabeling the member
+as a `witness_constructor` result. One admission is frozen for the first
+parameter yielding each distinct normalized artifact and binds the family,
+execution, Forge conformance and review, witness interface, predicate, and
+verifier evidence. The campaign then enters a pending-ratification state and
+passes those admissions through the common provider-free construction
+ratifier. A governed certificate discharges only the exact frozen
+construction objective. Rejection or capability unavailability returns the
+content-bound execution and ratification receipts to navigation as typed
+evidence; neither outcome grants ambient nonexistence authority. This makes a
+positive family executable while keeping family authorship, kernel authority,
+and retry identity in their respective lifecycle objects.
+
 Post-freeze interpretation feeds the same inventor loop when the frozen outer
 objective remains open. LeanMill removes source titles, URLs, model identities,
 and named alignment. `leanmill.post_freeze_research_disposition.v1` carries the

@@ -1,0 +1,18 @@
+{
+  "14": {
+    "clause_count": 2388,
+    "cnf": "binary_distance_14.cnf",
+    "cnf_sha256": "5b4b5b50c2a700b759adbf124974c76722a78cd75742c39d9cf9a2dc924a8c3c",
+    "metadata": "binary_distance_14.cnf.json",
+    "variable_count": 952
+  },
+  "15": {
+    "clause_count": 2488,
+    "cnf": "binary_distance_15.cnf",
+    "cnf_sha256": "08c88cb43cdec38091e5d6b4377498ff09ab099824fa846c4b31ca6b4308b2ef",
+    "metadata": "binary_distance_15.cnf.json",
+    "variable_count": 1003
+  },
+  "coordinate_convention": "bit_i_is_coordinate_i",
+  "schema": "leanmill.binary_distance_cnf_probe_set.v1"
+}

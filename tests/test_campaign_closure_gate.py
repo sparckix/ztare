@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from copy import deepcopy
+from dataclasses import replace
+
 import pytest
 
+from test_reviewed_family_objective_discharge import _fixture
 from ztare.leanmill.campaign_closure_gate import (
     GENERALIZATION_ADJUDICATION_SCHEMA,
     LINEAGE_DISPOSITION_SCHEMA,
@@ -9,7 +13,11 @@ from ztare.leanmill.campaign_closure_gate import (
     assert_campaign_closable,
     build_generalization_residual_receipt,
     campaign_closure_gate,
+    lineage_dispositions_from_reviewed_family_objective_discharge,
     lineage_disposition_from_terminal_transition,
+)
+from ztare.leanmill.reviewed_family_objective_discharge import (
+    build_reviewed_family_objective_discharge,
 )
 from ztare.leanmill.theory_ir import content_hash
 
@@ -160,4 +168,93 @@ def test_terminal_gate_rejects_hash_valid_generalization_with_opaque_origin() ->
             lineage_dispositions=(_disposition("lineage:0"),),
             generalization_residuals=(residual,),
             generalization_adjudications=(planted,),
+        )
+
+
+def test_reviewed_family_discharge_closes_sources_and_frozen_siblings(
+    tmp_path,
+) -> None:
+    discharge, blueprint = _fixture(tmp_path)
+    sibling_id = "lineage:frozen-sibling"
+    discharge = build_reviewed_family_objective_discharge(
+        source_pending_run=discharge["source_pending_run"],
+        blueprint=blueprint,
+        active_request=discharge["active_language_request"],
+        synthesis_input=discharge["lineage_synthesis_input"],
+        synthesis_decision=discharge["lineage_synthesis_decision"],
+        family_execution=discharge["finite_family_execution"],
+        admission=discharge["admission"],
+        ratification_aggregate=discharge["ratification_aggregate"],
+        attempted_ratification_aggregate_sha256s=discharge[
+            "attempted_ratification_aggregate_sha256s"
+        ],
+        frozen_lineage_ids=("lineage:family-author", sibling_id),
+    )
+
+    dispositions = lineage_dispositions_from_reviewed_family_objective_discharge(
+        discharge,
+        current_blueprint=blueprint,
+    )
+    by_lineage = {row["lineage_id"]: row for row in dispositions}
+    assert by_lineage["lineage:family-author"]["terminal_state"] == (
+        "objective_discharged"
+    )
+    assert by_lineage[sibling_id]["terminal_state"] == "superseded"
+
+    gate = assert_campaign_closable(
+        context_hash="context:test",
+        frozen_lineage_ids=("lineage:family-author", sibling_id),
+        lineage_dispositions=dispositions,
+    )
+    assert gate["ready"] is True
+
+
+def test_reviewed_family_disposition_rejects_rehashed_objective_tamper(
+    tmp_path,
+) -> None:
+    discharge, blueprint = _fixture(tmp_path)
+    disposition = lineage_dispositions_from_reviewed_family_objective_discharge(
+        discharge,
+        current_blueprint=blueprint,
+    )[0]
+    planted = deepcopy(disposition)
+    origin = planted["authority_receipt"]
+    objective = origin["construction_objective"]
+    objective["frozen_nl_objective"] = "A replacement campaign objective."
+    objective_core = {
+        key: value for key, value in objective.items() if key != "objective_sha256"
+    }
+    objective["objective_sha256"] = content_hash(objective_core)
+    origin["construction_objective_sha256"] = objective["objective_sha256"]
+    origin_core = {
+        key: value for key, value in origin.items() if key != "receipt_sha256"
+    }
+    origin["receipt_sha256"] = content_hash(origin_core)
+    planted["evidence_refs"][0] = origin["receipt_sha256"]
+    planted_core = {
+        key: value for key, value in planted.items() if key != "receipt_sha256"
+    }
+    planted["receipt_sha256"] = content_hash(planted_core)
+
+    with pytest.raises(ValueError, match="construction objective changed identity"):
+        campaign_closure_gate(
+            context_hash="context:test",
+            frozen_lineage_ids=("lineage:family-author",),
+            lineage_dispositions=(planted,),
+        )
+
+
+def test_reviewed_family_projection_rejects_current_blueprint_mismatch(
+    tmp_path,
+) -> None:
+    discharge, blueprint = _fixture(tmp_path)
+    other_blueprint = replace(
+        blueprint,
+        eigenquestion="A different frozen campaign eigenquestion.",
+    )
+
+    with pytest.raises(ValueError, match="crossed the current blueprint"):
+        lineage_dispositions_from_reviewed_family_objective_discharge(
+            discharge,
+            current_blueprint=other_blueprint,
         )

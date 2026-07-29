@@ -578,10 +578,13 @@ def domain_p0_history(domain: str, attempt_rows: "list[dict] | None" = None) -> 
                 cx.close()
         summ = summarize_campaign_cycle_time(rows)
         camps = [c for c in (summ.get("campaigns", {}) or {}).values() if (c.get("domain") or "") == domain]
-        with_ttc = [c for c in camps if (c.get("time_to_closure_s", {}) or {}).get("mean")]
+        with_ttc = [c for c in camps if (c.get("wall_s", {}) or {}).get("mean")]
         out = {"mean_ttc_s": None, "mean_cost_s": None, "close_rate": None, "n_campaigns": len(camps)}
         if with_ttc:
-            out["mean_ttc_s"] = round(sum(c["time_to_closure_s"]["mean"] for c in with_ttc) / len(with_ttc), 1)
+            out["mean_ttc_s"] = round(
+                sum(c["wall_s"]["mean"] for c in with_ttc) / len(with_ttc),
+                1,
+            )
             costs = [c.get("cost_to_closure_s", {}).get("mean") for c in with_ttc
                      if c.get("cost_to_closure_s", {}).get("mean")]
             out["mean_cost_s"] = round(sum(costs) / len(costs), 1) if costs else None

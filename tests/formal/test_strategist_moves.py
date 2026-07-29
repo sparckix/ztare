@@ -26,6 +26,7 @@ import ztare.leanmill.solver.agentic_leaf as al
 import ztare.gates.v33_preflight_risk_detector as v33
 import ztare.leanmill.solver.solver_core as sc
 import ztare.leanmill.solver.governed_dag_search as gds
+from ztare.leanmill.solver.deterministic import NativeHammerProbeResult
 
 GOAL = "theorem t : G n := by"   # canonical stub shape (ends with ':= by')
 ROW = {"row_id": "rt", "target_theorem_name": "t", "goal": GOAL}
@@ -49,9 +50,15 @@ def _runner(captured=None):
 
     def fake_validate(contract, proof_text, enriched_goal, target_name, lean_root,
                       timeout_s, kernel_compile_ok, kernel_compile_tail, goal_type=None,
-                      closure_source=None, posed_source=None):
-        return {"receipts": {"kernel_compile_receipt": {"passed": True},
-                             "matched_negative_control_receipt": {"passed": True}}}
+                      closure_source=None, posed_source=None, **_kwargs):
+        return {"credit_ready_at_solver_layer": True, "receipts": {
+            "kernel_compile_receipt": {"available": True, "passed": True},
+            "matched_negative_control_receipt": {
+                "available": True,
+                "passed": True,
+                "admitted_under_policy": True,
+            },
+        }}
 
     sc._verify_compile = fake_verify_compile
     sc._validate_against_contract = fake_validate
@@ -88,7 +95,14 @@ def test_specialize_negative_no_false_rung():
     assert pt[-1]["outcome"] == "no_rung"
 
 
-def test_generalize_positive_closes_through_governance_and_by_fold_is_single():
+def test_generalize_positive_closes_through_governance_and_by_fold_is_single(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        sc,
+        "_verified_closure_artifact",
+        lambda target, _closure, _posed: {"target": target},
+    )
     al.default_dispatch = lambda *a, **k: (
         "PROOF:\n```lean\nby\n  have gen : ∀ m, G m := by intro m; induction m <;> simp\n  exact gen n\n```\n")
     runner, pt, cap = _runner()
@@ -125,9 +139,9 @@ def test_spawned_goal_materializes_parent_vocabulary(tmp_path, monkeypatch):
     }
     seen = {}
 
-    def fake_native(child, *_args):
+    def fake_native(child, *_args, **_kwargs):
         seen.update(child)
-        return False, "", "expected miss"
+        return NativeHammerProbeResult("exhausted", transcript="expected miss")
 
     monkeypatch.setenv("ZTARE_CONJECTURE_DECOMPOSE", "1")
     monkeypatch.setattr(sc, "_native_hammer_probe", fake_native)
@@ -166,13 +180,25 @@ def test_spawned_child_governance_is_invariant_to_root_identity(tmp_path, monkey
     seen = {}
 
     monkeypatch.setenv("ZTARE_CONJECTURE_DECOMPOSE", "1")
-    monkeypatch.setattr(sc, "_native_hammer_probe", lambda *_a, **_k: (True, "trivial", "compiled"))
+    monkeypatch.setattr(
+        sc,
+        "_native_hammer_probe",
+        lambda *_a, **_k: NativeHammerProbeResult(
+            "closed", "trivial", "compiled"
+        ),
+    )
     monkeypatch.setattr(sc, "_record_attempt", lambda *a, **k: None)
 
     def governed(**kwargs):
         seen.update(kwargs)
-        return {"receipts": {"kernel_compile_receipt": {"passed": True},
-                              "matched_negative_control_receipt": {"passed": True}}}
+        return {"credit_ready_at_solver_layer": True, "receipts": {
+            "kernel_compile_receipt": {"available": True, "passed": True},
+            "matched_negative_control_receipt": {
+                "available": True,
+                "passed": True,
+                "admitted_under_policy": True,
+            },
+        }}
 
     monkeypatch.setattr(sc, "_validate_against_contract", governed)
     runner = sc._build_dag_move_runner(

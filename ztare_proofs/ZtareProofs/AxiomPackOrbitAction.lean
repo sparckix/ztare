@@ -15,7 +15,7 @@ universe u v w
 
 variable {G : Type u} {X : Type v} {O : Type w}
 
-def orbitActionOp [CommGroup G] [MulAction G X]
+def orbitActionOp [SMul G X]
     (orbit : X → O) (label : O → O → G) (x y z : X) : X :=
   label (orbit x) (orbit z) • y
 

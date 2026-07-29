@@ -54,6 +54,55 @@ def test_remote_exports_declare_host_process_boundary() -> None:
     assert "ZTARE_CODEX_NESTED_SANDBOX=0" in exports
 
 
+def test_posttick_forwards_formal_artifact_flags(monkeypatch) -> None:
+    mod = load_module()
+    remote = []
+    monkeypatch.setattr(
+        mod,
+        "remote_cmd",
+        lambda cmd, **kwargs: remote.append((cmd, kwargs)),
+    )
+
+    mod.action_posttick([
+        "tick-a",
+        "forecast-a",
+        "substrate-a",
+        "Frozen goal.",
+        "codex:RD",
+        "research_areas/result.md",
+        "--decision-changed",
+        "--thesis-path",
+        "ztare_proofs/ZtareProofs/Result.lean",
+        "--project-slug",
+        "axiompack_result",
+    ])
+
+    assert remote == [(
+        [
+            "python3",
+            "scripts/public/control/posttick_runner.py",
+            "--tick-id",
+            "tick-a",
+            "--contract-id",
+            "forecast-a",
+            "--substrate",
+            "substrate-a",
+            "--owner",
+            "codex:RD",
+            "--goal",
+            "Frozen goal.",
+            "--artifact-path",
+            "research_areas/result.md",
+            "--thesis-path",
+            "ztare_proofs/ZtareProofs/Result.lean",
+            "--project-slug",
+            "axiompack_result",
+            "--decision-changed",
+        ],
+        {"owner": "codex:RD", "membrane": True},
+    )]
+
+
 def test_remote_path_rejects_shell_metacharacters() -> None:
     mod = load_module()
 
@@ -130,6 +179,9 @@ frozen_context_ref:
   path: research_areas/pre_registrations/campaign_a/context.json
 predecessor_synthesis_ref:
   path: research_areas/pre_registrations/campaign_a/predecessor.json
+evidence_refs:
+  - research_areas/pre_registrations/campaign_a/source.json
+  - research_areas/pre_registrations/campaign_a/control.json
 ---
 Explore.
 """,
@@ -145,7 +197,34 @@ Explore.
         "research_areas/pre_registrations/campaign_a/typed_blueprint.json",
         "research_areas/pre_registrations/campaign_a/context.json",
         "research_areas/pre_registrations/campaign_a/predecessor.json",
+        "research_areas/pre_registrations/campaign_a/source.json",
+        "research_areas/pre_registrations/campaign_a/control.json",
     ]
+
+
+def test_campaign_manifest_is_authority_for_dynamic_evidence_sync(
+    monkeypatch, capsys
+):
+    mod = load_module()
+    declared = ["campaign.md", "research_areas/evidence.json"]
+    synced = []
+    monkeypatch.setattr(mod, "is_sync_allowlisted", lambda path: path == "campaign.md")
+    monkeypatch.setattr(mod, "_campaign_input_paths", lambda _path: declared)
+    monkeypatch.setattr(
+        mod,
+        "_sync_repo_file",
+        lambda path, *, receipt_label: synced.append((path, receipt_label)),
+    )
+
+    assert mod.sync_campaign_inputs("campaign.md") == declared
+    assert synced == [
+        ("campaign.md", "sync-campaign-input"),
+        ("research_areas/evidence.json", "sync-campaign-input"),
+    ]
+
+    with pytest.raises(SystemExit):
+        mod.sync_campaign_inputs("unreviewed.md")
+    assert "campaign manifest is not allowlisted" in capsys.readouterr().err
 
 
 def test_leanmill_preflight_syncs_declared_inputs_then_uses_remote_cli(
@@ -155,8 +234,11 @@ def test_leanmill_preflight_syncs_declared_inputs_then_uses_remote_cli(
     declared = ["campaign.md", "typed.json", "context.json"]
     synced = []
     remote = []
-    monkeypatch.setattr(mod, "_campaign_input_paths", lambda _path: declared)
-    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(
+        mod,
+        "sync_campaign_inputs",
+        lambda _path: synced.extend(declared) or declared,
+    )
     monkeypatch.setattr(mod, "remote_cmd", remote.append)
 
     mod.action_leanmill_preflight(["campaign.md"])
@@ -178,7 +260,12 @@ def test_detached_campaign_uses_user_systemd_without_waiting_for_child(
     synced = []
     remote = []
     remote_scripts = []
-    monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(
+        mod,
+        "sync_campaign_inputs",
+        lambda _path: synced.extend(["campaign.md", "typed.json"])
+        or ["campaign.md", "typed.json"],
+    )
     monkeypatch.setattr(mod, "remote_cmd", remote.append)
     monkeypatch.setattr(
         mod,
@@ -254,14 +341,19 @@ def test_named_resume_drives_continuously_unless_one_step_is_explicit(
     assert launch["schema"] == "leanmill.campaign_resume_launch.v1"
 
     calls = []
-    monkeypatch.setattr(mod, "remote_cmd", lambda *_args, **_kwargs: "")
     monkeypatch.setattr(
         mod,
-        "_leanmill_attempt_action",
-        lambda action, args: calls.append((action, args)),
+        "remote_cmd",
+        lambda argv, **_kwargs: calls.append(argv) or "",
     )
     mod.action_leanmill_resume(["/tmp/attempt-1", "--one-step"])
-    assert calls == [("resume", ["/tmp/attempt-1"])]
+    assert calls[-1] == [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
+        "resume",
+        "/tmp/attempt-1",
+    ]
 
     calls.clear()
     mod.action_leanmill_resume([
@@ -270,21 +362,32 @@ def test_named_resume_drives_continuously_unless_one_step_is_explicit(
         "--authority-ref",
         "user:continue-maximally:test",
     ])
-    assert calls == [(
+    assert calls[-1] == [
+        "./venv/bin/python",
+        "-m",
+        "ztare.leanmill.cli",
         "resume",
-        [
-            "/tmp/attempt-1",
-            "--authority-ref",
-            "user:continue-maximally:test",
-        ],
-    )]
+        "/tmp/attempt-1",
+        "--authority-ref",
+        "user:continue-maximally:test",
+    ]
 
 
 def test_ratify_existing_is_provider_free_named_vps_action(monkeypatch) -> None:
     mod = load_module()
     synced: list[str] = []
+    built: list[list[str]] = []
     remote: list[list[str]] = []
+    monkeypatch.setattr(
+        mod,
+        "lean_import_source_closure",
+        lambda _path: [
+            "ztare_proofs/ZtareProofs/Dependency.lean",
+            "ztare_proofs/ZtareProofs/Example.lean",
+        ],
+    )
     monkeypatch.setattr(mod, "sync_one_allowlisted", synced.append)
+    monkeypatch.setattr(mod, "action_lean_build", lambda args: built.append(args))
     monkeypatch.setattr(mod, "remote_cmd", lambda argv: remote.append(argv) or "")
 
     mod.action_leanmill_ratify_existing([
@@ -292,7 +395,11 @@ def test_ratify_existing_is_provider_free_named_vps_action(monkeypatch) -> None:
         "Example.namespaceTheorem",
     ])
 
-    assert synced == ["ztare_proofs/ZtareProofs/Example.lean"]
+    assert synced == [
+        "ztare_proofs/ZtareProofs/Dependency.lean",
+        "ztare_proofs/ZtareProofs/Example.lean",
+    ]
+    assert built == [["ZtareProofs.Example"]]
     assert remote == [[
         "./venv/bin/python",
         "scripts/public/control/leanmill/solve_adhoc.py",
@@ -308,6 +415,42 @@ def test_ratify_existing_is_provider_free_named_vps_action(monkeypatch) -> None:
         "--json",
     ]]
     assert "--provider" not in remote[0]
+
+
+def test_lean_import_source_closure_is_transitive_and_comment_safe(
+    tmp_path, monkeypatch
+) -> None:
+    mod = load_module()
+    proof_dir = tmp_path / "ztare_proofs" / "ZtareProofs"
+    proof_dir.mkdir(parents=True)
+    (proof_dir / "Root.lean").write_text(
+        "import ZtareProofs.Dependency\n"
+        "/- import ZtareProofs.CommentedOut -/\n"
+        "theorem root : True := by trivial\n",
+        encoding="utf-8",
+    )
+    (proof_dir / "Dependency.lean").write_text(
+        "import ZtareProofs.Leaf\n"
+        "theorem dependency : True := by trivial\n",
+        encoding="utf-8",
+    )
+    (proof_dir / "Leaf.lean").write_text(
+        "theorem leaf : True := by trivial\n",
+        encoding="utf-8",
+    )
+    (proof_dir / "CommentedOut.lean").write_text(
+        "theorem ignored : True := by trivial\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(mod, "LOCAL_REPO", tmp_path)
+
+    assert mod.lean_import_source_closure(
+        "ztare_proofs/ZtareProofs/Root.lean"
+    ) == [
+        "ztare_proofs/ZtareProofs/Leaf.lean",
+        "ztare_proofs/ZtareProofs/Dependency.lean",
+        "ztare_proofs/ZtareProofs/Root.lean",
+    ]
 
 
 def test_leanmill_extend_budget_forwards_formal_boundary_resources(
@@ -414,7 +557,9 @@ def test_nl_axiompack_campaign_launches_without_provider_free_preflight(
     monkeypatch.setattr(mod, "sync_one_allowlisted", lambda _path: None)
     monkeypatch.setattr(mod, "remote_cmd", remote.append)
     monkeypatch.setattr(mod, "remote_shell", lambda *_args, **_kwargs: "")
-    monkeypatch.setattr(mod, "_campaign_input_paths", lambda _path: ["campaign.md"])
+    monkeypatch.setattr(
+        mod, "sync_campaign_inputs", lambda _path: ["campaign.md"]
+    )
     monkeypatch.setattr(mod, "_campaign_metadata", lambda _path: {})
 
     mod.action_leanmill_campaign(
@@ -473,6 +618,51 @@ def test_leanmill_source_fetch_is_generic_digest_pinned_and_bounded(monkeypatch)
                 "/tmp/outside/reference.json",
             ]
         )
+
+
+def test_agent_observability_accepts_every_declared_runtime_role(
+    monkeypatch,
+) -> None:
+    mod = load_module()
+    calls: list[list[str]] = []
+    monkeypatch.setattr(
+        mod, "remote_cmd", lambda argv, **_kwargs: calls.append(argv) or ""
+    )
+
+    for role in sorted(mod.FRONTIER_RUNTIME_ROLES):
+        mod.action_leanmill_agent_output(
+            ["/tmp/axiompack-attempt", role, "0", "result"]
+        )
+        mod.action_leanmill_agent_results(["/tmp/axiompack-attempt", role])
+
+    assert len(calls) == 2 * len(mod.FRONTIER_RUNTIME_ROLES)
+    assert {call[-2] for call in calls[::2]} == set(mod.FRONTIER_RUNTIME_ROLES)
+    assert {call[-1] for call in calls[1::2]} == set(mod.FRONTIER_RUNTIME_ROLES)
+    assert all(
+        "frontier_role_artifact_directories" in call[2] for call in calls
+    )
+
+
+@pytest.mark.parametrize(
+    "role",
+    ("../navigator", "navigator/../../formalizer", "not_registered"),
+)
+def test_agent_observability_rejects_traversal_and_unregistered_roles(
+    role, monkeypatch
+) -> None:
+    mod = load_module()
+    calls: list[list[str]] = []
+    monkeypatch.setattr(
+        mod, "remote_cmd", lambda argv, **_kwargs: calls.append(argv) or ""
+    )
+
+    with pytest.raises(SystemExit):
+        mod.action_leanmill_agent_output(
+            ["/tmp/axiompack-attempt", role, "0", "result"]
+        )
+    with pytest.raises(SystemExit):
+        mod.action_leanmill_agent_results(["/tmp/axiompack-attempt", role])
+    assert calls == []
 
 
 def test_local_close_payload_lint_normalizes_date_and_rejects_unsynced_repo_ref(

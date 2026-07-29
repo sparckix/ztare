@@ -75,7 +75,11 @@ def measure_cold_baseline(lean_root, *, ceiling_s: int = 600, force: bool = Fals
         probe.write_text("import Mathlib\n\ntheorem _cold_baseline_probe : True := trivial\n", encoding="utf-8")
         t0 = time.monotonic()
         try:
-            r = subprocess.run(["lake", "env", "lean", probe.name], cwd=str(lean_root),
+            # The probe lives in a TemporaryDirectory, not in ``lean_root``.  Passing only
+            # ``probe.name`` makes Lean look for the file under ``cwd`` and turns every
+            # measurement into a false toolchain failure.  Keep the project root as cwd
+            # (Lake needs it), while identifying the existing probe by its absolute path.
+            r = subprocess.run(["lake", "env", "lean", str(probe.resolve())], cwd=str(lean_root),
                                capture_output=True, text=True, timeout=ceiling_s)
         except subprocess.TimeoutExpired:
             return None   # even a trivial compile exceeded the generous ceiling — a real toolchain problem

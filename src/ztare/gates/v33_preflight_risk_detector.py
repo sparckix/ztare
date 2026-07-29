@@ -260,7 +260,7 @@ def _compile_probe_standalone(probe: str, sandbox: Path, tag: str, timeout: int)
     # snippet passes, but the cold `lake env lean` path needs the header — without it a VALID proof false-errors.
     # Ensure the substrate header so BOTH paths see the same self-contained probe (canonical helper, idempotent).
     try:
-        from ztare.leanmill.solver.agentic_leaf import ensure_import_header
+        from ztare.leanmill.lean_source import ensure_import_header
         probe = ensure_import_header(probe)
     except Exception:  # noqa: BLE001 — never break the gate on the helper
         pass

@@ -4,6 +4,8 @@ from __future__ import annotations
 import importlib
 from typing import Any, Mapping
 
+from ztare.leanmill.theory_ir import content_hash
+
 from ztare.common.task_discharge import (
     TaskDischargeContract,
     TaskDischargeReceipt,
@@ -11,6 +13,10 @@ from ztare.common.task_discharge import (
 )
 
 _ADAPTERS = {
+    "binary_linear_code.v1": "ztare.leanmill.adapters.binary_linear_code",
+    "rational_polynomial_map.v1": (
+        "ztare.leanmill.adapters.rational_polynomial_map"
+    ),
     "generic_fol_finite.v1": "ztare.leanmill.adapters.generic_fol_finite",
     "magma_equational.v1": "ztare.leanmill.adapters.magma_equational",
     "finite_deterministic_protocol.v1": "ztare.leanmill.adapters.finite_protocol",
@@ -58,6 +64,103 @@ def theory_adapter_capabilities(adapter_id: str) -> tuple[str, ...]:
     ):
         raise ValueError(f"adapter {adapter_id!r} has an invalid capability registry")
     return tuple(sorted(capabilities))
+
+
+def theory_adapter_capability_contract(
+    adapter_id: str, capability_id: str
+) -> dict[str, Any]:
+    """Return immutable role/contract metadata for one executable capability."""
+
+    module = resolve_theory_adapter_module(adapter_id)
+    metadata = getattr(module, "CAPABILITY_CONTRACTS", None)
+    raw = metadata.get(str(capability_id)) if isinstance(metadata, Mapping) else None
+    if not isinstance(raw, Mapping) or set(raw) != {
+        "role", "contract", "contract_sha256",
+    }:
+        raise ValueError(
+            f"adapter {adapter_id!r} capability {capability_id!r} lacks "
+            "reviewed role metadata"
+        )
+    role = str(raw.get("role") or "")
+    contract = raw.get("contract")
+    if (
+        not role
+        or not isinstance(contract, Mapping)
+        or not contract
+        or raw.get("contract_sha256") != content_hash(contract)
+    ):
+        raise ValueError(
+            f"adapter {adapter_id!r} capability {capability_id!r} has "
+            "invalid role metadata"
+        )
+    return {
+        "role": role,
+        "contract": dict(contract),
+        "contract_sha256": str(raw["contract_sha256"]),
+    }
+
+
+def theory_task_capability_catalog(
+    adapter_id: str,
+    *,
+    adapter_config: Mapping[str, Any] | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Return reviewed task IDs leaves may name without guessing vocabulary."""
+
+    module = resolve_theory_adapter_module(adapter_id)
+    config = dict(adapter_config or {})
+    factory = getattr(module, "theory_task_capabilities", None)
+    rows = (
+        factory(adapter_config=config)
+        if callable(factory)
+        else getattr(module, "THEORY_TASK_CAPABILITIES", ())
+    )
+    if not isinstance(rows, (list, tuple)):
+        raise ValueError(f"adapter {adapter_id!r} has an invalid task capability catalog")
+    normalized: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    required = {"capability_id", "purpose", "use_when"}
+    for raw in rows:
+        if not isinstance(raw, Mapping) or frozenset(raw) not in {
+            frozenset(required),
+            frozenset(required | {"interface"}),
+        }:
+            raise ValueError(
+                f"adapter {adapter_id!r} has a malformed task capability row"
+            )
+        row = {key: str(raw[key]).strip() for key in sorted(required)}
+        capability_id = row["capability_id"]
+        if not all(row.values()) or capability_id in seen:
+            raise ValueError(
+                f"adapter {adapter_id!r} has a duplicate or empty task capability"
+            )
+        if "interface" in raw:
+            from ztare.leanmill.witness_construction_boundary import (
+                GOVERNED_WITNESS_CONSTRUCTION_CAPABILITY,
+                validate_witness_construction_interface,
+            )
+
+            if capability_id != GOVERNED_WITNESS_CONSTRUCTION_CAPABILITY:
+                raise ValueError(
+                    f"adapter {adapter_id!r} attached a construction interface "
+                    "to another task capability"
+                )
+            row["interface"] = validate_witness_construction_interface(
+                raw["interface"]
+            )
+            if callable(factory):
+                from ztare.leanmill.theory_ir import content_hash
+
+                if row["interface"]["target_config_sha256"] != content_hash(
+                    config
+                ):
+                    raise ValueError(
+                        f"adapter {adapter_id!r} construction interface crossed "
+                        "its frozen adapter configuration"
+                    )
+        seen.add(capability_id)
+        normalized.append(row)
+    return tuple(sorted(normalized, key=lambda row: row["capability_id"]))
 
 
 class _RegisteredTheoryTaskAdjudicator:
@@ -143,4 +246,6 @@ __all__ = [
     "registered_theory_adapter_ids",
     "materialize_theory_adapter_capability", "preflight_theory_adapter",
     "resolve_theory_adapter_module", "theory_adapter_capabilities",
+    "theory_adapter_capability_contract",
+    "theory_task_capability_catalog",
 ]

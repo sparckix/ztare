@@ -14,7 +14,10 @@ from ztare.leanmill.exploration_budget import (
     ExplorationBudget,
     budget_from_user_mapping,
 )
-from ztare.leanmill.frontier_campaign_definition import FrontierCampaignDefinition
+from ztare.leanmill.frontier_campaign_definition import (
+    FRONTIER_RUNTIME_ROLES,
+    FrontierCampaignDefinition,
+)
 from ztare.leanmill.theory_ir import content_hash
 
 
@@ -40,19 +43,7 @@ _AXIOMPACK_FIELDS = {
     "predecessor_synthesis_ref",
 }
 _FORMALIZE_ROLES = {"formalizer", "faithfulness_reviewer", "lean_solver"}
-_AXIOMPACK_ROLES = {
-    "budget_compiler",
-    "blueprint_compiler",
-    "semantic_reviewer",
-    "navigator",
-    "lineage_synthesizer",
-    "adapter_forge",
-    "adapter_reviewer",
-    "formalizer",
-    "faithfulness_reviewer",
-    "lean_solver",
-    "post_freeze_interpreter",
-}
+_AXIOMPACK_ROLES = set(FRONTIER_RUNTIME_ROLES)
 _RUNTIME_FIELDS = {
     "runtime",
     "model",

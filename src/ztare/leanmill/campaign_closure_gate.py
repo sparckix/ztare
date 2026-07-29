@@ -35,6 +35,18 @@ LEAF_DISPOSITION_AUTHORITY_RECEIPT_SCHEMA = (
 TERMINAL_TRANSITION_AUTHORITY_RECEIPT_SCHEMA = (
     "leanmill.campaign_closure_terminal_transition_authority.v1"
 )
+REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_AUTHORITY = (
+    "reviewed_family_content_bound_terminal_transition"
+)
+_REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_SCHEMA = (
+    "leanmill.reviewed_family_objective_discharge.v2"
+)
+REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_AUTHORITY = (
+    "reviewed_family_exhaustion_content_bound_terminal_transition"
+)
+_REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_SCHEMA = (
+    "leanmill.reviewed_family_exhaustion_discharge.v1"
+)
 
 _TERMINAL_LINEAGE_STATES = frozenset(
     {
@@ -100,6 +112,40 @@ def _terminal_transition_identity() -> GoverningIdentity:
         authority="content replay of the registered lifecycle transition receipt",
         equality_relation="transition receipt hash plus campaign context",
         compatibility_relation="only retired_unresolved is projected from a stop transition",
+    )
+
+
+def _reviewed_family_objective_discharge_identity() -> GoverningIdentity:
+    return GoverningIdentity(
+        job="project a reviewed finite-family witness into terminal campaign state",
+        owner="AxiomPack reviewed-family objective transition",
+        lifecycle="one frozen construction objective and its governed witness",
+        authority="deterministic replay of the typed reviewed-family discharge",
+        equality_relation=(
+            "blueprint, synthesis, source run, family execution, admission, "
+            "and governed ratification hashes"
+        ),
+        compatibility_relation=(
+            "contributing source lineages discharge the objective; other frozen "
+            "lineages are superseded by the same exact existential witness"
+        ),
+    )
+
+
+def _reviewed_family_exhaustion_discharge_identity() -> GoverningIdentity:
+    return GoverningIdentity(
+        job="project one reviewed exhausted family and its typed successor",
+        owner="AxiomPack reviewed-family exhaustion transition",
+        lifecycle="one frozen family execution and its later navigation wave",
+        authority="deterministic replay of the typed exhaustion discharge",
+        equality_relation=(
+            "blueprint, family review, complete rejection execution, feedback, "
+            "search wave, and next-request authorship hashes"
+        ),
+        compatibility_relation=(
+            "family-source lineages discharge only under the frozen stop clause; "
+            "other frozen lineages retire unresolved"
+        ),
     )
 
 
@@ -186,6 +232,10 @@ def _replay_task_discharge_authority(
         registered_theory_adapter_ids,
     )
     from ztare.leanmill.theory_program import TheoryProgram
+    from ztare.leanmill.theory_task_discharge_successor import (
+        CONSTRUCTION_RATIFICATION_TRANSITION_KEY,
+        validate_construction_ratification_successor_bundle,
+    )
 
     origin = _verify_authority_wrapper(
         value,
@@ -243,6 +293,31 @@ def _replay_task_discharge_authority(
     ):
         raise ValueError("task-discharge closure origin crossed campaign identity")
 
+    transition_rows: dict[tuple[str, str], dict[str, Any]] = {}
+    transition_evidence_refs: list[str] = []
+    transition = bundle.get(CONSTRUCTION_RATIFICATION_TRANSITION_KEY)
+    if transition is not None:
+        bundle = validate_construction_ratification_successor_bundle(
+            bundle, boundary
+        )
+        if not isinstance(transition, Mapping):  # validator gives the diagnostic
+            raise ValueError("task-discharge successor transition is malformed")
+        transition_evidence_refs.append(str(transition["receipt_sha256"]))
+        for raw in transition.get("rows") or ():
+            if not isinstance(raw, Mapping):
+                raise ValueError("task-discharge successor row is malformed")
+            key = (
+                str(raw.get("program_id") or ""),
+                str(raw.get("task_contract_sha256") or ""),
+            )
+            transition_rows[key] = dict(raw)
+            transition_evidence_refs.extend(
+                (
+                    str(raw.get("receipt_sha256") or ""),
+                    str(raw.get("aggregate_sha256") or ""),
+                )
+            )
+
     contracts = {
         contract.sha256: contract for contract in program.task_discharge_contracts
     }
@@ -273,21 +348,33 @@ def _replay_task_discharge_authority(
             or receipt.status != "discharged"
         ):
             raise ValueError("task-discharge closure row changed identity")
-        replayed = (
-            adjudicate_governed_formal_counterexample_task(
-                contract=contract,
-                boundary_result=boundary,
+        successor_row = transition_rows.get((program.program_id, contract.sha256))
+        if successor_row is not None:
+            final_receipt = (
+                successor_row.get("aggregate") or {}
+            ).get("final_task_discharge_receipt")
+            if final_receipt != receipt.to_dict():
+                raise ValueError(
+                    "task-discharge closure row does not replay its successor"
+                )
+        else:
+            replayed = (
+                adjudicate_governed_formal_counterexample_task(
+                    contract=contract,
+                    boundary_result=boundary,
+                )
+                if contract.adjudicator_id
+                == GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR
+                else adjudicate_theory_adapter_task(
+                    str(bundle["adapter_id"]),
+                    contract,
+                    boundary_result=boundary,
+                )
             )
-            if contract.adjudicator_id
-            == GOVERNED_FORMAL_COUNTEREXAMPLE_ADJUDICATOR
-            else adjudicate_theory_adapter_task(
-                str(bundle["adapter_id"]),
-                contract,
-                boundary_result=boundary,
-            )
-        )
-        if replayed.to_dict() != receipt.to_dict():
-            raise ValueError("task-discharge closure row does not replay its adjudicator")
+            if replayed.to_dict() != receipt.to_dict():
+                raise ValueError(
+                    "task-discharge closure row does not replay its adjudicator"
+                )
         if contract.sha256 in observed:
             raise ValueError("task-discharge closure origin duplicated a task")
         observed.add(contract.sha256)
@@ -321,7 +408,13 @@ def _replay_task_discharge_authority(
             raise ValueError(
                 "generalization closure origin does not own the declared residual"
             )
-    return (*matched_refs, bundle_ref, consumption_ref, boundary_ref)
+    return (
+        *matched_refs,
+        *tuple(ref for ref in transition_evidence_refs if ref),
+        bundle_ref,
+        consumption_ref,
+        boundary_ref,
+    )
 
 
 def _replay_leaf_disposition_authority(
@@ -447,6 +540,95 @@ def _replay_terminal_transition_authority(
     return (transition_ref,)
 
 
+def _replay_reviewed_family_objective_discharge_authority(
+    value: Mapping[str, Any], terminal: Mapping[str, Any]
+) -> tuple[str, ...]:
+    """Replay a typed family discharge and its exact lineage projection."""
+
+    from ztare.leanmill.reviewed_family_objective_discharge import (
+        validate_reviewed_family_objective_discharge,
+    )
+
+    discharge = validate_reviewed_family_objective_discharge(value)
+    source_run = discharge["source_pending_run"]
+    lineage_id = str(terminal.get("lineage_id") or "")
+    source_lineages = frozenset(
+        str(value) for value in discharge["source_lineage_ids"]
+    )
+    frozen_lineages = frozenset(
+        str(value) for value in discharge["frozen_lineage_ids"]
+    )
+    expected_state = (
+        "objective_discharged"
+        if lineage_id in source_lineages
+        else "superseded"
+    )
+    if (
+        terminal.get("context_hash") != source_run.get("context_hash")
+        or lineage_id not in frozen_lineages
+        or terminal.get("terminal_state") != expected_state
+    ):
+        raise ValueError(
+            "reviewed-family discharge crossed its campaign lineage projection"
+        )
+    return (
+        str(discharge["receipt_sha256"]),
+        str(discharge["construction_objective_sha256"]),
+        str(discharge["source_run_digest"]),
+        str(discharge["lineage_synthesis_decision_sha256"]),
+        str(discharge["finite_family_execution_sha256"]),
+        str(discharge["admission_sha256"]),
+        str(discharge["ratification_aggregate_sha256"]),
+        str(discharge["governed_closure_record_sha256"]),
+    )
+
+
+def _replay_reviewed_family_exhaustion_discharge_authority(
+    value: Mapping[str, Any], terminal: Mapping[str, Any]
+) -> tuple[str, ...]:
+    """Replay a family-scoped null and its explicit lineage projection."""
+
+    from ztare.leanmill.reviewed_family_exhaustion_discharge import (
+        validate_reviewed_family_exhaustion_discharge,
+    )
+
+    discharge = validate_reviewed_family_exhaustion_discharge(value)
+    observation = discharge["observation"]
+    lineage_id = str(terminal.get("lineage_id") or "")
+    source_lineages = frozenset(
+        str(item) for item in observation["source_lineage_ids"]
+    )
+    frozen_lineages = frozenset(
+        str(item) for item in observation["frozen_lineage_ids"]
+    )
+    expected_state = (
+        "objective_discharged"
+        if lineage_id in source_lineages
+        else "retired_unresolved"
+    )
+    if (
+        terminal.get("context_hash")
+        != observation["source_family_run"].get("context_hash")
+        or lineage_id not in frozen_lineages
+        or terminal.get("terminal_state") != expected_state
+    ):
+        raise ValueError(
+            "reviewed family exhaustion crossed its lineage projection"
+        )
+    return (
+        str(discharge["receipt_sha256"]),
+        str(observation["receipt_sha256"]),
+        str(observation["stop_permission_sha256"]),
+        str(observation["finite_family_sha256"]),
+        str(observation["forge_quarantine_receipt_sha256"]),
+        str(observation["finite_family_execution_sha256"]),
+        str(discharge["feedback_sha256"]),
+        str(discharge["feedback_wave_binding_sha256"]),
+        str(discharge["next_representation_authorship_sha256"]),
+        str(discharge["next_representation_request_id"]),
+    )
+
+
 _CLOSURE_AUTHORITY_ROUTES: tuple[CampaignClosureAuthorityRoute, ...] = (
     CampaignClosureAuthorityRoute(
         authority="validated_theory_task_discharge_consumption",
@@ -479,6 +661,24 @@ _CLOSURE_AUTHORITY_ROUTES: tuple[CampaignClosureAuthorityRoute, ...] = (
         authority_receipt_schema=TERMINAL_TRANSITION_AUTHORITY_RECEIPT_SCHEMA,
         identity=_terminal_transition_identity(),
         replay=_replay_terminal_transition_authority,
+    ),
+    CampaignClosureAuthorityRoute(
+        authority=REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_AUTHORITY,
+        obligation_kind="lineage_disposition",
+        terminal_states=frozenset({"objective_discharged", "superseded"}),
+        authority_receipt_schema=_REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_SCHEMA,
+        identity=_reviewed_family_objective_discharge_identity(),
+        replay=_replay_reviewed_family_objective_discharge_authority,
+    ),
+    CampaignClosureAuthorityRoute(
+        authority=REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_AUTHORITY,
+        obligation_kind="lineage_disposition",
+        terminal_states=frozenset(
+            {"objective_discharged", "retired_unresolved"}
+        ),
+        authority_receipt_schema=_REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_SCHEMA,
+        identity=_reviewed_family_exhaustion_discharge_identity(),
+        replay=_replay_reviewed_family_exhaustion_discharge_authority,
     ),
 )
 
@@ -642,6 +842,107 @@ def lineage_disposition_from_task_discharge(
         authority="validated_theory_task_discharge_consumption",
         authority_receipt=origin,
     )
+
+
+def lineage_dispositions_from_reviewed_family_objective_discharge(
+    objective_discharge: Mapping[str, Any],
+    *,
+    current_blueprint: Any | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Project one exact family witness across its complete frozen lineage set.
+
+    Source lineages authored the selected representation request and receive
+    ``objective_discharged``.  Frozen siblings receive ``superseded`` because
+    the same construction objective is existential and has already been met.
+    Both projections retain the complete typed discharge for terminal replay.
+    """
+
+    from ztare.leanmill.reviewed_family_objective_discharge import (
+        validate_reviewed_family_objective_discharge,
+    )
+
+    discharge = validate_reviewed_family_objective_discharge(
+        objective_discharge,
+        current_blueprint=current_blueprint,
+    )
+    context_hash = str(discharge["source_pending_run"]["context_hash"])
+    source_lineages = frozenset(
+        str(value) for value in discharge["source_lineage_ids"]
+    )
+    rows: list[dict[str, Any]] = []
+    for lineage_id in discharge["frozen_lineage_ids"]:
+        terminal = {
+            "context_hash": context_hash,
+            "lineage_id": str(lineage_id),
+            "terminal_state": (
+                "objective_discharged"
+                if lineage_id in source_lineages
+                else "superseded"
+            ),
+        }
+        evidence_refs = _replay_reviewed_family_objective_discharge_authority(
+            discharge, terminal
+        )
+        rows.append(
+            build_lineage_disposition_receipt(
+                **terminal,
+                evidence_refs=evidence_refs,
+                authority=REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_AUTHORITY,
+                authority_receipt=discharge,
+            )
+        )
+    return tuple(rows)
+
+
+def lineage_dispositions_from_reviewed_family_exhaustion_discharge(
+    exhaustion_discharge: Mapping[str, Any],
+    *,
+    current_blueprint: Any | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Project the permitted family null without discarding sibling science.
+
+    The family-source lineages satisfy the explicitly frozen information-yield
+    stop.  Other lineages are terminally retired but remain unresolved; family
+    rejection provides no supersession evidence for them.
+    """
+
+    from ztare.leanmill.reviewed_family_exhaustion_discharge import (
+        validate_reviewed_family_exhaustion_discharge,
+    )
+
+    discharge = validate_reviewed_family_exhaustion_discharge(
+        exhaustion_discharge, current_blueprint=current_blueprint
+    )
+    observation = discharge["observation"]
+    context_hash = str(observation["source_family_run"]["context_hash"])
+    source_lineages = frozenset(
+        str(item) for item in observation["source_lineage_ids"]
+    )
+    rows: list[dict[str, Any]] = []
+    for lineage_id in observation["frozen_lineage_ids"]:
+        terminal = {
+            "context_hash": context_hash,
+            "lineage_id": str(lineage_id),
+            "terminal_state": (
+                "objective_discharged"
+                if lineage_id in source_lineages
+                else "retired_unresolved"
+            ),
+        }
+        evidence_refs = (
+            _replay_reviewed_family_exhaustion_discharge_authority(
+                discharge, terminal
+            )
+        )
+        rows.append(
+            build_lineage_disposition_receipt(
+                **terminal,
+                evidence_refs=evidence_refs,
+                authority=REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_AUTHORITY,
+                authority_receipt=discharge,
+            )
+        )
+    return tuple(rows)
 
 
 def build_generalization_residual_receipt(
@@ -963,6 +1264,8 @@ __all__ = [
     "GENERALIZATION_RESIDUAL_SCHEMA",
     "LEAF_DISPOSITION_AUTHORITY_RECEIPT_SCHEMA",
     "LINEAGE_DISPOSITION_SCHEMA",
+    "REVIEWED_FAMILY_EXHAUSTION_DISCHARGE_AUTHORITY",
+    "REVIEWED_FAMILY_OBJECTIVE_DISCHARGE_AUTHORITY",
     "TASK_DISCHARGE_AUTHORITY_RECEIPT_SCHEMA",
     "TERMINAL_TRANSITION_AUTHORITY_RECEIPT_SCHEMA",
     "assert_campaign_closable",
@@ -974,6 +1277,8 @@ __all__ = [
     "build_terminal_transition_authority_receipt",
     "campaign_closure_gate",
     "generalization_adjudication_from_task_discharge",
+    "lineage_dispositions_from_reviewed_family_exhaustion_discharge",
+    "lineage_dispositions_from_reviewed_family_objective_discharge",
     "lineage_disposition_from_task_discharge",
     "lineage_disposition_from_terminal_transition",
 ]

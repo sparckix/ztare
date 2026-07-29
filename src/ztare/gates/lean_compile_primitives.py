@@ -194,6 +194,24 @@ def parse_axiom_output(output: str) -> dict[str, list[str]]:
     return parsed
 
 
+def _resolve_axiom_output_name(
+    axioms_by_name: dict[str, list[str]], target_name: str
+) -> str | None:
+    """Resolve Lean's qualified output name from a possibly short selector.
+
+    Lean prints the fully qualified declaration name even when a `#print`
+    directive inside its namespace used the short name.  A unique suffix is
+    therefore the same declaration identity; multiple suffix matches remain
+    inconclusive so a decoy declaration cannot select itself.
+    """
+
+    if target_name in axioms_by_name:
+        return target_name
+    suffix = "." + target_name
+    matches = [name for name in axioms_by_name if name.endswith(suffix)]
+    return matches[0] if len(matches) == 1 else None
+
+
 def _relative_to_or_self(path: Path, root: Path) -> str:
     try:
         return path.resolve().relative_to(root.resolve()).as_posix()
@@ -283,9 +301,10 @@ def audit_axioms_subset(lean_source: str, target_name: str, lean_path: Path, lea
             # completed audit.  Recognition and rc=0 are jointly required.
             return (False, False, [])
         axioms_by_name = rec.get("axioms") or {}
-    if target_name not in axioms_by_name:
+    resolved_target = _resolve_axiom_output_name(axioms_by_name, target_name)
+    if resolved_target is None:
         return (False, False, [])   # the directive produced no line for the target ⇒ inconclusive
-    ax = set(axioms_by_name.get(target_name) or [])
+    ax = set(axioms_by_name.get(resolved_target) or [])
     clean = ax.issubset(AXIOM_ALLOWLIST)
     return (clean, (not clean), sorted(ax))
 
