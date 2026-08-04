@@ -1,0 +1,240 @@
+{
+  "schema": "ztare-arc3-causal-response-derivative-spec-v1",
+  "spec_revision": 2,
+  "pre_live_corrections": [
+    {
+      "kind": "criticality_label_correction",
+      "previous_spec_sha256": "f0fc70c559ff4f755f01fd0e149e6049d54c96568c27006e533bb012450eb301",
+      "controller_contact_before_correction": false,
+      "environment_contact_before_correction": false,
+      "reason": "The executable estimator and hypothesis use R_response=1 as critical and R_response>1 as supercritical; the prior JSON label incorrectly called R_response>1 the critical boundary."
+    },
+    {
+      "kind": "controller_identity_and_intervention_compiler_completion",
+      "previous_spec_sha256": "f0fc70c559ff4f755f01fd0e149e6049d54c96568c27006e533bb012450eb301",
+      "controller_contact_before_correction": false,
+      "environment_contact_before_correction": false,
+      "reason": "The live controller uses the Responses API rather than the H96 subscription transport, so its controller scope must be reminted while task, context, choice set, and action vocabulary remain fixed. The live causal residual and byte-matched control renderers are now frozen before contact."
+    }
+  ],
+  "hypothesis_id": "H-GPSA-CAUSAL-RESPONSE-DERIVATIVE-20260803-97",
+  "status": "pre_registered",
+  "source_response": {
+    "family_sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+    "response_sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+    "contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "supported_offer_witnesses": [
+      {
+        "arm_ref": "h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json",
+        "arm_file_sha256": "f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd"
+      },
+      {
+        "arm_ref": "h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json",
+        "arm_file_sha256": "8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa"
+      }
+    ]
+  },
+  "response_program_compiler": {
+    "minimum_supported_offer_witnesses": 2,
+    "controlled_object_rule": "unique_common_controlled_object",
+    "waypoint_rule": "unique_longest_common_ordered_subsequence",
+    "expected_source_controlled_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+    "expected_source_waypoint_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+      "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7"
+    ],
+    "forbidden_inputs": [
+      "free_text_role_names",
+      "task_solution_labels",
+      "H96_outcome_metrics",
+      "target_post_proposal",
+      "embedding_similarity"
+    ]
+  },
+  "derivative_source": {
+    "h96_manifest_ref": "h96_causal_object_lineage/manifest.json",
+    "h96_manifest_file_sha256": "eaf153bca34ec97147e859a0d3b6585c8718fe8aef02bd211f6ab69b46846cc0",
+    "h96_result_ref": "h96_causal_object_lineage/result.json",
+    "h96_result_file_sha256": "055bd1e186b7cfb877a7d776a330403a997d0130cdbb81c8a5742762db73ec76",
+    "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+    "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "actions_from_source": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "derivative_rule": {
+    "kind": "joint_event_brz_derivative",
+    "waypoint_discharge_requires": [
+      "waypoint_bracketed_occlusion_enter",
+      "waypoint_unique_reappearance_next_hop",
+      "same_transition_other_tracked_object_fixed_support_appearance_revision"
+    ],
+    "event_selection_timing": "before_target_proposal_and_outcome",
+    "expected_discharged_source_waypoint_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+    ],
+    "expected_pending_source_waypoint_refs": [
+      "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7"
+    ],
+    "expected_target_controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+    "expected_target_pending_waypoint_refs": [
+      "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+    ],
+    "refuse_on": [
+      "ambiguous_response_program",
+      "ambiguous_lineage",
+      "unbracketed_occlusion",
+      "missing_coevent_revision",
+      "transition_receipt_mismatch",
+      "proxy_event_family",
+      "post_outcome_event_selection"
+    ]
+  },
+  "construction_replay": {
+    "offer_arm_ref": "h96_causal_object_lineage/arms/pair_01_offer_causal_mechanics.json",
+    "offer_arm_file_sha256": "7f10f03094c11e5180f287dceb7f412337d9250a23799dceb66581a50beaf57e",
+    "placebo_arm_ref": "h96_causal_object_lineage/arms/pair_01_withhold_redundant_true_memory.json",
+    "placebo_arm_file_sha256": "4efe480e9f9d7a2bc51bcce7d6e8e1d93d106f368837cbe193605f8b4c226df3",
+    "expected_static_offer_relation": "offered_other_transport",
+    "expected_derivative_offer_relation": "offered_supported_derivative",
+    "expected_derivative_placebo_relation": "withheld_already_satisfied",
+    "evidence_role": "construction_example_not_fresh_discriminator"
+  },
+  "matched_controller_fork": {
+    "api": "openai_responses",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "reasoning_context": "all_turns",
+    "store": true,
+    "branch_authority": "same_previous_response_id",
+    "instructions_repeated_on_each_branch": true,
+    "shared_blind_proposal_required": true,
+    "maximum_blind_parent_attempts_per_pair": 4,
+    "eligible_parent_rule": "blind_proposal_does_not_satisfy_target_residual_program",
+    "pair_count": 2,
+    "arm_order": [
+      [
+        "offer",
+        "withhold"
+      ],
+      [
+        "withhold",
+        "offer"
+      ]
+    ],
+    "live_scope_transport": {
+      "preserved_coordinates": [
+        "task_sha256",
+        "context_sha256",
+        "choice_set_sha256",
+        "action_vocabulary_sha256"
+      ],
+      "changed_coordinates": [
+        "controller_sha256"
+      ],
+      "controller_identity_includes": [
+        "api_kind",
+        "model",
+        "reasoning_effort",
+        "reasoning_context",
+        "store",
+        "instructions_sha256",
+        "tool_sha256"
+      ]
+    },
+    "intervention_compiler": {
+      "causal_content": "source program identity, exact lineage identity, target controlled-object handle, pending waypoint handles, discharged waypoint handles, and use rule",
+      "placebo_content": "true non-target observation and action-interface facts",
+      "padding": "utf8_space_padding_to_exact_frozen_bytes",
+      "causal_revision_identity": "hash_of_live_scope_source_program_lineage_rendered_content_and_primitive_action_cost"
+    }
+  },
+  "live_test": {
+    "game": "ls20",
+    "prefix_actions_per_arm": 7,
+    "post_prefix_actions_per_arm": 20,
+    "presented_bytes_per_intervention": 3849,
+    "shared_blind_inferences_per_pair_minimum": 1,
+    "shared_blind_inferences_per_pair_maximum": 4,
+    "branch_revision_inferences_per_pair": 2,
+    "post_revision_action_inferences_per_arm": 19,
+    "environment_contact_only_after_eligible_parent": true,
+    "admission_before_branch_revision": true
+  },
+  "reproduction_observable": {
+    "parent_family_count": 1,
+    "parent_promoted_child_count_before_h97": 0,
+    "required_promoted_child_count_after_h97": 1,
+    "required_offspring_delta": 1,
+    "critical_boundary": "response_reproduction_number_equals_1",
+    "supercritical_boundary": "response_reproduction_number_greater_than_1",
+    "h97_can_reach_critical_boundary": true,
+    "h97_cannot_establish_supercriticality": true
+  },
+  "success_criterion": {
+    "source_program_support_count": 2,
+    "source_program_waypoint_count": 2,
+    "discharged_waypoint_count": 1,
+    "pending_waypoint_count": 1,
+    "negative_derivative_refusal_count_minimum": 3,
+    "eligible_matched_pair_count": 2,
+    "shared_parent_identity_rate": 1.0,
+    "offer_supported_derivative_rate": 1.0,
+    "withhold_spontaneous_derivative_rate": 0.0,
+    "first_stage_derivative_delta": 1.0,
+    "minimum_task_delta": 0.0,
+    "minimum_mean_composite_delta_exclusive": 0.0,
+    "minimum_offer_composite_wins": 1,
+    "promoted_child_count": 1,
+    "offspring_delta": 1
+  },
+  "kill_conditions": [
+    "source_or_cost_drift",
+    "response_program_not_shared_by_both_supported_h95_offers",
+    "derivative_uses_H96_outcome_or_target_post_proposal",
+    "derivative_accepts_missing_or_ambiguous_joint_event",
+    "fork_branches_do_not_share_exact_previous_response_id",
+    "fork_branches_do_not_share_exact_blind_proposal",
+    "effective_reasoning_context_not_all_turns",
+    "eligible_parent_not_found_within_frozen_attempt_budget",
+    "late_admission",
+    "offer_derivative_uptake_failure",
+    "placebo_spontaneous_derivative_support",
+    "task_loss",
+    "nonpositive_mean_composite_delta",
+    "zero_composite_wins",
+    "no_promoted_child"
+  ],
+  "prior_art_boundary": {
+    "established": [
+      "Brzozowski_derivatives",
+      "Myhill_Nerode_quotients",
+      "reward_machines",
+      "temporal_logic_progression",
+      "hierarchical_RL_options",
+      "eligibility_traces",
+      "object_tracking",
+      "Responses_API_continuations"
+    ],
+    "candidate_join": [
+      "program_induced_from_randomized_externally_settled_response_witnesses",
+      "event_word_bound_by_exact_object_lineage_and_environment_receipts",
+      "pre_outcome_residual_contract_as_admission_and_credit_authority",
+      "exact_hidden_state_counterfactual_fork",
+      "post_settlement_child_promotion",
+      "response_reproduction_operator"
+    ],
+    "kill_if_prior_art_matches_join": true
+  },
+  "claim_boundary": [
+    "H97 tests one parent response at one descendant state.",
+    "H97 can raise observed offspring count from zero to one but cannot establish a supercritical response population.",
+    "H97 does not establish arbitrary learned reward machines, cross-task transfer, benchmark improvement, accelerating gains, or literature novelty."
+  ]
+}

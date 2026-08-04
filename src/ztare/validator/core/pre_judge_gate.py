@@ -18,7 +18,10 @@ from ztare.common.observation_chart import (
     assert_project_evidence_epoch,
     capture_project_evidence_epoch,
 )
-from ztare.common.patch_base_identity import load_current_repair_frontier
+from ztare.common.patch_base_identity import (
+    StaleRepairFrontierError,
+    load_current_repair_frontier,
+)
 
 _log = logging.getLogger(__name__)
 
@@ -660,22 +663,38 @@ def _dominance_promotion_ok(
     *,
     champion_heldout: dict[str, float],
     strict_improved: bool,
+    observed_row_dominance: dict[str, Any] | None = None,
 ) -> bool:
     """Tiered dominance promotion (SUBSTRATE-GENERAL, no game-specific logic).
 
-    Promote iff: harness_ok AND every observed-tier gate passes absolutely AND
-    every heldout-tier gate is non-regressing vs the champion's recorded value
-    (>= champion, or >= 0 when no champion value is recorded) AND the candidate
-    strictly improves something. You may not be required to solve what you have
-    not observed before you are allowed to improve what you have.
+    Promote iff: harness_ok AND every observed-tier gate passes absolutely —
+    except that the row-scored observed gate may instead carry a row-bitmap
+    dominance witness (candidate wrong-rows a STRICT SUBSET of the incumbent's,
+    same episode bytes, same evaluator; see
+    ``_observed_row_dominance_witness``) — AND every heldout-tier gate is
+    non-regressing vs the champion's recorded value AND the candidate strictly
+    improves something. You may not be required to solve what you have not
+    observed before you are allowed to improve what you have; equally, you may
+    not be required to out-perform perfection the incumbent itself no longer
+    attains. With a visible-perfect incumbent the witness cannot dominate, so
+    this reduces exactly to the old absolutist rule.
     """
     if not bool(gate_payload.get("harness_ok")) or not gates:
         return False
     if not strict_improved:
         return False
+    row_dominates = bool(
+        _observed_row_dominance_enabled()
+        and isinstance(observed_row_dominance, dict)
+        and observed_row_dominance.get("dominates") is True
+    )
     for gate in gates:
         if _gate_tier(gate) == "observed":
             if not _gate_passed(gate):
+                diag = gate.get("diagnostics")
+                row_scored = isinstance(diag, dict) and "wrong_rows" in diag
+                if row_scored and row_dominates:
+                    continue
                 return False
         else:  # heldout: non-regression, not must-pass
             try:
@@ -738,15 +757,37 @@ def _dominance_inputs(comparison: dict[str, Any] | None) -> "tuple[dict[str, flo
     return champion_heldout, strict_improved
 
 
+def _behavioral_coordinates_tied(comparison: dict[str, Any] | None) -> bool:
+    """Whether candidate and incumbent identify the same observed behavior."""
+
+    if comparison is None:
+        return False
+    return all(
+        comparison.get(key) == 0
+        for key in (
+            "exact_rows_delta",
+            "wrong_cells_delta",
+            "holdout_depth_delta",
+        )
+    )
+
+
 def _write_eval(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-def _append_gate_receipt(project_dir: Path, row: dict[str, Any]) -> None:
+def _append_gate_receipt(project_dir: Path, row: dict[str, Any]) -> bool:
     ledger = project_dir / "workspace" / "pre_judge_gate_receipts.jsonl"
-    ledger.parent.mkdir(parents=True, exist_ok=True)
-    with ledger.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(row, sort_keys=True, default=str) + "\n")
+    try:
+        ledger.parent.mkdir(parents=True, exist_ok=True)
+        with ledger.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(row, sort_keys=True, default=str) + "\n")
+    except OSError:
+        # Diagnostic receipt persistence has no authority over the gate result.
+        # Read-only staged scorers must preserve the verifier consequence even
+        # when the authority workspace correctly rejects incidental writes.
+        return False
+    return True
 
 
 def _sha256_text(text: str) -> str:
@@ -766,7 +807,7 @@ def _json_sha(payload: Any) -> str:
     return _sha256_text(json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str))
 
 
-def _evaluation_policy_sha256() -> str:
+def evaluation_policy_sha256() -> str:
     """Identify the policy that turns gate evidence into an adoption verdict.
 
     Candidate bytes and evidence bytes do not identify a verdict on their own:
@@ -1006,6 +1047,8 @@ def _same_candidate_sha(left: object, right: object) -> bool:
 def _best_prior_candidate_record(project_dir: Path, *, exclude_sha: str) -> dict[str, Any] | None:
     try:
         frontier = load_current_repair_frontier(project_dir)
+    except StaleRepairFrontierError:
+        frontier = None
     except FileNotFoundError:
         frontier = None
     except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
@@ -1147,6 +1190,77 @@ def _candidate_regression_receipt(
     return comparison
 
 
+def _observed_row_dominance_enabled() -> bool:
+    return os.environ.get("ZTARE_OBSERVED_ROW_DOMINANCE", "1") != "0"
+
+
+def _observed_row_dominance_witness(
+    project_dir: Path,
+    candidate_path: str | Path | None,
+    prior_submission: str | None,
+) -> dict[str, Any] | None:
+    """Row-bitmap dominance witness: candidate wrong-rows ⊂ prior wrong-rows.
+
+    Rationale (substrate-general): observed-tier absolutism ("every visible row
+    exact") was sound only under the invariant that the incumbent is itself
+    visible-perfect — then "no regression + strict improvement" degenerates to
+    exactness. Once evidence grows after promotion, the incumbent fails rows
+    too, and absolutism blocks every strict improver forever (measured: an
+    incumbent 617-wrong on the grown bank made the promotion door unpassable
+    by construction — the gate-achievability failure class at the promotion
+    door). Dominance strictly generalizes the old rule: with a visible-perfect
+    incumbent it REQUIRES exactness; otherwise it requires no-regression plus
+    strictly-fewer wrong rows.
+
+    Identity safety: BOTH carriers are scored by the same shared evaluator
+    (`build_row_bitmap`, content-addressed cache) over the same episode bytes;
+    the witness is refused unless episode_hash and evaluator_sha256 match, so
+    harness-local row spaces are never trusted or mixed. Fail-closed: any
+    failure returns None and the caller keeps today's absolutist behavior.
+    Promotion selects the SEARCH incumbent only; task discharge and terminal
+    authority are untouched (determinism stays at the soundness boundary).
+    """
+    if candidate_path is None or not prior_submission:
+        return None
+    try:
+        from ztare.worldmodel.evidence_consolidation import build_row_bitmap
+
+        prior_path = Path(prior_submission)
+        if not prior_path.is_absolute():
+            if ".." in prior_path.parts:
+                return None
+            prior_path = project_dir / prior_path
+        episode = project_dir / "raw" / "episodes" / "episode_001.jsonl"
+        if not episode.is_file() or not prior_path.is_file():
+            return None
+        cand = build_row_bitmap(candidate_path, episode, project_dir=project_dir)
+        prior = build_row_bitmap(prior_path, episode, project_dir=project_dir)
+        if cand.get("load_error") or prior.get("load_error"):
+            return None
+        if cand.get("episode_hash") != prior.get("episode_hash"):
+            return None
+        if cand.get("evaluator_sha256") != prior.get("evaluator_sha256"):
+            return None
+        cand_wrong = set(int(i) for i in cand.get("wrong_rows") or [])
+        prior_wrong = set(int(i) for i in prior.get("wrong_rows") or [])
+        regressions = sorted(cand_wrong - prior_wrong)
+        return {
+            "schema": "ztare-observed-row-dominance-witness-v1",
+            "episode_hash": cand.get("episode_hash"),
+            "evaluator_sha256": cand.get("evaluator_sha256"),
+            "candidate_wrong_row_count": len(cand_wrong),
+            "prior_wrong_row_count": len(prior_wrong),
+            "regressed_rows": regressions[:16],
+            "regressed_row_count": len(regressions),
+            "dominates": bool(
+                not regressions and len(cand_wrong) < len(prior_wrong)
+            ),
+        }
+    except Exception:  # noqa: BLE001
+        # Fail-closed: no witness -> observed-tier absolutism stands.
+        return None
+
+
 def _candidate_prior_comparison_receipt(
     *,
     project_dir: Path,
@@ -1214,6 +1328,21 @@ def _candidate_prior_comparison_receipt(
     )
     quotient_comparison = _regression_quotient_comparison(cur, best)
     holdout_witness = _holdout_witness(gate_payload)
+    row_dominance: dict[str, Any] | None = None
+    if _observed_row_dominance_enabled():
+        gates_by_name = _gates_dict(gate_payload)
+        visible_gate = gates_by_name.get("visible_replay_exact")
+        visible_failed = isinstance(visible_gate, dict) and not _gate_passed(
+            visible_gate
+        )
+        if visible_failed:
+            # Computed only when absolutism would block: with a visible-perfect
+            # incumbent the witness cannot dominate, so nothing changes there.
+            row_dominance = _observed_row_dominance_witness(
+                project_dir,
+                candidate_path,
+                str(best.get("submission") or "") or None,
+            )
     return {
         "schema": "ztare-candidate-regression-receipt-v1",
         "candidate_relation": "comparison_only",
@@ -1239,6 +1368,7 @@ def _candidate_prior_comparison_receipt(
         "first_mismatch": str(cur.get("first_mismatch") or "")[:240],
         "holdout_witness": holdout_witness or {},
         "quotient_comparison": quotient_comparison,
+        "observed_row_dominance": row_dominance or {},
         "_candidate_rank": (cur_exact, cur_holdout, cur_score, -cur_wrong),
         "_best_prior_rank": (best_exact, best_holdout, best_score, -best_wrong),
     }
@@ -1314,6 +1444,7 @@ def _record_candidate_memory(
     project_dir: Path,
     candidate_path: str | Path | None,
     gate_payload: dict[str, Any],
+    artifact_role: str = "behavior_carrier",
 ) -> None:
     try:
         from ztare.orchestrator.briefing_providers.surviving_candidates import (
@@ -1323,6 +1454,7 @@ def _record_candidate_memory(
             project_dir=project_dir,
             candidate_path=candidate_path,
             gate_payload=gate_payload,
+            artifact_role=artifact_role,
         )
     except Exception as exc:  # noqa: BLE001
         _append_gate_receipt(project_dir, {
@@ -1521,6 +1653,7 @@ def run_pre_judge_gate_harness(
     run_role: str | None = None,
     withheld_refs: tuple[str, ...] = (),
     exposed_refs: tuple[str, ...] = (),
+    artifact_role: str = "behavior_carrier",
 ) -> PreJudgeGateResult:
     """Run an opt-in project-local gate before paid judge evaluation.
 
@@ -1531,6 +1664,9 @@ def run_pre_judge_gate_harness(
     """
     project_path = Path(project_dir)
     latest_path = Path(latest_eval_results_path)
+    artifact_role = str(artifact_role or "behavior_carrier").strip()
+    if artifact_role not in {"behavior_carrier", "task_hypothesis"}:
+        raise ValueError(f"unsupported pre-judge artifact role: {artifact_role!r}")
     if not enabled:
         return PreJudgeGateResult(enabled=False, ran=False, should_skip_judge=False, payload={"verdict": "disabled"})
 
@@ -1577,8 +1713,8 @@ def run_pre_judge_gate_harness(
             gate_payload.setdefault("engine", "subprocess")
         gate_payload = _bind_gate_candidate_identity(gate_payload, candidate_path)
         gate_payload["evidence_epoch"] = evidence_epoch.to_dict()
-        evaluation_policy_sha256 = _evaluation_policy_sha256()
-        gate_payload["evaluation_policy_sha256"] = evaluation_policy_sha256
+        evaluation_policy_id = evaluation_policy_sha256()
+        gate_payload["evaluation_policy_sha256"] = evaluation_policy_id
         if run_role:
             gate_payload["run_role"] = str(run_role)
         if withheld_refs:
@@ -1595,7 +1731,7 @@ def run_pre_judge_gate_harness(
             project_path,
             candidate_sha=candidate_sha,
             evidence_epoch_sha256=evidence_epoch.epoch_sha256,
-            evaluation_policy_sha256=evaluation_policy_sha256,
+            evaluation_policy_sha256=evaluation_policy_id,
         )
         regression_receipt = _candidate_regression_receipt(
             project_dir=project_path,
@@ -1614,13 +1750,38 @@ def run_pre_judge_gate_harness(
                 gate_payload, gate_iter,
                 champion_heldout=champion_heldout,
                 strict_improved=strict_improved,
+                observed_row_dominance=(
+                    comparison.get("observed_row_dominance")
+                    if isinstance(comparison, dict)
+                    else None
+                ),
             )
         else:
             promotable = _all_gates_passed(gate_payload, gate_iter)
+        role_admissible = bool(promotable)
+        if artifact_role == "task_hypothesis" and not role_admissible:
+            if _dominance_promotion_enabled():
+                role_admissible = bool(
+                    regression_receipt is None
+                    and _behavioral_coordinates_tied(comparison)
+                    and _dominance_promotion_ok(
+                        gate_payload,
+                        gate_iter,
+                        champion_heldout=champion_heldout,
+                        strict_improved=True,
+                    )
+                )
+            else:
+                role_admissible = bool(
+                    regression_receipt is None
+                    and _behavioral_coordinates_tied(comparison)
+                    and _all_gates_passed(gate_payload, gate_iter)
+                )
         _record_candidate_memory(
             project_dir=project_path,
             candidate_path=candidate_path,
             gate_payload=gate_payload,
+            artifact_role=artifact_role,
         )
         promotion_authorized = gate_payload.get("candidate_promotion_authorized")
         if not isinstance(promotion_authorized, bool):
@@ -1641,6 +1802,8 @@ def run_pre_judge_gate_harness(
         model_selection_relation = (
             "same_carrier_same_evidence"
             if already_evaluated
+            else "behaviorally_equivalent_role_companion"
+            if artifact_role == "task_hypothesis" and role_admissible and not promotable
             else
             "evidence_improvement_with_complexity_cost"
             if promotable and evidence_delta and complexity_regressed
@@ -1652,11 +1815,19 @@ def run_pre_judge_gate_harness(
         )
         gate_payload["pre_judge_decision"] = {
             "schema": "ztare-pre-judge-decision-v1",
-            "evaluator_authorized": bool(promotable),
+            "evaluator_authorized": role_admissible,
             "candidate_promotion_authorized": bool(
-                promotable and promotion_authorized and not already_evaluated
+                artifact_role == "behavior_carrier"
+                and promotable
+                and promotion_authorized
+                and not already_evaluated
             ),
-            "authority_scope": "search_incumbent_selection",
+            "authority_scope": (
+                "task_hypothesis_admissibility"
+                if artifact_role == "task_hypothesis"
+                else "search_incumbent_selection"
+            ),
+            "artifact_role": artifact_role,
             "task_discharge_authorized": bool(
                 gate_payload.get("task_discharge_authorized", False)
             ),
@@ -1681,7 +1852,7 @@ def run_pre_judge_gate_harness(
             "candidate_sha": candidate_sha,
             "evidence_epoch_sha256": evidence_epoch.epoch_sha256,
         }
-        if promotable:
+        if role_admissible:
             if gate_payload.get("score_contract") == "deterministic_gates_only":
                 _write_eval(
                     latest_path,
@@ -1742,6 +1913,9 @@ def run_pre_judge_gate_harness(
                         "counterexample_trace"
                     ),
                     evidence_epoch=gate_payload.get("evidence_epoch") or {},
+                    evaluation_policy_sha256=str(
+                        gate_payload.get("evaluation_policy_sha256") or ""
+                    ),
                 )
             except Exception:  # noqa: BLE001
                 # A malformed comparison cannot move the role.  The gate block
@@ -1810,6 +1984,7 @@ def detect_patch_base_regression_preflight(
     python_executable: str = sys.executable,
     timeout_seconds: int = 120,
     workspace_cache_dir: str | Path | None = None,
+    require_strict_improvement: bool = True,
 ) -> PatchBaseRegressionPreflight | None:
     """Pure preflight for repair loops with a persisted deterministic near-miss.
 
@@ -1842,12 +2017,13 @@ def detect_patch_base_regression_preflight(
     gate_payload = _bind_gate_candidate_identity(gate_payload, candidate_path)
     assert_project_evidence_epoch(project_path, evidence_epoch)
     gate_payload["evidence_epoch"] = evidence_epoch.to_dict()
+    gate_payload["evaluation_policy_sha256"] = evaluation_policy_sha256()
     gate_payload.setdefault("engine", "subprocess")
     regression_receipt = _candidate_regression_receipt(
         project_dir=project_path,
         candidate_path=candidate_path,
         gate_payload=gate_payload,
-        require_strict_improvement=True,
+        require_strict_improvement=require_strict_improvement,
     )
     gate_iter = _normalize_gate_iter(gate_payload)
     failed_gates = _failed_gate_labels(
@@ -1860,13 +2036,40 @@ def detect_patch_base_regression_preflight(
             gate_payload=gate_payload,
         )
         champion_heldout, strict_improved = _dominance_inputs(comparison)
-        if _dominance_promotion_ok(
-            gate_payload, gate_iter,
-            champion_heldout=champion_heldout,
-            strict_improved=strict_improved,
+        if require_strict_improvement:
+            if _dominance_promotion_ok(
+                gate_payload, gate_iter,
+                champion_heldout=champion_heldout,
+                strict_improved=strict_improved,
+            ):
+                return None
+        elif (
+            regression_receipt is None
+            and _behavioral_coordinates_tied(comparison)
+            and _dominance_promotion_ok(
+                gate_payload,
+                gate_iter,
+                champion_heldout=champion_heldout,
+                # Reuse the same tier/non-regression checks without granting
+                # behavior-carrier promotion authority to this companion.
+                strict_improved=True,
+            )
         ):
             return None
-    elif regression_receipt is None and _all_gates_passed(gate_payload, gate_iter):
+    elif (
+        regression_receipt is None
+        and _all_gates_passed(gate_payload, gate_iter)
+        and (
+            require_strict_improvement
+            or _behavioral_coordinates_tied(
+                _candidate_prior_comparison_receipt(
+                    project_dir=project_path,
+                    candidate_path=candidate_path,
+                    gate_payload=gate_payload,
+                )
+            )
+        )
+    ):
         return None
     if regression_receipt is None:
         comparison_receipt = _candidate_prior_comparison_receipt(

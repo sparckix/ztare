@@ -39,3 +39,14 @@ def test_existing_patch_delta_alias_is_not_considered_valid_predictor_source() -
 
     assert "I_model = model" not in aliased
     assert "f = model" not in aliased
+
+
+def test_task_predicate_is_not_exported_as_transition_predictor() -> None:
+    code = (
+        'PATCH_BASE = {"source_ref":"workspace/submissions/base.py","sha256":"abc"}\n'
+        "PATCH_DELTA_SPEC = {'actions': {}, 'always': [{'op': 'identity'}]}\n"
+        "def GOAL_PREDICATE(observation):\n"
+        "    return False\n"
+    )
+
+    assert ensure_canonical_model_aliases(code) == code

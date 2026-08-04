@@ -74,6 +74,80 @@ def test_score_worldmodel_candidate_uses_manifest_authority_project(
     assert summary["candidate_relation"] == "no_regression_detected"
 
 
+def test_carrier_check_uses_manifest_bound_dynamics_assumption(tmp_path: Path) -> None:
+    visible = tmp_path / "visible"
+    visible.mkdir()
+    authority = tmp_path / "projects" / "demo"
+    authority.mkdir(parents=True)
+    (authority / "gate_harness.py").write_text("# gate\n", encoding="utf-8")
+    (tmp_path / "rubrics").mkdir()
+    (tmp_path / "rubrics/demo.json").write_text(
+        '{"dynamics_assumption":"lawful_time"}\n',
+        encoding="utf-8",
+    )
+    (visible / "MANIFEST.json").write_text(
+        json.dumps({"authority_project_path": str(authority)}) + "\n",
+        encoding="utf-8",
+    )
+    (visible / "candidate.py").write_text(
+        "def step(grid, action, t):\n    return grid if t >= 0 else grid\n",
+        encoding="utf-8",
+    )
+
+    payload = visible_workbench_cli._check_worldmodel_carrier(
+        project=visible,
+        source_ref="candidate.py",
+    )
+
+    assert payload["status"] == "pass"
+    assert payload["input_hashes"]["dynamics_assumption"] == "lawful_time"
+    assert payload["input_hashes"]["authority_project_ref"] == str(authority)
+
+
+def test_consumed_evidence_requires_analysis_receipt_input_binding(tmp_path: Path) -> None:
+    receipt_ref = "workspace/visible_cli_receipts/probe.json"
+    receipt = tmp_path / receipt_ref
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text(
+        json.dumps(
+            {
+                "input_hashes": {
+                    "artifact_hashes": {"workspace/evidence.json": "a" * 64}
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    blocker = {
+        "control_receipts": [
+            {
+                "type": "LOWERABILITY_BLOCKED",
+                "payload": {
+                    "evidence_refs": ["workspace/evidence.json"],
+                    "evidence_statuses": [
+                        {
+                            "ref": "workspace/evidence.json",
+                            "status": "consumed_counterexample",
+                        }
+                    ],
+                    "evidence_analysis_refs": [receipt_ref],
+                },
+            }
+        ]
+    }
+
+    assert visible_workbench_cli.worldmodel_payload_context_errors(tmp_path, blocker) == []
+    blocker["control_receipts"][0]["payload"]["evidence_statuses"].append(
+        {
+            "ref": "workspace/unread_donor.py",
+            "status": "consumed_counterexample",
+        }
+    )
+    errors = visible_workbench_cli.worldmodel_payload_context_errors(tmp_path, blocker)
+    assert len(errors) == 1
+    assert "workspace/unread_donor.py" in errors[0]
+
+
 def test_visible_cli_compiles_active_task_into_action_scope(
     tmp_path: Path,
 ) -> None:

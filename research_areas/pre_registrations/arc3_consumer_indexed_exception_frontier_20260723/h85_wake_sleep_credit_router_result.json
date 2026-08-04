@@ -1,0 +1,391 @@
+{
+  "boundary_checks": {
+    "first_contradiction_reopened_only_boundary": true,
+    "lifecycle_rows": [
+      {
+        "index": 1,
+        "lifecycle": "probation",
+        "primitive_action_cost_after": 11.0,
+        "primitive_action_cost_before": 11.0,
+        "reopened_support_refs": [
+          "boundary-episode"
+        ]
+      },
+      {
+        "index": 2,
+        "lifecycle": "probation",
+        "primitive_action_cost_after": 11.0,
+        "primitive_action_cost_before": 11.0,
+        "reopened_support_refs": [
+          "boundary-episode"
+        ]
+      },
+      {
+        "index": 3,
+        "lifecycle": "demoted",
+        "primitive_action_cost_after": 11.0,
+        "primitive_action_cost_before": 11.0,
+        "reopened_support_refs": []
+      }
+    ],
+    "outside_scope_reason": "scope_mismatch",
+    "outside_scope_state_unchanged": true,
+    "outside_scope_status": "rejected",
+    "primitive_action_cost_invariant": true,
+    "third_contradiction_demoted": true
+  },
+  "environment_contact": false,
+  "holdout_decisions_per_seed": 400,
+  "rows": [
+    {
+      "guard_overlap_causal_confuser": 1.0,
+      "guard_overlap_causal_semantic_twin": 0.3333333333333333,
+      "initial_top1": "memory-authority-confuser-v1",
+      "learned_top1": "memory-causal-v1",
+      "primitive_action_costs": {
+        "memory-authority-confuser-v1": 11.0,
+        "memory-causal-v1": 11.0,
+        "memory-semantic-twin-v1": 11.0
+      },
+      "router_regret": 66,
+      "seed": 7,
+      "semantic_overlap_causal_confuser": 0.0,
+      "semantic_overlap_causal_semantic_twin": 1.0,
+      "state": {
+        "credits": [
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:7:79:memory-authority-confuser-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.4737988213038407,
+            "mean_squared_prediction_error": 0.13792000813121993,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-authority-confuser-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 37.903905704307256,
+            "sum_squared_prediction_error": 11.033600650497595
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:7:79:memory-causal-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.7661789848792478,
+            "mean_squared_prediction_error": 0.3485743513044876,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-causal-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 61.29431879033983,
+            "sum_squared_prediction_error": 27.88594810435901
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:7:79:memory-semantic-twin-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.43040854907244086,
+            "mean_squared_prediction_error": 0.03522037648258973,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-semantic-twin-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 34.43268392579527,
+            "sum_squared_prediction_error": 2.8176301186071786
+          }
+        ],
+        "schema": "ztare-wake-sleep-credit-router-v1",
+        "sha256": "02bc645643d193651599c490818b41da18c364bb000f267f85b9e2f85b10b838"
+      },
+      "static_regret": 198,
+      "static_top1": "memory-authority-confuser-v1",
+      "strict_regret_improvement": true,
+      "top2_with_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-semantic-twin-v1"
+      ],
+      "top2_without_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-authority-confuser-v1"
+      ]
+    },
+    {
+      "guard_overlap_causal_confuser": 1.0,
+      "guard_overlap_causal_semantic_twin": 0.3333333333333333,
+      "initial_top1": "memory-authority-confuser-v1",
+      "learned_top1": "memory-causal-v1",
+      "primitive_action_costs": {
+        "memory-authority-confuser-v1": 11.0,
+        "memory-causal-v1": 11.0,
+        "memory-semantic-twin-v1": 11.0
+      },
+      "router_regret": 72,
+      "seed": 17,
+      "semantic_overlap_causal_confuser": 0.0,
+      "semantic_overlap_causal_semantic_twin": 1.0,
+      "state": {
+        "credits": [
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:17:79:memory-authority-confuser-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.4709331748783633,
+            "mean_squared_prediction_error": 0.13558717628490058,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-authority-confuser-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 37.674653990269064,
+            "sum_squared_prediction_error": 10.846974102792046
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:17:79:memory-causal-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.7683435839193594,
+            "mean_squared_prediction_error": 0.35196481839040195,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-causal-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 61.46748671354875,
+            "sum_squared_prediction_error": 28.157185471232157
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:17:79:memory-semantic-twin-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.3938372991409748,
+            "mean_squared_prediction_error": 0.0398782447448123,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-semantic-twin-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 31.506983931277986,
+            "sum_squared_prediction_error": 3.190259579584984
+          }
+        ],
+        "schema": "ztare-wake-sleep-credit-router-v1",
+        "sha256": "e51b68abfb7c09ea5d7b9af19cb0d213603859d2e2ab1090766a44136edfc42f"
+      },
+      "static_regret": 205,
+      "static_top1": "memory-authority-confuser-v1",
+      "strict_regret_improvement": true,
+      "top2_with_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-semantic-twin-v1"
+      ],
+      "top2_without_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-authority-confuser-v1"
+      ]
+    },
+    {
+      "guard_overlap_causal_confuser": 1.0,
+      "guard_overlap_causal_semantic_twin": 0.3333333333333333,
+      "initial_top1": "memory-authority-confuser-v1",
+      "learned_top1": "memory-causal-v1",
+      "primitive_action_costs": {
+        "memory-authority-confuser-v1": 11.0,
+        "memory-causal-v1": 11.0,
+        "memory-semantic-twin-v1": 11.0
+      },
+      "router_regret": 60,
+      "seed": 29,
+      "semantic_overlap_causal_confuser": 0.0,
+      "semantic_overlap_causal_semantic_twin": 1.0,
+      "state": {
+        "credits": [
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:29:79:memory-authority-confuser-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.4815515848518224,
+            "mean_squared_prediction_error": 0.13201128016593575,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-authority-confuser-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 38.52412678814579,
+            "sum_squared_prediction_error": 10.56090241327486
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:29:79:memory-causal-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.732809001587386,
+            "mean_squared_prediction_error": 0.31412204153414774,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-causal-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 58.62472012699088,
+            "sum_squared_prediction_error": 25.12976332273182
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:29:79:memory-semantic-twin-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.4479209230916176,
+            "mean_squared_prediction_error": 0.030495552171526837,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-semantic-twin-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 35.83367384732941,
+            "sum_squared_prediction_error": 2.439644173722147
+          }
+        ],
+        "schema": "ztare-wake-sleep-credit-router-v1",
+        "sha256": "755b0d3d34b3ace783341de59aa3f952f5cd2a654f3567209e037423efa29fb3"
+      },
+      "static_regret": 217,
+      "static_top1": "memory-authority-confuser-v1",
+      "strict_regret_improvement": true,
+      "top2_with_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-semantic-twin-v1"
+      ],
+      "top2_without_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-authority-confuser-v1"
+      ]
+    },
+    {
+      "guard_overlap_causal_confuser": 1.0,
+      "guard_overlap_causal_semantic_twin": 0.3333333333333333,
+      "initial_top1": "memory-authority-confuser-v1",
+      "learned_top1": "memory-causal-v1",
+      "primitive_action_costs": {
+        "memory-authority-confuser-v1": 11.0,
+        "memory-causal-v1": 11.0,
+        "memory-semantic-twin-v1": 11.0
+      },
+      "router_regret": 74,
+      "seed": 43,
+      "semantic_overlap_causal_confuser": 0.0,
+      "semantic_overlap_causal_semantic_twin": 1.0,
+      "state": {
+        "credits": [
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:43:79:memory-authority-confuser-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.48026651506130713,
+            "mean_squared_prediction_error": 0.13460540376825209,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-authority-confuser-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 38.42132120490457,
+            "sum_squared_prediction_error": 10.768432301460166
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:43:79:memory-causal-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.7326258933098942,
+            "mean_squared_prediction_error": 0.31562097444500836,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-causal-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 58.61007146479154,
+            "sum_squared_prediction_error": 25.24967795560067
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:43:79:memory-semantic-twin-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.426328513576416,
+            "mean_squared_prediction_error": 0.03722028016886868,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-semantic-twin-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 34.10628108611328,
+            "sum_squared_prediction_error": 2.9776224135094944
+          }
+        ],
+        "schema": "ztare-wake-sleep-credit-router-v1",
+        "sha256": "30f7e467dbdb095d38f24b1c06e1926fafb6e0d73ae4ee3f091c5e50c1702632"
+      },
+      "static_regret": 191,
+      "static_top1": "memory-authority-confuser-v1",
+      "strict_regret_improvement": true,
+      "top2_with_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-semantic-twin-v1"
+      ],
+      "top2_without_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-authority-confuser-v1"
+      ]
+    },
+    {
+      "guard_overlap_causal_confuser": 1.0,
+      "guard_overlap_causal_semantic_twin": 0.3333333333333333,
+      "initial_top1": "memory-authority-confuser-v1",
+      "learned_top1": "memory-causal-v1",
+      "primitive_action_costs": {
+        "memory-authority-confuser-v1": 11.0,
+        "memory-causal-v1": 11.0,
+        "memory-semantic-twin-v1": 11.0
+      },
+      "router_regret": 81,
+      "seed": 71,
+      "semantic_overlap_causal_confuser": 0.0,
+      "semantic_overlap_causal_semantic_twin": 1.0,
+      "state": {
+        "credits": [
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:71:79:memory-authority-confuser-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.48732775292670805,
+            "mean_squared_prediction_error": 0.1314795771156265,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-authority-confuser-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 38.986220234136646,
+            "sum_squared_prediction_error": 10.51836616925012
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:71:79:memory-causal-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.7172960827172031,
+            "mean_squared_prediction_error": 0.29228966975001175,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-causal-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 57.38368661737625,
+            "sum_squared_prediction_error": 23.38317358000094
+          },
+          {
+            "compatible_contradictions": 0,
+            "last_external_outcome_ref": "sealed:train:71:79:memory-semantic-twin-v1",
+            "lifecycle": "active",
+            "mean_observed_delta": 0.42985240174406114,
+            "mean_squared_prediction_error": 0.038016937989429817,
+            "memory_key": "f9e51c816e38cc0011609df5bf64d9ba1a1ff611d38802aeff2e0ed703d3217e:memory-semantic-twin-v1",
+            "reopened_support_refs": [],
+            "settlement_count": 80,
+            "sum_observed_delta": 34.38819213952489,
+            "sum_squared_prediction_error": 3.0413550391543853
+          }
+        ],
+        "schema": "ztare-wake-sleep-credit-router-v1",
+        "sha256": "bbf02d73908b7421cabff0e8458308ed11169e5b010434bed6232631e1143714"
+      },
+      "static_regret": 220,
+      "static_top1": "memory-authority-confuser-v1",
+      "strict_regret_improvement": true,
+      "top2_with_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-semantic-twin-v1"
+      ],
+      "top2_without_guard_overlap_cost": [
+        "memory-causal-v1",
+        "memory-authority-confuser-v1"
+      ]
+    }
+  ],
+  "schema": "ztare-wake-sleep-credit-router-audit-v1",
+  "seeds": [
+    7,
+    17,
+    29,
+    43,
+    71
+  ],
+  "status": "pass",
+  "training_settlements_per_memory": 80
+}

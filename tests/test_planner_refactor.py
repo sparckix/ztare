@@ -12,8 +12,16 @@ import os
 import random
 import time
 
-from ztare.worldmodel.planner import plan_novelty, plan_progress, pursue_goal, Plan
+from ztare.worldmodel.planner import (
+    Plan,
+    plan_novelty,
+    plan_progress,
+    plan_witness_gap,
+    pursue_goal,
+)
 from ztare.worldmodel.planner import _abstract_novelty  # read-only
+from ztare.worldmodel.planner import _current_chart_time_translation_certificate
+from ztare.worldmodel.episode_log import Transition
 from ztare.worldmodel.frontier_codec import (
     AbstractCarrierInterner,
     StateInterner,
@@ -55,6 +63,142 @@ def test_plan_novelty_deterministic():
     assert (r1 is None) == (r2 is None)
     if r1 is not None:
         assert r1.actions == r2.actions
+
+
+def test_witness_gap_keeps_transition_states_distinct_from_support():
+    """Support aliases must not erase a route through the transition graph."""
+    start = ((0,),)
+
+    def carrier(grid, action, _step):
+        state = grid[0][0]
+        if state == 0:
+            return ((1 if action == 0 else 2,),)
+        if state == 2 and action == 0:
+            return ((3,),)
+        return grid
+
+    def support(grid):
+        state = grid[0][0]
+        if state in (1, 2):
+            return "branch"
+        return f"state:{state}"
+
+    witnessed = {
+        ("state:0", 0),
+        ("state:0", 1),
+        ("branch", 0),
+        ("branch", 1),
+    }
+    plan = plan_witness_gap(
+        carrier,
+        start,
+        2,
+        witnessed,
+        max_depth=4,
+        abstract_fn=lambda grid: grid,
+        support_fn=support,
+    )
+
+    assert plan is not None
+    assert plan.actions == [1, 0, 0]
+
+
+def test_witness_gap_defaults_support_to_transition_identity():
+    """Callers without a coverage projection retain the prior contract."""
+    start = ((0,),)
+
+    def carrier(grid, action, _step):
+        state = grid[0][0]
+        if state == 0:
+            return ((1 if action == 0 else 2,),)
+        if state == 2 and action == 0:
+            return ((3,),)
+        return grid
+
+    witnessed = {
+        (((0,),), 0),
+        (((0,),), 1),
+        (((1,),), 0),
+        (((1,),), 1),
+        (((2,),), 0),
+        (((2,),), 1),
+    }
+    plan = plan_witness_gap(
+        carrier,
+        start,
+        2,
+        witnessed,
+        max_depth=4,
+        abstract_fn=lambda grid: grid,
+    )
+
+    assert plan is not None
+    assert plan.actions == [1, 0, 0]
+
+
+def test_pursuit_indexes_observed_support_through_coverage(monkeypatch):
+    """Evidence and live updates use the acquisition consumer's projection."""
+    from ztare.worldmodel import planner
+    from ztare.worldmodel import reachability as reachability_module
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self.t = 0
+            self.state = ((2, 99),)
+
+        def step(self, action):
+            assert action == 0
+            self.t += 1
+            self.state = ((3, 100),)
+            return self.state
+
+    def state_coverage_must_not_preempt(*_args, **_kwargs):
+        raise AssertionError("state coverage ran before operation support")
+
+    monkeypatch.setattr(
+        reachability_module,
+        "reachability_sweep",
+        state_coverage_must_not_preempt,
+    )
+    calls = []
+
+    def witness_gap(
+        _champion,
+        state,
+        _action_arity,
+        witnessed_pairs,
+        **kwargs,
+    ):
+        calls.append((state, witnessed_pairs, kwargs["support_fn"]))
+        return Plan(actions=[0], reason="consumer support fixture")
+
+    monkeypatch.setattr(planner, "plan_witness_gap", witness_gap)
+
+    def carrier(_state, _action, _step):
+        return ((3, 100),)
+
+    evidence = (
+        Transition(t=0, s=((1, 42),), a=0, s_next=((2, 43),)),
+    )
+    receipt = planner.pursue_goal(
+        Adapter(),
+        carrier,
+        abstract_fn=lambda grid: (grid[0][0], grid[0][1]),
+        coverage_fn=lambda transition_identity: transition_identity[0],
+        visited_store=set(),
+        evidence_transitions=evidence,
+        max_steps=1,
+        max_replans=0,
+    )
+
+    assert receipt.trace == [0]
+    assert calls[0][2](((7, 700),)) == 7
+    # The captured set is updated in place after the live intervention.
+    assert calls[0][1] == {(1, 0), (2, 0)}
 
 
 def test_simulated_search_arena_does_not_consume_novelty():
@@ -939,8 +1083,452 @@ def test_terminal_search_cap_does_not_switch_to_acquisition_policy(monkeypatch):
         max_replans=1,
     )
 
-    assert len(sweeps) == 2
+    # Each targeted turn consumes the bounded-cap receipt by geometrically
+    # widening the search twice; it never changes into acquisition control.
+    assert len(sweeps) == 6
     assert receipt.planning_outcome["policy"] == "bounded_terminal_search"
+
+
+def test_hypothesis_version_uses_information_yield_control(monkeypatch):
+    from ztare.worldmodel import planner
+    from ztare.worldmodel import reachability as reachability_module
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self.t = 0
+            self.state = ((0,),)
+
+        def step(self, _action):
+            self.t += 1
+            self.state = ((self.t,),)
+            return self.state
+
+    class Hypotheses:
+        target_kind = "hypothesis_version_space"
+
+        def __call__(self, _state):
+            return False
+
+    class Capped:
+        status = "search_budget_exhausted"
+        paths = []
+        saturated = False
+        states_enumerated = 5
+        exhaustive = False
+        detail = ""
+
+    sweeps = []
+    monkeypatch.setattr(
+        reachability_module,
+        "reachability_sweep",
+        lambda *_args, **_kwargs: sweeps.append(1) or Capped(),
+    )
+    monkeypatch.setattr(planner, "plan_to_goal", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        planner,
+        "plan_novelty",
+        lambda *_args, **_kwargs: Plan(actions=[0], reason="acquire fixture"),
+    )
+
+    receipt = planner.pursue_goal(
+        Adapter(),
+        lambda _grid, _action, step: ((step + 1,),),
+        goal_fn=Hypotheses(),
+        abstract_fn=lambda grid: grid,
+        visited_store={((0,),)},
+        max_steps=1,
+        max_replans=0,
+    )
+
+    assert len(sweeps) == 0
+    assert receipt.trace == [0]
+    assert receipt.planning_outcome["policy"] == "incremental_abstract_novelty"
+
+
+def test_hypothesis_search_uses_single_goal_experiment_problem(monkeypatch):
+    from ztare.common import factored_search as factored_module
+    from ztare.common.factored_search import FactoredSearchResult
+    from ztare.worldmodel import planner
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self.t = 0
+            self.state = ((0,),)
+
+        def step(self, _action):
+            self.t += 1
+            self.state = ((1,),)
+            return self.state
+
+    class Hypotheses:
+        target_kind = "hypothesis_version_space"
+
+        def __call__(self, _state):
+            return False
+
+    class Problem:
+        problem_id = "goal-writer-edge-fixture"
+        evidence_refs = ("fixture:goal-writer",)
+
+    class Projection:
+        projection_sha256 = "a" * 64
+
+        def goal_problem(self, **_kwargs):
+            return Problem()
+
+        def goal_experiment_problem(self, **_kwargs):
+            return Problem()
+
+    calls = []
+
+    def search_factored(**_kwargs):
+        calls.append(1)
+        return FactoredSearchResult(status="edge_found", actions=(0,))
+
+    monkeypatch.setattr(factored_module, "search_factored", search_factored)
+
+    def carrier(_state, _action, _time):
+        return ((1,),)
+
+    carrier._ztare_factored_projection = Projection()
+    receipt = planner.pursue_goal(
+        Adapter(),
+        carrier,
+        goal_fn=Hypotheses(),
+        max_steps=1,
+        max_replans=0,
+    )
+
+    assert calls == [1]
+    assert receipt.trace == [0]
+    assert receipt.planning_outcome["policy"] == "factored_goal_experiment"
+    assert receipt.planning_outcome["status"] == "edge_found"
+
+
+def test_factored_problem_identity_does_not_cross_replan(monkeypatch):
+    from ztare.common import factored_search as factored_module
+    from ztare.common.factored_search import FactoredSearchResult
+    from ztare.worldmodel import planner
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self.t = 0
+            self.state = ((0,),)
+
+        def step(self, _action):
+            self.t += 1
+            self.state = ((self.t,),)
+            return self.state
+
+    class Hypotheses:
+        target_kind = "hypothesis_version_space"
+
+        def __call__(self, _state):
+            return False
+
+    class Problem:
+        problem_id = "replan-scoped-fixture"
+        evidence_refs = ("fixture:replan-scope",)
+
+    class Projection:
+        projection_sha256 = "a" * 64
+
+        def goal_problem(self, **_kwargs):
+            return Problem()
+
+        def goal_experiment_problem(self, **_kwargs):
+            return Problem()
+
+    calls = []
+
+    def search_factored(**_kwargs):
+        calls.append(1)
+        if len(calls) == 1:
+            return FactoredSearchResult(status="search_budget_exhausted")
+        return FactoredSearchResult(status="edge_found", actions=(0,))
+
+    monkeypatch.setattr(factored_module, "search_factored", search_factored)
+    monkeypatch.setattr(planner, "plan_to_goal", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        planner,
+        "plan_novelty",
+        lambda *_args, **_kwargs: Plan(actions=[0], reason="raw fallback"),
+    )
+
+    def carrier(_state, _action, step):
+        return ((step + 1,),)
+
+    carrier._ztare_factored_projection = Projection()
+    receipt = planner.pursue_goal(
+        Adapter(),
+        carrier,
+        goal_fn=Hypotheses(),
+        max_steps=2,
+        max_replans=1,
+    )
+
+    # Widening stays inside one problem identity.  Once that acquisition plan
+    # fires, observations return before a fresh outer replan.
+    assert calls == [1, 1]
+    assert receipt.trace == [0]
+    assert receipt.status == "acquisition_observed"
+    assert receipt.planning_outcome["policy"] != ""
+
+
+def test_exhausted_mechanism_model_uses_witnessed_partial_action_route(
+    monkeypatch,
+):
+    from ztare.common import factored_search as factored_module
+    from ztare.common.factored_search import FactoredSearchResult
+    from ztare.common.partial_action_system import (
+        PartialActionObservation,
+        build_partial_action_system,
+    )
+    from ztare.worldmodel import mechanism_effects
+    from ztare.worldmodel import planner
+
+    start = ((0,),)
+    frontier_source = ((1,),)
+    frontier_successor = ((2,),)
+    observed_system = build_partial_action_system(
+        (
+            PartialActionObservation(
+                source=start,
+                operation=0,
+                successor=frontier_source,
+                evidence_ref="fixture:observed-route#0",
+            ),
+        ),
+        project=lambda state: state,
+        effect=lambda *_args: ("advance",),
+        projection_id="fixture-observed-partial-action",
+    )
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self.t = 0
+            self.state = start
+
+        def step(self, _action):
+            self.t += 1
+            self.state = (
+                frontier_source if self.t == 1 else frontier_successor
+            )
+            return self.state
+
+    class Problem:
+        problem_id = "factor-novelty-fixture"
+        evidence_refs = ("fixture:factor-novelty",)
+
+    class MechanismProblem:
+        problem_id = "mechanism-fixture"
+        evidence_refs = ("fixture:mechanism",)
+        action_system = observed_system
+        history_lift = None
+        history_suffix_length = 0
+
+        @staticmethod
+        def observed_start_key(state, _action_history):
+            return state
+
+    class Projection:
+        projection_sha256 = "a" * 64
+
+        @staticmethod
+        def factor(state):
+            return state
+
+        @staticmethod
+        def partial_operation_problem(**_kwargs):
+            return None
+
+        @staticmethod
+        def acquisition_problem(**_kwargs):
+            return Problem()
+
+        @staticmethod
+        def mechanism_acquisition_problem(**_kwargs):
+            return MechanismProblem()
+
+    searches = []
+
+    def search_factored(**_kwargs):
+        searches.append(_kwargs["problem"].problem_id)
+        if _kwargs["problem"].problem_id == "mechanism-fixture":
+            return FactoredSearchResult(
+                status="search_budget_exhausted",
+                continuation_actions=(0,) * 20,
+                generated=5000,
+                expanded=4800,
+            )
+        return FactoredSearchResult(
+            status="projected_frontier_exhausted",
+            generated=2,
+            expanded=2,
+        )
+
+    monkeypatch.setattr(factored_module, "search_factored", search_factored)
+    monkeypatch.setattr(
+        mechanism_effects,
+        "fiber_transition_key",
+        lambda factors: factors,
+    )
+    monkeypatch.setattr(
+        planner,
+        "plan_witness_gap",
+        lambda *_args, **_kwargs: (
+            (_ for _ in ()).throw(
+                AssertionError("typed mechanism exhaustion cannot use raw fallback")
+            )
+        ),
+    )
+
+    def carrier(state, _action, _time):
+        if state == start:
+            return frontier_source
+        return frontier_successor
+
+    carrier._ztare_factored_projection = Projection()
+    receipt = planner.pursue_goal(
+        Adapter(),
+        carrier,
+        evidence_states=(start,),
+        evidence_transitions=(object(),),
+        max_steps=2,
+        max_replans=0,
+    )
+
+    assert searches == ["factor-novelty-fixture"]
+    assert receipt.status == "acquisition_observed"
+    assert receipt.trace == [0, 0]
+    assert receipt.planning_outcome["policy"] == (
+        "guarded_protocol_information_yield"
+    )
+    assert receipt.planning_outcome["selected_protocol_policy"] == (
+        "observed_partial_action_frontier"
+    )
+    assert receipt.planning_outcome["consumer_action"] == (
+        "execute_selected_guarded_protocol"
+    )
+    assert receipt.planning_outcome[
+        "guarded_protocol_selection"
+    ]["selected_protocol_id"] == "observed_partial_action_frontier"
+    assert receipt.planning_outcome[
+        "observed_partial_action_frontier"
+    ]["action_count"] == 2
+    assert receipt.planning_outcome[
+        "guarded_protocol_selection"
+    ]["max_primitive_execution_units"] == 2.0
+
+    searches.clear()
+    budget_adapter = Adapter()
+    budget_receipt = planner.pursue_goal(
+        budget_adapter,
+        carrier,
+        evidence_states=(start,),
+        evidence_transitions=(object(),),
+        max_steps=1,
+        max_replans=0,
+    )
+
+    assert searches == ["factor-novelty-fixture"]
+    assert budget_adapter.t == 0
+    assert budget_receipt.trace == []
+    assert budget_receipt.status == "mechanism_protocol_budget_exhausted"
+    assert budget_receipt.planning_outcome["status"] == (
+        "no_affordable_protocol"
+    )
+    assert budget_receipt.planning_outcome[
+        "guarded_protocol_selection"
+    ]["max_primitive_execution_units"] == 1.0
+    assert budget_receipt.planning_outcome[
+        "guarded_protocol_selection"
+    ]["budget_ineligible_protocol_ids"]
+
+
+def test_hypothesis_search_executes_typed_bounded_continuation(monkeypatch):
+    from ztare.common import factored_search as factored_module
+    from ztare.common.factored_search import FactoredSearchResult
+    from ztare.worldmodel import planner
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+        t = 0
+        state = ((0,),)
+
+        def step(self, _action):
+            self.t += 1
+            self.state = ((1,),)
+            return self.state
+
+    class Hypotheses:
+        target_kind = "hypothesis_version_space"
+
+        def __call__(self, _state):
+            return False
+
+    class Problem:
+        problem_id = "bounded-continuation-fixture"
+        evidence_refs = ("fixture:bounded-continuation",)
+
+    class Projection:
+        projection_sha256 = "a" * 64
+
+        def goal_problem(self, **_kwargs):
+            return Problem()
+
+        def goal_experiment_problem(self, **_kwargs):
+            return Problem()
+
+    searches = []
+    monkeypatch.setattr(
+        factored_module,
+        "search_factored",
+        lambda **_kwargs: searches.append(1) or FactoredSearchResult(
+            status="search_budget_exhausted",
+            continuation_actions=(0,),
+            generated=5,
+        ),
+    )
+
+    def carrier(_state, _action, _time):
+        return ((1,),)
+
+    carrier._ztare_factored_projection = Projection()
+    receipt = planner.pursue_goal(
+        Adapter(),
+        carrier,
+        goal_fn=Hypotheses(),
+        max_steps=2,
+        max_replans=5,
+    )
+
+    assert receipt.trace == [0]
+    assert receipt.status == "acquisition_observed"
+    # One acquisition transaction may widen its fixed problem cap; it must not
+    # begin a second outer planning transaction before returning observations.
+    assert searches == [1, 1, 1]
+    assert receipt.planning_outcome["consumer_action"] == (
+        "execute_bounded_informative_continuation"
+    )
 
 
 def test_capitulation_novelty_uses_consumer_projection(monkeypatch):
@@ -1316,6 +1904,57 @@ def test_sweep_budget_receipt_written(tmp_path, monkeypatch):
     importlib.reload(planner_mod)
 
 
+def test_defined_target_consumes_budget_receipt_by_scaling_search(tmp_path, monkeypatch):
+    """A bounded miss reallocates search width without changing target semantics."""
+    monkeypatch.setenv("ZTARE_SWEEP_MAX_STATES", "3")
+    monkeypatch.setenv("ZTARE_SWEEP_ESCALATION_MAX_STATES", "20")
+    import importlib
+    import ztare.worldmodel.planner as planner_mod
+    importlib.reload(planner_mod)
+
+    def _chain(grid, _action, _step):
+        return ((min(9, grid[0][0] + 1),),)
+
+    class _Adapter:
+        action_arity = 1
+        t = 0
+        levels_completed = 0
+        state = ((0,),)
+
+        def step(self, action):
+            assert action == 0
+            self.state = _chain(self.state, action, self.t)
+            self.t += 1
+            return self.state
+
+    receipts_dir = tmp_path / "ws"
+    receipt = planner_mod.pursue_goal(
+        _Adapter(),
+        _chain,
+        goal_fn=lambda grid: grid == ((6,),),
+        abstract_fn=lambda grid: grid,
+        visited_store=set(),
+        max_steps=10,
+        max_replans=2,
+        plan_depth=2,
+        receipts_dir=receipts_dir,
+    )
+
+    assert receipt.status == "candidate_goal_reached"
+    assert receipt.steps_executed == 6
+    rows = [
+        json.loads(line)
+        for line in (receipts_dir / "reachability_budget.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    assert rows[0]["cap"] == 3
+    assert rows[0]["consumer_action"]["to_cap"] == 15
+
+    monkeypatch.delenv("ZTARE_SWEEP_MAX_STATES")
+    monkeypatch.delenv("ZTARE_SWEEP_ESCALATION_MAX_STATES")
+    importlib.reload(planner_mod)
+
+
 def test_sweep_cap_env_var_respected(monkeypatch):
     """ZTARE_SWEEP_MAX_STATES env var controls the sweep cap."""
     monkeypatch.setenv("ZTARE_SWEEP_MAX_STATES", "42")
@@ -1347,7 +1986,6 @@ def test_save_visited_delta_append_is_order_independent(tmp_path):
         store.add(frozenset({(i, 3, i % 5)}))
     R.save_visited(path, store)
     assert R.load_visited(path) == store
-
     # legacy compatibility: a fresh process (cleared cache) with a pre-existing
     # file must append only the delta, and equality must still hold
     R._WRITTEN_KEYS.clear()
@@ -1357,3 +1995,25 @@ def test_save_visited_delta_append_is_order_independent(tmp_path):
     after_lines = len(path.read_text().splitlines())
     assert after_lines == before_lines + 1  # only the delta was written
     assert R.load_visited(path) == store
+
+
+def test_current_chart_time_translation_certificate_is_evidence_bound():
+    rows = (
+        Transition(t=3, s=((0,),), a=0, s_next=((1,),)),
+        Transition(t=4, s=((1,),), a=0, s_next=((2,),)),
+    )
+    invariant = _current_chart_time_translation_certificate(
+        lambda state, _action, _time: ((state[0][0] + 1,),),
+        carrier_sha256="a" * 64,
+        transitions=rows,
+    )
+    phase_bound = _current_chart_time_translation_certificate(
+        lambda _state, _action, time_value: ((time_value - 2,),),
+        carrier_sha256="b" * 64,
+        transitions=rows,
+    )
+
+    assert invariant is not None and invariant.passed
+    assert invariant.tested == 2
+    assert phase_bound is not None and not phase_bound.passed
+    assert phase_bound.commute_mismatches == 2

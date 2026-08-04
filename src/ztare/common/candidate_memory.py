@@ -8,6 +8,7 @@ from typing import Any
 from ztare.common.patch_base_identity import (
     patch_base_fields_from_source,
     resolve_patch_base_ref,
+    task_hypothesis_companion_provenance_from_source,
     verify_patch_base_digest,
 )
 from ztare.common.worldmodel_carrier_purity import (
@@ -33,6 +34,7 @@ def admissible_candidate_memory_records(
     records: list[dict[str, Any]] | None = None,
     *,
     source_types: set[str] | None = None,
+    artifact_roles: set[str] | None = None,
     require_submission_source: bool = False,
     dynamics_assumption: str | None = None,
 ) -> list[dict[str, Any]]:
@@ -46,6 +48,7 @@ def admissible_candidate_memory_records(
     effective_dynamics = dynamics_assumption or project_dynamics_assumption(root)
     rows = records if records is not None else load_candidate_memory(root)
     allowed = source_types or {"full_survivor", "deterministic_near_miss"}
+    allowed_roles = artifact_roles or {"behavior_carrier"}
     invalidated = _selection_invalidated_shas(root)
     eligible: list[dict[str, Any]] = []
     for rec in rows:
@@ -74,6 +77,14 @@ def admissible_candidate_memory_records(
             continue
         sha = str(rec.get("sha") or rec.get("candidate_sha") or "").strip()
         source = candidate_memory_source(root, rec)
+        declared_role = str(rec.get("artifact_role") or "").strip()
+        effective_role = declared_role or (
+            "task_hypothesis"
+            if task_hypothesis_companion_provenance_from_source(source) is not None
+            else "behavior_carrier"
+        )
+        if effective_role not in allowed_roles:
+            continue
         cache_key = sha or hashlib.sha256(source.encode("utf-8")).hexdigest()
         if source and cache_key not in contract_errors:
             contract_errors[cache_key] = _carrier_chain_contract_error(
@@ -85,6 +96,35 @@ def admissible_candidate_memory_records(
             continue
         out.append(rec)
     return out
+
+
+def best_admissible_candidate_memory_record(
+    project: str | Path,
+    *,
+    source_types: set[str] | None = None,
+    artifact_roles: set[str] | None = None,
+    require_submission_source: bool = False,
+) -> dict[str, Any] | None:
+    """Select one current-evidence carrier by the shared frontier order."""
+    from ztare.common.patch_base_identity import repair_frontier_order
+
+    rows = admissible_candidate_memory_records(
+        project,
+        source_types=source_types,
+        artifact_roles=artifact_roles,
+        require_submission_source=require_submission_source,
+    )
+    return max(
+        rows,
+        key=lambda row: repair_frontier_order(
+            exact_rows=row.get("visible_exact_rows"),
+            holdout_depth=row.get("holdout_depth"),
+            gate_score=row.get("gate_score"),
+            wrong_cells=row.get("visible_wrong_cells"),
+            description_length=row.get("description_length"),
+        ),
+        default=None,
+    )
 
 
 def _selection_invalidated_shas(project: Path) -> set[str]:
@@ -122,6 +162,11 @@ def _record_evidence_epoch(rec: dict[str, Any]) -> str:
     else:
         value = rec.get("evidence_epoch_sha256")
     digest = str(value or "").strip().lower()
+    return digest if len(digest) == 64 and all(ch in "0123456789abcdef" for ch in digest) else ""
+
+
+def _record_evaluation_policy(rec: dict[str, Any]) -> str:
+    digest = str(rec.get("evaluation_policy_sha256") or "").strip().lower()
     return digest if len(digest) == 64 and all(ch in "0123456789abcdef" for ch in digest) else ""
 
 
@@ -167,11 +212,16 @@ def _active_evidence_view(
     epoch_bound = [rec for rec in records if _record_evidence_epoch(rec)]
     if epoch_bound:
         from ztare.common.observation_chart import capture_project_evidence_epoch
+        from ztare.validator.core.pre_judge_gate import evaluation_policy_sha256
 
         current_epoch = capture_project_evidence_epoch(project).epoch_sha256
+        policy_bound = any(_record_evaluation_policy(rec) for rec in epoch_bound)
+        current_policy = evaluation_policy_sha256() if policy_bound else ""
         current: list[dict[str, Any]] = []
         for rec in epoch_bound:
             if _record_evidence_epoch(rec) != current_epoch:
+                continue
+            if policy_bound and _record_evaluation_policy(rec) != current_policy:
                 continue
             full_sha = _normalized_carrier_sha(project, rec)
             if not full_sha:
@@ -179,6 +229,8 @@ def _active_evidence_view(
             normalized = dict(rec)
             normalized["sha"] = full_sha
             normalized["evidence_epoch_sha256"] = current_epoch
+            if current_policy:
+                normalized["evaluation_policy_sha256"] = current_policy
             binding = normalized.get("carrier_evidence_identity")
             if not isinstance(binding, dict):
                 normalized["carrier_evidence_identity"] = {

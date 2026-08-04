@@ -19,7 +19,10 @@ from ztare.common.visible_workbench_actions import (
 )
 from ztare.common.activity_meter import summarize_activity_spend
 from ztare.common.leaf_workbench_python import run_visible_json_probe
-from ztare.common.worldmodel_carrier_purity import carrier_contract_error
+from ztare.common.worldmodel_carrier_purity import (
+    carrier_contract_error,
+    project_dynamics_assumption,
+)
 
 
 SCHEMA = "ztare-visible-workbench-cli-receipt-v1"
@@ -384,7 +387,15 @@ def _probe_json(
 def _check_worldmodel_carrier(*, project: Path, source_ref: str) -> dict[str, Any]:
     source, label = _read_source(project=project, source_ref=source_ref)
     digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
-    error = carrier_contract_error(source)
+    try:
+        authority_project = _authority_project_for_aggregate(project)
+    except ValueError:
+        authority_project = project
+    dynamics_assumption = project_dynamics_assumption(authority_project)
+    error = carrier_contract_error(
+        source,
+        dynamics_assumption=dynamics_assumption,
+    )
     status = "pass" if error is None else "fail"
     return {
         "schema": SCHEMA,
@@ -395,6 +406,8 @@ def _check_worldmodel_carrier(*, project: Path, source_ref: str) -> dict[str, An
         "input_hashes": {
             "source_ref": label,
             "source_sha256": digest,
+            "dynamics_assumption": dynamics_assumption or "markovian",
+            "authority_project_ref": str(authority_project),
         },
         "output_summary": "carrier contract passed" if error is None else error,
         "error": error,
@@ -405,6 +418,8 @@ def _check_worldmodel_carrier(*, project: Path, source_ref: str) -> dict[str, An
                 "input_hashes": {
                     "source_ref": label,
                     "source_sha256": digest,
+                    "dynamics_assumption": dynamics_assumption or "markovian",
+                    "authority_project_ref": str(authority_project),
                 },
                 "output_summary": "carrier contract passed" if error is None else error,
                 "claim_bindings": ["visible CLI carrier contract check"],
@@ -581,7 +596,7 @@ def _check_receipt(*, project: Path, source_ref: str, kind: str) -> dict[str, An
             )
 
             parsed = parse_worldmodel_typed_payload_text(source)
-            errors.extend(_worldmodel_payload_evidence_ref_errors(project, parsed))
+            errors.extend(worldmodel_payload_context_errors(project, parsed))
             validator = "worldmodel_typed_payload"
             normalized = {
                 "payload_keys": sorted(parsed.keys()),
@@ -849,7 +864,9 @@ def _visible_morphism_frontier(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _worldmodel_payload_evidence_ref_errors(project: Path, payload: dict[str, Any]) -> list[str]:
+def worldmodel_payload_context_errors(project: Path, payload: dict[str, Any]) -> list[str]:
+    """Validate consumer-indexed evidence claims against typed input receipts."""
+
     source_refs = _visible_source_fiber_refs(project)
     errors: list[str] = []
     receipts = payload.get("control_receipts")
@@ -872,7 +889,74 @@ def _worldmodel_payload_evidence_ref_errors(project: Path, payload: dict[str, An
                 "not source-fiber files reserved for meta/tool proposals; "
                 f"source_fiber_refs={','.join(bad_refs[:6])}"
             )
+        consumed = {
+            _canonical_evidence_ref(item.get("ref"))
+            for item in data.get("evidence_statuses") or []
+            if isinstance(item, dict)
+            and str(item.get("status") or "") == "consumed_counterexample"
+            and _canonical_evidence_ref(item.get("ref"))
+        }
+        analysis_refs = [
+            _canonical_evidence_ref(ref)
+            for ref in data.get("evidence_analysis_refs") or []
+            if _canonical_evidence_ref(ref)
+        ]
+        bound_inputs: set[str] = set()
+        for ref in analysis_refs:
+            receipt = _read_context_artifact(project, ref)
+            if isinstance(receipt, dict):
+                bound_inputs.update(_typed_receipt_input_refs(receipt))
+        unbound = sorted(consumed - bound_inputs)
+        if unbound:
+            errors.append(
+                "LOWERABILITY_BLOCKED marks evidence as consumed without a cited "
+                "analysis receipt whose typed input hashes bind it; "
+                f"unbound_consumed_refs={','.join(unbound[:6])}"
+            )
     return errors
+
+
+def _canonical_evidence_ref(value: Any) -> str:
+    return str(value or "").strip().replace("\\", "/").split("#", 1)[0]
+
+
+def _read_context_artifact(project: Path, ref: str) -> Any:
+    roots = [project]
+    try:
+        roots.append(_authority_project_for_aggregate(project))
+    except ValueError:
+        pass
+    for root in dict.fromkeys(path.resolve() for path in roots):
+        path = (root / ref).resolve()
+        try:
+            path.relative_to(root)
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError, json.JSONDecodeError):
+            continue
+    return None
+
+
+def _typed_receipt_input_refs(value: Any) -> set[str]:
+    refs: set[str] = set()
+    if isinstance(value, dict):
+        hashes = value.get("input_hashes")
+        if isinstance(hashes, dict):
+            source_ref = _canonical_evidence_ref(hashes.get("source_ref"))
+            if source_ref:
+                refs.add(source_ref)
+            artifact_hashes = hashes.get("artifact_hashes")
+            if isinstance(artifact_hashes, dict):
+                refs.update(
+                    ref
+                    for item in artifact_hashes
+                    if (ref := _canonical_evidence_ref(item))
+                )
+        for item in value.values():
+            refs.update(_typed_receipt_input_refs(item))
+    elif isinstance(value, list):
+        for item in value:
+            refs.update(_typed_receipt_input_refs(item))
+    return refs
 
 
 def _visible_source_fiber_refs(project: Path) -> set[str]:

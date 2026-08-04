@@ -440,6 +440,7 @@ def patch_base_regression_retry_message(
     project_dir: str | Path,
     candidate_source: str,
     python_executable: str = sys.executable,
+    allow_behavioral_tie: bool = False,
 ) -> str | None:
     """Return an R1 retry message when a repair candidate loses its patch base.
 
@@ -459,6 +460,7 @@ def patch_base_regression_retry_message(
                 project_dir=project_path,
                 candidate_path=probe_path,
                 python_executable=python_executable,
+                require_strict_improvement=not allow_behavioral_tie,
             )
         except Exception as exc:  # noqa: BLE001
             # Fail open WITH a receipt: a broken probe must not silently skip
@@ -503,6 +505,9 @@ def patch_base_regression_retry_message(
                 counterexample_trace=trace,
                 evidence_epoch=(
                     regression.gate_payload.get("evidence_epoch") or {}
+                ),
+                evaluation_policy_sha256=str(
+                    regression.gate_payload.get("evaluation_policy_sha256") or ""
                 ),
             )
         except Exception:

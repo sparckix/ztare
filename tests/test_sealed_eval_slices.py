@@ -88,6 +88,455 @@ def test_archive_appends_multiple_rows(tmp_path):
     assert len(rows) == 2, "each call appends one row"
 
 
+def test_task_bound_archive_records_authoritative_empty_boundary_set(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import archive_sealed_eval_slice  # noqa: PLC0415
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    project = _project_dir(tmp_path)
+    contract = TaskDischargeContract(
+        contract_id="test.empty.boundaries.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="current_run",
+        owner="test",
+    )
+    receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="open",
+        authority="test_adapter",
+        observed={"done": False},
+    )
+
+    row = archive_sealed_eval_slice(
+        project,
+        _make_synthetic_log(2),
+        source_carrier_sha256="a" * 64,
+        task_contract=contract,
+        task_discharge_receipt=receipt,
+    )
+
+    assert row["non_discharge_edge_indices"] == []
+    stored = json.loads(
+        (project / "workspace" / "sealed_eval_slices.jsonl")
+        .read_text()
+        .strip()
+    )
+    assert stored["non_discharge_edge_indices"] == []
+
+
+def test_legacy_task_bound_archive_never_infers_missing_boundary_field(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_non_discharge_edge_predicate,
+        archive_sealed_eval_slice,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    project = _project_dir(tmp_path)
+    contract = TaskDischargeContract(
+        contract_id="test.legacy.typed.boundaries.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="current_run",
+        owner="test",
+    )
+    receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="open",
+        authority="test_adapter",
+        observed={"done": False},
+    )
+    row = archive_sealed_eval_slice(
+        project,
+        _make_synthetic_log(2),
+        source_carrier_sha256="a" * 64,
+        task_contract=contract,
+        task_discharge_receipt=receipt,
+    )
+    # Simulate the typed archives emitted before the empty-set field became
+    # mandatory. Their task identity is enough to forbid legacy frame inference.
+    ledger = project / "workspace" / "sealed_eval_slices.jsonl"
+    stored = json.loads(ledger.read_text())
+    stored.pop("non_discharge_edge_indices")
+    ledger.write_text(json.dumps(stored, sort_keys=True) + "\n")
+
+    predicate, count, refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256="a" * 64,
+        task_contract_sha256=contract.sha256,
+        report_payload={"cycles": []},
+    )
+
+    assert predicate is None
+    assert count == 0
+
+
+def test_goal_refutation_replays_only_in_same_task_chart_and_origin(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_goal_hypothesis_refutations,
+        archive_sealed_eval_slice,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+    from ztare.worldmodel.goal_abduction import GoalHypothesisSet
+
+    project = _project_dir(tmp_path)
+    contract = TaskDischargeContract(
+        contract_id="test.skill.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="current_run",
+        owner="test",
+    )
+    receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="open",
+        authority="test_adapter",
+        observed={"done": False},
+    )
+    origin = "b" * 64
+    archive_sealed_eval_slice(
+        project,
+        _make_synthetic_log(3),
+        source_carrier_sha256="a" * 64,
+        task_contract=contract,
+        task_discharge_receipt=receipt,
+        source_epoch=2,
+        origin_seed_sha256=origin,
+        goal_hypothesis_refutations=("zero-state",),
+    )
+
+    goals = GoalHypothesisSet((
+        ("rewritten-zero-state", lambda grid: grid == ((0, 0), (0, 0)), "test", {}),
+    ))
+    assert _sealed_goal_hypothesis_refutations(
+        project,
+        goals,
+        task_contract=contract,
+        source_epoch=2,
+        origin_seed_sha256=origin,
+    ) == ("rewritten-zero-state",)
+    assert goals.active_count == 0
+
+    changed_origin_goals = GoalHypothesisSet((
+        ("rewritten-zero-state", lambda grid: grid == ((0, 0), (0, 0)), "test", {}),
+    ))
+    assert _sealed_goal_hypothesis_refutations(
+        project,
+        changed_origin_goals,
+        task_contract=contract,
+        source_epoch=2,
+        origin_seed_sha256="c" * 64,
+    ) == ()
+    assert changed_origin_goals.active_count == 1
+
+
+def test_sealed_non_discharge_edges_compile_only_to_search_control(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_non_discharge_edge_predicate,
+        archive_sealed_eval_slice,
+    )
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    project = _project_dir(tmp_path)
+    source_sha = "a" * 64
+    task_sha = "c" * 64
+    regular = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=2,
+        evidence_refs=("test:dynamics",),
+    )
+    respawn = TransitionIdentity(
+        kind="reset_boundary",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=3,
+        boundary_kind="non_discharge_respawn",
+    )
+    completion = TransitionIdentity(
+        kind="epoch_boundary",
+        authority="environment_adapter",
+        source_epoch=3,
+        target_epoch=4,
+        boundary_kind="level_completed",
+    )
+    ordinary_source, respawn_source, completion_source = (
+        ((1,),), ((2,),), ((3,),)
+    )
+    row = archive_sealed_eval_slice(
+        project,
+        EpisodeLog([
+            Transition(1, ordinary_source, 0, ((2,),), regular),
+            Transition(2, respawn_source, 1, ((0,),), respawn),
+            Transition(3, completion_source, 2, ((4,),), completion),
+        ]),
+        source_carrier_sha256=source_sha,
+    )
+    report = {
+        "cycles": [{
+            "task_discharged": False,
+            "task_discharge_receipt": {
+                "status": "open",
+                "contract_sha256": task_sha,
+            },
+            "eval_slice": {"path": row["path"], "sha256": row["sha256"]},
+        }]
+    }
+
+    predicate, count, refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=task_sha,
+        report_payload=report,
+    )
+
+    assert count == 1
+    assert refs == [{"path": row["path"], "sha256": row["sha256"]}]
+    assert predicate(respawn_source, 1, 999) is True
+    assert predicate(ordinary_source, 0, 1) is False
+    assert predicate(completion_source, 2, 3) is False
+    assert predicate.evidence_edges == ((
+        respawn_source,
+        1,
+        f"{row['path']}#1",
+        (0,),
+    ),)
+    assert len(predicate.history_trajectories) == 1
+    assert predicate.history_trajectories[0].boundary_indices == frozenset({1})
+    assert _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256="b" * 64,
+        task_contract_sha256=task_sha,
+        report_payload=report,
+    ) == (None, 0, [])
+
+
+def test_exact_law_witness_overrides_task_non_discharge_marker(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_non_discharge_edge_predicate,
+        archive_sealed_eval_slice,
+    )
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    project = _project_dir(tmp_path)
+    source_sha = "a" * 64
+    task_sha = "c" * 64
+    identity = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=2,
+    )
+    transition = Transition(7, ((1,),), 0, ((2,),), identity)
+    row = archive_sealed_eval_slice(
+        project,
+        EpisodeLog([transition]),
+        source_carrier_sha256=source_sha,
+        non_discharge_edge_indices=(0,),
+        source_epoch=2,
+    )
+    report = {
+        "cycles": [{
+            "task_discharged": False,
+            "task_discharge_receipt": {
+                "status": "open",
+                "contract_sha256": task_sha,
+            },
+            "eval_slice": {"path": row["path"], "sha256": row["sha256"]},
+        }]
+    }
+
+    predicate, count, _refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=task_sha,
+        report_payload=report,
+        source_epoch=2,
+        transition_evidence=EpisodeLog([transition]),
+    )
+
+    assert predicate is None
+    assert count == 0
+
+
+def test_sealed_non_discharge_edges_preserve_typed_predecessor_chain(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_non_discharge_edge_predicate,
+        archive_sealed_eval_slice,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    project = _project_dir(tmp_path)
+    source_sha = "a" * 64
+    contract = TaskDischargeContract(
+        contract_id="test.skill.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="current_run",
+        owner="test",
+    )
+    open_receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="open",
+        authority="test_adapter",
+        observed={"done": False},
+    )
+    boundary = TransitionIdentity(
+        kind="reset_boundary",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=3,
+        boundary_kind="non_discharge_respawn",
+    )
+    first_source, second_source = ((1,),), ((2,),)
+    first = archive_sealed_eval_slice(
+        project,
+        EpisodeLog([Transition(1, first_source, 0, ((0,),), boundary)]),
+        source_carrier_sha256=source_sha,
+        task_contract=contract,
+        task_discharge_receipt=open_receipt,
+        non_discharge_edge_indices=(0,),
+    )
+    predicate, count, refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=contract.sha256,
+        report_payload={"cycles": []},
+    )
+    assert count == 1
+    assert predicate(first_source, 0, 99) is True
+    projected_once, _, _ = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=contract.sha256,
+        report_payload={"cycles": []},
+        abstract_fn=lambda _state: "shared-support",
+        coverage_fn=lambda identity: identity,
+    )
+    assert projected_once(((9,),), 0, 99) is False
+
+    second = archive_sealed_eval_slice(
+        project,
+        EpisodeLog([Transition(2, second_source, 0, ((0,),), boundary)]),
+        source_carrier_sha256=source_sha,
+        task_contract=contract,
+        task_discharge_receipt=open_receipt,
+        search_control_predecessors=refs,
+        non_discharge_edge_indices=(0,),
+    )
+    predicate, count, refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=contract.sha256,
+        report_payload={"cycles": []},
+        abstract_fn=lambda _state: "shared-support",
+        coverage_fn=lambda identity: identity,
+    )
+    assert count == 2
+    assert predicate(first_source, 0, 99) is True
+    assert predicate(second_source, 0, 99) is True
+    assert predicate(((9,),), 0, 99) is True
+    assert predicate(((9,),), 1, 99) is False
+    assert {item["path"] for item in refs} == {first["path"], second["path"]}
+
+
+def test_sealed_edges_are_scoped_to_epoch_and_origin_seed(tmp_path):
+    sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
+    from arc3_play_loop import (  # noqa: PLC0415
+        _sealed_non_discharge_edge_predicate,
+        archive_sealed_eval_slice,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    project = _project_dir(tmp_path)
+    source_sha = "a" * 64
+    active_seed = "1" * 64
+    stale_seed = "2" * 64
+    contract = TaskDischargeContract(
+        contract_id="test.epoch.scope.v1",
+        adjudicator_id="test.adjudicator.v1",
+        lifecycle_scope="current_run",
+        owner="test",
+    )
+    receipt = TaskDischargeReceipt(
+        contract_sha256=contract.sha256,
+        adjudicator_id=contract.adjudicator_id,
+        status="open",
+        authority="test_adapter",
+        observed={"done": False},
+    )
+    boundary = TransitionIdentity(
+        kind="reset_boundary",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=3,
+        boundary_kind="non_discharge_respawn",
+    )
+    stale_source = ((1,),)
+    active_source = ((2,),)
+    archive_sealed_eval_slice(
+        project,
+        EpisodeLog([Transition(1, stale_source, 0, ((0,),), boundary)]),
+        source_carrier_sha256=source_sha,
+        task_contract=contract,
+        task_discharge_receipt=receipt,
+        source_epoch=1,
+        origin_seed_sha256=stale_seed,
+        non_discharge_edge_indices=(0,),
+    )
+    active = archive_sealed_eval_slice(
+        project,
+        EpisodeLog([Transition(1, active_source, 0, ((0,),), boundary)]),
+        source_carrier_sha256=source_sha,
+        task_contract=contract,
+        task_discharge_receipt=receipt,
+        source_epoch=2,
+        origin_seed_sha256=active_seed,
+        non_discharge_edge_indices=(0,),
+    )
+
+    predicate, count, refs = _sealed_non_discharge_edge_predicate(
+        project,
+        source_carrier_sha256=source_sha,
+        task_contract_sha256=contract.sha256,
+        report_payload={"cycles": []},
+        source_epoch=2,
+        origin_seed_sha256=active_seed,
+    )
+
+    assert count == 1
+    assert predicate(active_source, 0, 1) is True
+    assert predicate(stale_source, 0, 1) is False
+    assert refs == [{"path": active["path"], "sha256": active["sha256"]}]
+
+
 def test_evidence_admission_drops_only_identical_observations(tmp_path):
     sys.path.insert(0, str(_ROOT / "scripts" / "public" / "control"))
     from arc3_play_loop import _append_observations  # noqa: PLC0415
@@ -167,7 +616,7 @@ def test_pack_excludes_eval_slices(tmp_path):
     (project / "workspace").mkdir(parents=True)
     (project / "gate_harness.py").write_text("# stub\n")  # needed for authority_project_path resolution
 
-    # plant a visible episode (episode_002 is staged in DISCOVERY)
+    # plant an active holdout episode; run role alone must not expose it
     ep2 = ep_dir / "episode_002.jsonl"
     ep2.write_text('{"t":0,"s":[[0]],"a":0,"s_next":[[0]]}\n')
 
@@ -212,9 +661,10 @@ def test_pack_excludes_eval_slices(tmp_path):
         f"SEAL BROKEN: eval_slices files found in pack workbench: {staged_eval_slices}"
     )
 
-    # sanity: episode_002.jsonl IS staged in DISCOVERY (control check)
+    # Active holdout remains absent even in DISCOVERY.  Demotion requires a
+    # typed evidence-role transition plus a successor withheld slice.
     episode_002_staged = list(pack.workbench.rglob("episode_002.jsonl"))
-    assert episode_002_staged, "episode_002.jsonl should be staged in DISCOVERY (control check)"
+    assert episode_002_staged == []
 
 
 # ---------------------------------------------------------------------------

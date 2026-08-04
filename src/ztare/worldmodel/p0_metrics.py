@@ -27,6 +27,19 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
     """
     project = Path(project)
     ws = project / "workspace"
+    continual_memory = None
+    continual_memory_path = ws / "continual_skill_memory.json"
+    if continual_memory_path.exists():
+        try:
+            from ztare.common.continual_skill_memory import (
+                load_continual_skill_memory,
+            )
+
+            continual_memory = load_continual_skill_memory(
+                continual_memory_path
+            )
+        except (OSError, TypeError, ValueError, json.JSONDecodeError):
+            continual_memory = None
     raw_transfer = _read_json(ws / "latest_level_transfer_probe.json")
     transfer: dict[str, Any] = {}
     transfer_binding: dict[str, Any] | None = None
@@ -81,6 +94,36 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
     )
     reach_states = _reachability_count(reachability, "states_enumerated")
     reach_edges = _reachability_count(reachability, "edges_enumerated")
+    memory_family_by_id = {
+        family.family_sha256: family
+        for family in (
+            continual_memory.families if continual_memory is not None else ()
+        )
+    }
+    continual_skill_uses = [
+        row for row in _continual_skill_use_windows(play)
+        if (
+            row["family_sha256"] in memory_family_by_id
+            and row["revision_sha256"]
+            in memory_family_by_id[
+                row["family_sha256"]
+            ].revision_sha256s
+            and row["context_sha256"]
+            in memory_family_by_id[
+                row["family_sha256"]
+            ].context_sha256s
+        )
+    ]
+    used_family_ids = {
+        row["family_sha256"] for row in continual_skill_uses
+    }
+    reused_used_family_count = sum(
+        bool(
+            memory_family_by_id.get(family_sha256)
+            and memory_family_by_id[family_sha256].cross_context_reused
+        )
+        for family_sha256 in used_family_ids
+    )
     return {
         "schema": SCHEMA,
         "project": str(project),
@@ -98,6 +141,7 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
                 "grammar_extension_promotion_contracts.jsonl",
                 "iteration_telemetry.jsonl",
                 "r1_debug",
+                "continual_skill_memory.json",
             ],
         ),
         "scoreboard": {
@@ -112,7 +156,14 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
             "catalog_size": catalog_size,
             "catalog_growth_velocity": None,
             "carrier_fidelity_best": _carrier_fidelity_best(active_candidate_records),
-            "operator_reusability_index": None,
+            "operator_reusability_index": (
+                _ratio(
+                    reused_used_family_count,
+                    len(used_family_ids),
+                )
+                if used_family_ids
+                else None
+            ),
             "temporal_admissibility_leakage": _ratio(temporal_rejections, max(1, total_r1)),
         },
         "transfer": {
@@ -145,7 +196,29 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
             "catalog_promotions": catalog_promotions,
             "catalog_growth_rate": None,
             "operator_vocabulary_size": _operator_vocabulary_size(active_candidate_records),
-            "operator_reuse_count": None,
+            "operator_reuse_count": (
+                reused_used_family_count
+                if used_family_ids
+                else None
+            ),
+            "continual_skill_family_count": (
+                len(continual_memory.families)
+                if continual_memory is not None
+                else None
+            ),
+            "continual_skill_revision_count": (
+                sum(
+                    len(family.revision_sha256s)
+                    for family in continual_memory.families
+                )
+                if continual_memory is not None
+                else None
+            ),
+            "intrinsic_learning_signal_count": (
+                len(continual_memory.intrinsic_signals)
+                if continual_memory is not None
+                else None
+            ),
             "open_strategy_cards": len(
                 active_strategy_cards(ws / "strategy_experiments.jsonl")
             ),
@@ -162,6 +235,8 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
             have_transfer=bool(transfer),
             have_reachability=bool(reachability),
             have_active_candidates=bool(active_candidate_records),
+            have_continual_memory=continual_memory is not None,
+            have_continual_skill_use=bool(continual_skill_uses),
         ),
         "source_manifest": _source_manifest(
             ws,
@@ -176,11 +251,14 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
                 "grammar_extension_promotion_contracts.jsonl",
                 "iteration_telemetry.jsonl",
                 "level_boundary_seed_replays.jsonl",
+                "continual_skill_memory.json",
             ],
         ),
         "control_readiness": {
             "status": "observer_only",
-            "decision_consumer_count": 0,
+            "decision_consumer_count": (
+                1 if continual_skill_uses else 0
+            ),
             "blocking_reasons": [
                 *(
                     ["transfer receipt is not bound to the current carrier/evidence identity"]
@@ -189,13 +267,20 @@ def build_p0_metrics(project: str | Path) -> dict[str, Any]:
                 ),
                 "other telemetry populations lack one shared run-and-epoch identity",
                 "catalog growth has no before/after population denominator",
-                "operator reuse has no cross-context identity ledger",
-                "no registered allocator or router consumes this snapshot",
+                *(
+                    []
+                    if continual_skill_uses
+                    else [
+                        "no selected plan has consumed a continual skill "
+                        "revision"
+                    ]
+                ),
             ],
         },
         "interpretation": (
-            "read-only P0 observations; only metrics marked operational have a "
-            "compatible evidence population, and none currently steers search"
+            "read-only P0 observations; the planner consumes continual skill "
+            "revision judgments, while the remaining metrics steer only when "
+            "their contracts name a compatible evidence population"
         ),
     }
 
@@ -478,6 +563,47 @@ def _hypothesis_split_ratio(transfer: dict[str, Any]) -> float | None:
     return None
 
 
+def _continual_skill_use_windows(payload: Any) -> list[dict[str, Any]]:
+    """Collect distinct, fully executed continual-skill windows."""
+
+    uses: dict[tuple[Any, ...], dict[str, Any]] = {}
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            rows = value.get("continual_skill_execution_windows")
+            if isinstance(rows, list):
+                for row in rows:
+                    if not isinstance(row, dict):
+                        continue
+                    if str(row.get("status") or "completed") != "completed":
+                        continue
+                    family_sha = str(row.get("family_sha256") or "")
+                    revision_sha = str(row.get("revision_sha256") or "")
+                    context_sha = str(row.get("context_sha256") or "")
+                    if not family_sha or not revision_sha or not context_sha:
+                        continue
+                    identity = (
+                        family_sha,
+                        revision_sha,
+                        context_sha,
+                        int(row.get("start_step") or 0),
+                        int(row.get("end_step") or 0),
+                    )
+                    uses[identity] = dict(row)
+            for key, child in value.items():
+                if key != "continual_skill_execution_windows":
+                    visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(payload)
+    return [
+        uses[key]
+        for key in sorted(uses)
+    ]
+
+
 def _source_manifest(workspace: Path, names: list[str]) -> list[dict[str, Any]]:
     rows = []
     for name in names:
@@ -500,6 +626,8 @@ def _metric_contracts(
     have_transfer: bool,
     have_reachability: bool,
     have_active_candidates: bool,
+    have_continual_memory: bool,
+    have_continual_skill_use: bool,
 ) -> dict[str, dict[str, Any]]:
     return {
         "scoreboard.levels_beaten": {
@@ -524,8 +652,17 @@ def _metric_contracts(
         },
         "information_theory.operator_reusability_index": {
             "identity": "same operator identity reused across distinct context identities",
-            "status": "not_computable",
-            "reason": "candidate fidelity is not cross-context reuse",
+            "status": (
+                "operational"
+                if have_continual_memory and have_continual_skill_use
+                else "missing_evidence"
+            ),
+            "reason": (
+                "selected skill revisions grouped by stable family identity "
+                "over distinct context hashes"
+                if have_continual_memory and have_continual_skill_use
+                else "memory plus a selected skill-use receipt are required"
+            ),
         },
         "information_theory.temporal_admissibility_leakage": {
             "identity": "temporally inadmissible attempts over one scoped R1 population",

@@ -20,6 +20,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass
 import hashlib
+import inspect
 import json
 from pathlib import Path
 
@@ -31,7 +32,7 @@ from ztare.worldmodel.transition_identity import (
 from ztare.worldmodel.grid_dsl import Program, evaluate
 
 
-_EVALUATOR_IMPLEMENTATION_REFS = (
+EVALUATOR_IMPLEMENTATION_REFS = (
     "common/equivariance.py",
     "common/observation_chart.py",
     "common/patch_base_identity.py",
@@ -61,7 +62,7 @@ def _build_evaluator_implementation_identity() -> dict[str, object]:
     package_root = Path(__file__).resolve().parents[1]
     module_hashes = {
         ref: hashlib.sha256((package_root / ref).read_bytes()).hexdigest()
-        for ref in _EVALUATOR_IMPLEMENTATION_REFS
+        for ref in EVALUATOR_IMPLEMENTATION_REFS
     }
     payload: dict[str, object] = {
         "schema": "ztare-transition-evaluator-implementation-v1",
@@ -136,22 +137,61 @@ def as_predictor(candidate):
     """Uniform prediction interface over BOTH candidate carriers: a grid_dsl
     Program AST, or a direct python callable (step(grid, action, t) — the
     mutator's native output on real environments; (grid, action) also
-    accepted). Fail-closed: any exception or wrong shape predicts None."""
+    accepted). Fail-closed: any exception or wrong shape predicts None.
+
+    ``None`` alone is insufficient evidence: it can denote an intentional
+    partial map, an execution exception, or an invalid carrier codomain.  The
+    wrapper therefore carries the latest typed failure for the diagnostic
+    consumer while preserving the established prediction return type.
+    """
     if callable(candidate):
+        try:
+            parameters = tuple(inspect.signature(candidate).parameters.values())
+            positional = tuple(
+                parameter
+                for parameter in parameters
+                if parameter.kind
+                in (parameter.POSITIONAL_ONLY, parameter.POSITIONAL_OR_KEYWORD)
+            )
+            accepts_varargs = any(
+                parameter.kind == parameter.VAR_POSITIONAL
+                for parameter in parameters
+            )
+            use_two_arguments = not accepts_varargs and len(positional) < 3
+        except (TypeError, ValueError):
+            use_two_arguments = False
+
         def _predict(s, a, t):
+            _predict._ztare_last_failure = None
             try:
-                try:
-                    out = candidate(s, a, t)
-                except TypeError:
-                    out = candidate(s, a)
-            except Exception:
+                out = candidate(s, a) if use_two_arguments else candidate(s, a, t)
+            except Exception as exc:
+                _predict._ztare_last_failure = {
+                    "kind": "candidate_exception",
+                    "exception_type": type(exc).__name__,
+                    "message": str(exc)[:240],
+                }
+                return None
+            if out is None:
+                _predict._ztare_last_failure = {"kind": "undefined_prediction"}
                 return None
             out = _canonical_grid_prediction(out)
             if out is None:
+                _predict._ztare_last_failure = {"kind": "invalid_prediction_shape"}
                 return None
             return out
+        _predict._ztare_last_failure = None
         return _predict
     return lambda s, a, t: evaluate(candidate, s, a, t)
+
+
+def _prediction_failure(predictor) -> dict:
+    failure = getattr(predictor, "_ztare_last_failure", None)
+    return dict(failure) if isinstance(failure, dict) else {"kind": "prediction_none"}
+
+
+def _prediction_failure_text(predictor) -> str:
+    return _prediction_failure_text_from_payload(_prediction_failure(predictor))
 
 
 def _canonical_grid_prediction(out):
@@ -294,17 +334,26 @@ def _divergent_cells(predicted, real, limit: int = 8) -> list[dict]:
 
 
 def _propagated_rollout(program: Program, holdout: EpisodeLog):
-    """Yield one segment-aware propagated prediction, stopping at divergence."""
+    """Yield law-scored predictions without propagating through boundaries."""
     predict = as_predictor(program)
+    env = env_frame_indices(holdout)
     current = None
     prev_t = None
     for i, tr in enumerate(holdout):
+        if i in env:
+            # The successor is an environment-owned chart origin.  It is
+            # neither a transition-law target nor a state through which the
+            # carrier may propagate.  The next scored row restarts from its
+            # observed source presentation.
+            current = None
+            prev_t = tr.t
+            continue
         if prev_t is not None and tr.t <= prev_t:
             current = None
         prev_t = tr.t
         state = tr.s if current is None else current
         predicted = predict(state, tr.a, tr.t)
-        yield i, tr, predicted
+        yield i, tr, predicted, _prediction_failure(predict) if predicted is None else None
         if predicted is None or predicted != tr.s_next:
             return
         current = predicted
@@ -312,18 +361,38 @@ def _propagated_rollout(program: Program, holdout: EpisodeLog):
 
 def _holdout_witness(program: Program, holdout: EpisodeLog) -> dict | None:
     """First failing row under the gate's segment-aware rollout."""
-    for i, tr, predicted in _propagated_rollout(program, holdout):
+    for i, tr, predicted, failure in _propagated_rollout(program, holdout):
         if predicted is None or predicted != tr.s_next:
-            return {
+            witness = {
                 "step_index": i,
                 "t": tr.t,
                 "action": tr.a,
                 "entry_context_note": (
-                    "fail-closed (prediction None)" if predicted is None else
+                    _prediction_failure_text_from_payload(failure) if predicted is None else
                     f"first rollout divergence at holdout row {i} (t={tr.t})"),
                 "divergent_cells": _divergent_cells(predicted, tr.s_next),
             }
+            if predicted is None and isinstance(failure, dict):
+                witness["prediction_failure"] = failure
+            return witness
     return None
+
+
+def _prediction_failure_text_from_payload(failure: object) -> str:
+    if not isinstance(failure, dict):
+        return "prediction was None (fail-closed)"
+    kind = str(failure.get("kind") or "prediction_none")
+    if kind == "candidate_exception":
+        return (
+            "candidate execution error "
+            f"{failure.get('exception_type') or 'Exception'}: "
+            f"{failure.get('message') or ''}"
+        ).rstrip()
+    if kind == "undefined_prediction":
+        return "candidate map undefined on this transition"
+    if kind == "invalid_prediction_shape":
+        return "candidate returned an invalid prediction shape"
+    return "prediction was None (fail-closed)"
 
 
 def _signature_key(signature: dict | None) -> str:
@@ -373,12 +442,9 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
           model-expected-change no-ops ever reach the mismatch path);
       (b) within-transition resets: an EPISODE-BOUNDARY discontinuity captured
           inside the step (level restart). The horizon resource — the color
-          whose bar DECREMENTS across most transitions (a genuine timer ticks
-          down nearly every step) — only ever GROWS on a reset. A transition
-          that (i) sits at an episode boundary (its successor row's t fails to
-          advance, or it is the final row) AND (ii) strictly grows that resource
-          is a refill: an episode boundary, not a transition law. The resource
-          color and the boundaries are read from the log — no game constants.
+          whose bar DECREMENTS across most transitions — grows at the temporal
+          seam. Refill magnitude alone is not boundary identity: large lawful
+          replenishments with an advancing clock remain dynamics.
 
     A recording gap (a new play cycle reset the env BETWEEN two rows) also shows
     a non-advancing t, but its own transition is normal physics: the resource
@@ -437,21 +503,17 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
         cand, n_down = down.most_common(1)[0]
         if n_down > len(rows) / 2:        # a continuous bar, not an occasional marker
             resource = cand
-    # (b) within-transition resets: a refill of the horizon resource. At an
-    # episode boundary ANY strict growth qualifies; away from a boundary only a
-    # RESET-SCALE refill (>= half the bar's max observed size) does — merged
-    # probe logs carry advancing t across real resets (2026-07-03 miss), while
-    # a lawful small pickup mechanic must stay physics.
+    # (b) within-transition resets: a refill at a temporal seam. Magnitude is a
+    # property of the observation, not boundary identity; using it here erased
+    # action-conditioned replenishment mechanics from the scientific bank.
     if resource is not None:
-        res_max = max(counts.get(resource, 0) for counts in state_counts)
         for i, tr in enumerate(rows):
             if i in protected_dynamics or i in explicit_boundary:
                 continue
             if i not in grew.get(resource, ()):
                 continue
             at_boundary = (i + 1 == len(rows)) or (rows[i + 1].t <= tr.t)
-            delta = next_counts[i].get(resource, 0) - state_counts[i].get(resource, 0)
-            if at_boundary or delta >= max(1, res_max // 2):
+            if at_boundary:
                 inferred.add(i)
     # (c) a SECONDARY per-episode counter: a colour that strictly depletes within
     # transitions (down>0) but NEVER regrows in one — it refills only across
@@ -493,6 +555,27 @@ def env_frame_indices(log: EpisodeLog) -> "set[int]":
     return idx
 
 
+def law_scored_view(
+    log: EpisodeLog,
+    *,
+    source_epoch: object | None = None,
+) -> EpisodeLog:
+    """Select one lifecycle chart after classifying law authority globally.
+
+    Environment discontinuities can only be recognized from their surrounding
+    evidence.  Classifying an already-sliced chart may erase that context and
+    relabel an adapter-owned row as dynamics.  This composition therefore owns
+    the order: classify on the supplied evidence bank, remove excluded rows,
+    then select the requested lifecycle chart.
+    """
+
+    excluded = env_frame_indices(log)
+    scored = EpisodeLog(
+        row for index, row in enumerate(log) if index not in excluded
+    )
+    return scored.within_epoch_view(source_epoch)
+
+
 def _env_frame_note(log: EpisodeLog, env: "set[int]") -> str:
     """Render exclusion authority instead of laundering every row as reset.
 
@@ -515,8 +598,39 @@ def _env_frame_note(log: EpisodeLog, env: "set[int]") -> str:
     )
 
 
+def _memoized_predictor(predict):
+    """Content-quotient replay: carriers are PURE functions of (s, a, t) by
+    contract, so identical inputs give identical predictions — score each
+    distinct transition once and reuse. Measured on the live ls20 bank:
+    80.4% duplicate (s,a,t) rows (16,506 -> 3,242 distinct, every duplicate
+    with identical s_next), i.e. a ~5x cut in authority-path replay cost with
+    verdict equivalence BY PURITY, not by sampling. This is the residual-
+    scaling doctrine's cheapest instance: never re-pay for information the
+    bank already contains. Memo is per-gate-call (no cross-call staleness).
+    """
+    memo: dict = {}
+
+    def _p(s, a, t):
+        key = (s if type(s) is tuple else tuple(map(tuple, s)), a, t)
+        hit = memo.get(key)
+        if hit is not None:
+            out, failure = hit
+            # a memoized None must carry its original typed failure — the
+            # diagnostic consumers read it off the predictor after each call
+            _p._ztare_last_failure = failure
+            return out
+        out = predict(s, a, t)
+        failure = getattr(predict, "_ztare_last_failure", None)
+        _p._ztare_last_failure = failure
+        memo[key] = (out, failure)
+        return out
+
+    _p._ztare_last_failure = None
+    return _p
+
+
 def replay_consistency_gate(program: Program, log: EpisodeLog) -> GateResult:
-    predict = as_predictor(program)
+    predict = _memoized_predictor(as_predictor(program))
     env = env_frame_indices(log)
     # Check whether the cap tripped for this log (F3a: cap trips are never
     # silent — surface them in the gate detail).
@@ -528,7 +642,10 @@ def replay_consistency_gate(program: Program, log: EpisodeLog) -> GateResult:
             continue
         predicted = predict(tr.s, tr.a, tr.t)
         if predicted is None:
-            return GateResult(False, f"fail-closed evaluation at t={tr.t}")
+            return GateResult(
+                False,
+                f"{_prediction_failure_text(predict)} at t={tr.t}",
+            )
         if predicted != tr.s_next:
             return GateResult(False,
                               f"replay mismatch at t={tr.t} action={tr.a}: "
@@ -546,7 +663,7 @@ def replay_diagnostics(program: Program, log: EpisodeLog) -> ReplayDiagnostics:
     diagnostic receipt preserves partial structure so the next mutator can build
     from the best failed candidate instead of treating all gate misses as equal.
     """
-    predict = as_predictor(program)
+    predict = _memoized_predictor(as_predictor(program))
     env = env_frame_indices(log)
     checked = exact = wrong_rows = wrong_cells = 0
     first = ""
@@ -563,14 +680,21 @@ def replay_diagnostics(program: Program, log: EpisodeLog) -> ReplayDiagnostics:
         if predicted is None:
             wrong_rows += 1
             wrong_cells += _wrong_cell_count(None, tr.s_next)
-            sig = {"kind": "prediction_none"}
+            sig = _prediction_failure(predict)
             key = _signature_key(sig)
             class_counts[key] += 1
             class_examples.setdefault(
                 key, {"signature": sig, "first_row": i, "t": tr.t, "action": tr.a}
             )
+            if len(residual) < _RESIDUAL_CAP:
+                residual.append({
+                    "t": tr.t,
+                    "action": tr.a,
+                    "prediction_failure": sig,
+                })
             if not first:
-                first = f"fail-closed evaluation at t={tr.t}"
+                first = f"{_prediction_failure_text(predict)} at t={tr.t}"
+                first_sig = sig
             continue
         if predicted == tr.s_next:
             exact += 1
@@ -648,7 +772,7 @@ def rollout_depth(program: Program, holdout: EpisodeLog) -> int:
     start, propagating the candidate's own predictions (a true rollout, not
     per-step teacher forcing)."""
     depth = 0
-    for _index, tr, predicted in _propagated_rollout(program, holdout):
+    for _index, tr, predicted, _failure in _propagated_rollout(program, holdout):
         if predicted is None or predicted != tr.s_next:
             break
         depth += 1
@@ -656,9 +780,15 @@ def rollout_depth(program: Program, holdout: EpisodeLog) -> int:
 
 
 def rollout_diagnostics(program: Program, holdout: EpisodeLog) -> dict:
+    env = env_frame_indices(holdout)
+    scored_rows = len(holdout) - len(env)
     depth = rollout_depth(program, holdout)
-    payload = {"rollout_depth": depth}
-    if depth < len(holdout):
+    payload = {
+        "rollout_depth": depth,
+        "scored_rows": scored_rows,
+        "environment_frames_excluded": len(env),
+    }
+    if depth < scored_rows:
         witness = _holdout_witness(program, holdout)
         if witness is not None:
             payload["holdout_witness"] = witness

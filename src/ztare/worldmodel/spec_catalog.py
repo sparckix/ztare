@@ -33,12 +33,11 @@ speculative ops); names are mathematical operations, never game mechanics:
                     color=E replacement=W: both set an extremal cell of one
                     value to another), kept as a distinct name so a filling
                     bar reads as accumulation in specs, briefings, receipts
-  region_event      on a mover CROSSING a fixed rect (its `mover_colors` sit
-                    in the rect on one grid but not the other — step-start
-                    vs post-action), write a learned cell-set to learned
-                    colors; the general form of door toggles, pressure
-                    plates, checkpoint HUD flags, and terrain restored behind
-                    a sprite that has moved on
+  region_event      on a mover crossing either an adapter-local rect or any
+                    occurrence of a finite trigger pattern, write a learned
+                    cell-set to learned colors
+  bind_region_value copy one source-state value onto the support selected by
+                    an expected current value inside an output region
   identity          explicit no-op
 
 Spec shape (JSON-able; all colors are ints):
@@ -60,7 +59,8 @@ import os
 from ztare.worldmodel.grid_dsl import Grid
 
 _ALLOWED_OPS = ("translate_block", "recolor_map", "consume_extremal",
-                "accumulate_extremal", "region_event", "identity")
+                "accumulate_extremal", "region_event", "bind_region_value",
+                "pattern_write", "identity")
 
 # ---- _match_components memo (the abduction floor) ---------------------------
 # Component extraction is a PURE function of (grid content, match colours): the
@@ -78,6 +78,9 @@ _MC_MEMO_CAP = 200_000
 _MC_MEMO_ON = os.environ.get("ZTARE_MC_MEMO", "1") != "0"   # A/B control for equivalence proof
 _MC_HITS = 0
 _MC_MISS = 0
+
+_PATTERN_RECT_MEMO: "dict[tuple, tuple[tuple[int, int, int, int], ...]]" = {}
+_PATTERN_RECT_MEMO_CAP = 100_000
 _UNDEFINED_OPERATION_IMAGE = object()
 
 
@@ -329,6 +332,51 @@ def _overlap(g, cols, rect) -> bool:
     return False
 
 
+def _trigger_pattern_rects(g, trigger_pattern):
+    """Return every window carrying one finite adapter presentation.
+
+    The pattern is a coordinate-free identity within the grid adapter.  Its
+    discovered locations are presentation coordinates used only during this
+    execution.  Content-keyed memoization avoids rescanning repeated states.
+    """
+
+    shape = trigger_pattern.get("shape")
+    values = trigger_pattern.get("values")
+    ph, pw = int(shape[0]), int(shape[1])
+    pattern_rows = tuple(
+        tuple(int(value) for value in values[offset : offset + pw])
+        for offset in range(0, len(values), pw)
+    )
+    grid_key = tuple(tuple(row) for row in g)
+    key = (grid_key, ph, pw, pattern_rows)
+    cached = _PATTERN_RECT_MEMO.get(key)
+    if cached is not None:
+        return cached
+    height = len(grid_key)
+    width = len(grid_key[0]) if height else 0
+    rects = tuple(
+        (row, col, row + ph - 1, col + pw - 1)
+        for row in range(max(0, height - ph + 1))
+        for col in range(max(0, width - pw + 1))
+        if all(
+            grid_key[row + dy][col : col + pw] == pattern_rows[dy]
+            for dy in range(ph)
+        )
+    )
+    if len(_PATTERN_RECT_MEMO) >= _PATTERN_RECT_MEMO_CAP:
+        _PATTERN_RECT_MEMO.clear()
+    _PATTERN_RECT_MEMO[key] = rects
+    return rects
+
+
+def _pattern_overlaps_rect(g, pattern, rect) -> bool:
+    y0, x0, y1, x1 = (int(value) for value in rect)
+    return any(
+        not (py1 < y0 or y1 < py0 or px1 < x0 or x1 < px0)
+        for py0, px0, py1, px1 in _trigger_pattern_rects(g, pattern)
+    )
+
+
 def _perm_from_rule(rule) -> dict:
     """Colour permutation map from a toggle/cycle spec. `cycle`: [[c1,c2,c3],...]
     rotates c1->c2->c3->c1; `toggle`: [[c1,c2],...] is the 2-cycle special case
@@ -371,9 +419,36 @@ def region_event_triggered(g0, g, rule) -> bool:
     """
 
     cols = {int(c) for c in rule["mover_colors"]}
-    rect = rule["rect"]
     edge = rule.get("edge", "exit")
-    before, after = _overlap(g0, cols, rect), _overlap(g, cols, rect)
+    trigger_pattern = rule.get("trigger_pattern")
+    mover_pattern = rule.get("mover_pattern")
+
+    def mover_overlaps(grid, rect) -> bool:
+        if mover_pattern is not None:
+            return _pattern_overlaps_rect(grid, mover_pattern, rect)
+        return _overlap(grid, cols, rect)
+
+    if trigger_pattern is not None:
+        # On arrival the unoccluded presentation is visible at step start; on
+        # departure it is visible in the consequence.  This is a partial
+        # object transport, not a translation of the entire world or its
+        # remote consequence object.
+        presentation = g0 if edge == "enter" else g
+        rects = _trigger_pattern_rects(presentation, trigger_pattern)
+        return any(
+            (
+                not mover_overlaps(g0, rect)
+                and mover_overlaps(g, rect)
+            )
+            if edge == "enter"
+            else (
+                mover_overlaps(g0, rect)
+                and not mover_overlaps(g, rect)
+            )
+            for rect in rects
+        )
+    rect = rule["rect"]
+    before, after = mover_overlaps(g0, rect), mover_overlaps(g, rect)
     return (before and not after) if edge == "exit" else ((not before) and after)
 
 
@@ -439,11 +514,80 @@ def _apply_region_event(g, rule, g0):
     return out
 
 
+def _apply_bind_region_value(g, rule, g0):
+    """Bind a carrier-output value to a source-state value by relation.
+
+    ``target_rect`` is an adapter presentation.  ``source_offset`` is measured
+    from its top-left corner, so palette identity is transported without
+    embedding the observed color as the write value.  The current-value
+    selector preserves the region's complement, so the operation transports a
+    sparse mask as well as a dense rectangle.
+    """
+
+    y0, x0, y1, x1 = (int(value) for value in rule["target_rect"])
+    dy, dx = (int(value) for value in rule["source_offset"])
+    expected = int(rule["expected_current"])
+    height = len(g)
+    width = len(g[0]) if height else 0
+    source_y, source_x = y0 + dy, x0 + dx
+    if (
+        not (0 <= source_y < len(g0) and 0 <= source_x < len(g0[source_y]))
+        or y0 < 0
+        or x0 < 0
+        or y1 >= height
+        or x1 >= width
+        or y1 < y0
+        or x1 < x0
+    ):
+        return g
+    support = tuple(
+        (row, col)
+        for row in range(y0, y1 + 1)
+        for col in range(x0, x1 + 1)
+        if g[row][col] == expected
+    )
+    if not support:
+        return g
+    bound = g0[source_y][source_x]
+    out = [row[:] for row in g]
+    for row, col in support:
+        out[row][col] = bound
+    return out
+
+
+def _apply_pattern_write(g: "list[list[int]]", rule: dict) -> "list[list[int]]":
+    """Write a learned constant pattern to a rect (row-major).
+
+    The RESTORATION family: a bounded region rewrites to remembered content
+    (refills, respawns, display resets, terrain restores). The pattern is a
+    learned constant — mined from recurring identical diffs — so the carrier
+    stays a pure function of (state, action, t). Firing conditions come from
+    the generic guard set (when_count / when_region / when_action / ...);
+    unguarded, it fires every step, which the assembler's replay check will
+    reject unless that is actually the law. MDL: the pattern's cell count is
+    the rule's honest description length, so smaller laws still win ties.
+    """
+    y0, x0, y1, x1 = (int(v) for v in rule["rect"])
+    pat = rule["pattern"]
+    out = [row[:] for row in g]
+    h, w = len(out), len(out[0])
+    k = 0
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if k >= len(pat):
+                return out
+            if 0 <= y < h and 0 <= x < w:
+                out[y][x] = int(pat[k])
+            k += 1
+    return out
+
+
 _APPLY = {
     "translate_block": _apply_translate_block,
     "recolor_map": _apply_recolor_map,
     "consume_extremal": _apply_consume_extremal,
     "accumulate_extremal": _apply_accumulate_extremal,
+    "pattern_write": _apply_pattern_write,
     "identity": lambda g, rule: g,
 }
 
@@ -452,7 +596,9 @@ _REQUIRED_FIELDS = {
     "recolor_map": ("mapping",),
     "consume_extremal": ("color", "replacement"),
     "accumulate_extremal": ("color",),
-    "region_event": ("mover_colors", "rect", "edge"),
+    "region_event": ("mover_colors", "edge"),
+    "bind_region_value": ("target_rect", "source_offset", "expected_current"),
+    "pattern_write": ("rect", "pattern"),
     "identity": (),
 }
 
@@ -554,8 +700,32 @@ def _validate_spec(spec, *, require_action_rules: bool) -> "str | None":
             return f"rule {r['op']} has malformed when_dest {wd!r}"
         if r["op"] == "region_event":
             rect = r.get("rect")
-            if not isinstance(rect, (list, tuple)) or len(rect) != 4:
+            trigger_pattern = r.get("trigger_pattern")
+            if (rect is None) == (trigger_pattern is None):
+                return "region_event needs exactly one of rect or trigger_pattern"
+            if rect is not None and (
+                not isinstance(rect, (list, tuple)) or len(rect) != 4
+            ):
                 return f"region_event has malformed rect {rect!r}"
+            for pattern_name, pattern in (
+                ("trigger_pattern", trigger_pattern),
+                ("mover_pattern", r.get("mover_pattern")),
+            ):
+                if pattern is None:
+                    continue
+                if not isinstance(pattern, dict):
+                    return f"region_event {pattern_name} must be an object"
+                shape = pattern.get("shape")
+                values = pattern.get("values")
+                if (
+                    not isinstance(shape, (list, tuple))
+                    or len(shape) != 2
+                    or any(not isinstance(value, int) or value <= 0 for value in shape)
+                    or not isinstance(values, (list, tuple))
+                    or len(values) != int(shape[0]) * int(shape[1])
+                    or not all(isinstance(value, int) for value in values)
+                ):
+                    return f"region_event has malformed {pattern_name} {pattern!r}"
             if r.get("edge") not in ("exit", "enter"):
                 return f"region_event has bad edge {r.get('edge')!r}"
             cst = r.get("content_states")
@@ -588,6 +758,48 @@ def _validate_spec(spec, *, require_action_rules: bool) -> "str | None":
                                    or not all(isinstance(c, (list, tuple)) and len(c) >= 2
                                               for c in cy)):
                 return f"region_event has malformed cycle {cy!r}"
+        if r["op"] == "bind_region_value":
+            target_rect = r.get("target_rect")
+            source_offset = r.get("source_offset")
+            if (
+                not isinstance(target_rect, (list, tuple))
+                or len(target_rect) != 4
+                or not all(isinstance(value, int) for value in target_rect)
+                or int(target_rect[2]) < int(target_rect[0])
+                or int(target_rect[3]) < int(target_rect[1])
+            ):
+                return f"bind_region_value has malformed target_rect {target_rect!r}"
+            if (
+                not isinstance(source_offset, (list, tuple))
+                or len(source_offset) != 2
+                or not all(isinstance(value, int) for value in source_offset)
+            ):
+                return f"bind_region_value has malformed source_offset {source_offset!r}"
+            if not isinstance(r.get("expected_current"), int):
+                return "bind_region_value expected_current must be an int"
+        if r["op"] == "pattern_write":
+            rect = r.get("rect")
+            if (
+                not isinstance(rect, (list, tuple))
+                or len(rect) != 4
+                or not all(isinstance(v, int) for v in rect)
+                or int(rect[2]) < int(rect[0])
+                or int(rect[3]) < int(rect[1])
+            ):
+                return f"pattern_write has malformed rect {rect!r}"
+            pat = r.get("pattern")
+            area = (int(rect[2]) - int(rect[0]) + 1) * (int(rect[3]) - int(rect[1]) + 1)
+            if (
+                not isinstance(pat, (list, tuple))
+                or not pat
+                or len(pat) != area
+                or not all(isinstance(v, int) for v in pat)
+            ):
+                return (
+                    f"pattern_write pattern must be {area} ints (rect area), "
+                    f"got {type(pat).__name__} of len "
+                    f"{len(pat) if isinstance(pat, (list, tuple)) else 'n/a'}"
+                )
     return None
 
 
@@ -727,6 +939,8 @@ def _lower_spec(spec, *, validator):
             # crossing (mover in the rect on g0 xor on the current grid)
             if rule["op"] == "region_event":
                 return _apply_region_event(cur, rule, g0)
+            if rule["op"] == "bind_region_value":
+                return _apply_bind_region_value(cur, rule, g0)
             if rule["op"] in ("consume_extremal", "accumulate_extremal"):
                 return _APPLY[rule["op"]](cur, rule, t)
             return _APPLY[rule["op"]](cur, rule)
@@ -818,11 +1032,12 @@ def render_region_event_contract() -> str:
 
     return (
         '{"op": "region_event", "mover_colors": [..], '
-        '"rect": [y0,x0,y1,x1], "edge": "enter"|"exit", '
+        '("rect": [y0,x0,y1,x1] OR '
+        '"trigger_pattern": {"shape": [h,w], "values": [..]}), '
+        '"edge": "enter"|"exit", '
         '"writes": [[color, [[y,x], ...]], ...]} — compare the step-start '
-        "grid with the post-action/base-next grid: enter means the mover is "
-        "absent from rect at step-start and present there post-action; exit "
-        "means the reverse; then apply the fixed writes"
+        "grid with the post-action/base-next grid: enter means the mover arrives "
+        "at the named presentation; exit means the reverse; then apply the writes"
     )
 
 
@@ -852,6 +1067,10 @@ def render_catalog_contract() -> str:
         "the mirror: per row/col, fill its extremal-index EMPTY cell with the color; accepts "
         "the same optional component_scope\n"
         "  " + render_region_event_contract() + "\n"
+        '  {"op": "bind_region_value", "target_rect": [y0,x0,y1,x1], '
+        '"source_offset": [dy,dx], "expected_current": int} — while the current '
+        "carrier image still equals the expected value over the target region, "
+        "copy the source-state value at (target top-left + offset) into that region\n"
         "  {\"op\": \"identity\"}\n"
         "GUARD for RULE-COUPLING: give a rule an \"id\": \"<name>\" and gate another rule with "
         "\"when_effect\": [\"<name>\", true] — it fires iff the id'd rule CHANGED the grid earlier "

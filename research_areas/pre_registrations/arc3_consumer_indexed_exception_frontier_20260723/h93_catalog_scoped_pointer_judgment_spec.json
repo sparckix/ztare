@@ -1,0 +1,160 @@
+{
+  "schema": "ztare-arc3-catalog-scoped-pointer-judgment-spec-v1",
+  "source_results": [
+    {
+      "ref": "h91_instrumented_proposal_plasticity/result.json",
+      "sha256": "8608e4b95f0f4e30da7c354d04595fe15b289843532ad160542dee280343f395"
+    },
+    {
+      "ref": "h92_object_linked_judgment_quotient/result.json",
+      "sha256": "60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79"
+    }
+  ],
+  "alpha_world": {
+    "schema": "ztare-grid-object-catalog-v1",
+    "compiler": "the unchanged H92 content-addressed component compiler"
+  },
+  "catalog_presentation": {
+    "schema": "ztare-grid-object-catalog-presentation-v1",
+    "ordering": [
+      "bbox",
+      "cell_count",
+      "type_sha256"
+    ],
+    "handle_format": "o followed by a zero-padded two-digit ordinal",
+    "presentation_identity": [
+      "observation_sha256",
+      "catalog_sha256",
+      "ordered_handle_to_object_ref_map"
+    ],
+    "actor_visibility": "handle, bbox, palette, cell_count, normalized colored shape; exact object refs remain in the adapter receipt",
+    "authority": "handles carry no role meaning and resolve only under the exact presentation sha256"
+  },
+  "alpha_judgment": {
+    "schema": "ztare-catalog-scoped-controller-plan-v1",
+    "actor_fields": [
+      "action",
+      "prediction",
+      "plan_summary",
+      "controlled_object_handle",
+      "ordered_waypoint_handles",
+      "uncertainty"
+    ],
+    "lowering": "resolve all handles through the exact presentation before constructing ObjectLinkedControllerProposal",
+    "checkpoint_order": "persist raw pre and post handle proposals before resolution and contract compilation"
+  },
+  "object_role_contract": {
+    "controlled_object_selector": {
+      "bbox": [
+        45,
+        34,
+        49,
+        38
+      ],
+      "palette": [
+        9,
+        12
+      ],
+      "cell_count": 25
+    },
+    "required_waypoint_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "forbidden_control_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "evidence_refs": [
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1",
+      "h92_object_linked_judgment_quotient/result.json#sha256=60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79"
+    ]
+  },
+  "target_intervention": {
+    "condition_id": "causal_mechanics",
+    "memory_ids": [
+      "goal_requires_glyph_match_v1",
+      "floor_marker_edits_state_glyph_v1"
+    ],
+    "producer_predicted_decision_delta": 0.96
+  },
+  "placebo_intervention": {
+    "condition_id": "redundant_true_memory",
+    "memory_ids": [
+      "controls_cardinal_v1",
+      "walls_block_without_state_change_v1",
+      "marker_is_not_consumed_v1"
+    ],
+    "producer_predicted_decision_delta": 0.99
+  },
+  "randomized_instrument": {
+    "offer": "target_intervention",
+    "withhold": "byte_matched_placebo_intervention",
+    "pair_count": 2,
+    "order_mode": "alternating",
+    "seed": "h93-catalog-scoped-pointer-judgment-20260730"
+  },
+  "costs": {
+    "primitive_actions_per_arm": 20,
+    "proposal_inferences_before_first_action": 2,
+    "presented_bytes_per_intervention": 3849,
+    "differential_offer_cost": 0.0
+  },
+  "predictions": {
+    "minimum_offer_supported_transport_rate": 1.0,
+    "maximum_withhold_spontaneous_transport_rate": 0.0,
+    "minimum_first_stage_transport_delta": 1.0,
+    "minimum_total_task_score_delta": 0.0,
+    "minimum_mean_composite_delta": 0.0
+  },
+  "success_criterion": {
+    "raw_proposal_checkpoint_rate": "1.0",
+    "catalog_handle_resolution_rate": "1.0",
+    "unknown_or_cross_presentation_handle_count": "0",
+    "offer_supported_transport_rate": "1.0",
+    "withhold_spontaneous_supported_transport_rate": "0.0",
+    "first_stage_transport_delta": "1.0",
+    "offer_total_task_score_minus_withhold": ">=0",
+    "offer_mean_composite_minus_withhold": ">0",
+    "instrument_status": "identified"
+  },
+  "kill_conditions": [
+    "the deterministic presentation map does not round-trip every catalog object exactly once",
+    "a raw proposal is not persisted before handle resolution",
+    "any actor handle is unknown or bound to another presentation",
+    "the bridge exposes role-labeled handles or accepts free text as object authority",
+    "either target arm lacks supported object-path transport",
+    "either placebo arm has spontaneous supported transport",
+    "target task score is lower than placebo",
+    "mean paired composite effect is nonpositive"
+  ],
+  "claim_boundary": [
+    "two new alternating-order pairs test the identity-presentation repair on fresh controllers",
+    "H92 completed pairs are discovery evidence and are excluded from H93 estimates",
+    "common judgment and credit operate only on exact refs after adapter resolution",
+    "passing establishes a usable object-linked eligibility trace in one context, not adaptive silence, transfer, compounding capability, benchmark gain, or literature novelty"
+  ]
+}

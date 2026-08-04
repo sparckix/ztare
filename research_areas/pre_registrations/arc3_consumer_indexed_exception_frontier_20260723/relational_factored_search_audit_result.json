@@ -1,0 +1,407 @@
+{
+  "carrier": {
+    "execution_sha256": "2dc741d6e7e40f8d0f264217c6908010f202e3caf0bb41b35fa3d26fd9c93ef8",
+    "kind": "patch_base",
+    "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+    "source_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d"
+  },
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-RELATIONAL-FACTORED-SEARCH-20260727-72",
+  "operation_maps": {
+    "0": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 307,
+          "vector": [
+            -5,
+            0
+          ]
+        },
+        {
+          "support": 12,
+          "vector": [
+            -5,
+            25
+          ]
+        },
+        {
+          "support": 4,
+          "vector": [
+            40,
+            -25
+          ]
+        },
+        {
+          "support": 3,
+          "vector": [
+            -5,
+            -15
+          ]
+        },
+        {
+          "support": 3,
+          "vector": [
+            35,
+            0
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            -5,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            15,
+            -15
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            15,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            20,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            25,
+            -45
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            -40
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            0
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            5,
+            -45
+          ]
+        }
+      ],
+      "operation": "0",
+      "runner_up_support": 12,
+      "support": 307,
+      "vector": [
+        -5,
+        0
+      ]
+    },
+    "1": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 228,
+          "vector": [
+            5,
+            0
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            -5,
+            -15
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -40
+          ]
+        }
+      ],
+      "operation": "1",
+      "runner_up_support": 2,
+      "support": 228,
+      "vector": [
+        5,
+        0
+      ]
+    },
+    "2": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 83,
+          "vector": [
+            0,
+            -5
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            0,
+            20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            -5,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            35,
+            -45
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -40
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            5,
+            -25
+          ]
+        }
+      ],
+      "operation": "2",
+      "runner_up_support": 2,
+      "support": 83,
+      "vector": [
+        0,
+        -5
+      ]
+    },
+    "3": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 92,
+          "vector": [
+            0,
+            5
+          ]
+        },
+        {
+          "support": 4,
+          "vector": [
+            40,
+            5
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            15,
+            -25
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            20,
+            -30
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            20,
+            -40
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            20,
+            -20
+          ]
+        }
+      ],
+      "operation": "3",
+      "runner_up_support": 4,
+      "support": 92,
+      "vector": [
+        0,
+        5
+      ]
+    }
+  },
+  "problem": {
+    "availability_factor_names": [
+      "one_shot_availability"
+    ],
+    "evidence_refs": [
+      "compiled_carrier:effect_compiler_constants",
+      "raw/episodes/episode_001.jsonl",
+      "workspace/latest_fiber_effect_table.json",
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/joint_relation_recompile_audit_result.json",
+      "raw/episodes/eval_slices/eval_20260728T025656528768Z.jsonl"
+    ],
+    "factor_names": [
+      "controlled_base",
+      "finite_configuration",
+      "presentation_assignment",
+      "operation_domain_assignment",
+      "ordered_feasibility_configuration",
+      "ordered_budget",
+      "one_shot_availability",
+      "task_relation"
+    ],
+    "feasibility_factor_names": [
+      "ordered_budget"
+    ],
+    "problem_id": "4f65a6f71127363883201d308274487893980141c8ed0c2f20bc98191f3a7647",
+    "terminal_factor_names": [
+      "task_relation"
+    ]
+  },
+  "replay": {
+    "action_word": [],
+    "replayed_prefix": [],
+    "source_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+    "source_time": 64,
+    "status": "no_action_word",
+    "terminal_relation": null
+  },
+  "schema": "ztare-relational-factored-search-audit-v1",
+  "search_bounds": {
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "search_result": {
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 21,
+    "expanded": 459,
+    "frontier_remaining": 71,
+    "generated": 529,
+    "projection_counterexample": {
+      "consumer_difference": {
+        "changed_cell_count": 2,
+        "changed_cells": [
+          {
+            "coordinate": [
+              61,
+              57
+            ],
+            "left": 3,
+            "right": 8
+          },
+          {
+            "coordinate": [
+              62,
+              57
+            ],
+            "left": 3,
+            "right": 8
+          }
+        ],
+        "changed_factor_names": [],
+        "schema": "ztare-consumer-quotient-difference-v1",
+        "task_relation_changed": false
+      },
+      "dominated_image": "(((((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False)), ((0, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (1, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (2, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (3, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)))), ('time', 87)), (20.0,))",
+      "dominated_time": "86",
+      "dominator_image": "(((((45, 9),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False)), ((0, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (1, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (2, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (3, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)))), ('time', 87)), (20.0,))",
+      "dominator_time": "86",
+      "intervention": "0",
+      "kind": "dominance_simulation_failed",
+      "merged_key": "((((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False)), ((0, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (1, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (2, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)), (3, (('joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072', False),)))), ('time', 86))"
+    },
+    "status": "projection_noncommuting"
+  },
+  "seed": {
+    "origin_seed_sha256": "a3d6f1f5a2741feb92b01bcb04a0b4b79e370883b66cfe6799fcbd89f81093ab",
+    "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+    "start_time": 64,
+    "trace_ref": "raw/episodes/eval_slices/eval_20260728T025656528768Z.jsonl"
+  },
+  "task": {
+    "active_epoch": 2,
+    "active_hypothesis_ids": [
+      "joint_affordance:c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072"
+    ],
+    "contract_sha256": "2bf705daf535a7f9fff0171c5774ac5e9fdb263e57f73d1029d5da18e1555581",
+    "evidence_refs": [
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/joint_relation_recompile_audit_result.json",
+      "raw/episodes/eval_slices/eval_20260728T025656528768Z.jsonl"
+    ],
+    "goal_identity_sha256": "a691857374b59103d8ba305116aad1086c5d9acc776f1ffbcf2614d1155c79c1",
+    "operations": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "target_descriptor_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072"
+  }
+}

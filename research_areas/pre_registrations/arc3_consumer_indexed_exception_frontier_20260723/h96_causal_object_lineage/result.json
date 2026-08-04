@@ -1,0 +1,294 @@
+{
+  "aggregate": {
+    "appearance_revision_count": 1,
+    "bracketed_occlusion_count": 1,
+    "lineage_transport_binding_count": 4,
+    "offer_composite_minus_withhold": 0.89,
+    "offer_first_level_action": 12,
+    "offer_levels_gained": 1,
+    "offer_total_task_score_minus_withhold": 1.0,
+    "static_transport_binding_count": 3,
+    "withhold_levels_gained": 0
+  },
+  "claim_boundary": [
+    "one H95 response transported through one six-transition descendant path inside one ARC level",
+    "one fixed-support appearance revision and at least one bracketed occlusion",
+    "the live assignment is exploratory lineage transport, not inherited target credit",
+    "passing establishes one descendant lineage-conditioned response, not arbitrary object permanence, multi-generation compounding, cross-task transfer, accelerating gains, benchmark improvement, or literature novelty",
+    "The completed pair does not identify a promoted descendant response family.",
+    "The positive task delta cannot repair the failed blind-basin and transported-contract checks."
+  ],
+  "completed_pair_count": 1,
+  "experiment_sha256": "8ff65a12c127964942c259f4d3412be75e8558aeeb354b822f2f7f9eb6d9d9a8",
+  "failed_checks": [
+    "withhold_blind_proposal_left_lineage_transported_basin",
+    "offer_response_failed_transported_contract"
+  ],
+  "kind": "experiment_result",
+  "manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/manifest.json",
+  "pair_01": {
+    "offer": {
+      "arm_file_sha256": "7f10f03094c11e5180f287dceb7f412337d9250a23799dceb66581a50beaf57e",
+      "arm_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/arms/pair_01_offer_causal_mechanics.json",
+      "blind_proposal": {
+        "action_ref": "1",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "consumed_intervention_revision_sha256": "",
+        "controlled_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+        "controller_instance_sha256": "9c8ea27e93ea9d390308c89d5363c4883b8312ee66ba8eee2e40d6e81c4d9c02",
+        "kind": "object_linked_controller_proposal",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_refs": [
+          "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+          "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be",
+          "object:11d7affbab3d797f2dfea4f672fee7991091afc5aa42e3189032bf2457d68f7f"
+        ],
+        "parent_proposal_sha256": "",
+        "predicted_consequence_ref": "sha256:addfd7c6ab848d5544d55d8c48e78a09b2ee641a313b01b142474bbda2ac805f",
+        "proposal_ref": "sha256:d5d5607b3bff785c8e931734bd8673dbe3189ea0c16d8f8659ee416eaf1932c7",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+        "sha256": "4f65693eef25a9697da74dc552e5885c90a93492558c65b871be683a5996761a"
+      },
+      "lineage_candidate": {
+        "action": "explore_lineage",
+        "intervention_transport_sha256": "ea5a437efe6f34a5e68b0ca8e15f9ca82a391df0b1009dae26fe2f7be36fc515",
+        "kind": "response_transport_candidate",
+        "mapped_source_post_path": [
+          "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+          "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+          "object:31b0903e4212bbafac6c3e4227db245a17a2df2fe1aa36e4772330fdd3b9fc11",
+          "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+        ],
+        "object_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+        "reason": "lineage_contract_and_response_square_commute",
+        "schema": "ztare-object-response-transport-v1",
+        "sha256": "3fae8a0e2258d5816de130b46757fc04f88fdfb656b6c01765fb0beacb47a551",
+        "source_basin_signature": {
+          "control_relation": "forbidden",
+          "required_waypoint_order_satisfied": false,
+          "required_waypoint_prefix_length": 0
+        },
+        "source_contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+        "source_family_sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+        "source_post_proposal_sha256": "0e72cf1abedfb5e68e97e2dc6d69afff33531bf4fc37550c128ac39deaccc093",
+        "source_pre_basin_sha256": "2a2965d92e56e68c88c806b48d13b763ce9c20256f672f0c515d14cc3030f37e",
+        "source_pre_proposal_sha256": "d59da75d871c7f879b1fb304c55fbda5cc38415e03fbc0139b2ce2171934e3ed",
+        "source_response_sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+        "status": "candidate_commuting",
+        "target_basin_signature": {
+          "control_relation": "forbidden",
+          "required_waypoint_order_satisfied": false,
+          "required_waypoint_prefix_length": 0
+        },
+        "target_contract_sha256": "3ff4cf0be41a8a209f720ee58a4c86af35d6077bd3ddd14ea532e9e58cd6785a",
+        "target_pre_basin_sha256": "59081542325cbf2647cfd1d951d194e2d22a2d2427e159443136c19144493d6d",
+        "target_pre_proposal_sha256": "4f65693eef25a9697da74dc552e5885c90a93492558c65b871be683a5996761a"
+      },
+      "metrics": {
+        "efficiency_score": 0.45,
+        "information_yield": 1.0,
+        "information_yield_measure": "unique_settled_successor_observation_sha256s/action_budget",
+        "task_score": 1.0,
+        "unique_settled_successor_count": 20
+      },
+      "outcome": {
+        "assignment": "offer",
+        "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/arms/pair_01_offer_causal_mechanics.json#sha256=7f10f03094c11e5180f287dceb7f412337d9250a23799dceb66581a50beaf57e",
+        "external_value": 0.89,
+        "kind": "instrumented_proposal_outcome",
+        "net_external_value": 0.89,
+        "offer_cost": 0.0,
+        "primitive_action_cost": 20.0,
+        "schema": "ztare-instrumented-proposal-plasticity-v1",
+        "sha256": "164f2c7f2d3b06516114115dc473d98217f76bc10d92b49bf7bfde6eca405c2c",
+        "transition_sha256": "c69a1131bd749b71592fb02964fd50a489c362bd7b53b01490559c55de052c36"
+      },
+      "transition": {
+        "action_relevant_displacement": true,
+        "assignment": "offer",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "changed_action": false,
+        "changed_features": true,
+        "changed_path": true,
+        "changed_prediction": true,
+        "contract_sha256": "3ff4cf0be41a8a209f720ee58a4c86af35d6077bd3ddd14ea532e9e58cd6785a",
+        "controller_instance_sha256": "9c8ea27e93ea9d390308c89d5363c4883b8312ee66ba8eee2e40d6e81c4d9c02",
+        "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+        "kind": "object_linked_proposal_transition",
+        "post_proposal_sha256": "075b5f0c39677f0128c4bda7a6f55faafd752d63e4d1ae981791ae0361d4da46",
+        "pre_basin_sha256": "59081542325cbf2647cfd1d951d194e2d22a2d2427e159443136c19144493d6d",
+        "pre_proposal_sha256": "4f65693eef25a9697da74dc552e5885c90a93492558c65b871be683a5996761a",
+        "relation": "offered_other_transport",
+        "response_signature_sha256": "5a0509c86735e68fff9b4dd45af09355f817216444ffe32e6ea5ffc60a1208fb",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+        "sha256": "c69a1131bd749b71592fb02964fd50a489c362bd7b53b01490559c55de052c36",
+        "stratum_sha256": "bd13751521c7b16046bb59b553c51b35303de71813493b7f8770a017aaa980ef",
+        "supported_transport": false,
+        "trial_ref": "bd13751521c7b16046bb59b553c51b35303de71813493b7f8770a017aaa980ef:offer:decision-0"
+      }
+    },
+    "withhold": {
+      "arm_file_sha256": "4efe480e9f9d7a2bc51bcce7d6e8e1d93d106f368837cbe193605f8b4c226df3",
+      "arm_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/arms/pair_01_withhold_redundant_true_memory.json",
+      "blind_proposal": {
+        "action_ref": "0",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "consumed_intervention_revision_sha256": "",
+        "controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+        "controller_instance_sha256": "f7b172ed20024a3049edffb954c08f300b96bc5dba4d4f9003c3ca97e90fb778",
+        "kind": "object_linked_controller_proposal",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_refs": [
+          "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+          "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+        ],
+        "parent_proposal_sha256": "",
+        "predicted_consequence_ref": "sha256:e65f9530c04de21c1e05713826bf8e324cd70110e8257d9c8365c3687a09bf19",
+        "proposal_ref": "sha256:be4f833aa1938322eb3bfd35674654477528826b09b51c8f1d79b0ee5c1cd0f4",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+        "sha256": "13b23186b4646d4ece267dce76efea2d089a0f315f59ec651207b7c46798ec11"
+      },
+      "lineage_candidate": {
+        "action": "refuse_transport",
+        "intervention_transport_sha256": "ea5a437efe6f34a5e68b0ca8e15f9ca82a391df0b1009dae26fe2f7be36fc515",
+        "kind": "response_transport_candidate",
+        "mapped_source_post_path": [
+          "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+          "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+          "object:31b0903e4212bbafac6c3e4227db245a17a2df2fe1aa36e4772330fdd3b9fc11",
+          "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+        ],
+        "object_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+        "reason": "target_blind_basin_mismatch",
+        "schema": "ztare-object-response-transport-v1",
+        "sha256": "feb4c1bf76a96b5618253d16efc21149716c47dc9060f22ddcdaac829dfb6224",
+        "source_basin_signature": {
+          "control_relation": "forbidden",
+          "required_waypoint_order_satisfied": false,
+          "required_waypoint_prefix_length": 0
+        },
+        "source_contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+        "source_family_sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+        "source_post_proposal_sha256": "0e72cf1abedfb5e68e97e2dc6d69afff33531bf4fc37550c128ac39deaccc093",
+        "source_pre_basin_sha256": "2a2965d92e56e68c88c806b48d13b763ce9c20256f672f0c515d14cc3030f37e",
+        "source_pre_proposal_sha256": "d59da75d871c7f879b1fb304c55fbda5cc38415e03fbc0139b2ce2171934e3ed",
+        "source_response_sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+        "status": "refused",
+        "target_basin_signature": {
+          "control_relation": "required",
+          "required_waypoint_order_satisfied": true,
+          "required_waypoint_prefix_length": 1
+        },
+        "target_contract_sha256": "3ff4cf0be41a8a209f720ee58a4c86af35d6077bd3ddd14ea532e9e58cd6785a",
+        "target_pre_basin_sha256": "4060d69794a7c6870219e00d9acd26cd27a78bc85208dda035780b2d55771f3d",
+        "target_pre_proposal_sha256": "13b23186b4646d4ece267dce76efea2d089a0f315f59ec651207b7c46798ec11"
+      },
+      "metrics": {
+        "efficiency_score": 0.0,
+        "information_yield": 1.0,
+        "information_yield_measure": "unique_settled_successor_observation_sha256s/action_budget",
+        "task_score": 0.0,
+        "unique_settled_successor_count": 20
+      },
+      "outcome": {
+        "assignment": "withhold",
+        "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/arms/pair_01_withhold_redundant_true_memory.json#sha256=4efe480e9f9d7a2bc51bcce7d6e8e1d93d106f368837cbe193605f8b4c226df3",
+        "external_value": 0.0,
+        "kind": "instrumented_proposal_outcome",
+        "net_external_value": 0.0,
+        "offer_cost": 0.0,
+        "primitive_action_cost": 20.0,
+        "schema": "ztare-instrumented-proposal-plasticity-v1",
+        "sha256": "f997bd8fba7c649f397c6bba6374ab370615ae20d86456f3f796976c5e065882",
+        "transition_sha256": "20107d35627b46716e49fbec2ed8de25c8d36c337bbab990670c1dc0db7cfdfd"
+      },
+      "transition": {
+        "action_relevant_displacement": true,
+        "assignment": "withhold",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "changed_action": false,
+        "changed_features": true,
+        "changed_path": true,
+        "changed_prediction": true,
+        "contract_sha256": "3ff4cf0be41a8a209f720ee58a4c86af35d6077bd3ddd14ea532e9e58cd6785a",
+        "controller_instance_sha256": "f7b172ed20024a3049edffb954c08f300b96bc5dba4d4f9003c3ca97e90fb778",
+        "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+        "kind": "object_linked_proposal_transition",
+        "post_proposal_sha256": "d3f563cb9255336c167578ca6baa19e35261c071ce39dfbd35e318aa1cc4912e",
+        "pre_basin_sha256": "4060d69794a7c6870219e00d9acd26cd27a78bc85208dda035780b2d55771f3d",
+        "pre_proposal_sha256": "13b23186b4646d4ece267dce76efea2d089a0f315f59ec651207b7c46798ec11",
+        "relation": "withheld_spontaneous_other",
+        "response_signature_sha256": "e3fa3844a33be12cf44d92845c654e1617950df869a721e95758ca64c97de862",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+        "sha256": "20107d35627b46716e49fbec2ed8de25c8d36c337bbab990670c1dc0db7cfdfd",
+        "stratum_sha256": "bd13751521c7b16046bb59b553c51b35303de71813493b7f8770a017aaa980ef",
+        "supported_transport": false,
+        "trial_ref": "bd13751521c7b16046bb59b553c51b35303de71813493b7f8770a017aaa980ef:withhold:decision-0"
+      }
+    }
+  },
+  "requested_pair_count": 2,
+  "schema": "ztare-arc3-causal-object-lineage-v1",
+  "sha256": "1f470363212d2be67fcd34385a7f07962d37c09ef48df3f535b6526c8e2b4e2e",
+  "status": "live_stopped_at_preregistered_kill",
+  "target_fiber_estimate": {
+    "complier_net_effect": null,
+    "contract_sha256": "3ff4cf0be41a8a209f720ee58a4c86af35d6077bd3ddd14ea532e9e58cd6785a",
+    "first_stage_transport_delta": 0.0,
+    "intent_to_treat_net_delta": 0.89,
+    "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+    "kind": "instrumented_plasticity_estimate",
+    "offer_count": 1,
+    "offer_mean_net_value": 0.89,
+    "offer_supported_transport_rate": 0.0,
+    "outcome_sha256s": [
+      "164f2c7f2d3b06516114115dc473d98217f76bc10d92b49bf7bfde6eca405c2c",
+      "f997bd8fba7c649f397c6bba6374ab370615ae20d86456f3f796976c5e065882"
+    ],
+    "proposal_basin_count": 2,
+    "relation_status_counts": {
+      "offered_other_transport": 1,
+      "withheld_spontaneous_other": 1
+    },
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+    "sha256": "361d35778c0b51d831387e8236cdc3ec9124345ed872db1ae048be919cba0c0f",
+    "status": "weak_instrument",
+    "withhold_count": 1,
+    "withhold_mean_net_value": 0.0,
+    "withhold_supported_transport_rate": 0.0
+  },
+  "verdict": "rejected"
+}

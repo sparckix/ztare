@@ -19,8 +19,10 @@ real-artifact assertion against the actual killed arc3_ls20_gov carrier.
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from pathlib import Path
+import pytest
 
 from ztare.validator.core.pre_judge_gate import (
     _dominance_inputs,
@@ -66,13 +68,17 @@ def _champion(
     description_length: int | None = None,
 ) -> None:
     (project / "workspace").mkdir(parents=True, exist_ok=True)
+    prior = project / "workspace" / "submissions" / "iter_001.py"
+    prior.parent.mkdir(parents=True, exist_ok=True)
+    prior_source = "def step(grid, action, t):\n    return list(grid)\n"
+    prior.write_text(prior_source, encoding="utf-8")
     (project / "workspace" / "candidate_memory.json").write_text(
         json.dumps({
             "schema": "ztare-candidate-memory-v1",
             "records": [{
                 "source_type": "deterministic_near_miss",
                 "submission": "workspace/submissions/iter_001.py",
-                "sha": "championsha",
+                "sha": hashlib.sha256(prior_source.encode("utf-8")).hexdigest(),
                 "visible_exact_rows": visible_exact_rows,
                 "visible_wrong_cells": wrong_cells,
                 "holdout_depth": holdout_depth,
@@ -109,10 +115,16 @@ def _candidate(project: Path) -> Path:
     return candidate
 
 
-def _preflight(project: Path, candidate: Path):
+def _preflight(
+    project: Path,
+    candidate: Path,
+    *,
+    require_strict_improvement: bool = True,
+):
     return detect_patch_base_regression_preflight(
         enabled=True, project_dir=project, candidate_path=candidate,
         python_executable=sys.executable,
+        require_strict_improvement=require_strict_improvement,
     )
 
 
@@ -194,6 +206,51 @@ def test_no_strict_improvement_killed(tmp_path, monkeypatch):
     assert _preflight(project, candidate) is not None  # blocked (no strict improve)
 
 
+def test_companion_artifact_may_tie_behavior_but_not_cross_failed_gate(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.setenv("ZTARE_DOMINANCE_PROMOTION", "1")
+    project = tmp_path / "p"
+    project.mkdir()
+    _champion(project, visible_exact_rows=6125, holdout_depth=10)
+    candidate = _candidate(project)
+    _write_harness(project, {
+        "visible_replay_exact": _visible_gate(exact_rows=6125, ok=True),
+        "holdout_rollout_exact": _holdout_gate(depth=10),
+    })
+
+    assert _preflight(
+        project,
+        candidate,
+        require_strict_improvement=False,
+    ) is None
+
+    _write_harness(project, {
+        "visible_replay_exact": _visible_gate(
+            exact_rows=6124,
+            wrong_cells=1,
+            ok=False,
+        ),
+        "holdout_rollout_exact": _holdout_gate(depth=10),
+    })
+    assert _preflight(
+        project,
+        candidate,
+        require_strict_improvement=False,
+    ) is not None
+
+    _write_harness(project, {
+        "visible_replay_exact": _visible_gate(exact_rows=6126, ok=True),
+        "holdout_rollout_exact": _holdout_gate(depth=10),
+    })
+    assert _preflight(
+        project,
+        candidate,
+        require_strict_improvement=False,
+    ) is not None
+
+
 def test_description_length_breaks_ties_without_blocking_evidence_gain() -> None:
     _, anchor_growth = _dominance_inputs({
         "best_prior_holdout_depth": 4,
@@ -256,3 +313,61 @@ def test_untagged_gate_defaults_to_observed_must_pass(tmp_path, monkeypatch):
         "holdout_rollout_exact": _holdout_gate(depth=0),
     })
     assert _preflight(project, candidate) is not None  # blocked
+
+
+def test_task_hypothesis_is_kernel_bound_to_current_carrier(tmp_path, monkeypatch):
+    from ztare.common import candidate_memory
+    from ztare.validator.core.candidate_preflight import (
+        task_hypothesis_companion_source,
+    )
+
+    project = tmp_path / "p"
+    carrier = project / "workspace" / "submissions" / "carrier.py"
+    carrier.parent.mkdir(parents=True)
+    carrier.write_text(
+        "def step(state, action, t):\n    return state\n",
+        encoding="utf-8",
+    )
+    record = {"source_type": "full_survivor"}
+    monkeypatch.setattr(
+        candidate_memory,
+        "best_admissible_candidate_memory_record",
+        lambda *_args, **_kwargs: record,
+    )
+    monkeypatch.setattr(
+        candidate_memory,
+        "candidate_memory_submission_path",
+        lambda *_args, **_kwargs: carrier,
+    )
+
+    source = task_hypothesis_companion_source(
+        project_dir=project,
+        task_source=(
+            "def GOAL_PREDICATE(state):\n"
+            "    return bool(state)\n"
+        ),
+    )
+
+    assert "PATCH_BASE" in source
+    assert hashlib.sha256(carrier.read_bytes()).hexdigest() in source
+    assert "return base_next" in source
+    assert "def GOAL_PREDICATE(state)" in source
+    from ztare.worldmodel.carrier_loader import load_carrier_from_source
+
+    companion = load_carrier_from_source(
+        source,
+        project / "companion.py",
+        project,
+        dynamics_assumption="lawful_time",
+    )
+    assert companion(((1,),), 0, 3) == ((1,),)
+
+    with pytest.raises(ValueError, match="standalone"):
+        task_hypothesis_companion_source(
+            project_dir=project,
+            task_source=(
+                "from test_model import *\n"
+                "def GOAL_PREDICATE(state):\n"
+                "    return True\n"
+            ),
+        )

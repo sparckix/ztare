@@ -1,0 +1,230 @@
+{
+  "bounds": {
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "all_operation_maps_admitted": true,
+    "edge_found": false,
+    "h38_separated": true,
+    "no_environment_contact": true,
+    "no_projection_counterexample": false,
+    "selected_joint_code": false
+  },
+  "field_projection_sha256": "ba6866911be554630efc092d5891dbf61a362945d38a887579eb8a62252f0016",
+  "h38_separation": {
+    "changed_cells": [
+      {
+        "coordinate": [
+          46,
+          30
+        ],
+        "left": 3,
+        "right": 9
+      },
+      {
+        "coordinate": [
+          46,
+          31
+        ],
+        "left": 3,
+        "right": 14
+      },
+      {
+        "coordinate": [
+          46,
+          32
+        ],
+        "left": 3,
+        "right": 14
+      },
+      {
+        "coordinate": [
+          47,
+          30
+        ],
+        "left": 3,
+        "right": 9
+      },
+      {
+        "coordinate": [
+          47,
+          31
+        ],
+        "left": 3,
+        "right": 0
+      },
+      {
+        "coordinate": [
+          47,
+          32
+        ],
+        "left": 3,
+        "right": 8
+      },
+      {
+        "coordinate": [
+          48,
+          30
+        ],
+        "left": 3,
+        "right": 12
+      },
+      {
+        "coordinate": [
+          48,
+          31
+        ],
+        "left": 3,
+        "right": 12
+      },
+      {
+        "coordinate": [
+          48,
+          32
+        ],
+        "left": 3,
+        "right": 8
+      }
+    ],
+    "left_field_sha256": "33f9d47920c1e1631919539bd6697c68e8813ddab0c61b20fa86594cd6d1a2d6",
+    "origin": [
+      40,
+      29
+    ],
+    "right_field_sha256": "15b373841b5fce17a2245d0038d1937d583d5265030c46f50fbc7c290af0f421",
+    "separated": true
+  },
+  "operation_maps": [
+    [
+      "0",
+      [
+        -5,
+        0
+      ]
+    ],
+    [
+      "1",
+      [
+        5,
+        0
+      ]
+    ],
+    [
+      "2",
+      [
+        0,
+        -5
+      ]
+    ],
+    [
+      "3",
+      [
+        0,
+        5
+      ]
+    ]
+  ],
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "problem_id": "0b0ded3780c7154eaa0009d395c1ab6be8c3b4e11d24bfa386a488dca05935c8",
+  "replay": {},
+  "schema": "ztare-actor-relative-affordance-field-audit-v1",
+  "search": {
+    "action_count": 0,
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 14,
+    "expanded": 94,
+    "frontier_remaining": 35,
+    "generated": 128,
+    "projection_counterexample": {
+      "consumer_difference": {
+        "changed_cell_count": 8,
+        "changed_cells": [
+          {
+            "coordinate": [
+              16,
+              35
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              16,
+              36
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              16,
+              37
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              17,
+              35
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              17,
+              37
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              18,
+              35
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              18,
+              36
+            ],
+            "left": 11,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              18,
+              37
+            ],
+            "left": 11,
+            "right": 3
+          }
+        ],
+        "changed_factor_names": [],
+        "schema": "ztare-consumer-quotient-difference-v1"
+      },
+      "dominated_image": "(((((20, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (('actor_relative_affordance_field', (('0', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('1', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('2', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('3', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))))),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 79), (6.0,))",
+      "dominated_time": "78",
+      "dominator_image": "(((((20, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (('actor_relative_affordance_field', (('0', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 1), ('palette_class', 1), ('palette_class', 1), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 1), ('palette_class', 0), ('palette_class', 1), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 1), ('palette_class', 1), ('palette_class', 1), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('1', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('2', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('3', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))))),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 79), (6.0,))",
+      "dominator_time": "78",
+      "intervention": "0",
+      "kind": "dominance_simulation_failed",
+      "merged_key": "((((25, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (('actor_relative_affordance_field', (('0', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('1', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('2', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))), ('3', ((('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)), (('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0), ('palette_class', 0)))))),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 78)"
+    },
+    "status": "projection_noncommuting"
+  },
+  "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+  "status": "actor_relative_affordance_field_refuted",
+  "target": {
+    "configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1"
+  }
+}

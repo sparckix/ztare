@@ -6,9 +6,9 @@ and returns a receipt to the commissioning surface. Executing a probe is
 zero-credit: an observation neither survives nor is killed.
 
 Contract: ``probe_source`` is self-contained python defining
-``probe(episodes) -> dict`` where ``episodes`` is ``{"visible": [...]}`` and,
-in DISCOVERY/HARNESS_DEBUG runs, also ``{"holdout": [...]}`` (holdout is a
-sealed test set in EVALUATION and is not exposed there). Each list holds
+``probe(episodes) -> dict`` where ``episodes`` is ``{"visible": [...]}``.
+Holdout remains kernel-side in every run role because a generative observation
+can steer later proposals. Each list holds
 transition dicts ``{"t", "a", "s", "s_next"}``. The only whitelisted import is
 ``from ztare.worldmodel.evidence_quotients import ...`` (exemplar quotients
 as library calls). Source is content-addressed under
@@ -30,25 +30,23 @@ RECEIPT_SCHEMA = "ztare-evidence-probe-receipt-v1"
 PAYLOAD_CHAR_CAP = 20_000
 STDERR_PREFIX_CHARS = 500
 
-# Module-level episode-file cache: (project_root, run_role, episode_file_key) -> serialized JSON path.
+# Module-level episode-file cache: visible episode content identity -> serialized JSON path.
 # Invalidated when any episode file's mtime changes. The cached file lives in the system
 # temp dir (auto-cleaned on reboot); key is content-addressed by mtime fingerprint.
 # ponytail: simple dict, never needs eviction (episode files rarely change mid-run; one
-# entry per project per role in practice)
+# entry per project in practice)
 _EPISODE_CACHE: dict[str, str] = {}
 
 
-def _episode_cache_key(project_dir: Path, run_role: str) -> tuple[str, str]:
-    """(fingerprint, cache_key_str) for the episode files of this project+role."""
+def _episode_cache_key(project_dir: Path) -> str:
+    """Content identity for the visible episode file."""
     episodes_dir = project_dir / "raw" / "episodes"
-    parts: list[str] = [str(project_dir.resolve()), run_role]
-    for ep in sorted(episodes_dir.glob("*.jsonl")):
-        try:
-            parts.append(f"{ep.name}:{ep.stat().st_mtime}")
-        except OSError:
-            parts.append(ep.name)
-    fingerprint = hashlib.sha256("|".join(parts).encode()).hexdigest()
-    return fingerprint, "|".join(parts[:2])  # (fingerprint, identity key prefix)
+    visible = episodes_dir / "episode_001.jsonl"
+    try:
+        identity = f"{project_dir.resolve()}:{visible.stat().st_mtime_ns}"
+    except OSError:
+        identity = f"{project_dir.resolve()}:missing"
+    return hashlib.sha256(identity.encode()).hexdigest()
 
 # The only ztare module a probe may import (exemplar quotients as library
 # calls). Everything else in ztare is off-limits — a probe observes, it does
@@ -97,6 +95,8 @@ def probe_purity_error(probe_source: str) -> "str | None":
     except SyntaxError as exc:
         return f"probe_source is not valid python: {exc}"
     for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and node.value == "holdout":
+            return "sealed holdout evidence is unavailable to generative probes"
         if isinstance(node, ast.Import):
             for alias in node.names:
                 top = alias.name.split(".", 1)[0]
@@ -131,28 +131,7 @@ def _error_receipt(probe_sha: str, error: str) -> dict:
     return {"schema": RECEIPT_SCHEMA, "probe_sha": probe_sha, "status": "error", "error": error}
 
 
-def _pack_run_role(project_dir: Path) -> str:
-    # The pack stages MANIFEST.json.run_role (see briefing_pack.build_briefing_pack);
-    # holdout staging keys off the same signal. Absent/unreadable manifest fails
-    # closed to EVALUATION so holdout stays sealed unless a run explicitly says
-    # DISCOVERY/HARNESS_DEBUG.
-    for name in ("MANIFEST.json", "visible_manifest.json"):
-        path = Path(project_dir) / name
-        try:
-            manifest = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            continue
-        if isinstance(manifest, dict) and str(manifest.get("run_role") or "").strip():
-            return str(manifest["run_role"]).strip().upper()
-    return "EVALUATION"
-
-
 def _load_episodes(project_dir: Path) -> dict:
-    # Holdout is the sealed test set for the rollout gate. In EVALUATION it stays
-    # kernel-side (exposing it to a leaf probe would let the leaf read the answer
-    # and defeat the gate). In DISCOVERY/HARNESS_DEBUG the holdout is intentionally
-    # consumable counterexample evidence — the same signal that gates pack holdout
-    # staging (briefing_pack holdout_visibility) — so the probe sees it too.
     from ztare.worldmodel.episode_log import EpisodeLog
     from ztare.worldmodel.evidence_quotients import resolve_episode_ref
     from ztare.worldmodel.grid_dsl import grid_to_lists
@@ -164,15 +143,7 @@ def _load_episodes(project_dir: Path) -> dict:
             for tr in EpisodeLog.read_jsonl(path)
         ]
 
-    episodes = {"visible": _transitions("visible")}
-    if _pack_run_role(project_dir) in {"DISCOVERY", "HARNESS_DEBUG"}:
-        try:
-            episodes["holdout"] = _transitions("holdout")
-        except (ValueError, OSError):
-            # DISCOVERY intends holdout to be consumable, but a pack may not have
-            # staged it; leave holdout absent rather than fail the whole probe.
-            pass
-    return episodes
+    return {"visible": _transitions("visible")}
 
 
 def run_evidence_probe(
@@ -189,9 +160,8 @@ def run_evidence_probe(
         return _error_receipt(probe_sha, purity)
     # --- episode-file cache -------------------------------------------------
     # Serialize episodes to a stable content-addressed file once per
-    # (project, run_role, episode-file mtime set); reuse across probe calls.
-    run_role = _pack_run_role(project)
-    fp, _ck = _episode_cache_key(project, run_role)
+    # (project, visible episode mtime); reuse across probe calls.
+    fp = _episode_cache_key(project)
     cached_ep_path: str | None = _EPISODE_CACHE.get(fp)
     if cached_ep_path and not Path(cached_ep_path).exists():
         # Cached file was cleaned from /tmp (e.g. reboot); invalidate.

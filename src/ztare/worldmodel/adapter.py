@@ -19,12 +19,13 @@ touching loop internals.
 from __future__ import annotations
 
 import json
+import importlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
-from ztare.worldmodel.episode_log import EpisodeLog
-from ztare.worldmodel.grid_dsl import Grid, grid_to_lists
+from ztare.worldmodel.episode_log import EpisodeLog, Transition
+from ztare.worldmodel.grid_dsl import Grid
 from ztare.worldmodel.policy import context_key, select_action
 from ztare.worldmodel.synthesis import SynthesisResult, synthesize
 
@@ -37,6 +38,31 @@ class EnvironmentAdapter(Protocol):
 
     def reset(self) -> Grid: ...
     def step(self, action: int) -> Grid: ...
+
+
+_PROJECT_ADAPTERS = {
+    "arc_agi3": ("ztare.substrates.arc_agi3", "adapter_from_project"),
+}
+
+
+def resolve_project_adapter(project_dir: "Path | str") -> EnvironmentAdapter:
+    """Construct a live adapter through a code-registered project profile."""
+    project = Path(project_dir)
+    try:
+        config = json.loads((project / "play_config.json").read_text())
+    except (OSError, ValueError):
+        config = {}
+    adapter_id = str(config.get("environment_adapter") or "").strip()
+    if not adapter_id and project.name.startswith("arc3_"):
+        adapter_id = "arc_agi3"
+    try:
+        module_name, factory_name = _PROJECT_ADAPTERS[adapter_id]
+    except KeyError as exc:
+        raise ValueError(
+            f"project has no registered environment adapter: {adapter_id!r}"
+        ) from exc
+    factory = getattr(importlib.import_module(module_name), factory_name)
+    return factory(project, config=config)
 
 
 class SyntheticEnvAdapter:
@@ -75,6 +101,68 @@ def episode_log_path(project_dir: "Path | str", episode: int = 1) -> Path:
 
 def committee_read_model_path(project_dir: "Path | str") -> Path:
     return Path(project_dir) / "workspace" / "worldmodel_committee.json"
+
+
+def observation_log(observed) -> EpisodeLog:
+    """Normalize adapter observation packets through one typed boundary."""
+    return EpisodeLog(
+        observation
+        if isinstance(observation, Transition)
+        else Transition(
+            t=observation[3],
+            s=observation[0],
+            a=observation[1],
+            s_next=observation[2],
+        )
+        for observation in observed
+    )
+
+
+def admit_observations(
+    project_dir: "Path | str",
+    observed,
+    *,
+    log: EpisodeLog | None = None,
+) -> tuple[EpisodeLog, int]:
+    """Admit non-duplicate transition identities through one evidence door."""
+    project = Path(project_dir)
+    if log is None:
+        log = EpisodeLog.read_jsonl(episode_log_path(project))
+    index: dict[str, set[tuple[str, object]]] = {}
+    for existing in log:
+        index.setdefault(existing.context_hash(), set()).add(
+            (existing.observation_hash(), existing.identity)
+        )
+    admitted: list[Transition] = []
+    for row in observation_log(observed):
+        consequence = (row.observation_hash(), row.identity)
+        consequences = index.setdefault(row.context_hash(), set())
+        if consequence in consequences:
+            continue
+        consequences.add(consequence)
+        admitted.append(row)
+    if admitted:
+        log.append_jsonl(episode_log_path(project), admitted)
+    return log, len(admitted)
+
+
+def grow_evidence(
+    project_dir: "Path | str",
+    observed,
+    adapter: EnvironmentAdapter,
+    *,
+    log: EpisodeLog | None = None,
+) -> int:
+    """Admit live observations and refresh their derived read models."""
+    project = Path(project_dir)
+    log, grown = admit_observations(project, observed, log=log)
+    if grown == 0:
+        return 0
+    result = synthesize(log, adapter.action_arity)
+    witnessed = {context_key(tr.a, tr.t) for tr in log}
+    write_committee_read_model(project, result, witnessed, log)
+    write_deterministic_evidence(project)
+    return grown
 
 
 def write_committee_read_model(project_dir: "Path | str", result: SynthesisResult,

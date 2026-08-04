@@ -142,15 +142,31 @@ def _patch_base_context_for_retry(
 
 
 def _counterexample_context_for_retry(project_dir: str | Path | None) -> str:
-    """Return compact context from the latest producer-issued quotient receipt."""
+    """Return compact context through the active task's receipt door."""
     if project_dir is None:
         return ""
+    summary = ""
+    try:
+        from ztare.common.leaf_workbench_executor import (
+            active_workbench_task_first_fire_receipt,
+        )
+
+        receipt = active_workbench_task_first_fire_receipt(
+            project_dir,
+            adapter_id="worldmodel",
+            materialize=False,
+        )
+        if isinstance(receipt, dict):
+            summary = str(receipt.get("output_summary") or "")
+    except Exception:
+        summary = ""
     try:
         from ztare.worldmodel.leaf_workbench import (
             run_worldmodel_counterexample_context_probe,
         )
 
-        summary = run_worldmodel_counterexample_context_probe(project_dir)
+        if not summary:
+            summary = run_worldmodel_counterexample_context_probe(project_dir)
     except Exception:
         return ""
     if not summary.strip():
@@ -162,7 +178,7 @@ def _counterexample_context_for_retry(project_dir: str | Path | None) -> str:
         else summary.strip()
     )
     return (
-        "\nFRESH COUNTEREXAMPLE CONTEXT (from latest patch-base regression receipt; "
+        "\nFRESH COUNTEREXAMPLE CONTEXT (from the active evaluation receipt; "
         "use as typed evidence, not as authority over the gate):\n"
         f"{rendered}\n\n"
     )
@@ -415,6 +431,18 @@ def _ready_receipt_facts_for_retry(
     project_dir: str | Path | None = None,
 ) -> str:
     rows = _workbench_receipt_rows_for_retry(retry_state_text)
+    # A retry needs the current consequence of each operation, not every
+    # historical presentation of it.  Later receipts supersede earlier ones
+    # for prompt projection while the kernel artifacts retain the audit trail.
+    latest_by_capability: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        payload = row.get("payload") if isinstance(row, dict) else None
+        if not isinstance(payload, dict):
+            continue
+        capability_id = str(payload.get("capability_id") or "").strip()
+        if capability_id:
+            latest_by_capability[capability_id] = row
+    rows = list(latest_by_capability.values())
     facts: list[dict[str, object]] = []
     for row in rows:
         payload = row.get("payload") if isinstance(row, dict) else None
@@ -497,6 +525,26 @@ def _ready_receipt_facts_for_retry(
             near = summary.get("near_miss_predicates")
             if isinstance(near, list) and near:
                 fact["near_miss_predicates"] = near[:2]
+            donors = summary.get("archived_residual_donors")
+            if isinstance(donors, list) and donors:
+                fact["archived_residual_donors"] = [
+                    {
+                        key: donor[key]
+                        for key in (
+                            "authority",
+                            "candidate_ref",
+                            "candidate_sha256",
+                            "historical_disposition",
+                            "baseline_wrong_cells",
+                            "donor_wrong_cells",
+                            "relation",
+                            "prediction_sha256",
+                        )
+                        if key in donor
+                    }
+                    for donor in donors[:2]
+                    if isinstance(donor, dict)
+                ]
         else:
             text = str(payload.get("output_summary") or "").strip()
             if text:
@@ -758,6 +806,18 @@ def _compact_counterexample_observation(
     )
     chart = observation.get("observation_chart")
     chart = chart if isinstance(chart, dict) else {}
+    donors = observation.get("archived_residual_donors")
+    donor_fields = (
+        "schema",
+        "authority",
+        "candidate_ref",
+        "candidate_sha256",
+        "historical_disposition",
+        "baseline_wrong_cells",
+        "donor_wrong_cells",
+        "relation",
+        "prediction_sha256",
+    )
     compact = {
         "schema": observation.get("schema"),
         "observation_ref": observation.get("observation_ref"),
@@ -779,6 +839,11 @@ def _compact_counterexample_observation(
         "state_change_truncated": len(state_change_runs) > max_residual_runs,
         "chart_overlap_conflicts": overlap_conflicts[:8],
         "chart_overlap_conflict_count": len(overlap_conflicts),
+        "archived_residual_donors": [
+            {key: donor[key] for key in donor_fields if key in donor}
+            for donor in (donors if isinstance(donors, list) else [])[:4]
+            if isinstance(donor, dict)
+        ],
     }
     return {key: value for key, value in compact.items() if value not in (None, "", [], {})}
 

@@ -1,0 +1,275 @@
+{
+  "holdout_count": 6,
+  "holdout_positive_count": 1,
+  "language_results": [
+    {
+      "language": "event_family",
+      "passed": false,
+      "positive_margin": 0.4,
+      "ranked_holdouts": [
+        {
+          "action_baseline_score": 0.39285714285714285,
+          "aligned_template_count": 1,
+          "alignment": [
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14226,
+                  "event": [
+                    [
+                      "finite_configuration",
+                      "changed"
+                    ]
+                  ],
+                  "event_sha256": "09a71064a23fda34749ad487999eb6b736ba14963bd15e13776a1ecc47eaf040",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14226",
+                  "operation": "1",
+                  "time": 30
+                }
+              ],
+              "candidate_position": 0,
+              "template_lineage": [
+                {
+                  "bank_row": 14202,
+                  "event": [
+                    [
+                      "finite_configuration",
+                      "changed"
+                    ]
+                  ],
+                  "event_sha256": "09a71064a23fda34749ad487999eb6b736ba14963bd15e13776a1ecc47eaf040",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+                  "operation": "0",
+                  "time": 6
+                }
+              ],
+              "template_position": 0
+            }
+          ],
+          "boundary_index": 14254,
+          "boundary_kind": "level_completed",
+          "event_count": 4,
+          "full_template_embedding": true,
+          "length_baseline_score": 0.2727272727272727,
+          "positive": true,
+          "reverse_score": 0.4,
+          "score": 0.4,
+          "section_length": 45
+        },
+        {
+          "action_baseline_score": 0.32,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 13958,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 1,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.19047619047619047,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 64
+        },
+        {
+          "action_baseline_score": 0.36923076923076925,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14016,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 1,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2264150943396226,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "action_baseline_score": 0.36363636363636365,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14077,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 1,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2222222222222222,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        },
+        {
+          "action_baseline_score": 0.36923076923076925,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14132,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 1,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2264150943396226,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "action_baseline_score": 0.36363636363636365,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14194,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 1,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2222222222222222,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        }
+      ],
+      "template_event_count": 1,
+      "template_reverse_identical": true,
+      "template_sha256": "0fea7a9d4ac62f3813e1f055346181903db44c141b96559ceffd864a2bd6d968"
+    },
+    {
+      "language": "event_operation_partition",
+      "passed": false,
+      "positive_margin": 0.3333333333333333,
+      "ranked_holdouts": [
+        {
+          "action_baseline_score": 0.39285714285714285,
+          "aligned_template_count": 1,
+          "alignment": [
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14226,
+                  "event": [
+                    [
+                      "finite_configuration",
+                      "changed"
+                    ]
+                  ],
+                  "event_sha256": "09a71064a23fda34749ad487999eb6b736ba14963bd15e13776a1ecc47eaf040",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14226",
+                  "operation": "1",
+                  "time": 30
+                }
+              ],
+              "candidate_position": 0,
+              "template_lineage": [
+                {
+                  "bank_row": 14202,
+                  "event": [
+                    [
+                      "finite_configuration",
+                      "changed"
+                    ]
+                  ],
+                  "event_sha256": "09a71064a23fda34749ad487999eb6b736ba14963bd15e13776a1ecc47eaf040",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+                  "operation": "0",
+                  "time": 6
+                }
+              ],
+              "template_position": 0
+            }
+          ],
+          "boundary_index": 14254,
+          "boundary_kind": "level_completed",
+          "event_count": 5,
+          "full_template_embedding": true,
+          "length_baseline_score": 0.2727272727272727,
+          "positive": true,
+          "reverse_score": 0.3333333333333333,
+          "score": 0.3333333333333333,
+          "section_length": 45
+        },
+        {
+          "action_baseline_score": 0.32,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 13958,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 2,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.19047619047619047,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 64
+        },
+        {
+          "action_baseline_score": 0.36923076923076925,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14016,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 2,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2264150943396226,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "action_baseline_score": 0.36363636363636365,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14077,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 2,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2222222222222222,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        },
+        {
+          "action_baseline_score": 0.36923076923076925,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14132,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 2,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2264150943396226,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "action_baseline_score": 0.36363636363636365,
+          "aligned_template_count": 0,
+          "alignment": [],
+          "boundary_index": 14194,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "event_count": 2,
+          "full_template_embedding": false,
+          "length_baseline_score": 0.2222222222222222,
+          "positive": false,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        }
+      ],
+      "template_event_count": 1,
+      "template_reverse_identical": true,
+      "template_sha256": "2ce103cd61cf1965bf18281a1493b11173450bade870b751c9f9281b5b50c3db"
+    }
+  ],
+  "passing_languages": [],
+  "schema": "ztare-success-predecessor-mechanism-audit-v1",
+  "status": "success_predecessor_mechanism_transport_refuted",
+  "template": {
+    "boundary_index": 14209,
+    "boundary_kind": "level_completed",
+    "raw_event_count": 1,
+    "section_length": 13,
+    "source_epoch": 0,
+    "target_epoch": 1
+  }
+}

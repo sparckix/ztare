@@ -1,0 +1,794 @@
+{
+  "bounds": {
+    "max_depth_per_search": 180,
+    "max_refinements": 8,
+    "max_states_per_search": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "all_splits_new_and_separating": true,
+    "closure_within_cap": false,
+    "final_edge_found": false,
+    "no_environment_contact": true,
+    "no_final_counterexample": false,
+    "selected_joint_code": false,
+    "target_independent_splits": true
+  },
+  "final_projection_sha256": "ca4dce53f7538303d9cdfad5c5ddf81a5f73861c8e2eec0f9a551ae1777dfafd",
+  "final_replay": {},
+  "iterations": [
+    {
+      "iteration": 1,
+      "projection_sha256": "27fdbd75a574e1c6c4353daf02f9e03d987d8f8ae91c25adfaa6419b3c49bf09",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 21,
+        "expanded": 190,
+        "frontier_remaining": 104,
+        "generated": 293,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 2,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  61,
+                  56
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  56
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True))), (0.0,))",
+          "dominated_time": "86",
+          "dominator_image": "((((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), (0.0,))",
+          "dominator_time": "85",
+          "intervention": "2",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            61,
+            57
+          ],
+          [
+            62,
+            57
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_2d88c68a8c832128",
+        "left_bit": true,
+        "lineage": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/repaired_joint_affordance_search_audit_result.json",
+        "reference": [
+          3,
+          3
+        ],
+        "right_bit": false
+      }
+    },
+    {
+      "iteration": 2,
+      "projection_sha256": "7829e4300110f0c5d030417e0a0dd4607040d0e90c7f5b4d3dbc09bc447919a8",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 22,
+        "expanded": 231,
+        "frontier_remaining": 109,
+        "generated": 339,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 9,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  46,
+                  30
+                ],
+                "left": 3,
+                "right": 9
+              },
+              {
+                "coordinate": [
+                  46,
+                  31
+                ],
+                "left": 3,
+                "right": 14
+              },
+              {
+                "coordinate": [
+                  46,
+                  32
+                ],
+                "left": 3,
+                "right": 14
+              },
+              {
+                "coordinate": [
+                  47,
+                  30
+                ],
+                "left": 3,
+                "right": 9
+              },
+              {
+                "coordinate": [
+                  47,
+                  31
+                ],
+                "left": 3,
+                "right": 0
+              },
+              {
+                "coordinate": [
+                  47,
+                  32
+                ],
+                "left": 3,
+                "right": 8
+              },
+              {
+                "coordinate": [
+                  48,
+                  30
+                ],
+                "left": 3,
+                "right": 12
+              },
+              {
+                "coordinate": [
+                  48,
+                  31
+                ],
+                "left": 3,
+                "right": 12
+              },
+              {
+                "coordinate": [
+                  48,
+                  32
+                ],
+                "left": 3,
+                "right": 8
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False), ('counterexample_availability_b180b62bd93f8a62', False))), (21.0,))",
+          "dominated_time": "85",
+          "dominator_image": "((((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True))), (21.0,))",
+          "dominator_time": "85",
+          "intervention": "1",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((40, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False), ('counterexample_availability_b180b62bd93f8a62', False)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            61,
+            56
+          ],
+          [
+            62,
+            56
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_b180b62bd93f8a62",
+        "left_bit": false,
+        "lineage": "iteration:1:a72744943bcbbfb81f75ce57ea95587594bfd7366cb3784a39df9e20329d4823",
+        "reference": [
+          3,
+          3
+        ],
+        "right_bit": true
+      }
+    },
+    {
+      "iteration": 3,
+      "projection_sha256": "97c97a3f29813fa0be2da97d084d872dba3315e956d66420b7d728b4e6a25d76",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 23,
+        "expanded": 324,
+        "frontier_remaining": 164,
+        "generated": 487,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 2,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  61,
+                  59
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  59
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((35, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False))), (0.0,))",
+          "dominated_time": "88",
+          "dominator_image": "((((35, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False))), (21.0,))",
+          "dominator_time": "87",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            46,
+            30
+          ],
+          [
+            46,
+            31
+          ],
+          [
+            46,
+            32
+          ],
+          [
+            47,
+            30
+          ],
+          [
+            47,
+            31
+          ],
+          [
+            47,
+            32
+          ],
+          [
+            48,
+            30
+          ],
+          [
+            48,
+            31
+          ],
+          [
+            48,
+            32
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_78bf30ee95235058",
+        "left_bit": true,
+        "lineage": "iteration:2:16a3d200579b4bd313da63c60e0f8442f433ae96a2e588e3c8bd22179a896860",
+        "reference": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "right_bit": false
+      }
+    },
+    {
+      "iteration": 4,
+      "projection_sha256": "5bf04ceb34fb720fee05b8d127246a5776a2ed8f96d1677aa50ef1ca72e77eb3",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 36,
+        "expanded": 4112,
+        "frontier_remaining": 1011,
+        "generated": 5122,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 10,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  16,
+                  35
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  16,
+                  36
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  16,
+                  37
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  17,
+                  35
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  17,
+                  37
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  18,
+                  35
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  18,
+                  36
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  18,
+                  37
+                ],
+                "left": 3,
+                "right": 11
+              },
+              {
+                "coordinate": [
+                  61,
+                  60
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  60
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True))), (0.0,))",
+          "dominated_time": "89",
+          "dominator_image": "((((45, 9),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False), ('counterexample_availability_b180b62bd93f8a62', False), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True))), (0.0,))",
+          "dominator_time": "88",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            61,
+            59
+          ],
+          [
+            62,
+            59
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_19fa656406c10db0",
+        "left_bit": false,
+        "lineage": "iteration:3:0f1b33e3637605eb6335db7e70456bf8ee4e0cef8ce68d68f97925db3db1942f",
+        "reference": [
+          3,
+          3
+        ],
+        "right_bit": true
+      }
+    },
+    {
+      "iteration": 5,
+      "projection_sha256": "24e329ada9bca40d6be70bcd9232aed16bd5614dee4b507e587b0ebf09757f95",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 30,
+        "expanded": 1838,
+        "frontier_remaining": 726,
+        "generated": 2563,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 3,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  31,
+                  22
+                ],
+                "left": 11,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  32,
+                  22
+                ],
+                "left": 11,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  33,
+                  22
+                ],
+                "left": 11,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((25, 49),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', True), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', False))), (0.0,))",
+          "dominated_time": "94",
+          "dominator_image": "((((25, 49),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', True), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True))), (0.0,))",
+          "dominator_time": "93",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((30, 49),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', True), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            16,
+            35
+          ],
+          [
+            16,
+            36
+          ],
+          [
+            16,
+            37
+          ],
+          [
+            17,
+            35
+          ],
+          [
+            17,
+            37
+          ],
+          [
+            18,
+            35
+          ],
+          [
+            18,
+            36
+          ],
+          [
+            18,
+            37
+          ],
+          [
+            61,
+            60
+          ],
+          [
+            62,
+            60
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_64065e3a46e047e9",
+        "left_bit": false,
+        "lineage": "iteration:4:e997df24eda33128710826b74b8db02ed82d82774ae43062ff54de84448328e3",
+        "reference": [
+          11,
+          11,
+          11,
+          11,
+          11,
+          11,
+          11,
+          11,
+          3,
+          3
+        ],
+        "right_bit": true
+      }
+    },
+    {
+      "iteration": 6,
+      "projection_sha256": "b039876fe1c7e0cc587c1cb2c83b9e5d1b28cd7dcafb02b70b25588badc27d23",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 27,
+        "expanded": 1149,
+        "frontier_remaining": 704,
+        "generated": 1852,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 4,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  61,
+                  62
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  61,
+                  63
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  62
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  63
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((40, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', False), ('counterexample_availability_e8ff7167eeef27ec', False))), (0.0,))",
+          "dominated_time": "91",
+          "dominator_image": "((((40, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', False))), (0.0,))",
+          "dominator_time": "89",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', False)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            31,
+            22
+          ],
+          [
+            32,
+            22
+          ],
+          [
+            33,
+            22
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_e8ff7167eeef27ec",
+        "left_bit": true,
+        "lineage": "iteration:5:85baf6e93cda41e2ebb75d693e7e9e7cf2a4ff18cae0546efac589e0b1500501",
+        "reference": [
+          11,
+          11,
+          11
+        ],
+        "right_bit": false
+      }
+    },
+    {
+      "iteration": 7,
+      "projection_sha256": "a7213a3d34b90063a52535678692587e727798a908bcc898ae7b3d11a90f5d62",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 25,
+        "expanded": 452,
+        "frontier_remaining": 280,
+        "generated": 731,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 2,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  61,
+                  62
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  62,
+                  62
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((35, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', True), ('counterexample_availability_7b76f72a55ebadf9', True))), (0.0,))",
+          "dominated_time": "90",
+          "dominator_image": "((((35, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', True), ('counterexample_availability_7b76f72a55ebadf9', False))), (0.0,))",
+          "dominator_time": "89",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', True), ('counterexample_availability_7b76f72a55ebadf9', False)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            61,
+            62
+          ],
+          [
+            61,
+            63
+          ],
+          [
+            62,
+            62
+          ],
+          [
+            62,
+            63
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_7b76f72a55ebadf9",
+        "left_bit": false,
+        "lineage": "iteration:6:e76bdc177e447cd853be36f2920e881701fbce71898356eb5e50d936d8c0609c",
+        "reference": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "right_bit": true
+      }
+    },
+    {
+      "iteration": 8,
+      "projection_sha256": "ca4dce53f7538303d9cdfad5c5ddf81a5f73861c8e2eec0f9a551ae1777dfafd",
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 28,
+        "expanded": 1562,
+        "frontier_remaining": 890,
+        "generated": 2451,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 2,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  47,
+                  32
+                ],
+                "left": 8,
+                "right": 3
+              },
+              {
+                "coordinate": [
+                  48,
+                  32
+                ],
+                "left": 8,
+                "right": 3
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((40, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', False), ('counterexample_availability_e8ff7167eeef27ec', False), ('counterexample_availability_7b76f72a55ebadf9', True), ('counterexample_availability_0b942a2cb0c8bc4f', True))), (0.0,))",
+          "dominated_time": "92",
+          "dominator_image": "((((40, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', False), ('counterexample_availability_7b76f72a55ebadf9', True), ('counterexample_availability_0b942a2cb0c8bc4f', True))), (0.0,))",
+          "dominator_time": "91",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((40, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True), ('counterexample_availability_b180b62bd93f8a62', True), ('counterexample_availability_78bf30ee95235058', False), ('counterexample_availability_19fa656406c10db0', True), ('counterexample_availability_64065e3a46e047e9', True), ('counterexample_availability_e8ff7167eeef27ec', False), ('counterexample_availability_7b76f72a55ebadf9', True), ('counterexample_availability_0b942a2cb0c8bc4f', True)))"
+        },
+        "status": "projection_noncommuting"
+      },
+      "split": {
+        "cells": [
+          [
+            61,
+            62
+          ],
+          [
+            62,
+            62
+          ]
+        ],
+        "discriminator_id": "counterexample_availability_0b942a2cb0c8bc4f",
+        "left_bit": false,
+        "lineage": "iteration:7:5efde6eba2395727f49e55bca044acf0aaa87259de1f1a1b78c6888e643f492f",
+        "reference": [
+          3,
+          3
+        ],
+        "right_bit": true
+      }
+    }
+  ],
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "problem_id": "e2adc91d7e386790c1f92fc6658920399ca55d3a0a7372c443b37c87f634fc30",
+  "refinement_count": 8,
+  "schema": "ztare-availability-cegar-closure-audit-v1",
+  "status": "availability_cegar_closure_refuted",
+  "stop_reason": "refinement_cap_exhausted",
+  "target": {
+    "configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "arm_order": [
+    "offer",
+    "withhold"
+  ],
+  "offer_composite_minus_withhold": 0.030000000000000027,
+  "offer_outcome": {
+    "assignment": "offer",
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h91_instrumented_proposal_plasticity/arms/pair_01_offer_causal_mechanics.json#sha256=e1be724e870ccb41360d69b9fac836a588e22f21e9866729cef668ef663c9742",
+    "external_value": 0.8800000000000001,
+    "kind": "instrumented_proposal_outcome",
+    "net_external_value": 0.8800000000000001,
+    "offer_cost": 0.0,
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "sha256": "1d83377dd4319a85f0a1c27b6a6528c6ef1c06e2273ce8ad7987c4956c380732",
+    "transition_sha256": "f229adbc605b7a9ae29fe95a0644fa5d09c3bc7b749b940d60584b80a4f5474f"
+  },
+  "offer_task_minus_withhold": 0.0,
+  "offer_transition": {
+    "action_relevant_displacement": true,
+    "added_required_features": [
+      "state_precondition_first"
+    ],
+    "assignment": "offer",
+    "changed_action": true,
+    "changed_features": true,
+    "changed_prediction": true,
+    "contract_sha256": "e5ed28ce88a6f61ccf02361ad80e74067f82a3cabe18b906beff76b0683bfd9f",
+    "controller_instance_sha256": "6af232bb43fc08c1d3a51c35ce2c4b42bfd446b8e7ba4e5a5c38cb0733767ed8",
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "instrumented_proposal_transition",
+    "post_proposal_sha256": "098167c30f061076f45d684f6269e45a6cf2d1b4c6c13b56d1aa31864294b1f9",
+    "pre_basin_sha256": "d5e58571896a74c79c0db8d65f21a168eef68c29645a4303d5e8179ee7ae9f2a",
+    "pre_proposal_sha256": "678be5d22a35909e56bf32036453caad127e45ba2beea326f67de6dc791639a7",
+    "relation": "offered_supported_transport",
+    "removed_forbidden_features": [],
+    "response_signature_sha256": "57476143560a231d3cf7faf6de3867812a23c6818c4f13816cf2429b4def43cb",
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "f229adbc605b7a9ae29fe95a0644fa5d09c3bc7b749b940d60584b80a4f5474f",
+    "stratum_sha256": "6e2e2df59a12ccd8fb7a235db66b10a445a147eb5f1cf1e4ff8d299c9ae48aa4",
+    "supported_transport": true,
+    "trial_ref": "6e2e2df59a12ccd8fb7a235db66b10a445a147eb5f1cf1e4ff8d299c9ae48aa4:offer:decision-0"
+  },
+  "pair_index": 1,
+  "stratum": {
+    "action_budget": 20,
+    "efficiency_score_weight": 0.2,
+    "kind": "recall_experiment_stratum",
+    "primitive_action_cost": 20.0,
+    "randomization_seed_sha256": "06b9864971a0eaeffb1b96fccd8bf243f52c15a9a585a894302d53f5494747b0",
+    "restored_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "restored_prefix_sha256": "3ba63f910b48e9dcce208dd5d865f47443d7aa0b525929c0ec644364a1b85428",
+    "schema": "ztare-wake-sleep-recall-identities-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "6e2e2df59a12ccd8fb7a235db66b10a445a147eb5f1cf1e4ff8d299c9ae48aa4",
+    "task_score_weight": 0.8
+  },
+  "withhold_outcome": {
+    "assignment": "withhold",
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h91_instrumented_proposal_plasticity/arms/pair_01_withhold_redundant_true_memory.json#sha256=1741886a54d2c2bf80b21324d5c0dff8dce71c54f2c3bdf10cea8155d96d73b5",
+    "external_value": 0.8500000000000001,
+    "kind": "instrumented_proposal_outcome",
+    "net_external_value": 0.8500000000000001,
+    "offer_cost": 0.0,
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "sha256": "3ecb326453408354bd93fa01e48650828c8e42fa62eb3afd6a010036c5cb111e",
+    "transition_sha256": "06bb188175fe031402de894fe258642c00e5a79e8c5fa4511b27864910dd7b87"
+  },
+  "withhold_transition": {
+    "action_relevant_displacement": true,
+    "added_required_features": [],
+    "assignment": "withhold",
+    "changed_action": true,
+    "changed_features": true,
+    "changed_prediction": true,
+    "contract_sha256": "e5ed28ce88a6f61ccf02361ad80e74067f82a3cabe18b906beff76b0683bfd9f",
+    "controller_instance_sha256": "56934221129dd67ffdc7d7c36281ed9fc21d7577e9911f6495123065d8d5bac1",
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "instrumented_proposal_transition",
+    "post_proposal_sha256": "2bbc6bacda9712e934b3d1ffdd709a43f259583a2a7819764fcc1332e147717c",
+    "pre_basin_sha256": "846711e9aea1b6615e0f12d30e1a04b303c24ad4fc24ce239a3c96f7abf502bb",
+    "pre_proposal_sha256": "991a1c09324d27bd817e4c547ccdf955d258134664af56b366f6ea728c2ee382",
+    "relation": "withheld_spontaneous_contradiction",
+    "removed_forbidden_features": [],
+    "response_signature_sha256": "3a87a9aac45e0dc9aca062c1c9e80cb9f462d287c8d7a10f70e024be54536f1e",
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "06bb188175fe031402de894fe258642c00e5a79e8c5fa4511b27864910dd7b87",
+    "stratum_sha256": "6e2e2df59a12ccd8fb7a235db66b10a445a147eb5f1cf1e4ff8d299c9ae48aa4",
+    "supported_transport": false,
+    "trial_ref": "6e2e2df59a12ccd8fb7a235db66b10a445a147eb5f1cf1e4ff8d299c9ae48aa4:withhold:decision-0"
+  }
+}

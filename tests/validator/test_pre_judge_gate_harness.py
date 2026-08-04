@@ -14,6 +14,7 @@ from ztare.common.leaf_workbench_contract import (
     LeafWorkbenchContract,
 )
 from ztare.validator.core.pre_judge_gate import (
+    _append_gate_receipt,
     bind_pre_judge_gate_payload,
     consume_pre_judge_gate_receipt,
     detect_patch_base_regression_preflight,
@@ -648,6 +649,123 @@ def test_pre_judge_gate_marks_regression_against_best_cached_candidate(tmp_path:
     assert not (project / "workspace" / "strategy_experiments.jsonl").exists()
 
 
+def test_task_hypothesis_tie_is_admitted_without_carrier_promotion_or_memory(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    latest = project / "latest_eval_results.json"
+    candidate = project / "workspace" / "submissions" / "task_companion.py"
+    candidate.parent.mkdir(parents=True)
+    candidate.write_text("def step(grid, action, t): return grid\n", encoding="utf-8")
+    prior_sha = _write_prior_submission(project)
+    memory_path = project / "workspace" / "candidate_memory.json"
+    memory_path.write_text(
+        json.dumps(
+            {
+                "schema": "ztare-candidate-memory-v1",
+                "records": [
+                    {
+                        "source_type": "full_survivor",
+                        "submission": "workspace/submissions/iter_001.py",
+                        "sha": prior_sha,
+                        "visible_checked_rows": 10,
+                        "visible_exact_rows": 10,
+                        "visible_wrong_cells": 0,
+                        "holdout_depth": 16,
+                        "gate_score": 1.0,
+                        "description_length": 100,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    _write_harness(
+        project,
+        (
+            "import json\n"
+            "print(json.dumps({\n"
+            "  'score': 1.0, 'score_contract': 'deterministic_gates_only',\n"
+            "  'description_length': 120, 'harness_ok': True, 'gates': {\n"
+            "    'visible_replay_exact': {'name': 'visible_replay_exact', "
+            "'tier': 'observed', 'pass': True, 'diagnostics': {"
+            "'checked_rows': 10, 'exact_rows': 10, 'wrong_cell_count': 0}},\n"
+            "    'holdout_rollout_exact': {'name': 'holdout_rollout_exact', "
+            "'tier': 'heldout', 'value': 16, 'threshold': 16, 'pass': True}\n"
+            "  }\n"
+            "}))\n"
+        ),
+    )
+
+    result = run_pre_judge_gate_harness(
+        enabled=True,
+        project_dir=project,
+        latest_eval_results_path=latest,
+        python_executable=sys.executable,
+        candidate_path=candidate,
+        artifact_role="task_hypothesis",
+    )
+
+    decision = result.payload["pre_judge_decision"]
+    assert result.should_skip_judge is True
+    assert decision["evaluator_authorized"] is True
+    assert decision["candidate_promotion_authorized"] is False
+    assert decision["authority_scope"] == "task_hypothesis_admissibility"
+    assert decision["model_selection_relation"] == (
+        "behaviorally_equivalent_role_companion"
+    )
+    records = json.loads(memory_path.read_text())["records"]
+    assert len(records) == 2
+    task_records = [
+        row for row in records if row.get("artifact_role") == "task_hypothesis"
+    ]
+    assert len(task_records) == 1
+    assert not (project / "workspace" / "latest_harness_weakness.json").exists()
+
+
+def test_task_hypothesis_companion_cannot_remain_a_carrier_repair_task(
+    tmp_path: Path,
+) -> None:
+    from ztare.common.leaf_workbench_executor import (
+        active_workbench_task_capability_scope,
+    )
+
+    workspace = tmp_path / "workspace"
+    submissions = workspace / "submissions"
+    submissions.mkdir(parents=True)
+    source = (
+        "TASK_HYPOTHESIS_PROVENANCE = {"
+        "'schema': 'ztare-task-hypothesis-companion-v1'}\n"
+        "def step(state, action, t): return state\n"
+    )
+    candidate = submissions / "task_companion.py"
+    candidate.write_text(source, encoding="utf-8")
+    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "active_frontier": {
+                    "candidate_sha": digest,
+                    "source_ref": "workspace/submissions/task_companion.py",
+                },
+                "workbench_task": {
+                    "task_id": "wrong-role-task",
+                    "source_ref": "workspace/submissions/task_companion.py",
+                    "source_sha256": digest,
+                    "admissible_capability_ids": ["run_visible_json_probe"],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    scope, task = active_workbench_task_capability_scope(tmp_path)
+
+    assert scope == frozenset()
+    assert task == {}
+
+
 def test_pre_judge_gate_ignores_impure_cached_candidate_memory(tmp_path: Path):
     project = tmp_path / "project"
     project.mkdir()
@@ -1219,6 +1337,14 @@ def test_retry_frontier_candidate_is_content_addressed(tmp_path: Path) -> None:
     assert ref == ref_again
     assert digest == digest_again == hashlib.sha256(source.encode()).hexdigest()
     assert (tmp_path / ref).read_text(encoding="utf-8") == source
+
+
+def test_diagnostic_receipt_write_failure_cannot_change_gate_consequence(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "workspace").write_text("read-only boundary", encoding="utf-8")
+
+    assert _append_gate_receipt(tmp_path, {"verdict": "failed"}) is False
 
 
 def test_patch_base_hard_gate_routes_to_executable_workbench_probe(tmp_path: Path):
@@ -3355,6 +3481,48 @@ def test_residual_event_identity_survives_translation_and_palette_change() -> No
     assert first["promotion_authorized"] is False
 
 
+def test_residual_extractor_consumes_accepted_mover_role() -> None:
+    from types import SimpleNamespace
+
+    from ztare.worldmodel.leaf_workbench import (
+        _catalog_residual_event_candidates,
+    )
+
+    source = [[0] * 12 for _ in range(12)]
+    proposed = [[0] * 12 for _ in range(12)]
+    observed = [[0] * 12 for _ in range(12)]
+    source[2][1:3] = [1, 1]
+    source[3][1:3] = [2, 2]
+    source[2][3] = 1
+    source[3][3] = 2
+    for grid in (proposed, observed):
+        grid[2][3:5] = [1, 1]
+        grid[3][3:5] = [2, 2]
+    observed[9][1:4] = [7, 7, 7]
+    transition = SimpleNamespace(
+        s=tuple(tuple(row) for row in source),
+        s_next=tuple(tuple(row) for row in observed),
+        a=3,
+        t=0,
+        identity=None,
+    )
+
+    candidates = _catalog_residual_event_candidates(
+        [],
+        transition,
+        tuple(tuple(row) for row in proposed),
+        transition.s_next,
+        mover_palettes=[(1, 2)],
+        mover_patterns=[{"shape": [2, 2], "values": [1, 1, 2, 2]}],
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0]["identity_status"] == "operation_recurrence_required"
+    assert candidates[0]["operation_identity"]["subject_role"] == (
+        "moves_under_actions"
+    )
+
+
 def test_vacated_component_boundary_requires_and_uses_intervention_recurrence() -> None:
     from ztare.worldmodel.episode_log import EpisodeLog
     from ztare.worldmodel.leaf_workbench import (
@@ -4309,6 +4477,142 @@ def test_leaf_workbench_action_request_runs_lowerable_selector_miner(tmp_path: P
     assert "action" in names
 
 
+def test_lowerable_selector_consumes_kernel_receipt_through_observation_ref_alias(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from ztare.worldmodel import leaf_workbench
+
+    project = tmp_path / "project"
+    workspace = project / "workspace"
+    receipts = workspace / "leaf_workbench_action_receipts"
+    receipts.mkdir(parents=True)
+    (project / "latest_eval_results.json").write_text("{}", encoding="utf-8")
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "workbench_task": {
+                    "task_id": "task-a",
+                    "failure_class": "unquotiented_counterexample_chart_missing",
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    donor = {
+        "candidate_ref": "workspace/submissions/donor.py",
+        "candidate_sha256": "d" * 64,
+        "authority": "diagnostic_operation_salvage_only",
+        "baseline_wrong_cells": 9,
+        "donor_wrong_cells": 1,
+    }
+    receipt_ref = "workspace/leaf_workbench_action_receipts/inspect.json"
+    (project / receipt_ref).write_text(
+        json.dumps(
+            {
+                "schema": "ztare-leaf-workbench-kernel-receipt-v1",
+                "capability_id": "inspect_worldmodel_counterexample_context",
+                "request": {"input_refs": {"task_id": "task-a"}},
+                "receipt": {
+                    "output_summary": json.dumps(
+                        {
+                            "observation_sha256": "observation-a",
+                            "counterexample_observation": {
+                                "consumer_quotient_difference": {
+                                    "changed_factor_names": ["finite_configuration"]
+                                },
+                                "archived_residual_donors": [donor],
+                            },
+                        }
+                    )
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        leaf_workbench,
+        "_mine_task_operation_domain_selector",
+        lambda *_args, **_kwargs: None,
+    )
+
+    result = leaf_workbench._handle_lowerable_selector_action(
+        project,
+        {
+            "input_refs": {
+                "observation_ref": receipt_ref,
+                "latest_eval_ref": "latest_eval_results.json",
+            }
+        },
+        None,
+        leaf_workbench.WORLD_MODEL_LEAF_WORKBENCH_CONTRACT,
+    )
+    summary = json.loads(result["output_summary"])
+
+    assert result["input_hashes"]["upstream_receipt_refs"] == [receipt_ref]
+    assert summary["lowerability_status"] == "consumer_quotient_available"
+    assert summary["archived_residual_donors"] == [donor]
+
+
+def test_active_task_fragment_surfaces_operation_donor_consequence(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from ztare.worldmodel import leaf_workbench
+
+    workspace = tmp_path / "workspace"
+    submissions = workspace / "submissions"
+    submissions.mkdir(parents=True)
+    source_ref = "workspace/submissions/frontier.py"
+    (tmp_path / source_ref).write_text("PROGRAM = None\n", encoding="utf-8")
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "workbench_task": {
+                    "task_id": "task-a",
+                    "failure_class": "counterexample_chart",
+                    "source_ref": source_ref,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        leaf_workbench,
+        "_active_task_consumed_payload",
+        lambda _project: (
+            {
+                "capability_id": "mine_worldmodel_lowerable_selectors",
+                "input_hashes": {"kernel_receipt_ref": "workspace/receipt.json"},
+            },
+            {
+                "observation_sha256": "observation-a",
+                "consumer_quotient_difference": {
+                    "changed_factor_names": ["finite_configuration"]
+                },
+                "archived_residual_donors": [
+                    {
+                        "candidate_ref": "workspace/submissions/donor.py",
+                        "candidate_sha256": "d" * 64,
+                        "historical_disposition": "rejected",
+                        "authority": "diagnostic_operation_salvage_only",
+                        "baseline_wrong_cells": 150,
+                        "donor_wrong_cells": 8,
+                        "relation": "strictly_closer_on_counterexample",
+                    }
+                ],
+            },
+        ),
+    )
+
+    fragment = leaf_workbench._render_active_task_first_fire_fragment(tmp_path)
+
+    assert "workspace/submissions/donor.py" in fragment
+    assert "counterexample wrong cells 150→8" in fragment
+    assert "salvage only the improving operation" in fragment
+    assert "archived program disposition remains in force" in fragment
+
+
 def test_lowerable_selector_requires_recurrence_before_granting_authority(tmp_path: Path):
     from ztare.worldmodel.leaf_workbench import (
         run_worldmodel_lowerable_selector_miner,
@@ -4363,6 +4667,113 @@ def test_lowerable_selector_requires_recurrence_before_granting_authority(tmp_pa
     assert summary["conjecture_predicates"] == []
     assert summary["identity_support"]["authority_granted"] is True
     assert summary["identity_support"]["distinct_positive_observations"] == 2
+
+
+def test_generic_selector_outcome_consumes_counterexample_route(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from ztare.worldmodel import leaf_workbench
+
+    project = tmp_path / "arc3_ab12_gov"
+    workspace = project / "workspace"
+    episodes = project / "raw" / "episodes"
+    receipts = workspace / "leaf_workbench_action_receipts"
+    receipts.mkdir(parents=True)
+    episodes.mkdir(parents=True)
+    source = [[5, 5, 5], [8, 8, 5], [5, 5, 5]]
+    target = [[5, 5, 5], [3, 3, 5], [5, 5, 5]]
+    (episodes / "episode_001.jsonl").write_text(
+        json.dumps({"t": 0, "a": 1, "s": source, "s_next": target}) + "\n",
+        encoding="utf-8",
+    )
+    (workspace / "latest_patch_base_regression.json").write_text(
+        json.dumps(
+            {
+                "counterexample_trace": {
+                    "mismatch_classes": [
+                        {"first_row": 0, "signature": {"bbox": [1, 0, 1, 1]}}
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    upstream = receipts / "inspect.json"
+    donor = {
+        "schema": "ztare-residual-donor-v1",
+        "authority": "diagnostic_operation_salvage_only",
+        "candidate_ref": "workspace/submissions/rejected.py",
+        "candidate_sha256": "d" * 64,
+        "historical_disposition": "rejected",
+        "baseline_wrong_cells": 9,
+        "donor_wrong_cells": 2,
+        "relation": "strictly_closer_on_counterexample",
+        "prediction_sha256": "e" * 64,
+    }
+    upstream.write_text(
+        json.dumps(
+            {
+                "schema": "ztare-leaf-workbench-kernel-receipt-v1",
+                "capability_id": "inspect_worldmodel_counterexample_context",
+                "request": {"input_refs": {"task_id": "task-a"}},
+                "receipt": {
+                    "capability_id": "inspect_worldmodel_counterexample_context",
+                    "output_summary": json.dumps(
+                        {
+                            "observation_sha256": "observation-a",
+                            "counterexample_observation": {
+                                "consumer_quotient_difference": {
+                                    "schema": "ztare-consumer-quotient-difference-v1",
+                                    "changed_factor_names": ["finite_configuration"],
+                                },
+                                "archived_residual_donors": [donor],
+                            },
+                        }
+                    ),
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (workspace / "latest_harness_weakness.json").write_text(
+        json.dumps(
+            {
+                "workbench_task": {
+                    "task_id": "task-a",
+                    "failure_class": "unquotiented_counterexample_chart_missing",
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        leaf_workbench,
+        "_mine_task_operation_domain_selector",
+        lambda *_args, **_kwargs: None,
+    )
+    summary = json.loads(
+        leaf_workbench.run_worldmodel_lowerable_selector_miner(
+            project,
+            upstream_receipt_refs=(
+                "workspace/leaf_workbench_action_receipts/inspect.json",
+            ),
+        )
+    )
+    rows = [
+        json.loads(line)
+        for line in (workspace / "counterexample_observation_routes.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+
+    assert rows[-1]["event"] == "first_fire"
+    assert rows[-1]["task_id"] == "task-a"
+    assert rows[-1]["observation_sha256"] == "observation-a"
+    assert rows[-1]["payload"]["outcome"] == summary["lowerability_status"]
+    assert summary["lowerability_status"] == "consumer_quotient_available"
+    assert summary["candidate_family_admissible"] is False
+    assert summary["archived_residual_donors"] == [donor]
 
 
 def test_lowerable_selector_does_not_count_epoch_boundary_as_law_recurrence(

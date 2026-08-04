@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "integer"
+    },
+    "prediction": {
+      "type": "string"
+    },
+    "plan_summary": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action",
+    "prediction",
+    "plan_summary",
+    "uncertainty"
+  ],
+  "additionalProperties": false
+}

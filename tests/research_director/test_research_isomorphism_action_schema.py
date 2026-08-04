@@ -283,6 +283,20 @@ def test_debug_conjecture_reports_parse_and_schema(monkeypatch) -> None:
             "left": [{"refuter": "no outcome difference", "gate": "gate audit", "receipt": "left_receipt"}],
             "right": [{"refuter": "no cycle reduction", "gate": "routing audit", "receipt": "right_receipt"}],
         },
+        "prior_art_inversion": {
+            "search_queries": [
+                "typed probe scheduler adaptive routing prior art",
+                "learned instrument selection outcome feedback",
+            ],
+            "comparison_axes": [
+                "decision-time trigger",
+                "external outcome credit",
+            ],
+            "kill_if_matched": (
+                "a prior system already couples the same typed scheduler "
+                "to the same outcome contrast"
+            ),
+        },
     }]
 
     dbg = debug_conjecture_for_seams(
@@ -297,6 +311,39 @@ def test_debug_conjecture_reports_parse_and_schema(monkeypatch) -> None:
     assert dbg["raw_candidate_count"] == 1
     assert dbg["candidate_count"] == 1
     assert dbg["candidates"][0]["prediction_cards"][0]["receipt"] == "left_receipt"
+    assert dbg["candidates"][0]["prior_art_inversion"]["search_queries"]
+
+
+def test_debug_conjecture_rejects_live_candidate_without_prior_art_inversion() -> None:
+    import json as _json
+
+    raw = [{
+        "mother_structure": "unfenced shared object",
+        "lowerings": {"left": {"a": "probe"}, "right": {"b": "route"}},
+        "novel_predictions": {
+            "left": ["state changes within 3 actions"],
+            "right": ["route changes within 3 actions"],
+        },
+        "kill_conditions": {
+            "left": ["refute if state stays fixed for 3 actions"],
+            "right": ["refute if route stays fixed for 3 actions"],
+        },
+    }]
+
+    dbg = debug_conjecture_for_seams(
+        {"constraint_class": "left", "a": "1"},
+        {"constraint_class": "right", "b": "2"},
+        model="gemini",
+        n=1,
+        dispatch=lambda *args, **kwargs: (
+            _json.dumps(raw),
+            {"transport": "test", "returncode": 0},
+        ),
+    )
+
+    assert dbg["raw_candidate_count"] == 1
+    assert dbg["candidate_count"] == 0
+    assert dbg["rejected_count"] == 1
 
 
 def test_langlands_sweep_pairs_fingerprints_under_budget(tmp_path: Path) -> None:

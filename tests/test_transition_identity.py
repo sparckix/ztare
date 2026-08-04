@@ -254,6 +254,64 @@ def test_unsupported_dynamics_default_does_not_hide_structural_reset() -> None:
     assert env_frame_indices(protected) == set()
 
 
+def test_refill_magnitude_does_not_create_boundary_identity() -> None:
+    full = _grid([[7, 7, 7, 7]])
+    three = _grid([[7, 7, 7, 0]])
+    two = _grid([[7, 7, 0, 0]])
+    one = _grid([[7, 0, 0, 0]])
+    empty = _grid([[0, 0, 0, 0]])
+    prefix = [
+        Transition(0, full, 0, three),
+        Transition(1, three, 0, two),
+        Transition(2, two, 0, one),
+        Transition(3, one, 0, empty),
+    ]
+    advancing = EpisodeLog([
+        *prefix,
+        Transition(4, empty, 0, full),
+        Transition(5, full, 0, three),
+    ])
+    reset_seam = EpisodeLog([
+        *prefix,
+        Transition(4, empty, 0, full),
+        Transition(0, full, 0, three),
+    ])
+
+    assert 4 not in env_frame_indices(advancing)
+    assert 4 in env_frame_indices(reset_seam)
+
+
+def test_law_scored_epoch_view_classifies_before_chart_selection() -> None:
+    from ztare.worldmodel.gates import law_scored_view
+
+    epoch_one = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=1,
+        target_epoch=1,
+    )
+    epoch_two = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=2,
+    )
+    full = _grid([[7, 7]])
+    one = _grid([[7, 0]])
+    empty = _grid([[0, 0]])
+    rows = [
+        Transition(index, full, 0, one, epoch_one)
+        for index in range(20)
+    ]
+    reset = Transition(20, empty, 0, full, epoch_two)
+    log = EpisodeLog([*rows, reset])
+
+    assert env_frame_indices(log) == {20}
+    assert env_frame_indices(log.within_epoch_view(2)) == set()
+    assert len(law_scored_view(log, source_epoch=1)) == 20
+    assert len(law_scored_view(log, source_epoch=2)) == 0
+
+
 def test_arc_adapter_authors_epoch_boundary_from_environment_signal(monkeypatch) -> None:
     class FakeEnv:
         action_space = ("ACTION1",)

@@ -3,6 +3,7 @@ from __future__ import annotations
 from ztare.common.artifact_refs import (
     collect_artifact_refs,
     collect_artifact_refs_from_text,
+    extract_sha256_refs,
     missing_project_artifact_refs,
     normalize_artifact_ref,
     project_artifact_ref_exists,
@@ -10,6 +11,17 @@ from ztare.common.artifact_refs import (
     resolve_project_artifact_ref,
     visible_workbench_authority_project,
 )
+
+
+def test_extract_sha256_refs_reads_typed_labels_without_inventing_ids() -> None:
+    digest = "a" * 64
+    assert extract_sha256_refs(
+        f"host_conformance.receipt_sha256:{digest}"
+    ) == (f"sha256:{digest}",)
+    assert extract_sha256_refs(f"artifact.py@sha256:{digest}") == (
+        f"sha256:{digest}",
+    )
+    assert extract_sha256_refs("receipt:too-short") == ()
 
 
 def test_artifact_ref_membrane_normalizes_hash_suffix_and_resolves(tmp_path) -> None:

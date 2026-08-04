@@ -266,6 +266,33 @@ def _ledger_path(project_dir: Path) -> Path:
     return p
 
 
+def _latest_records(project_dir: Path) -> list[dict]:
+    """Return the latest typed row for every candidate locator.
+
+    Admission and component salvage ask different questions of the same
+    executable-history ledger.  Keeping the last-write resolution here avoids
+    giving those consumers subtly different candidate populations.
+    """
+
+    path = _ledger_path(project_dir)
+    if not path.exists():
+        return []
+    by_ref: dict[str, tuple[int, dict]] = {}
+    for seq, line in enumerate(path.read_text().splitlines()):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except Exception:  # noqa: BLE001
+            continue
+        if record.get("schema") != _LEDGER_SCHEMA:
+            continue
+        ref = str(record.get("candidate_ref") or "").strip()
+        if ref:
+            by_ref[ref] = (seq, record)
+    return [record for _seq, record in sorted(by_ref.values())]
+
+
 def _load_prunes(project_dir: Path) -> tuple[set[str], set[str]]:
     """Return ref-bound prunes and legacy fingerprint-only prunes.
 
@@ -306,27 +333,10 @@ def load(project_dir: "str | Path") -> list[dict]:
     fingerprint-only row is honored only when it carries no candidate_ref.
     """
     project_dir = Path(project_dir).resolve()
-    lp = _ledger_path(project_dir)
-    if not lp.exists():
-        return []
     pruned_refs, pruned_fps = _load_prunes(project_dir)
-    # Latest record per locator, followed by latest record per source identity.
-    by_ref: dict[str, tuple[int, dict]] = {}
-    for seq, line in enumerate(lp.read_text().splitlines()):
-        if not line.strip():
-            continue
-        try:
-            rec = json.loads(line)
-        except Exception:  # noqa: BLE001
-            continue
-        if rec.get("schema") != _LEDGER_SCHEMA:
-            continue
-        ref = rec.get("candidate_ref")
-        if ref:
-            by_ref[ref] = (seq, rec)
     seen_hypotheses: set[str] = set()
     survivors: list[dict] = []
-    for _seq, rec in sorted(by_ref.values(), reverse=True):
+    for rec in reversed(_latest_records(project_dir)):
         if rec.get("status") != "admitted":
             continue
         ref = rec.get("candidate_ref")
@@ -347,6 +357,145 @@ def load(project_dir: "str | Path") -> list[dict]:
         survivors.append(rec)
     survivors.reverse()
     return survivors
+
+
+def residual_donors(
+    project_dir: "str | Path",
+    *,
+    transition,
+    baseline_prediction,
+    max_candidates: int = 4,
+    max_programs: int = 128,
+) -> list[dict]:
+    """Find archived programs whose local behavior improves one residual.
+
+    A rejected hypothesis is not an admissible carrier, but rejection of the
+    whole program does not erase a useful operation it expressed.  This query
+    evaluates historical program identities on exactly one visible
+    source/intervention/consequence relation and returns diagnostic donor
+    references.  It never composes, promotes, or copies the historical source.
+    """
+
+    project = Path(project_dir).resolve()
+    if max_candidates < 1 or max_programs < 1:
+        return []
+
+    def wrong_cells(candidate: Any) -> int:
+        target = transition.s_next
+        try:
+            if len(candidate) != len(target):
+                return 10**12
+            if any(len(left) != len(right) for left, right in zip(candidate, target)):
+                return 10**12
+            return sum(
+                left != right
+                for candidate_row, target_row in zip(candidate, target)
+                for left, right in zip(candidate_row, target_row)
+            )
+        except (TypeError, ValueError):
+            return 10**12
+
+    baseline_wrong = wrong_cells(baseline_prediction)
+    if baseline_wrong <= 0:
+        return []
+
+    # Historical exactness is only a loading priority. Evidence populations
+    # may differ, so it cannot grant donor or carrier authority.
+    records = sorted(
+        _latest_records(project),
+        key=lambda row: (
+            int(row.get("visible_exact") or 0)
+            / max(1, int(row.get("visible_total") or 0)),
+            int(row.get("visible_exact") or 0),
+        ),
+        reverse=True,
+    )
+    donors: list[dict] = []
+    seen_sources: set[str] = set()
+    evaluated = 0
+    for record in records:
+        if evaluated >= max_programs:
+            break
+        raw_ref = str(record.get("candidate_ref") or "").strip()
+        if not raw_ref:
+            continue
+        path = Path(raw_ref)
+        path = path if path.is_absolute() else project / path
+        try:
+            path = path.resolve()
+            path.relative_to(project)
+            source = path.read_bytes()
+        except (OSError, ValueError):
+            continue
+        source_sha = hashlib.sha256(source).hexdigest()
+        declared = str(
+            record.get("hypothesis_id") or record.get("candidate_sha") or ""
+        ).strip()
+        if declared and not source_sha.startswith(declared):
+            continue
+        if source_sha in seen_sources:
+            continue
+        seen_sources.add(source_sha)
+        evaluated += 1
+        try:
+            from ztare.worldmodel.carrier_loader import load_carrier_path
+
+            program, _kind, _loaded_sha = load_carrier_path(
+                path,
+                project_dir=project,
+                attach_projection=False,
+            )
+            prediction = as_predictor(program)(
+                transition.s,
+                transition.a,
+                transition.t,
+            )
+        except Exception:  # noqa: BLE001 - an unloadable archive is not a donor
+            continue
+        donor_wrong = wrong_cells(prediction)
+        if donor_wrong >= baseline_wrong:
+            continue
+        donors.append({
+            "schema": "ztare-residual-donor-v1",
+            "authority": "diagnostic_operation_salvage_only",
+            "candidate_ref": str(path.relative_to(project)),
+            "candidate_sha256": source_sha,
+            "historical_disposition": str(record.get("status") or ""),
+            "baseline_wrong_cells": baseline_wrong,
+            "donor_wrong_cells": donor_wrong,
+            "relation": (
+                "exact_on_counterexample"
+                if donor_wrong == 0
+                else "strictly_closer_on_counterexample"
+            ),
+            "prediction_sha256": hashlib.sha256(
+                json.dumps(
+                    _grid_to_json(prediction),
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
+        })
+    donors.sort(
+        key=lambda row: (
+            int(row["donor_wrong_cells"]),
+            row["candidate_sha256"],
+        )
+    )
+    # Program identity and local behavior identity are different quotients.
+    # Keep one representative per prediction so a family of syntactically
+    # distinct archives cannot spend the leaf's context on the same operation.
+    behavior_representatives: list[dict] = []
+    seen_predictions: set[str] = set()
+    for donor in donors:
+        prediction_sha = str(donor.get("prediction_sha256") or "")
+        if prediction_sha in seen_predictions:
+            continue
+        seen_predictions.add(prediction_sha)
+        behavior_representatives.append(donor)
+        if len(behavior_representatives) >= max_candidates:
+            break
+    return behavior_representatives
 
 
 def admit(

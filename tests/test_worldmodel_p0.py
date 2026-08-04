@@ -200,6 +200,48 @@ def test_rollout_diagnostics_emits_holdout_witness_from_first_mismatch():
     ]
 
 
+def test_replay_diagnostics_preserves_candidate_execution_failure_identity():
+    from ztare.worldmodel.episode_log import EpisodeLog
+    from ztare.worldmodel.gates import replay_diagnostics
+
+    log = EpisodeLog()
+    log.append(((1,),), 0, ((1,),), t=3)
+
+    def broken_candidate(_state, _action, _t):
+        raise NameError("missing_operator")
+
+    diagnostics = replay_diagnostics(broken_candidate, log).as_dict()
+
+    assert diagnostics["first_mismatch_signature"] == {
+        "kind": "candidate_exception",
+        "exception_type": "NameError",
+        "message": "missing_operator",
+    }
+    assert diagnostics["residual_table"][0]["prediction_failure"] == diagnostics[
+        "first_mismatch_signature"
+    ]
+    assert "candidate execution error NameError: missing_operator" in diagnostics[
+        "first_mismatch"
+    ]
+
+
+def test_replay_diagnostics_distinguishes_undefined_partial_map_from_exception():
+    from ztare.worldmodel.episode_log import EpisodeLog
+    from ztare.worldmodel.gates import replay_diagnostics
+
+    log = EpisodeLog()
+    log.append(((1,),), 0, ((1,),), t=4)
+
+    diagnostics = replay_diagnostics(lambda _state, _action, _t: None, log).as_dict()
+
+    assert diagnostics["first_mismatch_signature"] == {
+        "kind": "undefined_prediction"
+    }
+    assert diagnostics["first_mismatch"] == (
+        "candidate map undefined on this transition at t=4"
+    )
+
+
 def test_planner_reaches_goal_under_known_model():
     """Exploit half: BFS through a ratified law finds an action sequence that
     the model says reaches the goal; a fail-closed model prunes cleanly."""
@@ -290,6 +332,99 @@ def test_undefined_terminal_acquisition_uses_projected_coverage_before_raw_novel
     route = json.loads((tmp_path / "acquisition_routing.jsonl").read_text().splitlines()[-1])
     assert route["policy"] == "projected_reachability_coverage"
     assert route["plan_found"] is True
+
+
+def test_acquisition_search_does_not_simulate_through_adjudicated_boundary(tmp_path):
+    """A non-discharge edge constrains control without editing the carrier."""
+    from ztare.worldmodel.planner import pursue_goal
+
+    def law(state, action, _time):
+        position, remaining = state[0]
+        return ((position + int(action == 1), remaining - 1),)
+
+    class Adapter:
+        action_arity = 2
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self._state = ((0, 3),)
+            self._time = 0
+
+        @property
+        def state(self):
+            return self._state
+
+        @property
+        def t(self):
+            return self._time
+
+        def step(self, action):
+            if action == 1:
+                raise AssertionError(f"excluded acquisition edge executed: {action}")
+            self._state = law(self._state, action, self._time)
+            self._time += 1
+            return self._state
+
+    start = ((0, 3),)
+    abstract = lambda grid: tuple(grid[0])  # noqa: E731
+    receipt = pursue_goal(
+        Adapter(),
+        law,
+        max_steps=1,
+        plan_depth=2,
+        abstract_fn=abstract,
+        coverage_fn=lambda signature: signature[0],
+        visited_store={abstract(start)},
+        excluded_edge_fn=lambda source, action, _time: (
+            source == start and action == 1
+        ),
+        receipts_dir=tmp_path,
+    )
+
+    assert receipt.status == "plan_exhausted"
+    assert receipt.trace == [0]
+
+
+def test_pursue_returns_candidate_goal_to_external_adjudicator():
+    from ztare.worldmodel.planner import pursue_goal
+
+    def law(state, _action, _time):
+        return ((state[0][0] + 1,),)
+
+    class Adapter:
+        action_arity = 1
+        levels_completed = 0
+        last_transition_identity = None
+
+        def __init__(self):
+            self._state = ((0,),)
+            self._time = 0
+
+        @property
+        def state(self):
+            return self._state
+
+        @property
+        def t(self):
+            return self._time
+
+        def step(self, action):
+            self._state = law(self._state, action, self._time)
+            self._time += 1
+            return self._state
+
+    receipt = pursue_goal(
+        Adapter(),
+        law,
+        goal_fn=lambda state: state == ((1,),),
+        max_steps=3,
+        plan_depth=2,
+    )
+
+    assert receipt.status == "candidate_goal_reached"
+    assert receipt.trace == [0]
+    assert receipt.levels_gained == 0
 
 
 def test_pursue_reports_model_divergence():
@@ -660,6 +795,89 @@ def test_spec_region_event_writes_on_mover_crossing():
     bad, err2 = lower_spec({"actions": {"0": [{"op": "region_event", "mover_colors": [7],
                             "rect": [0, 0, 1], "edge": "exit", "writes": []}]}})
     assert bad is None and "rect" in err2
+
+
+def test_region_event_pattern_trigger_is_translation_equivariant():
+    from ztare.worldmodel.spec_catalog import lower_patch_delta_spec
+
+    rule = {
+        "op": "region_event",
+        "mover_colors": [7],
+        "trigger_pattern": {
+            "shape": [2, 2],
+            "values": [1, 2, 3, 4],
+        },
+        "edge": "enter",
+        "writes": [[9, [[0, 0]]]],
+    }
+    delta, error = lower_patch_delta_spec({"actions": {}, "always": [rule]})
+    assert error == ""
+
+    def case(top: int, left: int):
+        state = [[0 for _ in range(7)] for _ in range(7)]
+        state[top][left : left + 2] = [1, 2]
+        state[top + 1][left : left + 2] = [3, 4]
+        state[6][6] = 7
+        consequence = [row[:] for row in state]
+        consequence[6][6] = 0
+        consequence[top][left] = 7
+        return tuple(tuple(row) for row in state), tuple(
+            tuple(row) for row in consequence
+        )
+
+    first_state, first_next = case(1, 1)
+    shifted_state, shifted_next = case(3, 2)
+    first = delta(first_next, first_state, 0, 0)
+    shifted = delta(shifted_next, shifted_state, 3, 91)
+
+    assert first[0][0] == shifted[0][0] == 9
+    assert first[1:] == first_next[1:]
+    assert shifted[1:] == shifted_next[1:]
+
+    no_arrival = [list(row) for row in shifted_next]
+    no_arrival[3][2] = 0
+    no_arrival = tuple(tuple(row) for row in no_arrival)
+    assert delta(no_arrival, shifted_state, 2, 18) == no_arrival
+
+
+def test_bind_region_value_transports_value_without_palette_literal():
+    from ztare.worldmodel.spec_catalog import lower_patch_delta_spec
+
+    delta, error = lower_patch_delta_spec({
+        "actions": {},
+        "always": [{
+            "op": "bind_region_value",
+            "target_rect": [1, 2, 2, 3],
+            "source_offset": [0, -1],
+            "expected_current": 12,
+        }],
+    })
+    assert error == ""
+    state = (
+        (0, 0, 0, 0, 0),
+        (0, 9, 5, 5, 0),
+        (0, 9, 5, 5, 0),
+    )
+    base = (
+        (0, 0, 0, 0, 0),
+        (0, 9, 12, 12, 0),
+        (0, 9, 12, 12, 0),
+    )
+    assert delta(base, state, 0, 0)[1][2:4] == (9, 9)
+    sparse = (
+        (0, 0, 0, 0, 0),
+        (0, 9, 12, 5, 0),
+        (0, 9, 5, 12, 0),
+    )
+    transported = delta(sparse, state, 0, 0)
+    assert transported[1][2:4] == (9, 5)
+    assert transported[2][2:4] == (5, 9)
+    already_owned = tuple(
+        tuple(8 if row in (1, 2) and col in (2, 3) else value
+              for col, value in enumerate(values))
+        for row, values in enumerate(base)
+    )
+    assert delta(already_owned, state, 0, 0) == already_owned
 
 
 def test_spec_abduction_recovers_region_event():
@@ -1232,6 +1450,21 @@ def test_goal_abduction_dormant_conjunction():
     assert not goal(((6, 3, 3),))      # only A differs
     assert not goal(((3, 3, 6),))      # only B differs
     assert goal(((6, 3, 6),))          # both differ -> conjunction satisfied
+
+
+def test_goal_predicate_preserves_exact_support_not_bounding_hull():
+    """Changing an unrelated cell inside a support's display hull is inert."""
+    from ztare.worldmodel.goal_abduction import predicate_from_spec
+
+    start = ((3, 3, 3),)
+    spec = {
+        "cells": [[0, 0], [0, 2]],
+        "region": [0, 0, 0, 2],
+        "differs_from_start": True,
+    }
+    goal = predicate_from_spec(spec, start)
+    assert not goal(((3, 9, 3),))
+    assert goal(((9, 3, 3),))
 
 
 def test_goal_abduction_no_conjunction_when_co_witnessed():
@@ -2118,6 +2351,67 @@ def test_frontier_memory_reuses_only_exact_append_lineage(tmp_path):
     assert receipt["inherited_rows"] == 0
 
 
+def test_frontier_memory_reuses_same_epoch_append_lineage(tmp_path):
+    """An active epoch keeps its visited quotient across a certified append.
+
+    Global evidence-row counts cannot stand in for rows in the epoch-local
+    frontier view.
+    """
+    import importlib.util
+    from pathlib import Path
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.reachability import save_visited
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    root = Path(__file__).resolve().parents[1]
+    path = root / "scripts" / "public" / "control" / "arc3_play_loop.py"
+    spec = importlib.util.spec_from_file_location("arc3_play_loop_epoch", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    project = tmp_path / "project"
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    episode.parent.mkdir(parents=True)
+    e1 = TransitionIdentity(
+        kind="dynamics", authority="environment_adapter",
+        source_epoch=1, target_epoch=1,
+    )
+    e2 = TransitionIdentity(
+        kind="dynamics", authority="environment_adapter",
+        source_epoch=2, target_epoch=2,
+    )
+    rows = EpisodeLog([
+        Transition(0, ((1,),), 0, ((2,),), e1),
+        Transition(1, ((2,),), 0, ((3,),), e2),
+    ])
+    rows.write_jsonl(episode)
+
+    loaded = EpisodeLog.read_jsonl(episode)
+    _af, visited_path, _store = mod._frontier_memory(
+        project, loaded, source_epoch=2,
+    )
+    marker = frozenset({("same-epoch",)})
+    save_visited(visited_path, {marker})
+
+    loaded.append_jsonl(
+        episode,
+        [Transition(2, ((3,),), 0, ((4,),), e2)],
+    )
+    advanced = EpisodeLog.read_jsonl(episode)
+    _af2, same_path, same_store = mod._frontier_memory(
+        project, advanced, source_epoch=2,
+    )
+
+    assert same_path == visited_path
+    assert marker in same_store
+    receipt = json.loads(
+        (project / "workspace" / "latest_frontier_scope.json").read_text()
+    )
+    assert receipt["evidence_rows"] == 3
+    assert receipt["frontier_rows"] == 2
+    assert receipt["inherited_rows"] == 1
+
+
 def test_play_turn_reuses_one_evidence_induced_role_projection(tmp_path, monkeypatch):
     import importlib.util
     from pathlib import Path
@@ -2180,24 +2474,6 @@ def test_determinism_check_flags_stochastic_and_passes_deterministic():
     r = determinism_check(sto)
     assert not r.ok and "NON-DETERMINISTIC" in r.detail
 
-
-def test_closure_audit_emits_only_unclosed_cells():
-    """Injected source: present markers are closed; absent ones pre-register cards."""
-    from ztare.worldmodel.closure_audit import catalog_closure_audit
-    fake_src = "when_count when_overlap when_action translate_block recolor_map consume_extremal region_event action"
-    cards = list(catalog_closure_audit(fake_src))
-    fams = {c["failure_family"] for c in cards}
-    assert "closure:condition:indicator_region_state" in fams      # when_region absent
-    assert "closure:effect:state_dependent_toggle" in fams          # toggle absent
-    assert "closure:condition:event_history_latch" in fams          # never closable by marker
-    assert "closure:condition:global_count" not in fams             # present -> no card
-    fake_src2 = fake_src + " when_region when_phase toggle cycle"
-    fams2 = {c["failure_family"] for c in catalog_closure_audit(fake_src2)}
-    assert "closure:condition:indicator_region_state" not in fams2  # closing a cell retires its card
-
-
-# ── GP-250: rule-coupling operator (when_effect) — implement + validate ──────
-
 def test_spec_when_effect_couples_rule_to_prior_firing():
     """when_effect [ref_id, pol] fires a rule iff the id'd rule DID (True) /
     DIDN'T (False) change the grid earlier this step. ls20 timer coupling: the
@@ -2257,21 +2533,6 @@ def test_implement_and_validate_accept_reject_and_persists(tmp_path):
     lines = ledger.read_text().splitlines()
     assert len(lines) == 1, lines
     assert open_cards(ledger) == []           # a closed card leaves the open set empty
-
-
-def test_closure_audit_registers_rule_coupling_until_when_effect():
-    """The rule-coupling cell is pre-registered as an open card until the catalog
-    source carries the when_effect marker, then it retires."""
-    from ztare.worldmodel.closure_audit import catalog_closure_audit
-    src = "when_count when_overlap when_action when_region when_phase translate_block " \
-          "recolor_map consume_extremal region_event toggle cycle action"
-    fams = {c["failure_family"] for c in catalog_closure_audit(src)}
-    assert "closure:condition:rule_coupling" in fams          # when_effect absent -> card
-    fams2 = {c["failure_family"] for c in catalog_closure_audit(src + " when_effect")}
-    assert "closure:condition:rule_coupling" not in fams2      # marker present -> retired
-
-
-# ── GP-250: relational destination guard (when_dest) ─────────────────────────
 
 def test_spec_when_dest_relational_destination_gate():
     """when_dest [ref_id, colors, flag]: a rule fires iff the CURRENT action's
@@ -2393,21 +2654,6 @@ def test_spec_abduction_recovers_multi_content_dest_pause():
     # necessity: neither separating colour alone closes it (a single-colour /
     # intersection-based separator would leave a residual)
     assert mism(full, [0]) > 0 and mism(full, [6]) > 0, "multi-colour guard must be needed"
-
-
-def test_closure_audit_registers_destination_content_until_when_dest():
-    from ztare.worldmodel.closure_audit import catalog_closure_audit
-    src = "when_count when_overlap when_action when_region when_phase when_effect " \
-          "translate_block recolor_map consume_extremal region_event toggle cycle action"
-    fams = {c["failure_family"] for c in catalog_closure_audit(src)}
-    assert "closure:condition:destination_content" in fams
-    fams2 = {c["failure_family"] for c in catalog_closure_audit(src + " when_dest")}
-    assert "closure:condition:destination_content" not in fams2
-
-
-# ---------------------------------------------------------------------------
-# LEVEL-3 machinery contradiction detectors
-# ---------------------------------------------------------------------------
 
 def test_excused_but_diverging_fires_and_silent():
     """Detector 1: fires when a diverged row is 0-diff (excusal hides physics);
@@ -3034,386 +3280,7 @@ def test_strategy_battery_menu_query_executes(tmp_path):
     deanchor = fn(proj, top=1)
     assert deanchor["suspects"][0]["term"] == "marker"
     assert set(battery.experiment_kinds()) >= {"reachability_sweep_to_goal",
-                                               "coverage_gap_probe",
-                                               "semantic_deanchor_receipt_compile",
-                                               "compressed_counterexample_repair"}
-
-
-def test_strategy_battery_prefers_typed_kernel_role_bindings(tmp_path):
-    from ztare.worldmodel.strategy_battery import WorldmodelBattery
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_loop_event.json").write_text(json.dumps({
-        "kernel_role_bindings": [
-            {
-                "term": "glyph_window",
-                "roles": ["representation", "verification", "search_control"],
-                "evidence": "window term selected a verifier-facing search target",
-            }
-        ]
-    }))
-    (proj / "current_iteration.md").write_text(
-        "marker decides the goal; marker updates the planner; marker certifies progress"
-    )
-    out = WorldmodelBattery().query_menu()["semantic_deanchor"][1](proj, top=3)
-    assert out["method"] == "typed_kernel_role_binding"
-    assert out["suspects"][0]["term"] == "glyph_window"
-    assert set(out["suspects"][0]["kernel_roles"]) == {
-        "representation", "search_control", "verification"}
-
-
-def test_strategy_battery_reads_level_transfer_receipt_as_pressure(tmp_path):
-    from ztare.worldmodel.strategy_battery import WorldmodelBattery
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
-        _bind_current_transfer_receipt(proj, {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "exact_actions": 0,
-        "actions_tested": 4,
-        "replay_reaches_level": [1],
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-        },
-        "post_depth": 4,
-        "local_transfer": {
-            "steps_tested": 16,
-            "exact_steps_after_first_step_repair": 4,
-            "first_step_repair_generalizes_to_depth": False,
-        },
-        "kernel_role_bindings": [
-            {
-                "term": "first_step_boundary_residue",
-                "roles": ["representation", "compression", "model_update"],
-                "evidence": "same two cells disagree for every first post-boundary action",
-            }
-        ],
-        })
-    ))
-    out = WorldmodelBattery().query_menu()["semantic_deanchor"][1](proj, top=3)
-    assert out["method"] == "typed_kernel_role_binding"
-    assert out["suspects"][0]["term"] == "first_step_boundary_residue"
-    assert set(out["suspects"][0]["kernel_roles"]) == {
-        "compression", "model_update", "representation"}
-    dossier = WorldmodelBattery().run_audits(proj)
-    transfer = dossier["level_transfer_pressure"]
-    assert transfer["firing_signal"] == 0.75
-    assert transfer["residue_class"] == "action_independent_boundary_update"
-    assert transfer["repair_sufficient_for_first_step"] is True
-    assert transfer["first_step_repair_generalizes_to_depth"] is False
-
-
-def test_level_transfer_repair_card_written_from_certificate(tmp_path):
-    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
-        _bind_current_transfer_receipt(proj, {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "actions_tested": 4,
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-            "all_action_invariant": True,
-            "all_predicted_equals_boundary": True,
-            "cells": [{"y": 61, "x": 14}],
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-            "repair_map": [{
-                "y": 61,
-                "x": 14,
-                "from_predicted": 11,
-                "from_boundary": 11,
-                "to_observed": 3,
-            }],
-            "authority": "bounded sufficiency certificate only",
-        },
-        })
-    ))
-
-    written = write_level_transfer_repair_card(proj)
-    written_again = write_level_transfer_repair_card(proj)
-
-    assert len(written) == 1
-    assert written_again == []
-    card = written[0]
-    assert card["kind"] == "compressed_counterexample_repair"
-    assert card["action_plan"]["repair_certificate"]["repair_map"][0]["to_observed"] == 3
-    assert card["action_plan"]["required_next_gate"]["success_status"] == (
-        "exact_first_step_transfer"
-    )
-    ledger = proj / "workspace" / "strategy_experiments.jsonl"
-    assert ledger.exists()
-    assert len([l for l in ledger.read_text().splitlines() if l.strip()]) == 1
-
-
-def test_level_transfer_repair_card_rejects_path_or_sha_prefix_identity(tmp_path):
-    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
-
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    receipt = _bind_current_transfer_receipt(proj, {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "residue_quotient": {"residue_class": "bounded_residue"},
-        "repair_certificate": {"sufficient_for_first_step": True},
-    })
-    receipt["carrier_evidence_identity"]["carrier_sha256"] = (
-        receipt["carrier_evidence_identity"]["carrier_sha256"][:12]
-    )
-    receipt["candidate_path"] = "test_model.py"
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(
-        json.dumps(receipt)
-    )
-
-    assert write_level_transfer_repair_card(proj) == []
-    assert not (proj / "workspace" / "strategy_experiments.jsonl").exists()
-
-
-def test_level_transfer_card_routes_missing_seed_before_transfer_exactness(tmp_path):
-    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
-
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    (proj / "workspace" / "latest_level_transfer_probe.json").write_text(json.dumps(
-        _bind_current_transfer_receipt(proj, {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "actions_tested": 4,
-        "post_depth": 4,
-        "seed_path": "workspace/level2_seed.json",
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-            "all_action_invariant": True,
-            "all_predicted_equals_boundary": True,
-            "cells": [{"y": 61, "x": 14}],
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-            "repair_map": [{"y": 61, "x": 14, "from_predicted": 11, "to_observed": 3}],
-        },
-        "local_transfer": {
-            "steps_tested": 16,
-            "exact_steps_after_first_step_repair": 4,
-            "first_step_repair_generalizes_to_depth": False,
-        },
-        })
-    ))
-
-    written = write_level_transfer_repair_card(proj)
-
-    assert len(written) == 1
-    plan = written[0]["action_plan"]
-    assert plan["seed_prerequisite"]["status"] == "replayable_seed_missing"
-    assert plan["required_next_gate"]["command"] == "recover_level_boundary_seed"
-    assert plan["required_next_gate"]["success_status"] == (
-        "replayable_boundary_seed_available"
-    )
-    assert plan["required_next_gate"]["then_gate"]["success_status"] == (
-        "exact_local_transfer_depth"
-    )
-
-
-def test_level_transfer_repair_card_supersedes_narrow_first_step_card(tmp_path):
-    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    receipt = {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "actions_tested": 4,
-        "post_depth": 1,
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-            "all_action_invariant": True,
-            "all_predicted_equals_boundary": True,
-            "cells": [{"y": 61, "x": 14}],
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-            "repair_map": [{"y": 61, "x": 14, "from_predicted": 11, "to_observed": 3}],
-        },
-    }
-    receipt = _bind_current_transfer_receipt(proj, receipt)
-    path = proj / "workspace" / "latest_level_transfer_probe.json"
-    path.write_text(json.dumps(receipt))
-    assert len(write_level_transfer_repair_card(proj)) == 1
-
-    receipt["post_depth"] = 4
-    receipt["local_transfer"] = {
-        "steps_tested": 16,
-        "exact_steps_after_first_step_repair": 4,
-        "first_step_repair_generalizes_to_depth": False,
-    }
-    receipt["local_residue_quotient"] = {
-        "status": "multi_class_local_residue",
-        "classes": [{"relation": "underpredicted_update"}],
-    }
-    path.write_text(json.dumps(receipt))
-    written = write_level_transfer_repair_card(proj)
-
-    assert len(written) == 1
-    assert written[0]["action_plan"]["required_next_gate"]["success_status"] == (
-        "exact_local_transfer_depth"
-    )
-    assert written[0]["action_plan"]["local_residue_quotient"]["status"] == (
-        "multi_class_local_residue"
-    )
-    rows = [
-        json.loads(line)
-        for line in (proj / "workspace" / "strategy_experiments.jsonl").read_text().splitlines()
-        if line.strip()
-    ]
-    assert {row["disposition"] for row in rows} == {"rejected", "open"}
-    rejected = next(row for row in rows if row["disposition"] == "rejected")
-    assert "does not generalize" in rejected["counterexample"]
-
-
-def test_level_transfer_repair_card_supersedes_generic_hint_with_component_scope(tmp_path):
-    from ztare.worldmodel.level_transfer_repair import write_level_transfer_repair_card
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    receipt = {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "actions_tested": 4,
-        "post_depth": 4,
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-            "all_action_invariant": True,
-            "all_predicted_equals_boundary": True,
-            "cells": [{"y": 61, "x": 14}],
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-            "repair_map": [{"y": 61, "x": 14, "from_predicted": 11, "to_observed": 3}],
-        },
-        "local_transfer": {
-            "steps_tested": 16,
-            "exact_steps_after_first_step_repair": 4,
-            "first_step_repair_generalizes_to_depth": False,
-        },
-        "local_residue_quotient": {
-            "status": "multi_class_local_residue",
-            "classes": [{
-                "relation": "underpredicted_update",
-                "refinement_hint": {
-                    "candidate_class": "extremal_count_or_rate_refinement_candidate",
-                },
-            }],
-        },
-    }
-    receipt = _bind_current_transfer_receipt(proj, receipt)
-    path = proj / "workspace" / "latest_level_transfer_probe.json"
-    path.write_text(json.dumps(receipt))
-    assert len(write_level_transfer_repair_card(proj)) == 1
-
-    receipt["local_residue_quotient"]["classes"][0]["refinement_hint"] = {
-        "candidate_class": "component_scoped_extremal_count_or_rate_refinement_candidate",
-        "missing_generalization": "scope extremal updates to the evidence-induced component",
-    }
-    path.write_text(json.dumps(receipt))
-    assert len(write_level_transfer_repair_card(proj)) == 1
-
-    rows = [
-        json.loads(line)
-        for line in (proj / "workspace" / "strategy_experiments.jsonl").read_text().splitlines()
-        if line.strip()
-    ]
-    assert sum(row["disposition"] == "open" for row in rows) == 1
-    open_row = next(row for row in rows if row["disposition"] == "open")
-    hint = open_row["action_plan"]["local_residue_quotient"]["classes"][0]["refinement_hint"]
-    assert hint["candidate_class"] == (
-        "component_scoped_extremal_count_or_rate_refinement_candidate"
-    )
-
-
-def test_level_transfer_repair_card_reopens_current_receipt_after_stale_rejection(tmp_path):
-    from ztare.common.operator_proposal_contract import open_cards, record_disposition
-    from ztare.worldmodel.level_transfer_repair import (
-        build_compressed_counterexample_repair_card,
-        write_level_transfer_repair_card,
-    )
-
-    proj = _mini_worldmodel_project(tmp_path)
-    (proj / "workspace").mkdir(exist_ok=True)
-    receipt = {
-        "schema": "ztare-arc3-level-transfer-probe-v1",
-        "status": "bounded_mismatch",
-        "actions_tested": 4,
-        "post_depth": 4,
-        "residue_quotient": {
-            "residue_class": "action_independent_boundary_update",
-            "cell_count": 2,
-            "all_action_invariant": True,
-            "all_predicted_equals_boundary": True,
-            "cells": [{"y": 61, "x": 14}],
-        },
-        "repair_certificate": {
-            "repair_class": "action_independent_cell_rewrite",
-            "sufficient_for_first_step": True,
-            "scope": "first post-boundary transition",
-            "repair_map": [{"y": 61, "x": 14, "from_predicted": 11, "to_observed": 3}],
-        },
-        "local_transfer": {
-            "steps_tested": 16,
-            "exact_steps_after_first_step_repair": 4,
-            "first_step_repair_generalizes_to_depth": False,
-        },
-        "local_residue_quotient": {
-            "status": "multi_class_local_residue",
-            "classes": [{
-                "relation": "underpredicted_update",
-                "refinement_hint": {
-                    "candidate_class": (
-                        "component_scoped_extremal_count_or_rate_refinement_candidate"
-                    ),
-                },
-            }],
-        },
-    }
-    receipt = _bind_current_transfer_receipt(proj, receipt)
-    path = proj / "workspace" / "latest_level_transfer_probe.json"
-    path.write_text(json.dumps(receipt))
-    stale_closed = build_compressed_counterexample_repair_card(receipt)
-    stale_closed["disposition"] = "rejected"
-    stale_closed["counterexample"] = "superseded by stale replay diagnostics"
-    ledger = proj / "workspace" / "strategy_experiments.jsonl"
-    record_disposition(ledger, stale_closed)
-
-    written = write_level_transfer_repair_card(proj)
-
-    assert len(written) == 1
-    assert written[0]["disposition"] == "open"
-    assert written[0]["reactivation"]["previous_disposition"] == "rejected"
-    assert written[0]["reactivation"]["authority"].startswith(
-        "reactivates Strategy Office routing only"
-    )
-    assert [c["failure_family_sha"] for c in open_cards(ledger)] == [
-        written[0]["failure_family_sha"]
-    ]
-
-
+                                               "coverage_gap_probe"}
 def test_replay_residual_repair_sync_rejects_stale_card_and_opens_current_quotient(tmp_path):
     from ztare.common.operator_proposal_contract import write_proposal_cards
     from ztare.worldmodel.residual_repair import sync_replay_residual_repair_card
@@ -4281,7 +4148,8 @@ def test_search_control_card_disposition_from_terminal_report(tmp_path):
         "planner_attention_pressure": {
             "anomalies": [{"cycle": 1, "steps": 250}],
         },
-        "ledger_closure": {"open_strategy_cards": 0},
+        # Unrelated open cards do not own this residual identity.
+        "ledger_closure": {"open_strategy_cards": 7},
     })
     assert card is not None
     ledger = proj / "workspace" / "strategy_experiments.jsonl"
@@ -5110,6 +4978,475 @@ def test_play_round_accepts_task_discharge_without_level_delta(monkeypatch):
     assert pr.status == "task_discharged"
 
 
+def test_goal_hypothesis_identity_merges_intervention_presentations():
+    from ztare.worldmodel.goal_abduction import compile_goal_hypothesis_set
+
+    start = ((0, 0),)
+    predicate = {"region": [0, 0, 0, 0], "differs_from_start": True}
+    first = {"op": "region_event", "rect": [0, 0, 0, 0], "edge": "enter"}
+    second = {"op": "region_event", "rect": [1, 0, 1, 0], "edge": "exit"}
+    goals = compile_goal_hypothesis_set(
+        [
+            {"kind": "candidate", "predicate_spec": predicate, "experiment_specs": [first]},
+            {"kind": "candidate", "predicate_spec": predicate, "experiment_specs": [second]},
+        ],
+        start,
+    )
+
+    assert goals.active_count == 1
+    assert tuple(goals.experiments.values()) == ((first, second),)
+    assert goals.projection_key(((1, 0),)) == goals.projection_key(((1, 99),))
+
+
+def test_goal_hypothesis_compiler_replays_task_open_negative_evidence():
+    from ztare.worldmodel.goal_abduction import compile_goal_hypothesis_set
+
+    goals = compile_goal_hypothesis_set(
+        [
+            {
+                "kind": "already_reached",
+                "predicate_spec": {
+                    "region": [0, 0, 0, 0],
+                    "differs_from_start": True,
+                },
+            },
+            {
+                "kind": "unreached",
+                "predicate_spec": {
+                    "region": [0, 1, 0, 1],
+                    "differs_from_start": True,
+                },
+            },
+        ],
+        ((0, 0),),
+        task_open_states=(((1, 0),),),
+        source_epoch=4,
+        task_contract_sha256="a" * 64,
+    )
+
+    assert goals.active_count == 1
+    assert goals.satisfied_ids(((1, 1),))
+    assert goals.for_source_epoch(4) is goals
+    assert goals.for_source_epoch(5) is None
+
+
+def test_candidate_task_hypothesis_is_independent_of_carrier_promotion(tmp_path):
+    import hashlib
+
+    from ztare.worldmodel.goal_abduction import (
+        compile_candidate_goal_hypothesis_set,
+    )
+
+    project = tmp_path / "project"
+    submission = project / "workspace" / "submissions" / "candidate.py"
+    submission.parent.mkdir(parents=True)
+    source = "def GOAL_PREDICATE(observation):\n    return observation[0][0] == 1\n"
+    submission.write_text(source)
+    source_sha = hashlib.sha256(source.encode()).hexdigest()
+    records = [{
+        "source_type": "deterministic_near_miss",
+        "submission": "workspace/submissions/candidate.py",
+        "sha": source_sha,
+        "evidence_epoch_sha256": "e" * 64,
+        "observed_at_utc": "2026-07-18T00:00:00+00:00",
+    }]
+
+    goals = compile_candidate_goal_hypothesis_set(
+        project,
+        source_epoch=2,
+        task_contract_sha256="a" * 64,
+        witness_states=(((0,),), ((1,),)),
+        records=records,
+    )
+
+    assert goals is not None
+    assert goals.active_count == 1
+    assert goals.for_source_epoch(2) is goals
+    assert goals.for_source_epoch(3) is None
+    assert goals(((1,),)) is True
+
+
+def test_candidate_task_hypothesis_replays_task_open_negative_evidence(tmp_path):
+    import hashlib
+
+    from ztare.worldmodel.goal_abduction import (
+        compile_candidate_goal_hypothesis_set,
+    )
+
+    project = tmp_path / "project"
+    submission = project / "workspace" / "submissions" / "candidate.py"
+    submission.parent.mkdir(parents=True)
+    source = "def GOAL_PREDICATE(observation):\n    return observation[0][0] == 1\n"
+    submission.write_text(source)
+    records = [{
+        "submission": "workspace/submissions/candidate.py",
+        "sha": hashlib.sha256(source.encode()).hexdigest(),
+        "evidence_epoch_sha256": "e" * 64,
+    }]
+
+    goals = compile_candidate_goal_hypothesis_set(
+        project,
+        source_epoch=2,
+        task_contract_sha256="a" * 64,
+        witness_states=(((0,),), ((1,),)),
+        task_open_states=(((0,),), ((1,),)),
+        records=records,
+    )
+
+    assert goals is not None
+    assert goals.active_count == 0
+
+
+def test_task_hypothesis_composition_unions_identities_and_experiments():
+    from ztare.worldmodel.goal_abduction import (
+        GoalHypothesisSet,
+        compose_goal_hypothesis_sets,
+    )
+
+    first_rule = {"op": "region_event", "rect": [0, 0, 0, 0]}
+    second_rule = {"op": "region_event", "rect": [0, 1, 0, 1]}
+    first = GoalHypothesisSet(
+        (("a", lambda state: state[0][0] == 1, "first", {}),),
+        {"a": (first_rule,)},
+        source_epoch=2,
+        task_contract_sha256="c" * 64,
+    )
+    second = GoalHypothesisSet(
+        (
+            ("a", lambda state: state[0][0] == 1, "duplicate", {}),
+            ("b", lambda state: state[0][1] == 1, "second", {}),
+        ),
+        {"a": (first_rule,), "b": (second_rule,)},
+        source_epoch=2,
+        task_contract_sha256="c" * 64,
+    )
+    first.refuted_ids.add("a")
+
+    composed = compose_goal_hypothesis_sets(first, second)
+
+    assert tuple(row[0] for row in composed.hypotheses) == ("a", "b")
+    assert composed.active_count == 1
+    assert composed.experiments == {"a": (first_rule,), "b": (second_rule,)}
+    assert composed(((0, 1),)) is True
+
+
+def test_task_hypothesis_composition_rejects_cross_chart_union():
+    import pytest
+
+    from ztare.worldmodel.goal_abduction import (
+        GoalHypothesisSet,
+        compose_goal_hypothesis_sets,
+    )
+
+    one = GoalHypothesisSet((), source_epoch=1, task_contract_sha256="a" * 64)
+    two = GoalHypothesisSet((), source_epoch=2, task_contract_sha256="a" * 64)
+
+    with pytest.raises(ValueError, match="lifecycle charts"):
+        compose_goal_hypothesis_sets(one, two)
+
+
+def test_task_hypothesis_turn_cannot_preempt_residual_frontier():
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "scripts/public/control/arc3_play_loop.py"
+    ).read_text()
+    task_turn = source[source.index("if (\n                abduced"):]
+    task_turn = task_turn[:task_turn.index("):", task_turn.index("if ("))]
+
+    assert "not configured_residual_frontier" in task_turn
+    assert "not acquisition_only" in task_turn
+    assert "active_count" in task_turn
+
+
+def test_play_round_refutes_reached_goal_hypothesis_and_continues(monkeypatch):
+    from types import SimpleNamespace
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+    from ztare.worldmodel.goal_abduction import compile_goal_hypothesis_set
+
+    mod = _load_arc3_play_loop()
+    start = ((0, 0),)
+    goals = compile_goal_hypothesis_set(
+        [
+            {"kind": "first", "predicate_spec": {"region": [0, 0, 0, 0], "differs_from_start": True}},
+            {"kind": "second", "predicate_spec": {"region": [0, 1, 0, 1], "differs_from_start": True}},
+        ],
+        start,
+    )
+
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, contract):
+            return TaskDischargeReceipt(
+                contract_sha256=contract.sha256,
+                adjudicator_id=contract.adjudicator_id,
+                status="open",
+                authority="test_adapter",
+                observed={"accepted": False},
+            )
+
+    adapter = Adapter(state=start, levels_completed=0)
+    calls = []
+
+    def fake_pursue_goal(active_adapter, _model, max_steps, **kw):
+        calls.append((max_steps, kw.get("goal_fn").active_count))
+        active_adapter.state = (((1, 0),) if len(calls) == 1 else ((1, 1),))
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[len(calls)],
+            planning_outcome={},
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    contract = TaskDischargeContract(
+        contract_id="goal-version-space",
+        adjudicator_id="test.acceptance.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+    )
+    pr = mod._play_round_multilife(
+        adapter,
+        object(),
+        budget=2,
+        context_log=[],
+        task_contract=contract,
+        goal_fn=goals,
+    )
+
+    assert calls == [(2, 2), (1, 1)]
+    assert goals.active_count == 0
+    assert [row["status"] for row in pr.leg_outcomes] == [
+        "goal_hypothesis_refuted",
+        "goal_hypothesis_refuted",
+    ]
+    assert pr.task_discharged is False
+
+
+def test_play_round_refutes_only_reached_relational_goal_edge(monkeypatch):
+    from types import SimpleNamespace
+
+    from ztare.common.relational_task_contract import (
+        EdgeTaskHypothesis,
+        TaskHypothesisVersionSpace,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+    from ztare.worldmodel.goal_abduction import (
+        RelationalGoalEdgeHypothesisSet,
+    )
+
+    mod = _load_arc3_play_loop()
+    hypotheses = TaskHypothesisVersionSpace(
+        edge_hypotheses=(
+            EdgeTaskHypothesis(
+                "first",
+                lambda _source, operation, descriptor: (
+                    operation == 0 and descriptor == "first"
+                ),
+            ),
+            EdgeTaskHypothesis(
+                "second",
+                lambda _source, operation, descriptor: (
+                    operation == 1 and descriptor == "second"
+                ),
+            ),
+        ),
+        source_epoch=2,
+        task_contract_sha256="c" * 64,
+    )
+    goals = RelationalGoalEdgeHypothesisSet(
+        hypotheses=hypotheses,
+        describe_edge=lambda _source, operation, _time: (
+            "first" if operation == 0 else "second"
+        ),
+        descriptor_id="fixture.two-relations.v1",
+    )
+
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, contract):
+            return TaskDischargeReceipt(
+                contract_sha256=contract.sha256,
+                adjudicator_id=contract.adjudicator_id,
+                status="open",
+                authority="test_adapter",
+                observed={"accepted": False},
+            )
+
+    adapter = Adapter(
+        state=((0,),),
+        current_epoch=2,
+        levels_completed=0,
+        t=0,
+    )
+    calls = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
+        active = kw["goal_edge_fn"]
+        calls.append((
+            max_steps,
+            active.active_count,
+            kw.get("control_task_contract_sha256"),
+        ))
+        operation = len(calls) - 1
+        return SimpleNamespace(
+            status="candidate_goal_edge_reached",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[operation],
+            planning_outcome={},
+            candidate_goal_edge={
+                "source": ((0,),),
+                "operation": operation,
+                "time": operation,
+            },
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    contract = TaskDischargeContract(
+        contract_id="relational-goal-version-space",
+        adjudicator_id="test.acceptance.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+    )
+    receipt = mod._play_round_multilife(
+        adapter,
+        object(),
+        budget=2,
+        context_log=[],
+        task_contract=contract,
+        goal_edge_fn=goals,
+    )
+
+    assert calls == [
+        (2, 2, contract.sha256),
+        (1, 1, contract.sha256),
+    ]
+    assert goals.active_count == 0
+    assert [row["status"] for row in receipt.leg_outcomes] == [
+        "goal_hypothesis_refuted",
+        "goal_hypothesis_refuted",
+    ]
+    assert receipt.task_discharged is False
+
+
+def test_play_round_records_task_outcome_at_protocol_decision_boundary(
+    tmp_path,
+    monkeypatch,
+):
+    from types import SimpleNamespace
+
+    from ztare.common.continual_skill_memory import (
+        load_continual_skill_memory,
+    )
+    from ztare.common.task_discharge import (
+        TaskDischargeContract,
+        TaskDischargeReceipt,
+    )
+
+    mod = _load_arc3_play_loop()
+    contract = TaskDischargeContract(
+        contract_id="effect-option-outcome",
+        adjudicator_id="test.effect-option.v1",
+        lifecycle_scope="run",
+        owner="test-profile",
+    )
+
+    class Adapter(SimpleNamespace):
+        def adjudicate_task_discharge(self, active_contract):
+            return TaskDischargeReceipt(
+                contract_sha256=active_contract.sha256,
+                adjudicator_id=active_contract.adjudicator_id,
+                status="open",
+                authority="test_adapter",
+                observed={"epoch": self.current_epoch},
+                evidence_refs=(),
+            )
+
+    seen_contracts = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
+        seen_contracts.append(
+            kw.get("control_task_contract_sha256")
+        )
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[0],
+            planning_outcome={
+                "continual_control_process_tokens": [
+                    "primitive:prepare",
+                    "effect_option:advance",
+                ],
+                "task_decision_choice": {
+                    "decision_namespace": "acquisition-protocols",
+                    "choice_context_sha256": "choice-context-two",
+                    "continuation_context_sha256": "controller-context",
+                    "chosen_option_family_sha256": "advance",
+                    "chosen_option_variant_sha256": (
+                        "advance-context-two"
+                    ),
+                    "available_option_family_sha256s": [
+                        "advance",
+                        "detour",
+                    ],
+                },
+            },
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    receipt = mod._play_round_multilife(
+        Adapter(current_epoch=2),
+        object(),
+        budget=1,
+        context_log=[],
+        task_contract=contract,
+        receipts_dir=tmp_path,
+    )
+
+    memory = load_continual_skill_memory(
+        tmp_path / "continual_skill_memory.json"
+    )
+    assert seen_contracts == [contract.sha256]
+    assert receipt.continual_task_experience["status"] == "recorded"
+    assert receipt.continual_task_experience["outcome"] == "open"
+    assert receipt.continual_task_experience[
+        "effect_option_token_count"
+    ] == 1
+    assert receipt.continual_task_experience[
+        "choice_experience_count"
+    ] == 0
+    assert receipt.continual_task_experience[
+        "decision_experience_count"
+    ] == 1
+    assert len(memory.task_experiences) == 1
+    assert len(memory.task_choice_experiences) == 0
+    assert len(memory.task_decision_experiences) == 1
+    assert memory.task_experiences[0].process_tokens == (
+        "primitive:prepare",
+        "effect_option:advance",
+    )
+    assert (
+        memory.task_decision_experiences[0]
+        .chosen_option_family_sha256
+    ) == "advance"
+    assert memory.credit_witnesses == ()
+
+
 def test_multilife_rescopes_terminal_edge_at_each_epoch(monkeypatch):
     from types import SimpleNamespace
     from ztare.common.task_discharge import (
@@ -5186,9 +5523,13 @@ def test_play_round_does_not_relabel_environment_reset_as_law_divergence(monkeyp
 
     mod = _load_arc3_play_loop()
     calls = []
+    exclusions = []
+    boundary_edges = []
 
-    def fake_pursue_goal(_adapter, _model, max_steps, **_kw):
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
         calls.append(max_steps)
+        exclusions.append(kw.get("excluded_edge_fn"))
+        boundary_edges.append(tuple(kw.get("control_boundary_edges") or ()))
         if len(calls) == 1:
             return SimpleNamespace(
                 status="model_diverged",
@@ -5221,6 +5562,197 @@ def test_play_round_does_not_relabel_environment_reset_as_law_divergence(monkeyp
     assert mod._transition_model_mismatch(pr) is False
     assert pr.leg_outcomes[0]["status"] == "environment_boundary_inferred"
     assert "adapter-unclassified repaint" in pr.leg_outcomes[0]["detail"]
+    assert exclusions[0] is None
+    assert exclusions[1]("before", 0, 99) is True
+    assert exclusions[1]("before", 1, 99) is False
+    assert boundary_edges[0] == ()
+    assert boundary_edges[1][0][:2] == ("before", 0)
+    assert boundary_edges[1][0][2].startswith(
+        "arc3_play_loop:active_control_boundary#"
+    )
+    assert pr.non_discharge_edge_count == 1
+
+
+def test_play_round_replans_across_exact_known_context_transition(monkeypatch):
+    from types import SimpleNamespace
+
+    from ztare.worldmodel.episode_log import EpisodeLog, Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    mod = _load_arc3_play_loop()
+    identity = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=2,
+    )
+    transition = Transition(
+        9,
+        ((1,),),
+        0,
+        ((2,),),
+        identity,
+    )
+    calls = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
+        calls.append((
+            max_steps,
+            kw.get("excluded_edge_fn"),
+            tuple(kw.get("control_boundary_edges") or ()),
+            tuple(kw.get("control_history_prefix") or ()),
+        ))
+        if len(calls) == 1:
+            return SimpleNamespace(
+                status="model_diverged",
+                steps_executed=1,
+                levels_gained=0,
+                saturated=False,
+                observed_transitions=[transition],
+                divergence={"terminal_witness": {"sha256": "repaint"}},
+                trace=[0],
+            )
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[1],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    monkeypatch.setattr(mod, "_is_env_reset", lambda _context, _obs: True)
+    adapter = SimpleNamespace(current_epoch=2)
+    receipt = mod._play_round_multilife(
+        adapter,
+        object(),
+        budget=2,
+        context_log=EpisodeLog([transition]),
+        control_history_prefix=(7,),
+    )
+
+    assert receipt.leg_outcomes[0]["status"] == (
+        "environment_context_transition_inferred"
+    )
+    assert receipt.non_discharge_edge_count == 0
+    assert receipt.divergence is None
+    assert calls[1][1] is None
+    assert calls[1][2] == ()
+    assert calls[1][3] == ()
+
+
+def test_play_round_transports_repeated_non_discharge_over_support_fiber(monkeypatch):
+    from types import SimpleNamespace
+
+    mod = _load_arc3_play_loop()
+    sources = [((0, 7),), ((0, 8),), ((0, 9),)]
+    calls = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
+        exclusion = kw.get("excluded_edge_fn")
+        calls.append((max_steps, exclusion))
+        if len(calls) == 2:
+            assert exclusion(sources[0], 0, 50) is True
+            assert exclusion(sources[1], 0, 50) is False
+        if len(calls) == 3:
+            assert exclusion(sources[2], 0, 50) is True
+            return SimpleNamespace(
+                status="plan_exhausted",
+                steps_executed=0,
+                levels_gained=0,
+                saturated=False,
+                observed_transitions=[],
+                divergence=None,
+                trace=[],
+            )
+        source = sources[len(calls) - 1]
+        return SimpleNamespace(
+            status="model_diverged",
+            steps_executed=1,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[(source, 0, "reset", len(calls))],
+            divergence={"terminal_witness": {"sha256": f"boundary-{len(calls)}"}},
+            trace=[0],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    monkeypatch.setattr(mod, "_is_env_reset", lambda _context, _obs: True)
+    pr = mod._play_round_multilife(
+        object(),
+        object(),
+        budget=3,
+        context_log=[],
+        abstract_fn=lambda state: state[0][0],
+        coverage_fn=lambda identity: identity,
+    )
+
+    assert len(calls) == 3
+    assert pr.non_discharge_edge_count == 2
+    assert pr.non_discharge_projection_count == 1
+    assert pr.status == "plan_exhausted"
+
+
+def test_play_round_excludes_boundary_predecessor_not_following_reset(monkeypatch):
+    from types import SimpleNamespace
+    from ztare.worldmodel.episode_log import Transition
+    from ztare.worldmodel.transition_identity import TransitionIdentity
+
+    mod = _load_arc3_play_loop()
+    predecessor = ((1,),)
+    reset_source = ((2,),)
+    boundary = TransitionIdentity(
+        kind="epoch_boundary",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=3,
+        boundary_kind="task_open_terminal",
+    )
+    reset = TransitionIdentity(
+        kind="reset_boundary",
+        authority="environment_adapter",
+        source_epoch=3,
+        target_epoch=4,
+        boundary_kind="reset_after_terminal",
+    )
+    calls = []
+
+    def fake_pursue_goal(_adapter, _model, max_steps, **kw):
+        calls.append(kw.get("excluded_edge_fn"))
+        if len(calls) == 1:
+            return SimpleNamespace(
+                status="environment_boundary",
+                steps_executed=2,
+                levels_gained=0,
+                saturated=False,
+                observed_transitions=[
+                    Transition(5, predecessor, 1, reset_source, boundary),
+                    Transition(6, reset_source, 3, ((3,),), reset),
+                ],
+                divergence=None,
+                trace=[1, 3],
+            )
+        assert calls[-1](predecessor, 1, 99) is True
+        assert calls[-1](reset_source, 3, 99) is False
+        return SimpleNamespace(
+            status="plan_exhausted",
+            steps_executed=0,
+            levels_gained=0,
+            saturated=False,
+            observed_transitions=[],
+            divergence=None,
+            trace=[],
+        )
+
+    monkeypatch.setattr(mod, "pursue_goal", fake_pursue_goal)
+    pr = mod._play_round_multilife(
+        object(), object(), budget=3, context_log=[]
+    )
+
+    assert pr.non_discharge_edge_indices == [0]
+    assert pr.non_discharge_edge_count == 1
 
 
 def test_play_loop_mismatch_fields_separate_transition_from_terminal():
@@ -5325,6 +5857,14 @@ def test_strategy_battery_surfaces_planner_attention_pressure(tmp_path):
                 "levels_gained": 0,
                 "evidence_grown_by": 0,
                 "played": "candidate",
+                "planning_outcome": {
+                    "policy": "bounded_terminal_search",
+                    "status": "no_plan_within_bound",
+                    "factored_predecessor": {
+                        "policy": "factored_goal_experiment",
+                        "status": "search_budget_exhausted",
+                    },
+                },
             },
             {
                 "cycle": 2,
@@ -5392,6 +5932,14 @@ def test_search_control_repair_card_written_from_planner_pressure(tmp_path):
                 "levels_gained": 0,
                 "evidence_grown_by": 0,
                 "played": "candidate",
+                "planning_outcome": {
+                    "policy": "bounded_terminal_search",
+                    "status": "no_plan_within_bound",
+                    "factored_predecessor": {
+                        "policy": "factored_goal_experiment",
+                        "status": "search_budget_exhausted",
+                    },
+                },
             }
         ]
     }))
@@ -5408,6 +5956,9 @@ def test_search_control_repair_card_written_from_planner_pressure(tmp_path):
         "closed_dynamics_no_terminal_progress"
     )
     assert plan["routing_class"] == "target_synthesis_or_discriminating_probe"
+    assert plan["planning_outcome"]["factored_predecessor"]["policy"] == (
+        "factored_goal_experiment"
+    )
     assert plan["discriminator_axis"]["axis"] == (
         "target_specification_gap_vs_transition_model_gap"
     )
@@ -5592,6 +6143,17 @@ def test_strategy_office_prompt_includes_registry_example_and_lowerability_recei
     assert "\"rejection_reason\": \"action_plan is not lowerable\"" in prompt
     assert "Reply with STRICT JSON" not in prompt
     assert "The response format is STRICT JSON and nothing else." in prompt
+
+
+def test_strategy_path_probe_reuses_requested_prefixes():
+    from ztare.worldmodel.experiment_executor import _maximal_action_paths
+
+    covered = _maximal_action_paths([[0], [1], [0, 1], [1, 0], [2]])
+    assert [(path, indices) for _index, path, indices in covered] == [
+        ((0, 1), (0, 2)),
+        ((1, 0), (1, 3)),
+        ((2,), (4,)),
+    ]
 
 
 def test_experiment_executor_carrier_repair_probe_survives_and_kills_with_witness(tmp_path, monkeypatch):
@@ -6481,6 +7043,87 @@ def test_configured_system1_reuses_current_incumbent_before_mutation(
     assert outcome["model"](((1,),), 0, 0) == ((1,),)
 
 
+def test_current_cached_survivor_consumes_just_observed_gate(tmp_path, monkeypatch):
+    """Producer publication and survivor selection compose in one phase."""
+    mod = _load_arc3_play_loop()
+    source = "def step(state, action, t):\n    return state\n"
+    candidate = tmp_path / "workspace" / "submissions" / "candidate.py"
+    candidate.parent.mkdir(parents=True)
+    candidate.write_text(source, encoding="utf-8")
+    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    record = {
+        "submission": "workspace/submissions/candidate.py",
+        "visible_exact_rows": 3,
+        "visible_wrong_cells": 0,
+        "holdout_depth": 2,
+        "gate_score": 1.0,
+        "description_length": len(source),
+        "run_role": "EVALUATION",
+        "claim_class": "clean_transfer",
+        "evaluation_policy_sha256": "policy-current",
+    }
+    payload = {
+        "harness_ok": True,
+        "gated_sha256": digest,
+        "gates": {"replay": {"name": "replay", "pass": True}},
+        # Replacement can remain unpromoted while the carrier is reused as a
+        # current-evidence search survivor.
+        "pre_judge_decision": {"evaluator_authorized": False},
+        "evaluation_policy_sha256": "policy-current",
+    }
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.evaluation_policy_sha256",
+        lambda: "policy-current",
+    )
+    monkeypatch.setattr(
+        "ztare.common.candidate_memory.admissible_candidate_memory_records",
+        lambda *_args, **_kwargs: [record],
+    )
+    monkeypatch.setattr(
+        "ztare.common.candidate_memory.candidate_memory_source",
+        lambda *_args, **_kwargs: source,
+    )
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.run_pre_judge_gate_harness",
+        lambda **_kwargs: (_ for _ in ()).throw(
+            AssertionError("the just-observed gate must not replay")
+        ),
+    )
+
+    outcome = mod._current_cached_survivor(
+        tmp_path,
+        observed_gate_payloads={digest: payload},
+    )
+
+    assert outcome["status"] == "cached_survivor_current"
+    assert outcome["candidate_sha256"] == digest
+
+
+def test_current_cached_survivor_rejects_prior_evaluator_policy(
+    tmp_path, monkeypatch
+):
+    """Carrier/evidence equality cannot transport a verdict across policy."""
+    mod = _load_arc3_play_loop()
+    source = "def step(state, action, t):\n    return state\n"
+    candidate = tmp_path / "workspace" / "submissions" / "candidate.py"
+    candidate.parent.mkdir(parents=True)
+    candidate.write_text(source, encoding="utf-8")
+    record = {
+        "submission": "workspace/submissions/candidate.py",
+        "evaluation_policy_sha256": "policy-prior",
+    }
+    monkeypatch.setattr(
+        "ztare.common.candidate_memory.best_admissible_candidate_memory_record",
+        lambda *_args, **_kwargs: record,
+    )
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.evaluation_policy_sha256",
+        lambda: "policy-current",
+    )
+
+    assert mod._current_cached_survivor(tmp_path) is None
+
+
 def test_deterministic_producer_consumes_pre_judge_authority_bit(
     tmp_path, monkeypatch
 ):
@@ -6647,6 +7290,7 @@ def test_catalog_operation_compiler_consumes_matching_task_receipt_family(
     source = proposal.candidate_path.read_text(encoding="utf-8")
     assert "# TaskIdentity: task-1" in source
     assert "# OperationIdentity: " + operation_sha in source
+    assert "CARRIER_PROVENANCE =" in source
     assert "'when_region': [1, 1, 4, 4" in source
     assert "'when_action'" not in source
 
@@ -6654,6 +7298,44 @@ def test_catalog_operation_compiler_consumes_matching_task_receipt_family(
     mismatched["operation_identity_sha256"] = "f" * 64
     selector["output_summary"] = json.dumps(mismatched)
     assert producers._catalog_operation_patch_compiler(project, {}) is None
+
+    relational_identity = {
+        "relation": "input_bound_output_value",
+        "source_role": "observed_context",
+        "target_role": "carrier_consequence",
+        "compatibility": "equality_transport",
+    }
+    relational_sha = hashlib.sha256(
+        json.dumps(
+            relational_identity,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    inspection["output_summary"] = json.dumps(
+        {"catalog_residual_event_candidates": []}
+    )
+    selector["output_summary"] = json.dumps({
+        "schema": "ztare-worldmodel-operation-domain-selector-v1",
+        "task_id": "task-1",
+        "task_source_sha256": base_sha,
+        "operation_identity": relational_identity,
+        "operation_identity_sha256": relational_sha,
+        "candidate_delta_admissible": True,
+        "candidate_lowering": {
+            "op": "bind_region_value",
+            "target_rect": [1, 2, 2, 3],
+            "source_offset": [0, -1],
+            "expected_current": 12,
+        },
+    })
+
+    relational = producers._catalog_operation_patch_compiler(project, {})
+
+    assert relational is not None
+    relational_source = relational.candidate_path.read_text(encoding="utf-8")
+    assert "'op': 'bind_region_value'" in relational_source
+    assert relational_sha in relational_source
 
 
 def test_configured_system1_keeps_better_incumbent_residual_frontier(

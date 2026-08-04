@@ -104,6 +104,11 @@ def _dominance_check(
         gate_iter,
         champion_heldout=champion_heldout,
         strict_improved=strict_improved,
+        observed_row_dominance=(
+            comparison.get("observed_row_dominance")
+            if isinstance(comparison, dict)
+            else None
+        ),
     )
 
 
@@ -186,8 +191,12 @@ def materialize_champion_from_memory(project_dir: str | Path) -> dict[str, Any]:
         payload = _run_harness(project_dir, cand)
         if payload is None:
             continue
-        if not _observed_tier_passes(payload):
-            continue
+        # _dominance_check owns the full eligibility contract, including the
+        # observed-tier row-dominance escape (candidate wrong-rows a strict
+        # subset of the incumbent's under one shared evaluator). The old
+        # separate _observed_tier_passes pre-filter re-imposed absolutism
+        # ahead of that check, which made the door unpassable once the
+        # incumbent itself was no longer visible-perfect on grown evidence.
         if not _dominance_check(project_dir, cand, payload):
             continue
         promotable.append((_rank_key(payload), cand, payload))
@@ -207,7 +216,10 @@ def materialize_champion_from_memory(project_dir: str | Path) -> dict[str, Any]:
 
     # Compare against LIVE test_model.py
     live_payload = _live_gate_result(project_dir)
-    if live_payload is not None:
+    live_is_selectable = bool(
+        live_payload is not None and _observed_tier_passes(live_payload)
+    )
+    if live_is_selectable:
         live_rank = _rank_key(live_payload)
         if best_rank <= live_rank:
             row = {
@@ -221,6 +233,8 @@ def materialize_champion_from_memory(project_dir: str | Path) -> dict[str, Any]:
             }
             _write_receipt(workspace, row)
             return row
+    elif live_payload is not None:
+        live_rank = _rank_key(live_payload)
 
     # Promote: backup + install
     test_model = project_dir / "test_model.py"
@@ -257,6 +271,7 @@ def materialize_champion_from_memory(project_dir: str | Path) -> dict[str, Any]:
         "dominance_receipt": {
             "rank_before": live_rank if live_payload else None,
             "rank_after": best_rank,
+            "live_selectable_before": live_is_selectable,
         },
         "ts": ts,
     }

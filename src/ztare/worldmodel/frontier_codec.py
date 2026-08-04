@@ -262,31 +262,6 @@ def batch_novelty(grid: Grid, interner: StateInterner) -> int:
     return best
 
 
-def batch_novelty_multi(grids: "list[Grid]", interner: StateInterner) -> "list[int]":
-    """Vectorized novelty for a batch of candidate grids against the interner.
-
-    Returns list of int novelty scores (same semantics as batch_novelty per
-    element). More cache-friendly than calling batch_novelty in a loop.
-    """
-    if len(interner) == 0:
-        return [0] * len(grids)
-
-    mat = interner.visited_matrix  # (N_visited, H*W)
-    results = []
-    for grid in grids:
-        if grid in interner:
-            results.append(0)
-            continue
-        arr = grid_to_array(grid).ravel().astype(np.uint8)
-        diffs = (mat != arr).sum(axis=1)
-        results.append(int(diffs.min()))
-    return results
-
-
-# ---------------------------------------------------------------------------
-# AbstractCarrierInterner — fast membership for arbitrary hashable carriers
-# ---------------------------------------------------------------------------
-
 class AbstractCarrierInterner:
     """Maps arbitrary hashable carriers to integer IDs for O(1) int membership.
 

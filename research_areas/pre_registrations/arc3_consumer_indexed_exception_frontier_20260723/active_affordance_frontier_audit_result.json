@@ -1,0 +1,505 @@
+{
+  "active_graph": {
+    "ambiguous_relation_count": 0,
+    "boundary_edge_count": 10,
+    "context_transition_edge_count": 6,
+    "node_count": 130,
+    "reachable_frontier_pair_count": 366,
+    "reachable_node_count": 127,
+    "relation_count": 145,
+    "section_failure_count": 0
+  },
+  "active_problem": {
+    "active_epoch": 2,
+    "active_observation_count": 984,
+    "current_seed_sha256": "a3d6f1f5a2741feb92b01bcb04a0b4b79e370883b66cfe6799fcbd89f81093ab",
+    "history_kind": "action",
+    "history_suffix_length": 0,
+    "start_key": "1bec0125a244005d96b749b931db92c5ceceaaf3d388c07a89675da2de06af19",
+    "trajectory_count": 23
+  },
+  "candidate_count": 0,
+  "candidates": [],
+  "inadmissible_pair_count": 0,
+  "known_negative_match_count": 1,
+  "known_negative_matches": [
+    {
+      "boundary_kinds": [],
+      "context_crossings_before_terminal": 0,
+      "disposition": "observed_law",
+      "evidence_refs": [
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#28",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#29",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#30",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#31",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#32",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#33",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#34",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#35",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#36",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#37",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#38",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#39",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#40",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#41",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#42",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#43",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#44",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#45",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#46",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#47",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#48",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#49",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#50",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#51",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#52",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#53",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#54",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#55"
+      ],
+      "operation": "1",
+      "relation": {
+        "admissible": true,
+        "attempted_origin": [
+          50,
+          54
+        ],
+        "configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "controlled_origin": [
+          45,
+          54
+        ],
+        "descriptor_sha256": "5f332d7e3f1cf374998f1da7bc323ebe6cee405acb23268c60992eb8f7760bec",
+        "global_transform": "rotate_0_reflect",
+        "operation": "1"
+      },
+      "route_actions": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "1",
+        "1",
+        "3",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "3",
+        "3",
+        "3",
+        "3",
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "route_length": 29,
+      "source_lineage_sha256s": [
+        "0fea60ab96236a15ea88854b513a1179c851114a638ec028753b0a3ed4465d48",
+        "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+      ],
+      "source_representative_evidence_ref": "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#27",
+      "source_representative_sha256": "23529272a97c7b329c743b80a2b633ee11ae3a05fc282007db7c699de7424b9c",
+      "source_sha256": "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+    }
+  ],
+  "match_count": 1,
+  "matches": [
+    {
+      "boundary_kinds": [],
+      "context_crossings_before_terminal": 0,
+      "disposition": "observed_law",
+      "evidence_refs": [
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#28",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#29",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#30",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#31",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#32",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#33",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#34",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#35",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#36",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#37",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#38",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#39",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#40",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#41",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#42",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#43",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#44",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#45",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#46",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#47",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#48",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#49",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#50",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#51",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#52",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#53",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#54",
+        "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#55"
+      ],
+      "operation": "1",
+      "relation": {
+        "admissible": true,
+        "attempted_origin": [
+          50,
+          54
+        ],
+        "configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "controlled_origin": [
+          45,
+          54
+        ],
+        "descriptor_sha256": "5f332d7e3f1cf374998f1da7bc323ebe6cee405acb23268c60992eb8f7760bec",
+        "global_transform": "rotate_0_reflect",
+        "operation": "1"
+      },
+      "route_actions": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "1",
+        "1",
+        "3",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "3",
+        "3",
+        "3",
+        "3",
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "route_length": 29,
+      "source_lineage_sha256s": [
+        "0fea60ab96236a15ea88854b513a1179c851114a638ec028753b0a3ed4465d48",
+        "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+      ],
+      "source_representative_evidence_ref": "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#27",
+      "source_representative_sha256": "23529272a97c7b329c743b80a2b633ee11ae3a05fc282007db7c699de7424b9c",
+      "source_sha256": "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+    }
+  ],
+  "operation_maps": {
+    "0": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 307,
+          "vector": [
+            -5,
+            0
+          ]
+        },
+        {
+          "support": 12,
+          "vector": [
+            -5,
+            25
+          ]
+        },
+        {
+          "support": 4,
+          "vector": [
+            40,
+            -25
+          ]
+        },
+        {
+          "support": 3,
+          "vector": [
+            -5,
+            -15
+          ]
+        },
+        {
+          "support": 3,
+          "vector": [
+            35,
+            0
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            -5,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            15,
+            -15
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            15,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            20,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            25,
+            -45
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            -40
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            0
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            5,
+            -45
+          ]
+        }
+      ],
+      "operation": "0",
+      "runner_up_support": 12,
+      "support": 307,
+      "vector": [
+        -5,
+        0
+      ]
+    },
+    "1": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 228,
+          "vector": [
+            5,
+            0
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            -5,
+            -15
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            30,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -40
+          ]
+        }
+      ],
+      "operation": "1",
+      "runner_up_support": 2,
+      "support": 228,
+      "vector": [
+        5,
+        0
+      ]
+    },
+    "2": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 83,
+          "vector": [
+            0,
+            -5
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            0,
+            20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            -5,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            35,
+            -45
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -25
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            40,
+            -40
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            5,
+            -25
+          ]
+        }
+      ],
+      "operation": "2",
+      "runner_up_support": 2,
+      "support": 83,
+      "vector": [
+        0,
+        -5
+      ]
+    },
+    "3": {
+      "admitted": true,
+      "alternatives": [
+        {
+          "support": 92,
+          "vector": [
+            0,
+            5
+          ]
+        },
+        {
+          "support": 4,
+          "vector": [
+            40,
+            5
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            15,
+            -25
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            20,
+            -30
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            20,
+            -40
+          ]
+        },
+        {
+          "support": 2,
+          "vector": [
+            40,
+            -20
+          ]
+        },
+        {
+          "support": 1,
+          "vector": [
+            20,
+            -20
+          ]
+        }
+      ],
+      "operation": "3",
+      "runner_up_support": 4,
+      "support": 92,
+      "vector": [
+        0,
+        5
+      ]
+    }
+  },
+  "schema": "ztare-active-affordance-frontier-audit-v1",
+  "status": "active_affordance_frontier_refuted",
+  "template": {
+    "descriptor_sha256": "5f332d7e3f1cf374998f1da7bc323ebe6cee405acb23268c60992eb8f7760bec",
+    "replay_status": "direct",
+    "source_result": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/terminal_affordance_relation_audit_result.json"
+  }
+}

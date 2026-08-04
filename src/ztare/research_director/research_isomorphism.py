@@ -760,7 +760,13 @@ def debug_conjecture_for_seams(
     result["raw_candidate_count"] = len(raw)
     kept, rejected = [], []
     for conj in raw:
-        if _conjecture_survives_schema(conj, left, right, min_specificity=min_specificity):
+        if _conjecture_survives_schema(
+            conj,
+            left,
+            right,
+            min_specificity=min_specificity,
+            require_prior_art_inversion=True,
+        ):
             kept.append(conj)
         else:
             rejected.append(conj)
@@ -771,6 +777,7 @@ def debug_conjecture_for_seams(
             "mother_structure": c.mother_structure,
             "specificity": c.specificity,
             "prediction_cards": _prediction_cards(c),
+            "prior_art_inversion": c.prior_art_inversion,
         }
         for c in kept
     ]
@@ -1070,6 +1077,26 @@ def _prediction_cards(conj: SurfacedConjecture) -> "list[dict]":
     return cards
 
 
+def _prior_art_inversion_plan_valid(conj: SurfacedConjecture) -> bool:
+    """Require a bounded nearest-prior-art search plan before live conjectures survive."""
+
+    row = (
+        conj.prior_art_inversion
+        if isinstance(conj.prior_art_inversion, dict)
+        else {}
+    )
+    queries = row.get("search_queries")
+    axes = row.get("comparison_axes")
+    kill = str(row.get("kill_if_matched") or "").strip()
+    return (
+        isinstance(queries, list)
+        and any(str(value).strip() for value in queries)
+        and isinstance(axes, list)
+        and any(str(value).strip() for value in axes)
+        and bool(kill)
+    )
+
+
 def _conjecture_behavior_tokens(conj: SurfacedConjecture) -> "set[str]":
     import re
 
@@ -1221,7 +1248,8 @@ def closed_champion_fact_adjudicator(facts: dict):
 
 
 def _conjecture_survives_schema(conj: SurfacedConjecture, left: ConstraintFingerprint,
-                                right: ConstraintFingerprint, *, min_specificity: float = 0.25) -> bool:
+                                right: ConstraintFingerprint, *, min_specificity: float = 0.25,
+                                require_prior_art_inversion: bool = False) -> bool:
     lowers = conj.lowerings if isinstance(conj.lowerings, dict) else {}
     if not _lowering_covers(left, lowers.get("left")):
         return False
@@ -1230,6 +1258,8 @@ def _conjecture_survives_schema(conj: SurfacedConjecture, left: ConstraintFinger
     if not _side_list(conj.novel_predictions, "left") or not _side_list(conj.novel_predictions, "right"):
         return False
     if not _side_list(conj.kill_conditions, "left") or not _side_list(conj.kill_conditions, "right"):
+        return False
+    if require_prior_art_inversion and not _prior_art_inversion_plan_valid(conj):
         return False
     conj.specificity = prediction_specificity(conj)
     return (conj.specificity or 0.0) >= min_specificity
@@ -1256,6 +1286,7 @@ def _action_schema_from_conjecture(conj: SurfacedConjecture, left: ConstraintFin
         ),
         action_constraints=[
             "do not treat the conjecture as an established correspondence",
+            "do not use novelty language until the prior-art inversion plan is executed and a source-bound receipt rules out the nearest systems",
             "run closed-champion/offline adjudication before spending live actions",
             "do not promote without at least one prediction surviving its stated kill condition",
             "record a disposition for every prediction card created from this conjecture",
@@ -1277,6 +1308,7 @@ def _action_schema_from_conjecture(conj: SurfacedConjecture, left: ConstraintFin
             },
             "novel_predictions": conj.novel_predictions,
             "prediction_cards": _prediction_cards(conj),
+            "prior_art_inversion": conj.prior_art_inversion,
             "offline_adjudication": offline_adjudication,
             "specificity": conj.specificity,
         },
@@ -1289,6 +1321,7 @@ def conjecture_between(
     *,
     n: int = 5,
     model: str = "gemini",
+    timeout_s: int = 180,
     query=None,
     ledger: "Path | None" = _LEDGER,
     min_specificity: float = 0.25,
@@ -1315,7 +1348,10 @@ def conjecture_between(
 
         prov, mid = _provider_and_model(model)
         text, dispatch = _dispatch_text_with_receipt(
-            _build_conjecture_prompt(left, right, n), provider=prov, model=mid
+            _build_conjecture_prompt(left, right, n),
+            provider=prov,
+            model=mid,
+            timeout_s=timeout_s,
         )
         raw = _parse_conjectures(text)
         match = _re.search(r"\[.*\]", text, _re.S) if text else None
@@ -1339,7 +1375,13 @@ def conjecture_between(
     kept, rejected = [], []
     adjudications: dict[int, dict] = {}
     for conj in raw:
-        if not _conjecture_survives_schema(conj, left, right, min_specificity=min_specificity):
+        if not _conjecture_survives_schema(
+            conj,
+            left,
+            right,
+            min_specificity=min_specificity,
+            require_prior_art_inversion=(query is None),
+        ):
             rejected.append(conj)
             continue
         adj = _run_offline_adjudicator(conj, left, right, offline_adjudicator)
@@ -1371,6 +1413,7 @@ def conjecture_between(
                         "novel_predictions": conj.novel_predictions,
                         "prediction_cards": _prediction_cards(conj),
                         "kill_conditions": conj.kill_conditions,
+                        "prior_art_inversion": conj.prior_art_inversion,
                         "offline_adjudication": adj,
                         "specificity": conj.specificity,
                         "action_schema": _action_schema_from_conjecture(conj, left, right, adj),
@@ -1938,6 +1981,7 @@ def main(argv: "list[str] | None" = None) -> int:
                 right_state,
                 n=ns.n,
                 model=ns.model,
+                timeout_s=ns.timeout_s,
                 ledger=None if ns.debug else _LEDGER,
             )
             payload = {

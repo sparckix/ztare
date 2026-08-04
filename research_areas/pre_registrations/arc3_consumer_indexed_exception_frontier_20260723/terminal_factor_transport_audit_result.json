@@ -1,0 +1,333 @@
+{
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "completed_epochs": [
+    0,
+    1
+  ],
+  "feature_names": [
+    "availability_pattern",
+    "budget_positive",
+    "controlled_shape",
+    "finite_configuration",
+    "intervention",
+    "nearest_operation_domain_vectors",
+    "one_shot_availability",
+    "operation_domain_overlap",
+    "ordered_budget",
+    "ordered_feasibility_configuration",
+    "relative_operation_domain_geometry"
+  ],
+  "forbidden_coordinates": [
+    "raw_grid",
+    "source_epoch",
+    "controlled_base_absolute",
+    "presentation_assignment"
+  ],
+  "minimal_signature_width": 1,
+  "minimal_survivors": [
+    {
+      "feature_names": [
+        "availability_pattern"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "availability_pattern": [
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "feature_names": [
+        "budget_positive"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "budget_positive": true
+      }
+    },
+    {
+      "feature_names": [
+        "controlled_shape"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "controlled_shape": [
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "feature_names": [
+        "finite_configuration"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "finite_configuration": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "feature_names": [
+        "intervention"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "intervention": 1
+      }
+    },
+    {
+      "feature_names": [
+        "nearest_operation_domain_vectors"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "nearest_operation_domain_vectors": []
+      }
+    },
+    {
+      "feature_names": [
+        "one_shot_availability"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "one_shot_availability": [
+          [
+            "15_14_sig11",
+            false
+          ],
+          [
+            "50_39_sig11",
+            false
+          ]
+        ]
+      }
+    },
+    {
+      "feature_names": [
+        "operation_domain_overlap"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "operation_domain_overlap": []
+      }
+    },
+    {
+      "feature_names": [
+        "ordered_budget"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "ordered_budget": 17
+      }
+    },
+    {
+      "feature_names": [
+        "ordered_feasibility_configuration"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "ordered_feasibility_configuration": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "feature_names": [
+        "relative_operation_domain_geometry"
+      ],
+      "leave_one_success_out": true,
+      "negative_match_count": 0,
+      "signature": {
+        "relative_operation_domain_geometry": []
+      }
+    }
+  ],
+  "negative_count": 0,
+  "positive_count": 1,
+  "positive_rows": [
+    {
+      "evidence_refs": [
+        "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+      ],
+      "feature_sha256": "297d4551428528954f541aeba2ae0e5de1c6507fcae4c883b591e0616f19f299",
+      "features": {
+        "availability_pattern": [
+          false,
+          false
+        ],
+        "budget_positive": true,
+        "controlled_shape": [
+          [
+            0,
+            0
+          ]
+        ],
+        "finite_configuration": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "intervention": 1,
+        "nearest_operation_domain_vectors": [],
+        "one_shot_availability": [
+          [
+            "15_14_sig11",
+            false
+          ],
+          [
+            "50_39_sig11",
+            false
+          ]
+        ],
+        "operation_domain_overlap": [],
+        "ordered_budget": 17,
+        "ordered_feasibility_configuration": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "relative_operation_domain_geometry": []
+      },
+      "intervention": 1,
+      "row_index": 14254,
+      "source_epoch": 1,
+      "target_epoch": 2
+    }
+  ],
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "schema": "ztare-terminal-factor-transport-audit-v1",
+  "shared_feature_names": [
+    "availability_pattern",
+    "budget_positive",
+    "controlled_shape",
+    "finite_configuration",
+    "intervention",
+    "nearest_operation_domain_vectors",
+    "one_shot_availability",
+    "operation_domain_overlap",
+    "ordered_budget",
+    "ordered_feasibility_configuration",
+    "relative_operation_domain_geometry"
+  ]
+}

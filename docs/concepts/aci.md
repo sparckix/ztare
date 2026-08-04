@@ -20,6 +20,13 @@ The costliest hours of this campaign were silent deaths: background work vanishi
 ## Actions carry their cost and their reversibility
 Agents allocate boldness by reversibility and attention by cost. Each menu action declares: expected cost (quoted from measurement, updated by receipts) and reversibility class (pure-read / undoable-with-receipt / irreversible). The interface that hides cost gets hour-long surprises (this repo's abduction saga); the one that hides irreversibility gets timidity everywhere or recklessness somewhere.
 
+Branched experiments quote origin reconstruction separately from active
+interventions. Requested paths that are prefixes of longer paths share one
+execution witness; replaying the same origin once per prefix manufactures cost
+without information. The execution receipt records origin replays, origin
+interventions, and active interventions so allocation can learn from measured
+cost without adding semantic advice to a worker prompt.
+
 ## Reads are free, writes are gated, and the description is part of the interface
 Query affordances must be frictionless and composable; mutations flow through gates. And the interface's *statement of itself* shapes the mind using it: a mandate that framed the action space as a tool menu with a pre-named surrender exit produced surrendering leaves, while the same model without that frame kept working. Action-space statements must be truthful: where the carrier is sovereign, say so.
 
@@ -39,6 +46,12 @@ category is an authority-bound task-discharge contract, while the counter and
 comparison stay in the ARC adapter. The typed schema-route registry owns these
 declarations and rejects an incomplete operational route. The end-of-phase
 trace audit is only a projection of that shared decision.
+
+Project location follows the same rule. An explicit path is resolved as that
+path before a bare name is interpreted as a project slug. Prepending a project
+root to an already-qualified path creates a shadow project with the same name
+and a different evidence identity; existence of that shadow must never win
+resolution.
 
 The preflight includes a counterexample lowering from a different substrate
 family. A shared contract that requires a grid, scalar, level, clock, fixed
@@ -179,6 +192,12 @@ that epoch and cannot promote against a successor. The successor epoch rebuilds
 evidence-derived projections lazily before use. Scientific CEGAR therefore
 never optimizes against a bank whose coordinate identity moves underneath it.
 
+A numeric epoch is a coordinate inside one adapter lifecycle, not a causal run
+identity. Reset creates a new run object. Evidence from two resets may join only
+through a certified reset-transport relation that names both run identities and
+the consumer equality it preserves. Reusing the same integer epoch across
+fresh adapter instances does not establish reset invariance.
+
 Evidence append is a successor-state transition, not a file overwrite. If an
 identity sidecar binds the prior evidence bytes, the writer validates that all
 bound observations retain their positions and hashes, writes the compatible
@@ -226,6 +245,16 @@ concrete states sharing a declared transition key produce different projected
 successor keys, search emits a non-commutation counterexample and stops using
 that quotient. The substrate adjudicator still decides task discharge.
 
+Operation identity includes its executable domain relation. Compiling an
+operation while dropping which role-bearing objects can activate it leaves a
+map without its domain and creates false state mergers. A substrate lowerer may
+encode that relation with local coordinates, object graphs, proof states, or
+another native representation; common search sees only the resulting opaque
+factor. Clock identity is likewise retained in a consumer key until an
+explicit time-translation certificate authorizes its quotient. A failed merge
+may ask the substrate lowerer for a bounded presentation witness, but that
+witness diagnoses the erased factor and does not become kernel vocabulary.
+
 Bounded search outcomes also have control consequences. A state-cap receipt
 does not prove unreachability, but repeating the same full allocation on every
 replan erases what the receipt established. The allocator may therefore move
@@ -234,10 +263,50 @@ the model, task, prompt, and verifier fixed. The terminal planning outcome is
 preserved across environment segments; segment count is execution history,
 not a substitute status.
 
+When a terminal identity is already defined, the same receipt can instead
+widen the current factored search geometrically. That changes only tree width;
+it does not alter semantic advice, the target family, or the carrier. A later
+commutation counterexample cancels the widened search and routes back to the
+projection owner.
+
+An abducted target version space is a different object from an attested
+terminal identity. A bounded miss preserves every surviving hypothesis and
+changes control to information-yield acquisition. A version-space experiment
+may receive one bounded allocation-only widening when its identity remains
+`experiment` and its receipt cannot discharge the task; task-directed widening
+is reserved for defined terminal targets. Reaching a hypothesized predicate
+sends it to the adjudicator, whose open-task receipt refutes only that member.
+
+Information-yield control may compile a hypothesis into an experiment without
+changing its semantic identity. If an accepted operation is the registered
+writer of a target observation, search may seek an edge that fires that
+operation. This is a carrier-scoped control relation derived from typed
+producer/consumer overlap. The edge neither satisfies the predicate nor
+discharges the task; it selects a checkable intervention.
+
 This prevents two opposite failures: retaining every presentation property
 makes search combinatorial, while quotienting away feasibility makes a sound
 terminal target unreachable inside its lifecycle. A counterexample refines the
 projection owned by its category; it does not widen one universal signature.
+An ordered feasibility object may require both its support configuration for
+transition equality and a scalar order for dominance. Equal scalar value does
+not identify two differently arranged supports unless commutation establishes
+that quotient.
+
+Transition equality and acquisition novelty also use different projections.
+Absolute controlled position and exact relative domain offsets may be required
+to predict a successor, while counting each translated presentation as a new
+affordance manufactures learning from motion. Generic factor acquisition uses
+finite operation configuration and availability; a new domain selector is
+tested through a typed operation-discrimination obligation.
+
+A search problem is scoped to one replan attempt. Its target, start state,
+clock origin, allocation, and policy form its identity; a later replan begins
+with no problem and must construct a new one through the registered lowering.
+Reusing the prior problem when no current route applies would turn historical
+planner state into an implicit control policy and erase the receipt's policy
+identity. Factored attempts therefore share one execution-and-receipt door but
+never share the problem object across replan boundaries.
 
 The shared implementation boundary is a typed partition/refinement kernel, not
 a universal quotient schema. State-behavior, executable-hypothesis, residual,
@@ -274,6 +343,11 @@ an operational carrier halts its consequence path. The compact trace audit
 re-runs this same registry at phase exit; it does not maintain a second set of
 static filename, timing, or liveness heuristics.
 
+Lowerability is executable reachability through this registry. A proposal kind,
+matching fields, generated script, or prompt inclusion is insufficient. The
+contract is lowerable only when those typed parameters select a registered
+executor and its receipt can first-fire a declared consumer.
+
 Operational awareness is consumer-indexed consequence. A system is aware of a
 receipt when the registered downstream interpreter accepts the receipt's exact
 typed identity and changes declared control state or available operations. Key
@@ -296,6 +370,23 @@ transport, failed gate, failed delivery edge, or missing capability. The repair
 mutates the owner of that identity and replays its downstream consequences. It
 does not patch the visible symptom in a neighboring layer. A repair is adopted
 only after build, active consumer wiring, and a first-fire receipt.
+
+Artifact provenance and executable behavior are different equality relations.
+Task ids, receipt refs, authorship, and source bytes remain attached to the
+artifact ledger. A control consumer may reuse consequences across carriers
+only through a conservative execution quotient derived from statically
+lowerable IR; opaque programs remain byte-identified. Finite-probe agreement
+is a certificate property, not execution identity. This prevents provenance
+changes from erasing learned control while preserving audit and promotion
+boundaries.
+
+Consumer quotients must be minimal for the decision they own. A terminal
+hypothesis predicts whether its condition holds, so its search coordinate is a
+truth value; raw region contents are presentation. Multiple intervention
+presentations may attach to one hypothesis identity. Transition, feasibility,
+and lifecycle coordinates remain separate factors and compose at the search
+consumer. A finer feature map that preserves predicate truth but admits
+irrelevant variation is an unquotiented interface defect.
 
 Abducer evolution follows the same machinery lifecycle. A proposed abducer or
 operator-language change names its parent source digest, obstruction family,
@@ -395,9 +486,10 @@ advertised). Neither pole is fixed by prompting; both are structural.
 
 The line that separates lawful help from ratchet:
 
-- Injecting **receipts-derived evidence** into a briefing is admissible
-  (DISCOVERY may stage counterexamples; a transition delta the leaf could
-  compute itself is evidence, not science).
+- Injecting **receipts-derived visible evidence** into a briefing is admissible
+  (DISCOVERY may stage counterexamples only after their evidence identity is
+  changed from withheld to visible and a successor holdout is required; a
+  transition delta the leaf could compute itself is evidence, not science).
 - Injecting a **hypothesis or mechanism** is never admissible.
 - But even lawful evidence injection accrues dependency. The generalizing
   form is to mechanize the **question** ("the full boundary delta is

@@ -242,7 +242,7 @@ The `env_frame_indices` function classifies episodic discontinuities (deaths, re
 
 Both gates are exact and fail-closed.
 
-Gate tiers and holdout exposure policy follow the CEGIS membrane. Gates carry an evidence tier: `observed` gates are must-pass (any failure is a hard block); `heldout` gates require only non-regression against the champion's recorded value, so a candidate is not required to solve unseen material before it is allowed to improve what has been observed. In DISCOVERY and HARNESS\_DEBUG runs the briefing pack may stage holdout slices as consumable counterexample evidence for alpha/gamma repair; in EVALUATION runs the holdout remains kernel-side and is never exposed to a leaf probe or workbench tool. The run role is read from `MANIFEST.json` and defaults to `EVALUATION` when absent.
+Gate tiers and holdout exposure policy follow the CEGIS membrane. Gates carry an evidence tier: `observed` gates are must-pass (any failure is a hard block); `heldout` gates require only non-regression against the champion's recorded value, so a candidate is not required to solve unseen material before it is allowed to improve what has been observed. Generative workers and leaf-authored evidence probes are visible-only in every run role. DISCOVERY may consume a formerly sealed slice only after an explicit evidence-state transition demotes it to visible counterexample evidence and requires a fresh future withheld slice; a role label alone never exposes active holdout. The run role is read from `MANIFEST.json` and defaults to `EVALUATION` when absent.
 
 **Dynamics assumption.** Both ARC rubrics (`arc3_ls20_gov`, `arc3_tu93_gov`) declare `dynamics_assumption: lawful_time`. This lifts the syntactic t-read ban in `worldmodel_carrier_purity.validate_worldmodel_carrier_source`; anti-memorization is instead discharged by the held-out rollout and dominance gates. The resolution order is `ZTARE_DYNAMICS_ASSUMPTION` env var > rubric `dynamics_assumption` field > `markovian` default. When `lawful_time` is in effect, the leaf-workbench fragment head emits a `PHYSICS DECLARATION` line so the leaf knows time-dependent laws are admissible for this substrate.
 
@@ -313,10 +313,14 @@ segments is reported separately. This prevents a history property such as
 
 Accepted carriers may expose a consumer-indexed factor lowering through
 `worldmodel/compiled_fiber_planning.py`. The lowering compiles carrier-emitted
-effect receipts into four algebraic jobs: controlled base, finite
-configuration, ordered feasibility, and one-shot availability. These names are
-worldmodel lowering vocabulary; `common/factored_search.py` receives only
-opaque keys, an ordered vector, an edge predicate, and an estimate.
+effect receipts into seven algebraic jobs: controlled base, finite
+configuration, presentation assignment, operation-domain assignment, ordered
+feasibility configuration, ordered feasibility scalar, and one-shot
+availability. Pattern-triggered operations lower to
+the relative relation between controlled objects and current trigger
+occurrences; their adapter coordinates do not enter the common kernel. These
+names are worldmodel lowering vocabulary; `common/factored_search.py` receives
+only opaque keys, an ordered vector, an edge predicate, and an estimate.
 
 The terminal projection and the reachability projection are deliberately
 different. Terminal-edge steering compares controlled base plus finite
@@ -325,8 +329,11 @@ because those coordinates determine whether the edge can be reached inside the
 active lifecycle without changing what the edge means. Every compiled
 projection writes `compiled` and `first_fire` events under the registered
 `compiled_factors_to_planner.v1` route. A projected transition image that fails
-to commute returns a projection counterexample rather than silently merging
-the states.
+to commute returns a projection counterexample plus a bounded
+substrate-interpretable source difference rather than silently merging the
+states. Time remains in the consumer equality key until a carrier certificate
+authorizes time-translation quotienting. A targeted state-cap receipt widens
+the factored frontier geometrically while leaving the goal family unchanged.
 
 ### Task adjudication
 
@@ -338,6 +345,18 @@ do not decide task achievement. The project profile declares a
 only the receipt status. A proof substrate can lower the same contract through
 a kernel checker, and a prose substrate through a registered human or committee
 adjudicator, without importing ARC counters or spatial assumptions.
+
+`GoalHypothesisSet` identifies itself as a hypothesis version space rather than
+a defined terminal identity. Factored search may try to reach a member, but a
+state-cap receipt preserves the family and switches control to
+information-yield acquisition instead of authorizing repeated widening. A
+reached member is removed only after the adapter keeps the task open.
+
+The grid lowering also compiles an experiment edge when a carrier operation is
+a writer of a surviving predicate's observation region. Search then seeks that
+operation firing through the same factored problem and commutation checks. The
+relation is carrier-scoped and can change without changing predicate identity;
+the adapter still disposes the resulting task hypothesis.
 
 Terminal witnesses carry their source epoch. They may steer only inside that
 epoch; an epoch boundary severs terminal identity unless target-epoch evidence
@@ -425,10 +444,11 @@ dominance materializer as the single promoter → append-only ledgers):
    divergence*.
 3. **The version-space loop** (`worldmodel/version_space.py` +
    `population_enumerator.py` + `distinguishing_play.py`) — the extensional
-   engine: maintain the *population* of visible-perfect programs (mechanism
-   identity = behavioral fingerprint on a canonical probe battery, so
-   "same idea, different wording" is undefined rather than policed);
-   diversify by enumeration when authorship converges (measured: the entire
+   engine: maintain the *population* of visible-perfect programs. Executable
+   hypothesis identity remains content-addressed source; a behavioral
+   fingerprint on a frozen probe battery is an equivalence certificate used
+   to allocate distinguishing experiments and never merges source identities.
+   Diversify by enumeration when authorship converges (measured: the entire
    LLM-authored candidate history of ls20 collapsed to one behavioral
    fingerprint); compute *distinguishing experiments* from survivor
    disagreements and play exactly there. Each observation writes both
@@ -638,10 +658,10 @@ to multiple agents is a lane scheduler decision (science, meta-hardening,
 proof-work, tool-synthesis), not a reason to mix apparatus backlog into the
 science leaf's front-door attention.
 
-The workbench menu is also governed. A leaf may not invent a missing action and cite it as evidence. Unknown or defective actions may be described as a tool gap inside `LOWERABILITY_BLOCKED`; optional proposal skeletons must include input/output contract, evaluator, secret policy, safety invariant, and rollback condition. Capability proposals are morphism-shaped: they name the current state, desired state, and admissibility witness, so a future tool can be tested as an extension rather than smuggled in as a hand-authored hint. Only registered capabilities can produce `LEAF_WORKBENCH_RECEIPT` evidence. In a skill-acquisition run, a proposal alone is cold meta-backlog: it neither satisfies the current residual nor authorizes an empty candidate. The science-lane obstruction is `LOWERABILITY_BLOCKED`, which must cite attempted visible capabilities, attempted candidate family, missing witness/sensor, next action, and evidence refs. Only a paired lowerability obstruction or repeated telemetry-backed recurrence makes a proposal eligible for Strategy Office batch review. Proposals targeting hard-kernel gates remain audit records only. This keeps the interface self-improving without making a hardcoded menu into a new prior.
+The workbench menu is also governed. A leaf may not invent a missing action and cite it as evidence. Unknown or defective actions may be described as a tool gap inside `LOWERABILITY_BLOCKED`; optional proposal skeletons must include input/output contract, evaluator, secret policy, safety invariant, and rollback condition. Capability proposals are morphism-shaped: they name the current state, desired state, and admissibility witness, so a future tool can be tested as an extension rather than smuggled in as a hand-authored hint. Only registered capabilities can produce `LEAF_WORKBENCH_RECEIPT` evidence. A card is lowerable only when its typed parameters select a registered executor whose consequence has a downstream consumer; a matching kind string or a workspace script is insufficient. In a skill-acquisition run, a proposal alone is cold meta-backlog: it neither satisfies the current residual nor authorizes an empty candidate. The science-lane obstruction is `LOWERABILITY_BLOCKED`, which must cite attempted visible capabilities, attempted candidate family, missing witness/sensor, next action, and evidence refs. Only a paired lowerability obstruction or repeated telemetry-backed recurrence makes a proposal eligible for Strategy Office batch review. Proposals targeting hard-kernel gates remain audit records only. This keeps the interface self-improving without making a hardcoded menu into a new prior.
 
 Discovery blockers have one extra accounting rule. If a leaf marks staged
-counterexamples or holdout slices as consumed evidence, the blocker must also
+visible or explicitly demoted counterexamples as consumed evidence, the blocker must also
 cite `evidence_analysis_refs`: a derived scratch artifact, visible diagnostic
 receipt, or scored candidate that shows how those refs were used for
 alpha/gamma repair. It must also include `stopping_rationale`, a local
@@ -837,9 +857,9 @@ contract text, automaton events, prompt projections, or Strategy write policy.
   and the curated visible-workbench source membrane. Science-mode `ToolSource`
   staging uses `VISIBLE_WORKBENCH_SOURCE_REFS`, a narrow executable set for
   local preflight and worldmodel induction tools. This set includes
-  `evidence_probe.py` (governed leaf-authored probe over episode transitions,
-  zero-credit, AST allowlist, DISCOVERY-conditional holdout exposure) and
-  `evidence_quotients.py` (`event_timeline` and `episode_contrast` as library
+  `evidence_probe.py` (governed leaf-authored probe over visible episode
+  transitions, zero-credit, AST allowlist) and `evidence_quotients.py`
+  (`event_timeline` and visible-only comparisons as library
   and workbench capabilities). It should not be replaced by a transitive import
   graph or by every file named in the meta-hardening blast-radius map.
 - `visible_workbench_actions` plus `visible_workbench_cli`: in-turn visible
@@ -984,8 +1004,9 @@ counterexamples; evaluation measures whether the next abstraction transports.
 Every candidate, gate, and protocol-status reader should preserve the membrane metadata:
 `run_role` (`DISCOVERY`, `EVALUATION`, or `HARNESS_DEBUG`),
 `holdout_exposed_to_proposer`, `claim_class`, and
-`fresh_holdout_required`. Discovery may stage holdout-like slices in the
-visible workbench as consumable counterexamples; evaluation keeps them sealed.
+`fresh_holdout_required`. Discovery may stage explicitly demoted slices in the
+visible workbench as counterexamples; the active withheld slice stays sealed
+and is replaced after any demotion.
 
 Identity and property are separate. The project-root `test_model.py` is the
 mutable submission ABI and may describe the current candidate attempt, but it is
@@ -1330,15 +1351,16 @@ probe can write a caller-selected quarantined transition trace for apparatus
 inspection, but that trace is marked `admissible_to_synthesis=false`; only the
 governed collector may add target-epoch rows to the evidence bank.
 
-At the 2026-07-15 cold-audit boundary, immutable carrier `8d3e1f…` is refuted on
+At the 2026-07-15 cold-audit boundary, immutable carrier `8d3e1f…` was refuted on
 the newest visible evidence: 15,082/15,084 exact, with two wrong rows and 28
 wrong cells. It also reaches only 17/106 on the newest sealed trajectory. The
-historical 16/16 episode is declared consumable discovery evidence by the
-project manifest and task file; P0 records transfer as
+historical 16/16 episode was declared consumable discovery evidence by the
+project manifest and task file; that exposure path was subsequently removed,
+and P0 records the earlier transfer as
 `historical_or_unbound`. It cannot authorize a transfer or task-discharge
 claim.
 
-The two current residual identities are remote support effects under
+That audit's two residual identities were remote support effects under
 intervention 2. At local time 81, the observation creates a 2×10 value-11
 support at rows 61–62 and columns 13–22 beside an existing support; the carrier
 leaves 24 cells at the background value inside the gate projection. At local
@@ -1359,14 +1381,142 @@ scientific split.
 Sealed live trajectories now bind the exact SHA-256 of the immutable carrier
 that generated them, and the gate rechecks both that binding and the slice
 bytes. A later carrier trained on the appended transitions cannot borrow the
-earlier slice as unseen evidence. The next governed cycle therefore begins from
-an explicitly refuted carrier and must acquire a new executable consequence
-through the active transaction.
+earlier slice as unseen evidence. The governed successor therefore began from
+the refuted carrier and had to acquire a new executable consequence through the
+active transaction.
+
+At the start of the 2026-07-17 planning audit, the immutable carrier
+`158a5bff…` passed 15,621/15,621 then-current law-owned rows and the configured
+16/16 withheld rollout under evidence epoch `b11af8dc…`; the adapter reported
+two task discharges. Goal abduction produced ten separately identified
+predicates. Two were reached under live control and removed after the adapter
+kept the task open; their task-, epoch-, origin-, carrier-, and
+trajectory-bound refutations now replay from the sealed-slice store. Eight
+survived that point.
+
+Composing those predicates with the carrier projection produced three
+successive commutation witnesses. First, two equal projected states at
+different clock coordinates had different images, so clock identity was
+restored. Second, equal states under the old factors differed by swapping two
+3×3 outline objects between two sites; contact with one presentation replenished
+the ordered quantity while contact with the other spent it. The existing
+pattern-triggered operation therefore contributed an operation-domain
+assignment, expressed as trigger origins relative to the controlled object.
+Third, two states had the same scalar quantity but different live-group
+supports; one intervention distinguished them. Ordered support configuration
+therefore became an equality coordinate while its scalar remained the
+feasibility order. No game noun or coordinate entered common search.
+
+With those refinements the quotient commuted for 25,000 generated states to
+depth 33 but reached none of the eight predicates. This is a bounded search
+receipt, not an unreachability claim. It also exposed a control-category error:
+the abducted version space had been treated like an attested terminal identity.
+`GoalHypothesisSet` now identifies its own category. A bounded miss preserves
+its members and switches to information-yield acquisition; only a defined
+terminal target authorizes geometric widening. The task remains open.
+
+The writer-overlap experiment then found an 18-action factored path and spent
+19 live interventions including the discriminating edge. That edge added one
+within-epoch counterexample. The carrier predicted 53 of its 77 changed cells,
+including controlled motion, ordered depletion, and the registered writer;
+the sole residual is a remote 6×6 mask at rows 55–60 and columns 3–8 whose
+support is unchanged while its presentation changes uniformly from 9 to 14.
+The current reseal is therefore 15,621/15,622, with one 24-cell
+presentation-transport consequence awaiting governed re-identification. No
+coordinate clause has been added to the carrier. This experiment is scientific
+yield from the apparatus: a surviving target hypothesis selected a registered
+writer, factored search reached its firing edge, and live execution produced a
+localized counterexample to the transition model.
+
+Subsequent identification found seven banked occurrences of the same
+boundary-conditioned object transition. Their presentations form the witnessed
+partial graph `12 -> 9 -> 14`; no observation authorizes an outgoing edge from
+`14`, so the compiler leaves that image undefined rather than inventing a
+cycle. A cross-epoch counterexample selected an adapter-local transport guard,
+and same-operation refinement replaced the earlier layer over its parent
+instead of stacking another patch. The resulting carrier covers all 15,671
+currently scored transition rows and the 16-step withheld rollout. The active
+task adjudicator nevertheless remains open: dynamics coverage and task
+discharge are separate identities.
+
+That statement is bound to immutable artifact `b125054e…`. The older
+`8d3e1f…` and `158a5bff…` results, the mutable root `test_model.py`, and sealed
+trajectories generated by those artifacts remain distinct records. A score
+attached to one of them cannot be reported as the status of an unspecified
+"carrier."
+
+The next clean control experiment exposed a provenance quotient. Two compiled
+carriers had identical base digest, literal operation IR, and predictions, but
+different task and receipt references. Byte identity remains the artifact and
+audit identity; search-control consequences now join on a conservative
+execution identity for statically lowerable IR. Free-form programs remain
+byte-identified. Reusing fourteen prior non-discharge edges under that quotient
+redirected the next run into 22 previously unbanked transition packets, all of
+which the carrier predicted. This is the first measured payoff from the
+execution/provenance split.
+
+Goal search had committed the inverse error: its quotient key stored every raw
+cell in every candidate region, including one large rectangle. Cosmetic
+presentation changes therefore counted as information and inflated search
+memory. The consumer identity is now the Boolean truth vector of the active
+task-predicate hypotheses, composed with the transition and feasibility
+factors. Duplicate predicate identities merge their intervention
+presentations. One factored problem now seeks either a satisfied active
+predicate or a previously unseen truth vector through a relevant operation;
+the former three-stage goal/search/acquisition cascade was deleted. The
+deterministic value-transport authoring heuristic was also removed: its runtime
+operator remains available for historical carriers and leaf proposals, but the
+harness no longer prescribes that scientific family.
+
+The next allocation-only control test widened this same factored experiment
+from 250 to 5,000 generated states, expanding 3,329 to depth 18. It found no
+satisfied active predicate and no new truth-vector route. No environment action
+fired, no evidence changed, and the carrier was not resealed. This excludes
+small search width as the immediate explanation. Because the target object is
+a version-space experiment rather than an adapter-attested terminal identity,
+the receipt does not claim unreachability or task discharge; it routes back to
+terminal-identity acquisition and quotient review.
+
+The next failure was inside goal abduction. Exact write supports were reduced
+to their bounding rectangles before predicate compilation. One 30-cell sparse
+indicator thereby became a mutable `[5,5,58,58]` hull, and disconnected writes
+became one 45-row copy region. The adapter now preserves exact cell support as
+predicate identity; bounding rectangles remain display metadata, and template
+comparisons split disconnected write components. The active presentations
+dropped from twelve to eleven. Factored search then found a 17-intervention
+experiment after generating 161 states, reached one candidate predicate, and
+the adapter kept the task open. Only that predicate identity was refuted. Its
+sealed consequence replayed in the next run, which took zero actions and did
+not recreate routing debt.
+
+The Strategy Office had also appeared blind because its CLI resolved the
+explicit path `projects/arc3_ls20_gov` as the shadow
+`projects/projects/arc3_ls20_gov`. Project resolution now uses the common
+explicit-path-first door. On the active dossier the office commissioned a
+registered path experiment, whose first fire admitted seven new transition
+observations. Immutable carrier `b125054e…` remained exact on all 15,678 scored
+rows and the 16-step withheld rollout. The path executor now compiles requested
+prefixes into maximal executions and receipts separate origin-replay cost from
+active-intervention cost.
+
+The same run exposed a planner lifecycle defect: after a factored plan was
+consumed, its problem object could survive into the next replan even when no
+current lowering selected it, producing a blank policy receipt. Each replan now
+starts without a factored problem and all factored attempts pass through one
+search-and-receipt door. A regression test forbids problem identity from
+crossing that boundary.
 
 Boundary seeds preserve execution identity as typed segments—verified origin,
 disagreement acquisition, and active control—with source authority and action
 intervals. The flat action sequence is an adapter projection checked against
 those segments, not the authoritative trace identity.
+
+The remaining chart caveat is reset identity. The ARC adapter currently emits
+small integer epochs that can recur across fresh adapter instances. Active-bank
+sampling may use the latest verified boundary receipt inside one run, but it
+must not treat equal epoch integers from different resets as the same causal
+episode. Cross-reset reuse needs an explicit run identity plus a certified
+reset-transport relation; until then, reset invariance remains unratified.
 
 The active planning split is the substrate-neutral
 `common/factored_search.py` protocol plus the compiler-derived interactive-grid
@@ -1449,11 +1599,13 @@ consequence ledger. They do not share object identifiers, counterexample
 schemas, equality relations, epochs, or consumers. A grid divergence can split
 a state or residual class; it cannot directly update a configuration-memory
 causal estimate. The
-existing Myhill–Nerode-style implementation is `_ScoreContext` in
-`spec_abduction.py`: it memoizes candidate scoring by behavioral equivalence
-over the current evidence population. It should be composed with other
-consumers only after their equivalence relation is shown to match; a second DFA
-minimizer would duplicate machinery without establishing that match.
+`_ScoreContext` in `spec_abduction.py` memoizes candidate scoring by behavioral
+equivalence over the current evidence population. `GoalHypothesisSet` supplies
+a different consumer quotient: the truth vector of active terminal
+hypotheses. These share partition algebra while retaining different objects,
+refinement witnesses, and consumers. Composition requires equality of the
+relevant equivalence relation; a second generic DFA minimizer would duplicate
+machinery without establishing that equality.
 
 Cross-domain transport follows the same rule. The portable object is the
 invariant-owning contract plus target witnesses, never the ARC presentation
@@ -1487,6 +1639,384 @@ extension functions; it has no dispatch or promotion authority. Consolidation
 is complete only when one typed counterexample route can produce, sandbox,
 falsify, register, and first-fire a new operator identity across
 adapter-defined observation and intervention types.
+
+## Fast actor and outcome-priced wake-sleep recall (2026-07-29)
+
+This circuit completes an unfinished part of the existing abstract-
+interpretation design; it does not replace that design. The architecture
+already had raw episodes as a concrete domain, typed quotient functors,
+`alpha`/`gamma` replay obligations, wake-sleep seed growth, and sparse briefing
+projections. Those components primarily refined executable world models or
+placed records in prompts. They did not establish a causal path from a
+frontier actor's episode, through selective recall, to a changed decision and
+an externally settled consequence. Prompt delivery was observable, but
+decision use and marginal value were absent.
+
+The July 29 control experiment corrected the first identity. A deterministic
+carrier had been choosing the ARC interventions while the frontier model
+appeared only in slower authoring paths. `persistent_reasoning_controller.py`
+and `arc3_responses_agent_probe.py` instead make one tool-sealed frontier
+session the action owner. On `ls20`, a resumed GPT-5.6 Sol `xhigh` session
+gained one level in 20 actions; a fresh session at every action gained zero in
+32 under the same observation and action contract. Fast recurrent state
+therefore changed measured task behavior. Extending the resumed actor to the
+full 32-action budget still produced only one level, locating the next deficit
+after short-horizon continuity.
+
+The proposed memory composition has four typed arrows:
+
+1. the **wake log** preserves exact source and successor observations,
+   intervention identity, actor identity, and externally adjudicated
+   boundaries;
+2. `alpha_sleep` maps supported episodes to guarded memory candidates and a
+   support hypergraph without erasing their acquisition provenance;
+3. the **attention quotient** chooses a sparse compatible subset using
+   observed inject/ablate decision effect minus retrieval, calibration, and
+   guard-overlap costs;
+4. concretization returns each recalled candidate to its cited episodes,
+   predicted decision consequence, and later settlement. A compatible
+   counterexample refines the guard or reopens the smallest boundary support
+   before repeated contradictions may demote the revision.
+
+The generic kernel in `wake_sleep_credit_router.py` preserves task,
+controller, consumption-context, choice-set, and action-vocabulary scope.
+Matched settlements cannot change primitive intervention cost. On the sealed
+H85 synthetic discriminator, outcome calibration moved top-1 recall from a
+higher-authority confuser to the lower-authority causal memory on all five
+seeds and reduced held-out regret from `198,205,217,191,220` to
+`66,72,60,74,81`. Guard-overlap cost also rejected a fully overlapping
+confuser in a top-2 cross, while an outside-scope outcome left state
+byte-identical. This validates the router's mechanics, not ARC benefit.
+
+The first ARC micro-sleep integration, H86, was rejected. It used one stable
+session, exactly 32 charged actions, 33 settled observations, and one
+non-acting consolidation tick after the action-20 level boundary. Seven
+candidate memories were compressed to three, but the actor again gained only
+one level and pursued the same wrong-subgoal family after the boundary. With
+no live settlements, selection reduced to the producer's own predicted value
+minus retrieval cost; the highest-ranked item was the already-known cardinal
+control map.
+
+H86 also exposed a category error in the bridge. The router selected under the
+boundary observation hash, then the actor carried that digest through later,
+different observations without rechecking compatibility. The **acquisition
+context** belongs to a memory's provenance; the **consumption context** belongs
+to each recall decision. They are not one scope field. The next implementation
+must retain the former, derive the latter at every decision, and retrieve only
+guard-compatible revisions. Its payoff test must use externally settled,
+matched inject/ablate decisions rather than self-reported usefulness.
+
+Settlement introduces a third object. A stochastic controller instance cannot
+simultaneously take the inject and ablate branches. The causal estimand
+therefore belongs to a preregistered **exchangeability stratum** over restored
+decision contexts and controller classes, while each arm retains its distinct
+controller-instance and trajectory identities. Exact hashes protect
+provenance; an evidence-backed quotient certificate authorizes generalization
+across arm instances. Equating those jobs either makes counterfactual
+settlement impossible or launders unmatched runs into credit.
+
+H87 repaired those identities and supplied the first positive live
+discriminator. `MemoryAcquisitionProvenance` now owns the source episode,
+source observation, source controller instance, and supporting transition
+hashes. `RecallConsumptionDecision` binds a selected revision to one current
+observation and one harness-owned controller instance; its single direct
+injection is burned before the external inference call.
+`RecallExperimentStratum` owns only the equivalence claim needed to compare
+distinct stochastic arms: restored prefix and observation, controller class,
+choice set, action vocabulary, fixed budget/cost, scoring rule, and
+randomization identity. Runtime session and trajectory identities remain
+distinct and are checked before settlement.
+
+The H87 paired-prefix probe restored the same `ls20` initial observation for
+six fresh Sol `xhigh` arms, randomized order over three pairs, and charged 20
+actions to every arm. Inject received the three-memory H86 bundle on decision
+zero only. Inject completed Level 1 at actions `13,15,15`; controls completed
+at `20,miss,15`. Total task score was `3` versus `2`; paired composite deltas
+under the frozen `0.8 task + 0.2 efficiency` score were
+`0.07,0.86,0.00`. The mean observed delta was `0.31` against predicted `0.20`,
+and the exploratory criterion passed with two wins and one tie.
+
+The result is narrow. Mean unique-settled-observation yield delta was `0.00`:
+recall directed the same amount of visible contact more effectively rather
+than increasing observation diversity. The three-pair delta variance was
+large (per-pair prediction MSE `0.1642`), treatment had extra prompt tokens,
+and the intervention was the whole bundle. H87 supplies a same-game causal
+value signal for one-shot recall, while leaving state-conditional calibration,
+prompt-length placebo control, individual-memory attribution, and cross-game
+transfer open.
+
+H88 factored that bundle into two evidence-supported active interventions.
+The causal-mechanics bundle encoded the marker-to-glyph transition and the
+glyph-matching task relation. The redundant-true bundle encoded controls,
+wall blocking, and marker persistence. Both canonical presentations were
+exactly 3,849 UTF-8 bytes, both were injected once at decision zero, and every
+arm spent 20 actions from the same restored observation. Causal mechanics
+completed Level 1 at actions `13,15,13`; redundant true memory completed at
+`19,miss,14`. The causal bundle therefore scored `3/3` versus `2/3`, won all
+three paired composite comparisons (`+0.06,+0.86,+0.01`), and moved learned
+top-1 allocation to its revision despite a lower initial producer rating.
+
+This supports content-sensitive outcome credit at one decision surface. The
+redundant arms often inferred the mechanism later, after spending actions on
+the attractive but wrong direct-to-terminal branch. Causal recall altered
+early hypothesis control without supplying a complete route. Mean
+distinct-observation yield again stayed unchanged, so the measured benefit was
+policy allocation over available contact. The frozen H88 shuffles put causal
+first in all three pairs, a `1/8` draw; a right-first replication is required
+before assigning order-independent value.
+
+H89 supplied that replication. All three pairs ran redundant true memory
+first. Causal mechanics completed at `13,20,20`; redundant true memory
+completed at `16,miss,13`. Causal won two pairs, lost one, and preserved a
+`3/2` task advantage with mean composite effect `+0.2567`. Combined H88+H89
+evidence is three pairs in each order, `6/6` causal completions versus `4/6`
+redundant completions, and mean effect `+0.2833`. The negative H89 pair showed
+that identical observation scope does not identify the stochastic
+controller's active hypothesis.
+
+H90 then tested whether this settled credit compounds. Its hash-verified H89
+state selected causal mechanics for four fresh controllers; the empty-state
+producer prior selected redundant memory. Execution order was balanced. The
+trained choice completed at `19,20,13,miss`; producer-prior choice completed at
+`14,20,13,13`. Trained selection won zero pairs, lost one task, and averaged
+`-0.2325` against predicted `+0.20`. The compounding claim was rejected, and
+the new outcomes moved top-1 allocation back to redundant memory.
+
+The failure separates delivery from use. `RecallConsumptionReceipt` proves
+that one intervention entered one prompt. It does not identify the
+controller's unbriefed proposal or establish whether the intervention changed,
+confirmed, contradicted, or was ignored by the charged decision. H90's causal
+arms sometimes took the direct-terminal branch despite receiving the causal
+bundle. Average content value over one observation is therefore the wrong
+policy state when the controller's active hypothesis varies.
+
+The next identity is a proposal-conditional decision-use transition:
+
+```text
+unbriefed proposal
+-> candidate intervention
+-> inject / challenge / silence gate
+-> revised proposal
+-> use relation
+-> charged action
+-> external settlement
+```
+
+The use relation distinguishes `already_satisfied`, `accepted_change`,
+`rejected`, `contradicted`, and `unresolved`. External credit attaches to the
+gate decision under the pre-intervention proposal state. Memories retain
+evidence provenance; revised proposals retain controller authority; delivery
+receipts cannot substitute for a changed decision.
+
+The resulting critical-mass hypothesis is a loop-gain claim:
+
+```text
+experience
+-> causal compression
+-> compatible sparse intervention
+-> improved action
+-> matched external payment
+-> better future intervention selection
+```
+
+Stored volume cannot establish that threshold. The operational sign is that
+outcome-corrected selection produces progressively better later experience
+after paying retrieval and primitive-action costs. H87 established positive
+bundle recall; H88/H89 established order-robust local content discrimination;
+H90 rejected observation-only learned selection. Proposal-conditional gating,
+verified use, abstention, cross-context transport, and improvement-rate
+acceleration remain untested edges.
+
+The same intervention identity now has a provider-neutral lowering in
+`decision_intervention_market.py`. Episodic memories, briefing-provider
+records, skills, and retrieved traces retain their source vocabularies but bid
+into one exact prompt-token budget as rendered decision interventions. A
+provider or rendered-content change mints a new revision; acquisition
+provenance remains separate; allocation reuses the wake-sleep outcome-credit
+state rather than creating a second ranking system. Focused tests show that
+matched outcomes can move allocation from a high-authority briefing record to
+a lower-authority skill and that mixed provider kinds share one exact token
+budget. This is mechanized plumbing, not evidence that the live briefing
+system's choices improve.
+
+The central retrieval-credit circuit has direct prior art. ProactAgent
+(arXiv:2604.20572) represents retrieval as an agent action and trains it from
+paired continuations with and without retrieval after a shared interaction
+prefix; its reward combines environment outcome and interaction efficiency,
+and retrieved entries gain priority only when associated with improvement.
+AdaMEM (arXiv:2606.05684) performs step-wise adaptive memory during
+long-horizon agent trajectories, while UMA (arXiv:2602.18493) jointly learns
+consolidation and explicit memory-bank operations. The wake-sleep router is
+therefore a ZTARE lowering of a convergent 2026 agent-memory direction, not a
+new agent-memory architecture.
+
+Two still-closer systems further narrow the claim. Decision-Aware Memory Cards
+(arXiv:2606.08151) ranks evidence by expected action shift, outcome uplift,
+necessity, and negative-transfer risk rather than semantic similarity.
+Remember When It Matters (arXiv:2607.08716) runs a separate memory agent beside
+an unchanged action agent and learns whether to inject a reminder or remain
+silent; its reported ablations favor selective intervention over passive,
+always-on, advisor-only, and general-retrieval variants. H87 is therefore a
+fixed-prefix, always-inject precursor to the judgment problem that the latter
+paper directly studies. RICE-PO (arXiv:2605.26352) also localizes retrieval
+credit through counterfactual branches at high-uncertainty executable actions.
+
+The narrower additions requiring comparison against that prior art are typed
+actor chronology, separate acquisition/consumption/experimental-stratum
+identities, guard-overlap interference, primitive-action-cost invariance, and
+boundary-provenance reopening before demotion. H85 tests those mechanics only
+on a synthetic stream; H86 supplied no task payoff; H87 supplied the first
+same-game bundle-level payoff; H88/H89 supplied local content-specific payoff
+under both execution orders; H90 rejected the first held-out learned-selection
+  policy. These remain implementation claims and research questions, not
+  established literature contributions.
+
+H91 moved the governing identity from memory content to controller response.
+Every scored controller emitted a memory-blind proposal and then a
+same-observation commitment after either causal mechanics or an exact-byte
+redundant-true placebo. Both conditions used 3,849 canonical UTF-8 bytes, two
+inference calls before action, and 20 primitive actions. Target memory
+completed Level 1 at `13,15,13,15`; placebo at `16,20,20,16`. Target won all
+four paired composite comparisons and averaged `+0.04`.
+
+The instrumented response estimator did not credit all four target successes.
+It classified one newly supported target transport and zero placebo
+transports, yielding first stage `+0.25`, an identified intent-to-treat effect,
+and provisional complier effect `+0.16`. The other three target arms were
+recorded as different response relations because their frozen blind-proposal
+features already appeared to carry the contract. Delivery and task success
+therefore no longer manufacture use credit.
+
+The experiment also falsified the lexical proposal adapter as a final
+abstraction. Several blind controllers called the small `0/1` floor object the
+moving “marker” or “sprite.” A word match then treated a wrong-object plan as
+precondition-compliant. H91's external target/placebo effect remains measured,
+but its first-stage quotient is too noisy to authorize the next allocation
+policy.
+
+The architectural repair is a commuting pair of abstraction maps:
+
+```text
+raw observation --alpha_world--> content-addressed object/role graph
+      |                                      |
+blind proposal --alpha_judgment--> planned object/role path
+```
+
+The world and proposal sides must cite the same object identities and
+relations. A remembered intervention then compiles to a morphism on a planned
+role path; the response signature is the quotient of pre/post paths under
+action-relevant equivalence. External settlement prices that morphism inside
+its exact proposal basin. This is an extension of the existing
+alpha/functor/quotient architecture to controller state. Adding another
+semantic retrieval score or LLM judge would recreate the category error.
+
+The candidate research contribution is therefore not proactive memory,
+selective injection, counterfactual replay, or process attribution; all have
+close public systems. The narrower object is an instrumented internal
+controllability model: randomized memory encouragement, explicit
+offer-versus-uptake separation, proposal-lineage response signatures,
+weak-instrument refusal, fixed intervention cost, and external settlement,
+with response families later quotienting into conditional admission rules.
+H91 is one positive local discriminator. Object-linked transfer, held-out
+admission, and accelerating loop gain remain open.
+
+H92/H93 resolved the world/proposal bridge in two steps. H92 compiled the
+settled frame into ten content-addressed component occurrences and required
+proposals to cite the same objects as the world side. In its first two
+balanced-order pairs, causal memory moved both blind plans from the five-cell
+floor occurrence to the 25-cell moving occurrence with the floor occurrence
+first in the waypoint path; both placebos stayed in the wrong controlled-object
+basin. Target completed at `13,13`; placebo at `16,miss`. The third target
+proposal copied one 64-hex occurrence ref incorrectly, and the kernel rejected
+it before action under the frozen unknown-reference kill. H92 was rejected.
+
+That failure separated evidence identity from active presentation. Full
+content hashes remain appropriate inside receipts and compatibility checks;
+they are brittle controller-facing pointers. H93 assigns deterministic,
+role-free local handles (`o00...`) to the catalog's frozen occurrence order and
+hashes the complete handle map with the observation and catalog. The actor sees
+handles, geometry, and shape without exact refs or role labels. The adapter
+resolves the handles before constructing the exact-ref proposal consumed by
+the common kernel.
+
+Two fresh H93 pairs supported the repair. Every raw blind/revised proposal was
+persisted before resolution. Both targets revised `o02 -> o03`; both placebos
+stayed `o02 -> o02`. Exact-ref supported transport was `2/2` versus `0/2`,
+first stage `1.0`. Target completed at `13,15`; placebo at `miss,16`; task
+delta was `+1` and mean paired composite delta `+0.445`. The instrumented
+estimate was identified. The reusable sequence is now:
+
+```text
+alpha_world: observation -> exact object catalog
+presentation: exact object catalog -> local role-free handles
+alpha_judgment: raw handle plan -> exact object-role path
+plasticity: randomized offer -> exact path displacement -> external settlement
+```
+
+H94 compiled that eligibility trace into a response family keyed by the exact
+contract-relative blind proposal basin. A response is admissible only with
+enough randomized offer and withhold support, a strong typed-path first stage,
+and positive externally settled value after intervention cost. Prospective
+admission has three actions: `offer` for an identified positive basin,
+`silence` for an already-satisfied or identified nonpositive basin, and
+`explore` for an unseen or weak basin. Condition names and memory text are not
+inputs.
+
+The frozen H93 family contained one admissible basin: counts `2/2`, first stage
+`1.0`, net effect `+0.445`. On two fresh alternating-order pairs, both response
+controllers entered that basin and received causal mechanics before action.
+H90's independently rehydrated scalar credit state selected redundant true
+memory twice. Response controllers completed at actions `13,13`; scalar
+controllers at `14,15`. Task delta was `0`; response won both composite
+comparisons and averaged `+0.015`. No H94 outcome was visible to either
+selector.
+
+H95 moved that response to the observation after frozen prefix `[2]`. Exact
+source and target rendered intervention revisions remain distinct because the
+presentation envelope carries consumption scope. A revision-transport
+certificate relates them only when invariant payload, acquisition provenance,
+provider identity, calibration, authority, cost, and every non-context scope
+coordinate agree. Causal and placebo payloads require separate certificates.
+The object transport independently maps every contract and response-witness
+occurrence by unique content type. Only the causal target revision may enter
+the transported response contract.
+
+The positive object/intervention/proposal square commuted for all four fresh
+blind controllers. Causal mechanics produced supported transport `2/2`;
+redundant true memory produced spontaneous support `0/2`. Causal mechanics
+completed Level 1 at action `12` in both pairs; placebo completed at `miss,19`.
+Task delta was `+1.0`, causal mechanics won both composite comparisons, and
+mean paired gain was `+0.48`. Prefix `[2,2,2,0,0,0]` removed a required
+contract occurrence; transport refused before controller contact. Only the
+four randomized target-fiber settlements promoted the new target response
+family.
+
+The active judgment circuit is therefore:
+
+```text
+alpha_world: observation -> exact object catalog
+presentation: exact catalog -> local role-free handles
+alpha_judgment: blind handle plan -> exact contract-relative basin
+plasticity: randomized offer -> typed path displacement -> external settlement
+response family: basin-local settlement -> offer | silence | explore
+transport: object map + intervention re-rendering + commuting response square
+refusal: missing/ambiguous object or changed payload/provenance/authority/cost
+```
+
+This establishes prospective state-conditioned intervention credit across one
+observation boundary. It does not yet establish compositional memory. The next
+architectural object is a path-defect operator: compare two composed transport
+paths, charge or refuse noncommuting loops before delivery, and settle whether
+that defect predicts false reuse. That is the next boundary between one
+certified reactivation and accumulated skill.
+
+The miss also changed the apparatus. Live research-isomorphism conjectures now
+owe a `prior_art_inversion` plan containing non-empty search queries,
+comparison axes, and a match-based kill condition. A model-generated plan is
+not a novelty receipt; it only prevents the candidate from advancing without
+an explicit nearest-system search. Conjecture-mode candidates lacking the plan
+are rejected, and their action schema forbids novelty language until a
+source-bound comparison receipt exists.
 
 ## The examiner must be falsifiable; identity is revealed by movement (2026-07-11/12)
 

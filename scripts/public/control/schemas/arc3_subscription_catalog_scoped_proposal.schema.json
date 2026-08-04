@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "integer"
+    },
+    "prediction": {
+      "type": "string"
+    },
+    "plan_summary": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "controlled_object_handle": {
+      "type": "string",
+      "pattern": "^o[0-9]{2}$"
+    },
+    "ordered_waypoint_handles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^o[0-9]{2}$"
+      }
+    }
+  },
+  "required": [
+    "action",
+    "prediction",
+    "plan_summary",
+    "uncertainty",
+    "controlled_object_handle",
+    "ordered_waypoint_handles"
+  ],
+  "additionalProperties": false
+}

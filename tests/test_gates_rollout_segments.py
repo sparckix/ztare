@@ -13,8 +13,9 @@ proof is an unfalsifiable examiner.
   2. a WRONG law must still fail (the fix must not weaken the gate)
   3. the real ls20 holdout structure (non-advancing t) must be reseeded
 """
-from ztare.worldmodel.episode_log import EpisodeLog
-from ztare.worldmodel.gates import rollout_depth
+from ztare.worldmodel.episode_log import EpisodeLog, Transition
+from ztare.worldmodel.gates import rollout_depth, rollout_diagnostics
+from ztare.worldmodel.transition_identity import TransitionIdentity
 
 
 def _mk_grid(counter: int):
@@ -88,3 +89,38 @@ def test_continuous_holdout_semantics_unchanged():
         log.append(s, a, _mk_grid(c), t=10 + k)
     assert rollout_depth(_true_law, log) == 8
     assert rollout_depth(_wrong_law, log) < 8
+
+
+def test_environment_boundary_successor_cannot_change_rollout_verdict():
+    """A boundary presentation is excluded and severs propagation."""
+    regular = TransitionIdentity(
+        kind="dynamics",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=2,
+        evidence_refs=("test:dynamics",),
+    )
+    boundary = TransitionIdentity(
+        kind="reset_boundary",
+        authority="environment_adapter",
+        source_epoch=2,
+        target_epoch=3,
+        boundary_kind="non_discharge_respawn",
+        evidence_refs=("test:boundary",),
+    )
+    verdicts = []
+    for boundary_successor in (_mk_grid(0), _mk_grid(4)):
+        log = EpisodeLog([
+            Transition(10, _mk_grid(0), 0, _mk_grid(1), regular),
+            Transition(11, _mk_grid(1), 3, boundary_successor, boundary),
+            Transition(12, _mk_grid(3), 1, _mk_grid(0), regular),
+        ])
+        verdicts.append(rollout_diagnostics(_true_law, log))
+
+    assert verdicts == [
+        {
+            "rollout_depth": 2,
+            "scored_rows": 2,
+            "environment_frames_excluded": 1,
+        }
+    ] * 2

@@ -227,6 +227,7 @@ def record_candidate_gate_payload(
     project_dir: str | Path,
     candidate_path: str | Path | None,
     gate_payload: dict[str, Any],
+    artifact_role: str = "behavior_carrier",
     max_records: int = _MAX_CACHE_RECORDS,
 ) -> None:
     """Persist candidate-memory from an already-run deterministic gate.
@@ -243,6 +244,7 @@ def record_candidate_gate_payload(
     rec = _record_from_payload(name, digest, gate_payload, submission=submission)
     if rec is None:
         return
+    rec["artifact_role"] = str(artifact_role or "behavior_carrier")
     epoch = gate_payload.get("evidence_epoch")
     if isinstance(epoch, dict) and str(epoch.get("epoch_sha256") or "").strip():
         epoch_sha = str(epoch["epoch_sha256"])

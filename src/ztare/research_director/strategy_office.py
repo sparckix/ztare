@@ -48,6 +48,7 @@ from pathlib import Path
 from typing import Any, Callable, Protocol, runtime_checkable
 
 from ztare.common.operator_proposal_contract import attest, family_sha, write_proposal_cards
+from ztare.common.paths import resolve_project_dir
 from ztare.common.pending_file import write_pending
 from ztare.research_director.strategy_decision_policy import (
     STRATEGY_LEDGER,
@@ -56,7 +57,6 @@ from ztare.research_director.strategy_decision_policy import (
     submit_strategy_card_batch,
 )
 from ztare.worldmodel.experiment_executor import _probe_registry as _experiment_probe_registry
-from ztare.worldmodel.goal_abduction import predicate_from_spec
 from ztare.worldmodel.refuted_experiments import RefutedExperimentsLedger, render_refuted_block
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -214,8 +214,8 @@ The response format is STRICT JSON and nothing else. Exactly one of:
 INTERACTIVE PROBE (always available, any query round, several per round): the
 reserved query {{"name": "evidence_probe", "params": {{"probe_source": "<self-
 contained python defining probe(episodes) -> dict>"}}}} runs your own read-only
-analysis over the typed evidence (episodes = {{"visible": [...], "holdout":
-[...]}}, transitions as {{"t","a","s","s_next"}}) and returns its receipt in
+analysis over the typed visible evidence (episodes = {{"visible": [...]}},
+transitions as {{"t","a","s","s_next"}}) and returns its receipt in
 this transcript immediately — iterate probe -> read -> refine within this
 sitting. You may `from ztare.worldmodel.evidence_quotients import
 event_timeline, episode_contrast`. Probing earns no credit; it is how you look.
@@ -270,7 +270,7 @@ def _render_probe_registry() -> str:
     lines.append(
         "- evidence_probe: action_plan requires probe_source — inline, self-contained "
         "python defining `def probe(episodes) -> dict`, a READ-ONLY analysis over the "
-        'typed evidence (episodes = {"visible": [...], "holdout": [...]}, each a list '
+        'typed visible evidence (episodes = {"visible": [...]}, a list '
         "of {t, a, s, s_next} transition dicts). Kernel-executed in a sandbox; the "
         "receipt returns to the commissioning surface; disposition is 'observed' (an "
         "observation neither survives nor is killed). Exemplar quotients are available "
@@ -342,16 +342,6 @@ def _render_worked_example() -> str:
         "note": "FORM only; do not copy as content.",
     }
     return "=== WORKED EXAMPLE (FORM ONLY) ===\n" + json.dumps(example, indent=2, sort_keys=True)
-
-
-def _goal_predicate_compilable(pspec: Any) -> bool:
-    if not isinstance(pspec, dict) or not pspec:
-        return False
-    try:
-        fn = predicate_from_spec(pspec, [[0]])
-        return callable(fn) and fn([[0]]) in {True, False}
-    except Exception:  # noqa: BLE001
-        return False
 
 
 def _card_is_lowerable(card: dict[str, Any]) -> tuple[bool, str]:
@@ -1352,10 +1342,9 @@ def main(argv: "list[str] | None" = None) -> int:
                     help="run case-law reconciliation against workspace/disposition_reconciliation.jsonl")
     args = ap.parse_args(argv)
 
-    project_dir = REPO_ROOT / "projects" / args.project
-    if not project_dir.exists():
-        project_dir = Path(args.project)
-    if not project_dir.exists():
+    try:
+        project_dir = resolve_project_dir(args.project)
+    except FileNotFoundError:
         print(f"  ERROR: project dir not found: {args.project}")
         return 2
 

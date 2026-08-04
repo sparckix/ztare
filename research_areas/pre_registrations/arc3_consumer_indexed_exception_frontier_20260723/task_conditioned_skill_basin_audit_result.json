@@ -1,0 +1,55 @@
+{
+  "basin": null,
+  "concrete_transport": null,
+  "control_join": {
+    "checked_source_operation_pairs": 528,
+    "matched_pair_count": 0,
+    "status": "empty"
+  },
+  "hypothesis_id": "H-GPSA-TASK-CONDITIONED-SKILL-BASIN-20260727-77",
+  "identities": {
+    "carrier_execution_sha256": "2dc741d6e7e40f8d0f264217c6908010f202e3caf0bb41b35fa3d26fd9c93ef8",
+    "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+    "evidence_through_trace": "raw/episodes/eval_slices/eval_20260728T025656528768Z.jsonl",
+    "origin_seed_sha256": "a3d6f1f5a2741feb92b01bcb04a0b4b79e370883b66cfe6799fcbd89f81093ab",
+    "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+    "source_system_sha256": "e78d2de1f755875e20d525dccef23608d44cb6e2ff892475031df33ae4ea753c",
+    "start_source_key_sha256": "1bec0125a244005d96b749b931db92c5ceceaaf3d388c07a89675da2de06af19",
+    "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+    "task_configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "task_relation_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072"
+  },
+  "isomorphism": {
+    "dispatch_id": "b94f05b5460014852d685b92c0a512f6df71869c47bb5ddd321ffcf401af7fc2",
+    "rejected_candidate": "fibered closure operator additive-law candidate",
+    "selected_mother_structure": "guarded reachability kernel with evidence/postcondition adjunction"
+  },
+  "plan": {
+    "route": null,
+    "schema": "ztare-task-conditioned-acquisition-plan-v1",
+    "selected_frontier": null,
+    "status": "task_relation_unrepresented",
+    "task_changing_frontier": []
+  },
+  "route_replay": null,
+  "schema": "ztare-task-conditioned-skill-basin-audit-v1",
+  "snapshot_reconstruction": {
+    "fiber_count": 132,
+    "history_kind": "action",
+    "history_suffix_length": 0,
+    "ledger_row_count": 121,
+    "matched_trajectory_count": 28,
+    "matches_h63": true,
+    "noncommuting_relation_count": 0,
+    "observation_count": 825,
+    "relation_count": 149
+  },
+  "start_membership": {
+    "may": null,
+    "must": null,
+    "reason": "task relation has no control-fiber member"
+  },
+  "status": "task_relation_unrepresented",
+  "task_edge_count": 0,
+  "task_edges": []
+}

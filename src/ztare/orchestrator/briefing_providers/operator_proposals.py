@@ -43,14 +43,8 @@ class OperatorProposalsProvider(BriefingProvider):
     ):
         try:
             from ztare.common.operator_proposal_contract import open_cards
-            from ztare.worldmodel.adapter import episode_log_path
-            from ztare.worldmodel.episode_log import EpisodeLog
-
-            current_visible_sha = EpisodeLog.read_jsonl(
-                episode_log_path(project)
-            ).content_hash()
             task_id = str((task or {}).get("task_id") or "")
-            cards = []
+            bound_cards = []
             for card in open_cards(project / "workspace" / "operator_proposals.jsonl"):
                 binding = card.get("evidence_binding")
                 if not isinstance(binding, dict):
@@ -59,13 +53,30 @@ class OperatorProposalsProvider(BriefingProvider):
                     continue
                 if binding.get("evidence_role") != "visible":
                     continue
-                if str(binding.get("evidence_content_sha256") or "") != current_visible_sha:
+                if not str(binding.get("evidence_content_sha256") or ""):
                     continue
                 bound_task_id = str(binding.get("workbench_task_id") or "")
                 if task_id and bound_task_id != task_id:
                     continue
-                cards.append(card)
-            return cards
+                bound_cards.append(card)
+            if not bound_cards:
+                return []
+
+            # Evidence hashing is the expensive join.  Do it only after a card
+            # has established the schema/task side of the relation; historical
+            # unbound cards have no consumer in this epoch.
+            from ztare.worldmodel.adapter import episode_log_path
+            from ztare.worldmodel.episode_log import EpisodeLog
+
+            current_visible_sha = EpisodeLog.read_jsonl(
+                episode_log_path(project)
+            ).content_hash()
+            return [
+                card
+                for card in bound_cards
+                if str(card["evidence_binding"].get("evidence_content_sha256") or "")
+                == current_visible_sha
+            ]
         except Exception:  # noqa: BLE001 — never fatal to briefing assembly
             if raise_on_error:
                 raise

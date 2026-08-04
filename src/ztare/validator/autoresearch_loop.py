@@ -178,57 +178,10 @@ except Exception:  # noqa: BLE001
 
 
 def _ensure_canonical_model_aliases(code: str) -> str:
-    """Guarantee that test_model.py exposes f, model, and I_model names."""
-    try:
-        tree = ast.parse(code)
-    except SyntaxError:
-        return code
+    """Single door for legacy predictor aliases."""
+    from ztare.validator.model_aliases import ensure_canonical_model_aliases
 
-    top_level_names = {
-        node.name
-        for node in tree.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    }
-    for node in tree.body:
-        if isinstance(node, ast.Assign):
-            for target in node.targets:
-                if isinstance(target, ast.Name):
-                    top_level_names.add(target.id)
-
-    has_f = "f" in top_level_names
-    has_model = "model" in top_level_names
-    has_i_model = "I_model" in top_level_names
-    if has_f and has_model and has_i_model:
-        return code
-
-    canonical_name: str | None = None
-    for preferred in ("I_model", "f", "model"):
-        if preferred in top_level_names:
-            canonical_name = preferred
-            break
-    if canonical_name is None:
-        skip_prefixes = ("test", "assert", "check", "verify", "_")
-        for node in tree.body:
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                if not any(node.name.startswith(prefix) for prefix in skip_prefixes):
-                    canonical_name = node.name
-                    break
-    if canonical_name is None:
-        return code
-
-    suffix_lines = [
-        "",
-        "# Canonical aliases — gate harnesses may call f(), model(), or I_model()",
-    ]
-    if not has_f and canonical_name != "f":
-        suffix_lines.append(f"f = {canonical_name}")
-    if not has_model and canonical_name != "model":
-        suffix_lines.append(f"model = {canonical_name}")
-    if not has_i_model and canonical_name != "I_model":
-        suffix_lines.append(f"I_model = {canonical_name}")
-    if len(suffix_lines) <= 2:
-        return code
-    return code.rstrip() + "\n" + "\n".join(suffix_lines) + "\n"
+    return ensure_canonical_model_aliases(code)
 
 
 SESSION_TOKENS = 0
@@ -1582,7 +1535,11 @@ def _validate_bounded_discriminator_suite(
         )
 
 
-def _parse_worldmodel_payload_with_retry(text: str) -> dict[str, object]:
+def _parse_worldmodel_payload_with_retry(
+    text: str,
+    *,
+    project_dir: str | None = None,
+) -> dict[str, object]:
     """Parse and schema-check the worldmodel submission envelope.
 
     The typed parser owns its bounded repair rules.  Keeping this as a distinct
@@ -1595,6 +1552,17 @@ def _parse_worldmodel_payload_with_retry(text: str) -> dict[str, object]:
     )
 
     payload_obj = parse_worldmodel_typed_payload_text(text)
+    if project_dir:
+        from ztare.common.visible_workbench_cli import (
+            worldmodel_payload_context_errors,
+        )
+
+        context_errors = worldmodel_payload_context_errors(
+            Path(project_dir),
+            payload_obj,
+        )
+        if context_errors:
+            raise ValueError("; ".join(context_errors))
     # Rendering is the schema validator and the canonical projection used by
     # receipt consumers.  Run it here even though the caller renders again for
     # persistence so malformed control/candidate combinations fail at intake.
@@ -1648,6 +1616,11 @@ def _prepare_mutation_candidate(
     clean_thesis = None
     _control_only_submission = None  # sentinel; set when INVESTIGATED/LOWERABILITY_BLOCKED/action-request with empty carrier
     is_worldmodel_contract = is_worldmodel_submission_contract(rubric_data)
+    task_hypothesis_focus = (
+        is_worldmodel_contract
+        and os.environ.get("ZTARE_WORLDMODEL_TURN_FOCUS", "").strip()
+        == "task_hypothesis"
+    )
     candidate_thesis_pre_carrier = working_text
     if is_worldmodel_contract:
         from ztare.validator.core.candidate_preflight import (
@@ -1668,20 +1641,38 @@ def _prepare_mutation_candidate(
             log=lambda message: print(f"[candidate-preflight] {message}"),
         )
         try:
-            payload_obj = _parse_worldmodel_payload_with_retry(working_text)
+            payload_obj = _parse_worldmodel_payload_with_retry(
+                working_text,
+                project_dir=project_dir or PROJECT_DIR,
+            )
             candidate_thesis_pre_carrier = render_worldmodel_typed_payload(payload_obj)
             _wm_payload = payload_obj
             _wm_code = str(_wm_payload.get("test_model_py") or "")
             if _wm_code.strip():
-                python_code = _wm_code
+                if task_hypothesis_focus:
+                    from ztare.validator.core.candidate_preflight import (
+                        task_hypothesis_companion_source,
+                    )
+
+                    python_code = task_hypothesis_companion_source(
+                        project_dir=project_dir or PROJECT_DIR,
+                        task_source=_wm_code,
+                    )
+                    print(
+                        "📦 typed-payload extraction: standalone task hypothesis "
+                        "bound to current carrier by kernel companion"
+                    )
+                else:
+                    python_code = _wm_code
                 clean_thesis = (
                     str(_wm_payload.get("thesis_markdown") or "").strip()
                     or working_text
                 )
-                print(
-                    "📦 typed-payload extraction: test_model_py accepted from "
-                    "JSON payload (source: worldmodel_typed_payload)"
-                )
+                if not task_hypothesis_focus:
+                    print(
+                        "📦 typed-payload extraction: test_model_py accepted from "
+                        "JSON payload (source: worldmodel_typed_payload)"
+                    )
             else:
                 # Empty carrier: delegate control-only decision to the shared seam helper.
                 # If the receipt family grants may_omit_candidate (INVESTIGATED /
@@ -1767,6 +1758,9 @@ def _prepare_mutation_candidate(
             pre_judge_gate_harness=bool(rubric_data.get("pre_judge_gate_harness")),
             is_worldmodel_contract=is_worldmodel_submission_contract(rubric_data),
             source_ref=f"autoresearch:{getattr(args, 'project', 'unknown')}:candidate",
+            artifact_role=(
+                "task_hypothesis" if task_hypothesis_focus else "behavior_carrier"
+            ),
         ),
         log=lambda message: print(f"[candidate-preflight] {message}"),
     )
@@ -7370,80 +7364,6 @@ for i in range(ITERATIONS):
     # Extract the python code block for the Falsification Suite
     test_model_path = f"{PROJECT_DIR}/test_model.py"
 
-    def _ensure_canonical_model_aliases(code: str) -> str:
-        """Guarantee that test_model.py exposes ``f``, ``model``, AND ``I_model``
-        as top-level names, regardless of which path wrote the file.
-
-        GP-157 v5.0 fix (2026-04-25): added I_model as a canonical name
-        per Contract C/B requirements. The deterministic-fit-primitive build
-        path writes `def f(x)` (legacy convention); gate_harness.py (post-fix)
-        imports `I_model`; mutator-prompt Contract C tells mutator to write
-        `def I_model(...)`. All three must resolve to the same callable.
-
-        Rules (applied in order):
-        1. Find the canonical callable: prefer existing I_model > f > model >
-           first non-test top-level def.
-        2. Add aliases for all three names {f, model, I_model} not already defined.
-        3. On SyntaxError → return code unchanged (don't make it worse).
-        """
-        import ast as _ast
-        try:
-            tree = _ast.parse(code)
-        except SyntaxError:
-            return code
-
-        top_level_names = {
-            node.name
-            for node in tree.body
-            if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef))
-        }
-        # Also include simple assignments like ``model = f``
-        for node in tree.body:
-            if isinstance(node, _ast.Assign):
-                for t in node.targets:
-                    if isinstance(t, _ast.Name):
-                        top_level_names.add(t.id)
-
-        has_f = "f" in top_level_names
-        has_model = "model" in top_level_names
-        has_I_model = "I_model" in top_level_names
-
-        if has_f and has_model and has_I_model:
-            return code  # already canonical
-
-        # Find the source-of-truth callable: prefer existing canonical name
-        # in priority order (I_model first per Contract C/B), else first
-        # non-test top-level def.
-        canonical_name: str | None = None
-        for preferred in ("I_model", "f", "model"):
-            if preferred in top_level_names:
-                canonical_name = preferred
-                break
-        if canonical_name is None:
-            _skip = ("test", "assert", "check", "verify", "_")
-            for node in tree.body:
-                if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
-                    if not any(node.name.startswith(p) for p in _skip):
-                        canonical_name = node.name
-                        break
-
-        if canonical_name is None:
-            return code  # nothing to alias against
-
-        suffix_lines = [
-            "",
-            "# Canonical aliases — gate harnesses may call f(), model(), or I_model()",
-        ]
-        if not has_f and canonical_name != "f":
-            suffix_lines.append(f"f = {canonical_name}")
-        if not has_model and canonical_name != "model":
-            suffix_lines.append(f"model = {canonical_name}")
-        if not has_I_model and canonical_name != "I_model":
-            suffix_lines.append(f"I_model = {canonical_name}")
-        if len(suffix_lines) <= 2:  # only the header lines, no actual aliases
-            return code
-        return code.rstrip() + "\n" + "\n".join(suffix_lines) + "\n"
-
     # Layer 3 Mandatory (Odrzywołek Inversion, GP-035 extension):
     # The LLM is a pure topology generator.  test_model.py is ALWAYS built
     # deterministically from fit_declaration + fitted_params when the fit
@@ -7724,6 +7644,12 @@ for i in range(ITERATIONS):
                 candidate_path=_submission_snapshot_py_path,
                 expected_evidence_epoch=_ACTIVE_EVIDENCE_EPOCH,
                 run_role=resolve_cegis_run_role("mutator"),
+                artifact_role=(
+                    "task_hypothesis"
+                    if os.environ.get("ZTARE_WORLDMODEL_TURN_FOCUS", "").strip()
+                    == "task_hypothesis"
+                    else "behavior_carrier"
+                ),
             )
         if pre_judge_gate_result.message:
             print(pre_judge_gate_result.message)

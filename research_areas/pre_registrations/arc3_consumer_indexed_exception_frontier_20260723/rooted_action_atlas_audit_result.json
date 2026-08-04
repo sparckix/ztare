@@ -1,0 +1,347 @@
+{
+  "action_arity": 4,
+  "active_epoch": 2,
+  "chart_receipts": {
+    "0": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 4096
+    },
+    "1": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 4017
+    },
+    "2": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 2444
+    },
+    "3": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 3843
+    },
+    "4": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 2444
+    },
+    "5": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 3793
+    },
+    "6": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 2952
+    },
+    "7": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 3905
+    },
+    "8": {
+      "max_change_fraction": 0.002,
+      "schema": "ztare-canonical-alpha-v1",
+      "static_mask_cells": 3181
+    }
+  },
+  "completion_count": 2,
+  "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "prototype_status": "diagnostic_only_not_adopted",
+  "results": [
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 7,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 1,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 7,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 2,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 7,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 3,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 7,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 4,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 9,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 1,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "mode_position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 9,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 2,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "mode_position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 9,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 3,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "mode_position"
+    },
+    {
+      "action_renaming_invariant": true,
+      "active_frontier_count": 9,
+      "active_match_count": 0,
+      "active_matches": [],
+      "completion_port_count": 2,
+      "completion_ports": [
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 0,
+          "row_index": 14209,
+          "source_epoch": 0
+        },
+        {
+          "evidence_refs": [
+            "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+          ],
+          "nonterminal_adjacency": 0,
+          "port": 1,
+          "row_index": 14254,
+          "source_epoch": 1
+        }
+      ],
+      "depth": 4,
+      "nonvacuous": false,
+      "shared": false,
+      "shared_signature": "",
+      "success_action_maps": [],
+      "transition_order_invariant": true,
+      "variant": "mode_position"
+    }
+  ],
+  "schema": "ztare-rooted-action-atlas-audit-v1",
+  "signature_excludes": [
+    "raw_coordinates",
+    "epoch_labels",
+    "action_presentation",
+    "task_vocabulary"
+  ],
+  "survivor_count": 0,
+  "survivors": []
+}

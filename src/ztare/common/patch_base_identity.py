@@ -8,6 +8,7 @@ from typing import Any, Mapping
 
 
 CURRENT_REPAIR_FRONTIER_REF = "workspace/latest_patch_base_regression.json"
+TASK_HYPOTHESIS_COMPANION_SCHEMA = "ztare-task-hypothesis-companion-v1"
 
 
 class StaleRepairFrontierError(ValueError):
@@ -121,6 +122,11 @@ def persist_repair_frontier_if_dominant(
         old_epoch_sha = str(old_epoch.get("epoch_sha256") or "") if isinstance(old_epoch, Mapping) else ""
         if new_epoch_sha != old_epoch_sha:
             replace = True
+    if not replace:
+        if str(payload.get("evaluation_policy_sha256") or "") != str(
+            prior_payload.get("evaluation_policy_sha256") or ""
+        ):
+            replace = True
     if not replace and isinstance(prior_regression, Mapping):
         new_score = _repair_frontier_score(regression)
         old_score = _repair_frontier_score(prior_regression)
@@ -164,6 +170,7 @@ def persist_repair_frontier_observation(
     regression_receipt: Mapping[str, Any],
     counterexample_trace: Mapping[str, Any] | None,
     evidence_epoch: Mapping[str, Any],
+    evaluation_policy_sha256: str = "",
 ) -> bool:
     """Single writer door from one gate observation to the frontier role.
 
@@ -181,6 +188,11 @@ def persist_repair_frontier_observation(
             "evidence_epoch": dict(evidence_epoch),
             "candidate_regression_receipt": dict(regression_receipt),
             "counterexample_trace": dict(counterexample_trace or {}),
+            **(
+                {"evaluation_policy_sha256": str(evaluation_policy_sha256)}
+                if evaluation_policy_sha256
+                else {}
+            ),
         },
     )
 
@@ -296,6 +308,15 @@ def load_current_repair_frontier(
             "repair-frontier receipt belongs to a different evidence epoch: "
             f"receipt={epoch_sha} current={current_epoch_sha}"
         )
+    from ztare.validator.core.pre_judge_gate import evaluation_policy_sha256
+
+    receipt_policy_sha = str(payload.get("evaluation_policy_sha256") or "")
+    current_policy_sha = evaluation_policy_sha256()
+    if receipt_policy_sha != current_policy_sha:
+        raise StaleRepairFrontierError(
+            "repair-frontier receipt belongs to a different evaluation policy: "
+            f"receipt={receipt_policy_sha or '<missing>'} current={current_policy_sha}"
+        )
 
     resolved = _resolve_repair_frontier_identity(
         project,
@@ -309,6 +330,7 @@ def load_current_repair_frontier(
         "receipt_ref": receipt_ref,
         "receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
         "evidence_epoch_sha256": epoch_sha,
+        "evaluation_policy_sha256": receipt_policy_sha,
         "regression": regression,
         "exact_rows": int(regression.get(f"{prefix}_exact_rows") or 0),
         "wrong_cells": int(regression.get(f"{prefix}_wrong_cells") or 0),
@@ -397,6 +419,34 @@ def patch_base_fields_from_source(source: str) -> tuple[str, object] | None:
                     sha = None
                 break
             return (str(ref), sha) if ref else None
+    return None
+
+
+def task_hypothesis_companion_provenance_from_source(
+    source: str,
+) -> dict[str, Any] | None:
+    """Read the typed role marker from a kernel-built task companion."""
+
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return None
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        names = [target.id for target in node.targets if isinstance(target, ast.Name)]
+        if "TASK_HYPOTHESIS_PROVENANCE" not in names:
+            continue
+        try:
+            value = ast.literal_eval(node.value)
+        except Exception:  # noqa: BLE001
+            return None
+        if (
+            isinstance(value, dict)
+            and value.get("schema") == TASK_HYPOTHESIS_COMPANION_SCHEMA
+        ):
+            return value
+        return None
     return None
 
 

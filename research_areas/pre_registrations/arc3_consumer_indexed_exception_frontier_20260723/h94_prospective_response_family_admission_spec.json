@@ -1,0 +1,158 @@
+{
+  "schema": "ztare-arc3-prospective-response-family-admission-spec-v1",
+  "training_source": {
+    "ref": "h93_catalog_scoped_pointer_judgment/result.json",
+    "embedded_sha256": "09f424c2bf4079d543de8ea08b591873bd7aee51605903dbfd13c18b622ba0b0",
+    "file_sha256": "c3f9121fedd5639294ea78afdd002d7fe604bc83df213d86a78e1080e81c1a4a",
+    "manifest_file_sha256": "9f458baf86b9cb2e8ae7740e69c07510653125cca7f7f1c6a5f553e9641cc4dc",
+    "allowed_training_pairs": [
+      1,
+      2
+    ]
+  },
+  "scalar_comparator_source": {
+    "ref": "h90_heldout_outcome_trained_selector/result.json",
+    "sha256": "3b0d070afed8526ba84210b6e60b557aed753949247bf37c296a32beaa437f2b",
+    "file_sha256": "c5ccfdd126beea294e0d902621bbd1a87ae32004b38a7845fd7c969950bc9af0",
+    "final_credit_state_sha256": "f7eac4b676aa9a146da880d207ded5a63582f035475218c85f30b31a9c055497",
+    "required_selected_condition": "redundant_true_memory"
+  },
+  "response_family_compiler": {
+    "group_identity": [
+      "scope_sha256",
+      "contract_sha256",
+      "intervention_revision_sha256",
+      "pre_basin_sha256"
+    ],
+    "minimum_offer_count": 2,
+    "minimum_withhold_count": 2,
+    "minimum_first_stage_transport_delta": 1.0,
+    "minimum_intent_to_treat_net_delta": 0.0,
+    "selection_rule": {
+      "already_satisfies_contract": "silence",
+      "exact_identified_positive_basin": "offer",
+      "unseen_or_weak_basin": "explore"
+    },
+    "no_condition_name_rule": "admission consumes exact proposal and response-family identities, never condition_id or memory text"
+  },
+  "catalog_presentation": {
+    "schema": "ztare-grid-object-catalog-presentation-v1",
+    "same_compiler_as": "h93_catalog_scoped_pointer_judgment_spec.json",
+    "raw_proposal_checkpoint": "before handle resolution and admission"
+  },
+  "object_role_contract": {
+    "controlled_object_selector": {
+      "bbox": [
+        45,
+        34,
+        49,
+        38
+      ],
+      "palette": [
+        9,
+        12
+      ],
+      "cell_count": 25
+    },
+    "required_waypoint_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "forbidden_control_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "evidence_refs": [
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1",
+      "h92_object_linked_judgment_quotient/result.json#sha256=60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79"
+    ]
+  },
+  "target_intervention": {
+    "condition_id": "causal_mechanics",
+    "memory_ids": [
+      "goal_requires_glyph_match_v1",
+      "floor_marker_edits_state_glyph_v1"
+    ],
+    "producer_predicted_decision_delta": 0.96
+  },
+  "placebo_intervention": {
+    "condition_id": "redundant_true_memory",
+    "memory_ids": [
+      "controls_cardinal_v1",
+      "walls_block_without_state_change_v1",
+      "marker_is_not_consumed_v1"
+    ],
+    "producer_predicted_decision_delta": 0.99
+  },
+  "prospective_policies": {
+    "left": "h93_response_family_admission",
+    "right": "h90_final_scalar_credit_selector",
+    "pair_count": 2,
+    "order_mode": "alternating",
+    "seed": "h94-prospective-response-family-admission-20260730"
+  },
+  "costs": {
+    "primitive_actions_per_arm": 20,
+    "proposal_inferences_before_first_action": 2,
+    "presented_bytes_per_selected_intervention": 3849,
+    "differential_offer_cost": 0.0
+  },
+  "predictions": {
+    "response_policy_target_selection_rate": 1.0,
+    "scalar_policy_placebo_selection_rate": 1.0,
+    "minimum_response_policy_task_delta": 0.0,
+    "minimum_mean_response_policy_composite_delta": 0.0,
+    "minimum_response_policy_composite_wins": 1
+  },
+  "success_criterion": {
+    "training_result_and_family_hashes_verify": true,
+    "admission_decision_precedes_intervention": true,
+    "response_policy_selected_target": "2/2 through exact positive pre-basin",
+    "scalar_policy_selected_placebo": "2/2 through rehydrated H90 state",
+    "response_policy_total_task_score_minus_scalar": ">=0",
+    "response_policy_mean_composite_minus_scalar": ">0",
+    "response_policy_composite_wins": ">=1",
+    "all_identity_and_fixed_cost_checks": "pass"
+  },
+  "kill_conditions": [
+    "H93 result, manifest, transition, or response-family identity drifts",
+    "H90 result or final scalar credit state drifts",
+    "either policy uses a condition name, memory text, or H94 outcome to select",
+    "a response-policy blind proposal falls outside the trained exact basin",
+    "admission is recorded after intervention delivery",
+    "policy selections differ from the frozen target versus placebo contrast",
+    "proposal, presentation, inference, byte, session, or primitive action costs mismatch",
+    "response policy loses total task score",
+    "response policy mean composite delta is nonpositive",
+    "response policy wins zero pairs"
+  ],
+  "claim_boundary": [
+    "new stochastic controllers at the same task, observation, controller class, choice set, action vocabulary, and exact trained proposal basin",
+    "the policy test is prospective because H94 outcomes are absent from both selectors",
+    "the scalar comparator carries more prior outcome settlements but lacks proposal-state conditioning",
+    "passing establishes held-out use of a local response family, not cross-basin silence, cross-context transfer, accelerating gains, benchmark improvement, or literature novelty"
+  ]
+}

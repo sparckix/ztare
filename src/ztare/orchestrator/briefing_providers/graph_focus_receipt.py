@@ -291,10 +291,18 @@ def _has_in_loop_graph_focus_gap(path: Path) -> bool:
     for gap in gaps:
         if not isinstance(gap, dict):
             continue
+        contract = gap.get("recovery_contract")
+        contract = contract if isinstance(contract, dict) else {}
+        # A graph-focus route requires an object to focus.  Targetless local
+        # obstructions belong to the workbench/CEGAR route; constructing a
+        # repository graph cannot give them an identity and previously spent a
+        # full graph scan to return no action.
+        target = str(gap.get("target") or contract.get("target") or "").strip()
+        if not target:
+            continue
         if gap.get("in_loop_consumable") is True:
             return True
-        contract = gap.get("recovery_contract")
-        if isinstance(contract, dict) and contract.get("in_loop_consumable") is True:
+        if contract.get("in_loop_consumable") is True:
             return True
     return False
 

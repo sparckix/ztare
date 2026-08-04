@@ -1,0 +1,674 @@
+{
+  "holdout_count": 6,
+  "language_results": [
+    {
+      "language": "anchored_direction_runs",
+      "passed": false,
+      "positive_margin": 0.38461538461538464,
+      "ranked_holdouts": [
+        {
+          "aligned_template_count": 5,
+          "alignment": [
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14210,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14210",
+                  "operation": "0",
+                  "time": 14
+                }
+              ],
+              "candidate_position": 0,
+              "candidate_token": [
+                "direction",
+                -1,
+                0
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14197,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14197",
+                  "operation": "2",
+                  "time": 1
+                },
+                {
+                  "bank_row": 14198,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14198",
+                  "operation": "2",
+                  "time": 2
+                },
+                {
+                  "bank_row": 14199,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14199",
+                  "operation": "2",
+                  "time": 3
+                }
+              ],
+              "template_position": 0,
+              "template_token": [
+                "direction",
+                -1,
+                0
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14211,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14211",
+                  "operation": "3",
+                  "time": 15
+                }
+              ],
+              "candidate_position": 1,
+              "candidate_token": [
+                "direction",
+                0,
+                -1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14200,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14200",
+                  "operation": "0",
+                  "time": 4
+                },
+                {
+                  "bank_row": 14201,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14201",
+                  "operation": "0",
+                  "time": 5
+                },
+                {
+                  "bank_row": 14202,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+                  "operation": "0",
+                  "time": 6
+                }
+              ],
+              "template_position": 1,
+              "template_token": [
+                "direction",
+                0,
+                -1
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14217,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14217",
+                  "operation": "3",
+                  "time": 21
+                },
+                {
+                  "bank_row": 14218,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14218",
+                  "operation": "3",
+                  "time": 22
+                }
+              ],
+              "candidate_position": 3,
+              "candidate_token": [
+                "direction",
+                0,
+                -1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14203,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14203",
+                  "operation": "0",
+                  "time": 7
+                }
+              ],
+              "template_position": 3,
+              "template_token": [
+                "direction",
+                0,
+                -1
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14219,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14219",
+                  "operation": "1",
+                  "time": 23
+                }
+              ],
+              "candidate_position": 4,
+              "candidate_token": [
+                "direction",
+                1,
+                0
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14204,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14204",
+                  "operation": "3",
+                  "time": 8
+                },
+                {
+                  "bank_row": 14205,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14205",
+                  "operation": "3",
+                  "time": 9
+                },
+                {
+                  "bank_row": 14206,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14206",
+                  "operation": "3",
+                  "time": 10
+                }
+              ],
+              "template_position": 4,
+              "template_token": [
+                "direction",
+                1,
+                0
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14220,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14220",
+                  "operation": "3",
+                  "time": 24
+                }
+              ],
+              "candidate_position": 5,
+              "candidate_token": [
+                "direction",
+                0,
+                -1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14207,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14207",
+                  "operation": "0",
+                  "time": 11
+                },
+                {
+                  "bank_row": 14208,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14208",
+                  "operation": "0",
+                  "time": 12
+                }
+              ],
+              "template_position": 5,
+              "template_token": [
+                "direction",
+                0,
+                -1
+              ]
+            }
+          ],
+          "anchor_present": true,
+          "anchor_removed_score": 0.4166666666666667,
+          "boundary_index": 14254,
+          "boundary_kind": "level_completed",
+          "full_template_embedding": false,
+          "global_transform": "reflect_col",
+          "independent_step_score": 0.46153846153846156,
+          "positive": true,
+          "post_run_count": 12,
+          "pre_run_count": 7,
+          "reverse_score": 0.46153846153846156,
+          "score": 0.38461538461538464,
+          "section_length": 45
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 13958,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "rotate_270",
+          "independent_step_score": 0.0,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 61,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 64
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14016,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "rotate_270",
+          "independent_step_score": 0.0,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 51,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14077,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "identity",
+          "independent_step_score": 0.0,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 52,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14132,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "identity",
+          "independent_step_score": 0.0,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 50,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14194,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "reflect_row",
+          "independent_step_score": 0.0,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 51,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        }
+      ],
+      "template_global_transform": "transpose",
+      "template_motion_token_count": 5,
+      "template_sha256": "c20acff2690a3f13433268e5b212cf9574d2ef188e695ce8d3b10457c98b4674",
+      "template_token_count": 6
+    },
+    {
+      "language": "anchored_relative_turns",
+      "passed": false,
+      "positive_margin": 0.36363636363636365,
+      "ranked_holdouts": [
+        {
+          "aligned_template_count": 4,
+          "alignment": [
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14210,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14210",
+                  "operation": "0",
+                  "time": 14
+                },
+                {
+                  "bank_row": 14211,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14211",
+                  "operation": "3",
+                  "time": 15
+                }
+              ],
+              "candidate_position": 0,
+              "candidate_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14197,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14197",
+                  "operation": "2",
+                  "time": 1
+                },
+                {
+                  "bank_row": 14198,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14198",
+                  "operation": "2",
+                  "time": 2
+                },
+                {
+                  "bank_row": 14199,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14199",
+                  "operation": "2",
+                  "time": 3
+                },
+                {
+                  "bank_row": 14200,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14200",
+                  "operation": "0",
+                  "time": 4
+                },
+                {
+                  "bank_row": 14201,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14201",
+                  "operation": "0",
+                  "time": 5
+                },
+                {
+                  "bank_row": 14202,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+                  "operation": "0",
+                  "time": 6
+                }
+              ],
+              "template_position": 0,
+              "template_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14226,
+                  "event": "finite_configuration:changed",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14226",
+                  "operation": "1",
+                  "time": 30
+                }
+              ],
+              "candidate_position": 6,
+              "candidate_token": [
+                "anchor"
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14202,
+                  "event": "finite_configuration:changed",
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+                  "operation": "0",
+                  "time": 6
+                }
+              ],
+              "template_position": 1,
+              "template_token": [
+                "anchor"
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14227,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14227",
+                  "operation": "1",
+                  "time": 31
+                },
+                {
+                  "bank_row": 14228,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14228",
+                  "operation": "2",
+                  "time": 32
+                },
+                {
+                  "bank_row": 14229,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14229",
+                  "operation": "2",
+                  "time": 33
+                }
+              ],
+              "candidate_position": 7,
+              "candidate_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14203,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14203",
+                  "operation": "0",
+                  "time": 7
+                },
+                {
+                  "bank_row": 14204,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14204",
+                  "operation": "3",
+                  "time": 8
+                },
+                {
+                  "bank_row": 14205,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14205",
+                  "operation": "3",
+                  "time": 9
+                },
+                {
+                  "bank_row": 14206,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14206",
+                  "operation": "3",
+                  "time": 10
+                }
+              ],
+              "template_position": 2,
+              "template_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ]
+            },
+            {
+              "candidate_lineage": [
+                {
+                  "bank_row": 14230,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14230",
+                  "operation": "3",
+                  "time": 34
+                },
+                {
+                  "bank_row": 14231,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14231",
+                  "operation": "0",
+                  "time": 35
+                }
+              ],
+              "candidate_position": 9,
+              "candidate_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ],
+              "template_lineage": [
+                {
+                  "bank_row": 14204,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14204",
+                  "operation": "3",
+                  "time": 8
+                },
+                {
+                  "bank_row": 14205,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14205",
+                  "operation": "3",
+                  "time": 9
+                },
+                {
+                  "bank_row": 14206,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14206",
+                  "operation": "3",
+                  "time": 10
+                },
+                {
+                  "bank_row": 14207,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14207",
+                  "operation": "0",
+                  "time": 11
+                },
+                {
+                  "bank_row": 14208,
+                  "evidence_ref": "raw/episodes/episode_001.jsonl#14208",
+                  "operation": "0",
+                  "time": 12
+                }
+              ],
+              "template_position": 3,
+              "template_token": [
+                "turn",
+                1,
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "anchor_present": true,
+          "anchor_removed_score": 0.3,
+          "boundary_index": 14254,
+          "boundary_kind": "level_completed",
+          "full_template_embedding": true,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": true,
+          "post_run_count": 12,
+          "pre_run_count": 7,
+          "reverse_score": 0.36363636363636365,
+          "score": 0.36363636363636365,
+          "section_length": 45
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 13958,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 61,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 64
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14016,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 51,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14077,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 52,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14132,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 50,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 54
+        },
+        {
+          "aligned_template_count": 0,
+          "alignment": [],
+          "anchor_present": false,
+          "anchor_removed_score": 0.0,
+          "boundary_index": 14194,
+          "boundary_kind": "terminal_state:GAME_OVER",
+          "full_template_embedding": false,
+          "global_transform": "orthogonal_invariants",
+          "independent_step_score": null,
+          "positive": false,
+          "post_run_count": 0,
+          "pre_run_count": 51,
+          "reverse_score": 0.0,
+          "score": 0.0,
+          "section_length": 55
+        }
+      ],
+      "template_global_transform": "orthogonal_invariants",
+      "template_motion_token_count": 3,
+      "template_sha256": "f868083d0a8f92aecd9c71dbd32b8b8a0f20d4059a41ee93edd55de060e464f2",
+      "template_token_count": 4
+    }
+  ],
+  "passing_languages": [],
+  "schema": "ztare-event-anchored-equivariant-path-audit-v1",
+  "status": "event_anchored_equivariant_path_refuted",
+  "template": {
+    "anchor_present": true,
+    "anchor_witness": {
+      "bank_row": 14202,
+      "event": "finite_configuration:changed",
+      "evidence_ref": "raw/episodes/episode_001.jsonl#14202",
+      "operation": "0",
+      "time": 6
+    },
+    "boundary_index": 14209,
+    "post_run_count": 3,
+    "pre_run_count": 2,
+    "section_length": 13
+  }
+}

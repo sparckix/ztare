@@ -831,6 +831,7 @@ class SurfacedConjecture:
     lowerings: dict = field(default_factory=dict)
     novel_predictions: dict = field(default_factory=dict)
     kill_conditions: dict = field(default_factory=dict)
+    prior_art_inversion: dict = field(default_factory=dict)
     raw: str = ""
     specificity: "float | None" = None
 
@@ -1084,7 +1085,11 @@ def _build_conjecture_prompt(left: ConstraintFingerprint, right: ConstraintFinge
         "to components of the mother structure), `novel_predictions` (object with `left` and `right`; "
         "each side is a list of prediction objects with keys `prediction`, `measurement`, `intervention`, "
         "`horizon`, `expected_observation`, and `novelty_reason`), and `kill_conditions` (object with "
-        "`left` and `right`; each side is a list of objects with keys `refuter`, `gate`, and `receipt`). "
+        "`left` and `right`; each side is a list of objects with keys `refuter`, `gate`, and `receipt`), "
+        "and `prior_art_inversion` with non-empty `search_queries` (list), `comparison_axes` (list), "
+        "and `kill_if_matched` (string). This last object is a required search plan, not evidence that "
+        "the correspondence is new; downstream work must execute it and bind a source receipt before "
+        "using novelty language. "
         "Use bounded horizons and observable measurements; vague benefits are invalid. "
         "Do not claim the correspondence is established. Do not use source-side plausibility as evidence "
         "for either target prediction."
@@ -1221,12 +1226,14 @@ def _dispatch_text_with_receipt(
         repo = _P(__file__).resolve().parents[3]
         try:
             from ztare.common.subscription_agent_runtime import (
+                CODEX_SANDBOX_SEALED_COMPLETION,
                 redact_prompt_command,
                 run_subscription_agent_with_recovery,
             )
         except Exception:
             try:
                 from ztare.common.subscription_agent_runtime import (
+                    CODEX_SANDBOX_SEALED_COMPLETION,
                     redact_prompt_command,
                     run_subscription_agent_with_recovery,
                 )
@@ -1246,6 +1253,11 @@ def _dispatch_text_with_receipt(
                 runtime=provider, prompt=prompt, agent_id="constraint_isomorphism::query",
                 repo=repo, session_state=None, timeout_seconds=timeout_s,
                 codex_model_env=codex_model_env,
+                codex_sandbox=(
+                    CODEX_SANDBOX_SEALED_COMPLETION
+                    if provider == "codex"
+                    else "workspace-write"
+                ),
                 claude_disallowed_tools=["WebSearch", "WebFetch"])
             if provider == "codex" and model:
                 if prior_model_env is None:
@@ -1438,6 +1450,11 @@ def _parse_conjectures(text: str) -> "list[SurfacedConjecture]":
             lowerings=it.get("lowerings") if isinstance(it.get("lowerings"), dict) else {},
             novel_predictions=it.get("novel_predictions") if isinstance(it.get("novel_predictions"), dict) else {},
             kill_conditions=it.get("kill_conditions") if isinstance(it.get("kill_conditions"), dict) else {},
+            prior_art_inversion=(
+                it.get("prior_art_inversion")
+                if isinstance(it.get("prior_art_inversion"), dict)
+                else {}
+            ),
             raw=json.dumps(it)[:800],
         )
         c.specificity = prediction_specificity(c)

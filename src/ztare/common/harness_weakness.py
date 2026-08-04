@@ -85,14 +85,27 @@ def build_harness_weakness_receipt(
         ),
     )
     evidence_epoch_sha256 = capture_project_evidence_epoch(project_dir).epoch_sha256
-    workbench_task = _workbench_task(
-        weakness_class=weakness_class,
-        source_ref=frontier_source_ref,
-        source_sha256=frontier_sha256,
-        evidence_epoch_sha256=evidence_epoch_sha256,
-        route=route,
-        recommended_capability_id=recommended_capability_id,
-        trace=frontier_trace,
+    # A rejected sibling does not create a repair obligation for a surviving
+    # frontier whose own gate trace is complete.  Keep the sibling failure in
+    # the weakness ledger, but do not coerce it into a task owned by different
+    # carrier bytes.
+    frontier_closed = (
+        frontier_role == "best_admissible_prior"
+        and _visible_replay_is_exact(frontier_trace)
+        and not tuple(frontier_trace.get("failed_gates") or ())
+    )
+    workbench_task = (
+        {}
+        if frontier_closed
+        else _workbench_task(
+            weakness_class=weakness_class,
+            source_ref=frontier_source_ref,
+            source_sha256=frontier_sha256,
+            evidence_epoch_sha256=evidence_epoch_sha256,
+            route=route,
+            recommended_capability_id=recommended_capability_id,
+            trace=frontier_trace,
+        )
     )
     return {
         "schema": SCHEMA,
@@ -625,13 +638,14 @@ def _workbench_task(
             ).encode("utf-8")
         ).hexdigest()
     # The obligation identity binds the failed evidence, carrier, and epoch.
-    # Operation ordering is a replaceable search program and must not create a
-    # different scientific obligation.
+    # The weakness label and operation ordering are replaceable routing
+    # properties.  Neither may split one carrier/evidence/observation
+    # obligation; route and capability changes belong to ``program_id`` below.
     seed = json.dumps(
         {
             "schema": "ztare-leaf-workbench-task-v1",
             "adapter_id": "worldmodel",
-            "weakness_class": weakness_class,
+            "job": "resolve_falsified_carrier_observation",
             "source_sha256": source_sha256,
             "evidence_epoch_sha256": evidence_epoch_sha256,
             "observation_sha256": observation_sha256,

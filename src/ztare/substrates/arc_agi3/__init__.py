@@ -20,6 +20,8 @@ semantics; game docs must never reach loop-visible files.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from ztare.common.task_discharge import (
     TaskDischargeContract,
     TaskDischargeReceipt,
@@ -257,3 +259,20 @@ def list_games(arcade=None) -> list:
     arc = arcade or arc_agi.Arcade()
     envs = arc.get_environments()
     return [getattr(e, "game_id", str(e)) for e in envs]
+
+
+def adapter_from_project(project_dir, *, config=None):
+    """Resolve one ARC adapter from adapter-owned project presentation."""
+    project = Path(project_dir)
+    config = config if isinstance(config, dict) else {}
+    hint = str(config.get("game") or "").strip()
+    if not hint:
+        parts = project.name.split("_")
+        hint = parts[1] if len(parts) >= 2 and parts[0] == "arc3" else ""
+    game_id = hint if "-" in hint else next(
+        (game for game in list_games() if game.startswith(hint)),
+        None,
+    )
+    if not game_id:
+        raise ValueError(f"could not resolve ARC game from project {project.name!r}")
+    return ArcAgi3Adapter(game_id)

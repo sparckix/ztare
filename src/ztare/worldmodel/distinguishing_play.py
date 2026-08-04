@@ -247,53 +247,6 @@ class SessionReceipt:
     kind_counts: dict = field(default_factory=dict)
 
 
-def _adapter_from_project(project_dir: Path):
-    """Replicate the adapter construction from arc3_play_loop.py.
-
-    Source lines: arc3_play_loop.py:1409-1415 (adapter_factory = ArcAgi3Adapter;
-    adapter = adapter_factory(game_id)). Game ID is read from play_config.json
-    or inferred from the project directory name.
-    """
-    # ponytail: import locally so the module is importable without arc_agi3 present
-    import importlib
-    try:
-        ArcAgi3Adapter = importlib.import_module("ztare.substrates.arc_agi3").ArcAgi3Adapter
-    except ImportError as exc:
-        raise RuntimeError(
-            f"ArcAgi3Adapter not importable — is this an ARC project? ({exc})"
-        ) from exc
-
-    # Try play_config.json for game, else use project dir name prefix
-    # (mirrors arc3_play_loop._play_config + _resolve_game_id)
-    cfg_path = project_dir / "play_config.json"
-    game_hint = ""
-    if cfg_path.exists():
-        try:
-            cfg = json.loads(cfg_path.read_text())
-            game_hint = str(cfg.get("game") or "").strip()
-        except Exception:  # noqa: BLE001
-            pass
-    if not game_hint:
-        # fall back to project dir name without _gov/_eval suffixes
-        # project convention arc3_<game>_gov — try each token as a game prefix
-        # (the first token 'arc3' is the substrate, not the game: bug fixed)
-        _tokens = project_dir.name.split("_")
-        game_hint = _tokens[1] if len(_tokens) >= 2 else project_dir.name
-
-    try:
-        list_games = importlib.import_module("ztare.substrates.arc_agi3").list_games
-        game_id = next((g for g in list_games() if g.startswith(game_hint)), None)
-    except Exception:  # noqa: BLE001
-        game_id = None
-
-    if not game_id:
-        raise RuntimeError(
-            f"Could not resolve game id from hint {game_hint!r} in project {project_dir.name}"
-        )
-
-    return ArcAgi3Adapter(game_id)
-
-
 def _load_champion(project_dir: Path):
     """Load the ratified champion model. Returns (model, arity) or (None, None)."""
     tm = project_dir / "test_model.py"
@@ -365,7 +318,9 @@ def run_distinguishing_session(
 
     # Live play
     try:
-        adapter = _adapter_from_project(project_dir)
+        from ztare.worldmodel.adapter import resolve_project_adapter
+
+        adapter = resolve_project_adapter(project_dir)
     except Exception as exc:  # noqa: BLE001
         _log.error("adapter construction failed: %s", exc)
         _append_session(project_dir, receipt)

@@ -400,6 +400,45 @@ def test_graph_focus_receipt_provider_ignores_public_fetch_gap(tmp_path: Path) -
     assert provider.applies(ctx) is False
 
 
+def test_graph_focus_receipt_skips_targetless_local_obstruction(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project = tmp_path / "projects" / "demo"
+    workspace = project / "workspace"
+    _write_json(
+        workspace / "latest_evidence_gaps.json",
+        {
+            "evidence_gaps": [
+                {
+                    "in_loop_consumable": True,
+                    "recovery_contract": {
+                        "in_loop_consumable": True,
+                        "target": "",
+                        "required_surface": "missing abstract selector",
+                    },
+                }
+            ]
+        },
+    )
+    provider = GraphFocusReceiptProvider()
+    monkeypatch.setattr(
+        provider,
+        "_actions",
+        lambda _ctx: (_ for _ in ()).throw(
+            AssertionError("targetless obstruction must not build a graph")
+        ),
+    )
+    ctx = BriefingContext(
+        project_dir=project,
+        iter_index=2,
+        rubric={"fit_expression_grammar": "grid_dsl"},
+        workspace_dir=workspace,
+    )
+
+    assert provider.applies(ctx) is False
+
+
 def test_default_briefing_registers_graph_focus_provider() -> None:
     providers = {provider.name for provider in default_briefing().providers}
 

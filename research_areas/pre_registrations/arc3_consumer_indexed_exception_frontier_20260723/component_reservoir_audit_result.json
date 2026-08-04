@@ -1,0 +1,434 @@
+{
+  "collision": {
+    "changed_observation_cells": [
+      {
+        "changed_cell_count": 4,
+        "changed_cells": [
+          [
+            61,
+            62,
+            8,
+            3
+          ],
+          [
+            61,
+            63,
+            8,
+            3
+          ],
+          [
+            62,
+            62,
+            8,
+            3
+          ],
+          [
+            62,
+            63,
+            8,
+            3
+          ]
+        ],
+        "left_ref": "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+        "right_ref": "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43"
+      },
+      {
+        "changed_cell_count": 4,
+        "changed_cells": [
+          [
+            61,
+            59,
+            8,
+            3
+          ],
+          [
+            61,
+            60,
+            8,
+            3
+          ],
+          [
+            62,
+            59,
+            8,
+            3
+          ],
+          [
+            62,
+            60,
+            8,
+            3
+          ]
+        ],
+        "left_ref": "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43",
+        "right_ref": "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+      }
+    ],
+    "operation": "1",
+    "source_key_sha256": "4ab929993a22db595db68125a854b6e5c70ac5791623119cbddea473b29225c5",
+    "witnesses": [
+      {
+        "boundary_kind": "",
+        "index": 21,
+        "operation": 1,
+        "outcome": [
+          "effect",
+          "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4"
+        ],
+        "source_factor_sha256": "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e",
+        "source_sha256": "739de7c56280ccffd40cae8e2983a31b31c52025f79067d449d8061cab5c585e",
+        "time": 85
+      },
+      {
+        "boundary_kind": "",
+        "index": 43,
+        "operation": 1,
+        "outcome": [
+          "effect",
+          "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4"
+        ],
+        "source_factor_sha256": "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e",
+        "source_sha256": "6f21ccc405090cd9173748a997364813eb3c5f57815f06e45f770181c335d3f7",
+        "time": 107
+      },
+      {
+        "boundary_kind": "epoch_boundary",
+        "index": 65,
+        "operation": 1,
+        "outcome": [
+          "boundary",
+          "epoch_boundary"
+        ],
+        "source_factor_sha256": "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e",
+        "source_sha256": "7fac8f4691e12bdb5a1155dcbf85091b89cc0db50dac4f8461ab63521e3a57f5",
+        "time": 129
+      }
+    ]
+  },
+  "coordinate": {
+    "bounding_box": [
+      2,
+      2
+    ],
+    "component_area": 4,
+    "distinct_context_count": 3,
+    "evidence_refs": [
+      "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+      "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43",
+      "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+    ],
+    "exceptional_threshold": 1,
+    "normalized_shape": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "presentation_assignment_sha256": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+    "schema": "ztare-component-reservoir-coordinate-v1",
+    "structural_sha256": "8f63de9ea72842781b6d5f6a9ff224ddcfe7bbc8742f8c964f1f5269d2c9193e",
+    "witness_counts": [
+      3,
+      2,
+      1
+    ]
+  },
+  "heldout_replay": {
+    "passed": true,
+    "path": "raw/episodes/eval_slices/eval_20260713T093803Z.jsonl",
+    "rows": [
+      {
+        "count": 3,
+        "index": 14276,
+        "observed_exception": false,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": false
+      },
+      {
+        "count": 2,
+        "index": 14298,
+        "observed_exception": false,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": false
+      },
+      {
+        "count": 1,
+        "index": 14320,
+        "observed_exception": true,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": true
+      },
+      {
+        "count": 3,
+        "index": 14342,
+        "observed_exception": false,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": false
+      },
+      {
+        "count": 2,
+        "index": 14364,
+        "observed_exception": false,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": false
+      },
+      {
+        "count": 1,
+        "index": 14386,
+        "observed_exception": true,
+        "operation": 0,
+        "passed": true,
+        "predicted_exception": true
+      }
+    ]
+  },
+  "palette_transport": {
+    "rediscovered": true,
+    "same_structural_sha256": true,
+    "same_witness_counts": true
+  },
+  "partial_action_refinement": {
+    "baseline": {
+      "boundary_class_count": 1,
+      "effect_class_count": 2,
+      "exceptional_rank": [
+        {
+          "boundary_kind": "epoch_boundary",
+          "effect": "('boundary', 'epoch_boundary')",
+          "effect_sha256": "12a59233fa411639e1d3242abcd42a539c1d7fca8b88d0ebf77a5fb5bea0ae0a",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+          ],
+          "operation": "1",
+          "score": 6.0,
+          "source_key_digests": [
+            "4ab929993a22db595db68125a854b6e5c70ac5791623119cbddea473b29225c5"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43"
+          ],
+          "operation": "1",
+          "score": 0.5,
+          "source_key_digests": [
+            "4ab929993a22db595db68125a854b6e5c70ac5791623119cbddea473b29225c5"
+          ],
+          "support": 2
+        }
+      ],
+      "fiber_count": 2,
+      "noncommuting_relation_count": 1,
+      "noncommuting_relations": [
+        {
+          "effect_sha256s": [
+            "12a59233fa411639e1d3242abcd42a539c1d7fca8b88d0ebf77a5fb5bea0ae0a",
+            "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4"
+          ],
+          "effect_witnesses": [
+            {
+              "effect_sha256": "12a59233fa411639e1d3242abcd42a539c1d7fca8b88d0ebf77a5fb5bea0ae0a",
+              "evidence_refs": [
+                "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+              ]
+            },
+            {
+              "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+              "evidence_refs": [
+                "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+                "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43"
+              ]
+            }
+          ],
+          "operation": "1",
+          "relation_evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43",
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+          ],
+          "source_key_sha256": "4ab929993a22db595db68125a854b6e5c70ac5791623119cbddea473b29225c5",
+          "source_representative_evidence_ref": "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+          "source_representative_sha256": "739de7c56280ccffd40cae8e2983a31b31c52025f79067d449d8061cab5c585e"
+        }
+      ],
+      "observation_count": 3,
+      "projection_id": "fd843b3522b1d9e12e5fd8eebd0e0288ea9ef2bf664ea7604658fb361e3ddf6d",
+      "relation_count": 1,
+      "relation_evidence_count": 3,
+      "schema": "ztare-partial-action-system-v1",
+      "section": {
+        "checked": 2,
+        "failures": [],
+        "status": "pass"
+      },
+      "target_relation_count": 1
+    },
+    "refined": {
+      "boundary_class_count": 1,
+      "effect_class_count": 2,
+      "exceptional_rank": [
+        {
+          "boundary_kind": "epoch_boundary",
+          "effect": "('boundary', 'epoch_boundary')",
+          "effect_sha256": "12a59233fa411639e1d3242abcd42a539c1d7fca8b88d0ebf77a5fb5bea0ae0a",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#65"
+          ],
+          "operation": "1",
+          "score": 6.0,
+          "source_key_digests": [
+            "1dbf1d2523e09989fc0a4943da1bf72e2cfb061f67eccdf1e68a6a71ad65e5f0"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#21",
+            "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#43"
+          ],
+          "operation": "1",
+          "score": 0.5,
+          "source_key_digests": [
+            "5ae851ba4b17fbc4c22aec1140ee699f3954e0be94f9a55e6ce267b9df19264d",
+            "83f892a55c48f70b14736ac9f2987c091744c82935dc90bba380b8365357e3c7"
+          ],
+          "support": 2
+        }
+      ],
+      "fiber_count": 5,
+      "noncommuting_relation_count": 0,
+      "noncommuting_relations": [],
+      "observation_count": 3,
+      "projection_id": "19eccb65e2ecc2c4a5683c6c1f49d7a64acaacac963f7e5aca651da8fd1e522a",
+      "relation_count": 3,
+      "relation_evidence_count": 3,
+      "schema": "ztare-partial-action-system-v1",
+      "section": {
+        "checked": 5,
+        "failures": [],
+        "status": "pass"
+      },
+      "target_relation_count": 2
+    },
+    "relations_preserved": true
+  },
+  "schema": "ztare-component-reservoir-audit-v1",
+  "trajectory_compression": {
+    "counts": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "distinct_reservoir_context_count": 4,
+    "distinct_source_sha256_count": 86,
+    "observation_count": 86
+  }
+}

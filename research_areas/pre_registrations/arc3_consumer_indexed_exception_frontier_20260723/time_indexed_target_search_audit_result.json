@@ -1,0 +1,86 @@
+{
+  "ablation": {
+    "class": "TimeIndexedFiberSearchProblem",
+    "key": "(dominance_key(state), time_value)",
+    "only_override": "dominance_key_at"
+  },
+  "baseline": {
+    "bound": true,
+    "expanded": 458,
+    "generated": 457,
+    "result": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/joint_affordance_search_audit_result.json",
+    "status": "projected_frontier_exhausted"
+  },
+  "bounds": {
+    "interventions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "baseline_bound": true,
+    "edge_found": false,
+    "no_environment_contact": true,
+    "no_projection_counterexample": true,
+    "replay_goal_edge": false
+  },
+  "known_route": {
+    "action_count": 29,
+    "actions": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "2",
+      "1",
+      "1",
+      "3",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1",
+      "1",
+      "1",
+      "3",
+      "3",
+      "3",
+      "3",
+      "1",
+      "1",
+      "1",
+      "1"
+    ],
+    "same_actions": false
+  },
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "replay": {
+    "admissible": false,
+    "reason": "empty_route"
+  },
+  "schema": "ztare-time-indexed-target-search-audit-v1",
+  "search": {
+    "action_count": 0,
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 20,
+    "expanded": 458,
+    "frontier_remaining": 0,
+    "generated": 457,
+    "projection_counterexample": {},
+    "status": "projected_frontier_exhausted"
+  },
+  "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+  "status": "time_indexed_target_search_refuted"
+}

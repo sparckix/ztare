@@ -1,0 +1,150 @@
+{
+  "schema": "ztare-arc3-object-linked-judgment-quotient-spec-v1",
+  "source_result": {
+    "ref": "h91_instrumented_proposal_plasticity/result.json",
+    "sha256": "8608e4b95f0f4e30da7c354d04595fe15b289843532ad160542dee280343f395"
+  },
+  "alpha_world": {
+    "schema": "ztare-grid-object-catalog-v1",
+    "field_rule": "a palette value is field-like when its largest same-value four-connected component has area at least 2*max(height,width)",
+    "object_rule": "four-connected components over the complement of field-like palette values, permitting adjacent non-field values to share one object",
+    "type_identity": [
+      "normalized_colored_shape"
+    ],
+    "occurrence_identity": [
+      "observation_sha256",
+      "catalog_compiler_sha256",
+      "type_sha256",
+      "bbox"
+    ]
+  },
+  "alpha_judgment": {
+    "schema": "ztare-object-linked-controller-plan-v1",
+    "required_fields": [
+      "action",
+      "prediction",
+      "plan_summary",
+      "controlled_object_ref",
+      "ordered_waypoint_refs",
+      "uncertainty"
+    ],
+    "reference_authority": "every object ref must resolve in the exact same-observation alpha_world catalog",
+    "text_authority": "prediction, plan_summary, and uncertainty are retained as evidence but have no transport-classification authority"
+  },
+  "object_role_contract": {
+    "controlled_object_selector": {
+      "bbox": [
+        45,
+        34,
+        49,
+        38
+      ],
+      "palette": [
+        9,
+        12
+      ],
+      "cell_count": 25
+    },
+    "required_waypoint_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "forbidden_control_selectors": [
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "cell_count": 5
+      }
+    ],
+    "evidence_refs": [
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1",
+      "h91_instrumented_proposal_plasticity/result.json#sha256=8608e4b95f0f4e30da7c354d04595fe15b289843532ad160542dee280343f395"
+    ],
+    "selector_boundary": "selectors are frozen adapter data derived before H92 from the recorded observation and admitted memories; no selector or palette value enters the common judgment kernel"
+  },
+  "target_intervention": {
+    "condition_id": "causal_mechanics",
+    "memory_ids": [
+      "goal_requires_glyph_match_v1",
+      "floor_marker_edits_state_glyph_v1"
+    ],
+    "producer_predicted_decision_delta": 0.96
+  },
+  "placebo_intervention": {
+    "condition_id": "redundant_true_memory",
+    "memory_ids": [
+      "controls_cardinal_v1",
+      "walls_block_without_state_change_v1",
+      "marker_is_not_consumed_v1"
+    ],
+    "producer_predicted_decision_delta": 0.99
+  },
+  "presentation_controls": {
+    "presentation_match": "canonical_json_utf8_byte_padding",
+    "expected_bytes_per_arm": 3849
+  },
+  "randomized_instrument": {
+    "offer": "target_intervention",
+    "withhold": "byte_matched_placebo_intervention",
+    "pair_count": 4,
+    "order_mode": "alternating",
+    "seed": "h92-object-linked-judgment-quotient-20260730"
+  },
+  "costs": {
+    "primitive_actions_per_arm": 20,
+    "proposal_inferences_before_first_action": 2,
+    "differential_offer_cost": 0.0
+  },
+  "predictions": {
+    "minimum_offer_supported_transport_rate": 0.75,
+    "maximum_withhold_spontaneous_transport_rate": 0.25,
+    "minimum_first_stage_transport_delta": 0.5,
+    "minimum_total_task_score_delta": 0.0,
+    "minimum_mean_composite_delta": 0.0
+  },
+  "success_criterion": {
+    "catalog_reference_resolution_rate": "1.0",
+    "cross_observation_or_unknown_reference_count": "0",
+    "offer_supported_transport_rate": ">=0.75",
+    "withhold_spontaneous_supported_transport_rate": "<=0.25",
+    "first_stage_transport_delta": ">=0.50",
+    "offer_total_task_score_minus_withhold": ">=0",
+    "offer_mean_composite_minus_withhold": ">0",
+    "instrument_status": "identified"
+  },
+  "kill_conditions": [
+    "the object compiler cannot uniquely resolve either frozen selector",
+    "any proposal object ref is unknown or belongs to another observation catalog",
+    "the actor cannot complete the typed proposal protocol without fallback text classification",
+    "the object-linked first stage is below 0.50",
+    "target task score is lower than placebo",
+    "mean paired composite effect is nonpositive",
+    "a complier estimate is emitted under a weak object-linked instrument"
+  ],
+  "claim_boundary": [
+    "one public game, restored observation, controller class, and evidence-backed adapter contract",
+    "the common kernel sees only opaque object refs, path order, authority identities, assignment, cost, and external settlement",
+    "the experiment tests construct validity of an internal proposal-response quotient rather than benchmark gain",
+    "passing does not establish cross-context transport, adaptive silence, compounding capability, or literature novelty"
+  ]
+}

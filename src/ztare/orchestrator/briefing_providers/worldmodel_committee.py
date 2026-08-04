@@ -13,6 +13,7 @@ environment or the episode log.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from ztare.common.kernel_admissibility import validate_kernel_change_admissibility
@@ -76,7 +77,12 @@ class WorldmodelCommitteeProvider(BriefingProvider):
         replay_diag = _replay_diagnostics_block(ctx.project_dir)
         if replay_diag:
             lines.append(replay_diag)
-        if status == "grammar_ceiling":
+        turn_focus = os.environ.get("ZTARE_WORLDMODEL_TURN_FOCUS", "").strip()
+        task_hypothesis_ceiling = _task_hypothesis_ceiling_block(ctx.project_dir)
+        if task_hypothesis_ceiling:
+            lines.append(task_hypothesis_ceiling)
+            lines.append(_goal_exemplar_block(ctx.project_dir))
+        if status == "grammar_ceiling" and turn_focus != "task_hypothesis":
             from ztare.worldmodel.spec_catalog import render_catalog_contract
             lines.append("- " + render_catalog_contract())
             lines.append(_abduced_core_block(ctx.project_dir))
@@ -106,12 +112,13 @@ class WorldmodelCommitteeProvider(BriefingProvider):
                 "the registered adapter adjudicator remains the sole judge — a wrong "
                 "predicate costs search time, never a false success."
             )
-            try:
-                lines.append(_goal_exemplar_block(ctx.project_dir))
-            except Exception as exc:  # noqa: BLE001 (SystemExit not caught)
-                # Surface, never silently omit: a malformed exemplar record
-                # must not vanish the GOAL_PREDICATE ground truth silently.
-                lines.append(f"- goal exemplars: DEGRADED — {type(exc).__name__}: {exc}")
+            if not task_hypothesis_ceiling:
+                try:
+                    lines.append(_goal_exemplar_block(ctx.project_dir))
+                except Exception as exc:  # noqa: BLE001 (SystemExit not caught)
+                    # Surface, never silently omit: a malformed exemplar record
+                    # must not vanish the GOAL_PREDICATE ground truth silently.
+                    lines.append(f"- goal exemplars: DEGRADED — {type(exc).__name__}: {exc}")
         return "\n".join(lines) + "\n"
 
     def structured_records(self, ctx: BriefingContext) -> list[dict]:
@@ -290,8 +297,18 @@ def _latest_level_boundary_harvest(project: Path) -> tuple[Path, dict] | None:
     )
     for path in candidates:
         payload = _read_json(path)
-        if isinstance(payload, dict) and payload.get("schema") == "ztare-arc3-level-boundary-harvest-v1":
-            return path, payload
+        if not (
+            isinstance(payload, dict)
+            and payload.get("schema") == "ztare-arc3-level-boundary-harvest-v1"
+        ):
+            continue
+        source_name = Path(str(payload.get("episode_path") or "")).name
+        if source_name == "episode_002.jsonl" or path.stem.endswith("_002"):
+            # A derived presentation retains its source evidence role.  Run
+            # mode cannot demote an active holdout; a lawful transition must
+            # mint a separately visible artifact and a successor withheld slice.
+            continue
+        return path, payload
     return None
 
 
@@ -528,6 +545,49 @@ def _saturation_block(project_dir) -> str:
             "or an environment-judged goal outside modeled dynamics.")
 
 
+def _task_hypothesis_ceiling_block(project_dir) -> str:
+    """Render a task-hypothesis obligation independently of transition fit."""
+
+    try:
+        from ztare.worldmodel.strategy_battery import WorldmodelBattery
+
+        pressure = WorldmodelBattery().run_audits(project_dir).get(
+            "goal_hypothesis_pressure"
+        ) or {}
+    except Exception as exc:  # noqa: BLE001
+        return f"## Task-hypothesis state\n- DEGRADED: {type(exc).__name__}: {exc}"
+    status = pressure.get("status")
+    if status not in {"version_space_empty", "version_space_stalled"}:
+        return ""
+    active = int(pressure.get("active_hypotheses") or 0)
+    state = (
+        "has no surviving predicate"
+        if status == "version_space_empty"
+        else (
+            f"has {active} surviving predicate(s), but the bound planner receipt "
+            "found no discriminating intervention within its declared budget"
+        )
+    )
+    return (
+        "## Task-hypothesis refinement obligation\n"
+        f"- source epoch: {pressure.get('active_epoch')}; the current version space "
+        f"{state}. The transition carrier and the task-hypothesis "
+        "version space are separate objects.\n"
+        "- Preserve the current transition behavior. Propose one falsifiable "
+        "standalone adapter-lowered `GOAL_PREDICATE(observation) -> bool` "
+        "module from current "
+        "visible evidence, together with its rival and a discriminating "
+        "intervention. The predicate only steers acquisition; the registered "
+        "task adjudicator disposes it. Do not import or repeat the transition "
+        "carrier; the kernel binds its immutable companion. Task-open states "
+        "are behavioral no-goods: a predicate already true on one remains "
+        "refuted under a syntactic rewrite. Do not import a prior-epoch "
+        "terminal presentation. A prior task edge may transfer only as a "
+        "falsifiable role/invariant hypothesis with a target-chart "
+        "discriminator; it carries no discharge authority."
+    )
+
+
 def _level_boundary_harvest_block(project_dir) -> str:
     latest = _latest_level_boundary_harvest(Path(project_dir))
     if latest is None:
@@ -588,13 +648,18 @@ def _residual_class_receipt_block(project_dir) -> str:
 
 
 def _goal_exemplar_block(project_dir) -> str:
-    """Labeled goal transitions (a level completed during play) — the ground
-    truth any GOAL_PREDICATE hypothesis must satisfy, and abduction fuel."""
+    """Labeled task edges scoped to the lifecycle that produced them."""
     import json
     from pathlib import Path
     path = Path(project_dir) / "workspace" / "goal_exemplars.jsonl"
     if not path.exists():
-        return "- goal exemplars: none witnessed yet (no level completed)."
+        return "- current-epoch task exemplars: none witnessed."
+    try:
+        from ztare.worldmodel.strategy_battery import _active_epoch
+
+        active_epoch = _active_epoch(project_dir)
+    except Exception:  # noqa: BLE001
+        active_epoch = None
     try:
         raw = path.read_text().splitlines()
     except OSError as exc:
@@ -604,15 +669,28 @@ def _goal_exemplar_block(project_dir) -> str:
         if not l.strip():
             continue
         try:
-            ex.append(json.loads(l))
+            row = json.loads(l)
         except json.JSONDecodeError:
             skipped.append(n)  # skip+count+name; never drop the whole block
+            continue
+        if (
+            isinstance(row, dict)
+            and row.get("schema") == "ztare-goal-exemplar-v2"
+            and row.get("source_epoch") == active_epoch
+        ):
+            ex.append(row)
     if not ex:
-        # ALL lines corrupt ⇒ escalate to a DEGRADED note (block empty).
-        return (f"- goal exemplars: DEGRADED — all {len(skipped)} non-blank "
-                f"line(s) unparseable (lines {skipped}); no exemplar recovered.")
-    out = [f"- GOAL EXEMPLARS ({len(ex)} witnessed level-completing transitions; "
-           "any GOAL_PREDICATE you propose MUST hold on their s_next):"]
+        if skipped and len(skipped) == len([line for line in raw if line.strip()]):
+            return (
+                f"- current-epoch task exemplars: DEGRADED — all {len(skipped)} "
+                f"non-blank line(s) unparseable (lines {skipped})."
+            )
+        return (
+            f"- current-epoch task exemplars: none for source epoch {active_epoch}; "
+            "prior-epoch presentations have no transport authority."
+        )
+    out = [f"- CURRENT-EPOCH TASK EXEMPLARS ({len(ex)} adapter-attested edges; "
+           "any GOAL_PREDICATE proposed for this epoch must hold on their s_next):"]
     if skipped:
         out.append(f"  NOTE: skipped {len(skipped)} corrupt exemplar line(s) "
                    f"(lines {skipped}); good exemplars below.")

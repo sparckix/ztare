@@ -30,6 +30,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "src"))
@@ -41,16 +42,21 @@ from ztare.common.worldmodel_carrier_purity import (  # noqa: E402
 )
 from ztare.substrates.arc_agi3 import ArcAgi3Adapter  # noqa: E402
 from ztare.worldmodel.adapter import (  # noqa: E402
-    committee_read_model_path, episode_log_path, write_committee_read_model,
-    write_deterministic_evidence)
+    admit_observations as _append_observations,
+    episode_log_path,
+    grow_evidence as _grow_evidence,
+    observation_log as _observation_log,
+)
 from ztare.worldmodel.episode_log import EpisodeLog, Transition  # noqa: E402
 from ztare.worldmodel.carrier_loader import load_carrier_from_source  # noqa: E402
+from ztare.worldmodel.level_boundary_seed import (  # noqa: E402
+    replay_latest_seed as _replay_latest_level_boundary_seed,
+    replay_latest_seed_trace as _replay_latest_level_boundary_seed_trace,
+)
 from ztare.worldmodel.planner import pursue_goal  # noqa: E402
-from ztare.worldmodel.policy import context_key  # noqa: E402
 from ztare.worldmodel.residual_repair import (  # noqa: E402
     reject_satisfied_seed_prerequisite_cards,
 )
-from ztare.worldmodel.synthesis import synthesize  # noqa: E402
 
 
 _ADVICE_MODES = {"advice", "competition", "compiled", "advice_consume"}
@@ -101,6 +107,31 @@ def _play_config(project: Path) -> dict:
     return cfg
 
 
+def _projected_control_edge_identity(
+    source,
+    intervention,
+    *,
+    abstract_fn=None,
+    coverage_fn=None,
+):
+    """Return the acquisition consumer's state-action identity when total.
+
+    A projection failure does not erase the exact edge. It merely withholds
+    transport to other presentations until the consumer can represent them.
+    """
+    if abstract_fn is None:
+        return None
+    try:
+        identity = abstract_fn(source)
+        if coverage_fn is not None:
+            identity = coverage_fn(identity)
+        edge = (identity, intervention)
+        hash(edge)
+        return edge
+    except Exception:  # noqa: BLE001 - exact edge remains available
+        return None
+
+
 def _is_env_reset(context_log, round_obs) -> bool:
     """Classify the LAST observed transition as an ENVIRONMENT RESET (episode
     boundary) using the gate's own logic: append the round's observations to the
@@ -116,6 +147,37 @@ def _is_env_reset(context_log, round_obs) -> bool:
             s_, a_, s2_, t_ = observation
             tmp.append(s_, a_, s2_, t=t_)
     return bool(len(tmp)) and (len(tmp) - 1) in env_frame_indices(tmp)
+
+
+def _first_environment_boundary_in_tail(context_log, round_obs, tail_length):
+    """Return the first boundary observation in the newest trajectory tail."""
+    from ztare.worldmodel.gates import env_frame_indices
+
+    tmp = EpisodeLog(list(context_log))
+    normalized = []
+    for observation in round_obs:
+        transition = (
+            observation
+            if isinstance(observation, Transition)
+            else Transition(
+                t=observation[3],
+                s=observation[0],
+                a=observation[1],
+                s_next=observation[2],
+            )
+        )
+        normalized.append(transition)
+        tmp.append_transition(transition)
+    tail = max(0, min(int(tail_length), len(normalized)))
+    start_in_round = len(normalized) - tail
+    start_in_joined = len(tmp) - tail
+    candidates = sorted(
+        index for index in env_frame_indices(tmp) if index >= start_in_joined
+    )
+    if not candidates:
+        return None
+    round_index = start_in_round + candidates[0] - start_in_joined
+    return round_index, normalized[round_index]
 
 
 def _play_round_multilife(
@@ -148,8 +210,94 @@ def _play_round_multilife(
     task_discharged = False
     legacy_boundary_stop = False
     discharge_receipt = None
+    task_process_tokens = []
+    task_decision_windows = []
+    task_context_epoch = _adapter_epoch(adapter)
     run_goal_edge = kw.get("goal_edge_fn")
+    run_goal_fn = kw.get("goal_fn")
     run_acquisition_obligation = kw.get("acquisition_obligation")
+    base_edge_exclusion = kw.get("excluded_edge_fn")
+    inherited_boundary_edges = tuple(
+        kw.get("control_boundary_edges") or ()
+    )
+    sealed_boundary_edges = tuple(
+        getattr(base_edge_exclusion, "predictive_evidence_edges", ())
+        or getattr(base_edge_exclusion, "evidence_edges", ())
+        or ()
+    )
+    sealed_history_trajectories = tuple(
+        getattr(base_edge_exclusion, "history_trajectories", ()) or ()
+    )
+    inherited_history_trajectories = tuple(
+        kw.get("control_history_trajectories") or ()
+    )
+    active_control_history = list(
+        kw.get("control_history_prefix") or ()
+    )
+    active_operation_effect_history = list(
+        kw.get("control_operation_effect_history_prefix") or ()
+    )
+    factored_projection = getattr(
+        play_model,
+        "_ztare_factored_projection",
+        None,
+    )
+
+    def advance_control_histories(
+        transitions,
+        *,
+        action_prefix,
+        operation_effect_prefix,
+    ):
+        if factored_projection is None:
+            return (
+                (
+                    *tuple(action_prefix),
+                    *(transition.a for transition in transitions),
+                ),
+                tuple(operation_effect_prefix),
+            )
+        from ztare.worldmodel.mechanism_effects import (
+            predictive_prefixes_from_transitions,
+        )
+
+        return predictive_prefixes_from_transitions(
+            transitions,
+            projection=factored_projection,
+            action_prefix=action_prefix,
+            operation_effect_prefix=operation_effect_prefix,
+        )
+    non_discharge_edges: list[tuple[object, object]] = []
+    non_discharge_boundary_edges: list[
+        tuple[object, object, str, tuple, tuple]
+    ] = []
+    non_discharge_edge_indices: list[int] = []
+    projected_non_discharge_counts: dict[object, int] = {}
+
+    def excluded_control_edge(source, intervention, time_value):
+        if base_edge_exclusion is not None and base_edge_exclusion(
+            source, intervention, time_value
+        ):
+            return True
+        if any(
+            source == prior_source and intervention == prior_intervention
+            for prior_source, prior_intervention in non_discharge_edges
+        ):
+            return True
+        projected = _projected_control_edge_identity(
+            source,
+            intervention,
+            abstract_fn=kw.get("abstract_fn"),
+            coverage_fn=kw.get("coverage_fn"),
+        )
+        # One task-open boundary excludes its exact edge. Two distinct
+        # presentations with the same consumer identity admit transport of the
+        # no-good across that support fiber.
+        return (
+            projected is not None
+            and projected_non_discharge_counts.get(projected, 0) >= 2
+        )
+
     while remaining > 0:
         if task_contract is not None:
             discharge_receipt = adjudicate_task_discharge(adapter, task_contract)
@@ -158,19 +306,32 @@ def _play_round_multilife(
             status = "task_discharged"
             break
         leg_kw = dict(kw)
+        if task_contract is not None:
+            leg_kw["control_task_contract_sha256"] = task_contract.sha256
+        if getattr(run_goal_fn, "active_count", 1) == 0:
+            leg_kw["goal_fn"] = None
+        if getattr(run_goal_edge, "active_count", 1) == 0:
+            leg_kw["goal_edge_fn"] = None
         active_epoch = _adapter_epoch(adapter)
+        active_rows = ()
+        if active_epoch is not None:
+            evidence_bank = EpisodeLog(
+                transition
+                for transition in (*tuple(context_log), *tuple(obs))
+                if isinstance(transition, Transition)
+            )
+            active_rows = evidence_bank.within_epoch_view(active_epoch)
         if active_epoch is not None and "evidence_states" not in leg_kw:
-            active_rows = EpisodeLog(
-                [
-                    transition
-                    for transition in (*tuple(context_log), *tuple(obs))
-                    if isinstance(transition, Transition)
-                ]
-            ).within_epoch_view(active_epoch)
             leg_kw["evidence_states"] = tuple(
                 state
                 for transition in active_rows
                 for state in (transition.s, transition.s_next)
+            )
+        if active_epoch is not None and "evidence_transitions" not in leg_kw:
+            from ztare.worldmodel.gates import law_scored_view
+
+            leg_kw["evidence_transitions"] = tuple(
+                law_scored_view(evidence_bank, source_epoch=active_epoch)
             )
         if hasattr(run_goal_edge, "for_source_epoch"):
             if active_epoch is not None:
@@ -181,14 +342,48 @@ def _play_round_multilife(
                 leg_kw["goal_edge_fn"] = run_goal_edge.for_source_epoch(
                     active_epoch
                 )
+                if getattr(
+                    leg_kw["goal_edge_fn"],
+                    "active_count",
+                    1,
+                ) == 0:
+                    leg_kw["goal_edge_fn"] = None
         if hasattr(run_acquisition_obligation, "for_source_epoch"):
             if active_epoch is not None:
                 leg_kw["acquisition_obligation"] = (
                     run_acquisition_obligation.for_source_epoch(active_epoch)
                 )
+        if base_edge_exclusion is not None or non_discharge_edges:
+            leg_kw["excluded_edge_fn"] = excluded_control_edge
+        active_boundary_edges = tuple(non_discharge_boundary_edges)
+        if (
+            inherited_boundary_edges
+            or sealed_boundary_edges
+            or active_boundary_edges
+        ):
+            leg_kw["control_boundary_edges"] = tuple((
+                *inherited_boundary_edges,
+                *sealed_boundary_edges,
+                *active_boundary_edges,
+            ))
+        leg_kw["control_history_prefix"] = tuple(active_control_history)
+        leg_kw["control_operation_effect_history_prefix"] = tuple(
+            active_operation_effect_history
+        )
+        if sealed_history_trajectories or inherited_history_trajectories:
+            leg_kw["control_history_trajectories"] = tuple((
+                *inherited_history_trajectories,
+                *sealed_history_trajectories,
+            ))
+        leg_observation_start = len(obs)
+        leg_history_start = tuple(active_control_history)
+        leg_operation_effect_history_start = tuple(
+            active_operation_effect_history
+        )
         pr = pursue_goal(adapter, play_model, max_steps=remaining, **leg_kw)
+        leg_trace = list(getattr(pr, "trace", []) or [])
         obs.extend(pr.observed_transitions)
-        trace.extend(getattr(pr, "trace", []) or [])
+        trace.extend(leg_trace)
         steps += pr.steps_executed
         levels += pr.levels_gained
         saturated = saturated or bool(pr.saturated)
@@ -200,12 +395,55 @@ def _play_round_multilife(
         # disposition before writing the leg receipt: otherwise the same row
         # is reported here as scientific refutation and later excluded by the
         # replay gate's shared boundary classifier.
-        inferred_boundary = (
+        inferred_repaint = (
             pr.status == "model_diverged"
             and pr.steps_executed > 0
             and _is_env_reset(context_log, obs)
         )
-        if inferred_boundary:
+        inferred_transition = (
+            pr.observed_transitions[-1]
+            if inferred_repaint
+            and pr.observed_transitions
+            and isinstance(pr.observed_transitions[-1], Transition)
+            else None
+        )
+        inferred_context_transition = bool(
+            inferred_transition is not None
+            and any(
+                known.s == inferred_transition.s
+                and known.a == inferred_transition.a
+                and known.s_next == inferred_transition.s_next
+                for known in active_rows
+            )
+        )
+        inferred_boundary = bool(
+            inferred_repaint and not inferred_context_transition
+        )
+        boundary_observation = None
+        boundary_observation_index = None
+        if inferred_boundary and pr.observed_transitions:
+            boundary_observation = pr.observed_transitions[-1]
+            boundary_observation_index = len(obs) - 1
+        elif (
+            pr.status == "environment_boundary"
+            and pr.observed_transitions
+        ):
+            located_boundary = _first_environment_boundary_in_tail(
+                context_log,
+                obs,
+                len(pr.observed_transitions),
+            )
+            if located_boundary is not None:
+                boundary_observation_index, boundary_observation = (
+                    located_boundary
+                )
+        if inferred_context_transition:
+            status = "environment_context_transition_inferred"
+            detail = (
+                "evidence-side classifier matched a prior within-epoch "
+                "transition; replan from its observed context"
+            )
+        elif inferred_boundary:
             status = "environment_boundary_inferred"
             detail = (
                 "evidence-side boundary classifier resolved an adapter-"
@@ -215,15 +453,161 @@ def _play_round_multilife(
         planning_outcome = dict(
             getattr(pr, "planning_outcome", {}) or {}
         )
+        task_process_tokens.extend(
+            str(token)
+            for token in (
+                planning_outcome.get("continual_control_process_tokens")
+                or ()
+            )
+            if str(token)
+        )
+        refuted_goal_hypotheses: tuple[str, ...] = ()
+        candidate_goal_edge = getattr(pr, "candidate_goal_edge", None)
+        active_leg_goal_edge = leg_kw.get("goal_edge_fn")
+        can_refute_candidate_edge = bool(
+            isinstance(candidate_goal_edge, dict)
+            and callable(
+                getattr(active_leg_goal_edge, "refute_satisfied", None)
+            )
+        )
+        if (
+            (
+                status in {"plan_exhausted", "candidate_goal_reached"}
+                and callable(
+                    getattr(run_goal_fn, "refute_satisfied", None)
+                )
+            )
+            or can_refute_candidate_edge
+        ) and task_contract is not None:
+            discharge_receipt = adjudicate_task_discharge(adapter, task_contract)
+            task_discharged = discharge_receipt.discharged
+            if task_discharged:
+                status = "task_discharged"
+                detail = "registered task adjudicator accepted the candidate predicate"
+            else:
+                if can_refute_candidate_edge:
+                    refuted_goal_hypotheses = tuple(
+                        active_leg_goal_edge.refute_satisfied(
+                            candidate_goal_edge["source"],
+                            candidate_goal_edge["operation"],
+                            candidate_goal_edge.get("time"),
+                        )
+                    )
+                else:
+                    refuted_goal_hypotheses = tuple(
+                        run_goal_fn.refute_satisfied(adapter.state)
+                    )
+                if refuted_goal_hypotheses:
+                    if status not in {
+                        "environment_boundary",
+                        "environment_boundary_inferred",
+                        "model_diverged",
+                    }:
+                        status = "goal_hypothesis_refuted"
+                        detail = (
+                            "adapter task adjudication remained open after "
+                            "reaching "
+                            f"{len(refuted_goal_hypotheses)} candidate "
+                            "relation(s)"
+                        )
+                    planning_outcome["goal_hypotheses_refuted"] = list(
+                        refuted_goal_hypotheses
+                    )
+                    planning_outcome["goal_hypotheses_remaining"] = int(
+                        getattr(
+                            (
+                                active_leg_goal_edge
+                                if can_refute_candidate_edge
+                                else run_goal_fn
+                            ),
+                            "active_count",
+                            0,
+                        )
+                    )
+        decision_window = planning_outcome.get("task_decision_choice")
+        if (
+            isinstance(decision_window, dict)
+            and task_contract is not None
+            and pr.steps_executed > 0
+        ):
+            required_decision_fields = (
+                "decision_namespace",
+                "choice_context_sha256",
+                "continuation_context_sha256",
+                "chosen_option_family_sha256",
+                "chosen_option_variant_sha256",
+                "available_option_family_sha256s",
+            )
+            if all(
+                decision_window.get(field)
+                for field in required_decision_fields
+            ):
+                from ztare.common.equivariance import stable_sha256
+
+                leg_discharge_receipt = adjudicate_task_discharge(
+                    adapter,
+                    task_contract,
+                )
+                leg_task_discharged = (
+                    leg_discharge_receipt.discharged
+                )
+                if leg_task_discharged:
+                    task_discharged = True
+                    status = "task_discharged"
+                leg_adjudication_sha256 = stable_sha256(
+                    leg_discharge_receipt.to_dict()
+                )
+                task_decision_windows.append({
+                    **{
+                        field: decision_window[field]
+                        for field in required_decision_fields
+                    },
+                    "outcome": (
+                        "attained"
+                        if leg_task_discharged
+                        else "open"
+                    ),
+                    "evidence_ref": (
+                        "task_adjudication:"
+                        + leg_adjudication_sha256
+                    ),
+                })
         leg_outcomes.append(
             {
                 "status": status,
                 "steps_executed": int(pr.steps_executed),
                 "detail": detail,
                 "planning_outcome": planning_outcome,
+                "non_discharge_edges_excluded": len(non_discharge_edges),
             }
         )
         remaining -= max(pr.steps_executed, 0)
+        if task_discharged:
+            break
+        if (
+            refuted_goal_hypotheses
+            and remaining > 0
+            and status not in {
+                "environment_boundary",
+                "environment_boundary_inferred",
+                "model_diverged",
+            }
+        ):
+            (
+                next_action_history,
+                next_operation_effect_history,
+            ) = advance_control_histories(
+                pr.observed_transitions,
+                action_prefix=leg_history_start,
+                operation_effect_prefix=(
+                    leg_operation_effect_history_start
+                ),
+            )
+            active_control_history = list(next_action_history)
+            active_operation_effect_history = list(
+                next_operation_effect_history
+            )
+            continue
         if pr.levels_gained > 0:
             if task_contract is not None:
                 discharge_receipt = adjudicate_task_discharge(adapter, task_contract)
@@ -239,10 +623,98 @@ def _play_round_multilife(
                 status = "task_discharged"
                 break
             lives += 1
+            active_control_history = []
+            active_operation_effect_history = []
+            continue
+        if (
+            status == "environment_context_transition_inferred"
+            and pr.steps_executed > 0
+        ):
+            # The exact source-operation-successor triple already belongs to
+            # transition evidence. Task non-discharge cannot turn it into
+            # partiality. The repaint begins a fresh finite-history segment,
+            # while its observed successor remains the next planning state.
+            lives += 1
+            active_control_history = []
+            active_operation_effect_history = []
             continue
         if status in {"environment_boundary", "environment_boundary_inferred"} \
                 and pr.steps_executed > 0:
+            # The adapter has now supplied the missing consequence of the
+            # simulated edge.  If the active task adjudicator remains open,
+            # that concrete source/intervention is a control no-good for this
+            # run.  Feed it back through pursue_goal's single prediction door
+            # before starting the next life; do not edit the transition law.
+            if task_contract is not None:
+                discharge_receipt = adjudicate_task_discharge(
+                    adapter, task_contract
+                )
+                task_discharged = discharge_receipt.discharged
+            if task_discharged:
+                status = "task_discharged"
+                break
+            last_observation = (
+                boundary_observation
+                if boundary_observation is not None
+                else pr.observed_transitions[-1]
+                if pr.observed_transitions else None
+            )
+            if isinstance(last_observation, Transition):
+                edge = (last_observation.s, last_observation.a)
+            elif (
+                isinstance(last_observation, tuple)
+                and len(last_observation) >= 2
+            ):
+                edge = (last_observation[0], last_observation[1])
+            else:
+                edge = None
+            if edge is not None and not any(
+                edge[0] == prior_source and edge[1] == prior_intervention
+                for prior_source, prior_intervention in non_discharge_edges
+            ):
+                non_discharge_edges.append(edge)
+                projected = _projected_control_edge_identity(
+                    edge[0],
+                    edge[1],
+                    abstract_fn=kw.get("abstract_fn"),
+                    coverage_fn=kw.get("coverage_fn"),
+                )
+                if projected is not None:
+                    projected_non_discharge_counts[projected] = (
+                        projected_non_discharge_counts.get(projected, 0) + 1
+                    )
+                if boundary_observation_index is None:
+                    boundary_observation_index = len(obs) - 1
+                non_discharge_edge_indices.append(
+                    int(boundary_observation_index)
+                )
+                local_boundary_index = max(
+                    0,
+                    int(boundary_observation_index)
+                    - leg_observation_start,
+                )
+                non_discharge_boundary_edges.append((
+                    edge[0],
+                    edge[1],
+                    (
+                        "arc3_play_loop:active_control_boundary#"
+                        f"{len(non_discharge_boundary_edges)}"
+                    ),
+                    tuple((
+                        *leg_history_start,
+                        *leg_trace[:local_boundary_index],
+                    )),
+                    advance_control_histories(
+                        pr.observed_transitions[:local_boundary_index],
+                        action_prefix=leg_history_start,
+                        operation_effect_prefix=(
+                            leg_operation_effect_history_start
+                        ),
+                    )[1],
+                ))
             lives += 1
+            active_control_history = []
+            active_operation_effect_history = []
             continue
         # Preserve only a carrier counterexample.  A legacy/untyped boundary can
         # initially surface from the within-epoch planner as ``model_diverged``;
@@ -252,6 +724,131 @@ def _play_round_multilife(
         if divergence is None and getattr(pr, "divergence", None) is not None:
             divergence = pr.divergence
         break        # genuine stop: saturation / real divergence / budget spent
+    continual_task_experience = {
+        "status": "not_recorded",
+        "reason": "task contract, process tokens, or persistence path absent",
+    }
+    if (
+        task_contract is not None
+        and (task_process_tokens or task_decision_windows)
+        and kw.get("receipts_dir") is not None
+    ):
+        try:
+            from ztare.common.continual_skill_memory import (
+                load_continual_skill_memory,
+                record_task_decision_experience,
+                record_task_experience,
+                save_continual_skill_memory,
+            )
+            from ztare.common.equivariance import stable_sha256
+
+            discharge_receipt = adjudicate_task_discharge(
+                adapter,
+                task_contract,
+            )
+            task_discharged = discharge_receipt.discharged
+            if task_discharged:
+                status = "task_discharged"
+            adjudication = discharge_receipt.to_dict()
+            outcome = "attained" if task_discharged else "open"
+            adjudication_sha256 = stable_sha256(adjudication)
+            trace_ref = "arc3-control-run:" + stable_sha256({
+                "task_contract_sha256": task_contract.sha256,
+                "process_tokens": tuple(task_process_tokens),
+                "decision_choices": tuple(
+                    (
+                        choice["decision_namespace"],
+                        choice["choice_context_sha256"],
+                        choice["chosen_option_variant_sha256"],
+                        choice["outcome"],
+                    )
+                    for choice in task_decision_windows
+                ),
+                "outcome": outcome,
+                "adjudication_sha256": adjudication_sha256,
+            })
+            memory_path = (
+                Path(kw["receipts_dir"])
+                / "continual_skill_memory.json"
+            )
+            memory_before = load_continual_skill_memory(memory_path)
+            memory_after = memory_before
+            if task_process_tokens:
+                memory_after = record_task_experience(
+                    memory_after,
+                    task_contract_sha256=task_contract.sha256,
+                    trace_ref=trace_ref,
+                    outcome=outcome,
+                    process_tokens=tuple(task_process_tokens),
+                    evidence_ref=(
+                        "task_adjudication:" + adjudication_sha256
+                    ),
+                    context_key=(
+                        "arc3-task-control-context-v1",
+                        task_contract.sha256,
+                        (
+                            f"{type(adapter).__module__}."
+                            f"{type(adapter).__qualname__}"
+                        ),
+                        task_context_epoch,
+                    ),
+                )
+            for choice_index, choice in enumerate(
+                task_decision_windows
+            ):
+                memory_after = record_task_decision_experience(
+                    memory_after,
+                    task_contract_sha256=task_contract.sha256,
+                    trace_ref=trace_ref,
+                    choice_index=choice_index,
+                    outcome=str(choice["outcome"]),
+                    decision_namespace=str(
+                        choice["decision_namespace"]
+                    ),
+                    choice_context_sha256=str(
+                        choice["choice_context_sha256"]
+                    ),
+                    continuation_context_sha256=str(
+                        choice["continuation_context_sha256"]
+                    ),
+                    chosen_option_family_sha256=str(
+                        choice["chosen_option_family_sha256"]
+                    ),
+                    chosen_option_variant_sha256=str(
+                        choice["chosen_option_variant_sha256"]
+                    ),
+                    available_option_family_sha256s=tuple(map(
+                        str,
+                        choice["available_option_family_sha256s"],
+                    )),
+                    evidence_ref=str(choice["evidence_ref"]),
+                )
+            save_continual_skill_memory(memory_path, memory_after)
+            continual_task_experience = {
+                "status": "recorded",
+                "trace_ref": trace_ref,
+                "outcome": outcome,
+                "process_token_count": len(task_process_tokens),
+                "effect_option_token_count": sum(
+                    token.startswith("effect_option:")
+                    for token in task_process_tokens
+                ),
+                "choice_experience_count": 0,
+                "decision_experience_count": len(
+                    task_decision_windows
+                ),
+                "adjudication_sha256": adjudication_sha256,
+                "memory_before_sha256": memory_before.memory_sha256,
+                "memory_after_sha256": memory_after.memory_sha256,
+                "credit_witness_count": len(
+                    memory_after.credit_witnesses
+                ),
+            }
+        except Exception as task_memory_error:  # noqa: BLE001
+            continual_task_experience = {
+                "status": "recording_failed",
+                "error_type": type(task_memory_error).__name__,
+            }
     # ``lives`` is execution history.  Preserve the terminal lifecycle outcome
     # as status so downstream routing can distinguish task discharge, model
     # refutation, environment boundaries, and bounded planning exhaustion.
@@ -262,12 +859,21 @@ def _play_round_multilife(
                            detail=detail, replans=replans,
                            planning_outcome=planning_outcome,
                            leg_outcomes=leg_outcomes,
+                           non_discharge_edge_count=len(non_discharge_edges),
+                           non_discharge_edge_indices=non_discharge_edge_indices,
+                           non_discharge_projection_count=sum(
+                               1 for count in projected_non_discharge_counts.values()
+                               if count >= 2
+                           ),
                            task_discharged=task_discharged,
                            legacy_boundary_stop=legacy_boundary_stop,
                            task_contract=(task_contract.to_dict() if task_contract is not None else None),
                            task_discharge_receipt=(
                                discharge_receipt.to_dict()
                                if discharge_receipt is not None else None
+                           ),
+                           continual_task_experience=(
+                               continual_task_experience
                            ))
 
 
@@ -420,82 +1026,6 @@ def _write_level_boundary_seed(
     target.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     (ws / "latest_level_boundary_seed.json").write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n")
-    return receipt
-
-
-def _replay_latest_level_boundary_seed(project: Path, adapter) -> dict:
-    """Replay and verify the deepest persisted boundary before a play cycle.
-
-    The stored action sequence is episodic memory.  The environment's observed
-    epoch after replay is the authority.  A failed replay is severed here and
-    the cycle remains at reset; downstream planning never inherits the seed's
-    declared epoch merely because the JSON file exists.
-    """
-    from ztare.worldmodel.level_boundary_seed import load_seed
-
-    path = project / "workspace" / "latest_level_boundary_seed.json"
-    if not path.is_file():
-        return {
-            "schema": "ztare-level-boundary-seed-replay-v1",
-            "status": "no_seed",
-            "actions": [],
-            "observed_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
-        }
-    try:
-        seed, sequence, _raw, seed_sha256 = load_seed(path)
-        declared_epoch = int(seed.get("completed_level"))
-        if declared_epoch < 1:
-            raise ValueError("completed_level must be positive")
-        for action in sequence:
-            if action < 0 or action >= int(getattr(adapter, "action_arity", 0) or 0):
-                raise ValueError(f"seed intervention outside adapter domain: {action}")
-            adapter.step(action)
-        observed_epoch = int(getattr(adapter, "levels_completed", 0) or 0)
-        status = "verified" if observed_epoch == declared_epoch else "epoch_mismatch"
-        if status != "verified":
-            adapter.reset()
-        declared_segments = seed.get("execution_segments")
-        if not isinstance(declared_segments, list) or not declared_segments:
-            declared_segments = [{
-                "segment_id": "legacy-origin",
-                "segment_kind": "verified_origin",
-                "source_ref": "workspace/latest_level_boundary_seed.json",
-                "authority": "environment_verified_replay",
-                "start_index": 0,
-                "end_index_exclusive": len(sequence),
-                "actions": sequence,
-            }]
-        receipt = {
-            "schema": "ztare-level-boundary-seed-replay-v1",
-            "status": status,
-            "seed_ref": "workspace/latest_level_boundary_seed.json",
-            "seed_sha256": seed_sha256,
-            "declared_epoch": declared_epoch,
-            "observed_epoch": observed_epoch,
-            "active_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
-            "actions": sequence if status == "verified" else [],
-            "execution_segments": declared_segments if status == "verified" else [],
-            "interventions_executed": len(sequence),
-        }
-    except Exception as exc:  # noqa: BLE001
-        try:
-            adapter.reset()
-        except Exception:  # noqa: BLE001
-            pass
-        receipt = {
-            "schema": "ztare-level-boundary-seed-replay-v1",
-            "status": "invalid_or_unreplayable",
-            "seed_ref": "workspace/latest_level_boundary_seed.json",
-            "observed_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
-            "active_epoch": int(getattr(adapter, "levels_completed", 0) or 0),
-            "actions": [],
-            "execution_segments": [],
-            "error": f"{type(exc).__name__}: {exc}",
-        }
-    ledger = project / "workspace" / "level_boundary_seed_replays.jsonl"
-    ledger.parent.mkdir(parents=True, exist_ok=True)
-    with ledger.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(receipt, sort_keys=True) + "\n")
     return receipt
 
 
@@ -1145,6 +1675,8 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
             source_epoch=int(getattr(adapter, "levels_completed", 0) or 0),
         )
         active_goal_edge = goal_edge_fn or bank_goal_edge
+        from ztare.common.task_discharge import task_discharge_from_profile
+        task_contract = task_discharge_from_profile(cfg)
         structural_gf, n_cand = (
             (None, 0)
             if goal_fn is not None or active_goal_edge is not None
@@ -1155,12 +1687,11 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
                 source_epoch=int(
                     getattr(adapter, "levels_completed", 0) or 0
                 ),
+                task_contract_sha256=(task_contract.sha256 if task_contract else ""),
             )
         )
         active_goal = None if active_goal_edge is not None else (goal_fn or structural_gf)
         active_progress = progress_fn if active_goal is None and active_goal_edge is None else None
-        from ztare.common.task_discharge import task_discharge_from_profile
-        task_contract = task_discharge_from_profile(cfg)
         # VISITED SEED FROM RAW EVIDENCE (single source of truth): the frontier
         # store is the live cache UNION every abstract state in the log, so
         # coverage never re-walks a state the evidence already witnessed.
@@ -1234,21 +1765,13 @@ def _sprint(project: Path, adapter, cfg: dict, progress_fn, goal_fn,
                 "source_ref": f"workspace/level{seed['target_level']}_seed.json",
             }
             if pr.observed_transitions:
-                import json as _j
-                _goal_transition = pr.observed_transitions[-1]
-                if isinstance(_goal_transition, Transition):
-                    gs, ga, gnext, gt = (
-                        _goal_transition.s,
-                        _goal_transition.a,
-                        _goal_transition.s_next,
-                        _goal_transition.t,
-                    )
-                else:
-                    gs, ga, gnext, gt = _goal_transition
-                (project / "workspace" / "goal_exemplars.jsonl").open("a").write(
-                    _j.dumps({"schema": "ztare-goal-exemplar-v1", "cycle": f"sprint{rnd}",
-                              "t": gt, "action": ga, "s": [list(r) for r in gs],
-                              "s_next": [list(r) for r in gnext]}) + chr(10))
+                _write_goal_exemplar(
+                    project,
+                    pr.observed_transitions[-1],
+                    cycle=f"sprint{rnd}",
+                    game_id=game_id,
+                    task_contract=task_contract,
+                )
             print(f"  🏆 LEVEL in sprint {rnd}", flush=True)
         if out["task_discharged"]:
             break
@@ -1390,7 +1913,14 @@ def _invariants(project: Path, subject=None) -> list:
     return load_current_invariants(project, subject=subject)
 
 
-def _structural_goal_fn(project: Path, log, ab, *, source_epoch=None):
+def _structural_goal_fn(
+    project: Path,
+    log,
+    ab,
+    *,
+    source_epoch=None,
+    task_contract_sha256="",
+):
     """Pre-exemplar goal source (in-loop wiring, 2026-07-03): dormant-event /
     goal-abduction candidates compiled to ONE OR-predicate — reaching ANY
     candidate state is worth probing; the adapter adjudicator disposes. Returns
@@ -1398,8 +1928,10 @@ def _structural_goal_fn(project: Path, log, ab, *, source_epoch=None):
     candidates are absent."""
     try:
         from ztare.worldmodel.goal_abduction import (
-            abduce_goal_candidates, predicate_from_spec)
-        from ztare.worldmodel.object_roles import induce_roles
+            abduce_goal_candidates,
+            compile_goal_hypothesis_set,
+            predicate_from_spec,
+        )
         goal_log = log
         if source_epoch is not None:
             # Lifecycle selection has one authority-bearing door.  Repeating a
@@ -1408,7 +1940,11 @@ def _structural_goal_fn(project: Path, log, ab, *, source_epoch=None):
             goal_log = log.within_epoch_view(source_epoch)
             if not len(goal_log):
                 return None, 0
-        roles = induce_roles(goal_log, _log_arity(goal_log))
+        roles = _role_state(
+            project,
+            log,
+            source_epoch=source_epoch,
+        )
         out = abduce_goal_candidates(
             goal_log,
             getattr(ab, "spec", None),
@@ -1423,14 +1959,88 @@ def _structural_goal_fn(project: Path, log, ab, *, source_epoch=None):
             setattr(predicate, "_ztare_source_epoch", source_epoch)
             return predicate, 1
         cands = [c for c in out.get("candidates", []) if c.get("predicate_spec")]
-        preds = [predicate_from_spec(c["predicate_spec"], start) for c in cands]
-        if not preds:
+        task_open_states = tuple(
+            transition.s_next
+            for transition in goal_log
+            if transition.identity is not None
+            and transition.identity.is_authoritative
+            and not transition.identity.is_boundary
+        )
+        predicate = compile_goal_hypothesis_set(
+            cands,
+            start,
+            task_open_states=task_open_states,
+            source_epoch=source_epoch,
+            task_contract_sha256=task_contract_sha256,
+        )
+        if predicate is None:
             return None, 0
-        predicate = lambda g: any(pf(g) for pf in preds)
         setattr(predicate, "_ztare_source_epoch", source_epoch)
         return predicate, len(cands)
     except Exception:
         return None, 0
+
+
+def _candidate_task_hypotheses(
+    project: Path,
+    *,
+    source_epoch,
+    task_contract,
+    candidate_paths=(),
+):
+    """Load current-epoch leaf task hypotheses without adopting their carrier."""
+
+    if task_contract is None or source_epoch is None:
+        return None
+    try:
+        from ztare.worldmodel.goal_abduction import (
+            compile_candidate_goal_hypothesis_set,
+        )
+
+        active = EpisodeLog.read_jsonl(episode_log_path(project)).within_epoch_view(
+            source_epoch
+        )
+        states = tuple(
+            state
+            for transition in active
+            for state in (transition.s, transition.s_next)
+        )
+        projected = compile_candidate_goal_hypothesis_set(
+            project,
+            source_epoch=source_epoch,
+            task_contract_sha256=task_contract.sha256,
+            witness_states=(*states[:8], *states[-8:]),
+            task_open_states=states,
+        )
+        if projected is not None:
+            return projected
+        from ztare.common.observation_chart import capture_project_evidence_epoch
+
+        evidence_epoch = capture_project_evidence_epoch(project).epoch_sha256
+        records = []
+        for path in candidate_paths:
+            path = Path(path)
+            try:
+                ref = str(path.resolve().relative_to(project.resolve()))
+            except (OSError, ValueError):
+                continue
+            if path.is_file():
+                records.append({
+                    "source_type": "task_hypothesis",
+                    "artifact_role": "task_hypothesis",
+                    "submission": ref,
+                    "evidence_epoch_sha256": evidence_epoch,
+                })
+        return compile_candidate_goal_hypothesis_set(
+            project,
+            source_epoch=source_epoch,
+            task_contract_sha256=task_contract.sha256,
+            witness_states=(*states[:8], *states[-8:]),
+            task_open_states=states,
+            records=records,
+        )
+    except Exception:  # noqa: BLE001 - optional steering never blocks identification
+        return None
 
 
 def _seed_visited(
@@ -1485,7 +2095,53 @@ def _sidecar_semantic_sha(episode_path: Path) -> str | None:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _frontier_scope(project: Path, log, abstract_fn, *, source_epoch=None) -> dict:
+def _sidecar_binding_prefix_sha(
+    episode_path: Path,
+    row_limit: int,
+) -> str | None:
+    """Identity of the sidecar meaning over an existing episode prefix."""
+    sidecar = episode_path.with_name(f"{episode_path.stem}.identity.json")
+    if not sidecar.is_file():
+        return None
+    try:
+        payload = json.loads(sidecar.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "unreadable"
+    bindings: list[dict] = []
+    for binding in payload.get("bindings") or []:
+        if not isinstance(binding, dict):
+            return "unreadable"
+        try:
+            row_index = int(binding.get("row_index", -1))
+        except (TypeError, ValueError):
+            return "unreadable"
+        if row_index < int(row_limit):
+            bindings.append(binding)
+    prefix_payload = {
+        "schema": payload.get("schema"),
+        "episode_chart_sha256": payload.get("episode_chart_sha256"),
+        "bindings": bindings,
+        # A changed chart or transport contract may change the meaning of an
+        # old binding even when the row bytes did not change, so keep both.
+        "observation_charts": payload.get("observation_charts") or [],
+        "transport_windows": payload.get("transport_windows") or [],
+    }
+    encoded = json.dumps(
+        prefix_payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _frontier_scope(
+    project: Path,
+    log,
+    abstract_fn,
+    *,
+    source_epoch=None,
+    frontier_rows: int | None = None,
+) -> dict:
     """Validity key for live frontier memory.
 
     Frontier memory is a quotient cache, not a substrate fact. It is reusable
@@ -1502,7 +2158,13 @@ def _frontier_scope(project: Path, log, abstract_fn, *, source_epoch=None) -> di
         "episode_prefix_bytes": prefix["bytes"],
         "episode_prefix_sha256": prefix["sha256"],
         "sidecar_semantic_sha256": _sidecar_semantic_sha(episode),
+        "sidecar_binding_prefix_sha256": _sidecar_binding_prefix_sha(
+            episode, len(log)
+        ),
         "source_epoch": source_epoch,
+        "frontier_rows": int(
+            len(log) if frontier_rows is None else frontier_rows
+        ),
         "abstraction_version": (
             _FRONTIER_ABSTRACTION_VERSION if abstract_fn is not None else "none"
         ),
@@ -1552,34 +2214,38 @@ def _frontier_memory(project: Path, log=None, *, source_epoch=None):
         log,
         abstract,
         source_epoch=source_epoch,
+        frontier_rows=len(frontier_log),
     )
     visited_path = _frontier_memory_path(project, scope)
     inherited: set = set()
     inherited_rows = 0
     if (
-        source_epoch is None
-        and
         isinstance(prior, dict)
         and prior.get("abstraction_version") == scope["abstraction_version"]
-        and prior.get("sidecar_semantic_sha256") == scope["sidecar_semantic_sha256"]
+        and prior.get("source_epoch") == scope["source_epoch"]
     ):
         try:
             prior_rows = int(prior.get("evidence_rows", -1))
+            prior_frontier_rows = int(prior.get("frontier_rows", -1))
             prior_bytes = int(prior.get("episode_prefix_bytes", -1))
             prior_ref = str(prior.get("visited_path") or "")
             prior_visited = project / prior_ref
             prefix = _episode_prefix_identity(episode_log_path(project), prior_bytes)
             prefix_matches = (
                 0 <= prior_rows <= len(log)
+                and 0 <= prior_frontier_rows <= len(frontier_log)
                 and prior_bytes >= 0
                 and prefix["bytes"] == prior_bytes
                 and prefix["sha256"] == prior.get("episode_prefix_sha256")
+                and _sidecar_binding_prefix_sha(
+                    episode_log_path(project), prior_rows
+                ) == prior.get("sidecar_binding_prefix_sha256")
                 and prior_visited.is_file()
             )
             if prefix_matches:
                 from ztare.worldmodel.reachability import load_visited
                 inherited = load_visited(prior_visited)
-                inherited_rows = prior_rows
+                inherited_rows = prior_frontier_rows
                 # The cache object follows the certified append lineage.  Keep
                 # one file and delta-append new quotient keys instead of
                 # copying the full image into a new evidence-hash filename.
@@ -1639,6 +2305,44 @@ def _record_spec_receipt(project: Path, spec: dict, cycle: int) -> None:
                              "cycle": cycle, "ops": ops, "spec": spec,
                              "verdict": "replay_and_holdout_pass",
                              "source": "abduction"}) + chr(10))
+
+
+def _write_goal_exemplar(
+    project: Path,
+    transition,
+    *,
+    cycle,
+    game_id: str,
+    task_contract,
+) -> dict | None:
+    """Persist a terminal-edge witness with its lifecycle identity."""
+
+    if not isinstance(transition, Transition):
+        return None
+    identity = getattr(transition, "identity", None)
+    if identity is None or not identity.is_authoritative:
+        return None
+    row = {
+        "schema": "ztare-goal-exemplar-v2",
+        "game": game_id,
+        "cycle": cycle,
+        "t": transition.t,
+        "action": transition.a,
+        "s": [list(r) for r in transition.s],
+        "s_next": [list(r) for r in transition.s_next],
+        "source_epoch": identity.source_epoch,
+        "target_epoch": identity.target_epoch,
+        "transition_identity": identity.to_dict(),
+        "task_contract_sha256": (
+            task_contract.sha256 if task_contract is not None else ""
+        ),
+        "authority": "adapter-attested terminal edge; no cross-epoch transport",
+    }
+    path = project / "workspace" / "goal_exemplars.jsonl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row, sort_keys=True) + "\n")
+    return row
 
 
 def _validate_carrier_rubric_aware(source: str, project) -> None:
@@ -2186,8 +2890,15 @@ def _clean_env() -> dict:
     return env
 
 
-def _run_governed_cycle(project_slug: str, rubric: str, iters: int, mutator: str,
-                        judge: str) -> int:
+def _run_governed_cycle(
+    project_slug: str,
+    rubric: str,
+    iters: int,
+    mutator: str,
+    judge: str,
+    *,
+    turn_focus: str = "",
+) -> int:
     # ITERS is a BUDGET; the rubric's `stop_on_gate_pass: true` ends the cycle
     # the moment a champion clears the hard gate, so a cycle never plays a
     # sub-gate model and never burns the full budget once a valid one exists
@@ -2196,7 +2907,14 @@ def _run_governed_cycle(project_slug: str, rubric: str, iters: int, mutator: str
            f"ITERS={iters}", f"MUTATOR_MODEL={mutator}", f"JUDGE_MODEL={judge}",
            "AGENT_MUTATOR=1", "AGENT_JUDGE=1",
            "AGENT_MUTATOR_RUNTIME=codex", "AGENT_JUDGE_RUNTIME=codex", "AGENT_TIMEOUT=600"]
-    return subprocess.run(cmd, cwd=REPO, env=_clean_env()).returncode
+    env = _clean_env()
+    # This conductor has already selected and gated the carrier frontier.
+    # The child loop may refine it, but must not independently rescan recent
+    # files and replace that identity before iteration 1.
+    env["ZTARE_CHAMPION_MATERIALIZATION"] = "0"
+    if turn_focus:
+        env["ZTARE_WORLDMODEL_TURN_FOCUS"] = str(turn_focus)
+    return subprocess.run(cmd, cwd=REPO, env=env).returncode
 
 
 def archive_sealed_eval_slice(
@@ -2204,6 +2922,16 @@ def archive_sealed_eval_slice(
     log: EpisodeLog,
     *,
     source_carrier_sha256: str,
+    source_carrier_execution_sha256: str = "",
+    task_contract=None,
+    task_discharge_receipt=None,
+    search_control_predecessors=(),
+    source_epoch=None,
+    origin_seed_sha256="",
+    goal_hypothesis_refutations=(),
+    non_discharge_edge_indices=(),
+    history_prefix_actions=(),
+    history_prefix_operation_effects=(),
 ) -> dict:
     """Persist a live-play trajectory as a sealed eval slice.
 
@@ -2218,6 +2946,10 @@ def archive_sealed_eval_slice(
     from datetime import datetime, timezone
     if len(source_carrier_sha256) != 64:
         raise ValueError("sealed eval slice requires a full source carrier sha256")
+    if source_carrier_execution_sha256 and len(source_carrier_execution_sha256) != 64:
+        raise ValueError(
+            "sealed eval slice requires a full carrier execution sha256"
+        )
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     slice_dir = project / "raw" / "episodes" / "eval_slices"
     slice_dir.mkdir(parents=True, exist_ok=True)
@@ -2232,6 +2964,74 @@ def archive_sealed_eval_slice(
         "source": "live_play",
         "source_carrier_sha256": source_carrier_sha256,
     }
+    edge_indices = tuple(dict.fromkeys(
+        int(index) for index in non_discharge_edge_indices
+    ))
+    if any(index < 0 or index >= len(log) for index in edge_indices):
+        raise ValueError("sealed non-discharge edge index is outside the slice")
+    if edge_indices:
+        row["non_discharge_edge_indices"] = list(edge_indices)
+    history_prefix = tuple(int(action) for action in history_prefix_actions)
+    if history_prefix:
+        row["history_prefix_actions"] = list(history_prefix)
+    operation_effect_prefix = tuple(
+        tuple(token)
+        for token in history_prefix_operation_effects
+    )
+    if operation_effect_prefix:
+        row["history_prefix_operation_effects"] = [
+            list(token) for token in operation_effect_prefix
+        ]
+    if source_carrier_execution_sha256:
+        row["source_carrier_execution_sha256"] = (
+            source_carrier_execution_sha256
+        )
+    if task_contract is not None or task_discharge_receipt is not None:
+        if task_contract is None or task_discharge_receipt is None:
+            raise ValueError(
+                "sealed task binding requires both contract and adjudicator receipt"
+            )
+        from ztare.common.task_discharge import bind_task_discharge_receipt
+
+        bound_contract, bound_receipt = bind_task_discharge_receipt(
+            task_contract, task_discharge_receipt
+        )
+        row.update({
+            "task_contract_sha256": bound_contract.sha256,
+            "task_discharge_status": bound_receipt.status,
+            "task_discharge_receipt_sha256": bound_receipt.sha256,
+            "task_discharge_receipt": bound_receipt.to_dict(),
+        })
+        # Presence, including an empty list, is authoritative task-bound
+        # evidence that no control boundary was adjudicated in this slice.
+        row.setdefault("non_discharge_edge_indices", [])
+        if source_epoch is not None:
+            row["source_epoch"] = int(source_epoch)
+        if origin_seed_sha256:
+            if len(str(origin_seed_sha256)) != 64:
+                raise ValueError("sealed task origin requires a full seed sha256")
+            row["origin_seed_sha256"] = str(origin_seed_sha256)
+        refuted = tuple(dict.fromkeys(
+            str(item) for item in goal_hypothesis_refutations if str(item)
+        ))
+        if refuted:
+            if bound_receipt.status != "open":
+                raise ValueError(
+                    "goal-hypothesis refutation requires an open task receipt"
+                )
+            if source_epoch is None or not origin_seed_sha256:
+                raise ValueError(
+                    "goal-hypothesis refutation requires source epoch and origin seed"
+                )
+            row["goal_hypothesis_refutations"] = list(refuted)
+        if bound_receipt.status == "open" and search_control_predecessors:
+            row["search_control_predecessors"] = [
+                {"path": str(ref["path"]), "sha256": str(ref["sha256"])}
+                for ref in search_control_predecessors
+                if isinstance(ref, dict)
+                and str(ref.get("path") or "")
+                and len(str(ref.get("sha256") or "")) == 64
+            ]
     ledger = project / "workspace" / "sealed_eval_slices.jsonl"
     ledger.parent.mkdir(parents=True, exist_ok=True)
     with ledger.open("a", encoding="utf-8") as fh:
@@ -2239,63 +3039,481 @@ def archive_sealed_eval_slice(
     return row
 
 
-def _observation_transitions(observed) -> list[Transition]:
-    """Normalize collector packets at the transition-carrier boundary."""
-    rows: list[Transition] = []
-    for observation in observed:
-        if isinstance(observation, Transition):
-            rows.append(observation)
-        else:
-            s, a, s_next, t = observation
-            rows.append(Transition(t=t, s=s, a=a, s_next=s_next))
-    return rows
+def _sealed_goal_hypothesis_refutations(
+    project: Path,
+    goal_hypotheses,
+    *,
+    task_contract,
+    source_epoch: int,
+    origin_seed_sha256: str,
+    report_payload: dict | None = None,
+) -> tuple[str, ...]:
+    """Replay task-bound negative consequences into a goal version space.
 
-
-def _append_observations(project: Path, observed, *, log=None) -> tuple[EpisodeLog, int]:
-    """Single evidence-admission door for live transition observations.
-
-    Exact repeated observations are redundant. A repeated intervention
-    context with a different consequence is retained: it is a determinism or
-    hidden-state witness, not a duplicate. Persistence advances the existing
-    append-only carrier; it never rewrites the population prefix.
+    A stored identifier alone has no authority.  Admission requires the same
+    task contract, lifecycle chart, and origin seed; an exact sealed trajectory
+    must also contain a state satisfying the current executable predicate.
+    The previous report is a one-run compatibility bridge.  Every subsequent
+    archive carries the cumulative identities through this typed slice door.
     """
-    if log is None:
-        log = EpisodeLog.read_jsonl(episode_log_path(project))
-    # Observation equality does not subsume lifecycle identity.  The same
-    # visible transition can be re-observed with an adapter-attested identity;
-    # dropping that packet would prevent the authority upgrade from entering
-    # the evidence carrier.  Keep the sidecar's observation hash identity-free
-    # (it binds bytes without circularity), and include the typed identity only
-    # at this admission boundary.
-    index: dict[str, set[tuple[str, object]]] = {}
-    for existing in log:
-        index.setdefault(existing.context_hash(), set()).add(
-            (existing.observation_hash(), existing.identity)
-        )
-    admitted: list[Transition] = []
-    for row in _observation_transitions(observed):
-        context = row.context_hash()
-        observation = (row.observation_hash(), row.identity)
-        consequences = index.setdefault(context, set())
-        if observation in consequences:
+    from ztare.common.task_discharge import bind_task_discharge_receipt
+
+    if (
+        task_contract is None
+        or not callable(getattr(goal_hypotheses, "predicate_for", None))
+        or not callable(getattr(goal_hypotheses, "refute_ids", None))
+        or len(str(origin_seed_sha256 or "")) != 64
+    ):
+        return ()
+    ledger = project / "workspace" / "sealed_eval_slices.jsonl"
+    try:
+        rows = [
+            json.loads(line)
+            for line in ledger.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+    except (OSError, ValueError):
+        rows = []
+
+    admitted: list[str] = []
+    for row in rows:
+        if (
+            not isinstance(row, dict)
+            or row.get("task_contract_sha256") != task_contract.sha256
+            or row.get("task_discharge_status") != "open"
+            or row.get("source_epoch") != int(source_epoch)
+            or row.get("origin_seed_sha256") != origin_seed_sha256
+        ):
             continue
-        consequences.add(observation)
-        admitted.append(row)
-    if admitted:
-        log.append_jsonl(episode_log_path(project), admitted)
-    return log, len(admitted)
+        receipt_payload = row.get("task_discharge_receipt")
+        try:
+            _contract, receipt = bind_task_discharge_receipt(
+                task_contract, receipt_payload
+            )
+        except (TypeError, ValueError):
+            continue
+        if (
+            receipt.status != "open"
+            or receipt.sha256 != row.get("task_discharge_receipt_sha256")
+        ):
+            continue
+        slice_path = project / str(row.get("path") or "")
+        try:
+            if hashlib.sha256(slice_path.read_bytes()).hexdigest() != row.get("sha256"):
+                continue
+            trajectory = EpisodeLog.read_jsonl(slice_path)
+        except (OSError, ValueError):
+            continue
+        states = tuple(
+            state
+            for transition in trajectory
+            for state in (transition.s, transition.s_next)
+        )
+        # A task-open trajectory is a behavioral counterexample to every
+        # current predicate that fires on one of its states.  Replay the
+        # consequence instead of matching source ids, so syntactic rewrites of
+        # an already-refuted predicate cannot reopen it under a new filename.
+        if callable(getattr(goal_hypotheses, "satisfied_ids", None)):
+            for state in states:
+                admitted.extend(goal_hypotheses.satisfied_ids(state))
+        for hypothesis_id in row.get("goal_hypothesis_refutations") or ():
+            predicate = goal_hypotheses.predicate_for(str(hypothesis_id))
+            if predicate is not None and any(predicate(state) for state in states):
+                admitted.append(str(hypothesis_id))
+
+    # The report bridge is bounded to the exact active lifecycle and exists so
+    # the first typed archive can inherit the immediately preceding run.
+    payload = report_payload if isinstance(report_payload, dict) else {}
+    cycles = payload.get("cycles") if isinstance(payload.get("cycles"), list) else []
+    prior = next((row for row in reversed(cycles) if isinstance(row, dict)), None)
+    if isinstance(prior, dict):
+        receipt = prior.get("task_discharge_receipt")
+        seed = prior.get("seed_replay")
+        if (
+            isinstance(receipt, dict)
+            and receipt.get("contract_sha256") == task_contract.sha256
+            and receipt.get("status") == "open"
+            and isinstance(seed, dict)
+            and seed.get("active_epoch") == int(source_epoch)
+            and seed.get("seed_sha256") == origin_seed_sha256
+        ):
+            admitted.extend(prior.get("prior_goal_hypotheses_refuted") or ())
+            for leg in prior.get("planning_legs") or ():
+                if not isinstance(leg, dict):
+                    continue
+                outcome = leg.get("planning_outcome")
+                if not isinstance(outcome, dict):
+                    continue
+                admitted.extend(outcome.get("goal_hypotheses_refuted") or ())
+
+    return goal_hypotheses.refute_ids(admitted)
 
 
-def _grow_evidence(project: Path, observed, adapter, *, log=None) -> int:
-    """Admit live transitions and refresh derived identification views."""
-    log, grown = _append_observations(project, observed, log=log)
-    if grown == 0:
-        return 0
-    result = synthesize(log, adapter.action_arity)
-    witnessed = {context_key(tr.a, tr.t) for tr in log}
-    write_committee_read_model(project, result, witnessed, log)
-    write_deterministic_evidence(project)
-    return grown
+def _sealed_non_discharge_edge_predicate(
+    project: Path,
+    *,
+    source_carrier_sha256: str,
+    source_carrier_execution_sha256: str = "",
+    task_contract_sha256: str,
+    report_payload: dict | None = None,
+    abstract_fn=None,
+    coverage_fn=None,
+    fallback_operation_effect_prefix=(),
+    source_epoch=None,
+    origin_seed_sha256="",
+    transition_evidence=None,
+):
+    """Compile prior live boundary consequences into search-only no-goods.
+
+    The slice remains absent from prompts and candidate synthesis.  Reuse is
+    allowed only for the carrier that generated the slice, with exact ledger
+    and file identity, and only when the run-level task adjudicator remained
+    open.  Level-completion edges retain their separate target authority.
+    """
+    if (
+        len(str(source_carrier_sha256 or "")) != 64
+        or (
+            source_carrier_execution_sha256
+            and len(str(source_carrier_execution_sha256)) != 64
+        )
+        or len(str(task_contract_sha256 or "")) != 64
+    ):
+        return None, 0, []
+    payload = report_payload
+    if not isinstance(payload, dict):
+        try:
+            payload = json.loads(
+                (project / "workspace" / "arc3_play_loop_report.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+        except (OSError, ValueError):
+            return None, 0, []
+    cycles = payload.get("cycles") if isinstance(payload.get("cycles"), list) else []
+    cycle = next(
+        (
+            row
+            for row in reversed(cycles)
+            if isinstance(row, dict)
+            and row.get("task_discharged") is False
+            and isinstance(row.get("eval_slice"), dict)
+        ),
+        None,
+    )
+    ledger = project / "workspace" / "sealed_eval_slices.jsonl"
+    try:
+        ledger_rows = [
+            json.loads(line)
+            for line in ledger.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+    except (OSError, ValueError):
+        return None, 0, []
+
+    carrier_rows = {
+        (str(row.get("path") or ""), str(row.get("sha256") or "")): row
+        for row in ledger_rows
+        if isinstance(row, dict)
+        and (
+            row.get("source_carrier_sha256") == source_carrier_sha256
+            or (
+                source_carrier_execution_sha256
+                and row.get("source_carrier_execution_sha256")
+                == source_carrier_execution_sha256
+            )
+        )
+        and (
+            source_epoch is None
+            or row.get("source_epoch") == int(source_epoch)
+        )
+        and (
+            not origin_seed_sha256
+            or row.get("origin_seed_sha256") == origin_seed_sha256
+        )
+    }
+    requested_refs: list[dict] = []
+    for row in carrier_rows.values():
+        if (
+            row.get("task_contract_sha256") == task_contract_sha256
+            and row.get("task_discharge_status") == "open"
+        ):
+            requested_refs.append({"path": row.get("path"), "sha256": row.get("sha256")})
+            requested_refs.extend(row.get("search_control_predecessors") or [])
+
+    # Compatibility bridge for the immediately preceding run.  Its exact task
+    # receipt supplies the identity missing from pre-schema ledger rows; the
+    # next archive carries this ref forward under the typed task binding.
+    if cycle is not None:
+        receipt = cycle.get("task_discharge_receipt")
+        if (
+            isinstance(receipt, dict)
+            and receipt.get("status") == "open"
+            and receipt.get("contract_sha256") == task_contract_sha256
+        ):
+            requested_refs.append({
+                "path": cycle["eval_slice"].get("path"),
+                "sha256": cycle["eval_slice"].get("sha256"),
+            })
+
+    verified_refs: list[dict] = []
+    trajectories: list[tuple[EpisodeLog, dict, dict | None]] = []
+    for ref in requested_refs:
+        if not isinstance(ref, dict):
+            continue
+        slice_ref = str(ref.get("path") or "")
+        slice_sha = str(ref.get("sha256") or "")
+        if (slice_ref, slice_sha) not in carrier_rows:
+            continue
+        if any(
+            item["path"] == slice_ref and item["sha256"] == slice_sha
+            for item in verified_refs
+        ):
+            continue
+        slice_path = project / slice_ref
+        try:
+            if hashlib.sha256(slice_path.read_bytes()).hexdigest() != slice_sha:
+                continue
+            cycle_payload = None
+            if (
+                cycle is not None
+                and cycle.get("eval_slice", {}).get("path") == slice_ref
+                and cycle.get("eval_slice", {}).get("sha256") == slice_sha
+            ):
+                cycle_payload = cycle
+            trajectories.append((
+                EpisodeLog.read_jsonl(slice_path),
+                carrier_rows[(slice_ref, slice_sha)],
+                cycle_payload,
+            ))
+        except (OSError, ValueError):
+            continue
+        verified_refs.append({"path": slice_ref, "sha256": slice_sha})
+
+    if not trajectories:
+        return None, 0, []
+    from ztare.worldmodel.gates import env_frame_indices
+
+    fallback_seed_sha = str(
+        origin_seed_sha256
+        or (
+            (cycle or {}).get("seed_replay") or {}
+        ).get("seed_sha256")
+        or ""
+    )
+    if not fallback_seed_sha:
+        try:
+            fallback_seed_sha = hashlib.sha256(
+                (
+                    project
+                    / "workspace"
+                    / "latest_level_boundary_seed.json"
+                ).read_bytes()
+            ).hexdigest()
+        except OSError:
+            fallback_seed_sha = ""
+    from ztare.worldmodel.mechanism_effects import HistoryTrajectoryEvidence
+    known_law_triples = set()
+    if transition_evidence is not None:
+        from ztare.worldmodel.gates import law_scored_view
+
+        known_law_triples = {
+            (transition.s, transition.a, transition.s_next)
+            for transition in law_scored_view(
+                transition_evidence,
+                source_epoch=source_epoch,
+            )
+        }
+
+    edges: list[tuple[object, object, str, tuple, tuple]] = []
+    history_trajectories: list[HistoryTrajectoryEvidence] = []
+    for trajectory, slice_row, cycle_payload in trajectories:
+        detected_boundaries = set(env_frame_indices(trajectory))
+        history_prefix = tuple(
+            slice_row.get("history_prefix_actions") or ()
+        )
+        operation_effect_prefix = tuple(
+            tuple(token)
+            for token in (
+                slice_row.get("history_prefix_operation_effects") or ()
+            )
+        )
+        same_seed_origin = bool(
+            fallback_seed_sha
+            and slice_row.get("origin_seed_sha256") == fallback_seed_sha
+        )
+        if same_seed_origin and cycle_payload is not None:
+            prefix_segment = next(
+                (
+                    segment
+                    for segment in (
+                        cycle_payload.get("execution_segments") or ()
+                    )
+                    if isinstance(segment, dict)
+                    and segment.get("segment_kind")
+                    == "disagreement_acquisition"
+                ),
+                None,
+            )
+            history_prefix = tuple(
+                (prefix_segment or {}).get("actions") or ()
+            )
+        elif same_seed_origin and not operation_effect_prefix:
+            # A verified level seed ends at a lifecycle boundary. Legacy
+            # slices stored the whole seed sequence as a prefix even though
+            # within-epoch predictive state must restart in the target epoch.
+            history_prefix = ()
+            operation_effect_prefix = tuple(
+                tuple(token)
+                for token in fallback_operation_effect_prefix
+            )
+        declared_indices = slice_row.get("non_discharge_edge_indices")
+        if isinstance(declared_indices, list):
+            edge_indices = {
+                int(index)
+                for index in declared_indices
+                if isinstance(index, int)
+                and not isinstance(index, bool)
+                and 0 <= index < len(trajectory)
+            }
+        elif slice_row.get("task_contract_sha256"):
+            # Typed task-bound archives own boundary identity explicitly.
+            # Do not reinterpret an absent legacy field through frame-change
+            # heuristics: an open ordinary transition would become a false
+            # partiality witness.
+            edge_indices = set()
+        elif cycle_payload is not None:
+            edge_indices = set()
+            cursor = 0
+            for leg in cycle_payload.get("planning_legs") or ():
+                if not isinstance(leg, dict):
+                    continue
+                start = cursor
+                cursor = min(
+                    len(trajectory),
+                    cursor + max(0, int(leg.get("steps_executed") or 0)),
+                )
+                if leg.get("status") not in {
+                    "environment_boundary",
+                    "environment_boundary_inferred",
+                } or cursor <= start:
+                    continue
+                candidates = sorted(
+                    index
+                    for index in detected_boundaries
+                    if start <= index < cursor
+                )
+                edge_indices.add(candidates[0] if candidates else cursor - 1)
+            if not edge_indices:
+                edge_indices = {
+                    index
+                    for index in detected_boundaries
+                    if index - 1 not in detected_boundaries
+                }
+        else:
+            # A boundary followed immediately by its reset is one lifecycle
+            # consequence. Preserve the predecessor edge, not both repaints.
+            edge_indices = {
+                index
+                for index in detected_boundaries
+                if index - 1 not in detected_boundaries
+            }
+        # A task-open marker records failure to discharge the task. It cannot
+        # overwrite an exact within-epoch transition identity already owned by
+        # the law bank. Such a row remains in the trajectory and may transport
+        # the controller into a different predictive context.
+        edge_indices = {
+            index
+            for index in edge_indices
+            if (
+                trajectory.transitions()[index].s,
+                trajectory.transitions()[index].a,
+                trajectory.transitions()[index].s_next,
+            ) not in known_law_triples
+        }
+        history_trajectories.append(HistoryTrajectoryEvidence(
+            transitions=tuple(trajectory.transitions()),
+            action_prefix=tuple(history_prefix),
+            operation_effect_prefix=tuple(operation_effect_prefix),
+            boundary_indices=frozenset(edge_indices),
+            evidence_ref=str(slice_row.get("path") or "sealed_slice"),
+        ))
+        for index in sorted(edge_indices):
+            transition = trajectory.transitions()[index]
+            identity = transition.identity
+            if (
+                identity is not None
+                and identity.is_authoritative
+                and identity.kind == "epoch_boundary"
+                and identity.boundary_kind == "level_completed"
+            ):
+                continue
+            edge = (
+                transition.s,
+                transition.a,
+                f"{slice_row.get('path', 'sealed_slice')}#{index}",
+                tuple((
+                    *history_prefix,
+                    *(row.a for row in trajectory.transitions()[:index]),
+                )),
+                tuple(operation_effect_prefix),
+            )
+            if not any(
+                edge[0] == source and edge[1] == intervention
+                for (
+                    source,
+                    intervention,
+                    _evidence_ref,
+                    _action_history,
+                    _effect_history,
+                ) in edges
+            ):
+                edges.append(edge)
+    if not edges:
+        return None, 0, verified_refs
+
+    projected_counts: dict[object, int] = {}
+    for (
+        source,
+        intervention,
+        _evidence_ref,
+        _action_history,
+        _effect_history,
+    ) in edges:
+        projected = _projected_control_edge_identity(
+            source,
+            intervention,
+            abstract_fn=abstract_fn,
+            coverage_fn=coverage_fn,
+        )
+        if projected is not None:
+            projected_counts[projected] = projected_counts.get(projected, 0) + 1
+
+    def excludes(source, intervention, _time_value):
+        if any(
+            source == prior_source and intervention == prior_intervention
+            for (
+                prior_source,
+                prior_intervention,
+                _evidence_ref,
+                _action_history,
+                _effect_history,
+            ) in edges
+        ):
+            return True
+        projected = _projected_control_edge_identity(
+            source,
+            intervention,
+            abstract_fn=abstract_fn,
+            coverage_fn=coverage_fn,
+        )
+        return projected is not None and projected_counts.get(projected, 0) >= 2
+
+    excludes.predictive_evidence_edges = tuple(edges)
+    excludes.evidence_edges = tuple(
+        edge[:4] for edge in edges
+    )
+    excludes.history_trajectories = tuple(history_trajectories)
+    return excludes, len(edges), verified_refs
 
 
 def _strategy_office_enabled(cfg: dict) -> bool:
@@ -2467,6 +3685,71 @@ def _apply_current_gate_consequences(project: Path, gate_payload: object) -> dic
     )
 
 
+def _current_cached_survivor(
+    project: Path,
+    *,
+    observed_gate_payloads: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any] | None:
+    """Select one current-epoch survivor through the candidate-memory door.
+
+    Candidate memory joins carrier bytes to both the current evidence epoch
+    and the policy that interpreted it.  Reuse is search-only; promotion
+    remains outside this selector.
+    """
+    from ztare.common.candidate_memory import (
+        best_admissible_candidate_memory_record,
+        candidate_memory_source,
+    )
+
+    try:
+        record = best_admissible_candidate_memory_record(
+            project,
+            source_types={"full_survivor"},
+            require_submission_source=True,
+        )
+    except Exception:  # noqa: BLE001
+        record = None
+    if record is None:
+        return None
+    supplied = observed_gate_payloads or {}
+    source_ref = str(record.get("submission") or "").strip()
+    candidate_path = project / source_ref
+    candidate_sha = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    from ztare.validator.core.pre_judge_gate import evaluation_policy_sha256
+
+    current_policy = evaluation_policy_sha256()
+    observed = supplied.get(candidate_sha, {})
+    observed_gates = observed.get("gates") if isinstance(observed, dict) else None
+    observed_current = bool(
+        isinstance(observed_gates, dict)
+        and observed_gates
+        and all(
+            isinstance(gate, dict) and gate.get("pass") is True
+            for gate in observed_gates.values()
+        )
+        and str(observed.get("evaluation_policy_sha256") or "") == current_policy
+    )
+    if (
+        str(record.get("evaluation_policy_sha256") or "") != current_policy
+        and not observed_current
+    ):
+        return None
+    source = candidate_memory_source(project, record)
+    return {
+        "status": "cached_survivor_current",
+        "model": load_carrier_from_source(source, candidate_path.name, project),
+        "source": source,
+        "source_ref": source_ref,
+        "candidate_sha256": candidate_sha,
+        "producer_id": "candidate_memory_full_survivor",
+        "gate_payload": observed,
+        "membrane": {
+            key: record.get(key)
+            for key in ("run_role", "claim_class", "fresh_holdout_required")
+        },
+    }
+
+
 def _configured_system1_candidate(project: Path, cfg: dict):
     """Return a configured producer's adoption or localized repair frontier."""
     project = Path(project).resolve()
@@ -2474,11 +3757,6 @@ def _configured_system1_candidate(project: Path, cfg: dict):
         evaluate_configured_candidates,
     )
     from ztare.common.patch_base_identity import repair_frontier_order
-    from ztare.validator.core.pre_judge_gate import (
-        consume_pre_judge_gate_receipt,
-        run_pre_judge_gate_harness,
-    )
-
     def residual_rank(payload: dict[str, Any]) -> tuple[int, int, float, int, int]:
         gates = payload.get("gates")
         if not isinstance(gates, dict):
@@ -2506,6 +3784,13 @@ def _configured_system1_candidate(project: Path, cfg: dict):
                 ),
             )
         return best
+
+    # A current-epoch full survivor already paid the deterministic gate and can
+    # steer search without receiving promotion authority.  Select it before
+    # replaying a stale mutable root.
+    cached = _current_cached_survivor(project)
+    if cached is not None:
+        return cached
 
     # Incumbent and challenger have different authority contracts.  Reusing an
     # incumbent requires current-epoch gate coverage; replacing it additionally
@@ -2574,89 +3859,6 @@ def _configured_system1_candidate(project: Path, cfg: dict):
                     "gate_payload": incumbent_payload,
                 }
 
-    # Candidate memory is executable version-space state, not prompt-only
-    # narrative. Re-verify the strongest current-extent survivor before
-    # opening a new producer. Reuse needs current gate coverage; it does not
-    # need to dominate itself again.
-    try:
-        from ztare.common.candidate_memory import (
-            admissible_candidate_memory_records,
-            candidate_memory_source,
-        )
-
-        survivors = admissible_candidate_memory_records(
-            project,
-            source_types={"full_survivor"},
-            require_submission_source=True,
-        )
-    except Exception:  # noqa: BLE001
-        survivors = []
-    for record in sorted(
-        survivors,
-        key=lambda row: repair_frontier_order(
-            exact_rows=row.get("visible_exact_rows"),
-            holdout_depth=row.get("holdout_depth"),
-            gate_score=row.get("gate_score"),
-            wrong_cells=row.get("visible_wrong_cells"),
-            description_length=row.get("description_length"),
-        ),
-        reverse=True,
-    ):
-        source_ref = str(record.get("submission") or "").strip()
-        candidate_path = project / source_ref
-        if not source_ref or not candidate_path.is_file():
-            continue
-        survivor_result = run_pre_judge_gate_harness(
-            enabled=True,
-            project_dir=project,
-            latest_eval_results_path=project / "latest_eval_results.json",
-            python_executable=sys.executable,
-            candidate_path=candidate_path,
-            run_role=str(record.get("run_role") or "") or None,
-            withheld_refs=tuple(str(ref) for ref in record.get("withheld_refs") or ()),
-            exposed_refs=tuple(
-                str(ref) for ref in record.get("exposed_withheld_refs") or ()
-            ),
-        )
-        survivor_payload = (
-            survivor_result.payload
-            if isinstance(survivor_result.payload, dict)
-            else {}
-        )
-        consumed = consume_pre_judge_gate_receipt(
-            survivor_payload,
-            candidate_path=candidate_path,
-        )
-        if not consumed["harness_ok"] or not consumed["gates_present"]:
-            return {
-                "status": "verification_unavailable",
-                "causes": ["cached survivor verifier emitted no gates"],
-                "candidate_sha256s": [consumed["candidate_sha256"]],
-            }
-        if survivor_result.ran and not consumed["failed_gates"]:
-            source = candidate_memory_source(project, record)
-            return {
-                "status": "cached_survivor_current",
-                "model": load_carrier_from_source(
-                    source,
-                    candidate_path.name,
-                    project,
-                ),
-                "source": source,
-                "source_ref": source_ref,
-                "candidate_sha256": consumed["candidate_sha256"],
-                "producer_id": "candidate_memory_full_survivor",
-                "gate_payload": survivor_payload,
-                "membrane": {
-                    key: record.get(key)
-                    for key in (
-                        "run_role",
-                        "claim_class",
-                        "fresh_holdout_required",
-                    )
-                },
-            }
-
     assessed = evaluate_configured_candidates(
         project,
         cfg,
@@ -2678,6 +3880,19 @@ def _configured_system1_candidate(project: Path, cfg: dict):
             "source": source,
             "gate_payload": chosen.gate_payload,
         }
+
+    # The producer gate writes candidate memory.  Re-enter the same selector
+    # before consulting the older singleton repair-frontier receipt, reusing
+    # the gate payload already observed in this call.
+    cached = _current_cached_survivor(
+        project,
+        observed_gate_payloads={
+            candidate.proposal.candidate_sha256: candidate.gate_payload
+            for candidate in assessed
+        },
+    )
+    if cached is not None:
+        return cached
 
     # The epoch-scoped repair-frontier receipt owns continuation identity.
     # Candidate memory and producer gates are plural evidence; neither may
@@ -2805,8 +4020,19 @@ def main() -> int:
     cfg = _play_config(project)
     if mode_override is not None:
         cfg["mode"], cfg["mode_alias"] = _normalize_play_mode(mode_override)
+    from ztare.common.task_discharge import task_discharge_from_profile
+
+    task_contract = task_discharge_from_profile(cfg)
     print(f"play mode: {cfg['mode']} (sprint_steps={cfg['sprint_steps']}, "
           f"checkpoint_every={cfg['governed_checkpoint_every']})", flush=True)
+    try:
+        previous_report = json.loads(
+            (project / "workspace" / "arc3_play_loop_report.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    except (OSError, ValueError):
+        previous_report = {}
     report = {"game": game_id, "cycles": [], "mode": cfg["mode"]}
     seed_recovery = _recover_level_boundary_seed(project, game_id=game_id, cfg=cfg)
     if seed_recovery.get("status") not in {"skipped_no_open_card", None}:
@@ -2878,6 +4104,27 @@ def main() -> int:
             )
             break
         _system1_status = str(_system1.get("status") or "none")
+        # ESCALATION ESCAPE (env-gated, default off): residual-frontier
+        # preemption assumes the patch compiler's language covers the
+        # frontier. When the same frontier recurs across runs with no
+        # gate-passing patch and the governed mutator is unavailable, that
+        # assumption starves the ONLY producer with a wider hypothesis
+        # language (sprint full abduction) — the routing deadlock observed
+        # 2026-07-20 (frontier 389c8a1f recycled every cycle while abduce,
+        # newly able to express the restoration family, never ran). The flag
+        # demotes the preemption for this run; candidate authority is
+        # unchanged (gates still decide).
+        import os as _os_esc
+        if (
+            _system1_status == "residual_frontier"
+            and _os_esc.environ.get("ZTARE_FORCE_SPRINT_REABDUCTION", "0") == "1"
+        ):
+            print(
+                "  ZTARE_FORCE_SPRINT_REABDUCTION=1: demoting residual_frontier "
+                "preemption -> sprint full re-abduction owns this cycle",
+                flush=True,
+            )
+            _system1_status = "none"
         if _system1_status == "verification_unavailable":
             report["cycles"].append(
                 {
@@ -3196,7 +4443,6 @@ def main() -> int:
                         and _rd(_ab.step_fn, _hold) >= len(_hold):
                     candidate, abduced = _ab.step_fn, True
                     _record_spec_receipt(project, _ab.spec, cyc)
-                    import json as _j
                     from ztare.worldmodel.candidate_pool import add_candidate
                     _spec_source = "WORLD_MODEL_SPEC = " + repr(_ab.spec) + "\n"
                     add_candidate(project, _spec_source,
@@ -3221,6 +4467,61 @@ def main() -> int:
         except Exception as _ab_err:  # noqa: BLE001 — abduction is an optimization, never a blocker
             print(f"  abduction step-0 error (falling through to mutator): {_ab_err}", flush=True)
 
+        # Transition identification and task-hypothesis induction are separate
+        # version spaces.  An exact carrier must not suppress the generative
+        # worker when the task-hypothesis language has no current presentation.
+        _task_goal_generation = False
+        _preserved_transition_candidate = None
+        _candidate_goal_projection = None
+        _goal_source_epoch = None
+        try:
+            from ztare.worldmodel.strategy_battery import WorldmodelBattery
+
+            _goal_pressure = WorldmodelBattery().run_audits(project).get(
+                "goal_hypothesis_pressure"
+            ) or {}
+            _goal_source_epoch = _goal_pressure.get("active_epoch")
+            _candidate_goal_projection = _candidate_task_hypotheses(
+                project,
+                source_epoch=_goal_source_epoch,
+                task_contract=task_contract,
+            )
+            if (
+                abduced
+                and not configured_residual_frontier
+                and not acquisition_only
+                and not advice_only
+                and task_contract is not None
+                and _goal_pressure.get("status") in {
+                    "version_space_empty",
+                    "version_space_stalled",
+                }
+                and int(
+                    getattr(_candidate_goal_projection, "active_count", 0) or 0
+                ) == 0
+            ):
+                _preserved_transition_candidate = (
+                    candidate,
+                    cand_progress,
+                    cand_goal,
+                    candidate_path,
+                )
+                _task_goal_generation = True
+                abduced = False
+                print(
+                    "  task-hypothesis version space requires refinement; preserving the "
+                    "transition carrier and routing a hypothesis-only governed turn",
+                    flush=True,
+                )
+        except Exception as _goal_pressure_err:  # noqa: BLE001
+            print(
+                "  task-hypothesis pressure unavailable: "
+                f"{type(_goal_pressure_err).__name__}: {_goal_pressure_err}",
+                flush=True,
+            )
+
+        _governed_adopted = False
+        _new_governed_submission_paths = ()
         if not abduced and advice_only:
             candidate, cand_progress, cand_goal, _advice_source = _load_advice_model(project)
             if candidate is None:
@@ -3234,13 +4535,31 @@ def main() -> int:
         elif not abduced:
             print(f"\n===== CYCLE {cyc}/{cycles}: governed identification =====", flush=True)
             _adoption_cursor = _governed_adoption_cursor(project)
+            _submissions_dir = project / "workspace" / "submissions"
+            _submissions_before = set(_submissions_dir.glob("*.py"))
             with phase("governed_loop", project / "workspace"):
-                rc = _run_governed_cycle(slug, rubric, iters, "gpt5.5", "gpt5.5")
+                rc = _run_governed_cycle(
+                    slug,
+                    rubric,
+                    iters,
+                    "gpt5.5",
+                    "gpt5.5",
+                    turn_focus=(
+                        "task_hypothesis" if _task_goal_generation else ""
+                    ),
+                )
+            _new_governed_submission_paths = tuple(
+                sorted(
+                    set(_submissions_dir.glob("*.py")) - _submissions_before,
+                    key=lambda path: path.name,
+                )
+            )
             _adoption = _governed_adoption_since(project, _adoption_cursor)
             _append_play_receipt(
                 project,
                 {"site": "arc3_play_loop.py:governed_adoption", **_adoption},
             )
+            _governed_adopted = bool(_adoption["adopted"])
             if _adoption["adopted"]:
                 candidate, cand_progress, cand_goal = _load_ratified_model(project)
                 _adopted_ref = str(_adoption.get("immutable_source_ref") or "")
@@ -3253,7 +4572,11 @@ def main() -> int:
                 candidate, cand_progress, cand_goal = None, None, None
                 print(
                     "  governed cycle produced no current-run promoted candidate; "
-                    "preserving the unresolved identification state",
+                    + (
+                        "checking its task-hypothesis projection independently"
+                        if _task_goal_generation
+                        else "preserving the unresolved identification state"
+                    ),
                     flush=True,
                 )
             if candidate is not None and _adoption["adopted"]:
@@ -3261,15 +4584,52 @@ def main() -> int:
                 add_candidate(project, (project / "test_model.py").read_text(),
                               carrier="mutator", origin=f"governed_cycle_{cyc}")
 
+        if _task_goal_generation and not _governed_adopted:
+            (
+                candidate,
+                cand_progress,
+                cand_goal,
+                candidate_path,
+            ) = _preserved_transition_candidate
+        if task_contract is not None and _goal_source_epoch is not None:
+            _candidate_goal_projection = _candidate_task_hypotheses(
+                project,
+                source_epoch=_goal_source_epoch,
+                task_contract=task_contract,
+                candidate_paths=(
+                    _new_governed_submission_paths
+                    if _task_goal_generation
+                    else ()
+                ),
+            )
+        if _candidate_goal_projection is not None:
+            if candidate is not None:
+                cand_goal = _candidate_goal_projection
+            else:
+                best_goal = _candidate_goal_projection
+            print(
+                "  current-epoch leaf task hypotheses admitted for steering "
+                f"({_candidate_goal_projection.active_count} candidate(s)); "
+                "transition-carrier promotion remains separate",
+                flush=True,
+            )
+
         # Determine the active lifecycle before selecting any goal consumer.
         # Previously a witness from an older epoch suppressed structural
         # acquisition and was only scoped away after that decision.
         adapter = ArcAgi3Adapter(game_id)
         adapter.reset()
-        seed_replay = _replay_latest_level_boundary_seed(project, adapter)
+        (
+            seed_replay,
+            seed_transitions,
+        ) = _replay_latest_level_boundary_seed_trace(project, adapter)
         seed_prefix = list(seed_replay.get("actions") or [])
         seed_segments = list(seed_replay.get("execution_segments") or [])
         active_epoch = int(getattr(adapter, "levels_completed", 0) or 0)
+        if hasattr(cand_goal, "for_source_epoch"):
+            cand_goal = cand_goal.for_source_epoch(active_epoch)
+        if hasattr(best_goal, "for_source_epoch"):
+            best_goal = best_goal.for_source_epoch(active_epoch)
         if hasattr(cand_goal_edge, "for_source_epoch"):
             cand_goal_edge = cand_goal_edge.for_source_epoch(active_epoch)
         if hasattr(best_goal_edge, "for_source_epoch"):
@@ -3283,11 +4643,12 @@ def main() -> int:
         goal_carrier = candidate if candidate is not None else best_model
         goal_is_candidate = candidate is not None
         current_goal = cand_goal if goal_is_candidate else best_goal
-        if goal_carrier is not None and current_goal is None and not acquisition_only:
+        if goal_carrier is not None and not acquisition_only:
             try:
                 from types import SimpleNamespace as _SimpleNamespace
                 from ztare.worldmodel.goal_abduction import (
                     authoritative_goal_edge_predicate,
+                    compose_goal_hypothesis_sets,
                 )
 
                 _goal_log = EpisodeLog.read_jsonl(episode_log_path(project))
@@ -3296,22 +4657,42 @@ def main() -> int:
                     source_epoch=active_epoch,
                 )
                 _goal_ab = locals().get("_ab")
-                if _goal_ab is None:
-                    _goal_ab = _SimpleNamespace(spec=None)
+                if _goal_ab is None or getattr(_goal_ab, "spec", None) is None:
+                    _goal_carrier_path = (
+                        candidate_path if goal_is_candidate else best_model_path
+                    )
+                    _goal_spec = None
+                    if _goal_carrier_path is not None:
+                        from ztare.worldmodel.patch_base_carrier import (
+                            composed_literal_operator_spec,
+                        )
+
+                        _goal_spec = composed_literal_operator_spec(
+                            _goal_carrier_path,
+                            project_dir=project,
+                        )
+                    _goal_ab = _SimpleNamespace(spec=_goal_spec)
                 if cand_goal_edge is None:
                     induced_goal, _goal_candidate_count = _structural_goal_fn(
                         project,
                         _goal_log,
                         _goal_ab,
                         source_epoch=active_epoch,
+                        task_contract_sha256=(
+                            task_contract.sha256 if task_contract else ""
+                        ),
                     )
                 else:
                     induced_goal = None
                     _goal_candidate_count = _goal_edge_count
+                composed_goal = compose_goal_hypothesis_sets(
+                    current_goal,
+                    induced_goal,
+                ) if induced_goal is not None else current_goal
                 if goal_is_candidate:
-                    cand_goal = induced_goal
+                    cand_goal = composed_goal
                 else:
-                    best_goal = induced_goal
+                    best_goal = composed_goal
                     best_goal_edge = cand_goal_edge
                 if cand_goal_edge is not None:
                     print(
@@ -3319,10 +4700,12 @@ def main() -> int:
                         f"of carrier ({_goal_edge_count} witnesses)",
                         flush=True,
                     )
-                elif cand_goal is not None:
+                elif composed_goal is not None:
                     print(
-                        "  structural goal predicate induced independently of "
-                        f"carrier ({_goal_candidate_count} candidates)",
+                        "  task-hypothesis producers composed independently of "
+                        "the transition carrier "
+                        f"({getattr(composed_goal, 'active_count', _goal_candidate_count)} "
+                        "active identities)",
                         flush=True,
                     )
             except Exception as _goal_err:  # noqa: BLE001
@@ -3348,18 +4731,56 @@ def main() -> int:
         if play_model is None:
             _existing_log = EpisodeLog.read_jsonl(episode_log_path(project))
             if len(_existing_log) > 0:
-                report["cycles"].append({
-                    "cycle": cyc,
-                    "status": "identification_unresolved",
-                    "transitions_available": len(_existing_log),
-                    "loop_rc": rc,
-                })
-                print(
-                    "  no promoted model; existing evidence is preserved without "
-                    "spending environment actions",
-                    flush=True,
-                )
+                # ACQUISITION UNDER UNRESOLVED IDENTIFICATION (AGENTS.md 8a-2):
+                # an open residual with banked evidence is not a reason to stop
+                # acting. Steering never authors success (the sealed terminal
+                # verifier owns it), so play an acquisition leg with the best
+                # incumbent carrier instead of abstaining from the environment.
+                # This restores the champion-persistence invariant stated above
+                # ("always PLAY the deepest-playing model ever found"), which
+                # the residual_frontier gate path silently dropped.
+                try:
+                    from ztare.worldmodel.carrier_loader import (
+                        load_carrier_path,
+                        project_dynamics_assumption,
+                    )
+                    _inc = load_carrier_path(
+                        project / "test_model.py",
+                        project_dir=project,
+                        dynamics_assumption=project_dynamics_assumption(project),
+                    )
+                    play_model = _inc[0]
+                    play_carrier_path = project / "test_model.py"
+                    report["cycles"].append({
+                        "cycle": cyc,
+                        "status": "acquisition_with_unresolved_identification",
+                        "transitions_available": len(_existing_log),
+                        "loop_rc": rc,
+                    })
+                    print(
+                        "  identification unresolved -> ACQUISITION leg with "
+                        "incumbent carrier (steering-only, no promotion "
+                        "authority)",
+                        flush=True,
+                    )
+                except Exception as _inc_exc:  # noqa: BLE001
+                    report["cycles"].append({
+                        "cycle": cyc,
+                        "status": "identification_unresolved",
+                        "transitions_available": len(_existing_log),
+                        "incumbent_lowering_error": str(_inc_exc)[:200],
+                        "loop_rc": rc,
+                    })
+                    print(
+                        "  no promoted model and incumbent failed to lower; "
+                        "existing evidence is preserved without spending "
+                        "environment actions",
+                        flush=True,
+                    )
+                    continue
+            if play_model is None and len(_existing_log) > 0:
                 continue
+        if play_model is None:
             grew = _bootstrap_explore(project, adapter, cfg)
             report["cycles"].append({"cycle": cyc, "status": "bootstrap_exploration",
                                      "transitions_added": grew, "loop_rc": rc})
@@ -3376,6 +4797,7 @@ def main() -> int:
             _log_now = EpisodeLog.read_jsonl(episode_log_path(project))
             committee = surviving_committee(project, _log_now)
             prelude_actions = []
+            prelude_transitions = []
             if len(committee) >= 2:
                 dplan = plan_disagreement(committee, adapter.state,
                                           adapter.action_arity, start_step=adapter.t)
@@ -3388,10 +4810,22 @@ def main() -> int:
                         s2 = adapter.step(a)
                         prelude_actions.append(int(a))
                         disc.append((s_now, a, s2, t_now))
+                        prelude_transitions.append(Transition(
+                            t=t_now,
+                            s=s_now,
+                            a=int(a),
+                            s_next=s2,
+                            identity=getattr(
+                                adapter,
+                                "last_transition_identity",
+                                None,
+                            ),
+                        ))
                     _grow_evidence(project, disc, adapter)
         except Exception as _dc_err:  # noqa: BLE001 — discrimination is an optimization
             print(f"  committee-discrimination skipped: {_dc_err}", flush=True)
             prelude_actions = []
+            prelude_transitions = []
 
         steer = (
             "operation-discrimination" if acquisition_obligation is not None else
@@ -3407,8 +4841,100 @@ def main() -> int:
             context_log,
             source_epoch=active_epoch,
         )
-        from ztare.common.task_discharge import task_discharge_from_profile
-        task_contract = task_discharge_from_profile(cfg)
+        inherited_goal_refutations = _sealed_goal_hypothesis_refutations(
+            project,
+            play_goal,
+            task_contract=task_contract,
+            source_epoch=active_epoch,
+            origin_seed_sha256=str(seed_replay.get("seed_sha256") or ""),
+            report_payload=previous_report,
+        )
+        task_hypothesis_version = None
+        task_hypothesis_identity = str(
+            getattr(play_goal, "identity_sha256", "") or ""
+        )
+        if task_hypothesis_identity:
+            task_hypothesis_version = {
+                "identity_sha256": task_hypothesis_identity,
+                "active_count": int(
+                    getattr(play_goal, "active_count", 0) or 0
+                ),
+                "source_epoch": active_epoch,
+                "task_contract_sha256": (
+                    task_contract.sha256 if task_contract else ""
+                ),
+            }
+        if play_carrier_path is None or not play_carrier_path.is_file():
+            raise RuntimeError("live trajectory has no immutable source carrier")
+        play_carrier_sha256 = hashlib.sha256(
+            play_carrier_path.read_bytes()
+        ).hexdigest()
+        from ztare.worldmodel.patch_base_carrier import (
+            carrier_execution_sha256_from_source,
+        )
+
+        play_carrier_execution_sha256 = carrier_execution_sha256_from_source(
+            play_carrier_path.read_text(encoding="utf-8")
+        )
+        play_projection = getattr(
+            play_model,
+            "_ztare_factored_projection",
+            None,
+        )
+        if play_projection is not None:
+            from ztare.worldmodel.mechanism_effects import (
+                predictive_prefixes_from_transitions,
+            )
+
+            (
+                active_action_history,
+                active_operation_effect_history,
+            ) = predictive_prefixes_from_transitions(
+                seed_transitions,
+                projection=play_projection,
+            )
+            (
+                active_action_history,
+                active_operation_effect_history,
+            ) = predictive_prefixes_from_transitions(
+                prelude_transitions,
+                projection=play_projection,
+                action_prefix=active_action_history,
+                operation_effect_prefix=active_operation_effect_history,
+            )
+        else:
+            active_action_history = tuple((*seed_prefix, *prelude_actions))
+            active_operation_effect_history = ()
+        coverage_projection = _coverage_fn(
+            project,
+            context_log,
+            source_epoch=active_epoch,
+        )
+        (
+            prior_edge_exclusion,
+            prior_edge_exclusion_count,
+            prior_edge_slice_refs,
+        ) = (
+            _sealed_non_discharge_edge_predicate(
+                project,
+                source_carrier_sha256=play_carrier_sha256,
+                source_carrier_execution_sha256=(
+                play_carrier_execution_sha256
+                ),
+                task_contract_sha256=(task_contract.sha256 if task_contract else ""),
+                report_payload=previous_report,
+                abstract_fn=af,
+                coverage_fn=coverage_projection,
+                fallback_operation_effect_prefix=(
+                    active_operation_effect_history
+                ),
+                source_epoch=active_epoch,
+                origin_seed_sha256=str(
+                    seed_replay.get("seed_sha256") or ""
+                ),
+                transition_evidence=context_log,
+            )
+        )
         with phase("live_play", project / "workspace"):
             pr = _play_round_multilife(
                 adapter,
@@ -3419,6 +4945,7 @@ def main() -> int:
                 goal_fn=play_goal,
                 goal_edge_fn=play_goal_edge,
                 acquisition_obligation=acquisition_obligation,
+                excluded_edge_fn=prior_edge_exclusion,
                 progress_fn=(
                     play_progress
                     if play_goal is None
@@ -3432,12 +4959,13 @@ def main() -> int:
                     source_epoch=active_epoch,
                 ),
                 invariants=_invariants(project, play_model), abstract_fn=af,
-                coverage_fn=_coverage_fn(
-                    project,
-                    context_log,
-                    source_epoch=active_epoch,
-                ),
+                coverage_fn=coverage_projection,
                 visited_store=visited_store, visited_path=visited_path,
+                carrier_execution_sha256=play_carrier_execution_sha256,
+                control_history_prefix=active_action_history,
+                control_operation_effect_history_prefix=(
+                    active_operation_effect_history
+                ),
                 plan_depth=10, max_replans=12,
                 receipts_dir=project / "workspace")
         # Truthful provenance: a governed cycle that exited rc!=0 leaves a STALE
@@ -3477,6 +5005,15 @@ def main() -> int:
                  "terminal_witness_sha": _terminal_witness_sha(pr),
                  "kernel_role_bindings": _kernel_role_bindings(pr),
                  "task_contract": getattr(pr, "task_contract", None),
+                 "prior_non_discharge_edges_excluded": prior_edge_exclusion_count,
+                 "non_discharge_edge_indices": list(
+                     getattr(pr, "non_discharge_edge_indices", ()) or ()
+                 ),
+                 "non_discharge_projection_count": int(
+                     getattr(pr, "non_discharge_projection_count", 0) or 0
+                 ),
+                 "prior_goal_hypotheses_refuted": list(inherited_goal_refutations),
+                 "task_hypothesis_version": task_hypothesis_version,
                  "task_discharge_receipt": getattr(pr, "task_discharge_receipt", None),
                  "seed_replay": {
                      key: value for key, value in seed_replay.items() if key != "actions"
@@ -3506,24 +5043,16 @@ def main() -> int:
             }
             # GOAL EXEMPLAR: the transition that triggered the terminal verifier is
             # a labeled example of the goal predicate — abduction fuel for
-            # goal-directed planning on this and future levels. Never lose it.
+            # goal-directed planning in the source lifecycle. Cross-epoch use
+            # requires a separately certified transport.
             if pr.observed_transitions:
-                import json as _json
-                _goal_transition = pr.observed_transitions[-1]
-                if isinstance(_goal_transition, Transition):
-                    gs, ga, gnext, gt = (
-                        _goal_transition.s,
-                        _goal_transition.a,
-                        _goal_transition.s_next,
-                        _goal_transition.t,
-                    )
-                else:
-                    gs, ga, gnext, gt = _goal_transition
-                (project / "workspace" / "goal_exemplars.jsonl").open("a").write(
-                    _json.dumps({"schema": "ztare-goal-exemplar-v1",
-                                 "game": game_id, "cycle": cyc, "t": gt, "action": ga,
-                                 "s": [list(r) for r in gs],
-                                 "s_next": [list(r) for r in gnext]}) + chr(10))
+                _write_goal_exemplar(
+                    project,
+                    pr.observed_transitions[-1],
+                    cycle=cyc,
+                    game_id=game_id,
+                    task_contract=task_contract,
+                )
         if entry["task_discharged"]:
             report["cycles"].append(entry)
             report["result"] = "beat"
@@ -3574,35 +5103,86 @@ def main() -> int:
                 progress_fn=play_progress,
                 evidence_grown_by=grown))
         if pr.observed_transitions:
-            _trajectory = EpisodeLog(_observation_transitions(pr.observed_transitions))
-            if play_carrier_path is None or not play_carrier_path.is_file():
-                raise RuntimeError("live trajectory has no immutable source carrier")
+            _trajectory = _observation_log(pr.observed_transitions)
             _slice_row = archive_sealed_eval_slice(
                 project,
                 _trajectory,
-                source_carrier_sha256=hashlib.sha256(
-                    play_carrier_path.read_bytes()
-                ).hexdigest(),
+                source_carrier_sha256=play_carrier_sha256,
+                source_carrier_execution_sha256=(
+                    play_carrier_execution_sha256
+                ),
+                task_contract=task_contract,
+                task_discharge_receipt=getattr(pr, "task_discharge_receipt", None),
+                search_control_predecessors=prior_edge_slice_refs,
+                source_epoch=active_epoch,
+                origin_seed_sha256=str(seed_replay.get("seed_sha256") or ""),
+                goal_hypothesis_refutations=(
+                    tuple(sorted(getattr(play_goal, "refuted_ids", ()) or ()))
+                ),
+                non_discharge_edge_indices=tuple(
+                    getattr(pr, "non_discharge_edge_indices", ()) or ()
+                ),
+                history_prefix_actions=active_action_history,
+                history_prefix_operation_effects=(
+                    active_operation_effect_history
+                ),
             )
             entry["eval_slice"] = {"path": _slice_row["path"], "sha256": _slice_row["sha256"]}
         entry["best_depth"] = best_depth
         report["cycles"].append(entry)
+        previous_report = report
         office = _maybe_convene_strategy_office(project, cfg, report,
                                                 cycle=cyc, entry=entry)
         if office.get("enabled") or office.get("deterministic_cards_written"):
             entry["strategy_office"] = office
+        unchanged_survivor = (
+            grown == 0
+            and _system1_status in {"cached_survivor_current", "incumbent_current"}
+        )
         print(f"  no level; depth {pr.steps_executed} (best {best_depth}); grew evidence "
-              f"by {grown} ({pr.status}); re-sealing", flush=True)
-        with phase("reseal", project / "workspace"):
-            seal_result = subprocess.run(
-                ["make", "seal", f"PROJECT={slug}", f"RUBRIC={rubric}"],
-                cwd=REPO,
-                input="pass\nyes\npass\n",
-                text=True,
-                env=_clean_env(),
-                stdout=subprocess.DEVNULL,
-            )
-        if seal_result.returncode != 0:
+              f"by {grown} ({pr.status})", flush=True)
+        if unchanged_survivor:
+            entry["reseal_gate"] = {
+                "status": "unchanged_identity_skipped",
+                "reason": "current carrier and evidence epoch are unchanged",
+            }
+            continue
+        # Appending evidence advances one project lifecycle; it does not create
+        # a new project.  The full ``make seal`` door repeats rubric review and
+        # runs the gate harness twice before the candidate-specific evaluation
+        # below.  Validate only the changed evidence/leak membrane here, then
+        # let the single candidate gate provide the integration attestation.
+        with phase("reseal_preflight", project / "workspace"):
+            seal_checks = [[
+                sys.executable,
+                str(REPO / "scripts" / "validate_evidence.py"),
+                slug,
+                "--rubric",
+                str(REPO / rubric),
+            ]]
+            denylist = project / ".denylist"
+            if denylist.is_file():
+                seal_checks.append([
+                    sys.executable,
+                    "-m",
+                    "src.ztare.validator.leak_sentinel",
+                    str(project),
+                    str(REPO / rubric),
+                    "--denylist-file",
+                    str(denylist),
+                ])
+            seal_result = None
+            for command in seal_checks:
+                result = subprocess.run(
+                    command,
+                    cwd=REPO,
+                    env=_clean_env(),
+                    stdout=subprocess.DEVNULL,
+                )
+                if result.returncode != 0:
+                    seal_result = result
+                    break
+        if seal_result is not None:
             entry["reseal_gate"] = {
                 "status": "artifact_seal_failed",
                 "returncode": seal_result.returncode,
@@ -3622,6 +5202,14 @@ def main() -> int:
                     raise RuntimeError("project root has no registered gate harness")
                 reseal_payload = reseal_gate["payload"]
                 reseal_consumed = reseal_gate["consumed"]
+                from ztare.scaffold.write_seal import write_seal
+
+                write_seal(
+                    slug,
+                    project,
+                    REPO / rubric,
+                    project / "sandbox_seal.json",
+                )
                 visible = (
                     (reseal_payload.get("gates") or {}).get("visible_replay_exact")
                     or {}

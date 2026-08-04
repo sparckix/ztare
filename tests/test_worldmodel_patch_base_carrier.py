@@ -7,10 +7,14 @@ import pytest
 
 from ztare.fit.mdl import description_units
 from ztare.worldmodel.patch_base_carrier import (
+    carrier_execution_sha256_from_source,
+    carrier_provenance_from_source,
     compact_literal_patch_prefix,
     compose_patch_base_carrier,
+    composed_literal_operator_spec,
     composed_carrier_description_length,
     resolved_patch_base_paths,
+    literal_patch_prefix_layers,
 )
 from ztare.worldmodel.carrier_loader import load_carrier_from_source
 
@@ -32,6 +36,54 @@ def _load_program(ns):
 
 def _call_program(program, grid, action, t):
     return program(grid, action, t)
+
+
+def test_carrier_provenance_prefers_typed_literal_and_reads_legacy_headers() -> None:
+    typed = carrier_provenance_from_source(
+        "CARRIER_PROVENANCE = {"
+        "'task_id': 'task-a', "
+        "'operation_identity_sha256': 'abc', "
+        "'receipt_refs': ['workspace/r.json']}\n"
+        "# TaskIdentity: ignored\n"
+    )
+    assert typed == {
+        "task_id": "task-a",
+        "operation_identity_sha256": "abc",
+        "receipt_refs": ["workspace/r.json"],
+    }
+
+    legacy = carrier_provenance_from_source(
+        "# TaskIdentity: task-b\n"
+        "# OperationIdentity: def\n"
+        "# ReceiptRefs: workspace/a.json,workspace/b.json\n"
+    )
+    assert legacy == {
+        "task_id": "task-b",
+        "operation_identity_sha256": "def",
+        "receipt_refs": ["workspace/a.json", "workspace/b.json"],
+    }
+
+
+def test_literal_execution_identity_quotients_provenance_only() -> None:
+    body = (
+        "PATCH_BASE = {'source_ref': 'workspace/submissions/base.py', "
+        f"'sha256': '{'a' * 64}'}}\n"
+        "PATCH_DELTA_SPEC = {'actions': {}, 'always': [{'op': 'identity'}]}\n"
+    )
+    first = (
+        "CARRIER_PROVENANCE = {'task_id': 'one', 'receipt_refs': ['a']}\n" + body
+    )
+    second = (
+        "CARRIER_PROVENANCE = {'task_id': 'two', 'receipt_refs': ['b']}\n" + body
+    )
+    changed = body.replace("'identity'", "'clear_region'")
+
+    assert carrier_execution_sha256_from_source(first) == (
+        carrier_execution_sha256_from_source(second)
+    )
+    assert carrier_execution_sha256_from_source(first) != (
+        carrier_execution_sha256_from_source(changed)
+    )
 
 
 def test_patch_base_carrier_composes_gate_owned_base_and_delta(tmp_path: Path) -> None:
@@ -343,6 +395,8 @@ def test_literal_patch_prefix_compaction_preserves_composed_behavior(
     base, base_digest = _write_base(tmp_path)
     first = tmp_path / "workspace" / "submissions" / "first_spec.py"
     first.write_text(
+        "CARRIER_PROVENANCE = {'task_id': 'first', "
+        "'operation_identity_sha256': 'op-first', 'receipt_refs': []}\n"
         "PATCH_BASE = "
         + repr({"source_ref": str(base.relative_to(tmp_path)), "sha256": base_digest})
         + "\nPATCH_DELTA_SPEC = "
@@ -356,6 +410,8 @@ def test_literal_patch_prefix_compaction_preserves_composed_behavior(
     first_digest = hashlib.sha256(first.read_bytes()).hexdigest()
     second = tmp_path / "workspace" / "submissions" / "second_spec.py"
     second.write_text(
+        "CARRIER_PROVENANCE = {'task_id': 'second', "
+        "'operation_identity_sha256': 'op-second', 'receipt_refs': []}\n"
         "PATCH_BASE = "
         + repr({"source_ref": str(first.relative_to(tmp_path)), "sha256": first_digest})
         + "\nPATCH_DELTA_SPEC = "
@@ -392,3 +448,19 @@ def test_literal_patch_prefix_compaction_preserves_composed_behavior(
         flattened(*probe) for probe in probes
     ]
     assert len(resolved_patch_base_paths(compacted, project_dir=tmp_path)) == 1
+    compacted_base, layers = literal_patch_prefix_layers(
+        compacted,
+        project_dir=tmp_path,
+    )
+    assert compacted_base == base.resolve()
+    assert [
+        layer["provenance"]["operation_identity_sha256"] for layer in layers
+    ] == ["op-first", "op-second"]
+    carried = composed_literal_operator_spec(compacted, project_dir=tmp_path)
+    assert carried == {
+        "actions": {},
+        "always": [
+            {"op": "recolor_map", "mapping": {2: 4}},
+            {"op": "recolor_map", "mapping": {3: 5}},
+        ],
+    }

@@ -1,0 +1,209 @@
+{
+  "artifact_surface": true,
+  "bounded_claim": true,
+  "confidence": 0.78,
+  "decision": "invoke_autoresearch",
+  "kernel_entry_contract": {
+    "allowed_work_modes": [
+      "inspection_only",
+      "in_loop_autoresearch_gate"
+    ],
+    "blockers": [],
+    "can_enter_kernel": true,
+    "disallowed_work_modes": [
+      "rd_out_of_loop_execution",
+      "untyped_source_to_kernel_entry",
+      "project_prep_queue_as_research_execution"
+    ],
+    "entry_command": "ztare autoresearch route --task 'identify the transition law of sealed environment e01 within the grid_dsl grammar tier' --project arc3_ls20_gov --rubric arc3_ls20_gov --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json",
+    "entry_surface": "in_loop_autoresearch",
+    "history_debt": [],
+    "in_loop_focus_receipts": [],
+    "inspection_command": "ztare autoresearch trace --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --json",
+    "intake_id": null,
+    "intake_path": "projects/arc3_ls20_gov/arc3_ls20_gov_intake.json",
+    "packet_id": null,
+    "packet_path": "projects/arc3_ls20_gov/arc3_ls20_gov_intake.json",
+    "preflight_command": "ztare autoresearch run --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --preflight-only",
+    "prerequisites": {
+      "launch_preflight_ok": true,
+      "launch_preflight_status": "ok",
+      "missing_ref_falsifier_ok": true,
+      "project_intake_matches_project": true,
+      "project_intake_matches_rubric": true,
+      "project_intake_ok": true,
+      "project_packet_matches_project": true,
+      "project_packet_matches_rubric": true,
+      "project_packet_ok": true,
+      "registered_substrate_abi": null,
+      "requires_i_model": false,
+      "source_evidence_count": 2,
+      "source_preflight_ok": true,
+      "source_preflight_status": "ready_for_kernel",
+      "submission_contract_kind": "worldmodel"
+    },
+    "project": "projects/arc3_ls20_gov",
+    "readiness": "ready_for_in_loop_candidate",
+    "readiness_canonical": "ready_for_in_loop_candidate",
+    "rubric": "rubrics/arc3_ls20_gov.json",
+    "run_command": "ztare autoresearch run --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --iters 10",
+    "schema": "ztare-kernel-entry-contract-v1",
+    "status": "ready",
+    "submission_contract": {
+      "cage_meta_class": null,
+      "enable_fit_primitive": false,
+      "enable_fit_primitive_features": false,
+      "expected_submission_surface": "numeric I_model submission",
+      "falsification_mode": "bounded_discriminator",
+      "fit_score_mode": "discrete_exact",
+      "holdout_hard_gate": true,
+      "numeric_cross_class_diagnostic_eligible": false,
+      "registered_signature": null,
+      "registered_substrate_abi": null,
+      "requires_i_model": false,
+      "rubric_mode": "calibration",
+      "schema": "ztare-launch-contract-summary-v1",
+      "submission_contract_kind": "worldmodel",
+      "theorem_required_functions": []
+    },
+    "withheld_in_loop_focus_receipts": []
+  },
+  "missing": [],
+  "operator_card_routes": [
+    {
+      "card_id": "OP-RMI-01",
+      "matched_terms": [
+        "semantic:-0.0225"
+      ],
+      "name": "Reflexive Mining Instrument Check",
+      "route_mode": "semantic_atlas",
+      "score": -2.25
+    },
+    {
+      "card_id": "OP-MME-01",
+      "matched_terms": [
+        "semantic:-0.0262"
+      ],
+      "name": "Meta-Language Edge Carrier",
+      "route_mode": "semantic_atlas",
+      "score": -2.62
+    },
+    {
+      "card_id": "OP-AWR-01",
+      "matched_terms": [
+        "semantic:-0.0263"
+      ],
+      "name": "Autoresearch Workbench Routing",
+      "route_mode": "semantic_atlas",
+      "score": -2.63
+    },
+    {
+      "card_id": "OP-BCG-01",
+      "matched_terms": [
+        "exception"
+      ],
+      "name": "Branch-Coverage Gate",
+      "route_mode": "lexical_fallback",
+      "score": 2.0
+    }
+  ],
+  "plan_preview": {
+    "available": true,
+    "budget": {
+      "iteration_budget": "10",
+      "llm_retries": "runtime_default",
+      "llm_timeout_seconds": "runtime_default",
+      "model_fallback_policy": "disabled_by_default",
+      "provider_spend_starts_at": "bounded_loop_run"
+    },
+    "dependency_order": [
+      {
+        "command": "ztare autoresearch route --task 'identify the transition law of sealed environment e01 within the grid_dsl grammar tier' --project arc3_ls20_gov --rubric arc3_ls20_gov --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json",
+        "description": "check whether the task belongs in the in-loop kernel",
+        "id": "route_decision",
+        "model_calls": false
+      },
+      {
+        "command": "ztare autoresearch run --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --preflight-only",
+        "description": "run launch checks without mutator or judge model calls",
+        "id": "preflight_only",
+        "model_calls": false,
+        "status": "pending"
+      },
+      {
+        "command": "ztare autoresearch run --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --iters 10",
+        "description": "run the in-loop mutator/evaluator cycle after preflight",
+        "id": "bounded_loop_run",
+        "model_calls": true
+      },
+      {
+        "description": "inspect trace and health output before treating a run as evidence",
+        "id": "trace_health_review",
+        "model_calls": false
+      }
+    ],
+    "expected_outputs": [
+      "projects/projects/arc3_ls20_gov/workspace/eval_history.jsonl",
+      "projects/projects/arc3_ls20_gov/workspace/iteration_telemetry.jsonl",
+      "projects/projects/arc3_ls20_gov/workspace/latest_eval.json or equivalent score artifact",
+      "ztare autoresearch trace/health JSON"
+    ],
+    "largest_quality_drop_risk": "candidate_evidence_or_metric_gaming",
+    "model_calls_before_confirmation": false,
+    "project": "projects/arc3_ls20_gov",
+    "recommended_first_command": "ztare autoresearch run --project projects/arc3_ls20_gov --rubric rubrics/arc3_ls20_gov.json --intake projects/arc3_ls20_gov/arc3_ls20_gov_intake.json --preflight-only",
+    "risk_reason": "the first paid loop can still produce a plausible artifact that only passes a weak rubric; inspect the trace before promotion",
+    "rubric": "rubrics/arc3_ls20_gov.json",
+    "schema": "ztare-autoresearch-plan-preview-v1",
+    "source": "autoresearch_workbench_router",
+    "status": "ready_for_preflight",
+    "worker_count": 4,
+    "workers": [
+      {
+        "model_calls": false,
+        "role": "route_readiness_check",
+        "work_mode": "deterministic"
+      },
+      {
+        "model_calls": false,
+        "role": "launch_preflight",
+        "work_mode": "deterministic"
+      },
+      {
+        "model_calls": true,
+        "role": "mutator",
+        "transport": "api",
+        "work_mode": "in_loop_autoresearch"
+      },
+      {
+        "model_calls": true,
+        "role": "judge_or_gate",
+        "transport": "api",
+        "work_mode": "in_loop_autoresearch"
+      }
+    ]
+  },
+  "project": "projects/arc3_ls20_gov",
+  "reasons": [
+    "bounded claim surface",
+    "stable evaluator or deterministic gate",
+    "rubric can encode success/failure",
+    "artifact surface is available for mutation/projection"
+  ],
+  "rubric": "rubrics/arc3_ls20_gov.json",
+  "rubric_ready": true,
+  "source_contract_errors": [],
+  "stable_evaluator": true,
+  "subscription_worker_available": false,
+  "suggested_next_step": "open an autoresearch run with worker metadata recorded; keep RD outside the loop and use the workbench output as ratified evidence",
+  "surface_scaffold": [],
+  "task": "Test whether consumer-indexed state-action support and exception-weighted acquisition repair ARC Level 3 exploration without game-specific coordinates",
+  "worker_metadata": {
+    "transport": "api",
+    "worker_archetype": "fungible_llm_call",
+    "worker_capability": "bare_llm_call",
+    "worker_identity": "fungible",
+    "worker_metadata_source": "autoresearch_workbench_router",
+    "worker_state": "stateless_externalized_briefing"
+  }
+}

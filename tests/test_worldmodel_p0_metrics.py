@@ -3,6 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ztare.common.continual_skill_memory import (
+    ContinualSkillMemory,
+    SkillFamilyMemory,
+    save_continual_skill_memory,
+)
 from ztare.worldmodel.p0_metrics import build_p0_metrics, write_p0_metrics
 from ztare.worldmodel.carrier_loader import (
     resolve_current_carrier_evidence_identity,
@@ -97,6 +102,76 @@ def test_write_p0_metrics_writes_project_workspace_receipt(tmp_path: Path) -> No
 
     assert path == ws / "p0_metrics.json"
     assert json.loads(path.read_text())["schema"] == "ztare-arc3-p0-metrics-v2"
+
+
+def test_p0_metrics_consume_stable_cross_context_skill_identity(
+    tmp_path: Path,
+) -> None:
+    ws = tmp_path / "workspace"
+    ws.mkdir()
+    families = tuple(sorted(
+        (
+            SkillFamilyMemory(
+                family_sha256="family-a",
+                operation_namespace="actions",
+                operation_sha256s=("op-a",),
+                operation_reprs=("'a'",),
+                revision_sha256s=("revision-a",),
+                context_sha256s=("context-1", "context-2"),
+                trace_refs=("trace-1", "trace-2"),
+            ),
+            SkillFamilyMemory(
+                family_sha256="family-b",
+                operation_namespace="actions",
+                operation_sha256s=("op-b",),
+                operation_reprs=("'b'",),
+                revision_sha256s=("revision-b",),
+                context_sha256s=("context-1",),
+                trace_refs=("trace-3",),
+            ),
+        ),
+        key=lambda family: family.family_sha256,
+    ))
+    save_continual_skill_memory(
+        ws / "continual_skill_memory.json",
+        ContinualSkillMemory(families=families),
+    )
+    (ws / "arc3_play_loop_report.json").write_text(json.dumps({
+        "cycles": [{
+            "planning_outcome": {
+                "continual_skill_execution_windows": [
+                    {
+                        "family_sha256": "family-a",
+                        "revision_sha256": "revision-a",
+                        "context_sha256": "context-1",
+                        "start_step": 0,
+                        "end_step": 2,
+                    },
+                    {
+                        "family_sha256": "family-b",
+                        "revision_sha256": "revision-b",
+                        "context_sha256": "context-1",
+                        "start_step": 2,
+                        "end_step": 3,
+                    },
+                ],
+            },
+        }],
+    }))
+
+    metrics = build_p0_metrics(tmp_path)
+
+    assert metrics["information_theory"]["operator_reusability_index"] == 0.5
+    assert metrics["compression"]["operator_reuse_count"] == 1
+    assert metrics["compression"]["continual_skill_family_count"] == 2
+    assert metrics["compression"]["continual_skill_revision_count"] == 2
+    assert metrics["control_readiness"]["decision_consumer_count"] == 1
+    assert (
+        metrics["metric_contracts"][
+            "information_theory.operator_reusability_index"
+        ]["status"]
+        == "operational"
+    )
 
 
 def test_p0_transfer_metrics_ignore_unbound_prefix_receipt(tmp_path: Path) -> None:

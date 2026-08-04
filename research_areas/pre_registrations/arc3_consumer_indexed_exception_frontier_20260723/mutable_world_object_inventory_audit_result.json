@@ -1,0 +1,232 @@
+{
+  "bounds": {
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "edge_found": false,
+    "h38_separated": true,
+    "h39_separated": true,
+    "no_environment_contact": true,
+    "no_projection_counterexample": false,
+    "selected_joint_code": false
+  },
+  "h38_separation": {
+    "changed_cells": [
+      {
+        "coordinate": [
+          46,
+          30
+        ],
+        "left": 3,
+        "right": 9
+      },
+      {
+        "coordinate": [
+          46,
+          31
+        ],
+        "left": 3,
+        "right": 14
+      },
+      {
+        "coordinate": [
+          46,
+          32
+        ],
+        "left": 3,
+        "right": 14
+      },
+      {
+        "coordinate": [
+          47,
+          30
+        ],
+        "left": 3,
+        "right": 9
+      },
+      {
+        "coordinate": [
+          47,
+          31
+        ],
+        "left": 3,
+        "right": 0
+      },
+      {
+        "coordinate": [
+          47,
+          32
+        ],
+        "left": 3,
+        "right": 8
+      },
+      {
+        "coordinate": [
+          48,
+          30
+        ],
+        "left": 3,
+        "right": 12
+      },
+      {
+        "coordinate": [
+          48,
+          31
+        ],
+        "left": 3,
+        "right": 12
+      },
+      {
+        "coordinate": [
+          48,
+          32
+        ],
+        "left": 3,
+        "right": 8
+      }
+    ],
+    "left_component_count": 0,
+    "left_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "origin": [
+      40,
+      29
+    ],
+    "right_component_count": 1,
+    "right_inventory_sha256": "1d2fb5165f73426d47dca32895a440b7b260332a6ae1fc7b33974393c20c27f4",
+    "separated": true
+  },
+  "h39_separation": {
+    "changed_cells": [
+      {
+        "coordinate": [
+          16,
+          35
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          16,
+          36
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          16,
+          37
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          17,
+          35
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          17,
+          37
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          18,
+          35
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          18,
+          36
+        ],
+        "left": 11,
+        "right": 3
+      },
+      {
+        "coordinate": [
+          18,
+          37
+        ],
+        "left": 11,
+        "right": 3
+      }
+    ],
+    "left_component_count": 1,
+    "left_inventory_sha256": "050b38864e465f028b517378484383182340ba1a98948df3e50953a521f2221b",
+    "origin": [
+      25,
+      34
+    ],
+    "right_component_count": 0,
+    "right_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "separated": true
+  },
+  "interface_row": 55,
+  "inventory_projection_sha256": "4dedf65e0806b73a65e361776ebdc59771152761117cef5a0d187eba5e4fb636",
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "problem_id": "bfdb7760941197238d26c933a772cbde9222d3e06f5628b0aca92b6a061226dd",
+  "replay": {},
+  "schema": "ztare-mutable-world-object-inventory-audit-v1",
+  "search": {
+    "action_count": 0,
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 22,
+    "expanded": 301,
+    "frontier_remaining": 186,
+    "generated": 486,
+    "projection_counterexample": {
+      "consumer_difference": {
+        "changed_cell_count": 2,
+        "changed_cells": [
+          {
+            "coordinate": [
+              61,
+              56
+            ],
+            "left": 3,
+            "right": 8
+          },
+          {
+            "coordinate": [
+              62,
+              56
+            ],
+            "left": 3,
+            "right": 8
+          }
+        ],
+        "changed_factor_names": [],
+        "schema": "ztare-consumer-quotient-difference-v1"
+      },
+      "dominated_image": "(((((45, 24),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (('mutable_world_object_inventory', (3, 'e64e51ef3af91e4d4c673e32d7fceef8e5ca65a8134a49581da36f2326d931ad')),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 87), (0.0,))",
+      "dominated_time": "86",
+      "dominator_image": "(((((45, 24),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (('mutable_world_object_inventory', (3, 'e64e51ef3af91e4d4c673e32d7fceef8e5ca65a8134a49581da36f2326d931ad')),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True))), 87), (0.0,))",
+      "dominator_time": "86",
+      "intervention": "2",
+      "kind": "dominance_simulation_failed",
+      "merged_key": "((((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (('mutable_world_object_inventory', (3, 'e85e87c92562921d2bd5518d2c4169c90848ad149ca2f37cbdb6c0ad8bbcb101')),), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 86)"
+    },
+    "status": "projection_noncommuting"
+  },
+  "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+  "status": "mutable_world_object_inventory_refuted",
+  "target": {
+    "configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1"
+  }
+}

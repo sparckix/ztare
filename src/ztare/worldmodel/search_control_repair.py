@@ -175,9 +175,15 @@ def build_search_control_residue_card(dossier: dict[str, Any]) -> dict[str, Any]
     cycles = [a.get("cycle") for a in anomalies if a.get("cycle") is not None]
     steps = [int(a.get("steps") or 0) for a in anomalies]
     goal_candidates = int(ledger.get("goal_candidates_undispositioned") or 0)
-    open_strategy = int(ledger.get("open_strategy_cards") or 0)
-    if open_strategy:
-        return None
+    planning_outcome = next(
+        (
+            dict(a["planning_outcome"])
+            for a in reversed(anomalies)
+            if isinstance(a.get("planning_outcome"), dict)
+            and a["planning_outcome"]
+        ),
+        {},
+    )
 
     plan = {
         "residue_quotient": {
@@ -188,6 +194,7 @@ def build_search_control_residue_card(dossier: dict[str, Any]) -> dict[str, Any]
             "total_steps": sum(steps),
         },
         "routing_class": "target_synthesis_or_discriminating_probe",
+        "planning_outcome": planning_outcome,
         "candidate_status": {
             "goal_abduction_mode": ledger.get("goal_abduction_mode"),
             "goal_candidates_undispositioned": goal_candidates,
@@ -213,7 +220,16 @@ def build_search_control_residue_card(dossier: dict[str, Any]) -> dict[str, Any]
             ),
         },
     }
-    family = f"search_control_residue_repair|{json.dumps(plan, sort_keys=True, default=str)}"
+    family_identity = {
+        "residue_class": plan["residue_quotient"]["residue_class"],
+        "anomaly_class": plan["residue_quotient"]["anomaly_class"],
+        "routing_class": plan["routing_class"],
+        "discriminator_axis": plan["discriminator_axis"]["axis"],
+    }
+    family = (
+        "search_control_residue_repair|"
+        + json.dumps(family_identity, sort_keys=True)
+    )
     return {
         "schema": "strategy-experiment-v1",
         "kind": "search_control_residue_repair",

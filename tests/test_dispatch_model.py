@@ -827,6 +827,64 @@ def test_dispatch_model_visible_workbench_worldmodel_task_is_compact_contract(
     assert "legacy ceremony" in context
 
 
+def test_worldmodel_task_hypothesis_focus_changes_the_typed_ask(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setenv("ZTARE_AGENT_DISPATCH", "agent")
+    monkeypatch.setenv("ZTARE_WORLDMODEL_TURN_FOCUS", "task_hypothesis")
+    (tmp_path / "projects/demo/workspace").mkdir(parents=True)
+    (tmp_path / "projects/demo/workspace/mutator_briefing_iter_001_records.json").write_text(
+        json.dumps({
+            "records": [
+                {
+                    "provider": "strategy_experiments",
+                    "source_type": "strategy_experiment",
+                    "kind": "search_control_residue_repair",
+                    "failure_family_sha": "a" * 64,
+                },
+                {
+                    "provider": "strategy_experiments",
+                    "source_type": "strategy_experiment",
+                    "kind": "evidence_probe",
+                    "failure_family_sha": "b" * 64,
+                },
+            ]
+        }) + "\n",
+        encoding="utf-8",
+    )
+    seen: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(["codex"], 0, stdout="typed", stderr=""),
+            final_command=["codex", "exec", "redacted"],
+            recovery_note=None,
+        )
+
+    dispatch_model(
+        "WORLDMODEL TYPED PAYLOAD CONTRACT:\n- Return ONLY one raw JSON object.\n",
+        capability="agent",
+        backend="codex",
+        repo=tmp_path,
+        agent_id="autoresearch_mutator_demo",
+        agent_execution_mode="visible_workbench",
+        runner=fake_runner,
+    )
+
+    task = (seen["repo"] / "TASK.md").read_text(encoding="utf-8")
+    asks = json.loads((seen["repo"] / "ASKS.json").read_text(encoding="utf-8"))
+    assert asks["asks"][0]["contract_id"] == "worldmodel-task-hypothesis-v1"
+    assert asks["asks"][0]["current_refs"] == ["routing_record_sha256:" + "a" * 64]
+    assert "GOAL_PREDICATE(state)" in task
+    assert "never a report, receipt, score, task-adjudicator field" in task
+    assert "Do not add or modify transition operations" in task
+    assert "coordinates, labels" in task
+    assert "target-chart discriminator" in task
+    assert "Search locally in the CEGIS loop" not in task
+
+
 def test_dispatch_model_visible_workbench_worldmodel_retry_task_is_compact_contract(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path,
@@ -884,7 +942,7 @@ def test_dispatch_model_visible_workbench_worldmodel_retry_task_is_compact_contr
     context = (seen["repo"] / "CONTEXT.md").read_text(encoding="utf-8")
     attention = (seen["repo"] / "ATTENTION.md").read_text(encoding="utf-8")
     assert asks["asks"][0]["contract_id"] == "worldmodel-candidate-first-v1"
-    assert asks["asks"][0]["current_refs"] == ["strategy_card_sha:" + "b" * 64]
+    assert asks["asks"][0]["current_refs"] == ["routing_record_sha256:" + "b" * 64]
     assert "retry residual card" not in task
     assert "retry residual card" in attention
     assert "probe-json" not in task
@@ -920,6 +978,30 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
         "def step(state, action, t): return state\n",
         encoding="utf-8",
     )
+    (tmp_path / "projects/demo/workspace/submissions/donor.py").write_text(
+        "def step(state, action, t): return state\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "projects/demo/workspace/leaf_workbench_action_receipts").mkdir()
+    (tmp_path / "projects/demo/workspace/leaf_workbench_action_receipts/inspect.json").write_text(
+        json.dumps(
+            {
+                "receipt": {
+                    "output_summary": json.dumps(
+                        {
+                            "archived_residual_donors": [
+                                {
+                                    "candidate_ref": "workspace/submissions/donor.py",
+                                    "authority": "diagnostic_operation_salvage_only",
+                                }
+                            ]
+                        }
+                    )
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
     (tmp_path / "projects/demo/workspace/sealed_holdout.json").write_text(
         '{"hidden":true}\n',
         encoding="utf-8",
@@ -937,7 +1019,10 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
                         "provider": "strategy_experiments",
                         "source_type": "strategy_experiment",
                         "source_ref": "workspace/latest_patch_base_regression.json",
-                        "evidence_refs": ["workspace/submissions/base.py"],
+                        "evidence_refs": [
+                            "workspace/submissions/base.py",
+                            "workspace/leaf_workbench_action_receipts/inspect.json",
+                        ],
                         "submission": "workspace/submissions/frontier.py",
                         "summary": "stage only structured evidence refs",
                     }
@@ -981,6 +1066,7 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
         "PATCH_BASE = {}\n"
     )
     assert (staged / "workspace/submissions/frontier.py").is_file()
+    assert (staged / "workspace/submissions/donor.py").is_file()
     assert not (staged / "src/ztare/common/harness_weakness.py").exists()
     assert not (staged / "workspace/sealed_holdout.json").exists()
     manifest = json.loads((staged / "visible_manifest.json").read_text(encoding="utf-8"))
@@ -988,6 +1074,7 @@ def test_dispatch_model_visible_workbench_materializes_structured_visible_worksp
     assert by_ref["workspace/latest_patch_base_regression.json"]["status"] == "materialized"
     assert by_ref["workspace/submissions/base.py"]["status"] == "materialized"
     assert by_ref["workspace/submissions/frontier.py"]["status"] == "materialized"
+    assert by_ref["workspace/submissions/donor.py"]["status"] == "materialized"
     assert "src/ztare/common/harness_weakness.py" not in by_ref
     assert "workspace/sealed_holdout.json" not in by_ref
 
@@ -1052,7 +1139,78 @@ def test_dispatch_model_visible_workbench_canonicalizes_evidence_ref_suffixes(
     assert "workspace/strategy_experiments.jsonl:a0c7867" not in by_ref
 
 
-def test_dispatch_model_visible_workbench_resolves_project_root_artifact_refs(
+def test_worldmodel_ask_tracks_consumed_receipt_work_objects(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setenv("ZTARE_AGENT_DISPATCH", "agent")
+    workspace = tmp_path / "projects/demo/workspace"
+    (workspace / "submissions").mkdir(parents=True)
+    (workspace / "leaf_workbench_action_receipts").mkdir()
+    (workspace / "submissions/donor.py").write_text("def step(): pass\n", encoding="utf-8")
+    (workspace / "leaf_workbench_action_receipts/receipt.json").write_text(
+        '{"status":"pass"}\n',
+        encoding="utf-8",
+    )
+    # A selector-miner consequence may carry donor deltas even when an older
+    # inspection receipt no longer exposes a standalone observation digest.
+    observation_sha = ""
+    (workspace / "mutator_briefing_iter_001_records.json").write_text(
+        json.dumps(
+            {
+                "records": [
+                    {
+                        "source_type": "leaf_workbench_kernel_receipt",
+                        "record_role": "active_task_first_fire",
+                        "source_ref": "workspace/leaf_workbench_action_receipts/receipt.json",
+                        "consumer_projection": {
+                            "observation_sha256": observation_sha,
+                            "archived_residual_donors": [
+                                {
+                                    "candidate_ref": "workspace/submissions/donor.py",
+                                    "candidate_sha256": "d" * 64,
+                                }
+                            ],
+                        },
+                    }
+                ]
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    seen: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(["codex"], 0, stdout="typed", stderr=""),
+            final_command=["codex", "exec", "redacted"],
+            recovery_note=None,
+        )
+
+    dispatch_model(
+        "WORLDMODEL TYPED PAYLOAD CONTRACT:\n- Return ONLY one raw JSON object.\n",
+        capability="agent",
+        backend="codex",
+        repo=tmp_path,
+        agent_id="autoresearch_mutator_demo",
+        agent_execution_mode="visible_workbench",
+        runner=fake_runner,
+    )
+
+    staged = seen["repo"]
+    asks = json.loads((staged / "ASKS.json").read_text(encoding="utf-8"))
+    assert asks["asks"][0]["current_refs"] == [
+        "artifact_ref:workspace/submissions/donor.py#sha256=" + "d" * 64,
+        "receipt_ref:workspace/leaf_workbench_action_receipts/receipt.json",
+    ]
+    task = (staged / "TASK.md").read_text(encoding="utf-8")
+    assert "no staged counterexample refs were materialized" not in task
+    assert "workspace/submissions/donor.py" in task
+
+
+def test_dispatch_model_visible_workbench_rejects_active_holdout_artifact_refs(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path,
 ) -> None:
@@ -1101,10 +1259,10 @@ def test_dispatch_model_visible_workbench_resolves_project_root_artifact_refs(
     )
 
     staged = seen["repo"]
-    assert (staged / "raw/episodes/episode_002.jsonl").read_text(encoding="utf-8") == '{"t":2}\n{"t":3}\n'
+    assert not (staged / "raw/episodes/episode_002.jsonl").exists()
     manifest = json.loads((staged / "visible_manifest.json").read_text(encoding="utf-8"))
     by_ref = {row["ref"]: row for row in manifest["visible_artifacts"]}
-    assert by_ref["raw/episodes/episode_002.jsonl"]["status"] == "materialized"
+    assert by_ref["raw/episodes/episode_002.jsonl"]["status"] == "withheld"
 
 
 def test_dispatch_model_visible_workbench_cli_runs_inside_staged_cwd(
@@ -1531,6 +1689,17 @@ def test_dispatch_model_visible_workbench_cli_runs_inside_staged_cwd(
     malformed_payload = json.loads(malformed_proposal.stdout)
     assert malformed_payload["status"] == "fail"
     assert "malformed_capability_proposal" in malformed_payload["error_classes"]
+
+
+def test_visible_workbench_source_membrane_covers_evaluator_identity() -> None:
+    from ztare.common.projection_owner_registry import VISIBLE_WORKBENCH_SOURCE_REFS
+    from ztare.worldmodel.gates import EVALUATOR_IMPLEMENTATION_REFS
+
+    required = {
+        f"src/ztare/{relative}"
+        for relative in EVALUATOR_IMPLEMENTATION_REFS
+    }
+    assert required <= set(VISIBLE_WORKBENCH_SOURCE_REFS)
 
 
 def test_dispatch_model_agent_wraps_stdout_contract_without_briefing(

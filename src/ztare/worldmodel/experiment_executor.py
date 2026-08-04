@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,7 +11,7 @@ from ztare.common.operator_proposal_contract import record_disposition
 from ztare.common.strategy_card_roles import active_strategy_cards
 from ztare.common.worldmodel_carrier_purity import carrier_contract_error
 from ztare.validator.core.pre_judge_gate import detect_patch_base_regression_preflight
-from ztare.worldmodel.goal_abduction import predicate_from_spec
+from ztare.worldmodel.goal_abduction import predicate_spec_supported
 from ztare.worldmodel.refuted_experiments import RefutedExperimentsLedger
 
 
@@ -52,22 +51,44 @@ def _probe_registry() -> dict[str, set[str]]:
         "horizon_exhaustion_probe": {"paths"},
         "carrier_repair_probe": {"repair_carrier", "target_residual_class"},
         "evidence_probe": {"probe_source"},
-        # Battery-advertised kinds executed via separate codepaths (residual_repair,
-        # briefing_providers, etc.); registered here so _lowerable_card passes them
-        # through to _default_probe_runner which blocks gracefully via "no probe harness"
-        # instead of silently producing rejected_unlowerable.
-        # ponytail: add execution harnesses if/when these kinds need direct probe runs
-        "compressed_counterexample_repair": {"source_receipt"},
-        "disposition_backlog_review": {"paths"},
-        "semantic_deanchor_receipt_compile": {"paths"},
-        "scheduler_counterexample_review": {"paths"},
     }
+
+
+def _action_paths(plan: dict[str, Any]) -> list[list[int]]:
+    paths = plan.get("paths")
+    if not isinstance(paths, list):
+        return []
+    return [
+        [int(action) for action in path]
+        for path in paths
+        if isinstance(path, list)
+        and bool(path)
+        and all(isinstance(action, int) and not isinstance(action, bool) for action in path)
+    ]
+
+
+def _maximal_action_paths(paths) -> tuple[tuple[int, tuple[int, ...], tuple[int, ...]], ...]:
+    """Cover requested paths by maximal prefixes, retaining requested indices."""
+    normalized = tuple(tuple(path) for path in paths)
+    out = []
+    for index, path in enumerate(normalized):
+        if any(
+            len(other) > len(path) and other[: len(path)] == path
+            for other in normalized
+        ):
+            continue
+        covered = tuple(
+            other_index
+            for other_index, other in enumerate(normalized)
+            if path[: len(other)] == other
+        )
+        out.append((index, path, covered))
+    return tuple(out)
 
 
 def _lowerable_card(card: dict[str, Any]) -> bool:
     plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
-    paths = plan.get("paths")
-    if isinstance(paths, list) and paths:
+    if _action_paths(plan):
         return True
     repair_carrier = plan.get("repair_carrier")
     if isinstance(repair_carrier, str) and repair_carrier.strip():
@@ -80,15 +101,14 @@ def _lowerable_card(card: dict[str, Any]) -> bool:
     # Observation sort: inline probe_source is lowerable on its own. Carrier
     # fields are checked first above, so a card carrying both routes (and
     # gates) as a carrier card — carrier wins.
-    if str(plan.get("probe_source") or "").strip():
-        return True
+    probe_source = str(plan.get("probe_source") or "").strip()
+    if probe_source:
+        from ztare.worldmodel.evidence_probe import probe_purity_error
+
+        return probe_purity_error(probe_source) is None
     pspec = plan.get("goal_predicate_spec")
     if isinstance(pspec, dict) and pspec:
-        try:
-            fn = predicate_from_spec(pspec, [[0]])
-            return callable(fn)
-        except Exception:
-            return False
+        return predicate_spec_supported(pspec)
     kind = str(card.get("kind") or "").strip()
     probe_params = plan.get("probe_params") if isinstance(plan.get("probe_params"), dict) else {}
     if kind == "carrier_repair_probe":
@@ -237,6 +257,131 @@ def _evidence_probe_outcome(project_dir: Path, probe_source: str) -> dict[str, A
     }
 
 
+def _active_carrier(project_dir: Path):
+    from ztare.common.candidate_memory import (
+        best_admissible_candidate_memory_record,
+        candidate_memory_source,
+        candidate_memory_submission_path,
+    )
+    from ztare.worldmodel.carrier_loader import load_carrier_from_source
+
+    record = best_admissible_candidate_memory_record(
+        project_dir,
+        source_types={"full_survivor"},
+        require_submission_source=True,
+    )
+    if record is None:
+        raise RuntimeError("no current-evidence full survivor")
+    path = candidate_memory_submission_path(project_dir, record)
+    source = candidate_memory_source(project_dir, record)
+    if path is None or not source:
+        raise RuntimeError("current survivor has no immutable carrier source")
+    return load_carrier_from_source(source, path, project_dir)
+
+
+def _path_probe_outcome(project_dir: Path, card: dict[str, Any]) -> dict[str, Any]:
+    from ztare.worldmodel.adapter import grow_evidence, resolve_project_adapter
+    from ztare.worldmodel.episode_log import Transition
+    from ztare.worldmodel.level_boundary_seed import replay_latest_seed
+
+    plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
+    requested = _action_paths(plan)
+    executions = _maximal_action_paths(requested)
+    rows = []
+    grown = 0
+    origin_interventions = 0
+    for path_index, actions, covered_indices in executions:
+        adapter = resolve_project_adapter(project_dir)
+        adapter.reset()
+        origin = replay_latest_seed(project_dir, adapter)
+        origin_interventions += int(origin.get("interventions_executed") or 0)
+        observed = []
+        for action in actions:
+            if action < 0 or action >= adapter.action_arity:
+                raise ValueError(f"intervention outside adapter domain: {action}")
+            state, step = adapter.state, adapter.t
+            successor = adapter.step(action)
+            observed.append(Transition(
+                t=step,
+                s=state,
+                a=action,
+                s_next=successor,
+                identity=getattr(adapter, "last_transition_identity", None),
+            ))
+        admitted = grow_evidence(project_dir, observed, adapter)
+        grown += admitted
+        rows.append({
+            "schema": "ztare-strategy-experiment-probe-row-v1",
+            "kind": str(card.get("kind") or "targeted_action_path_probe"),
+            "path_index": path_index,
+            "covers_path_indices": list(covered_indices),
+            "actions": actions,
+            "origin_seed_sha256": str(origin.get("seed_sha256") or ""),
+            "observations": len(observed),
+            "evidence_grown_by": admitted,
+            "status": "observed",
+        })
+    return {
+        "schema": "ztare-strategy-experiment-probe-outcome-v1",
+        "status": "ok",
+        "summary": (
+            f"covered {len(requested)} requested path(s) with {len(rows)} origin replay(s); "
+            f"admitted {grown} observations"
+        ),
+        "live_rows": rows,
+        "observed_status": "observed",
+        "execution_cost": {
+            "origin_replays": len(rows),
+            "origin_interventions": origin_interventions,
+            "active_interventions": sum(
+                len(actions) for _index, actions, _covered in executions
+            ),
+        },
+    }
+
+
+def _goal_probe_outcome(project_dir: Path, card: dict[str, Any]) -> dict[str, Any]:
+    from ztare.worldmodel.adapter import grow_evidence, resolve_project_adapter
+    from ztare.worldmodel.goal_abduction import predicate_from_spec
+    from ztare.worldmodel.level_boundary_seed import replay_latest_seed
+    from ztare.worldmodel.planner import pursue_goal
+
+    plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
+    adapter = resolve_project_adapter(project_dir)
+    adapter.reset()
+    origin = replay_latest_seed(project_dir, adapter)
+    predicate = predicate_from_spec(
+        plan["goal_predicate_spec"],
+        adapter.state,
+        getattr(adapter, "symmetry_group", "identity"),
+    )
+    receipt = pursue_goal(
+        adapter,
+        _active_carrier(project_dir),
+        goal_fn=predicate,
+        max_steps=int(plan.get("max_steps") or 200),
+        max_replans=int(plan.get("max_replans") or 10),
+    )
+    grown = grow_evidence(project_dir, receipt.observed_transitions, adapter)
+    row = {
+        "schema": "ztare-strategy-experiment-probe-row-v1",
+        "kind": str(card.get("kind") or "reachability_sweep_to_goal"),
+        "origin_seed_sha256": str(origin.get("seed_sha256") or ""),
+        "pursuit_status": receipt.status,
+        "interventions": list(receipt.trace),
+        "evidence_grown_by": grown,
+        "planning_outcome": receipt.planning_outcome,
+        "status": "observed",
+    }
+    return {
+        "schema": "ztare-strategy-experiment-probe-outcome-v1",
+        "status": "ok",
+        "summary": f"goal probe {receipt.status}; admitted {grown} observations",
+        "live_rows": [row],
+        "observed_status": "observed",
+    }
+
+
 def _default_probe_runner(project_dir: Path, card: dict[str, Any]) -> dict[str, Any]:
     plan = card.get("action_plan") if isinstance(card.get("action_plan"), dict) else {}
     kind = str(card.get("kind") or "").strip()
@@ -255,24 +400,11 @@ def _default_probe_runner(project_dir: Path, card: dict[str, Any]) -> dict[str, 
     probe_source = str(plan.get("probe_source") or "").strip()
     if probe_source:
         return _evidence_probe_outcome(project_dir, probe_source)
-    probe_path = project_dir / "workspace" / f"probe_{kind}.py"
-    if not probe_path.exists():
-        return {
-            "schema": "ztare-strategy-experiment-probe-outcome-v1",
-            "status": "blocked",
-            "summary": f"no probe harness found for kind {kind}",
-            "live_rows": [],
-            "observed_status": "no_probe_harness",
-        }
-    spec = importlib.util.spec_from_file_location(f"probe_{kind}", probe_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"unable to load probe harness: {probe_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)  # type: ignore[union-attr]
-    runner = getattr(module, "run", None) or getattr(module, "execute", None) or getattr(module, "probe", None)
-    if not callable(runner):
-        raise RuntimeError(f"probe harness missing run/execute/probe: {probe_path}")
-    return dict(runner(project_dir=project_dir, card=card, action_plan=plan))
+    if _action_paths(plan):
+        return _path_probe_outcome(project_dir, card)
+    if predicate_spec_supported(plan.get("goal_predicate_spec")):
+        return _goal_probe_outcome(project_dir, card)
+    raise RuntimeError(f"lowerable experiment kind has no registered executor: {kind}")
 
 
 def _execution_receipt(card: dict[str, Any], outcome: dict[str, Any], disposition: str) -> dict[str, Any]:
@@ -294,6 +426,7 @@ def _execution_receipt(card: dict[str, Any], outcome: dict[str, Any], dispositio
         "kill_condition_matched": kill_condition_matched,
         "outcome_summary": outcome.get("summary", ""),
         "outcome_status": outcome.get("status", ""),
+        "execution_cost": outcome.get("execution_cost") or {},
         "outcome_sha256": hashlib.sha256(blob).hexdigest(),
         "attestation": {
             "card_sha": card.get("failure_family_sha"),
@@ -338,7 +471,16 @@ def execute_experiments(
             }
             disposition = "rejected_unlowerable"
         else:
-            outcome = runner(project_dir, card)
+            try:
+                outcome = runner(project_dir, card)
+            except Exception as exc:  # noqa: BLE001 - failures become receipts
+                outcome = {
+                    "schema": "ztare-strategy-experiment-probe-outcome-v1",
+                    "status": "blocked",
+                    "summary": f"probe execution failed: {type(exc).__name__}: {exc}",
+                    "live_rows": [],
+                    "observed_status": "execution_error",
+                }
             disposition = "survived"
             if str(outcome.get("observed_status") or "") == "observed":
                 # Evidence probes are zero-credit observations: an observation

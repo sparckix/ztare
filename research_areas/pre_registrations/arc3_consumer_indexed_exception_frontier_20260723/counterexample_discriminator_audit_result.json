@@ -1,0 +1,100 @@
+{
+  "boundary_index": 15,
+  "boundary_operation": "2",
+  "candidates": [
+    {
+      "boundary_class_count": 1,
+      "fiber_count": 516,
+      "fields": [
+        "controlled_base",
+        "finite_configuration",
+        "operation_domain_assignment",
+        "ordered_feasibility_configuration",
+        "ordered_budget",
+        "one_shot_availability"
+      ],
+      "frontier": {
+        "action_count": 17,
+        "ambiguous_edges_on_path": 0,
+        "depth": 17,
+        "exceptional_score": 14.0,
+        "frontier_pairs": 1448,
+        "reachable_nodes": 516,
+        "schema": "ztare-observed-partial-action-frontier-plan-v1",
+        "status": "frontier_pair_found",
+        "target_operation": "2",
+        "target_source_sha256": "40c8b308674446b140289533da593a09cd122681761d692999235d9f1949eea4"
+      },
+      "noncommuting_relation_count": 1,
+      "pair_relation_noncommuting": true,
+      "pair_sources_separated": false,
+      "relation_count": 616
+    }
+  ],
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "differing_fields": [],
+  "factor_comparison": {
+    "controlled_base": {
+      "boundary": "((30, 24),)",
+      "boundary_sha256": "4125a2d1961569b555ebc4416a1145f2d9f11755792c7ff667d336cd0519bbb0",
+      "equal": true,
+      "law": "((30, 24),)",
+      "law_sha256": "4125a2d1961569b555ebc4416a1145f2d9f11755792c7ff667d336cd0519bbb0"
+    },
+    "finite_configuration": {
+      "boundary": "(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)",
+      "boundary_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+      "equal": true,
+      "law": "(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)",
+      "law_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b"
+    },
+    "one_shot_availability": {
+      "boundary": "(('15_14_sig11', False), ('50_39_sig11', False))",
+      "boundary_sha256": "a458f3b13e309cca9b1a902eccb6a7887b0681a4373fbfc1e63128d2370ed1fb",
+      "equal": true,
+      "law": "(('15_14_sig11', False), ('50_39_sig11', False))",
+      "law_sha256": "a458f3b13e309cca9b1a902eccb6a7887b0681a4373fbfc1e63128d2370ed1fb"
+    },
+    "operation_domain_assignment": {
+      "boundary": "()",
+      "boundary_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "equal": true,
+      "law": "()",
+      "law_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ordered_budget": {
+      "boundary": "6",
+      "boundary_sha256": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+      "equal": true,
+      "law": "6",
+      "law_sha256": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683"
+    },
+    "ordered_feasibility_configuration": {
+      "boundary": "(False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, True, True, True, True)",
+      "boundary_sha256": "abbc128b638dda8237edd08c564c066d7ec876a4ec180f038ab281f15d0fd093",
+      "equal": true,
+      "law": "(False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, True, True, True, True, True)",
+      "law_sha256": "abbc128b638dda8237edd08c564c066d7ec876a4ec180f038ab281f15d0fd093"
+    },
+    "presentation_assignment": {
+      "boundary": "(12, 5)",
+      "boundary_sha256": "d1459715e03ce124e0077ccd1750af07dce5676a0b4cd2ff980e61b111e3a954",
+      "equal": true,
+      "law": "(12, 5)",
+      "law_sha256": "d1459715e03ce124e0077ccd1750af07dce5676a0b4cd2ff980e61b111e3a954"
+    }
+  },
+  "law_counterpart": {
+    "active_row_index": 324,
+    "candidate_count": 1,
+    "evidence_ref": "law_scored_view(raw/episodes/episode_001.jsonl)#324",
+    "operation": "2"
+  },
+  "omitted_differing_fields": [],
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "raw_source_difference_cells": 0,
+  "raw_sources_equal": true,
+  "same_operation": true,
+  "schema": "ztare-counterexample-discriminator-audit-v1",
+  "trace": "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl"
+}

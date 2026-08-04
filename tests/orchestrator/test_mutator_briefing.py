@@ -213,6 +213,7 @@ def test_structural_transport_applies_does_not_compute_cuts(
 
 def test_identity_bound_task_suppresses_unbound_sibling_briefings(
     tmp_path: Path,
+    monkeypatch,
 ) -> None:
     import hashlib
 
@@ -261,6 +262,12 @@ def test_identity_bound_task_suppresses_unbound_sibling_briefings(
         workspace_dir=workspace,
         iter_index=1,
         rubric={"fit_expression_grammar": "grid_dsl"},
+    )
+    monkeypatch.setattr(
+        "ztare.worldmodel.episode_log.EpisodeLog.read_jsonl",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("unbound proposal must not scan the evidence bank")
+        ),
     )
 
     assert OperatorProposalsProvider().applies(ctx) is False
@@ -611,11 +618,11 @@ def test_worldmodel_committee_exposes_loop_receipts_as_structured_records(
             }
         )
     )
-    (ws / "level_boundary_harvest_episode_002.json").write_text(
+    (ws / "level_boundary_harvest_episode_001.json").write_text(
         json.dumps(
             {
                 "schema": "ztare-arc3-level-boundary-harvest-v1",
-                "episode_path": "/tmp/episode_002.jsonl",
+                "episode_path": "/tmp/episode_001.jsonl",
                 "content_hash": "abc123",
                 "transitions": 16,
                 "post_depth": 4,
@@ -683,7 +690,7 @@ def test_worldmodel_committee_exposes_loop_receipts_as_structured_records(
     assert by_type["compressed_counterexample"]["repair_sufficient_for_first_step"] is True
     assert by_type["compressed_counterexample"]["first_step_repair_generalizes_to_depth"] is False
     assert by_type["level_boundary_harvest"]["source_ref"] == (
-        "workspace/level_boundary_harvest_episode_002.json"
+        "workspace/level_boundary_harvest_episode_001.json"
     )
     assert by_type["level_boundary_harvest"]["transitions"] == 16
     assert by_type["level_boundary_harvest"]["seed_available"] is False

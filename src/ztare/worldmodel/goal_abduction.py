@@ -23,7 +23,12 @@ from the evidence — no ls20 (or any level) constants.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar
+import hashlib
+from pathlib import Path
+from typing import Any, Callable, ClassVar
+
+from ztare.common.equivariance import stable_sha256
+from ztare.common.relational_task_contract import TaskHypothesisVersionSpace
 
 DEFAULT_K = 3
 
@@ -189,6 +194,111 @@ class AuthoritativeGoalEdgePredicate:
         return AuthoritativeGoalEdgePredicate(selected) if selected else None
 
 
+@dataclass
+class RelationalGoalEdgeHypothesisSet:
+    """Lower relational task candidates into the planner's edge protocol.
+
+    ``describe_edge`` is a substrate adapter from a source, operation, and
+    optional time coordinate to an opaque relation descriptor.  The common
+    version space decides which descriptors satisfy active hypotheses.
+    """
+
+    time_aware: ClassVar[bool] = True
+    target_kind: ClassVar[str] = "hypothesis_edge_version_space"
+
+    hypotheses: TaskHypothesisVersionSpace
+    describe_edge: Callable[[Any, Any, Any], Any]
+    descriptor_id: str
+    operations: tuple[Any, ...] = ()
+    evidence_refs: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not str(self.descriptor_id).strip():
+            raise ValueError("relational goal edges require descriptor_id")
+        if not self.hypotheses.edge_hypotheses:
+            raise ValueError(
+                "relational goal edges require at least one edge hypothesis"
+            )
+        if len(self.operations) != len(set(self.operations)):
+            raise ValueError("relational goal-edge operations must be unique")
+
+    @property
+    def active_count(self) -> int:
+        return self.hypotheses.active_count
+
+    @property
+    def task_contract_sha256(self) -> str:
+        return self.hypotheses.task_contract_sha256
+
+    @property
+    def identity_sha256(self) -> str:
+        return stable_sha256({
+            "task_hypotheses": self.hypotheses.identity_sha256,
+            "descriptor_id": self.descriptor_id,
+            "operations": list(map(repr, self.operations)),
+            "evidence_refs": self.evidence_refs,
+        })
+
+    def relation_projection_key(
+        self,
+        source: Any,
+        time: Any = None,
+    ) -> tuple[tuple[Any, tuple[tuple[str, bool], ...]], ...]:
+        """Truth vector whose equality preserves every nominated edge test."""
+        return tuple(
+            (
+                operation,
+                self.hypotheses.edge_projection_key(
+                    source,
+                    operation,
+                    self.describe_edge(source, operation, time),
+                ),
+            )
+            for operation in self.operations
+        )
+
+    def satisfied_ids(
+        self,
+        source: Any,
+        operation: Any,
+        time: Any = None,
+    ) -> tuple[str, ...]:
+        descriptor = self.describe_edge(source, operation, time)
+        return self.hypotheses.edge_satisfied_ids(
+            source,
+            operation,
+            descriptor,
+        )
+
+    def __call__(
+        self,
+        source: Any,
+        operation: Any,
+        time: Any = None,
+    ) -> bool:
+        return bool(self.satisfied_ids(source, operation, time))
+
+    def refute_satisfied(
+        self,
+        source: Any,
+        operation: Any,
+        time: Any = None,
+    ) -> tuple[str, ...]:
+        descriptor = self.describe_edge(source, operation, time)
+        return self.hypotheses.refute_edge_satisfied(
+            source,
+            operation,
+            descriptor,
+        )
+
+    def for_source_epoch(
+        self,
+        source_epoch: object,
+    ) -> "RelationalGoalEdgeHypothesisSet | None":
+        chart = self.hypotheses.source_epoch
+        return self if chart is None or chart == source_epoch else None
+
+
 def authoritative_goal_edge_predicate(log, *, source_epoch: object | None = None):
     """Compile environment-success receipts into an edge predicate.
 
@@ -307,6 +417,16 @@ def _region(positions):
     return [min(ys), min(xs), max(ys), max(xs)]
 
 
+def _support_predicate(positions, *, differs_from_start=True):
+    """Exact grid-support identity plus a derived display rectangle."""
+    cells = sorted({(int(y), int(x)) for y, x in positions})
+    return {
+        "cells": [[y, x] for y, x in cells],
+        "region": _region(cells),
+        "differs_from_start": bool(differs_from_start),
+    }
+
+
 def _pre_success(rows, spec, roles) -> dict:
     candidates: list[dict] = []
     # (a) dormant region_events
@@ -318,8 +438,8 @@ def _pre_success(rows, spec, roles) -> dict:
             continue
         candidates.append({
             "kind": "dormant_region_event",
-            "predicate_spec": {"region": _region([(y, x) for (y, x, _c) in cells]),
-                               "differs_from_start": True},
+            "predicate_spec": _support_predicate((y, x) for y, x, _c in cells),
+            "experiment_specs": [dict(rule)],
             "rationale": "a region_event write never observed firing in evidence; "
                          "making it fire is a candidate goal",
         })
@@ -330,9 +450,17 @@ def _pre_success(rows, spec, roles) -> dict:
         cand_pos = sorted(p for p in (_constant_positions(rows) & _write_target_positions(rows, spec))
                           if _in(start, p[0], p[1]) and start[p[0]][p[1]] in indicator)
         if cand_pos:
+            candidate_positions = set(cand_pos)
             candidates.append({
                 "kind": "never_visited_indicator",
-                "predicate_spec": {"region": _region(cand_pos), "differs_from_start": True},
+                "predicate_spec": _support_predicate(cand_pos),
+                "experiment_specs": [
+                    dict(rule)
+                    for rule in _all_rules(spec)
+                    if rule.get("op") == "region_event"
+                    and candidate_positions
+                    & {(y, x) for y, x, _color in _event_write_cells(rule)}
+                ],
                 "rationale": "indicator-role cells that are rule write-targets never "
                              "changed in evidence; changing them is a candidate goal",
             })
@@ -367,7 +495,7 @@ def _depletion_config_candidates(rows, spec) -> list:
     for combo in itertools.product((True, False), repeat=len(regions)):
         if not any(combo):                             # exclude all-unchanged
             continue
-        sub = [{"region": _region(list(cells)), "differs_from_start": changed}
+        sub = [_support_predicate(cells, differs_from_start=changed)
                for cells, changed in zip(regions, combo)]
         sub.append({"resource_zero": int(resource)})
         out.append({
@@ -447,6 +575,39 @@ def _norm_pattern(grid, rect, bg) -> frozenset:
     return frozenset((y - my, x - mx, grid[y][x]) for (y, x) in cells)
 
 
+def _norm_support_pattern(grid, cells, bg) -> frozenset:
+    """Normalize values only on the declared support, excluding its hull."""
+    selected = [
+        (int(y), int(x))
+        for y, x in cells
+        if _in(grid, int(y), int(x)) and grid[int(y)][int(x)] not in bg
+    ]
+    if not selected:
+        return frozenset()
+    my = min(y for y, _x in selected)
+    mx = min(x for _y, x in selected)
+    return frozenset((y - my, x - mx, grid[y][x]) for y, x in selected)
+
+
+def _support_components(cells) -> list[set[tuple[int, int]]]:
+    """4-connected components of an exact write support."""
+    remaining = {(int(y), int(x)) for y, x in cells}
+    out = []
+    while remaining:
+        seed = remaining.pop()
+        component = {seed}
+        frontier = [seed]
+        while frontier:
+            y, x = frontier.pop()
+            for neighbour in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                if neighbour in remaining:
+                    remaining.remove(neighbour)
+                    component.add(neighbour)
+                    frontier.append(neighbour)
+        out.append(component)
+    return out
+
+
 def _template_copy_candidates(rows, spec, roles) -> list:
     """Detect (a) TEMPLATE regions — static, isolated, small, structured non-bg
     glyphs — and (b) COPY regions — cell-sets an event rule mutates — and pair any
@@ -482,15 +643,15 @@ def _template_copy_candidates(rows, spec, roles) -> list:
         if rule.get("op") != "region_event":
             continue
         triples = _event_write_cells(rule)
-        cells = {(y, x) for (y, x, _c) in triples}
-        if not cells:
+        written = {(y, x): c for y, x, c in triples}
+        if not written:
             continue
-        pal = {c for (_y, _x, c) in triples}
-        pal |= {start[y][x] for (y, x) in cells if _in(start, y, x)}
-        pal -= bg
-        copies.append((cells, pal))
+        for cells in _support_components(written):
+            pal = {written[cell] for cell in cells}
+            pal |= {start[y][x] for y, x in cells if _in(start, y, x)}
+            copies.append((cells, pal - bg, rule))
     out, seen = [], set()
-    for (ccells, cpal) in copies:
+    for (ccells, cpal, source_rule) in copies:
         for (tcells, tpal) in templates:
             if ccells == tcells or not (cpal & tpal):
                 continue
@@ -500,13 +661,21 @@ def _template_copy_candidates(rows, spec, roles) -> list:
             seen.add((crect, trect))
             # already-matched at start => nothing to achieve => not a goal (drops a
             # copy sub-shape that coincidentally equals a template)
-            if _norm_pattern(start, crect, bg) == _norm_pattern(start, trect, bg):
+            if _norm_support_pattern(start, ccells, bg) == _norm_support_pattern(
+                start, tcells, bg
+            ):
                 continue
             out.append({
                 "kind": "template_match",
-                "predicate_spec": {"copy_region": list(crect), "template_region": list(trect),
-                                   "relation": "content_equal_up_to_alignment",
-                                   "background": sorted(bg)},
+                "predicate_spec": {
+                    "copy_cells": [[y, x] for y, x in sorted(ccells)],
+                    "template_cells": [[y, x] for y, x in sorted(tcells)],
+                    "copy_region": list(crect),
+                    "template_region": list(trect),
+                    "relation": "content_equal_up_to_alignment",
+                    "background": sorted(bg),
+                },
+                "experiment_specs": [dict(source_rule)],
                 "rationale": "static template + agent-mutable copy of same palette => "
                              "goal: make copy match template (core-knowledge prior)",
             })
@@ -534,14 +703,23 @@ def _conjunction_candidates(rows, spec) -> list:
     if len(witnessed) <= 3:
         combos += list(itertools.combinations(witnessed, 3))
     out = []
+    event_rules = [
+        rule for rule in _all_rules(spec) if rule.get("op") == "region_event"
+    ]
     for combo in combos:
         if any(all(_region_changed(g, start, cells) for cells in combo) for g in grids):
             continue                                   # co-witnessed -> not dormant
         out.append({
             "kind": "dormant_conjunction",
             "predicate_spec": {"conjunction": [
-                {"region": _region(list(cells)), "differs_from_start": True}
+                _support_predicate(cells)
                 for cells in combo]},
+            "experiment_specs": [
+                dict(rule)
+                for rule in event_rules
+                if set().union(*combo)
+                & {(y, x) for y, x, _color in _event_write_cells(rule)}
+            ],
             "rationale": "events witnessed individually, never co-active",
         })
     return out
@@ -576,11 +754,425 @@ def _post_success(rows, resource, completions, K=DEFAULT_K) -> dict:
     if not goal_pos:
         return {"mode": "post_success", "goal_predicate_spec": None, "support": len(completions)}
     return {"mode": "post_success",
-            "goal_predicate_spec": {"region": _region(goal_pos), "differs_from_start": True},
+            "goal_predicate_spec": _support_predicate(goal_pos),
             "support": len(completions)}
 
 
 # ── predicate compilation (usable by reachability_sweep goal_fn) ─────────────
+
+
+class GoalHypothesisSet:
+    """Version space of task predicates under adapter adjudication.
+
+    A state predicate proposes where to intervene; it does not own task
+    discharge.  If the registered adjudicator remains open after a reached
+    predicate, that exact hypothesis is removed while its siblings survive.
+    """
+
+    target_kind: ClassVar[str] = "hypothesis_version_space"
+
+    def __init__(
+        self,
+        hypotheses,
+        experiments=None,
+        *,
+        source_epoch=None,
+        task_contract_sha256="",
+    ):
+        self.hypotheses = tuple(hypotheses)
+        self.experiments = {
+            hypothesis_id: tuple(rules)
+            for hypothesis_id, rules in dict(experiments or {}).items()
+        }
+        self.refuted_ids: set[str] = set()
+        self._ztare_source_epoch = source_epoch
+        self.task_contract_sha256 = str(task_contract_sha256 or "")
+
+    def _active(self):
+        return (
+            row for row in self.hypotheses if row[0] not in self.refuted_ids
+        )
+
+    @property
+    def identity_sha256(self) -> str:
+        from ztare.common.equivariance import stable_sha256
+
+        return stable_sha256({
+            "active_goal_hypotheses": sorted(
+                hypothesis_id for hypothesis_id, *_rest in self._active()
+            ),
+            "source_epoch": self._ztare_source_epoch,
+            "task_contract_sha256": self.task_contract_sha256,
+        })
+
+    def __call__(self, grid) -> bool:
+        return any(
+            predicate(grid)
+            for _id, predicate, _kind, _spec in self._active()
+        )
+
+    def satisfied_ids(self, grid) -> tuple[str, ...]:
+        return tuple(
+            hypothesis_id
+            for hypothesis_id, predicate, _kind, _spec in self._active()
+            if predicate(grid)
+        )
+
+    def refute_satisfied(self, grid) -> tuple[str, ...]:
+        refuted = self.satisfied_ids(grid)
+        self.refuted_ids.update(refuted)
+        return refuted
+
+    def predicate_for(self, hypothesis_id: str):
+        """Return the predicate owned by one exact hypothesis identity."""
+        return next(
+            (
+                predicate
+                for candidate_id, predicate, _kind, _spec in self.hypotheses
+                if candidate_id == str(hypothesis_id)
+            ),
+            None,
+        )
+
+    def refute_ids(self, hypothesis_ids) -> tuple[str, ...]:
+        """Remove only identities present in this version space.
+
+        Stored task consequences are scoped and witness-checked by the caller;
+        this method deliberately owns no persistence or substrate semantics.
+        """
+        known = {hypothesis_id for hypothesis_id, *_rest in self.hypotheses}
+        admitted = tuple(
+            dict.fromkeys(
+                str(hypothesis_id)
+                for hypothesis_id in hypothesis_ids
+                if str(hypothesis_id) in known
+            )
+        )
+        self.refuted_ids.update(admitted)
+        return admitted
+
+    def for_source_epoch(self, source_epoch):
+        """Return this version space only in the chart that induced it."""
+
+        if self._ztare_source_epoch is None:
+            return self
+        return self if self._ztare_source_epoch == source_epoch else None
+
+    def projection_key(self, grid) -> tuple:
+        """Truth vector of the active terminal hypotheses.
+
+        Pixel presentations belong to the substrate chart.  The goal consumer
+        only distinguishes which candidate conditions hold; transition and
+        feasibility coordinates remain in the composed search problem.
+        """
+        return tuple(
+            (hypothesis_id, bool(predicate(grid)))
+            for hypothesis_id, predicate, _kind, _spec in self._active()
+        )
+
+    @property
+    def active_experiment_domain_ids(self) -> tuple[str, ...]:
+        from ztare.common.equivariance import stable_sha256
+
+        return tuple(dict.fromkeys(
+            "operation_domain_" + stable_sha256(rule)[:16]
+            for hypothesis_id, rules in self.experiments.items()
+            if hypothesis_id not in self.refuted_ids
+            for rule in rules
+        ))
+
+    def experiment_edge_ids(self, source, successor) -> tuple[str, ...]:
+        """Active hypotheses whose evidence-derived operation fires here."""
+        from ztare.worldmodel.spec_catalog import region_event_triggered
+
+        return tuple(
+            hypothesis_id
+            for hypothesis_id, rules in self.experiments.items()
+            if hypothesis_id not in self.refuted_ids
+            and any(
+                region_event_triggered(source, successor, rule)
+                for rule in rules
+            )
+        )
+
+    @property
+    def active_count(self) -> int:
+        return sum(1 for _row in self._active())
+
+
+def compose_goal_hypothesis_sets(*spaces):
+    """Union compatible task-predicate version spaces without type erasure.
+
+    Producers may contribute different presentations of the same hypothesis or
+    different experiment domains.  Composition is keyed by hypothesis identity
+    and is defined only inside one lifecycle/task chart.
+    """
+
+    active_spaces = tuple(space for space in spaces if space is not None)
+    if not active_spaces:
+        return None
+    if len(active_spaces) == 1:
+        return active_spaces[0]
+    if not all(isinstance(space, GoalHypothesisSet) for space in active_spaces):
+        raise TypeError("task-hypothesis composition requires version-space operands")
+    chart = {
+        (space._ztare_source_epoch, space.task_contract_sha256)
+        for space in active_spaces
+    }
+    if len(chart) != 1:
+        raise ValueError("cannot compose task hypotheses across lifecycle charts")
+
+    hypotheses: dict[str, tuple] = {}
+    experiments: dict[str, list[dict]] = {}
+    experiment_ids: dict[str, set[str]] = {}
+    from ztare.common.equivariance import stable_sha256
+
+    for space in active_spaces:
+        for row in space.hypotheses:
+            hypotheses.setdefault(row[0], row)
+        for hypothesis_id, rules in space.experiments.items():
+            seen = experiment_ids.setdefault(hypothesis_id, set())
+            for rule in rules:
+                rule_id = stable_sha256(rule)
+                if rule_id not in seen:
+                    seen.add(rule_id)
+                    experiments.setdefault(hypothesis_id, []).append(rule)
+    source_epoch, task_contract_sha256 = next(iter(chart))
+    result = GoalHypothesisSet(
+        tuple(hypotheses.values()),
+        experiments,
+        source_epoch=source_epoch,
+        task_contract_sha256=task_contract_sha256,
+    )
+    result.refuted_ids.update(
+        hypothesis_id
+        for space in active_spaces
+        for hypothesis_id in space.refuted_ids
+        if hypothesis_id in hypotheses
+    )
+    return result
+
+
+def compile_goal_hypothesis_set(
+    candidates,
+    start_grid,
+    symmetry_group="identity",
+    *,
+    task_open_states=(),
+    source_epoch=None,
+    task_contract_sha256="",
+):
+    """Compile a task-predicate version space and replay negative evidence.
+
+    ``task_open_states`` are adapter-attested observations at which the task
+    adjudicator remained open.  Any state predicate already true on one of
+    those observations is behaviorally refuted regardless of its source name.
+    """
+
+    from ztare.common.equivariance import stable_sha256
+
+    hypotheses: dict[str, tuple] = {}
+    experiments: dict[str, list[dict]] = {}
+    experiment_ids: dict[str, set[str]] = {}
+    for candidate in candidates:
+        spec = candidate.get("predicate_spec")
+        if not spec:
+            continue
+        identity = {
+            "kind": str(candidate.get("kind") or "candidate_goal"),
+            "predicate_spec": spec,
+        }
+        hypothesis_id = stable_sha256(identity)
+        hypotheses.setdefault(
+            hypothesis_id,
+            (
+                hypothesis_id,
+                predicate_from_spec(spec, start_grid, symmetry_group),
+                identity["kind"],
+                spec,
+            ),
+        )
+        candidate_experiments = candidate.get("experiment_specs") or ()
+        admitted_experiments = tuple(
+            dict(experiment)
+            for experiment in candidate_experiments
+            if isinstance(experiment, dict)
+            and experiment.get("op") == "region_event"
+        )
+        for experiment in admitted_experiments:
+            experiment_id = stable_sha256(experiment)
+            seen = experiment_ids.setdefault(hypothesis_id, set())
+            if experiment_id in seen:
+                continue
+            seen.add(experiment_id)
+            experiments.setdefault(hypothesis_id, []).append(experiment)
+    if not hypotheses:
+        return None
+    result = GoalHypothesisSet(
+        tuple(hypotheses.values()),
+        experiments,
+        source_epoch=source_epoch,
+        task_contract_sha256=task_contract_sha256,
+    )
+    for state in task_open_states:
+        result.refute_satisfied(state)
+    return result
+
+
+def compile_candidate_goal_hypothesis_set(
+    project_dir,
+    *,
+    source_epoch,
+    task_contract_sha256,
+    witness_states=(),
+    task_open_states=(),
+    records=None,
+):
+    """Project leaf-authored task predicates independently of carrier adoption.
+
+    Candidate memory is an evidence-epoch-bound audit population.  A transition
+    carrier may lose its promotion contest while the task predicate carried in
+    the same submission remains a useful, falsifiable steering hypothesis.  The
+    adapter therefore projects ``GOAL_PREDICATE`` from current candidate rows
+    into its own version space.  Task discharge authority remains external.
+
+    Program-byte identity is deliberately conservative: executable predicate
+    equivalence is undecidable.  Negative task receipts transfer across new
+    program presentations by replaying their states through each predicate,
+    rather than by pretending two source files are identical.
+    """
+
+    contract_sha = str(task_contract_sha256 or "").strip().lower()
+    if (
+        len(contract_sha) != 64
+        or any(ch not in "0123456789abcdef" for ch in contract_sha)
+    ):
+        return None
+    project = Path(project_dir).resolve()
+    if records is None:
+        from ztare.common.candidate_memory import (
+            admissible_candidate_memory_records,
+        )
+
+        records = admissible_candidate_memory_records(
+            project,
+            artifact_roles={"task_hypothesis"},
+            require_submission_source=True,
+        )
+    from ztare.common.candidate_memory import (
+        candidate_memory_source,
+        candidate_memory_submission_path,
+    )
+    from ztare.common.equivariance import stable_sha256
+
+    probes = tuple(witness_states)[:16]
+    hypotheses: list[tuple] = []
+    seen_sources: set[str] = set()
+    for record in sorted(
+        (row for row in (records or ()) if isinstance(row, dict)),
+        key=lambda row: str(row.get("observed_at_utc") or ""),
+        reverse=True,
+    ):
+        path = candidate_memory_submission_path(project, record)
+        source = candidate_memory_source(project, record)
+        if path is None or not source:
+            continue
+        source_sha = hashlib.sha256(source.encode("utf-8")).hexdigest()
+        if source_sha in seen_sources:
+            continue
+        seen_sources.add(source_sha)
+        namespace = {"__name__": "candidate_task_hypothesis"}
+        try:
+            exec(compile(source, str(path), "exec"), namespace)  # noqa: S102
+            predicate = namespace.get("GOAL_PREDICATE")
+            if not callable(predicate):
+                continue
+            if any(type(predicate(state)) is not bool for state in probes):
+                continue
+        except Exception:  # noqa: BLE001 - one bad proposal cannot hide siblings
+            continue
+        binding = record.get("carrier_evidence_identity")
+        binding = binding if isinstance(binding, dict) else {}
+        evidence_epoch = str(
+            record.get("evidence_epoch_sha256")
+            or binding.get("evidence_epoch_sha256")
+            or ""
+        )
+        identity = {
+            "kind": "candidate_task_hypothesis",
+            "task_contract_sha256": contract_sha,
+            "source_epoch": source_epoch,
+            "evidence_epoch_sha256": evidence_epoch,
+            "candidate_source_sha256": source_sha,
+        }
+        hypothesis_id = stable_sha256(identity)
+        hypotheses.append(
+            (
+                hypothesis_id,
+                predicate,
+                identity["kind"],
+                {
+                    "source_ref": str(path.relative_to(project)),
+                    "source_sha256": source_sha,
+                },
+            )
+        )
+    if not hypotheses:
+        return None
+    result = GoalHypothesisSet(
+        hypotheses,
+        source_epoch=source_epoch,
+        task_contract_sha256=contract_sha,
+    )
+    for state in task_open_states:
+        result.refute_satisfied(state)
+    return result
+
+
+def predicate_spec_supported(pspec) -> bool:
+    """Whether the adapter has a non-vacuous lowering for this predicate."""
+    if not isinstance(pspec, dict) or not pspec:
+        return False
+    conjunction = pspec.get("conjunction")
+    if conjunction is not None:
+        return (
+            isinstance(conjunction, list)
+            and bool(conjunction)
+            and all(predicate_spec_supported(sub) for sub in conjunction)
+        )
+    if pspec.get("relation") == "content_equal_up_to_alignment":
+        return (
+            _valid_cell_support(pspec.get("template_cells"))
+            and _valid_cell_support(pspec.get("copy_cells"))
+        ) or all(
+            isinstance(pspec.get(key), (list, tuple)) and len(pspec[key]) == 4
+            for key in ("template_region", "copy_region")
+        )
+    if "resource_zero" in pspec:
+        value = pspec.get("resource_zero")
+        return isinstance(value, int) and not isinstance(value, bool)
+    if pspec.get("cells") is not None:
+        return _valid_cell_support(pspec.get("cells"))
+    region = pspec.get("region")
+    return (
+        isinstance(region, (list, tuple))
+        and len(region) == 4
+        and all(isinstance(value, int) and not isinstance(value, bool) for value in region)
+    )
+
+
+def _valid_cell_support(cells) -> bool:
+    return (
+        isinstance(cells, (list, tuple))
+        and bool(cells)
+        and all(
+            isinstance(cell, (list, tuple))
+            and len(cell) == 2
+            and all(isinstance(value, int) and not isinstance(value, bool) for value in cell)
+            for cell in cells
+        )
+    )
+
 
 def predicate_from_spec(pspec, start_grid, symmetry_group="identity"):
     """Compile a predicate_spec to ``goal_fn(grid) -> bool`` with region-differs-
@@ -604,16 +1196,22 @@ def predicate_from_spec(pspec, start_grid, symmetry_group="identity"):
         from ztare.worldmodel.symmetry import canonical_form
         bg = {int(c) for c in (pspec.get("background") or [])}
         trect, crect = pspec.get("template_region"), pspec.get("copy_region")
-        if not trect or not crect:
+        tcells, ccells = pspec.get("template_cells"), pspec.get("copy_cells")
+        if tcells and ccells:
+            tpat = _norm_support_pattern(start_grid, tcells, bg)
+            observed = lambda grid: _norm_support_pattern(grid, ccells, bg)
+        elif trect and crect:
+            tpat = _norm_pattern(start_grid, trect, bg)
+            observed = lambda grid: _norm_pattern(grid, crect, bg)
+        else:
             return lambda g: False
-        tpat = _norm_pattern(start_grid, trect, bg)
         if not tpat:                                   # empty template => no goal
             return lambda g: False
         tcanon = canonical_form(tpat, symmetry_group)
 
         def tm_fn(grid):
             try:
-                return canonical_form(_norm_pattern(grid, crect, bg), symmetry_group) == tcanon
+                return canonical_form(observed(grid), symmetry_group) == tcanon
             except Exception:  # noqa: BLE001 — fail-closed
                 return False
         return tm_fn
@@ -626,15 +1224,24 @@ def predicate_from_spec(pspec, start_grid, symmetry_group="identity"):
             except Exception:  # noqa: BLE001 — fail-closed
                 return False
         return zero_fn
-    if pspec.get("region") is None:
-        return lambda g: False
-    y0, x0, y1, x1 = (int(v) for v in pspec["region"])
     differs = bool(pspec.get("differs_from_start", True))
     H = len(start_grid)
     W = len(start_grid[0]) if H else 0
-    base = {(y, x): start_grid[y][x]
-            for y in range(max(0, y0), min(H - 1, y1) + 1)
-            for x in range(max(0, x0), min(W - 1, x1) + 1)}
+    if pspec.get("cells") is not None:
+        try:
+            cells = {(int(y), int(x)) for y, x in pspec["cells"]}
+        except (TypeError, ValueError):
+            return lambda g: False
+        if not cells or any(not (0 <= y < H and 0 <= x < W) for y, x in cells):
+            return lambda g: False
+        base = {(y, x): start_grid[y][x] for y, x in cells}
+    else:
+        if pspec.get("region") is None:
+            return lambda g: False
+        y0, x0, y1, x1 = (int(v) for v in pspec["region"])
+        base = {(y, x): start_grid[y][x]
+                for y in range(max(0, y0), min(H - 1, y1) + 1)
+                for x in range(max(0, x0), min(W - 1, x1) + 1)}
 
     def goal_fn(grid):
         try:

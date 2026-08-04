@@ -1,0 +1,51 @@
+{
+  "action_arity": 4,
+  "buggy_conflated_plan": [
+    0
+  ],
+  "carrier_kind": "patch_base",
+  "carrier_sha256": "389c8a1f1aa110d2cff0cc8f0d8a9532a96e3cf484abb1158a7714e7a1b8f700",
+  "consumer_indexed_plan": [
+    1,
+    3
+  ],
+  "consumer_indexed_reason": "unsupported operation pair at depth 2 (11 nodes)",
+  "evidence_hash": "8862d17add31e22c73f18924642e21e9950072d515d2ef41b0e7c2cebbe37855",
+  "evidence_rows": 940,
+  "factored_projection_attached": true,
+  "other_witnessed_actions_at_target": [
+    0,
+    1,
+    2
+  ],
+  "role_summary": [
+    {
+      "members": 3,
+      "name": "moves_under_actions"
+    },
+    {
+      "members": 1,
+      "name": "never_changes"
+    },
+    {
+      "members": 1,
+      "name": "covered_uncovered"
+    },
+    {
+      "members": 1,
+      "name": "static_structural_mirror"
+    }
+  ],
+  "schema": "ztare-arc3-consumer-indexed-frontier-audit-v1",
+  "source_epoch": 2,
+  "support_missing_pairs": 290,
+  "support_nodes": 137,
+  "support_nondeterministic_pairs": 19,
+  "support_pairs": 258,
+  "target_action": 3,
+  "target_pair_previously_witnessed": false,
+  "target_support_sha256": "9017a7edfd9b8e725c7f22da873111db178342baf3b87160550bfcc98eae5fed",
+  "target_support_source_rows": 31,
+  "transition_nodes": 191,
+  "transition_pairs": 317
+}

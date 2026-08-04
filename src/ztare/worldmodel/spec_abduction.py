@@ -258,6 +258,100 @@ def _abduce_recolor_map(s, s_next, diff) -> "list[dict]":
         if mapping else []
 
 
+_PATTERN_WRITE_MAX_AREA = 512   # ponytail: skip whole-board repaints (boundary frames); raise if a real law exceeds it
+
+
+def _abduce_pattern_write(s, s_next, diff) -> "list[dict]":
+    """RESTORATION family: a bounded region rewrites to a constant pattern.
+
+    Kepler case: refills, respawns, display resets, terrain restores — laws
+    where changed cells within a cluster take content that is IDENTICAL every
+    time the mechanic fires (the remembered configuration). Mining: cluster
+    the changed cells into disjoint rects; for each cluster propose writing
+    the observed post-state content of that rect. Recurrence is adjudicated
+    downstream — an identical (rect, pattern) across occurrences dedups into
+    one high-count candidate in the per-action Counter, while one-off diffs
+    (a mover at ever-different positions) stay count-1 and lose. Guards
+    (when_count / when_region / ...) are fitted by the existing learners; an
+    unguarded pattern_write that should not fire every step simply fails
+    replay and is discarded. No substrate nouns: rect and pattern are learned
+    from evidence.
+    """
+    if not diff:
+        return []
+    # 4-connected components of the changed cells (NOT _cluster_rects: that
+    # merges only overlapping rects, and adjacent single cells never overlap,
+    # so a contiguous strip would shatter into area-1 clusters).
+    changed = {(y, x) for (y, x, _a, _b) in diff}
+    comps: "list[list[tuple[int, int]]]" = []
+    unseen = set(changed)
+    while unseen:
+        seed = unseen.pop()
+        comp, stack = [seed], [seed]
+        while stack:
+            cy, cx = stack.pop()
+            for nb in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
+                if nb in unseen:
+                    unseen.discard(nb)
+                    comp.append(nb)
+                    stack.append(nb)
+        comps.append(comp)
+    clusters = [(min(y for y, _ in c), min(x for _, x in c),
+                 max(y for y, _ in c), max(x for _, x in c)) for c in comps]
+    h, w = len(s), len(s[0])
+    out: "list[dict]" = []
+    for (y0, x0, y1, x1) in clusters:
+        area = (y1 - y0 + 1) * (x1 - x0 + 1)
+        # area 1: a single-cell constant write is already expressible by the
+        # recolor/extremal families; proposing it here floods the per-action
+        # counter with high-frequency noise that outranks real region laws.
+        if area < 2 or area > _PATTERN_WRITE_MAX_AREA:
+            continue
+        pattern = [int(s_next[y][x])
+                   for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)]
+        out.append({"op": "pattern_write",
+                    "rect": [int(y0), int(x0), int(y1), int(x1)],
+                    "pattern": pattern})
+        # RECT EXPANSION: the observed diff under-covers the restored region
+        # wherever cells already held the remembered value (e.g. the one bar
+        # cell that was still full when the refill fired). Under composition
+        # after base dynamics, the narrow rect misses those cells, so also
+        # propose the rect grown to the s_next-connected extent of the
+        # restored content (4-connected flood over cells holding the
+        # pattern's value-set, seeded from the cluster). MDL still prefers
+        # the narrow rule when both replay exactly.
+        vals = {int(s_next[y][x])
+                for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)}
+        seen = set()
+        stack = [(y, x) for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)
+                 if 0 <= y < h and 0 <= x < w]
+        seen.update(stack)
+        # Expansion exists to capture the FEW adjacent cells already at the
+        # remembered value (the bar cell still full when the refill fired) —
+        # bound it to a small multiple of the cluster so a value shared with
+        # the background cannot flood the board into a giant bogus pattern.
+        cap = 4 * area + 8
+        while stack and len(seen) <= cap:
+            cy, cx = stack.pop()
+            for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
+                if (0 <= ny < h and 0 <= nx < w and (ny, nx) not in seen
+                        and int(s_next[ny][nx]) in vals):
+                    seen.add((ny, nx))
+                    stack.append((ny, nx))
+        if len(seen) > cap:
+            continue
+        ey0 = min(y for y, _ in seen); ey1 = max(y for y, _ in seen)
+        ex0 = min(x for _, x in seen); ex1 = max(x for _, x in seen)
+        e_area = (ey1 - ey0 + 1) * (ex1 - ex0 + 1)
+        if (ey0, ex0, ey1, ex1) != (y0, x0, y1, x1) and 2 <= e_area <= _PATTERN_WRITE_MAX_AREA:
+            e_pattern = [int(s_next[y][x])
+                         for y in range(ey0, ey1 + 1) for x in range(ex0, ex1 + 1)]
+            out.append({"op": "pattern_write",
+                        "rect": [int(ey0), int(ex0), int(ey1), int(ex1)],
+                        "pattern": e_pattern})
+    return out
+
+
 def _extremal_component_scope_candidates(rule: dict) -> "list[dict]":
     """Structural scope refinements shared by abduction and transport checks.
 
@@ -1220,7 +1314,10 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
         found = (_abduce_translate_block(tr.s, tr.s_next, d)
                  + _abduce_consume_extremal(tr.s, tr.s_next, d)
                  + _abduce_accumulate_extremal(tr.s, tr.s_next, d)
-                 + _abduce_recolor_map(tr.s, tr.s_next, d))
+                 + _abduce_recolor_map(tr.s, tr.s_next, d)
+                 + (_abduce_pattern_write(tr.s, tr.s_next, d)
+                    if os.environ.get("ZTARE_PATTERN_WRITE", "1") != "0"
+                    else []))
         # subsumption lattice, not sequential fallback (external review):
         # CoM translation is the GENERAL family, rigid its DeltaPixels=0
         # member — emit both; behavioral dedup collapses them where they
@@ -1234,7 +1331,13 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
     # rules seen under every action are action-independent ("always")
     always_keys = None
     for a in range(action_arity):
-        keys = {k for k in per_action.get(a, ()) if k != ("identity",)}
+        # pattern_write (the memorizer family) never enters the UNGUARDED
+        # always intersection: an unguarded constant write fires every step
+        # and wrecks replay, and with small action arities the intersection
+        # admits nearly everything. Patterns participate only ordered-last in
+        # the per-action windows and via the GUARDED conditional-always path.
+        keys = {k for k in per_action.get(a, ())
+                if k != ("identity",) and _thaw(k).get("op") != "pattern_write"}
         always_keys = keys if always_keys is None else (always_keys & keys)
     always_keys = always_keys or set()
     always_rules = [_thaw(k) for k in sorted(always_keys, key=repr)]
@@ -1295,6 +1398,15 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
         trs = by_action_transitions.get(a, [])
         cands = [k for k, _n in per_action.get(a, Counter()).most_common()
                  if k != ("identity",) and k not in always_keys]
+        # pattern_write is the MEMORIZER family — the family of last resort.
+        # It is EXCLUDED from the per-action windows entirely: even ordered
+        # last, its presence in the bounded windows (cands[:8], cands[:6])
+        # changes which compact-family pairs get explored and lets a memorized
+        # pattern win by search order rather than MDL (measured: two planted
+        # recoveries flipped). Patterns enter assembly through exactly one
+        # door — the guarded conditional-always post-selection, which admits
+        # them only on a STRICT mismatch cut over the compact winner.
+        cands = [k for k in cands if _thaw(k).get("op") != "pattern_write"]
         expl_cache = {}
 
         def expl(rules):
@@ -1571,6 +1683,77 @@ def abduce_spec(log: EpisodeLog, action_arity: int,
             if cur_bad < best_bad:
                 best_spec = {"actions": b_actions, "always": cur_always}
                 best_step, best_bad = cur_step, cur_bad
+
+    # CONDITIONAL-ALWAYS (post-selection, strict-cut only): an action-
+    # independent mechanic (restoration, spawner, periodic environment write)
+    # may witness under only SOME actions by happenstance and never explains a
+    # whole transition alone, so it can enter neither always_keys nor a
+    # per-action single. Append it to the winning always-block GUARDED —
+    # after the base dynamics, so a restoration composes over the burn that
+    # triggers it — with a count guard learned from where its effect is
+    # present vs absent. Same discipline as the positional-pause swap above:
+    # the appended rule earns its place only by STRICTLY cutting mismatches;
+    # a tie never admits it (an extra memorized rule must not ride along with
+    # an already-exact compact law).
+    if best_spec is not None and best_bad is not None and best_bad > 0:
+        _pooled: Counter = Counter()
+        for _a in per_action:
+            for _k, _n in per_action[_a].items():
+                # This door admits ONLY the memorizer family: compact families
+                # already have their own doors (per-action windows, always
+                # intersection, overlap/phase variants, region mining), and
+                # letting them re-enter here changed winners on planted
+                # recoveries whose structure the region machinery owns.
+                if _thaw(_k).get("op") != "pattern_write":
+                    continue
+                if _k != ("identity",) and _k not in always_keys:
+                    _pooled[_k] += _n
+
+        def _pooled_support(_k) -> int:
+            # SUPPORT ranking (AGENTS.md 8a-6), not raw frequency:
+            # occurrences x cells explained per firing. A high-frequency
+            # 2-cell noise pattern must not outrank the 36-cell restoration
+            # law witnessed 6 times.
+            _r = _thaw(_k)
+            return _pooled[_k] * max(1, len(_r.get("pattern") or ()))
+
+        # GREEDY CHAIN on the CELL metric: a real restoration is compound
+        # (bar + sprite regions land on the same frame), so one appended
+        # pattern cuts cells but not whole transitions — the transition
+        # metric "would reject every single fix and the coupled repair could
+        # never assemble" (_wrong_cell_count's own contract). Each admitted
+        # rule must STRICTLY cut wrong cells; transition-level best_bad is
+        # recomputed at the end for downstream consumers.
+        _env_door = frozenset(_efi(log))
+        _cur_step = best_step
+        _cur_cells = (_wrong_cell_count(_cur_step, log, _env_door)
+                      if _cur_step is not None else None)
+        _admitted = False
+        for _k in sorted(_pooled, key=_pooled_support, reverse=True)[:6]:
+            if _cur_step is None or _cur_cells is None or _cur_cells == 0:
+                break
+            _r = _thaw(_k)
+            _fired = [tr for tr in log if _effect_present(_r, tr)]
+            _paused = [tr for tr in log if not _effect_present(_r, tr)]
+            if not _fired or not _paused:
+                continue
+            _g = _separating_count(_fired, _paused)
+            if _g is None:
+                continue
+            _gr = dict(_r)
+            _gr["when_count"] = _g
+            _cand = {"actions": best_spec["actions"],
+                     "always": list(best_spec["always"]) + [_gr]}
+            _st, _e = lower_spec(_cand)
+            if _st is None:
+                continue
+            _cells = _wrong_cell_count(_st, log, _env_door, incumbent=_cur_cells)
+            if _cells < _cur_cells:
+                best_spec, _cur_step, _cur_cells = _cand, _st, _cells
+                _admitted = True
+        if _admitted:
+            best_step = _cur_step
+            best_bad = _mismatch_count(_cur_step, log)
 
     # ---- ACTION-SCOPING (post-closure) ----
     # the positional pause / region_event learned above are action-independent;
@@ -1889,7 +2072,29 @@ def _append_event_wrong_cell_count(preds, ev, log, env, incumbent: "int | None" 
 
 def _effect_present(rule, tr) -> bool:
     """Did reality show this always-rule's effect in the transition? For
-    consume rules: some cell of (color -> replacement) flipped."""
+    consume rules: some cell of (color -> replacement) flipped. For
+    pattern_write: the rect ARRIVED at the pattern this step (post-state
+    matches it, pre-state did not)."""
+    if rule.get("op") == "pattern_write":
+        y0, x0, y1, x1 = (int(v) for v in rule["rect"])
+        pat = rule["pattern"]
+        h, w = len(tr.s), len(tr.s[0])
+        k = 0
+        post_match, pre_match = True, True
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                if k < len(pat) and 0 <= y < h and 0 <= x < w:
+                    if int(tr.s_next[y][x]) != int(pat[k]):
+                        post_match = False
+                    if int(tr.s[y][x]) != int(pat[k]):
+                        pre_match = False
+                k += 1
+        return post_match and not pre_match
+    if rule.get("op") == "accumulate_extremal":
+        a = int(rule.get("from", 0))
+        b = int(rule["color"])
+        return any(tr.s[y][x] == a and tr.s_next[y][x] == b
+                   for y in range(len(tr.s)) for x in range(len(tr.s[0])))
     if rule.get("op") != "consume_extremal":
         return False
     a, b = int(rule["color"]), int(rule["replacement"])
@@ -3369,7 +3574,21 @@ def _mine_content_state_machine(observations, *, eligible_states=None):
         if source in transitions and transitions[source] != target:
             return None
         transitions[source] = target
-    if not transitions or _cellwise_reproducible(states, transitions):
+    if not transitions:
+        return None
+    # Defer only when the executable write family can carry the observed
+    # relation.  A partial colour path (for example a->b->c with c unseen as a
+    # source) is cell-wise on the current sample but is not yet an authorized
+    # permutation.  Treating that property as a closed cycle invents an edge;
+    # the finite-state graph can represent the witnessed partial function and
+    # fail closed elsewhere.
+    cell_pairs = defaultdict(list)
+    for source, target in transitions.items():
+        for position, pair in enumerate(zip(states[source], states[target])):
+            cell_pairs[(0, position)].append(pair)
+    if _cellwise_reproducible(states, transitions) and _fit_write_function(
+        [0, 0, 0, len(states[0]) - 1], cell_pairs, []
+    ) is not None:
         return None
     state_transition, ordered = _as_cycle_or_graph(transitions, states)
     return state_transition, ordered

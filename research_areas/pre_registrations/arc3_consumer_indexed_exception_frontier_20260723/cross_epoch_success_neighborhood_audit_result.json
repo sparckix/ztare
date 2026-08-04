@@ -1,0 +1,378 @@
+{
+  "schema": "ztare-cross-epoch-success-neighborhood-audit-v1",
+  "success_edges": [
+    {
+      "bank_row": 14209,
+      "source_sha256": "ab7c3d970d7c3a881f0dc636c445290c96302de6510d0f14e2b207ad2fa53a69",
+      "operation": "0",
+      "source_epoch": 0,
+      "target_epoch": 1,
+      "evidence_refs": [
+        "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+      ]
+    },
+    {
+      "bank_row": 14254,
+      "source_sha256": "7eca7510e0b06b2e2e9917752b5c30c8ad202b6a7ae6b3cbc94d28639c462e17",
+      "operation": "1",
+      "source_epoch": 1,
+      "target_epoch": 2,
+      "evidence_refs": [
+        "workspace/latest_level_boundary_seed_l2.json:full_sequence_from_reset"
+      ]
+    }
+  ],
+  "epoch_graphs": {
+    "0": {
+      "observation_count": 13,
+      "node_count": 13,
+      "relation_count": 13,
+      "boundary_source_count": 1,
+      "noncommuting_relation_count": 0,
+      "success_source_sha256": "ab7c3d970d7c3a881f0dc636c445290c96302de6510d0f14e2b207ad2fa53a69",
+      "success_source_present": true
+    },
+    "1": {
+      "observation_count": 50,
+      "node_count": 48,
+      "relation_count": 49,
+      "boundary_source_count": 4,
+      "noncommuting_relation_count": 0,
+      "success_source_sha256": "7eca7510e0b06b2e2e9917752b5c30c8ad202b6a7ae6b3cbc94d28639c462e17",
+      "success_source_present": true
+    }
+  },
+  "anchored_windows": {
+    "0": {
+      "success_index": 14209,
+      "continuous_window_start": 14197,
+      "continuous_window_end_exclusive": 14210,
+      "continuous_window_length": 13,
+      "selected_row_count": 13,
+      "added_authoritative_confuser_count": 0
+    },
+    "1": {
+      "success_index": 14254,
+      "continuous_window_start": 14210,
+      "continuous_window_end_exclusive": 14255,
+      "continuous_window_length": 45,
+      "selected_row_count": 50,
+      "added_authoritative_confuser_count": 5
+    }
+  },
+  "active_graph": {
+    "node_count": 130,
+    "relation_count": 145,
+    "boundary_source_count": 5,
+    "frontier_source_count": 125
+  },
+  "symmetry_results": [
+    {
+      "symmetry": "operation_preserving_exact_effect",
+      "depth": 1,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_preserving_exact_effect",
+      "depth": 2,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_preserving_exact_effect",
+      "depth": 3,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_exact_effect",
+      "depth": 1,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_exact_effect",
+      "depth": 2,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_exact_effect",
+      "depth": 3,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_preserving_effect_family",
+      "depth": 1,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_preserving_effect_family",
+      "depth": 2,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_preserving_effect_family",
+      "depth": 3,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_effect_family",
+      "depth": 1,
+      "success_code_equal": true,
+      "forward": {
+        "heldout_recovered": true,
+        "match_count": 1,
+        "boundary_baseline_count": 4,
+        "matches": [
+          "7eca7510e0b06b2e2e9917752b5c30c8ad202b6a7ae6b3cbc94d28639c462e17"
+        ]
+      },
+      "reverse": {
+        "heldout_recovered": true,
+        "match_count": 1,
+        "boundary_baseline_count": 1,
+        "matches": [
+          "ab7c3d970d7c3a881f0dc636c445290c96302de6510d0f14e2b207ad2fa53a69"
+        ]
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_effect_family",
+      "depth": 2,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    },
+    {
+      "symmetry": "operation_renaming_effect_family",
+      "depth": 3,
+      "success_code_equal": false,
+      "forward": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 4,
+        "matches": []
+      },
+      "reverse": {
+        "heldout_recovered": false,
+        "match_count": 0,
+        "boundary_baseline_count": 1,
+        "matches": []
+      },
+      "baseline_dominance": true,
+      "active": {
+        "frontier_match_count": 0,
+        "known_non_discharge_overlap_count": 0,
+        "outside_known_non_discharge_count": 0,
+        "candidates": []
+      },
+      "passed": false
+    }
+  ],
+  "survivor_count": 0,
+  "survivors": [],
+  "status": "graph_neighborhood_transport_refuted"
+}

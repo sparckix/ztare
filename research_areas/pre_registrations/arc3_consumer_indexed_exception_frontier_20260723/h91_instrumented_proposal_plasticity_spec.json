@@ -1,0 +1,97 @@
+{
+  "schema": "ztare-arc3-instrumented-proposal-plasticity-spec-v1",
+  "target_intervention": {
+    "condition_id": "causal_mechanics",
+    "memory_ids": [
+      "goal_requires_glyph_match_v1",
+      "floor_marker_edits_state_glyph_v1"
+    ],
+    "producer_predicted_decision_delta": 0.96
+  },
+  "placebo_intervention": {
+    "condition_id": "redundant_true_memory",
+    "memory_ids": [
+      "controls_cardinal_v1",
+      "walls_block_without_state_change_v1",
+      "marker_is_not_consumed_v1"
+    ],
+    "producer_predicted_decision_delta": 0.99
+  },
+  "proposal_feature_adapter": {
+    "schema": "ztare-regex-proposal-feature-adapter-v1",
+    "text_fields": [
+      "prediction",
+      "plan_summary"
+    ],
+    "rules": [
+      {
+        "feature_id": "state_precondition_first",
+        "include_any_regex": [
+          "\\bmarker\\b",
+          "\\bstate glyph\\b",
+          "\\bbottom-left\\b",
+          "\\b0/1\\b"
+        ],
+        "exclude_any_regex": []
+      },
+      {
+        "feature_id": "terminal_before_precondition",
+        "include_any_regex": [
+          "\\btarget\\b",
+          "\\bframed\\b",
+          "\\bupper chamber\\b",
+          "\\balready match(?:es|ed|ing)?\\b"
+        ],
+        "exclude_any_regex": [
+          "\\bmarker\\b",
+          "\\bstate glyph\\b",
+          "\\bbottom-left\\b",
+          "\\b0/1\\b"
+        ]
+      }
+    ]
+  },
+  "decision_use_contract": {
+    "required_features": [
+      "state_precondition_first"
+    ],
+    "forbidden_features": [
+      "terminal_before_precondition"
+    ],
+    "evidence_memory_ids": [
+      "goal_requires_glyph_match_v1",
+      "floor_marker_edits_state_glyph_v1"
+    ]
+  },
+  "randomized_instrument": {
+    "offer": "target_intervention",
+    "withhold": "byte_matched_placebo_intervention",
+    "pair_count": 4,
+    "order_mode": "alternating",
+    "seed": "h91-instrumented-proposal-plasticity-20260730"
+  },
+  "costs": {
+    "primitive_actions_per_arm": 20,
+    "proposal_inferences_before_first_action": 2,
+    "differential_offer_cost": 0.0,
+    "presentation_match": "canonical_json_utf8_byte_padding"
+  },
+  "prediction": {
+    "minimum_first_stage_transport_delta": 0.25,
+    "minimum_intent_to_treat_composite_delta": 0.0,
+    "minimum_total_task_score_delta": 0.0
+  },
+  "success_criterion": {
+    "instrument_status": "identified",
+    "offer_supported_transport_rate_minus_withhold": ">=0.25",
+    "offer_total_task_score_minus_withhold": ">=0",
+    "offer_mean_composite_minus_withhold": ">0"
+  },
+  "claim_boundary": [
+    "same public game and restored initial observation only",
+    "feature lowering is frozen and task-specific while the proposal-plasticity kernel is substrate-neutral",
+    "the placebo is redundant true memory with exact matched canonical byte length",
+    "proposal features are inspectable text lowerings and do not expose hidden reasoning state",
+    "four stochastic pairs are a mechanism discriminator, not a benchmark estimate"
+  ]
+}

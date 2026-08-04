@@ -1,0 +1,1711 @@
+{
+  "active_epoch": {
+    "receipt": {
+      "boundary_class_count": 0,
+      "effect_class_count": 57,
+      "exceptional_rank": [
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 25, -45)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "3cb83069cfe68d132d239fea89fce35a21dd733bceb968bdb4e8392656e2efff",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#484"
+          ],
+          "operation": "0",
+          "score": 19.0,
+          "source_key_digests": [
+            "adbd020883633314d33a731bd383208dc73c6725a5dbcce448ce7ee9ae642fc5"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -40)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "2060451b0e5761c756541428e095f9088cd2557b9436db4855365729d560e474",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#653"
+          ],
+          "operation": "1",
+          "score": 19.0,
+          "source_key_digests": [
+            "3e39fc0e4e1e65e8137bf7d3469e56b017d3173d8f7f0bed120d283077120ed8"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -40)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "2060451b0e5761c756541428e095f9088cd2557b9436db4855365729d560e474",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#433"
+          ],
+          "operation": "2",
+          "score": 19.0,
+          "source_key_digests": [
+            "3e39fc0e4e1e65e8137bf7d3469e56b017d3173d8f7f0bed120d283077120ed8"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 35, -45)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "a5008357380b4434e47b049853929651727a09db73b0acc50d855a2cdfe3b9c6",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#473"
+          ],
+          "operation": "2",
+          "score": 19.0,
+          "source_key_digests": [
+            "0750d9f1d3113a66f8c16a7dcdfa13c6f4e4c0d31ebb8a8b72d9c31073d6ec15"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -40)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "61d39958dbf9531c19db2c6010eb9e12b94f0a5ae149007b17fcddf1dcf135a6",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#559"
+          ],
+          "operation": "3",
+          "score": 19.0,
+          "source_key_digests": [
+            "b2c229a188bebde50385c9e3a86882cf0fafe4189f8e5b4bccccb1207c079bbf"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -30)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "78bab3f37a1b9bc4315074870eb9db59dd777781cc7fcee3459a8361f268b468",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#564"
+          ],
+          "operation": "3",
+          "score": 19.0,
+          "source_key_digests": [
+            "14ca6e527793ac556839a651008fe8ac635616f34200c267b98ad220ffa48240"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -30)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "8c1228b6ab28cb2efe6515bcc88870326718826d40d3d8271b0760782a641cc7",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#528"
+          ],
+          "operation": "3",
+          "score": 19.0,
+          "source_key_digests": [
+            "7fe1ae77b384f361f6fc60fa157f6e7ba5fa53a7ee2aa3274646583b18d9807c"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -40)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "a9ab0665d16a012722a3a5bf7ad139f0bc67449601e51f90155c54d2510962d3",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#538"
+          ],
+          "operation": "3",
+          "score": 19.0,
+          "source_key_digests": [
+            "16d60c3792a1136cca08cb9ff2da7e371ec3fc9f467d5afb9bf5552c135a481f"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "15d5376e9b2eaf94b98d17d0d93584c606d99648ff502992e4b098ee65e285b6",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#737"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "b2166f5548fd236af0774b93d14920198850dfc44f986700823db21077f48cd0"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 15, -15)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "3fca5e1a87bc4bc13cc452d6505f44abab3dcc27c954160d26a871c5f0334cec",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#705"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "cd795728259ffaa673c1eaffcb5e6c87c8224daab55d2420274ec659cbd5afa7"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', 13), ('ordered_budget', 13))",
+          "effect_sha256": "88f0a2ef43f0bfc3911e4a4cc676f594aa3b7af104a667ce391f748917d257d5",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#576"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "541157a62529b4cf97e36f1a21b50dd7c709beb04b0f4d104d1bc51572c71432"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 15, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "8d3a15e31ded3d9ea1897afff51ed7c5294cdd683daa7780d75bb876fd0daf29",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#743"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "f23ffe5a6db7aa6f3510f390582867630db3b665c83dc73d0746d47b173db6b8"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, -45)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "8df1ece915f4a6b0358bc1256e1539ea20221b0d658569328f8bb205fdbfd564",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#374"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "3dd122d28b7eb4572feb827e7732bb4647b2cd0698d4b4a0704bfdcb890342de"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 30, -40)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "c3974d129c8ad6bcb6bca8c1eb60a9e51c3222753c26f9127dcbb7cea3342a69",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#383"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "1821c9d173020245182af40fa62f0989d7cd1f31e7f11128409f204c3795c84e"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 30, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "cd04f976307aec0e2b89adf85de7047798619564ffb8a53f24ea6af5cecb261b",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#287"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "e9d2448d02dc0e0ac02e4f55c058b17bd7073219e149b7a21e4ee310ebcfb3a7"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "eb5e47e40cfff4b29ac23e47ee1640ef7f515a42485d264ca82fcf7b9d4e0b60",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#352"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "3c2dffe93f19917a5a3aeedae0f3f255e83abb971aafa135e7cdc1ae759802cd"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#265"
+          ],
+          "operation": "0",
+          "score": 14.0,
+          "source_key_digests": [
+            "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', 15), ('ordered_budget', 15))",
+          "effect_sha256": "c5e6555525777d92d4a795b092abca05947c20dd4d09daff39eb72a18d37f579",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#344"
+          ],
+          "operation": "1",
+          "score": 14.0,
+          "source_key_digests": [
+            "0c400b01e3be6cfc19189edd62dc4ef93bc8b200b9f7663b955eadd760a3e9fc"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 30, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "e464f93f00b223a5b2c026c104166de2530bb5ea3b1f5383914b8e257435cfe2",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#780"
+          ],
+          "operation": "1",
+          "score": 14.0,
+          "source_key_digests": [
+            "52cafa23aff56cd40e70ada9c933f4232fa3c021328b3bba8398de5d776e8c2f"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', 15), ('ordered_budget', 15))",
+          "effect_sha256": "31a7c8cc474f21f4fffce87ab12368565f93a29e2a38ac99c0f820a9642eef12",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#324"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "5dadf09fe7281cc258bfe907a4a275a0c70652049b69f485d5fd0326c81846d0"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "748e6d4661c9599b573f4cedf813b6511429e5fb2c26f2a845588ac282df30a8",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#619"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "58254a2a99f34ccbd6b5320443f032a161c1edfad1f275bfaf6831271780235a"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', 5), ('ordered_budget', 5))",
+          "effect_sha256": "ca5da39828b186d67dc7da86fa6bb1487e1e1fb1bee705c063977161a9c73bc9",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#597"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "3b59167215b6589392afe6503213a64bbd0e323d9bee102a622ff89025175727"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "dab697e8f29b298c48284e64e1be19edef2ff309690b8f31de83b46f11772765",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#922"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "00ff4a28d9dc259d65414e51ab01854efafa35e97447f771cedac89aec88372e"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', 6), ('ordered_budget', 6))",
+          "effect_sha256": "e86cdea3d30ad733c5b7e677b935c28f733e884a2519d79548172e90239aefa2",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#865"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "d8dc04e8fd91f6d40d9ba8e94355597bd877775177b6202ec0dee2db7570ca29"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "eb5e47e40cfff4b29ac23e47ee1640ef7f515a42485d264ca82fcf7b9d4e0b60",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#748"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "3c2dffe93f19917a5a3aeedae0f3f255e83abb971aafa135e7cdc1ae759802cd"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#926"
+          ],
+          "operation": "2",
+          "score": 14.0,
+          "source_key_digests": [
+            "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 13), ('ordered_budget', 13))",
+          "effect_sha256": "11f361f33180738b969d5e27706b8c0aca74ae84a541c2c2728ee9254036f9d3",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#820"
+          ],
+          "operation": "3",
+          "score": 14.0,
+          "source_key_digests": [
+            "0ecf3bafaa203d5fddd471415ef9b42e20f6af7c3e91fef771d5b6f8a958049f"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 20, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "15d5376e9b2eaf94b98d17d0d93584c606d99648ff502992e4b098ee65e285b6",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#742"
+          ],
+          "operation": "3",
+          "score": 14.0,
+          "source_key_digests": [
+            "b2166f5548fd236af0774b93d14920198850dfc44f986700823db21077f48cd0"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 16), ('ordered_budget', 16))",
+          "effect_sha256": "a9bae89018c6280271e6c48bccb905ed4b36e4eb4ef2cf0704a397e8e799fc68",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#849"
+          ],
+          "operation": "3",
+          "score": 14.0,
+          "source_key_digests": [
+            "23d040e10ba98f0924c1b27f697c45e934a493a8566cd71ecabaf2a47909c291"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 18), ('ordered_budget', 18))",
+          "effect_sha256": "c55510376f79f6336393f4df79a714088296f0cbabd47a9b4d95efd60821d972",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#842"
+          ],
+          "operation": "3",
+          "score": 14.0,
+          "source_key_digests": [
+            "7922d685ae29329149628ad6b1f485df764a0f1833f96c446bbe07b7db2cb571"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, -15)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "86658debe455bca8e6a3c702cd51c4975116d4357eead7255af17eda9af4153c",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#807",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#808"
+          ],
+          "operation": "1",
+          "score": 13.5,
+          "source_key_digests": [
+            "4263abefebe7665a7dd1ab0f64c1e9782232d69d50552d65508f23711290c596"
+          ],
+          "support": 2
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#766",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#924"
+          ],
+          "operation": "1",
+          "score": 13.5,
+          "source_key_digests": [
+            "61b1e668bf1584e1ea1f097955d9adb555a8810ff635a419d10ae7ba54772e5e"
+          ],
+          "support": 2
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 15, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "8d3a15e31ded3d9ea1897afff51ed7c5294cdd683daa7780d75bb876fd0daf29",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#719",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#740"
+          ],
+          "operation": "3",
+          "score": 13.5,
+          "source_key_digests": [
+            "f23ffe5a6db7aa6f3510f390582867630db3b665c83dc73d0746d47b173db6b8"
+          ],
+          "support": 2
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, -15)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "86658debe455bca8e6a3c702cd51c4975116d4357eead7255af17eda9af4153c",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#752",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#797",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#802"
+          ],
+          "operation": "0",
+          "score": 13.333333333333334,
+          "source_key_digests": [
+            "4263abefebe7665a7dd1ab0f64c1e9782232d69d50552d65508f23711290c596"
+          ],
+          "support": 3
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+          "effect_sha256": "dab697e8f29b298c48284e64e1be19edef2ff309690b8f31de83b46f11772765",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#21",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#43",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#874",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#878"
+          ],
+          "operation": "0",
+          "score": 13.25,
+          "source_key_digests": [
+            "00ff4a28d9dc259d65414e51ab01854efafa35e97447f771cedac89aec88372e"
+          ],
+          "support": 4
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 11), ('ordered_budget', 11))",
+          "effect_sha256": "78a020fcc866e807c42f0e9cc8d4bcded8f4f4b6bf834c30732987297a56cd57",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#326",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#445",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#496",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#631",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#665"
+          ],
+          "operation": "3",
+          "score": 13.2,
+          "source_key_digests": [
+            "923665abd6573afebbf10c7766fbe538052646b9c1d9010cdce47ef5a71b45b3"
+          ],
+          "support": 5
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, 0)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "72565675e620c252e16c5a1da3ac0829e77d5ba2e37c4406973096db5ceb6c88",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#414"
+          ],
+          "operation": "0",
+          "score": 12.0,
+          "source_key_digests": [
+            "b8804b987d96ab8a7c03cff0cfeef58947af2a6802cbc00cce63206040bd1291"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, -5)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "9ec2fe81758e708f70573502bc51e369a4533cd4c9e0fe39c1fdb1d4ba096330",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#431"
+          ],
+          "operation": "2",
+          "score": 12.0,
+          "source_key_digests": [
+            "30b7a6c68c09b081e184a99b4ee60f233e73fbcdc957eb972b4a76d734c04025"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "62dce992e36007aee2873442b78f5149cd9f5b0f7bc5128f2dae772fc8622c25",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#412"
+          ],
+          "operation": "3",
+          "score": 12.0,
+          "source_key_digests": [
+            "8987ea0893c70dea09b875cd95f7bf58ccd76264d0c72f7562e56609a37375fb"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "ca51d3ea5daa6e50cee47ff8a3bd95e2b3b125fdbcc2b027fdb37c0bbe28f5d8",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#463"
+          ],
+          "operation": "3",
+          "score": 12.0,
+          "source_key_digests": [
+            "bf07852d1fd8baba26dcf38f38a20152f5d2190015a9fd8009419b6a0e4a6f5a"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 5)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "14f812e960a66f088d2e70b838d152ccb2499b05c2533edbb7ab7de9db4fe2b0",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#419",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#421"
+          ],
+          "operation": "3",
+          "score": 11.5,
+          "source_key_digests": [
+            "a3a965aadbef3b872a54f0aee7a8074e56e1365fef4c718b53ae62c82fbcfc7c",
+            "bff4b87f05638dbdfa1c3df4a863a5aeb079ff501afc0b23d6ac857c5ea380f0"
+          ],
+          "support": 2
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, 0)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "e6a51bda1d8522c2dd09c224f339f984ea6463d382367be600d5088cf3ba17a4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#476",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#510",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#551"
+          ],
+          "operation": "1",
+          "score": 11.333333333333334,
+          "source_key_digests": [
+            "1080878b960ad80f005e7f7e8be0f218b2a3461f419bf86a89248701a4104b60"
+          ],
+          "support": 3
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, 0)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "24536ad6cfb12b7dd124c20aa1f39e89581d5224806ed9fbbabb9e127f3e7827",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#459",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#474",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#508",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#651"
+          ],
+          "operation": "1",
+          "score": 11.25,
+          "source_key_digests": [
+            "6667f62bdc077a024b2656c448de4736552218f92e738be1ba209ae530465a55",
+            "7d612dfb38e93553e90bc646df92957071a00aaf77b6ad58306b83ec48dee40f"
+          ],
+          "support": 4
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, -5)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "db84bd33ff88d66b3ec56f4f57dd4a161f818ce889af952b6544fb831dbdb6ab",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#406",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#408",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#455",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#506",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#649",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#685"
+          ],
+          "operation": "2",
+          "score": 11.166666666666666,
+          "source_key_digests": [
+            "36ffcd53efc9faddeab2bdbcca64813777b0d47078db8345afd704a7273cd3c6",
+            "5aba6e91d095e36c2ee75bb001d345bf5a1e1cfdf441743a4dad2227cd2115ff",
+            "944ed21ca461bc1cf40247b07d40c732959427e8a00766e698bcc71b5c317f25",
+            "b44a4b3af7a565dd668bf408508e78216b6a3f1323710e9643a2bb11f4bf07fa"
+          ],
+          "support": 6
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 0, 20)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "4cbcd79ad6ff14540584cc0325e4a73cf31f9df4911b932be7a45c39a4b7dfa1",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#346",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#583"
+          ],
+          "operation": "2",
+          "score": 6.5,
+          "source_key_digests": [
+            "06b575ade5439be9f9e10daab16a0db0fface3f08a96e155ce1d52c7237d16ae",
+            "efc2ac265c1385334adf110d9355bfdc612cca66b45a1a5fe2a24afeb11aaeae"
+          ],
+          "support": 2
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 35, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "bbe7c2ddb7433b192d0ac85f51363f74b5d71520ed45b9f5fb501de15797c66e",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#340",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#423",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#465"
+          ],
+          "operation": "0",
+          "score": 6.333333333333333,
+          "source_key_digests": [
+            "0693746dbfe62709c4a7cbbe608b414a359018346a6e00b6c210e0730cf9e406",
+            "56a059a413e38e9acda817c77bf4707053270ed608da0a9943a57b2e90cabeb4",
+            "db0fa037a1519ee396ac24b07a9bcd81b3d36775c428be25a02783f285b1fba4"
+          ],
+          "support": 3
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 40, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "60754d8669fcd2dee4f63c3b9f92473a59be57e47328e240140bb96c372910c6",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#457",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#458",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#478",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#565"
+          ],
+          "operation": "3",
+          "score": 6.25,
+          "source_key_digests": [
+            "6667f62bdc077a024b2656c448de4736552218f92e738be1ba209ae530465a55",
+            "bb14133911fc05def1a08ed32da1a0921fc88417f9d9f36af61205f19ac33dd4"
+          ],
+          "support": 4
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#407",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#887",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#892",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#895",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#898",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#901",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#903",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#913",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#916",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#919",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#973"
+          ],
+          "operation": "3",
+          "score": 6.090909090909091,
+          "source_key_digests": [
+            "02fc7e7a99071694ca87543d66bd39b926dc1ad5173c7126a5f2d44265c7b29e",
+            "0573ecfb557f93c409431fe790c77dfb2516792bfd3719e4725e77247f053e27",
+            "0aa941c92983b390b8dceaf7c60ed536d70f5482107d4e349fb57f4331f2cebb",
+            "263a9140b55a368e44899f8d358bbbbb78853bab8d9d5e3c5c3098380fab3b0c",
+            "49195bbc6a69e4c0e43012233d7a497f5c6bbc1b4ff00795b838bb2d0d668ea4",
+            "7c30d1e7dd95f2e4ddc25f3e3844b83db91ad70eacaa1507070790f464739f70",
+            "87948f9e97837a00b4c2107c6148a964a2f79452dd3fd6c0d91a446346f86121",
+            "944ed21ca461bc1cf40247b07d40c732959427e8a00766e698bcc71b5c317f25",
+            "ab5ebc91f7cf2f8210c0aabf54ae9e9f5c22017cd5b52e204cc3aefdaea40692",
+            "faec9d52ed8988ebb3cf44f21c935ef18200bef9011bdfeb01cb1c82752279c2",
+            "fdbad905b0632bc714d2ec6d4c6a3a8058af665b3758adf6dd201424df2cfb89"
+          ],
+          "support": 11
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, 25)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "574a104e91c9e7bcd30ffbacd9ce8958da29740ce7c468bd49ab356be43b08ea",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#7",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#29",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#51",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#397",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#441",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#492",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#627",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#661",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#693",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#713",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#727",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#917"
+          ],
+          "operation": "0",
+          "score": 6.083333333333333,
+          "source_key_digests": [
+            "743a224506b8985657b71d353a783edf95b923ecf1397ad316da2ccafb9bc19f",
+            "d6947fd9e92a8c1b1a1a552b96f869d71f57d1591eedc5302ee07d5301e3453d",
+            "e606cff15262a682bc3aeb044c3bb17daf5dbcf8354eb72485c30d05d37549e1"
+          ],
+          "support": 12
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+          "evidence_refs": [
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#811",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#817",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#818",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#830",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#831",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#832",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#833",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#836",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#837",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#838",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#839",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#840",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#845",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#846",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#847",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#884",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#891",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#894",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#897",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#900",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#912",
+            "law_scored_view(raw/episodes/episode_001.jsonl,source_epoch=2)#915"
+          ],
+          "operation": "2",
+          "score": 6.045454545454546,
+          "source_key_digests": [
+            "1363f8c47ca794809ffa759aef953752792e482c3525b36522c9a6943e20f1ad",
+            "253cce778c10267c406f3d3a108e09ebfdcaf341e03ad52b372342d8ec432c2f",
+            "2c2c697de12afdfe8a2b4bfbb7c5eb54fe569995bd0819d67fdcb49d95f88e39",
+            "48853520be0cc36d4b884f4ec8bc5fcfb365a5eb5b4695495ad47bd51738f4b5",
+            "4bc9d65b89d03154f4fa34da478a49e8dabfa6d1fea01130dc134f73e4675587",
+            "519dedc08dc7344f7020452b213bba2c2eef32ac993d0051f51e0a8dfc00a116",
+            "59dadf87a974985be550269c1cf69da41ba47ed57788cdf4528024e10790c41d",
+            "6155c84e6f86f7ddd53e11a30658735223de42a9d40c73e8c5058a24f6b043cd",
+            "82db0584a4c1d097e9fa4e4e4d2e9a81a08e492ef2e0896e32a506dcffe8a0a3",
+            "8582d898e5b401892aa6ab36af24abc092e5ff5484920c8a1b610d981563b1dc",
+            "87c17f435a27c46ed85a895f9f6c121c8168f7bf1eb83c7627eba1f0343c297a",
+            "96347705d48e8ad3aaaa3b4997c1a9cf03efa5e7915d89813599216909a21d76",
+            "a32b8a3cdbec77273ab536e214e18c281941c70d8bbd6cdce318efd5350135d2",
+            "a6a37a0c57c06488d70c0008df8b76ce3688087338455612683977e4cb154ff4",
+            "b67a3a2a7535f911a2e553023c1b7679c2c2b21b3e651d2323322b72b4090244",
+            "b7b9c310f7ae29dd740718c74af2d503954406d557474a1cbb08dbe30ef6260f",
+            "d1a16059b30795e5a2cf5795f1f1b84940394547b77de7ea14bd7ed9cffc0fa2",
+            "e01dc001c593960d78c40101b7314db8eed1fa2df2e77e4fc457d388adb6e7e0"
+          ],
+          "support": 22
+        }
+      ],
+      "fiber_count": 516,
+      "noncommuting_relation_count": 0,
+      "noncommuting_relations": [],
+      "observation_count": 975,
+      "projection_id": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+      "relation_count": 616,
+      "schema": "ztare-partial-action-system-v1",
+      "section": {
+        "checked": 516,
+        "failures": [],
+        "status": "pass"
+      },
+      "target_relation_count": 616
+    },
+    "source_epoch": 2,
+    "support_rank": [
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "0dcb2fbc994b2b7ff3eff81fa35f668ee454b423625314bdadc003fadacf86e6",
+        "operation": "0",
+        "source_count": 175,
+        "support": 303
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "fec1d30f7e61dad70d5f14cacee530bc07bade8f838a1b271eadb839ea338781",
+        "operation": "1",
+        "source_count": 157,
+        "support": 217
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+        "operation": "0",
+        "source_count": 54,
+        "support": 124
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "5360d265c045af0623adb5aa671a3340a60d5da306d3213d7bff97848692e1f6",
+        "operation": "3",
+        "source_count": 58,
+        "support": 80
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "1d7b16e9a71c6c73aa0c83f918903d8af557aa3a3b6bcd55c99624f9b509d6fa",
+        "operation": "2",
+        "source_count": 56,
+        "support": 72
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+        "operation": "1",
+        "source_count": 27,
+        "support": 30
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('identity',),)",
+        "effect_sha256": "97762d80486324a2ab10c0543c596eec0cee78bf68796c6da9c9c92e9aa70fff",
+        "operation": "1",
+        "source_count": 1,
+        "support": 28
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+        "operation": "2",
+        "source_count": 18,
+        "support": 22
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, 25)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "574a104e91c9e7bcd30ffbacd9ce8958da29740ce7c468bd49ab356be43b08ea",
+        "operation": "0",
+        "source_count": 3,
+        "support": 12
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "73e94a8d04356cc52fd15866c5871c7a8e759c81a3d76e37fedc5131ee7153f4",
+        "operation": "3",
+        "source_count": 11,
+        "support": 11
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, -5)), ('finite_configuration', (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "db84bd33ff88d66b3ec56f4f57dd4a161f818ce889af952b6544fb831dbdb6ab",
+        "operation": "2",
+        "source_count": 4,
+        "support": 6
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 11), ('ordered_budget', 11))",
+        "effect_sha256": "78a020fcc866e807c42f0e9cc8d4bcded8f4f4b6bf834c30732987297a56cd57",
+        "operation": "3",
+        "source_count": 1,
+        "support": 5
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 40, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "dab697e8f29b298c48284e64e1be19edef2ff309690b8f31de83b46f11772765",
+        "operation": "0",
+        "source_count": 1,
+        "support": 4
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 40, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "60754d8669fcd2dee4f63c3b9f92473a59be57e47328e240140bb96c372910c6",
+        "operation": "3",
+        "source_count": 2,
+        "support": 4
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "24536ad6cfb12b7dd124c20aa1f39e89581d5224806ed9fbbabb9e127f3e7827",
+        "operation": "1",
+        "source_count": 2,
+        "support": 4
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 35, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "bbe7c2ddb7433b192d0ac85f51363f74b5d71520ed45b9f5fb501de15797c66e",
+        "operation": "0",
+        "source_count": 3,
+        "support": 3
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "e6a51bda1d8522c2dd09c224f339f984ea6463d382367be600d5088cf3ba17a4",
+        "operation": "1",
+        "source_count": 1,
+        "support": 3
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, -15)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "86658debe455bca8e6a3c702cd51c4975116d4357eead7255af17eda9af4153c",
+        "operation": "0",
+        "source_count": 1,
+        "support": 3
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, 20)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "4cbcd79ad6ff14540584cc0325e4a73cf31f9df4911b932be7a45c39a4b7dfa1",
+        "operation": "2",
+        "source_count": 2,
+        "support": 2
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, 5)), ('finite_configuration', (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "14f812e960a66f088d2e70b838d152ccb2499b05c2533edbb7ab7de9db4fe2b0",
+        "operation": "3",
+        "source_count": 2,
+        "support": 2
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 15, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "8d3a15e31ded3d9ea1897afff51ed7c5294cdd683daa7780d75bb876fd0daf29",
+        "operation": "3",
+        "source_count": 1,
+        "support": 2
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+        "operation": "1",
+        "source_count": 1,
+        "support": 2
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, -15)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "86658debe455bca8e6a3c702cd51c4975116d4357eead7255af17eda9af4153c",
+        "operation": "1",
+        "source_count": 1,
+        "support": 2
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 40, -20)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "fbcf77d1bc466bfda4f51eb144616f8dae987e8343c1a5de9fae1655d07cc8a4",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 30, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "cd04f976307aec0e2b89adf85de7047798619564ffb8a53f24ea6af5cecb261b",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', 15), ('ordered_budget', 15))",
+        "effect_sha256": "31a7c8cc474f21f4fffce87ab12368565f93a29e2a38ac99c0f820a9642eef12",
+        "operation": "2",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', 15), ('ordered_budget', 15))",
+        "effect_sha256": "c5e6555525777d92d4a795b092abca05947c20dd4d09daff39eb72a18d37f579",
+        "operation": "1",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, -25)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "eb5e47e40cfff4b29ac23e47ee1640ef7f515a42485d264ca82fcf7b9d4e0b60",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, -45)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "8df1ece915f4a6b0358bc1256e1539ea20221b0d658569328f8bb205fdbfd564",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 30, -40)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "effect_sha256": "c3974d129c8ad6bcb6bca8c1eb60a9e51c3222753c26f9127dcbb7cea3342a69",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      }
+    ]
+  },
+  "bank": {
+    "status": "skipped_active_only"
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "discriminators": {
+    "trace_boundary_classes": 0,
+    "trace_noncommuting_relations": 0,
+    "trace_section_passed": true
+  },
+  "history_lift": {
+    "action_system_sha256": "98e2fead644b11e9cff4da31210049a7cfd49848b8af730d6d6d9c1bdd8ed6ed",
+    "boundary_noncommuting_relations": 0,
+    "candidates": [
+      {
+        "boundary_noncommuting_relation_count": 1,
+        "fiber_count": 76,
+        "history_kind": "action",
+        "noncommuting_relation_count": 2,
+        "relation_count": 80,
+        "suffix_length": 0
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 79,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 82,
+        "suffix_length": 1
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 80,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 83,
+        "suffix_length": 2
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 81,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 84,
+        "suffix_length": 3
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 83,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 86,
+        "suffix_length": 4
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 85,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 88,
+        "suffix_length": 5
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 87,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 90,
+        "suffix_length": 6
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 89,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 92,
+        "suffix_length": 7
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 91,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 94,
+        "suffix_length": 8
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 93,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 96,
+        "suffix_length": 9
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 95,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 98,
+        "suffix_length": 10
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 97,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 100,
+        "suffix_length": 11
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 99,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 102,
+        "suffix_length": 12
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 101,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 104,
+        "suffix_length": 13
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 103,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 106,
+        "suffix_length": 14
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 105,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 108,
+        "suffix_length": 15
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 107,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 110,
+        "suffix_length": 16
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 109,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 112,
+        "suffix_length": 17
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 111,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 114,
+        "suffix_length": 18
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 113,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 116,
+        "suffix_length": 19
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 115,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 118,
+        "suffix_length": 20
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 117,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 120,
+        "suffix_length": 21
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 119,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 122,
+        "suffix_length": 22
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 121,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 124,
+        "suffix_length": 23
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 123,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 126,
+        "suffix_length": 24
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 125,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 128,
+        "suffix_length": 25
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 127,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 130,
+        "suffix_length": 26
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 129,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 132,
+        "suffix_length": 27
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 131,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 134,
+        "suffix_length": 28
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 133,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 136,
+        "suffix_length": 29
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 135,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 138,
+        "suffix_length": 30
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 137,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 139,
+        "suffix_length": 31
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 138,
+        "history_kind": "action",
+        "noncommuting_relation_count": 1,
+        "relation_count": 140,
+        "suffix_length": 32
+      },
+      {
+        "boundary_noncommuting_relation_count": 1,
+        "fiber_count": 76,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 2,
+        "relation_count": 80,
+        "suffix_length": 0
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 81,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 84,
+        "suffix_length": 1
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 84,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 87,
+        "suffix_length": 2
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 87,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 90,
+        "suffix_length": 3
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 90,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 93,
+        "suffix_length": 4
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 93,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 96,
+        "suffix_length": 5
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 96,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 99,
+        "suffix_length": 6
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 99,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 102,
+        "suffix_length": 7
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 102,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 105,
+        "suffix_length": 8
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 105,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 108,
+        "suffix_length": 9
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 108,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 111,
+        "suffix_length": 10
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 111,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 114,
+        "suffix_length": 11
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 114,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 117,
+        "suffix_length": 12
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 117,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 120,
+        "suffix_length": 13
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 120,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 123,
+        "suffix_length": 14
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 123,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 126,
+        "suffix_length": 15
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 126,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 129,
+        "suffix_length": 16
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 129,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 132,
+        "suffix_length": 17
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 132,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 135,
+        "suffix_length": 18
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 135,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 138,
+        "suffix_length": 19
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 138,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 140,
+        "suffix_length": 20
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 140,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 142,
+        "suffix_length": 21
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 142,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 144,
+        "suffix_length": 22
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 144,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 146,
+        "suffix_length": 23
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 146,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 148,
+        "suffix_length": 24
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 148,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 150,
+        "suffix_length": 25
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 150,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 152,
+        "suffix_length": 26
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 152,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 154,
+        "suffix_length": 27
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 154,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 155,
+        "suffix_length": 28
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 155,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 156,
+        "suffix_length": 29
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 156,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 157,
+        "suffix_length": 30
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 157,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 158,
+        "suffix_length": 31
+      },
+      {
+        "boundary_noncommuting_relation_count": 0,
+        "fiber_count": 158,
+        "history_kind": "operation_effect",
+        "noncommuting_relation_count": 1,
+        "relation_count": 159,
+        "suffix_length": 32
+      }
+    ],
+    "history_kind": "action",
+    "schema": "ztare-history-lift-selection-v1",
+    "suffix_length": 1
+  },
+  "latest_trace": {
+    "boundary_indices": [],
+    "path": "raw/episodes/eval_slices/eval_20260725T194809829605Z.jsonl",
+    "receipt": {
+      "boundary_class_count": 0,
+      "effect_class_count": 2,
+      "exceptional_rank": [
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "0dcb2fbc994b2b7ff3eff81fa35f668ee454b423625314bdadc003fadacf86e6",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260725T194809829605Z.jsonl#0"
+          ],
+          "operation": "0",
+          "score": 6.0,
+          "source_key_digests": [
+            "59dadf87a974985be550269c1cf69da41ba47ed57788cdf4528024e10790c41d"
+          ],
+          "support": 1
+        },
+        {
+          "boundary_kind": "",
+          "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+          "effect_sha256": "fec1d30f7e61dad70d5f14cacee530bc07bade8f838a1b271eadb839ea338781",
+          "evidence_refs": [
+            "raw/episodes/eval_slices/eval_20260725T194809829605Z.jsonl#1"
+          ],
+          "operation": "1",
+          "score": 6.0,
+          "source_key_digests": [
+            "a6a37a0c57c06488d70c0008df8b76ce3688087338455612683977e4cb154ff4"
+          ],
+          "support": 1
+        }
+      ],
+      "fiber_count": 3,
+      "noncommuting_relation_count": 0,
+      "noncommuting_relations": [],
+      "observation_count": 2,
+      "projection_id": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+      "relation_count": 2,
+      "schema": "ztare-partial-action-system-v1",
+      "section": {
+        "checked": 3,
+        "failures": [],
+        "status": "pass"
+      },
+      "target_relation_count": 2
+    },
+    "support_rank": [
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "0dcb2fbc994b2b7ff3eff81fa35f668ee454b423625314bdadc003fadacf86e6",
+        "operation": "0",
+        "source_count": 1,
+        "support": 1
+      },
+      {
+        "boundary_kind": "",
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "effect_sha256": "fec1d30f7e61dad70d5f14cacee530bc07bade8f838a1b271eadb839ea338781",
+        "operation": "1",
+        "source_count": 1,
+        "support": 1
+      }
+    ]
+  },
+  "offline_mechanism_search": {
+    "status": "skipped"
+  },
+  "offline_observed_frontier": {
+    "action_count": 2,
+    "actions": [
+      "0",
+      "2"
+    ],
+    "ambiguous_edges_on_path": 0,
+    "depth": 2,
+    "exceptional_score": 14.0,
+    "frontier_pairs": 97,
+    "reachable_nodes": 34,
+    "schema": "ztare-observed-partial-action-frontier-plan-v1",
+    "status": "frontier_pair_found",
+    "target_operation": "2",
+    "target_source_sha256": "763c6939d554650b28e33ae8e2e718bf38321659feeb367a2667ddf6400680dd"
+  },
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "schema": "ztare-partial-action-audit-v1"
+}

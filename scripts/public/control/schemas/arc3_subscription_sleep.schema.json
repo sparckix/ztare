@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "ztare-arc3-level-boundary-sleep-digest-v1"
+      ]
+    },
+    "episode_summary": {
+      "type": "string"
+    },
+    "memories": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "properties": {
+          "memory_id": {
+            "type": "string"
+          },
+          "claim": {
+            "type": "string"
+          },
+          "guard_features": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string"
+            }
+          },
+          "support_action_counts": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            }
+          },
+          "contradiction_action_counts": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32
+            }
+          },
+          "predicted_decision_delta": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          },
+          "retrieval_cost": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "memory_id",
+          "claim",
+          "guard_features",
+          "support_action_counts",
+          "contradiction_action_counts",
+          "predicted_decision_delta",
+          "retrieval_cost"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "active_uncertainties": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_decision_questions": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "episode_summary",
+    "memories",
+    "active_uncertainties",
+    "next_decision_questions"
+  ],
+  "additionalProperties": false
+}

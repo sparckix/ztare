@@ -247,7 +247,8 @@ def build_row_bitmap(
     exact_count = 0
 
     if program is not None:
-        predict = as_predictor(program)
+        from ztare.worldmodel.gates import _memoized_predictor
+        predict = _memoized_predictor(as_predictor(program))
         for i, tr in enumerate(rows):
             if i in env_idx:
                 bits.append(True)  # env frames are excluded, not wrong

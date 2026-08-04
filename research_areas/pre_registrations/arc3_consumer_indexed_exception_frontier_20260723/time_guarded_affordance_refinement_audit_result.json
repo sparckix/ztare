@@ -1,0 +1,151 @@
+{
+  "bounds": {
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "clock_identity": {
+    "key": "(dominance_key(state), time_value)",
+    "time_translation_certificate": null
+  },
+  "criteria": {
+    "edge_found": false,
+    "no_cross_time_residual": true,
+    "no_environment_contact": true,
+    "no_projection_counterexample": false,
+    "no_same_time_residual": false,
+    "selected_joint_code": false,
+    "source_split_same_time": true,
+    "split_separates": true
+  },
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "problem_id": "648721cf340863aa1a0263804a4ba92f786f09497f54db070de55230a234722b",
+  "refined_projection_sha256": "27fdbd75a574e1c6c4353daf02f9e03d987d8f8ae91c25adfaa6419b3c49bf09",
+  "replay": {},
+  "schema": "ztare-time-guarded-affordance-refinement-audit-v1",
+  "search": {
+    "action_count": 0,
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 22,
+    "expanded": 231,
+    "frontier_remaining": 110,
+    "generated": 340,
+    "projection_counterexample": {
+      "consumer_difference": {
+        "changed_cell_count": 9,
+        "changed_cells": [
+          {
+            "coordinate": [
+              46,
+              30
+            ],
+            "left": 3,
+            "right": 9
+          },
+          {
+            "coordinate": [
+              46,
+              31
+            ],
+            "left": 3,
+            "right": 14
+          },
+          {
+            "coordinate": [
+              46,
+              32
+            ],
+            "left": 3,
+            "right": 14
+          },
+          {
+            "coordinate": [
+              47,
+              30
+            ],
+            "left": 3,
+            "right": 9
+          },
+          {
+            "coordinate": [
+              47,
+              31
+            ],
+            "left": 3,
+            "right": 0
+          },
+          {
+            "coordinate": [
+              47,
+              32
+            ],
+            "left": 3,
+            "right": 8
+          },
+          {
+            "coordinate": [
+              48,
+              30
+            ],
+            "left": 3,
+            "right": 12
+          },
+          {
+            "coordinate": [
+              48,
+              31
+            ],
+            "left": 3,
+            "right": 12
+          },
+          {
+            "coordinate": [
+              48,
+              32
+            ],
+            "left": 3,
+            "right": 8
+          }
+        ],
+        "changed_factor_names": [],
+        "schema": "ztare-consumer-quotient-difference-v1"
+      },
+      "dominated_image": "(((((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 86), (21.0,))",
+      "dominated_time": "85",
+      "dominator_image": "(((((45, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', True))), 86), (21.0,))",
+      "dominator_time": "85",
+      "intervention": "1",
+      "kind": "dominance_simulation_failed",
+      "merged_key": "((((40, 29),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (9, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_2d88c68a8c832128', False))), 85)"
+    },
+    "status": "projection_noncommuting"
+  },
+  "split": {
+    "cells": [
+      [
+        61,
+        57
+      ],
+      [
+        62,
+        57
+      ]
+    ],
+    "discriminator_id": "counterexample_availability_2d88c68a8c832128",
+    "left_bit": true,
+    "lineage": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/repaired_joint_affordance_search_audit_result.json",
+    "reference": [
+      3,
+      3
+    ],
+    "right_bit": false
+  },
+  "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+  "status": "time_guarded_affordance_refinement_refuted",
+  "target": {
+    "configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1"
+  }
+}

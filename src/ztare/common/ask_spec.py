@@ -60,7 +60,11 @@ def render_ask_spec_markdown(spec: AskSpec) -> str:
     return "\n".join(lines)
 
 
-def worldmodel_candidate_ask_spec(*, objective: str, active_shas: list[str]) -> AskSpec:
+def worldmodel_candidate_ask_spec(
+    *,
+    objective: str,
+    current_refs: tuple[str, ...] = (),
+) -> AskSpec:
     return AskSpec(
         contract_id=CANDIDATE_FIRST_CONTRACT_ID,
         objective=objective,
@@ -78,5 +82,5 @@ def worldmodel_candidate_ask_spec(*, objective: str, active_shas: list[str]) -> 
             "Treat stopping as a local information-yield decision: if the next visible action is cheap, executable, and informative, run it before returning a blocker.",
             "When stopping after consumed counterexamples, return a local_frontier_decision so the stop can be audited as a bounded search choice.",
         ),
-        current_refs=tuple(f"strategy_card_sha:{sha}" for sha in active_shas),
+        current_refs=current_refs,
     )

@@ -75,10 +75,10 @@ def test_missing_run_role_fails_closed_to_evaluation(tmp_path):
     assert receipt["payload"] == {"keys": ["visible"]}
 
 
-def test_discovery_exposes_holdout_to_a_probe(tmp_path):
+def test_discovery_also_seals_holdout_from_a_probe(tmp_path):
     receipt = run_evidence_probe(_project(tmp_path, run_role="DISCOVERY"), _KEYS_PROBE)
     assert receipt["status"] == "ok"
-    assert receipt["payload"] == {"keys": ["holdout", "visible"]}
+    assert receipt["payload"] == {"keys": ["visible"]}
 
 
 def test_purity_rejection_names_the_marker(tmp_path):
@@ -175,8 +175,7 @@ def test_executor_blocks_impure_probe_with_error_receipt(tmp_path):
     result = execute_experiments(proj, all_open=True)
 
     receipt = result["receipts"][0]
-    assert receipt["disposition"] == "blocked"
-    assert "open" in receipt["outcome_summary"]
+    assert receipt["disposition"] == "rejected_unlowerable"
 
 
 def test_carrier_fields_win_over_probe_source(tmp_path):

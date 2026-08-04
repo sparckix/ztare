@@ -47,10 +47,22 @@ class FactoredStateTarget(Protocol):
     def state_target(self, state: Any) -> bool: ...
 
 
+@runtime_checkable
+class FactoredContinuationSelector(Protocol):
+    """Optional information criterion for a bounded frontier proposal."""
+
+    def continuation_admissible(
+        self,
+        state: Any,
+        path: tuple[Any, ...],
+    ) -> bool: ...
+
+
 @dataclass(frozen=True)
 class FactoredSearchResult:
     status: str
     actions: tuple[Any, ...] = ()
+    continuation_actions: tuple[Any, ...] = ()
     generated: int = 0
     expanded: int = 0
     frontier_remaining: int = 0
@@ -79,6 +91,21 @@ def _estimate(problem: FactoredSearchProblem, state: Any) -> float:
     if value < 0:
         raise ValueError("factored-search estimate must be non-negative")
     return value
+
+
+def _dominance_key(
+    problem: FactoredSearchProblem,
+    state: Any,
+    time_value: Any,
+) -> Hashable:
+    """Use a time-indexed key when the lowering has not quotiented the clock."""
+    indexed = getattr(problem, "dominance_key_at", None)
+    raw = (
+        indexed(state, time_value)
+        if callable(indexed)
+        else problem.dominance_key(state)
+    )
+    return _hashable(raw, "dominance_key")
 
 
 def search_factored(
@@ -110,7 +137,7 @@ def search_factored(
     if not problem.admissible(start):
         return FactoredSearchResult(status="start_outside_feasibility_domain")
 
-    start_key = _hashable(problem.dominance_key(start), "dominance_key")
+    start_key = _dominance_key(problem, start, start_time)
     start_vector = _vector(problem, start)
     state_target = (
         problem.state_target
@@ -128,6 +155,41 @@ def search_factored(
     # A quotient key claims that its transition image is well-defined.  Keep a
     # witness per (key, intervention); a second image refutes that claim.
     transition_images: dict[tuple[Hashable, Any], Hashable] = {}
+
+    def counterexample_receipt(
+        payload: dict[str, Any],
+        left: Any,
+        right: Any,
+        intervention: Any,
+        left_time: Any,
+        right_time: Any,
+    ) -> dict[str, Any]:
+        """Attach a bounded substrate explanation at the erasure boundary."""
+        explainer = getattr(problem, "explain_state_difference", None)
+        if not callable(explainer):
+            explainer = getattr(
+                getattr(problem, "projection", None),
+                "explain_state_difference",
+                None,
+            )
+        if callable(explainer):
+            try:
+                explanation = explainer(left, right)
+            except Exception as exc:  # noqa: BLE001
+                explanation = {"diagnostic_error": type(exc).__name__}
+            if isinstance(explanation, dict):
+                payload["consumer_difference"] = explanation
+        capture = getattr(problem, "capture_projection_counterexample", None)
+        if callable(capture):
+            capture(
+                left,
+                right,
+                intervention,
+                left_time,
+                right_time,
+                payload,
+            )
+        return payload
 
     def dominance_counterexample(
         *,
@@ -152,7 +214,7 @@ def search_factored(
                 problem.goal_edge(dominated_state, intervention, dominated_time)
             )
             if dominated_goal and not dominator_goal:
-                return {
+                return counterexample_receipt({
                     "kind": "dominance_simulation_failed",
                     "merged_key": repr(key),
                     "intervention": repr(intervention),
@@ -160,7 +222,8 @@ def search_factored(
                     "dominated_time": repr(dominated_time),
                     "dominator_image": "nonterminal",
                     "dominated_image": "goal_edge",
-                }
+                }, dominator_state, dominated_state, intervention,
+                   dominator_time, dominated_time)
             if dominated_goal:
                 continue
             dominated_successor = predict(
@@ -178,7 +241,7 @@ def search_factored(
             if dominator_successor is None or not problem.admissible(
                 dominator_successor
             ):
-                return {
+                return counterexample_receipt({
                     "kind": "dominance_simulation_failed",
                     "merged_key": repr(key),
                     "intervention": repr(intervention),
@@ -186,15 +249,28 @@ def search_factored(
                     "dominated_time": repr(dominated_time),
                     "dominator_image": "missing_or_outside_domain",
                     "dominated_image": repr(
-                        problem.dominance_key(dominated_successor)
+                        _dominance_key(
+                            problem,
+                            dominated_successor,
+                            advance_time(dominated_time),
+                        )
                     ),
-                }
+                }, dominator_state, dominated_state, intervention,
+                   dominator_time, dominated_time)
             dominator_key = _hashable(
-                problem.dominance_key(dominator_successor),
+                _dominance_key(
+                    problem,
+                    dominator_successor,
+                    advance_time(dominator_time),
+                ),
                 "dominance_key",
             )
             dominated_key = _hashable(
-                problem.dominance_key(dominated_successor),
+                _dominance_key(
+                    problem,
+                    dominated_successor,
+                    advance_time(dominated_time),
+                ),
                 "dominance_key",
             )
             dominator_vector = _vector(problem, dominator_successor)
@@ -208,7 +284,7 @@ def search_factored(
                 )
             )
             if not simulates:
-                return {
+                return counterexample_receipt({
                     "kind": "dominance_simulation_failed",
                     "merged_key": repr(key),
                     "intervention": repr(intervention),
@@ -220,7 +296,8 @@ def search_factored(
                     "dominated_image": repr(
                         (dominated_key, dominated_vector)
                     ),
-                }
+                }, dominator_state, dominated_state, intervention,
+                   dominator_time, dominated_time)
         return None
 
     def admitted(
@@ -231,6 +308,9 @@ def search_factored(
         time_value: Any,
     ) -> tuple[bool, dict[str, Any] | None]:
         rows = pareto.setdefault(key, [])
+        exact_transition_identity = bool(
+            getattr(problem, "exact_transition_identity", False)
+        )
         dominators = [
             row
             for row in rows
@@ -239,6 +319,12 @@ def search_factored(
             and all(old >= new for old, new in zip(row[1], vector))
         ]
         if dominators:
+            # Exact (state, time) identity makes deterministic transition
+            # compatibility definitional. Re-running every labeled successor
+            # check at a duplicate node changes no scientific claim and can
+            # dominate the cost of a conservative fallback search.
+            if exact_transition_identity:
+                return False, None
             for _old_depth, _old_vector, old_state, old_time in dominators:
                 counterexample = dominance_counterexample(
                     key=key,
@@ -257,16 +343,17 @@ def search_factored(
             and len(row[1]) == len(vector)
             and all(new >= old for new, old in zip(vector, row[1]))
         ]
-        for _old_depth, _old_vector, old_state, old_time in dominated_rows:
-            counterexample = dominance_counterexample(
-                key=key,
-                dominator_state=state,
-                dominator_time=time_value,
-                dominated_state=old_state,
-                dominated_time=old_time,
-            )
-            if counterexample is not None:
-                return False, counterexample
+        if not exact_transition_identity:
+            for _old_depth, _old_vector, old_state, old_time in dominated_rows:
+                counterexample = dominance_counterexample(
+                    key=key,
+                    dominator_state=state,
+                    dominator_time=time_value,
+                    dominated_state=old_state,
+                    dominated_time=old_time,
+                )
+                if counterexample is not None:
+                    return False, counterexample
         rows[:] = [
             row
             for row in rows
@@ -280,6 +367,7 @@ def search_factored(
         return True, None
 
     tie = generated = expanded = deepest = 0
+    depth_truncated = False
     frontier: list[tuple[float, int, int, Any, Any, tuple[Any, ...]]] = [
         (_estimate(problem, start), 0, tie, start, start_time, ())
     ]
@@ -288,8 +376,9 @@ def search_factored(
         expanded += 1
         deepest = max(deepest, depth)
         if depth >= max_depth:
+            depth_truncated = True
             continue
-        source_key = _hashable(problem.dominance_key(state), "dominance_key")
+        source_key = _dominance_key(problem, state, time_value)
         for intervention in interventions:
             if problem.goal_edge(state, intervention, time_value):
                 return FactoredSearchResult(
@@ -303,9 +392,8 @@ def search_factored(
             successor = predict(state, intervention, time_value)
             if successor is None or not problem.admissible(successor):
                 continue
-            successor_key = _hashable(
-                problem.dominance_key(successor), "dominance_key"
-            )
+            successor_time = advance_time(time_value)
+            successor_key = _dominance_key(problem, successor, successor_time)
             image_key = (source_key, intervention)
             prior_image = transition_images.get(image_key)
             if prior_image is not None and prior_image != successor_key:
@@ -334,7 +422,6 @@ def search_factored(
                 )
             successor_vector = _vector(problem, successor)
             next_depth = depth + 1
-            successor_time = advance_time(time_value)
             is_admitted, merge_counterexample = admitted(
                 successor_key,
                 next_depth,
@@ -369,8 +456,36 @@ def search_factored(
             )
             if generated >= max_states:
                 break
+    continuation: tuple[Any, ...] = ()
+    if frontier:
+        selector = (
+            problem.continuation_admissible
+            if isinstance(problem, FactoredContinuationSelector)
+            else None
+        )
+        selected = next(
+            (
+                row
+                for row in sorted(frontier)
+                if selector is None or selector(row[3], row[5])
+            ),
+            None,
+        )
+        if selected is not None:
+            continuation = selected[5]
+    status = (
+        "search_budget_exhausted"
+        if frontier
+        else "depth_bound_exhausted"
+        if depth_truncated
+        else "projected_frontier_exhausted"
+    )
     return FactoredSearchResult(
-        status="search_budget_exhausted" if frontier else "projected_frontier_exhausted",
+        status=status,
+        # A bounded continuation is a control proposal, not a terminal witness.
+        # Keep it in a separate field so consumers cannot obtain terminal
+        # authority by treating search truncation as success.
+        continuation_actions=continuation,
         generated=generated,
         expanded=expanded,
         frontier_remaining=len(frontier),
@@ -382,5 +497,6 @@ __all__ = [
     "FactoredSearchProblem",
     "FactoredSearchResult",
     "FactoredStateTarget",
+    "FactoredContinuationSelector",
     "search_factored",
 ]

@@ -58,17 +58,44 @@ def surviving_committee(project_dir, log: EpisodeLog) -> "list":
         return []
     survivors, signatures = [], set()
     log_rows = list(log)
+    entries = []
+    for line in path.read_text().splitlines():
+        try:
+            entries.append(json.loads(line))
+        except Exception:
+            continue
+    # Candidate memory is the gate's evidence-indexed survivor ledger.  Use it
+    # as the committee index, then replay only the current exact members as a
+    # defense.  Replaying every historical source made this advisory step cost
+    # O(pool history × evidence bank) after the project gate had already done
+    # the same work.
+    current_exact: set[str] | None = None
+    try:
+        from ztare.common.observation_chart import capture_project_evidence_epoch
+
+        memory = json.loads(
+            (Path(project_dir) / "workspace" / "candidate_memory.json").read_text()
+        )
+        epoch_sha = capture_project_evidence_epoch(project_dir).epoch_sha256
+        current_exact = {
+            str(row.get("sha") or "")[:16]
+            for row in (memory.get("records") or [])
+            if row.get("evidence_epoch_sha256") == epoch_sha
+            and row.get("visible_checked_rows") == row.get("visible_exact_rows")
+        }
+    except (OSError, TypeError, ValueError):
+        pass
+    if current_exact is not None:
+        entries = [row for row in entries if str(row.get("sha") or "") in current_exact]
+        if len(entries) < 2:
+            return []
     # Derive action arity from the log so the counterfactual probe is valid on
     # non-4-arity environments. Hardcoding 4 probed nonexistent actions on
     # smaller arities, producing identity predictions → spurious dedup
     # (committee shrinkage). Falls back to 4 when the log is empty.
     arity = (max(tr.a for tr in log_rows) + 1) if log_rows else 4
     probe = [(tr.s, tr.a, tr.t) for tr in log_rows[:8]]
-    for line in path.read_text().splitlines():
-        try:
-            entry = json.loads(line)
-        except Exception:
-            continue
+    for entry in entries:
         fn = _load_member(entry, project_dir=project_dir)
         if fn is None or not replay_consistency_gate(fn, log).ok:
             continue

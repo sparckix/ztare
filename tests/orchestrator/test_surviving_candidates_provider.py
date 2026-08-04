@@ -613,6 +613,8 @@ def test_worldmodel_briefing_consumes_epoch_bound_repair_frontier(tmp_path: Path
     old_sha = hashlib.sha256(old.read_bytes()).hexdigest()
     new_sha = hashlib.sha256(new.read_bytes()).hexdigest()
     epoch = capture_project_evidence_epoch(project)
+    from ztare.validator.core.pre_judge_gate import evaluation_policy_sha256
+
     (project / "workspace" / "latest_patch_base_regression.json").write_text(
         json.dumps({
             "candidate_regression_receipt": {
@@ -631,6 +633,7 @@ def test_worldmodel_briefing_consumes_epoch_bound_repair_frontier(tmp_path: Path
                 "best_prior_gate_score": 0.3333,
             },
             "evidence_epoch": epoch.to_dict(),
+            "evaluation_policy_sha256": evaluation_policy_sha256(),
         }),
         encoding="utf-8",
     )

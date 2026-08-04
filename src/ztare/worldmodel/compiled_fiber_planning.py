@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 import json
 from pathlib import Path
-from typing import Any, Callable, Hashable, Mapping
+from typing import Any, Callable, Hashable, Iterable, Mapping
 
 from ztare.common.equivariance import stable_sha256
 
@@ -33,6 +33,20 @@ _REQUIRED_NAMESPACE_KEYS = frozenset({
 
 def _tuple_rows(value: Any) -> tuple[tuple[Any, ...], ...]:
     return tuple(tuple(row) for row in value)
+
+
+def _prediction_key(state: Any, intervention: Any, time_value: Any) -> Hashable:
+    """Use native carrier identity when available; digest only opaque states."""
+    key = (state, intervention, time_value)
+    try:
+        hash(key)
+    except TypeError:
+        return stable_sha256({
+            "state": state,
+            "intervention": intervention,
+            "time": time_value,
+        })
+    return key
 
 
 def _partition_presentation(values: tuple[Any, ...]) -> tuple[tuple[int, ...], tuple[Any, ...]]:
@@ -60,12 +74,20 @@ class FiberFactors:
     presentation_assignment: tuple[Any, ...]
     ordered_budget: int
     one_shot_availability: tuple[tuple[str, bool], ...]
+    ordered_feasibility_configuration: tuple[bool, ...] = ()
+    operation_domain_assignment: tuple[
+        tuple[str, tuple[tuple[int, int], ...]], ...
+    ] = ()
 
     def as_mapping(self) -> Mapping[str, Hashable]:
         return {
             "controlled_base": self.controlled_base,
             "finite_configuration": self.finite_configuration,
             "presentation_assignment": self.presentation_assignment,
+            "operation_domain_assignment": self.operation_domain_assignment,
+            "ordered_feasibility_configuration": (
+                self.ordered_feasibility_configuration
+            ),
             "ordered_budget": self.ordered_budget,
             "one_shot_availability": self.one_shot_availability,
         }
@@ -217,7 +239,8 @@ def operation_recurrence_acquisition_obligation(
         (
             dict(row)
             for row in (conjectures if isinstance(conjectures, list) else [])
-            if isinstance(row, Mapping) and row.get("op") == "region_event"
+            if isinstance(row, Mapping)
+            and row.get("op") in {"region_event", "bind_region_value"}
         ),
         None,
     )
@@ -237,11 +260,30 @@ def operation_recurrence_acquisition_obligation(
     if lowering_error:
         raise ValueError(f"operation acquisition trigger is not lowerable: {lowering_error}")
 
-    def trigger(source: object, successor: object) -> bool:
-        try:
-            return bool(region_event_triggered(source, successor, trigger_rule))
-        except Exception:
-            return False
+    if trigger_rule["op"] == "region_event":
+        def trigger(source: object, successor: object) -> bool:
+            try:
+                return bool(region_event_triggered(source, successor, trigger_rule))
+            except Exception:
+                return False
+    else:
+        def trigger(source: object, successor: object) -> bool:
+            try:
+                y0, x0, y1, x1 = (
+                    int(value) for value in trigger_rule["target_rect"]
+                )
+                dy, dx = (
+                    int(value) for value in trigger_rule["source_offset"]
+                )
+                expected = int(trigger_rule["expected_current"])
+                source_value = source[y0 + dy][x0 + dx]
+                return source_value != expected and any(
+                    successor[row][col] == expected
+                    for row in range(y0, y1 + 1)
+                    for col in range(x0, x1 + 1)
+                )
+            except (IndexError, KeyError, TypeError, ValueError):
+                return False
 
     observation_ref = str(obligation.get("source_observation_ref") or "")
     episode_ref, separator, row_text = observation_ref.partition("#transition:")
@@ -289,6 +331,8 @@ class CompiledFiberProjection:
         "controlled_base",
         "finite_configuration",
         "presentation_assignment",
+        "operation_domain_assignment",
+        "ordered_feasibility_configuration",
         "ordered_budget",
         "one_shot_availability",
     )
@@ -345,7 +389,7 @@ class CompiledFiberProjection:
             "evidence_refs": evidence_refs,
         }
         self.projection_sha256 = stable_sha256(identity_payload)
-        self._factor_cached = lru_cache(maxsize=20_000)(self._factor_uncached)
+        self._factor_cached = lru_cache(maxsize=1_024)(self._factor_uncached)
 
     def _validate(self) -> None:
         if not self.sprite or not self.sprite[0]:
@@ -397,10 +441,27 @@ class CompiledFiberProjection:
         )
         rendered = tuple(state[row][col] for row, col in self.display_cells)
         configuration, presentation = _partition_presentation(rendered)
-        budget = sum(
+        operation_domains = []
+        for rule in self.rules:
+            if rule.get("type") != "operation_domain":
+                continue
+            if isinstance(rule.get("trigger_pattern"), Mapping):
+                from ztare.worldmodel.spec_catalog import _trigger_pattern_rects
+
+                rects = _trigger_pattern_rects(state, rule["trigger_pattern"])
+            else:
+                rects = (tuple(int(value) for value in rule["rect"]),)
+            relative_origins = tuple(sorted(
+                (row - base_row, col - base_col)
+                for base_row, base_col in bases
+                for row, col, _row_end, _col_end in rects
+            ))
+            operation_domains.append((str(rule["id"]), relative_origins))
+        budget_configuration = tuple(
             all(state[row][col] == self.budget_live_value for row, col in group)
             for group in self.budget_groups
         )
+        budget = sum(budget_configuration)
         availability = []
         for rule in self.rules:
             when_region = rule.get("when_region")
@@ -428,16 +489,60 @@ class CompiledFiberProjection:
             controlled_base=bases,
             finite_configuration=configuration,
             presentation_assignment=presentation,
+            operation_domain_assignment=tuple(operation_domains),
             ordered_budget=int(budget),
             one_shot_availability=tuple(availability),
+            ordered_feasibility_configuration=budget_configuration,
         )
 
     def factor(self, state: Any) -> FiberFactors:
         frozen = state if isinstance(state, tuple) else _tuple_rows(state)
         return self._factor_cached(frozen)
 
+    def clear_runtime_caches(self) -> None:
+        """Release search-local state presentations between lifecycle legs."""
+        self._factor_cached.cache_clear()
+
+    def explain_state_difference(self, left: Any, right: Any) -> dict[str, Any]:
+        """Bounded presentation witness for a failed consumer quotient."""
+        changed = [
+            {
+                "coordinate": [row, col],
+                "left": left[row][col],
+                "right": right[row][col],
+            }
+            for row in range(min(len(left), len(right)))
+            for col in range(min(len(left[row]), len(right[row])))
+            if left[row][col] != right[row][col]
+        ]
+        left_factors = self.factor(left).as_mapping()
+        right_factors = self.factor(right).as_mapping()
+        return {
+            "schema": "ztare-consumer-quotient-difference-v1",
+            "changed_cell_count": len(changed),
+            "changed_cells": changed[:64],
+            "changed_factor_names": [
+                name
+                for name in self.factor_names
+                if left_factors[name] != right_factors[name]
+            ],
+        }
+
     def problem_for(self, goal_edge: Any, start: Any):
         """Compile a target-specific problem from adapter-attested witnesses."""
+        if (
+            getattr(goal_edge, "target_kind", "")
+            == "hypothesis_edge_version_space"
+            and callable(
+                getattr(goal_edge, "relation_projection_key", None)
+            )
+            and tuple(getattr(goal_edge, "operations", ()) or ())
+            and self.in_domain(start)
+        ):
+            return CompiledFiberRelationalGoalProblem(
+                projection=self,
+                target=goal_edge,
+            )
         witnesses = tuple(getattr(goal_edge, "witnesses", ()) or ())
         if not witnesses or not self.in_domain(start):
             return None
@@ -472,6 +577,28 @@ class CompiledFiberProjection:
             ),
         )
 
+    def exact_relational_problem_for(self, goal_edge: Any, start: Any):
+        """Withdraw a refuted quotient while preserving a relational target.
+
+        Exact observation equality is a conservative consumer fallback for a
+        carrier whose compiled factor equality failed the runtime commutation
+        test.  It does not repair or promote that projection.
+        """
+        if (
+            getattr(goal_edge, "target_kind", "")
+            != "hypothesis_edge_version_space"
+            or not callable(
+                getattr(goal_edge, "relation_projection_key", None)
+            )
+            or not tuple(getattr(goal_edge, "operations", ()) or ())
+            or not self.in_domain(start)
+        ):
+            return None
+        return CompiledFiberExactRelationalGoalProblem(
+            projection=self,
+            target=goal_edge,
+        )
+
     def operation_discrimination_problem(
         self,
         obligation: OperationRecurrenceAcquisitionObligation,
@@ -503,11 +630,14 @@ class CompiledFiberProjection:
     def acquisition_key(factors: FiberFactors) -> tuple[Hashable, ...]:
         """Identity whose novelty can change the operation affordance set.
 
-        Palette assignment and remaining budget stay available to transition
-        feasibility, but they do not manufacture a new acquisition target.
+        Controlled position and exact domain offsets are transition coordinates,
+        not new skills: counting their translation orbit made every ordinary
+        move look like acquisition.  A new finite operation configuration or a
+        changed one-shot availability can alter the executable affordance set.
+        New domain selectors are acquired through the typed operation-
+        discrimination obligation, where the trigger identity is explicit.
         """
         return (
-            factors.controlled_base,
             factors.finite_configuration,
             factors.one_shot_availability,
         )
@@ -532,6 +662,72 @@ class CompiledFiberProjection:
             projection=self,
             observed_keys=frozenset(observed),
             evidence_ref=evidence_ref,
+        )
+
+    def mechanism_acquisition_problem(
+        self,
+        *,
+        start: Any,
+        evidence_transitions: tuple[Any, ...],
+        predict: Callable[[Any, Any, Any], Any],
+        evidence_ref: str,
+        boundary_predicate: Callable[[Any, Any, Any], bool] | None = None,
+        boundary_edges: tuple[tuple[Any, ...], ...] = (),
+        history_trajectories: tuple[Any, ...] = (),
+        exhaustive_history_candidates: bool = False,
+    ) -> "CompiledFiberMechanismAcquisitionProblem | None":
+        """Seek a new context for an exceptional witnessed factor effect.
+
+        This is the successor to exhausted state/configuration novelty.  The
+        target is an operation effect transported through the factor relation,
+        never a copied source coordinate.
+        """
+        if not self.in_domain(start) or not evidence_transitions:
+            return None
+        from ztare.worldmodel.mechanism_effects import (
+            build_fiber_action_system,
+            select_fiber_history_action_system,
+        )
+
+        history_lift = (
+            select_fiber_history_action_system(
+                evidence_transitions,
+                projection=self,
+                evidence_ref=evidence_ref,
+                explicit_boundary_edges=boundary_edges,
+                history_trajectories=history_trajectories,
+                exhaustive_candidates=exhaustive_history_candidates,
+            )
+            if boundary_edges or history_trajectories
+            else None
+        )
+        action_system = (
+            history_lift.action_system
+            if history_lift is not None
+            else build_fiber_action_system(
+                evidence_transitions,
+                projection=self,
+                evidence_ref=evidence_ref,
+                boundary_predicate=boundary_predicate,
+                explicit_boundary_edges=boundary_edges,
+            )
+        )
+        if not action_system.passed_section:
+            raise ValueError("witnessed partial-action section did not commute")
+        ranked = tuple(
+            row
+            for row in action_system.ranked_effects(include_boundaries=False)
+            if row.effect != (("identity",),)
+        )
+        if not ranked:
+            return None
+        return CompiledFiberMechanismAcquisitionProblem(
+            projection=self,
+            action_system=action_system,
+            predict=predict,
+            ranked_effects=ranked[:16],
+            evidence_ref=evidence_ref,
+            history_lift=history_lift,
         )
 
     def partial_operation_problem(
@@ -562,6 +758,73 @@ class CompiledFiberProjection:
             predict=predict,
         )
 
+    def goal_problem(self, *, start: Any, target: Any):
+        """Compose transition factors with a target-observation quotient."""
+        if (
+            not self.in_domain(start)
+            or not callable(getattr(target, "projection_key", None))
+            or not str(getattr(target, "identity_sha256", ""))
+        ):
+            return None
+        return CompiledFiberGoalProblem(
+            projection=self,
+            target=target,
+        )
+
+    def goal_discrimination_problem(
+        self,
+        *,
+        start: Any,
+        target: Any,
+        evidence_states: tuple[Any, ...],
+    ):
+        """Seek a target-relevant observation absent from current evidence."""
+        problem = self.goal_problem(start=start, target=target)
+        if problem is None:
+            return None
+        observed = frozenset(
+            target.projection_key(state)
+            for state in (*evidence_states, start)
+            if self.in_domain(state)
+        )
+        return CompiledFiberGoalProblem(
+            projection=self,
+            target=target,
+            observed_target_keys=observed,
+        )
+
+    def goal_experiment_problem(
+        self,
+        *,
+        start: Any,
+        target: Any,
+        predict: Callable[[Any, Any, Any], Any],
+        evidence_states: tuple[Any, ...] = (),
+        time_translation_certificate: Any = None,
+    ):
+        if (
+            not self.in_domain(start)
+            or not callable(getattr(target, "experiment_edge_ids", None))
+            or not tuple(getattr(target, "active_experiment_domain_ids", ()))
+        ):
+            return None
+        return CompiledFiberGoalExperimentProblem(
+            projection=self,
+            target=target,
+            predict=predict,
+            observed_target_keys=frozenset(
+                target.projection_key(state)
+                for state in (*evidence_states, start)
+                if self.in_domain(state)
+            ),
+            observed_acquisition_keys=frozenset(
+                self.acquisition_key(self.factor(state))
+                for state in (*evidence_states, start)
+                if self.in_domain(state)
+            ),
+            time_translation_certificate=time_translation_certificate,
+        )
+
     def receipt_payload(self) -> dict[str, Any]:
         return {
             "schema": "ztare-factored-planning-projection-v1",
@@ -585,10 +848,10 @@ def _patch_refined_projection(
     """Transport a declarative finite-state delta into its search projection.
 
     A composed transition carrier and its control projection must describe the
-    same operation graph.  A whole-content state machine over the projected
-    display can replace the inherited configuration graph.  Any other patch
-    rule invalidates the inherited projection until a factor-impact transport
-    is registered for that operation.
+    same operation graph.  Whole-content display machines refine the finite
+    graph.  Translation-equivariant event patterns refine the operation-domain
+    relation.  Other rules retain the pointwise factorizer as a proposal whose
+    mergers are checked by the common search consumer.
     """
     if not isinstance(patch_spec, Mapping):
         return projection
@@ -635,11 +898,30 @@ def _patch_refined_projection(
             for source, target in pairs
         }
         refinements.append((rule, configurations, graph))
-    if not refinements or len(refinements) != len(rules):
-        return None
+    domain_markers = []
+    for rule in rules:
+        if rule.get("op") != "region_event":
+            continue
+        marker = {
+            "id": "operation_domain_" + stable_sha256(rule)[:16],
+            "type": "operation_domain",
+        }
+        if isinstance(rule.get("trigger_pattern"), Mapping):
+            marker["trigger_pattern"] = dict(rule["trigger_pattern"])
+        elif isinstance(rule.get("rect"), (list, tuple)):
+            marker["rect"] = tuple(int(value) for value in rule["rect"])
+        else:
+            continue
+        domain_markers.append(marker)
+    # A declarative patch does not erase the pointwise factorizer.  Recognized
+    # display-state refinements update its finite graph below; other operations
+    # retain the inherited projection as a runtime-checked proposal.  The
+    # factored search consumer checks commutation/forward simulation at merges.
+    if not refinements and not domain_markers:
+        return projection
     configurations = projection.configurations
     graph = projection.configuration_next
-    markers = []
+    markers = list(domain_markers)
     signatures = {stable_sha256(rule) for rule in rules}
     if refinements:
         refinement_signatures = {
@@ -746,6 +1028,8 @@ class CompiledFiberSearchProblem:
             factors.controlled_base,
             factors.finite_configuration,
             factors.presentation_assignment,
+            factors.operation_domain_assignment,
+            factors.ordered_feasibility_configuration,
             factors.one_shot_availability,
         )
 
@@ -753,8 +1037,10 @@ class CompiledFiberSearchProblem:
         return (self.projection.factor(state).ordered_budget,)
 
     def admissible(self, state: Any) -> bool:
-        factors = self.projection.factor(state)
-        return self.projection.in_domain(state) and factors.ordered_budget > 0
+        # Zero resource may be a recoverable mechanism state: an admitted
+        # successor can renew it.  Feasibility belongs to transition structure,
+        # while the terminal edge keeps its stricter positive-budget contract.
+        return self.projection.in_domain(state)
 
     def goal_edge(self, state: Any, intervention: Any, _time: Any) -> bool:
         factors = self.projection.factor(state)
@@ -809,6 +1095,171 @@ class CompiledFiberSearchProblem:
         return milestone
 
 
+class CompiledFiberRelationalGoalProblem:
+    """Search for an active task relation without importing a target state.
+
+    The carrier projection supplies coordinates sufficient to predict state
+    evolution.  The task hypothesis supplies a second, consumer-indexed
+    coordinate: the truth vector of every nominated ``(state, operation)``
+    relation.  Including that vector in dominance equality prevents a search
+    from merging two carrier-equivalent presentations when only one admits a
+    candidate completion edge.
+    """
+
+    factor_names = (*CompiledFiberProjection.factor_names, "task_relation")
+    terminal_factor_names = ("task_relation",)
+    feasibility_factor_names = CompiledFiberProjection.feasibility_factor_names
+    availability_factor_names = CompiledFiberProjection.availability_factor_names
+
+    def __init__(
+        self,
+        *,
+        projection: CompiledFiberProjection,
+        target: Any,
+    ) -> None:
+        operations = tuple(getattr(target, "operations", ()) or ())
+        relation_projection_key = getattr(target, "relation_projection_key", None)
+        if not operations or not callable(relation_projection_key):
+            raise ValueError(
+                "relational fiber goal requires operations and a projection key"
+            )
+        self.projection = projection
+        self.projection_sha256 = projection.projection_sha256
+        self.target = target
+        self.operations = operations
+        self.evidence_refs = tuple(dict.fromkeys((
+            *projection.evidence_refs,
+            *(str(ref) for ref in (getattr(target, "evidence_refs", ()) or ())),
+        )))
+        self.problem_id = stable_sha256({
+            "schema": "ztare-compiled-fiber-relational-goal-problem-v1",
+            "projection_sha256": self.projection_sha256,
+            "target_identity_sha256": str(
+                getattr(target, "identity_sha256", "")
+            ),
+            "operations": list(map(repr, operations)),
+            "factor_names": self.factor_names,
+            "terminal_factor_names": self.terminal_factor_names,
+            "feasibility_factor_names": self.feasibility_factor_names,
+            "availability_factor_names": self.availability_factor_names,
+            "evidence_refs": self.evidence_refs,
+        })
+
+    def _dominance_key(self, state: Any, time_value: Any) -> Hashable:
+        factors = self.projection.factor(state)
+        return (
+            factors.controlled_base,
+            factors.finite_configuration,
+            factors.presentation_assignment,
+            factors.operation_domain_assignment,
+            factors.ordered_feasibility_configuration,
+            factors.one_shot_availability,
+            self.target.relation_projection_key(state, time_value),
+        )
+
+    def dominance_key(self, state: Any) -> Hashable:
+        return self._dominance_key(state, None)
+
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        # Until transition and task-relation time translations are jointly
+        # certified, retain the clock coordinate.
+        return self._dominance_key(state, time_value), ("time", time_value)
+
+    def dominance_vector(self, state: Any) -> tuple[int, ...]:
+        return (self.projection.factor(state).ordered_budget,)
+
+    def admissible(self, state: Any) -> bool:
+        return self.projection.in_domain(state)
+
+    def goal_edge(
+        self,
+        state: Any,
+        intervention: Any,
+        time_value: Any,
+    ) -> bool:
+        return (
+            intervention in self.operations
+            and self.projection.factor(state).ordered_budget > 0
+            and bool(self.target(state, intervention, time_value))
+        )
+
+    @staticmethod
+    def state_target(_state: Any) -> bool:
+        return False
+
+    @staticmethod
+    def estimate(_state: Any) -> int:
+        # No target-state metric is licensed by a relation-valued contract.
+        return 0
+
+    def explain_state_difference(
+        self,
+        left: Any,
+        right: Any,
+    ) -> dict[str, Any]:
+        receipt = self.projection.explain_state_difference(left, right)
+        try:
+            receipt["task_relation_changed"] = (
+                self.target.relation_projection_key(left, None)
+                != self.target.relation_projection_key(right, None)
+            )
+        except Exception as exc:  # noqa: BLE001
+            receipt["task_relation_diagnostic_error"] = type(exc).__name__
+        return receipt
+
+
+class CompiledFiberExactRelationalGoalProblem(
+    CompiledFiberRelationalGoalProblem
+):
+    """Conservative relational search after factor equality is refuted."""
+
+    exact_transition_identity = True
+    factor_names = ("exact_observation", "task_relation")
+    terminal_factor_names = ("task_relation",)
+    feasibility_factor_names: tuple[str, ...] = ()
+    availability_factor_names: tuple[str, ...] = ()
+
+    def __init__(
+        self,
+        *,
+        projection: CompiledFiberProjection,
+        target: Any,
+    ) -> None:
+        super().__init__(projection=projection, target=target)
+        self.problem_id = stable_sha256({
+            "schema": "ztare-compiled-fiber-exact-relational-goal-problem-v1",
+            "refuted_factored_problem_id": self.problem_id,
+            "projection_sha256": self.projection_sha256,
+            "target_identity_sha256": str(
+                getattr(target, "identity_sha256", "")
+            ),
+            "operations": list(map(repr, self.operations)),
+            "factor_names": self.factor_names,
+            "terminal_factor_names": self.terminal_factor_names,
+            "evidence_refs": self.evidence_refs,
+        })
+
+    @staticmethod
+    def _exact_observation_key(state: Any) -> Hashable:
+        return ("content_sha256", stable_sha256(state))
+
+    def _dominance_key(self, state: Any, time_value: Any) -> Hashable:
+        # For a fixed target identity, relation truth is a derived coordinate
+        # of exact state, operation, and time. It remains the terminal factor
+        # evaluated by ``goal_edge``; repeating it in transition equality would
+        # add work but no distinction.
+        return self._exact_observation_key(state)
+
+    def dominance_vector(
+        self,
+        _state: Any,
+    ) -> tuple[int | float, ...]:
+        return ()
+
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        return self._dominance_key(state, time_value), ("time", time_value)
+
+
 class CompiledFiberOperationDiscriminationProblem(CompiledFiberSearchProblem):
     """Seek a conjectured operation trigger outside its witnessed context."""
 
@@ -834,7 +1285,7 @@ class CompiledFiberOperationDiscriminationProblem(CompiledFiberSearchProblem):
         )
         self.obligation = obligation
         self._predict = predict
-        self._prediction_cache: dict[str, Any] = {}
+        self._prediction_cache: dict[Hashable, Any] = {}
         self.problem_id = stable_sha256({
             "base_problem_id": self.problem_id,
             "objective": "distinct_operation_trigger_context",
@@ -858,6 +1309,8 @@ class CompiledFiberOperationDiscriminationProblem(CompiledFiberSearchProblem):
             factors.controlled_base,
             factors.finite_configuration,
             factors.presentation_assignment,
+            factors.operation_domain_assignment,
+            factors.ordered_feasibility_configuration,
             factors.ordered_budget,
             factors.one_shot_availability,
         )
@@ -867,12 +1320,12 @@ class CompiledFiberOperationDiscriminationProblem(CompiledFiberSearchProblem):
         # Here it changes operation availability, so no ordered pruning remains.
         return ()
 
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        # No time-translation certificate is attached to this carrier.
+        return self.dominance_key(state), time_value
+
     def predict(self, state: Any, intervention: Any, time_value: Any) -> Any:
-        key = stable_sha256({
-            "state": state,
-            "intervention": intervention,
-            "time": time_value,
-        })
+        key = _prediction_key(state, intervention, time_value)
         if key not in self._prediction_cache:
             self._prediction_cache[key] = self._predict(
                 state,
@@ -927,6 +1380,8 @@ class CompiledFiberAcquisitionProblem:
             factors.controlled_base,
             factors.finite_configuration,
             factors.presentation_assignment,
+            factors.operation_domain_assignment,
+            factors.ordered_feasibility_configuration,
             factors.one_shot_availability,
         )
 
@@ -946,6 +1401,358 @@ class CompiledFiberAcquisitionProblem:
 
     def estimate(self, _state: Any) -> int:
         return 0
+
+
+class CompiledFiberMechanismAcquisitionProblem:
+    """Transport an exceptional operation effect to a new witnessed context."""
+
+    factor_names = CompiledFiberProjection.factor_names
+    terminal_factor_names: tuple[str, ...] = ()
+    feasibility_factor_names = CompiledFiberProjection.feasibility_factor_names
+    availability_factor_names = CompiledFiberProjection.availability_factor_names
+
+    def __init__(
+        self,
+        *,
+        projection: CompiledFiberProjection,
+        action_system: Any,
+        predict: Callable[[Any, Any, Any], Any],
+        ranked_effects: tuple[Any, ...],
+        evidence_ref: str,
+        history_lift: Any = None,
+    ) -> None:
+        self.projection = projection
+        self.projection_sha256 = projection.projection_sha256
+        self.action_system = action_system
+        self.history_lift = history_lift
+        self.history_suffix_length = int(
+            getattr(history_lift, "suffix_length", 0) or 0
+        )
+        self._predict = predict
+        self._prediction_cache: dict[Hashable, Any] = {}
+        self.target_effect_classes = frozenset(
+            row.class_key for row in ranked_effects
+        )
+        self.observed_effect_classes = frozenset(
+            action_system.effect_support
+        )
+        self.known_sources = {
+            key: frozenset(value)
+            for key, value in action_system.effect_sources.items()
+        }
+        self.evidence_refs = tuple(dict.fromkeys((
+            *projection.evidence_refs,
+            str(evidence_ref),
+            *(
+                ref
+                for row in ranked_effects
+                for ref in row.evidence_refs
+            ),
+        )))
+        self.problem_id = stable_sha256({
+            "projection_sha256": self.projection_sha256,
+            "objective": "exceptional_mechanism_transport",
+            "partial_action_system_sha256": action_system.sha256,
+            "target_effect_classes": sorted(
+                stable_sha256(value)
+                for value in self.target_effect_classes
+            ),
+            "evidence_ref": str(evidence_ref),
+            "history_lift": (
+                history_lift.to_receipt()
+                if history_lift is not None
+                else None
+            ),
+        })
+
+    def observed_start_key(
+        self,
+        state: Any,
+        action_history: Iterable[Hashable] = (),
+        operation_effect_history: Iterable[Hashable] = (),
+    ) -> Hashable:
+        factors = self.projection.factor(state)
+        if self.history_lift is not None:
+            return self.history_lift.start_key(
+                factors,
+                observation=state,
+                action_history=action_history,
+                operation_effect_history=operation_effect_history,
+            )
+        from ztare.worldmodel.mechanism_effects import fiber_transition_key
+
+        return fiber_transition_key(factors)
+
+    def acquisition_context_key(self, source_key: Hashable) -> Hashable:
+        """Context identity for a witnessed control source.
+
+        The partial-action system owns the concrete section. The projection's
+        acquisition key owns which factor changes can alter the affordance
+        set. Quotient class identifiers and evidence support are absent.
+        """
+        representative = self.action_system.representative(source_key)
+        observation = getattr(
+            representative,
+            "observation",
+            representative,
+        )
+        key: tuple[Hashable, ...] = (
+            self.projection.acquisition_key(
+                self.projection.factor(observation)
+            ),
+        )
+        if self.history_lift is not None:
+            key = (
+                *key,
+                self.history_lift.predictive_context_key(observation),
+            )
+        return key
+
+    def acquisition_support_key(self, source_key: Hashable) -> Hashable:
+        """Evidence-admission identity beneath a history-lifted control node."""
+        representative = self.action_system.representative(source_key)
+        observation = getattr(
+            representative,
+            "observation",
+            representative,
+        )
+        return stable_sha256(observation)
+
+    def source_lineage_keys(
+        self,
+        source_key: Hashable,
+    ) -> tuple[Hashable, ...]:
+        if self.history_lift is None:
+            return (source_key,)
+        return self.history_lift.source_lineage_keys(source_key)
+
+    def dominance_key(self, state: Any) -> Hashable:
+        factors = self.projection.factor(state)
+        # Mechanism discovery may depend on any admitted factor.  No factor is
+        # ordered away until the effect relation certifies that erasure.
+        return tuple(
+            factors.as_mapping()[name]
+            for name in self.factor_names
+        )
+
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        # Clock transport has separate certificate authority.
+        return self.dominance_key(state), time_value
+
+    def dominance_vector(self, _state: Any) -> tuple[int | float, ...]:
+        return ()
+
+    def admissible(self, state: Any) -> bool:
+        factors = self.projection.factor(state)
+        return self.projection.in_domain(state) and factors.ordered_budget > 0
+
+    def predict(self, state: Any, intervention: Any, time_value: Any) -> Any:
+        key = _prediction_key(state, intervention, time_value)
+        if key not in self._prediction_cache:
+            self._prediction_cache[key] = self._predict(
+                state,
+                intervention,
+                time_value,
+            )
+        return self._prediction_cache[key]
+
+    def goal_edge(self, state: Any, intervention: Any, time_value: Any) -> bool:
+        if self.history_suffix_length:
+            # Simulated search does not carry an action-history state.  The
+            # witnessed relation owns control for a lifted problem.
+            return False
+        successor = self.predict(state, intervention, time_value)
+        if successor is None or not self.admissible(successor):
+            return False
+        from ztare.worldmodel.mechanism_effects import (
+            fiber_mechanism_effect,
+            fiber_transition_key,
+        )
+
+        source_factors = self.projection.factor(state)
+        target_factors = self.projection.factor(successor)
+        effect = fiber_mechanism_effect(source_factors, target_factors)
+        if effect == (("identity",),):
+            return False
+        effect_class = (intervention, effect)
+        if effect_class not in self.observed_effect_classes:
+            return True
+        return (
+            effect_class in self.target_effect_classes
+            and fiber_transition_key(source_factors)
+            not in self.known_sources.get(effect_class, ())
+        )
+
+    def estimate(self, _state: Any) -> int:
+        return 0
+
+
+class CompiledFiberGoalProblem:
+    """Consumer-indexed quotient for one executable goal version space."""
+
+    factor_names = CompiledFiberProjection.factor_names
+    terminal_factor_names = ("target_observation",)
+    feasibility_factor_names = CompiledFiberProjection.feasibility_factor_names
+    availability_factor_names = CompiledFiberProjection.availability_factor_names
+
+    def __init__(
+        self,
+        *,
+        projection: CompiledFiberProjection,
+        target: Any,
+        observed_target_keys: frozenset[Hashable] | None = None,
+    ) -> None:
+        self.projection = projection
+        self.projection_sha256 = projection.projection_sha256
+        self.target = target
+        self.observed_target_keys = observed_target_keys
+        self.evidence_refs = projection.evidence_refs
+        self.problem_id = stable_sha256({
+            "projection_sha256": self.projection_sha256,
+            "objective": (
+                "goal_observation_acquisition"
+                if observed_target_keys is not None
+                else "goal_version_space"
+            ),
+            "target_identity": target.identity_sha256,
+            "observed_target_keys": sorted(
+                stable_sha256(key) for key in (observed_target_keys or ())
+            ),
+        })
+
+    def dominance_key(self, state: Any) -> Hashable:
+        factors = self.projection.factor(state)
+        return (
+            factors.controlled_base,
+            factors.finite_configuration,
+            factors.presentation_assignment,
+            factors.operation_domain_assignment,
+            factors.ordered_feasibility_configuration,
+            factors.ordered_budget,
+            factors.one_shot_availability,
+            self.target.projection_key(state),
+        )
+
+    def dominance_vector(self, _state: Any) -> tuple[int | float, ...]:
+        # The commutation checker showed that budget changes successor identity
+        # for this consumer, so it belongs in equality rather than dominance.
+        return ()
+
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        # Time stays in the consumer identity until this carrier has an
+        # explicit time-translation equivariance certificate.
+        return self.dominance_key(state), time_value
+
+    def admissible(self, state: Any) -> bool:
+        factors = self.projection.factor(state)
+        return self.projection.in_domain(state) and factors.ordered_budget > 0
+
+    def goal_edge(self, _state: Any, _intervention: Any, _time: Any) -> bool:
+        return False
+
+    def state_target(self, state: Any) -> bool:
+        if self.observed_target_keys is not None:
+            return self.target.projection_key(state) not in self.observed_target_keys
+        return bool(self.target(state))
+
+    def estimate(self, _state: Any) -> int:
+        return 0
+
+
+class CompiledFiberGoalExperimentProblem(CompiledFiberGoalProblem):
+    """Seek an edge firing an operation already bound to a goal hypothesis."""
+
+    def __init__(
+        self,
+        *,
+        projection,
+        target,
+        predict,
+        observed_target_keys: frozenset[Hashable],
+        observed_acquisition_keys: frozenset[Hashable] | None = None,
+        time_translation_certificate: Any = None,
+    ) -> None:
+        super().__init__(projection=projection, target=target)
+        self._predict = predict
+        self._prediction_cache: dict[Hashable, Any] = {}
+        self.observed_target_keys = observed_target_keys
+        self.observed_acquisition_keys = observed_acquisition_keys
+        self.time_translation_certificate = (
+            time_translation_certificate
+            if bool(getattr(time_translation_certificate, "passed", False))
+            else None
+        )
+        self.problem_id = stable_sha256({
+            "base_problem_id": self.problem_id,
+            "objective": "goal_hypothesis_experiment_edge",
+            "experiment_domains": target.active_experiment_domain_ids,
+            "observed_target_keys": sorted(
+                stable_sha256(key) for key in observed_target_keys
+            ),
+            "observed_acquisition_keys": sorted(
+                stable_sha256(key)
+                for key in (observed_acquisition_keys or ())
+            ),
+            "time_translation_certificate_sha256": (
+                stable_sha256(self.time_translation_certificate.to_dict())
+                if self.time_translation_certificate is not None
+                else ""
+            ),
+        })
+
+    def predict(self, state: Any, intervention: Any, time_value: Any) -> Any:
+        key = _prediction_key(state, intervention, time_value)
+        if key not in self._prediction_cache:
+            self._prediction_cache[key] = self._predict(
+                state, intervention, time_value
+            )
+        return self._prediction_cache[key]
+
+    def goal_edge(self, state: Any, intervention: Any, time_value: Any) -> bool:
+        successor = self.predict(state, intervention, time_value)
+        return bool(
+            successor is not None
+            and self.target.experiment_edge_ids(state, successor)
+            and self.target.projection_key(successor)
+            not in self.observed_target_keys
+        )
+
+    def state_target(self, _state: Any) -> bool:
+        return (
+            bool(self.target(_state))
+            or self.target.projection_key(_state)
+            not in self.observed_target_keys
+        )
+
+    def continuation_admissible(
+        self,
+        state: Any,
+        _path: tuple[Any, ...],
+    ) -> bool:
+        """Do not replay a bounded frontier with no new affordance identity."""
+        if self.observed_acquisition_keys is None:
+            return True
+        return self.projection.acquisition_key(
+            self.projection.factor(state)
+        ) not in self.observed_acquisition_keys
+
+    def dominance_key_at(self, state: Any, time_value: Any) -> Hashable:
+        if self.time_translation_certificate is not None:
+            return self.dominance_key(state)
+        return super().dominance_key_at(state, time_value)
+
+    def estimate(self, state: Any) -> int:
+        domains = dict(self.projection.factor(state).operation_domain_assignment)
+        offsets = [
+            offset
+            for identity in self.target.active_experiment_domain_ids
+            for offset in domains.get(identity, ())
+        ]
+        scale = max(1, len(self.projection.sprite))
+        return min(
+            (abs(row) + abs(col)) // scale
+            for row, col in offsets
+        ) if offsets else 0
 
 
 class CompiledFiberPartialOperationProblem:
@@ -968,7 +1775,7 @@ class CompiledFiberPartialOperationProblem:
         self.unresolved_configurations = unresolved_configurations
         self.evidence_refs = projection.evidence_refs
         self._predict = predict
-        self._prediction_cache: dict[str, Any] = {}
+        self._prediction_cache: dict[Hashable, Any] = {}
         self._landmarks = tuple(
             tuple(rule["bbox"][:2])
             for rule in getattr(projection, "rules", ())
@@ -996,11 +1803,7 @@ class CompiledFiberPartialOperationProblem:
         return self.projection.in_domain(state) and factors.ordered_budget > 0
 
     def predict(self, state: Any, intervention: Any, time_value: Any) -> Any:
-        key = stable_sha256({
-            "state": state,
-            "intervention": intervention,
-            "time": time_value,
-        })
+        key = _prediction_key(state, intervention, time_value)
         if key not in self._prediction_cache:
             self._prediction_cache[key] = self._predict(
                 state, intervention, time_value
@@ -1084,21 +1887,26 @@ def attach_compiled_projection(
     """Single attachment door shared by gates, caches, and live loading."""
     if not callable(program):
         return program
-    projection = projection_from_namespace(
+    declared_projection = projection_from_namespace(
         namespace,
         project_dir=project_dir,
     )
+    projection = declared_projection
     if projection is None:
         projection = getattr(program, "_ztare_factored_projection", None)
     if projection is not None:
-        patch_spec = namespace.get("PATCH_DELTA_SPEC")
-        if patch_spec is None and callable(namespace.get("PATCH_DELTA")):
-            setattr(program, "_ztare_factored_projection", None)
-            return program
-        projection = _patch_refined_projection(
-            projection,
-            patch_spec,
-        )
+        patch_specs = []
+        if namespace.get("PATCH_DELTA_SPEC") is not None:
+            patch_specs.append(namespace["PATCH_DELTA_SPEC"])
+        if isinstance(namespace.get("_PATCH_DELTA_SPECS"), (list, tuple)):
+            patch_specs.extend(namespace["_PATCH_DELTA_SPECS"])
+        # An opaque delta cannot certify a refined quotient, but it also cannot
+        # erase the base factorizer.  Keep the inherited projection as a
+        # runtime-checked proposal: concrete state-target search uses only its
+        # pointwise feasibility coordinate, while quotienting consumers retain
+        # the search_factored commutation/forward-simulation guard.
+        for patch_spec in patch_specs:
+            projection = _patch_refined_projection(projection, patch_spec)
         setattr(program, "_ztare_factored_projection", projection)
     return program
 
@@ -1127,6 +1935,10 @@ def append_projection_receipt(
             "problem_id": problem.problem_id,
             "problem_evidence_refs": list(problem.evidence_refs),
         })
+        action_system = getattr(problem, "action_system", None)
+        if action_system is not None:
+            row["partial_action_system"] = action_system.to_receipt(rank_cap=20)
+            row["partial_action_system_sha256"] = action_system.sha256
     if search_result is not None:
         row["search"] = {
             "status": search_result.status,
@@ -1134,6 +1946,7 @@ def append_projection_receipt(
             "expanded": int(search_result.expanded),
             "deepest_depth": int(search_result.deepest_depth),
             "projection_counterexample": dict(search_result.projection_counterexample),
+            "continuation_length": len(search_result.continuation_actions),
         }
     path = Path(receipts_dir) / "factored_planning_projection.jsonl"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1145,6 +1958,7 @@ def append_projection_receipt(
 __all__ = [
     "CompiledFiberProjection",
     "CompiledFiberAcquisitionProblem",
+    "CompiledFiberMechanismAcquisitionProblem",
     "CompiledFiberPartialOperationProblem",
     "CompiledFiberOperationDiscriminationProblem",
     "CompiledFiberSearchProblem",

@@ -14,8 +14,36 @@ from ztare.common.harness_weakness import (
     write_lowerability_harness_weakness_receipt,
     _load_ledger_weakness_classifiers,
     _validate_predicate_spec,
+    _workbench_task,
 )
 from ztare.research_director import strategy_office as so
+
+
+def test_workbench_obligation_identity_ignores_classifier_churn() -> None:
+    common = {
+        "source_ref": "workspace/submissions/carrier.py",
+        "source_sha256": "a" * 64,
+        "evidence_epoch_sha256": "b" * 64,
+        "recommended_capability_id": "inspect_worldmodel_counterexample_context",
+        "trace": {
+            "observation_sha256": "c" * 64,
+            "first_mismatch": "same falsifying transition",
+        },
+    }
+    first = _workbench_task(
+        weakness_class="local_receipt_overgeneralized",
+        route="request_counterexample_context_then_factor_delta_by_residual_quotient",
+        **common,
+    )
+    second = _workbench_task(
+        weakness_class="unquotiented_counterexample_chart_missing",
+        route="request_counterexample_context_then_refine_abstraction",
+        **common,
+    )
+
+    assert first["task_id"] == second["task_id"]
+    assert first["failure_class"] != second["failure_class"]
+    assert first["program_id"] != second["program_id"]
 
 
 def test_seed_registry_matches_existing_branch_behavior(tmp_path: Path) -> None:
@@ -188,6 +216,59 @@ def test_regressed_candidate_routes_workbench_to_best_prior_frontier(tmp_path: P
         counterexample_trace={"first_mismatch": "failed candidate residual"},
     )
     assert successor["workbench_task"]["task_id"] != task["task_id"]
+
+
+def test_regressed_candidate_does_not_assign_repair_task_to_exact_survivor(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    submissions = project / "workspace" / "submissions"
+    submissions.mkdir(parents=True)
+    prior = submissions / "prior.py"
+    prior.write_text("def step(grid, action, t):\n    return grid\n", encoding="utf-8")
+    prior_sha = hashlib.sha256(prior.read_bytes()).hexdigest()
+    episode = project / "raw" / "episodes" / "episode_001.jsonl"
+    episode.parent.mkdir(parents=True)
+    episode.write_text('{"state":[[0]],"action":0,"next_state":[[0]],"t":0}\n')
+    (project / "workspace" / "candidate_memory.json").write_text(
+        json.dumps({
+            "schema": "ztare-candidate-memory-v1",
+            "records": [{
+                "source_type": "full_survivor",
+                "submission": "workspace/submissions/prior.py",
+                "sha": prior_sha,
+                "visible_exact_rows": 11,
+                "visible_checked_rows": 11,
+                "counterexample_trace": {
+                    "checked_rows": 11,
+                    "exact_rows": 11,
+                    "wrong_cell_count": 0,
+                    "failed_gates": [],
+                    "first_mismatch": "",
+                    "evidence_ref": "raw/episodes/episode_001.jsonl",
+                },
+            }],
+        }),
+        encoding="utf-8",
+    )
+
+    receipt = build_harness_weakness_receipt(
+        project_dir=project,
+        source_ref="latest_eval_results.json:pre_judge_gate_block",
+        regression_receipt={
+            "candidate_relation": "regression",
+            "candidate_sha": "f" * 64,
+            "candidate_exact_rows": 4,
+            "best_prior_sha": prior_sha,
+            "best_prior_exact_rows": 11,
+            "best_prior_submission": "workspace/submissions/prior.py",
+            "quotient_comparison": {"relation": "changed_support"},
+        },
+        counterexample_trace={"first_mismatch": "failed sibling residual"},
+    )
+
+    assert receipt["active_frontier"]["role"] == "best_admissible_prior"
+    assert receipt["workbench_task"] == {}
 
 
 def test_frontier_task_carries_full_artifact_identity_from_legacy_display_sha(

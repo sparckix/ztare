@@ -1,0 +1,182 @@
+{
+  "schema": "ztare-arc3-causal-object-lineage-spec-v1",
+  "source_response": {
+    "result_ref": "h95_response_transport_square/result.json",
+    "result_embedded_sha256": "ec5c63057dcdd7ba18b1ceb29fa75ffe883b5548eee2ac6ee9ce30e8b1f15bf9",
+    "result_file_sha256": "6fd1cb577eb0fed0799622e02f0da35120ca58988defda2e622baf242cdebbea",
+    "manifest_file_sha256": "f026de9ec3dbc4bfa036b9a1243847f600d5a9537aca96d39cb36b5bf007ea54",
+    "family_sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+    "response_sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+    "contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f"
+  },
+  "source_response_witness": {
+    "arm_ref": "h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json",
+    "arm_file_sha256": "f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+    "pre_proposal_sha256": "d59da75d871c7f879b1fb304c55fbda5cc38415e03fbc0139b2ce2171934e3ed",
+    "post_proposal_sha256": "0e72cf1abedfb5e68e97e2dc6d69afff33531bf4fc37550c128ac39deaccc093"
+  },
+  "descendant_path": {
+    "actions_from_reset": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      1
+    ],
+    "source_observation_index": 1,
+    "actions_from_source": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      1
+    ],
+    "expected_source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "expected_source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "expected_endpoint_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "expected_endpoint_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "static_direct_status": "refused",
+    "static_direct_binding_count": 3,
+    "static_path_first_refusal_source_index": 5,
+    "static_path_first_refusal_target_index": 6,
+    "static_path_first_refusal_binding_count": 2
+  },
+  "appearance_revision_witness": {
+    "source_object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+    "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+    "target_object_ref": "object:31b0903e4212bbafac6c3e4227db245a17a2df2fe1aa36e4772330fdd3b9fc11",
+    "target_type_sha256": "23152f1307717e7bb19407562eee3c58d71b9021c742226eecfec048ac3f5eb1",
+    "preserved_bbox": [
+      55,
+      3,
+      60,
+      8
+    ],
+    "preserved_palette": [
+      9
+    ],
+    "preserved_cell_count": 20,
+    "changed_property": "normalized_colored_shape"
+  },
+  "lineage_compiler": {
+    "relations": [
+      "unique_exact_type",
+      "unique_fixed_support_appearance_revision",
+      "bracketed_occlusion_enter",
+      "unique_reappearance_exit"
+    ],
+    "appearance_revision_invariants": [
+      "bbox",
+      "palette",
+      "cell_count"
+    ],
+    "maximum_occlusion_frames": 1,
+    "authority_inputs": [
+      "ordered observation catalogs",
+      "environment transition receipts",
+      "required source object refs"
+    ],
+    "forbidden_authority_inputs": [
+      "condition_id",
+      "memory_text",
+      "role_label",
+      "embedding_similarity",
+      "H96_outcome"
+    ],
+    "ambiguity_action": "refuse_lineage",
+    "descendant_action": "explore_lineage",
+    "promotion_rule": "descendant response is admitted only after randomized descendant-fiber settlement"
+  },
+  "live_test": {
+    "pair_count": 2,
+    "order_mode": "alternating",
+    "seed": "h96-causal-object-lineage-20260802",
+    "target_assignment": {
+      "condition_id": "causal_mechanics",
+      "memory_ids": [
+        "goal_requires_glyph_match_v1",
+        "floor_marker_edits_state_glyph_v1"
+      ],
+      "producer_predicted_decision_delta": 0.96
+    },
+    "placebo_assignment": {
+      "condition_id": "redundant_true_memory",
+      "memory_ids": [
+        "controls_cardinal_v1",
+        "walls_block_without_state_change_v1",
+        "marker_is_not_consumed_v1"
+      ],
+      "producer_predicted_decision_delta": 0.99
+    }
+  },
+  "costs": {
+    "prefix_actions_per_arm": 7,
+    "post_prefix_actions_per_arm": 20,
+    "total_primitive_actions_per_arm": 27,
+    "proposal_inferences_before_post_prefix_action": 2,
+    "presented_bytes_per_intervention": 3849,
+    "differential_offer_cost": 0.0
+  },
+  "success_criterion": {
+    "all_source_and_path_hashes_verify": true,
+    "static_type_transport_status": "refused",
+    "lineage_transport_status": "transportable",
+    "required_lineage_count": 4,
+    "appearance_revision_count": ">=1",
+    "bracketed_occlusion_count": ">=1",
+    "target_blind_basin_matches_lineage_transport": "2/2",
+    "placebo_blind_basin_matches_lineage_transport": "2/2",
+    "target_supported_transport": "2/2",
+    "placebo_spontaneous_supported_transport": "0/2",
+    "minimum_first_stage_transport_delta": 1.0,
+    "target_total_task_score_minus_placebo": ">=0",
+    "mean_target_minus_placebo_composite": ">0",
+    "target_composite_wins": ">=1",
+    "target_family_promotion": "after H96 settlement only",
+    "all_identity_and_fixed_cost_checks": "pass"
+  },
+  "kill_conditions": [
+    "a frozen H95 result, manifest, family, response, contract, witness, or proposal hash drifts",
+    "path replay misses the frozen source or endpoint identity",
+    "static unique-type transport unexpectedly becomes complete",
+    "lineage compilation consumes a forbidden authority input",
+    "the appearance revision changes bbox, palette, or cell count",
+    "an appearance revision or reappearance has more than one admissible target",
+    "an absence exceeds one frame or lacks bracketing transition receipts",
+    "the lineage-aware contract or mapped response square does not commute",
+    "a blind proposal leaves the lineage-transported basin",
+    "lineage admission occurs after intervention delivery",
+    "target uptake is below 2/2 or placebo spontaneous uptake exceeds 0/2",
+    "prefix, inference, byte, session, or primitive-action costs mismatch",
+    "target loses total task score, has nonpositive mean composite delta, or wins zero pairs"
+  ],
+  "research_isomorphism": {
+    "dispatch_id": "bd0530c313ac08e0e2077cfc9be53c0570e5b314a8e89eb1834f3ef144a18017",
+    "selected_mother_structure": "Ancestry-lifted partial transport on a transition graph",
+    "compiled_prediction": "appearance identity may revise or become temporarily unobserved while lineage identity persists only through a complete unique transition-receipt chain"
+  },
+  "prior_art_boundary": {
+    "established_components": [
+      "object permanence",
+      "occlusion tracking",
+      "slot alignment",
+      "action-conditioned object transition memory",
+      "structured object and skill retrieval",
+      "provenance lineage DAGs"
+    ],
+    "candidate_differentiator": "fail-closed receipt-backed appearance quotient used as necessary authority for randomized response transport, prospective admission, and descendant external settlement",
+    "kill_if_matched": "an existing system implements the joined authority-and-credit loop"
+  },
+  "claim_boundary": [
+    "one H95 response transported through one six-transition descendant path inside one ARC level",
+    "one fixed-support appearance revision and at least one bracketed occlusion",
+    "the live assignment is exploratory lineage transport, not inherited target credit",
+    "passing establishes one descendant lineage-conditioned response, not arbitrary object permanence, multi-generation compounding, cross-task transfer, accelerating gains, benchmark improvement, or literature novelty"
+  ]
+}

@@ -133,7 +133,8 @@ def reachability_sweep(champion, start: Grid, action_arity: int, *,
                        start_step: int = 0,
                        max_states: int = 200000, max_depth: int = 400,
                        rank_fn=None, invariants=None, abstract_fn=None,
-                       visited_store=None, coverage_fn=None) -> SweepResult:
+                       visited_store=None, coverage_fn=None,
+                       admissible_fn=None) -> SweepResult:
     """BFS over reachable states under the champion, resource-bounded.
 
     Exact frontier exhaustion and resource interruption have distinct result
@@ -245,6 +246,8 @@ def reachability_sweep(champion, start: Grid, action_arity: int, *,
                 continue
             nxt = predict(grid, a, step)
             if nxt is None:
+                continue
+            if admissible_fn is not None and not admissible_fn(nxt):
                 continue
             # DETERMINISTIC proof bridge: a predicted successor that violates a
             # KERNEL-RATIFIED invariant is a model hallucination -> drop it.

@@ -111,6 +111,13 @@ class SpecNogoodLedger:
             },
             defeasible=True,
         )
+        # WRITE DEDUP: append-order-latest-wins means a row for an already-
+        # indexed signature adds no information (same clause identity, ~25KB
+        # of duplicate grids per row — measured 2.3x file bloat). Skipping
+        # the redundant append bounds ledger growth to DISTINCT signatures;
+        # the ledger stays append-only (we never rewrite, only decline).
+        if sig in self._clauses_by_sig():
+            return clause
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a") as f:
             f.write(json.dumps({
@@ -122,6 +129,25 @@ class SpecNogoodLedger:
 
     # ---- CONSULT -----------------------------------------------------------
     def _clauses_by_sig(self) -> "dict[str, ConflictClause]":
+        """Stat-cached parse: the ledger is consulted per candidate (blocks())
+        but changes only on learn/record appends. Re-reading a 21MB JSONL per
+        candidate made consult cost scale with refutation HISTORY instead of
+        the distinct-clause count (the anti-scaling law again). The cache key
+        is (size, mtime_ns): any append changes both; authority is unchanged
+        because the parse itself is unchanged."""
+        try:
+            st = self.path.stat()
+            key = (st.st_size, st.st_mtime_ns)
+        except OSError:
+            key = None
+        cached = getattr(self, "_sig_cache", None)
+        if cached is not None and cached[0] == key:
+            return cached[1]
+        out = self._parse_clauses()
+        self._sig_cache = (key, out)
+        return out
+
+    def _parse_clauses(self) -> "dict[str, ConflictClause]":
         out: dict[str, ConflictClause] = {}
         if not self.path.exists():
             return out

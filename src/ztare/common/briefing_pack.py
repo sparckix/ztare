@@ -191,17 +191,14 @@ def build_briefing_pack(request: BriefingPackRequest) -> BriefingPack:
         "briefing_sha256": _sha_text(request.briefing or ""),
         "sealed_boundary_present": request.sealed_boundary_present,
         "run_role": request.run_role,
-        "holdout_visibility": (
-            "consumable_counterexample_evidence"
-            if request.run_role in {DISCOVERY, HARNESS_DEBUG}
-            else "sealed"
-        ),
+        "holdout_visibility": "sealed_requires_explicit_evidence_role_transition",
         "front_door": ["TASK.md", "ASKS.json", "ATTENTION.md", "RECORDS.json", "WORKBENCH_TOOLS.md"],
         "background": ["CONTEXT.md"],
         "policy": (
-            "This cwd contains prompt-visible artifacts only. In DISCOVERY, "
-            "holdout/counterexample slices may be consumed as evidence but cannot "
-            "support a clean-transfer claim. In EVALUATION, holdouts stay sealed. "
+            "This cwd contains prompt-visible artifacts only. Active holdout "
+            "artifacts stay sealed in every run role; a counterexample becomes "
+            "visible only through an explicit evidence-role transition that also "
+            "binds a successor withheld slice. "
             "Environment actions and authority gates must be requested through "
             "typed workbench actions."
         ),
@@ -332,9 +329,34 @@ def _task_doc(
 
 def _ask_spec(task: str, records: list[Any]) -> AskSpec:
     if _looks_like_worldmodel_payload_task(str(task or "")):
+        if _worldmodel_turn_focus() == "task_hypothesis":
+            return AskSpec(
+                contract_id="worldmodel-task-hypothesis-v1",
+                objective=_worldmodel_task_hypothesis_objective(),
+                target_surface="candidate",
+                expected_output_schema="worldmodel_typed_payload",
+                validator=(
+                    "ztare.validator.worldmodel_typed_payload."
+                    "parse_worldmodel_typed_payload_text"
+                ),
+                authority_level="routing_only",
+                blocking_policy="blocks_candidate",
+                source_file="src/ztare/common/briefing_pack.py",
+                source_function="_worldmodel_task_doc",
+                examples=(
+                    "Keep the staged transition carrier behavior unchanged.",
+                    "Append one falsifiable GOAL_PREDICATE over the transition state.",
+                    "Name a rival and a discriminating intervention in thesis_markdown.",
+                    "The registered task adjudicator retains discharge authority.",
+                ),
+                current_refs=tuple(
+                    f"routing_record_sha256:{sha}"
+                    for sha in _task_hypothesis_strategy_shas(records)
+                ),
+            )
         return worldmodel_candidate_ask_spec(
             objective=_worldmodel_induction_objective(),
-            active_shas=_strategy_failure_shas(records),
+            current_refs=_worldmodel_current_refs(records),
         )
     return AskSpec(
         contract_id="generic-typed-contract-v1",
@@ -372,37 +394,80 @@ def _worldmodel_task_doc(
     run_role: str = EVALUATION,
     artifacts: list[dict[str, Any]] | None = None,
 ) -> str:
-    active_shas = _strategy_failure_shas(records)
+    hypothesis_focus = _worldmodel_turn_focus() == "task_hypothesis"
+    active_shas = (
+        _task_hypothesis_strategy_shas(records)
+        if hypothesis_focus
+        else _strategy_failure_shas(records)
+    )
     shas_text = "\n".join(f"- {sha}" for sha in active_shas) if active_shas else "- See ATTENTION.md / RECORDS.json."
-    evidence_lines = _evidence_status_lines(run_role=run_role, artifacts=artifacts or [])
-    induction_objective = _worldmodel_induction_objective()
+    evidence_lines = _evidence_status_lines(
+        run_role=run_role,
+        artifacts=artifacts or [],
+        records=records,
+    )
+    induction_objective = (
+        _worldmodel_task_hypothesis_objective()
+        if hypothesis_focus
+        else _worldmodel_induction_objective()
+    )
+    science_contract = (
+        "Hypothesis-first policy: preserve accepted transition behavior; spend "
+        "this turn only on a falsifiable task predicate and its discriminator. "
+        "A predicate can steer acquisition but cannot discharge the task or "
+        "amend the transition law."
+        if hypothesis_focus
+        else _compact_science_contract_text()
+    )
+    work_loop = (
+        "Hold the staged transition carrier fixed. Treat task-open observations "
+        "as negative examples; compare surviving task predicates, choose one "
+        "falsifiable rival, and return a standalone top-level "
+        "`GOAL_PREDICATE(state) -> bool` module. Do not repeat or import the "
+        "transition carrier; the kernel binds the predicate to its immutable "
+        "carrier companion. State the role, relation, or certified invariant "
+        "that makes the proposed condition an identity; coordinates, labels, "
+        "and other presentation properties may locate evidence but cannot by "
+        "themselves define the task. A prior-chart task edge may be proposed "
+        "only as a falsifiable invariant-level transport with a target-chart "
+        "discriminator, never as inherited authority. The "
+        "input is the same substrate state consumed by the transition carrier, "
+        "never a report, receipt, score, task-adjudicator field, or lifecycle "
+        "counter. Do not add or modify transition operations. The predicate is "
+        "acquisition steering; the registered task adjudicator disposes it."
+        if hypothesis_focus
+        else (
+            "Search locally in the CEGIS loop: evidence -> quotient/roles -> "
+            "executable transition law -> visible score/preflight -> repair or "
+            "typed obstruction. Scratch code and local probes are part of thinking; "
+            "receipts are citations, not the target. If you stop with an obstruction "
+            "after consuming staged counterexamples, cite the derived scratch "
+            "artifact, visible diagnostic receipt, or scored candidate that connects "
+            "those refs to the obstruction. Stop only when the next visible local "
+            "action is no longer worth doing in this turn; if it is cheap, executable, "
+            "and informative, run it."
+        )
+    )
     return (
         "# Task\n\n"
         + render_ask_spec_markdown(
             spec
             or worldmodel_candidate_ask_spec(
                 objective=induction_objective,
-                active_shas=active_shas,
+                current_refs=_worldmodel_current_refs(records),
             )
         )
         + "\n"
         "Use `ATTENTION.md` and `RECORDS.json` as evidence indexes. Treat Strategy "
         "cards as routing records, not as the law to fit. Use `CONTEXT.md` only "
         "as background.\n\n"
-        f"{_compact_science_contract_text()}\n\n"
+        f"{science_contract}\n\n"
         "## Evidence Status\n\n"
         f"- run_role: `{run_role}`\n"
         + "\n".join(evidence_lines)
         + "\n\n"
         "## Work Loop\n\n"
-        "Search locally in the CEGIS loop: evidence -> quotient/roles -> executable "
-        "transition law -> visible score/preflight -> repair or typed obstruction. "
-        "Scratch code and local probes are part of thinking; receipts are citations, "
-        "not the target. If you stop with an obstruction after consuming staged "
-        "counterexamples, cite the derived scratch artifact, visible diagnostic "
-        "receipt, or scored candidate that connects those refs to the obstruction. "
-        "Stop only when the next visible local action is no longer worth doing in "
-        "this turn; if it is cheap, executable, and informative, run it.\n\n"
+        f"{work_loop}\n\n"
         "## Final Answer Contract\n\n"
         f"{SCIENCE_OUTPUT_POLICY.final_contract_text()}\n"
         "All Strategy-card, workbench, tool-gap, and action-request objects belong in `control_receipts`. "
@@ -417,7 +482,7 @@ def _worldmodel_task_doc(
         "or a registered workbench action is a no-op.\n\n"
         "For executable candidates, run `check-worldmodel-carrier` locally before final submission. "
         "Run `check-receipt --kind worldmodel-payload` over the final JSON when possible.\n\n"
-        "## Active Strategy Card SHAs\n\n"
+        "## Current Routing Record SHAs\n\n"
         f"{shas_text}\n"
     )
 
@@ -431,6 +496,19 @@ def _worldmodel_induction_objective() -> str:
     )
 
 
+def _worldmodel_task_hypothesis_objective() -> str:
+    return (
+        "Refine the current task-hypothesis version space while preserving the "
+        "accepted transition carrier. Return a standalone "
+        "`GOAL_PREDICATE(state) -> bool` module, plus a concise rival "
+        "and discriminating intervention. Do not repair or extend transition laws."
+    )
+
+
+def _worldmodel_turn_focus() -> str:
+    return str(os.environ.get("ZTARE_WORLDMODEL_TURN_FOCUS") or "").strip().lower()
+
+
 def _compact_science_contract_text() -> str:
     return (
         "Candidate-first policy: propose a transportable executable law whenever "
@@ -441,17 +519,16 @@ def _compact_science_contract_text() -> str:
     )
 
 
-def _evidence_status_lines(*, run_role: str, artifacts: list[dict[str, Any]]) -> list[str]:
-    visible = [
-        str(row.get("ref") or row.get("source_ref") or "").strip()
-        for row in artifacts
-        if isinstance(row, dict) and row.get("status") == "materialized"
-    ]
-    counterexample_refs = [
-        ref
-        for ref in visible
-        if "holdout" in ref or "episode_002" in ref or "counterexample" in ref
-    ]
+def _evidence_status_lines(
+    *,
+    run_role: str,
+    artifacts: list[dict[str, Any]],
+    records: list[Any],
+) -> list[str]:
+    counterexample_refs = _counterexample_evidence_refs(
+        artifacts=artifacts,
+        records=records,
+    )
     if run_role in {DISCOVERY, HARNESS_DEBUG}:
         if counterexample_refs:
             refs = ", ".join(f"`{ref}`" for ref in counterexample_refs[:8])
@@ -466,6 +543,76 @@ def _evidence_status_lines(*, run_role: str, artifacts: list[dict[str, Any]]) ->
     return [
         "- fresh verifier refs, if present, are for gate/promotion measurement; do not inspect hidden holdout outside declared visible artifacts.",
     ]
+
+
+def _worldmodel_current_refs(records: list[Any], *, limit: int = 8) -> tuple[str, ...]:
+    """Return the active consumer's work objects without relabeling their type."""
+
+    refs: list[str] = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        projection = record.get("consumer_projection")
+        if not isinstance(projection, dict):
+            continue
+        for donor in projection.get("archived_residual_donors") or []:
+            if not isinstance(donor, dict):
+                continue
+            ref = str(donor.get("candidate_ref") or "").strip()
+            sha = str(donor.get("candidate_sha256") or "").strip()
+            if ref:
+                refs.append(
+                    f"artifact_ref:{ref}" + (f"#sha256={sha}" if sha else "")
+                )
+        source_ref = str(record.get("source_ref") or "").strip()
+        source_sha = str(record.get("source_sha") or "").strip()
+        if source_ref:
+            refs.append(
+                f"receipt_ref:{source_ref}"
+                + (f"#sha256={source_sha}" if source_sha else "")
+            )
+        observation_sha = str(projection.get("observation_sha256") or "").strip()
+        if observation_sha:
+            refs.append(f"observation_sha256:{observation_sha}")
+    if not refs:
+        refs.extend(
+            f"routing_record_sha256:{sha}" for sha in _strategy_failure_shas(records)
+        )
+    return tuple(dict.fromkeys(refs))[:limit]
+
+
+def _counterexample_evidence_refs(
+    *,
+    artifacts: list[dict[str, Any]],
+    records: list[Any],
+) -> list[str]:
+    visible = {
+        str(row.get("ref") or row.get("source_ref") or "").strip()
+        for row in artifacts
+        if isinstance(row, dict) and row.get("status") == "materialized"
+    }
+    refs = [
+        ref
+        for ref in visible
+        if "holdout" in ref or "episode_002" in ref or "counterexample" in ref
+    ]
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        projection = record.get("consumer_projection")
+        if not isinstance(projection, dict) or not (
+            projection.get("observation_sha256")
+            or projection.get("archived_residual_donors")
+        ):
+            continue
+        candidates = [record.get("source_ref")]
+        candidates.extend(
+            donor.get("candidate_ref")
+            for donor in projection.get("archived_residual_donors") or []
+            if isinstance(donor, dict)
+        )
+        refs.extend(str(ref) for ref in candidates if str(ref or "") in visible)
+    return list(dict.fromkeys(refs))
 
 
 def _single_line(value: Any, *, limit: int = 480) -> str:
@@ -494,6 +641,18 @@ def _strategy_failure_shas(records: list[Any], *, limit: int = 8) -> list[str]:
     return shas
 
 
+def _task_hypothesis_strategy_shas(records: list[Any]) -> list[str]:
+    """Keep the focused ask bound only to task-specification residues."""
+
+    selected = [
+        record
+        for record in records
+        if isinstance(record, dict)
+        and record.get("kind") == "search_control_residue_repair"
+    ]
+    return _strategy_failure_shas(selected, limit=2)
+
+
 def _attention_doc(
     *,
     briefing: str | None,
@@ -507,7 +666,11 @@ def _attention_doc(
         heading="## Briefing Attention Agenda",
     )
     record_lines = _record_attention_lines(records)
-    evidence_lines = _attention_evidence_lines(run_role=run_role, artifacts=artifacts or [])
+    evidence_lines = _attention_evidence_lines(
+        run_role=run_role,
+        artifacts=artifacts or [],
+        records=records,
+    )
     if record_lines:
         text = (
             "# Attention\n\n"
@@ -540,20 +703,15 @@ def _attention_doc(
     )
 
 
-def _attention_evidence_lines(*, run_role: str, artifacts: list[dict[str, Any]]) -> list[str]:
+def _attention_evidence_lines(
+    *,
+    run_role: str,
+    artifacts: list[dict[str, Any]],
+    records: list[Any],
+) -> list[str]:
     lines: list[str] = []
     if run_role in {DISCOVERY, HARNESS_DEBUG}:
-        refs = [
-            str(row.get("ref") or row.get("source_ref") or "").strip()
-            for row in artifacts
-            if isinstance(row, dict)
-            and row.get("status") == "materialized"
-            and (
-                "holdout" in str(row.get("ref") or row.get("source_ref") or "")
-                or "episode_002" in str(row.get("ref") or row.get("source_ref") or "")
-                or "counterexample" in str(row.get("ref") or row.get("source_ref") or "")
-            )
-        ]
+        refs = _counterexample_evidence_refs(artifacts=artifacts, records=records)
         if refs:
             lines.append(
                 "- evidence_status: DISCOVERY counterexamples are visible learning evidence; "
@@ -990,14 +1148,11 @@ def _visible_workbench_command_doc() -> str:
 
 _VISIBLE_STAGE_DENY_FILENAMES = {
     ".env",
+    "evidence_holdout.txt",
+    "episode_002.jsonl",
     "sealed_holdout.json",
     "ground_truth.json",
 }
-
-_DISCOVERY_HOLDOUT_REFS = (
-    "evidence_holdout.txt",
-    "raw/episodes/episode_002.jsonl",
-)
 
 _VISIBLE_ARTIFACT_EXT_RE = re.compile(
     r"^(.*?\.(?:csv|json|jsonl|lean|md|py|toml|tsv|txt|ya?ml))(?:[:#].*)?$"
@@ -1012,12 +1167,13 @@ def _materialize_structured_visible_artifacts(
     records: list[Any],
     run_role: str = EVALUATION,
 ) -> list[dict[str, Any]]:
-    refs = set(_structured_visible_artifact_refs(records))
-    if run_role in {DISCOVERY, HARNESS_DEBUG}:
-        refs.update(_DISCOVERY_HOLDOUT_REFS)
-    refs = sorted(refs)
+    refs = sorted(set(_structured_visible_artifact_refs(records)))
+    seen_refs = set(refs)
     artifacts: list[dict[str, Any]] = []
-    for ref in refs:
+    cursor = 0
+    while cursor < len(refs):
+        ref = refs[cursor]
+        cursor += 1
         record: dict[str, Any] = {
             "ref": ref,
             "authority_level": "visible_context_artifact",
@@ -1089,6 +1245,22 @@ def _materialize_structured_visible_artifacts(
                 pass
         record.update(artifact_record)
         artifacts.append(record)
+        # Receipt envelopes are evidence graphs.  Stage their visible local
+        # dependencies to a fixed point so a typed ref does not become dead
+        # text at the sandbox boundary.  The ordinary visibility and byte
+        # gates above still govern every discovered child.
+        if resolved.suffix == ".json" and size <= max_bytes:
+            try:
+                nested_payload = json.loads(resolved.read_text(encoding="utf-8"))
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                nested_payload = None
+            if isinstance(nested_payload, (dict, list)):
+                for nested_ref in sorted(
+                    set(_iter_structured_visible_artifact_refs(nested_payload))
+                ):
+                    if nested_ref not in seen_refs:
+                        refs.append(nested_ref)
+                        seen_refs.add(nested_ref)
     return artifacts
 
 
@@ -1103,6 +1275,13 @@ def _structured_visible_artifact_refs(records: list[Any]) -> list[str]:
 
 def _iter_structured_visible_artifact_refs(value: Any, *, key: str = "") -> list[str]:
     refs: list[str] = []
+    if key == "output_summary" and isinstance(value, str):
+        try:
+            decoded = json.loads(value)
+        except json.JSONDecodeError:
+            decoded = None
+        if isinstance(decoded, (dict, list)):
+            return _iter_structured_visible_artifact_refs(decoded)
     if isinstance(value, dict):
         for child_key, child in value.items():
             refs.extend(_iter_structured_visible_artifact_refs(child, key=str(child_key)))
@@ -1119,7 +1298,10 @@ def _iter_structured_visible_artifact_refs(value: Any, *, key: str = "") -> list
         return refs
     if key in _VISIBLE_ARTIFACT_REF_KEYS or key.endswith(_VISIBLE_ARTIFACT_REF_KEY_SUFFIXES):
         ref = _canonical_visible_artifact_ref(str(value or ""))
-        if ref and _visible_artifact_ref_allowed(ref):
+        if ref and (
+            _visible_artifact_ref_allowed(ref)
+            or Path(ref).name in {"evidence_holdout.txt", "episode_002.jsonl"}
+        ):
             refs.append(ref)
     return refs
 
@@ -1167,8 +1349,6 @@ def _visible_artifact_ref_allowed(ref: str, *, run_role: str = EVALUATION) -> bo
         return False
     if any(part.startswith(".") for part in path.parts):
         return False
-    if path.name == "evidence_holdout.txt":
-        return run_role in {DISCOVERY, HARNESS_DEBUG}
     if path.name in _VISIBLE_STAGE_DENY_FILENAMES:
         return False
     # ponytail: eval_slices/ is a sealed holdout dir — never stage into packs

@@ -25,6 +25,7 @@ from ztare.worldmodel.version_space import (
     fingerprint,
     load,
     probe_battery,
+    residual_donors,
     seed_from_history,
     _load_prunes,
 )
@@ -265,6 +266,43 @@ class TestAdmit:
         survivors = load(project)
         assert len(survivors) == 1
         assert survivors[0]["status"] == "admitted"
+
+    def test_rejected_program_can_donate_local_behavior_without_reentry(self, tmp_path):
+        project = _make_project(
+            tmp_path,
+            [
+                (_G1, 0, _G2),
+                (_G2, 1, _G3),
+            ],
+        )
+        workspace = project / "workspace"
+        workspace.mkdir()
+        donor = _write_candidate(
+            workspace,
+            "partial_donor.py",
+            (
+                "def step(s, a, t):\n"
+                "    return ((2,2),(3,4))\n"
+            ),
+        )
+        record = admit(donor, project)
+        assert record["status"] == "rejected"
+        transition = EpisodeLog.read_jsonl(
+            project / "raw" / "episodes" / "episode_001.jsonl"
+        ).transitions()[0]
+
+        found = residual_donors(
+            project,
+            transition=transition,
+            baseline_prediction=_G4,
+        )
+
+        assert len(found) == 1
+        assert found[0]["candidate_ref"] == "workspace/partial_donor.py"
+        assert found[0]["historical_disposition"] == "rejected"
+        assert found[0]["relation"] == "exact_on_counterexample"
+        assert found[0]["authority"] == "diagnostic_operation_salvage_only"
+        assert load(project) == []
 
 
 class TestSeedFromHistory:

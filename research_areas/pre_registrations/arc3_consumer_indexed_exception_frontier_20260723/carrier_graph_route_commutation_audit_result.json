@@ -1,0 +1,2550 @@
+{
+  "carrier_execution_sha256": "2dc741d6e7e40f8d0f264217c6908010f202e3caf0bb41b35fa3d26fd9c93ef8",
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "comparison": {
+    "carrier_missing_step": null,
+    "final_goal_edge": true,
+    "first_any_factor_divergence": 11,
+    "first_terminal_key_divergence": null,
+    "steps": [
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            40,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+        "carrier_target_sha256": "9a8bda2336b447abd83948bc5360a32f8a7d6b0eb79cb087287f77888b5b3ce5",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260725T194809829605Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T053829456027Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T165943587979Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#0",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#0"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            40,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+        "graph_source_sha256": "1bec0125a244005d96b749b931db92c5ceceaaf3d388c07a89675da2de06af19",
+        "graph_target_representative_sha256": "9a8bda2336b447abd83948bc5360a32f8a7d6b0eb79cb087287f77888b5b3ce5",
+        "graph_target_sha256": "c4eef54d14b5a3c4b13c785932c59e11636b45cb899c4bc664ece15ed0cd4602",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 0,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "757a339a3f9b35ca45e2189fc2dcf416d90d1cdd176cb9947b70fbb6c6e84a43",
+          "c4eef54d14b5a3c4b13c785932c59e11636b45cb899c4bc664ece15ed0cd4602"
+        ],
+        "terminal_key_equal": true,
+        "time": 64
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            35,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "9a8bda2336b447abd83948bc5360a32f8a7d6b0eb79cb087287f77888b5b3ce5",
+        "carrier_target_sha256": "a6e82bcf235ce21a10ed059570d2ffa31b1899492b1cf319c26e46cecd252dd1",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#67",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#1",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#1"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            35,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "9a8bda2336b447abd83948bc5360a32f8a7d6b0eb79cb087287f77888b5b3ce5",
+        "graph_source_sha256": "c4eef54d14b5a3c4b13c785932c59e11636b45cb899c4bc664ece15ed0cd4602",
+        "graph_target_representative_sha256": "a6e82bcf235ce21a10ed059570d2ffa31b1899492b1cf319c26e46cecd252dd1",
+        "graph_target_sha256": "47dcfe13172ce240ada6b8720358806954ca1a4a433e30a7514ffdac899ceb17",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 1,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "47dcfe13172ce240ada6b8720358806954ca1a4a433e30a7514ffdac899ceb17",
+          "5bfb7f3cfb91cd5eec4f0dbf694988914fb90154f56e5cde2caca85fb6bb47de"
+        ],
+        "terminal_key_equal": true,
+        "time": 65
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "a6e82bcf235ce21a10ed059570d2ffa31b1899492b1cf319c26e46cecd252dd1",
+        "carrier_target_sha256": "9a47964834a657cd07ab70e9a572965158f800b72ae9c058e2f5c48091d8f89b",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#68",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#2",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#2"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "a6e82bcf235ce21a10ed059570d2ffa31b1899492b1cf319c26e46cecd252dd1",
+        "graph_source_sha256": "47dcfe13172ce240ada6b8720358806954ca1a4a433e30a7514ffdac899ceb17",
+        "graph_target_representative_sha256": "9a47964834a657cd07ab70e9a572965158f800b72ae9c058e2f5c48091d8f89b",
+        "graph_target_sha256": "fea3411b29440dbe0a5bf6eef90fc46d2aa9f063a6a683da2542c73a308150f3",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 2,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "48f8bb4944a72bb966134130d4584efbcf6ba846376fb1fbf55ef8f8296ae18d",
+          "fea3411b29440dbe0a5bf6eef90fc46d2aa9f063a6a683da2542c73a308150f3"
+        ],
+        "terminal_key_equal": true,
+        "time": 66
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            25,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "9a47964834a657cd07ab70e9a572965158f800b72ae9c058e2f5c48091d8f89b",
+        "carrier_target_sha256": "68e2110b5b3200a6e098966305bd7f6515353fa65155e1554a6d91cfe7ab1e16",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#69",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#3",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#3"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            25,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "9a47964834a657cd07ab70e9a572965158f800b72ae9c058e2f5c48091d8f89b",
+        "graph_source_sha256": "fea3411b29440dbe0a5bf6eef90fc46d2aa9f063a6a683da2542c73a308150f3",
+        "graph_target_representative_sha256": "68e2110b5b3200a6e098966305bd7f6515353fa65155e1554a6d91cfe7ab1e16",
+        "graph_target_sha256": "67545c1a83fd8dac4f51b9b2bf08bae02e71d5792feb957120224f5612f26a65",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 3,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "67545c1a83fd8dac4f51b9b2bf08bae02e71d5792feb957120224f5612f26a65",
+          "767a3d6333b79d61903a46c494cc82232ec1693e79b1b733b71952aa2d44a304"
+        ],
+        "terminal_key_equal": true,
+        "time": 67
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            20,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "68e2110b5b3200a6e098966305bd7f6515353fa65155e1554a6d91cfe7ab1e16",
+        "carrier_target_sha256": "afcb6725f2ff0906e59177126d4ba414ff45ce781bbd4e572787e32ac3f95880",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#70",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#4",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#4"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            20,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "68e2110b5b3200a6e098966305bd7f6515353fa65155e1554a6d91cfe7ab1e16",
+        "graph_source_sha256": "67545c1a83fd8dac4f51b9b2bf08bae02e71d5792feb957120224f5612f26a65",
+        "graph_target_representative_sha256": "afcb6725f2ff0906e59177126d4ba414ff45ce781bbd4e572787e32ac3f95880",
+        "graph_target_sha256": "18fa069eea65c7364d4e3c9ce502d0d40dd9a554d307eac3965059f801bc58b5",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 4,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "18fa069eea65c7364d4e3c9ce502d0d40dd9a554d307eac3965059f801bc58b5",
+          "6e8e20184b37cc18de1c6638588a7363ad891be603fa66829cdfb2bd869d7c5a"
+        ],
+        "terminal_key_equal": true,
+        "time": 68
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "afcb6725f2ff0906e59177126d4ba414ff45ce781bbd4e572787e32ac3f95880",
+        "carrier_target_sha256": "5d8787fbc11ba0719319eef01f86da396818b29d26bb3b3bc2133dec063009f1",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#71",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#5",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#5"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "afcb6725f2ff0906e59177126d4ba414ff45ce781bbd4e572787e32ac3f95880",
+        "graph_source_sha256": "18fa069eea65c7364d4e3c9ce502d0d40dd9a554d307eac3965059f801bc58b5",
+        "graph_target_representative_sha256": "5d8787fbc11ba0719319eef01f86da396818b29d26bb3b3bc2133dec063009f1",
+        "graph_target_sha256": "920ec5b5744de825a5020ba1abc1db3ce23c88750244d67b92310ce1a355994b",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 5,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "920ec5b5744de825a5020ba1abc1db3ce23c88750244d67b92310ce1a355994b",
+          "ad971e182eaa6fbeb66afc3157985b83febdbd5899b602873dc27dfef3407332"
+        ],
+        "terminal_key_equal": true,
+        "time": 69
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            10,
+            9
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "5d8787fbc11ba0719319eef01f86da396818b29d26bb3b3bc2133dec063009f1",
+        "carrier_target_sha256": "7e4ad792076670287016487a5420f318befca74ccd87b1b25e818d17e1a87f7a",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#72",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#6",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#6"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            10,
+            9
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "5d8787fbc11ba0719319eef01f86da396818b29d26bb3b3bc2133dec063009f1",
+        "graph_source_sha256": "920ec5b5744de825a5020ba1abc1db3ce23c88750244d67b92310ce1a355994b",
+        "graph_target_representative_sha256": "7e4ad792076670287016487a5420f318befca74ccd87b1b25e818d17e1a87f7a",
+        "graph_target_sha256": "fdac6865c81d93cafa56555428280d12db15d3c130fc290fb52b2a1e0e7171ef",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 6,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "93c45961f034bc15475bf9f1cd49a03319b442103ad238caf7e0f4e4cd5ec6fd",
+          "fdac6865c81d93cafa56555428280d12db15d3c130fc290fb52b2a1e0e7171ef"
+        ],
+        "terminal_key_equal": true,
+        "time": 70
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            5,
+            34
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', -5, 25)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "7e4ad792076670287016487a5420f318befca74ccd87b1b25e818d17e1a87f7a",
+        "carrier_target_sha256": "d041d36cd007650b33d0b55a1d1b4ccb1ad5816161422a217c99db56563cb81d",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260723T011101264665Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260724T231804834496Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260725T172509074290Z.jsonl#73",
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260725T185747154114Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T181704475477Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T200726879896Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T205139058694Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260726T234449824661Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T001613804937Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T002329717636Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T003326766130Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T004004072646Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T010510769021Z.jsonl#7",
+          "raw/episodes/eval_slices/eval_20260727T011647961680Z.jsonl#7"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            5,
+            34
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', -5, 25)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "7e4ad792076670287016487a5420f318befca74ccd87b1b25e818d17e1a87f7a",
+        "graph_source_sha256": "fdac6865c81d93cafa56555428280d12db15d3c130fc290fb52b2a1e0e7171ef",
+        "graph_target_representative_sha256": "d041d36cd007650b33d0b55a1d1b4ccb1ad5816161422a217c99db56563cb81d",
+        "graph_target_sha256": "df187025da0726590b8bbe4095e1674cfb057525779ff686822419d89fcb2e1b",
+        "operation": "0",
+        "source_factor_differences": [],
+        "step": 7,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "d36c7cf9500b1ad093e2cf13a94bd16843fd8b9f64be12b3c4a55adea3375d9a",
+          "df187025da0726590b8bbe4095e1674cfb057525779ff686822419d89fcb2e1b"
+        ],
+        "terminal_key_equal": true,
+        "time": 71
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            5,
+            29
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "d041d36cd007650b33d0b55a1d1b4ccb1ad5816161422a217c99db56563cb81d",
+        "carrier_target_sha256": "54caed4c4600d5b3f001375987b414e9b4e3242835cd6b7a4002e16c045437cd",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#8",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#8",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#8",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#8",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#8"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            5,
+            29
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, -5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "d041d36cd007650b33d0b55a1d1b4ccb1ad5816161422a217c99db56563cb81d",
+        "graph_source_sha256": "df187025da0726590b8bbe4095e1674cfb057525779ff686822419d89fcb2e1b",
+        "graph_target_representative_sha256": "54caed4c4600d5b3f001375987b414e9b4e3242835cd6b7a4002e16c045437cd",
+        "graph_target_sha256": "48d88f7422d6ebd9bc41192b5af6077bf95aa4ca3e888f9072439dabc9304555",
+        "operation": "2",
+        "source_factor_differences": [],
+        "step": 8,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "48d88f7422d6ebd9bc41192b5af6077bf95aa4ca3e888f9072439dabc9304555",
+          "4ba6fc631be6572ca0a935b56a9e36a9565b618e43625b1d928eeb344df967c4"
+        ],
+        "terminal_key_equal": true,
+        "time": 72
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            10,
+            29
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "54caed4c4600d5b3f001375987b414e9b4e3242835cd6b7a4002e16c045437cd",
+        "carrier_target_sha256": "5179b14d188260508f8ec26df9ff4d180017ad7413459beacd7cb1220af9b9a3",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#9",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#9",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#9",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#9",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#9"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            10,
+            29
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "54caed4c4600d5b3f001375987b414e9b4e3242835cd6b7a4002e16c045437cd",
+        "graph_source_sha256": "48d88f7422d6ebd9bc41192b5af6077bf95aa4ca3e888f9072439dabc9304555",
+        "graph_target_representative_sha256": "5179b14d188260508f8ec26df9ff4d180017ad7413459beacd7cb1220af9b9a3",
+        "graph_target_sha256": "650ae7d96348de89ea28daa89842603e5128234785ac7cc93683ea494d6e9145",
+        "operation": "1",
+        "source_factor_differences": [],
+        "step": 9,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "60387eb2cf11fd38db1233b2fbc4483cd2862627ba1cf7e80f411cbecebedc9b",
+          "650ae7d96348de89ea28daa89842603e5128234785ac7cc93683ea494d6e9145"
+        ],
+        "terminal_key_equal": true,
+        "time": 73
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            29
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "5179b14d188260508f8ec26df9ff4d180017ad7413459beacd7cb1220af9b9a3",
+        "carrier_target_sha256": "75e10e3d2bcb0bda3b3d07aac6fe43eeeb4797658728ee12e9bb12f0f9965153",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#10",
+          "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl#10",
+          "raw/episodes/eval_slices/eval_20260726T172325552951Z.jsonl#10",
+          "raw/episodes/eval_slices/eval_20260726T175642003529Z.jsonl#10",
+          "raw/episodes/eval_slices/eval_20260726T180758839355Z.jsonl#10"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            29
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "5179b14d188260508f8ec26df9ff4d180017ad7413459beacd7cb1220af9b9a3",
+        "graph_source_sha256": "650ae7d96348de89ea28daa89842603e5128234785ac7cc93683ea494d6e9145",
+        "graph_target_representative_sha256": "75e10e3d2bcb0bda3b3d07aac6fe43eeeb4797658728ee12e9bb12f0f9965153",
+        "graph_target_sha256": "d2856a40abb6e285f884be3dfdee0799760e6b697f5758b74eedc6772ed65d29",
+        "operation": "1",
+        "source_factor_differences": [],
+        "step": 10,
+        "target_factor_differences": [],
+        "target_lineage_sha256s": [
+          "d2856a40abb6e285f884be3dfdee0799760e6b697f5758b74eedc6772ed65d29",
+          "dd60de9f7cc8fffbb06af95df3b8a011a666bb68985460e8a051e665879a5c3e"
+        ],
+        "terminal_key_equal": true,
+        "time": 74
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "75e10e3d2bcb0bda3b3d07aac6fe43eeeb4797658728ee12e9bb12f0f9965153",
+        "carrier_target_sha256": "82504a511ca1c3c4635a5106d398342efeb09985420f4b3ca7db1b7098a2ac0c",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#11"
+        ],
+        "effect_equal": false,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 11), ('ordered_budget', 11))",
+        "graph_source_representative_sha256": "75e10e3d2bcb0bda3b3d07aac6fe43eeeb4797658728ee12e9bb12f0f9965153",
+        "graph_source_sha256": "d2856a40abb6e285f884be3dfdee0799760e6b697f5758b74eedc6772ed65d29",
+        "graph_target_representative_sha256": "c0b70ba20a45beced7fca501339cd89838ff08e373f4d706fe003c224d00dac2",
+        "graph_target_sha256": "8f9dcb2859f820e2912db50628965f821549a807a5c2d977adc56ae58845bc15",
+        "operation": "3",
+        "source_factor_differences": [],
+        "step": 11,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "195242d5d2f5ac3bd695e0e7670d46b2d704908c950d41335acf0366375f5cb8",
+          "8f9dcb2859f820e2912db50628965f821549a807a5c2d977adc56ae58845bc15"
+        ],
+        "terminal_key_equal": true,
+        "time": 75
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "82504a511ca1c3c4635a5106d398342efeb09985420f4b3ca7db1b7098a2ac0c",
+        "carrier_target_sha256": "0c67cd0833a883806084b9bf317808d0de3f8bfc5a7e802ba71436e39cfd2793",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#12"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "c0b70ba20a45beced7fca501339cd89838ff08e373f4d706fe003c224d00dac2",
+        "graph_source_sha256": "8f9dcb2859f820e2912db50628965f821549a807a5c2d977adc56ae58845bc15",
+        "graph_target_representative_sha256": "c56f6fe0425e49af60bfee11a4b26864914787ac55453f57bac4ab73a9e3fc1f",
+        "graph_target_sha256": "063338a0738017c539f0f159bc693572813980a3376ad3582236db752f8feb87",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 12,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "063338a0738017c539f0f159bc693572813980a3376ad3582236db752f8feb87",
+          "e3143de3f6e93b976334e6463b0617819a682b35df45b8afcf80101144675947"
+        ],
+        "terminal_key_equal": true,
+        "time": 76
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "0c67cd0833a883806084b9bf317808d0de3f8bfc5a7e802ba71436e39cfd2793",
+        "carrier_target_sha256": "545cb71d6d2065fbf27c7083332df4401f9510050acb7a2102e6d4279319060c",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#13"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "c56f6fe0425e49af60bfee11a4b26864914787ac55453f57bac4ab73a9e3fc1f",
+        "graph_source_sha256": "063338a0738017c539f0f159bc693572813980a3376ad3582236db752f8feb87",
+        "graph_target_representative_sha256": "3d80565ae5b3142703803032fb2a72250a2c24972cbeef607baa4cbd95f15e86",
+        "graph_target_sha256": "732547b4c9ca41288bf781839bc93eea9f0f05b58fd932ce25087a681930ed06",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 13,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "732547b4c9ca41288bf781839bc93eea9f0f05b58fd932ce25087a681930ed06",
+          "d7ff73a546fa6ca19875a8b3fcd83dbc5a657af9e76ebc7c84ea5eea69a0f867"
+        ],
+        "terminal_key_equal": true,
+        "time": 77
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "545cb71d6d2065fbf27c7083332df4401f9510050acb7a2102e6d4279319060c",
+        "carrier_target_sha256": "16d3acee4a521644c46dbca1c0a602a98a2de691efe0cdaad5fb1ceabac80079",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#14"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "3d80565ae5b3142703803032fb2a72250a2c24972cbeef607baa4cbd95f15e86",
+        "graph_source_sha256": "732547b4c9ca41288bf781839bc93eea9f0f05b58fd932ce25087a681930ed06",
+        "graph_target_representative_sha256": "74c6a64e2ab3d299b91248978e2b2ba9bdd13f0dc6dcef18fe4622507969bc84",
+        "graph_target_sha256": "3fb164892915046479794511a7ea2b8ecd535d274d9156b03d10b83832be4acc",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 14,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "3fb164892915046479794511a7ea2b8ecd535d274d9156b03d10b83832be4acc",
+          "b0fb529df9b14c31788152c2e0ebb83244f048e0f838c03949a92e0110589c4f"
+        ],
+        "terminal_key_equal": true,
+        "time": 78
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "16d3acee4a521644c46dbca1c0a602a98a2de691efe0cdaad5fb1ceabac80079",
+        "carrier_target_sha256": "2374032a0af993d70930062391acec0513c88dbe7331bc682149abd0934b5615",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#15"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "74c6a64e2ab3d299b91248978e2b2ba9bdd13f0dc6dcef18fe4622507969bc84",
+        "graph_source_sha256": "3fb164892915046479794511a7ea2b8ecd535d274d9156b03d10b83832be4acc",
+        "graph_target_representative_sha256": "c5666a01945a8a1dac97eb879e87abbd09fed1e19dade5cff101ac2fedf095c7",
+        "graph_target_sha256": "bf3b3c4ebef2920872837f01930b60e797c8bf2be5b019151195447b1fc946ca",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 15,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "a3d40cda61f230cfc0d50764952ae24c588307d703d1561670fca85191165825",
+          "bf3b3c4ebef2920872837f01930b60e797c8bf2be5b019151195447b1fc946ca"
+        ],
+        "terminal_key_equal": true,
+        "time": 79
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "2374032a0af993d70930062391acec0513c88dbe7331bc682149abd0934b5615",
+        "carrier_target_sha256": "84d113bb6fdbebbd39de7f46e721acc99f21ab13b17e72ccfd8968a4a82b98b5",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#16"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "c5666a01945a8a1dac97eb879e87abbd09fed1e19dade5cff101ac2fedf095c7",
+        "graph_source_sha256": "bf3b3c4ebef2920872837f01930b60e797c8bf2be5b019151195447b1fc946ca",
+        "graph_target_representative_sha256": "5febf76717a1e6f79ffe959cb10094ba2281fadaf56e6169159ce46f129d9022",
+        "graph_target_sha256": "03b1bcc6de57d10238ae315af3f321d302298f8a063f98a7ff5b47acec8227d5",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 16,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "03b1bcc6de57d10238ae315af3f321d302298f8a063f98a7ff5b47acec8227d5",
+          "81ab8ffbd2fb69792ef6c5dab6cf1c9bd43d24a5ecd6de00dcc28d7561ac31f0"
+        ],
+        "terminal_key_equal": true,
+        "time": 80
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "carrier_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "84d113bb6fdbebbd39de7f46e721acc99f21ab13b17e72ccfd8968a4a82b98b5",
+        "carrier_target_sha256": "c3536df0e53c41a7bc2aa676922ce0cedf32ea6d70f739b5fe961f71c3351214",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#17"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            15,
+            34
+          ]
+        ],
+        "graph_effect": "(('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "5febf76717a1e6f79ffe959cb10094ba2281fadaf56e6169159ce46f129d9022",
+        "graph_source_sha256": "03b1bcc6de57d10238ae315af3f321d302298f8a063f98a7ff5b47acec8227d5",
+        "graph_target_representative_sha256": "a6db1ebf5f6354f6acf84d7061d7b213585413e148e1d56e79e46d57f39fef63",
+        "graph_target_sha256": "f258e5ee5ed7c493bd226bd78b7762dddff8fba8e48cd563b8d55639ac55779f",
+        "operation": "0",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 17,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "f258e5ee5ed7c493bd226bd78b7762dddff8fba8e48cd563b8d55639ac55779f",
+          "f8c09dde6946cc3207460aa829042b5a2227030d83f689f33f21b1dbb409c81f"
+        ],
+        "terminal_key_equal": true,
+        "time": 81
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            20,
+            34
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "c3536df0e53c41a7bc2aa676922ce0cedf32ea6d70f739b5fe961f71c3351214",
+        "carrier_target_sha256": "e786da545cf8d8d5f8e9f0c1eafb21a42e55c5fedd725588afd8ff5dd04ce867",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#18"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            20,
+            34
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "a6db1ebf5f6354f6acf84d7061d7b213585413e148e1d56e79e46d57f39fef63",
+        "graph_source_sha256": "f258e5ee5ed7c493bd226bd78b7762dddff8fba8e48cd563b8d55639ac55779f",
+        "graph_target_representative_sha256": "40b30b9ca0f54a9fc3e05d4eafadfd910acf578fafad826fc13015a24e1c7c1f",
+        "graph_target_sha256": "1be76add3b6049a0c31bc1dcd3faca33a1f0c2db61bb2cf2cfd69af837ad25a5",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 18,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "1be76add3b6049a0c31bc1dcd3faca33a1f0c2db61bb2cf2cfd69af837ad25a5",
+          "570b142822b28bdc86ab9c934a050bcecb1dc6bd2ffcb296727abec8cf0d6632"
+        ],
+        "terminal_key_equal": true,
+        "time": 82
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            25,
+            34
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "e786da545cf8d8d5f8e9f0c1eafb21a42e55c5fedd725588afd8ff5dd04ce867",
+        "carrier_target_sha256": "c7341aea41b73cc5125d6b7261506f7a21fc7cfb88a82f2018719555954a3d4d",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#19"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            25,
+            34
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "40b30b9ca0f54a9fc3e05d4eafadfd910acf578fafad826fc13015a24e1c7c1f",
+        "graph_source_sha256": "1be76add3b6049a0c31bc1dcd3faca33a1f0c2db61bb2cf2cfd69af837ad25a5",
+        "graph_target_representative_sha256": "8e13e37fb4690419d379868af121a2674bdc6acf52dfa1fe3ea1c67105c5f252",
+        "graph_target_sha256": "8652f1db7a60f2e2107cb94a526f7c517fb0145baf4752d73c634e13aab9deb8",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 19,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "8652f1db7a60f2e2107cb94a526f7c517fb0145baf4752d73c634e13aab9deb8",
+          "d13d821ca5eb38d0c6861ee9b80a0fb7b651fa4eb7d545a3d75b5988010c046b"
+        ],
+        "terminal_key_equal": true,
+        "time": 83
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            34
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "c7341aea41b73cc5125d6b7261506f7a21fc7cfb88a82f2018719555954a3d4d",
+        "carrier_target_sha256": "0d859105a65519c0631690444eb988f3519be91b8b0377f365574a451fcbd9a7",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#20"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            34
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "8e13e37fb4690419d379868af121a2674bdc6acf52dfa1fe3ea1c67105c5f252",
+        "graph_source_sha256": "8652f1db7a60f2e2107cb94a526f7c517fb0145baf4752d73c634e13aab9deb8",
+        "graph_target_representative_sha256": "54c9bc8925560fb2fef987e67920c7c8a3ddb01cb3570d0fe9312f77ca3ef60c",
+        "graph_target_sha256": "5423b11083bbe9459e3e391f9aa98619868fc40570082ee83348be9927bbd33f",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 20,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "5423b11083bbe9459e3e391f9aa98619868fc40570082ee83348be9927bbd33f",
+          "c103ebec75027c34d579268a00f44d4f43b093f1b7bfe8b547632d41615112c1"
+        ],
+        "terminal_key_equal": true,
+        "time": 84
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            39
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "carrier_source_sha256": "0d859105a65519c0631690444eb988f3519be91b8b0377f365574a451fcbd9a7",
+        "carrier_target_sha256": "f83d1cf6ba87bba5fb1bd05ee3f1fbbbb7bc1ad6ed57a401d30c431fdde9a119",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#21"
+        ],
+        "effect_equal": false,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            39
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "54c9bc8925560fb2fef987e67920c7c8a3ddb01cb3570d0fe9312f77ca3ef60c",
+        "graph_source_sha256": "5423b11083bbe9459e3e391f9aa98619868fc40570082ee83348be9927bbd33f",
+        "graph_target_representative_sha256": "c660ff01d6c0d08e06f9aa79076875fade64759d0085ed79b204b6130f05dd86",
+        "graph_target_sha256": "979a79f74a421dac90f216db374ee54e1cc76ac83fbab27ef75e25c217a1c274",
+        "operation": "3",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 21,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "979a79f74a421dac90f216db374ee54e1cc76ac83fbab27ef75e25c217a1c274",
+          "cac4c7d5d82b00f749b48e4e59ef5a531252b9cec3bf83b5462ffeeadf283055"
+        ],
+        "terminal_key_equal": true,
+        "time": 85
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            44
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "f83d1cf6ba87bba5fb1bd05ee3f1fbbbb7bc1ad6ed57a401d30c431fdde9a119",
+        "carrier_target_sha256": "32947c381bf14074b1a4daa7b68d94c50bcddfbe29a61f19c757bb90f083c068",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#22"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            44
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "c660ff01d6c0d08e06f9aa79076875fade64759d0085ed79b204b6130f05dd86",
+        "graph_source_sha256": "979a79f74a421dac90f216db374ee54e1cc76ac83fbab27ef75e25c217a1c274",
+        "graph_target_representative_sha256": "62e945d7e4f37739bd6ba6ff0843bf8d892b92193c868826da2338be78cf1941",
+        "graph_target_sha256": "d0488b328ac19ff2eac3b8c28a393e2c0f3f4fa43627c21a29d0ec4354c9c7e5",
+        "operation": "3",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 22,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "7d47de3f3c7b69c9a435ab01415b78903fc5b99d32ebe2420870a6f81ba0dbb6",
+          "d0488b328ac19ff2eac3b8c28a393e2c0f3f4fa43627c21a29d0ec4354c9c7e5"
+        ],
+        "terminal_key_equal": true,
+        "time": 86
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            49
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "32947c381bf14074b1a4daa7b68d94c50bcddfbe29a61f19c757bb90f083c068",
+        "carrier_target_sha256": "3b56d808b558c5dd7d8979a391338e8d1f4b0cfdabc032eb652e9ffcdcaa965f",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#23"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            49
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "62e945d7e4f37739bd6ba6ff0843bf8d892b92193c868826da2338be78cf1941",
+        "graph_source_sha256": "d0488b328ac19ff2eac3b8c28a393e2c0f3f4fa43627c21a29d0ec4354c9c7e5",
+        "graph_target_representative_sha256": "0f02be5c3ae57e4e411ef3797872412d9c67fc43c89118eaa11b9c07a90c1383",
+        "graph_target_sha256": "9584d2f21488049095711cad61fe7a37c2aff608ccd8ca94b8fb267820910ce6",
+        "operation": "3",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 23,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "4abe6be818d10b83a17a958c2f01aa4cdb819b95ea445c52dd08719b9d3b4b99",
+          "9584d2f21488049095711cad61fe7a37c2aff608ccd8ca94b8fb267820910ce6"
+        ],
+        "terminal_key_equal": true,
+        "time": 87
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            30,
+            54
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "3b56d808b558c5dd7d8979a391338e8d1f4b0cfdabc032eb652e9ffcdcaa965f",
+        "carrier_target_sha256": "a06fd43e7d0589a541f5c67a024b9811d1a3cb3da03ed6f308e289065d6a67cf",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#24"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            30,
+            54
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "0f02be5c3ae57e4e411ef3797872412d9c67fc43c89118eaa11b9c07a90c1383",
+        "graph_source_sha256": "9584d2f21488049095711cad61fe7a37c2aff608ccd8ca94b8fb267820910ce6",
+        "graph_target_representative_sha256": "a39b23de1a7b702c531b7fb358474b0a442599f64b01c4135dd5e9284169dafe",
+        "graph_target_sha256": "2a77787608e8f3399e144767878aae442c8c8d393fb1e47207638650011c277f",
+        "operation": "3",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 24,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "2a77787608e8f3399e144767878aae442c8c8d393fb1e47207638650011c277f",
+          "e0ef7711f9c02280f18b62afe3b7b27488ae5de48a9aa20b99c2c5d041977a5a"
+        ],
+        "terminal_key_equal": true,
+        "time": 88
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            35,
+            54
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "a06fd43e7d0589a541f5c67a024b9811d1a3cb3da03ed6f308e289065d6a67cf",
+        "carrier_target_sha256": "9d82136025299cfc02068829452e3168c865e506b474face1b6596ba920474e5",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#25"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            35,
+            54
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "a39b23de1a7b702c531b7fb358474b0a442599f64b01c4135dd5e9284169dafe",
+        "graph_source_sha256": "2a77787608e8f3399e144767878aae442c8c8d393fb1e47207638650011c277f",
+        "graph_target_representative_sha256": "9dd3d9b7c2f046ff7bb81f988143857a507098d52fc05fc6665d5ba9764309e9",
+        "graph_target_sha256": "930f8c2b6ce451a5d6175e5802850a0c24f5e8448d24c829ae7b30d834f1dada",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 25,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "7b2d4f5759f17829b0274bca88020a326e8452df0c43769b3b46c0811856b4fa",
+          "930f8c2b6ce451a5d6175e5802850a0c24f5e8448d24c829ae7b30d834f1dada"
+        ],
+        "terminal_key_equal": true,
+        "time": 89
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            40,
+            54
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "9d82136025299cfc02068829452e3168c865e506b474face1b6596ba920474e5",
+        "carrier_target_sha256": "21de0c95f0c45029e2e43b5aea7cf849ea6b28cccd4e2920a9c31ed0282f06f5",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#26"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            40,
+            54
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "9dd3d9b7c2f046ff7bb81f988143857a507098d52fc05fc6665d5ba9764309e9",
+        "graph_source_sha256": "930f8c2b6ce451a5d6175e5802850a0c24f5e8448d24c829ae7b30d834f1dada",
+        "graph_target_representative_sha256": "72eb4f6e8d7182dbe4d23323eca584a335e063bc086b9abe28c4ed2d55de10fe",
+        "graph_target_sha256": "04b222aee00114a4b1b32af491445731765204712a5007c35a8a4fc47bef69ac",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 26,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "04b222aee00114a4b1b32af491445731765204712a5007c35a8a4fc47bef69ac",
+          "5dacff025bd8c716e12bfc197e5f969b39f142923c14368a35eee3d2c638c9a5"
+        ],
+        "terminal_key_equal": true,
+        "time": 90
+      },
+      {
+        "boundary_kinds": [],
+        "carrier_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "carrier_controlled_base": [
+          [
+            45,
+            54
+          ]
+        ],
+        "carrier_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "carrier_source_sha256": "21de0c95f0c45029e2e43b5aea7cf849ea6b28cccd4e2920a9c31ed0282f06f5",
+        "carrier_target_sha256": "9e4caf9460a2f26474703e82af5f52ba536582fe2f29c40cdf552d37b7a0c809",
+        "context_transition": false,
+        "edge_evidence_refs": [
+          "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#27"
+        ],
+        "effect_equal": true,
+        "graph_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+        "graph_configuration_value": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "graph_controlled_base": [
+          [
+            45,
+            54
+          ]
+        ],
+        "graph_effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', -1), ('ordered_budget', -1))",
+        "graph_source_representative_sha256": "72eb4f6e8d7182dbe4d23323eca584a335e063bc086b9abe28c4ed2d55de10fe",
+        "graph_source_sha256": "04b222aee00114a4b1b32af491445731765204712a5007c35a8a4fc47bef69ac",
+        "graph_target_representative_sha256": "23529272a97c7b329c743b80a2b633ee11ae3a05fc282007db7c699de7424b9c",
+        "graph_target_sha256": "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db",
+        "operation": "1",
+        "source_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "step": 27,
+        "target_factor_differences": [
+          "ordered_feasibility_configuration",
+          "ordered_budget"
+        ],
+        "target_lineage_sha256s": [
+          "0fea60ab96236a15ea88854b513a1179c851114a638ec028753b0a3ed4465d48",
+          "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+        ],
+        "terminal_key_equal": true,
+        "time": 91
+      }
+    ],
+    "steps_compared": 28
+  },
+  "criteria": {
+    "final_goal_edge": true,
+    "graph_identity": true,
+    "no_environment_contact": true,
+    "prefix_edges_valid": true,
+    "route_identity": true,
+    "terminal_key_commutes": true
+  },
+  "graph": {
+    "ambiguous_relation_count": 0,
+    "boundary_edge_count": 10,
+    "context_transition_edge_count": 6,
+    "matches_expected": true,
+    "node_count": 130,
+    "reachable_node_count": 127,
+    "relation_count": 145,
+    "route_context_crossings": 0,
+    "target_source_sha256": "26bcf98bff4cdfbdde92f1fa057814eed5fb62f4863e0f5aad7a930156b784db"
+  },
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "route": {
+    "expected_actions": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "2",
+      "1",
+      "1",
+      "3",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1",
+      "1",
+      "1",
+      "3",
+      "3",
+      "3",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "graph_actions": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "2",
+      "1",
+      "1",
+      "3",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1",
+      "1",
+      "1",
+      "3",
+      "3",
+      "3",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "matches_expected": true,
+    "prefix_edges_valid": true,
+    "prefix_length": 28,
+    "terminal_operation": "1"
+  },
+  "schema": "ztare-carrier-graph-route-commutation-audit-v1",
+  "status": "carrier_graph_route_commutation_confirmed"
+}

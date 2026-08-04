@@ -54,7 +54,10 @@ def event_sources(spec) -> list:
                              for _c, cs in (rule.get("writes") or []) for (y, x) in cs))
         if not cells:
             continue
-        rect = [int(v) for v in rule["rect"]]
+        raw_rect = rule.get("rect")
+        if not isinstance(raw_rect, (list, tuple)) or len(raw_rect) != 4:
+            continue
+        rect = [int(v) for v in raw_rect]
         wa = rule.get("when_action")
         out.append({
             "source_id": f"region_event@{rect}",

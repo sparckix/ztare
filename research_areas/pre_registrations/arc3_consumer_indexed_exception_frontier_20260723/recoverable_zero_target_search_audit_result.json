@@ -1,0 +1,486 @@
+{
+  "ablation": {
+    "class": "RecoverableZeroFiberSearchProblem",
+    "goal_positive_budget_unchanged": true,
+    "only_override": "admissible",
+    "predicate": "projection.in_domain(state)"
+  },
+  "baseline": {
+    "bound": true,
+    "deepest_depth": 20,
+    "expanded": 458,
+    "generated": 457,
+    "result": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/joint_affordance_search_audit_result.json",
+    "status": "projected_frontier_exhausted"
+  },
+  "budget_trace": {
+    "all_in_domain": true,
+    "complete": true,
+    "renewals": [
+      {
+        "depth": 22,
+        "effect": "(('controlled_base', ('translate', 5, 0)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "from_budget": 0,
+        "operation": "1",
+        "to_budget": 21
+      }
+    ],
+    "rows": [
+      {
+        "depth": 0,
+        "in_domain": true,
+        "ordered_budget": 21,
+        "time": 64
+      },
+      {
+        "depth": 1,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 20,
+        "time": 65
+      },
+      {
+        "depth": 2,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 19,
+        "time": 66
+      },
+      {
+        "depth": 3,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 18,
+        "time": 67
+      },
+      {
+        "depth": 4,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 17,
+        "time": 68
+      },
+      {
+        "depth": 5,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 16,
+        "time": 69
+      },
+      {
+        "depth": 6,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 15,
+        "time": 70
+      },
+      {
+        "depth": 7,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 14,
+        "time": 71
+      },
+      {
+        "depth": 8,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 13,
+        "time": 72
+      },
+      {
+        "depth": 9,
+        "in_domain": true,
+        "operation": "2",
+        "ordered_budget": 12,
+        "time": 73
+      },
+      {
+        "depth": 10,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 11,
+        "time": 74
+      },
+      {
+        "depth": 11,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 10,
+        "time": 75
+      },
+      {
+        "depth": 12,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 9,
+        "time": 76
+      },
+      {
+        "depth": 13,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 8,
+        "time": 77
+      },
+      {
+        "depth": 14,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 7,
+        "time": 78
+      },
+      {
+        "depth": 15,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 6,
+        "time": 79
+      },
+      {
+        "depth": 16,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 5,
+        "time": 80
+      },
+      {
+        "depth": 17,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 4,
+        "time": 81
+      },
+      {
+        "depth": 18,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 3,
+        "time": 82
+      },
+      {
+        "depth": 19,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 2,
+        "time": 83
+      },
+      {
+        "depth": 20,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 1,
+        "time": 84
+      },
+      {
+        "depth": 21,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 0,
+        "time": 85
+      },
+      {
+        "depth": 22,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 21,
+        "time": 86
+      }
+    ],
+    "zero_depths": [
+      21
+    ]
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "baseline_bound": true,
+    "edge_found": true,
+    "in_domain_zero_state": true,
+    "no_environment_contact": true,
+    "no_projection_counterexample": true,
+    "replay_goal_edge": true,
+    "zero_to_positive_renewal": true
+  },
+  "known_route": {
+    "action_count": 29,
+    "same_actions": false
+  },
+  "known_route_budget_trace": {
+    "all_in_domain": true,
+    "complete": true,
+    "renewals": [
+      {
+        "depth": 22,
+        "effect": "(('controlled_base', ('translate', 0, 5)), ('ordered_feasibility_configuration', 21), ('ordered_budget', 21))",
+        "from_budget": 0,
+        "operation": "3",
+        "to_budget": 21
+      }
+    ],
+    "rows": [
+      {
+        "depth": 0,
+        "in_domain": true,
+        "ordered_budget": 21,
+        "time": 64
+      },
+      {
+        "depth": 1,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 20,
+        "time": 65
+      },
+      {
+        "depth": 2,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 19,
+        "time": 66
+      },
+      {
+        "depth": 3,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 18,
+        "time": 67
+      },
+      {
+        "depth": 4,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 17,
+        "time": 68
+      },
+      {
+        "depth": 5,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 16,
+        "time": 69
+      },
+      {
+        "depth": 6,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 15,
+        "time": 70
+      },
+      {
+        "depth": 7,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 14,
+        "time": 71
+      },
+      {
+        "depth": 8,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 13,
+        "time": 72
+      },
+      {
+        "depth": 9,
+        "in_domain": true,
+        "operation": "2",
+        "ordered_budget": 12,
+        "time": 73
+      },
+      {
+        "depth": 10,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 11,
+        "time": 74
+      },
+      {
+        "depth": 11,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 10,
+        "time": 75
+      },
+      {
+        "depth": 12,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 9,
+        "time": 76
+      },
+      {
+        "depth": 13,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 8,
+        "time": 77
+      },
+      {
+        "depth": 14,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 7,
+        "time": 78
+      },
+      {
+        "depth": 15,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 6,
+        "time": 79
+      },
+      {
+        "depth": 16,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 5,
+        "time": 80
+      },
+      {
+        "depth": 17,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 4,
+        "time": 81
+      },
+      {
+        "depth": 18,
+        "in_domain": true,
+        "operation": "0",
+        "ordered_budget": 3,
+        "time": 82
+      },
+      {
+        "depth": 19,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 2,
+        "time": 83
+      },
+      {
+        "depth": 20,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 1,
+        "time": 84
+      },
+      {
+        "depth": 21,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 0,
+        "time": 85
+      },
+      {
+        "depth": 22,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 21,
+        "time": 86
+      },
+      {
+        "depth": 23,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 20,
+        "time": 87
+      },
+      {
+        "depth": 24,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 19,
+        "time": 88
+      },
+      {
+        "depth": 25,
+        "in_domain": true,
+        "operation": "3",
+        "ordered_budget": 18,
+        "time": 89
+      },
+      {
+        "depth": 26,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 17,
+        "time": 90
+      },
+      {
+        "depth": 27,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 16,
+        "time": 91
+      },
+      {
+        "depth": 28,
+        "in_domain": true,
+        "operation": "1",
+        "ordered_budget": 15,
+        "time": 92
+      }
+    ],
+    "zero_depths": [
+      21
+    ]
+  },
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "replay": {
+    "admissible": true,
+    "attempted_origin": [
+      50,
+      54
+    ],
+    "configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+    "controlled_base": [
+      [
+        45,
+        54
+      ]
+    ],
+    "goal_edge": true,
+    "joint_sha256": "41c7dfcfc3e4313529e7cced390916187e5490028dc272f8e0d33ba077539484",
+    "joint_transform": "rotate_0_reflect",
+    "raw_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+    "terminal_operation": "1",
+    "terminal_time": 86
+  },
+  "schema": "ztare-recoverable-zero-target-search-audit-v1",
+  "search": {
+    "action_count": 23,
+    "actions": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "2",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "3",
+      "3",
+      "3",
+      "3",
+      "3",
+      "1",
+      "1",
+      "1",
+      "1"
+    ],
+    "continuation_actions": [],
+    "deepest_depth": 23,
+    "expanded": 113,
+    "frontier_remaining": 75,
+    "generated": 187,
+    "projection_counterexample": {},
+    "status": "edge_found"
+  },
+  "status": "recoverable_zero_target_search_confirmed"
+}

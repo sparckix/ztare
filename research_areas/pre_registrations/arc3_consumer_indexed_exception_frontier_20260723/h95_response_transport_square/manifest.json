@@ -1,0 +1,3929 @@
+{
+  "arm_orders": [
+    [
+      "offer",
+      "withhold"
+    ],
+    [
+      "withhold",
+      "offer"
+    ]
+  ],
+  "experiment_sha256": "560800f2dfa64048ea6d2669950a290014b738b0dee4fc54e24e766c03dd9937",
+  "game_id": "ls20-9607627b",
+  "intervention_revision_transport": {
+    "acquisition_provenance_sha256": "8de283084163ee790d6cf5b7721662245163383e347f4a60d6c66a63c1c4c990",
+    "changed_scope_coordinates": [
+      "context_sha256"
+    ],
+    "evidence_refs": [
+      "positive_prefix:556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a",
+      "source_intervention:703c720faedcd8d18854024d7b268d919a30a70f79660d1b0bad9a61cfcf0549",
+      "source_manifest:research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/manifest.json"
+    ],
+    "invariant_checks": [
+      "acquisition_provenance",
+      "actionability_score",
+      "authority_score",
+      "boundary_support_refs",
+      "content_ref",
+      "guard_features",
+      "intervention_kind",
+      "payload_invariant",
+      "predicted_decision_delta",
+      "primitive_action_cost",
+      "prompt_cost_per_token",
+      "provider_id",
+      "provider_revision",
+      "recency_score",
+      "rendered_token_count",
+      "semantic_features",
+      "support_refs",
+      "tokenizer"
+    ],
+    "kind": "intervention_revision_transport",
+    "payload_invariant_sha256": "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+    "preserved_scope_coordinates": [
+      "action_vocabulary_sha256",
+      "choice_set_sha256",
+      "controller_sha256",
+      "task_sha256"
+    ],
+    "reason": "context_rerender_preserves_payload_provenance_and_cost",
+    "schema": "ztare-object-response-transport-v1",
+    "sha256": "064a4b5a5710efc9ab0fc3ee70e4cd2f7d279932ccc7ad74dbc929c49b1ce7eb",
+    "source_intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "source_rendered_content_sha256": "b9fe7d3b9574bbdb094697bb9d2a4d63766a421f4eac142ffe6db3ffb08eae68",
+    "source_scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "status": "transportable",
+    "target_intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "target_rendered_content_sha256": "60d3e0fa20aef26e63efb4b69041a9910bb1eec4d65f5d178cc29ddbd8027092",
+    "target_scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb"
+  },
+  "kind": "experiment_manifest",
+  "model": "gpt-5.6-sol",
+  "negative_branch_controller_contact": false,
+  "negative_object_transport": {
+    "evidence_refs": [
+      "negative_prefix:e7c9becb9f307b9a43bff440b849777629060ac5e15ebe939cedcd2865932575",
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/arms/pair_01_offer_causal_mechanics.json#sha256=c0fe3d10e53c35265904d076f24e5d22aaa07521ad4c82555bafa76b6da6195d"
+    ],
+    "kind": "object_catalog_transport",
+    "method": "unique_type_sha256",
+    "object_ref_bindings": [
+      {
+        "source_object_ref": "object:1d1adb222812b6e505db9b90ae099c850d23725eedfd8881881eb7758714780e",
+        "target_object_ref": "object:65a3773bca1ae4af109ff5a48fbd2b9dc473de05f1daba9653a8fad16e373a07",
+        "type_sha256": "5fef753beff27a5beab65ae607d647903459e1028c017c360d3c374c1709001a"
+      },
+      {
+        "source_object_ref": "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+        "target_object_ref": "object:3d0c9dea212dae7a732ef0425769c0fe794c3fa2393f481422d87c1c926db80f",
+        "type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763"
+      },
+      {
+        "source_object_ref": "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7",
+        "target_object_ref": "object:41a0dc22a7fcd2fa8db5b17c210ed2d2472c1dfcaaf4d128df6d7cd89bbc42c0",
+        "type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2"
+      }
+    ],
+    "reason": "required_contract_object_has_no_unique_target",
+    "required_source_object_refs": [
+      "object:1d1adb222812b6e505db9b90ae099c850d23725eedfd8881881eb7758714780e",
+      "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+      "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc",
+      "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7"
+    ],
+    "schema": "ztare-object-response-transport-v1",
+    "sha256": "7ee908bcd310fe189984345a0275a4253cbf29360380b3dc7c5019e5198ba146",
+    "source_catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "source_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "status": "refused",
+    "target_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+    "target_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919"
+  },
+  "negative_prefix": {
+    "action_arity": 4,
+    "actions": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      0
+    ],
+    "final_observation": {
+      "action_count": 6,
+      "adapter_epoch": 0,
+      "available_action_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "grid_rle_rows": [
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x28,3x9,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x9,4x23",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+        "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+        "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+        "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+        "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x35,4x10",
+        "5x4,4x15,3x35,4x10",
+        "5x4,4x15,3x35,4x10",
+        "5x4,4x15,3x35,4x10",
+        "5x4,4x15,3x35,4x10",
+        "5x4,4x60",
+        "5x4,4x60",
+        "4x64",
+        "4x1,5x10,4x53",
+        "4x1,5x10,4x53",
+        "4x1,5x2,9x6,5x2,4x53",
+        "4x1,5x2,9x6,5x2,4x53",
+        "4x1,5x6,9x2,5x2,4x53",
+        "4x1,5x6,9x2,5x2,4x53",
+        "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+        "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+        "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+        "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+        "4x12,5x52"
+      ],
+      "grid_shape": [
+        64,
+        64
+      ],
+      "levels_completed": 0,
+      "observation_index": 6,
+      "schema": "ztare-arc3-settled-observation-v1",
+      "sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919"
+    },
+    "observations": [
+      {
+        "action_count": 0,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x15,12x5,3x15,4x10",
+          "5x4,4x15,3x15,12x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,11x42,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,11x42,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 0,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778"
+      },
+      {
+        "action_count": 1,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x10,12x5,3x20,4x10",
+          "5x4,4x15,3x10,12x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 1,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690"
+      },
+      {
+        "action_count": 2,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,12x5,3x25,4x10",
+          "5x4,4x15,3x5,12x5,3x25,4x10",
+          "5x4,4x15,3x5,9x5,3x25,4x10",
+          "5x4,4x15,3x5,9x5,3x25,4x10",
+          "5x4,4x15,3x5,9x5,3x25,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x2,11x40,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x2,11x40,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 2,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952"
+      },
+      {
+        "action_count": 3,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,12x5,3x30,4x10",
+          "5x4,4x15,12x5,3x30,4x10",
+          "5x4,4x15,9x5,3x30,4x10",
+          "5x4,4x15,9x5,3x30,4x10",
+          "5x4,4x15,9x5,3x30,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x3,11x39,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x3,11x39,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 3,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557"
+      },
+      {
+        "action_count": 4,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,12x5,4x10,3x20,4x10",
+          "5x4,4x15,12x5,4x10,3x20,4x10",
+          "5x4,4x15,9x5,4x10,3x20,4x10",
+          "5x4,4x15,9x5,4x10,3x20,4x10",
+          "5x4,4x15,9x5,4x10,3x20,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x4,11x38,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x4,11x38,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 4,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957"
+      },
+      {
+        "action_count": 5,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 5,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0"
+      },
+      {
+        "action_count": 6,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,12x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x5,9x5,3x5,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x15,3x35,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x6,9x2,5x2,4x53",
+          "4x1,5x6,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x5,11x37,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 6,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919"
+      }
+    ],
+    "sha256": "e7c9becb9f307b9a43bff440b849777629060ac5e15ebe939cedcd2865932575",
+    "transitions": [
+      {
+        "action": 2,
+        "boundary_kind": null,
+        "prefix_action_count": 1,
+        "source_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+        "successor_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      },
+      {
+        "action": 2,
+        "boundary_kind": null,
+        "prefix_action_count": 2,
+        "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "successor_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      },
+      {
+        "action": 2,
+        "boundary_kind": null,
+        "prefix_action_count": 3,
+        "source_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+        "successor_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      },
+      {
+        "action": 0,
+        "boundary_kind": null,
+        "prefix_action_count": 4,
+        "source_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+        "successor_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      },
+      {
+        "action": 0,
+        "boundary_kind": null,
+        "prefix_action_count": 5,
+        "source_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+        "successor_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      },
+      {
+        "action": 0,
+        "boundary_kind": null,
+        "prefix_action_count": 6,
+        "source_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+        "successor_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      }
+    ]
+  },
+  "pairs": 2,
+  "placebo_digest_sha256": "e4e3c222849f1f7e6f869f6c4d540c274ac9f8409d1c1f718002ebb9bee24a8e",
+  "placebo_intervention_revision_transport": {
+    "acquisition_provenance_sha256": "5702a0498d67aeb019d167bd16985725604e49f259aa49b38f6076ce575dc33e",
+    "changed_scope_coordinates": [
+      "context_sha256"
+    ],
+    "evidence_refs": [
+      "positive_prefix:556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a",
+      "source_intervention:fcb53da4c7dfaf2177813332691d15e7a9977593b46d7b6911e0f3a20e10452c",
+      "source_manifest:research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/manifest.json"
+    ],
+    "invariant_checks": [
+      "acquisition_provenance",
+      "actionability_score",
+      "authority_score",
+      "boundary_support_refs",
+      "content_ref",
+      "guard_features",
+      "intervention_kind",
+      "payload_invariant",
+      "predicted_decision_delta",
+      "primitive_action_cost",
+      "prompt_cost_per_token",
+      "provider_id",
+      "provider_revision",
+      "recency_score",
+      "rendered_token_count",
+      "semantic_features",
+      "support_refs",
+      "tokenizer"
+    ],
+    "kind": "intervention_revision_transport",
+    "payload_invariant_sha256": "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c",
+    "preserved_scope_coordinates": [
+      "action_vocabulary_sha256",
+      "choice_set_sha256",
+      "controller_sha256",
+      "task_sha256"
+    ],
+    "reason": "context_rerender_preserves_payload_provenance_and_cost",
+    "schema": "ztare-object-response-transport-v1",
+    "sha256": "af9d496e8e35dd125d046140b21afa7a4023a00631c470d8c55053284c5864d5",
+    "source_intervention_revision_sha256": "8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+    "source_rendered_content_sha256": "21136e4f6d963110254f55e073a31088157a29a4481b7859b04cbe9a6f5bb975",
+    "source_scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "status": "transportable",
+    "target_intervention_revision_sha256": "4f5e74cec727c0268d61490d41bf85ffe15eb7003fea1df493d42d08c00938c0",
+    "target_rendered_content_sha256": "e4e3c222849f1f7e6f869f6c4d540c274ac9f8409d1c1f718002ebb9bee24a8e",
+    "target_scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb"
+  },
+  "placebo_proposal": {
+    "acquisition_provenance": {
+      "boundary_support_sha256s": [],
+      "controller_instance_sha256": "caf758d8cd191b024ac3a291a83ad71d14b9cf7abf95b215d95105f786ee233e",
+      "episode_sha256": "d7e8e951d24a0359585daa6644741167adcdc8322cb0ec1ac058644955e4b7bd",
+      "kind": "memory_acquisition_provenance",
+      "observation_sha256": "29a9f2b50530972b88e24194cf3695699185f6c471f824d93a15a4beb7e337ad",
+      "schema": "ztare-wake-sleep-recall-identities-v1",
+      "sha256": "5702a0498d67aeb019d167bd16985725604e49f259aa49b38f6076ce575dc33e",
+      "support_sha256s": [
+        "014356c25e6fe43f73b7276a93b015952f63fd3ab36fdff710a26bf06769e6ff",
+        "14efc3468ccad75fccf286b53fd1bd2cf7a9b5f0cef1e1ef40058739c79843db",
+        "287fa1894ee1a89d7b7facafea842d24fad548a3d3a4c7b4df7a3b84afc0649f",
+        "28be560903006a9ee4cddbfbc211f87701b9923b806a8e1c7c490d36e73fae2a",
+        "2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+        "4995b1de8ca5fa02a29501fa272328099e0b74f92511f7aeb8e0f737cb230fa0",
+        "5c14b49a13f53b50939fefa6e9a599e7a53806b9233f82074745ab01f5315794",
+        "620ad877f39d4e12d8a62db5de29ea40fc05dbcb9a2fa38812269163a71064dc",
+        "6af50b8daa48a2931a84a350de45abaafdd333c19db0c4274d9d1ed945f33700",
+        "a8c458efa3154917ad249ab8c837d61c0b277d26e31b3f4825de7358e7c89225",
+        "bb8d36ac4d8795a362aa1ee57f6084a8f06e8d7157d9cb70041c8c71d6819195",
+        "c3d975217121fcf1d24afab9d062093284e4ce7d43a5232f567a88dbad5e8586",
+        "cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+        "cdf4f1066c91d37c6f5aad2acdd9583b4d47b6b0833329f13090ff0aab98fb52",
+        "e1800403266bb7c7b8184e7479ac9c4268dbc61c7a0de2fe9e68e121a136d021",
+        "e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12",
+        "e5b0968cccf7303d2f4115e89c450e400e56caf4da52717aa050d177c1ca88a3",
+        "eb08c86087f37370b89bfa91f8f5f5d7c1652c5c3f5bc8daecd08b2fb163ebc9",
+        "fa3c36e7a2b8d94f773662e2dd172af67b0e63bbf0277932406991a836eefcc9"
+      ]
+    },
+    "actionability_score": 1.0,
+    "authority_score": 50.0,
+    "boundary_support_refs": [],
+    "content_ref": "memory_condition:redundant_true_memory",
+    "guard_features": [
+      "adapter exposes actions 0\u20133",
+      "avatar adjacent to wall or gated target",
+      "avatar fully covers marker footprint",
+      "five-cell-aligned corridors",
+      "movable 5\u00d75 two-color avatar",
+      "same marker coordinates before overlap and after departure",
+      "source and successor observations visually identical"
+    ],
+    "intervention_kind": "episodic_memory_bundle",
+    "intervention_revision_sha256": "4f5e74cec727c0268d61490d41bf85ffe15eb7003fea1df493d42d08c00938c0",
+    "kind": "decision_intervention_proposal",
+    "predicted_decision_delta": 0.99,
+    "primitive_action_cost": 20.0,
+    "prompt_cost_per_token": 0.0,
+    "provider_id": "redundant_true_memory",
+    "provider_revision_sha256": "29461ada98b7b2eea3973ec302619bd0a734927b888c9d885cb9c92d6670af95",
+    "recency_score": 1.0,
+    "rendered_content_sha256": "e4e3c222849f1f7e6f869f6c4d540c274ac9f8409d1c1f718002ebb9bee24a8e",
+    "rendered_token_count": 3849,
+    "retrieval_cost": 0.0,
+    "schema": "ztare-decision-intervention-market-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "semantic_features": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "a",
+      "across",
+      "action",
+      "adapter",
+      "an",
+      "and",
+      "avatar",
+      "boundary",
+      "by",
+      "can",
+      "cardinal",
+      "cells.",
+      "consume",
+      "consumption.",
+      "departed,",
+      "did",
+      "disappearance",
+      "down,",
+      "five",
+      "grid",
+      "hidden",
+      "impassable",
+      "into",
+      "leaving",
+      "left,",
+      "marker",
+      "mean",
+      "move",
+      "moves",
+      "normally",
+      "not",
+      "occupied",
+      "reappeared",
+      "right,",
+      "semantics,",
+      "so",
+      "state",
+      "the",
+      "unchanged",
+      "unchanged.",
+      "under",
+      "up,",
+      "visible",
+      "was",
+      "when",
+      "while"
+    ],
+    "sha256": "a4c12e26add82d8a1dcfeec7aaa57f0a39d53c4c7de5348859f0583f40298163",
+    "support_refs": [
+      "sha256:014356c25e6fe43f73b7276a93b015952f63fd3ab36fdff710a26bf06769e6ff",
+      "sha256:14efc3468ccad75fccf286b53fd1bd2cf7a9b5f0cef1e1ef40058739c79843db",
+      "sha256:287fa1894ee1a89d7b7facafea842d24fad548a3d3a4c7b4df7a3b84afc0649f",
+      "sha256:28be560903006a9ee4cddbfbc211f87701b9923b806a8e1c7c490d36e73fae2a",
+      "sha256:2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+      "sha256:4995b1de8ca5fa02a29501fa272328099e0b74f92511f7aeb8e0f737cb230fa0",
+      "sha256:5c14b49a13f53b50939fefa6e9a599e7a53806b9233f82074745ab01f5315794",
+      "sha256:620ad877f39d4e12d8a62db5de29ea40fc05dbcb9a2fa38812269163a71064dc",
+      "sha256:6af50b8daa48a2931a84a350de45abaafdd333c19db0c4274d9d1ed945f33700",
+      "sha256:a8c458efa3154917ad249ab8c837d61c0b277d26e31b3f4825de7358e7c89225",
+      "sha256:bb8d36ac4d8795a362aa1ee57f6084a8f06e8d7157d9cb70041c8c71d6819195",
+      "sha256:c3d975217121fcf1d24afab9d062093284e4ce7d43a5232f567a88dbad5e8586",
+      "sha256:cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+      "sha256:cdf4f1066c91d37c6f5aad2acdd9583b4d47b6b0833329f13090ff0aab98fb52",
+      "sha256:e1800403266bb7c7b8184e7479ac9c4268dbc61c7a0de2fe9e68e121a136d021",
+      "sha256:e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12",
+      "sha256:e5b0968cccf7303d2f4115e89c450e400e56caf4da52717aa050d177c1ca88a3",
+      "sha256:eb08c86087f37370b89bfa91f8f5f5d7c1652c5c3f5bc8daecd08b2fb163ebc9",
+      "sha256:fa3c36e7a2b8d94f773662e2dd172af67b0e63bbf0277932406991a836eefcc9"
+    ],
+    "tokenizer_sha256": "cb699880421b5ec72e3496b8dab0c3d2a685556ba2b77ae867bf1741433d05aa"
+  },
+  "positive_object_transport": {
+    "evidence_refs": [
+      "positive_prefix:556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a",
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/arms/pair_01_offer_causal_mechanics.json#sha256=c0fe3d10e53c35265904d076f24e5d22aaa07521ad4c82555bafa76b6da6195d"
+    ],
+    "kind": "object_catalog_transport",
+    "method": "unique_type_sha256",
+    "object_ref_bindings": [
+      {
+        "source_object_ref": "object:1d1adb222812b6e505db9b90ae099c850d23725eedfd8881881eb7758714780e",
+        "target_object_ref": "object:939f6acb3f164d95357e74918f7eb723a68a9eea2b39c577c8050149ab638b55",
+        "type_sha256": "5fef753beff27a5beab65ae607d647903459e1028c017c360d3c374c1709001a"
+      },
+      {
+        "source_object_ref": "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+        "target_object_ref": "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7",
+        "type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763"
+      },
+      {
+        "source_object_ref": "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc",
+        "target_object_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+        "type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb"
+      },
+      {
+        "source_object_ref": "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7",
+        "target_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+        "type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2"
+      }
+    ],
+    "reason": "unique_type_correspondence_complete",
+    "required_source_object_refs": [
+      "object:1d1adb222812b6e505db9b90ae099c850d23725eedfd8881881eb7758714780e",
+      "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+      "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc",
+      "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7"
+    ],
+    "schema": "ztare-object-response-transport-v1",
+    "sha256": "01ed49838de2679acdeffef5a9c1621361881291220121b1d045f8e0bb6fddcf",
+    "source_catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "source_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "status": "transportable",
+    "target_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "target_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690"
+  },
+  "positive_prefix": {
+    "action_arity": 4,
+    "actions": [
+      2
+    ],
+    "final_observation": {
+      "action_count": 1,
+      "adapter_epoch": 0,
+      "available_action_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "grid_rle_rows": [
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x60",
+        "5x4,4x28,3x9,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x1,5x7,3x1,4x23",
+        "5x4,4x28,3x9,4x23",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x30,3x5,4x25",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x40,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+        "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+        "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x10,3x15,4x5,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x5,4x10,3x20,4x10",
+        "5x4,4x15,3x10,12x5,3x20,4x10",
+        "5x4,4x15,3x10,12x5,3x20,4x10",
+        "5x4,4x15,3x10,9x5,3x20,4x10",
+        "5x4,4x15,3x10,9x5,3x20,4x10",
+        "5x4,4x15,3x10,9x5,3x20,4x10",
+        "5x4,4x60",
+        "5x4,4x60",
+        "4x64",
+        "4x1,5x10,4x53",
+        "4x1,5x10,4x53",
+        "4x1,5x2,9x6,5x2,4x53",
+        "4x1,5x2,9x6,5x2,4x53",
+        "4x1,5x2,9x2,5x6,4x53",
+        "4x1,5x2,9x2,5x6,4x53",
+        "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+        "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+        "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+        "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+        "4x12,5x52"
+      ],
+      "grid_shape": [
+        64,
+        64
+      ],
+      "levels_completed": 0,
+      "observation_index": 1,
+      "schema": "ztare-arc3-settled-observation-v1",
+      "sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690"
+    },
+    "observations": [
+      {
+        "action_count": 0,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x15,12x5,3x15,4x10",
+          "5x4,4x15,3x15,12x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x15,3x15,9x5,3x15,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,11x42,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,11x42,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 0,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778"
+      },
+      {
+        "action_count": 1,
+        "adapter_epoch": 0,
+        "available_action_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grid_rle_rows": [
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x60",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x3,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x4,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x2,9x1,5x1,9x1,5x2,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x1,5x7,3x1,4x23",
+          "5x4,4x28,3x9,4x23",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x30,3x5,4x25",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x40,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x7,0x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x6,1x1,0x2,3x6,4x5,3x20,4x10",
+          "5x4,4x10,3x7,1x1,3x7,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x10,3x15,4x5,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x5,4x10,3x20,4x10",
+          "5x4,4x15,3x10,12x5,3x20,4x10",
+          "5x4,4x15,3x10,12x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x15,3x10,9x5,3x20,4x10",
+          "5x4,4x60",
+          "5x4,4x60",
+          "4x64",
+          "4x1,5x10,4x53",
+          "4x1,5x10,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x6,5x2,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x6,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x53",
+          "4x1,5x2,9x2,5x2,9x2,5x2,4x1,5x52",
+          "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x1,5x10,4x1,5x1,3x1,11x41,5x1,8x2,5x1,8x2,5x1,8x2",
+          "4x12,5x52"
+        ],
+        "grid_shape": [
+          64,
+          64
+        ],
+        "levels_completed": 0,
+        "observation_index": 1,
+        "schema": "ztare-arc3-settled-observation-v1",
+        "sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690"
+      }
+    ],
+    "sha256": "556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a",
+    "transitions": [
+      {
+        "action": 2,
+        "boundary_kind": null,
+        "prefix_action_count": 1,
+        "source_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+        "successor_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "transition_authority": "environment_adapter",
+        "transition_kind": "unclassified"
+      }
+    ]
+  },
+  "post_prefix_budget_per_arm": 20,
+  "prefix_actions_per_arm": 1,
+  "preflight_transport_candidate": {
+    "action": "explore_transport",
+    "intervention_transport_sha256": "064a4b5a5710efc9ab0fc3ee70e4cd2f7d279932ccc7ad74dbc929c49b1ce7eb",
+    "kind": "response_transport_candidate",
+    "mapped_source_post_path": [
+      "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+      "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7",
+      "object:939f6acb3f164d95357e74918f7eb723a68a9eea2b39c577c8050149ab638b55"
+    ],
+    "object_transport_sha256": "01ed49838de2679acdeffef5a9c1621361881291220121b1d045f8e0bb6fddcf",
+    "reason": "object_contract_and_response_square_commute",
+    "schema": "ztare-object-response-transport-v1",
+    "sha256": "2f2e19cb5cd3b57c3eff7e5b1339d45969995b5e297ebf4ac6e9f60483a0c20a",
+    "source_basin_signature": {
+      "control_relation": "forbidden",
+      "required_waypoint_order_satisfied": false,
+      "required_waypoint_prefix_length": 0
+    },
+    "source_contract_sha256": "43cb77e97834a0c179db7897b8390c7fb69b3e4c24fbcff05b5985fa1d6760db",
+    "source_family_sha256": "e4d793cdff26e09d50e9b602621d358a317f6d8316386f7683875fb8ffa833e6",
+    "source_post_proposal_sha256": "f03271937564b4276cac6ac3624d729031690c5e0323287d799b307ac2680d4a",
+    "source_pre_basin_sha256": "7dfc7f076f8721391feef81df42c909f7ce9898969945842a10033a08b4690ac",
+    "source_pre_proposal_sha256": "c63ccdfdb4471d054908d4c5c43ec603867c6623a4a64be0c687773151e7f81b",
+    "source_response_sha256": "0ce0ed4b2de33cb6857995b0ccef25e83cec16fbbd5d4c55d42655fd3ea701d4",
+    "status": "candidate_commuting",
+    "target_basin_signature": {
+      "control_relation": "forbidden",
+      "required_waypoint_order_satisfied": false,
+      "required_waypoint_prefix_length": 0
+    },
+    "target_contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "target_pre_basin_sha256": "2a2965d92e56e68c88c806b48d13b763ce9c20256f672f0c515d14cc3030f37e",
+    "target_pre_proposal_sha256": "a4e6ec1c15fbe2a21562921d4042c21f2e4e8220ee05a756644dd4c4caba542c"
+  },
+  "proposal_inferences_before_post_prefix_action": 2,
+  "reasoning_effort": "xhigh",
+  "rendered_utf8_bytes_per_intervention": 3849,
+  "schema": "ztare-arc3-response-transport-square-v1",
+  "seed": "h95-response-transport-square-20260730",
+  "source": {
+    "boundary_action_count": 20,
+    "source_boundary_observation_sha256": "29a9f2b50530972b88e24194cf3695699185f6c471f824d93a15a4beb7e337ad",
+    "source_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h86_level_boundary_microsleep_result.json",
+    "source_runtime_session": "019fb698-190b-7642-bf55-772a8bc7b2fc",
+    "source_sha256": "50ad60cf9bd5738ad556ed37f364d62f7626b554f15b98ead1a16c4b47b1f482",
+    "spec_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square_spec.json",
+    "spec_sha256": "62ad89938a180ada9d12cdced180d6c0da297bf3350bad33cdb01f1a5d34115a"
+  },
+  "source_contract": {
+    "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "evidence_refs": [
+      "h92_object_linked_judgment_quotient/result.json#sha256=60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79",
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1"
+    ],
+    "forbidden_controlled_object_refs": [
+      "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc"
+    ],
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "object_role_path_contract",
+    "required_controlled_object_ref": "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7",
+    "required_waypoint_refs": [
+      "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc"
+    ],
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "43cb77e97834a0c179db7897b8390c7fb69b3e4c24fbcff05b5985fa1d6760db"
+  },
+  "source_intervention": {
+    "acquisition_provenance": {
+      "boundary_support_sha256s": [
+        "8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf"
+      ],
+      "controller_instance_sha256": "caf758d8cd191b024ac3a291a83ad71d14b9cf7abf95b215d95105f786ee233e",
+      "episode_sha256": "d7e8e951d24a0359585daa6644741167adcdc8322cb0ec1ac058644955e4b7bd",
+      "kind": "memory_acquisition_provenance",
+      "observation_sha256": "29a9f2b50530972b88e24194cf3695699185f6c471f824d93a15a4beb7e337ad",
+      "schema": "ztare-wake-sleep-recall-identities-v1",
+      "sha256": "8de283084163ee790d6cf5b7721662245163383e347f4a60d6c66a63c1c4c990",
+      "support_sha256s": [
+        "2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+        "8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf",
+        "cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+        "e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12"
+      ]
+    },
+    "actionability_score": 1.0,
+    "authority_score": 50.0,
+    "boundary_support_refs": [
+      "sha256:8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf"
+    ],
+    "content_ref": "memory_condition:causal_mechanics",
+    "guard_features": [
+      "avatar aligned with target entrance",
+      "avatar overlaps marker then departs",
+      "bottom-left enlarged glyph",
+      "enlarged bottom-left glyph",
+      "framed 9-colored target glyph",
+      "small 0/1 marker embedded in traversable lane"
+    ],
+    "intervention_kind": "episodic_memory_bundle",
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "decision_intervention_proposal",
+    "predicted_decision_delta": 0.96,
+    "primitive_action_cost": 20.0,
+    "prompt_cost_per_token": 0.0,
+    "provider_id": "causal_mechanics",
+    "provider_revision_sha256": "7f5b9b0ab562bb3fea46cd4ddea6132c7cff6e098d087b0704f037e067736c90",
+    "recency_score": 1.0,
+    "rendered_content_sha256": "b9fe7d3b9574bbdb094697bb9d2a4d63766a421f4eac142ffe6db3ffb08eae68",
+    "rendered_token_count": 3849,
+    "retrieval_cost": 0.0,
+    "schema": "ztare-decision-intervention-market-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "semantic_features": [
+      "0/1",
+      "after",
+      "alone",
+      "and",
+      "appearance",
+      "avatar\u2019s",
+      "between",
+      "bottom-left",
+      "by",
+      "changed",
+      "completed",
+      "did",
+      "edited",
+      "enlarged",
+      "entry",
+      "equality",
+      "floor",
+      "framed",
+      "gated",
+      "glyph",
+      "glyph;",
+      "is",
+      "its",
+      "leaving",
+      "level.",
+      "marker",
+      "marker.",
+      "matched-state",
+      "moving",
+      "not",
+      "off",
+      "onto",
+      "persisted",
+      "proximity",
+      "small",
+      "solid",
+      "state",
+      "stepping",
+      "suffice,",
+      "target",
+      "the",
+      "two-color",
+      "unchanged;",
+      "while"
+    ],
+    "sha256": "703c720faedcd8d18854024d7b268d919a30a70f79660d1b0bad9a61cfcf0549",
+    "support_refs": [
+      "sha256:2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+      "sha256:8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf",
+      "sha256:cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+      "sha256:e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12"
+    ],
+    "tokenizer_sha256": "cb699880421b5ec72e3496b8dab0c3d2a685556ba2b77ae867bf1741433d05aa"
+  },
+  "source_placebo_intervention": {
+    "acquisition_provenance": {
+      "boundary_support_sha256s": [],
+      "controller_instance_sha256": "caf758d8cd191b024ac3a291a83ad71d14b9cf7abf95b215d95105f786ee233e",
+      "episode_sha256": "d7e8e951d24a0359585daa6644741167adcdc8322cb0ec1ac058644955e4b7bd",
+      "kind": "memory_acquisition_provenance",
+      "observation_sha256": "29a9f2b50530972b88e24194cf3695699185f6c471f824d93a15a4beb7e337ad",
+      "schema": "ztare-wake-sleep-recall-identities-v1",
+      "sha256": "5702a0498d67aeb019d167bd16985725604e49f259aa49b38f6076ce575dc33e",
+      "support_sha256s": [
+        "014356c25e6fe43f73b7276a93b015952f63fd3ab36fdff710a26bf06769e6ff",
+        "14efc3468ccad75fccf286b53fd1bd2cf7a9b5f0cef1e1ef40058739c79843db",
+        "287fa1894ee1a89d7b7facafea842d24fad548a3d3a4c7b4df7a3b84afc0649f",
+        "28be560903006a9ee4cddbfbc211f87701b9923b806a8e1c7c490d36e73fae2a",
+        "2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+        "4995b1de8ca5fa02a29501fa272328099e0b74f92511f7aeb8e0f737cb230fa0",
+        "5c14b49a13f53b50939fefa6e9a599e7a53806b9233f82074745ab01f5315794",
+        "620ad877f39d4e12d8a62db5de29ea40fc05dbcb9a2fa38812269163a71064dc",
+        "6af50b8daa48a2931a84a350de45abaafdd333c19db0c4274d9d1ed945f33700",
+        "a8c458efa3154917ad249ab8c837d61c0b277d26e31b3f4825de7358e7c89225",
+        "bb8d36ac4d8795a362aa1ee57f6084a8f06e8d7157d9cb70041c8c71d6819195",
+        "c3d975217121fcf1d24afab9d062093284e4ce7d43a5232f567a88dbad5e8586",
+        "cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+        "cdf4f1066c91d37c6f5aad2acdd9583b4d47b6b0833329f13090ff0aab98fb52",
+        "e1800403266bb7c7b8184e7479ac9c4268dbc61c7a0de2fe9e68e121a136d021",
+        "e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12",
+        "e5b0968cccf7303d2f4115e89c450e400e56caf4da52717aa050d177c1ca88a3",
+        "eb08c86087f37370b89bfa91f8f5f5d7c1652c5c3f5bc8daecd08b2fb163ebc9",
+        "fa3c36e7a2b8d94f773662e2dd172af67b0e63bbf0277932406991a836eefcc9"
+      ]
+    },
+    "actionability_score": 1.0,
+    "authority_score": 50.0,
+    "boundary_support_refs": [],
+    "content_ref": "memory_condition:redundant_true_memory",
+    "guard_features": [
+      "adapter exposes actions 0\u20133",
+      "avatar adjacent to wall or gated target",
+      "avatar fully covers marker footprint",
+      "five-cell-aligned corridors",
+      "movable 5\u00d75 two-color avatar",
+      "same marker coordinates before overlap and after departure",
+      "source and successor observations visually identical"
+    ],
+    "intervention_kind": "episodic_memory_bundle",
+    "intervention_revision_sha256": "8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+    "kind": "decision_intervention_proposal",
+    "predicted_decision_delta": 0.99,
+    "primitive_action_cost": 20.0,
+    "prompt_cost_per_token": 0.0,
+    "provider_id": "redundant_true_memory",
+    "provider_revision_sha256": "29461ada98b7b2eea3973ec302619bd0a734927b888c9d885cb9c92d6670af95",
+    "recency_score": 1.0,
+    "rendered_content_sha256": "21136e4f6d963110254f55e073a31088157a29a4481b7859b04cbe9a6f5bb975",
+    "rendered_token_count": 3849,
+    "retrieval_cost": 0.0,
+    "schema": "ztare-decision-intervention-market-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "semantic_features": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "a",
+      "across",
+      "action",
+      "adapter",
+      "an",
+      "and",
+      "avatar",
+      "boundary",
+      "by",
+      "can",
+      "cardinal",
+      "cells.",
+      "consume",
+      "consumption.",
+      "departed,",
+      "did",
+      "disappearance",
+      "down,",
+      "five",
+      "grid",
+      "hidden",
+      "impassable",
+      "into",
+      "leaving",
+      "left,",
+      "marker",
+      "mean",
+      "move",
+      "moves",
+      "normally",
+      "not",
+      "occupied",
+      "reappeared",
+      "right,",
+      "semantics,",
+      "so",
+      "state",
+      "the",
+      "unchanged",
+      "unchanged.",
+      "under",
+      "up,",
+      "visible",
+      "was",
+      "when",
+      "while"
+    ],
+    "sha256": "fcb53da4c7dfaf2177813332691d15e7a9977593b46d7b6911e0f3a20e10452c",
+    "support_refs": [
+      "sha256:014356c25e6fe43f73b7276a93b015952f63fd3ab36fdff710a26bf06769e6ff",
+      "sha256:14efc3468ccad75fccf286b53fd1bd2cf7a9b5f0cef1e1ef40058739c79843db",
+      "sha256:287fa1894ee1a89d7b7facafea842d24fad548a3d3a4c7b4df7a3b84afc0649f",
+      "sha256:28be560903006a9ee4cddbfbc211f87701b9923b806a8e1c7c490d36e73fae2a",
+      "sha256:2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+      "sha256:4995b1de8ca5fa02a29501fa272328099e0b74f92511f7aeb8e0f737cb230fa0",
+      "sha256:5c14b49a13f53b50939fefa6e9a599e7a53806b9233f82074745ab01f5315794",
+      "sha256:620ad877f39d4e12d8a62db5de29ea40fc05dbcb9a2fa38812269163a71064dc",
+      "sha256:6af50b8daa48a2931a84a350de45abaafdd333c19db0c4274d9d1ed945f33700",
+      "sha256:a8c458efa3154917ad249ab8c837d61c0b277d26e31b3f4825de7358e7c89225",
+      "sha256:bb8d36ac4d8795a362aa1ee57f6084a8f06e8d7157d9cb70041c8c71d6819195",
+      "sha256:c3d975217121fcf1d24afab9d062093284e4ce7d43a5232f567a88dbad5e8586",
+      "sha256:cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+      "sha256:cdf4f1066c91d37c6f5aad2acdd9583b4d47b6b0833329f13090ff0aab98fb52",
+      "sha256:e1800403266bb7c7b8184e7479ac9c4268dbc61c7a0de2fe9e68e121a136d021",
+      "sha256:e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12",
+      "sha256:e5b0968cccf7303d2f4115e89c450e400e56caf4da52717aa050d177c1ca88a3",
+      "sha256:eb08c86087f37370b89bfa91f8f5f5d7c1652c5c3f5bc8daecd08b2fb163ebc9",
+      "sha256:fa3c36e7a2b8d94f773662e2dd172af67b0e63bbf0277932406991a836eefcc9"
+    ],
+    "tokenizer_sha256": "cb699880421b5ec72e3496b8dab0c3d2a685556ba2b77ae867bf1741433d05aa"
+  },
+  "source_post_proposal": {
+    "action_ref": "2",
+    "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "consumed_intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "controlled_object_ref": "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7",
+    "controller_instance_sha256": "adec6d57b451d504e47b5d013319eb13ee4c7048057e3db970314a23fff6008e",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "ordered_waypoint_refs": [
+      "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc",
+      "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+      "object:1d1adb222812b6e505db9b90ae099c850d23725eedfd8881881eb7758714780e"
+    ],
+    "parent_proposal_sha256": "c63ccdfdb4471d054908d4c5c43ec603867c6623a4a64be0c687773151e7f81b",
+    "predicted_consequence_ref": "sha256:4e3d8a8f3597cd0f3459b7d2eb7e63586cb027a061bde58eec95a44daedc4637",
+    "proposal_ref": "sha256:790e55c51f023dd39e01cd1f4c4952a060ea679b76482af0736cf4f10a20e1cb",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "f03271937564b4276cac6ac3624d729031690c5e0323287d799b307ac2680d4a"
+  },
+  "source_pre_proposal": {
+    "action_ref": "0",
+    "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:a04e6278f3da757afa3babede0539b4ebdc20a0219ece9a092a0e3f19f56aadc",
+    "controller_instance_sha256": "adec6d57b451d504e47b5d013319eb13ee4c7048057e3db970314a23fff6008e",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "ordered_waypoint_refs": [
+      "object:4dc6f3900de09d515d0c5e06ba98f9f78d7c4a934cd7e23ad1c426c80093272d",
+      "object:dc8e68c5051240caab773d906b9c05da6f362477d9474698cfbb88302278bcb7"
+    ],
+    "parent_proposal_sha256": "",
+    "predicted_consequence_ref": "sha256:e47b2a0568a3d1f9a789e214c447e3dab2aec1370feb4ef9fae4432e5d67a561",
+    "proposal_ref": "sha256:eaf74d65ecce792ca41f56b3f1cabb59157603c4ebad41bfb5e279b8502f4fe8",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "c63ccdfdb4471d054908d4c5c43ec603867c6623a4a64be0c687773151e7f81b"
+  },
+  "source_response": {
+    "admissible": true,
+    "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "complier_net_effect": 0.44500000000000006,
+    "contract_sha256": "43cb77e97834a0c179db7897b8390c7fb69b3e4c24fbcff05b5985fa1d6760db",
+    "first_stage_transport_delta": 1.0,
+    "intent_to_treat_net_delta": 0.44500000000000006,
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "object_basin_response",
+    "offer_count": 2,
+    "offer_supported_transport_rate": 1.0,
+    "outcome_sha256s": [
+      "68099debddd2cdc771d820ca38e27cd786ec5d2933e7bd40525b400eca45de63",
+      "75eb9d7c0033d6c94c41525eb289e6c468a5541e8a2a2dcbfbb689568c28048b",
+      "bbc3ac646b961b534582620641b033c38a23ef474c10bf0691349ed052cd7586",
+      "f0c2d39b20dca0c38599e36053a52b57f2f9b465f871e19b7dd6e2de94011ce0"
+    ],
+    "pre_basin_sha256": "7dfc7f076f8721391feef81df42c909f7ce9898969945842a10033a08b4690ac",
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-object-basin-response-family-v1",
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "0ce0ed4b2de33cb6857995b0ccef25e83cec16fbbd5d4c55d42655fd3ea701d4",
+    "status": "identified_positive",
+    "withhold_count": 2,
+    "withhold_supported_transport_rate": 0.0
+  },
+  "source_response_family": {
+    "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+    "contract_sha256": "43cb77e97834a0c179db7897b8390c7fb69b3e4c24fbcff05b5985fa1d6760db",
+    "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "kind": "object_response_family",
+    "minimum_first_stage_transport_delta": 1.0,
+    "minimum_intent_to_treat_net_delta": 0.0,
+    "minimum_offer_count": 2,
+    "minimum_withhold_count": 2,
+    "responses": [
+      {
+        "admissible": true,
+        "catalog_sha256": "efa46d65fe13dc582d888fa5414ed2ccedd58b08d6e00a31edd26bf4266350da",
+        "complier_net_effect": 0.44500000000000006,
+        "contract_sha256": "43cb77e97834a0c179db7897b8390c7fb69b3e4c24fbcff05b5985fa1d6760db",
+        "first_stage_transport_delta": 1.0,
+        "intent_to_treat_net_delta": 0.44500000000000006,
+        "intervention_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+        "kind": "object_basin_response",
+        "offer_count": 2,
+        "offer_supported_transport_rate": 1.0,
+        "outcome_sha256s": [
+          "68099debddd2cdc771d820ca38e27cd786ec5d2933e7bd40525b400eca45de63",
+          "75eb9d7c0033d6c94c41525eb289e6c468a5541e8a2a2dcbfbb689568c28048b",
+          "bbc3ac646b961b534582620641b033c38a23ef474c10bf0691349ed052cd7586",
+          "f0c2d39b20dca0c38599e36053a52b57f2f9b465f871e19b7dd6e2de94011ce0"
+        ],
+        "pre_basin_sha256": "7dfc7f076f8721391feef81df42c909f7ce9898969945842a10033a08b4690ac",
+        "primitive_action_cost": 20.0,
+        "schema": "ztare-object-basin-response-family-v1",
+        "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+        "sha256": "0ce0ed4b2de33cb6857995b0ccef25e83cec16fbbd5d4c55d42655fd3ea701d4",
+        "status": "identified_positive",
+        "withhold_count": 2,
+        "withhold_supported_transport_rate": 0.0
+      }
+    ],
+    "schema": "ztare-object-basin-response-family-v1",
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "e4d793cdff26e09d50e9b602621d358a317f6d8316386f7683875fb8ffa833e6",
+    "source_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h93_catalog_scoped_pointer_judgment/result.json",
+    "source_result_sha256": "09f424c2bf4079d543de8ea08b591873bd7aee51605903dbfd13c18b622ba0b0"
+  },
+  "source_verification": {
+    "h93_witness_file_sha256": "22492bd3087555c24314c4a8e446f9bb98e3a98ae8db59b41b0a352b2ae4b000",
+    "h93_witness_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h93_catalog_scoped_pointer_judgment/arms/pair_01_offer_causal_mechanics.json",
+    "h94_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/result.json",
+    "h94_result_replay": {
+      "manifest_file_sha256": "b753d039b3b73990072200f521752659bfca95deb9893efc3929c78a82827778",
+      "mean_response_minus_scalar_composite": 0.015000000000000069,
+      "pair_count": 2,
+      "response_admission_count": 2,
+      "result_file_sha256": "67865c448988bcbf9afb4141efb738258d2ed1426f34bd76072702e9df6183c2",
+      "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h94_prospective_response_family_admission/result.json",
+      "result_sha256": "21d66a4a6ddd6ba48f0a1bbe3faa0d98ef78453eacbe6aead26cc3d963f36a7d",
+      "scalar_admission_count": 2,
+      "status": "offline_replay_verified"
+    },
+    "h94_result_sha256": "21d66a4a6ddd6ba48f0a1bbe3faa0d98ef78453eacbe6aead26cc3d963f36a7d"
+  },
+  "spec_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square_spec.json",
+  "spec_sha256": "62ad89938a180ada9d12cdced180d6c0da297bf3350bad33cdb01f1a5d34115a",
+  "success_criterion": {
+    "all_identity_and_fixed_cost_checks": "pass",
+    "all_source_and_prefix_hashes_verify": true,
+    "mean_target_minus_placebo_composite": ">0",
+    "minimum_first_stage_transport_delta": 1.0,
+    "negative_prefix_controller_contact": false,
+    "negative_transport_status": "refused",
+    "placebo_blind_basin_matches_transported_source": "2/2",
+    "placebo_spontaneous_supported_transport": "0/2",
+    "positive_transport_status": "candidate_commuting",
+    "target_blind_basin_matches_transported_source": "2/2",
+    "target_composite_wins": ">=1",
+    "target_family_promotion": "after H95 settlement only",
+    "target_supported_transport": "2/2",
+    "target_total_task_score_minus_placebo": ">=0"
+  },
+  "target_catalog": {
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "compiler_sha256": "5db4cfe9df0f2e82ec1b6abd4ff88bdbc388d5f62be645e26ba85200c07e705d",
+    "field_values": [
+      3,
+      4,
+      5
+    ],
+    "grid_sha256": "11f7f1b6f43af765b5e821511341801abfd8c2e915008e4ce5a305d9a3071826",
+    "grid_shape": [
+      64,
+      64
+    ],
+    "objects": [
+      {
+        "bbox": [
+          11,
+          35,
+          13,
+          37
+        ],
+        "cell_count": 5,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            0,
+            2,
+            9
+          ],
+          [
+            1,
+            2,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ]
+        ],
+        "object_ref": "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7",
+        "palette": [
+          9
+        ],
+        "type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763"
+      },
+      {
+        "bbox": [
+          13,
+          35,
+          13,
+          35
+        ],
+        "cell_count": 1,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ]
+        ],
+        "object_ref": "object:939f6acb3f164d95357e74918f7eb723a68a9eea2b39c577c8050149ab638b55",
+        "palette": [
+          9
+        ],
+        "type_sha256": "5fef753beff27a5beab65ae607d647903459e1028c017c360d3c374c1709001a"
+      },
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "cell_count": 5,
+        "normalized_colored_shape": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ],
+        "object_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+        "palette": [
+          0,
+          1
+        ],
+        "type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb"
+      },
+      {
+        "bbox": [
+          45,
+          29,
+          49,
+          33
+        ],
+        "cell_count": 25,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            12
+          ],
+          [
+            0,
+            1,
+            12
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            0,
+            3,
+            12
+          ],
+          [
+            0,
+            4,
+            12
+          ],
+          [
+            1,
+            0,
+            12
+          ],
+          [
+            1,
+            1,
+            12
+          ],
+          [
+            1,
+            2,
+            12
+          ],
+          [
+            1,
+            3,
+            12
+          ],
+          [
+            1,
+            4,
+            12
+          ],
+          [
+            2,
+            0,
+            9
+          ],
+          [
+            2,
+            1,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            2,
+            4,
+            9
+          ],
+          [
+            3,
+            0,
+            9
+          ],
+          [
+            3,
+            1,
+            9
+          ],
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            3,
+            9
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            4,
+            3,
+            9
+          ],
+          [
+            4,
+            4,
+            9
+          ]
+        ],
+        "object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+        "palette": [
+          9,
+          12
+        ],
+        "type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2"
+      },
+      {
+        "bbox": [
+          55,
+          3,
+          60,
+          8
+        ],
+        "cell_count": 20,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            0,
+            2,
+            9
+          ],
+          [
+            0,
+            3,
+            9
+          ],
+          [
+            0,
+            4,
+            9
+          ],
+          [
+            0,
+            5,
+            9
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            1,
+            1,
+            9
+          ],
+          [
+            1,
+            2,
+            9
+          ],
+          [
+            1,
+            3,
+            9
+          ],
+          [
+            1,
+            4,
+            9
+          ],
+          [
+            1,
+            5,
+            9
+          ],
+          [
+            2,
+            0,
+            9
+          ],
+          [
+            2,
+            1,
+            9
+          ],
+          [
+            3,
+            0,
+            9
+          ],
+          [
+            3,
+            1,
+            9
+          ],
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            5,
+            0,
+            9
+          ],
+          [
+            5,
+            1,
+            9
+          ]
+        ],
+        "object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+        "palette": [
+          9
+        ],
+        "type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924"
+      },
+      {
+        "bbox": [
+          59,
+          7,
+          60,
+          8
+        ],
+        "cell_count": 4,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            1,
+            1,
+            9
+          ]
+        ],
+        "object_ref": "object:8f1b3f33bf71a373b46bb20078e17569c187c47046b91d2d91c20f34042bf807",
+        "palette": [
+          9
+        ],
+        "type_sha256": "b5d88fe46111cd03035168fd1ae5f36667dcd5446e5b09094aa4e86bb63ebadc"
+      },
+      {
+        "bbox": [
+          61,
+          14,
+          62,
+          54
+        ],
+        "cell_count": 82,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            11
+          ],
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            0,
+            2,
+            11
+          ],
+          [
+            0,
+            3,
+            11
+          ],
+          [
+            0,
+            4,
+            11
+          ],
+          [
+            0,
+            5,
+            11
+          ],
+          [
+            0,
+            6,
+            11
+          ],
+          [
+            0,
+            7,
+            11
+          ],
+          [
+            0,
+            8,
+            11
+          ],
+          [
+            0,
+            9,
+            11
+          ],
+          [
+            0,
+            10,
+            11
+          ],
+          [
+            0,
+            11,
+            11
+          ],
+          [
+            0,
+            12,
+            11
+          ],
+          [
+            0,
+            13,
+            11
+          ],
+          [
+            0,
+            14,
+            11
+          ],
+          [
+            0,
+            15,
+            11
+          ],
+          [
+            0,
+            16,
+            11
+          ],
+          [
+            0,
+            17,
+            11
+          ],
+          [
+            0,
+            18,
+            11
+          ],
+          [
+            0,
+            19,
+            11
+          ],
+          [
+            0,
+            20,
+            11
+          ],
+          [
+            0,
+            21,
+            11
+          ],
+          [
+            0,
+            22,
+            11
+          ],
+          [
+            0,
+            23,
+            11
+          ],
+          [
+            0,
+            24,
+            11
+          ],
+          [
+            0,
+            25,
+            11
+          ],
+          [
+            0,
+            26,
+            11
+          ],
+          [
+            0,
+            27,
+            11
+          ],
+          [
+            0,
+            28,
+            11
+          ],
+          [
+            0,
+            29,
+            11
+          ],
+          [
+            0,
+            30,
+            11
+          ],
+          [
+            0,
+            31,
+            11
+          ],
+          [
+            0,
+            32,
+            11
+          ],
+          [
+            0,
+            33,
+            11
+          ],
+          [
+            0,
+            34,
+            11
+          ],
+          [
+            0,
+            35,
+            11
+          ],
+          [
+            0,
+            36,
+            11
+          ],
+          [
+            0,
+            37,
+            11
+          ],
+          [
+            0,
+            38,
+            11
+          ],
+          [
+            0,
+            39,
+            11
+          ],
+          [
+            0,
+            40,
+            11
+          ],
+          [
+            1,
+            0,
+            11
+          ],
+          [
+            1,
+            1,
+            11
+          ],
+          [
+            1,
+            2,
+            11
+          ],
+          [
+            1,
+            3,
+            11
+          ],
+          [
+            1,
+            4,
+            11
+          ],
+          [
+            1,
+            5,
+            11
+          ],
+          [
+            1,
+            6,
+            11
+          ],
+          [
+            1,
+            7,
+            11
+          ],
+          [
+            1,
+            8,
+            11
+          ],
+          [
+            1,
+            9,
+            11
+          ],
+          [
+            1,
+            10,
+            11
+          ],
+          [
+            1,
+            11,
+            11
+          ],
+          [
+            1,
+            12,
+            11
+          ],
+          [
+            1,
+            13,
+            11
+          ],
+          [
+            1,
+            14,
+            11
+          ],
+          [
+            1,
+            15,
+            11
+          ],
+          [
+            1,
+            16,
+            11
+          ],
+          [
+            1,
+            17,
+            11
+          ],
+          [
+            1,
+            18,
+            11
+          ],
+          [
+            1,
+            19,
+            11
+          ],
+          [
+            1,
+            20,
+            11
+          ],
+          [
+            1,
+            21,
+            11
+          ],
+          [
+            1,
+            22,
+            11
+          ],
+          [
+            1,
+            23,
+            11
+          ],
+          [
+            1,
+            24,
+            11
+          ],
+          [
+            1,
+            25,
+            11
+          ],
+          [
+            1,
+            26,
+            11
+          ],
+          [
+            1,
+            27,
+            11
+          ],
+          [
+            1,
+            28,
+            11
+          ],
+          [
+            1,
+            29,
+            11
+          ],
+          [
+            1,
+            30,
+            11
+          ],
+          [
+            1,
+            31,
+            11
+          ],
+          [
+            1,
+            32,
+            11
+          ],
+          [
+            1,
+            33,
+            11
+          ],
+          [
+            1,
+            34,
+            11
+          ],
+          [
+            1,
+            35,
+            11
+          ],
+          [
+            1,
+            36,
+            11
+          ],
+          [
+            1,
+            37,
+            11
+          ],
+          [
+            1,
+            38,
+            11
+          ],
+          [
+            1,
+            39,
+            11
+          ],
+          [
+            1,
+            40,
+            11
+          ]
+        ],
+        "object_ref": "object:d434ccc1bbc39911814612a9282e8b3ae35bcdbe77e5b0156045e02484c31a2a",
+        "palette": [
+          11
+        ],
+        "type_sha256": "341e39ebdfb5e1055b037e67c802efb5a4c14579a2a53d97f628aba977d877b5"
+      },
+      {
+        "bbox": [
+          61,
+          56,
+          62,
+          57
+        ],
+        "cell_count": 4,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "object_ref": "object:4a083c7119fd9d6090f824f3123b62c9e26df259f2dbfccbe8ebf5748b9691d0",
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      },
+      {
+        "bbox": [
+          61,
+          59,
+          62,
+          60
+        ],
+        "cell_count": 4,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "object_ref": "object:f0668350fec4ed269f5b4214e5364ea5d001ca59dc79bfad26a0abb906aa9999",
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      },
+      {
+        "bbox": [
+          61,
+          62,
+          62,
+          63
+        ],
+        "cell_count": 4,
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "object_ref": "object:74ecb977101cf0b347c3dc4b57ba75eca9621ab91bdc1c786cf61a19b7d2e9fb",
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      }
+    ],
+    "observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "schema": "ztare-grid-object-catalog-v1",
+    "sha256": "366733844a884f337d3302532c147282b7cee32582cf9f5e3c49c474c7dd05c8"
+  },
+  "target_contract": {
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "evidence_refs": [
+      "h92_object_linked_judgment_quotient/result.json#sha256=60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79",
+      "intervention_transport:064a4b5a5710efc9ab0fc3ee70e4cd2f7d279932ccc7ad74dbc929c49b1ce7eb",
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1",
+      "object_transport:01ed49838de2679acdeffef5a9c1621361881291220121b1d045f8e0bb6fddcf",
+      "prefix_evidence:556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a"
+    ],
+    "forbidden_controlled_object_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+    ],
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "kind": "object_role_path_contract",
+    "required_controlled_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+    "required_waypoint_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+    ],
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d"
+  },
+  "target_digest_sha256": "60d3e0fa20aef26e63efb4b69041a9910bb1eec4d65f5d178cc29ddbd8027092",
+  "target_presentation": {
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "field_values": [
+      3,
+      4,
+      5
+    ],
+    "grid_shape": [
+      64,
+      64
+    ],
+    "handle_bindings": [
+      {
+        "handle": "o00",
+        "object_ref": "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7"
+      },
+      {
+        "handle": "o01",
+        "object_ref": "object:939f6acb3f164d95357e74918f7eb723a68a9eea2b39c577c8050149ab638b55"
+      },
+      {
+        "handle": "o02",
+        "object_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+      },
+      {
+        "handle": "o03",
+        "object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21"
+      },
+      {
+        "handle": "o04",
+        "object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98"
+      },
+      {
+        "handle": "o05",
+        "object_ref": "object:8f1b3f33bf71a373b46bb20078e17569c187c47046b91d2d91c20f34042bf807"
+      },
+      {
+        "handle": "o06",
+        "object_ref": "object:d434ccc1bbc39911814612a9282e8b3ae35bcdbe77e5b0156045e02484c31a2a"
+      },
+      {
+        "handle": "o07",
+        "object_ref": "object:4a083c7119fd9d6090f824f3123b62c9e26df259f2dbfccbe8ebf5748b9691d0"
+      },
+      {
+        "handle": "o08",
+        "object_ref": "object:f0668350fec4ed269f5b4214e5364ea5d001ca59dc79bfad26a0abb906aa9999"
+      },
+      {
+        "handle": "o09",
+        "object_ref": "object:74ecb977101cf0b347c3dc4b57ba75eca9621ab91bdc1c786cf61a19b7d2e9fb"
+      }
+    ],
+    "objects": [
+      {
+        "bbox": [
+          11,
+          35,
+          13,
+          37
+        ],
+        "cell_count": 5,
+        "handle": "o00",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            0,
+            2,
+            9
+          ],
+          [
+            1,
+            2,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ]
+        ],
+        "palette": [
+          9
+        ],
+        "type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763"
+      },
+      {
+        "bbox": [
+          13,
+          35,
+          13,
+          35
+        ],
+        "cell_count": 1,
+        "handle": "o01",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ]
+        ],
+        "palette": [
+          9
+        ],
+        "type_sha256": "5fef753beff27a5beab65ae607d647903459e1028c017c360d3c374c1709001a"
+      },
+      {
+        "bbox": [
+          31,
+          20,
+          33,
+          22
+        ],
+        "cell_count": 5,
+        "handle": "o02",
+        "normalized_colored_shape": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ],
+        "palette": [
+          0,
+          1
+        ],
+        "type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb"
+      },
+      {
+        "bbox": [
+          45,
+          29,
+          49,
+          33
+        ],
+        "cell_count": 25,
+        "handle": "o03",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            12
+          ],
+          [
+            0,
+            1,
+            12
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            0,
+            3,
+            12
+          ],
+          [
+            0,
+            4,
+            12
+          ],
+          [
+            1,
+            0,
+            12
+          ],
+          [
+            1,
+            1,
+            12
+          ],
+          [
+            1,
+            2,
+            12
+          ],
+          [
+            1,
+            3,
+            12
+          ],
+          [
+            1,
+            4,
+            12
+          ],
+          [
+            2,
+            0,
+            9
+          ],
+          [
+            2,
+            1,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            2,
+            4,
+            9
+          ],
+          [
+            3,
+            0,
+            9
+          ],
+          [
+            3,
+            1,
+            9
+          ],
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            3,
+            9
+          ],
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            4,
+            3,
+            9
+          ],
+          [
+            4,
+            4,
+            9
+          ]
+        ],
+        "palette": [
+          9,
+          12
+        ],
+        "type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2"
+      },
+      {
+        "bbox": [
+          55,
+          3,
+          60,
+          8
+        ],
+        "cell_count": 20,
+        "handle": "o04",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            0,
+            2,
+            9
+          ],
+          [
+            0,
+            3,
+            9
+          ],
+          [
+            0,
+            4,
+            9
+          ],
+          [
+            0,
+            5,
+            9
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            1,
+            1,
+            9
+          ],
+          [
+            1,
+            2,
+            9
+          ],
+          [
+            1,
+            3,
+            9
+          ],
+          [
+            1,
+            4,
+            9
+          ],
+          [
+            1,
+            5,
+            9
+          ],
+          [
+            2,
+            0,
+            9
+          ],
+          [
+            2,
+            1,
+            9
+          ],
+          [
+            3,
+            0,
+            9
+          ],
+          [
+            3,
+            1,
+            9
+          ],
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            5,
+            0,
+            9
+          ],
+          [
+            5,
+            1,
+            9
+          ]
+        ],
+        "palette": [
+          9
+        ],
+        "type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924"
+      },
+      {
+        "bbox": [
+          59,
+          7,
+          60,
+          8
+        ],
+        "cell_count": 4,
+        "handle": "o05",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            1,
+            1,
+            9
+          ]
+        ],
+        "palette": [
+          9
+        ],
+        "type_sha256": "b5d88fe46111cd03035168fd1ae5f36667dcd5446e5b09094aa4e86bb63ebadc"
+      },
+      {
+        "bbox": [
+          61,
+          14,
+          62,
+          54
+        ],
+        "cell_count": 82,
+        "handle": "o06",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            11
+          ],
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            0,
+            2,
+            11
+          ],
+          [
+            0,
+            3,
+            11
+          ],
+          [
+            0,
+            4,
+            11
+          ],
+          [
+            0,
+            5,
+            11
+          ],
+          [
+            0,
+            6,
+            11
+          ],
+          [
+            0,
+            7,
+            11
+          ],
+          [
+            0,
+            8,
+            11
+          ],
+          [
+            0,
+            9,
+            11
+          ],
+          [
+            0,
+            10,
+            11
+          ],
+          [
+            0,
+            11,
+            11
+          ],
+          [
+            0,
+            12,
+            11
+          ],
+          [
+            0,
+            13,
+            11
+          ],
+          [
+            0,
+            14,
+            11
+          ],
+          [
+            0,
+            15,
+            11
+          ],
+          [
+            0,
+            16,
+            11
+          ],
+          [
+            0,
+            17,
+            11
+          ],
+          [
+            0,
+            18,
+            11
+          ],
+          [
+            0,
+            19,
+            11
+          ],
+          [
+            0,
+            20,
+            11
+          ],
+          [
+            0,
+            21,
+            11
+          ],
+          [
+            0,
+            22,
+            11
+          ],
+          [
+            0,
+            23,
+            11
+          ],
+          [
+            0,
+            24,
+            11
+          ],
+          [
+            0,
+            25,
+            11
+          ],
+          [
+            0,
+            26,
+            11
+          ],
+          [
+            0,
+            27,
+            11
+          ],
+          [
+            0,
+            28,
+            11
+          ],
+          [
+            0,
+            29,
+            11
+          ],
+          [
+            0,
+            30,
+            11
+          ],
+          [
+            0,
+            31,
+            11
+          ],
+          [
+            0,
+            32,
+            11
+          ],
+          [
+            0,
+            33,
+            11
+          ],
+          [
+            0,
+            34,
+            11
+          ],
+          [
+            0,
+            35,
+            11
+          ],
+          [
+            0,
+            36,
+            11
+          ],
+          [
+            0,
+            37,
+            11
+          ],
+          [
+            0,
+            38,
+            11
+          ],
+          [
+            0,
+            39,
+            11
+          ],
+          [
+            0,
+            40,
+            11
+          ],
+          [
+            1,
+            0,
+            11
+          ],
+          [
+            1,
+            1,
+            11
+          ],
+          [
+            1,
+            2,
+            11
+          ],
+          [
+            1,
+            3,
+            11
+          ],
+          [
+            1,
+            4,
+            11
+          ],
+          [
+            1,
+            5,
+            11
+          ],
+          [
+            1,
+            6,
+            11
+          ],
+          [
+            1,
+            7,
+            11
+          ],
+          [
+            1,
+            8,
+            11
+          ],
+          [
+            1,
+            9,
+            11
+          ],
+          [
+            1,
+            10,
+            11
+          ],
+          [
+            1,
+            11,
+            11
+          ],
+          [
+            1,
+            12,
+            11
+          ],
+          [
+            1,
+            13,
+            11
+          ],
+          [
+            1,
+            14,
+            11
+          ],
+          [
+            1,
+            15,
+            11
+          ],
+          [
+            1,
+            16,
+            11
+          ],
+          [
+            1,
+            17,
+            11
+          ],
+          [
+            1,
+            18,
+            11
+          ],
+          [
+            1,
+            19,
+            11
+          ],
+          [
+            1,
+            20,
+            11
+          ],
+          [
+            1,
+            21,
+            11
+          ],
+          [
+            1,
+            22,
+            11
+          ],
+          [
+            1,
+            23,
+            11
+          ],
+          [
+            1,
+            24,
+            11
+          ],
+          [
+            1,
+            25,
+            11
+          ],
+          [
+            1,
+            26,
+            11
+          ],
+          [
+            1,
+            27,
+            11
+          ],
+          [
+            1,
+            28,
+            11
+          ],
+          [
+            1,
+            29,
+            11
+          ],
+          [
+            1,
+            30,
+            11
+          ],
+          [
+            1,
+            31,
+            11
+          ],
+          [
+            1,
+            32,
+            11
+          ],
+          [
+            1,
+            33,
+            11
+          ],
+          [
+            1,
+            34,
+            11
+          ],
+          [
+            1,
+            35,
+            11
+          ],
+          [
+            1,
+            36,
+            11
+          ],
+          [
+            1,
+            37,
+            11
+          ],
+          [
+            1,
+            38,
+            11
+          ],
+          [
+            1,
+            39,
+            11
+          ],
+          [
+            1,
+            40,
+            11
+          ]
+        ],
+        "palette": [
+          11
+        ],
+        "type_sha256": "341e39ebdfb5e1055b037e67c802efb5a4c14579a2a53d97f628aba977d877b5"
+      },
+      {
+        "bbox": [
+          61,
+          56,
+          62,
+          57
+        ],
+        "cell_count": 4,
+        "handle": "o07",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      },
+      {
+        "bbox": [
+          61,
+          59,
+          62,
+          60
+        ],
+        "cell_count": 4,
+        "handle": "o08",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      },
+      {
+        "bbox": [
+          61,
+          62,
+          62,
+          63
+        ],
+        "cell_count": 4,
+        "handle": "o09",
+        "normalized_colored_shape": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ],
+        "palette": [
+          8
+        ],
+        "type_sha256": "01c1fd01168be497be1ddea60f88778eeda63703b3d4862e3a1e1688cda0371d"
+      }
+    ],
+    "observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "presentation_sha256": "f516bac684b5c72967c7737aa8f0fd7afae0672c24abc57b7a4f899380983423",
+    "schema": "ztare-grid-object-catalog-presentation-v1",
+    "sha256": "6c25a5e75139b6839a88238be1e019d346564337070717122ea24b15f3a59efd"
+  },
+  "target_proposal": {
+    "acquisition_provenance": {
+      "boundary_support_sha256s": [
+        "8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf"
+      ],
+      "controller_instance_sha256": "caf758d8cd191b024ac3a291a83ad71d14b9cf7abf95b215d95105f786ee233e",
+      "episode_sha256": "d7e8e951d24a0359585daa6644741167adcdc8322cb0ec1ac058644955e4b7bd",
+      "kind": "memory_acquisition_provenance",
+      "observation_sha256": "29a9f2b50530972b88e24194cf3695699185f6c471f824d93a15a4beb7e337ad",
+      "schema": "ztare-wake-sleep-recall-identities-v1",
+      "sha256": "8de283084163ee790d6cf5b7721662245163383e347f4a60d6c66a63c1c4c990",
+      "support_sha256s": [
+        "2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+        "8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf",
+        "cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+        "e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12"
+      ]
+    },
+    "actionability_score": 1.0,
+    "authority_score": 50.0,
+    "boundary_support_refs": [
+      "sha256:8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf"
+    ],
+    "content_ref": "memory_condition:causal_mechanics",
+    "guard_features": [
+      "avatar aligned with target entrance",
+      "avatar overlaps marker then departs",
+      "bottom-left enlarged glyph",
+      "enlarged bottom-left glyph",
+      "framed 9-colored target glyph",
+      "small 0/1 marker embedded in traversable lane"
+    ],
+    "intervention_kind": "episodic_memory_bundle",
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "kind": "decision_intervention_proposal",
+    "predicted_decision_delta": 0.96,
+    "primitive_action_cost": 20.0,
+    "prompt_cost_per_token": 0.0,
+    "provider_id": "causal_mechanics",
+    "provider_revision_sha256": "7f5b9b0ab562bb3fea46cd4ddea6132c7cff6e098d087b0704f037e067736c90",
+    "recency_score": 1.0,
+    "rendered_content_sha256": "60d3e0fa20aef26e63efb4b69041a9910bb1eec4d65f5d178cc29ddbd8027092",
+    "rendered_token_count": 3849,
+    "retrieval_cost": 0.0,
+    "schema": "ztare-decision-intervention-market-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "semantic_features": [
+      "0/1",
+      "after",
+      "alone",
+      "and",
+      "appearance",
+      "avatar\u2019s",
+      "between",
+      "bottom-left",
+      "by",
+      "changed",
+      "completed",
+      "did",
+      "edited",
+      "enlarged",
+      "entry",
+      "equality",
+      "floor",
+      "framed",
+      "gated",
+      "glyph",
+      "glyph;",
+      "is",
+      "its",
+      "leaving",
+      "level.",
+      "marker",
+      "marker.",
+      "matched-state",
+      "moving",
+      "not",
+      "off",
+      "onto",
+      "persisted",
+      "proximity",
+      "small",
+      "solid",
+      "state",
+      "stepping",
+      "suffice,",
+      "target",
+      "the",
+      "two-color",
+      "unchanged;",
+      "while"
+    ],
+    "sha256": "db5ea4fed042d22eb3950664f80c1ce7f7af094bd56a350589551bc7dc472c76",
+    "support_refs": [
+      "sha256:2ea4a7153aaa157e325cac1330fdc0e4d39d8dac3dd0890527fcca5f1860dfef",
+      "sha256:8db5cdfa1fa26c9f20e84c6c98d1fc5cafb2ecb87c64e5663f97f5a1d6be84bf",
+      "sha256:cc367fb1a0519b3e0de3e2e32a130b1cc9bf174da72508610b179b740972aab6",
+      "sha256:e47a7623b8eb2f58f8bf76f1b3f978ad4e06d9a871499b5293d020357c97cf12"
+    ],
+    "tokenizer_sha256": "cb699880421b5ec72e3496b8dab0c3d2a685556ba2b77ae867bf1741433d05aa"
+  },
+  "target_scope": {
+    "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+    "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+    "context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+    "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+  },
+  "total_primitive_actions_per_arm": 21
+}

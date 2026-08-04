@@ -6,6 +6,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping
 
+from ztare.common.artifact_refs import collect_artifact_refs
 from ztare.common.candidate_memory import (
     admissible_candidate_memory_records,
     candidate_memory_source,
@@ -13,6 +14,7 @@ from ztare.common.candidate_memory import (
 from ztare.common.patch_base_identity import (
     repair_frontier_fields,
     resolve_repair_frontier,
+    task_hypothesis_companion_provenance_from_source,
 )
 from ztare.common.projection_owner_registry import VISIBLE_WORKBENCH_SOURCE_FIBERS
 from ztare.common.leaf_workbench_contract import (
@@ -181,6 +183,8 @@ WORLD_MODEL_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
                 "behavioral_fiber",
                 "patch_base_chain_effects",
                 "commuting_transports",
+                "consumer_quotient_difference",
+                "archived_residual_donors",
             ],
         ),
         LeafWorkbenchCapability(
@@ -192,7 +196,12 @@ WORLD_MODEL_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
             ),
             authority="pure_diagnostic",
             secret_policy="derived_no_raw_secret",
-            input_contract=["latest_regression_ref", "episode_log_ref", "feature_budget"],
+            input_contract=[
+                "latest_regression_ref",
+                "episode_log_ref",
+                "feature_budget",
+                "upstream_receipt_refs",
+            ],
             output_contract=[
                 "support_bbox",
                 "target_label_counts",
@@ -227,6 +236,8 @@ WORLD_MODEL_LEAF_WORKBENCH_CONTRACT = LeafWorkbenchContract(
                 "near_miss_predicates",
                 "confusion_matrix",
                 "executable_delta_hint",
+                "consumer_quotient_difference",
+                "archived_residual_donors",
             ],
         ),
         LeafWorkbenchCapability(
@@ -413,6 +424,17 @@ def worldmodel_workbench_task_identity_status(
 
     if bound_sha and task_sha != bound_sha:
         return {"active": True, "relation": "task_source_identity_mismatch"}
+
+    try:
+        task_source = task_path.read_text(encoding="utf-8")
+    except OSError:
+        task_source = ""
+    if task_hypothesis_companion_provenance_from_source(task_source) is not None:
+        return {
+            "active": False,
+            "relation": "task_hypothesis_not_carrier_repair_frontier",
+            "task_sha256": task_sha,
+        }
 
     root_path = project / "test_model.py"
     try:
@@ -876,15 +898,16 @@ def _handle_lowerable_selector_action(
     input_refs = req.get("input_refs") if isinstance(req.get("input_refs"), dict) else {}
     regression_ref = _regression_ref_from_input_refs(project, input_refs)
     episode_ref = str(input_refs.get("episode_log_ref") or _default_episode_log_ref(project))
+    upstream_receipt_refs = tuple(
+        ref
+        for ref in collect_artifact_refs(req)
+        if ref.startswith("workspace/leaf_workbench_action_receipts/")
+    )
     summary = run_worldmodel_lowerable_selector_miner(
         project,
         regression_ref=regression_ref,
         episode_ref=episode_ref,
-        upstream_receipt_refs=tuple(
-            str(ref)
-            for ref in (input_refs.get("upstream_receipt_refs") or ())
-            if str(ref).strip()
-        ),
+        upstream_receipt_refs=upstream_receipt_refs,
     )
     return {
         "input_hashes": {
@@ -892,9 +915,7 @@ def _handle_lowerable_selector_action(
             "latest_regression_sha256": _shaish(project / regression_ref),
             "episode_log_ref": episode_ref,
             "episode_log_sha256": _shaish(project / episode_ref),
-            "upstream_receipt_refs": list(
-                input_refs.get("upstream_receipt_refs") or ()
-            ),
+            "upstream_receipt_refs": list(upstream_receipt_refs),
             "request": _short_receipt_json(req),
         },
         "output_summary": summary,
@@ -1273,14 +1294,15 @@ def _structural_isomorphism_receipt_summary(payload: object) -> str:
     return "; ".join(str(bit) for bit in bits if str(bit))
 
 
-def _active_task_first_fire_payload(
+def _active_task_consumed_payload(
     project_dir: str | Path,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     from ztare.common.leaf_workbench_executor import (
-        active_workbench_task_first_fire_receipt,
+        active_workbench_task_receipt_family,
     )
 
-    receipt = active_workbench_task_first_fire_receipt(project_dir)
+    family = active_workbench_task_receipt_family(project_dir, materialize=False)
+    receipt = next(reversed(family.values()), None) if family else None
     if not isinstance(receipt, dict):
         return {}, {}
     summary: object = receipt.get("output_summary")
@@ -1292,10 +1314,35 @@ def _active_task_first_fire_payload(
     return receipt, summary if isinstance(summary, dict) else {}
 
 
+def _archived_residual_donor_projection(summary: Mapping[str, Any]) -> list[dict[str, Any]]:
+    observation = summary.get("counterexample_observation")
+    observation = observation if isinstance(observation, Mapping) else {}
+    donors = summary.get("archived_residual_donors") or observation.get(
+        "archived_residual_donors"
+    )
+    if not isinstance(donors, list):
+        return []
+    fields = (
+        "authority",
+        "candidate_ref",
+        "candidate_sha256",
+        "historical_disposition",
+        "baseline_wrong_cells",
+        "donor_wrong_cells",
+        "relation",
+        "prediction_sha256",
+    )
+    return [
+        {key: donor[key] for key in fields if key in donor}
+        for donor in donors[:2]
+        if isinstance(donor, Mapping)
+    ]
+
+
 def _render_active_task_first_fire_fragment(project_dir: str | Path) -> str:
     """Render the selected task's consumed receipt before the broad menu."""
 
-    receipt, summary = _active_task_first_fire_payload(project_dir)
+    receipt, summary = _active_task_consumed_payload(project_dir)
     if not receipt:
         return ""
     weakness = _read_json(Path(project_dir) / "workspace" / "latest_harness_weakness.json")
@@ -1304,13 +1351,14 @@ def _render_active_task_first_fire_fragment(project_dir: str | Path) -> str:
     input_hashes = receipt.get("input_hashes")
     input_hashes = input_hashes if isinstance(input_hashes, dict) else {}
     lines = [
-        "## Active workbench task — parent first-fire receipt",
+        "## Active workbench task — parent first-fire receipt family (latest consumed consequence)",
         f"- task identity: {task.get('task_id')}; failure class: {task.get('failure_class')}",
-        f"- selected capability already executed by kernel: {receipt.get('capability_id')}",
+        f"- consumed capability already executed by kernel: {receipt.get('capability_id')}",
         f"- receipt ref: {input_hashes.get('kernel_receipt_ref')}; observation identity: {summary.get('observation_sha256')}",
     ]
     candidates = summary.get("catalog_residual_event_candidates")
     candidate = candidates[0] if isinstance(candidates, list) and candidates and isinstance(candidates[0], dict) else {}
+    donors = _archived_residual_donor_projection(summary)
     if candidate:
         from ztare.worldmodel.retry_surface import (
             compact_catalog_residual_event_candidate,
@@ -1360,6 +1408,31 @@ def _render_active_task_first_fire_fragment(project_dir: str | Path) -> str:
                 f"- catalog edge contract: {render_region_event_contract()}",
                 "- authority: diagnostic candidate only. Coordinates and palette values lower the operation identity; replay, holdout, and promotion gates retain authority.",
             ]
+        )
+    elif donors:
+        quotient_difference = summary.get("consumer_quotient_difference")
+        quotient_difference = (
+            quotient_difference if isinstance(quotient_difference, Mapping) else {}
+        )
+        lines.append(
+            "- consumer quotient changed factors: "
+            + ",".join(
+                str(name)
+                for name in (quotient_difference.get("changed_factor_names") or [])
+            )
+        )
+        for donor in donors:
+            lines.append(
+                "- archived operation donor: "
+                f"source_ref={donor.get('candidate_ref')}; "
+                f"sha256={donor.get('candidate_sha256')}; "
+                f"counterexample wrong cells {donor.get('baseline_wrong_cells')}→"
+                f"{donor.get('donor_wrong_cells')}; relation={donor.get('relation')}; "
+                f"authority={donor.get('authority')}"
+            )
+        lines.append(
+            "- consequence: inspect and salvage only the improving operation; "
+            "the archived program disposition remains in force."
         )
     else:
         lines.append(
@@ -1415,7 +1488,7 @@ def worldmodel_leaf_workbench_records(project_dir: str | Path) -> list[dict[str,
                 ),
             }
         )
-        first_fire, first_fire_summary = _active_task_first_fire_payload(project)
+        first_fire, first_fire_summary = _active_task_consumed_payload(project)
         if first_fire:
             hashes = first_fire.get("input_hashes")
             hashes = hashes if isinstance(hashes, dict) else {}
@@ -1433,6 +1506,9 @@ def worldmodel_leaf_workbench_records(project_dir: str | Path) -> list[dict[str,
                     first_fire_summary.get("observation_sha256") or ""
                 ),
             }
+            donors = _archived_residual_donor_projection(first_fire_summary)
+            if donors:
+                consumer_projection["archived_residual_donors"] = donors
             if event:
                 from ztare.worldmodel.retry_surface import (
                     compact_catalog_residual_event_candidate,
@@ -2103,7 +2179,29 @@ def _regression_ref_from_input_refs(project: Path, input_refs: Mapping[str, Any]
         ref = str(input_refs.get(key) or "").strip()
         if ref and _ref_has_regression_payload(project, ref):
             return ref
-    _current, current_ref = _current_regression_receipt(project)
+    try:
+        weakness = json.loads(
+            (project / "workspace" / "latest_harness_weakness.json").read_text(
+                encoding="utf-8"
+            )
+        )
+    except (OSError, ValueError):
+        weakness = {}
+    task = weakness.get("workbench_task")
+    task = task if isinstance(task, Mapping) else {}
+    requested_task_id = str(input_refs.get("task_id") or "").strip()
+    task_source_sha = (
+        str(task.get("source_sha256") or "").strip()
+        if requested_task_id
+        and requested_task_id == str(task.get("task_id") or "").strip()
+        else ""
+    )
+    _current, current_ref = _current_regression_receipt(
+        project,
+        candidate_sha256=task_source_sha,
+    )
+    if _current is None and task_source_sha:
+        _current, current_ref = _current_regression_receipt(project)
     if _current is not None:
         return current_ref
     return _latest_visible_candidate_score_ref(project) or "workspace/latest_patch_base_regression.json"
@@ -2293,10 +2391,12 @@ def _extract_residual_quotient(payload: Any) -> str:
 
 
 def _regression_payload_is_current(project: Path, payload: object) -> bool:
-    """Reject a pinned repair receipt after the active evidence epoch moves."""
+    """Reject a pinned repair receipt after its evidence or policy identity moves."""
     if not isinstance(payload, dict):
         return False
-    epoch = payload.get("evidence_epoch")
+    gate_payload = payload.get("pre_judge_gate_payload")
+    gate_payload = gate_payload if isinstance(gate_payload, dict) else {}
+    epoch = payload.get("evidence_epoch") or gate_payload.get("evidence_epoch")
     if not isinstance(epoch, dict):
         return True  # legacy unpinned diagnostics retain diagnostic authority
     expected = str(epoch.get("epoch_sha256") or "").strip()
@@ -2304,11 +2404,19 @@ def _regression_payload_is_current(project: Path, payload: object) -> bool:
         return True
     try:
         from ztare.common.observation_chart import capture_project_evidence_epoch
+        from ztare.validator.core.pre_judge_gate import evaluation_policy_sha256
 
         current = capture_project_evidence_epoch(project)
     except Exception:  # noqa: BLE001 - unavailable epoch checks fail closed
         return False
-    return current.epoch_sha256 == expected
+    if current.epoch_sha256 != expected:
+        return False
+    declared_policy = str(
+        payload.get("evaluation_policy_sha256")
+        or gate_payload.get("evaluation_policy_sha256")
+        or ""
+    ).strip()
+    return bool(declared_policy) and declared_policy == evaluation_policy_sha256()
 
 
 def _candidate_outcome_from_counterexample_trace(
@@ -2411,14 +2519,21 @@ def _regression_receipt_from_payload(
     return _candidate_outcome_from_counterexample_trace(project, payload)
 
 
-def _current_regression_receipt(project: Path) -> tuple[dict[str, Any] | None, str]:
+def _current_regression_receipt(
+    project: Path,
+    *,
+    candidate_sha256: str = "",
+) -> tuple[dict[str, Any] | None, str]:
     for rel in (
         "workspace/latest_patch_base_regression.json",
         "latest_eval_results.json",
     ):
         payload, _path = _read_regression_payload(project, rel)
         receipt = _regression_receipt_from_payload(project, payload)
-        if receipt:
+        if receipt and (
+            not candidate_sha256
+            or str(receipt.get("candidate_sha") or "") == candidate_sha256
+        ):
             return receipt, rel
     return None, "latest_eval_results.json"
 
@@ -2708,6 +2823,199 @@ def _task_bound_upstream_receipts(
     return outputs
 
 
+def _bound_worldmodel_task_source(
+    project: Path,
+    *,
+    task_id: str,
+) -> tuple[dict[str, Any], Path, bytes, str]:
+    """Single identity-binding door for an active worldmodel task carrier."""
+
+    weakness = _read_json(project / "workspace" / "latest_harness_weakness.json")
+    task = weakness.get("workbench_task") if isinstance(weakness, dict) else None
+    if (
+        not isinstance(task, Mapping)
+        or str(task.get("task_id") or "").strip() != str(task_id).strip()
+    ):
+        raise ValueError("worldmodel refinement no longer names the active task")
+    source_ref = str(task.get("source_ref") or "").strip()
+    source_sha = str(task.get("source_sha256") or "").strip().lower()
+    if not source_ref or len(source_sha) != 64:
+        raise ValueError("worldmodel refinement task has no carrier identity")
+    from ztare.common.artifact_refs import resolve_project_artifact_ref
+
+    source_path = resolve_project_artifact_ref(project, source_ref)
+    if source_path is None or not source_path.is_file():
+        raise ValueError("worldmodel refinement carrier is unavailable")
+    source_bytes = source_path.read_bytes()
+    if hashlib.sha256(source_bytes).hexdigest() != source_sha:
+        raise ValueError("worldmodel refinement carrier identity changed")
+    return dict(task), source_path, source_bytes, source_sha
+
+
+def _task_counterexample_locator(
+    context: Mapping[str, Any] | None,
+    *,
+    default_episode_ref: str,
+) -> tuple[str, int | None, list[int]]:
+    """Resolve the active typed observation without reopening a stale trace."""
+
+    if context is None:
+        return default_episode_ref, None, []
+    summary = context.get("summary")
+    observation = (
+        summary.get("counterexample_observation")
+        if isinstance(summary, Mapping)
+        and isinstance(summary.get("counterexample_observation"), Mapping)
+        else summary
+    )
+    chart = (
+        observation.get("observation_chart")
+        if isinstance(observation, Mapping)
+        else None
+    )
+    parameters = chart.get("parameters") if isinstance(chart, Mapping) else None
+    localization = (
+        parameters.get("localization")
+        if isinstance(parameters, Mapping)
+        else None
+    )
+    bbox = (
+        localization.get("residual_region")
+        if isinstance(localization, Mapping)
+        else None
+    )
+    observation_ref = (
+        str(observation.get("observation_ref") or "")
+        if isinstance(observation, Mapping)
+        else ""
+    )
+    marker = "#transition:"
+    if not isinstance(bbox, (list, tuple)) or len(bbox) != 4 or marker not in observation_ref:
+        return default_episode_ref, None, []
+    episode_ref, row_text = observation_ref.rsplit(marker, 1)
+    try:
+        return episode_ref, int(row_text), [int(value) for value in bbox]
+    except ValueError:
+        return default_episode_ref, None, []
+
+
+def _carrier_operation_lineage_support(
+    project: Path,
+    *,
+    source_path: Path,
+    source: str,
+    operation_identity_sha256: str,
+) -> dict[str, Any]:
+    """Read operation authority already carried by the candidate lineage.
+
+    This joins a composed carrier's typed provenance to the selector receipts
+    that established its operation identity.  Receipt support may authorize
+    reuse of the identity; the current evidence bank still decides whether a
+    transported lowering is admissible.
+    """
+
+    from ztare.common.artifact_refs import resolve_project_artifact_ref
+    from ztare.worldmodel.patch_base_carrier import (
+        carrier_provenance_from_source,
+        resolved_patch_base_paths,
+    )
+
+    provenance = carrier_provenance_from_source(source)
+    if (
+        provenance.get("operation_identity_sha256")
+        != operation_identity_sha256
+    ):
+        return {}
+    try:
+        ancestor_paths = resolved_patch_base_paths(
+            source_path,
+            project_dir=project,
+        )
+    except (OSError, ValueError):
+        return {}
+    ancestor_sha256s = {
+        hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in ancestor_paths
+    }
+    observation_sha256s: set[str] = set()
+    receipt_refs: list[dict[str, str]] = []
+    presentations: list[dict[str, Any]] = []
+    for ref in provenance.get("receipt_refs", []):
+        path = resolve_project_artifact_ref(project, str(ref))
+        if path is None or not path.is_file():
+            continue
+        raw = path.read_bytes()
+        receipt_sha = hashlib.sha256(raw).hexdigest()
+        if path.stem != receipt_sha:
+            continue
+        try:
+            artifact = json.loads(raw)
+        except (TypeError, ValueError):
+            continue
+        if artifact.get("capability_id") != "mine_worldmodel_lowerable_selectors":
+            continue
+        receipt = artifact.get("receipt")
+        summary = receipt.get("output_summary") if isinstance(receipt, Mapping) else None
+        if isinstance(summary, str):
+            try:
+                summary = json.loads(summary)
+            except json.JSONDecodeError:
+                continue
+        if (
+            not isinstance(summary, Mapping)
+            or summary.get("schema")
+            != "ztare-worldmodel-operation-domain-selector-v1"
+            or summary.get("candidate_delta_admissible") is not True
+            or summary.get("operation_identity_sha256")
+            != operation_identity_sha256
+            or summary.get("task_source_sha256") not in ancestor_sha256s
+        ):
+            continue
+        identity_support = summary.get("identity_support")
+        if (
+            not isinstance(identity_support, Mapping)
+            or identity_support.get("authority_granted") is not True
+        ):
+            continue
+        domain = summary.get("domain_evidence")
+        if isinstance(domain, Mapping):
+            observation_sha256s.update(
+                str(value)
+                for value in domain.get(
+                    "operation_domain_observation_sha256s", []
+                )
+                if str(value)
+            )
+        lowerings = summary.get("conjecture_predicates")
+        predicates = summary.get("candidate_predicates")
+        if (
+            isinstance(lowerings, list)
+            and lowerings
+            and isinstance(lowerings[0], Mapping)
+            and isinstance(predicates, list)
+        ):
+            for predicate in predicates:
+                when_region = (
+                    predicate.get("when_region")
+                    if isinstance(predicate, Mapping)
+                    else None
+                )
+                if isinstance(when_region, (list, tuple)) and len(when_region) == 5:
+                    presentations.append({
+                        "when_region": list(when_region),
+                        "lowering": dict(lowerings[0]),
+                    })
+        receipt_refs.append({
+            "path": str(path.relative_to(project.resolve())),
+            "sha256": receipt_sha,
+        })
+    return {
+        "observation_sha256s": sorted(observation_sha256s),
+        "receipt_refs": receipt_refs,
+        "presentations": presentations,
+    }
+
+
 def _mine_task_operation_domain_selector(
     project: Path,
     *,
@@ -2756,6 +3064,13 @@ def _mine_task_operation_domain_selector(
         return None
     if _stable_json_sha256(operation_identity) != operation_sha:
         raise ValueError("task-carried operation identity digest does not match")
+    counterexample = summary.get("counterexample_observation")
+    counterexample = counterexample if isinstance(counterexample, Mapping) else {}
+    transition_identity = counterexample.get("transition_identity")
+    transition_identity = (
+        transition_identity if isinstance(transition_identity, Mapping) else {}
+    )
+    source_epoch = transition_identity.get("source_epoch")
     # Departure events may carry a separately witnessed source boundary.  A
     # remote arrival event already carries its adapter-local trigger chart in
     # the catalog lowering.  Requiring the departure-only field here erased
@@ -2767,25 +3082,10 @@ def _mine_task_operation_domain_selector(
     source_rect = [int(value) for value in source_rect]
 
     task_id = str(context.get("task_id") or "").strip()
-    weakness = _read_json(project / "workspace" / "latest_harness_weakness.json")
-    task = weakness.get("workbench_task") if isinstance(weakness, dict) else None
-    if (
-        not isinstance(task, Mapping)
-        or str(task.get("task_id") or "").strip() != task_id
-    ):
-        raise ValueError("operation-domain refinement no longer names the active task")
-    source_ref = str(task.get("source_ref") or "").strip()
-    source_sha = str(task.get("source_sha256") or "").strip().lower()
-    if not source_ref or len(source_sha) != 64:
-        raise ValueError("operation-domain refinement task has no carrier identity")
-    from ztare.common.artifact_refs import resolve_project_artifact_ref
-
-    source_path = resolve_project_artifact_ref(project, source_ref)
-    if source_path is None or not source_path.is_file():
-        raise ValueError("operation-domain refinement carrier is unavailable")
-    source_bytes = source_path.read_bytes()
-    if hashlib.sha256(source_bytes).hexdigest() != source_sha:
-        raise ValueError("operation-domain refinement carrier identity changed")
+    task, source_path, source_bytes, source_sha = _bound_worldmodel_task_source(
+        project,
+        task_id=task_id,
+    )
     source_ref = _rel(project, source_path)
 
     from ztare.worldmodel.evidence_consolidation import _load_carrier_from_source
@@ -2799,11 +3099,64 @@ def _mine_task_operation_domain_selector(
         str(source_path),
         project,
     )
-    predictor = as_predictor(program)
     episode_path = resolve_episode_ref(project, episode_ref)
     log = EpisodeLog.read_jsonl(episode_path)
     transitions = log.transitions()
     excluded = env_frame_indices(log)
+    state_machine = _refine_region_event_to_partial_state_machine(
+        lowering,
+        list(enumerate(transitions)),
+        source_epoch=source_epoch,
+    )
+    compiled_lowering: dict[str, Any] | None = None
+    if state_machine is not None:
+        lowering = state_machine["lowering"]
+        operation_identity = {
+            "relation": "boundary_conditioned_state_transition",
+            "subject_role": "moves_under_actions",
+            "boundary": (
+                "departure" if lowering.get("edge") == "exit" else "arrival"
+            ),
+            "consequence_role": "finite_state_object",
+        }
+        operation_sha = _stable_json_sha256(operation_identity)
+        compiled_lowering = dict(lowering)
+    replacement_base: dict[str, str] | None = None
+    source_text = source_bytes.decode("utf-8")
+    from ztare.common.patch_base_identity import (
+        patch_base_fields_from_source,
+        resolve_patch_base_ref,
+        verify_patch_base_digest,
+    )
+    from ztare.worldmodel.patch_base_carrier import carrier_provenance_from_source
+
+    source_provenance = carrier_provenance_from_source(source_text)
+    if source_provenance.get("operation_identity_sha256") == operation_sha:
+        parent_fields = patch_base_fields_from_source(source_text)
+        if parent_fields is None:
+            raise ValueError("same-operation refinement has no typed parent carrier")
+        parent_ref, parent_declared_sha = parent_fields
+        parent_path = resolve_patch_base_ref(project, parent_ref)
+        parent_sha = verify_patch_base_digest(parent_path, parent_declared_sha)
+        parent_source = parent_path.read_text(encoding="utf-8")
+        program = _load_carrier_from_source(
+            parent_source,
+            str(parent_path),
+            project,
+        )
+        replacement_base = {
+            "source_ref": str(parent_ref),
+            "sha256": parent_sha,
+            "replaces_source_sha256": source_sha,
+            "operation_identity_sha256": operation_sha,
+        }
+    predictor = as_predictor(program)
+    lineage_support = _carrier_operation_lineage_support(
+        project,
+        source_path=source_path,
+        source=source_bytes.decode("utf-8"),
+        operation_identity_sha256=operation_sha,
+    )
     patch_delta, lowering_error = lower_patch_delta_spec(
         {"actions": {}, "always": [dict(lowering)]}
     )
@@ -2870,11 +3223,26 @@ def _mine_task_operation_domain_selector(
         for value in (event.get("operation_support_rows") or [])
         if isinstance(value, int) or str(value).lstrip("-").isdigit()
     )
+    if state_machine is not None:
+        domain_support_indices.update(state_machine["support_rows"])
     domain_support_indices.update(int(row["index"]) for row in repair_positive)
     domain_positive = [
         evaluated_by_index[index]
         for index in sorted(domain_support_indices)
         if index in evaluated_by_index
+        and (
+            source_epoch is None
+            or (
+                getattr(evaluated_by_index[index]["transition"], "identity", None)
+                is not None
+                and evaluated_by_index[index]["transition"].identity.is_authoritative
+                and not evaluated_by_index[index]["transition"].identity.is_boundary
+                and evaluated_by_index[index]["transition"].identity.source_epoch
+                == source_epoch
+                and evaluated_by_index[index]["transition"].identity.target_epoch
+                == source_epoch
+            )
+        )
     ]
     # Row coordinates are evidence locators, not observation identities.  A
     # copied/replayed row must not manufacture recurrence authority.  Reuse the
@@ -2903,8 +3271,19 @@ def _mine_task_operation_domain_selector(
     # env_frame_indices and cannot manufacture recurrence.
     law_owned_recurrence = len(distinct_domain_positive) >= 2
     identity_support = boundary_recurrence or law_owned_recurrence
+    inherited_observation_sha256s = {
+        str(value)
+        for value in lineage_support.get("observation_sha256s", [])
+        if str(value)
+    }
+    all_identity_observation_sha256s = (
+        set(domain_observation_sha256s) | inherited_observation_sha256s
+    )
+    if len(all_identity_observation_sha256s) >= 2:
+        identity_support = True
 
     selected: dict[str, Any] | None = None
+    candidate_lowering: dict[str, Any] | None = compiled_lowering
     if not harmful and unguarded_wrong == 0:
         selected = {
             "kind": "unrestricted_operation_domain",
@@ -3020,9 +3399,91 @@ def _mine_task_operation_domain_selector(
             )
             selected = separating_charts[0]
 
+    # A carrier may already own this operation identity in another local
+    # presentation.  When the old and current guards are translations of the
+    # same finite pattern, compile their shared orbit instead of appending a
+    # second coordinate case.  The inherited consequence remains fixed unless
+    # full-bank replay shows that this transported trigger improves the model
+    # without damaging a previously exact row.
+    if selected is not None and lineage_support.get("presentations"):
+        current_guard = selected.get("lowering")
+        current_when_region = (
+            current_guard.get("when_region")
+            if isinstance(current_guard, Mapping)
+            else None
+        )
+        for presentation in lineage_support["presentations"]:
+            prior_when_region = presentation.get("when_region")
+            prior_lowering = presentation.get("lowering")
+            if (
+                not isinstance(current_when_region, (list, tuple))
+                or len(current_when_region) != 5
+                or not isinstance(prior_when_region, (list, tuple))
+                or len(prior_when_region) != 5
+                or list(current_when_region[4]) != list(prior_when_region[4])
+                or not isinstance(prior_lowering, Mapping)
+                or prior_lowering.get("op") != "region_event"
+                or lowering.get("op") != "region_event"
+                or prior_lowering.get("edge") != lowering.get("edge")
+            ):
+                continue
+            height = int(prior_when_region[2]) - int(prior_when_region[0]) + 1
+            width = int(prior_when_region[3]) - int(prior_when_region[1]) + 1
+            pattern = [int(value) for value in prior_when_region[4]]
+            if height <= 0 or width <= 0 or len(pattern) != height * width:
+                continue
+            transported = dict(prior_lowering)
+            transported.pop("rect", None)
+            transported.pop("when_region", None)
+            transported["mover_colors"] = list(lowering.get("mover_colors") or [])
+            transported["trigger_pattern"] = {
+                "shape": [height, width],
+                "values": pattern,
+            }
+            transported_delta, transported_error = lower_patch_delta_spec(
+                {"actions": {}, "always": [transported]}
+            )
+            if transported_delta is None:
+                continue
+            transported_wrong = 0
+            transported_harmful = 0
+            transported_changed = 0
+            for row in evaluated:
+                transition = row["transition"]
+                base = canonical_grid(
+                    predictor(transition.s, transition.a, transition.t)
+                )
+                observed = canonical_grid(transition.s_next)
+                proposed = canonical_grid(
+                    transported_delta(base, transition.s, transition.a, transition.t)
+                )
+                if base is None or observed is None or proposed is None:
+                    transported_error = "transported evaluation incomplete"
+                    break
+                transported_wrong += proposed != observed
+                transported_harmful += base == observed and proposed != observed
+                transported_changed += proposed != base
+            if (
+                not transported_error
+                and transported_changed > 0
+                and transported_harmful == 0
+                and transported_wrong < base_wrong
+            ):
+                candidate_lowering = transported
+                selected = {
+                    "kind": "adapter_pattern_orbit",
+                    "lowering": {"trigger_pattern": transported["trigger_pattern"]},
+                    "margin": None,
+                    "bbox": None,
+                    "pattern": pattern,
+                    "guarded_wrong": transported_wrong,
+                    "transported_changed": transported_changed,
+                }
+                break
+
     candidate_admissible = bool(
         selected is not None
-        and selected["guarded_wrong"] == 0
+        and selected["guarded_wrong"] < base_wrong
         and identity_support
         and not ambiguous
         and failed_predictions == 0
@@ -3042,6 +3503,17 @@ def _mine_task_operation_domain_selector(
     domain_positive_rows = [int(row["index"]) for row in domain_positive]
     harmful_rows = [int(row["index"]) for row in harmful]
     selector_lowering = selected["lowering"] if selected is not None else {}
+    if candidate_lowering is not None and selector_lowering:
+        conflicts = {
+            key
+            for key, value in selector_lowering.items()
+            if key in candidate_lowering and candidate_lowering[key] != value
+        }
+        if conflicts:
+            raise ValueError(
+                f"operation-domain guard conflicts with state lowering: {sorted(conflicts)}"
+            )
+        candidate_lowering = {**candidate_lowering, **selector_lowering}
     acquisition_obligation: dict[str, Any] | None = None
     if not identity_support and distinct_domain_positive:
         witness = distinct_domain_positive[0]
@@ -3082,6 +3554,7 @@ def _mine_task_operation_domain_selector(
         "task_id": task_id,
         "task_source_ref": source_ref,
         "task_source_sha256": source_sha,
+        **({"replacement_base": replacement_base} if replacement_base else {}),
         "source_receipt_ref": str(context.get("ref") or ""),
         "source_receipt_sha256": str(context.get("sha256") or ""),
         "operation_identity": dict(operation_identity),
@@ -3144,18 +3617,43 @@ def _mine_task_operation_domain_selector(
             ),
         },
         "identity_support": {
-            "distinct_positive_observations": len(distinct_domain_positive),
+            "distinct_positive_observations": len(
+                all_identity_observation_sha256s
+            ),
+            "current_observations": len(distinct_domain_positive),
+            "inherited_observations": len(inherited_observation_sha256s),
+            "lineage_receipts": lineage_support.get("receipt_refs", []),
             "distinct_interventions": len(interventions),
             "minimum_observations": 2,
             "scope": "law_owned_transition",
             "boundary_recurrence": boundary_recurrence,
             "authority_granted": identity_support,
         },
+        **(
+            {
+                "state_machine_evidence": {
+                    "region": state_machine["region"],
+                    "state_count": state_machine["state_count"],
+                    "transition_observation_count": state_machine[
+                        "transition_observation_count"
+                    ],
+                    "support_rows": state_machine["support_rows"],
+                    "transition_kind": "witnessed_partial_function",
+                }
+            }
+            if state_machine is not None
+            else {}
+        ),
         "lowerability_status": status,
         "candidate_family_admissible": candidate_admissible,
         "candidate_delta_admissible": candidate_admissible,
         "candidate_predicates": [selector_lowering] if candidate_admissible else [],
         "conjecture_predicates": [dict(lowering)],
+        **(
+            {"candidate_lowering": candidate_lowering}
+            if candidate_lowering is not None and candidate_admissible
+            else {}
+        ),
         **(
             {"acquisition_obligation": acquisition_obligation}
             if acquisition_obligation is not None
@@ -3205,6 +3703,35 @@ def run_worldmodel_lowerable_selector_miner(
         upstream_receipt_refs,
     )
     context = upstream.get("inspect_worldmodel_counterexample_context")
+
+    def record_first_fire(outcome: str) -> None:
+        if context is None:
+            return
+        summary = context.get("summary")
+        observation_sha = str(
+            summary.get("observation_sha256")
+            if isinstance(summary, Mapping)
+            else ""
+        ).strip()
+        task_id = str(context.get("task_id") or "").strip()
+        if not observation_sha or not task_id:
+            return
+        from ztare.common.schema_routes import append_schema_route_event
+
+        append_schema_route_event(
+            project,
+            schema_id="ztare-counterexample-observation-triple-v1",
+            event="first_fire",
+            join_values={
+                "observation_sha256": observation_sha,
+                "task_id": task_id,
+            },
+            payload={
+                "consumer": "worldmodel_operation_domain_refinement",
+                "outcome": outcome,
+            },
+        )
+
     if context is not None:
         task_domain_result = _mine_task_operation_domain_selector(
             project,
@@ -3213,30 +3740,72 @@ def run_worldmodel_lowerable_selector_miner(
             max_margin=8,
         )
         if task_domain_result is not None:
-            observation_sha = str(
-                (context.get("summary") or {}).get("observation_sha256")
-                if isinstance(context.get("summary"), Mapping)
-                else ""
-            ).strip()
-            task_id = str(task_domain_result.get("task_id") or "").strip()
-            if observation_sha and task_id:
-                from ztare.common.schema_routes import append_schema_route_event
-
-                append_schema_route_event(
-                    project,
-                    schema_id="ztare-counterexample-observation-triple-v1",
-                    event="first_fire",
-                    join_values={
-                        "observation_sha256": observation_sha,
-                        "task_id": task_id,
-                    },
-                    payload={
-                        "consumer": "worldmodel_operation_domain_refinement",
-                        "outcome": task_domain_result.get("lowerability_status"),
-                    },
-                )
+            record_first_fire(str(task_domain_result.get("lowerability_status") or ""))
             return json.dumps(
                 task_domain_result,
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            )
+        context_summary = context.get("summary")
+        observation = (
+            context_summary.get("counterexample_observation")
+            if isinstance(context_summary, Mapping)
+            and isinstance(context_summary.get("counterexample_observation"), Mapping)
+            else {}
+        )
+        quotient_difference = observation.get("consumer_quotient_difference")
+        weakness = _read_json(project / "workspace" / "latest_harness_weakness.json")
+        task = weakness.get("workbench_task") if isinstance(weakness, Mapping) else None
+        task_matches = bool(
+            isinstance(task, Mapping)
+            and str(task.get("task_id") or "") == str(context.get("task_id") or "")
+        )
+        if (
+            task_matches
+            and task.get("failure_class")
+            == "unquotiented_counterexample_chart_missing"
+            and isinstance(quotient_difference, Mapping)
+        ):
+            changed_factors = list(
+                quotient_difference.get("changed_factor_names") or []
+            )
+            donors = observation.get("archived_residual_donors")
+            donors = donors if isinstance(donors, list) else []
+            status = (
+                "consumer_quotient_available"
+                if changed_factors
+                else "consumer_quotient_refinement_required"
+            )
+            record_first_fire(status)
+            return json.dumps(
+                {
+                    "schema": "ztare-worldmodel-lowerable-selector-miner-v1",
+                    "authority": "diagnostic_only",
+                    "admissibility_scope": "consumer_quotient",
+                    "candidate_family_id": "same-shaped-window-selector-v1",
+                    "candidate_family_admissible": False,
+                    "lowerability_status": status,
+                    "candidate_predicates": [],
+                    "conjecture_predicates": [],
+                    "near_miss_predicates": [],
+                    "consumer_quotient_difference": dict(quotient_difference),
+                    **(
+                        {"archived_residual_donors": donors[:4]}
+                        if donors
+                        else {}
+                    ),
+                    "next_required_evidence": (
+                        (
+                            "salvage only the counterexample-improving operation from the "
+                            "archived donor; its full-carrier rejection remains in force"
+                            if donors
+                            else "route the distinguished factor boundary to its registered consumer"
+                        )
+                        if changed_factors
+                        else "refine the consumer quotient before proposing a carrier delta"
+                    ),
+                },
                 sort_keys=True,
                 separators=(",", ":"),
                 default=str,
@@ -3249,6 +3818,12 @@ def run_worldmodel_lowerable_selector_miner(
     )
     bbox = _trace_bbox(trace)
     first_row = _trace_first_row(trace)
+    active_episode_ref, active_row, active_bbox = _task_counterexample_locator(
+        context,
+        default_episode_ref=episode_ref,
+    )
+    if active_row is not None and len(active_bbox) == 4:
+        episode_ref, first_row, bbox = active_episode_ref, active_row, active_bbox
     if len(bbox) != 4 or first_row is None:
         raise ValueError("latest regression has no counterexample bbox/row to lower")
     try:
@@ -3439,6 +4014,7 @@ def run_worldmodel_lowerable_selector_miner(
     }
     if candidate_predicates:
         payload_out["candidate_delta_admissible"] = True
+    record_first_fire(lowerability_status)
     return json.dumps(payload_out, sort_keys=True, separators=(",", ":"), default=str)
 
 
@@ -4902,12 +5478,50 @@ def _active_frontier_observation_triple(
         ),
     )
     triple = triple_object.to_dict()
+    projection = getattr(model, "_ztare_factored_projection", None)
+    sprite = getattr(projection, "sprite", ())
+    mover_palettes = (
+        [tuple(sorted({int(value) for row in sprite for value in row}))]
+        if sprite
+        else []
+    )
+    mover_patterns = (
+        [{
+            "shape": [len(sprite), len(sprite[0])],
+            "values": [int(value) for row in sprite for value in row],
+        }]
+        if sprite and sprite[0]
+        else []
+    )
     event_candidates = _catalog_residual_event_candidates(
         [],
         transition,
         predicted,
         actual,
+        mover_palettes=mover_palettes,
+        mover_patterns=mover_patterns,
     )
+    try:
+        from ztare.worldmodel.version_space import residual_donors
+
+        archived_residual_donors = residual_donors(
+            project,
+            transition=transition,
+            baseline_prediction=predicted,
+        )
+    except (OSError, TypeError, ValueError):
+        archived_residual_donors = []
+    quotient_difference = None
+    if projection is not None and callable(
+        getattr(projection, "explain_state_difference", None)
+    ):
+        try:
+            quotient_difference = projection.explain_state_difference(
+                predicted,
+                actual,
+            )
+        except (IndexError, KeyError, TypeError, ValueError):
+            quotient_difference = None
     return {
         **triple,
         "observation_sha256": triple_object.sha256,
@@ -4918,6 +5532,105 @@ def _active_frontier_observation_triple(
         "frontier_role": "best_admissible_prior" if use_best else "evaluated_candidate",
         "source_observation_chart": source_chart.to_dict(),
         "catalog_residual_event_candidates": event_candidates,
+        **(
+            {"archived_residual_donors": archived_residual_donors}
+            if archived_residual_donors
+            else {}
+        ),
+        **(
+            {"consumer_quotient_difference": quotient_difference}
+            if quotient_difference is not None
+            else {}
+        ),
+    }
+
+
+def _refine_region_event_to_partial_state_machine(
+    candidate: Mapping[str, Any],
+    observations: list[tuple[int | None, Any]],
+    *,
+    source_epoch: Any = None,
+) -> dict[str, Any] | None:
+    """Compile repeated boundary effects into a witnessed partial function.
+
+    Fixed writes are presentations of one consequence.  When the same trigger
+    carries several whole-object transitions, reuse the catalog's finite-state
+    algebra; an unobserved successor remains undefined instead of being closed
+    into a guessed cycle.
+    """
+    if candidate.get("op") != "region_event" or candidate.get("content_states"):
+        return None
+    cells = [
+        (int(cell[0]), int(cell[1]))
+        for _value, write_cells in (candidate.get("writes") or [])
+        for cell in write_cells
+        if isinstance(cell, (list, tuple)) and len(cell) == 2
+    ]
+    if not cells:
+        return None
+    region = [
+        min(row for row, _col in cells),
+        min(col for _row, col in cells),
+        max(row for row, _col in cells),
+        max(col for _row, col in cells),
+    ]
+    from ztare.worldmodel.spec_abduction import _mine_content_state_machine
+    from ztare.worldmodel.spec_catalog import region_event_triggered
+
+    def content(grid: Any) -> tuple[Any, ...]:
+        return tuple(
+            grid[row][col]
+            for row in range(region[0], region[2] + 1)
+            for col in range(region[1], region[3] + 1)
+        )
+
+    transitions: list[tuple[tuple[Any, ...], tuple[Any, ...]]] = []
+    support_rows: list[int] = []
+    for row_index, item in observations:
+        identity = getattr(item, "identity", None)
+        if identity is not None and (
+            not getattr(identity, "is_authoritative", False)
+            or getattr(identity, "is_boundary", True)
+            or identity.source_epoch != identity.target_epoch
+            or (
+                source_epoch is not None
+                and identity.source_epoch != source_epoch
+            )
+        ):
+            continue
+        if source_epoch is not None and identity is None:
+            continue
+        try:
+            if not region_event_triggered(item.s, item.s_next, candidate):
+                continue
+            before, after = content(item.s), content(item.s_next)
+        except (IndexError, KeyError, TypeError, ValueError):
+            continue
+        if before == after:
+            continue
+        transitions.append((before, after))
+        if row_index is not None:
+            support_rows.append(int(row_index))
+    machine = _mine_content_state_machine(transitions)
+    if machine is None:
+        return None
+    state_transition, states = machine
+    lowering = {
+        key: value
+        for key, value in candidate.items()
+        if key not in {"writes", "toggle", "cycle", "when_region"}
+    }
+    lowering.update({
+        "region": region,
+        "content_states": [list(state) for state in states],
+        "state_transition": state_transition,
+    })
+    return {
+        "lowering": lowering,
+        "support_rows": sorted(set(support_rows)),
+        "state_count": len(states),
+        "transition_observation_count": len(transitions),
+        "region": region,
     }
 
 
@@ -4927,6 +5640,8 @@ def _catalog_residual_event_candidates(
     proposed: Any,
     observed: Any,
     *,
+    mover_palettes: list[tuple[int, ...]] | None = None,
+    mover_patterns: list[dict[str, Any]] | None = None,
     min_role_support: int = 2,
     max_candidates: int = 2,
 ) -> list[dict[str, Any]]:
@@ -4992,114 +5707,29 @@ def _catalog_residual_event_candidates(
             and len(prior.s[0]) == len(transition.s[0])
         )
 
-    def compress_stateful_consequence(candidate: Mapping[str, Any]):
-        """Lift repeated fixed effects into one whole-content transition law.
-
-        The current residual anchors the consequence object.  Earlier firings
-        of the same boundary contribute additional presentations; a bounded
-        component join recovers the object's full support.  The shared spec
-        miner then decides whether those observations form a functional,
-        non-cell-wise machine.  This keeps state count, coordinates, and values
-        in the adapter lowering rather than operation identity.
-        """
-        from ztare.worldmodel.spec_abduction import (
-            _gap_tolerant_components,
-            _mine_content_state_machine,
-        )
-        from ztare.worldmodel.spec_catalog import region_event_triggered
-
-        trigger = {
-            key: candidate[key]
-            for key in ("mover_colors", "rect", "edge")
-            if key in candidate
+    role_support: dict[tuple[int, ...], dict[str, Any]] = {
+        tuple(sorted(int(value) for value in palette)): {
+            "rows": [],
+            "current_observation": True,
+            "interventions": {int(transition.a)},
+            "displacements": set(),
         }
-        if set(trigger) != {"mover_colors", "rect", "edge"}:
-            return None
-        observations = [
-            (row_index, prior)
-            for row_index, prior in prior_transitions
-            if compatible_law_observation(prior)
-        ] + [(None, transition)]
-        fired = [
-            (row_index, item)
-            for row_index, item in observations
-            if region_event_triggered(item.s, item.s_next, trigger)
-        ]
-        if len(fired) < 2:
-            return None
-        changed = {
-            (row, col)
-            for _row_index, item in fired
-            for row in range(min(len(item.s), len(item.s_next)))
-            for col in range(min(len(item.s[row]), len(item.s_next[row])))
-            if item.s[row][col] != item.s_next[row][col]
-        }
-        anchor = {(int(row), int(col)) for row, col in wrong}
-        components = [
-            component
-            for component in _gap_tolerant_components(changed)
-            if anchor.issubset(component)
-        ]
-        if len(components) != 1:
-            return None
-        component = components[0]
-        rect = [int(value) for value in trigger["rect"]]
-        if any(rect[0] <= row <= rect[2] and rect[1] <= col <= rect[3]
-               for row, col in component):
-            return None
-        region = [
-            min(row for row, _col in component),
-            min(col for _row, col in component),
-            max(row for row, _col in component),
-            max(col for _row, col in component),
-        ]
-        def content(grid: Any) -> tuple[Any, ...]:
-            return tuple(
-                grid[row][col]
-                for row in range(region[0], region[2] + 1)
-                for col in range(region[1], region[3] + 1)
-            )
-
-        transition_observations = []
-        support_rows = []
-        for row_index, item in fired:
-            before, after = content(item.s), content(item.s_next)
-            if before == after:
-                continue
-            transition_observations.append((before, after))
-            if row_index is not None:
-                support_rows.append(int(row_index))
-        machine = _mine_content_state_machine(transition_observations)
-        if machine is None:
-            return None
-        state_transition, states = machine
-        lowering = {
-            key: value
-            for key, value in candidate.items()
-            if key not in {"writes", "toggle", "cycle", "when_region"}
-        }
-        lowering.update({
-            "region": region,
-            "content_states": [list(state) for state in states],
-            "state_transition": state_transition,
-        })
-        return {
-            "lowering": lowering,
-            "support_rows": sorted(set(support_rows)),
-            "state_count": len(states),
-            "transition_observation_count": len(transition_observations),
-            "region": region,
-        }
-
-    role_support: dict[tuple[int, ...], dict[str, Any]] = {}
+        for palette in (mover_palettes or [])
+        if len(set(palette)) >= 2
+    }
     role_observations = [*prior_transitions, (None, transition)]
     for row_index, prior in role_observations:
         if not compatible_law_observation(prior):
             continue
+        # The proposal is the carrier's identified motion image; the observed
+        # successor additionally contains the residual whose cause is being
+        # sought.  Inferring the mover from the latter lets the unexplained
+        # consequence contaminate the role abstraction.
+        role_successor = proposed if row_index is None else prior.s_next
         proposals = _abduce_translate_block(
             prior.s,
-            prior.s_next,
-            _diff(prior.s, prior.s_next),
+            role_successor,
+            _diff(prior.s, role_successor),
         )
         seen_on_row: set[tuple[int, ...]] = set()
         for proposal in proposals:
@@ -5246,6 +5876,17 @@ def _catalog_residual_event_candidates(
             if tuple(candidate.get("mover_colors", ())) == palette
         ]
         for candidate in candidates[:1]:
+            mover_pattern = next(
+                (
+                    pattern
+                    for pattern in (mover_patterns or [])
+                    if tuple(sorted({int(value) for value in pattern["values"]}))
+                    == palette
+                ),
+                None,
+            )
+            if mover_pattern is not None:
+                candidate = {**candidate, "mover_pattern": dict(mover_pattern)}
             if boundary_evidence:
                 candidate = {
                     **candidate,
@@ -5287,7 +5928,16 @@ def _catalog_residual_event_candidates(
                 boundary_evidence
                 and int(boundary_evidence.get("support_count") or 0) >= 2
             )
-            state_machine = compress_stateful_consequence(candidate)
+            state_machine = _refine_region_event_to_partial_state_machine(
+                candidate,
+                support_observations,
+                source_epoch=(
+                    current_identity.source_epoch
+                    if current_identity is not None
+                    and getattr(current_identity, "is_authoritative", False)
+                    else None
+                ),
+            )
             if state_machine is not None:
                 candidate = state_machine["lowering"]
             edge = str(candidate.get("edge") or "")

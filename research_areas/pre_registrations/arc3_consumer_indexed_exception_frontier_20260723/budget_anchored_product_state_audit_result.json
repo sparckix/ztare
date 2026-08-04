@@ -1,0 +1,500 @@
+{
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "codebook": {
+    "changed_source_count": 4,
+    "deterministic_changed_edges": true,
+    "edges": [
+      {
+        "source_sha256": "64670856624994d3b8d1c79194f21009309e72dcc32eafd38222a40c8cab8c84",
+        "support": 138,
+        "target_sha256": "02bce5b987afeb9fbd854560192663cb0b990a45b88fc21d1e54955773e842d8"
+      },
+      {
+        "source_sha256": "92e14dcbe000e39433460abdf4c14a820b818781cf8e6fa22a0f85c245a27d8a",
+        "support": 140,
+        "target_sha256": "64670856624994d3b8d1c79194f21009309e72dcc32eafd38222a40c8cab8c84"
+      },
+      {
+        "source_sha256": "8babfc66319f791e4380d3d843f8a34e361eaee3c56a54c2f103f238eea1f545",
+        "support": 156,
+        "target_sha256": "92e14dcbe000e39433460abdf4c14a820b818781cf8e6fa22a0f85c245a27d8a"
+      },
+      {
+        "source_sha256": "02bce5b987afeb9fbd854560192663cb0b990a45b88fc21d1e54955773e842d8",
+        "support": 193,
+        "target_sha256": "8babfc66319f791e4380d3d843f8a34e361eaee3c56a54c2f103f238eea1f545"
+      }
+    ],
+    "single_cycle": true,
+    "state_count": 4,
+    "state_sha256s": [
+      "02bce5b987afeb9fbd854560192663cb0b990a45b88fc21d1e54955773e842d8",
+      "64670856624994d3b8d1c79194f21009309e72dcc32eafd38222a40c8cab8c84",
+      "8babfc66319f791e4380d3d843f8a34e361eaee3c56a54c2f103f238eea1f545",
+      "92e14dcbe000e39433460abdf4c14a820b818781cf8e6fa22a0f85c245a27d8a"
+    ]
+  },
+  "criteria": {
+    "all_four_witnesses_separated": true,
+    "deterministic_single_cycle": true,
+    "four_state_codebook": true,
+    "no_environment_contact": true,
+    "positive_edge": true,
+    "selected_edge": false,
+    "selected_joint_code": false
+  },
+  "inference": {
+    "background": 3,
+    "background_authority": "unique_primary_non_live_value",
+    "budget_rows": [
+      61,
+      62
+    ],
+    "cell_values": {
+      "(61, 56)": [
+        3,
+        8
+      ],
+      "(61, 57)": [
+        3,
+        8
+      ],
+      "(61, 59)": [
+        3,
+        8
+      ],
+      "(61, 60)": [
+        3,
+        8
+      ],
+      "(61, 62)": [
+        3,
+        8
+      ],
+      "(61, 63)": [
+        3,
+        8
+      ],
+      "(62, 56)": [
+        3,
+        8
+      ],
+      "(62, 57)": [
+        3,
+        8
+      ],
+      "(62, 59)": [
+        3,
+        8
+      ],
+      "(62, 60)": [
+        3,
+        8
+      ],
+      "(62, 62)": [
+        3,
+        8
+      ],
+      "(62, 63)": [
+        3,
+        8
+      ]
+    },
+    "cells": [
+      [
+        61,
+        56
+      ],
+      [
+        61,
+        57
+      ],
+      [
+        61,
+        59
+      ],
+      [
+        61,
+        60
+      ],
+      [
+        61,
+        62
+      ],
+      [
+        61,
+        63
+      ],
+      [
+        62,
+        56
+      ],
+      [
+        62,
+        57
+      ],
+      [
+        62,
+        59
+      ],
+      [
+        62,
+        60
+      ],
+      [
+        62,
+        62
+      ],
+      [
+        62,
+        63
+      ]
+    ],
+    "primary_alphabet": [
+      11,
+      3
+    ],
+    "primary_boundary_col": 54,
+    "primary_live_value": 11
+  },
+  "interface_witnesses": {
+    "h35": {
+      "changed_cells": [
+        {
+          "coordinate": [
+            61,
+            57
+          ],
+          "left": 3,
+          "right": 8
+        },
+        {
+          "coordinate": [
+            62,
+            57
+          ],
+          "left": 3,
+          "right": 8
+        }
+      ],
+      "separated": true,
+      "separating_secondary_cells": [
+        [
+          61,
+          57
+        ],
+        [
+          62,
+          57
+        ]
+      ]
+    },
+    "h40": {
+      "changed_cells": [
+        {
+          "coordinate": [
+            61,
+            56
+          ],
+          "left": 3,
+          "right": 8
+        },
+        {
+          "coordinate": [
+            62,
+            56
+          ],
+          "left": 3,
+          "right": 8
+        }
+      ],
+      "separated": true,
+      "separating_secondary_cells": [
+        [
+          61,
+          56
+        ],
+        [
+          62,
+          56
+        ]
+      ]
+    }
+  },
+  "only_change": "global_modal_background_to_unique_primary_non_live_value",
+  "parent_audit": "composed_world_resource_state_audit.py",
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "positive_control": {
+    "problem_id": "5a7e0d215cec7929c3c09127f5710d261331b9dda0e1f7356aac2c7bdd5cffd2",
+    "replay": {
+      "admissible": true,
+      "attempted_origin": [
+        50,
+        54
+      ],
+      "configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+      "controlled_base": [
+        [
+          45,
+          54
+        ]
+      ],
+      "goal_edge": true,
+      "joint_sha256": "41c7dfcfc3e4313529e7cced390916187e5490028dc272f8e0d33ba077539484",
+      "joint_transform": "rotate_0_reflect",
+      "raw_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+      "terminal_operation": "1",
+      "terminal_time": 86
+    },
+    "search": {
+      "action_count": 23,
+      "actions": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "3",
+        "3",
+        "3",
+        "3",
+        "3",
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "continuation_actions": [],
+      "deepest_depth": 23,
+      "expanded": 126,
+      "frontier_remaining": 107,
+      "generated": 232,
+      "projection_counterexample": {},
+      "status": "edge_found"
+    }
+  },
+  "projection_sha256": "b0797be323996cf455f40bec83b7431af15bcba2748b31bd7fd026f32acb1616",
+  "schema": "ztare-budget-anchored-product-state-audit-v1",
+  "selected_search": {
+    "problem_id": "ae22d5b0ddf0ce408af0043814d4d904677887dc3ec03f2f0d5a5000dea414e2",
+    "replay": {},
+    "search": {
+      "action_count": 0,
+      "actions": [],
+      "continuation_actions": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "1",
+        "1",
+        "3",
+        "1",
+        "1",
+        "1",
+        "2",
+        "2",
+        "2",
+        "3",
+        "3",
+        "1",
+        "2",
+        "1",
+        "3",
+        "1",
+        "3",
+        "3",
+        "3",
+        "3",
+        "3",
+        "0"
+      ],
+      "deepest_depth": 33,
+      "expanded": 13986,
+      "frontier_remaining": 6015,
+      "generated": 20000,
+      "projection_counterexample": {},
+      "status": "search_budget_exhausted"
+    }
+  },
+  "start_state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+  "status": "budget_anchored_product_state_refuted",
+  "world_witnesses": {
+    "h38": {
+      "changed_cells": [
+        {
+          "coordinate": [
+            46,
+            30
+          ],
+          "left": 3,
+          "right": 9
+        },
+        {
+          "coordinate": [
+            46,
+            31
+          ],
+          "left": 3,
+          "right": 14
+        },
+        {
+          "coordinate": [
+            46,
+            32
+          ],
+          "left": 3,
+          "right": 14
+        },
+        {
+          "coordinate": [
+            47,
+            30
+          ],
+          "left": 3,
+          "right": 9
+        },
+        {
+          "coordinate": [
+            47,
+            31
+          ],
+          "left": 3,
+          "right": 0
+        },
+        {
+          "coordinate": [
+            47,
+            32
+          ],
+          "left": 3,
+          "right": 8
+        },
+        {
+          "coordinate": [
+            48,
+            30
+          ],
+          "left": 3,
+          "right": 12
+        },
+        {
+          "coordinate": [
+            48,
+            31
+          ],
+          "left": 3,
+          "right": 12
+        },
+        {
+          "coordinate": [
+            48,
+            32
+          ],
+          "left": 3,
+          "right": 8
+        }
+      ],
+      "left_component_count": 0,
+      "left_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "origin": [
+        40,
+        29
+      ],
+      "right_component_count": 1,
+      "right_inventory_sha256": "1d2fb5165f73426d47dca32895a440b7b260332a6ae1fc7b33974393c20c27f4",
+      "separated": true
+    },
+    "h39": {
+      "changed_cells": [
+        {
+          "coordinate": [
+            16,
+            35
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            16,
+            36
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            16,
+            37
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            17,
+            35
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            17,
+            37
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            18,
+            35
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            18,
+            36
+          ],
+          "left": 11,
+          "right": 3
+        },
+        {
+          "coordinate": [
+            18,
+            37
+          ],
+          "left": 11,
+          "right": 3
+        }
+      ],
+      "left_component_count": 1,
+      "left_inventory_sha256": "050b38864e465f028b517378484383182340ba1a98948df3e50953a521f2221b",
+      "origin": [
+        25,
+        34
+      ],
+      "right_component_count": 0,
+      "right_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "separated": true
+    }
+  }
+}

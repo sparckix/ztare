@@ -31,13 +31,14 @@ from ztare.worldmodel.episode_log import EpisodeLog, Transition
 from ztare.worldmodel.cycle_enumeration import cycles_from_evidence
 from ztare.worldmodel.gates import env_frame_indices
 from ztare.worldmodel.goal_abduction import (
-    _horizon_resource, _indicator_regions, _norm_spec, _region, _region_changed,
+    _horizon_resource, _indicator_regions, _norm_spec, _region_changed,
     abduce_goal_candidates,
 )
 from ztare.worldmodel.grid_dsl import grid_from_lists
 from ztare.worldmodel.object_roles import (
     induce_roles, object_signature, sound_signature, volatile_positions,
 )
+from ztare.worldmodel.transition_identity import TransitionIdentity
 
 ROW_CAP_ENV = "ZTARE_STRATEGY_BATTERY_ROW_CAP"
 _DEFAULT_ROW_CAP = 1000
@@ -149,6 +150,22 @@ def _row_cap() -> int:
         return _DEFAULT_ROW_CAP
 
 
+def _active_epoch(project: "Path | str"):
+    path = Path(project) / "workspace" / "level_boundary_seed_replays.jsonl"
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return None
+    for line in reversed(lines):
+        try:
+            row = json.loads(line)
+        except (TypeError, ValueError):
+            continue
+        if isinstance(row, dict) and row.get("status") == "verified":
+            return row.get("active_epoch")
+    return None
+
+
 def _load_capped(project: "Path | str", cap: "int | None" = None,
                  path: "Path | None" = None) -> "list[Transition]":
     """Stream up to ``cap`` transitions from the episode log — never a full read
@@ -159,6 +176,7 @@ def _load_capped(project: "Path | str", cap: "int | None" = None,
     if not path.exists():
         return []
     rows: "list[Transition]" = []
+    active_epoch = _active_epoch(project)
     with path.open() as f:
         for line in f:
             line = line.strip()
@@ -166,8 +184,23 @@ def _load_capped(project: "Path | str", cap: "int | None" = None,
                 continue
             try:
                 d = json.loads(line)
-                rows.append(Transition(d["t"], grid_from_lists(d["s"]), d["a"],
-                                       grid_from_lists(d["s_next"])))
+                identity = (
+                    TransitionIdentity.from_dict(d["identity"])
+                    if isinstance(d.get("identity"), dict)
+                    else None
+                )
+                if active_epoch is not None and not (
+                    identity is not None
+                    and identity.is_authoritative
+                    and not identity.is_boundary
+                    and identity.source_epoch == active_epoch
+                    and identity.target_epoch in (None, active_epoch)
+                ):
+                    continue
+                rows.append(Transition(
+                    d["t"], grid_from_lists(d["s"]), d["a"],
+                    grid_from_lists(d["s_next"]), identity,
+                ))
             except Exception:  # noqa: BLE001 — a corrupt row is skipped, not fatal
                 continue
             if len(rows) >= cap:
@@ -176,7 +209,29 @@ def _load_capped(project: "Path | str", cap: "int | None" = None,
 
 
 def _last_spec(project: "Path | str") -> dict:
-    path = Path(project) / "workspace" / "spec_receipts.jsonl"
+    root = Path(project)
+    try:
+        from ztare.common.candidate_memory import (
+            best_admissible_candidate_memory_record,
+            candidate_memory_submission_path,
+        )
+        from ztare.worldmodel.patch_base_carrier import (
+            composed_literal_operator_spec,
+        )
+
+        record = best_admissible_candidate_memory_record(
+            root,
+            source_types={"full_survivor"},
+            require_submission_source=True,
+        )
+        carrier = candidate_memory_submission_path(root, record or {})
+        if carrier is not None:
+            spec = composed_literal_operator_spec(carrier, project_dir=root)
+            if spec:
+                return _norm_spec(spec)
+    except (OSError, TypeError, ValueError):
+        pass
+    path = root / "workspace" / "spec_receipts.jsonl"
     if not path.exists():
         return {}
     last = None
@@ -555,6 +610,16 @@ def _planner_attention_pressure(project: "Path | str") -> dict:
             "cycle": entry.get("cycle"),
             "steps": entry.get("steps"),
             "played": entry.get("played"),
+            "planning_outcome": (
+                entry.get("planning_outcome")
+                if isinstance(entry.get("planning_outcome"), dict)
+                else {}
+            ),
+            "task_hypothesis_version": (
+                entry.get("task_hypothesis_version")
+                if isinstance(entry.get("task_hypothesis_version"), dict)
+                else {}
+            ),
             "expected_next_kernel_action": (
                 "goal-cue synthesis, compressed counterexample repair, "
                 "or targeted evidence request"
@@ -715,17 +780,113 @@ class WorldmodelBattery:
         log = EpisodeLog(rows)
         spec = _last_spec(project)
         roles = induce_roles(log, _action_arity(rows))
+        goal_result = abduce_goal_candidates(log, spec, roles)
+        goal_candidates = (
+            goal_result.get("candidates")
+            if isinstance(goal_result, dict) and isinstance(goal_result.get("candidates"), list)
+            else []
+        )
+        planner = _planner_attention_pressure(project)
+        task_contract_sha256 = ""
+        try:
+            from ztare.common.task_discharge import task_discharge_from_profile
+
+            profile = json.loads(
+                (Path(project) / "play_config.json").read_text(encoding="utf-8")
+            )
+            task_contract = task_discharge_from_profile(profile)
+            task_contract_sha256 = task_contract.sha256 if task_contract else ""
+        except (OSError, TypeError, ValueError):
+            pass
+        goal_version_space = None
+        if goal_candidates:
+            from ztare.worldmodel.goal_abduction import compile_goal_hypothesis_set
+
+            task_open_states = tuple(
+                transition.s_next
+                for transition in rows
+                if transition.identity is not None
+                and transition.identity.is_authoritative
+                and not transition.identity.is_boundary
+            )
+            goal_version_space = compile_goal_hypothesis_set(
+                goal_candidates,
+                rows[0].s,
+                task_open_states=task_open_states,
+                source_epoch=_active_epoch(project),
+                task_contract_sha256=task_contract_sha256,
+            )
+        active_goal_hypotheses = int(
+            getattr(goal_version_space, "active_count", 0) or 0
+        )
+        goal_status = "active"
+        if (
+            isinstance(goal_result, dict)
+            and goal_result.get("mode") == "pre_success"
+            and active_goal_hypotheses == 0
+        ):
+            goal_status = "version_space_empty"
+        current_goal_identity = str(
+            getattr(goal_version_space, "identity_sha256", "") or ""
+        )
+        matching_stall = next(
+            (
+                anomaly
+                for anomaly in reversed(planner.get("anomalies") or ())
+                if (
+                    anomaly.get("task_hypothesis_version") or {}
+                ).get("identity_sha256") == current_goal_identity
+            ),
+            None,
+        )
+        if goal_status == "active" and matching_stall is not None:
+            goal_status = "version_space_stalled"
+        goal_hypothesis_pressure = {
+            "mode": goal_result.get("mode") if isinstance(goal_result, dict) else None,
+            "active_epoch": _active_epoch(project),
+            "candidate_presentations": len(goal_candidates),
+            "candidate_identities": (
+                len(getattr(goal_version_space, "hypotheses", ()) or ())
+            ),
+            "active_hypotheses": active_goal_hypotheses,
+            "identity_sha256": current_goal_identity,
+            "status": goal_status,
+        }
         nd = _novelty_decay(rows)
         cov = _conditional_coverage(rows, spec, roles)
         ev = _event_context(rows, spec, roles)
         ledger = _ledger_closure(project, rows, spec, roles)
         sweep = _sweep_horizon(rows)
         deanchor = _semantic_deanchor_pressure(project)
-        planner = _planner_attention_pressure(project)
         transfer = _level_transfer_pressure(project)
         loop_control = _loop_control_pressure(project)
         cyc = cycles_from_evidence(log, spec)
+        active_obstruction = (
+            {
+                "source": "goal_hypothesis_pressure",
+                "anomaly_class": (
+                    "goal_hypothesis_version_space_empty"
+                    if goal_status == "version_space_empty"
+                    else "goal_hypothesis_version_space_stalled"
+                ),
+                "consumer_action": "targeted_acquisition_or_language_refinement",
+                "evidence_rows": len(rows),
+            }
+            if goal_hypothesis_pressure["status"] in {
+                "version_space_empty",
+                "version_space_stalled",
+            }
+            and planner.get("anomalies")
+            else
+            {
+                "source": "planner_attention_pressure",
+                **planner["anomalies"][-1],
+            }
+            if planner.get("anomalies")
+            else {}
+        )
         return {
+            "active_obstruction": active_obstruction,
             "substrate": "worldmodel_grid",
             "rows_scanned": len(rows),
             "row_cap": cap,
@@ -738,6 +899,7 @@ class WorldmodelBattery:
             "sweep_horizon": sweep,
             "semantic_deanchor_pressure": deanchor,
             "planner_attention_pressure": planner,
+            "goal_hypothesis_pressure": goal_hypothesis_pressure,
             "level_transfer_pressure": transfer,
             "loop_control_pressure": loop_control,
             "cycle_enumeration": {
@@ -790,28 +952,49 @@ class WorldmodelBattery:
             out["anomalies"] = out.get("anomalies", [])[:int(top)]
             return out
 
+        def _goal_hypotheses(project, top=20):
+            rows = _load_capped(project)
+            spec = _last_spec(project)
+            roles = induce_roles(EpisodeLog(rows), _action_arity(rows)) if rows else []
+            result = abduce_goal_candidates(EpisodeLog(rows), spec, roles) if rows else {}
+            candidates = result.get("candidates") if isinstance(result, dict) else []
+            return {
+                "mode": result.get("mode") if isinstance(result, dict) else None,
+                "rows_scanned": len(rows),
+                "active_epoch": _active_epoch(project),
+                "status": (
+                    "version_space_empty"
+                    if isinstance(result, dict)
+                    and result.get("mode") == "pre_success"
+                    and not candidates
+                    else "active"
+                ),
+                "goal_predicate_spec": (
+                    result.get("goal_predicate_spec")
+                    if isinstance(result, dict)
+                    else None
+                ),
+                "candidates": [
+                    {
+                        "kind": candidate.get("kind"),
+                        "predicate_spec": candidate.get("predicate_spec"),
+                        "experiment_specs": candidate.get("experiment_specs") or [],
+                    }
+                    for candidate in (candidates or [])[: max(1, int(top))]
+                    if isinstance(candidate, dict)
+                ],
+            }
+
         def _event_timeline(project, episode="visible", spec='{"changed": true}'):
             from ztare.worldmodel.evidence_quotients import (
                 cap_events, event_timeline, resolve_episode_ref)
+            if str(episode) != "visible":
+                raise ValueError("Strategy queries may inspect visible evidence only")
             rows = _load_capped(project, path=resolve_episode_ref(project, episode))
             parsed = json.loads(spec) if isinstance(spec, str) else dict(spec or {})
             out = cap_events(event_timeline(EpisodeLog(rows), cell_predicate_spec=parsed))
             out["rows_scanned"] = len(rows)
             if len(rows) >= _row_cap():
-                out["row_cap"] = _row_cap()
-                out["capped"] = True
-            return out
-
-        def _episode_contrast(project, episode_a="visible", episode_b="holdout",
-                              at_t=None):
-            from ztare.worldmodel.evidence_quotients import (
-                episode_contrast, resolve_episode_ref)
-            rows_a = _load_capped(project, path=resolve_episode_ref(project, episode_a))
-            rows_b = _load_capped(project, path=resolve_episode_ref(project, episode_b))
-            out = episode_contrast(EpisodeLog(rows_a), EpisodeLog(rows_b),
-                                   at_t=None if at_t is None else int(at_t))
-            out["rows_scanned"] = {"a": len(rows_a), "b": len(rows_b)}
-            if max(len(rows_a), len(rows_b)) >= _row_cap():
                 out["row_cap"] = _row_cap()
                 out["capped"] = True
             return out
@@ -834,15 +1017,14 @@ class WorldmodelBattery:
                                "repair certificate, if present", _transfer),
             "loop_control": ("autoresearch information-yield scheduler "
                              "counterexamples (params: top)", _loop_control),
+            "goal_hypotheses": ("active-chart task-predicate version space and "
+                                "its visible-evidence experiment presentations "
+                                "(params: top)", _goal_hypotheses),
             "event_timeline": ("group cell-change events across time in one "
                                "episode log; per-step counts + rate series "
-                               "(params: episode=visible|holdout|path, spec JSON "
+                               "(params: episode=visible, spec JSON "
                                "with changed/before_in/after_not_in)",
                                _event_timeline),
-            "episode_contrast": ("contrast two episodes' states at a matching "
-                                 "step: value census delta + differing rows "
-                                 "(params: episode_a, episode_b, at_t)",
-                                 _episode_contrast),
         }
 
     def experiment_kinds(self) -> "list[str]":
@@ -852,8 +1034,4 @@ class WorldmodelBattery:
             "coverage_gap_probe",               # drive a 1-position hole to a 2nd position
             "conjunction_activation_probe",     # co-activate never-co-witnessed flags
             "horizon_exhaustion_probe",         # exhaust the bounded object-space (refute)
-            "disposition_backlog_review",       # close tested-but-undispositioned cards
-            "semantic_deanchor_receipt_compile", # deanchor suspect term into receipt/test/quotient
-            "compressed_counterexample_repair", # compact residue -> quotient/test/repair card before broad search
-            "scheduler_counterexample_review",  # low-yield telemetry -> routing/kernel-improvement receipt
         ]

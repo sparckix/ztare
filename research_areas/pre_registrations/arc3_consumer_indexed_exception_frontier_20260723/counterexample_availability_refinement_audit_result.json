@@ -1,0 +1,174 @@
+{
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "edge_found": false,
+    "no_environment_contact": true,
+    "no_new_projection_counterexample": false,
+    "selected_joint_code": false,
+    "separates_counterexample": true,
+    "valid_counterexample": true
+  },
+  "parent_projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "projection_sha256": "66d8c330129bddd9ceea9fa8540447e333b0529cbdc79baabd353b9a968f3b54",
+  "refinement": {
+    "cells": [
+      [
+        61,
+        57
+      ],
+      [
+        62,
+        57
+      ]
+    ],
+    "counterexample_result": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/repaired_joint_affordance_search_audit_result.json",
+    "discriminator_id": "counterexample_availability_d2b277888bbba94e",
+    "kind": "dominance_simulation_failed",
+    "left_bit": true,
+    "reference": [
+      3,
+      3
+    ],
+    "right_bit": false,
+    "same_time": true,
+    "separates_counterexample": true,
+    "target_independent": true
+  },
+  "replay": {
+    "admissible": false,
+    "reason": "empty_route"
+  },
+  "schema": "ztare-counterexample-availability-refinement-audit-v1",
+  "search": {
+    "action_count": 0,
+    "actions": [],
+    "continuation_actions": [],
+    "deepest_depth": 21,
+    "expanded": 190,
+    "frontier_remaining": 104,
+    "generated": 293,
+    "projection_counterexample": {
+      "consumer_difference": {
+        "changed_cell_count": 2,
+        "changed_cells": [
+          {
+            "coordinate": [
+              61,
+              56
+            ],
+            "left": 8,
+            "right": 3
+          },
+          {
+            "coordinate": [
+              62,
+              56
+            ],
+            "left": 8,
+            "right": 3
+          }
+        ],
+        "changed_factor_names": [],
+        "schema": "ztare-consumer-quotient-difference-v1"
+      },
+      "dominated_image": "((((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_d2b277888bbba94e', True))), (0.0,))",
+      "dominated_time": "86",
+      "dominator_image": "((((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_d2b277888bbba94e', False))), (0.0,))",
+      "dominator_time": "85",
+      "intervention": "2",
+      "kind": "dominance_simulation_failed",
+      "merged_key": "(((40, 54),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False), (('15_14_sig11', False), ('50_39_sig11', False), ('counterexample_availability_d2b277888bbba94e', False)))"
+    },
+    "status": "projection_noncommuting"
+  },
+  "status": "counterexample_availability_refinement_refuted",
+  "target": {
+    "configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+    "controlled_base": [
+      [
+        45,
+        54
+      ]
+    ],
+    "evidence_refs": [
+      "raw/episodes/episode_001.jsonl#14963:s_next",
+      "raw/episodes/episode_001.jsonl#14965:s_next",
+      "raw/episodes/episode_001.jsonl#14975:s_next",
+      "raw/episodes/episode_001.jsonl#14976:s",
+      "raw/episodes/episode_001.jsonl#14976:s_next",
+      "raw/episodes/episode_001.jsonl#14977:s",
+      "raw/episodes/episode_001.jsonl#15003:s_next",
+      "raw/episodes/episode_001.jsonl#15004:s",
+      "raw/episodes/episode_001.jsonl#15004:s_next",
+      "raw/episodes/episode_001.jsonl#15005:s",
+      "raw/episodes/episode_001.jsonl#15005:s_next",
+      "raw/episodes/episode_001.jsonl#15006:s",
+      "raw/episodes/episode_001.jsonl#15006:s_next",
+      "raw/episodes/episode_001.jsonl#15007:s",
+      "raw/episodes/episode_001.jsonl#15008:s",
+      "raw/episodes/episode_001.jsonl#15008:s_next",
+      "raw/episodes/episode_001.jsonl#15009:s",
+      "raw/episodes/episode_001.jsonl#15009:s_next",
+      "raw/episodes/episode_001.jsonl#15010:s",
+      "raw/episodes/episode_001.jsonl#15010:s_next",
+      "raw/episodes/episode_001.jsonl#15011:s",
+      "raw/episodes/episode_001.jsonl#15011:s_next",
+      "raw/episodes/episode_001.jsonl#15012:s",
+      "raw/episodes/episode_001.jsonl#15012:s_next",
+      "raw/episodes/episode_001.jsonl#15013:s",
+      "raw/episodes/episode_001.jsonl#15013:s_next",
+      "raw/episodes/episode_001.jsonl#15014:s",
+      "raw/episodes/episode_001.jsonl#15014:s_next",
+      "raw/episodes/episode_001.jsonl#15015:s",
+      "raw/episodes/episode_001.jsonl#15015:s_next",
+      "raw/episodes/episode_001.jsonl#15016:s",
+      "raw/episodes/episode_001.jsonl#15016:s_next",
+      "raw/episodes/episode_001.jsonl#15017:s",
+      "raw/episodes/episode_001.jsonl#15018:s_next",
+      "raw/episodes/episode_001.jsonl#15019:s",
+      "raw/episodes/episode_001.jsonl#15019:s_next",
+      "raw/episodes/episode_001.jsonl#15020:s",
+      "raw/episodes/episode_001.jsonl#15052:s_next",
+      "raw/episodes/episode_001.jsonl#15053:s",
+      "raw/episodes/episode_001.jsonl#15053:s_next",
+      "raw/episodes/episode_001.jsonl#15054:s",
+      "raw/episodes/episode_001.jsonl#15101:s",
+      "raw/episodes/episode_001.jsonl#15101:s_next",
+      "raw/episodes/episode_001.jsonl#15102:s",
+      "raw/episodes/episode_001.jsonl#15102:s_next",
+      "raw/episodes/episode_001.jsonl#15103:s",
+      "raw/episodes/episode_001.jsonl#15103:s_next",
+      "raw/episodes/episode_001.jsonl#15104:s",
+      "raw/episodes/episode_001.jsonl#15104:s_next",
+      "raw/episodes/episode_001.jsonl#15105:s",
+      "raw/episodes/episode_001.jsonl#15105:s_next",
+      "raw/episodes/episode_001.jsonl#15106:s",
+      "raw/episodes/episode_001.jsonl#15106:s_next",
+      "raw/episodes/episode_001.jsonl#15107:s",
+      "raw/episodes/episode_001.jsonl#15107:s_next",
+      "raw/episodes/episode_001.jsonl#15108:s",
+      "raw/episodes/episode_001.jsonl#15108:s_next",
+      "raw/episodes/episode_001.jsonl#15109:s",
+      "raw/episodes/episode_001.jsonl#15109:s_next",
+      "raw/episodes/episode_001.jsonl#15110:s",
+      "raw/episodes/episode_001.jsonl#15245:s",
+      "raw/episodes/episode_001.jsonl#15245:s_next",
+      "raw/episodes/episode_001.jsonl#15246:s",
+      "raw/episodes/episode_001.jsonl#15255:s",
+      "raw/episodes/episode_001.jsonl#15255:s_next",
+      "raw/episodes/episode_001.jsonl#15256:s",
+      "raw/episodes/episode_001.jsonl#15256:s_next",
+      "raw/episodes/episode_001.jsonl#15257:s",
+      "raw/episodes/episode_001.jsonl#15257:s_next",
+      "raw/episodes/episode_001.jsonl#15258:s",
+      "raw/episodes/episode_001.jsonl#15258:s_next",
+      "raw/episodes/episode_001.jsonl#15259:s",
+      "raw/episodes/episode_001.jsonl#15452:s_next",
+      "raw/episodes/episode_001.jsonl#15453:s",
+      "raw/episodes/episode_001.jsonl#15453:s_next",
+      "raw/episodes/episode_001.jsonl#15454:s"
+    ],
+    "joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1"
+  }
+}

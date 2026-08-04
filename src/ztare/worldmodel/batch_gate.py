@@ -33,7 +33,8 @@ Output per candidate:
     "visible_env_excluded": int,
     "wrong_rows": [int],         # indices where prediction != s_next
     "holdout_depth": int,        # consecutive steps predicted on holdout
-    "holdout_total": int,
+    "holdout_total": int,        # law-scored rows after boundary exclusion
+    "holdout_env_excluded": int,
     "partial": bool,             # True = early-aborted, not a full verdict
     ["load_error": str],         # if carrier failed to load
     ["abort_reason": str],       # if early-aborted
@@ -151,7 +152,8 @@ def batch_gate(
 
     champion_wrong_count = len(champion_bitmap.get("wrong_rows", [])) if champion_bitmap else 0
     visible_total = len(visible) if visible else 0
-    holdout_total = len(holdout) if holdout else 0
+    holdout_env_excluded = len(env_frame_indices(holdout)) if holdout else 0
+    holdout_total = len(holdout) - holdout_env_excluded if holdout else 0
 
     results: list[dict] = []
 
@@ -166,6 +168,7 @@ def batch_gate(
             "wrong_rows": [],
             "holdout_depth": -1,
             "holdout_total": holdout_total,
+            "holdout_env_excluded": holdout_env_excluded,
             "partial": False,
         }
 

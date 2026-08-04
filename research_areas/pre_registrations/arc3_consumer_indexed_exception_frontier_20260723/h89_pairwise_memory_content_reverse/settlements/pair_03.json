@@ -1,0 +1,227 @@
+{
+  "arm_order": [
+    "right",
+    "left"
+  ],
+  "left_consumption": {
+    "controller_instance_sha256": "d98e2ad1e847d720d474d82d406438066fd1fb14d9820e96138b82471844a85e",
+    "decision_sha256": "3caf5af4acfc9ae1fa3c041719bd3e88a314f2a7a528ea06a5c0cc5df4b86af9",
+    "kind": "recall_consumption",
+    "next_decision_sha256": "05d386342ab10a9a8230c12b387ddc87325eec9555543ff014bbd1f9655a1a77",
+    "observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "reason": "one_shot_direct_injection",
+    "schema": "ztare-wake-sleep-recall-identities-v1",
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "selected_memory_keys": [
+      "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3"
+    ],
+    "sha256": "5286769a248f625c6d5b082da61dee03c640effc2e297f9c1e8cb32da57756c4",
+    "status": "consumed"
+  },
+  "left_outcome": {
+    "arm_id": "pair-03-causal_mechanics",
+    "consumption_receipt_sha256": "5286769a248f625c6d5b082da61dee03c640effc2e297f9c1e8cb32da57756c4",
+    "controller_instance_sha256": "d98e2ad1e847d720d474d82d406438066fd1fb14d9820e96138b82471844a85e",
+    "decision_score": 0.81,
+    "efficiency_score": 0.05,
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_left_causal_mechanics.json#sha256=5f07a2e7f1b1b91f54f4fcdcf6cd720031867f74f6c7e284db80ffc5343ace58",
+    "information_yield": 1.0,
+    "kind": "decision_intervention_arm_outcome",
+    "primitive_action_cost": 20.0,
+    "proposal_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+    "runtime_controller_instance_ref": "019fbe5a-9891-7f02-a445-8ba5e58f25f8",
+    "schema": "ztare-decision-intervention-market-v1",
+    "sha256": "35b2c27a75e1adcda93e7511eaa4d82dbb2c3549e26b04cc2fd4d8a4fc68e3c5",
+    "stratum_sha256": "1a0f3fe1713fa8adf3fb9834a313e90425d4ef2b3c4301d8cf750c26cc35e6e3",
+    "task_score": 1.0,
+    "trajectory_sha256": "9c03d9c7e880b7fff02013fa1d80aea877293fc3ab81d4f86fcce86af18f072c"
+  },
+  "left_recall": {
+    "calibration_penalty_weight": 0.25,
+    "candidate_memory_keys": [
+      "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3"
+    ],
+    "exploration_weight": 0.0,
+    "guard_overlap_weight": 0.25,
+    "kind": "recall",
+    "max_items": 1,
+    "max_prompt_tokens": 3849,
+    "prior_strength": 2.0,
+    "schema": "ztare-wake-sleep-credit-router-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "selected_prompt_tokens": 3849,
+    "selections": [
+      {
+        "calibrated_decision_delta": 0.69,
+        "calibration_penalty": 0.11092499999999998,
+        "guard_overlap": 0.0,
+        "guard_overlap_cost": 0.0,
+        "lifecycle": "active",
+        "memory_key": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+        "memory_revision_sha256": "e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+        "predicted_decision_delta": 0.96,
+        "primitive_action_cost": 20.0,
+        "prompt_token_cost": 3849,
+        "provider_id": "episodic_memory_bundle:causal_mechanics",
+        "retrieval_cost": 0.0,
+        "score": 0.579075
+      }
+    ],
+    "sha256": "4fc8ad8db546d7b6d05daa3d1b656f8b871cb72aaaa66904fb3dfbea4240b003"
+  },
+  "pair_index": 3,
+  "right_consumption": {
+    "controller_instance_sha256": "c9393cc22160e9b9a1fd9c1d97c58dc17caff6ea93bc7c0af86c07478469d03c",
+    "decision_sha256": "1e201132e7a3b06fbcb9c5fcedf0cbdbbb6e588f376085a8a786f9fc625cc05e",
+    "kind": "recall_consumption",
+    "next_decision_sha256": "4743ca4073a7fcd47a04bd4aad2cca0ecd23ef8cb32040b8bed2489b8e8cd41b",
+    "observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "reason": "one_shot_direct_injection",
+    "schema": "ztare-wake-sleep-recall-identities-v1",
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "selected_memory_keys": [
+      "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985"
+    ],
+    "sha256": "5822fb335eb9ae22990f160bd04ba3198966157eb7e8f63f2707a07d57659b31",
+    "status": "consumed"
+  },
+  "right_outcome": {
+    "arm_id": "pair-03-redundant_true_memory",
+    "consumption_receipt_sha256": "5822fb335eb9ae22990f160bd04ba3198966157eb7e8f63f2707a07d57659b31",
+    "controller_instance_sha256": "c9393cc22160e9b9a1fd9c1d97c58dc17caff6ea93bc7c0af86c07478469d03c",
+    "decision_score": 0.8800000000000001,
+    "efficiency_score": 0.4,
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_right_redundant_true_memory.json#sha256=09da0e42757bd59845549ec4891b8a1e3d688eae7efd2fecdac5794328cddfdc",
+    "information_yield": 1.0,
+    "kind": "decision_intervention_arm_outcome",
+    "primitive_action_cost": 20.0,
+    "proposal_revision_sha256": "8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+    "runtime_controller_instance_ref": "019fbe56-39f9-7572-b460-d9a0c053eb6a",
+    "schema": "ztare-decision-intervention-market-v1",
+    "sha256": "0e1aff8e2ba545254260d596b3cd794f8d0d002064ef8ad227523e5cfea1fab7",
+    "stratum_sha256": "1a0f3fe1713fa8adf3fb9834a313e90425d4ef2b3c4301d8cf750c26cc35e6e3",
+    "task_score": 1.0,
+    "trajectory_sha256": "336732a9656ac0f6e58ce28955527235920009d288588184ca13e3c2fc965e23"
+  },
+  "right_recall": {
+    "calibration_penalty_weight": 0.25,
+    "candidate_memory_keys": [
+      "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985"
+    ],
+    "exploration_weight": 0.0,
+    "guard_overlap_weight": 0.25,
+    "kind": "recall",
+    "max_items": 1,
+    "max_prompt_tokens": 3849,
+    "prior_strength": 2.0,
+    "schema": "ztare-wake-sleep-credit-router-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "selected_prompt_tokens": 3849,
+    "selections": [
+      {
+        "calibrated_decision_delta": 0.285,
+        "calibration_penalty": 0.53505,
+        "guard_overlap": 0.0,
+        "guard_overlap_cost": 0.0,
+        "lifecycle": "probation",
+        "memory_key": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+        "memory_revision_sha256": "8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+        "predicted_decision_delta": 0.99,
+        "primitive_action_cost": 20.0,
+        "prompt_token_cost": 3849,
+        "provider_id": "episodic_memory_bundle:redundant_true_memory",
+        "retrieval_cost": 0.0,
+        "score": -0.25005000000000005
+      }
+    ],
+    "sha256": "d678a5452a44733b8040d1ccf3405d2f58c6a23441341c388a527d3dc7742bff"
+  },
+  "settlement": {
+    "kind": "pairwise_intervention_trial",
+    "left_arm_sha256": "35b2c27a75e1adcda93e7511eaa4d82dbb2c3549e26b04cc2fd4d8a4fc68e3c5",
+    "left_settlement": {
+      "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_left_causal_mechanics.json#sha256=5f07a2e7f1b1b91f54f4fcdcf6cd720031867f74f6c7e284db80ffc5343ace58",
+      "kind": "settlement",
+      "lifecycle_after": "active",
+      "lifecycle_before": "active",
+      "matched_control_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_right_redundant_true_memory.json#sha256=09da0e42757bd59845549ec4891b8a1e3d688eae7efd2fecdac5794328cddfdc",
+      "memory_key": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:e32046fb0d67861ea9174e429768871dfbc4f500ed406e6d39ddbc37974518f3",
+      "next_state_sha256": "cbaae290eef6975331058c82a238f1f9e9765316f4e5707e4330ba03d509066e",
+      "observed_decision_delta": -0.07000000000000006,
+      "primitive_action_cost_after": 20.0,
+      "primitive_action_cost_before": 20.0,
+      "prior_state_sha256": "fac652de97b323c5570f437458b373505cd87244b2edec1cba897fc525c0fb6c",
+      "reason": "compatible_matched_outcome",
+      "recall_sha256": "4fc8ad8db546d7b6d05daa3d1b656f8b871cb72aaaa66904fb3dfbea4240b003",
+      "reopened_support_refs": [],
+      "schema": "ztare-wake-sleep-credit-router-v1",
+      "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+      "sha256": "2c23bbb308107042aa5d7e69bb786ad0c9ae0f2300de6503b1ab8be3b03b088d",
+      "status": "settled"
+    },
+    "observed_decision_delta": -0.07000000000000006,
+    "observed_efficiency_delta": -0.35000000000000003,
+    "observed_information_yield_delta": 0.0,
+    "observed_task_delta": 0.0,
+    "reason": "matched_active_intervention_duel",
+    "right_arm_sha256": "0e1aff8e2ba545254260d596b3cd794f8d0d002064ef8ad227523e5cfea1fab7",
+    "right_settlement": {
+      "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_right_redundant_true_memory.json#sha256=09da0e42757bd59845549ec4891b8a1e3d688eae7efd2fecdac5794328cddfdc",
+      "kind": "settlement",
+      "lifecycle_after": "active",
+      "lifecycle_before": "probation",
+      "matched_control_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h89_pairwise_memory_content_reverse/arms/pair_03_left_causal_mechanics.json#sha256=5f07a2e7f1b1b91f54f4fcdcf6cd720031867f74f6c7e284db80ffc5343ace58",
+      "memory_key": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9:8be45f02c57e800bae37a640c40534b064b04231f9471170a05f650433656985",
+      "next_state_sha256": "2dcbacbda148349e2df429f93da43a1808e632e0c7cf9c94dc2d2077aed6a5ec",
+      "observed_decision_delta": 0.07000000000000006,
+      "primitive_action_cost_after": 20.0,
+      "primitive_action_cost_before": 20.0,
+      "prior_state_sha256": "cbaae290eef6975331058c82a238f1f9e9765316f4e5707e4330ba03d509066e",
+      "reason": "compatible_matched_outcome",
+      "recall_sha256": "d678a5452a44733b8040d1ccf3405d2f58c6a23441341c388a527d3dc7742bff",
+      "reopened_support_refs": [],
+      "schema": "ztare-wake-sleep-credit-router-v1",
+      "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+      "sha256": "4dc6d6454f867920c312ab5e5069a81fae8d21f62346a9915ab8bb7c8652dbeb",
+      "status": "settled"
+    },
+    "schema": "ztare-decision-intervention-market-v1",
+    "sha256": "48ffb453d0bcfd92e7987670703d6880be9c48748e8b0f39953d326d1ca81197",
+    "status": "settled",
+    "stratum_sha256": "1a0f3fe1713fa8adf3fb9834a313e90425d4ef2b3c4301d8cf750c26cc35e6e3"
+  },
+  "stratum": {
+    "action_budget": 20,
+    "efficiency_score_weight": 0.2,
+    "kind": "recall_experiment_stratum",
+    "primitive_action_cost": 20.0,
+    "randomization_seed_sha256": "70b593412f0a553926e32694b1cb34affdc4db1f4e4cee3369d64b4bab4498ba",
+    "restored_observation_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+    "restored_prefix_sha256": "3ba63f910b48e9dcce208dd5d865f47443d7aa0b525929c0ec644364a1b85428",
+    "schema": "ztare-wake-sleep-recall-identities-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "74ee08fbff2bcbf5edb1b827b8ebdbfd71cac8b86c54806c1610a64a817b46a9",
+    "sha256": "1a0f3fe1713fa8adf3fb9834a313e90425d4ef2b3c4301d8cf750c26cc35e6e3",
+    "task_score_weight": 0.8
+  }
+}

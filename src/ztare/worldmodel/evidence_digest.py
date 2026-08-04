@@ -72,7 +72,13 @@ def _residual_clusters(rows, residual_indices):
     clusters = WorldmodelOperatorProposals().cluster_residual(
         rows, None, sorted(residual_indices)
     )
-    clusters.sort(key=lambda c: (repr(c["signature"]), min(c["indices"])))
+    # Rank by SUPPORT (rows the class covers), biggest first. The digest is
+    # budget-truncated and read front-to-back, so the class whose repair closes
+    # the most residual must lead and survive the elision pass — "position is
+    # meaning" (AGENTS.md 8a / aci.md). Ranking by signature string buried the
+    # dominant mechanic among 1-row noise classes. Tie-break by first index for
+    # determinism. Substrate-general: no substrate nouns, only class support.
+    clusters.sort(key=lambda c: (-len(c["indices"]), min(c["indices"])))
     return clusters
 
 

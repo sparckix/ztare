@@ -1,0 +1,265 @@
+{
+  "bounds": {
+    "interventions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "max_depth": 180,
+    "max_states": 20000
+  },
+  "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+  "criteria": {
+    "all_selected_targets": false,
+    "no_environment_contact": true,
+    "positive_control": true,
+    "raw_configuration_witnesses": true
+  },
+  "known_graph_route": {
+    "action_count": 29,
+    "actions": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "2",
+      "1",
+      "1",
+      "3",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1",
+      "1",
+      "1",
+      "3",
+      "3",
+      "3",
+      "3",
+      "1",
+      "1",
+      "1",
+      "1"
+    ]
+  },
+  "positive_control": {
+    "passed": true,
+    "problem_id": "16b1bd6e5c638a7bb16e53e102fae4a08792d75cedfeff637150cb6be3397991",
+    "replay": {
+      "admissible": true,
+      "attempted_origin": [
+        50,
+        54
+      ],
+      "configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+      "controlled_base": [
+        [
+          45,
+          54
+        ]
+      ],
+      "goal_edge": true,
+      "joint_sha256": "41c7dfcfc3e4313529e7cced390916187e5490028dc272f8e0d33ba077539484",
+      "joint_transform": "rotate_0_reflect",
+      "raw_configuration_sha256": "293fb91ad721cdd6f9126d2d6e9e0750b257c86ae5f3802e1ce11c814ab8f94b",
+      "terminal_operation": "1",
+      "terminal_time": 86
+    },
+    "search": {
+      "action_count": 23,
+      "actions": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "3",
+        "3",
+        "3",
+        "3",
+        "3",
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "continuation_actions": [],
+      "deepest_depth": 23,
+      "expanded": 113,
+      "frontier_remaining": 75,
+      "generated": 187,
+      "projection_counterexample": {},
+      "status": "edge_found"
+    }
+  },
+  "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+  "schema": "ztare-joint-affordance-search-audit-v1",
+  "selected_searches": [
+    {
+      "differs_from_known_route_before_terminal": false,
+      "evidence_refs": [
+        "raw/episodes/episode_001.jsonl#14963:s_next",
+        "raw/episodes/episode_001.jsonl#14965:s_next",
+        "raw/episodes/episode_001.jsonl#14975:s_next",
+        "raw/episodes/episode_001.jsonl#14976:s",
+        "raw/episodes/episode_001.jsonl#14976:s_next",
+        "raw/episodes/episode_001.jsonl#14977:s",
+        "raw/episodes/episode_001.jsonl#15003:s_next",
+        "raw/episodes/episode_001.jsonl#15004:s",
+        "raw/episodes/episode_001.jsonl#15004:s_next",
+        "raw/episodes/episode_001.jsonl#15005:s",
+        "raw/episodes/episode_001.jsonl#15005:s_next",
+        "raw/episodes/episode_001.jsonl#15006:s",
+        "raw/episodes/episode_001.jsonl#15006:s_next",
+        "raw/episodes/episode_001.jsonl#15007:s",
+        "raw/episodes/episode_001.jsonl#15008:s",
+        "raw/episodes/episode_001.jsonl#15008:s_next",
+        "raw/episodes/episode_001.jsonl#15009:s",
+        "raw/episodes/episode_001.jsonl#15009:s_next",
+        "raw/episodes/episode_001.jsonl#15010:s",
+        "raw/episodes/episode_001.jsonl#15010:s_next",
+        "raw/episodes/episode_001.jsonl#15011:s",
+        "raw/episodes/episode_001.jsonl#15011:s_next",
+        "raw/episodes/episode_001.jsonl#15012:s",
+        "raw/episodes/episode_001.jsonl#15012:s_next",
+        "raw/episodes/episode_001.jsonl#15013:s",
+        "raw/episodes/episode_001.jsonl#15013:s_next",
+        "raw/episodes/episode_001.jsonl#15014:s",
+        "raw/episodes/episode_001.jsonl#15014:s_next",
+        "raw/episodes/episode_001.jsonl#15015:s",
+        "raw/episodes/episode_001.jsonl#15015:s_next",
+        "raw/episodes/episode_001.jsonl#15016:s",
+        "raw/episodes/episode_001.jsonl#15016:s_next",
+        "raw/episodes/episode_001.jsonl#15017:s",
+        "raw/episodes/episode_001.jsonl#15018:s_next",
+        "raw/episodes/episode_001.jsonl#15019:s",
+        "raw/episodes/episode_001.jsonl#15019:s_next",
+        "raw/episodes/episode_001.jsonl#15020:s",
+        "raw/episodes/episode_001.jsonl#15052:s_next",
+        "raw/episodes/episode_001.jsonl#15053:s",
+        "raw/episodes/episode_001.jsonl#15053:s_next",
+        "raw/episodes/episode_001.jsonl#15054:s",
+        "raw/episodes/episode_001.jsonl#15101:s",
+        "raw/episodes/episode_001.jsonl#15101:s_next",
+        "raw/episodes/episode_001.jsonl#15102:s",
+        "raw/episodes/episode_001.jsonl#15102:s_next",
+        "raw/episodes/episode_001.jsonl#15103:s",
+        "raw/episodes/episode_001.jsonl#15103:s_next",
+        "raw/episodes/episode_001.jsonl#15104:s",
+        "raw/episodes/episode_001.jsonl#15104:s_next",
+        "raw/episodes/episode_001.jsonl#15105:s",
+        "raw/episodes/episode_001.jsonl#15105:s_next",
+        "raw/episodes/episode_001.jsonl#15106:s",
+        "raw/episodes/episode_001.jsonl#15106:s_next",
+        "raw/episodes/episode_001.jsonl#15107:s",
+        "raw/episodes/episode_001.jsonl#15107:s_next",
+        "raw/episodes/episode_001.jsonl#15108:s",
+        "raw/episodes/episode_001.jsonl#15108:s_next",
+        "raw/episodes/episode_001.jsonl#15109:s",
+        "raw/episodes/episode_001.jsonl#15109:s_next",
+        "raw/episodes/episode_001.jsonl#15110:s",
+        "raw/episodes/episode_001.jsonl#15245:s",
+        "raw/episodes/episode_001.jsonl#15245:s_next",
+        "raw/episodes/episode_001.jsonl#15246:s",
+        "raw/episodes/episode_001.jsonl#15255:s",
+        "raw/episodes/episode_001.jsonl#15255:s_next",
+        "raw/episodes/episode_001.jsonl#15256:s",
+        "raw/episodes/episode_001.jsonl#15256:s_next",
+        "raw/episodes/episode_001.jsonl#15257:s",
+        "raw/episodes/episode_001.jsonl#15257:s_next",
+        "raw/episodes/episode_001.jsonl#15258:s",
+        "raw/episodes/episode_001.jsonl#15258:s_next",
+        "raw/episodes/episode_001.jsonl#15259:s",
+        "raw/episodes/episode_001.jsonl#15452:s_next",
+        "raw/episodes/episode_001.jsonl#15453:s",
+        "raw/episodes/episode_001.jsonl#15453:s_next",
+        "raw/episodes/episode_001.jsonl#15454:s"
+      ],
+      "partition_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+      "raw_configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000",
+      "replay": {
+        "admissible": false,
+        "reason": "empty_route"
+      },
+      "search": {
+        "action_count": 0,
+        "actions": [],
+        "continuation_actions": [],
+        "deepest_depth": 30,
+        "expanded": 778,
+        "frontier_remaining": 170,
+        "generated": 947,
+        "projection_counterexample": {
+          "consumer_difference": {
+            "changed_cell_count": 2,
+            "changed_cells": [
+              {
+                "coordinate": [
+                  61,
+                  57
+                ],
+                "left": 3,
+                "right": 8
+              },
+              {
+                "coordinate": [
+                  62,
+                  57
+                ],
+                "left": 3,
+                "right": 8
+              }
+            ],
+            "changed_factor_names": [],
+            "schema": "ztare-consumer-quotient-difference-v1"
+          },
+          "dominated_image": "((((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False))), (20.0,))",
+          "dominated_time": "86",
+          "dominator_image": "((((45, 9),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (False, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False))), (20.0,))",
+          "dominator_time": "86",
+          "intervention": "0",
+          "kind": "dominance_simulation_failed",
+          "merged_key": "(((5, 34),), (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0), (12, 5), (), (True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True), (('15_14_sig11', False), ('50_39_sig11', False)))"
+        },
+        "status": "projection_noncommuting"
+      }
+    }
+  ],
+  "start": {
+    "row": 0,
+    "state_sha256": "8dcadc1d835e9d2cbef3f441a7c623ec91f823de2ce48f344018aaee1d9f5a78",
+    "time": 64,
+    "trace": "raw/episodes/eval_slices/eval_20260725T192020752309Z.jsonl"
+  },
+  "status": "joint_affordance_search_refuted",
+  "target": {
+    "controlled_base": [
+      [
+        45,
+        54
+      ]
+    ],
+    "evidence_ref": "raw/episodes/eval_slices/eval_20260725T180904835221Z.jsonl#27",
+    "expected_joint_sha256": "c19683438c8aebf80055531bc063ab560e2cd5538de63675345cff4614438072",
+    "operation": "1",
+    "raw_selected_configuration_count": 1,
+    "selected_configuration_sha256": "4dd96788ba556af49abb6b84a143ff58f4e933b8c8c331159017b9c91d77a000"
+  }
+}

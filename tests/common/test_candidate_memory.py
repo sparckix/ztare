@@ -6,6 +6,51 @@ import json
 from ztare.common.candidate_memory import admissible_candidate_memory_records
 
 
+def test_candidate_memory_separates_behavior_and_task_artifact_roles(tmp_path) -> None:
+    submissions = tmp_path / "workspace" / "submissions"
+    submissions.mkdir(parents=True)
+    behavior = submissions / "behavior.py"
+    behavior.write_text(
+        "def step(grid, action, t):\n    return grid\n",
+        encoding="utf-8",
+    )
+    behavior_sha = hashlib.sha256(behavior.read_bytes()).hexdigest()
+    task = submissions / "task.py"
+    task.write_text(
+        "TASK_HYPOTHESIS_PROVENANCE = {"
+        "'schema': 'ztare-task-hypothesis-companion-v1'}\n"
+        f"PATCH_BASE = {{'source_ref': 'workspace/submissions/behavior.py', "
+        f"'sha256': '{behavior_sha}'}}\n"
+        "def PATCH_DELTA(base_next, state, action):\n    return base_next\n"
+        "def GOAL_PREDICATE(state):\n    return False\n",
+        encoding="utf-8",
+    )
+    records = [
+        {
+            "source_type": "full_survivor",
+            "artifact_role": "behavior_carrier",
+            "submission": "workspace/submissions/behavior.py",
+            "sha": behavior_sha,
+        },
+        {
+            "source_type": "full_survivor",
+            "artifact_role": "task_hypothesis",
+            "submission": "workspace/submissions/task.py",
+            "sha": hashlib.sha256(task.read_bytes()).hexdigest(),
+        },
+    ]
+
+    behavior_rows = admissible_candidate_memory_records(tmp_path, records)
+    task_rows = admissible_candidate_memory_records(
+        tmp_path,
+        records,
+        artifact_roles={"task_hypothesis"},
+    )
+
+    assert [row["artifact_role"] for row in behavior_rows] == ["behavior_carrier"]
+    assert [row["artifact_role"] for row in task_rows] == ["task_hypothesis"]
+
+
 def test_candidate_memory_accepts_legacy_patch_base_prefix_chain(tmp_path) -> None:
     submissions = tmp_path / "workspace" / "submissions"
     submissions.mkdir(parents=True)
@@ -253,3 +298,48 @@ def test_candidate_memory_uses_declared_epoch_not_replay_row_extent(
     assert [row["sha"] for row in active] == [
         hashlib.sha256(current.read_bytes()).hexdigest()
     ]
+
+
+def test_candidate_memory_joins_current_evaluation_policy(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    from ztare.common.observation_chart import capture_project_evidence_epoch
+
+    submissions = tmp_path / "workspace" / "submissions"
+    submissions.mkdir(parents=True)
+    candidate = submissions / "candidate.py"
+    candidate.write_text("def step(grid, action, t):\n    return grid\n", encoding="utf-8")
+    candidate_sha = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    epoch = capture_project_evidence_epoch(tmp_path).epoch_sha256
+    current_policy = "b" * 64
+    monkeypatch.setattr(
+        "ztare.validator.core.pre_judge_gate.evaluation_policy_sha256",
+        lambda: current_policy,
+    )
+    records = [
+        {
+            "source_type": "full_survivor",
+            "submission": "workspace/submissions/candidate.py",
+            "sha": candidate_sha,
+            "evidence_epoch_sha256": epoch,
+            "evaluation_policy_sha256": "a" * 64,
+            "visible_exact_rows": 10,
+            "visible_checked_rows": 10,
+        },
+        {
+            "source_type": "deterministic_near_miss",
+            "submission": "workspace/submissions/candidate.py",
+            "sha": candidate_sha,
+            "evidence_epoch_sha256": epoch,
+            "evaluation_policy_sha256": current_policy,
+            "visible_exact_rows": 9,
+            "visible_checked_rows": 10,
+        },
+    ]
+
+    active = admissible_candidate_memory_records(tmp_path, records)
+
+    assert len(active) == 1
+    assert active[0]["source_type"] == "deterministic_near_miss"
+    assert active[0]["evaluation_policy_sha256"] == current_policy
