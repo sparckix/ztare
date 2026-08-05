@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
-from typing import Any, Iterable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 
 class ResponsesContinuationError(RuntimeError):
@@ -143,6 +143,9 @@ class PersistentResponsesToolThread:
         reasoning_context: str = "all_turns",
         max_output_tokens: int = 4096,
         timeout_seconds: float = 300,
+        exchange_observer: (
+            Callable[[Mapping[str, Any]], None] | None
+        ) = None,
     ) -> None:
         if reasoning_context not in {"all_turns", "current_turn"}:
             raise ValueError(
@@ -163,6 +166,8 @@ class PersistentResponsesToolThread:
         self.reasoning_context = reasoning_context
         self.max_output_tokens = int(max_output_tokens)
         self.timeout_seconds = float(timeout_seconds)
+        self.exchange_observer = exchange_observer
+        self.request_index = 0
         self.previous_response_id: str | None = None
 
     def fork_from_current(self) -> "PersistentResponsesToolThread":
@@ -181,9 +186,16 @@ class PersistentResponsesToolThread:
             reasoning_context=self.reasoning_context,
             max_output_tokens=self.max_output_tokens,
             timeout_seconds=self.timeout_seconds,
+            exchange_observer=self.exchange_observer,
         )
         child.previous_response_id = self.previous_response_id
         return child
+
+    def set_exchange_observer(
+        self,
+        observer: Callable[[Mapping[str, Any]], None] | None,
+    ) -> None:
+        self.exchange_observer = observer
 
     def decide(self, input_items: Iterable[Mapping[str, Any]]) -> ResponsesToolDecision:
         prior = self.previous_response_id
@@ -208,6 +220,14 @@ class PersistentResponsesToolThread:
         if prior is not None:
             request["previous_response_id"] = prior
         response = self._client.responses.create(**request)
+        self.request_index += 1
+        if self.exchange_observer is not None:
+            self.exchange_observer({
+                "schema": "ztare-responses-exchange-v1",
+                "request_index": self.request_index,
+                "request": request,
+                "response": dict(_response_payload(response)),
+            })
         response_id = str(_field(response, "id", "") or "")
         if not response_id:
             raise ResponsesContinuationError("response omitted its identity")
@@ -295,10 +315,41 @@ def compile_responses_fork_authority(
     )
 
 
+def responses_tool_decision_from_receipt(
+    receipt: Mapping[str, Any],
+) -> ResponsesToolDecision:
+    if receipt.get("schema") != "ztare-responses-tool-decision-v1":
+        raise ValueError("wrong Responses tool-decision schema")
+    row = ResponsesToolDecision(
+        response_id=str(receipt["response_id"]),
+        previous_response_id=(
+            str(receipt["previous_response_id"])
+            if receipt.get("previous_response_id") is not None
+            else None
+        ),
+        call_id=str(receipt["call_id"]),
+        tool_name=str(receipt["tool_name"]),
+        arguments=dict(receipt["arguments"]),
+        requested_reasoning_context=str(
+            receipt["requested_reasoning_context"]
+        ),
+        effective_reasoning_context=str(
+            receipt["effective_reasoning_context"]
+        ),
+        input_tokens=int(receipt["input_tokens"]),
+        output_tokens=int(receipt["output_tokens"]),
+        cached_input_tokens=int(receipt["cached_input_tokens"]),
+    )
+    if row.to_receipt() != dict(receipt):
+        raise ValueError("Responses tool-decision receipt drifted")
+    return row
+
+
 __all__ = [
     "PersistentResponsesToolThread",
     "ResponsesContinuationError",
     "ResponsesForkAuthority",
     "ResponsesToolDecision",
     "compile_responses_fork_authority",
+    "responses_tool_decision_from_receipt",
 ]

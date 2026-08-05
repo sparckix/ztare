@@ -8,6 +8,7 @@ from ztare.common.persistent_reasoning_controller import (
     PersistentResponsesToolThread,
     ResponsesContinuationError,
     compile_responses_fork_authority,
+    responses_tool_decision_from_receipt,
 )
 
 
@@ -143,3 +144,6 @@ def test_thread_forks_two_children_from_exact_stored_parent() -> None:
         "resp-placebo",
     )
     assert authority.to_receipt()["shared_parent"] is True
+    assert responses_tool_decision_from_receipt(
+        parent.to_receipt()
+    ) == parent
