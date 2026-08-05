@@ -1,0 +1,41 @@
+{
+  "claim_boundary": "The preserved contract-lane pack cannot enter promotion. Frontier theorem certificates were not consumed or reinterpreted as pack evidence.",
+  "inspection": {
+    "failures": [],
+    "frontier_theorem_certificate_consumed": false,
+    "missing_artifacts": [
+      {
+        "field": "pack.theory_signature",
+        "owner": "pack"
+      },
+      {
+        "field": "pack.base_theory_resolved",
+        "owner": "pack"
+      },
+      {
+        "field": "pack.candidate_axioms[0].formula",
+        "owner": "pack"
+      },
+      {
+        "field": "pack.candidate_axioms[1].formula",
+        "owner": "pack"
+      },
+      {
+        "field": "pack.candidate_axioms[2].formula",
+        "owner": "pack"
+      }
+    ],
+    "next_required_field": "pack.theory_signature",
+    "pack_digest": "sha256:81de49fbe1683b678a44369bcb2366c337e44e77b816929d89d152da4c45fed1",
+    "promotion_kind": "axiom_pack_contract_lane",
+    "proof_credit_eligible": false,
+    "receipt_sha256": "612703e9ff89a321b3b00e981322b1f097ed33f652733f867c60b612b7e2a9fc",
+    "schema": "leanmill.axiom_pack_promotion_blocker.v1",
+    "stage": "candidate_intake",
+    "status": "blocked_missing_artifact",
+    "theorem_campaign_admissible": false
+  },
+  "schema": "leanmill.axiom_pack_promotion_first_fire.v1",
+  "source_artifact": "analytics/public/queries/axiom_pack_live_eval.json",
+  "source_artifact_sha256": "sha256:ec27dde54fc807eb596bb5e6973c7dfb26c687342d443678d5a46eac26ec0c30"
+}

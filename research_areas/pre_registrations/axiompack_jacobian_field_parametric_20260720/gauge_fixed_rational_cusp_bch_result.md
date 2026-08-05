@@ -1,8 +1,8 @@
 # Fixed-rational cusp BCH discriminator
 
-**Status:** exact shell algebra and all-order adjacent-shell reduction plus
-fixed-amplitude prefix through order forty-one; odd-subsequence nonvanishing
-remains open
+**Status:** exact shell algebra and all-order adjacent-shell reduction,
+fixed-amplitude and symbolic positive prefixes through order forty-one;
+odd-subsequence nonvanishing remains open
 
 ## Rational specialization
 
@@ -293,6 +293,39 @@ all-order proof must use the cross-order relations satisfied by the actual
 solution \(W\), or find the first order at which those relations fail to
 protect the boundary shell.
 
+The symbolic shell replay now tests those relations directly.  With
+symbolic outer and middle coefficients \(e,\ell\), every exact polynomial
+
+\[
+-z_{k,k-1}(e,\ell),\qquad 1\le k\le21,
+\]
+
+is nonzero and coefficientwise nonnegative.  More strongly, after the Wick
+rotation every odd shell beyond the linear \(Q^2\) term is
+coefficientwise nonnegative through logarithmic order forty-one.
+
+This is not termwise Magnus positivity.  At logarithmic order five, the raw
+velocity contribution to the boundary shell contains \(-18e\ell\); the
+inverse-`dexp` contributions repair it in the completed coefficient.
+The weighted-profile compression writes
+\[
+W_{2k-1}=P^{k+2}F_k(Q^2/P^3).
+\]
+At \((e,\ell)=(1,3)\), every higher \(F_k\) through \(k=21\) has simple
+negative zeros, certified by rational isolating intervals, and consecutive
+profiles strictly interlace.  Boundary parts of the complete bivariate even
+adjoints at depths \(2,4,6,8\), as well as the first boundary Wronskian,
+remain coefficientwise nonnegative through order forty-one.  Since these
+adjoints are precisely the objects weighted by positive Bernoulli
+coefficients in the \(e\)-differential equation, preservation of the
+proper-position profile chain is the current all-order candidate.
+All thirty-nine adjacent coefficient minors visible through order
+twenty-one are also strictly positive, providing a rational
+total-positivity shadow of that chain.
+Through \(k=11\), amplitude homogeneity plus coefficient-positive
+discriminants and fixed-sign adjacent resultants prove the same negative-root
+and interlacing statement uniformly for every \(e,\ell>0\).
+
 ## Boundary
 
 This result supplies a rational amplitude with a long exact critical prefix,
@@ -306,5 +339,11 @@ The direct polynomial replay is
 [`gauge_fixed_rational_cusp_bch.py`](gauge_fixed_rational_cusp_bch.py).
 The compressed order-forty-one replay is
 [`gauge_fixed_rational_cusp_shell_recurrence.py`](gauge_fixed_rational_cusp_shell_recurrence.py).
-Both use the shared formal Lie-series implementation and make no provider
+The symbolic boundary replays are
+[`gauge_fixed_rational_odd_boundary.py`](gauge_fixed_rational_odd_boundary.py)
+and
+[`gauge_fixed_rational_odd_boundary_sparse.py`](gauge_fixed_rational_odd_boundary_sparse.py).
+The profile/Serre replay is
+[`gauge_fixed_rational_profile_cone.py`](gauge_fixed_rational_profile_cone.py).
+They use the shared formal Lie-series implementation and make no provider
 calls.

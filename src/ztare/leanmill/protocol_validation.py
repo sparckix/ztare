@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Mapping
 
-from ztare.leanmill.theory_ir import content_hash
+from ztare.common.content_identity import content_sha256 as content_hash
 
 
 def require_exact_fields(

@@ -1,0 +1,49 @@
+{
+  "schema": "leanmill.axiom_pack_live_typed_producer_first_fire.v1",
+  "status": "candidate_born",
+  "execution_door": "ztare.leanmill.axiom_pack.main --live-isomorphism",
+  "runtime_owner": "ztare.leanmill.axiom_pack_live_producer.build_live_typed_axiom_pack_runtime",
+  "candidate_birth_owner": "ztare.leanmill.axiom_pack_candidate_birth.materialize_typed_axiom_pack_candidate",
+  "orchestration_owner": "ztare.leanmill.axiom_pack_orchestration.orchestrate_typed_axiom_proposals",
+  "input_authorities": [
+    "non_calibration_escalation",
+    "signed_unseen_task_manifest",
+    "task_manifest_public_key",
+    "semantic_checker_private_public_keypair",
+    "semantic_checker_verifier_ref"
+  ],
+  "role_dispatch": [
+    "axiom_pack_typed_proposer",
+    "axiom_pack_semantic_checker"
+  ],
+  "producer_outcome": "typed_proposals",
+  "candidate_count": 1,
+  "candidate_birth_status": "candidate_born",
+  "provider_calls": 0,
+  "first_fire_mode": "production-door fixture with deterministic callbacks substituted at the SubscriptionJSONRole boundary",
+  "fixture_formula_source": "existing priority candidate template encoded as Formula IR",
+  "establishes": [
+    "normal CLI constructs the reviewed non-calibration runtime",
+    "separated proposer and semantic-checker roles traverse the production door",
+    "a host-validated typed proposal reaches identity-complete candidate birth"
+  ],
+  "does_not_establish": [
+    "a newly discovered mathematical axiom pack",
+    "promotion of this specific first-fire candidate"
+  ],
+  "promotion_reachability": {
+    "status": "test_proven_on_deterministic_signed_controls",
+    "evidence": "tests/test_axiom_pack_promotion_campaign.py::test_admitted_pack_reaches_content_bound_promotion"
+  },
+  "preprovider_checks": [
+    "escalation_receipt_digest",
+    "manifest_signature_and_base_binding",
+    "proposer_checker_role_separation",
+    "semantic_checker_keypair_binding",
+    "proposer_view_escalation_base_identity"
+  ],
+  "test": "tests/test_axiom_pack_candidate_birth.py::test_live_cli_constructs_reviewed_runtime_and_births_candidate_provider_free",
+  "proof_credit_eligible": false,
+  "theorem_campaign_admissible": false,
+  "content_sha256": "sha256:859aa8602dd2c82709373632f409355a7128bb5b68c33db3de083b2b3f57a748"
+}

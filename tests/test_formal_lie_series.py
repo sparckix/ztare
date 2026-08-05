@@ -5,6 +5,8 @@ import pytest
 from ztare.common.formal_lie_series import (
     FormalLieOps,
     VelocityPlacement,
+    bch_series,
+    factor_magnus_by_projection,
     forward_dexp_coefficients,
     inverse_dexp_coefficients,
     magnus_from_velocity,
@@ -91,3 +93,59 @@ def test_opposite_flow_equations_flip_the_first_bracket_shell() -> None:
     assert left[1:3] == right[1:3]
     assert left[3] == (Fraction(0), Fraction(-1, 12))
     assert right[3] == (Fraction(0), Fraction(1, 12))
+
+
+def test_bch_series_uses_the_declared_product_order() -> None:
+    ops = _ops()
+    left: list[Pair] = [
+        (Fraction(0), Fraction(0)),
+        (Fraction(1), Fraction(0)),
+        (Fraction(0), Fraction(0)),
+        (Fraction(0), Fraction(0)),
+    ]
+    right: list[Pair] = [
+        (Fraction(0), Fraction(0)),
+        (Fraction(0), Fraction(1)),
+        (Fraction(0), Fraction(0)),
+        (Fraction(0), Fraction(0)),
+    ]
+    product = bch_series(left, right, 3, ops)
+    assert product == [
+        (Fraction(0), Fraction(0)),
+        (Fraction(1), Fraction(1)),
+        (Fraction(0), Fraction(1, 2)),
+        (Fraction(0), Fraction(1, 12)),
+    ]
+    reversed_product = bch_series(right, left, 3, ops)
+    assert reversed_product[2] == (Fraction(0), Fraction(-1, 2))
+
+
+def test_projection_factorization_roundtrip() -> None:
+    ops = _ops()
+    logarithm: list[Pair] = [
+        (Fraction(0), Fraction(0)),
+        (Fraction(2), Fraction(3)),
+        (Fraction(-1), Fraction(5)),
+        (Fraction(4), Fraction(-2)),
+        (Fraction(7), Fraction(11)),
+    ]
+    first, residual = factor_magnus_by_projection(
+        logarithm,
+        4,
+        ops,
+        lambda value: (value[0], Fraction(0)),
+    )
+    assert all(value[1] == 0 for value in first)
+    assert all(value[0] == 0 for value in residual)
+    assert bch_series(first, residual, 4, ops) == logarithm
+
+
+def test_projection_factorization_validates_series_lengths() -> None:
+    ops = _ops()
+    with pytest.raises(ValueError, match="through order n"):
+        factor_magnus_by_projection(
+            [(Fraction(0), Fraction(0))],
+            1,
+            ops,
+            lambda value: value,
+        )

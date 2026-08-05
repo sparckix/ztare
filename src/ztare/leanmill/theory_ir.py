@@ -12,12 +12,15 @@ candidate pack as an explicit typeclass assumption.
 from __future__ import annotations
 
 from dataclasses import dataclass
-import hashlib
 from itertools import permutations, product
-import json
 from math import prod
 import re
 from typing import Any, Iterable, Mapping, Sequence
+
+from ztare.common.content_identity import (
+    canonical_json as _canonical_json,
+    content_sha256 as content_hash,
+)
 
 
 SIGNATURE_SCHEMA = "leanmill.theory_signature.v1"
@@ -29,16 +32,6 @@ _IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 class IRValidationError(ValueError):
     """Raised when an IR object is malformed or ill-typed."""
-
-
-def _canonical_json(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
-
-
-def content_hash(value: Any) -> str:
-    """Return a deterministic SHA-256 hash for JSON-compatible content."""
-
-    return hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
 
 
 def _require_identifier(value: str, *, context: str) -> None:

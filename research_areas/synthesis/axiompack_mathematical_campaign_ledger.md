@@ -449,11 +449,47 @@ invariant and an active successor layer:
     \]
 
     Thus a universal bounded-source cone normal form is impossible.  The
-    particular moving family avoids this quotient through six solved orders
-    and an order-seven lookahead.  Its selected cone connection has source
-    logarithm degree profile `(5,5,9,11,14,18,22)` through order seven, but
-    no all-order coefficient recurrence or symmetric tail minimax follows
-    from that finite prefix.
+    particular moving family avoids this quotient through six solved orders.
+    At instantaneous order seven, carrying all fourteen lower affine
+    directions gives exact rational inconsistency functionals at source caps
+    \(14,15,16\) and a complete 692-row rational replay first at cap \(17\).
+    The selected cone connection has source logarithm degree profile
+    `(5,5,9,11,14,18,22,26)` through order eight.  Its new top shell is
+    transverse to the top cusp, so the tangent \(W_m\)-ideal is not the full
+    leading algebra.  Across the complete six-dimensional minimum-cap affine
+    family through instantaneous order four, the first transverse seed is
+    nevertheless invariant:
+
+    \[
+    \operatorname{top}_{14}\Omega^{\rm src}_5
+    =\frac7{276480}Z_5.
+    \]
+
+    The exact monomial bracket gives
+    \(\operatorname{ad}_{W_4}^{k}Z_5
+      =\frac{k+7}{7}(2k+1)!!Z_{5+k}\).
+    Complete affine carries strengthen coefficient survival:
+    \(\operatorname{top}_{18}\Omega^{\rm src}_6=-Z_6/184320\) for all ten
+    parameters through order five, and
+    \(\operatorname{top}_{22}\Omega^{\rm src}_7=-Z_7/1376256\) for all
+    fourteen parameters through order six.  The exact order-seven kernel has
+    dimension twenty-one, extends all fourteen incoming directions, and
+    fixes
+    \(\operatorname{top}_{26}\Omega^{\rm src}_8=5Z_8/14155776\).
+    This proves a nonzero escaping Lie-word ray and four successive invariant
+    coefficients, but not
+    survival under every later compatible choice.  No symmetric tail minimax
+    follows from the finite prefix.
+
+    In the exact excess-\(-6\) quotient, setting projected velocity inputs to
+    zero from derivative order three yields parameter-independent nonzero
+    \(Z_m\) coefficients through \(m=41\), with period-four sign rule
+    \((-1)^{\lfloor m/2\rfloor}\).  The filtered replay agrees with the full
+    Magnus calculation through order eight.  No constant-coefficient,
+    low-degree rational-ratio, bounded polynomial-coefficient, product-form,
+    or rational-generating-function recurrence fits the checked sequence.
+    This remains conditional finite evidence until the later velocity
+    filtration and all-order nonvanishing are proved.
 13. The exceptional-divisor normal form has a first surviving transverse
     class.  After complete target normalization through layer one, the
     layer-two weight-five target image is
@@ -490,6 +526,165 @@ invariant and an active successor layer:
     affine-normalized line \(H_0+\lambda K_*\) is covered by the same
     classification.  Higher seed-isotropy algebras, non-affine divisor
     profiles, and a distinct coupled staircase remain open.
+15. The exact normalized global control
+
+    \[
+    K_s=a(s)P^3+b(s)PQ-\frac14Q^2
+    \]
+
+    does not realize the apparent slope-two continuation suggested by
+    logarithmic orders six through eight.  In the polynomial Hamiltonian
+    chart \(z=2+2t-3v\), its complete order-nine source shell is
+
+    \[
+    -\frac{23}{42278584320}v^{20}z^{17},
+    \]
+
+    of derivation degree \(34\), while the target derivation degrees through
+    order fifteen are
+    `(2,2,2,2,3,3,4,4,5,5,6,6,7,7,8)`.
+    The side-typed source and target recursions both pass forward-`dexp`
+    round trips.
+
+    The additive grading
+
+    \[
+    (I,J)=(a-3q-1,b-2q-3)
+    \]
+
+    on a source Hamiltonian \(v^az^b\) at cost \(q\) gives an exact
+    southwest quotient.  All velocity grades are nonpositive, the
+    order-two radial letter is the unique zero grade, and the instantaneous
+    exponents obey \(a,b\leq9\).  In the rectangle down to \((-6,-3)\), the
+    order-\((6+2r)\) coefficient on
+    \(v^{13+6r}z^{12+4r}\) matches
+
+    \[
+    \frac1{2^{20}}
+    \left(-\frac3{128}\right)^r
+    (2r-1)!!
+    \frac{12B_{r+2}}{(r+2)!}
+    \]
+
+    through order eighty-one.
+
+    The affine translation \(u=1+v\) reduces the same quotient to eighteen
+    instantaneous monomials.  Outside terminal grade \((-6,-3)\), the
+    logarithm is the exact polynomial
+    \(s^2L_2+s^3L_3+s^4L_4\), with
+
+    \[
+    [L_2,L_3]=-\frac7{32768}u^{10}z^{10},\qquad
+    [L_2,L_4]=-\frac1{131072}u^{13}z^{12},\qquad
+    [L_3,L_4]=0.
+    \]
+
+    Both nonzero brackets are terminal, so every surviving outer bracket
+    uses the unique zero-grade generator
+    \(A=-3(uz)^7/896\).  This gives the exact forward-`dexp` equation
+
+    \[
+    2[D+f(D+xD')]+\frac1{1536}(1-f)=\frac7{3072},
+    \qquad f=\frac{1-e^{-x}}x,
+    \]
+
+    whose unique formal solution is
+
+    \[
+    D(x)=\frac7{12288}
+    +\frac1{2048x}
+    \left(\frac{x}{e^x-1}-1+\frac x2\right).
+    \]
+
+    Therefore the displayed Bernoulli formula holds at every order.
+    Existing even-Bernoulli nonvanishing and the nonzero radial adjoint
+    recurrence give a source Hamiltonian
+    \(u^{3n-5}z^{2n}\) at every \(n=6+4m\), with derivation degree
+    \(5n-8\).  This proves unbounded source logarithmic degree for the
+    displayed global connection.  The controlling defect
+    \(\Delta=H+2N=1/1024\) is unchanged by every polynomial order-three
+    perturbation \(s^3M(P,Q)\): the seed \(z\)-orders reduce the exact
+    coefficient functional to 42 monomials, all annihilated.  Earlier and
+    later target coefficients remain outside this rigidity statement, so it
+    is not a minimax lower bound over other cone-compatible gauges.
+
+    The first order-one cancellation tests split.  The direction
+    \(-sQ^3/56\) cancels the rate-five source generator and its first
+    rate-seven source face, but creates an alternating \(P^3,Q^3\) target
+    algebra.  Its distinguished target word remains nonzero in the complete
+    left-Magnus replay through order forty-two; all-order coefficient
+    survival is open.  The source side nevertheless excludes this
+    direction.  In the closed excess \(G=a+b-7q-4\), the next module
+    \(G=-13\) has coefficient
+
+    \[
+    \frac{27}{12845056}
+    \frac{B_{k+2}}{(k+2)!}
+    \prod_{j=0}^{k-1}\frac{9(2j+1)}{896}
+    \]
+
+    on the radial orbit from \(u^{17}z^{16}\).  Even depths give a nonzero
+    shell at every \(n=6+4m\) of source derivation degree \(7n-12\).
+
+    The seed-central direction
+
+    \[
+    K_s-\frac9{28}sH_0^2,\qquad
+    H_0=-P^3/36-Q^2/4,
+    \]
+
+    also cancels the old generator and commutes with the target seed.  Its
+    source pullback creates a new radial generator
+    \(-9u^{12}z^{12}/458752\) in a closed quotient.  The finite
+    negative-grade core changes the first terminal iterate by \(-12/37\),
+    after which only the radial generator acts.  The universal response
+    coefficient is \(B_{k+1}/(2(k+1)!)\); hence every \(n=6+4m\) carries a
+    nonzero source Hamiltonian \(u^{23+22m}z^{22+18m}\) of derivation degree
+    \(10n-18\).  This excludes the seed-central cancellation at all orders
+    without constraining arbitrary coefficientwise-finite staircases.
+
+    The minimum seed-Newton-weight direction
+    \(-sP^2Q/168\) behaves differently.  It cancels the rate-five generator
+    and gives a complete nonpositive source grading
+    \(G_4=a+b-4q-4\), hence the all-order upper bound
+    \(\deg\Omega_n^{\rm src}\le4n+4\).  The triangular grading
+    \(h=q-(a-b)\) isolates a closed \(h=5\) boundary whose normalized
+    response is
+
+    \[
+    -\frac{221}{26208}
+    +\frac{23}{1950}x
+    +\frac{13}{1872}\frac{x}{e^x-1}.
+    \]
+
+    Its even Bernoulli coefficients give a nonzero source subsequence of
+    exact derivation degree \(4n-6\) at \(n=2+4m\).  Thus this connection
+    has exact symmetric logarithmic rate four and proves that the minimax
+    is at most four.  It does not supply the uniform lower bound over the
+    full cancellation hyperplane.
+
+    The cheapest remaining order-one radial counterattack is also
+    classified.  In the plane
+
+    \[
+    -P^2Q/168+\alpha PQ+\beta Q^2,
+    \]
+
+    the cost-two radial generator vanishes only at
+    \(\beta=325/1344\), but a cost-three radial generator is independent of
+    both parameters.  At the exceptional point \(\alpha=0\), its terminal
+    orbit has logarithmic orders \(q=2+3k\) and source degree \(4q-6\).
+    The dominant quadratic marker sector has an exact Bernoulli response
+    satisfying
+
+    \[
+    27(2m)!D_{2m}^{\rm dom}\equiv1\pmod3.
+    \]
+
+    The linear, other quadratic, and cubic sectors vanish modulo three
+    after the same scaling.  Hence the complete exceptional connection also
+    has exact symmetric rate four.  This closes the low-weight \(Q^2\)
+    exception, not later coefficientwise-finite repairs.
 
 **Validity.** Exact symbolic replay checks the family Jacobian, scalar
 denominator cancellation, degree cap, top-field commutation, and degree-15
@@ -540,6 +735,23 @@ The current-policy provider-free closures include:
 - `AxiomPackJacobianSecondTransverseQuotientArithmetic.second_transverse_quotient_arithmetic_terminal_certificate`
   for the nonzero seed-linearized augmented minor, canonical class, and
   parity-routing arithmetic.
+- `AxiomPackJacobianGlobalControlMagnusEscapeArithmetic.global_control_magnus_escape_arithmetic_terminal_certificate`
+  for the radial adjoint nonvanishing, even-coefficient transfer,
+  \(5n-8\) degree arithmetic, and unboundedness of the certified degree
+  subsequence.
+- `AxiomPackJacobianSeedCentralMagnusTransferArithmetic.seed_central_magnus_transfer_arithmetic_terminal_certificate`
+  for the transferred radial recurrence, Bernoulli response,
+  \(10n-18\) degree arithmetic, and unbounded certified subsequence of the
+  seed-central cancellation.
+- `AxiomPackJacobianQ3SourceMagnusEscapeArithmetic.q3_source_magnus_escape_arithmetic_terminal_certificate`
+  for the excess-\(-13\) radial recurrence, even-Bernoulli transfer,
+  \(7n-12\) degree arithmetic, and its unbounded certified subsequence.
+- `AxiomPackJacobianP2QMagnusRateArithmetic.p2q_magnus_rate_arithmetic_terminal_certificate`
+  for the minimum-weight radial recurrence, Bernoulli noncancellation, and
+  exact rate-four degree arithmetic.
+- `AxiomPackJacobianConeRadialStaircaseArithmetic.cone_radial_staircase_arithmetic_terminal_certificate`
+  for the cone-weight families, target-degree bound, normal-layer Rees
+  inequalities, and Hamiltonian-to-vector degree translation.
 
 The later contact statements additionally use exhaustive exact rational
 coefficient systems and coefficientwise polynomial replay.  Their current
@@ -548,8 +760,12 @@ exhaustiveness.
 
 The tail-vector update uses equation-typed Magnus/dexp round trips, the exact
 evaluated shell bracket, symbolic weighted-Hamiltonian bracket recurrences,
-and complete cap-seven linear algebra.  These are deterministic research
-replays; no new Lean endpoint is claimed for the tail minimax.
+complete cap-seven linear algebra, and the exact \(z^2\)-Hamiltonian
+bigrading of the normalized global control.  These are deterministic
+research replays.  The radial staircase now has a kernel-checked arithmetic
+endpoint; its polynomial triangular division and formal-series integration
+remain the displayed mathematical argument rather than a monolithic Lean
+object.
 
 **Knowledge relation.** Formal-etale path lifting is recovery. Targeted
 primary-source, exact-formula, and repository searches through 2026-07-29
@@ -598,12 +814,510 @@ The active successor is the symmetric tail statistic
 The rank-one and higher-rank cusp categories, the first moving phase
 transition, the universal transverse obstruction, and the selected
 mixed-orientation Magnus prefix are now separated.  The first tail attack
-has been reduced to correlated odd-shell positivity, the literal canonical
-staircase and its first finite-state adjoint model have been excluded, and
-the complete affine-normalized low-weight orbit category has been excluded.
-What remains is an all-order invariant or construction for a distinct
-coupled staircase or a higher-isotropy/non-affine target algebra, including
-its filtered cokernels and source-Lie closure.  The lifecycle was assisted:
+has been reduced to correlated odd-shell positivity, and the literal
+canonical staircase plus its first finite-state adjoint model have been
+excluded.
+
+The selected moving cone staircase has one further exact step.  Its
+instantaneous cap profile is now `(5,5,7,9,11,13,14,17)`: the guessed
+cap-fifteen continuation fails, as does cap sixteen.  One cap-seventeen
+solution extends the source logarithmic profile to
+`(5,5,9,11,14,18,22,26)`.  The outgoing order-seven affine kernel has
+dimension twenty-one, extends all fourteen incoming directions, and cannot
+alter the degree-twenty-six shell.  This remains finite-prefix evidence
+because later compatible controls have not been classified.
+
+The separate normalized global-control schedule is now excluded as a
+bounded-log candidate at all orders.  Its source degree jumps from \(26\) at
+order eight to \(34\) at order nine, and the translated closed quotient
+derives a nonzero Bernoulli subsequence of exact degree \(5n-8\) for every
+\(n=6+4m\).  Its scalar tail defect is invariant under an arbitrary
+polynomial change to the order-three target coefficient.  This removes one
+explicit finite-control escape and one full perturbation slot, but does not
+exclude a different coefficientwise-finite moving staircase.
+
+At order one, the seed-central cancellation is also excluded at all orders.
+Although \(-9sH_0^2/28\) commutes with the target seed and removes the
+rate-five source generator, its pullback creates a second radial quotient
+whose nonzero degrees are \(10n-18\) at \(n=6+4m\).  The alternative
+\(-sQ^3/56\) removes the first checked source faces, but the next closed
+source excess has nonzero degrees \(7n-12\) at the same order subsequence.
+Its alternating-cubic target coefficients also survive through order
+forty-two, though no target all-order formula is needed for the source
+disposition.  Neither result controls a later coefficientwise-finite
+schedule.
+
+The lower-Newton-weight repair \(-sP^2Q/168\) is now the best explicit
+competitor.  Its source logarithm has exact rate four: the closed
+\(h=5,G_4=-7\) boundary has a Bernoulli subsequence of degree \(4n-6\), and
+the complete Newton support supplies the matching upper bound.  The target
+rate is at most one, so the connection's symmetric rate is four.  This
+improves the minimax upper bound to four.  The next calculation must test
+uniformity over the full order-one cancellation hyperplane or construct a
+richer direction below rate four.
+
+That order-one test is now complete at the unique \(Q^2\) exception.  Its
+cost-two radial face cancels, but a cost-three radial face produces a second
+all-order degree-\(4n+O(1)\) orbit.  A closed divided-power response and
+3-local separation prove noncancellation at every positive even orbit
+depth.  The next staircase coefficient is therefore forced later: the
+minimum cone monomial that cancels this cost-three face is
+\(-s^2PQ^2/5376\).  Its complete Newton and logarithmic response is now
+closed.  The source grading
+
+\[
+2(a+b)-7q-8
+\]
+
+has a unique cost-four radial generator, and its first terminal orbit has a
+closed positive-weight Bernoulli-polynomial response.  Fourier negativity
+of that weight gives a nonzero even subsequence of exact source degree
+\(7n/2-5\).  The connection therefore has exact symmetric rate \(7/2\) and
+improves the minimax upper bound to \(7/2\).
+
+The one-generator \(137s^3Q^3/129024\) repair lowers the next Newton polygon
+to \(10/3\), but a coupled row solve is stronger.  Canceling every
+represented radial weight at each parameter order gives finite row
+dimensions \((3,4,5,6,7)\) and exact source Hamiltonian degrees
+\((8,10,12,14,16)\) at costs two through six.  The moving family identity
+
+\[
+(A_s',B_s')=L_s(r)(a_s,b_sr)
+\]
+
+ties the first normal layer to the radial solve, while every higher normal
+factor lowers radial degree by two.  The resulting all-order triangular
+induction gives source logarithmic degree at most \(2q+1\) and target rate
+at most one.  Hence the current symmetric minimax upper bound is
+
+\[
+\boxed{\sigma_{\rm ct}\le2}.
+\]
+
+A target-lift audit corrected the first version of this staircase.  The
+minimum cone by itself admits the bare Hamiltonian \(Q\), but the declared
+target-lift category excludes it.  Removing that single column replaces
+the bounded radial remainder \(r^2,r^4\) by \(r^3,r^4\), makes every source
+Hamiltonian divisible by \(z^3\), and leaves the degree profile unchanged.
+The repaired source/right and target/left round trips pass.
+
+The arithmetic filtration endpoint is kernel-checked.  The unresolved
+question has moved to the unused higher-normal cone directions: \(Q^2C\)
+first meets the growing second-normal layer at cost seven.  On the corrected
+background, velocity-first cancellation lowers the instantaneous row but
+BCH restores degree \(18\).  The logarithm-first prefix passes both oriented
+round trips through target order ten, yet its negative-normal quotient has
+degrees \(19,21,23\) at orders \(8,9,10\).  Thus one \(C\)-layer retains
+rate two.  The next discriminator is a finite high-degree \(C\)-prefix:
+its delayed Magnus brackets may change that quotient even though the
+current-row \(C\) diagonal cannot.
+
+The first delayed-prefix discriminator is now negative.  Adding
+\(\lambda Q^2C\) to row one leaves the first negative-normal quotient
+unchanged but creates top source-Magnus coefficients
+\(33\lambda^2/16384\) and
+\(-1377\lambda^3/9175040\), at Hamiltonian degrees \(33\) and \(42\).
+The leading-amplitude quotient is now closed at all orders.  Its
+three-state finite core has a positive periodic-cokernel recurrence, and
+the terminal response has the exact form
+
+\[
+E(x)=\frac{xJ(x)}{e^x-1}.
+\]
+
+An all-order coefficient majorant plus a rational interval calculation
+proves \(\operatorname{Im}J(2\pi i)>1/200\).  Therefore the response has a
+nonremovable pole and infinitely many nonzero coefficients.  Every
+\(\lambda\ne0\) produces terminal Hamiltonians
+\(u^{12+7n}z^{16+7n}\) at infinitely many costs \(5+2n\), with limiting
+spatial rate seven.  This excludes the smallest delayed one-\(C\) prefix.
+The remaining finite-prefix loopholes are equal-weight discriminant
+cancellation, arbitrary finite one-\(C\) prefixes, and higher \(C\)-adic
+powers.
+
+The next monomial counterattack is also excluded, but it changes the
+classification.  For \(Q^4C\), the current row removes the complete
+prefix-dependent cost-three logarithmic coefficient.  A deeper grading
+finds the first surviving input at cost four:
+
+\[
+A=-\frac9{1024}u^{14}z^{16},
+\qquad
+V_{\rm term}=\frac5{1024}u^{14}z^{17}.
+\]
+
+The terminal response is the standard cost-four function
+
+\[
+\frac{x}{e^x-1}\int_0^1t^3e^{t^2x}\,dt.
+\]
+
+Its odd depths are nonzero by even-Bernoulli nonvanishing, and the adjoint
+multiplier \(9(7-13k)/512\) never vanishes.  Thus \(Q^4C\) has an infinite
+source subsequence of limiting spatial rate thirteen.  This kills the
+cost-three seed as a universal invariant: the next one-\(C\)
+classification must use the first covariant target derivative that exits
+the cone and the first source grade surviving at that depth.
+
+That target cone-exit depth is now classified for all pure-\(Q\) one-\(C\)
+prefixes.  For \(G_b=Q^bC\), the unique all-\(P^3\) branch of
+\(\operatorname{ad}_{H_0}^nG_b\) is
+
+\[
+\frac{4(b)_n}{12^n}P^{3+2n}Q^{b-n},
+\]
+
+with cone margin \(2b-3-4n\).  Every other branch has larger margin.
+Consequently the first target coefficient outside the cone occurs exactly
+at \(n=\lfloor b/2\rfloor\).  The remaining source question is a
+coupled transfer through the cone-valued target runway.
+
+The \(b=6\) countercheck shows that this is a coupled, rather than
+target-only, transfer problem.  Its target cone-exit depth is three.
+The exact covariant continuation has cone-valued \(G_1,G_2\), followed
+by the outside-cone terms
+\(-5P^9Q^3/108+5P^8Q^3/432\) in \(G_3\).  Supplying all of \(G_1,G_2\)
+does not remove the cost-four source velocity
+\(29u^{20}z^{23}/65536\).  The cost-six terminal velocity vanishes, and
+the logarithm has
+\[
+[u^{39}z^{42}]\Omega^{\rm src}_6
+=\frac{435}{2147483648}.
+\]
+The terminal adjoint multiplier \(9(10-19k)/8192\) never vanishes, and
+the associated cost-four Bernoulli response has a nonzero odd-depth
+subsequence.  Hence \(Q^6C\) also yields an unbounded
+leading-amplitude source ray, now of limiting rate nineteen.  The source
+transfer seen at \(b=6\) is not exceptional.  Symbolic reduction for
+every \(b\ge6\) gives the nonzero cost-four coefficient
+\[
+\frac{(-1)^b(9b+4)}{2^{2b+5}}
+\]
+on \(u^{3b+2}z^{3b+5}\); exact \(b=4,5\) replays obey the same formula.
+The associated odd Bernoulli ray has limiting rate \(3b+1\).
+
+The remaining pure-\(Q\) exponent \(b=3\) initially mimics an escape.
+Its entire leading grade window has a logarithm supported only at costs
+two and three through cost nine.  One layer lower, at grade
+\((-16,-12)\), a three-state current cokernel is independent of two
+affine control directions.  Its normalized response has forcing bound
+\[
+|H_n|\le\frac{130(n+2)^4}{(n+2)!},
+\]
+and a rational interval certificate gives
+\(\operatorname{Im}J(2\pi i)>1/4000\).  Hence it has infinite support
+and limiting rate ten.  Together with the \(Q^2C\) theorem, the
+pure-\(Q\) one-\(C\) family is now complete.  Mixed one-\(C\) leading
+classes and higher \(C\)-adic powers are the remaining prefix
+counterattacks.
+
+The complete one-\(C\) classification is now available.  Modulo
+\(D=4P^3+27Q^2\), stable mixed residues have a uniform
+nonpolynomial \(\phi_2\) response, while \(PQ^2C\) and \(PQ^3C\) have
+certified lower two-state recurrences with limiting rates nine and
+twelve.  Exact positive \(D\)-adic depth one is nonzero in all three
+residue classes.  For every depth \(d\ge2\), generalized-multinomial
+reduction gives the terminal coefficient
+\[
+\left(-\frac34\right)^a
+\left(-\frac14\right)^b
+\left(\frac{27}{8}\right)^d
+\frac3{64}\binom d2
+\]
+at exponent \((\sigma,\sigma+4)\),
+\(\sigma=2a+3b+5d+1\).  The current quotient cannot reach this
+monomial, its adjoint multiplier has no integral zero, and the
+\(\phi_2\) response has a nonremovable pole.  Therefore every nonzero
+finite one-\(C\) prefix has unbounded logarithmic source complexity.
+The successor finite-prefix obstruction is \(C^m\), \(m\ge2\).
+
+The stable part of that successor is resolved.  The seed pullback satisfies
+\[
+\operatorname{Res}_r(P-P_0,Q-Q_0)=C/64,
+\qquad
+C(P_0,Q_0)=z^2\cdot\text{unit},
+\]
+so target \(C\)-adic valuation becomes exactly twice source normal
+valuation.  In the \(D\)-adic basis, the stable cost-four transfer is
+\[
+\begin{aligned}
+[u^Sz^{S+2m+1}]V_4
+={}&
+\left(-\frac34\right)^a
+\left(-\frac14\right)^b
+\left(\frac{27}{8}\right)^d
+\left(-\frac9{16}\right)^{m-1}\\
+&\times\frac{6a+9b+15d+4m}{32},
+\end{aligned}
+\]
+where \(S=2a+3b+5d+2m\).  Its odd terminal is a polynomial-current
+cokernel, its adjoint multiplier has no integral zero, and its
+\(\phi_3\) response has infinitely many nonzero rows.  The positive-\(d\)
+part of a twelve-state boundary-slack certificate also passes.
+
+The first proposed treatment of the five exceptional \(d=0\) states
+fails two preregistered checks: the primary radial offset is
+state-dependent, and three of the amplitudes are cubic rather than
+quadratic in contact depth.  Recomputing the complete residual gives
+offsets \(2,1,1,1,2\), five factored nonzero amplitude laws, and a
+strictly positive adjoint multiplier
+\(2m\delta_{a,\ell}+2k(S-m)\).  A fifth same-parity depth agrees for
+every amplitude.  The corrected transition graph has no
+exceptional-\(d=0\) return.  Maximum contact depth then excludes
+\(M>1,k\ge1\), while depth zero and all \(M=1\) cancellations exit to
+the injective odd quotient.
+
+Combined-prefix matrices through \(C^3\) remove exact target identities
+before comparison and have source rank equal to target rank.  Therefore
+every nonzero finite polynomial contact prefix is excluded.  Vector B
+is again narrowed to an infinite coefficientwise-finite contact
+schedule; the unrestricted matching lower bound remains open.
+
+For continuations of the normalized radial background, coefficientwise
+local finiteness closes that remaining positive-contact schedule as well.
+At the least \(C\)-adic depth, the robust transfer has Euler eigenvalue
+\(3w+4m>0\), and any current row that reaches the odd terminal introduces
+a strictly higher same-order source pivot.  An exceptional ray either
+survives or has a least cancellation order; the corrected transition then
+enters the robust case.  Every resulting ray has limiting Hamiltonian rate
+at least \(11/2\).  The live Vector-B object is now an arbitrary
+noncanonical contact-zero backbone with its coupled recursion.  This is
+still short of the unrestricted matching lower bound.
+
+The finite-dimensional formal-orbit attack is now complete.  Cusp-weight
+growth and the exact cusp parametrization show that every
+finite-dimensional polynomial target Hamiltonian algebra containing the
+normalized seed is abelian and contained in \(\mathbb Q[H_0]\).  The
+exceptional-divisor quotient forces the unique affine scalar profile.
+Higher powers \(H_0^k\) start only in normal layer \(3k-3\), so they cannot
+change the first two source jets through layer two.  Spectral projectors in
+those jets isolate \(z^4\) and \(z^3\) layer-one generators and produce a
+nonzero full-source ray of degrees \(8+4j\).  Thus higher seed isotropy,
+higher normal powers, alternative cubic divisor profiles, and
+nonpolynomial generic-time sums do not yield a finite-dimensional
+source/target coefficient Lie algebra.
+
+What remains is an all-order invariant or construction for an
+infinite-dimensional coefficientwise-finite coupled staircase.  The live
+alternatives are the correlated odd-shell positivity attack and a distinct
+locally finite schedule.  The fixed-rational symbolic replay now has
+coefficientwise-nonnegative boundary polynomials through index twenty-one
+and nonnegative Wick-rotated odd shells through logarithmic order forty-one.
+At the prescribed amplitude, the higher weighted profiles have simple
+negative zeros and strictly interlace through the same order; rational
+Sturm intervals certify the finite root pattern.  The first profile
+Wronskian and the boundary parts of even adjoints at depths \(2,4,6,8\)
+remain nonnegative through that cap.  A raw Magnus summand is already
+negative at order five, so an all-order proof must preserve this
+proper-position chain rather than apply termwise positivity.  The completed
+finite-orbit classification and this strengthened prefix do not by
+themselves determine the symmetric tail slope.
+Amplitude homogeneity, coefficient-positive discriminants, and fixed-sign
+adjacent resultants certify the same negative-root/interlacing pattern over
+the entire positive amplitude quadrant through \(k=11\); the missing step
+is preservation by the nonlinear even-adjoint recurrence, not dependence on
+the single rational evaluation.
+
+### 2026-07-31 filtered-obstruction and ramification update
+
+The substrate-neutral Filtered Obstruction Compiler now handles same-space
+coinvariants, cross-grade symbol cokernels, moving relations, and forcing
+reachability after quotient.  The complete Jacobian target/source symbol on
+the cusp leaves a two-dimensional local ramification coinvariant
+\(\mathbb Q[\tau]/(\tau^2)\), \(\tau=3r-2\).  The decisive reachability test
+is negative: every polynomial multiplier has zero first \(\tau\)-jet because
+\(P'(2/3)=Q'(2/3)=0\), while \(Q^2C\) spans the value line.  After that
+control, the ambient cokernel has dimension one and the reachable cokernel
+has dimension zero.  Polynomial target Poisson/Magnus transport and
+polynomial weighted-volume source brackets preserve this conclusion, so the
+verdict is route-invariant across coefficientwise-polynomial target and
+source transport.
+
+The corrected next lever is the reachable \(Q^2C\) value cancellation and
+its source terminal self-cascade under an arbitrary contact-zero backbone.
+Forbidden false paths are: treating ambient cokernel dimension as family
+excitation; identifying the two-jet quotient with the earlier three-state
+principal-parts module; extrapolating finite windows; or reopening the
+ramification first-jet route without leaving the coefficientwise-polynomial
+category.
+
+### 2026-07-31 arbitrary-backbone terminal resonance update
+
+The Filtered Obstruction Compiler now accepts finite product filtrations in
+addition to scalar filtrations.  Product shifts, moving relations, and symbol
+maps are shape-checked; mixed scalar/product degrees and wrong component
+shifts fail.  The first Jacobian product adapter uses the complete
+contact-zero lift algebra \(\mathbb Q+(P^3,PQ,Q^2)\), not the narrower
+\(K_*\)-tower.  Its canonical cusp symbol of weight \(w\ge5\) pulls back to a
+source Hamiltonian with nonzero leader \(u^wz^w\) and all support
+componentwise southwest.  Every componentwise-nonpositive backbone letter is
+strictly negative in the second \(Q^2C\) terminal grade.
+
+The named terminal coefficient is nevertheless movable by a finite
+positive-grade prefix.  A row-one weight-six backbone \(\beta P^3\) changes
+the first terminal coefficient to
+
+\[
+\frac{3(563076\beta+283)}{16384},
+\]
+
+and \(\beta=-283/563076\) cancels it.  The same row has the nonzero current
+cokernel
+
+\[
+-\frac{893997}{512524288}u^{20}z^{20}.
+\]
+
+The complete diagonal adjoint formula has the sole parameter resonance at
+cost two.  At that resonance a unique combination of weights five through
+twelve cancels every difference-two source monomial, including the old
+zero-grade engine.  This rejects extrapolation of the selected-background
+terminal recurrence to arbitrary backbones.
+
+A stronger transverse quotient survives.  On
+
+\[
+b-a\ge3,\qquad a+b\ge12,
+\]
+
+the cost-two source class lies outside every contact-zero pullback.  The exact
+annihilator has fourteen coordinates, is unchanged by a held-out weight-32
+replay, and is all-weight complete because its \(z\)-support stops at twelve
+while every weight at least twenty-five is divisible by \(z^{13}\).
+
+**Verdict:** the uniform named-terminal hypothesis is rejected, while a new
+canonical high-transverse class is established.  **Corrected next lever:**
+compile its covariant parameter recursion under the complete moving
+contact-zero connection and determine whether its least nonzero response has
+rate at least two.  **Forbidden paths:** reusing the old \(A\)-recurrence
+after the exact cost-two cancellation; restricting the backbone to
+\(\mathbb Q[K_*]\); treating the cost-five surplus alone as a tail theorem;
+or claiming all-weight completeness from window stabilization rather than
+the \(z^{13}\) support cutoff.
+
+### 2026-07-31 covariant contact-zero and positive-contact repair update
+
+The Filtered Obstruction Compiler now owns a surplus-projection lifecycle.
+Given two exact maps on one control quotient, it computes the terminal image
+of the complete kernel of the surplus map.  This catches cancellations that
+require combinations of individually surplus-bearing columns.  Alien tests
+cover forced surplus payment, a two-column kernel cancellation, a direct
+surplus-free control, bad relation descent, incomplete maps, and rejection of
+moving relations in the static quotient category.
+
+For the Jacobian adapter, the exceptional cost-two contact-zero actor is an
+exact target pullback with northeast term
+\(27u^{12}z^{12}/1280\).  If \(L_3\) is the cost-three defect, then for every
+\(k\ge3\) the unique northeast corner of
+\(\operatorname{ad}_{A_*}^k L_3\) is
+
+\[
+T_k=u^{11k+5}z^{9k+8},\qquad
+c_{k+1}=\frac{81(2k-3)}{320}c_k,
+\]
+
+with \(c_3=-114614109/4194304000\).  The right-forward-`dexp`
+coefficient is \((-1)^k/(k+1)!\), so the leading-amplitude contact-zero
+associated-grade response is nonzero at every depth and has source
+derivation degree \(10n-20\) at cost \(n=2k+3\).  This is an all-weight
+statement: contact-zero pullbacks form a source Lie subalgebra of
+nonnegative normal order, whereas \(T_k\) has normal order \(3-2k<0\).
+
+The category counterattack is exact.  The full lift algebra contains the
+positive-contact direction
+
+\[
+-\frac12Q^2C,
+\]
+
+which cancels the complete cost-two Hamiltonian.  It vanishes modulo \(C\),
+so it does not alter the contact-zero associated-grade result.  After this
+repair the cost-three Hamiltonian survives every lift-compatible target
+monomial; its witness has \(z\)-support at most nine, which makes the finite
+weight calculation all-weight complete.
+
+**Verdict:** the all-weight leading-amplitude contact-zero claim is
+supported, while the unrestricted fixed-amplitude and coupled
+positive-contact problem remains open.  **Corrected next lever:** transport
+the all-weight cost-three quotient after \(-Q^2C/2\) through the complete
+higher-contact recursion and allow cancellations between amplitude degrees.
+**Forbidden paths:** identifying the full lift algebra with the contact-zero
+associated grade; promoting a leading-amplitude recurrence to a fixed-
+amplitude statement; discarding \(C\)-adic valuation when classifying a
+control; or inferring the minimax tail from the rate-ten ray alone.
+
+### 2026-07-31 coupled repair identity correction
+
+The proposed \(-Q^2C/2\) term is not an independent later
+positive-contact control.  The delayed prefix is the order-one target
+velocity \(sQ^2C\), whose exact target logarithm is \(s^2Q^2C/2\).
+Forward-`dexp` sends the proposed negative logarithm to
+\(-sQ^2C\).  The velocities cancel identically, so the complete coupled
+target and source connections return to the no-prefix background at every
+order.  In particular, there is no post-repair cost-three quotient.
+
+The earlier \(L_3\) annihilator remains a valid static same-cost check: it
+proves that a cost-three target row cannot cancel \(L_3\) while the lower row
+is held fixed.  It cannot be promoted across a changed cost-two logarithm.
+The finite radial staircase matches the no-prefix background through five
+target rows with both typed round trips; the all-order step is the exact
+target-velocity identity.
+
+**Verdict:** the cost-three coupled successor is rejected at its object
+identity.  **Corrected next lever:** take the least nonzero positive-contact
+coefficient over an arbitrary moving contact-zero backbone and prove an
+obstruction uniform under shifts of that least index, while retaining fixed-
+amplitude collisions.  **Forbidden paths:** treating a coefficient's own
+negative logarithm as an independent later control; quotienting a higher row
+without transporting lower-row changes; or carrying the static \(L_3\)
+annihilator into a coupled recurrence.
+
+### 2026-07-31 least-positive-contact induction update
+
+The least nonzero positive-contact coefficient is now controlled over every
+coefficientwise-polynomial moving contact-zero backbone.  Exact group
+factorization removes the entire lower contact-zero connection before the
+least positive layer is compared.  In the resulting complete-face induction,
+each cancellation either descends in a well-founded normal grade or exposes a
+same-order source pivot; the corrected normal-three factors are positive for
+every lift-admissible state.  The only exceptional branch has coefficient
+
+\[
+-\frac{3}{2^{3k+4}}\ne0.
+\]
+
+The asymptotic compiler then charges every non-descent transition at its
+actual occurrence order.  Terminal branches have source rate at least
+\(11/2\), cancellation branches have source rate at least \(2\), and the
+affine occurrence map is injective, so a finite supercritical backbone prefix
+cannot be billed again as a tail payment.  Shifting the least positive-contact
+index changes only the intercept, and rational amplitude specialization
+preserves nonvanishing because the least coefficient is nonzero by definition.
+Consequently every such branch has symmetric logarithmic limsup at least two.
+
+The reusable Filtered Obstruction Compiler now includes the corresponding
+asymptotic induction lifecycle: infinite-support validation, affine
+occurrence/payment order, side-compatible rate witnesses, same-order
+no-rebilling, and parameter-shift invariance.  Alien tests reject finite
+support, missing or subcritical payments, descent-billed witnesses, side
+mismatch, order mismatch, and rebilling.  The Jacobian adapter and the
+arithmetic certificate are replayed by
+`gauge_moving_backbone_unconditional_induction.py` and
+`AxiomPackJacobianMovingBackboneInductionArithmetic.lean`.
+
+**Verdict:** the positive-contact branch is supported at its unrestricted
+coefficientwise-polynomial boundary.  **Corrected next lever:** classify the
+pure contact-zero branch, where there is no least positive layer to factor
+off.  The required successor is an all-order lower induction matching the
+known radial staircase upper construction, including the finite
+supercritical-prefix loophole and the complete radial/normal coupling.
+**Forbidden paths:** applying the positive-contact factorization when every
+positive contact coefficient vanishes; extrapolating the radial staircase
+upper bound into a lower bound; treating a finite prefix as an asymptotic
+payment; or promoting a finite Rees window without an all-order transition
+law.
+
+The lifecycle was assisted:
 the operator
 supplied the public event, and the formal-etale/category correction plus
 filtered-velocity language were produced during supervised continuation. This
@@ -656,10 +1370,35 @@ Jacobian-specific lifecycle branch was added.
 - [Moving transverse quotient](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_transverse_quotient_result.md)
 - [Second transverse target quotient](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_second_transverse_target_quotient_result.md)
 - [Moving mixed-orientation Magnus prefix](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_lie_cone_magnus_pencil.md)
+- [Moving cone order-seven exact extension](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_order_seven_extension_pencil.md)
+- [Complete-affine order-five transverse shell](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_log_five_affine_escape_pencil.md)
+- [Successive complete-affine transverse shells](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_z_ray_affine_invariance_pencil.md)
+- [Order-seven affine kernel and fourth transverse shell](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_order_seven_kernel_pencil.md)
+- [Excess-filtered transverse recurrence attack](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_moving_cone_excess_filtered_recurrence_pencil.md)
+- [Normalized global-control order-nine correction](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_controlled_global_magnus_hamiltonian_result.md)
+- [Normalized global-control all-order pencil](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_controlled_global_magnus_all_order_pencil.md)
+- [Normalized global-control all-order theorem](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_controlled_global_magnus_hamiltonian_result.md)
+- [Global-ray order-three perturbation rigidity](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_global_ray_defect_perturbation_pencil.md)
+- [\(Q^3\)-cancellation source Magnus escape](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_q3_source_excess_modules_result.md)
+- [Alternating-cubic target top quotient](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_q3_target_top_quotient_pencil.md)
+- [Seed-central all-order Magnus transfer](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_seed_central_magnus_transfer_result.md)
+- [Minimum-weight \(P^2Q\) cancellation](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_p2q_order_one_cancellation_result.md)
+- [Exceptional \(P^2Q+Q^2\) rate-four theorem](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_p2q_q2_rate_four_dichotomy_result.md)
+- [Order-two \(PQ^2\) cone repair pencil](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_p2q_q2_pq2_order_two_repair_pencil.md)
+- [Order-two \(PQ^2\) exact rate-\(7/2\) theorem](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_p2q_q2_pq2_order_two_repair_result.md)
+- [Order-three \(Q^3\) cone repair pencil](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_p2q_q2_pq2_q3_order_three_repair_pencil.md)
+- [Coupled radial cone staircase pencil](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_cone_radial_triangular_staircase_pencil.md)
+- [Coefficientwise-finite rate-two cone staircase](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_cone_radial_triangular_staircase_result.md)
+- [Higher-normal cone staircase attack](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_cone_higher_normal_triangular_staircase_pencil.md)
 - [Tail minimax attack map](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_tail_minimax_attack_vectors_pencil.md)
 - [Fixed-rational cusp BCH reduction](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_fixed_rational_cusp_bch_result.md)
+- [Fixed-rational odd-boundary positivity](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_fixed_rational_odd_boundary_pencil.md)
+- [Fixed-rational weighted-profile cone](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_fixed_rational_profile_cone_pencil.md)
 - [Canonical-staircase causality and adjoint kill](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_tail_staircase_sadic_causality_pencil.md)
 - [Finite-dimensional orbit obstructions](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_finite_dimensional_orbit_obstruction_result.md)
+- [Cusp-Hamiltonian finite Lie classification](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_cusp_hamiltonian_finite_lie_classification_pencil.md)
+- [Centralizer divisor and source graded escape](../pre_registrations/axiompack_jacobian_field_parametric_20260720/gauge_centralizer_divisor_profile_pencil.md)
+- [Filtered compiler and unreachable ramification coinvariant](../pre_registrations/axiompack_jacobian_field_parametric_20260720/filtered_obstruction_compiler_ramification_result.md)
 - [Cusp-Poisson historical-priority audit](../pre_registrations/axiompack_jacobian_field_parametric_20260720/cusp_poisson_successor_prior_art_audit.md)
 - [Repaired mechanism-autonomy control](../pre_registrations/axiompack_jacobian_mechanism_autonomy_20260725/repaired_control_outcome.md)
 - `ztare_proofs/ZtareProofs/AxiomPackJacobianEtalePathLift.lean`
@@ -680,6 +1419,10 @@ Jacobian-specific lifecycle branch was added.
 - `ztare_proofs/ZtareProofs/AxiomPackJacobianConeSymbolSurjectivityArithmetic.lean`
 - `ztare_proofs/ZtareProofs/AxiomPackJacobianConeTransverseTowerArithmetic.lean`
 - `ztare_proofs/ZtareProofs/AxiomPackJacobianSecondTransverseQuotientArithmetic.lean`
+- `ztare_proofs/ZtareProofs/AxiomPackJacobianFiniteTargetLieEscapeArithmetic.lean`
+- `ztare_proofs/ZtareProofs/AxiomPackJacobianGlobalControlMagnusEscapeArithmetic.lean`
+- `ztare_proofs/ZtareProofs/AxiomPackJacobianQ3SourceMagnusEscapeArithmetic.lean`
+- `ztare_proofs/ZtareProofs/AxiomPackJacobianSeedCentralMagnusTransferArithmetic.lean`
 
 ## Earlier calibration campaigns
 

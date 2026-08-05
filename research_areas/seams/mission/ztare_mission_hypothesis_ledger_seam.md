@@ -7543,7 +7543,7 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 
 ## H-AXIOMPACK-20260712-01 - Search-wave image growth as the continuation discriminator
 
-- **Status:** open / preregistered
+- **Status:** confirmed
 - **Eigenquestion:** are repeated anonymous theory-search waves exploring new semantic failure structure, or only new syntax under a blind representation?
 - **Hypothesis:** classifying each wave by growth of raw conjecture identities versus their residual-yield and premise-ablation image will separate productive continuation from representation blindness and regional exhaustion without prescribing the next theory language.
 - **Discriminating test:** replay the active finite functor-image campaign through the shared image-set classification. `expanding` requires a new outcome carrier; `alpha_blind` requires new raw conjectures with no new carrier; `exhausted` requires no new raw conjecture. Compare the classification with the frozen lineage traces and the leaf's next decision.
@@ -7634,3 +7634,3132 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 - **Discriminating test:** use two transitions with identical state/action and times congruent modulo the current hard-coded period but different lawful successors. Exercise evidence growth, planning, and prediction memoization with and without a period certificate.
 - **Success criterion:** uncertified paths preserve both transitions and compute both predictions; a valid certificate permits quotienting; a visible-sample periodicity observation alone has no authority.
 - **Kill condition:** full-time identity causes an unbounded search despite existing depth/node budgets, a quotient is inferred from replay samples, or a period declaration bypasses held-out verification.
+
+## H-AXIOMPACK-20260720-01 - Exact rational polynomial maps fit the shared construction boundary
+
+- **Status:** open / preregistered
+- **Axis:** AxiomPack domain-adapter generality / exact construction semantics
+- **Eigenquestion:** can the existing inert-artifact construction lifecycle admit sparse rational polynomial maps without moving candidate selection, mathematical assertions, or approximate checks into the adapter?
+- **Hypothesis:** a `rational_polynomial_map.v1` adapter that canonically represents sparse maps over `ℚ`, recomputes the full Jacobian determinant, and exactly evaluates declared collision points will use the same witness-construction and provider-free ratification boundaries as the binary-code adapter; no kernel or lifecycle fork is required.
+- **Discriminating test:** register the adapter, replay the published three-variable constant-Jacobian collision as a positive conformance fixture, and attack it with coefficient perturbation, nonconstant-determinant, false-collision, duplicate-point, malformed-rational, and candidate-supplied-certificate fixtures. Then carry the accepted artifact through a provider-free Lean task that proves the determinant identity and distinct equal-image inputs over `ℚ` and transports the witness to `ℂ`.
+- **Success criterion:** exact host replay accepts only the valid fixture; every adversarial fixture is rejected for a typed reason; receipt bytes bind the normalized map, predicate, determinant, collision inputs, and common image; the formal theorem compiles and governance admits the exact carried artifact with zero provider calls.
+- **Kill condition:** acceptance relies on sampling, floating point, an artifact-authored determinant assertion, or candidate selection inside the adapter; the formal task proves a weaker formula than the host predicate; or polynomial support requires a separate campaign lifecycle rather than a registered domain adapter.
+- **Claim boundary:** this is an apparatus-conformance test. Because the formula is public, success does not show autonomous discovery of the counterexample; that requires a separately sealed reconstruction target and a frozen representation grammar.
+
+## H-AXIOMPACK-BLC-20260720-02 - Coset extension is the next exact chart for the open `[50,20,14]` cell
+
+- **Status:** open / preregistered
+- **Axis:** binary-code construction identity / subcode-to-coset extension
+- **Eigenquestion:** does any exact `[50,19,14]` shortening of the frozen `[51,20,14]` control have a coset at distance at least 14, so that adjoining one representative yields a binary `[50,20,14]` code?
+- **Hypothesis:** moving from generator-row perturbations to the quotient `F_2^50 / C` will turn the missing twentieth row into an exact maximin coset problem; a counterexample-guided Boolean solver can either emit a vector `v` whose entire coset `v+C` has weight at least 14, or accumulate a replayable family of low-weight codeword centers that sharply constrains or excludes the extension cone of one frozen shortening.
+- **Discriminating test:** put one shortening basis in canonical systematic gauge, search its 31-dimensional quotient with exact Boolean cardinality constraints `wt(v+c) >= 14`, and use a complete Gray-code enumeration of all `2^19` words of `C` as the counterexample oracle. Every failed candidate adds the exact offending codeword constraint. On a survivor, independently verify the resulting 20-by-50 matrix with the registered exhaustive adapter. On UNSAT, preserve the exact Boolean instance and require an independently replayable solver certificate before calling the extension cone exhausted.
+- **Success criterion:** either a rank-20 distance-at-least-14 matrix passes all `2^20-1` messages and enters construction-artifact ratification, or a certificate-backed UNSAT result proves covering radius at most 13 for the one byte-frozen shortening; a bounded nonterminal pilot must at least report constraint-growth and minimum-coset-distance trajectories that decide whether the chart is computationally useful.
+- **Kill condition:** quotient gauge omits a coset; the inner oracle samples rather than exhausts `C`; a low-weight witness does not replay as `v+c`; UNSAT lacks an independently checkable certificate; or the search merely enumerates raw 20-by-50 matrices under another name.
+
+## H-AXIOMPACK-CONSTRUCTION-20260720-03 - One typed construction protocol can carry runtime-authored symbolic and finite producers
+
+- **Status:** open / preregistered
+- **Axis:** construction identity / runtime language expansion / exact CEGIS
+- **Eigenquestion:** can a cold campaign leaf describe a new construction chart as data, have AdapterForge materialize it campaign-locally, and drive exact candidate/rejection feedback without generated-code import, host-authored substrate mathematics, or a new lifecycle branch?
+- **Hypothesis:** extending the existing witness-construction and alpha/gamma boundaries with a content-addressed construction parameterization and exact constraint IR will unify finite-family enumeration, bounded coefficient search, and later exact symbolic backends. The invariant kernel will own data validation, resource ceilings, execution receipts, residual transport, and replay; adapters will own lowering to and reconstruction from their mathematical carrier; leaves will own the representation choice and revisions; campaign-local artifacts will not mutate the adapter registry.
+- **Discriminating test:** freeze two cold fixtures against the same protocol: (1) a binary-code construction family with finite Boolean parameters and exact minimum-distance rejection residuals, and (2) a sparse rational-polynomial ansatz whose constant-Jacobian and collision conditions lower to exact rational constraints. Require both to traverse parameterization review, deterministic execution or typed backend unavailability, exact adapter verification, counterexample feedback, and a later leaf-authored revision. Attack authority spoofing, mutable descriptors, noncanonical rationals, unbounded domains, generated executable code, cross-campaign replay, post-outcome parameterization, and registry mutation.
+- **Success criterion:** both fixtures reuse one construction-problem schema and lifecycle; the binary fixture completes a bounded family replay; the polynomial fixture either emits an exactly verified candidate or a typed constraint/backend residual; crash replay consumes zero provider calls; all receipts bind campaign, context, epoch, parameterization, constraint system, backend contract, candidate, and verifier result; no substrate-specific branch enters the generic campaign runner.
+- **Kill condition:** the shared schema degenerates into an opaque substrate payload; the host must invent the ansatz, constraints, or revision; safe execution requires importing campaign-generated code; finite and symbolic routes still require separate campaign state machines; an adapter result can obtain terminal credit without exact replay and later ratification; or the implementation duplicates an existing invariant-owning seam instead of extending it.
+- **Claim boundary:** this is an apparatus theorem about two conformance fixtures. It does not show autonomous Jacobian rediscovery, solve the binary `[50,20,14]` cell, or imply that every mathematical theory is decidable.
+- **Claim boundary:** a negative result applies only to the named shortening (or to separately certified equivalent shortenings). It does not decide the ambient table cell. A positive exact matrix would address existence, while priority would remain a separate source audit.
+
+## H-AXIOMPACK-JACOBIAN-FIELDS-20260720-04 - Exact polynomial construction waves should range over reviewed coefficient fields
+
+- **Status:** open / preregistered
+- **Axis:** field-parametric polynomial construction / cross-field transport
+- **Eigenquestion:** can one cold polynomial-construction request be compiled into exact sibling searches over `Q`, prime fields, and later reviewed finite extensions without changing the campaign state machine or transferring a verdict across characteristics by accident?
+- **Hypothesis:** making the field specification and scalar/backend contract part of each construction-problem identity will let AxiomPack scout coefficient ansatzes broadly with finite-field SAT/enumeration and replay survivors over `Q`, while a separate checked reduction/lifting receipt controls every cross-field inference. The common protocol will see only bounded problem bytes and the shared residual algebra.
+- **Discriminating test:** freeze a sparse three-variable Keller-map ansatz and the public weighted-lift seed constraints `p(0)=0`, `p(1)=-c`, and `integral_0^1 p=0`. Compile one rational instance and several good-prime reductions from the same leaf-authored family description. Require exact determinant/collision replay in each field, typed exclusion of bad primes or noninvertible denominators, and a content-bound transport receipt before any modular result changes the rational search. Then substitute a fake extension-field capability in the registry fixture and verify that no common-protocol or runner branch changes.
+- **Success criterion:** all field siblings traverse the same reviewed construction transition; adapter capabilities alone own scalar normalization and solving; crash replay spends zero provider calls; modular rejection or survival can rank or refute the frozen ansatz but cannot certify a characteristic-zero map; a rational survivor must pass the exact rational adapter and current ratification route.
+- **Kill condition:** the common kernel interprets field elements, the runner switches on characteristic/backend IDs, finite-field noninjectivity is reported as a counterexample over `C`, denominator or bad-prime obligations are omitted, generated code is imported, or an unregistered coefficient domain is silently coerced.
+- **Claim boundary:** the weighted-lift family and the public counterexample are public inputs. This experiment tests scalable cross-field search and authority separation; it does not claim discovery or historical priority.
+
+## H-AXIOMPACK-JACOBIAN-SHELLS-20260720-05 - The known cubic family has exact support-cancellation radius five
+
+- **Status:** partially confirmed 2026-07-20; support-radius prediction passed, lower-shell formal isolation remains unresolved
+- **Axis:** local deformation mechanism / complete equivariant support filtration
+- **Eigenquestion:** at which complete component-degree shell does the normalized public quadratic-seed point first recover the tangent of the known cubic weighted-lift family, and do any lower shells contain a different integrable direction?
+- **Hypothesis:** after the same two scaling normalizations used by the same-degree and adjacent-shell charts, the derivative of the exact cubic family is absent from the kernels of the cumulative complete-shell linearizations through `+4` and enters at `+5`. The adjacent `+1` old tangent remains obstructed at order three; cumulative `+2`, `+3`, and `+4` contain no nonconstant formal arc unless they expose a mathematically distinct mechanism; cumulative `+5` recovers the exact cubic-family derivative and its closed rational arc.
+- **Discriminating test:** generate every equivariant coefficient whose component degree lies between the base ceiling and cumulative shell `k`, for `k=0,...,5`, rather than selecting terms from the known family. Recompute the exact Keller coefficient ideal, normalized tangent and cokernel maps over `QQ`. Independently differentiate the normalized cubic family and project it into each chart. At `+5`, substitute the exact rational one-parameter family into the coefficient equations; at lower shells, carry every projective tangent through successive exact obstruction equations until it dies or produces an integrable candidate.
+- **Predicted family support:** the derivative uses `+1` coordinates `b40,b12,c50,c22`; `+2` coordinates `b31,c41`; `+3` coordinates `b50,b22,c60,c32`; `+4` coordinates `b41,c51`; and `+5` coordinates `b32,c42`, with all other first-order entries in those shells zero.
+- **Success criterion:** the complete `+5` chart contains the independently derived family tangent and the exact family substitution has zero Keller defect; no earlier chart is called rigid without exhausting all its tangent directions by exact obstruction equations. An earlier integrable off-family direction is a falsification of the rigidity prediction and a higher-value construction candidate.
+- **Kill condition:** a shell omits an equivariant monomial, the chart is selected from the weighted-lift formula, scaling directions are counted as families, a projected vector is compared across inconsistent normalizations, or rank/compatibility is inferred numerically.
+- **Claim boundary:** this test concerns the local normalized equivariant coefficient schemes around one public map. It neither rediscovers the counterexample nor classifies arbitrary Keller maps.
+- **Outcome:** the independently differentiated family has nonzero projected residual counts `32,33,33,32,26,0` in cumulative shells `+0,...,+5`; its exact substitution first fits at `+5`, with every predicted new derivative coordinate matching. The tangent dimensions are `1,2,3,4,5,7`. The `+2,+3,+4` quadratic obstruction cones have nonzero projective points, so the stronger lower-shell isolation clause is not established and must not be inferred from the support-radius result.
+
+## H-AXIOMPACK-JACOBIAN-GAUGE-20260720-06 - Tangent growth below shell five is coordinate-orbit growth
+
+- **Status:** falsified 2026-07-20 as a quotient-dimension prediction; its family-membership kill condition fired
+- **Axis:** canonical coordinates / deformation quotient by equivariant gauge
+- **Eigenquestion:** do the extra tangents in cumulative shells `0,...,5` describe new Keller-map moduli, or infinitesimal source/target coordinate changes whose higher-order orbit leaves the truncated chart?
+- **Hypothesis:** the exact Lie algebra generated by source shears `(v,gamma) -> (v + epsilon f(gamma), gamma)` and target Hamiltonian fields in `(P,Q)` spans every normalized tangent through cumulative shell `+4`. At `+5` its span has codimension one, and the derivative of the normalized cubic weighted-lift family supplies the missing class. If that derivative lies in the gauge span, the apparent family direction is demoted to coordinate equivalence.
+- **Discriminating test:** at the public base pair `(P0,Q0)`, generate source monomials `f(gamma)=gamma^m` and target Hamiltonian monomials `H=P^i Q^j` whose induced `(delta beta,delta alpha)` are polynomial and contained in each complete shell. Form their exact rational coefficient matrix, impose the frozen `b_(1,0)` normalization by taking the kernel of its row, and compare its column span with the exact Keller tangent kernel. Test the cubic-family derivative for membership in the resulting gauge span.
+- **Success criterion:** every claimed gauge vector differentiates an exact determinant-preserving coordinate action; the computed gauge span is a subspace of the Keller tangent kernel; ranks and family membership are exact. A lower-shell quotient tangent or additional `+5` quotient class falsifies the one-modulus prediction and becomes the next construction target.
+- **Kill condition:** generators are selected to match the observed tangent basis, a vector has support outside the tested chart, normalization is restored by deleting a coordinate rather than taking the exact constrained span, a merely symplectic first-order field is called a polynomial automorphism without a formal-coordinate claim boundary, or rank is numerical.
+- **Claim boundary:** this is an infinitesimal/formal coordinate-quotient calculation. It does not establish global polynomial conjugacy or inequivalence of two maps.
+- **Outcome:** the corrected expansion-before-constraint calculation does not span the full tangent spaces. Stable gauge ranks are `0` through shell `+3`, `1` at `+4`, and `3` at `+5`, leaving quotient dimensions `1,2,3,4,4,4`. More decisively, the cubic-family tangent lies in the shell-`+5` gauge span at Hamiltonian weight four, with exact generator `H=-Q^2/4-P^3/36`. The proposed one-modulus interpretation is therefore demoted.
+
+## H-AXIOMPACK-JACOBIAN-GAUGE-20260720-07 - Coordinate generators must be constrained after expansion
+
+- **Status:** confirmed within the declared generator bounds 2026-07-20
+- **Axis:** coordinate Lie algebra / cancellation across generators
+- **Eigenquestion:** can a linear combination of coordinate generators cancel every out-of-chart and frozen coefficient even though no individual monomial generator lies in the normalized chart?
+- **Hypothesis:** expanding the bounded source/target coordinate Lie algebra into the complete coefficient universe before imposing zero rows will recover some or all of the unexplained Keller tangents. The rank must stabilize as the target-Hamiltonian weight bound `i+2j` increases through `3,4,5,6`; otherwise the bounded quotient is inconclusive.
+- **Discriminating test:** for each cumulative shell, expand source generators `gamma^m` for `0<=m<=8` and every target Hamiltonian monomial `P^i Q^j` with `3<=i+2j<=W`. Build one matrix over the union of all induced beta/alpha monomials. Take the exact kernel of all rows outside the chart together with the frozen `b_(1,0)` row, project the constrained image to chart coordinates, and compare it with the Keller tangent kernel for `W=3,4,5,6`. Test the cubic-family derivative against each stabilized image.
+- **Success criterion:** every projected gauge column has zero forbidden rows and lies in the exact Keller tangent kernel; the rank sequence is reported at every bound. Only a stable rank may support a quotient claim. A stable rank below the tangent dimension leaves a coordinate-independent residual; full rank demotes the corresponding tangent space to gauge.
+- **Kill condition:** generators with nonzero forbidden coordinates are projected by deletion, the constraint nullspace is inferred generator-by-generator, the bound is increased only until a preferred answer appears, or stabilization is asserted from one bound.
+- **Claim boundary:** the calculation exhausts only the declared source-shear and target-Hamiltonian generator families through weight six. A residual may still be removed by a broader coordinate action.
+- **Outcome:** constraining after joint expansion recovers ranks missed by the monomial-local test. The rank sequence at shell `+5` is `2,3,3,3` for `W=3,4,5,6`, and the family tangent first enters at `W=4`; its only nonzero generator coefficients are `-1/4` on `Q^2` and `-1/36` on `P^3`. All admitted projected columns satisfy the forbidden-row constraints and the exact Keller linearization.
+
+## H-AXIOMPACK-JACOBIAN-FIBER-20260720-08 - The gauge tangent hides a new branch at infinity
+
+- **Status:** confirmed 2026-07-20 as an exact recovery of the public weighted-lift degree mechanism
+- **Axis:** generic-fiber invariant / exceptional degree-drop locus
+- **Eigenquestion:** is the normalized cubic weighted-lift line an actual coordinate orbit of the quadratic-seed map, or does its gauge-valued first derivative hide a higher-order change of generic function-field degree?
+- **Hypothesis:** the seed `s=0` has generic fiber degree three, while every fixed rational `s!=0` in the cubic seed line has generic fiber degree four. Therefore the family is not globally source/target polynomial-conjugate to the seed despite its tangent lying in the bounded Hamiltonian gauge span; the missing fourth branch escapes to infinity at `s=0`.
+- **Discriminating test:** use the weighted coordinates before invertible normalization. Compute `R_s(w)=integral p_s(w)`, the fiber equation `R_s(w)-wP+Q=0`, and rational recovery of `(v,t)` from `(P,Q,w)`. Prove the polynomial is irreducible over `Q(P,Q)` for fixed rational `s` by the degree-one-in-`Q` factor argument, and check that its leading coefficient is `s/4` for `s!=0` and `-1` at `s=0`. Verify the invertible normalization preserves the extension degree.
+- **Success criterion:** the recovery formulas are exact, the fiber polynomial is primitive and irreducible, and the degrees are exactly `3` and `4`; no collision count at special points is substituted for generic degree. If the quartic factors or `w` does not generate the source function field, the branch-jump claim fails.
+- **Kill condition:** irreducibility is inferred from numerical samples, the target variables `P,Q` are specialized, normalization uses a vanishing scalar, degree of the displayed equation is confused with field-extension degree, or conjugacy is rejected using raw coefficient differences.
+- **Claim boundary:** degree distinguishes the seed from generic nonzero members. It does not classify nonzero parameters among themselves or prove security, invertibility, or a new counterexample.
+- **Outcome:** the exact inverse polynomial is `-P*w + Q + s*w^4/4 - s*w^3/2 + s*w^2/4 - w^3 + w^2`. Its coefficient of the independent variable `Q` is one; the Gauss/degree-one argument makes it irreducible over `Q(P,Q)` for every fixed defined rational parameter. Its `w`-degree is three at `s=0` and four at `s!=0`, and symbolic substitution verifies both the source equation and rational recovery. The fixed-gamma normalization exceptions are `s=4,6`. This separates first-order Hamiltonian gauge from global polynomial-coordinate equivalence.
+
+## H-AXIOMPACK-JACOBIAN-JETS-20260720-09 - Locate the first polynomial-coordinate escape jet
+
+- **Status:** confirmed 2026-07-20 for polynomial target Hamiltonians plus polynomial fixed-gamma source shears; broader coordinate groups remain open
+- **Axis:** filtered deformation / polynomial Hamiltonian normal form
+- **Eigenquestion:** the normalized cubic weighted-lift line has first derivative `X_H(P0,Q0)` for `H=-Q^2/4-P^3/36`, yet its nonzero members have a different generic degree. At which formal order does the line first leave the orbit of bounded polynomial source shears and target Hamiltonian coordinate changes?
+- **Hypothesis:** after subtracting the forced Lie-square term `X_H^2(P0,Q0)` from the second derivative of the exact normalized family, the residual is not in the stabilized expansion-before-constraint span of polynomial target Hamiltonians and source shears. A nonzero exact cokernel functional would concentrate the global degree jump into a second-order polynomial-coordinate obstruction.
+- **Discriminating test:** independently derive the first two parameter derivatives of the exact normalized family. Verify the first derivative identities `dot(beta)=-gamma*alpha0/2` and `dot(alpha)=beta0^2/12`. Form the second-jet residual in `(P,Q)`, then generate complete source-shear and target-Hamiltonian Lie algebras at increasing weight bounds. Expand all generators before imposing support and normalization constraints, solve exact rational membership, and require rank stabilization. If membership holds, retain the exact decomposition and advance to the next jet rather than declaring escape.
+- **Success criterion:** either an exact stabilized left-kernel functional evaluates nonzero on the residual, locating the first escape order, or an exact coordinate decomposition advances the lower bound on formal contact. Every identity is replayed symbolically and the finite terminal certificate is carried to LeanMill without a provider call.
+- **Kill condition:** the family is selected by truncating its own monomials instead of using its complete second-jet support; the raw second derivative is compared without the Lie-square term; forbidden coefficients are deleted before constraining the generator span; a numerical rank decides membership; or the already-public generic-degree jump is counted as the new result.
+- **Claim boundary:** this is a local filtered-coordinate statement for one public one-parameter family. It does not classify hyperbolic equivariant Keller maps or resolve the planar Jacobian conjecture. Historical priority remains a separate audit.
+- **Outcome:** exact differentiation gives the Hamiltonian first derivative `(-Q/2,P^2/12)`. After subtracting its Lie square, reduction modulo the cubic inverse relation leaves a nonbase second-jet residue. A weighted associated-graded argument forces every positive-degree fixed-gamma source shear coefficient to vanish, while a constant shear has no `w^2` term and cannot cancel `(10-21P)w^2/24`. The resulting all-degree obstruction for the declared coordinate subgroup compiled in Lean and closed through provider-free governance with certificate SHA-256 `6e6ef67e7dbd7945f4206e99c69a14fc3b97187b4df9fc08084bb224b64a8b6f`.
+
+## H-AXIOMPACK-JACOBIAN-FULL-GAUGE-20260720-10 - Test whether the degree jump is invisible to the third formal jet
+
+- **Status:** confirmed 2026-07-20; full equivariant coordinate contact survives through the third jet
+- **Axis:** full equivariant coordinate group / formal-versus-global separation
+- **Eigenquestion:** after the first target-Hamiltonian jet and the polynomial full-source correction at order two, does the normalized cubic weighted-lift line remain coordinate-trivial through order three even though its generic degree changes away from the seed?
+- **Orientation:** a post-hoc adversarial audit of H09 found that its second residual is exactly `d(P0,Q0)(U2,V2)` for a polynomial quotient vector field with `U2 in (v,t)`, `V2 in (t,v^2)`, and a divergence-free equivariant lift. This demotes the H09 escape from the full coordinate group to the fixed-gamma subgroup. It is context for this hypothesis, not a preregistered H09 result.
+- **Hypothesis:** after subtracting `V_H^3(F0)+3 DV_H(F0) A2`, where `V_H=(-Q/2,P^2/12)` and `A2=dF0(Y2)`, the third derivative is again `dF0(Y3)` for a polynomial quotient vector field satisfying the two lift ideals. Thus the global degree jump is invisible through at least three formal parameter jets.
+- **Discriminating test:** independently compute the third derivative of the exact normalized family; verify the second source field and its weighted divergence; form the composition-correct third residual; solve the exact two-by-two Jacobian system for `(U3,V3)`; and check polynomiality plus `U3 in (v,t)`, `V3 in (t,v^2)`. If direct source solving fails, exhaust polynomial target-Hamiltonian corrections before declaring a full-gauge obstruction.
+- **Success criterion:** an exact polynomial `(U3,V3)` with explicit lift-ideal decompositions and zero weighted divergence establishes third-order contact; otherwise an exact denominator, ideal, or quotient-residue obstruction that survives target corrections locates the first full-gauge escape. The terminal certificate must compile and pass provider-free ratification.
+- **Kill condition:** the raw third derivative is tested without the composition cross term; a rational field solution is called polynomial; lift ideals are inferred from samples; a restricted source subgroup is confused with the full equivariant lift; or finite-jet contact is promoted to nonzero-parameter conjugacy.
+- **Claim boundary:** this tests one public family under the formally generated equivariant source/target group. It neither proves all-order formal triviality nor classifies hyperbolic equivariant Keller maps.
+- **Outcome:** after the composition-correct subtraction `V_H^3(F0)+3 DV_H(F0)A2`, exact inversion of the seed quotient Jacobian produces polynomial source fields of total degree 11 at order two and 13 at order three. Both satisfy `U in (v,t)`, `V in (t,v^2)` and admit explicit divergence-free equivariant infinitesimal lifts. Their compact `(w,gamma)` forms preserve `gamma dw wedge dgamma` infinitesimally. Since the first source correction begins at order two, nonlinear determinant terms begin only at order four, so the third-jet contact claim survives. The terminal canonical-coordinate theorem compiled and passed provider-free governance with certificate SHA-256 `84a211449102f5ec415959d1a61a31f0b8655a11dc6667e886e526d816b1f938`.
+
+## H-AXIOMPACK-JACOBIAN-FORMAL-DEPTH-20260720-11 - Test recursive coordinate contact through order six
+
+- **Status:** partially confirmed 2026-07-20; contact and liftability passed, preregistered degree law falsified
+- **Axis:** s-adic formal equivalence / exceptional behavior at infinity
+- **Eigenquestion:** is the public cubic family coordinate-trivial to every finite parameter order in the completed polynomial equivariant coordinate group, with the global degree jump encoded only by unbounded coordinate degree and behavior at infinity?
+- **Hypothesis:** recursively removing the exact target flow `exp(s X_H)` and solving `F0 o psi_s = exp(-s X_H) o Fs` yields polynomial source coefficients through order six. Each coefficient lies in `(v,t) x (t,v^2)`, and source total degrees follow `2n+7` for orders `n=2,...,6`.
+- **Discriminating test:** compute the target Lie series and exact normalized family series over `Q[v,t]`; solve the two-by-two seed Jacobian equation recursively at each ordinary `s` coefficient; recompose and require every coefficient through order six to vanish exactly. Check denominator cancellation, the two lift ideals, reproduction of the independently derived second/third jets after factorial conversion, and the predicted degree sequence.
+- **Success criterion:** exact polynomial, liftable coefficients and zero recomposition residual through order six support an all-order divisibility theorem; the first denominator, lift-ideal failure, or recomposition residual instead localizes the exceptional jet. A terminal bounded certificate is formalized without copying the entire symbolic expansion into the kernel.
+- **Kill condition:** earlier nonlinear source terms are omitted; derivatives and ordinary series coefficients are conflated; ranks or coefficients are floating point; rational functions are accepted as polynomial; or bounded contact is promoted to actual conjugacy at nonzero parameter.
+- **Claim boundary:** even success through order six is finite evidence. An all-order statement requires an induction in canonical coordinates, and no result here changes the public generic-degree distinction.
+- **Outcome:** exact recursive inversion produced polynomial quotient-source coefficients in `(v,t) x (t,v^2)` at every order two through six, reproduced the independently derived factorial-scaled order-two and order-three fields, and recomposed to zero coefficientwise through order six. These ideals certify infinitesimal liftability; they do not alone assemble the coefficients into a Jacobian-one coordinate series. The preregistered linear degree prediction failed at order four: the observed total degrees are `11,13,21,23,31`, with alternating increments `+2,+8,+2,+8`. The bounded quotient contact survived while the failed degree model exposed a sharper parity-sensitive growth mechanism. The full three-coordinate all-order statement comes separately from formal etaleness and the determinant chain rule.
+
+## H-AXIOMPACK-JACOBIAN-ETALE-LIFT-20260720-12 - Separate generic formal lifting from family-specific degree growth
+
+- **Status:** confirmed 2026-07-20 as a standard formal-etaleness mechanism; special all-order contact demoted
+- **Axis:** formal path lifting for Keller maps / mechanism compression
+- **Eigenquestion:** is the order-six polynomial contact a special divisibility phenomenon of the public weighted-lift family, or is coefficientwise polynomial source triviality forced for every polynomial deformation through a polynomial map with unit Jacobian?
+- **Hypothesis:** let `F0 : A^m -> A^m` have constant unit Jacobian over a characteristic-zero field and let `G_s=F0+sum_{n>=1}s^n G_n` have polynomial coefficients. There is a unique formal source automorphism `psi_s=id+sum_{n>=1}s^n Y_n`, coefficientwise polynomial, satisfying `F0 o psi_s=G_s`. If the data are equivariant, uniqueness makes `psi_s` equivariant; if both maps preserve the same volume form, `psi_s` does as well. Applied after any coefficientwise-polynomial equivariant target flow, this explains all-order polynomial contact of the current family. The observed parity degree law is not implied by the general lemma.
+- **Discriminating test:** prove the coefficient recursion using the polynomial inverse `adj(DF0)/det(DF0)`, including the nonlinear lower-order composition terms; prove uniqueness and formal invertibility; then test equivariance by conjugating the solution and volume preservation by the formal chain rule. Instantiate the construction on the current family and check that its quotient coefficients coincide with the order-two through order-six replay. Independently derive or falsify the parity degree law from the associated graded recursion.
+- **Success criterion:** a complete algebraic induction establishes generic polynomial formal path lifting and reproduces the current coefficients, demoting finite formal contact to a general mechanism; a failure of polynomiality, uniqueness, equivariance, or volume preservation identifies the missing hypothesis. Family-specific scientific content survives only in invariants not forced by the lemma, such as minimal source-degree growth or failure of specialization to a finite polynomial automorphism.
+- **Kill condition:** invertibility of `DF0` is asserted only over the rational function field; the unit determinant is omitted; a formal source series is confused with a polynomial automorphism at fixed nonzero `s`; equivariance is inferred without uniqueness; or volume preservation is inferred without the chain rule and the Jacobian hypotheses.
+- **Claim boundary:** this is an algebraic formal-lifting statement and is expected to be standard. It would explain the computation, not create a new Jacobian counterexample. Any priority claim attaches only to a separately proved sharp degree-growth or infinity invariant after literature audit.
+- **Outcome:** the hypothesis holds by formal etaleness. The unit determinant makes `F0` etale by the Jacobian presentation criterion, so its unique lifting property across the successive square-zero thickenings `k[s]/(s^(N+1)) -> k[s]/(s^N)` supplies compatible source automorphisms at every order. In coordinates, the new coefficient is uniquely `adj(DF0) R_n`; the step theorem compiled and passed provider-free LeanMill governance with closure-record SHA-256 `fa798849981b715b043444aa31a4f3a5bdf5582947d5ead957a7ee57cc5bef73`. Global noninjectivity causes no conflict because the nilpotent lift follows the identity sheet and gives no inverse at nonzero parameter. Consequently the order-six removability and all-order extension are standard recovery. The degree sequence is gauge-dependent until minimized over admissible target corrections; the next scientific residual is a filtered minimal-degree or non-algebraizability invariant.
+
+## H-AXIOMPACK-JACOBIAN-UNBOUNDED-LIFT-20260720-13 - Force the formal source lift out of every fixed degree stage
+
+- **Status:** confirmed 2026-07-20; qualitative unboundedness proved, priority provisional
+- **Axis:** non-algebraizability / polynomial ind-group filtration
+- **Eigenquestion:** does the public generic-degree jump force the unique source-only formal-etale trivialization to have unbounded spatial degree, independently of the gauge-specific coefficient sequence observed through order six?
+- **Hypothesis:** for the unique formal source lift `F_s=F0 o psi_s`, the degrees in the source variables of the coefficients of `psi_s` are not uniformly bounded. If they were bounded by `D`, then `psi_s` would be a polynomial map over `k[[s]]` and hence a dominant polynomial map over `K=k((s))`. Generic function-field degrees would multiply under `F_s=F0 o psi_s`, forcing `4=3*m` for the positive integer generic degree `m` of `psi_s`, a contradiction.
+- **Discriminating test:** state the uniform-degree-to-`k[[s]][x]` implication precisely; verify that the normalized family and the source-only formal lift define the composition identity over `K`; prove dominance of `psi_K` from its unit Jacobian; identify the intermediate field `K(psi_K)` and prove the tower-degree identity `deg(F_s)=deg(psi_K) deg(F0)`; then use the already certified degrees three and four. Attack the argument without assuming that a Keller map is invertible.
+- **Success criterion:** an exact tower of finite function-field extensions yields the divisibility contradiction, proving that no fixed source-degree stage contains the compatible formal lifts. A counterexample to field identification, dominance, finite degree, or specialization kills the theorem and localizes the missing hypothesis.
+- **Kill condition:** bounded coefficient degree is confused with bounded parameter order; the inverse of `psi_K` is assumed polynomial; degree multiplication is asserted without dominance and finite extensions; the target-Hamiltonian gauge is used instead of the canonical source-only lift; or the public `3 -> 4` degree calculation is counted again as new.
+- **Claim boundary:** this is a qualitative unboundedness statement for the unique source-only lift of one public family. It gives no sharp coefficient-degree rate and no new Jacobian counterexample. Historical priority of this formal/global corollary remains under targeted review.
+- **Outcome:** the bounded-degree assumption assembles the unique formal-etale lift into a polynomial map `psi_K` over `K=k((s))`. Its unit Jacobian makes it dominant and generically finite. The composition identity gives the finite tower `K(F_s) subset K(psi_K) subset K(x)`, and algebraic independence identifies the upper relative degree with the seed degree three. The tower law would therefore make the generic family degree a multiple of three, contradicting its certified degree four. Hence the source coefficients have unbounded spatial degree. LeanMill ratified the abstract field-tower obstruction with zero provider calls; closure-record SHA-256 `824ffb395c67ff9d451e90355bed18fcf5791091dad7e2ab3e302aa85a88a89f`. Targeted search found the standard formal-etale and ind-group ingredients but not this exact corollary for the public family; novelty remains unconfirmed.
+
+## H-AXIOMPACK-JACOBIAN-FILTERED-FLOW-20260720-14 - Explain the parity degree sequence by an associated-graded flow
+
+- **Status:** confirmed 2026-07-25 in the declared target-Hamiltonian gauge; gauge-minimized rate remains open
+- **Axis:** filtered substitution group / quantitative degree growth in a fixed gauge
+- **Eigenquestion:** after fixing the declared target-Hamiltonian removal, are the top homogeneous parts of the unique source lift governed at every order by one explicitly integrable vector-field flow, rather than by unrelated cancellations?
+- **Orientation:** exact coefficients through order six have degrees `11,13,21,23,31`. Their top parts satisfy `Y3_top = -(7/18) r Y2_top`, `Y2_top(r)=0`, `Y4_top=Y2_top^2/2`, `Y5_top=Y2_top(Y3_top)`, and `Y6_top=Y2_top^3/6`, where `r=v(2t-3v)`. These already-observed identities motivate the prospective all-order filtration test; they do not count as its confirmation.
+- **Hypothesis:** write `X=Y2_top`, `f=-(7/18)r`, and express the substitution logarithm as `sum_j s^j Z_j`. The later primitives have strict degree deficit relative to `X`: for even `j>=4`, `deg(Z_j)-1 < 5j`, and for odd `j>=5`, `deg(Z_j)-1 < 5j-3`. Consequently the all-`X` index multiset is the only even maximizer, while the multiset with one `fX` and the remaining entries `X` is the only odd maximizer. Its different placements coalesce in the associated graded because `X(f)=0`. Thus the fixed-gauge source coefficients obey `d_(2k)=10k+1` and `d_(2k+1)=10k+3` for every `k>=1`, with explicit nonzero top forms supplied by the closed `X`-flow.
+- **Discriminating test:** derive the substitution-logarithm from the exact family and seed map in a filtration that tracks parameter order and spatial degree; prove the two strict deficit bounds without extrapolating from orders through six; then prove the word-maximality lemma and compare its top coefficients with the exact recursive source lift. Search directly for a primitive violating either bound before formalizing the positive result.
+- **Success criterion:** a symbolic filtration argument establishes both deficit inequalities and the noncancellation of the maximal index multisets, yielding the displayed all-order degree law. A later primitive at or above the threshold, a competing maximal index multiset, failure of top commutation, or a zero top coefficient kills the hypothesis and identifies the first exceptional order.
+- **Kill condition:** more finite orders are treated as an induction; total-degree behavior is promoted across target gauges; the substitution series is confused with its logarithm; noncommuting vector fields are replaced by scalar products; or the qualitative unboundedness theorem is counted again as the quantitative result.
+- **Claim boundary:** this concerns one public family in one explicitly fixed target gauge. Even confirmation would be a filtered deformation statement, not a new counterexample, a gauge-minimal rate, or a resolution of any remaining Jacobian conjecture.
+- **Outcome:** differentiating the exact factorization gives the target-relative velocity `V_s=(DF_s)^(-1)(partial_s F_s-X_H(F_s))`, with evolution fixed by `partial_s psi_s=D psi_s V_s`. Exact cancellation leaves scalar denominators regular at zero and spatial numerator degree 15, so its Taylor coefficients have degrees `11`, `13`, and at most `15` thereafter. Their first two top fields are `2X` and `-(7/12)r(2X)`, with `X(r)=0`. Parameter-cost deficits are therefore `0`, `3`, and at least `6`; Magnus brackets made only from the first field vanish, while the potentially tied odd brackets lose their top part by commutation. The closed `X`-flow supplies nonzero maximal coefficients, proving `d_(2k)=10k+1` and `d_(2k+1)=10k+3` for all `k>=1`. An independent inverse-branch elimination produces a discriminant cubic with the same square-root Newton face. LeanMill ratified both the filtered envelope and inverse-coordinate identities with zero provider calls; closure-record digests are `ef9557ec3a37f2ac7e0f5e6606f5225aba4109829d4f80e125e1f78186e9c58d` and `0d7203391bdeaa5e84bf49298bef7f6abb55c3f0625494f28d71a5b5225c66c7`. The rate is quotient total degree in fixed linear coordinates and fixed gauge; three-variable and gauge-minimized rates remain outside the statement.
+
+## H-AXIOMPACK-EVIDENCE-SUCCESSOR-20260725-15 - Reviewed functor images must cross the evidence-context boundary
+
+- **Status:** open / preregistered
+- **Axis:** language-successor identity / evidence-to-model transition
+- **Eigenquestion:** can an observation-driven campaign consume an independently reviewed campaign-local functor image, or does the successor compiler assume that every source object already belongs to a finite-model universe?
+- **Hypothesis:** a pointwise functor image needs the frozen source object identities, their multiplicities, reviewed target finite models, and an explicit target formula grammar. Formal-model contexts supply multiplicities from their universe records; evidence-incidence contexts supply unit multiplicity per declared observation. When the source grammar cannot type the target signature, the reviewed application owns the target grammar instead of receiving a host default. Dispatching on the source-context category at this invariant-owning seam will compile both through the same immutable successor-epoch transition.
+- **Discriminating test:** build a three-object exact `EvidenceTheoryContext`, bind a reviewed finite-model functor application and target grammar to all three object IDs, and call the registered generic successor compiler. Require a compiled formal context, exact source coverage, deterministic canonical-image counts, nonempty target coordinates, and a transition bound to the source context hash. Replay the existing formal-model fixture unchanged and attack missing, duplicate, cross-context object identities, and absent or malformed target grammars.
+- **Success criterion:** both source categories compile through `build_model_universe_image`; the evidence source uses unit weights; every object maps exactly once; the source epoch remains archived; the campaign-local successor resumes without registry mutation.
+- **Kill condition:** evidence objects require semantics beyond identity and declared multiplicity for pointwise image construction, the target image cannot replay independently of hidden source payloads, or supporting the transition requires a second campaign lifecycle.
+- **Claim boundary:** the functor image is complete relative to the frozen source panel. It carries no completeness claim over the ambient mathematical domain.
+- **Outcome:** the registered successor compiler now dispatches on the frozen source-context category. Formal contexts retain their census multiplicities; evidence contexts contribute one occurrence per declared object. AdapterForge accepts a versioned data-only functor application whose reviewed payload owns the target signature, target equation grammar, and one finite target model per source object. The host validates the grammar and every model before review; the compiler replays the receipt, canonicalizes the image, archives the evidence epoch, installs a formal successor epoch, and resumes the campaign without registry mutation. A missing or null target grammar is rejected for evidence sources. A rational-polynomial evidence source also replays through the source-compiler-first / generic-fallback route, so polynomial semantics stay with their registered adapter while the campaign-local application owns the abstraction. The end-to-end evidence first-fire and the wider language/Forge/campaign suite pass (`133 passed`).
+
+## H-AXIOMPACK-ALPHA-BLIND-ROUTING-20260725-16 - Flat semantic images must remove same-chart continuation affordances
+
+- **Status:** confirmed
+- **Axis:** search-wave state identity / representation transition
+- **Eigenquestion:** when a wave adds raw candidates but no semantic image, can the lifecycle still advertise unchanged-context or formula-only continuation and thereby repeat the same representational failure?
+- **Hypothesis:** `alpha_blind` identifies a representation boundary for the current epoch. Its lawful next moves are to author a theory-language request or stop/defer unresolved; unchanged-context and formula-coordinate continuation remain unavailable until a successor epoch or new external evidence changes the state identity.
+- **Discriminating test:** construct adaptive move portfolios for `expanding`, `alpha_blind`, and `exhausted` wave receipts. For `alpha_blind`, validate that `current_context` and `formula_coordinate` choices fail while `theory_language` and `defer_all` remain available. Preserve the current affordances for `expanding`; preserve stop/defer for `exhausted`.
+- **Success criterion:** the typed portfolio and decision validator agree with the receipt's continuation semantics, and a language request can flow through compiler-first, AdapterForge-on-gap, successor admission, and resumed navigation.
+- **Kill condition:** the restriction suppresses a move that can produce a new semantic carrier inside the unchanged abstraction, depends on substrate vocabulary, or silently chooses the successor representation for the leaf.
+- **Outcome:** the move portfolio now treats `alpha_blind` as an epoch boundary: unchanged-context continuation, formula-only continuation, and formula admission are unavailable; a leaf-authored theory-language request and unresolved deferral remain available. The evidence-to-formal first-fire exercises the full compiler-first / Forge-on-capability-gap / reviewed admission / resumed-navigation route, so the restriction does not pick the new representation on behalf of the leaf.
+- **Claim boundary:** this changes action availability after a measured flat image; the leaf still authors the mathematical representation and its discriminating test.
+
+## H-AXIOMPACK-JACOBIAN-MECHANISM-FIRST-FIRE-20260725-17 - A fresh flat evidence chart must cause an agent-authored mechanism successor
+
+- **Status:** confirmed as an apparatus-autonomy control
+- **Axis:** autonomous representation change / Jacobian calibration replay
+- **Eigenquestion:** can a fresh AxiomPack leaf, seeing only anonymous exact coefficient records under a flat predicate chart, identify the representational blind spot, author an executable successor request, and continue into a formal epoch without receiving the known parity formula, invariant coordinate, flow mechanism, target grammar, or functor image from the host?
+- **Hypothesis:** five exact coefficient records with parameter orders `2..6`, component degrees, opaque coefficient hashes, and one raw leading homogeneous vector are sufficient for an Ultra navigator to reject the flat pass/fail chart as non-generative. It will request a quotient, filtration, recurrence, or mechanism coordinate. The registered source compiler will report its typed capability gap; a distinct AdapterForge leaf will author a campaign-local data-only functor application with an explicit target signature and formula grammar; an independent reviewer will accept it only if it compresses or discriminates the frozen records without a source-injective relabeling. The source evidence epoch will then be archived and navigation will resume over the compiled formal image.
+- **Discriminating test:** run a new immutable `rational_polynomial_map.v1` evidence-induced campaign whose three executable hypotheses have the same truth profile on all five records. The object payloads expose exact replay facts but omit the known parity split, formulas `5n+1` and `5n-2`, the linear form `2t-3v`, the invariant `v(2t-3v)`, Hamiltonian/flow vocabulary, and every successor model or equation. Inspect the durable role prompts, workbench receipts, language request, compiler outcome, Forge source bytes, independent review, epoch archive, successor context, resumed navigation, and any LeanMill boundary artifact.
+- **Success criterion:** (1) a durable navigator call cites host-issued evidence receipts and authors a nonempty theory-language request; (2) the source adapter is consulted before the generic campaign-local compiler; (3) any Forge proposal is authored by its subscription role, contains an explicit target grammar and one target model per frozen source object, makes no registry mutation, and is accepted by a distinct reviewer; (4) the evidence context is archived and a formal successor epoch resumes; and (5) the resumed leaf either freezes a falsifiable formal task that reaches LeanMill or emits a typed scientific rejection/unresolved disposition. Credit requires the successor to do more than assign a unique arbitrary label to every source object.
+- **Kill condition:** the host supplies parity, the affine degree law, the invariant coordinate, target equations, or source-to-target models; the leaf remains in the flat chart; AdapterForge returns a source-injective lookup table with no reviewed structural rationale; the target grammar is absent or cannot replay; a registry mutation is required; the source epoch is overwritten; or finite-panel fit is promoted to an all-order or historical-priority claim.
+- **Claim boundary:** this is an apparatus-autonomy control over a result already known in the workspace. Passing it cannot establish mathematical priority. A scientific claim from the run needs a distinct statement, exact replay beyond the source panel, LeanMill ratification, and a separate prior-art disposition.
+- **Attempt 001 observation:** `attempt-8e81645d6ddf41329f37b066d003765f` reached the intended flat-chart diagnosis and source-compiler-first capability gap, then failed the control because the source workbench still exposed `governed_witness_construction`. After AdapterForge returned a typed runtime-unavailable receipt, recovery invoked the excluded construction task a second time. The attempt was interrupted and preserved. This isolated an adapter-task identity defect rather than a Jacobian-specific parser failure: prompt-level `forbidden_shortcuts` did not constrain the executable task catalog.
+- **Repair outcome:** a versioned adapter-scoped task-capability envelope now intersects the reviewed catalog during preflight, removes the task action when that intersection is empty, and is discarded when a successor changes adapter identity. The AdapterForge contract additionally requires an executable v2 functor image, including its target `formula_grammar`, when the compiler gap requires a usable successor rather than coordinates alone. Attempt 001 remains unchanged.
+- **Attempt 002 outcome:** `attempt-0194b3c80f204c029af55ac566afe937` passed every preregistered autonomy condition. The leaf authored request `theory-language-request:2598782f8a82988f4f75b8e6e3ffe681cbbf77551bdb6c8c5d8ff730a1b5d120`; source-compiler-first lowering reached the typed executable gap; AdapterForge attempt 006 authored a data-only unary functor image with an explicit equation grammar and five target models; host conformance found three coordinate classes over five objects; a distinct reviewer accepted it; no registry changed; source epoch 0 was archived; and successor commit `0fcc66bfc8df4273cbe08c53676661575b396ddac6f5d7745a9a172e8ae41d59` admitted epoch 1. The resumed leaf tested the involution presentation, observed two refuted stronger predictions and zero residual yield, and rejected it. Boundary completion `dac4b99413f08c7f696daac030d42a497a3e1a2b1a53d413cf51430a90acba8f` records `campaign_completed_no_candidate`; the state machine returns `complete`.
+- **Interpretation:** the control confirms autonomous language expansion through a reviewed executable successor and a typed scientific stop. It contributes no theorem and no priority evidence for the separately ratified fixed-gauge degree law.
+
+## H-AXIOMPACK-JACOBIAN-GAUGE-MINIMUM-20260725-18 - The second source jet has gauge-minimal quotient degree eleven
+
+- **Status:** falsified 2026-07-25; an admissible Hamiltonian gauge lowers the degree to five
+- **Axis:** target-gauge quotient / minimal source degree / cubic field invariant
+- **Eigenquestion:** after fixing the public first target-Hamiltonian jet, can any second-order target coordinate change reduce the required polynomial source correction below quotient total degree eleven?
+- **Hypothesis:** let `R2` be the exact second derivative residual after subtracting `X_H^2(F0)`, with `X_H=(-Q/2,P^2/12)`. In the cubic extension generated by `w`, `w^3-w^2+P*w-Q=0`, a second-order target change contributes only a base-field pair. For every polynomial source pair `Y=(U,V)` of total degree at most ten, the non-base remainder of `R2-DF0*Y` is nonzero. The existing degree-eleven source field makes the remainder zero. Hence the gauge-minimized second source degree is exactly eleven, even after relaxing the target correction from polynomial Hamiltonian to arbitrary rational `Q(P,Q)^2`.
+- **Discriminating test:** generate every source monomial `v^i*t^j` with `i+j<=D` independently in both components for `D=0,...,10`; substitute `gamma=P-2*w+3*w^2`, `v=w/gamma-1`, and `t=gamma-1+3*v/2`; clear common denominators; reduce modulo the exact inverse cubic; and solve the resulting rational linear system requiring the `w` and `w^2` coefficients of both components to vanish. Then replay the known degree-eleven source field as an exact upper-bound witness.
+- **Success criterion:** exact rank inconsistency excludes every degree at most ten, a content-bound dual obstruction functional replays independently, and the degree-eleven witness satisfies the composition equation. The finite certificate then reaches provider-free LeanMill ratification.
+- **Kill condition:** any degree-at-most-ten solution exists; the inverse coordinate or cubic identity fails; denominator handling changes the solution set; the known degree-eleven field does not solve the exact second-jet equation; or an omitted non-base composition term changes `R2`.
+- **Claim boundary:** exclusion uses the larger rational target-field class, so it implies a lower bound for polynomial Hamiltonian target gauges. A positive field-membership result would not imply a polynomial target correction. The result concerns only the second source jet in quotient coordinates and cannot establish the all-order gauge-minimized growth law or historical priority.
+- **Outcome:** the relaxed base-field system first became consistent at source degree five. Its initial polynomial target pair was not divergence-free, so it served only as a control. Imposing the full source lift ideals and parameterizing target Hamiltonians directly produced the exact admissible gauge `K=-P^2*Q/168-179*P*Q/1680+131*Q^2/672`. Its Hamiltonian field is `(-P^2/168-179*P/1680+131*Q/336, P*Q/84+179*Q/1680)`. Exact polynomial comparison gives a source pair of component degrees `(5,5)` satisfying `U in (v,t)` and `V in (t,v^2)`. For Hamiltonian degree bounds three and four, every source degree at most four is inconsistent by one rank, while degree five is consistent. Thus the fixed target-Hamiltonian gauge used for H14 is not coefficient-degree minimal even at order two. Arbitrary Hamiltonian degree remains to be excluded before calling five the gauge minimum.
+
+## H-AXIOMPACK-JACOBIAN-GAUGE-MINIMUM-20260725-19 - The second source jet has Hamiltonian gauge minimum five
+
+- **Status:** falsified as stated 2026-07-25; finite stabilization survived but the proposed subduction chain was incomplete
+- **Axis:** filtered target-coordinate algebra / source-degree normal form
+- **Eigenquestion:** can a polynomial Hamiltonian of degree above four exploit cancellations at infinity to reduce the second source correction below total degree five?
+- **Hypothesis:** after constraining pullback component degrees to `(8,10)`, the target-Hamiltonian image stabilizes at Hamiltonian degree four. The first target subduction `Delta=4*P^3+27*Q^2` has pullback degree ten; the next cancellation `Delta^2+48*P^5` has pullback degree eighteen and cannot enter the bounded window. Therefore the exact one-dimensional obstruction excluding source degrees at most four persists for arbitrary polynomial Hamiltonians, while the H18 outcome supplies a degree-five witness.
+- **Discriminating test:** enumerate all Hamiltonian monomials through total degree twelve, expand before constraining, jointly zero every pullback coefficient above component degrees `(8,10)`, and track the exact projected image rank. Combine the stabilized image with all liftable source monomials through degree four and extract a left-kernel functional nonzero on `R2`. Then prove the stabilization using the filtered subduction chain rather than finite rank repetition.
+- **Success criterion:** no new bounded target direction appears after degree four; one exact dual functional excludes the residual from the stabilized source-plus-target image; the all-degree filtration proof shows the next generator lies above the window; and the degree-five Hamiltonian witness replays exactly.
+- **Kill condition:** a higher-degree Hamiltonian supplies a new bounded direction or a degree-at-most-four source solution; `Delta^2+48*P^5` is not the next relevant subduction; the component window omits a term; or stabilization is inferred from finite bounds without the all-degree argument.
+- **Claim boundary:** this concerns the second formal source coefficient in quotient coordinates under polynomial Hamiltonian target gauges and full equivariant source lift ideals. It cannot establish the all-order gauge-minimized sequence or mathematical priority.
+- **Outcome:** sparse exact expansion through Hamiltonian degree twelve found bounded target-image rank seven at every bound from three onward, and the source-degree-at-most-four system remained inconsistent by one rank throughout. The proposed all-degree explanation failed its own kill condition: `Theta=4*P^3-18*P*Q+27*Q^2` has pullback degree eight, and `C=Theta-P^2+4*Q` has pullback degree six. Thus `Delta^2+48*P^5` is not the next relevant subduction. The finite evidence still supports degree five, but H19 cannot supply the proof.
+
+## H-AXIOMPACK-JACOBIAN-GAUGE-MINIMUM-20260725-20 - A quadratic filtered target coordinate proves the second-jet minimum
+
+- **Status:** confirmed 2026-07-26 as an exact second-jet theorem; historical priority remains unconfirmed
+- **Axis:** canonical target coordinate / arbitrary-degree Hamiltonian quotient / source-degree obstruction
+- **Eigenquestion:** does `C=4*P^3-18*P*Q+27*Q^2-P^2+4*Q` turn the arbitrary polynomial target-gauge problem into a quadratic normal form whose low filtered pieces are finite and exact?
+- **Hypothesis:** in coordinates `gamma=1-3*v/2+t` and `w=(1+v)*gamma`, with weights `(1,2)`, the pullback satisfies `C(F0)=gamma^2*(3*P+gamma-1)` and `27*Q^2=C+(18*P-4)*Q-4*P^3+P^2`. Every target polynomial therefore has a unique normal form `A(P,C)+Q*B(P,C)`. Its normal monomials have pairwise distinct leading terms and filtered degrees `4*a+6*c` and `6+4*a+6*c`. Hence the scalar pieces through degrees eight and ten have bases `{1,P,P^2,Q,C}` and `{1,P,P^2,Q,P*Q,C,P*C}`. Hamiltonian integrability then restricts every field inside the `(8,10)` component window to the seven Hamiltonians `{P,Q,P^2,P*Q,Q^2,P^3,P^2*Q}`.
+- **Discriminating test:** replay the `C` identities and degree preservation; derive both scalar bases from the normal form; compare them with exact coefficient ranks through target degree twelve; extract a primitive dual functional annihilating all degree-at-most-four source lifts and the seven target fields while evaluating nontrivially on `R2`; replay the H18 degree-five witness; then encode and ratify the normal-form, lower-bound, and upper-bound statements in Lean.
+- **Success criterion:** the all-degree normal form proves target-image stabilization without extrapolation, the dual functional proves source degree at least five, the explicit witness proves source degree at most five, and provider-free LeanMill ratifies the exact bounded theorem.
+- **Kill condition:** failure of any displayed identity; nonuniqueness or leading-term collision in the normal form; an eighth admissible Hamiltonian direction; failure of the dual obstruction; failure of the degree-five witness; or reliance on a finite Hamiltonian-degree ceiling for the final claim.
+- **Claim boundary:** this is a second-jet minimum for one normalized polynomial family, full equivariant source-lift ideals, and polynomial Hamiltonian target gauges. It does not supply an all-order gauge-minimized sequence, a new Jacobian counterexample, or a priority verdict.
+- **Outcome:** every displayed coordinate identity passed exact rational replay. The normal form has signatures `(2*c,2*a+2*c)` and `(2*c,2*a+2*c+3)` with filtered degrees `4*a+6*c` and `6+4*a+6*c`; the relevant scalar windows are exactly `{1,P,P^2,Q,C}` and `{1,P,P^2,Q,P*Q,C,P*C}`. Divergence-free coefficient comparison reduces the target field to the seven Hamiltonians `{P,Q,P^2,P*Q,Q^2,P^3,P^2*Q}`. The 27-source plus seven-target matrix has rank 34, augmented rank 35, and an eight-coordinate primitive dual pairing of 18 with the residual. The H18 Hamiltonian supplies a source witness of component degrees `(5,5)`, proving the minimum is five. The combined Lean target `complete_gauge_minimal_second_jet_certificate` closed provider-free with closure-record SHA-256 `198fff79881d699197cfb8e1a808cf247491c1d51153cb55527f4ed9966e4972` and kernel-parity SHA-256 `2e0e2fc730912ec891ae9b4f99bec80154b69cc139ddd561bc684113adba73ef`. A current-source audit found no statement of the coordinate `C`, exact Hamiltonian, seven-direction window, or minimum; the closest public overlap is the capped joint source/target composition computation in the Fong–Fable state note. This supports a narrow priority candidate pending specialist review.
+
+## H-LEANMILL-ANONYMOUS-DECLARATION-IDENTITY-20260726-21 - Anonymous signature identity must survive source displacement
+
+- **Status:** falsified 2026-07-26 by a cross-source same-signature collision
+- **Axis:** statement-integrity identity / canonical re-elaboration / source displacement
+- **Eigenquestion:** can governance distinguish an unchanged anonymous instance that moved because an earlier proof body changed length from an instance that was added, removed, or modified?
+- **Hypothesis:** line numbers are locations, not declaration identities. For anonymous declarations, the stable textual identity is the namespace-qualified declaration kind, normalized signature, and occurrence number among declarations with that same namespace, kind, and signature. Replacing the proof body of an earlier target will then preserve every downstream anonymous instance identity, while an added, removed, signature-mutated, or body-mutated instance remains observable by statement-integrity and canonical re-elaboration.
+- **Discriminating test:** compare an original source and a probe that differ only in the target proof length above several anonymous instances; require identical anonymous declaration keys and a passing statement-integrity/canonical-context classification. Then independently insert a new core-operation instance, remove an original instance, mutate an original signature, and mutate an original body; require the corresponding added-instance, deletion, or definition-alteration disposition. Include two anonymous instances with the same signature so occurrence identity is exercised.
+- **Success criterion:** harmless line displacement produces no deleted, added, shadowing, or context-hijack finding; each substantive mutation remains detected; existing parser and anti-laundering suites pass; and the previously rejected Jacobian target proceeds beyond both governance organs.
+- **Kill condition:** stable matching requires ignoring anonymous instances, duplicate signatures collapse, a substantive mutation passes, declaration ordering outside a same-signature class changes identity, or the Jacobian replay still reports line-shifted anonymous declarations.
+- **Claim boundary:** this repairs source-level declaration identity only. It does not weaken kernel compilation, axiom audit, statement preservation, or context-hijack detection.
+- **Outcome:** line displacement and same-signature duplicates were stable, and statement-integrity continued to detect insertion, removal, signature mutation, and body mutation. The canonical re-elaboration control exposed a collision with a registered-substrate anonymous instance having the same signature but a different implementation. Because independently parsed source units reset the occurrence index, signature identity alone could misclassify a newly injected core instance as pre-existing. The kill condition fired before the Jacobian replay.
+
+## H-LEANMILL-ANONYMOUS-DECLARATION-IDENTITY-20260726-22 - Anonymous declaration equality includes its implementation
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** declaration equality / source-unit union / context-hijack preservation
+- **Eigenquestion:** does a normalized full-declaration fingerprint provide a line-stable anonymous identity without allowing cross-source signature collisions?
+- **Hypothesis:** an anonymous instance has no user-level name, so the strongest portable textual identity available before elaboration is its namespace-qualified kind, normalized full declaration, and occurrence among identical declarations. This key is invariant under displacement and comment/whitespace edits. A signature or implementation mutation creates a new identity, so the original is reported missing and a newly introduced core instance is still classified as added. Exact repeated declarations remain distinct by occurrence.
+- **Discriminating test:** rerun the H21 displacement, duplicate, insertion, removal, signature-mutation, and implementation-mutation cases while a registered substrate contains a same-signature/different-body core instance. Require no collision with the injected instance, no removed context for the displaced unchanged declarations, and rejection of every substantive mutation. Run the parser, statement-integrity, canonical-reelaboration, and anti-laundering regression surfaces before replaying the Jacobian ratification.
+- **Success criterion:** every harmless displacement key is byte-identical; same-signature/different-body instances have different keys; exact duplicates have distinct occurrence suffixes; all substantive mutations are rejected; and the Jacobian target clears both declaration-governance organs.
+- **Kill condition:** comment or line edits change identity, exact duplicates collapse, any changed declaration is treated as pre-existing, or a downstream unchanged Jacobian instance is still classified as deleted/added.
+- **Claim boundary:** this changes only the pre-elaboration identity used to compare anonymous declarations. Kernel compilation and the existing semantic-hijack backstop remain authoritative.
+- **Outcome:** anonymous identities now use namespace-qualified kind, normalized full declaration, and occurrence within identical declarations; the occurrence suffix remains inside the anonymous leaf name. Four focused regression tests cover line displacement, exact duplicates, same-signature/different-body cross-source instances, and substantive mutations. The statement-integrity, canonical-reelaboration, parser, and anti-laundering controls passed. The previously rejected Jacobian artifact then cleared both declaration-governance organs and three carried targets closed, including the final combined certificate. No kernel, axiom, or target-preservation rule was relaxed.
+# H-ARC3-BOUNDARY-REACHABILITY-FIBER-20260726-01 - Preserve programs across observational refinement
+
+- **Status:** partially confirmed 2026-07-26; program persistence and boundary concentration passed, admitted context-transition identity did not
+- **Axis:** consumer-indexed control graph / persistent option identity / sparse task authority
+- **Eigenquestion:** can the acquisition learner preserve action-chunk identity and concentrate experiments on task-relevant reachability when its observational quotient refines, without completing the growing pairwise support relation?
+- **Hypothesis:** the accepted factor projection should be treated as the base of a boundary-reachability fiber system. Complete control-state identity owns transition consequences; evidence support is a fiber over that state; option identity is an operation program plus concrete initiation lineage; context changes reindex the program; and only the adapter's external event map owns task completion. Under this object, the six previously learned option programs survive the latest quotient split as stable, gated, or partially supported sections, while reachable source-operation and boundary-adjacent frontiers remain subquadratic in the number of sources.
+- **Discriminating test:** compile a common, substrate-agnostic fiber system from the current witnessed partial action relation; use the projection's admitted acquisition key as context identity; import the pre-refinement options by concrete initiation-member digests and operation words; reindex them through witnessed edges only; and report section transport, reachable graph size, context transitions, typed boundaries, option dispositions, and the highest-ranked boundary-relevant frontier. No live action is authorized by this test.
+- **Success criterion:** all six programs retain identity without old quotient IDs; every traversal has a concrete witness; at least one reachable context or typed-boundary transition concentrates the frontier; and the selected graph frontier is not a pairwise compatibility-completion objective.
+- **Kill condition:** a program needs its former class ID to remain callable, any missing edge is filled from a peer, concrete transport fails, no context or boundary structure is reachable, frontier size follows pairwise support growth, or common code imports substrate coordinates.
+- **Claim boundary:** success validates an acquisition representation and an offline experiment rank. It does not establish a task event or Level 3 completion.
+- **Outcome:** the current system compiled to 83 nodes, 86 relations, and 246 graph gaps versus 3,590 pairwise support gaps. All six pre-refinement option programs reindexed as stable from their concrete witnesses despite the current quotient reporting zero options. Five typed `control_exclusion` edges concentrated 109 reachable gaps to 35 boundary-relevant gaps. The acquisition context key was constant, exposing a missing mode factor. The next registered transaction queries operation 0 at a source where operation 3 already has two non-discharge boundary witnesses.
+
+# H-ARC3-BOUNDARY-SOURCE-DISCRIMINATOR-20260726-02 - Interrogate the exclusion source
+
+- **Status:** confirmed 2026-07-26 as an operation-specific safe alternative; no task increment
+- **Axis:** exceptional-set acquisition / boundary degeneration / external task authority
+- **Eigenquestion:** at a control source where operation 3 has twice caused an externally typed non-discharge boundary, what does the previously untested operation 0 do?
+- **Hypothesis:** the exact witnessed route `[0,0,0,0,0,0,0,0,2,1,1]` reaches the boundary source without borrowing an edge. Operation 0 will either remain in-lifecycle and expose an operation-specific safe alternative, cross another typed boundary and establish a multi-operation degeneration, or cause an externally reported task event.
+- **Discriminating test:** run one no-worker acquisition probe with budget 12 and require policy `boundary_reachability_frontier`, consumer action `execute_boundary_source_discriminator`, target source `943c3bdc3d7736f8e4ac3d5b0ef3ebf642c27e845ac8f672270524de8812369e`, operation 0, boundary distance zero, and the exact route above followed by operation 0.
+- **Success criterion:** the transaction reaches the registered source, executes operation 0, seals ordered evidence, and distinguishes the three outcomes without interpreting a non-discharge boundary as task completion.
+- **Kill condition:** policy, route, source, or operation changes; pairwise support completion outranks the boundary source; a route edge is invented; execution stops early; a model worker selects an action; or no sealed lineage is produced.
+- **Claim boundary:** the transaction characterizes one exceptional control source. Only an adapter-reported level increment changes Level 3 status.
+- **Outcome:** the exact 12-operation no-worker transaction reached the registered source and tested operation 0. It remained inside the lifecycle with relative controlled-base translation `(-5,0)` and one unit of ordered budget consumed. One row was admitted and sealed. The graph now selects operation 1 at the same source as the next exceptional-set discriminator.
+
+# H-ARC3-BOUNDARY-SOURCE-OP1-20260726-03 - Resolve the second untested operation at the exclusion source
+
+- **Status:** mixed result 2026-07-26; directional effect observed, acquisition novelty falsified
+- **Axis:** local controllability basis / exceptional-source completion
+- **Eigenquestion:** at the source where operation 3 exits control and operation 0 safely translates, does operation 1 join the safe translation branch, join the exclusion branch, or expose a third mechanism?
+- **Hypothesis:** the exact witnessed prefix `[0,0,0,0,0,0,0,0,2,1,1]` reaches the same source, and operation 1 distinguishes safe symmetry, a directional local basis, typed exclusion, or an external task event.
+- **Discriminating test:** run one no-worker probe at budget 12, requiring policy `boundary_reachability_frontier`, consumer action `execute_boundary_source_discriminator`, the registered source, operation 1, boundary distance zero, and exact route `[0,0,0,0,0,0,0,0,2,1,1,1]`.
+- **Success criterion:** execute and seal the registered query with its effect or boundary identity and external task receipt.
+- **Kill condition:** any route, source, operation, policy, or worker identity changes; an edge is invented; execution stops early; or no sealed lineage is produced.
+- **Claim boundary:** this resolves one operation at one exceptional source and carries no task-completion claim without an external level increment.
+- **Outcome:** the exact transaction observed the opposite directional translation `(5,0)` and no task increment. Persistent evidence did not grow: four prior rows already had the exact rendered source, operation, and successor. The history-indexed graph had surfaced a false acquisition gap because control history and evidence-admission support were conflated.
+
+# H-ARC3-ADMISSION-SUPPORT-FIBER-20260726-04 - Separate history control from evidence support
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** control-state identity / evidence-admission identity / acquisition novelty
+- **Eigenquestion:** can a coarser evidence-admission support fiber remove history-induced duplicate acquisition targets without altering the history-sensitive control relation?
+- **Hypothesis:** retain full history-lifted control nodes and edges, but aggregate observed-operation support over nodes with the same exact rendered-source digest. This will remove the just-refuted operation-1 gap, preserve operation 0's new witnessed edge, leave relation counts unchanged, and select a different boundary-relevant experiment without borrowing an outcome.
+- **Discriminating test:** compile the current graph with separate context and admission-support projections; compare node count, support-identity count, relation counts, deterministic edges, the registered source's support set, and the next frontier against the pre-correction receipt.
+- **Success criterion:** support identities are fewer than control nodes; operation 1 is supported at the registered source; all graph edges remain evidence-owned; the false gap vanishes; and the next acquisition target changes.
+- **Kill condition:** a successor or effect is copied, relation counts change from aggregation, the duplicate remains targeted, the new operation-0 edge disappears, or common code imports substrate vocabulary.
+- **Claim boundary:** this changes acquisition bookkeeping only. It does not certify history-independent dynamics or a task event.
+- **Outcome:** 85 history control nodes map to 82 exact rendered-source admission identities. The redundant operation-1 target disappeared without adding an edge, effect, or successor. The graph retained 88 witnessed relations and selected an admission-novel operation at a different typed-exclusion source.
+
+# H-ARC3-SECOND-BOUNDARY-SOURCE-20260726-05 - Test the next exclusion source
+
+- **Status:** confirmed 2026-07-26 as a second safe relative-translation witness; no task increment
+- **Axis:** exceptional-set reachability / safe continuation
+- **Eigenquestion:** at the second reachable source with a typed control-exclusion edge, does operation 0 provide a safe continuation, another exclusion, or a distinct exceptional mechanism?
+- **Hypothesis:** the exact witnessed prefix `[0,0,0,0,0,0,0,0,0,0,2,1,1]` reaches source `c1ad28cdb3c2eee116b05251c406bbf6fe5a730bad3aeb3cc8374723a7484807`, and operation 0 supplies an admission-novel discriminator under the separated support identity.
+- **Discriminating test:** run one no-worker budget-14 probe requiring boundary-reachability policy, the exact source, operation, route, boundary distance zero, and sealed ordered lineage.
+- **Success criterion:** execute the admission-novel operation and seal its factor effect, typed boundary, or external task event.
+- **Kill condition:** any identity changes, an edge is copied through support aggregation, evidence growth is zero, execution stops early, or a model worker selects an action.
+- **Claim boundary:** this characterizes a second exceptional source; only external task authority can report Level 3 completion.
+- **Outcome:** the exact budget-14 transaction added one row. Operation 0 remained in-lifecycle with the same relative translation `(-5,0)` and budget decrement seen at the first exclusion source. The next graph target is operation 0 at a third source where operation 2 is excluded, reached through a repeated length-20 operation-0 program.
+
+# H-ARC3-THIRD-BOUNDARY-SOURCE-20260726-07 - Transport the repeated option to an exclusion source
+
+- **Status:** confirmed 2026-07-26 as an option-domain boundary; no task increment
+- **Axis:** persistent option transport / boundary of controllability
+- **Eigenquestion:** does the repeated safe-translation option transport to the source where operation 2 is excluded, and what does operation 0 do there?
+- **Hypothesis:** twenty witnessed repetitions of operation 0 followed by operation 2 reach source `4ab929993a22db595db68125a854b6e5c70ac5791623119cbddea473b29225c5`; operation 0 there will either extend the safe relative-translation option, expose its domain boundary, or trigger an external task event.
+- **Discriminating test:** run one no-worker budget-22 probe requiring the boundary-reachability policy, exact source, operation 0, boundary distance zero, separated support identity, and route `[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0]`.
+- **Success criterion:** transport every witnessed prefix edge, execute an admission-novel terminal operation, and seal its effect, boundary, or external event.
+- **Kill condition:** program transport borrows an edge, any registered identity changes, evidence growth is zero, execution stops early, or a model worker selects an action.
+- **Claim boundary:** this tests one option-domain boundary and carries no task-completion claim without an external level increment.
+- **Outcome:** the exact length-22 transaction transported the repeated option to the registered source, where operation 0 crossed a newly inferred non-discharge boundary. Operation 2 was already excluded there. The next registered query tests operation 3 at the same two-operation degeneration.
+
+# H-ARC3-THIRD-BOUNDARY-OP3-20260726-08 - Seek a safe exit from the two-operation degeneration
+
+- **Status:** confirmed 2026-07-26 as a third excluded operation; no task increment
+- **Axis:** local control complement / exceptional-source degeneration
+- **Eigenquestion:** at the source where operations 0 and 2 are excluded, does operation 3 provide a safe exit, join the exclusion surface, or trigger an external task event?
+- **Hypothesis:** the witnessed length-21 prefix reaches the same source; operation 3 will distinguish a safe complement from a three-operation exclusion surface.
+- **Discriminating test:** run one no-worker budget-22 probe requiring boundary-reachability policy, exact source, operation 3, boundary distance zero, and route `[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3]`.
+- **Success criterion:** execute and seal the registered operation as a traversable effect, typed boundary, or external task event.
+- **Kill condition:** any identity changes, an edge is borrowed, execution stops early, or a model worker selects an action.
+- **Claim boundary:** this resolves a local control complement; only external authority can report Level 3 completion.
+- **Outcome:** the exact no-worker length-22 transaction reached the registered source and operation. Operation 3 crossed a newly inferred non-discharge boundary, joining operations 0 and 2 on the exclusion surface; operation 1 is the only admitted local direction. The sealed slice is `eval_20260726T205139058694Z.jsonl` with SHA-256 `10e5388a79a6a4b33dceb205ffaf45ec95ed616b2dabe581dcb2951aa0147d7f`. The external counter remained at two completed levels. Audit then found that reachability receipts sourced edge references from a global effect class, smearing the new row across peer source-operation relations with the same boundary effect. H09 repairs that provenance boundary before another transaction.
+
+# H-ARC3-RELATION-LINEAGE-OWNERSHIP-20260726-09 - Give each reachability edge its own witnesses
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** evidence identity / source-operation relation / receipt provenance
+- **Eigenquestion:** can evidence lineage be owned by the witnessed source-operation relation without changing any transition, effect, target, support, or frontier identity?
+- **Hypothesis:** effect-class evidence is correctly aggregated for effect support but cannot witness a concrete relation. Retaining `relation_evidence_refs[(source, operation)]` in the common partial-action system and consuming it in boundary reachability will attach the latest operation-3 row only to its observed source while preserving every graph and frontier identity.
+- **Discriminating test:** compile a two-source shared-effect fixture and the current sealed bank before and after the change; compare relation targets, effects, supports, boundaries, graph counts, and frontier, while checking exact edge-reference ownership.
+- **Success criterion:** peer references disappear from relation receipts; shared effect support remains aggregated; no scientific graph identity or frontier changes.
+- **Kill condition:** any relation, target, effect, boundary, support identity, or frontier changes; effect support fragments; or a peer reference remains.
+- **Claim boundary:** this repairs provenance and contributes no task event.
+- **Outcome:** the common compiler now retains relation-owned evidence references separately from effect-class references. A two-source shared-effect fixture preserves aggregate support while giving each edge only its own row. Recompiling the sealed bank preserved 86 nodes, 91 relations, 83 support identities, 7 boundaries, 83 deterministic edges, 1 ambiguous edge, and the exact next frontier. The latest op3 row is now cited only by source `4ab929…`; the older `c1ad28…` relation cites only its own row. The apparent endpoint mismatch was therefore a provenance-smearing artifact.
+
+# H-ARC3-HISTORY-LIFT-SHORT-CIRCUIT-20260726-06 - Prune candidates dominated by the selector ordering
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** history-state compiler / exact selector dominance / acquisition latency
+- **Eigenquestion:** can the history-lift selector stop after the shortest zero-boundary-ambiguity suffix without changing the selected action system?
+- **Hypothesis:** because boundary ambiguity is nonnegative and suffix length is the first tiebreak after that minimum, once one history family reaches zero at length L, larger lengths in that family cannot win and the other family needs evaluation only through L. On current evidence this reduces 66 candidates to four while preserving the selected action-suffix-one system hash.
+- **Discriminating test:** retain an exhaustive mode; run pruned and exhaustive selection on identical evidence and compare selected family, suffix, action-system SHA-256, boundary count, section, and relations. Include a fixture where the second family could win at a shorter or equal length.
+- **Success criterion:** selected scientific identities are byte-identical and only explicit candidate-search diagnostics differ.
+- **Kill condition:** any selected identity changes, zero is assumed before observation, a shorter second-family candidate is skipped, or pruning alters a scientific relation.
+- **Claim boundary:** this is an exact compiler optimization; it contributes no Level 3 evidence.
+- **Outcome:** pruned mode evaluated four candidates and exhaustive mode 66. Both selected action suffix length one with action-system SHA-256 `c2613b4dd789c564c35af5184b768e577cd83cb0b64551dc9aceb0e5ca759e10`, zero boundary ambiguity, and the same graph and frontier. A fixture where operation-effect history wins remains passing.
+
+# H-ARC3-PERSISTENT-PREDICTIVE-CONTEXT-20260726-10 - Refine state by witnessed future tests
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** predictive state identity / persistent observation context / counterexample-guided refinement
+- **Eigenquestion:** is the one remaining non-commuting source-operation relation reducible to finite action/effect history, or does it witness a missing persistent observation-derived context coordinate?
+- **Hypothesis:** action and operation/effect suffixes through length 32 will retain exactly one ambiguity because the current projection identifies concrete presentations with different witnessed intervention futures. The exact collision will expose a recurring observation residual from which a substrate-general, non-injective predictive refinement can be learned.
+- **Discriminating test:** recompile the latest sealed evidence exhaustively through suffix length 32; emit the surviving relation's owned witnesses, factor identities, source digests, and observation residual; then test the minimum observation-derived partition against held-out witnessed future tests while rejecting full-render and coordinate-memorizing splits.
+- **Success criterion:** the refinement is smaller than rendered identity, preserves transition and lineage evidence, improves held-out future-test prediction, and reduces non-commutation or yields multiple witnessed contexts.
+- **Kill condition:** longer history resolves the collision; concrete sources do not differ; no recurring residual predicts the future-test split; or only source-injective, coordinate-specific, or lineage-contaminated refinements work.
+- **Claim boundary:** This concerns predictive state identity and acquisition control. It does not establish task completion or change the external level counter.
+- **Outcome:** after correcting boundary identity in H11, both history families retained one boundary-contaminated collision through suffix length 32. The three operation-1 sources shared every admitted factor but differed by successive removals of one translation-equivalent 2×2 component, giving active counts `3,2,1`; the first two looped and the third carried the typed terminal boundary. The learned component-reservoir coordinate compresses 86 rendered sources to four values, removes the collision, survives palette transport, and predicts six held-out rows under a different operation in an older trace. Integrated compilation yields four contexts, two context-transition edges, and zero ambiguous edges while the external level counter remains two.
+
+# H-ARC3-HISTORY-BOUNDARY-IDENTITY-20260726-11 - Preserve adapter partiality through history compilation
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** transition lifecycle identity / sealed trajectory lowering / partial action
+- **Eigenquestion:** does the history compiler preserve an adapter-typed terminal or reset boundary when the row is not repeated in the trajectory's supplemental boundary-index set?
+- **Hypothesis:** the ordinary compiler already routes typed boundaries to partiality, while history trajectory ingestion checks only supplemental indices. Applying `transition_boundary_kind` there and preserving its kind will reclassify the surviving operation-1 collision as law-versus-terminal partiality without changing law rows, histories, observations, or references.
+- **Discriminating test:** compile a typed epoch-boundary fixture with no supplemental index, require no successor target and exact boundary-kind preservation, then recompile the latest sealed evidence and compare relation ownership.
+- **Success criterion:** the terminal row leaves ordinary effect support, appears under its adapter boundary kind, resets predictive histories, and leaves every non-boundary witness unchanged.
+- **Kill condition:** the row remains a law effect, is rewritten as control exclusion, changes a law identity, fails to reset histories, or moves evidence between relations.
+- **Claim boundary:** This repairs transition lifecycle identity. It neither supplies a context coordinate nor changes the external level counter.
+- **Outcome:** sealed trajectory ingestion now applies the same adapter-boundary classifier as ordinary transition lowering, preserves the specific boundary kind, and resets both predictive histories. The terminal operation-1 row moved out of ordinary effect support and into `epoch_boundary` partiality with its exact reference. The surviving collision became correctly boundary-contaminated; law witnesses were unchanged.
+
+# H-ARC3-OPTION-REFINEMENT-TRANSPORT-20260726-12 - Pull option initiation back along refinement
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** persistent skill identity / predictive refinement morphism / witnessed option images
+- **Eigenquestion:** can a learned option retain identity and lineage when one prior initiation node refines into several predictive-context children?
+- **Hypothesis:** each refined node has an explicit parent in the prior graph. Reindexing an option over that parent's inverse image will preserve option identity while letting child executions become stable, context-gated, partial, or unsupported according to their own witnessed edges. Digest-only lookup falsely reports all six current options absent.
+- **Discriminating test:** use a two-child fixture to require context-gated transport when both paths exist and partial support when one child edge is missing; then reindex the six current options and require removal of refinement-induced `initiation_source_absent` failures.
+- **Success criterion:** only explicit parent lineages resolve; variants cite current children; sibling edges are never borrowed; option/evidence identities stay fixed; and the live bank is no longer uniformly absent.
+- **Kill condition:** parentless resolution, sibling borrowing, identity drift, hidden failed children, or persistent absence despite a valid parent morphism.
+- **Claim boundary:** This transports learned action chunks across state refinement. It neither certifies unwitnessed option images nor changes the external level counter.
+- **Outcome:** boundary reachability now retains an explicit current-node-to-parent lineage morphism. Reindexing pulls prior initiation identities back to their refined children and executes every child on its own edges. The fixture produces context-gated variants with two complete children and partial support when one child edge is missing. The six live options moved from uniformly unsupported to three context-gated and three partially supported; no option fails solely through refinement-induced initiation absence.
+
+# H-ARC3-CONTEXT-CROSSING-OP0-20260726-13 - Intervene after a learned reservoir transition
+
+- **Status:** target not reached 2026-07-26; apparatus counterexample
+- **Axis:** context-indexed acquisition / boundary reachability / live intervention
+- **Eigenquestion:** what is the witnessed image of operation 0 at the first reachable boundary source whose route crosses the learned reservoir context?
+- **Hypothesis:** the exact route `[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0]` reaches source `3f5f8861…` at boundary distance zero after a witnessed context transition. Operation 0 will yield a context-specific law, typed partiality, or external task event.
+- **Discriminating test:** run one Codex-only acquisition probe with budget 44 and require boundary-reachability policy, the registered source/operation/route, context-crossing and boundary flags, sealed lineage, and zero worker-selected actions.
+- **Success criterion:** the registered operation executes or an adapter boundary stops it; its row is sealed under exact source-operation lineage; recompilation retains zero ambiguity; only an external level increment counts as task completion.
+- **Kill condition:** identity or route drift, sibling-edge borrowing, unexplained early stop, model-worker action selection, missing sealed evidence, or renewed ambiguity.
+- **Claim boundary:** This is one context-indexed intervention. It establishes Level 3 completion only if the external adapter increments the counter.
+- **Outcome:** the no-worker run selected the exact registered 44-action route and executed its first 22 presses. At the first context crossing, operation 1 produced the exact previously witnessed transition `739de7c5… → a9c3d74d…`, but multilife control converted the same-epoch respawn into a task-open no-good and replanned, so the registered final operation 0 was never reached. A second 14-action leg completed; four evidence rows were admitted and slice `eval_20260726T234449824661Z.jsonl` (`1745e716…`) was sealed. The adapter reported zero levels gained and two completed levels. The run localized a task-adjudication/transition-identity conflation addressed by H14.
+
+# H-ARC3-CONTEXT-TRANSITION-OWNERSHIP-20260726-14 - Keep task non-discharge separate from traversability
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** task adjudication / transition partiality / predictive context lifecycle
+- **Eigenquestion:** when a same-epoch repaint exactly matches a prior source-operation-successor law, can an open task counter turn it into a control no-good?
+- **Hypothesis:** task non-discharge and transition partiality have different owners. An exact prior law triple remains traversable; the controller must retain its successor, reset finite histories, and replan in the new context without adding an exclusion. A legacy supplemental marker cannot override the same law identity.
+- **Discriminating test:** test a known same-epoch repaint through multilife control and sealed-edge compilation; require context-transition disposition and no exclusion. Preserve exclusions for unmatched no-goods and partiality for adapter-typed epoch/reset boundaries. Recompile the current ARC evidence and require the reservoir refinement with zero ambiguity.
+- **Success criterion:** exact law triples remain traversable, histories reset, evidence lineage persists, unmatched no-goods remain excluded, typed lifecycle boundaries remain partial, and the current graph retains four contexts with zero ambiguity.
+- **Kill condition:** traversal without exact law, traversal of an adapter terminal, continued exclusion of the duplicate law, history carry across respawn, lineage loss, or reservoir loss.
+- **Claim boundary:** This repairs control semantics around observed respawns. It does not assert Level 3 completion.
+- **Outcome:** exact known same-epoch repaint triples now receive a context-transition disposition, retain their observed successor, reset finite histories, and trigger replanning without a no-good. The sealed marker compiler likewise refuses to overwrite an exact law triple while preserving unmatched no-goods and adapter lifecycle boundaries. Recompiling the latest evidence restored the reservoir coordinate and produced 218 nodes, four contexts, five context-transition edges, five typed boundaries, and zero ambiguous edges.
+
+# H-ARC3-CONTEXT-REFINED-SHORT-CIRCUIT-20260726-15 - Select in the refined state space
+
+- **Status:** partially falsified 2026-07-26; cost and exhaustive-equivalence claims confirmed
+- **Axis:** abstraction selection / counterexample refinement / compilation cost
+- **Eigenquestion:** can the history selector test an evidence-derived predictive coordinate at each candidate and stop at the first zero-ambiguity candidate without changing the exhaustive selection?
+- **Hypothesis:** zero boundary ambiguity is the lower bound. Once a history candidate plus an admitted predictive coordinate reaches it, longer suffixes in that family are dominated and the other family only needs evaluation through that suffix length. The current bank should fall from 66 raw candidates to at most four while retaining the exhaustive coordinate and action-system digests.
+- **Discriminating test:** move reservoir discovery into candidate evaluation, compare pruned and exhaustive selection on a collision fixture and the latest sealed ARC slice, and compare graph/context/boundary/option/frontier identities with H14.
+- **Success criterion:** identical selected history, coordinate, and system digests; zero ambiguity; at most four raw live candidates; unchanged H14 scientific outputs.
+- **Kill condition:** identity drift, ambiguity, frontier drift, loss of compression eligibility, or more than four raw candidates.
+- **Claim boundary:** This changes selector cost only. It does not add environmental evidence or alter task discharge.
+- **Outcome:** pruned selection evaluated two raw candidates versus 66 in the exhaustive oracle, and both selected action suffix zero, predictive-context digest `140ba9cf…`, action-system digest `c653c994…`, zero ambiguity, and the same frontier. The prediction that H14's chart identity would persist was false: selecting the reservoir coordinate before ranking history removed the 22-action suffix and compressed 218 nodes / 218 relations to 130 nodes / 139 relations while retaining all 130 evidence-support identities, four contexts, five context transitions, and five typed boundaries. The former history coordinate was compensating for a missing latent coordinate. Ninety-nine focused tests passed; no environment action occurred and the completed-level counter remains two.
+
+# H-ARC3-CONTEXT-REFINED-FRONTIER-OP0-20260726-16 - Traverse two context transitions to the boundary frontier
+
+- **Status:** target reached 2026-07-26; transition-count prediction falsified
+- **Axis:** active skill acquisition / context-transition composition / boundary intervention
+- **Eigenquestion:** can the controller traverse both known reservoir-context transitions and execute operation 0 at the first boundary-relevant source in the compressed chart?
+- **Hypothesis:** route `[0] * 20 + [2] + [0] * 21 + [2, 0]` reaches source `2fb837ceaed2…`. Known transitions at indices 20 and 42 reset histories and replan, yielding legs of 21, 22, and one action without a no-good.
+- **Discriminating test:** run one no-worker `ls20` acquisition probe with budget 44, require the registered plan identity and context/boundary flags, traverse both known transitions, execute the target or stop under an adapter-owned boundary, seal evidence, and recompile.
+- **Success criterion:** no worker actions; no exclusions on known transitions; target operation executes or its exact adapter boundary fires; source-operation lineage persists; recompilation has zero ambiguity; only an external adapter increment establishes Level 3 completion.
+- **Kill condition:** plan drift, known-transition exclusion, history carry, budget exhaustion before target, untyped stop, missing evidence lineage, ambiguity, or worker action.
+- **Claim boundary:** This is one intervention. It establishes task completion only through the external adjudicator.
+- **Outcome:** the no-worker probe selected the exact registered chart, source, operation, flags, and route. It executed two 22-action legs, not the predicted 21/22/1 decomposition: the first ended in a known context transition and replanned without exclusion; the second reached `2fb837ce…` and executed operation 0, which produced an inferred environment boundary. One row was admitted and slice `eval_20260727T001613804937Z.jsonl` (`822f26b1…`) was sealed. Recompilation retained 130 nodes, four contexts, five context transitions, and zero ambiguity while adding the sixth typed boundary. The adapter remained at two completed levels.
+
+# H-ARC3-CONTEXT-REFINED-FRONTIER-OP3-20260726-17 - Map the next operation at the same exceptional source
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** exceptional-source interrogation / partial action completion / task event
+- **Eigenquestion:** what is the image of operation 3 at source `2fb837ce…`, where operation 0 is partial and another operation changes predictive context?
+- **Hypothesis:** route `[0] * 20 + [2, 0] + [0] * 20 + [2, 3]` crosses one known context transition after 22 actions, then executes operation 3 at the registered source. The image will be a law transition, typed boundary, or external task event.
+- **Discriminating test:** run one no-worker probe with budget 44, require the registered source/operation/route/flags, retain and replan after the known transition, then seal and recompile the target edge.
+- **Success criterion:** no worker actions or known-transition exclusion; operation 3 executes at the exact source or its adapter boundary fires; lineage is sealed; recompilation has zero ambiguity; task completion requires the external increment.
+- **Kill condition:** identity drift, exclusion, history carry, budget exhaustion, off-target untyped stop, lineage loss, ambiguity, or worker action.
+- **Claim boundary:** This maps one operation. Task completion remains external.
+- **Outcome:** the no-worker probe executed the exact route as two 22-action legs. The known context transition replanned without exclusion; operation 3 then executed at `2fb837ce…` and produced an inferred environment boundary. One row was admitted and slice `eval_20260727T002329717636Z.jsonl` (`502fa55d…`) was sealed. Recompilation retained 130 nodes, four contexts, five context transitions, and zero ambiguity, with seven typed boundaries and 141 relations. The completed-level counter stayed at two.
+
+# H-ARC3-POST-TRANSITION-EPOCH-SIBLING-OP0-20260726-18 - Interrogate the epoch-boundary exceptional set
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** exceptional-set acquisition / sibling operation / lifecycle boundary
+- **Eigenquestion:** what is the operation-0 image at the first reachable source already carrying an adapter-owned epoch boundary under operation 1?
+- **Hypothesis:** route `[0] * 20 + [2, 0] + [0] * 20 + [2, 1] + [0] * 20 + [2, 0]` crosses two known context transitions, reaches `495dd39e…`, and executes operation 0. Its sibling operation 1 is already an `epoch_boundary`; operation 0 will expose a law image, second partial boundary, or external task event.
+- **Discriminating test:** run one no-worker probe with budget 66, require exact plan/source/operation/flags, retain and replan after both known transitions, then seal and recompile the target.
+- **Success criterion:** no worker actions or known-transition exclusions; target executes or its exact adapter boundary fires; lineage persists; ambiguity remains zero; task completion requires the external increment.
+- **Kill condition:** identity drift, exclusion, history carry, budget exhaustion, off-target stop, lineage loss, ambiguity, or worker action.
+- **Claim boundary:** This maps one sibling operation at a lifecycle boundary. Task completion remains external.
+- **Outcome:** the no-worker probe executed the exact 66-action route as three 22-action legs. Both known transitions replanned without exclusions; operation 0 then executed at `495dd39e…`. The live controller initially returned an observed acquisition, but the sealed row carries adapter `epoch_boundary` identity. H21's corrected compact recompilation therefore types operation 0 as a boundary; the intermediate context-transition attribution from the archive-order-defective chart is superseded. Slice `eval_20260727T003326766130Z.jsonl` (`048d772c…`) was sealed, and the completed-level counter stayed at two.
+
+# H-ARC3-POST-TRANSITION-EPOCH-SIBLING-OP2-20260726-19 - Complete the next sibling image
+
+- **Status:** target reached 2026-07-26; abstraction counterexample
+- **Axis:** exceptional-source operation table / context-indexed partial action
+- **Eigenquestion:** what is the operation-2 image where operation 1 is an epoch boundary and operation 0 changes context?
+- **Hypothesis:** route `[0] * 20 + [2, 0] + [0] * 20 + [2, 1] + [0] * 20 + [2, 2]` crosses both known transitions, reaches `495dd39e…`, and executes operation 2, producing a deterministic image, typed boundary, or external task event.
+- **Discriminating test:** run one no-worker probe with budget 66, require exact plan identity and transition replans, then seal and recompile the target image.
+- **Success criterion:** no worker actions or known-transition exclusions; exact target execution or adapter boundary; lineage retained; zero ambiguity; external increment required for task completion.
+- **Kill condition:** identity drift, exclusion, history carry, premature exhaustion/stop, lineage loss, ambiguity, or worker action.
+- **Claim boundary:** This fills one sibling image. Task completion remains external.
+- **Outcome:** the no-worker probe traversed both known context transitions and operation 2 fired an adapter-owned epoch boundary at `495dd39e…`. No law row was added; the sealed slice is `eval_20260727T004004072646Z.jsonl` (`55b43ef2…`), and the level counter stayed two. Admitting the eighth boundary exposed a coordinate failure: suffix-zero reservoir refinement no longer commutes, so selection reintroduced an action suffix of length 22. The graph expanded from 130 to 240 nodes while support identity remained 130. H20 tests whether the suffix is a proxy for the preceding context event.
+
+# H-ARC3-CONTEXT-EVENT-CAUSAL-STATE-20260726-20 - Replace raw path memory with the entering event
+
+- **Status:** falsified 2026-07-26 before planner implementation
+- **Axis:** action learning / causal state / canonical history coordinate
+- **Eigenquestion:** is the required 22-action suffix merely a proxy for the operation/effect that entered the current predictive context?
+- **Hypothesis:** suffix-zero collisions agree on current factors and reservoir count but differ at the oldest token of the minimal suffix, the prior context-transition event. Persisting that event while discarding 21 transport tokens will preserve zero ambiguity and lineage with fewer than 160 nodes.
+- **Discriminating test:** expose suffix-zero conflict lineage; compare current observations, reservoir count, raw histories, and last context-changing event; compile an event-persistent candidate that updates only on context change and clears on lifecycle boundary; compare against suffix 22 exhaustively.
+- **Success criterion:** all conflicts separate by event token; relation/evidence refs unchanged; zero ambiguity; fewer than 160 nodes; live/offline keys agree; exhaustive digest equality.
+- **Kill condition:** same event lineage across a conflict, future/hidden-state dependence, token carry across boundary, lineage drift, ambiguity, at least 160 nodes, or key divergence.
+- **Claim boundary:** This tests a general causal-state coordinate. It supplies no environment law or task completion.
+- **Outcome:** suffix-zero conflict lineage resolves to component counts 3, 2, 1, and 0, so the collisions do not share the same reservoir coordinate and do not require an entering-event state. The learner instead conflates global archive append order with temporal order: independent sealed trajectories interleave high and low counts, causing the correct within-trajectory monotone coordinate to be rejected. No planner or live-key change was made.
+
+# H-ARC3-RESERVOIR-TRAJECTORY-ORDER-20260726-21 - Give monotonicity an explicit sequence owner
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** evidence identity / temporal order / canonical coordinate selection
+- **Eigenquestion:** does checking depletion inside each trajectory restore the suffix-zero reservoir chart after the operation-2 boundary?
+- **Hypothesis:** component count is nonincreasing within each sealed trajectory; global append order has no temporal authority across trajectories. Explicit sequence identity/position will eliminate all four collisions and return the graph below 160 nodes without lineage change.
+- **Discriminating test:** add optional sequence identity/position to reservoir witnesses, enforce monotonicity plus a strict decrease within sequences, populate metadata from trajectory evidence, add an interleaving fixture, and compare pruned/exhaustive selection on the latest bank.
+- **Success criterion:** fixture coordinate equality; suffix zero; zero ambiguity; fewer than 160 nodes; relation/evidence, boundary, and support identity preservation; exhaustive digest equality.
+- **Kill condition:** within-sequence failure, ambiguity, at least 160 nodes, lineage drift, cross-sequence boundary carry, or exhaustive disagreement.
+- **Claim boundary:** This repairs order ownership. It adds no environment law or task completion.
+- **Outcome:** reservoir witnesses now carry optional sequence identity/position; monotonicity and strict decrease are evaluated within sequences. The coordinate digest identifies the executable projection rather than witness counts or threshold. Pruned selection evaluated two candidates and exhaustive selection 66; both returned suffix zero, context digest `2a8fc092…`, system digest `71e3d516…`, and identical 130-node / 143-relation graphs with eight boundaries, six context transitions, 130 support identities, and zero ambiguity. One hundred focused tests passed. The level counter remains two.
+
+# H-ARC3-POST-TRANSITION-EPOCH-SIBLING-OP3-20260726-22 - Close the lifecycle-source operation table
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** exceptional-source completion / lifecycle partial action / task event
+- **Eigenquestion:** what is the final unmapped operation where operations 0, 1, and 2 are adapter-owned epoch boundaries?
+- **Hypothesis:** route `[0] * 20 + [2, 0] + [0] * 20 + [2, 1] + [0] * 20 + [2, 3]` crosses two known context transitions, reaches `495dd39e…`, and executes operation 3, closing the local table as a boundary, law image, or external event.
+- **Discriminating test:** run one no-worker probe with budget 66, require the compact chart and exact plan identity, traverse both known transitions, execute operation 3, seal lineage, and recompile.
+- **Success criterion:** no worker action, history inflation, or known-transition exclusion; exact target execution or boundary; all sibling operations typed; zero ambiguity; external increment required for completion.
+- **Kill condition:** inflated chart, identity drift, exclusion, history carry, premature stop, lineage loss, ambiguity, or worker action.
+- **Claim boundary:** This closes one local table. Task completion remains external.
+- **Outcome:** the no-worker probe retained the suffix-zero compact chart, traversed both context transitions, and operation 3 fired an adapter-owned epoch boundary at `495dd39e…`. Slice `eval_20260727T010510769021Z.jsonl` (`8cc46b8b…`) was sealed. Recompilation gives 130 nodes, 144 relations, nine typed boundaries, six context transitions, and zero ambiguity. All four operations at this source are epoch boundaries; the external counter stayed at two.
+
+# H-ARC3-SECOND-EPOCH-SOURCE-OP1-20260726-23 - Test a distinct lifecycle source
+
+- **Status:** confirmed 2026-07-26 as an epoch boundary; no task increment
+- **Axis:** exceptional-source diversity / sibling mechanism / task event
+- **Eigenquestion:** does operation 1 at the second reachable epoch-boundary source differ from the completed four-boundary basin?
+- **Hypothesis:** route `[0] * 20 + [2, 0] + [0] * 20 + [2, 1] + [0] * 21 + [1]` crosses two contexts, reaches `b59ad072…`, and executes operation 1. This distinct source has an operation-0 epoch boundary; operation 1 may be deterministic, partial, or task-discharging.
+- **Discriminating test:** run one no-worker probe with budget 66, require compact chart and exact plan identity, traverse both known transitions, execute the target, seal lineage, and recompile.
+- **Success criterion:** no worker, history inflation, or known-transition exclusion; exact target execution or boundary; zero ambiguity; external increment required for completion.
+- **Kill condition:** inflated chart, identity drift, exclusion, history carry, premature stop, lineage loss, ambiguity, or worker action.
+- **Claim boundary:** This tests one distinct boundary source; no table is transported from the prior source.
+- **Outcome:** the Codex-only probe retained the suffix-zero chart and executed the exact route as three 22-action legs. Both known context transitions replanned without exclusions. Operation 1 at `b59ad072…` produced a sealed environment-adapter `epoch_boundary` from epoch 2 to epoch 3 (`terminal_state:GAME_OVER`). Slice `eval_20260727T011647961680Z.jsonl` (`00ecc6d0…`) was admitted. Recompilation gives 130 nodes, 145 relations, ten typed boundaries, six context transitions, and zero ambiguity. Operations 0 and 1 at this source are now both epoch boundaries; the completed-level counter remains two.
+
+# H-ARC3-SUCCESS-ANCHORED-CONTROLLABILITY-20260726-24 - Reframe acquisition around consequence transport
+
+- **Status:** partially confirmed and narrowed 2026-07-26
+- **Axis:** action learning / task-conditioned controllability / representation selection
+- **Eigenquestion:** has acquisition stalled because it prioritizes missing local images rather than transport toward externally witnessed task discharge?
+- **Hypothesis:** a typed conjectural correspondence between the compact partial-action graph and human event-segmented action learning will identify a success-conditioned controllability or consequence potential as the missing object.
+- **Discriminating test:** run the existing meta-arc matcher with its cross-cluster adversary, then Codex-backed `research_isomorphism --mode conjecture` over both invariant fingerprints; require bidirectional lowerings, mapped failure modes, prediction cards, and a deterministic discriminator over sealed receipts.
+- **Success criterion:** the transport selects an existing carrier or narrowly missing invariant, distinguishes the 66-action boundary sibling from the 13-action frontier or prior-success transport, and avoids substrate-specific dynamics.
+- **Kill condition:** no schema-valid candidate; resemblance without transport; unmapped failure modes; no evidence-computable discriminator; or a return to exhaustive pair completion.
+- **Claim boundary:** This selects a representation and experiment; it does not certify a carrier or establish task completion.
+- **Outcome:** the meta-arc matcher supplied interface-composition and local-gate moves but had calibrated lift `-22%`, so it received no routing authority. Codex conjecture mode returned three valid mother structures converging on viability boundaries versus a positive consequence anchor; its claim that the 13-action frontier was productive was rejected as unsupported. Evidence inspection then found two exact prior `level_completed` edges, while `authoritative_goal_edge_predicate` correctly rejects their use in epoch 2 without a certified transport. A full-bank merge is inadmissible: 1,021 fibers and 173 noncommuting relations versus the active 130-node zero-ambiguity chart. The narrowed missing object is a cross-epoch partial graph morphism that must pass a prior-level holdout before it may rank Level 3 interventions.
+
+# H-ARC3-CROSS-EPOCH-SUCCESS-NEIGHBORHOOD-20260726-25 - Hold out a prior success edge
+
+- **Status:** refuted 2026-07-26
+- **Axis:** cross-epoch partial morphism / success-edge transport / action symmetry
+- **Eigenquestion:** can rooted operation/effect structure recover a prior success source across distinct level ontologies without rendered coordinates?
+- **Hypothesis:** exact depth-1–3 rooted codes under fixed operation-renaming and mechanism-family symmetries will recover the epoch-1 success source from epoch 0, pass the reciprocal check, outperform the lifecycle-boundary baseline, and nominate an active source outside known non-discharge boundaries.
+- **Discriminating test:** compile sealed graphs per epoch; coarsen every lifecycle boundary equally; evaluate four preregistered symmetry families and depths 1–3; hide the positive label; compare cross-epoch matches and active candidates.
+- **Success criterion:** bidirectional held-out recovery, no broader than the boundary baseline in either direction, strictly narrower in at least one, and at least one active candidate outside known non-discharge sources.
+- **Kill condition:** no exact match, boundary-class-only matching, reciprocal failure, death-source-only active matches, or dependence on presentation coordinates, success labels, learned weights, or action names.
+- **Claim boundary:** A pass supplies candidate transport lineage only; external task authority still owns completion.
+- **Outcome:** exact continuous anchoring recovered 13 epoch-0 route rows and 45 epoch-1 route rows plus five terminal confusers. Only the depth-one operation-renaming/effect-family code recovered both held-out success sources; it had one match in each prior graph but no image in the 130-node active graph. All deeper and less-coarsened codes failed cross-epoch equality. Rooted local graph structure therefore transports a terminal mechanism class but no Level 3 task-valence candidate.
+
+# H-ARC3-SUCCESS-PREDECESSOR-MECHANISM-20260726-26 - Transport the option section, not its endpoint
+
+- **Status:** refuted 2026-07-26
+- **Axis:** rewarded action chunk / ordered mechanism event / cross-epoch consequence
+- **Eigenquestion:** does task consequence transport as the ordered predecessor mechanism ending at a positive lifecycle boundary?
+- **Hypothesis:** the epoch-0 completion section yields a nontrivial presentation-free mechanism-event word that fully embeds in the held-out epoch-1 completion and ranks it above every same-epoch non-discharge terminal section.
+- **Discriminating test:** recover exact boundary-terminated sections; hide epoch-1 valence; remove identity, pure translation, and nonpositive routine resource costs; compare fixed event-family and event/operation-partition words by LCS F1; require complete aligned lineage and defeat a reversed-order ablation.
+- **Success criterion:** a non-singleton event word aligns completely to the held-out completion, ranks it uniquely with positive margin over all failures, and carries exact backward sections.
+- **Kill condition:** fewer than two events, incomplete embedding, failure tie, order-ablation tie, missing lineage, or dependence on presentation, literal operations, length, or hidden labels.
+- **Claim boundary:** A pass certifies only prior-level option transport; Level 3 ranking and execution require a separate registered lowering.
+- **Outcome:** after the fixed lowering, epoch 0 supplied only one event, `finite_configuration:changed` at bank row 14202. It aligned to row 14226 in the held-out epoch-1 completion and to none of five same-epoch terminal failures, but a singleton has no ordered mechanism and equals its reversal. Both languages therefore failed the nontriviality and order criteria. The residue is a possible phase anchor; the discarded equivariant control path, rather than another terminal-node property, is the next object to test.
+
+# H-ARC3-EVENT-ANCHORED-EQUIVARIANT-PATH-20260726-27 - Rotate the control path into canonical coordinates
+
+- **Status:** refuted 2026-07-26
+- **Axis:** equivariant action learning / internal event origin / path transport
+- **Eigenquestion:** do the two prior completion paths become the same action mechanism after anchoring at their shared configuration event and quotienting global lattice orientation?
+- **Hypothesis:** a translation-free, primitive-direction, run-collapsed path with one internal configuration-change anchor and one global dihedral symmetry fully embeds from epoch 0 into the held-out epoch-1 completion and not into same-epoch terminal failures.
+- **Discriminating test:** build anchored direction-run and relative-turn words; hide epoch-1 valence; rank all terminal sections by LCS F1; require complete lineage and compare against reversal, anchor-removal, and forbidden per-step-rotation ablations.
+- **Success criterion:** an anchored word with motion on both sides and at least three motion/turn tokens uniquely recovers the completion with positive margin and beats reversal and anchor removal.
+- **Kill condition:** missing/edge anchor, incomplete embedding, failure tie, ablation tie, per-step symmetry requirement, literal-action or rendered-coordinate dependence, or missing backward section.
+- **Claim boundary:** A pass certifies prior-level path correspondence only; Level 3 consumption remains a separate experiment.
+- **Outcome:** the direction word aligned five of six tokens but skipped the anchor, scored `5/13`, and was beaten by its reversal and the forbidden per-step-rotation quotient at `6/13`. The relative-turn word fully aligned and excluded all five failures, but its three motion tokens were the same orthogonal-turn invariant, so reversal tied at `4/11`. The completion paths are not certified as one globally rotated motor program. The next tested identity is the terminal object/configuration/destination relation.
+
+# H-ARC3-TERMINAL-AFFORDANCE-RELATION-20260726-28 - Make the terminal relation the object
+
+- **Status:** full product refuted; destination-footprint invariant confirmed 2026-07-26
+- **Axis:** object-centered action learning / destination affordance / configuration
+- **Eigenquestion:** do prior completion edges share a presentation-invariant relation among controlled object, configuration, and attempted destination?
+- **Hypothesis:** palette-normalized, dihedral-canonical destination geometry paired with the finite-configuration partition exactly matches the epoch-0 and held-out epoch-1 completion edges while excluding same-epoch terminal failures.
+- **Discriminating test:** infer operation displacements from ordinary controlled translations; construct footprint and one-object-margin shell codes at each attempted destination; hide epoch-1 valence; compare four fixed geometry/configuration descriptors and their ablations.
+- **Success criterion:** supported untied displacements, unique controlled origins, exact positive equality under at least one geometry-plus-configuration descriptor, zero failure matches, and complete lineage.
+- **Kill condition:** displacement or origin ambiguity, no positive equality, failure collision, coordinate/palette/action leakage, independent subregion rotations, path dependence, hidden-label use, or missing lineage.
+- **Claim boundary:** A pass certifies prior-level affordance transport only; active-edge nomination and external completion remain separate.
+- **Outcome:** all terminal displacement maps were supported and both positive sources had unique controlled origins. Their attempted-destination 5×5 palette partitions are exactly equal under one dihedral transform (SHA-256 `5f332d7e…`) and differ from all five epoch-1 `GAME_OVER` edges. The footprint-plus-configuration product fails: the epoch-0 positive configuration matches every epoch-1 failure, while the epoch-1 positive uses a different configuration. The larger shell also fails cross-epoch equality. Thus destination footprint transports and configuration remains level-local; only the former may be lowered to the active frontier.
+
+# H-ARC3-ACTIVE-AFFORDANCE-FRONTIER-20260726-29 - Pull back the certified footprint
+
+- **Status:** refuted 2026-07-26
+- **Axis:** active partial morphism / affordance preimage / frontier concentration
+- **Eigenquestion:** does the held-out-certified completion footprint have a reachable unsupported preimage in Level 3?
+- **Hypothesis:** exact H28 footprint equality will select at least one reachable unsupported source-operation pair, fewer than the 366 unfiltered pairs, while matching no already observed Level 3 non-discharge edge.
+- **Discriminating test:** rebuild the compact active fibers and operation maps; scan every reachable pair's concrete representative using the frozen footprint descriptor; classify law/boundary/frontier status; emit shortest witnessed routes to unsupported matches.
+- **Success criterion:** zero graph ambiguity, four admitted operation maps, no known-negative match, at least one exact unsupported match, strict frontier concentration, and complete route/relation lineage.
+- **Kill condition:** ambiguity or drift, known-negative match, no unsupported match, no concentration, unwitnessed/boundary-crossing route, configuration leakage, or missing representative/displacement/lineage.
+- **Claim boundary:** A pass selects a candidate only; live execution and external task authority remain separate.
+- **Outcome:** the active quotient retained 130 nodes, 145 relations, ten boundaries, six context transitions, 127 reachable nodes, 366 unsupported reachable pairs, and zero ambiguity. Exactly one pair matched the certified footprint: operation 1 at `26bcf98b…`, reached in 29 operations. It is an already observed law with 28 evidence references, not a frontier candidate, and its external task receipt is open. Its configuration digest `293fb91a…` matches the epoch-0 completion and all five epoch-1 failures, while the held-out epoch-1 completion has `64766534…`. The two configuration matrices are dihedral images. H28 independently canonicalized the footprint but left configuration coordinates fixed, so the next object is their joint orbit under one shared D4 transform.
+
+# H-ARC3-JOINT-EQUIVARIANT-AFFORDANCE-20260726-30 - Preserve relative orientation
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** shared group action / relational affordance / coordinate separation
+- **Eigenquestion:** is task discharge native to the relative orientation between attempted-destination geometry and finite configuration?
+- **Hypothesis:** applying the same D4 transform to the raw target footprint and square configuration matrix before palette normalization yields a joint code that exactly transports the epoch-0 completion to the held-out epoch-1 completion, excludes all five failures, defeats independent-canonicalization ablations, and has an active configuration preimage distinct from `293fb91a…`.
+- **Discriminating test:** hide epoch-1 valence; compute the eight shared joint images and exact template matches; compare footprint-only, configuration-only, and independently canonicalized products; then pair the fixed H29 active target footprint with every distinct active epoch-2 configuration and retain evidence-backed matching preimages.
+- **Success criterion:** unique held-out positive, zero failures, all inputs admissible, independent-product ablation inferior, and at least one active matching configuration distinct from the observed non-discharge configuration.
+- **Kill condition:** ambiguity, nonsquare configuration, positive miss, failure collision, ablation sufficiency, no active preimage, only the known non-discharge configuration, transform mismatch, hidden-label use, or missing lineage.
+- **Claim boundary:** A pass certifies a joint code and active configuration preimage only; route reachability, edge productivity, live execution, and task completion remain separate.
+- **Outcome:** shared-D4 code `c1968343…` exactly matched the held-out epoch-1 completion and none of five same-epoch failures. The active bank contains four configuration orientations; footprint-only, configuration-only, and independently canonicalized products matched all four when paired with the fixed target, while the shared joint code matched exactly one: `4dd96788…`, witnessed in 36 admitted active states. The known non-discharge target configuration `293fb91a…` was excluded. Relative orientation is the transported invariant; the next discriminator is whether the current action system can carry that configuration to the target relation.
+
+# H-ARC3-JOINT-AFFORDANCE-SEARCH-20260726-31 - Compose the selected target
+
+- **Status:** refuted 2026-07-26 at positive control
+- **Axis:** target composition / factored predictive search / consumer calibration
+- **Eigenquestion:** can the existing general factored-search consumer compose the evidence-derived target base with the H30-selected configuration and recover an offline route?
+- **Hypothesis:** `CompiledFiberSearchProblem` plus `search_factored` first recovers the observed H29 target as a positive control, then finds an edge-bearing carrier route to the same base and operation under every raw rendering of selected configuration partition `4dd96788…`, within depth 180 and 20,000 generated states.
+- **Discriminating test:** use trace `eval_20260725T192020752309Z.jsonl#0` at its recorded time; copy the observed target factors and replace only finite configuration from admitted H30 witnesses; search with the unchanged carrier; replay returned routes offline and recompute exact factors and joint code `c1968343…`.
+- **Success criterion:** positive control and every selected raw-rendering target return `edge_found`; no projection counterexample; replay reaches target factors and joint code; selected route differs from the known non-discharge route.
+- **Kill condition:** calibration failure, missing or disagreeing raw witnesses, bound exhaustion, noncommutation, replay mismatch, route collapse, or environment contact.
+- **Claim boundary:** A pass yields an offline carrier route proposal only; execution and external task completion remain separately governed.
+- **Outcome:** the H30-selected partition had one raw rendering with admitted lineage. Both the exact observed H29 target and the selected-configuration target exhausted the carrier's projected frontier after 457 generated / 458 expanded states, returning no route and no projection counterexample. Because the evidence action system already reaches the observed target in 29 operations, calibration failed before target composition. The next test aligns that graph route against carrier replay and localizes the first factor-level divergence.
+
+# H-ARC3-CARRIER-GRAPH-ROUTE-COMMUTATION-20260726-32 - Localize calibration failure
+
+- **Status:** confirmed 2026-07-26 for terminal-key transport
+- **Axis:** predictive transport / evidence graph / consumer equality
+- **Eigenquestion:** why can the evidence graph reach the H29 target while carrier-based factored search cannot?
+- **Hypothesis:** replaying the frozen 28-operation H29 prefix through the unchanged carrier preserves the graph target's `(controlled_base, finite_configuration)` key at every step and satisfies the observed-target goal edge; if so, H31 failed in search equality/dominance rather than prediction.
+- **Discriminating test:** rebuild the exact H29 graph; require count/source/route identity; align every deterministic graph edge with carrier replay from the same trace state and time; report all factor differences, edge lineage, first terminal-key divergence, first any-factor divergence, and final goal result.
+- **Success criterion:** zero graph ambiguity/drift; every prefix edge deterministic and non-boundary; no terminal-key divergence; final state satisfies operation 1 at the H29 target.
+- **Kill condition:** graph or route drift, missing edge/lineage, carrier `None`, terminal-key divergence, final goal miss, or environment contact.
+- **Claim boundary:** A pass localizes H31 to search pruning; failure localizes the earliest carrier/evidence transport defect without repairing it or authorizing execution.
+- **Outcome:** graph identity and the 28-operation prefix matched H29 exactly. Every edge was deterministic and non-boundary; carrier replay preserved `(controlled_base, finite_configuration)` through all 28 steps and the final state satisfied the observed operation-1 target. The first other-factor divergence was step 11: the evidence representative renewed feasibility/budget by 11 while the carrier decremented by one; the carrier renewed by 21 at step 21 instead. Because `CompiledFiberSearchProblem` lacks `dominance_key_at`, target search merges clock-distinct states without a time-translation certificate. A time-indexed ablation is the next discriminator.
+
+# H-ARC3-TIME-INDEXED-TARGET-SEARCH-20260726-33 - Restore clock identity
+
+- **Status:** refuted 2026-07-26
+- **Axis:** search equality / clock transport / calibration
+- **Eigenquestion:** did H31 prune the valid route by merging carrier states reached at different times without a time-translation certificate?
+- **Hypothesis:** an audit-local `CompiledFiberSearchProblem` override adding only `(dominance_key(state), time_value)` recovers the observed H29 positive-control edge within the unchanged depth-180 / 20,000-state bounds.
+- **Discriminating test:** bind the frozen H31 exhausted baseline; run common `search_factored` with only clock identity added; replay any result and verify H32 terminal factors and goal edge.
+- **Success criterion:** `edge_found`, no projection counterexample, correct replayed terminal key/edge, unchanged baseline and all nonclock behavior.
+- **Kill condition:** baseline drift, exhaustion, noncommutation, replay/goal mismatch, broader behavior change, or environment contact.
+- **Claim boundary:** A pass certifies the missing clock guard; core repair and selected-target search remain separate.
+- **Outcome:** adding time as the sole equality coordinate reproduced the baseline exactly: 457 generated / 458 expanded states, projected frontier exhausted at depth 20. Forced H29 replay reveals the actual membrane: budget is 1 at depth 20, 0 at depth 21, then renews to 21 at depth 22 while remaining inside the projection domain. `CompiledFiberSearchProblem.admissible` rejects the recoverable zero state before its renewal edge despite the same consumer carrying renewal landmarks in its estimate.
+
+# H-ARC3-RECOVERABLE-ZERO-TARGET-SEARCH-20260726-34 - Keep mechanism states admissible
+
+- **Status:** confirmed 2026-07-26
+- **Axis:** feasibility identity / renewal mechanism / search calibration
+- **Eigenquestion:** did target search mistake a recoverable zero-resource mechanism state for a terminally infeasible state?
+- **Hypothesis:** an audit-local target-search subclass changing only `admissible` to `projection.in_domain(state)` recovers the observed H29 edge within the unchanged H31 bounds; inherited `goal_edge` still requires positive budget.
+- **Discriminating test:** rerun the exact positive control; replay the result; require an in-domain zero-budget state followed by a positive renewal and the correct terminal factors/edge.
+- **Success criterion:** `edge_found`, no noncommutation, in-domain replay, explicit zero-to-positive renewal, correct target/edge, no other behavior change.
+- **Kill condition:** exhaustion, noncommutation, out-of-domain replay, no renewal witness, goal mismatch, broader change, or environment contact.
+- **Claim boundary:** A pass justifies a narrow core repair and regression tests; the H30-selected target remains untested.
+- **Outcome:** the one-method ablation returned `edge_found` in 23 actions after 187 generated / 113 expanded states with zero projection counterexamples. Replay stayed in-domain, crossed budget zero at depth 21, renewed to 21 at depth 22, and satisfied the observed target edge. Core `CompiledFiberSearchProblem.admissible` now preserves projection-domain zero states while `goal_edge` retains its positive-budget requirement; a regression test covers advance-to-zero, renew, finish.
+
+# H-ARC3-REPAIRED-JOINT-AFFORDANCE-SEARCH-20260726-35 - Consume the selected relation
+
+- **Status:** refuted 2026-07-26 by projection counterexample
+- **Axis:** repaired consumer / relational target / offline route
+- **Eigenquestion:** after retaining recoverable mechanism states, can target search compose the H30-selected orientation with the evidence-derived destination?
+- **Hypothesis:** rerunning H31 unchanged against the repaired core finds both the observed positive control and selected configuration `4dd96788…` within depth 180 / 20,000 states; selected replay recomputes joint code `c1968343…`.
+- **Discriminating test:** same trace, carrier, target base, operation, raw configuration witness, bounds, and four interventions; no audit-local override; carrier-replay and verify terminal factors and shared-D4 code.
+- **Success criterion:** both targets `edge_found`, no noncommutation, selected factors/code exact, route distinct from known non-discharge route.
+- **Kill condition:** calibration regression, exhaustion, noncommutation, factor/code mismatch, route collapse, broader alteration, or environment contact.
+- **Claim boundary:** A pass yields a calibrated offline route proposal only; execution and external completion remain separate.
+- **Outcome:** the repaired positive control returned `edge_found` in 23 actions. Selected-target search generated 947 / expanded 778 states before the commutation guard found a same-time dominance simulation failure. Two states equal on every compiled factor differed only at `(61,57),(62,57)` (`3` versus `8`); operation 0 mapped them to different controlled bases. The receipt's changed-factor list was empty. This is a missing finite availability coordinate, not target unreachability.
+
+# H-ARC3-COUNTEREXAMPLE-AVAILABILITY-REFINEMENT-20260726-36 - Split the unsound fiber
+
+- **Status:** refuted 2026-07-26 as a single split
+- **Axis:** CEGAR / missing state identity / availability
+- **Eigenquestion:** does the H35 commutation witness identify the sole missing coordinate needed for sound selected-target search?
+- **Hypothesis:** an audit-local projection wrapper appending one canonical boolean over H35's changed cells to `one_shot_availability` separates the divergent images and yields `edge_found` for the selected target within unchanged bounds.
+- **Discriminating test:** validate the same-time, no-known-factor counterexample; derive the bit symmetrically from left/right tuples; rerun only the selected target; replay and verify configuration `4dd96788…` and joint code `c1968343…`.
+- **Success criterion:** counterexample separated, edge found, no new noncommutation, exact factors/code, no target leakage or environment contact.
+- **Kill condition:** malformed receipt, no separation, exhaustion, new counterexample, factor/code mismatch, target leakage, or environment contact.
+- **Claim boundary:** A pass certifies one generic refinement and an offline route only; core promotion, execution, and completion remain separate.
+- **Outcome:** the canonical bit over H35 cells `(61,57),(62,57)` separated its witness, but the rerun found another no-known-factor dominance failure after 293 generated / 190 expanded states. The new witness differs at adjacent `(61,56),(62,56)` and operation 2 produces different successor availability. One bit exposed one coordinate of a larger finite carrier. The next test closes the carrier with a bounded counterexample-guided loop rather than guessing its extent.
+
+# H-ARC3-AVAILABILITY-CEGAR-CLOSURE-20260726-37 - Close the missing finite carrier
+
+- **Status:** refuted 2026-07-26 at the eight-refinement cap
+- **Axis:** bounded CEGAR / factor completion / target-independent refinement
+- **Eigenquestion:** can commutation receipts recover the missing finite availability carrier without preselecting its rendered region?
+- **Hypothesis:** iteratively appending one canonical availability bit per new no-known-factor dominance counterexample reaches `edge_found` for the selected target within eight refinements and unchanged per-search bounds.
+- **Discriminating test:** validate/symmetrize each receipt, recompute projection identity, rerun exact H35 search, stop on edge, non-refinable/repeated witness, exhaustion, or eight splits; replay any edge and verify `4dd96788…` / `c1968343…`.
+- **Success criterion:** every split new and separating; closure within eight; final edge with no counterexample; exact replayed factors/code; no target leakage or environment contact.
+- **Kill condition:** malformed/repeated/already-represented receipt, ordinary exhaustion, cap exceeded, replay mismatch, target leakage, or environment contact.
+- **Claim boundary:** A pass certifies bounded generic CEGAR closure and an offline route; core promotion and execution remain separate.
+- **Outcome:** all eight target-independent splits were new and separated their producing witnesses, but selected-target search still ended in `dominance_simulation_failed`. Six of the seven post-initial receipts merged states at different carrier times; the sole additional same-time receipt covered a structured 3×3 region. Witness geometry spread across adjacent two-row strips, compact regions, and lines while every represented factor remained equal. Independent rendered-cell bits refine the quotient without closing it. The next discriminator preserves carrier time identity and admits refinements only for residual same-time witnesses.
+
+# H-ARC3-TIME-GUARDED-AFFORDANCE-REFINEMENT-20260726-38 - Compose clock and same-time identity
+
+- **Status:** refuted 2026-07-26 by a same-time object witness
+- **Axis:** clock authority / same-time projection refinement / target composition
+- **Eigenquestion:** does preserving carrier time together with the one H35 same-time split close the selected-target quotient?
+- **Hypothesis:** a target consumer keyed by `(dominance_key(state), time)` plus only the target-independent H35 discriminator returns `edge_found` for the H30-selected target within depth 180 / 20,000 states.
+- **Discriminating test:** reconstruct and validate the H35 split, rerun exact selected search with time-indexed equality, and replay any route against configuration `4dd96788…` and joint code `c1968343…`.
+- **Success criterion:** split separates; edge found without counterexample; exact admissible replay; no environment contact.
+- **Kill condition:** cross-time merge after guard, new same-time counterexample, exhaustion, bound exhaustion, replay mismatch, leakage, or environment contact.
+- **Claim boundary:** A pass yields an offline route and evidence for a target-consumer clock guard; core promotion and execution remain separate.
+- **Outcome:** clock-indexed equality plus the H35 split stopped after 340 generated / 231 expanded states at a same-time (`85 == 85`) simulation failure. The source states were equal on every represented factor and differed only by a compact structured 3×3 object at rows 46–48 / columns 30–32. Operation 1 moved both to the same controlled base and budget, but only the object-present state changed the downstream H35 marker. Clock identity removes the cross-time family; the residual is one-shot world-object availability, which must be factored from object identity/lifecycle rather than another rendered marker predicate.
+
+# H-ARC3-ACTOR-RELATIVE-AFFORDANCE-FIELD-20260726-39 - Make local action context the state
+
+- **Status:** refuted 2026-07-26 at the local-field boundary
+- **Axis:** actor-centered coordinates / local affordance field / transition identity
+- **Eigenquestion:** is selected-target transition identity native to the controlled object plus its action-indexed destination field?
+- **Hypothesis:** appending palette-normalized controlled-object-sized windows at every admitted stride destination, indexed by operation and actor-relative, separates H38 and returns `edge_found` under the clock guard and H35 split within depth 180 / 20,000 states.
+- **Discriminating test:** derive all four vectors from admitted active evidence; verify H38 separation; rerun exact selected search; replay against `4dd96788…` / `c1968343…`.
+- **Success criterion:** admitted maps; H38 separated; edge without counterexample; exact admissible replay; no environment contact.
+- **Kill condition:** map ambiguity, no H38 separation, new counterexample, exhaustion, replay mismatch, leakage, or environment contact.
+- **Claim boundary:** A pass certifies an actor-relative affordance coordinate and an offline route; core promotion and execution remain separate.
+- **Outcome:** all four maps were admitted and the field separated H38, but search found another same-time failure after 128 generated / 94 expanded states. At base `(25,34)` the immediate footprints matched while an eight-cell structured ring at rows 16–18 / columns 35–37 differed. Operation 0 moved both actors to `(20,34)`, where that object entered the next local field and split the successor images. Enlarging the crop would only move its boundary. The missing coordinate is mutable world-object configuration, separated from actor coordinates, static world, and UI.
+
+# H-ARC3-MUTABLE-WORLD-OBJECT-INVENTORY-20260726-40 - Factor persistent world state
+
+- **Status:** refuted 2026-07-26 by an interface-only residual
+- **Axis:** object inventory / lifecycle identity / world-interface separation
+- **Eigenquestion:** does a canonical connected-component inventory provide the persistent state identity absent from local fields and rendered markers?
+- **Hypothesis:** an inventory of palette-normalized nonbackground world components, after removing the controlled rendering and projection-owned interface rows, separates H38/H39 and returns `edge_found` with the H35 split and clock identity within depth 180 / 20,000 states.
+- **Discriminating test:** require direct digest separation on both prior receipts; rerun exact selected search; replay against `4dd96788…` / `c1968343…`.
+- **Success criterion:** both witnesses separated; edge without counterexample; exact admissible replay; no environment contact.
+- **Kill condition:** ambiguous interface/background, separation failure, new counterexample, exhaustion, replay mismatch, leakage, or environment contact.
+- **Claim boundary:** A pass certifies the inventory coordinate and an offline route; core promotion and execution remain separate.
+- **Outcome:** the inventory separated H38 and H39, then search found a same-time failure after 486 generated / 301 expanded states. Actor, configuration, primary budget, world inventory, and time matched; only interface cells `(61,56),(62,56)` differed (`3` versus `8`). Across 16,578 evidence rows the right-hand strip has exactly four states: three binary two-column groups follow a deterministic `3→2→1→0→3` live-group cycle while separators remain constant. This is a second finite resource coordinate. Retain the inventory and replace point-marker predicates with the complete evidence-derived resource configuration.
+
+# H-ARC3-COMPOSED-WORLD-RESOURCE-STATE-20260726-41 - Compose the missing factors
+
+- **Status:** refuted 2026-07-26 at inference; search did not run
+- **Axis:** product state / secondary scalar / mutable-world inventory
+- **Eigenquestion:** do mutable-world inventory, the evidence-derived secondary resource configuration, and clock form the missing product state?
+- **Hypothesis:** replacing point markers with all binary variable cells after the primary ordered-budget rendering, then composing that coordinate with H40 inventory and time, recovers both observed and H30-selected edges within depth 180 / 20,000 states each.
+- **Discriminating test:** require the inferred four-state deterministic cycle; separate H35/H40 interface and H38/H39 world witnesses; search/replay positive control then selected configuration `4dd96788…`; verify joint code `c1968343…`.
+- **Success criterion:** both edges without counterexamples; four witnesses separated; codebook/transition checks; exact admissible replays; no environment contact.
+- **Kill condition:** inference ambiguity, codebook/transition mismatch, witness collision, noncommutation, exhaustion, replay mismatch, leakage, or environment contact.
+- **Claim boundary:** A pass yields an offline route and certifies the product coordinate for the current carrier; core promotion and execution remain separate.
+- **Outcome:** the global modal-world value was `4`, while all twelve variable secondary cells use `{3,8}`, so the registered background-binary inference failed before search. The primary budget alphabet is exactly `{11,3}` with declared live value `11`; its unique non-live value `3` is the invariant depleted anchor. No product-state sufficiency claim follows. The next test changes only the background inference from global mode to primary-scalar complement.
+
+# H-ARC3-BUDGET-ANCHORED-PRODUCT-STATE-20260726-42 - Transport scalar identity
+
+- **Status:** refuted 2026-07-26 by selected-search budget; representation criteria confirmed
+- **Axis:** scalar transport / depleted-value identity / product-state sufficiency
+- **Eigenquestion:** does H41 become sufficient when the secondary scalar is anchored to the primary scalar's depleted rendering?
+- **Hypothesis:** changing only background inference to the unique non-live value observed across all primary budget groups satisfies H41 and recovers observed plus selected edges within unchanged bounds.
+- **Discriminating test:** retain every H41 construction/search criterion; require a two-value primary alphabet containing declared live value; use its complement as depleted anchor.
+- **Success criterion:** four-state deterministic cycle; four prior witnesses separated; both edges without counterexamples; exact replay and selected joint code; no environment contact.
+- **Kill condition:** any H41 kill condition or no unique primary depleted anchor.
+- **Claim boundary:** A pass yields an offline route and certifies the current carrier's product coordinate; core promotion and execution remain separate.
+- **Outcome:** the primary scalar yielded unique depleted anchor `3`; twelve inferred cells formed the measured four-state deterministic cycle and separated all four prior witnesses. Positive control returned `edge_found` in 23 actions after 232 generated / 126 expanded states with no counterexample and correct replay. Selected search produced no counterexample but exhausted 20,000 generated / 13,986 expanded states at depth 33 with 6,015 frontier states and a 31-action continuation. The next discriminator consumes the common search's explicit continuation through bounded receding-horizon composition rather than adding factors or widening one monolithic run.
+
+# H-ARC3-CONTINUATION-COMPOSED-SEARCH-20260726-43 - Compose bounded searches
+
+- **Status:** interrupted 2026-07-26 before a result; no verdict
+- **Axis:** receding horizon / continuation contract / product-graph search
+- **Eigenquestion:** can the common consumer's explicit continuation contract compose H42 into an offline selected-target route?
+- **Hypothesis:** replay-and-replan from each 20,000-state continuation reaches the selected edge within four unchanged segments.
+- **Discriminating test:** reconstruct H42 exactly; search, replay nonempty continuation, and replan; reject on counterexample, nonadmission, repeated `(dominance_key,time)` boundary, other status, or four segments; replay any full route against `4dd96788…` / `c1968343…`.
+- **Success criterion:** admitted segments; no counterexample/repeat; edge within four; exact full replay; no environment contact.
+- **Kill condition:** any procedure guard or final replay failure.
+- **Claim boundary:** A pass yields an offline route proposal; core promotion, authority-side certification, and execution remain separate.
+- **Outcome:** the run was stopped before a terminal result because the proposed experiment had drifted from learning reusable skill structure into substrate-specific route computation. No success or failure claim follows. The H42 product-state evidence remains available as a calibration case for a deanchored action-learning mechanism.
+
+# H-GPSA-PREDICTIVE-STATE-SKILL-ISOMORPHISM-20260726-44 - Deanchor action learning
+
+- **Status:** refuted 2026-07-27 at the manual orthogonality gate
+- **Axis:** general-purpose skill acquisition / predictive state / explicit isomorphism
+- **Eigenquestion:** can the ARC abstraction failures and biological action learning be lowered into one shared mechanism that selects both state identity and reusable skill units?
+- **Hypothesis:** `research_isomorphism.py --mode conjecture` can surface at least one shared mother structure in which action-conditioned prediction error refines a minimal predictive state and repeated controllable transition structure compiles into temporally extended operators, with complete lowerings, bidirectional predictions, and kill conditions.
+- **Discriminating test:** present two operator-neutral fingerprints—interactive-control quotient failure and sensorimotor action learning—to the Codex conjecture path; require every supplied invariant to be transported and reject candidates that merely rename H42 factors, reuse either home domain, omit an intervention, or do not select a substrate-neutral apparatus change.
+- **Success criterion:** at least one schema-surviving candidate covers every invariant on both sides, states a shared object outside both home fields, supplies measurable predictions and interventions for both sides, and implies a falsifiable engine change separating predictive-state refinement from skill compilation.
+- **Kill condition:** zero schema survivors; decorative analogy; one-sided or incomplete lowering; no measurable intervention/horizon; no distinct skill-learning mechanism; target/game vocabulary in the shared object; or no executable apparatus discriminator.
+- **Claim boundary:** a survivor is a conjectural design hypothesis only. It cannot establish a brain correspondence, solve Level 3, authorize live actions, or enter the learned correspondence dictionary without a separate experiment receipt.
+- **Outcome:** Codex conjecture mode returned three schema-complete candidates, but all three named their shared object in the same control-learning basin—control quotient, option sheaf, or predictive automaton. They separated representation refinement from chunk reuse and supplied bidirectional interventions, yet did not change the governing algebra. Existing code already implements predictive partition refinement, deterministic-path option discovery, and option transport across refinement. H44 therefore failed its substrate-neutral apparatus-change criterion. The next conjecture lifts both sides to histories under continuation and compares that object with guarded trace compilation.
+
+# H-GPSA-GUARDED-PATH-CATEGORY-20260727-45 - Compile generators, not routes
+
+- **Status:** confirmed as an apparatus conjecture 2026-07-27
+- **Axis:** action-history algebra / orthogonal transport / skill compiler
+- **Eigenquestion:** are predictive states and reusable skills consequences of one guarded quotient of composable histories rather than two separately engineered objects?
+- **Hypothesis:** an explicit conjectural transport between action-history learning and guarded trace compilation will identify a shared partial category: objects are continuation-equivalence classes, morphisms are executable words, composition is guarded concatenation, counterexamples are distinguishing suffixes or side exits, and compression selects a small generator basis.
+- **Discriminating test:** run Codex-only `research_isomorphism.py --mode conjecture` over two fingerprints whose required invariants are carrier, equality, unit, composition, refinement witness, compression objective, fallback, and authority. Reject any candidate whose shared object uses ARC, neural, reinforcement-learning, option, or JIT vocabulary; require complete lowerings, bidirectional predictions, and one implementable discriminator against the current “enumerate every deterministic path” option miner.
+- **Success criterion:** at least one schema survivor defines the shared object outside both home fields; transports all eight invariants; predicts when a composed word should be cached versus interpreted; treats failure as a typed side exit that refines a guard or quotient; and implies a bounded generic fixture distinguishing generator compilation from deterministic-path enumeration.
+- **Kill condition:** no survivor; same-basin renaming; absent right-congruence or guarded composition; no minimal-basis/compression criterion; no fallback/deoptimization semantics; no bounded discriminator; or substrate-specific lowering in the common mechanism.
+- **Claim boundary:** a survivor selects an apparatus experiment only. It does not establish a biological account, certify a learned skill, solve a task, or authorize environment interaction.
+- **Outcome:** Codex conjecture mode returned three schema-complete candidates. `Guarded continuation quotient machine` passed the manual gate: it lowered both fingerprints through continuation equality, guarded partial composition, shortest distinguishing suffixes, a compact reusable generator family, and reference fallback. The current common implementation already owns observed-test partition refinement but `_discover_options` enumerates every deterministic quotient path up to a length cap and has no description-length admission, side-exit model, or fallback decision. H45 selects a bounded compiler discriminator; it does not establish the conjecture beyond that test.
+
+# H-GPSA-GUARDED-SKILL-COMPILER-20260727-46 - Demand reusable generators
+
+- **Status:** confirmed 2026-07-27 on the bounded generic discriminator
+- **Axis:** guarded trace grammar / MDL skill admission / side-exit fallback
+- **Eigenquestion:** can a substrate-neutral compiler retain a small set of reusable action-word generators while preserving exact witnessed behavior and refusing unsafe reuse?
+- **Hypothesis:** a greedy description-length compiler over ordered opaque transition traces will retain only repeated words with positive net token savings; attach successful initiation/effect variants and explicit boundary side exits; and choose primitive fallback for any initiation key with conflicting success/exit evidence.
+- **Discriminating test:** construct ordered traces with repeated motifs, deterministic alternatives that the current bounded-path miner would enumerate, and one explicit early boundary during a motif. Compile with fixed word bounds and compare against deterministic-path enumeration. Expand the compiled encoding back to primitive words.
+- **Success criterion:** exact reconstruction; positive total description-length gain; fewer retained programs than bounded deterministic paths; at least one multiply witnessed program; an explicit typed side exit at its earliest failed step; compiled admission for clean starts; primitive fallback for an unsafe or unseen start; deterministic output under trace permutation.
+- **Kill condition:** reconstruction mismatch; nonpositive gain; path-count parity; unrecorded boundary; unsafe start admitted; unseen start admitted; output changes under trace permutation; invented effects/targets; or substrate vocabulary in the common contract.
+- **Claim boundary:** a pass certifies the common compiler contract on bounded evidence only. ARC consumption, cross-epoch transport, environment execution, and task discharge remain separate.
+- **Outcome:** the common compiler retained one three-operation generator versus three bounded deterministic-path options. It losslessly reconstructed all 11 primitive tokens with encoded length 7 plus dictionary cost 3, for description-length gain 1. Two independent successful traces supported one effect/termination variant. A third trace produced a typed side exit at failed step 2 after the two-operation prefix. Clean starts returned `compiled`; the conflicting start returned `primitive_fallback:guard_conflict`; an unseen start returned `primitive_fallback:guard_unwitnessed`. Reversing trace order produced an identical receipt. Twenty-one focused common tests passed with the existing quotient and option-transport suites.
+
+# H-ARC3-GUARDED-SKILL-EVIDENCE-20260727-47 - Compile the sealed trajectories
+
+- **Status:** refuted on the preregistered count comparison 2026-07-27; ordered-skill carrier confirmed
+- **Axis:** cross-substrate first fire / ordered evidence / skill-demand discriminator
+- **Eigenquestion:** does the active sealed ARC evidence contain repeated guarded morphisms that earn reusable identity under the common compiler, or were the prior options artifacts of deterministic graph-path enumeration?
+- **Hypothesis:** lowering current-epoch sealed trajectories through the accepted history/predictive source identity into the common compiler yields exact reconstruction and at least one positive-gain skill with independent trace support, while typed lifecycle boundaries remain side exits and no program crosses an epoch reset.
+- **Discriminating test:** add a worldmodel adapter from `HistoryTrajectoryEvidence` to opaque common traces; compile the exact history trajectories already consumed by the partial-action audit; compare library count, description length, variants, and exits with the current predictive quotient's bounded options; repeat under reversed trajectory order.
+- **Success criterion:** exact reconstruction; positive gain; at least one independently supported admitted program; every explicit/adapter lifecycle boundary represented as a boundary token or side exit; no compiled occurrence spans a boundary; deterministic receipt under order reversal; fewer programs than bounded path enumeration.
+- **Kill condition:** no positive-gain program; reconstruction mismatch; boundary crossing; order dependence; every candidate rejected by guard conflict; path-count parity; projection/source identity drift; or any environment action.
+- **Claim boundary:** the test determines whether existing evidence supports reusable generator identity. It does not execute a skill, rank a task target, change the external level counter, or establish Level 3 completion.
+- **Outcome:** twenty-seven sealed current-epoch traces contained 768 primitive tokens. The compiler retained four guarded programs, encoded the corpus in 264 tokens plus 16 dictionary tokens, and reconstructed all operations exactly for gain 488. Receipts were invariant under trajectory reversal. Every program had independently supported admitted starts and typed lifecycle side exits; no occurrence crossed a boundary. The current predictive quotient returned zero bounded options, so the preregistered `program_count < option_count` condition failed (`4 < 0` is false). This exposes the mechanism: graph-path option discovery loses all option identity after predictive refinement, while ordered trace grammar retains four reusable generators.
+
+# H-ARC3-GUARDED-PLAN-CONSUMPTION-20260727-48 - Make learned generators act on planning
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** downstream consumption / guarded plan tokenization / skill first fire
+- **Eigenquestion:** can the four learned generators reduce a witnessed acquisition plan while preserving its exact primitive path and refusing any unsupported macro step?
+- **Hypothesis:** a common dynamic-programming consumer over an opaque deterministic transition callback can encode the witnessed prefix of the current 13-operation frontier plan with fewer plan tokens by using only programs whose initiation guard is admitted and whose stepwise images match the reference relation.
+- **Discriminating test:** implement the consumer without ARC nouns; precompute the exact primitive state path; permit a skill token only when its word matches the requested suffix, `decide(source)` returns `compiled`, and reference execution reaches each expected successor; compare tokenized expansion to the unchanged primitive prefix; keep the final unwitnessed frontier operation primitive and outside the compiled prefix.
+- **Success criterion:** exact expansion and final witnessed-prefix state; at least one compiled token; fewer plan tokens than primitive operations; zero use from fallback starts; invariant result under library order; no change to target operation or environment state.
+- **Kill condition:** no compression; expansion/state mismatch; unsupported or conflicting guard used; macro crosses a boundary; target operation absorbed into a skill; order dependence; or environment contact.
+- **Claim boundary:** a pass is the first downstream consumption of learned skill identity in planning. It does not execute the plan, validate an unwitnessed edge, or change task status.
+- **Outcome:** the consumer encoded the exact 12-operation witnessed prefix as three plan tokens: skill `(0,0,0,0,0)`, skill `(0,0,0,2,1,1)`, and primitive `3`. Expansion was exact, the final source digest remained `8f9dcb28…`, token savings were nine, and reversing library order produced the same receipt. The unwitnessed final operation `1` remained outside the compiled prefix. No fallback guard or boundary was traversed.
+
+# H-ARC3-GUARDED-FRONTIER-CONTACT-20260727-49 - Execute one learned-skill frontier
+
+- **Status:** refuted 2026-07-27 by route-selection drift
+- **Axis:** environment-grounded skill acquisition / frontier contact / Level 3 discriminator
+- **Eigenquestion:** what consequence follows when the learned-skill prefix reaches source `8f9dcb28…` and executes its unwitnessed operation `1`?
+- **Hypothesis:** the no-worker governed acquisition probe, replaying the unchanged Level 3 seed and accepted carrier, selects the H48 route `(0,0,0,0,0,0,0,0,2,1,1,3,1)` within budget 13 and converts its final pair into either task discharge or a new typed transition/boundary witness.
+- **Discriminating test:** run `arc3_acquisition_probe.py --game ls20 --budget 13`; require unchanged carrier execution digest `2dc741d6…`, origin seed `a3d6f1f5…`, no model worker or carrier promotion, exact 13-operation trace, exact target-source lineage, sealed slice archival, evidence admission, and adapter task-discharge receipt.
+- **Success criterion:** the exact route executes; the final operation is observed and archived; the external task receipt either increments Level 3 or keeps it open with a new admitted law/boundary edge; no apparatus obstruction.
+- **Kill condition:** seed/carrier drift, different route, premature stop, excluded known edge, failed archive/admission, apparatus obstruction, worker invocation, or unreceipted environment action.
+- **Claim boundary:** only the adapter's task-discharge receipt may claim Level 3 completion. Otherwise the result is one new action-consequence witness and must recompile before any next probe.
+- **Outcome:** seed `a3d6f1f5…` and carrier execution `2dc741d6…` matched, the probe executed 13 actions, archived slice `eval_20260727T154419281388Z.jsonl`, and returned an open adapter task receipt with zero levels gained. The exact H48 route did not execute. It remained present only as `observed_partial_action_frontier.actions`; the active selector preferred a 66-action `boundary_reachability_frontier` plan and the budget exposed its first thirteen operations, all `0`. The executed trace therefore matched the selected legacy plan but killed H49's route-identity condition. No new evidence entered because those thirteen transitions were already witnessed. The apparatus defect is selection ownership: an unpriced boundary heuristic can subordinate the continuation experiment even when the latter is the preregistered discriminator.
+
+# H-GPSA-PROTOCOL-SPECTROSCOPY-ISOMORPHISM-20260727-50 - Price experiments, not frontiers
+
+- **Status:** confirmed as an apparatus conjecture 2026-07-27
+- **Axis:** orthogonal representation / active experiment identity / skill composition
+- **Eigenquestion:** what is the invariant object that should choose among reachable acquisition probes after H49 exposed conflicting route owners?
+- **Hypothesis:** Codex conjecture mode can transport interactive skill acquisition and spectroscopy into a shared object whose unit is a guarded preparation–probe–readout protocol. Protocol equality is equality of the outcome partition induced on compatible mechanisms, reusable skills own preparation cost only, typed boundaries are destructive or regime-changing responses, and selection maximizes discriminative information per execution cost rather than graph-frontier rank.
+- **Discriminating test:** run `research_isomorphism.py --mode conjecture` with one fingerprint for partial interactive histories and another for spectroscopy. Require typed mappings for carrier, protocol, equality, composition, symmetry, boundary, cost, authority, and failure. Reject control/RL, graph-search, compiler, or spectroscopy vocabulary in the shared object; require bidirectional predictions and an executable discriminator between the H49 boundary route and continuation route.
+- **Success criterion:** at least one schema survivor transports all nine invariants, separates preparation from epistemic probe value, defines protocol equality by a predicted response partition, gives a cost/risk-normalized selection rule, treats degenerations as informative typed outcomes, and selects an apparatus change using the existing exact information-yield primitive.
+- **Kill condition:** no survivor; same-basin renaming; graph distance or novelty retained as an unpriced authority; skills allowed to manufacture probe value; missing version-space/outcome partition; boundaries discarded; no bounded offline policy discriminator; or substrate vocabulary in the common carrier.
+- **Claim boundary:** a survivor selects a policy experiment only. It cannot establish a biological equivalence, authorize an ARC action, or establish Level 3 completion.
+- **Outcome:** the first Codex dispatch timed out without candidates; the identical frozen prompt completed under the declared 300-second transport bound and returned two schema-complete candidates. `guarded outcome-partition functor` passed the manual gate. Both lowerings make a protocol a guarded preparation–probe–readout chain, identify protocols extensionally by the partition they induce on compatible mechanisms, retain symmetry and typed boundary outcomes, carry separate cost coordinates, and leave the observed response authoritative. This selects a common multistep protocol-pricing contract over the existing `information_yield_pricing` primitive. It rejects H49's unpriced precedence rule: learned skills may reduce preparation cost, while graph distance, boundary relevance, and novelty cannot independently own selection.
+
+# H-GPSA-GUARDED-PROTOCOL-PRICING-20260727-51 - Give one object selection authority
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** common protocol calculus / information-per-cost / ARC offline discriminator
+- **Eigenquestion:** does extensional response-partition pricing resolve H49's conflicting route owners without substrate heuristics or task vocabulary?
+- **Hypothesis:** a common selector over opaque guarded protocols will canonicalize protocols by their committee-response partition, retain the cheapest representative of equal partitions, and rank the remaining representatives by the existing composite information yield divided by explicit execution cost. Lowered onto the current partial-action compatibility relation, both the 13-operation observed-continuation route and 66-operation boundary route will be priceable, and the former will have higher yield density while preserving final probe `1`.
+- **Discriminating test:** implement a common protocol/cost/pricing contract that delegates partition components to `ztare.common.information_yield_pricing.price_experiment`; test exact partition equality, guard refusal, cost-vector accounting, cheapest equal-partition representative, and order invariance on opaque fixtures. Add a worldmodel lowering that follows only witnessed deterministic preparation edges, uses compatible sources with witnessed probe responses as the committee, retains boundary responses, and optionally prices guarded-skill plan tokens only in the control-cost coordinate. Run it read-only on the same sealed ARC evidence and both H49 candidate routes.
+- **Success criterion:** common fixtures pass; no protocol crosses an undefined or boundary preparation edge; response partitions and costs are receipted; equal partitions deduplicate by cost; selection is invariant to protocol and committee order; both ARC protocols have nonempty evidence-backed committees; the selected ARC protocol is exactly `(0,0,0,0,0,0,0,0,2,1,1,3,1)` with final probe `1`; its primitive execution cost remains 13 even if skills reduce control tokens; no environment action occurs.
+- **Kill condition:** invented response hypotheses; empty ARC committee; target leakage; skills reduce primitive execution cost; boundary response deletion; noncanonical equality; order dependence; the boundary route has greater or equal yield density; selected route drift; or environment contact.
+- **Claim boundary:** a pass authorizes a narrow planner policy repair and a separately preregistered probe. It does not itself authorize execution or establish Level 3 completion.
+- **Outcome:** twenty-two focused common/worldmodel tests passed. The read-only sealed audit compiled both H49 candidates without crossing an undefined preparation edge. The 13-operation continuation protocol had 18 compatible evidence members in eight response cells, primitive execution cost 13, three compiled control tokens, weighted yield `1.36102343`, and yield density `0.08506396`. The 66-operation boundary protocol had three compatible members in three response cells, primitive cost 66, sixteen control tokens, weighted yield `1.83333333`, and density `0.02235772`. The common selector chose `observed_continuation`, preserving source `8f9dcb28…` and probe `1`; its receipt was invariant to protocol, committee, and skill-library order. Typed boundary responses remained committee cells. Skills reduced only control units. This confirms the policy contract and authorizes planner integration before a new live hypothesis.
+
+# H-GPSA-PLANNER-PROTOCOL-AUTHORITY-20260727-52 - Remove precedence drift
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** planner integration / single selection owner / offline equivalence
+- **Eigenquestion:** can the planner expose all existing frontier producers as protocol candidates and give only the common information-per-cost selector execution authority?
+- **Hypothesis:** replacing the boundary-first conditional in `pursue_goal` with protocol lowering and common selection will preserve every legacy diagnostic while selecting the H51 continuation route. An offline planner fixture and the sealed audit will show that selected protocol identity, `Plan.actions`, policy receipt, and expansion all agree; flat, guard-rejected, or committee-free candidates cannot regain authority through fallback precedence.
+- **Discriminating test:** refactor only the mechanism-acquisition selection block. Always compute observed, boundary, predictive-quotient, and predictive-support candidates when available; lower each through witnessed relations; compile the guarded skill library from supplied trajectories; price with the existing worldmodel weights; construct `Plan` only from the selected protocol. Add regression tests for boundary-vs-continuation selection, selected-action identity, diagnostic retention, and no-valued-protocol refusal. Re-run focused suites and the sealed read-only audit.
+- **Success criterion:** no legacy `boundary_reachability_selected` authority remains; one selection receipt owns the chosen actions; current evidence yields the exact 13-operation H51 plan; every diagnostic remains inspectable; selected operations expand exactly; tests pass; no adapter or environment call occurs.
+- **Kill condition:** any unpriced fallback selects a frontier; diagnostic loss; different selected route; committee/guard bypass; skill compression alters primitive actions; broader planner behavior changes outside mechanism acquisition; test regression; or environment contact.
+- **Claim boundary:** a pass certifies planner wiring only and permits preregistration of a live probe. It cannot establish task progress or completion.
+- **Outcome:** the mechanism-acquisition branch now computes observed, boundary, predictive-quotient, and predictive-support diagnostics unconditionally, lowers every executable candidate through `select_witnessed_protocols`, and constructs `Plan.actions` only from the common selection receipt. The legacy boundary/support selection booleans are absent. A selected-protocol/operation-word equality guard returns `apparatus_obstructed` on any transport mismatch. The sealed audit again selected the exact 13-operation route to source `8f9dcb28…` and probe `1`; order invariance held and all producer receipts remained present. Eighty-seven focused planner/protocol/skill tests plus 255 transition/worldmodel/quotient/boundary tests passed (342 total). No adapter was instantiated by the audit.
+
+# H-ARC3-PRICED-PROTOCOL-CONTACT-20260727-53 - Observe the selected response
+
+- **Status:** refuted 2026-07-27 by pre-action apparatus obstruction
+- **Axis:** governed environment contact / protocol identity / Level 3 discriminator
+- **Eigenquestion:** what response does the environment assign to probe `1` after the priced preparation reaches source `8f9dcb28…`?
+- **Hypothesis:** the no-worker acquisition probe with budget 13 will replay seed `a3d6f1f5…`, retain carrier execution `2dc741d6…`, report policy `guarded_protocol_information_yield`, select `observed_partial_action_frontier`, and execute exactly `(0,0,0,0,0,0,0,0,2,1,1,3,1)`. The final response will either increment the adapter's level count or enter a sealed slice as a new typed transition/boundary consequence.
+- **Discriminating test:** run `arc3_acquisition_probe.py --game ls20 --budget 13` once. Require exact seed/carrier identities, exact planning policy and selected protocol, selected-protocol/plan equality, exact trace, final probe observation, sealed slice, evidence admission or an explicit already-witnessed verdict, and adapter task receipt. No worker, candidate synthesis, carrier promotion, task predicate, or manual route injection is permitted.
+- **Success criterion:** the exact selected protocol executes without apparatus obstruction and the final response is receipted. Level 3 is established only if the adapter task receipt reports an increment from two completed levels; otherwise the response must add a new admitted consequence and trigger offline recompilation before another action.
+- **Kill condition:** route/policy/seed/carrier drift; premature stop; identity mismatch; final probe absent; response already excluded; missing archive/admission/task receipt; worker invocation; or apparatus obstruction.
+- **Claim boundary:** only adapter authority can establish Level 3 completion. A non-discharge response is evidence for the next protocol compilation, not progress by score.
+- **Outcome:** the adapter replayed the verified seed, but planning raised `TypeError: '<' not supported between instances of 'PredictiveSupportGap' and 'PredictiveSupportGap'` before constructing or executing an active plan. Two support candidates tied on joint-test count, exceptional score, depth, untested-source digest, and operation representation; `min()` then reached the unorderable gap payload because the rank lacked tested-source identity. The acquisition report and sealed-slice ledger retained their H49 timestamps, confirming no active trace or final probe was archived. H53 is therefore refuted by apparatus obstruction and supplies no Level 3 verdict.
+
+# H-GPSA-SUPPORT-GAP-TOTAL-ORDER-20260727-54 - Complete candidate identity
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** deterministic selection identity / total ordering / no semantic rank change
+- **Eigenquestion:** is the H53 obstruction solely the missing tested-source coordinate in predictive-support candidate identity?
+- **Hypothesis:** inserting `stable_sha256(gap.tested_source)` as the final scalar tie-break before the payload makes support-frontier selection total and permutation-invariant while leaving every previously untied choice unchanged.
+- **Discriminating test:** add a generic fixture with one reachable untested source and two compatible tested sources sharing operation, joint-test count, effect score, depth, and untested identity. Confirm the pre-patch tuple would tie through operation; require post-patch selection of the lexicographically smaller tested-source digest under both observation orders. Run the predictive, planner, protocol, transition, and worldmodel suites; rerun the sealed audit without environment contact.
+- **Success criterion:** no object comparison; deterministic selected tested-source digest under order reversal; existing support-frontier fixture unchanged; all suites pass; sealed H51/H52 protocol choice remains the 13-operation route; no adapter call.
+- **Kill condition:** semantic ranking changes before a tie; order dependence; ambiguous selected lineage; regression; different priced protocol; or environment contact.
+- **Claim boundary:** a pass repairs deterministic candidate identity only. Another separately preregistered live contact remains required.
+- **Outcome:** candidate tuples now include `stable_sha256(gap.tested_source)` immediately before the gap payload. A constructed exact tie selected the smaller tested-source digest under both evidence orders, while the prior untied support fixture was unchanged. Three hundred forty-three predictive, protocol, planner, transition, quotient, boundary, and worldmodel tests passed. The sealed audit selected the same support lineage `495dd39e…`, the same `observed_continuation` protocol, and the same 13-operation word with unchanged densities. No adapter was instantiated.
+
+# H-ARC3-PRICED-PROTOCOL-RETRY-20260727-55 - Reach the response after total ordering
+
+- **Status:** confirmed as protocol contact 2026-07-27; Level 3 remains open
+- **Axis:** governed environment contact / repaired selection identity / Level 3 discriminator
+- **Eigenquestion:** after making predictive-support ordering total, what adapter response follows the unchanged priced protocol?
+- **Hypothesis:** one no-worker budget-13 acquisition transaction will retain seed `a3d6f1f5…`, carrier execution `2dc741d6…`, support tested-source `495dd39e…`, policy `guarded_protocol_information_yield`, selected producer `observed_partial_action_frontier`, and exact trace `(0,0,0,0,0,0,0,0,2,1,1,3,1)`. Probe `1` at source `8f9dcb28…` will now reach the adapter and yield task discharge or a new admitted response.
+- **Discriminating test:** rerun `arc3_acquisition_probe.py --game ls20 --budget 13` once. Require all frozen identities, selected-protocol/plan equality, exact active trace, final probe observation, sealed slice, evidence disposition, and adapter task receipt. No worker, candidate synthesis, carrier promotion, manual route, or task predicate.
+- **Success criterion:** no apparatus obstruction; exact protocol and final response receipt. An adapter increase from two completed levels establishes Level 3. Otherwise evidence must grow by at least one or explicitly classify the final response for offline recompilation.
+- **Kill condition:** any H53 kill condition, recurrence of object comparison, selected support-lineage drift, or no new final response.
+- **Claim boundary:** only the adapter task receipt may establish completion.
+- **Outcome:** seed and carrier execution identities matched. The planner selected `observed_partial_action_frontier` through `guarded_protocol_information_yield` and executed the exact 13-operation word across two lifecycle legs (12 operations to an inferred context transition, then probe `1`). The adapter remained at two completed levels with delta zero, so Level 3 is not complete. The first leg's terminal transition matched prior within-epoch evidence; the final probe completed a bounded acquisition transaction. Raw evidence growth was zero and no non-discharge edge appeared, but the complete history was archived as sealed slice `eval_20260728T022442536158Z.jsonl` (`4ea283e7…`). This is a history-conditioned response witness requiring recompilation before another contact.
+
+# H-ARC3-POST-RESPONSE-PROTOCOL-RECOMPILE-20260727-56 - Consume the sealed history
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** evidence monotonicity / history-conditioned response / next protocol
+- **Eigenquestion:** does admitting H55's sealed trajectory remove the just-tested history-conditioned pair from the protocol frontier?
+- **Hypothesis:** rebuilding the partial action system, guarded skill library, compatibility relation, and protocol portfolio with `eval_20260728T022442536158Z.jsonl` admitted will not select the exact H55 13-operation protocol again. The tested source-operation response will be represented in the history relation, and the next selected protocol will have a different operation word or return `no_valued_protocol`.
+- **Discriminating test:** run the read-only partial-action audit against the H55 trace and report. Require seed/carrier/epoch identity, inclusion of 29 sealed trajectories, exact reconstruction, portfolio order invariance, and a selected word unequal to H55 or typed exhaustion. Compare frontier/support/response receipts; do not instantiate an adapter.
+- **Success criterion:** H55 route absent from selection; new history response represented; selected protocol is guarded and priceable or the frontier closes; no environment contact.
+- **Kill condition:** exact H55 route selected again; sealed trace excluded; reconstruction failure; guard/committee bypass; order dependence; identity drift; or adapter contact.
+- **Claim boundary:** a pass identifies the next offline protocol only. It does not authorize or establish another environment result.
+- **Outcome:** the rebuilt corpus contains 29 sealed trajectories and 794 primitive tokens; the guarded library reconstructs them exactly with four programs and gain 507. The action system grew from 130 to 131 sources and 145 to 146 relations. The H55 word ending in probe `1` disappeared. The portfolio selected `observed_continuation` with the same 12-operation preparation and new probe `2`: `(0,0,0,0,0,0,0,0,2,1,1,3,2)`. Its committee has five compatible mechanisms in three response cells; primitive cost 13, control cost 3, density `0.08565227`. Order invariance held and no adapter was instantiated.
+
+# H-ARC3-PRICED-PROBE2-CONTACT-20260727-57 - Test the next response cell
+
+- **Status:** confirmed as protocol contact 2026-07-27; Level 3 remains open
+- **Axis:** governed environment contact / history-conditioned protocol / Level 3 discriminator
+- **Eigenquestion:** what response follows operation `2` at source `8f9dcb28…` after the learned preparation?
+- **Hypothesis:** one no-worker budget-13 acquisition transaction will select and execute `(0,0,0,0,0,0,0,0,2,1,1,3,2)` through `guarded_protocol_information_yield`, with the first 12 operations represented by three control tokens and all 13 primitive costs preserved. The adapter will either discharge Level 3 or seal a distinct history-conditioned response.
+- **Discriminating test:** run the acquisition probe once. Require seed `a3d6f1f5…`, carrier execution `2dc741d6…`, exact selected producer/trace, target source `8f9dcb28…`, probe `2`, sealed slice, evidence disposition, and adapter task receipt. No manual route, worker, synthesis, promotion, or task predicate.
+- **Success criterion:** exact response contact without apparatus obstruction. An adapter increase from two completed levels establishes Level 3; otherwise archive and recompile before any next contact.
+- **Kill condition:** identity/route drift, repeat of probe `1`, final probe absent, apparatus obstruction, unsealed response, or missing task receipt.
+- **Claim boundary:** only adapter authority may establish completion.
+- **Outcome:** the planner derived and executed the exact 13-operation word ending in probe `2`, across the same 12-operation context-transition leg plus one probe leg. The adapter remained at two completed levels with delta zero. Raw evidence growth was zero; the history-conditioned response was archived as `eval_20260728T023358302449Z.jsonl` (`aaad87f6…`). No apparatus obstruction or route drift occurred. Level 3 remains open and the trajectory must be consumed before further contact.
+
+# H-ARC3-POST-PROBE2-RECOMPILE-20260727-58 - Eliminate the tested protocol
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** monotone protocol elimination / sealed-history consumption
+- **Eigenquestion:** after admitting H57, does the protocol frontier remove the word ending in probe `2` and expose a distinct next experiment?
+- **Hypothesis:** a read-only rebuild with the H57 slice will contain 30 sealed histories, exactly reconstruct the corpus, and select a word different from both probe-`1` and probe-`2` protocols at source `8f9dcb28…`, or return typed exhaustion.
+- **Discriminating test:** run the partial-action audit on the H57 trace/report; require order invariance, trace inclusion, guard/committee receipts, and no adapter.
+- **Success criterion:** neither prior 13-operation word is selected; the next protocol is distinct and priceable or no valued protocol remains.
+- **Kill condition:** repeated prior word, missing trajectory, reconstruction/order/identity failure, or environment contact.
+- **Claim boundary:** offline selection only.
+- **Outcome:** the rebuild admitted 30 sealed histories and expanded the witnessed action system to 132 sources and 147 relations. Both prior words at source `8f9dcb28…` disappeared. The order-invariant portfolio selected a different experiment at source `6731546b…`: `(0,0,0,0,0,0,0,0,2,1,1,2,1,1,1,2,0)`. Its final probe is `0`; the committee contains 87 compatible mechanisms partitioned into 14 response cells. Primitive execution cost is 17, compiled control cost is six, weighted yield is `1.13135514`, and yield density is `0.04918935`, above the boundary protocol's `0.02235772`. No adapter was instantiated.
+
+# H-ARC3-DISTINCT-FRONTIER-CONTACT-20260727-59 - Observe the moved experiment
+
+- **Status:** refuted 2026-07-27 by offline/live portfolio non-identity; Level 3 remains open
+- **Axis:** governed environment contact / outcome-partition movement / Level 3 discriminator
+- **Eigenquestion:** what response follows probe `0` after the distinct 16-operation preparation reaches source `6731546b…`?
+- **Hypothesis:** one no-worker budget-17 acquisition transaction will select and execute `(0,0,0,0,0,0,0,0,2,1,1,2,1,1,1,2,0)` through `guarded_protocol_information_yield`. The complete 17 primitive operations will be preserved while the learned controller represents the preparation with fewer control tokens. The adapter will either report a third completed level or seal a new history-conditioned response that removes this protocol on recompilation.
+- **Discriminating test:** run `arc3_acquisition_probe.py --game ls20 --budget 17` once. Require seed `a3d6f1f5…`, carrier execution `2dc741d6…`, selected producer `observed_partial_action_frontier`, exact operation word, target source `6731546b…`, final probe `0`, a sealed slice, evidence disposition, and adapter task receipt. No manual route, worker, synthesis, promotion, or task predicate is permitted.
+- **Success criterion:** exact response contact without apparatus obstruction. An adapter increase from two completed levels establishes Level 3; otherwise archive the response and recompile before any further contact.
+- **Kill condition:** identity or route drift; recurrence of either prior 13-operation word; final probe absent; apparatus obstruction; unsealed response; or missing task receipt.
+- **Claim boundary:** only the adapter task receipt may establish Level 3 completion.
+- **Outcome:** seed and carrier identities matched, but the live planner selected and executed `(0,0,0,0,0,0,0,0,3)`, not the preregistered 17-operation word. The full live portfolio contained four producer identities; `predictive_compatibility_support` priced six compatible mechanisms into four response cells at density `0.13879634`, above the observed route's `0.04918935`, so the common information-yield selector correctly preferred it. The H58 audit had supplied only observed and boundary routes to the same selector even though it computed predictive-support and predictive-quotient frontiers. The test therefore refutes audit/live portfolio identity, not live selection authority. The adapter remained at two completed levels. Evidence grew by one and the nine-operation response was sealed as `eval_20260728T024200012296Z.jsonl` (`2ac6fd9e…`).
+
+# H-GPSA-PROTOCOL-PORTFOLIO-IDENTITY-20260727-60 - Make candidate membership one object
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** invariant ownership / audit-live equivalence / acquisition protocol membership
+- **Eigenquestion:** can one typed portfolio-construction object make omission of a producer impossible across offline audit and live execution?
+- **Hypothesis:** moving the four-producer membership contract into `ztare.worldmodel.mechanism_protocols` and requiring observed, boundary, predictive-quotient, and predictive-support frontier arguments at every call will make audit and planner select from identical named candidates. On the H58 evidence snapshot, both surfaces will select `predictive_compatibility_support` and the exact nine-operation word `(0,0,0,0,0,0,0,0,3)`.
+- **Discriminating test:** add a generic typed frontier-portfolio result whose constructor owns status filtering, canonical producer IDs, quotient/orbit naming, selected operation identity, and selected frontier lookup. Replace duplicated candidate-list assembly in planner and audit. Add fixtures proving all four fields are required, invalid/empty frontiers are filtered identically, selection owns the returned word, and candidate order cannot change the receipt. Rerun the H58 read-only audit and focused planner/protocol suites; do not instantiate an adapter.
+- **Success criterion:** no call site manually enumerates acquisition protocol IDs; audit and planner use the same constructor; the H58 replay includes the predictive-support candidate and selects its nine-operation word with the live H59 density/partition receipt; selected frontier actions equal selected protocol operations; tests pass; no environment contact.
+- **Kill condition:** call-site candidate enumeration remains; any producer can be silently omitted; audit retains the 17-operation selection; receipt/order drift; selected word mismatch; test regression; or adapter contact.
+- **Claim boundary:** a pass establishes audit/live portfolio equivalence only. It neither validates H59's response as task progress nor establishes Level 3 completion.
+- **Outcome:** `MechanismAcquisitionFrontiers` now owns the four required producer slots, status admission, canonical producer IDs, and quotient/orbit identity; `WitnessedAcquisitionProtocolPortfolio` owns the selected frontier and operation word. Planner and audit both call `select_acquisition_protocols` with that typed object. The audit now cuts the sealed-history ledger at its declared trace, preventing future evidence from entering an earlier decision. Replaying H58 excluded the one later H59 slice and reproduced the live receipt exactly: predictive-support selected, nine primitive operations, two control units, six compatible mechanisms, four response classes, weighted yield `1.52675974`, density `0.13879634`. All four producer identities were priced; order invariance held. One hundred twenty-eight protocol, planner, transition, boundary, skill, and quotient tests passed. No adapter was instantiated.
+
+# H-ARC3-POST-SUPPORT-RECOMPILE-20260727-61 - Consume the nine-operation response
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** causal evidence update / complete portfolio / monotone experiment selection
+- **Eigenquestion:** after admitting H59's nine-operation support response, does the complete four-producer portfolio eliminate that exact tested protocol and select the next highest-yield experiment?
+- **Hypothesis:** a causal read-only audit through `eval_20260728T024200012296Z.jsonl` will contain 31 compatible sealed histories, price all admitted acquisition producers through `select_acquisition_protocols`, and not select `(0,0,0,0,0,0,0,0,3)` again. It will select a distinct guarded operation word or return typed exhaustion.
+- **Discriminating test:** run the partial-action audit with H59's slice and current report, active-only and model-search disabled. Require matched causal boundary with zero future rows, exact guarded-history reconstruction, four-slot portfolio receipt, order invariance, and a selected word unequal to H59 or no valued protocol. Do not instantiate an adapter.
+- **Success criterion:** H59's protocol is absent from selection; every admitted producer appears in the pricing receipt; a distinct selected protocol has an evidence-backed committee and exact operation ownership, or selection is exhausted; no environment contact.
+- **Kill condition:** H59 word repeats; the response slice is omitted; causal leakage; producer omission; reconstruction/order failure; selected frontier/operation mismatch; or adapter contact.
+- **Claim boundary:** offline next-experiment selection only.
+- **Outcome:** the causal snapshot ends at H59 with zero future rows and contains 31 exactly reconstructed histories. The action system gained one witnessed relation (132 sources, 148 relations). H59's word ending in probe `3` disappeared. All four producer identities were priced and the order-invariant selector again chose `predictive_compatibility_support`, now with `(0,0,0,0,0,0,0,0,1)`. Its 18 compatible mechanisms form eight response cells; primitive cost is nine, control cost two, weighted yield `1.36102343`, and density `0.12372940`, above observed/quotient `0.04918935` and boundary `0.02235772`. No adapter was instantiated.
+
+# H-ARC3-PRICED-SUPPORT-PROBE1-20260727-62 - Observe the next support response
+
+- **Status:** confirmed as protocol contact 2026-07-27; Level 3 remains open
+- **Axis:** governed environment contact / predictive-support partition / Level 3 discriminator
+- **Eigenquestion:** what response follows operation `1` after the eight-operation witnessed preparation reaches source `df187025…`?
+- **Hypothesis:** one no-worker budget-nine acquisition transaction will select and execute `(0,0,0,0,0,0,0,0,1)` through `guarded_protocol_information_yield` and producer `predictive_compatibility_support`. The adapter will either report a third completed level or seal the response and eliminate this exact protocol at the next causal compilation.
+- **Discriminating test:** run `arc3_acquisition_probe.py --game ls20 --budget 9` once. Require seed `a3d6f1f5…`, carrier execution `2dc741d6…`, complete four-producer pricing, exact selected word, target source `df187025…`, probe `1`, sealed slice, evidence disposition, and adapter task receipt. No manual route, worker, synthesis, promotion, or task predicate.
+- **Success criterion:** exact response contact without apparatus obstruction. An adapter increase from two completed levels establishes Level 3; otherwise the sealed response must be consumed before further contact.
+- **Kill condition:** identity or route drift; repeat probe `3`; producer omission; final probe absent; apparatus obstruction; unsealed response; or missing task receipt.
+- **Claim boundary:** only the adapter task receipt may establish Level 3 completion.
+- **Outcome:** the full live portfolio independently selected `predictive_compatibility_support` and executed exactly `(0,0,0,0,0,0,0,0,1)` in one bounded transaction. Seed and carrier execution identities matched; all nine operations reached the adapter. The adapter remained at two completed levels with delta zero. Evidence grew by one and the response was sealed as `eval_20260728T025656528768Z.jsonl` (`9a1ebac8…`). No apparatus obstruction or route drift occurred. Level 3 remains open.
+
+# H-ARC3-POST-SUPPORT-PROBE1-RECOMPILE-20260727-63 - Update after probe one
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** causal evidence update / predictive-support completion / next experiment
+- **Eigenquestion:** does admitting H62 eliminate the nine-operation word ending in probe `1`, and what complete-portfolio experiment becomes most valuable?
+- **Hypothesis:** a causal read-only audit through `eval_20260728T025656528768Z.jsonl` will contain 32 exactly reconstructed histories, price the complete producer family, and not select `(0,0,0,0,0,0,0,0,1)` again. It will select a distinct guarded experiment or return typed exhaustion.
+- **Discriminating test:** run the active-only, no-model-search audit on H62's sealed slice/report. Require matched causal boundary, zero future rows, exact skill reconstruction, complete producer pricing, order invariance, and selected frontier/operation identity. No adapter.
+- **Success criterion:** H62's word is absent from selection; the next selected protocol is distinct and evidence-backed or the portfolio is exhausted; no environment contact.
+- **Kill condition:** exact H62 repeat; missing slice; causal leakage; producer omission; reconstruction/order/identity failure; or adapter contact.
+- **Claim boundary:** offline selection only.
+- **Outcome:** the causal snapshot contains 32 exactly reconstructed histories and no future rows. The action system gained one relation (132 sources, 149 relations), and H62's word ending in probe `1` disappeared. The complete portfolio selected a distinct predictive-support experiment, `(0,0,0,0,0,0,0,0,0,0,3)`, at source `0f7fbf8b…`. Its six compatible mechanisms form four response cells; primitive cost is 11, control cost two, weighted yield `1.52675974`, and density `0.11744306`. All four producers were priced and order invariance held. No adapter was instantiated.
+
+# H-GPSA-DECISION-QUOTIENT-ISOMORPHISM-20260727-64 - Learn only distinctions that change action
+
+- **Status:** refuted 2026-07-27 by the manual orthogonality gate
+- **Axis:** orthogonal reframe / experiment-versus-commitment / task-relevant equality
+- **Eigenquestion:** what higher object decides when mechanism identification is sufficient and a skill-acquisition engine should attempt task discharge?
+- **Hypothesis:** the current 7,176 predictive-support gaps are inflated because mechanism equality is finer than decision equality: many response distinctions need not change the best task-directed intervention. A Codex-only typed conjecture transport between guarded skill acquisition and sequential diagnosis-before-treatment will surface a common object with two morphism classes—information refinements and terminal commitments—whose experiment value is reduction in decision ambiguity or worst-case regret, not raw response entropy. Its stop rule will prefer commitment when no affordable experiment can change the intervention choice.
+- **Discriminating test:** run `research_isomorphism.py --mode conjecture --model codex --typed-mapping` on two frozen fingerprints. Require explicit transport for carrier, equality, information morphism, commitment morphism, composition, task value, cost, boundary/degeneration, stopping rule, authority, and failure. Manually reject shared vocabularies from control/RL, ARC, clinical medicine, or spectroscopy. A survivor must imply a bounded generic fixture in which a high-entropy experiment receives zero decision value because every response cell recommends the same commitment, while a lower-entropy experiment that can flip the commitment ranks above it.
+- **Success criterion:** at least one candidate transports all eleven invariants bidirectionally; defines a task-relative quotient coarser than predictive equivalence; keeps outcome observation and task receipt authoritative; separates skill/control cost from primitive cost; supplies an explicit no-prior decision-value calculation and stop rule; and selects a common-module discriminator without game vocabulary.
+- **Kill condition:** entropy remains the sole authority; no commitment/action class; probabilistic priors are required; task success is inferred from a boundary label; information and intervention are conflated; no transport of degenerations/failure; no executable discriminator; or substrate vocabulary enters the common object.
+- **Claim boundary:** a survivor is an apparatus conjecture only. It cannot authorize another ARC action or establish task completion.
+- **Outcome:** Codex returned two typed transports: a decision atlas with refinement/commitment arrows and a finite compatible preorder of actionable states. Both transported the eleven named fields and independently predicted a task-relative quotient coarser than mechanism identity. Neither supplied the preregistered prior-free decision-value calculation or executable discriminator; both left “changes robust choice enough” as prose. No candidate passes the gate, so no common primitive is promoted from this conjecture. The failed transport nevertheless directed a capability audit that found an existing task-relative category: `GoalHypothesisSet`, factored goal experiment/search lowerings, and full-loop precedence over acquisition. The recent acquisition-only entrypoint intentionally omitted that category.
+
+# H-GPSA-HARNESS-OBJECT-IDENTITY-20260727-65 - Restore the task-relative consumer
+
+- **Status:** refuted 2026-07-27
+- **Axis:** harness identity / existing category reuse / goal-versus-acquisition composition
+- **Eigenquestion:** has the Level 3 investigation been running an acquisition-only harness after the engine had already built a task-relative goal consumer?
+- **Hypothesis:** the current accepted carrier plus active-epoch evidence will induce a nonempty `GoalHypothesisSet` through the existing structural-goal compiler, with identity bound to source epoch 2 and the active task contract. The full play harness will therefore have a task-relative consumer unavailable to `arc3_acquisition_probe.py`, explaining why repeated information-priced probes cannot by themselves test task-directed skill use.
+- **Discriminating test:** read the accepted carrier, active evidence, task profile, and compiled operator spec without adapter contact. Invoke the same `_structural_goal_fn` used by the full loop for source epoch 2. Require a typed hypothesis version space, nonzero active identities, stable identity digest, task-contract binding, and at least one nonconstant projection key over witnessed states. Inspect the two harness call sites to require that the acquisition probe omits `goal_fn`/`goal_edge_fn` while the full loop passes them into `_play_round_multilife`.
+- **Success criterion:** the structural goal version space is nonempty and evidence-responsive; its lifecycle and contract identities match the active project; call-site asymmetry is confirmed; no new task/goal heuristic is added; no adapter contact.
+- **Kill condition:** no active goal hypotheses; constant/empty projection; lifecycle or task-contract mismatch; acquisition probe already consumes the same goal object; full loop omits it; code execution mutates evidence; or adapter contact.
+- **Claim boundary:** a pass selects the full harness for a separately preregistered run. It does not establish that any goal hypothesis is correct or that Level 3 is complete.
+- **Outcome:** the call-site asymmetry is present, but the active task-relative object is absent. Against 1,002 active-epoch transitions, `_structural_goal_fn` returned no `GoalHypothesisSet`, zero candidates, and no projection identity. The independent current-epoch candidate-task projection also returned none. Thus the recent acquisition probe did not bypass an available goal consumer; both full and acquisition harnesses currently fall through to acquisition because the task version space is empty. No adapter was instantiated.
+
+# H-GPSA-TERMINAL-FACTOR-TRANSPORT-20260727-66 - Seek task structure across lifecycle presentations
+
+- **Status:** refuted 2026-07-27 by chart-domain failure
+- **Axis:** cross-epoch isomorphism / task-hypothesis acquisition / factor invariants
+- **Eigenquestion:** do prior adapter-attested task-discharge edges share a factor-level relation that transports across lifecycle presentations without copying an old source grid?
+- **Hypothesis:** projecting every authoritative `level_completed` source edge and task-open dynamics edge through the accepted factorization will expose a nonempty, minimal factor/intervention signature shared by all successful epochs and absent from the task-open comparison set. Leave-one-success-out transport will recover each held-out success. Such a signature would define a task-hypothesis candidate over factor relations while preserving the prohibition on exact cross-epoch state transport.
+- **Discriminating test:** read the episode bank and accepted projection only. Enumerate the named factor coordinates already owned by `FiberFactors` plus intervention identity; treat authoritative `level_completed` edges as positives and authoritative non-boundary edges from completed epochs as negatives. Search subsets in increasing description length for signatures whose equality partition contains every positive and no negative. Require leave-one-positive-out recovery, report all equally minimal signatures, and reject any signature containing raw grid coordinates, epoch labels, task names, or presentation-only assignments. No adapter.
+- **Success criterion:** at least one non-presentation factor signature has support in at least two completed epochs, perfect negative separation, and leave-one-success-out recovery; its feature names and values are receipted; no current-epoch action occurs.
+- **Kill condition:** fewer than two authoritative successes; no shared signature; separation depends on absolute controlled coordinates, presentation assignment, epoch ID, or task vocabulary; leave-one-out failure; negative leakage; projection error; or adapter contact.
+- **Claim boundary:** a pass identifies a task-hypothesis representation for a subsequent bounded compiler test. It neither asserts that the signature holds in Level 3 nor authorizes execution.
+- **Outcome:** the bank contains two authoritative completions (source epochs 0 and 1), but the current accepted factor projection admits only the epoch-1 completion source and zero task-open comparison edges from completed epochs. The enumerator therefore reported one positive, zero negatives, and vacuous one-feature separators. This triggers the preregistered fewer-than-two-success and negative-leakage kill conditions. A lifecycle-local factor chart cannot own cross-epoch task transport. No adapter was instantiated.
+
+# H-GPSA-ROOTED-ACTION-ATLAS-20260727-67 - Transport terminal ports by local graph isomorphism
+
+- **Status:** refuted 2026-07-27
+- **Axis:** per-epoch canonical atlas / action equivariance / task-port transport
+- **Eigenquestion:** can adapter-attested completion edges be represented as isomorphic rooted action-graph ports across lifecycle-local charts?
+- **Hypothesis:** constructing one sensorimotor chart per epoch—rather than forcing old states through the current carrier—and canonicalizing rooted action neighborhoods modulo action-label permutations will give the two completed epochs a shared, nonvacuous terminal-port signature. The same signature will identify a finite set of unwitnessed `(node, action)` ports in active epoch 2 without copying coordinates or naming a task object.
+- **Discriminating test:** use the review-only canonical locator as a diagnostic, separately fit on each epoch. Build within-epoch graphs from non-boundary transitions under two declared chart variants: mover position, and slow-mode digest × mover position. For every authoritative completion source/action and each active frontier port, compute depth-1 through depth-4 rooted transition signatures canonicalized over every permutation of the finite action alphabet. Require at least one variant/depth where both successes agree, each success root has witnessed nonterminal adjacency, the signature is not the all-undefined neighborhood, and active matches are finite and nonempty. Report all action mappings/candidates and variant sensitivity; no adapter.
+- **Success criterion:** a shared nonvacuous signature exists across both completed epochs under at least one chart variant at depth at least two; active candidate ports are fewer than the raw frontier and carry evidence paths; the result is invariant to action renaming and transition order; no raw coordinate or epoch label enters the signature; no environment contact.
+- **Kill condition:** locator failure; only one completion maps; agreement only at vacuous depth; no depth-2+ agreement; all active frontier ports match; no active candidate matches; order/action-renaming dependence; result depends on static-mask presentation; or adapter contact.
+- **Claim boundary:** a pass proposes task-hypothesis ports for a separately governed contact. It does not certify any candidate or Level 3.
+- **Outcome:** both completion sources mapped, but under both position and mode×position variants each completion root had zero witnessed nonterminal adjacency. Their rooted port signatures disagreed at every depth 1–4, and active matching yielded none. The prototype produced only seven position-frontier or nine mode-position-frontier ports in epoch 2, contradicting the accepted evidence projection's 132 sources and hundreds of missing pairs. This confirms the prototype's own diagnostic-only warning and triggers the locator/vacuity kill conditions. No adapter was instantiated.
+
+# H-GPSA-CARRIER-ATLAS-COVERAGE-20260727-68 - Recover lifecycle-local charts from accepted lineage
+
+- **Status:** refuted 2026-07-27
+- **Axis:** multi-chart carrier lineage / coverage / cross-epoch task transport
+- **Eigenquestion:** does candidate memory already contain accepted local projections whose union covers both completed lifecycles and supplies chart overlaps for explicit transport?
+- **Hypothesis:** the gate-passing carrier lineage contains multiple compiled fiber projections specialized to different evidence epochs. Although the current projection admits only one success chart, the union will admit both authoritative completion sources, nonzero task-open comparison edges in each completed epoch, and at least one overlap region linking charts. This would make task transport an atlas problem over existing learned charts rather than a new pixel heuristic.
+- **Discriminating test:** read admissible candidate-memory survivor sources and the episode bank. Load each immutable submission through the normal carrier loader, retain only compiled projections, and measure `in_domain` coverage per source epoch, completion-edge coverage, task-open comparison coverage, and pairwise state overlap. Deduplicate projections by projection identity. Do not score transition prediction or mutate candidate memory. No adapter.
+- **Success criterion:** at least two distinct projection identities jointly cover both authoritative completion sources; each covered completion has at least one same-epoch task-open comparison state; the selected chart family has a nonempty pairwise overlap or an explicit absence receipt; source/gate/evidence identities are reported; no environment contact.
+- **Kill condition:** no historical projections load; union still misses a completion; all completion charts lack negatives; projection identity collapses to the current chart; source files are missing; load requires mutation; or adapter contact.
+- **Claim boundary:** a pass establishes atlas coverage only. It cannot assert cross-chart factor equality, induce a goal, or authorize execution.
+- **Outcome:** all 43 gate-passing sources were readable and 11 distinct
+  projection hashes loaded, but their observed domains formed one extension
+  class: zero epoch-0 states, six epoch-1 states, and 1,024 epoch-2 states.
+  Every projection admitted only completion row 14254, missed completion row
+  14209, and supplied zero task-open comparison states in either completed
+  epoch. The 55 pairwise overlaps therefore reflect duplicate coverage, not
+  an atlas connecting lifecycle charts. The union misses a completion and all
+  completion charts lack negatives, triggering two kill conditions. This also
+  rejects code hash as the relevant projection identity for this question;
+  observational domain and factor behavior must participate in equality. No
+  adapter was instantiated.
+
+# H-GPSA-RELATIONAL-TASK-CONTRACT-20260727-69 - Make task intent a morphism predicate
+
+- **Status:** confirmed on the bounded common discriminator 2026-07-27
+- **Axis:** task identity / relational specification / weakest precondition
+- **Eigenquestion:** did the engine learn a transported task relation and then
+  lose it because the runtime goal category admits only unary state
+  predicates?
+- **Hypothesis:** a Codex-only typed conjecture transport between
+  boundary-conditioned skill acquisition and guarded-command semantics will
+  identify the shared object as an evidence-owned predicate on partial action
+  morphisms, with skill composition acting by weakest-precondition pullback.
+  This category strictly contains unary state goals and can carry H30's
+  held-out-certified joint affordance relation without importing its ARC
+  constants into common code.
+- **Discriminating test:** run `research_isomorphism.py --mode conjecture
+  --model codex --typed-mapping` on two frozen six-invariant fingerprints.
+  Require explicit bidirectional transport for carrier, target, evidence,
+  coordinate change, composition, and failure. Manually require an executable
+  recurrence for pulling an edge predicate backward through an operation word.
+  Then implement only a bounded common-module fixture in which two states are
+  identical under every unary goal feature but two operations differ under a
+  relational task contract; require task-open edge evidence to refute only the
+  reached relation, exact reconstruction of the operation word, and
+  state-goal backward compatibility.
+- **Success criterion:** at least one conjecture survives the manual gate with
+  a typed edge-predicate contract and explicit pullback rule; the bounded
+  fixture passes, remains substrate-neutral, and demonstrates a nonempty
+  falsifiable task version space where the unary representation is empty.
+- **Kill condition:** the candidate reduces to state value, reward naming, or
+  exact terminal-state matching; lacks a source-operation relation; cannot
+  compose through a word; grants task authority to prediction; requires ARC
+  vocabulary; refutes sibling relations from one open receipt; or breaks
+  unary-goal compatibility.
+- **Claim boundary:** a pass repairs the common task-hypothesis category only.
+  H30 lowering, route selection, environment contact, and Level 3 completion
+  remain separate governed experiments.
+- **Outcome:** Codex conjecture dispatch `6d402977…` returned one surviving
+  mother structure, `Guarded relation lattice with backward transport`. It
+  mapped all six invariants bidirectionally and selected relational preimage
+  as the composition law. The common implementation now represents unary and
+  source-operation-outcome hypotheses in one evidence-scoped version space.
+  It implements the finite recurrence in both `may` and `must` modalities,
+  retains exact operation-word order, and refutes only hypotheses satisfied by
+  the observed state or edge. In the bounded discriminator every unary feature
+  was constant, the relational version space retained two distinct candidates,
+  one task-open edge refuted only its matching candidate, and backward
+  transport selected exactly one initiation source. Unary compatibility was
+  preserved. Twenty-four focused task, skill, effect, and protocol tests
+  passed. No ARC constants entered the common module and no adapter was
+  instantiated.
+
+# H-GPSA-RELATIONAL-GOAL-CONSUMER-20260727-70 - Preserve the learned relation at runtime
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** common-to-substrate lowering / task-hypothesis lifecycle / planner
+  consumption
+- **Eigenquestion:** can the existing edge-planning path consume a relational
+  task version space without converting it back into a unary state target?
+- **Hypothesis:** a thin worldmodel adapter from
+  `TaskHypothesisVersionSpace` to the existing `goal_edge_fn` protocol will
+  preserve lifecycle identity, task-contract identity, descriptor identity,
+  and hypothesis-local refutation. Bounded planning will reach the nominated
+  source-operation relation without simulating through it; when the external
+  adjudicator remains open, the play lifecycle will refute only that relation
+  and continue with a sibling.
+- **Discriminating test:** add a descriptor-bound relational edge wrapper and
+  a typed candidate-edge receipt. In a bounded two-candidate fixture, require
+  `plan_to_goal` to return the exact preparation-plus-probe word; require the
+  live executor to stop after the candidate edge without labeling task
+  discharge; make the external adjudicator remain open; require only the
+  reached hypothesis to be removed and the second planning leg to receive the
+  surviving edge space. Require cross-epoch scoping to return `None`, and keep
+  exact authoritative edge predicates unchanged.
+- **Success criterion:** exact plan, no prediction beyond the candidate edge,
+  local refutation, sibling continuation, lifecycle/contract/descriptor
+  identity in receipts, unary-goal regression tests unchanged, and no
+  substrate constants or adapter contact.
+- **Kill condition:** conversion to a state predicate; speculative successor
+  required to recognize the edge; task completion inferred by the wrapper;
+  all siblings refuted together; exact authoritative edge behavior changes;
+  cross-epoch leakage; missing descriptor identity; or regression failure.
+- **Claim boundary:** a pass establishes runtime support for learned
+  relational goals. Compiling H30's descriptor, finding a Level 3 route, and
+  contacting the environment remain separate experiments.
+- **Outcome:** `RelationalGoalEdgeHypothesisSet` now binds the common task
+  version space to an opaque, identity-bearing substrate descriptor and the
+  existing `goal_edge_fn` protocol. It scopes by evidence epoch, preserves task
+  contract and descriptor identity, and exposes only active edge hypotheses.
+  Bounded search found the exact preparation-plus-probe word and stopped at
+  the candidate relation without planning through it. Live-executor fixtures
+  returned a typed candidate-edge receipt with zero task credit. With the
+  external adjudicator held open, the multilife consumer removed only the
+  reached hypothesis and passed the surviving relation to the next leg.
+  Existing unary-goal and exact-authoritative-edge tests remained unchanged.
+  Ninety focused planner, skill, effect, protocol, and sealed-evidence tests
+  plus all 224 worldmodel tests passed. No substrate constants entered the
+  common module and no environment adapter was instantiated.
+
+# H-ARC3-JOINT-RELATION-RECOMPILE-20260727-71 - Rebind the learned task relation
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** learned relation recompilation / current evidence epoch / holdout
+  preservation
+- **Eigenquestion:** does H30's cross-epoch joint-affordance relation survive
+  recompilation under the current carrier and expanded evidence bank?
+- **Hypothesis:** rerunning the frozen joint-equivariant compiler with the
+  current accepted carrier will reproduce a relation code that matches the
+  held-out epoch-1 completion, matches none of the five same-epoch
+  non-discharge boundaries, defeats independently canonicalized factor
+  ablations, and has a nonempty active-epoch preimage distinct from the known
+  open target relation.
+- **Discriminating test:** rerun
+  `joint_equivariant_affordance_audit.py` against the unchanged H29 active
+  target artifact and current project. Compare every criterion, prior holdout
+  row, operation-map support, template code, active configuration count, and
+  selected active preimage with the frozen H30 receipt. Write a new result;
+  do not overwrite H30, instantiate an adapter, or search a route.
+- **Success criterion:** all compiler criteria pass; one held-out positive and
+  zero held-out negatives match; the shared joint action remains stricter than
+  the independent product; at least one current active preimage is
+  evidence-backed and excludes the known non-discharge configuration.
+- **Kill condition:** projection/domain failure; operation-map ambiguity;
+  holdout positive miss; any failure collision; ablation tie; no active
+  preimage; only the known open configuration survives; evidence lineage
+  missing; or environment contact.
+- **Claim boundary:** a pass supplies a current descriptor-bound relational
+  goal candidate. Route existence, execution, and Level 3 completion remain
+  separate experiments.
+- **Outcome:** the frozen compiler completed against the expanded bank and
+  current accepted carrier with every criterion true. Joint code `c1968343…`
+  again matched the one held-out epoch-1 completion and zero of five
+  same-epoch non-discharge boundaries. The active epoch still has four
+  configuration orientations; footprint-only, configuration-only, and the
+  independently canonicalized product each match all four, while the shared
+  group action matches only configuration `4dd96788…`, now backed by current
+  evidence. The known open configuration remains excluded. No route search or
+  environment contact occurred.
+
+# H-GPSA-RELATIONAL-FACTORED-SEARCH-20260727-72 - Search in the task-relation quotient
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** relational target lowering / factored search / task-relative
+  equality
+- **Eigenquestion:** can the calibrated factored consumer search directly for
+  a learned source-operation relation instead of reconstructing a copied
+  terminal state?
+- **Hypothesis:** a generic `FactoredSearchProblem` whose goal delegates to a
+  relational task version space and whose dominance key includes the active
+  relation truth vector will preserve target equality while reusing the
+  carrier's transition and feasibility factors. On a bounded fixture it will
+  find the exact relational edge. Instantiated with H71's evidence-derived
+  descriptor, it will either find an offline Level 3 candidate route or return
+  a typed projection counterexample or bounded continuation.
+- **Discriminating test:** add no descriptor vocabulary to common search.
+  Extend the relational edge wrapper with an operation-domain truth-vector
+  key; lower it through the current compiled-fiber projection into a generic
+  relational search problem. Verify target-equality separation and exact route
+  on a bounded fixture. Then derive active operation displacements from current
+  epoch-2 evidence, bind H71's joint code and the configured task contract,
+  and run `search_factored` from the current seed state with four
+  evidence-declared operations, depth 180, and 20,000 states. Offline replay
+  any result and recompute the relational descriptor. No adapter.
+- **Success criterion:** fixture route and target equality pass; the ARC audit
+  returns one total typed outcome. `edge_found` requires exact replayed
+  descriptor and active hypothesis identity. A counterexample must identify
+  the erased coordinate; bounded exhaustion must carry a continuation and
+  frontier receipt. No copied historical state or environment contact.
+- **Kill condition:** relation truth differs inside a retained dominance key;
+  descriptor identity is absent; goal evaluation needs a speculative
+  successor; fixture fails; replayed route misses; untyped exhaustion; raw
+  target state enters the generic problem; or environment contact.
+- **Claim boundary:** `edge_found` is an offline task-directed proposal only.
+  External execution and Level 3 completion require a separate registered
+  contact.
+- **Outcome:** the generic fixture separated carrier-equal states by their
+  task-relation truth vector and found the exact two-operation edge; 248
+  focused tests passed. The Level 3 audit then returned the preregistered typed
+  `projection_noncommuting` outcome after 529 generated / 459 expanded states,
+  at depth 21. Two source states had the same carrier key, budget order, clock,
+  and four-operation task-relation truth vector, yet action `0` mapped them to
+  different successor keys. The bounded difference is exactly cells
+  `(61,57)` and `(62,57)`, values `3` versus `8`; no declared carrier factor
+  changed. Inspection binds those cells to an auxiliary 2×2 object consumed by
+  a learned relocation mechanism in the accepted carrier chain but omitted
+  from the compiled chart. The relation-valued target survived; the mechanism
+  quotient was refuted. No environment contact occurred.
+
+# H-GPSA-TRANSITION-CONGRUENCE-MEMBRANE-20260727-73 - Do not inherit untransported equality
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** representation lineage / transition congruence / exact relational
+  fallback
+- **Eigenquestion:** when an accepted transition program contains layers whose
+  read predicates were not transported into a compiled quotient, can the
+  consumer preserve the learned task relation while withdrawing only the
+  invalid state equality?
+- **Hypothesis:** transition equality is licensed only when every carrier layer
+  has a projection transport or the runtime commutation guard has not refuted
+  it. After H72's counterexample, a substrate-neutral exact-observation
+  relational problem will retain the task-relation truth vector and external
+  adjudication while replacing the refuted mechanism key with exact state plus
+  clock identity. On a bounded fixture, two concrete presentations that the
+  old factors merged will remain distinct. On Level 3, rerunning the frozen
+  H71 relation from the same seed with depth 180 and 20,000 states will return
+  an offline relational edge, a bounded continuation, or a new typed failure;
+  it may not reproduce H72's same invalid merge.
+- **Discriminating test:** first run capability-amnesia retrieval and one
+  Codex-only research-isomorphism conjecture dispatch over the H72 witness,
+  requiring explicit state/operation/failure-mode transport. Add a generic
+  exact relational search problem whose identity names exact observation as
+  the transition coordinate and task relation as the terminal coordinate.
+  Verify on a fixture that it separates states merged by the factor chart.
+  Then rerun H72's descriptor, operation maps, seed, depth, and state bound
+  with exact relational equality. Replay any edge or continuation offline. Do
+  not change the carrier, target descriptor, operation set, environment, or
+  adapter.
+- **Success criterion:** the fixture distinguishes the formerly merged
+  sources; the Level 3 run returns one typed outcome without H72's
+  `(61,57)/(62,57)` merge. An edge must replay to H71's exact descriptor. A
+  bounded result must preserve a nonempty continuation and frontier receipt.
+  A new failure must name a different contract boundary.
+- **Kill condition:** exact identity still merges distinct states; the task
+  relation changes; a copied target state enters the problem; the same H72
+  counterexample recurs; the result is untyped; a returned word fails offline
+  replay; or environment contact occurs.
+- **Claim boundary:** this tests a safe consumer fallback and projection
+  invalidation rule. It does not certify the old quotient, promote a carrier,
+  or establish task discharge.
+- **Outcome:** semantic retrieval found no matching transition-quotient
+  refinement primitive. Codex-only conjecture dispatch `9d0c7e…` mapped the
+  failure to right-congruence refinement and predicted a one-operation
+  splitter while acceptance remains separate. The exact relational fallback
+  distinguished the bounded fixture and passed 249 focused tests. On Level 3
+  it did not reproduce H72's invalid merge and returned
+  `search_budget_exhausted`: 20,000 generated, 16,024 expanded, depth 30, and
+  3,977 frontier nodes. Its 30-operation continuation replayed exactly offline.
+  No H71 relation edge was found. Thus exact identity supplies a correctness
+  membrane but not adequate compression at the frozen allocation; the next
+  chart should split by labeled successor behavior, not by additional
+  appearance features. No environment contact occurred.
+
+# H-GPSA-LABELED-SUCCESSOR-REFINEMENT-20260727-74 - Split by what actions do
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** behavioral canonical coordinates / right congruence / bounded
+  relational search
+- **Eigenquestion:** does one step of labeled behavioral refinement recover
+  the missing transition coordinate without expanding to exact observations?
+- **Hypothesis:** given a consumer key `q`, define
+  `q₁(s,t) = (q(s,t), (q(T_a(s,t),t+1))_a)` over the finite admitted operation
+  alphabet, with a typed missing-image token. This one-step future signature
+  is substrate-neutral and must separate H72's sources because action `0`
+  already distinguishes their `q` images. It will leave the relation-valued
+  task predicate unchanged. On Level 3, search under `q₁` will either find an
+  offline H71 edge, return a new deeper distinguishing-suffix counterexample,
+  or yield a bounded continuation with more compressed coverage than H73.
+- **Discriminating test:** implement a generic
+  `LabeledSuccessorRefinementProblem` over any `FactoredSearchProblem`,
+  deterministic predictor, and finite operation tuple. Its identity binds the
+  parent problem, operation alphabet, carrier execution identity, and depth
+  one. It memoizes labeled images but delegates goal, admissibility,
+  feasibility, and task authority unchanged. First verify that a fixture pair
+  merged by `q` but separated by one labeled image receives distinct `q₁`
+  keys and that search finds the relational edge. Then rerun H72 from the same
+  seed with H71, four operations, depth 180, and 20,000 states. Offline replay
+  any edge or continuation. No adapter or carrier edit.
+- **Success criterion:** fixture separation and route pass; H72's exact
+  source-pair merge cannot recur; the Level 3 result is typed. An edge must
+  replay to H71's descriptor. A new counterexample must require a deeper
+  distinguishing suffix or name another contract boundary. A bounded
+  continuation must replay and report frontier coverage.
+- **Kill condition:** `q₁` fails to distinguish a pair whose labeled `q`
+  images differ; task relation or adjudication changes; carrier image is
+  invented; H72's same merge recurs; result or replay is untyped; or
+  environment contact occurs.
+- **Claim boundary:** depth-one refinement is a consumer chart proposal
+  checked by runtime commutation. It does not certify a fixed point, task
+  discharge, or live Level 3 completion.
+- **Outcome:** the generic depth-one refinement and fixture passed; 250 focused
+  tests passed. On Level 3, the H72 source block no longer caused the
+  counterexample. Search returned a new typed `projection_noncommuting` result
+  after 537 generated / 462 expanded states at depth 21. The new merged source
+  class has principal base `(5,29)` rather than H72's `(5,34)`. Intervention
+  `3` maps its two members to depth-one classes whose action-`0` images differ:
+  the shortest exposed distinguishing word is therefore `(3,0)`, of length
+  two. The raw source difference still reflects the same auxiliary-marker
+  phase, but one-step parent images agree; depth two is required. Task-relation
+  truth remained unchanged and no environment contact occurred.
+
+# H-GPSA-DEPTH-TWO-CONGRUENCE-20260727-75 - Admit the distinguishing word
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** behavioral refinement depth / distinguishing suffix / relational
+  reachability
+- **Eigenquestion:** does the exact two-operation suffix exposed by H74 suffice
+  to restore transition congruence over the next reachable frontier?
+- **Hypothesis:** recursively defining
+  `q₂(s,t) = (q₁(s,t), (q₁(T_a(s,t),t+1))_a)` will separate H74's merged
+  sources because their operation-`3` successors have different depth-one
+  keys. A generic depth parameter and compact behavioral digest will preserve
+  the same right-congruence construction without substrate vocabulary. On
+  Level 3, `q₂` search will find H71's relation, return a strictly deeper
+  distinguishing word, or supply a replayable bounded continuation.
+- **Discriminating test:** generalize the depth-one wrapper to a positive
+  refinement depth with recursively memoized labeled image keys and identity
+  bound to that depth. Verify a fixture where `q₀` and `q₁` merge a pair but
+  `q₂` separates it and finds the exact relational route. Then rerun H72's
+  carrier, H71 relation, seed, four operations, depth 180, and 20,000-state
+  ceiling at refinement depth two. Replay any proposed word offline. No
+  adapter or carrier edit.
+- **Success criterion:** fixture demonstrates `q₁` equality and `q₂`
+  inequality; H74's `(3,0)` source merge cannot recur; Level 3 returns one
+  typed outcome. A new counterexample must expose a distinguishing suffix
+  longer than two or another contract boundary. An edge must replay to H71;
+  a continuation must replay with frontier counts.
+- **Kill condition:** `q₂` merges H74's pair; recursive key depends on
+  substrate fields; task relation changes; result is untyped; replay fails; or
+  environment contact occurs.
+- **Claim boundary:** depth two remains a runtime-challenged consumer
+  projection, not a fixed-point certificate or task-discharge receipt.
+- **Outcome:** the generic depth parameter, compact behavioral digest, and
+  shortest-word extractor passed their fixtures; 251 focused tests passed.
+  Level 3 returned `projection_noncommuting` after 535 generated / 461
+  expanded states at depth 21. The depth-two merged sources are separated by
+  exact word `(0,3,0)`, extracted from ephemeral concrete witnesses and stored
+  only as operation labels plus state digests. Thus H74's length-two merge did
+  not recur; the next demanded behavioral depth is exactly three.
+  Task-relation truth remained unchanged and no environment contact occurred.
+
+# H-GPSA-DEPTH-THREE-CONGRUENCE-20260727-76 - Compile the measured memory horizon
+
+- **Status:** withdrawn before test 2026-07-27
+- **Axis:** action-memory horizon / depth-three right congruence / task
+  relation
+- **Eigenquestion:** does compiling the exact measured distinguishing horizon
+  `(0,3,0)` yield a transition-sufficient chart over the reachable search
+  frontier?
+- **Hypothesis:** `q₃`, the third recursive labeled-successor refinement, will
+  separate H75's pair by construction and preserve the H71 task relation. A
+  bounded fixture with two roots first distinguished by a three-operation word
+  will be equal under `q₂`, unequal under `q₃`, and searchable to its
+  relational edge. On Level 3, `q₃` will return an H71 edge, a strictly longer
+  distinguishing word, or a replayable bounded continuation.
+- **Discriminating test:** add no representation feature. Instantiate the
+  generic refinement at depth three and verify the length-three fixture. Then
+  rerun the unchanged carrier, H71 relation, seed, four operations, depth 180,
+  and 20,000-state ceiling. Extract the shortest word for any counterexample
+  and replay any proposed route offline. No adapter or carrier edit.
+- **Success criterion:** fixture is equal at depth two and separated at depth
+  three; H75's `(0,3,0)` merge cannot recur; Level 3 returns a typed outcome.
+  A new counterexample must have shortest word longer than three. An edge must
+  replay to H71; a continuation must replay with frontier counts.
+- **Kill condition:** depth three merges the measured pair; shortest-word
+  extraction contradicts the refined key; target identity changes; result or
+  replay is untyped; or environment contact occurs.
+- **Claim boundary:** a depth-three chart remains an offline consumer proposal
+  under runtime commutation, not task discharge.
+- **Withdrawal:** H72-H75 show that increasing `q_d` repairs successively
+  exposed state distinctions while leaving the governing search object
+  unchanged. The principal rejected that level of attack before H76 ran. No
+  fixture, Level 3 audit, or environment contact occurred. The successor
+  hypothesis changes the consumer invariant from full transition congruence
+  to task-conditioned controllable-predecessor preservation.
+
+# H-GPSA-TASK-CONDITIONED-SKILL-BASIN-20260727-77 - Pull the goal through skills
+
+- **Status:** refuted 2026-07-27 at the task/control join
+- **Axis:** predicate-transformer coordinates / task-conditioned control /
+  partial-action skill acquisition
+- **Eigenquestion:** does changing the planning object from a state quotient
+  to the controllable predecessor interval of an evidence-owned task relation
+  make the Level 3 obstruction small and direct acquisition toward the edge
+  that can change task reachability?
+- **Hypothesis:** every witnessed operation in a partial action system induces
+  two monotone predicate transformers: existential `Pre_may` and guarded
+  universal `Pre_must`. Their fixed points around an edge-valued task
+  hypothesis define an optimistic and certified controllable basin. Guarded
+  skills act by transformer composition. State distinctions are required only
+  when they change membership in this interval. Applied to the frozen H71
+  relation and the H63 causal evidence snapshot, this coordinate will produce
+  one of three discriminating outcomes: the current seed already has a
+  witnessed route to an H71 edge; the seed lies outside `must` but inside
+  `may`, with a finite ambiguity cut; or the seed lies outside both, with a
+  finite missing-edge cut whose members are ranked by possible basin gain.
+- **Discriminating test:** first run Codex-only
+  `research_isomorphism.py --mode conjecture --typed-mapping` between the
+  partial-action control seam and predicate-transformer semantics, requiring
+  transport of carrier, goal, operation, composition, uncertainty, equality,
+  acquisition value, and failure. Reject any candidate that returns to
+  finite-horizon state signatures, generic response entropy, or substrate
+  vocabulary. Implement only the minimal common basin compiler selected by a
+  surviving transport, with a bounded fixture where two states are
+  transition-distinct but task-basin equivalent and one unknown edge changes
+  the `may/must` interval. Then lower the frozen H71 relation into the exact
+  H63 partial-action snapshot, compute the basin and cut from the current seed,
+  and replay any fully witnessed route offline. No carrier edit, q-depth
+  increment, adapter, or environment contact.
+- **Success criterion:** the conjecture transport is schema-complete and
+  selects an executable predecessor recurrence; the fixture preserves the
+  edge goal, composes a guarded word by transformer composition, merges the
+  task-irrelevant transition distinction, and names the one interval-changing
+  unknown edge. The Level 3 audit returns a typed basin receipt with H71 task,
+  H63 evidence, current seed, `may/must` membership, finite cut, and exact
+  lineage. A witnessed route must replay to H71; an unresolved result must
+  rank only edges capable of changing basin membership.
+- **Kill condition:** no schema survivor; the recurrence needs copied target
+  states or full future trees; state equality ignores task identity; unknown
+  edges are silently totalized; `must` admits an unwitnessed or
+  nondeterministic escape; the fixture cannot discard a task-irrelevant
+  distinction; the Level 3 cut is untyped or unbounded; lineage drifts from
+  H63/H71; or environment contact occurs.
+- **Claim boundary:** a basin pass supplies an offline task-conditioned
+  planning or acquisition object. It does not establish the biological
+  analogy, validate an unwitnessed consequence, or discharge Level 3.
+- **Outcome:** Codex conjecture dispatch `b94f05b5…` produced two
+  schema-complete correspondences. The guarded reachability kernel with
+  evidence/postcondition adjunction passed the manual gate; the additive
+  closure-boundary candidate did not. The common `may/must` predecessor
+  compiler then passed its bounded discriminator: twenty-five focused tests,
+  a transition-distinct but task-decision-equivalent merge, a retained
+  nondeterministic interval, guarded-word composition, and selection of only
+  the missing edge whose image enters the basin. The Level 3 lowering
+  reconstructed H63 exactly (`825` observations, `132` fibers, `149`
+  relations, source-system digest `e78d2de1…`) but found zero H71 joint task
+  edges among all `528` concrete source-operation pairs. Basin construction
+  therefore stopped with typed `task_relation_unrepresented`; no search or
+  environment contact occurred. Inspection of the H71 compiler shows why:
+  its active row paired one frozen target footprint with independently grouped
+  finite configurations and never required both factors to co-occur on one
+  control edge. The next discriminator compiles the whole calibrated relation
+  version space against concrete control pairs and task-open evidence before
+  any hypothesis can govern planning.
+
+# H-GPSA-TASK-CARRIER-JOIN-20260727-78 - Require a concrete image before planning
+
+- **Status:** confirmed 2026-07-27
+- **Axis:** relational-goal version space / carrier compatibility /
+  task-open falsification
+- **Eigenquestion:** did H71 commit to a relation that was calibrated on prior
+  terminal edges but had neither a concrete image nor complete falsification
+  against the control evidence it was meant to govern?
+- **Hypothesis:** evaluating all four H71 relation codes on the exact H63
+  source-operation carrier and on every H63 task-open transition will separate
+  three statuses that the prior audit conflated: `refuted`,
+  `control_supported`, and `unrepresented`. The selected shared-joint relation
+  will remain unrepresented. The less restrictive footprint-only or
+  independent-product relations will have nonempty carrier images, but every
+  such image already exercised in a task-open trace will refute its
+  hypothesis. Consequently no H71 candidate will be both unrefuted and
+  control-supported.
+- **Discriminating test:** freeze H71's four template hashes and prior
+  positive/negative counts; reconstruct H63 by digest; compute every code from
+  one concrete representative and one operation, never by independently
+  pairing factors. Evaluate the same predicates on every transition in the
+  32 sealed H63 histories whose adapter receipt is task-open. Classify each
+  hypothesis: any calibrated or active task-open collision is `refuted`;
+  otherwise a nonempty concrete join is `control_supported`; otherwise it is
+  `unrepresented`. For each surviving supported hypothesis only, compile H77's
+  basin and replay any route offline. No target selection by specificity,
+  carrier search, adapter, or environment contact.
+- **Success criterion:** all 528 carrier pairs and all eligible task-open
+  transitions receive exact code receipts; H71's joint image is empty; every
+  nonempty simpler image has an evidence-bound disposition; no refuted or
+  unrepresented hypothesis enters basin construction; the final version-space
+  status and any basin outcome are typed and order-invariant.
+- **Kill condition:** the joint relation has a concrete H63 member; a simpler
+  relation remains unrefuted and control-supported contrary to the
+  hypothesis; an active negative is omitted; factor products are synthesized
+  without a concrete source-operation pair; candidate order changes the
+  disposition; a refuted/empty relation governs planning; identity drifts
+  from H63/H71; or environment contact occurs.
+- **Claim boundary:** this is a compatibility and falsification gate for task
+  hypotheses. It does not prove that an unrepresented relation is impossible,
+  select a replacement task concept, or discharge Level 3.
+- **Outcome:** the H63 reconstruction again matched digest `e78d2de1…`.
+  Candidate order did not change any disposition. Across `528` concrete
+  control pairs and `825` task-open transitions, the shared-joint relation had
+  zero control members and zero current negative collisions:
+  `unrepresented`. Footprint-only and independent-product each had exactly one
+  control member, and that exact relation occurred in one task-open pair:
+  both `refuted`. Configuration-only matched all `528` pairs and `149`
+  task-open pairs, in addition to its five prior terminal negatives:
+  `refuted`. No H71 hypothesis was both unrefuted and control-supported, so no
+  basin or search ran. The local edge descriptor is therefore insufficient as
+  the task object; the next discriminator lifts task identity to the
+  intervention/effect history that precedes an authority boundary.
+
+# H-GPSA-CAUSAL-EVENT-STRUCTURE-20260727-79 - Quotient process order, not state
+
+- **Status:** refuted 2026-07-29 at the manual orthogonality and coherence gate
+- **Axis:** process identity / sparse-outcome credit / orthogonal action
+  learning
+- **Eigenquestion:** did the engine attach task identity to the final
+  transition because it represented an intervention process as a state path,
+  when the invariant object is the partial order of outcome-relevant events
+  produced by that process?
+- **Hypothesis:** successful action learning and sparse-outcome credit
+  assignment share a finite causal event structure. Occurrences are observed
+  mechanism changes or typed boundaries; dependence is intervention-sensitive
+  precedence; independent occurrences commute; skills are guarded reusable
+  substructures with executable linearizations; task evidence labels an
+  authority-boundary cut; and credit is its backward dependency cone.
+- **Discriminating test:** run Codex-only
+  `research_isomorphism.py --mode conjecture --typed-mapping` between frozen
+  fingerprints for interactive sparse-outcome histories and goal-directed
+  sensorimotor learning. Require bidirectional transport of carrier,
+  occurrence, dependence, independence, composition, symmetry, task/outcome,
+  credit, failure, and authority. Reject raw strings, suffixes, state
+  quotients, local terminal predicates, frontiers, home-domain vocabulary, or
+  repetitions of an existing compiler/pricer/task-edge contract. Require a
+  bounded discriminator where commuting nuisance events preserve process
+  identity but deleting a causal prerequisite changes it despite an identical
+  last edge. Inspect existing primitives after selection; no ARC audit or
+  environment contact.
+- **Success criterion:** a schema-complete mother structure outside both home
+  vocabularies supplies explicit ordered-observation to dependency-structure
+  and guarded-linearization maps, swap/delete predictions, backward-cone
+  credit, and one implementable common discriminator not already present.
+- **Kill condition:** no survivor; decorative/one-sided mapping; future-label
+  leakage into dependence; boundary-kind task inference; swap/delete
+  prediction failure; no executable linearization; recurrence of an existing
+  mechanism; or environment contact.
+- **Claim boundary:** a pass selects a common apparatus experiment only. It
+  does not establish a biological account, certify ARC dependencies, authorize
+  an environment action, or discharge Level 3.
+- **Outcome:** Codex conjecture dispatch `3ab6225b…` returned two
+  schema-complete candidates and zero manually admitted candidates. `Typed
+  causal process quotient with delayed authoritative cuts` transported all
+  ten fields but contradicted its own independence relation: independently
+  swappable events were defined to preserve effects and authority, then
+  predicted to change post-devaluation persistence. `Guarded trace category
+  with external cut functor` repeated H45's guarded continuation category and
+  introduced an ungrounded credit statistic that again changed under a
+  quotient-preserving swap. H79 selects no implementation. The remaining
+  object must define credit through a measurable reduction in later
+  acquisition cost rather than attach an unconstrained score to a trace.
+
+# H-GPSA-COMPOUNDING-LEARNING-STATE-20260729-80 - Make experience reduce later acquisition cost
+
+- **Status:** active 2026-07-29
+- **Eigenquestion:** can one durable state compose guarded skill evidence,
+  authority outcomes, matched-contrast credit, and explicit transport so a
+  later isomorphic task needs fewer demonstrations while prior skills remain?
+- **Test:** merge skill revisions under lineage-independent family identity;
+  learn early judgment only from one-edit outcome contrasts; transport a
+  family through an explicit operation bijection; require one local guard
+  witness where a fresh compiler requires two; serialize/reload; and recheck
+  every prior decision.
+- **Pass:** fewer target demonstrations, an evidence-localized early failure,
+  stable prior decisions, exact persistence, and no transferred task outcome.
+- **Kill:** family identity changes when evidence grows; unpaired outcomes
+  receive causal credit; transport executes without a local guard witness;
+  old decisions drift; or persistence loses lineage.
+
+# H-GPSA-PERSISTED-REASONING-ACTOR-20260729-81 - Let the frontier model own the action chronology
+
+- **Status:** active 2026-07-29
+- **Axis:** acting-controller identity / fast recurrent state / slow compiled
+  memory
+- **Eigenquestion:** did the ARC investigation measure a compiled deterministic
+  controller while attributing its zero task gain to the frontier model and
+  the new skill-memory architecture?
+- **Hypothesis:** a direct GPT-5.6 Sol controller that observes every settled
+  frame, chooses every charged action, and continues one stored Responses API
+  thread with `reasoning.context=all_turns` and `previous_response_id` will
+  gain at least one `ls20` level within 32 actions from reset. The existing
+  compiled controller cannot answer this question because no frontier-model
+  inference occurs at its action boundary.
+- **Discriminating test:** keep the game, reset boundary, 32-action budget,
+  observation palette, action ordering, and adapter level counter fixed. Give
+  Sol no puzzle documentation, prior solution trace, compiled carrier, or
+  ZTARE task credit. Supply each settled frame as both a lossless row-run
+  encoding and a nearest-neighbour PNG. Force exactly one typed action tool
+  call per response, reject any response whose effective reasoning context is
+  not `all_turns`, and bind every turn to the preceding response ID and tool
+  call ID. Record levels and token usage from provider and adapter receipts.
+- **Success criterion:** all action decisions form one verified response chain,
+  all environment acts are charged once, and the adapter reports at least one
+  level gained within 32 actions. A pass establishes an acting recurrent
+  reasoner as a missing baseline; it does not attribute the gain specifically
+  to persisted reasoning until a matched `current_turn` arm is run.
+- **Kill condition:** the provider rejects the continuation contract; the
+  effective context is absent or differs; a tool call is ambiguous; action
+  accounting drifts; observation history leaks puzzle-specific knowledge; or
+  zero levels are gained by action 32.
+- **Claim boundary:** this is a controller-identity and harness discriminator.
+  It neither refutes the compiled skill machinery nor credits slow memory,
+  distal credit, or biological analogy with any observed gain.
+- **Apparatus note 2026-07-29:** the first API attempt stopped before frame
+  inference or any charged ARC action with provider
+  `429 credit_balance_exhausted`. H81 remains untested.
+
+# H-GPSA-RESUMED-SUBSCRIPTION-ACTOR-20260729-82 - Test the actor before the unavailable API transport
+
+- **Status:** confirmed 2026-07-29
+- **Axis:** acting-controller identity / resumed inference session / transport
+  substitution
+- **Eigenquestion:** does a frontier model acting through one continuing
+  observation/action session gain task credit where the compiled deterministic
+  controller did not?
+- **Hypothesis:** GPT-5.6 Sol at `xhigh`, choosing every action through one
+  tool-sealed Codex subscription session and resuming that exact session after
+  every settled observation, will gain at least one `ls20` level within 32
+  charged actions from reset.
+- **Discriminating test:** preserve H81's game, reset, action budget, action
+  ordering, adapter counter, lack of puzzle documentation, and lossless
+  row-run observation. Replace only the unavailable API transport with
+  `codex exec resume`; require one stable session ID, monotonically increasing
+  session tick count, a schema-constrained single action, and no shell, web,
+  JavaScript, or repository tools. Record every action, prediction, adapter
+  epoch, and level count.
+- **Success criterion:** one resumed session owns all decisions, every
+  environment act is charged once, and the adapter reports at least one level
+  gained within 32 actions.
+- **Kill condition:** session identity changes or is absent; resume fails;
+  output violates the action schema; the sealed worker reaches another tool;
+  action accounting drifts; or zero levels are gained by action 32.
+- **Claim boundary:** a pass supports the missing-actor diagnosis only. The
+  subscription CLI does not expose an effective `reasoning.context` receipt,
+  so H82 cannot confirm H81's API-setting claim or measure the isolated effect
+  of persisted reasoning.
+- **Outcome:** one GPT-5.6 Sol `xhigh` session
+  `019fb5f1-2837-7800-a525-73a809dc744d` chose all twenty charged actions.
+  Its session tick count advanced exactly from 1 through 20. The adapter
+  reported the first level boundary after action 20. Receipt
+  `h82_persistent_subscription_actor_result.json` has SHA-256
+  `b79aa3229ce3570f429cdd381aa8fb13bae58b3b32a0c2951736af644359751d`.
+
+# H-GPSA-FAST-STATE-ABLATION-20260729-83 - Reset the actor between actions
+
+- **Status:** confirmed 2026-07-29
+- **Axis:** recurrent session continuity / acting-model capacity / exact
+  action budget
+- **Eigenquestion:** did H82 gain the level because Sol acted at all, or
+  because the same Sol reasoning process retained its path-dependent
+  hypotheses across actions?
+- **Hypothesis:** replacing H82's resumed session with a fresh, tool-sealed
+  Sol `xhigh` session for every action, while preserving the game, reset,
+  current-observation encoding, instructions, action schema, and 32-action
+  budget, will fail to gain level 1 by action 20 and will not gain it by action
+  32.
+- **Discriminating test:** rerun the H82 harness from reset. Each turn receives
+  only the current lossless settled observation and the same task
+  instructions. Force a newly minted Codex session ID on each decision.
+  Preserve model, effort, action ordering, schema, timeout, and adapter
+  authority. Compare adapter level count and action efficiency to H82.
+- **Success criterion:** all decision sessions are distinct, accounting is
+  exact, and the fresh-session controller has zero level gain at action 32.
+  This supports recurrent reasoning state as the measured difference.
+- **Kill condition:** a session is accidentally resumed; the environment or
+  instructions differ; action accounting drifts; or the fresh-session
+  controller gains the first level in 20 or fewer actions.
+- **Claim boundary:** a pass identifies fast session continuity as useful on
+  this game/run. It does not isolate the public API's persisted-reasoning
+  implementation or show that slow compiled memory is unnecessary.
+- **Outcome:** the control spent all 32 charged actions and gained zero levels.
+  All 32 decision session IDs were distinct, and every session reported tick
+  count 1. By contrast, H82's resumed actor gained level 1 at action 20.
+  Receipt `h83_fresh_subscription_actor_result.json` has SHA-256
+  `b215a630b851eb53c433f1953a2fddd54f74e1f6394218fa696e0f94908f21cb`.
+
+# H-GPSA-FULL-BUDGET-RESUMED-ACTOR-20260729-84 - Continue the actor across level boundaries
+
+- **Status:** rejected 2026-07-29
+- **Axis:** fixed-budget benchmark semantics / recurrent state across level
+  boundaries / level yield
+- **Eigenquestion:** did the one-level H82 result understate the resumed
+  actor because the probe stopped at its first level boundary instead of
+  spending the declared 32-action budget?
+- **Hypothesis:** GPT-5.6 Sol at `xhigh`, owning every action through one
+  resumed, tool-sealed subscription session, will complete at least two
+  `ls20` levels within exactly 32 charged actions from reset when the harness
+  continues after the first level boundary.
+- **Discriminating test:** retain H82's game, reset, model, effort, action
+  ordering, lossless observation, instructions, tool seal, and 32-action
+  budget. Remove only the early stop after the first level gain. Require one
+  stable session ID, session ticks 1 through 32, exact action accounting, and
+  environment-adapter level counts after every action. Record every level
+  boundary action.
+- **Success criterion:** the run spends exactly 32 actions and the adapter
+  reports at least two levels gained.
+- **Kill condition:** continuation breaks across a level boundary; identity or
+  accounting drifts; the environment ends before the declared budget cannot be
+  represented without an implicit reset; or fewer than two levels are gained.
+- **Claim boundary:** a pass would match the screenshot's two-of-six outcome
+  on this one game/run, not establish the public API settings' causal effect
+  or a benchmark-wide percentage. A failure would leave H82/H83's
+  fast-continuity result intact while locating the remaining deficit after
+  level 1.
+- **Outcome:** the one resumed session spent all 32 charged actions with
+  session ticks exactly 1 through 32. It gained level 1 at action 16 and no
+  second level. On level 2 it retained the action map and prior mechanic
+  hypotheses, but spent actions 17 through 28 reaching a ring that the next
+  observation identified as a recharge checkpoint rather than the needed
+  pattern-changing switch. Receipt
+  `h84_full_budget_resumed_actor_result.json` has SHA-256
+  `b27106f1d08b3f73b40c8b16f03d1519a9abf2ee394f6d5c148ea6b805152ca7`.
+
+# H-GPSA-WAKE-SLEEP-CREDIT-ROUTER-20260729-85 - Make recalled memory pay through compatible outcomes
+
+- **Status:** confirmed 2026-07-29
+- **Axis:** multi-rate consolidation / sparse attention / counterfactual recall
+  credit / guard-overlap interference
+- **Eigenquestion:** can a substrate-neutral wake-sleep router learn which
+  consolidated memory changes a bounded online decision, rather than ranking
+  provider records by authority, similarity, use count, or recency?
+- **Hypothesis:** after matched inject/ablate settlements on a sealed synthetic
+  decision stream, an outcome-calibrated top-1 router will select the
+  lower-authority causal memory over a higher-authority irrelevant confuser
+  and achieve lower held-out decision regret than the existing static
+  authority/actionability agenda on all five deterministic seeds. Credit will
+  remain exact-scope, primitive action cost will remain invariant, overlapping
+  guards will compete more strongly than embedding similarity, and one
+  compatible contradiction will reopen boundary provenance before repeated
+  compatible contradictions demote the memory.
+- **Discriminating test:** implement an immutable task/controller/context/
+  choice-set/action-vocabulary scope; candidate memories with frozen predicted
+  decision delta, retrieval cost, support refs, guard features, and provider
+  authority; sparse selection by calibrated outcome delta minus retrieval and
+  guard-overlap costs; matched inject/ablate settlement; and
+  candidate→active→probation→demoted transitions. Generate five seeded streams
+  where provider authority and embedding similarity favor the confusers while
+  only one lower-authority memory has positive compatible inject/ablate
+  effect. Hold out the evaluation outcomes from calibration. Compare top-1
+  regret against the current authority baseline, exercise a top-2
+  similarity-versus-guard-overlap cross, submit inside- and outside-scope
+  contradictions, and compare primitive cost before/after settlement.
+- **Success criterion:** router regret is strictly lower on all five seeds;
+  the causal memory is top-1 only after compatible outcome evidence; an
+  outside-scope outcome changes no statistic or state; the top-2 selection
+  excludes the higher-overlap confuser despite lower embedding similarity;
+  primitive cost is byte-identical; the first inside-guard contradiction
+  enters probation and reopens only the declared boundary support; and three
+  matching contradictions demote the memory.
+- **Kill condition:** authority or similarity alone produces the claimed
+  result; any credit crosses the exact scope; use count predicts recall after
+  marginal effect is present; the router fails to beat the static baseline on
+  any seed; embedding similarity dominates the orthogonalized guard-overlap
+  cross; primitive cost changes; or contradiction causes immediate global
+  deletion, no provenance reopening, or no later demotion.
+- **Claim boundary:** a pass establishes the mechanics of outcome-priced
+  sparse memory on a sealed stream. It does not establish ARC improvement,
+  biological fidelity, or benchmark-wide transfer. ARC integration requires
+  exact observation/successor episode capture and a separately registered
+  level-boundary comparison.
+- **Outcome:** all five deterministic seeds moved top-1 recall from the
+  high-authority confuser before settlement to the lower-authority causal
+  memory afterward. Router/static held-out regrets over 400 decisions were
+  `66/198`, `72/205`, `60/217`, `74/191`, and `81/220`. With two recall
+  slots, guard-overlap cost displaced the fully overlapping confuser in favor
+  of the semantically identical lower-overlap candidate; without that cost
+  the confuser remained second. An outside-scope settlement was rejected with
+  byte-identical state. Primitive action cost remained `11.0`. The first
+  compatible contradiction entered probation and reopened only
+  `boundary-episode`; the third demoted the memory. Receipt
+  `h85_wake_sleep_credit_router_result.json` has SHA-256
+  `029597d8abd0b99fb04998ce9a13ffab04b26c532887481c0616bae86a920069`.
+
+# H-GPSA-LEVEL-BOUNDARY-MICROSLEEP-20260729-86 - Consolidate the first level before acting on the second
+
+- **Status:** rejected 2026-07-29; scope-integration defect exposed
+- **Axis:** exact wake episode / same-session offline consolidation / sparse
+  recall / cross-level action efficiency
+- **Eigenquestion:** can an uncharged level-boundary consolidation tick reduce
+  the wrong-subgoal cost that left H84 at one level, without replacing the
+  recurrent actor or smuggling in an action sequence?
+- **Hypothesis:** one GPT-5.6 Sol `xhigh` resumed session, given exactly the H84
+  game, reset, observations, action ordering, instructions, and 32 charged
+  actions, will gain at least two levels when the first level boundary triggers
+  a same-session micro-sleep that compiles the completed wake segment and
+  recalls at most three guarded memories by predicted decision delta minus
+  retrieval and guard-overlap cost.
+- **Discriminating test:** preserve H84's acting controller and fixed action
+  budget. Persist the initial plus every successor observation as lossless
+  row-runs with content hash; bind every action to source/successor hashes and
+  adapter transition identity. After an adapter-authoritative level boundary,
+  run one schema-constrained inference in the same session that is forbidden
+  to choose an action and must produce guarded memories citing supporting
+  action counts, predicted decision deltas, retrieval costs, uncertainties,
+  and next discriminators. Lower those memories through an empty-credit H85
+  router with `top_k=3` and guard-overlap cost `0.20`; expose only the selected
+  digest to subsequent action turns. Record the extra inference tick
+  separately from charged actions.
+- **Success criterion:** one session identity owns all action and sleep
+  inferences; exactly 32 environment actions and 33 settled observations are
+  recorded; the sleep tick occurs only after a level boundary and cites the
+  completed wake segment; no more than three memories re-enter the actor; and
+  the adapter reports at least two levels gained.
+- **Kill condition:** fewer than two levels; action accounting changes; the
+  sleep output chooses or executes an action; session identity changes; a
+  selected memory lacks wake support; observation links or boundary authority
+  are absent; the raw unselected digest enters the actor; or primitive
+  environment-action cost changes.
+- **Claim boundary:** a pass would support same-session consolidation plus
+  sparse recall on this run. The arm spends one additional model inference and
+  therefore is not compute-matched benchmark evidence. It does not yet settle
+  H85 outcome credit because H84 and H86 do not share an exact stochastic
+  decision context or randomized inject/ablate assignment.
+- **Outcome:** the run spent exactly 32 environment actions, recorded 33
+  settled observations, and used one Codex session whose action ticks were
+  `1..20,22..33`. Tick 21 was the sole consolidation inference, immediately
+  after the action-20 level boundary. The digest proposed seven memories and
+  the router returned three: the cardinal control map, target/state-glyph
+  equality, and marker-driven glyph editing. The actor gained no second level.
+  Its twelve post-boundary actions traversed to and stepped onto an untested
+  ring, reproducing the wrong-subgoal family seen in H84 rather than reducing
+  it.
+- **Architectural counterexample:** the empty-credit router ranked the
+  producer's own predicted deltas minus retrieval cost; all selected pairwise
+  guard overlaps were zero and no observed decision effect existed. More
+  seriously, selection was scoped to the level-boundary observation hash, but
+  the selected digest remained active after later actions changed that
+  context. The live bridge therefore did not preserve H85's exact consumption
+  scope. A valid successor must store acquisition provenance separately from
+  consumption scope and rerun compatibility at each decision.
+- **Evidence:** `h86_level_boundary_microsleep_result.json` has SHA-256
+  `50ad60cf9bd5738ad556ed37f364d62f7626b554f15b98ead1a16c4b47b1f482`.
+
+# H-AXIOMPACK-JACOBIAN-FILTERED-OBSTRUCTION-COMPILER-20260731-87 - Compile filtered obstructions without fixing the substrate
+
+- **Status:** supported 2026-07-31; exact compiler and first Jacobian
+  reachability adapter complete
+- **Axis:** filtered algebra / associated-graded quotient / reusable exact
+  obstruction machinery
+- **Eigenquestion:** can the exact filtration, quotient, leading-support,
+  transition, and Magnus mechanisms already used in the Jacobian campaign be
+  expressed by one substrate-neutral contract that rejects incompatible
+  conventions and then decides the first contact-zero coinvariant question?
+- **Hypothesis:** a small compiler whose core owns only filtration degrees,
+  graded actions, quotient relations, leading pivots, and transition edges can
+  replay both an alien filtered Lie algebra and the Jacobian least-positive-
+  contact module.  For the Jacobian adapter, quotienting the contact-zero
+  action on the first positive-contact layer will either leave a nonzero
+  coinvariant with an explicit annihilating functional or return an exact
+  cancellation witness.  No substrate label, polynomial variable name, or
+  Magnus side belongs in the core contract.
+- **Discriminating test:** inventory existing AxiomPack and `src/ztare`
+  components first; define compatibility identities for filtration shifts,
+  quotient closure, and velocity placement; pass a non-Jacobian toy model with
+  a known one-dimensional coinvariant; fail a wrong-shift and non-invariant-
+  relation control; then adapt the exact Jacobian contact-zero/positive-contact
+  basis and compute the quotient rank with a replayable witness.  Compare the
+  adapter's finite truncations under at least two basis orderings and extend
+  the window once before interpreting stabilization.
+- **Success criterion:** one reusable core, one alien-substrate replay, both
+  negative controls rejected, and a basis-independent Jacobian output giving
+  either a nonzero coinvariant functional or an exact cancellation vector.
+- **Kill condition:** the core must know cusp/contact vocabulary; filtration
+  compatibility is inferred from a finite output instead of checked; the
+  Jacobian rank changes under basis ordering or the next window; quotient
+  relations are not preserved by the action; or the computation merely
+  restates the finite positive-contact theorem.
+- **Claim boundary:** this tick advances the unrestricted moving-family
+  campaign only if it controls the arbitrary contact-zero backbone.  A useful
+  compiler by itself is apparatus progress, and a finite quotient calculation
+  by itself is not campaign completion.
+
+# H-GPSA-PAIRED-ONE-SHOT-RECALL-20260730-87 - Price the H86 memory bundle on restored prefixes
+
+- **Status:** supported on the preregistered exploratory criterion 2026-07-30
+- **Axis:** acquisition provenance / one-shot consumption / matched
+  controller strata / externally measured recall value
+- **Eigenquestion:** does the evidence-derived H86 memory bundle change a
+  fresh Sol controller's task behavior when it is recalled once at an exact
+  restored initial observation, or did H86 merely add prompt material already
+  recoverable by the actor?
+- **Hypothesis:** across three seeded pairs of fresh GPT-5.6 Sol `xhigh`
+  controllers on the exact `ls20` initial observation, an inject arm receiving
+  the three-item H86 bundle on decision zero only will have greater total
+  first-level task score than its no-recall controls and win an
+  `0.8 * task + 0.2 * efficiency` composite in at least two pairs. The
+  predicted mean composite delta is `0.20`.
+- **Discriminating test:** preserve the H86 bundle's exact source episode,
+  boundary observation, controller instance, and supporting transition hashes
+  as acquisition provenance. Create a distinct consumption scope at the
+  restored initial observation, preserving task, controller class, choice set,
+  and action vocabulary through an explicit transport claim. Randomize arm
+  order from the sealed seed
+  `h87-paired-one-shot-recall-20260730`. Each arm gets a fresh resumed
+  subscription controller and exactly 20 charged actions. Inject the bundle
+  only into the treatment's first decision; burn that authorization before the
+  inference call. Require distinct harness controller, runtime session, and
+  trajectory identities within each pair. Record task score, first-level
+  efficiency, and unique-settled-observation yield separately.
+- **Success criterion:** all six arms restore the same initial observation and
+  spend 20 actions; treatment and control controller/runtime/trajectory
+  identities are distinct; treatment has exactly one prefix injection and
+  control has none; primitive cost matches within every pair; treatment has
+  greater total task score and positive composite delta in at least two of
+  three pairs.
+- **Kill condition:** a digest persists after decision zero; source provenance
+  is used as the consumption key; any arm identity or primitive cost is reused
+  across the counterfactual; the initial observations differ; control sees the
+  bundle; the composite mean is nonpositive with no positive task delta; or
+  the paired outcome cannot be externally reconstructed from action and
+  adapter receipts.
+- **Claim boundary:** the intervention is the three-memory bundle, so this
+  experiment cannot assign credit to an individual memory. Treatment has
+  extra prompt tokens. Three pairs on one public game are an exploratory
+  mechanism discriminator, not cross-game transfer or a benchmark estimate.
+- **Outcome:** all six fresh arms restored observation
+  `e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778`
+  and spent exactly 20 actions. Inject completed Level 1 in all three arms at
+  actions `13,15,15`; ablate completed in two arms at actions `20,miss,15`.
+  The paired composite deltas were `0.07,0.86,0.00`: two wins, one tie, mean
+  `0.31` against the predicted `0.20`. Total task score was `3` versus `2`.
+  Mean unique-settled-observation yield delta was exactly `0.00`, so the
+  measured gain was allocation of contact rather than more distinct visible
+  outcomes. Each inject arm carried exactly one prefix injection; all harness
+  controller, runtime session, and trajectory identities were pairwise
+  distinct; primitive cost was `20/20` in every pair. Per-pair prediction MSE
+  remained high (`0.1642`), so mean lift is not calibrated at the individual
+  stratum level. Result
+  `h87_paired_one_shot_recall/result.json` has SHA-256
+  `ebbc2209ce1b684e804d7751236d7c1a236c4309362ce906580b14bd3f12228a`.
+
+# H-GPSA-PAIRWISE-MEMORY-CONTENT-20260730-88 - Price causal mechanics against redundant true memory
+
+- **Status:** supported 2026-07-30; reverse-order replication owed
+- **Axis:** active memory intervention / content attribution / prompt-cost
+  control / outcome-corrected provider judgment
+- **Eigenquestion:** did H87 benefit from the specific causal
+  marker→glyph→target memories, or would any true H86 reminder of comparable
+  presentation size have produced the same improvement?
+- **Hypothesis:** across three seeded pairs of fresh GPT-5.6 Sol `xhigh`
+  controllers on the exact `ls20` initial observation, a one-shot bundle
+  containing `goal_requires_glyph_match_v1` and
+  `floor_marker_edits_state_glyph_v1` will have greater total first-level task
+  score than a one-shot true-memory bundle containing
+  `controls_cardinal_v1`, `walls_block_without_state_change_v1`, and
+  `marker_is_not_consumed_v1`, and will win the
+  `0.8 task + 0.2 efficiency` score in at least two pairs. Predicted mean
+  left-minus-right delta is `+0.15`.
+- **Discriminating test:** select both bundles by external memory IDs from the
+  seven-item H86 source digest. Preserve disjoint exact supporting-transition
+  provenance. Render both through the same schema and add an inert
+  presentation field to the shorter bundle until canonical JSON UTF-8 byte
+  lengths are identical. Randomize condition order from seed
+  `h88-pairwise-memory-content-20260730`. Each arm restores the same initial
+  observation, uses a fresh resumed subscription controller, receives exactly
+  one decision-zero injection, and spends 20 actions. Settle the two active
+  interventions symmetrically so a relative win credits the causal bundle and
+  debits the redundant bundle.
+- **Success criterion:** all arm pairs match initial observation and
+  primitive cost; rendered bundle byte lengths match exactly; runtime and
+  trajectory identities remain distinct; each arm has exactly one prefix
+  injection; causal mechanics have greater total task score and positive
+  composite delta in at least two of three pairs; learned top-1 allocation
+  moves to causal mechanics even though the source producer rated the control
+  map bundle higher (`0.99` versus `0.96`).
+- **Kill condition:** bundle membership overlaps or lacks H86 support; prompt
+  bytes differ; any direct injection repeats; active-arm credit is laundered
+  through an ablate receipt; controller, trajectory, observation, or action
+  cost identity is reused; causal mechanics do not beat redundant true memory;
+  or learned allocation still prefers the losing intervention.
+- **Claim boundary:** canonical UTF-8 byte length is exact, while the
+  subscription runtime does not expose its model tokenizer, so exact model
+  input-token equality is unavailable. Three pairs on one game test
+  bundle-level content value only; they do not establish an online
+  inject-or-silence policy, cross-game transfer, or benchmark uplift.
+- **Outcome:** all six arms matched the restored observation, exact
+  3,849-byte presentation cost, and 20-action primitive cost. Causal mechanics
+  completed Level 1 at actions `13,15,13`; redundant true memory completed at
+  `19,miss,14`. Total task score was `3/2`, and paired composite deltas were
+  `+0.06,+0.86,+0.01`, so all three decision comparisons favored causal
+  mechanics. Mean observed delta was `+0.31` against predicted `+0.15`.
+  Outcome credit moved learned top-1 allocation to the causal revision despite
+  its lower producer rating. Mean distinct-observation yield delta remained
+  `0.00`. The frozen randomizer produced left-first order in all three pairs
+  (`1/8` under independent fair shuffles); the content result is supported
+  within that run, while order independence remains open. Result
+  `h88_pairwise_memory_content/result.json` has SHA-256
+  `9dc9e7fdce2b4479896926c09019da9c896a8ae7e0b9ad6e209cfadadc1de2d7`.
+
+# H-GPSA-PAIRWISE-MEMORY-CONTENT-REVERSE-20260730-89 - Reverse the active-memory execution order
+
+- **Status:** supported 2026-07-30
+- **Axis:** temporal-order confound / active memory intervention /
+  content-credit replication
+- **Eigenquestion:** does the H88 causal-mechanics advantage survive when the
+  redundant-true arm executes first in every pair?
+- **Hypothesis:** across three fresh right-first pairs under the H88
+  observation, conditions, byte budget, controller class, and 20-action cost,
+  causal mechanics will retain greater total first-level task score and
+  positive `0.8 task + 0.2 efficiency` delta in at least two pairs. Predicted
+  mean causal-minus-redundant delta is `+0.15`, a shrinkage estimate relative
+  to H88's observed `+0.31`.
+- **Discriminating test:** run the same evidence-selected, disjoint H88
+  condition spec through the same one-shot harness with
+  `order_mode=right-first`, seed
+  `h89-pairwise-memory-content-reverse-20260730`, and a new output directory.
+  Freeze arm orders as `right,left` for all three pairs before environment
+  contact. Preserve exact 3,849-byte presentations, restored observation,
+  distinct controller/runtime/trajectory identities, and symmetric
+  active-intervention settlement.
+- **Success criterion:** all H88 identity and cost checks pass; causal
+  mechanics have greater total task score; causal composite delta is positive
+  in at least two of three right-first pairs; learned top-1 allocation ends on
+  causal mechanics.
+- **Kill condition:** any identity or cost mismatch; any arm order differs
+  from `right,left`; causal total task score is not greater; at most one
+  positive composite delta; or learned top-1 remains on redundant true memory.
+- **Claim boundary:** this is an order-confound replication on one public game
+  and one initial observation. Support would establish order robustness for
+  this local content comparison, not autonomous retrieval judgment,
+  cross-context transport, or benchmark uplift.
+- **Outcome:** all three frozen orders were `right,left`, with redundant true
+  memory executed before causal mechanics. Causal mechanics completed Level 1
+  at `13,20,20`; redundant true memory completed at `16,miss,13`. Total task
+  score was `3/2`; composite deltas were `+0.03,+0.81,-0.07`, for two wins and
+  one negative-transfer stratum. Mean causal-minus-redundant delta was
+  `+0.2567` against predicted `+0.15`, and learned top-1 remained the causal
+  revision. Combined H88+H89 evidence is `6/6` causal completions versus `4/6`
+  redundant completions, with three pairs in each execution order. Result
+  `h89_pairwise_memory_content_reverse/result.json` has SHA-256
+  `2093a1c1a12b7bc3362ef4e66f684f38fab8e545635b62f5f7d3ef6a06479fcc`.
+
+# H-GPSA-HELDOUT-OUTCOME-TRAINED-SELECTOR-20260730-90 - Let prior outcome credit choose the next intervention
+
+- **Status:** rejected 2026-07-30; observation-level average credit did not
+  compound
+- **Axis:** temporal credit use / autonomous allocation / producer-prior
+  control / held-out controller transfer
+- **Eigenquestion:** does the externally settled H89 credit state cause a
+  better intervention to be selected and executed on later fresh controller
+  instances than the uncalibrated producer prior?
+- **Hypothesis:** a hash-verified rehydration of H89's final credit state will
+  allocate the causal-mechanics intervention, while the empty-state
+  producer-prior allocator will choose redundant true memory because its
+  initial rating is `0.99` versus `0.96`. Across four fresh paired controller
+  strata, the outcome-trained selection will have greater total first-level
+  task score and positive `0.8 task + 0.2 efficiency` delta in at least three
+  pairs. Predicted mean trained-minus-prior delta is `+0.20`.
+- **Discriminating test:** before any scored controller-arm contact, verify
+  H89 result hash `2093a1c1...`, rehydrate its embedded credit-state receipt
+  with exact hash and derived-field checks, confirm that the uncharged live
+  observation has the same consumption scope, and run the same sparse
+  allocator twice over the two H88 proposals: once with H89 credit and once
+  from an empty state. Abort if both selectors choose the same revision.
+  Assign the outcome-trained choice to the left arm and producer-prior choice
+  to the right arm. Freeze four alternating execution orders, restore the same
+  initial observation, inject each selected 3,849-byte bundle once, and charge
+  every fresh Sol `xhigh` controller 20 actions.
+- **Success criterion:** the source and credit-state hashes verify; the
+  outcome-trained selector chooses causal mechanics without a condition name
+  in the allocation rule; producer prior chooses redundant true memory;
+  execution order is balanced `2/2`; all identity and fixed-cost checks pass;
+  outcome-trained selection has greater total task score and positive
+  composite delta in at least three of four pairs.
+- **Kill condition:** source-state rehydration drifts; selector choices are
+  equal; a role is hand-assigned after allocation; presentation or primitive
+  cost differs; execution order is unbalanced; the trained selector fails the
+  task or pair-win criterion; or its final learned allocation no longer
+  selects the better intervention.
+- **Claim boundary:** H90 tests whether prior matched outcomes alter a later
+  decision on held-out stochastic controllers at the same game and
+  observation. It does not establish cross-context credit transport,
+  inject-or-silence judgment, benchmark gain, or accelerating improvement.
+- **Outcome:** the H89 result and embedded credit-state hashes verified.
+  Outcome-trained allocation selected causal mechanics; producer-prior
+  allocation selected redundant true memory; orders were balanced `2/2`.
+  The trained arm completed Level 1 at `19,20,13,miss`; producer-prior arms
+  completed at `14,20,13,13`. Paired deltas were
+  `-0.05,0.00,0.00,-0.88`: zero trained wins, total task delta `-1`, and mean
+  `-0.2325` against predicted `+0.20`. The frozen criterion failed, and the
+  four new settlements moved final top-1 back to redundant true memory.
+  Injection was receipted, but the controller's pre-intervention hypothesis
+  and post-intervention use were absent from the credit context. Result
+  `h90_heldout_outcome_trained_selector/result.json` has SHA-256
+  `3b0d070afed8526ba84210b6e60b557aed753949247bf37c296a32beaa437f2b`.
+
+# H-GPSA-INSTRUMENTED-PROPOSAL-PLASTICITY-20260730-91 - Separate memory offer from proposal uptake
+
+- **Status:** supported 2026-07-30; lexical proposal quotient requires
+  object-identity repair before policy use
+- **Axis:** blind proposal lineage / randomized encouragement / endogenous
+  intervention uptake / response-signature credit
+- **Eigenquestion:** did H90 fail because causal memory lacks stable value, or
+  because the allocator equated an offered intervention with a change in the
+  controller's active proposal?
+- **Hypothesis:** relative to an exact-byte-matched redundant-true placebo,
+  causal-mechanics recall will increase contract-supported transport from a
+  blind pre-proposal to the same controller's committed proposal by at least
+  `+0.25`. The target offer will have nonnegative total first-level task delta
+  and positive mean `0.8 task + 0.2 efficiency` intent-to-treat delta. A
+  complier effect may be emitted only if the randomized offer has the
+  preregistered first-stage strength.
+- **Discriminating test:** run four alternating paired Sol `xhigh` strata
+  from the same restored observation. Every arm performs two inference calls
+  before its first charged action: a memory-blind proposal, followed by a
+  committed proposal after randomized causal or placebo recall. Both bundles
+  use the H88 evidence selections and exact canonical byte matching; every
+  arm then spends 20 primitive actions. Freeze the feature lowering and
+  decision-use contract in
+  `h91_instrumented_proposal_plasticity_spec.json`. Bind exact scope,
+  controller instance, proposal ancestry, assignment, intervention revision,
+  response signature, trajectory, and external outcome. Estimate the
+  offer-minus-placebo first stage and reduced-form outcome separately.
+- **Success criterion:** all identity, presentation, two-inference, and
+  primitive-cost checks pass; supported-transport first stage is at least
+  `+0.25`; target total task score is no lower than placebo; mean composite
+  intent-to-treat delta is positive; and the estimator status is
+  `identified`.
+- **Kill condition:** any identity/cost mismatch; proposal classification is
+  changed after environment contact; first stage below `+0.25`; target task
+  loss; nonpositive composite effect; or any complier estimate emitted under
+  a weak first stage.
+- **Claim boundary:** H91 is a mechanism discriminator on one public game,
+  observation, controller class, and task-specific frozen feature adapter.
+  It does not establish hidden-state access, cross-context transport,
+  benchmark gain, or literature novelty.
+- **Outcome:** all eight arms matched the restored observation, two-inference
+  proposal protocol, exact 3,849-byte presentation, and 20-action cost. Target
+  memory completed Level 1 at `13,15,13,15`; placebo at `16,20,20,16`.
+  Target won all four composite comparisons
+  (`+0.03,+0.05,+0.07,+0.01`) with task delta `0` and mean `+0.04`.
+  Frozen lowering classified supported transport in `1/4` target arms and
+  `0/4` placebo arms, exactly meeting the `+0.25` first-stage threshold; the
+  estimator returned `identified` and provisional complier effect `+0.16`.
+  A post-run construct audit found that blind controllers sometimes used
+  “marker” for the moving avatar, so lexical features marked a wrong-object
+  plan as precondition-compliant. The outcome comparison and proposal
+  chronology stand; the first stage cannot govern held-out admission until
+  proposals reference the same content-addressed objects as the world model.
+  Result
+  `h91_instrumented_proposal_plasticity/result.json` has SHA-256
+  `8608e4b95f0f4e30da7c354d04595fe15b289843532ad160542dee280343f395`.
+
+# H-GPSA-OBJECT-LINKED-JUDGMENT-QUOTIENT-20260730-92 - Bind controller plans to world objects
+
+- **Status:** rejected 2026-07-30 by frozen unknown-reference kill
+- **Axis:** alpha-world / alpha-judgment commuting identity / typed
+  object-role paths / causal response credit
+- **Eigenquestion:** did H91's target intervention improve decisions by
+  correcting the active object/role plan, or did the lexical response
+  classifier manufacture uptake by confusing words with object identity?
+- **Hypothesis:** relative to the exact-byte-matched redundant-true placebo,
+  causal memory will move at least `3/4` blind proposals from an incorrect
+  controlled object to the evidence-backed controlled object plus required
+  waypoint; placebo will do so in at most `1/4`. The object-linked first stage
+  will be at least `+0.50`, target task delta will be nonnegative, and mean
+  paired composite effect will be positive.
+- **Discriminating test:** compile the frozen observation into a task-label-free
+  content-addressed component catalog. Require each blind and revised proposal
+  to cite a controlled occurrence and ordered waypoint refs from that exact
+  catalog. Resolve the evidence contract's selectors in the grid adapter,
+  while the common kernel sees only opaque refs. Run four alternating target
+  versus byte-matched-placebo pairs with two proposal calls, 3,849 presented
+  bytes, and 20 primitive actions per arm. Estimate target encouragement,
+  typed path uptake, and external outcome separately.
+- **Success criterion:** both frozen selectors resolve uniquely; all proposal
+  refs resolve in the same-observation catalog; target supported transport is
+  at least `0.75`; placebo spontaneous transport is at most `0.25`; first stage
+  is at least `0.50`; target task delta is nonnegative; mean paired composite
+  delta is positive; and estimator status is `identified`.
+- **Kill condition:** ambiguous selectors; unresolved or cross-observation
+  refs; lexical fallback; first stage below `0.50`; target task loss;
+  nonpositive composite effect; or a complier estimate under a weak
+  instrument.
+- **Claim boundary:** H92 tests the construct validity of one internal
+  proposal-response quotient. It does not establish cross-context transfer,
+  adaptive silence, compounding capability, benchmark gain, or literature
+  novelty.
+- **Outcome:** two balanced-order pairs completed before pair 3. Target memory
+  completed Level 1 at `13,13`; placebo at `16,miss`. Object-linked supported
+  transport was `2/2` target and `0/2` placebo; partial task delta was `+1`
+  and mean paired composite delta `+0.455`. Before pair 3's first charged
+  action, the controller copied one 64-hex object ref with a one-character
+  error. The kernel rejected the unknown ref, triggering H92's explicit kill.
+  The partial direction is informative but cannot satisfy the planned
+  four-pair criterion. Result SHA-256:
+  `60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79`.
+  Architectural correction: preserve cryptographic occurrence identity inside
+  the bridge while exposing deterministic catalog-scoped short handles to the
+  controller. Also persist raw proposal calls before reference validation.
+
+# H-GPSA-CATALOG-SCOPED-POINTER-JUDGMENT-20260730-93 - Separate object identity from active presentation
+
+- **Status:** supported 2026-07-30
+- **Axis:** identity/presentation split / local pointer resolution /
+  alpha-judgment / object-path eligibility trace
+- **Eigenquestion:** did H92 fail because object-linked controller state is
+  unusable, or because it made a controller reproduce cryptographic evidence
+  identities?
+- **Hypothesis:** a deterministic, role-free, catalog-scoped handle map will
+  resolve every proposal to exact object refs while removing the hash-copy
+  channel. Across two new alternating-order pairs, target memory will yield
+  supported object-path transport in `2/2` arms and placebo in `0/2`; target
+  task delta will be nonnegative and mean paired composite delta positive.
+- **Discriminating test:** compile the unchanged H92 catalog, assign handles
+  `o00...` by frozen object order, and bind the ordered map to observation and
+  catalog identities. Show the controller handles plus geometry, never role
+  labels or exact refs. Persist raw blind/revised proposals before resolution;
+  resolve handles inside the adapter; run the unchanged common object-path
+  contract and instrumented outcome estimator. Use two fresh balanced-order
+  pairs, two proposal calls, 3,849 intervention bytes, and 20 actions per arm.
+- **Success criterion:** presentation round-trip and raw proposal checkpoint
+  rates are `1.0`; no invalid handle; target supported transport `2/2`;
+  placebo spontaneous transport `0/2`; first stage `1.0`; nonnegative target
+  task delta; positive mean composite delta; estimator `identified`.
+- **Kill condition:** non-bijective presentation; missing pre-resolution
+  checkpoint; unknown/cross-presentation handle; role-labeled handle; any
+  target uptake miss; any placebo spontaneous uptake; target task loss; or
+  nonpositive composite delta.
+- **Claim boundary:** H93 tests one identity-presentation repair. H92 discovery
+  pairs are excluded. Passing does not establish learned silence, transfer,
+  compounding capability, benchmark gain, or literature novelty.
+- **Outcome:** the catalog presentation mapped the H92 marker and mover
+  occurrences to role-free handles `o02` and `o03`. Both target controllers
+  revised `o02 -> o03` with supported exact-ref transport; both placebo
+  controllers stayed `o02 -> o02` and compiled as contradiction. All raw
+  proposal pairs were checkpointed before resolution; handle resolution was
+  `4/4`; first stage was `1.0`. Target completed at `13,15`; placebo at
+  `miss,16`; task delta `+1`; paired composite deltas `+0.88,+0.01`; mean
+  `+0.445`. The estimator returned `identified` with provisional complier
+  effect `+0.445`. Machine result embedded SHA-256:
+  `09f424c2bf4079d543de8ea08b591873bd7aee51605903dbfd13c18b622ba0b0`;
+  result file SHA-256:
+  `c3f9121fedd5639294ea78afdd002d7fe604bc83df213d86a78e1080e81c1a4a`.
+  The next discriminator is proposal-conditional offer versus silence on fresh
+  controllers, with an always-offer comparator and explicit intervention cost.
+
+# H-GPSA-PROSPECTIVE-RESPONSE-FAMILY-ADMISSION-20260730-94 - Spend causal credit through the blind proposal basin
+
+- **Status:** supported 2026-07-30 at the same-context, same-basin boundary;
+  cross-basin silence and transported chained judgment remain open
+- **Axis:** prospective temporal credit / exact proposal-basin response family /
+  conditioned admission versus scalar outcome credit
+- **Eigenquestion:** does H93 improve a later intervention choice, or only
+  describe forced recall more accurately after the fact?
+- **Hypothesis:** a response family compiled only from H93's frozen randomized
+  target/placebo settlements will recognize the exact wrong-control blind
+  basin and select causal mechanics for new controllers. H90's rehydrated final
+  scalar credit state will select redundant true memory. The response policy
+  will have nonnegative task delta, positive mean composite delta, and at
+  least one win across two balanced-order pairs.
+- **Discriminating test:** verify H93 result/file/transition identities and H90
+  result/final-credit identities. Compile response rows by exact scope,
+  contract, intervention, and pre-basin with `2/2` support per assignment,
+  first stage `1.0`, and positive net effect. For every fresh arm, persist and
+  resolve the blind handle proposal before selecting or delivering memory.
+  Response-policy selection must arise from the exact family; comparator
+  selection must arise from the H90 allocator. Freeze all selections before
+  H94 outcomes. Match 3,849 bytes, two proposal calls, one session, and 20
+  actions.
+- **Success criterion:** all source/family and cost checks pass; response policy
+  selects target `2/2`; scalar policy selects placebo `2/2`; response policy
+  total task delta `>=0`; mean composite delta `>0`; at least one pair win.
+- **Kill condition:** source/family drift; selection by condition name or
+  memory text; unseen/weak basin; admission after delivery; comparator drift;
+  any identity/cost mismatch; target-policy task loss; nonpositive mean delta;
+  or zero wins.
+- **Claim boundary:** same exact task/context/controller-class/proposal basin,
+  new stochastic controllers. Passing establishes prospective use of a local
+  response family, not silence across basins, context transfer, chained
+  judgment, accelerating gains, benchmark improvement, or literature novelty.
+- **Pre-contact apparatus correction:** the first launch stopped after ARC
+  environment discovery and initial-observation reconstruction, before
+  controller inference or primitive action. The H94 spec had changed H93's
+  contract evidence ancestry while leaving its object selectors fixed; the
+  response-family identity check refused it. H93's exact contract, including
+  its H92 evidence reference, was restored. H93 training identity remains in
+  the separate response-family source receipt. A second pre-controller launch
+  caught and corrected a harness-only H90 state-identity accessor
+  (`to_receipt()["sha256"]` is canonical); again no controller inference or
+  primitive action occurred.
+- **Outcome:** H93's four settlements compiled into one admissible response
+  family with offer/withhold counts `2/2`, first stage `1.0`, net
+  intent-to-treat effect `+0.445`, and family SHA
+  `e4d793cdff26e09d50e9b602621d358a317f6d8316386f7683875fb8ffa833e6`.
+  On two new alternating-order pairs, both blind response-policy plans mapped
+  to the trained exact basin and emitted `offer` before delivery; H90's frozen
+  scalar state selected redundant true memory twice. Response controllers
+  completed at actions `13,13`; scalar/placebo controllers at `14,15`.
+  Task delta was `0`; response won `2/2` composite pairs and averaged
+  `+0.015`. All byte, inference, session, primitive-cost, transition, and
+  checkpoint checks passed; neither selector consumed H94 outcomes. Embedded
+  result SHA:
+  `21d66a4a6ddd6ba48f0a1bbe3faa0d98ef78453eacbe6aead26cc3d963f36a7d`;
+  file SHA:
+  `67865c448988bcbf9afb4141efb738258d2ed1426f34bd76072702e9df6183c2`.
+  This supports prospective state-conditioned credit at one local fiber. The
+  successor must discriminate silence or certified transport outside that
+  basin before any critical-mass claim.
+
+# H-GPSA-RESPONSE-TRANSPORT-SQUARE-20260730-95 - Move local judgment across one observation fiber
+
+- **Status:** supported 2026-08-02; preflight apparatus corrected before
+  manifest creation or H95 controller contact
+- **Axis:** one-hop response transport / contract-preserving partial object
+  correspondence / structural refusal
+- **Eigenquestion:** can H94's local response cross a changed observation
+  through a commuting object/proposal square while refusing a nearby target
+  where the contract waypoint disappears?
+- **Hypothesis:** unique content-addressed object-type correspondences will map
+  H94's source contract and H93 pre/post response witness from the initial
+  observation to the observation after frozen prefix `[2]`. New blind target
+  proposals in the transported wrong-control basin will support exploratory
+  causal-memory transport. Prefix `[2,2,2,0,0,0]` will fail before controller
+  contact because its target catalog lacks the required waypoint occurrence.
+- **Discriminating test:** hash-check H93/H94 source evidence; replay both
+  frozen prefixes; compile only unique type correspondences for contract and
+  response-witness refs; reconstruct the frozen intervention presentation;
+  compile separate causal and placebo context re-rendering certificates that
+  preserve payload, acquisition provenance, provider, calibration, and cost;
+  bind only the causal target revision into the transported contract; require
+  a candidate commuting positive square and a refused negative square. On the
+  positive branch, run two fresh
+  alternating-order causal/placebo pairs with admission before delivery,
+  3,849 bytes, two proposal calls, one prefix action, and 20 post-prefix
+  actions. Promote target credit only after randomized settlement.
+- **Success criterion:** positive candidate commutes; negative target refuses
+  with no controller call; all four blind proposals match the transported
+  basin; target supported transport `2/2`; placebo spontaneous transport
+  `0/2`; first stage `1.0`; nonnegative task delta; positive mean composite
+  delta; at least one win; all identity and cost checks pass.
+- **Kill condition:** source/prefix drift; ambiguous or role-informed mapping;
+  intervention payload/provenance/provider/cost drift; cross-payload
+  certificate reuse; wrong target revision in the contract; noncommuting
+  positive square; accepted negative target; blind-basin mismatch; admission
+  after delivery; target uptake miss; placebo spontaneous uptake; cost
+  mismatch; task loss; nonpositive mean delta; or zero wins.
+- **Pre-controller apparatus correction:** the first preflight stopped before
+  manifest creation because exact rendered revision equality conflated the
+  invariant memory payload with its context-bearing presentation envelope.
+  H95 now compiles an explicit source-revision to target-revision morphism and
+  retains distinct exact identities on both sides. The live criterion did not
+  change.
+- **Research-isomorphism lowering:** dispatch
+  `cf9431566565faa89ea1a0db10741d6fa0e0fa19d2dc145af359972b42d07bd9`
+  surfaced tagged, path-sensitive operator transport. H95 compiles its
+  single-hop prediction and refusal gate. The two-hop loop-defect prediction
+  is deferred until one-hop transport earns settlement.
+- **Claim boundary:** one within-level observation transport and one offline
+  refusal. Passing does not establish two-hop holonomy, chained controller
+  credit, cross-task transfer, accelerating gains, benchmark improvement, or
+  literature novelty.
+- **Outcome:** the positive object transport and both payload-specific
+  intervention revision transports compiled with only `context_sha256`
+  changed. All four blind proposals occupied the transported basin. Causal
+  uptake was `2/2`; placebo spontaneous uptake was `0/2`; first stage was
+  `1.0`; task delta was `+1.0`; causal mechanics won both paired composite
+  comparisons with mean delta `+0.48`. The missing-waypoint prefix refused
+  before controller contact. Target-fiber settlement promoted family
+  `2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867`.
+  Offline replay verified every source, transport, candidate, checkpoint,
+  arm, outcome, estimate, and promotion receipt. Evidence:
+  `h95_response_transport_square_result.md`.
+
+# H-GPSA-CAUSAL-OBJECT-LINEAGE-20260802-96 - Preserve response authority through appearance change
+
+- **Status:** rejected 2026-08-03 at the first live pair; pair two was not run
+- **Axis:** second-generation response transport / causal object files /
+  appearance-lineage quotient / descendant settlement
+- **Eigenquestion:** can H95's promoted response cross the state change it
+  helps produce when static appearance types split but environment-receipt
+  ancestry remains unique?
+- **Hypothesis:** a partial quotient over time-indexed appearances will track
+  H95's four required objects through unique exact-type continuation, a
+  fixed-support appearance revision, and bracketed one-frame occlusion. This
+  lineage will move the H95 response into the descendant fiber even though
+  static unique-type transport refuses.
+- **Discriminating test:** verify H95 source evidence; replay frozen path
+  `[2,2,2,0,0,0,1]`; reproduce direct static failure `3/4` and sequential
+  failure at `5 -> 6`; compile only receipt-backed unique lineage events;
+  require a commuting mapped target square; then run two fresh
+  alternating-order causal/placebo pairs with lineage admission before
+  delivery, seven prefix actions, 3,849 bytes, two proposal calls, and 20
+  post-prefix actions. Promote descendant credit only after settlement.
+- **Success criterion:** lineage `4/4` with at least one fixed-support revision
+  and one bracketed occlusion; static type refusal; all four blind proposals
+  in the transported basin; causal supported transport `2/2`; placebo
+  spontaneous transport `0/2`; first stage `1.0`; nonnegative task delta;
+  positive mean composite delta; at least one win; identity and cost checks
+  pass.
+- **Kill condition:** source/path drift; static map unexpectedly complete;
+  ambiguous successor; unbracketed gap; changed fixed support; semantic or
+  outcome input to lineage; noncommuting response square; blind-basin
+  mismatch; late admission; uptake miss; placebo support; cost mismatch; task
+  loss; nonpositive mean delta; or zero wins.
+- **Research-isomorphism lowering:** dispatch
+  `bd0530c313ac08e0e2077cfc9be53c0570e5b314a8e89eb1834f3ef144a18017`
+  selected ancestry-lifted partial transport. H96 compiles it into exact
+  appearance events whose receipt becomes downstream admission authority.
+- **Prior-art boundary:** object permanence, occlusion tracking, object
+  transition models, structured object/skill memory, and provenance DAGs are
+  established. The candidate differentiator is their fail-closed
+  receipt-backed appearance quotient joined to randomized response transport,
+  prospective descendant admission, and external settlement. Passing is not
+  a literature-novelty verdict.
+- **Claim boundary:** one H95 response, one six-transition descendant path,
+  one fixed-support revision, and bracketed occlusion. Multi-generation
+  compounding, cross-task transfer, accelerating gains, benchmark improvement,
+  and literature novelty remain open.
+- **Outcome:** controller-free lineage resolved `4/4` required occurrences
+  across one appearance revision and one bracketed occlusion while static
+  transport refused at `3/4`. The first causal arm completed Level 1 at action
+  `12`; placebo did not complete, for task delta `+1.0` and composite delta
+  `+0.89`. The run rejected because the causal post-proposal failed the
+  unchanged future-waypoint contract and the placebo blind proposal occupied
+  a different transported basin. The source contract's required marker had
+  already been consumed by the descendant prefix. No descendant family was
+  promoted, so strict response offspring count remained `0`. Evidence:
+  `h96_causal_object_lineage_result.md`; embedded result
+  `1f470363212d2be67fcd34385a7f07962d37c09ef48df3f535b6526c8e2b4e2e`.
+
+# H-GPSA-CAUSAL-RESPONSE-DERIVATIVE-20260803-97 - Consume completed subgoals and measure response offspring
+
+- **Status:** pre-registered; no H97 controller contact
+- **Axis:** causal contract derivative / exact-state counterfactual fork /
+  response reproduction
+- **Eigenquestion:** can H95's settled response produce one promoted descendant
+  when completed subgoals are removed by a pre-outcome event derivative and
+  causal/placebo continuations share one exact blind controller state?
+- **Hypothesis:** H95's two supported causal witnesses share the response
+  program `moving occurrence -> marker -> target`. H96's exact lineage contains
+  a joint marker-occlusion/glyph-revision event before descendant outcome. A
+  Brzozowski-style derivative will consume the marker obligation and leave
+  `moving occurrence -> target`, classifying the successful H96 behavior
+  without post-outcome selection.
+- **Discriminating test:** compile the common program from both H95 supported
+  offers; derive it using only object-lineage and environment-transition
+  receipts; require three negative refusals; use H96 only as a construction
+  replay. For fresh evidence, create one stored `gpt-5.6-sol` blind proposal
+  per eligible pair with `reasoning.context=all_turns`, then fork causal and
+  placebo revisions from the exact same `previous_response_id`. Run two
+  matched pairs from the seven-action descendant prefix and promote one child
+  only after external settlement.
+- **Success criterion:** source support `2`; derivative discharges exactly one
+  of two waypoints; all negative controls refuse; two matched parent forks;
+  causal derivative support `2/2`; placebo spontaneous support `0/2`; first
+  stage `1.0`; nonnegative task delta; positive mean composite delta; at least
+  one win; one promoted child; parent offspring count `0 -> 1`.
+- **Kill condition:** source/program ambiguity; outcome or target-post leakage
+  into the derivative; accepted missing/ambiguous/proxy event; fork parent or
+  blind-proposal mismatch; reasoning-context drift; insufficient eligible
+  parents; late admission; uptake miss; placebo support; cost drift; task loss;
+  nonpositive mean delta; zero wins; or no child.
+- **Critical-mass boundary:** H97 can reach observed response offspring `1`.
+  The proposed supercritical boundary is `R_response > 1`; H97 cannot establish
+  it. A sibling-fiber reproduction experiment remains necessary.
+- **Prior-art boundary:** derivatives, reward machines, temporal progression,
+  options, eligibility traces, tracking, and Responses API continuation are
+  established. The candidate join is randomized settled-program induction,
+  exact lineage-bound event derivatives, pre-outcome residual authority,
+  exact hidden-state counterfactual branching, child settlement, and an
+  explicit reproduction operator.
+- **Claim boundary:** one parent, one descendant, two matched pairs, at most
+  one child. No supercriticality, cross-task transfer, accelerating gains,
+  benchmark improvement, or literature novelty.
+
+# H-AXIOMPACK-JACOBIAN-Q2C-ARBITRARY-BACKBONE-20260731-88 - Test the terminal ray against the complete contact-zero backbone
+
+- **Status:** rejected 2026-07-31; exact resonance and successor quotient
+  exposed
+- **Axis:** unrestricted contact-zero backbone / terminal associated grade /
+  all-order source recurrence
+- **Eigenquestion:** does the arbitrary coefficientwise-polynomial
+  contact-zero backbone contain any mode at the terminal grade of the
+  immediate-exit \(Q^2C\) source ray, or is its action strictly lower in the
+  terminal filtration?
+- **Hypothesis:** after expressing the complete contact-zero stabilizer tower
+  as a filtered module in the \((u,z)\) chart, every backbone contribution is
+  either strictly below the \(Q^2C\) terminal grade or acts by a scalar that
+  cannot annihilate the all-order terminal coefficient.  The normalized
+  terminal recurrence will therefore remain nonzero for every finite
+  coefficientwise-polynomial contact-zero backbone.
+- **Discriminating test:** derive the source Hamiltonian and amplitude cost of
+  the general stabilizer \(f(K_*)\); enumerate its terminal-grade support
+  symbolically at growing truncations; use the filtered obstruction compiler
+  to quotient all strictly lower modes; and carry every surviving same-grade
+  parameter through the exact Magnus recurrence.  Verify the result by an
+  independent direct bracket replay and by held-out truncation depths.
+- **Success criterion:** an exact filtration certificate shows that no
+  arbitrary-backbone column reaches the terminal quotient, or the residual
+  same-grade action is solved symbolically and the terminal coefficient is
+  nonzero at every depth for every admissible finite polynomial \(f\).
+- **Kill condition:** one admissible stabilizer mode reaches the same terminal
+  grade and cancels a terminal row; the grading depends on the normalized
+  representative; a held-out depth introduces a new same-grade column; or
+  the recurrence requires a degree bound on \(f\).
+- **Claim boundary:** success controls the arbitrary coefficientwise-
+  polynomial contact-zero backbone for the immediate-exit \(Q^2C\) lane.  It
+  does not by itself control non-polynomial formal backbones, other exit
+  strata, or the full Jacobian minimax tail.
+- **Outcome:** the named terminal coefficient is not invariant.  A row-one
+  weight-six backbone \(\beta P^3\) changes it to
+  \(3(563076\beta+283)/16384\), so
+  \(\beta=-283/563076\) cancels it.  The cancellation leaves the exact
+  current-cokernel shell
+  \(-893997u^{20}z^{20}/512524288\).  At the exceptional cost-two resonance,
+  a unique weight-five-through-twelve combination cancels the complete
+  difference-two source support, including the old zero-grade engine.  The
+  complete contact-zero associated-grade image still misses a
+  high-transverse class on
+  \(b-a\ge3,\ a+b\ge12\); a fourteen-coordinate annihilator is unchanged by
+  a held-out weight-32 replay and is all-weight complete because weights at
+  least 25 are divisible by \(z^{13}\).  The successor is the covariant
+  recurrence of this transverse class, not the rejected named-terminal
+  invariant.
+
+# H-AXIOMPACK-JACOBIAN-HIGH-TRANSVERSE-COVARIANT-20260731-89 - Transport the complete transverse quotient
+
+- **Status:** supported 2026-07-31 at the leading-amplitude contact-zero
+  boundary; fixed-amplitude and coupled positive-contact continuations open
+- **Axis:** complete contact-zero quotient / covariant filtered transport /
+  unrestricted source-tail rate
+- **Eigenquestion:** after quotienting every coefficientwise-polynomial
+  contact-zero pullback at cost two, does the surviving high-transverse class
+  force a nonzero covariant response at infinitely many costs with source
+  degree rate at least two, or can later contact coefficients cancel it below
+  rate two?
+- **Hypothesis:** the fourteen-coordinate high-transverse annihilator extends
+  to a covariant family of shifted functionals.  Under the complete moving
+  connection, its first nonzero transition has a northeast pivot whose
+  iterated adjoint multiplier has at most finitely many exceptional zeros.
+  Consequently every admissible below-rate-two coefficient schedule leaves a
+  nonzero response at infinitely many costs.
+- **Discriminating test:** compile the cost-two quotient as a module over the
+  complete contact-zero Lie action; derive the monomial transition law and
+  its exceptional set; search exact finite truncations while enlarging both
+  cost and backbone weight; then replace stabilization by either an
+  all-weight pivot/triangularity proof or an explicit recursive cancellation
+  schedule.  Replay every proposed recurrence directly in the source
+  Hamiltonian bracket and through the typed Magnus convention.
+- **Success criterion:** produce a covariant annihilator recurrence with
+  exact nonzero transition coefficients outside a finite classified
+  exceptional graph, and prove that every escape from that graph pays source
+  degree at least two per cost asymptotically; or construct an exact
+  coefficientwise-polynomial schedule with eventual source rate strictly
+  below two and verify it at arbitrary depth.
+- **Kill condition:** the high-transverse class is killed by an admissible
+  later coefficient; the shifted functional does not descend through the
+  complete contact-zero image; the exceptional graph contains an infinite
+  cancellation path; held-out costs introduce unclassified same-grade
+  controls; or the claimed lower bound uses a finite weight or cost cap.
+- **Claim boundary:** this tick decides the complete contact-zero covariant
+  response generated by the surviving Q2C high-transverse class.  Even a
+  positive result must still be matched against other exit strata and any
+  coupled higher-contact schedules before determining the full symmetric
+  Jacobian minimax tail.
+- **Outcome:** after the unique cost-two contact-zero resonance, the actor is
+  an exact target pullback with unique northeast term
+  (27u^{12}z^{12}/1280).  The cost-three defect has, for every (k\ge3),
+  the unique northeast terminal
+  (T_k=u^{11k+5}z^{9k+8}), with
+  (c_3=-114614109/4194304000) and
+  (c_{k+1}=81(2k-3)c_k/320\ne0).  The right-forward-`dexp` scalar is
+  ((-1)^k/(k+1)!), and the source derivation degree is (10n-20) at cost
+  (n=2k+3).  Every competing row-one contact-zero word remains a target
+  pullback of nonnegative normal order, whereas (T_k) has normal order
+  (3-2k<0); hence its terminal pairing is zero at every weight.  Exact
+  surplus-kernel replays at two finite windows and a matched direct control
+  stress the compiler.  The all-weight step uses the pullback Lie identity,
+  not stabilization.  The first coupled counterattack lies outside contact
+  zero: the static preimage (-Q^2C/2) cancels the complete (L_2) source
+  Hamiltonian at fixed cost.  A later coupled audit shows that it is the
+  negative of the same delayed prefix's own target logarithm, so its full
+  forward-`dexp` replay removes the prefix and (L_3) as well.  Cancellation
+  at a fixed rational amplitude across different amplitude degrees remains
+  outside the contact-zero outcome.
+
+# H-AXIOMPACK-JACOBIAN-COST-THREE-COUPLED-20260731-90 - Transport the post-repair quotient at fixed amplitude
+
+- **Status:** rejected 2026-07-31; the proposed post-repair quotient is not
+  a coupled connection object
+- **Axis:** positive-contact repair / all-weight cost-three quotient /
+  fixed-amplitude coupled source-target rate
+- **Eigenquestion:** after the exact cost-two repair
+  \(-Q^2C/2\), does the surviving all-weight cost-three quotient force
+  infinitely many source or target logarithmic responses of rate at least
+  two under every coefficientwise-polynomial higher-contact continuation at
+  fixed rational amplitude, or is there an exact lower-rate cancellation
+  schedule?
+- **Hypothesis:** the cost-three annihilator extends to a covariant module
+  for the first post-repair higher-contact actor.  At every attempted
+  cancellation, either the source surplus projection has a pivot of rate at
+  least two or the required target Hamiltonian has ordinary-degree rate at
+  least two.  Specializing the amplitude will not create an infinite
+  zero-payment path because the transition matrix has only a finite
+  exceptional divisor.
+- **Discriminating test:** derive the complete coefficient equations after
+  inserting \(-Q^2C/2\); isolate the first actor that transports the
+  cost-three quotient; compile its source and target maps in the product
+  filtration; retain all amplitude degrees before rational specialization;
+  and enlarge contact depth, cost, and weight until the exact pivot module
+  is visible.  Replace any stabilized finite pattern by an all-weight
+  recurrence, a finite exceptional-divisor classification, or an explicit
+  recursive cancellation schedule.  Replay both group sides through their
+  typed forward-`dexp` equations.
+- **Success criterion:** an exact all-weight surplus-or-terminal recurrence
+  proves that every continuation has infinitely many responses with source
+  or target rate at least two after fixed-amplitude specialization; or an
+  exact coefficientwise-polynomial schedule gives both logarithmic rates
+  strictly below two and replays at arbitrary depth.
+- **Kill condition:** the first post-repair actor annihilates the cost-three
+  quotient; different amplitude degrees cancel its terminal on an infinite
+  path; a later positive-contact row reaches the terminal with no charged
+  source surplus or target degree; the recurrence depends on a finite cap;
+  or the exact source/target group conventions disagree with the proposed
+  coefficient equations.
+- **Claim boundary:** success decides the coupled continuation of the
+  immediate \(Q^2C\) exit lane after its first positive-contact repair.  It
+  must still be compared with other exit strata and both-sided constructions
+  before fixing the unrestricted symmetric Jacobian minimax value.
+- **Outcome:** the delayed prefix is the order-one target velocity
+  \(sQ^2C\), whose left-Magnus logarithm is
+  \(s^2Q^2C/2\).  The proposed repair \(-s^2Q^2C/2\) has exact
+  forward-`dexp` velocity \(-sQ^2C\).  Their sum is identically zero, so the
+  complete coupled target connection and its source pullback return to the
+  no-prefix background at every order.  Exact source-right and target-left
+  replays through five target rows match the background.  Thus the static
+  cost-three annihilator does not define a post-repair quotient; it arose by
+  quotienting the same-cost row without transporting the lower-row change.
+  The corrected successor is the least nonzero positive-contact coefficient
+  over an arbitrary moving contact-zero backbone.
+
+# H-AXIOMPACK-JACOBIAN-LEAST-POSITIVE-CONTACT-20260731-91 - Test the boundary quotient over every moving contact-zero backbone
+
+- **Status:** supported 2026-07-31; pure contact-zero successor remains open
+- **Axis:** exact target-flow boundary quotient / arbitrary moving
+  contact-zero backbone / fixed-amplitude positive-contact tail
+- **Eigenquestion:** after quotienting target prefixes paired with their own
+  negative logarithms, does the least nonzero positive-contact coefficient
+  define a nonzero opposite-parity class whose coupled recursion forces
+  infinitely many source or target responses of rate at least two under an
+  arbitrary coefficientwise-polynomial contact-zero backbone?
+- **Hypothesis:** in the seed chart (x=u+1/2), least-(z) target pullbacks
+  have parity equal to their (z)-order and form a Lie subalgebra; the
+  complementary parity is a module under every contact-zero target letter.
+  After exact lower-row boundaries and all same-block current columns are
+  removed, the first positive-contact odd transfer will have a nonzero
+  highest-(x)-degree pivot.  Any moving-backbone cancellation of that pivot
+  will expose either a higher source surplus or a target Hamiltonian whose
+  degree rate is at least two.  The terminal polynomial will have no rational
+  exceptional value supporting an infinite below-rate-two path.
+- **Discriminating test:** verify the minimal-(z) parity and bracket laws;
+  parameterize the complete row-one contact-zero basis through a training
+  weight; replay representative (P^aQ^bC^m) seeds through the existing
+  cost-three/cost-four normalizer with all amplitude degrees retained; form
+  the exact target-parity quotient only after forward-`dexp` and moving
+  pullback boundaries; and compute terminal reachability in the complete
+  surplus kernel.  Repeat at held-out backbone weights, contact depths, and
+  radial slopes.  Promote only a symbolic all-index recurrence,
+  exceptional-divisor classification, or explicit cancellation schedule.
+- **Success criterion:** an exact nonzero class survives the complete
+  boundary quotient and an all-index law proves that every fixed rational
+  specialization leaves infinitely many source or target payments of rate
+  at least two; or an exact coefficientwise-polynomial schedule decides the
+  alternative with both rates strictly below two.
+- **Kill condition:** the proposed seed is exact after lower-row replay; a
+  contact-zero source residue breaches the module routing; the full surplus
+  kernel reaches the terminal without a charged pivot; a rational amplitude
+  supports an infinite cancellation path; a held-out block introduces an
+  unclassified control; or the statistic changes with the canonical
+  representative.
+- **Claim boundary:** success concerns the least positive-contact class over
+  arbitrary polynomial contact-zero backbones, uniformly under shifts of its
+  least index.  It must still be combined with the contact-zero-only branch,
+  the opposite source/target orientation, other exit strata, and the global
+  tail comparison before the unrestricted symmetric Jacobian minimax can be
+  considered decided.
+- **Outcome:** exact group factorization removes the full lower contact-zero
+  connection before the least positive layer is compared.  The complete-face
+  induction has only well-founded descent, same-order source payment, or a
+  terminal branch; the normal-three factors are positive on every
+  lift-admissible state, and the exceptional exit is
+  \(-3/2^{3k+4}\ne0\).  A substrate-neutral asymptotic induction compiler
+  checks infinite occurrence support, affine occurrence/payment order,
+  side-compatible rate witnesses, injective same-order no-rebilling, and
+  least-index shift invariance.  Cancellation branches pay source rate two
+  and terminal branches pay at least \(11/2\), so the symmetric logarithmic
+  limsup is at least two for every nonzero rational specialization.  The
+  pure contact-zero branch is not covered because it has no least positive
+  contact coefficient.
+
+# H-AXIOMPACK-JACOBIAN-PURE-CONTACT-ZERO-20260802-92 - Close or construct the radial/normal tail
+
+- **Status:** supported 2026-07-31; split tensor-density induction passes
+- **Axis:** pure contact-zero coefficient complex / radial-normal critical
+  grade / arbitrary finite supercritical prefix / logarithmic rate
+- **Eigenquestion:** when every positive-contact coefficient vanishes, does
+  every coefficientwise-polynomial pure contact-zero gauge schedule have
+  symmetric logarithmic limsup at least two, or is there an exact schedule
+  below rate two?
+- **Hypothesis:** the complete coefficient map is triangular in the grade
+  \(\Gamma(r^dz^js^n)=2d+j-2n\): radial restriction is diagonal,
+  \(R'=LN\) determines the first-normal layer, and higher normal layers
+  strictly lose Rees grade.  A finite supercritical radial prefix cannot hide
+  in the tail because its highest Newton face acts nontrivially on a canonical
+  odd-normal background terminal and yields injectively owned rate-two
+  descendants.
+- **Discriminating test:** derive the \(m=0\) weighted-face map; compile its
+  exact radial, first-normal, and higher-normal blocks; classify the finite
+  prefix action using the target parity algebra and the complete radial-word
+  formula; and search the exact polynomial parameter fiber for a critical
+  zero path.  Replace every finite pattern by an all-index transition law or
+  an explicit typed cancellation recurrence.
+- **Success criterion:** an unconditional all-index lower induction matches
+  the known rate-two staircase upper construction, including arbitrary finite
+  supercritical prefixes; or an exact coefficientwise-polynomial schedule
+  has both logarithmic rates strictly below two and passes arbitrary-depth
+  source/target replay.
+- **Kill condition:** a same-grade zero-payment cycle; absence of an actual
+  odd-normal background terminal; cancellation of the tied Newton face by
+  mixed prefixes; an \(m=0\) kernel not routed to a charged pivot; a rational
+  collision sharing occurrence identity; or a candidate construction that
+  leaves the admissible polynomial category.
+- **Claim boundary:** this tick concerns the pure contact-zero branch of the
+  normalized Jacobian family.  A positive result must still be combined with
+  the least-positive-contact branch, both contact orientations, and the final
+  global tail comparison before the unrestricted campaign is decided.
+- **Outcome:** the plain normal-two candidate failed its declared adapter
+  condition because the target image needs its normal-three companion.  In
+  the corrected split coordinate
+  \(J=B+(3xA'+5A)/9\), every target-kernel control has \(J=0\).  Factoring
+  the Witt logarithm leaves an abelian critical source residual whose exact
+  quadratic-field ODE has no rational solution; therefore its series has
+  infinite support.  At a maximal polar monomial \(s^{-h}x^d\), the tensor
+  orbit coefficient is
+  \(\prod_{i<k}(2e+(2i-3)d-5)\).  At most four positive starting exponents
+  resonate.  Infinite critical support supplies a fresh Newton class, the
+  semidirect inverse transfer produces infinitely many source payments, and
+  their limiting rate is \(2d/(d-h)>2\).  The finite maximal-face induction
+  reaches the certified critical two-flow terminal.  The pure contact-zero
+  lower bound is two and matches the existing staircase in that category.
+
+# H-AXIOMPACK-JACOBIAN-GLOBAL-TAIL-DICHOTOMY-20260731-93 - Compose the two exhaustive contact branches
+
+- **Status:** supported 2026-07-31; unrestricted minimax certificate passes
+- **Axis:** exhaustive contact-depth dichotomy / symmetric logarithmic tail /
+  matching construction
+- **Eigenquestion:** do the supported least-positive-contact induction and
+  the pure contact-zero tensor induction exhaust every coefficientwise-
+  polynomial admissible gauge schedule, so that the radial staircase's upper
+  bound two is the exact unrestricted minimax value?
+- **Hypothesis:** coefficientwise polynomiality and well-ordering of parameter
+  index and contact depth give an exhaustive alternative: either every
+  positive-contact coefficient is zero, or there is a least parameter row
+  and least positive depth.  The first branch is covered by H92 and the
+  second by H91 over its arbitrary moving contact-zero backbone.  Both give
+  lower bound two, while the radial staircase gives an admissible upper bound
+  two.
+- **Discriminating test:** bind the three independent certificates—pure
+  contact-zero lower bound, least-positive-contact lower bound, and radial
+  staircase upper construction—to one typed exhaustive-tail composition.
+  Re-run each adapter, check that their schedule categories share the same
+  source/target degree and logarithmic conventions, kernel-check the
+  well-order/exhaustiveness and bound arithmetic, and reject a missing
+  branch, mismatched category, weaker lower bound, or nonmatching upper
+  bound.
+- **Success criterion:** one replayable certificate reports an exhaustive
+  two-branch lower bound of two and an admissible upper construction of two,
+  with every component digest bound and no finite-window premise in either
+  lower branch.
+- **Kill condition:** a schedule lies in neither branch; H91 assumes a
+  normalized backbone rather than the arbitrary moving backbone; H92 omits a
+  finite polar prefix; the source/target flow conventions or degree
+  statistics differ; the upper construction leaves the declared admissible
+  cone; or any component conclusion depends on a finite order, weight, or
+  contact-depth cap.
+- **Claim boundary:** success determines the unrestricted symmetric tail
+  minimax for this normalized public Jacobian family and declared
+  coefficientwise-polynomial gauge category.  It is not a solution of the
+  planar Jacobian conjecture and does not establish historical priority.
+- **Outcome:** the pure-contact tensor certificate, arbitrary-moving-backbone
+  least-positive-contact certificate, and radial staircase upper certificate
+  use the same logarithmic conventions, degree statistic, and admissible
+  schedule category.  The zero-positive-support/least-positive-occurrence
+  partition is exhaustive by well-ordering.  Both all-order lower branches
+  give two uniformly under finite prefixes; the independent all-order
+  staircase gives an admissible upper bound two.  The composition compiler
+  returns \(\sigma_{\rm ct}=2\), with certificate SHA-256
+  `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`.
+  The finite staircase replay's observed slope is retained only as a stress
+  diagnostic; it is not used as the upper theorem.
+
+# H-FILTERED-OBSTRUCTION-PROOF-CARRYING-KERNEL-20260802-94 - Replace manual composition flags by typed evidence identities
+
+- **Status:** supported 2026-08-02; transfer and adversarial matrix passes
+- **Axis:** associated-graded obstruction compiler / content-bound premise
+  identity / exhaustive composition / cross-domain transfer
+- **Eigenquestion:** can the filtered-obstruction compiler replace manual
+  completeness and compatibility assertions by replayable, authority-typed
+  evidence contracts while preserving the unrestricted Jacobian minimax
+  result and transferring to unrelated filtrations?
+- **Hypothesis:** a common canonical-content identity plus a closed evidence
+  receipt and typed tail context suffice to derive the zero/least-positive
+  partition, enforce exact premise coverage, reject cross-context grafts, and
+  produce a proof-carrying minimax certificate without substrate vocabulary
+  below the adapter boundary.
+- **Discriminating test:** extract the existing LeanMill content-hash rule to
+  `ztare.common`; replace the tail-composition truth flags and opaque digest
+  bundle by one typed context and exactly three replayed receipts; recover the
+  Jacobian component digests and value `2`; transfer unchanged to polynomial-
+  degree and valuation/support fixtures; and run tamper, wrong-context,
+  duplicate, missing-claim, unknown-authority, finite-window, statistic, and
+  bound rejection fixtures.
+- **Success criterion:** the compiler derives exhaustiveness from a recognized
+  well-order identity, accepts exactly the three compatible all-order claims,
+  preserves the Jacobian component identities and conclusion, passes both
+  alien-domain fixtures, and rejects every adversarial fixture without adding
+  substrate-specific fields to the receipt kernel.
+- **Kill condition:** the design merely renames Booleans; a digest-shaped
+  string remains sufficient authority; incompatible contexts compose; a
+  duplicate masks a missing claim; Jacobian certificate identity or value
+  changes; alien transfer needs contact/Magnus vocabulary; or common and
+  LeanMill retain competing receipt dialects.
+- **Claim boundary:** success establishes a proof-carrying composition kernel
+  for declared filtered evidence. It does not prove adapter-owned algebraic
+  premises, certify historical novelty of the Jacobian theorem, or promote a
+  finite computation to an all-order result.
+- **Outcome:** canonical content identity is shared with LeanMill, while the
+  proof-receipt category remains distinct from tabular evidence formats.  The
+  tail compiler derives its exhaustive partition, accepts exactly three
+  context-compatible receipts, transfers to polynomial-degree and
+  valuation/support tails, and rejects every declared attack.  Its Jacobian
+  semantic digest remains `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`;
+  its proof-contract digest is
+  `270c91a82e642bb832cff6863ab8c9291f15f3be5e1109b6ff9f751e019a0e4c`.
+
+# H-FILTERED-OBSTRUCTION-POLAR-TENSOR-EVIDENCE-20260802-95 - Compress nine flags into a representation identity and three propositions
+
+- **Status:** supported 2026-08-02; three-receipt tensor contract passes
+- **Axis:** split Witt tensor module / evidence identity / maximal-face
+  induction / downstream certificate stability
+- **Eigenquestion:** can the polar-tensor compiler replace its nine manual
+  truth flags by one compiler-recognized model and exactly three content-bound
+  proposition receipts while preserving its alien and Jacobian theorem
+  identities?
+- **Hypothesis:** the split action, target module, Newton lattice, semidirect
+  transfer, and rate dictionary form one representation identity. The only
+  adapter-owned propositions needed by the universal compiler are the finite
+  maximal-face decomposition, critical-module infinite support, and critical
+  terminal exclusion.
+- **Discriminating test:** migrate the problem to a content-bound context and
+  exact three-claim evidence set; rerun alien and Jacobian adapters; compare
+  the pre-migration polar-tensor and global minimax digests; and reject
+  tampered, missing, duplicate, wrong-context, finite-window,
+  finite-experiment, unknown-model, and insufficient-rate inputs.
+- **Success criterion:** no Boolean field remains in the polar-tensor problem;
+  all universal orbit/resonance/rate conclusions are derived; both established
+  theorem digests are unchanged; and every adversarial fixture fails with a
+  typed identity or theorem-premise error.
+- **Kill condition:** nine receipt-shaped flags replace nine Booleans; the
+  model identity can mismatch the compiled action or target module; evidence
+  claims substitute for one another; any theorem digest changes; or common
+  evidence acquires Jacobian-specific vocabulary.
+- **Claim boundary:** success hardens one high-consequence factorization
+  lifecycle. It does not yet migrate the polar-Witt, Puiseux, or asymptotic-
+  induction evidence contracts.
+- **Outcome:** the nine flags became one compiler-recognized split-tensor
+  context plus exactly three propositions.  The alien digest remains
+  `fae8ed2e458734d2012ca4f2dec4ba37817ffcf1dbd699621119abe4d1908e84`,
+  the Jacobian digest remains
+  `2790198e149ffbd07ef7e677c45fff7df2d4e539d02af9ce3081bb67ebdab632`,
+  and every declared identity, scope, authority, and rate attack fails.
+
+# H-FILTERED-OBSTRUCTION-ASYMPTOTIC-SUPPORT-EVIDENCE-20260802-96 - Bind infinite support to the compiled induction graph
+
+- **Status:** supported 2026-08-02; graph-bound support receipt passes
+- **Axis:** filtered asymptotic induction / transition-graph identity /
+  infinite occurrence support / global certificate stability
+- **Eigenquestion:** can the remaining Boolean infinite-support premise be
+  replaced by one authority-typed proposition bound to the exact compiled
+  induction graph without changing the least-positive-contact or global
+  Jacobian theorem identities?
+- **Hypothesis:** the induction transition-graph digest is the governing
+  context for the support theorem.  One exact receipt declaring infinite,
+  unbounded occurrence support under that context suffices; the compiler can
+  continue to derive injective affine occurrence order, exhaustive closing
+  payment, no rebilling, and the rate bound.
+- **Discriminating test:** migrate the problem input from a Boolean plus bare
+  digest to one content-bound receipt; preserve the alien, Jacobian
+  least-positive, and global minimax semantic digests; and reject tampered,
+  finite-scope, finite-experiment, wrong-subject, and cross-graph receipts.
+- **Success criterion:** the asymptotic problem has no Boolean fields, the
+  receipt replays against the compiled graph before rate composition, all
+  adversarial fixtures fail, and the established global result remains
+  exactly `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`.
+- **Kill condition:** the support proposition is not graph-bound; a digest
+  string alone authorizes the theorem; finite evidence authorizes an
+  all-order conclusion; a receipt crosses problem or graph identity; or an
+  established semantic digest changes.
+- **Claim boundary:** success hardens the positive-contact asymptotic
+  composition edge.  It does not prove the adapter-owned recurrence theorem
+  or migrate the remaining polar-Witt and Puiseux premise contracts.
+- **Outcome:** infinite support is now one proposition bound to transition
+  graph `e0935e13bc4525f3e0e0707331cfac5e9a8f2a3cd0674a5e7dfdd0a6925d914d`.
+  The least-positive semantic digest remains
+  `83ed836310d28e2468175866d8b74a18a1d6257e1de43309c93ed9635ea7110b`;
+  the new proof envelope is
+  `e4b1e94132e3e054c5e06a9eb1cefe358360981e8011045e7944b99135055108`.
+
+# H-FILTERED-OBSTRUCTION-PUISEUX-GERM-EVIDENCE-20260802-97 - Share one germ identity across one- and two-flow obstructions
+
+- **Status:** supported 2026-08-02; shared-germ paired compilers pass
+- **Axis:** local Puiseux germ / single-flow Julia obstruction / two-flow
+  factorization / critical-terminal certificate stability
+- **Eigenquestion:** can six Boolean premises across the paired Puiseux
+  compilers be replaced by one shared germ context and four typed
+  propositions without changing any downstream Jacobian theorem identity?
+- **Hypothesis:** the germ, coordinate, first fractional exponent, and exact
+  expansion artifact form one immutable context.  Nonzero regular and
+  fractional coefficients, the Julia identity, and the two-flow identity
+  are the only adapter propositions; the proportional-case Julia receipt is
+  derived by the compiler from the two-flow factorization.
+- **Discriminating test:** migrate both problems; preserve the alien and
+  Jacobian single/two-flow digests plus the polar-tensor and global digests;
+  and reject tampered, duplicate, missing, substituted, finite-scope,
+  finite-experiment, cross-context, and wrong-expansion receipts.
+- **Success criterion:** neither input dataclass has Boolean fields, both
+  compilers share the same context type, the proportional branch has
+  compiler authority rather than a caller flag, every adversarial fixture
+  fails, and the global digest remains exactly
+  `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`.
+- **Kill condition:** two receipt dialects emerge; a claim substitutes for
+  another; finite truncation authorizes an exact identity; the proportional
+  branch retains caller authority; or any established semantic digest
+  changes.
+- **Claim boundary:** success hardens the critical-terminal evidence chain
+  used by the global theorem.  It does not rehabilitate the intentionally
+  rejected plain polar-Witt Jacobian adapter.
+- **Outcome:** the paired problems share one germ context and no Boolean
+  premise.  The proportional Julia proposition is compiler-derived.  The
+  Jacobian single-/two-flow digests remain
+  `6c3a97ebae223d4c0dbf6762d1399d242ea951459d3e7ae44255be2575931926`
+  and `190c7ff996246b663dc6ab94435aaea81fa8f8e4c009188badac06ec88bc963c`;
+  their polar-tensor and global consumers remain unchanged.
+
+# H-FILTERED-OBSTRUCTION-POLAR-WITT-EVIDENCE-20260802-98 - Preserve the missing-invariant rejection without Boolean premises
+
+- **Status:** supported 2026-08-02; final Boolean-premise audit passes
+- **Axis:** tangent-Witt/Newton model / finite maximal face / semidirect
+  quotient identity / fail-closed adapter
+- **Eigenquestion:** can the last Boolean-bearing filtered problem become a
+  three-proposition typed contract while preserving both its alien theorem
+  and the Jacobian adapter's missing-invariant rejection?
+- **Hypothesis:** five assertions compress to one recognized model plus a
+  finite maximal-face theorem, an exact semidirect-quotient applicability
+  theorem, and a centralizer-exclusion theorem.  The compiler must not infer
+  the middle proposition from model identity.
+- **Discriminating test:** migrate the problem, pin the alien semantic digest,
+  retain the exact Jacobian rejection code, reject identity/scope/authority
+  grafts, and run an AST audit over every `Filtered*Problem` input.
+- **Success criterion:** all problem inputs have zero Boolean fields, the
+  alien theorem digest is unchanged, the plain normal-two Jacobian adapter
+  still fails with `missing_semidirect_newton_quotient`, and every adversarial
+  receipt fixture fails.
+- **Kill condition:** five receipt-shaped flags replace the old inputs; the
+  compiler accepts the Jacobian adapter by recognizing only the abstract
+  model; a face or centralizer proposition substitutes for the semidirect
+  proposition; or semantic identity changes.
+- **Claim boundary:** success completes premise-identity migration for the
+  current filtered-obstruction problem dataclasses.  It does not repair the
+  mathematically invalid plain normal-two Jacobian adapter.
+- **Outcome:** five flags became one model and three propositions.  The alien
+  semantic digest is
+  `56b97db9444fb0ecef119ec4d44666bd5d63e6b3f7cbc3e40a79b37507ed4333`.
+  The plain Jacobian adapter retains the exact
+  `missing_semidirect_newton_quotient` rejection, and the global reflection
+  audit reports no Boolean field in any `Filtered*Problem` input.
+
+# H-FILTERED-OBSTRUCTION-KERNEL-AUTHORITY-20260802-99 - Project governed Lean ratification into non-mintable evidence
+
+- **Status:** supported 2026-08-02; governed replay and adversarial matrix pass
+- **Axis:** governed theorem ratification / formal-kernel authority / exact
+  theorem scope / filtered evidence composition
+- **Eigenquestion:** can formal-kernel evidence be constructed only from an
+  exactly replayed LeanMill governed carried-theorem record, without a second
+  receipt dialect or a broader claim than the Lean signature proves?
+- **Hypothesis:** one immutable binding of the governed-record, target,
+  signature, source, proof, goal, toolchain, and persisted parity identities is
+  sufficient for a one-way LeanMill-to-common projection. The generic evidence
+  factory must reject formal-kernel authority, and ordinary evidence bytes must
+  remain unchanged.
+- **Discriminating test:** implement the one-way adapter; ratify theorem-scoped
+  arithmetic support for the least-positive moving backbone, critical Puiseux
+  terminal, radial staircase, and one alien fixture; then reject label-only,
+  stale-toolchain, missing-parity, failed-kernel, cross-target, cross-source,
+  cross-proof, cross-goal, and tampered-binding attacks.
+- **Success criterion:** formal-kernel authority has exactly one public positive
+  constructor backed by the existing governed validator; each support receipt
+  names no proposition broader than its Lean theorem signature; common imports
+  no LeanMill module; and every established Jacobian semantic digest is
+  unchanged, including global
+  `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`.
+- **Kill condition:** a caller mints authority by label; a partial theorem
+  upgrades a full branch; any identity/parity/governance graft passes; the
+  bridge duplicates LeanMill validation; or an established semantic digest
+  changes.
+- **Claim boundary:** success certifies theorem-scoped arithmetic support and
+  its authority lifecycle. It does not formalize adapter-owned Jacobian
+  algebra, all-order support, formal-flow identities, radial division, or the
+  complete minimax theorem.
+- **Outcome:** the generic factory rejects formal-kernel authority and common
+  replay refuses to authorize a formal receipt.  The sole positive bridge
+  resolves and replays LeanMill governed records, their exact theorem/source/
+  proof/goal identities, current complete toolchain, positive axiom and
+  governance receipts, and persisted kernel parity.  Six theorem-scoped
+  receipts cover both lower-branch arithmetic spines, the critical Puiseux
+  arithmetic terminal, radial upper arithmetic, final comparison logic, and
+  an alien valuation fixture.  The support-envelope digest is
+  `045e1c33f1911059e37f556a9a2475bd3f6823d6dfeaadbfc0b50c8d67150b87`;
+  the global semantic digest remains
+  `24bee337068d65d8d81d1fa4ac584cec1130e3b160bef765f5afbd131acc1108`.
+
+# H-FORMAL-RESIDUAL-COVERAGE-COMPILER-20260802-100 - Compute exact uncovered formal leaves before authority promotion
+
+- **Status:** pre-registered 2026-08-02; discriminating implementation pending
+- **Axis:** claim-decomposition DAG / governed formal receipts / residual
+  frontier / authority-promotion eligibility
+- **Eigenquestion:** can AxiomPack compute the exact uncovered proposition set
+  of a broad claim and prevent partial theorem coverage from upgrading the
+  root's authority?
+- **Hypothesis:** a finite acyclic claim DAG, exact normalized-signature
+  identities for formal leaves and inference rules, and ledger-backed governed
+  receipt replay suffice to compute a least fixed-point coverage certificate.
+  Complete bottom-up coverage plus a direct governed root theorem is necessary
+  for promotion eligibility; the compiler itself issues no formal authority.
+- **Discriminating test:** compile the critical Puiseux terminal with only its
+  ratified arithmetic leaf and recover the exact remaining germ, Julia,
+  two-flow, inference, and root residual; transfer to an alien claim; then
+  reject missing, duplicate, extra, cyclic, unreachable, cross-DAG,
+  cross-signature, adapter-semantic, and partial-root attacks.
+- **Success criterion:** the initial Puiseux residual is exact; adding a formal
+  leaf removes only its matching obligation; no partial configuration reports
+  promotion eligibility; an alien DAG passes without Jacobian vocabulary; and
+  all established semantic digests remain fixed.
+- **Kill condition:** a theorem name substitutes for signature identity; a
+  caller-declared edge substitutes for a governed inference rule; an
+  adapter-semantic leaf becomes formally covered; disconnected debt is hidden;
+  the compiler mints formal authority; or semantic identity drifts.
+- **Claim boundary:** success mechanizes formalization coverage and residual
+  selection. It does not prove uncovered Puiseux leaves, validate their
+  mathematical statements, or upgrade the critical terminal unless every
+  governed requirement actually closes.

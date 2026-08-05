@@ -38,43 +38,43 @@ and the source forward `dexp` uses
 \sum_{k\ge0}\frac{(-1)^k\operatorname{ad}_\Omega^k}{(k+1)!}.
 \]
 
-Both exact forward round trips pass through order seven.  Using the same
+Both exact forward round trips pass through order eight.  Using the same
 orientation on both sides preserves the degree profiles below but reverses
 the first orientation-sensitive source shells.
 
 ## Exact degree profiles
 
 For the selected cone connection from the natural-weight replay, the
-instantaneous source velocity degrees at \(j=0,\ldots,6\) are
+instantaneous source velocity degrees at \(j=0,\ldots,7\) are
 
 \[
-(5,5,7,9,11,13,14).
+(5,5,7,9,11,13,14,17).
 \]
 
 After converting \(V_j,K_j\) to ordinary coefficients by division by
 \(j!\), the actual source precomposition logarithm has component degrees
-at logarithmic orders \(1,\ldots,7\)
+at logarithmic orders \(1,\ldots,8\)
 
 \[
-\boxed{(5,5,9,11,14,18,22)}.
+\boxed{(5,5,9,11,14,18,22,26)}.
 \]
 
 The target logarithmic Hamiltonian degrees are
 
 \[
-\boxed{(2,3,3,3,4,4,5)},
+\boxed{(2,3,3,3,4,4,5,5)},
 \]
 
 and the corresponding Hamiltonian-vector-field degrees are
 
 \[
-(1,2,2,2,3,3,4).
+(1,2,2,2,3,3,4,4).
 \]
 
 The maximum target cusp weights are exactly
 
 \[
-(6,7,8,9,10,11,12).
+(6,7,8,9,10,11,12,13).
 \]
 
 The target logarithm remains cone-valued, as required by Poisson closure.
@@ -126,6 +126,12 @@ The source top shells for the correct precomposition orientation are
   \left(
     -\frac1{1376256}V^{16}G^6,
     \frac1{774144}V^{15}G^7
+  \right),\\
+\operatorname{top}\Omega^{\rm src}_8
+  &=
+  \left(
+    \frac5{14155776}V^{19}G^7,
+    -\frac{19}{28311552}V^{18}G^8
   \right).
 \end{aligned}
 \]
@@ -144,6 +150,18 @@ the first orientation-sensitive shells are
 \operatorname{top}\Omega^{\rm src}_4=\frac{115}{24576}W_7.
 \]
 
+The order-eight shell is instead transverse to the top cusp:
+
+\[
+d(VG)\!\left(\operatorname{top}\Omega^{\rm src}_8\right)
+=-\frac{V^{19}G^8}{3145728}.
+\]
+
+The cap-seventeen kernel has exact dimension twenty-one, and its projection
+onto the fourteen incoming affine coordinates has full rank.  Retaining all
+lower parameters symbolically shows that the displayed order-eight shell is
+constant across this complete affine family.
+
 ## Exact coefficient hashes
 
 The hashes below cover complete expanded coefficients, not only their top
@@ -158,13 +176,15 @@ shells.
 | 5 | `86b5357dc26d3afc05173ec2df9e757528b2fbd8c447c0c7d4c907e148f7997d`, `61a354bb42996b0efc39e680ff6e219627c9ae515e0766d6f3d582d544bd39d0` |
 | 6 | `7045407993b8f634a8a26808025bf7a475437b1b28e18df76b4c04b72507e554`, `b39559ef87ea1a98cbb5ec6ce32b483313443fef4fe78ac77c91dc9470d0b766` |
 | 7 | `e7b6059f5c0b974ab782172f21dd965948a4cb407bec120a62fccc7a2a6851d1`, `06dbaf56bcf337455ecf276ad7f2582c5537c77d22231bc34f12c8bc1f80dfbe` |
+| 8 | `76a2ba16eddcb6b7b8d9394c2b970ff56a70c6ea6da2b5359de28f0507fb3d72`, `f4327d20e5ac61e9861c4330376801c5705773b39fe9a24100835b02717bf9c9` |
 
 ## Interpretation
 
 The source logarithm grows substantially faster than the instantaneous
 minimum-cap sequence in this selected connection.  In particular,
-\(\deg\Omega^{\rm src}_7=22\) although \(\deg V_6=14\).  This kills the
-inference from the finite velocity profile to a slope-two logarithmic law.
+\(\deg\Omega^{\rm src}_8=26\) although \(\deg V_7=17\).  The exact
+order-seven affine solve also kills the cap-fifteen extrapolation: the
+minimum is seventeen.
 
 It does not establish an asymptotic lower bound.  Later affine choices can
 feed the same top shells, and the exact source-only connection has velocity

@@ -320,3 +320,100 @@ The broader Vector B lane remains live precisely at the noncanonical
 coupled recursion in the four bullets above.  A finite prefix or a diagonal
 support pattern without the contact equation is not evidence for a value of
 \(\sigma_{\rm ct}\).
+
+## Positive-contact locally finite schedule: preregistration
+
+The corrected higher-contact theorem suggests that the remaining
+infinite-\(C\)-adic caveat may be unnecessarily broad.  The
+maximum-contact argument is needed to stop a finite cascade, but local
+finiteness supplies a different well-order: every nonzero coefficient row
+is a finite polynomial, and every attempted cancellation has a first
+parameter order.
+
+The proposed dichotomy is:
+
+1. A robust positive-contact class has a unique northeast terminal ray.
+   At every ray order, any finite current combination containing that
+   terminal has a strictly higher even-normal pivot at the same order.
+   Hence either the terminal or a higher source-log shell survives.
+2. An exceptional \(d=0\) class has a nonresonant primary
+   \(\phi_2\) ray.  If it is never canceled, that ray survives.  At its
+   first cancellation, the corrected transition equation leaves the five
+   exceptional states and enters the robust case.
+
+For a robust class \(P^aQ^bD^dC^m\), the surviving ray has limiting
+source Hamiltonian rate
+
+\[
+L=2a+3b+5d+3m-2.
+\]
+
+For an exceptional class the same orbit calculation gives \(L=S+m-2\).
+The cone and parity constraints should make every such \(L>2\).
+
+The positive-contact infinite-schedule lane is excluded only if all of the
+following exact checks pass:
+
+- every canonical boundary state is either robust or one of the five
+  corrected exceptional states;
+- the robust terminal/pivot relation is stable under arbitrary finite
+  affine combinations at one coefficient row;
+- the five exceptional amplitudes are nonzero and their adjoint factors
+  have no natural zero;
+- the corrected transition has no exceptional-to-exceptional
+  \(d=0\) edge; and
+- the minimum limiting rate over every admissible state is strictly
+  above two.
+
+A finite affine kernel, a same-order cancellation with no higher pivot, an
+exceptional return edge, or a rate at most two kills this strengthening.
+Even if it passes, the claim concerns positive \(C\)-adic contact only.
+Pure contact-zero recursions and the unrestricted symmetric minimax remain
+separate.
+
+### Exact outcome
+
+The five checks pass for coefficientwise-polynomial continuations of the
+normalized radial background.
+
+At the least positive contact depth, contact valuation gives a nonzero
+axis polynomial \(g(r)\).  On its highest degree \(w\), the robust odd
+transfer has eigenvalue
+
+\[
+3w+4m>0.
+\]
+
+Any finite current row reaching that odd terminal has support parameters
+\(t\ge h\ge1\); its leading even pivot is higher by radial margin \(t>0\)
+and nonnegative total-degree margin \(t-h\).  Thus a finite affine
+combination cannot erase both the terminal and every higher same-order
+pivot.
+
+For the exceptional rows, the corrected amplitudes are nonzero, the
+bracket factors are positive, and the first cancellation leaves
+exceptional \(d=0\).  Local finiteness supplies a least cancellation
+order, so no global maximum contact depth is needed for this dichotomy.
+Writing
+
+\[
+2b=a+3d+3m+\ell,
+\]
+
+the limiting source Hamiltonian rate is
+
+\[
+L
+=\frac{7a+19d+15m+3\ell-4}{2}
+\ge\frac{11}{2}>2.
+\]
+
+The replay is
+[`gauge_positive_contact_locally_finite_obstruction.py`](gauge_positive_contact_locally_finite_obstruction.py),
+and the rate inequality is checked in
+[`AxiomPackJacobianFiniteContactPrefixArithmetic.lean`](../../../ztare_proofs/ZtareProofs/AxiomPackJacobianFiniteContactPrefixArithmetic.lean).
+
+This removes an infinite positive-\(C\)-adic continuation of the fixed
+normalized background.  It does not make the terminal module uniform
+over an arbitrary replacement of the contact-zero backbone.  The broader
+noncanonical coupled recursion therefore remains the live Vector-B lane.

@@ -1,0 +1,73 @@
+{
+  "candidate_birth": {
+    "can_persist_pack": false,
+    "failures": [
+      "live typed producer runtime was not supplied"
+    ],
+    "frontier_theorem_certificate_consumed": false,
+    "missing_capabilities": [
+      {
+        "field": "live_typed_producer_runtime.escalation",
+        "owner": "axiom_pack_campaign_admission"
+      },
+      {
+        "field": "live_typed_producer_runtime.task_manifest",
+        "owner": "axiom_pack_campaign_admission"
+      },
+      {
+        "field": "live_typed_producer_runtime.proposer_call",
+        "owner": "typed_axiom_proposer"
+      },
+      {
+        "field": "live_typed_producer_runtime.semantic_checker_fn",
+        "owner": "semantic_fidelity_checker"
+      }
+    ],
+    "next_required_field": "live_typed_producer_runtime.escalation",
+    "promotion_status": "blocked_before_quarantine",
+    "proof_credit_eligible": false,
+    "receipt_sha256": "sha256:31aa29a1669d27a9cc339519212d76a57eeb82c22450c857b1d46d25bbda30a4",
+    "schema": "leanmill.axiom_pack_candidate_capability_blocker.v1",
+    "source_receipt_sha256": "sha256:54bfaed4073cdf8a7d3b5c2deb34b5fc4282b5d5537b655b442ecd6de2ba932b",
+    "stage": "executable_language",
+    "status": "blocked_missing_capability",
+    "theorem_campaign_admissible": false
+  },
+  "frontier_theorem_certificate_consumed": false,
+  "live_receipt": {
+    "can_mutate_substrate": false,
+    "canonical_engine": "ztare.leanmill.axiom_pack_orchestration",
+    "mode": "conjecture",
+    "model": "codex",
+    "proof_credit_eligible": false,
+    "provider_calls": 0,
+    "result": {
+      "candidate_count": 0,
+      "missing_capabilities": [
+        "live_typed_producer_runtime.escalation",
+        "live_typed_producer_runtime.task_manifest",
+        "live_typed_producer_runtime.proposer_call",
+        "live_typed_producer_runtime.semantic_checker_fn"
+      ],
+      "outcome_detail": "live typed producer runtime was not supplied",
+      "producer_outcome": "language_capability_gap",
+      "requested_candidate_cap": 8,
+      "typed_axiom_proposals": []
+    },
+    "schema": "leanmill.agent_tool.structural_isomorphism_receipt.v1",
+    "status": "language_capability_gap",
+    "theorem_campaign_admissible": false,
+    "trial_source": "live_typed_axiom_pack_producer"
+  },
+  "output_contract_schema": "leanmill.axiom_pack_typed_producer_output.v1",
+  "output_schema_sha256": "sha256:e706dd1d0b56ccbac2b8f889d3987af855dd9b685fe3d1adf83dfcf3ba0f9c24",
+  "producer_owner": "ztare.leanmill.axiom_pack_orchestration.run_live_typed_axiom_pack_producer",
+  "producer_view_schema": "leanmill.axiom_pack_typed_producer_view.v1",
+  "producer_view_sha256": "sha256:73c3a1216b8fc72a3a338d6387fd27195c99b31f65a3746d5cec3faf5b61d8ef",
+  "prompt_sha256": "sha256:71cd0ca63b11ece3c768568e5be9d934d7d27a59055501e2fded869107bd9389",
+  "provider_calls": 0,
+  "receipt_sha256": "sha256:e6d7656780d7851aba73e5119fed8d51a9c5aec95f9b07fe13c4d59b2aef3655",
+  "schema": "leanmill.axiom_pack_live_typed_producer_preflight.v1",
+  "status": "blocked_missing_runtime",
+  "superseded_by": "analytics/public/queries/axiom_pack_live_typed_producer_first_fire.json"
+}

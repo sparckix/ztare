@@ -70,3 +70,31 @@ Even persistence at every order would describe this gauge only.  It would
 not prove a minimax lower bound over all contacts or strengthen the existing
 \(\sigma_{\rm ct}\le2\) upper bound.  The finite ray is a diagnostic for the
 remaining gauge search.
+
+## Order-nine successor
+
+The preregistered continuation is falsified at order nine.  The complete
+polynomial Hamiltonian replay is recorded in
+[`gauge_controlled_global_magnus_hamiltonian_result.md`](gauge_controlled_global_magnus_hamiltonian_result.md).
+Its top order-nine source Hamiltonian is
+
+\[
+-\frac{23}{42278584320}v^{20}(g+2)^{17},
+\]
+
+with derivation degree \(34\), rather than the predicted \(28\).  The
+orders-six-to-eight statements above remain exact finite results; they must
+not be extrapolated.
+
+The successor Hamiltonian quotient nevertheless proves a different
+all-order ray.  After \(u=1+v\), the exact source logarithm contains a
+nonzero Hamiltonian proportional to
+
+\[
+u^{3n-5}z^{2n}
+\]
+
+at every \(n=6+4m\), with source derivation degree \(5n-8\).  Its symbolic
+forward-`dexp` derivation and claim boundary are in the linked Hamiltonian
+result.  This excludes the displayed global control as a bounded-log
+connection without making a minimax statement over other gauges.

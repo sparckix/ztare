@@ -74,6 +74,71 @@ def _assert_top_hamiltonian(
     assert _subtract(top, expected) == (0, 0)
 
 
+def _leading_bracket(
+    left: Pair,
+    right: Pair,
+    v: sp.Symbol,
+    t: sp.Symbol,
+) -> Pair:
+    """Return the first nonzero homogeneous shell of a polynomial bracket."""
+
+    def shells(field: Pair) -> dict[int, Pair]:
+        by_degree: dict[int, list[sp.Expr]] = {}
+        for component_index, component in enumerate(field):
+            for monomial, coefficient in sp.Poly(
+                component, v, t
+            ).terms():
+                degree = sum(monomial)
+                if degree not in by_degree:
+                    by_degree[degree] = [
+                        sp.Integer(0),
+                        sp.Integer(0),
+                    ]
+                by_degree[degree][component_index] += (
+                    coefficient * v ** monomial[0] * t ** monomial[1]
+                )
+        return {
+            degree: (sp.expand(parts[0]), sp.expand(parts[1]))
+            for degree, parts in by_degree.items()
+        }
+
+    left_shells = shells(left)
+    right_shells = shells(right)
+    candidate_degrees = sorted(
+        {
+            left_degree + right_degree - 1
+            for left_degree in left_shells
+            for right_degree in right_shells
+        },
+        reverse=True,
+    )
+    for candidate_degree in candidate_degrees:
+        shell: Pair = (sp.Integer(0), sp.Integer(0))
+        for left_degree, left_shell in left_shells.items():
+            right_degree = candidate_degree + 1 - left_degree
+            right_shell = right_shells.get(right_degree)
+            if right_shell is None:
+                continue
+            contribution = _bracket(
+                left_shell,
+                right_shell,
+                v,
+                t,
+            )
+            shell = (
+                sp.expand(shell[0] + contribution[0]),
+                sp.expand(shell[1] + contribution[1]),
+            )
+        shell = (
+            sp.cancel(shell[0]),
+            sp.cancel(shell[1]),
+        )
+        if shell != (0, 0):
+            assert _degree(shell, v, t) == candidate_degree
+            return shell
+    return sp.Integer(0), sp.Integer(0)
+
+
 def run() -> dict[str, object]:
     data = source_only_connection()
     s, v, t, _ = data["symbols"]
@@ -182,7 +247,7 @@ def run() -> dict[str, object]:
         first, first_hamiltonian, v, t, g
     )
 
-    seed = _bracket(first, third, v, t)
+    seed = _leading_bracket(first, third, v, t)
     seed_coefficient = sp.factor(
         27 * ell**2 / (4096 * (3 * ell - 2) ** 2)
     )
@@ -190,7 +255,7 @@ def run() -> dict[str, object]:
     assert _degree(seed, v, t) == 18
     _assert_top_hamiltonian(seed, seed_hamiltonian, v, t, g)
 
-    next_ray = _bracket(first, seed, v, t)
+    next_ray = _leading_bracket(first, seed, v, t)
     recurrence_multiplier = sp.factor(
         9 * ell / (16 * (3 * ell - 2))
     )

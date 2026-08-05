@@ -1,0 +1,33 @@
+{
+  "candidate_birth": {
+    "can_persist_pack": false,
+    "failures": [
+      "prose_only_candidate_output"
+    ],
+    "frontier_theorem_certificate_consumed": false,
+    "missing_capabilities": [
+      {
+        "field": "producer_output.result.typed_axiom_proposals",
+        "owner": "typed_axiom_proposer"
+      }
+    ],
+    "next_required_field": "producer_output.result.typed_axiom_proposals",
+    "promotion_status": "blocked_before_quarantine",
+    "proof_credit_eligible": false,
+    "receipt_sha256": "sha256:af42895d714b0cad74eec043bb4fd1b0f4aa31b9e6b4deeca5a5fe6ddfddf14b",
+    "schema": "leanmill.axiom_pack_candidate_capability_blocker.v1",
+    "source_receipt_sha256": "sha256:9543cfdde00998c7635259dde49c07b2a850fff0dd9767a7439c56c61d13600d",
+    "stage": "executable_language",
+    "status": "blocked_missing_capability",
+    "theorem_campaign_admissible": false
+  },
+  "frontier_theorem_certificate_consumed": false,
+  "promotion_transition_invoked": false,
+  "promotion_transition_reason": "candidate birth blocked before an executable pack existed",
+  "receipt_sha256": "sha256:f8f2e956fd55c641ddc69367f44e13a65a1a3b9f0f903754552d516c56aa1acd",
+  "schema": "leanmill.axiom_pack_candidate_birth_first_fire.v1",
+  "source_artifact": "analytics/public/queries/axiom_pack_live_eval.json",
+  "source_artifact_sha256": "sha256:ec27dde54fc807eb596bb5e6973c7dfb26c687342d443678d5a46eac26ec0c30",
+  "source_model": "codex",
+  "source_trial": "live_agent_isomorphism"
+}

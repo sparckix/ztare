@@ -705,3 +705,7 @@ projects/ai_capex/workspace/*
 
 # warrant-filtration paper working notes (Fable review, roadmap, draft twin) — private
 /warrant-filtration/
+
+# AxiomPack binary-code certificate probes: deterministic solver intermediates.
+/research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/*.cnf
+/research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/*.lrat

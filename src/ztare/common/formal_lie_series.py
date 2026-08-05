@@ -1,4 +1,4 @@
-"""Formal Magnus/dexp recursions with an equation-typed velocity side.
+"""Formal Magnus, dexp, BCH, and split-factorization recursions.
 
 The words "left" and "right" are easy to reverse when a group action is
 composed on different sides.  ``VelocityPlacement`` therefore names the
@@ -10,6 +10,9 @@ matrix equation itself:
 The implementation is substrate-neutral.  Callers supply the zero, addition,
 rational scaling, and Lie-bracket operations for their coefficient type.
 Series use ordinary coefficients: entry ``j`` multiplies ``s**j``.
+The BCH and factorization functions require identity-tangent inputs: their
+order-zero coefficients must vanish.  This makes every coefficient depend
+on finitely many lower-order brackets.
 """
 
 from __future__ import annotations
@@ -118,6 +121,49 @@ def _series_bracket(
     return result
 
 
+def _series_add(
+    left: list[Coefficient],
+    right: list[Coefficient],
+    maximum_order: int,
+    ops: FormalLieOps[Coefficient],
+) -> list[Coefficient]:
+    return [
+        ops.add(left[order], right[order])
+        for order in range(maximum_order + 1)
+    ]
+
+
+def _adjoint_exponential(
+    actor: list[Coefficient],
+    value: list[Coefficient],
+    maximum_order: int,
+    ops: FormalLieOps[Coefficient],
+    *,
+    sign: int = 1,
+) -> list[Coefficient]:
+    """Return ``exp(sign * ad_actor)(value)`` through one series order."""
+
+    if sign not in {-1, 1}:
+        raise ValueError("adjoint sign must be -1 or 1")
+    result = list(value[: maximum_order + 1])
+    nested = list(value[: maximum_order + 1])
+    for depth in range(1, maximum_order + 1):
+        nested = _series_bracket(actor, nested, maximum_order, ops)
+        result = _series_add(
+            result,
+            [
+                ops.scale(
+                    coefficient,
+                    Fraction(sign**depth, factorial(depth)),
+                )
+                for coefficient in nested
+            ],
+            maximum_order,
+            ops,
+        )
+    return result
+
+
 def magnus_from_velocity(
     velocity: list[Coefficient],
     maximum_order: int,
@@ -188,3 +234,93 @@ def velocity_from_magnus(
                 ops.scale(nested[order], forward[depth]),
             )
     return result
+
+
+def bch_series(
+    left: list[Coefficient],
+    right: list[Coefficient],
+    maximum_order: int,
+    ops: FormalLieOps[Coefficient],
+) -> list[Coefficient]:
+    """Return ``log(exp(left) * exp(right))`` through ``s**n``.
+
+    Both inputs must have zero order-zero coefficient.  The implementation
+    uses left-multiplication velocities:
+
+    ``V_product = V_left + exp(ad_left)(V_right)``.
+
+    Reusing the typed dexp recursion keeps BCH orientation coupled to the
+    displayed product equation.
+    """
+
+    if maximum_order < 0:
+        raise ValueError("maximum_order must be nonnegative")
+    if len(left) <= maximum_order or len(right) <= maximum_order:
+        raise ValueError("both logarithms need coefficients through order n")
+    left_velocity = velocity_from_magnus(
+        left,
+        maximum_order,
+        ops,
+        VelocityPlacement.LEFT_MULTIPLY,
+    )
+    right_velocity = velocity_from_magnus(
+        right,
+        maximum_order,
+        ops,
+        VelocityPlacement.LEFT_MULTIPLY,
+    )
+    transported_right = _adjoint_exponential(
+        left,
+        right_velocity,
+        maximum_order,
+        ops,
+    )
+    product_velocity = _series_add(
+        left_velocity,
+        transported_right,
+        maximum_order,
+        ops,
+    )
+    return magnus_from_velocity(
+        product_velocity,
+        maximum_order,
+        ops,
+        VelocityPlacement.LEFT_MULTIPLY,
+    )
+
+
+def factor_magnus_by_projection(
+    logarithm: list[Coefficient],
+    maximum_order: int,
+    ops: FormalLieOps[Coefficient],
+    project_first_factor: Callable[[Coefficient], Coefficient],
+) -> tuple[list[Coefficient], list[Coefficient]]:
+    """Factor one logarithm as ``BCH(first, residual)`` recursively.
+
+    ``project_first_factor`` declares a coefficient-space splitting.  At
+    order ``n``, the BCH coefficient is ``first[n] + residual[n]`` plus a
+    known expression in lower orders.  Projection therefore determines a
+    unique pair coefficient by coefficient.  If the projection image is a
+    Lie subalgebra, ``first`` is the logarithm of the corresponding formal
+    subgroup factor.  No subalgebra or asymptotic-completeness claim is
+    inferred by this substrate-neutral routine.
+    """
+
+    if maximum_order < 0:
+        raise ValueError("maximum_order must be nonnegative")
+    if len(logarithm) <= maximum_order:
+        raise ValueError("logarithm needs coefficients through order n")
+    first = [ops.zero() for _ in range(maximum_order + 1)]
+    residual = [ops.zero() for _ in range(maximum_order + 1)]
+    for order in range(1, maximum_order + 1):
+        approximation = bch_series(first, residual, order, ops)
+        missing = ops.add(
+            logarithm[order],
+            ops.scale(approximation[order], Fraction(-1)),
+        )
+        first[order] = project_first_factor(missing)
+        residual[order] = ops.add(
+            missing,
+            ops.scale(first[order], Fraction(-1)),
+        )
+    return first, residual
