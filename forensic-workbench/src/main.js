@@ -48,6 +48,7 @@ import {
   Anchor as MAnchor,
 } from "./workspaces/leanmill-ui.jsx";
 import { DayZeroStartPanel } from "./workspaces/start.jsx";
+import { InvestmentPanel } from "./workspaces/investment.jsx";
 import { RegisterBetForm, ExecuteWagerForm, decisionTestContext } from "./sections/wagerpanel.jsx";
 import { BindEvidenceForm } from "./sections/decisionpanel.jsx";
 import { contributedScenarioPanels, scenarioPanelDiscovery } from "./scenario-panel-registry.jsx";
@@ -59,6 +60,7 @@ import {
   ScrollText, Target, FolderOpen, Zap, Workflow, ListChecks, Gavel, Clock,
   LayoutGrid, FunctionSquare, Settings as SettingsIcon, Puzzle, FileText, Beaker, Network,
   Upload as IconUpload, Rocket, Play, Activity, ArrowLeft, ArrowRight, X, House, Search,
+  TrendingUp, Database,
 } from "lucide-react";
 import DOMPurify from "dompurify";
 
@@ -69,9 +71,12 @@ const NAV_ICON = {
   "Pressure-test the thesis": Zap, "Map": Network, "Open points": ListChecks,
   "Verdict": Gavel, "History": Clock, "ZTARE Projects": LayoutGrid,
   "LeanMill": FunctionSquare, "Activity": Activity, "Plugins": Puzzle, "Settings": SettingsIcon,
+  "Capital": TrendingUp,
   // LeanMill submenu — same wayfinding treatment the project subnav already gets
   "Start": Rocket, "Draft target": Target, "Run a proof": Play,
   "Proof files": FileText, "Proof status": Activity, "Axiom discovery": Beaker,
+  "Sources & signals": Database, "Opportunities": Search, "Strategy frontier": Workflow, "Plays": Target,
+  "Portfolio": LayoutGrid, "Shadow book": Clock, "World models": Network,
   // home-link aliases — same destinations, plainer labels
   "My claim": Target, "Test it": Zap,
 };
@@ -153,6 +158,7 @@ const WORKSPACE_SECTIONS = [
   { id: "overview", label: "Thesis", summary: "What you're arguing, what would change your mind, where it's weakest, and how it held up", subnav: ["Thesis", "Assumptions", "Charter", "Research map"] },
   { id: "sources", label: "Evidence", summary: "What backs your thesis, what's missing, and add more", subnav: ["Prepare files", "Project brief"] },
   { id: "run", label: "Pressure-test the thesis", summary: "Run the loop that attacks your thesis to find its strongest, best-defended version", subnav: ["Ready to run", "Scoring guide", "Run settings", "Check readiness", "Fix warnings"] },
+  { id: "investment", label: "Capital", summary: "Compile public evidence into strategy-aware paper decisions and a constrained portfolio", subnav: ["Overview", "Sources & signals", "Opportunities", "Strategy frontier", "Plays", "Portfolio", "Shadow book", "World models"] },
   { id: "leanmill", label: "LeanMill", summary: "Formalize & solve, fix a failing proof, or kernel-ratify a finished one", subnav: ["Start", "Draft target", "Run a proof", "Proof status", "Proof files", "Axiom discovery"] },
   { id: "review", label: "Open points", summary: "Loose ends to look at, with your notes on each", subnav: ["Things to review", "Save next step", "Saved history"] },
   { id: "save", label: "Verdict", summary: "Whether you can trust this, what's weak, and what to fix", subnav: ["Report readiness", "Report inputs", "Project file"] }
@@ -264,6 +270,38 @@ const WORKSPACE_DETAIL_COPY = {
   "leanmill:Axiom discovery": {
     title: "Axiom discovery",
     body: "AxiomPack explores an axiom space from a research direction you describe — it maps the frontier and surfaces candidate theory (explore_axiom_space), rather than proving a target you state. Author a discovery blueprint (a Markdown region description with lane: axiompack), then launch and watch its budget, boundary checks, finalists, and stop reason."
+  },
+  "investment:Overview": {
+    title: "Capital workbench",
+    body: "Public evidence, bounded decision policies, the constrained paper portfolio, and prospective outcomes in one operating view."
+  },
+  "investment:Sources & signals": {
+    title: "Sources & signals",
+    body: "Cached public-source bytes, point-in-time availability, normalized observations, and deterministic signal receipts."
+  },
+  "investment:Opportunities": {
+    title: "Opportunity funnel",
+    body: "Automatically screen source-complete candidates, decompose fund returns by declared factors, and route qualified ideas into source-bound underwriting drafts."
+  },
+  "investment:Strategy frontier": {
+    title: "Strategy frontier",
+    body: "The nested company, investment-policy, and portfolio frontiers, with closure limited to each declared language and scope."
+  },
+  "investment:Plays": {
+    title: "Compiled plays",
+    body: "Source-bound theses, rival mechanisms, valuation programs, policy frontiers, and selected paper actions."
+  },
+  "investment:Portfolio": {
+    title: "Paper portfolio",
+    body: "Compatible entity decisions assembled under capital, concentration, turnover, and downside limits."
+  },
+  "investment:Shadow book": {
+    title: "Shadow book",
+    body: "Frozen prospective decisions waiting for outcomes, benchmark comparison, and no-action settlement."
+  },
+  "investment:World models": {
+    title: "World models",
+    body: "Point-in-time model tournaments scored on common episodes with corrected comparisons and paper-only authority."
   },
   "save:Report readiness": {
     title: "Can I trust this report?",
@@ -9947,8 +9985,10 @@ function Sidebar({
 }) {
   const activeSection = WORKSPACE_SECTIONS.find((item) => item.id === activeWorkspace) || WORKSPACE_SECTIONS[0];
   const leanMillActive = activeWorkspace === "leanmill";
+  const capitalActive = activeWorkspace === "investment";
   const productNavItems = [
     { id: "research", label: "ZTARE Projects", workspace: "projects", subsection: "Projects", icon: "projects" },
+    { id: "capital", label: "Capital", workspace: "investment", subsection: "Overview", icon: "capital" },
     { id: "leanmill", label: "LeanMill", workspace: "leanmill", subsection: "Overview", icon: "leanmill" },
     { id: "activity", label: "Activity", workspace: "projects", subsection: "Activity", icon: "activity" },
     { id: "plugins", label: "Plugins", workspace: "projects", subsection: "Plugins", icon: "plugins" },
@@ -9977,6 +10017,14 @@ function Sidebar({
         body: detailCopy("leanmill", subsection).body,
         title: detailCopy("leanmill", subsection).title
       }))
+    : capitalActive
+      ? activeSection.subnav.map((subsection) => ({
+          label: subsection,
+          workspace: "investment",
+          subsection,
+          body: detailCopy("investment", subsection).body,
+          title: detailCopy("investment", subsection).title
+        }))
     : projectTaskItems.map((item) => ({
         ...item,
         title: detailCopy(item.workspace, item.subsection).title
@@ -9984,7 +10032,7 @@ function Sidebar({
   return h(
     "aside",
     { className: "sidebar" },
-    h("div", { className: "brand-lockup" }, h("div", { className: "brand-mark" }, "ZT"), h("div", { className: "side-title" }, h("strong", null, "ZTARE"), h("span", null, leanMillActive ? "LeanMill" : "Project Workbench"))),
+    h("div", { className: "brand-lockup" }, h("div", { className: "brand-mark" }, "ZT"), h("div", { className: "side-title" }, h("strong", null, "ZTARE"), h("span", null, leanMillActive ? "LeanMill" : capitalActive ? "Capital Workbench" : "Project Workbench"))),
     h(
       "nav",
       { className: "side-nav", "aria-label": "Workbench sections" },
@@ -9997,6 +10045,8 @@ function Sidebar({
             className: (
               item.id === "leanmill"
                 ? leanMillActive
+                : item.id === "capital"
+                  ? capitalActive
                 : item.id === "activity"
                   ? activeWorkspace === "projects" && activeSubsection === "Activity"
                 : item.id === "plugins"
@@ -10022,8 +10072,8 @@ function Sidebar({
     ),
     h(
       "section",
-    { className: "side-subnav", "aria-label": leanMillActive ? "LeanMill submenu" : day0Mode ? "Get started menu" : "Selected project menu" },
-      h("span", null, leanMillActive ? "Proof work" : day0Mode ? "Get started" : "Selected project"),
+    { className: "side-subnav", "aria-label": leanMillActive ? "LeanMill submenu" : capitalActive ? "Capital submenu" : day0Mode ? "Get started menu" : "Selected project menu" },
+      h("span", null, leanMillActive ? "Proof work" : capitalActive ? "Capital work" : day0Mode ? "Get started" : "Selected project"),
       h(
         "div",
         { className: "side-subnav-list" },
@@ -10902,14 +10952,15 @@ function detailKey(workspace, subsection) {
 
 function normalizeWorkspaceTarget(workspace, subsection) {
   const requestedWorkspace = String(workspace || "").trim();
-  const workspaceId = WORKSPACE_ALIASES[requestedWorkspace] || requestedWorkspace;
+  const workspaceId = WORKSPACE_ALIASES[requestedWorkspace]
+    || WORKSPACE_SECTIONS.find((item) => item.id.toLowerCase() === requestedWorkspace.toLowerCase())?.id
+    || requestedWorkspace;
   const section = WORKSPACE_SECTIONS.find((item) => item.id === workspaceId) || WORKSPACE_SECTIONS[0];
   const rawSubsection = String(subsection || "").trim() || section.subnav[0];
   const subsectionAliases = WORKSPACE_SUBSECTION_ALIASES[section.id] || {};
   const aliasedSubsection = subsectionAliases[rawSubsection] || rawSubsection;
-  const normalizedSubsection = section.subnav.includes(aliasedSubsection)
-    ? aliasedSubsection
-    : section.subnav[0];
+  const normalizedSubsection = section.subnav.find((item) => item.toLowerCase() === aliasedSubsection.toLowerCase())
+    || section.subnav[0];
   return [section.id, normalizedSubsection];
 }
 
@@ -11383,6 +11434,9 @@ function App() {
   const [sourceListContext, setSourceListContext] = useState(null);
   const [sourceListMessage, setSourceListMessage] = useState("");
   const [principleContext, setPrincipleContext] = useState(null);
+  const [investmentContext, setInvestmentContext] = useState(null);
+  const [investmentMessage, setInvestmentMessage] = useState("");
+  const [investmentBusy, setInvestmentBusy] = useState(false);
   const [leanMillContext, setLeanMillContext] = useState(null);
   const [leanMillMessage, setLeanMillMessage] = useState("");
   const [leanMillBlueprintDraft, setLeanMillBlueprintDraft] = useState(emptyLeanMillBlueprintDraft());
@@ -12270,6 +12324,74 @@ function App() {
         return refreshResult("sources", false, err.message || err);
       });
   };
+
+  const loadInvestmentContext = () => {
+    setInvestmentMessage("Loading the capital workspace.");
+    return fetch(`/api/investment?view=${encodeURIComponent(activeSubsection || "Overview")}`, { headers: { Accept: "application/json" } })
+      .then((response) => response.json().then((payload) => ({ response, payload })))
+      .then(({ response, payload }) => {
+        if (!response.ok && payload.available !== false) throw new Error(payload.error || `capital workspace fetch failed: ${response.status}`);
+        setLiveMode(true);
+        setInvestmentContext(payload);
+        setInvestmentMessage(payload.available === false ? payload.error : "Capital workspace loaded from local operator state.");
+        return refreshResult("Capital", payload.ok !== false);
+      })
+      .catch((err) => {
+        setInvestmentContext(null);
+        setInvestmentMessage(`Capital workspace unavailable: ${err.message || err}`);
+        return refreshResult("Capital", false, err.message || err);
+      });
+  };
+
+  const runInvestmentAction = (action, request = {}) => {
+    if (!liveMode || investmentBusy) return Promise.resolve(null);
+    const labels = { init: "Initializing", sources: "Refreshing public sources", build: "Compiling", refresh: "Refreshing", discover: "Running autonomous discovery", "enrichment-run": "Running bounded research enrichment", "capital-cycle": "Running the capital cycle", "universe-refresh": "Refreshing the broad market catalog", scout: "Compiling the market request", "enroll-equity": "Enriching the equity", "enroll-fund": "Enriching the fund", "hydrate-fund": "Acquiring issuer look-through", "seed-equity": "Creating an equity draft", activate: "Activating a paper profile", "equity-activate": "Approving the equity paper watch", "fund-activate": "Approving the fund paper watch", "company-state-flow": "Testing persistent-company current", "company-state-path-action": "Opening the prospective path challenger", "execution-market": "Running the verified execution market", "closed-book-open": "Freezing a closed-book forecast", "closed-book-settle": "Settling due forecast windows", "market-state-cycle": "Refreshing and issuing market-state forecasts", "institutional-learning": "Refreshing institutional learning" };
+    setInvestmentBusy(true);
+    setInvestmentMessage(`${labels[action] || "Running"} the capital workspace.`);
+    return fetch(`/api/investment/${encodeURIComponent(action)}?view=${encodeURIComponent(activeSubsection || "Overview")}`, {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(request || {})
+    })
+      .then((response) => jsonResponseOrError(response, `capital ${action} failed`))
+      .then((payload) => {
+        const next = payload.read_model || (payload.build && payload.build.read_model) || null;
+        if (next) setInvestmentContext(next);
+        setInvestmentMessage(
+          action === "sources" ? `${(payload.source_run || {}).observation_count || 0} point-in-time observations materialized.`
+            : action === "build" ? `${payload.compiled_decision_count || 0} decisions compiled; golden store ${((payload.golden_store_verification || {}).ok) ? "verified" : "needs attention"}.`
+            : action === "init" ? "Capital workspace initialized. Configure public sources, then compile an operator profile."
+            : action === "discover" ? `${(payload.run || {}).candidate_count || 0} candidates ranked; ${(payload.run || {}).qualified_count || 0} research requests emitted.`
+            : action === "enrichment-run" ? `${(payload.autonomous_enrichment || {}).evidence_ready_count || 0} evidence-ready research requests; ${(payload.autonomous_enrichment || {}).blocked_count || 0} typed blocks.`
+            : action === "capital-cycle" ? `${(payload.opportunity_book || {}).qualified_count || 0} underwriting-ready; ${Math.round(Number((payload.opportunity_book || {}).paper_posture?.cash_weight || 0) * 100)}% cash in the shadow book.`
+            : action === "universe-refresh" ? `${(payload.catalog || {}).security_count || 0} public securities cataloged for coarse screening.`
+            : action === "scout" ? `${((payload.scout || {}).population || {}).returned_count || 0} candidates queued from ${((payload.scout || {}).population || {}).catalog_count || 0} catalog identities.`
+            : action === "enroll-equity" ? `${payload.ticker || "Equity"} enrolled; SEC fundamentals, price history, quality, and valuation screens rebuilt.`
+            : action === "enroll-fund" ? `${payload.ticker || "Fund"} enrolled; price history and factor watchlist rebuilt. Valuation still requires issuer or holdings evidence.`
+            : action === "hydrate-fund" ? `${(payload.selected_tickers || []).length} cross-fund issuers refreshed under ${Number((payload.source_budget || {}).estimated_source_calls || 0)} public-source calls.`
+            : action === "seed-equity" ? "Source-bound equity draft compiled for review."
+            : action === "activate" ? "Reviewed profile activated for paper tracking."
+            : action === "equity-activate" || action === "fund-activate" ? "Exact current proposal approved as a zero-weight paper watch."
+            : action === "execution-market" ? `${payload.agent_verification_pass_count || 0} agent execution lanes passed the independent valuation verifier.`
+            : action === "closed-book-open" ? `${payload.evidence_packet?.entity?.entity_id || "Candidate"}: ${(payload.candidate_forecasts || []).length} forecasts${(payload.underwriting_information_ablation?.arms || []).length ? ` across ${(payload.underwriting_information_ablation.arms || []).length} research-information arms` : ""} frozen through ${String(payload.end_at || "").slice(0, 10)}.`
+            : action === "closed-book-settle" ? `${payload.settled_count || 0} windows settled; ${payload.pending_count || 0} remain pending.`
+            : action === "market-state-cycle" ? `${(payload.forecast_actions || []).filter((row) => row.status !== "error").length} market-state windows issued or replayed; ${(payload.settlement || {}).pending_count || 0} pending.`
+            : action === "institutional-learning" ? `${(payload.state || {}).phenotype_episode_count || 0} dated episodes; ${(payload.state || {}).settled_episode_count || 0} settled; ${(payload.state || {}).candidate_count || 0} executable conjectures.`
+            : action === "company-state-flow" ? `${(payload.result || {}).evaluation_block_count || 0} company-state blocks scored; directed-current promotion ${(payload.result || {}).promotion_eligible ? "passed" : "rejected"}.`
+            : action === "company-state-path-action" ? `${(payload.result || {}).structural_checks?.total_structural_path_count || 0} paths frozen through ${String(((payload.result || {}).outcome_contracts || []).at(-1)?.settlement_not_before || "").slice(0, 10)}.`
+            : "Capital workspace refreshed."
+        );
+        return next || loadInvestmentContext();
+      })
+      .catch((err) => setInvestmentMessage(`Capital ${action} failed: ${err.message || err}`))
+      .finally(() => setInvestmentBusy(false));
+  };
+
+  useEffect(() => {
+    if (activeWorkspace !== "investment") return undefined;
+    loadInvestmentContext();
+    return undefined;
+  }, [activeWorkspace, activeSubsection]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadLeanMillContext = () => {
     setLeanMillMessage("Loading LeanMill state.");
@@ -15215,7 +15337,26 @@ function App() {
     onNavigateWorkspace: navigateWorkspace
   };
   const leanMillView = (view, key) => [h(LeanMillPanel, { key, view, ...leanMillProps })];
+  const investmentProps = {
+    state: investmentContext,
+    message: investmentMessage,
+    busy: investmentBusy,
+    liveMode,
+    onAction: runInvestmentAction,
+    onPreview: loadFilePreview
+  };
+  const investmentView = (view, key) => [h(InvestmentPanel, { key, view, ...investmentProps })];
   const workspacePanels = {
+    investment: {
+      "Overview": investmentView("Overview", "investment-overview"),
+      "Sources & signals": investmentView("Sources & signals", "investment-sources"),
+      "Opportunities": investmentView("Opportunities", "investment-opportunities"),
+      "Strategy frontier": investmentView("Strategy frontier", "investment-strategy"),
+      "Plays": investmentView("Plays", "investment-plays"),
+      "Portfolio": investmentView("Portfolio", "investment-portfolio"),
+      "Shadow book": investmentView("Shadow book", "investment-shadow"),
+      "World models": investmentView("World models", "investment-world-models")
+    },
     overview: {
       Thesis: [
         h(Thesis, { key: "thesis", view: buildThesisView(snapshot, claimSupportContext, evalResults, workflowContext), decision, onOpenDetail: navigateWorkspace, onOpenModal: openModal, onPreview: loadFilePreview, onEigenquestion: runEigenquestionLive, eigenquestion })
@@ -15566,11 +15707,12 @@ function App() {
   });
   const projectsWorkspace = activeWorkspace === "projects";
   const leanMillWorkspace = activeWorkspace === "leanmill";
+  const investmentWorkspace = activeWorkspace === "investment";
   const projectsHome = !day0Mode && projectsWorkspace && activeSubnav === "Current project";
   const topbarClaimRow = rowByLabel((snapshot && snapshot.rows) || [], "Bounded claim");
   // Axiom discovery (AxiomPack) is a different job from everyday proof work — don't reuse the "machine-checked proofs" header there.
   const leanMillDiscovery = leanMillWorkspace && activeSubnav === "Axiom discovery";
-  const topbarTitle = leanMillDiscovery ? "Axiom discovery" : leanMillWorkspace ? "LeanMill — machine-checked proofs" : day0Mode ? "Start a project" : humanProjectTitle(snapshot, topbarClaimRow);
+  const topbarTitle = leanMillDiscovery ? "Axiom discovery" : leanMillWorkspace ? "LeanMill — machine-checked proofs" : investmentWorkspace ? "JaggedThoughts Capital" : day0Mode ? "Start a project" : humanProjectTitle(snapshot, topbarClaimRow);
   return h(
     "main",
     { className: `app-shell ${day0Mode ? "day-zero" : ""}${loadBarActive ? " is-loading" : ""}` },
@@ -15608,9 +15750,11 @@ function App() {
         h(
           "div",
           { className: "topbar-copy" },
-          h("span", { className: "eyebrow" }, leanMillWorkspace ? "LeanMill" : "Project Workbench"),
+          h("span", { className: "eyebrow" }, leanMillWorkspace ? "LeanMill" : investmentWorkspace ? "Investment Management" : "Project Workbench"),
           h("h1", null, topbarTitle),
-          leanMillWorkspace
+          investmentWorkspace
+            ? h("p", { className: "topbar-day-zero" }, "Compile public evidence into strategy-aware paper decisions, close their bounded frontiers, and settle consequences without rewriting the decision-time record.")
+            : leanMillWorkspace
             ? h("p", { className: "topbar-day-zero" }, leanMillDiscovery
                 ? "AxiomPack explores an axiom space from a research direction — mapping the frontier and surfacing candidate theory, a different job from proving a stated target."
                 : "Formalize and solve a statement, rescue a failing proof, or kernel-ratify a finished one — for math and non-math targets alike.")
@@ -15621,7 +15765,7 @@ function App() {
         h(
           "div",
           { className: "topbar-actions" },
-          liveMode && leanMillWorkspace
+          liveMode && (leanMillWorkspace || investmentWorkspace)
             ? h(
                 "button",
                 {
@@ -15633,7 +15777,7 @@ function App() {
                 "ZTARE Projects"
               )
             : null,
-          liveMode && !leanMillWorkspace && !(activeWorkspace === "projects" && activeSubnav === "Projects")
+          liveMode && !leanMillWorkspace && !investmentWorkspace && !(activeWorkspace === "projects" && activeSubnav === "Projects")
             ? h(
                 "button",
                 {
@@ -15646,7 +15790,7 @@ function App() {
                 day0Mode ? "Show projects" : loadingSnapshot ? "Refreshing projects" : "Projects"
               )
             : null,
-          liveMode && !day0Mode && !leanMillWorkspace
+          liveMode && !day0Mode && !leanMillWorkspace && !investmentWorkspace
             ? h(
                 "button",
                 {
@@ -15664,9 +15808,9 @@ function App() {
                 {
                   type: "button",
                   className: "snapshot-link",
-                  onClick: leanMillWorkspace ? loadLeanMillContext : refreshCurrentProject,
+                  onClick: investmentWorkspace ? loadInvestmentContext : leanMillWorkspace ? loadLeanMillContext : refreshCurrentProject,
                   disabled: loadingSnapshot,
-                  title: leanMillWorkspace ? "Refresh LeanMill files and history" : "Refresh from local project files"
+                  title: investmentWorkspace ? "Refresh the capital read model" : leanMillWorkspace ? "Refresh LeanMill files and history" : "Refresh from local project files"
                 },
                 loadingSnapshot ? "Refreshing" : "Refresh"
               )
@@ -15720,7 +15864,7 @@ function App() {
             h("button", { type: "button", className: "chip ghost", onClick: cancelBackgroundJob }, "Cancel")
           )
         : null,
-      !day0Mode && modeMessage ? h("div", { key: modeMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
+      !day0Mode && !investmentWorkspace && modeMessage ? h("div", { key: modeMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, modeMessage) : null,
       !day0Mode && actionMessage ? h("div", { key: actionMessage, className: `mode-banner ${liveMode ? "live" : "offline"}` }, actionMessage) : null,
       h(PendingEditsStrip, { items: pendingEditorItems, onOpenDetail: openPendingEditor }),
       h(
@@ -15731,7 +15875,7 @@ function App() {
         projectsHome
           ? h(MoreDetail, { title: "Switch project" }, projectSwitchPanel)
           : null,
-        projectsHome || projectsWorkspace || leanMillWorkspace
+        projectsHome || projectsWorkspace || leanMillWorkspace || investmentWorkspace
           ? null
           : h(WorkspacePageHeader, {
               activeSection,

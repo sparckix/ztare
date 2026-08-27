@@ -1,0 +1,214 @@
+schema: jaggedthoughts-autonomous-profile-v1
+profile_id: autonomous-service-strategy
+
+decision:
+  id: service-channel-2026
+  question: Which contingent channel policy is robust to competitor response?
+  evidence_epoch: 2026-08-08
+
+sources:
+  - id: strategy_notes
+    path: sources/autonomous_service_strategy.md
+    fetched_at: "2026-08-08T00:00:00Z"
+
+evidence:
+  - id: e_context
+    source_id: strategy_notes
+    excerpt: The decision concerns whether to expand through a partner pilot or build a direct channel.
+  - id: e_state
+    source_id: strategy_notes
+    excerpt: The tracked state coordinates are contribution margin, channel control, market reach, competitor pressure, and partner support.
+  - id: e_history
+    source_id: strategy_notes
+    excerpt: In the low-pressure observation, the partner pilot reduced margin by 2, increased reach by 10, and increased partner support by 5.
+  - id: e_response
+    source_id: strategy_notes
+    excerpt: A live mechanism hypothesis predicts that high competitor pressure triggers a stronger response against a partner pilot than against a direct channel.
+  - id: e_objectives
+    source_id: strategy_notes
+    excerpt: The decision objectives are to preserve contribution margin, channel control, and market reach across surviving mechanisms.
+  - id: e_probe
+    source_id: strategy_notes
+    excerpt: A bounded pilot readout can distinguish the two current mechanism candidates before the larger channel commitment.
+
+states:
+  - id: low_pressure_before
+    epoch: 0
+    firm: {margin: 20, control: 60, reach: 30}
+    actors:
+      - id: competitor
+        variables: {pressure: 20}
+      - id: partner
+        variables: {support: 50}
+    context: {market: reference}
+  - id: low_pressure_after
+    epoch: 1
+    firm: {margin: 18, control: 60, reach: 40}
+    actors:
+      - id: competitor
+        variables: {pressure: 20}
+      - id: partner
+        variables: {support: 55}
+    context: {market: reference}
+  - id: high_pressure_now
+    epoch: 10
+    firm: {margin: 20, control: 60, reach: 30}
+    actors:
+      - id: competitor
+        variables: {pressure: 70}
+      - id: partner
+        variables: {support: 50}
+    context: {market: reference}
+
+actions:
+  - id: partner_pilot
+    description: Run a reversible partner-channel pilot.
+    primitive_cost: 1
+    irreversibility: 0.1
+    authority_tier: reversible_pilot
+    evidence_refs: [e_context, e_probe]
+  - id: direct_build
+    description: Build a controlled direct channel increment.
+    primitive_cost: 3
+    irreversibility: 0.4
+    authority_tier: reversible_pilot
+    evidence_refs: [e_context]
+
+transitions:
+  - id: observed_low_pressure_partner
+    source: low_pressure_before
+    action: partner_pilot
+    target: low_pressure_after
+    occurred_at: 2026-07-15T00:00:00Z
+    evidence_refs: [e_history]
+
+tolerance_by_path:
+  firm.margin: 0
+  firm.control: 0
+  firm.reach: 0
+  actor.competitor.pressure: 0
+  actor.partner.support: 0
+
+mechanisms:
+  - id: stable_response
+    description: Channel effects do not change with competitor pressure.
+    description_units: 4
+    evidence_refs: [e_history]
+    rules:
+      - id: stable_partner
+        phase: primary
+        actions: [partner_pilot]
+        effects:
+          - {path: firm.margin, delta: -2}
+          - {path: firm.reach, delta: 10}
+          - {path: actor.partner.support, delta: 5}
+        evidence_refs: [e_history]
+      - id: stable_direct
+        phase: primary
+        actions: [direct_build]
+        effects:
+          - {path: firm.margin, delta: -6}
+          - {path: firm.control, delta: 15}
+          - {path: firm.reach, delta: 3}
+        evidence_refs: [e_context]
+  - id: pressure_response
+    description: High pressure triggers endogenous competitor responses.
+    description_units: 6
+    evidence_refs: [e_history, e_response]
+    rules:
+      - id: pressure_partner_primary
+        phase: primary
+        actions: [partner_pilot]
+        effects:
+          - {path: firm.margin, delta: -2}
+          - {path: firm.reach, delta: 10}
+          - {path: actor.partner.support, delta: 5}
+        evidence_refs: [e_history]
+      - id: pressure_direct_primary
+        phase: primary
+        actions: [direct_build]
+        effects:
+          - {path: firm.margin, delta: -6}
+          - {path: firm.control, delta: 15}
+          - {path: firm.reach, delta: 3}
+        evidence_refs: [e_context]
+      - id: competitor_answers_partner
+        phase: actor_response
+        actor_id: competitor
+        priority: 10
+        actions: [partner_pilot]
+        conditions:
+          - {path: actor.competitor.pressure, operator: ge, value: 50}
+        effects:
+          - {path: firm.margin, delta: -8}
+          - {path: actor.competitor.pressure, delta: 10}
+        evidence_refs: [e_response]
+      - id: competitor_answers_direct
+        phase: actor_response
+        actor_id: competitor
+        priority: 10
+        actions: [direct_build]
+        conditions:
+          - {path: actor.competitor.pressure, operator: ge, value: 50}
+        effects:
+          - {path: firm.margin, delta: -2}
+          - {path: actor.competitor.pressure, delta: 3}
+        evidence_refs: [e_response]
+
+policy:
+  grammar_id: service-channel-policy
+  version: "1"
+  initial_state: high_pressure_now
+  max_depth: 2
+  max_programs: 1000
+  max_action_steps: 4
+  conditions:
+    - id: pressure_high
+      path: actor.competitor.pressure
+      operator: ge
+      value: 75
+      evidence_refs: [e_response]
+  objectives:
+    - {id: margin, path: firm.margin, direction: maximize}
+    - {id: control, path: firm.control, direction: maximize}
+    - {id: reach, path: firm.reach, direction: maximize}
+  representation:
+    id: service-channel-representation
+    status: residual
+    residuals:
+      - Customer response is absent from the current state coordinates.
+      - Mechanism deltas are deterministic inside each candidate.
+
+probes:
+  - id: high_pressure_partner
+    start_state: high_pressure_now
+    action: partner_pilot
+    response_paths:
+      - firm.margin
+      - firm.reach
+      - actor.competitor.pressure
+    adapter: file_transition
+    adapter_config:
+      observation_path: observations/high_pressure_partner.json
+    cost: {preparation: 0.2, probe: 1, readout: 0.2, irreversibility: 0.1}
+    novel_context: true
+    evidence_refs: [e_probe, e_response]
+  - id: high_pressure_direct
+    start_state: high_pressure_now
+    action: direct_build
+    response_paths:
+      - firm.margin
+      - firm.control
+      - actor.competitor.pressure
+    adapter: file_transition
+    adapter_config:
+      observation_path: observations/high_pressure_direct.json
+    cost: {preparation: 0.5, probe: 3, readout: 0.3, irreversibility: 0.4}
+    evidence_refs: [e_probe, e_response]
+
+authority:
+  id: reference-readout-authority
+  allowed_adapters: [file_transition]
+  allowed_action_tiers: [reversible_pilot]
+  max_primitive_execution_units: 4
+  max_irreversibility_units: 0.5

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import gzip
 import hashlib
 import json
 import math
@@ -19,7 +20,7 @@ import time
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, Mapping
 from urllib.parse import parse_qs, urlparse
 
 # The workbench is routinely launched as a script (Makefile/live helper), where
@@ -47,6 +48,31 @@ from ztare.workspace import source_files as source_files_core
 from ztare.workspace import workbench_settings as settings_core
 from ztare.workspace import workbench_contracts as workbench_contracts_core
 from ztare.workspace.server_payloads import leanmill as leanmill_payloads
+from ztare.investment import workspace as investment_workspace_core
+from ztare.leanmill import work_queue
+from ztare.investment.equity_paper import activate_workspace_equity_paper_watch
+from ztare.investment.fund_paper import activate_workspace_fund_paper_watch
+from ztare.investment.household_goal_trajectory import compile_household_goal_trajectory
+from ztare.investment.historical_strategy_bulk_learning import (
+    acquire_bulk_strategy_documents,
+    compile_bulk_strategy_learning_queue,
+    resolve_bulk_strategy_ambiguities,
+)
+from ztare.investment.historical_strategy_bulk_corpus import acquire_sec_bulk_companyfacts
+from ztare.investment.historical_strategy_bulk_outcomes import (
+    compile_bulk_strategy_outcome_observations,
+    compile_bulk_strategy_outcome_coverage,
+    compile_bulk_strategy_panel_readiness,
+)
+from ztare.investment.historical_strategy_bulk_effects import (
+    compile_bulk_strategy_effect_diagnostics,
+    compile_bulk_strategy_outcome_robustness,
+)
+from ztare.investment.historical_strategy_law_search import compile_bulk_strategy_law_search
+from ztare.investment.historical_strategy_law_trial import advance_bulk_strategy_law_trial
+from ztare.investment.max_caliber_recovery import compile_max_caliber_readiness
+from ztare.investment.public_capital_market_basis import acquire_public_capital_market_basis
+from ztare.common.equivariance import stable_sha256
 from ztare.common.storage import FileStorage
 from ztare.workspace import claim_support as claim_support_core
 from ztare.workspace import claim_card as claim_card_core
@@ -121,6 +147,7 @@ WORKBENCH_UI_SECTIONS = {
     "overview": {"Overview", "Charter", "Thesis", "Assumptions", "Evidence summary", "Research map"},
     "sources": {"Prepare files", "Project brief", "Add file", "Edit file"},
     "run": {"Ready to run", "Scoring guide", "Run settings", "Check readiness", "Start run", "Fix warnings"},
+    "investment": {"Overview", "Sources & signals", "Strategy frontier", "Plays", "Portfolio", "Shadow book", "World models"},
     "leanmill": {"Start", "Draft target", "Proof files", "Proof status"},
     "review": {"Things to review", "Save review", "Save next step", "Saved history"},
     "save": {"Report readiness", "Report inputs", "Project file"},
@@ -242,6 +269,40 @@ WRITE_POST_ENDPOINTS = {
     "/api/leanmill/campaign-interpret",
     "/api/scenario-reingest-promote",
     "/api/scenario-deliverable-editorial",
+    "/api/investment/init",
+    "/api/investment/sources",
+    "/api/investment/build",
+    "/api/investment/refresh",
+    "/api/investment/discover",
+    "/api/investment/enrichment-run",
+    "/api/investment/capital-cycle",
+    "/api/investment/goal-trajectory",
+    "/api/investment/household-basis",
+    "/api/investment/household-allocation-scenario",
+    "/api/investment/household-policy-freeze",
+    "/api/investment/household-operator-policy-freeze",
+    "/api/investment/household-budget",
+    "/api/investment/universe-refresh",
+    "/api/investment/scout",
+    "/api/investment/draft-candidate",
+    "/api/investment/submit-dossier",
+    "/api/investment/enroll-equity",
+    "/api/investment/enroll-fund",
+    "/api/investment/hydrate-fund",
+    "/api/investment/seed-equity",
+    "/api/investment/activate",
+    "/api/investment/equity-activate",
+    "/api/investment/fund-activate",
+    "/api/investment/market-flow",
+    "/api/investment/company-state-flow",
+    "/api/investment/company-state-path-action",
+    "/api/investment/execution-market",
+    "/api/investment/closed-book-open",
+    "/api/investment/closed-book-settle",
+    "/api/investment/market-state-cycle",
+    "/api/investment/institutional-learning",
+    "/api/investment/strategy-event-learning",
+    "/api/investment/settle-prices",
 }
 SOURCE_ACTIONS = source_actions_core.SOURCE_ACTIONS
 
@@ -251,6 +312,567 @@ SOURCE_ACTIONS = source_actions_core.SOURCE_ACTIONS
 # Lazy root (a callable) so it tracks snapshot.REPO — several tests monkeypatch that to a tmp dir; matches the
 # prior FileWorkbenchStorage.root property behavior.
 WORKBENCH_STORE = FileStorage(lambda: snapshot.REPO, schema=WORKBENCH_STORAGE_SCHEMA)
+
+
+_INVESTMENT_VIEW_FIELDS = {
+    "Overview": {
+        "allocation_readiness", "capital_cycle", "closed_book", "decisions", "discovery",
+        "household_default_allocation", "household_mandate_frontier",
+        "household_paper_policy_path", "institutional_edge_map",
+        "operator_household_paper_policy",
+        "instrument_portfolio_admissions", "investor_action_brief",
+        "learning_experiment_activation", "learning_experiment_design",
+        "live_automatic_transition", "next_action", "paper_watch_decisions", "paths",
+        "point_in_time_evidence", "readiness", "research_budget_tournament", "source_run",
+        "strategy_law_induction",
+    },
+    "Sources & signals": {
+        "broad_equity_potential", "discovery", "latest_observations", "metric_universe",
+        "paths", "point_in_time_evidence", "signal_receipts", "source_receipts",
+        "source_requirements", "source_run", "source_statuses", "subscription_research",
+    },
+    "Opportunities": {
+        "broad_equity_potential", "broad_fund_acquisition", "capital_cycle", "company_quality",
+        "decisions", "discovery", "discovery_research_handoff", "equity_paper_proposals",
+        "fund_lookthrough_acquisition", "fund_lookthrough_acquisition_plan",
+        "fund_paper_proposals", "funnel_transition_counts", "funnel_transition_receipts",
+        "latest_enrichment_cycle", "latest_enrichment_execution", "latest_market_scout",
+        "learning_schedule", "market_catalog", "paper_watch_decisions", "paths",
+        "rank_program_tournament", "research_budget_tournament", "research_dossiers",
+        "research_job_queue", "research_learning", "research_memory", "research_requests",
+        "scheduled_market_scout_cycle", "source_run", "source_statuses", "state_pricing",
+        "subscription_research", "underwriting_index", "universe_breadth", "watchlists",
+    },
+    "Strategy frontier": {
+        "company_strategy_frontiers", "decisions", "institutional_learning", "paths",
+        "learning_schedule", "research_budget_tournament",
+        "market_flow_experiments", "max_caliber_readiness", "max_caliber_recovery",
+        "strategy_path_lagrangian",
+        "strategy_constraint_evidence_jobs",
+        "strategy_business_clock",
+        "strategy_investment_path",
+        "strategy_path_shadow",
+        "strategy_event_research_acquisition",
+        "strategy_event_learning_units",
+        "subscription_research",
+        "strategy_active_comparator", "strategy_alpha_tournament", "strategy_cohort_research", "strategy_dual_outcomes",
+        "strategy_law_induction", "strategy_move_learning", "strategy_outcome_acquisition",
+        "strategy_program_comparison", "strategy_program_control_acquisition",
+        "strategy_program_learning", "strategy_program_outcome_acquisition",
+        "strategy_program_transfer", "strategy_transfer_acquisition", "strategy_valuation_bridge",
+        "strategy_state_control_acquisition", "strategy_state_experiment",
+        "strategy_state_successor", "strategy_state_transition_join", "strategy_transfer",
+        "historical_strategy_control_design", "historical_strategy_control_acquisition",
+        "historical_strategy_bulk_corpus", "historical_strategy_bulk_effects",
+        "historical_strategy_bulk_learning", "historical_strategy_bulk_panel_readiness",
+        "historical_strategy_law_search", "historical_strategy_law_trial",
+        "historical_strategy_outcome_robustness",
+    },
+    "Plays": {"decisions"},
+    "Portfolio": {
+        "capital_cycle", "fund_implementation_review", "fund_sleeve_comparison", "household_capital_market_basis",
+        "household_default_allocation", "household_goal_surface", "household_mandate_frontier",
+        "household_paper_policy_path", "household_policy_tournament", "paths", "portfolio",
+        "operator_household_paper_policy", "sleeve_implementation_frontier",
+    },
+    "Shadow book": {"capital_cycle", "closed_book", "pending_decisions"},
+    "World models": {
+        "activation_matrix_policy_learning",
+        "adaptive_execution", "closed_book", "historical_strategy_bulk_corpus",
+        "historical_strategy_bulk_effects", "historical_strategy_bulk_learning",
+        "historical_strategy_bulk_outcomes", "historical_strategy_bulk_panel_readiness",
+        "historical_strategy_control_design", "historical_strategy_event_replay",
+        "historical_strategy_representation_learning",
+        "historical_strategy_security_walk_forward", "historical_strategy_walk_forward",
+        "historical_strategy_law_search", "historical_strategy_law_trial",
+        "historical_strategy_outcome_robustness",
+        "institutional_learning", "market_flow_experiments", "market_state", "paths",
+        "portfolio_policy", "research_budget_tournament", "research_projects",
+        "sealed_walk_forward_readiness", "search_trial_census", "strategy_business_clock",
+        "strategy_alpha_tournament", "strategy_path_shadow", "tournaments",
+    },
+}
+_INVESTMENT_BASE_FIELDS = {
+    "schema", "ok", "available", "initialized", "capital_authority", "generated_at", "owner",
+    "workspace_name", "workspace_path", "workspace_preview_root", "read_model_sha256",
+}
+
+
+def _served_investment_projection(
+    payload: Mapping[str, Any], view: str | None = None,
+) -> dict[str, Any]:
+    requested_view = str(view or "").strip()
+    fields = _INVESTMENT_VIEW_FIELDS.get(requested_view)
+    body = (
+        {key: payload[key] for key in _INVESTMENT_BASE_FIELDS | fields if key in payload}
+        if fields is not None else dict(payload)
+    )
+    if requested_view == "Strategy frontier" and isinstance(
+        body.get("institutional_learning"), Mapping
+    ):
+        learning = body["institutional_learning"]
+        body["institutional_learning"] = {
+            key: learning[key]
+            for key in ("candidates", "evaluations", "strategy_causal_panel")
+            if key in learning
+        }
+    if requested_view == "Opportunities":
+        limits = {}
+        if isinstance(body.get("research_learning"), Mapping):
+            learning = dict(body["research_learning"])
+            rows = list(learning.get("rows") or ())
+            learning["rows"] = rows[-100:]
+            body["research_learning"] = learning
+            limits["research_learning_rows"] = {
+                "total": len(rows), "served": len(learning["rows"]),
+            }
+        if isinstance(body.get("research_memory"), Mapping):
+            memory = dict(body["research_memory"])
+            sources = list(memory.get("sources") or ())
+            memory["sources"] = sources[:12]
+            for key in ("mechanism_families", "model_research_results", "research_coverage"):
+                memory.pop(key, None)
+            body["research_memory"] = memory
+            limits["research_memory_sources"] = {
+                "total": len(sources), "served": len(memory["sources"]),
+            }
+        if isinstance(body.get("latest_enrichment_cycle"), Mapping):
+            cycle = dict(body["latest_enrichment_cycle"])
+            candidates = list(cycle.get("candidates") or ())
+            cycle["candidates"] = [
+                row for row in candidates if row.get("selection_status") == "selected"
+            ]
+            cycle.pop("jobs", None)
+            body["latest_enrichment_cycle"] = cycle
+            limits["enrichment_candidates"] = {
+                "total": len(candidates), "served": len(cycle["candidates"]),
+            }
+        body["served_projection_limits"] = limits
+    base_hash = body.pop("read_model_sha256", None)
+    if base_hash:
+        body["base_read_model_sha256"] = base_hash
+    if fields is not None:
+        body["served_view"] = requested_view
+    return {**body, "served_projection_sha256": stable_sha256(body)}
+
+
+def _served_investment_action(
+    payload: Mapping[str, Any], view: str | None = None,
+) -> dict[str, Any]:
+    body = dict(payload)
+    if isinstance(body.get("read_model"), Mapping):
+        body["read_model"] = _served_investment_projection(body["read_model"], view)
+    if isinstance(body.get("build"), Mapping):
+        build = dict(body["build"])
+        if isinstance(build.get("read_model"), Mapping):
+            build["read_model"] = _served_investment_projection(build["read_model"], view)
+        body["build"] = build
+    return body
+
+
+def investment_workspace_payload(view: str | None = None) -> dict[str, Any]:
+    """Read the private local capital-workspace projection."""
+    if PROJECT_SCOPE != "local":
+        return _served_investment_projection({
+            "schema": investment_workspace_core.READ_MODEL_SCHEMA,
+            "ok": False,
+            "available": False,
+            "initialized": False,
+            "capital_authority": False,
+            "error": "The investment workspace is available only in local project scope.",
+        }, view)
+    payload = investment_workspace_core.read_cached_read_model()
+    workspace_root = investment_workspace_core.default_workspace_path()
+    try:
+        payload = dict(payload)
+        payload["research_job_queue"] = investment_workspace_core.research_job_snapshot(
+            workspace_root / "state" / "research_jobs.sqlite3", limit=500,
+        )
+        connection = work_queue.connect(
+            str(workspace_root / "state" / "research_jobs.sqlite3")
+        )
+        try:
+            payload["strategy_constraint_evidence_jobs"] = [
+                work_queue.row_to_dict(row) for row in connection.execute(
+                    "SELECT * FROM work_items WHERE kind=? "
+                    "ORDER BY updated_at DESC LIMIT 20",
+                    ("jaggedthoughts_strategy_constraint_evidence_research",),
+                ).fetchall()
+            ]
+        finally:
+            connection.close()
+        schedule_path = (
+            workspace_root / "institutional_learning" / "scheduler" / "latest.json"
+        )
+        if schedule_path.is_file():
+            payload["learning_schedule"] = json.loads(
+                schedule_path.read_text(encoding="utf-8")
+            )
+        try:
+            payload["max_caliber_readiness"] = compile_max_caliber_readiness(
+                payload.get("max_caliber_recovery") or {},
+                payload.get("strategy_state_transition_join") or {},
+                payload.get("learning_schedule") or {},
+            )
+        except (KeyError, TypeError, ValueError):
+            pass
+        successor_path = (
+            workspace_root / "experiments" / "results"
+            / "strategy-state-successor-readiness.json"
+        )
+        if successor_path.is_file():
+            payload["strategy_state_successor"] = json.loads(
+                successor_path.read_text(encoding="utf-8")
+            )
+            paths = dict(payload.get("paths") or {})
+            paths["strategy_state_successor_latest"] = (
+                "experiments/results/strategy-state-successor-readiness.json"
+            )
+            payload["paths"] = paths
+        historical_control_root = (
+            workspace_root / "institutional_learning"
+            / "historical_strategy_event_replay"
+        )
+        for field, filename, path_field in (
+            (
+                "historical_strategy_control_design", "control-design-latest.json",
+                "historical_strategy_control_design_latest",
+            ),
+            (
+                "historical_strategy_control_acquisition", "control-acquisition-latest.json",
+                "historical_strategy_control_acquisition_latest",
+            ),
+        ):
+            artifact = historical_control_root / filename
+            if artifact.is_file():
+                payload[field] = json.loads(artifact.read_text(encoding="utf-8"))
+                paths = dict(payload.get("paths") or {})
+                paths[path_field] = (
+                    "institutional_learning/historical_strategy_event_replay/" + filename
+                )
+                payload["paths"] = paths
+        for field, relative_path, path_field in (
+            (
+                "historical_strategy_bulk_learning",
+                "institutional_learning/historical_strategy_bulk_learning/latest.json",
+                "historical_strategy_bulk_learning_latest",
+            ),
+            (
+                "historical_strategy_law_search",
+                "institutional_learning/historical_strategy_bulk_outcomes/law-search.json",
+                "historical_strategy_law_search_latest",
+            ),
+            (
+                "historical_strategy_law_trial",
+                "institutional_learning/historical_strategy_bulk_outcomes/law-trials/latest.json",
+                "historical_strategy_law_trial_latest",
+            ),
+        ):
+            artifact = workspace_root / relative_path
+            if artifact.is_file():
+                payload[field] = json.loads(artifact.read_text(encoding="utf-8"))
+                paths = dict(payload.get("paths") or {})
+                paths[path_field] = relative_path
+                payload["paths"] = paths
+    except (OSError, ValueError, TypeError):
+        pass
+    payload["operator_household_paper_policy"] = (
+        investment_workspace_core.workspace_operator_paper_policy_status()
+    )
+    private_surface_path = Path(os.environ.get(
+        "JAGGEDTHOUGHTS_HOUSEHOLD_SURFACE",
+        _WORKBENCH_REPO / "org/mandates/jaggedthoughts_household_goal_surface.json",
+    )).expanduser()
+    basis_path = (
+        workspace_root
+        / "household" / "capital_market_basis" / "latest.json"
+    )
+    if basis_path.is_file():
+        try:
+            payload = dict(payload)
+            payload["household_capital_market_basis"] = json.loads(
+                basis_path.read_text(encoding="utf-8")
+            )
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            pass
+    if isinstance(payload.get("household_goal_surface"), Mapping) and (
+        payload["household_goal_surface"].get("available") is not False
+    ):
+        return _served_investment_projection(payload, view)
+    if not private_surface_path.is_file():
+        return _served_investment_projection(payload, view)
+    try:
+        private_surface = json.loads(private_surface_path.read_text(encoding="utf-8"))
+        body = dict(private_surface)
+        claimed = str(body.pop("surface_sha256", ""))
+        if stable_sha256(body) != claimed:
+            raise ValueError("private household goal surface content hash mismatch")
+        payload = dict(payload)
+        payload["household_goal_surface"] = private_surface
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as error:
+        payload = dict(payload)
+        payload["household_goal_surface"] = {
+            "available": False,
+            "capital_authority": False,
+            "error": str(error),
+        }
+    return _served_investment_projection(payload, view)
+
+
+def investment_learning_payload() -> dict[str, Any]:
+    """Read the compact institutional-learning projection."""
+    if PROJECT_SCOPE != "local":
+        return {"ok": False, "available": False, "capital_authority": False}
+    return investment_workspace_core.institutional_learning_status(
+        investment_workspace_core.default_workspace_path()
+    )
+
+
+def investment_workspace_action(action: str, request: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Run one explicit local investment-workspace transition."""
+    if PROJECT_SCOPE != "local":
+        raise ValueError("investment workspace actions require local project scope")
+    normalized = str(action or "").strip().lower()
+    inputs = dict(request or {})
+    if normalized == "init":
+        return investment_workspace_core.initialize_workspace()
+    if normalized == "sources":
+        source_run = investment_workspace_core.refresh_workspace_sources()
+        read_model = investment_workspace_core.build_read_model()
+        return {"ok": bool(source_run.get("ok")), "source_run": source_run, "read_model": read_model}
+    if normalized == "build":
+        return investment_workspace_core.build_workspace()
+    if normalized == "refresh":
+        return investment_workspace_core.refresh_workspace()
+    if normalized == "discover":
+        return investment_workspace_core.run_workspace_discovery(
+            force=bool(inputs.get("force", True)),
+            strict_sources=bool(inputs.get("strict", False)),
+        )
+    if normalized == "enrichment-run":
+        return investment_workspace_core.run_workspace_autonomous_enrichment(
+            strict_sources=bool(inputs.get("strict", False)),
+        )
+    if normalized == "capital-cycle":
+        return investment_workspace_core.run_workspace_capital_cycle(
+            force=bool(inputs.get("force", True)),
+        )
+    if normalized == "goal-trajectory":
+        return compile_household_goal_trajectory(inputs)
+    if normalized == "household-basis":
+        if inputs:
+            raise ValueError("household-basis accepts no private or client-supplied inputs")
+        return acquire_public_capital_market_basis(
+            investment_workspace_core.default_workspace_path()
+        )
+    if normalized == "household-allocation-scenario":
+        return investment_workspace_core.run_workspace_household_allocation_scenario(inputs)
+    if normalized == "household-policy-freeze":
+        scenario_inputs = inputs.get("scenario_inputs")
+        if not isinstance(scenario_inputs, dict):
+            raise ValueError("household-policy-freeze requires scenario_inputs")
+        return investment_workspace_core.freeze_workspace_household_policy_tournament(
+            scenario_inputs,
+            expected_scenario_sha256=str(inputs.get("expected_scenario_sha256") or ""),
+            horizon_days=int(inputs.get("horizon_days") or 365),
+            transaction_cost_bps=float(inputs.get("transaction_cost_bps") or 10.0),
+        )
+    if normalized == "household-operator-policy-freeze":
+        mandate = inputs.get("mandate")
+        completion = inputs.get("mandate_completion")
+        scenario_inputs = inputs.get("scenario_inputs")
+        if not isinstance(scenario_inputs, dict):
+            raise ValueError(
+                "household-operator-policy-freeze requires scenario_inputs"
+            )
+        if mandate is None and isinstance(completion, dict):
+            return investment_workspace_core.freeze_workspace_composed_operator_paper_policy(
+                completion,
+                scenario_inputs,
+                expected_scenario_sha256=str(inputs.get("expected_scenario_sha256") or ""),
+                selected_proposal_id=str(inputs.get("selected_proposal_id") or ""),
+                operator_id=str(inputs.get("operator_id") or ""),
+                attestation=str(inputs.get("attestation") or ""),
+                reviewed_at=str(inputs.get("reviewed_at") or "") or None,
+                transaction_cost_bps=float(inputs.get("transaction_cost_bps") or 10.0),
+            )
+        if not isinstance(mandate, dict):
+            raise ValueError(
+                "household-operator-policy-freeze requires mandate or mandate_completion"
+            )
+        return investment_workspace_core.freeze_workspace_operator_paper_policy(
+            mandate,
+            scenario_inputs,
+            expected_scenario_sha256=str(inputs.get("expected_scenario_sha256") or ""),
+            selected_proposal_id=str(inputs.get("selected_proposal_id") or ""),
+            operator_id=str(inputs.get("operator_id") or ""),
+            attestation=str(inputs.get("attestation") or ""),
+            reviewed_at=str(inputs.get("reviewed_at") or "") or None,
+            transaction_cost_bps=float(inputs.get("transaction_cost_bps") or 10.0),
+        )
+    if normalized == "household-budget":
+        if inputs:
+            raise ValueError("household-budget accepts no client-supplied inputs")
+        return investment_workspace_core.refresh_workspace_household_budget_evidence()
+    if normalized == "universe-refresh":
+        return investment_workspace_core.refresh_workspace_market_catalog()
+    if normalized == "scout":
+        intent_overrides = inputs.get("intent_overrides")
+        if intent_overrides is not None and not isinstance(intent_overrides, dict):
+            raise ValueError("intent_overrides must be an object")
+        return investment_workspace_core.run_workspace_market_scout(
+            str(inputs.get("query") or ""),
+            max_results=int(inputs.get("max_results") or 50),
+            refresh_catalog=bool(inputs.get("refresh_catalog", False)),
+            intent_overrides=intent_overrides,
+        )
+    if normalized == "draft-candidate":
+        return investment_workspace_core.draft_workspace_discovery_candidate(
+            str(inputs.get("candidate_leaf") or ""),
+            thesis_claim=str(inputs.get("thesis_claim") or "") or None,
+            entity_name=str(inputs.get("entity_name") or "") or None,
+            base_growth=float(inputs["base_growth"]) if inputs.get("base_growth") is not None else None,
+            terminal_growth=float(inputs["terminal_growth"]) if inputs.get("terminal_growth") is not None else None,
+            dossier_path=str(inputs.get("dossier_path") or "") or None,
+        )
+    if normalized == "submit-dossier":
+        return investment_workspace_core.submit_workspace_research_dossier(
+            str(inputs.get("dossier_path") or ""),
+        )
+    if normalized == "seed-equity":
+        return investment_workspace_core.seed_workspace_public_equity_draft(
+            entity_id=str(inputs.get("entity_id") or ""),
+            entity_name=str(inputs.get("entity_name") or ""),
+            benchmark_id=str(inputs.get("benchmark_id") or "SPY"),
+            benchmark_name=str(inputs.get("benchmark_name") or "S&P 500 ETF benchmark"),
+            thesis_claim=str(inputs.get("thesis_claim") or ""),
+            beta=float(inputs.get("beta", 1.0)),
+            base_growth=float(inputs.get("base_growth", 0.03)),
+            terminal_growth=float(inputs.get("terminal_growth", 0.025)),
+            overwrite=bool(inputs.get("overwrite", False)),
+        )
+    if normalized == "enroll-equity":
+        return investment_workspace_core.enroll_workspace_public_equity(
+            str(inputs.get("ticker") or ""),
+        )
+    if normalized == "enroll-fund":
+        return investment_workspace_core.enroll_workspace_public_fund(
+            str(inputs.get("ticker") or ""),
+            str(inputs.get("name") or ""),
+            category=str(inputs.get("category") or "public ETF catalog candidate"),
+        )
+    if normalized == "hydrate-fund":
+        return investment_workspace_core.hydrate_workspace_fund_lookthrough(
+            target_entity_id=str(inputs.get("ticker") or "PORTFOLIO"),
+            limit=int(inputs.get("limit") or 10),
+        )
+    if normalized == "activate":
+        return investment_workspace_core.activate_workspace_profile(
+            str(inputs.get("profile_id") or ""), str(inputs.get("confirmation") or ""),
+        )
+    if normalized == "fund-activate":
+        activation = activate_workspace_fund_paper_watch(
+            investment_workspace_core.default_workspace_path(),
+            str(inputs.get("entity_id") or ""),
+            proposal_sha256=str(inputs.get("proposal_sha256") or ""),
+            confirmation=str(inputs.get("confirmation") or ""),
+            operator_id=str(inputs.get("operator_id") or ""),
+            activated_at=str(inputs.get("activated_at") or "") or None,
+        )
+        return {**activation, "read_model": investment_workspace_core.build_read_model()}
+    if normalized == "equity-activate":
+        activation = activate_workspace_equity_paper_watch(
+            investment_workspace_core.default_workspace_path(),
+            str(inputs.get("entity_id") or ""),
+            proposal_sha256=str(inputs.get("proposal_sha256") or ""),
+            confirmation=str(inputs.get("confirmation") or ""),
+            operator_id=str(inputs.get("operator_id") or ""),
+            activated_at=str(inputs.get("activated_at") or "") or None,
+        )
+        return {**activation, "read_model": investment_workspace_core.build_read_model()}
+    if normalized == "market-flow":
+        return investment_workspace_core.run_workspace_market_flow_experiment(
+            "experiments/lagrangian_market_flow.yaml",
+        )
+    if normalized == "company-state-flow":
+        return investment_workspace_core.run_workspace_company_state_flow_experiment(
+            "experiments/company_state_probability_current.yaml",
+        )
+    if normalized == "company-state-path-action":
+        return investment_workspace_core.run_workspace_company_state_path_action(
+            "experiments/company_state_path_action.yaml",
+        )
+    if normalized == "execution-market":
+        return investment_workspace_core.run_workspace_execution_market_probe(
+            decision_id=str(inputs.get("decision_id") or "") or None,
+            program_id=str(inputs.get("program_id") or "") or None,
+        )
+    if normalized == "closed-book-open":
+        return investment_workspace_core.open_workspace_closed_book_forecast(
+            decision_id=str(inputs.get("decision_id") or "") or None,
+            paper_watch_decision_id=(
+                str(inputs.get("paper_watch_decision_id") or "") or None
+            ),
+            candidate_leaf=str(inputs.get("candidate_leaf") or "") or None,
+            benchmark_id=str(inputs.get("benchmark_id") or "SPY"),
+            probe_weight=float(inputs.get("probe_weight") or 0.05),
+            horizon_days=int(inputs.get("horizon_days") or 90),
+        )
+    if normalized == "closed-book-settle":
+        return investment_workspace_core.settle_workspace_closed_book_forecasts(
+            as_of=str(inputs.get("as_of") or "") or None,
+        )
+    if normalized == "market-state-cycle":
+        return investment_workspace_core.run_workspace_market_state_cycle(
+            refresh_sources=bool(inputs.get("refresh_sources", True)),
+            force=bool(inputs.get("force", False)),
+        )
+    if normalized == "institutional-learning":
+        return investment_workspace_core.run_workspace_institutional_learning()
+    if normalized == "strategy-event-learning":
+        root = investment_workspace_core.default_workspace_path()
+        acquisition = acquire_bulk_strategy_documents(
+            root, limit=int(inputs.get("document_limit") or 8),
+        )
+        semantic = resolve_bulk_strategy_ambiguities(
+            root, limit=int(inputs.get("semantic_limit") or 4),
+        )
+        companyfacts = acquire_sec_bulk_companyfacts(root)
+        outcomes = compile_bulk_strategy_outcome_observations(root)
+        outcome_coverage = compile_bulk_strategy_outcome_coverage(root)
+        panel_readiness = compile_bulk_strategy_panel_readiness(root)
+        effect_diagnostics = compile_bulk_strategy_effect_diagnostics(root)
+        outcome_robustness = compile_bulk_strategy_outcome_robustness(root)
+        law_search = compile_bulk_strategy_law_search(root)
+        law_trial = advance_bulk_strategy_law_trial(root)
+        learning_queue = compile_bulk_strategy_learning_queue(root)
+        read_model = investment_workspace_core.project_workspace_read_model(root)
+        return {
+            "acquisition": acquisition["acquisition"],
+            "semantic_resolution": semantic,
+            "companyfacts_receipt_sha256": companyfacts["receipt_sha256"],
+            "outcomes": outcomes,
+            "outcome_coverage": outcome_coverage,
+            "panel_readiness": panel_readiness,
+            "effect_diagnostics": effect_diagnostics,
+            "outcome_robustness": outcome_robustness,
+            "law_search": law_search,
+            "law_trial": law_trial,
+            "learning_queue": learning_queue,
+            "read_model": read_model,
+        }
+    if normalized == "settle-prices":
+        prices = inputs.get("prices")
+        if not isinstance(prices, dict):
+            raise ValueError("settle-prices requires a prices object")
+        return investment_workspace_core.settle_workspace_prices(
+            str(inputs.get("decision_id") or ""),
+            observed_at=str(inputs.get("observed_at") or ""),
+            available_at=str(inputs.get("available_at") or ""),
+            prices=prices,
+            source_refs=list(inputs.get("source_refs") or []),
+        )
+    raise ValueError(f"unsupported investment workspace action: {normalized}")
 
 
 def json_bytes(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
@@ -4286,6 +4908,8 @@ def server_status_payload() -> dict[str, Any]:
         "GET /api/status",
         "GET /api/settings",
         "GET /api/capabilities",
+        "GET /api/investment",
+        "GET /api/investment/institutional-learning",
         "GET /api/principles",
         "GET /api/projects",
         "GET /api/project-recovery-draft",
@@ -4341,6 +4965,28 @@ def server_status_payload() -> dict[str, Any]:
         "POST /api/project-file",
         "POST /api/review",
         "POST /api/next-step",
+        "POST /api/investment/init",
+        "POST /api/investment/sources",
+        "POST /api/investment/build",
+        "POST /api/investment/refresh",
+        "POST /api/investment/discover",
+        "POST /api/investment/enrichment-run",
+        "POST /api/investment/capital-cycle",
+        "POST /api/investment/strategy-event-learning",
+        "POST /api/investment/goal-trajectory",
+        "POST /api/investment/household-basis",
+        "POST /api/investment/draft-candidate",
+        "POST /api/investment/submit-dossier",
+        "POST /api/investment/enroll-equity",
+        "POST /api/investment/seed-equity",
+        "POST /api/investment/activate",
+        "POST /api/investment/equity-activate",
+        "POST /api/investment/fund-activate",
+        "POST /api/investment/market-flow",
+        "POST /api/investment/execution-market",
+        "POST /api/investment/closed-book-open",
+        "POST /api/investment/closed-book-settle",
+        "POST /api/investment/settle-prices",
     ]
     compatibility_endpoints = [
         "GET /api/claim-support",
@@ -4523,6 +5169,7 @@ def server_status_payload() -> dict[str, Any]:
             "primary_live_routes": {
                 "settings": "GET /api/settings -> POST /api/settings",
                 "principles": "GET /api/principles",
+                "investment_workspace": "GET /api/investment -> POST /api/investment/{init|sources|build|refresh|discover|enrichment-run|capital-cycle|goal-trajectory|household-basis|submit-dossier|draft-candidate|enroll-equity|enroll-fund|hydrate-fund|seed-equity|activate|market-flow|execution-market|closed-book-open|closed-book-settle|market-state-cycle|settle-prices}",
                 "project_inventory": "GET /api/projects",
                 "snapshot": "GET /api/snapshot",
                 "workflow": "GET /api/workflow",
@@ -13555,10 +14202,15 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
 
     def send_json(self, payload: dict[str, Any], status: int = 200, *, include_body: bool = True) -> None:
         code, body = json_bytes(payload, status)
+        compressed = "gzip" in self.headers.get("Accept-Encoding", "").lower() and len(body) >= 1024
+        if compressed:
+            body = gzip.compress(body, compresslevel=5)
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Access-Control-Allow-Origin", local_dev_origin(self.headers.get("Origin")))
-        self.send_header("Vary", "Origin")
+        self.send_header("Vary", "Origin, Accept-Encoding")
+        if compressed:
+            self.send_header("Content-Encoding", "gzip")
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         try:
@@ -13658,6 +14310,16 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/capabilities":
                 self.send_json(reasoning_capability_payload())
+                return
+            if parsed.path == "/api/investment":
+                payload = investment_workspace_payload(
+                    first_param(parse_qs(parsed.query), "view", "") or None
+                )
+                self.send_json(payload, status=200 if payload.get("ok") else 403 if payload.get("available") is False else 200)
+                return
+            if parsed.path == "/api/investment/institutional-learning":
+                payload = investment_learning_payload()
+                self.send_json(payload, status=403 if payload.get("available") is False else 200)
                 return
             if parsed.path == "/api/scenarios":
                 self.send_json(scenarios_payload())
@@ -13914,6 +14576,17 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         try:
+            if parsed.path.startswith("/api/investment/"):
+                action = parsed.path.removeprefix("/api/investment/")
+                # Consume and validate the explicit JSON request even though the
+                # local workspace path is server-owned rather than client-owned.
+                request = self.read_json_body()
+                response = investment_workspace_action(action, request)
+                response = _served_investment_action(
+                    response, first_param(parse_qs(parsed.query), "view", "") or None,
+                )
+                self.send_json(response, status=200 if response.get("ok", True) else 400)
+                return
             if parsed.path == "/api/run-config":
                 request = self.read_json_body()
                 try:
@@ -14451,6 +15124,30 @@ def build_parser() -> argparse.ArgumentParser:
         default=",".join(sorted(PROJECT_ALLOWLIST)),
         help="Comma-separated project allowlist; required with --project-scope allowlist.",
     )
+    parser.add_argument(
+        "--no-investment-discovery-service", action="store_true",
+        help="Do not start the local JaggedThoughts discovery due-check thread.",
+    )
+    parser.add_argument(
+        "--investment-discovery-poll-seconds", type=float, default=300.0,
+        help="Seconds between local investment discovery due checks.",
+    )
+    parser.add_argument(
+        "--no-investment-capital-cycle-service", action="store_true",
+        help="Do not start the local JaggedThoughts capital-cycle due-check thread.",
+    )
+    parser.add_argument(
+        "--investment-capital-cycle-poll-seconds", type=float, default=None,
+        help="Override the capital-cycle cadence declared by workspace policy.",
+    )
+    parser.add_argument(
+        "--no-investment-research-agent-service", action="store_true",
+        help="Do not start the policy-enabled JaggedThoughts subscription research consumer.",
+    )
+    parser.add_argument(
+        "--investment-research-agent-poll-seconds", type=float, default=None,
+        help="Override the research-agent queue poll cadence declared by workspace policy.",
+    )
     return parser
 
 
@@ -14462,6 +15159,58 @@ def main(argv: list[str] | None = None) -> int:
     if PROJECT_SCOPE == "allowlist" and not PROJECT_ALLOWLIST:
         raise SystemExit("--project-scope allowlist requires --projects <slug,...>")
     server = ThreadingHTTPServer((args.host, args.port), WorkbenchHandler)
+    service_processes: dict[str, subprocess.Popen[bytes]] = {}
+    service_commands: dict[str, list[str]] = {}
+    service_retry_at: dict[str, float] = {}
+    def start_service(command: str, poll_seconds: float | None) -> None:
+        argv = [
+            sys.executable, "-m", "ztare.investment.cli", "workspace",
+            "--path", str(investment_workspace_core.default_workspace_path()),
+            command,
+            *(["--poll-seconds", str(poll_seconds)] if poll_seconds is not None else []),
+        ]
+        service_commands[command] = argv
+        service_processes[command] = subprocess.Popen(
+            argv,
+            cwd=snapshot.REPO,
+            env={**os.environ, "PYTHONPATH": str(snapshot.REPO / "src")},
+        )
+
+    def supervise_services() -> None:
+        now = time.monotonic()
+        for name, argv in service_commands.items():
+            process = service_processes.get(name)
+            if process is not None and process.poll() is None:
+                continue
+            if now < service_retry_at.get(name, 0.0):
+                continue
+            return_code = process.returncode if process is not None else None
+            print(
+                f"Investment {name} exited ({return_code}); restarting.", flush=True,
+            )
+            service_processes[name] = subprocess.Popen(
+                argv,
+                cwd=snapshot.REPO,
+                env={**os.environ, "PYTHONPATH": str(snapshot.REPO / "src")},
+            )
+            service_retry_at[name] = now + 5.0
+
+    server.service_actions = supervise_services  # type: ignore[method-assign]
+    if PROJECT_SCOPE == "local" and not args.no_investment_discovery_service:
+        try:
+            start_service("discovery-service", args.investment_discovery_poll_seconds)
+        except (FileNotFoundError, OSError, TypeError, ValueError) as error:
+            print(f"Investment discovery service not started: {error}", flush=True)
+    if PROJECT_SCOPE == "local" and not args.no_investment_capital_cycle_service:
+        try:
+            start_service("capital-cycle-service", args.investment_capital_cycle_poll_seconds)
+        except (FileNotFoundError, OSError, TypeError, ValueError) as error:
+            print(f"Investment capital-cycle service not started: {error}", flush=True)
+    if PROJECT_SCOPE == "local" and not args.no_investment_research_agent_service:
+        try:
+            start_service("research-agent", args.investment_research_agent_poll_seconds)
+        except (FileNotFoundError, OSError, TypeError, ValueError) as error:
+            print(f"Investment research agent service not started: {error}", flush=True)
     print(f"Project Workbench server listening on http://{args.host}:{args.port} (projects: {PROJECT_SCOPE})", flush=True)
     if not (WORKBENCH_DIST / "index.html").exists():
         print("  React app not built yet. Run `make forensic-workbench-build` to serve the UI from this server.", flush=True)
@@ -14469,6 +15218,15 @@ def main(argv: list[str] | None = None) -> int:
         server.serve_forever()
     except KeyboardInterrupt:
         return 0
+    finally:
+        for process in service_processes.values():
+            if process.poll() is None:
+                process.terminate()
+        for process in service_processes.values():
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
     return 0
 
 

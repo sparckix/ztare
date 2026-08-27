@@ -1,0 +1,13 @@
+observation_id,entity_id,metric_id,value,unit,observed_at,available_at,source_ref
+alpha-price-q2,ALPHA,price,50,USD,2026-06-30T20:00:00Z,2026-06-30T20:00:00Z,point_in_time_export
+vti-price-q2,VTI,price,300,USD,2026-06-30T20:00:00Z,2026-06-30T20:00:00Z,point_in_time_export
+alpha-fcf-yield-q2,ALPHA,fcf_yield,0.08,decimal,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-roic-q2,ALPHA,roic,0.18,decimal,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-leverage-q2,ALPHA,net_debt_ebitda,1.4,multiple,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-concentration-q2,ALPHA,revenue_concentration,0.38,decimal,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-durability-q2,ALPHA,durability,0.72,score,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-fragility-q2,ALPHA,fragility,0.34,score,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-owner-earnings-q2,ALPHA,normalized_owner_earnings,7000,USD/year,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-excess-cash-q2,ALPHA,excess_net_cash,5000,USD,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-diluted-shares-q2,ALPHA,diluted_shares,2000,shares,2026-06-30T00:00:00Z,2026-06-30T12:00:00Z,point_in_time_export
+alpha-price-future,ALPHA,price,61,USD,2026-09-30T20:00:00Z,2026-09-30T20:00:00Z,point_in_time_export

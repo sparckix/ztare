@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "contract_id", "entity_id", "candidate_leaf", "candidate_sha256",
+    "instrument_admission_sha256", "valuation_envelope_sha256", "dossier_sha256",
+    "strategy_valuation_bridge_sha256",
+    "information_cutoff", "horizon_at", "horizon_days", "spot_price_observation",
+    "comparator", "scope", "states"
+  ],
+  "properties": {
+    "schema": {"type": "string", "const": "jaggedthoughts-candidate-payoff-forecast-v1"},
+    "contract_id": {"type": "string", "minLength": 1},
+    "entity_id": {"type": "string", "minLength": 1},
+    "candidate_leaf": {"type": "string", "minLength": 1},
+    "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "instrument_admission_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "valuation_envelope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dossier_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "strategy_valuation_bridge_sha256": {"type": ["string", "null"]},
+    "information_cutoff": {"type": "string"},
+    "horizon_at": {"type": "string"},
+    "horizon_days": {"type": "integer", "minimum": 30, "maximum": 3650},
+    "spot_price_observation": {"$ref": "#/$defs/spot"},
+    "comparator": {"$ref": "#/$defs/comparator"},
+    "scope": {"$ref": "#/$defs/scope"},
+    "states": {"type": "array", "minItems": 2, "maxItems": 8, "items": {"$ref": "#/$defs/state"}}
+  },
+  "$defs": {
+    "refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "interval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["low", "high", "unit"],
+      "properties": {
+        "low": {"type": "number"}, "high": {"type": "number"},
+        "unit": {"type": "string"}
+      }
+    },
+    "spot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observation_id", "value", "unit", "observed_at", "available_at", "source_ref"],
+      "properties": {
+        "observation_id": {"type": "string"}, "value": {"type": "number"},
+        "unit": {"type": "string", "const": "currency/share"}, "observed_at": {"type": "string"},
+        "available_at": {"type": "string"}, "source_ref": {"type": "string"}
+      }
+    },
+    "comparator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "entity_id", "horizon_return", "source_refs"],
+      "properties": {
+        "kind": {"type": "string", "const": "benchmark_total_return"}, "entity_id": {"type": "string"},
+        "horizon_return": {"$ref": "#/$defs/interval"}, "source_refs": {"$ref": "#/$defs/refs"}
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "residual_state_id", "exhaustive_within_authored_scope"],
+      "properties": {
+        "kind": {"type": "string", "const": "ordered_thesis_rival_residual_partition"},
+        "residual_state_id": {"type": "string"},
+        "exhaustive_within_authored_scope": {"type": "boolean", "const": true}
+      }
+    },
+    "state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state_id", "outcome_predicate", "probability", "candidate_horizon_total_return"],
+      "properties": {
+        "state_id": {"type": "string"},
+        "outcome_predicate": {
+          "type": "object", "additionalProperties": false,
+          "required": ["metric_ids", "settlement_rule", "is_residual_catch_all"],
+          "properties": {
+            "metric_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+            "settlement_rule": {"type": "string"}, "is_residual_catch_all": {"type": "boolean"}
+          }
+        },
+        "probability": {
+          "type": "object", "additionalProperties": false,
+          "required": ["low", "high", "unit", "identity", "forecast_sha256", "source_refs"],
+          "properties": {
+            "low": {"type": "number", "minimum": 0, "maximum": 1},
+            "high": {"type": "number", "minimum": 0, "maximum": 1},
+            "unit": {"type": "string", "const": "probability_decimal"},
+            "identity": {"type": "string", "const": "authored_forecast_interval"},
+            "forecast_sha256": {"type": ["string", "null"]},
+            "source_refs": {"$ref": "#/$defs/refs"}
+          }
+        },
+        "candidate_horizon_total_return": {
+          "type": "object", "additionalProperties": false,
+          "required": ["low", "high", "unit", "valuation_scenario_ids", "source_refs"],
+          "properties": {
+            "low": {"type": "number", "minimum": -1, "maximum": 10},
+            "high": {"type": "number", "minimum": -1, "maximum": 10},
+            "unit": {"type": "string", "const": "decimal"},
+            "valuation_scenario_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+            "source_refs": {"$ref": "#/$defs/refs"}
+          }
+        }
+      }
+    }
+  }
+}

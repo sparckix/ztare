@@ -709,3 +709,15 @@ projects/ai_capex/workspace/*
 # AxiomPack binary-code certificate probes: deterministic solver intermediates.
 /research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/*.cnf
 /research_areas/pre_registrations/axiompack_binary_linear_code_frontier_v1_20260717/*.lrat
+
+# Local JaggedThoughts household snapshot; contains operator financial data.
+/institutional_learning/strategy_cohorts/acquisition-latest.json
+
+# Machine-local caches, transfer staging, and generated agent transcripts.
+/.mplconfig/
+/.vps_pull_staging/
+/.run_gale.remote.py
+/Untitled.md
+**/.agent_calls/
+/analytics/public/queries/*.bak*
+/ztare_proofs/*.last_good

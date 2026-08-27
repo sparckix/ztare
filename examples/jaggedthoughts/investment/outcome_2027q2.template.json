@@ -1,0 +1,13 @@
+{
+  "schema": "jaggedthoughts-investment-outcome-v1",
+  "decision_record_sha256": "REPLACE_WITH_COMPILED_DECISION_HASH",
+  "observed_at": "2027-06-30T20:00:00Z",
+  "available_at": "2027-06-30T21:00:00Z",
+  "prices": {
+    "ALPHA": 58.0,
+    "VTI": 324.0
+  },
+  "source_refs": [
+    "sealed-2027q2-price-export"
+  ]
+}

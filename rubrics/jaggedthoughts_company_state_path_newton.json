@@ -1,0 +1,52 @@
+{
+  "rubric_version": "1.0",
+  "project": "jaggedthoughts_company_state_path_newton",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "The candidate must discover a compact executable joint path action, not classify one next state.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The frozen project harness owns entity paths, temporal partitions, controls, proper scores, action binding, and the successor boundary.",
+  "enable_cold_shot_seed": true,
+  "holdout_hard_gate": true,
+  "enforce_per_class_farther_tail": true,
+  "farther_tail_contract": true,
+  "composition_stagnation_threshold": 3,
+  "persona": "You are an adversarial financial econometrician searching for the smallest executable action over a frozen six-state company panel. Preserve fit_model(visible_rows), path_action(source_state_id, intermediate_state_id, terminal_state_id, params=None), predict_path_distribution(source_state_id, params=None), STATE_IDS, and an explicit LAGRANGIAN declaration. A candidate sees only source_state_id and must generate all 36 joint intermediate-terminal probabilities as normalized exp(-action). The first-order and reversible Markov rivals use identical visible transitions and are mandatory. Do not use company identity, dates, holdout outcomes, price returns, or web data. Reject physics vocabulary that only renames a transition matrix or the frozen deterministic seed.",
+  "dimensions": [
+    {"name": "Chronological joint-path forecast", "weight": 35, "description": "Does the candidate beat every control on cross-entropy and multiclass Brier loss in both frozen evaluation partitions?"},
+    {"name": "Generative Yield", "weight": 25, "description": "Does one declared action generate the complete normalized 36-path distribution exactly?"},
+    {"name": "Mechanism and rivals", "weight": 20, "description": "Is the form distinct from Markov, reversible, persistence, uniform, distance, and the frozen deterministic seed?"},
+    {"name": "Temporal evidence discipline", "weight": 10, "description": "Are fit, embargo, holdout, farther tail, and prospective successor identities preserved?"},
+    {"name": "Parsimony", "weight": 10, "description": "Is the mechanism compact, finite, normalized, and interpretable without extra data?"}
+  ],
+  "penalties": [
+    "NO_PATH_LAW: A one-step classifier or score without a joint path distribution earns no Newton credit.",
+    "LEAKAGE: Company identity, dates, outcomes, returns, web data, or holdout-derived fitting fails the candidate.",
+    "WEAK_RIVAL: Omitting first-order Markov, reversible Markov, or the frozen action controls fails the comparison.",
+    "ACTION_LABEL_ONLY: A Lagrangian label not exactly bound to probabilities earns no mechanism credit.",
+    "TEMPORAL_OVERCLAIM: Retrospective current-universe evidence grants no prospective, signal, or capital authority."
+  ],
+  "criteria": {
+    "Chronological joint-path forecast": "Both proper scores beat every declared control in holdout and farther tail, with positive cross-entropy advantage in at least two of three time blocks. The three-block inference is explicitly underpowered and requires prospective settlement.",
+    "Generative Yield": "The harness reconstructs every probability from exp(-path_action) within 1e-10.",
+    "Mechanism and rivals": "Predictions differ from at least one required control and survive all required comparisons.",
+    "Temporal evidence discipline": "Only visible rows fit parameters; the frozen evidence receipt and successor evidence ids remain unchanged.",
+    "Parsimony": "Every path distribution is finite, nonnegative, unit-mass, and exposes a compact parameter surface."
+  },
+  "secondary_observable_contract": {
+    "observable": "complete two-quarter intermediate-terminal company-state path",
+    "measurement": "cross-entropy and multiclass Brier loss on frozen chronological holdout and farther-tail company paths",
+    "expected_range": "strictly below every identical-information control on both proper scores",
+    "falsifier": "either proper score loses on either chronological partition"
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": ["source_epoch", "intermediate_epoch", "terminal_epoch", "entity_id", "source_state_id", "intermediate_state_id", "terminal_state_id"],
+    "independent_vars": ["source_state_id"],
+    "min_rows": 80,
+    "require_finite": false,
+    "format_provenance": "projects/jaggedthoughts_company_state_path_newton/evidence_source_receipt.json",
+    "docstring": "Frozen entity-level two-quarter paths under the selected 2x3 company-state partition; current-universe retrospective diagnostic authority only."
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "jaggedthoughts-strategy-law-induction-current-v1",
+  "compiled_at": "2026-08-13T14:20:00Z",
+  "induction_sha256": "20c7a9ff7b7dd81fbf54cd70dd1bde5e5a8a251601dab2b3b515f2f7eac54a80",
+  "status": "falsifiable_laws_blocked_on_declared_evidence",
+  "source_frontier_count": 6,
+  "candidate_count": 6,
+  "eligible_candidate_count": 0,
+  "observational_equivalence_count": 2,
+  "subsumption_count": 10,
+  "candidate_relation_fields": [
+    [],
+    ["strategy_form"],
+    ["implementation_mode"],
+    ["implementation_mode", "strategy_form"],
+    ["addressed_actor_profile", "implementation_mode"],
+    ["addressed_actor_profile", "implementation_mode", "operating_object_scope"]
+  ],
+  "common_status": "blocked_awaiting_prospective_outcomes",
+  "common_effect_status": "proposal_only",
+  "common_effect_blockers": [
+    "bounded_treated_and_controls",
+    "multiplicity",
+    "no_source_bound_effect_with_unit_interval_and_environment",
+    "omitted_moderator_transfer",
+    "power_and_direction",
+    "prospective_holdout",
+    "transfer_environments"
+  ],
+  "common_missing_evidence": [
+    "10 planned peer classifications",
+    "4 independent treated units and 4 bounded control units",
+    "post-boundary treatment events and group-time outcome cells",
+    "a directionally supported effect with the declared minimum detectable effect",
+    "settled law-environment p-values that survive the frozen BH-FDR family",
+    "2 independent transfer environments",
+    "two prospectively eligible phenotype values for every omitted moderator"
+  ],
+  "authority": "strategy_learning_shadow_only",
+  "capital_authority": false
+}

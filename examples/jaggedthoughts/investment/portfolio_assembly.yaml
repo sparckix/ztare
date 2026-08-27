@@ -1,0 +1,22 @@
+schema: jaggedthoughts-portfolio-assembly-profile-v1
+portfolio_id: reference-paper-portfolio-2026q2
+max_combinations: 64
+
+# Add more source profiles here once they share owner, as-of epoch, benchmark,
+# currency, and starting paper book.
+investment_profile_files:
+  - value_quality_play.yaml
+
+constraints:
+  id: reference-paper-constraints
+  max_invested_weight: 0.90
+  max_candidate_weight: 0.15
+  max_turnover_weight: 0.20
+  max_weighted_downside: 0.30
+  fixed_weighted_downside: 0.15
+
+objectives:
+  - {id: return, metric: expected_excess_return, direction: maximize, scale: 0.10, utility_weight: 0.60}
+  - {id: downside, metric: weighted_downside, direction: minimize, scale: 0.30, utility_weight: 0.25}
+  - {id: confidence, metric: thesis_confidence, direction: maximize, scale: 0.15, utility_weight: 0.10}
+  - {id: turnover, metric: turnover, direction: minimize, scale: 0.20, utility_weight: 0.05}

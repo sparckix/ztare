@@ -1,0 +1,167 @@
+schema: jaggedthoughts-world-model-tournament-profile-v1
+
+tournament:
+  tournament_id: alpha-quarterly-mechanism-tournament-2024q4
+  owner: jaggedthoughts
+  as_of: 2025-01-10T20:00:00Z
+  mode: historical_backtest
+  baseline_model_id: historical-control
+  transaction_cost_bps: 10
+  alpha: 0.05
+  min_inference_blocks: 8
+  periods_per_year: 4
+  seed: 42
+  declared_trial_family_ids: [historical-control-v1, strategy-transition-v1]
+  source_refs: [sealed-alpha-quarterly-panel, tournament-method-v1]
+
+observables:
+  - observable_id: owner_earnings_growth
+    unit: decimal
+    loss: absolute
+    scale: 0.10
+    weight: 0.5
+    role: primary
+  - observable_id: revenue_concentration_change
+    unit: decimal
+    loss: absolute
+    scale: 0.05
+    weight: 0.3
+    role: linked
+  - observable_id: margin_pressure_event
+    unit: binary
+    loss: brier
+    scale: 1
+    weight: 0.2
+    role: primary
+
+models:
+  - model_id: historical-control
+    version: "1"
+    model_family: historical_control
+    trial_family_id: historical-control-v1
+    mechanism_ids: [unconditional-quarterly-mean]
+    linked_observable_ids: []
+    source_refs: [control-definition-v1]
+  - model_id: strategy-transition
+    version: "1"
+    model_family: lagrangian
+    trial_family_id: strategy-transition-v1
+    mechanism_ids: [concentration-to-margin-transition, reinvestment-to-owner-earnings]
+    linked_observable_ids: [revenue_concentration_change]
+    source_refs: [strategy-transition-memo-v1, symbolic-law-receipt-v1]
+
+episodes:
+  - episode_id: alpha-2023q1
+    inference_block_id: 2023q1
+    entity_id: ALPHA
+    start_at: 2023-01-02T14:30:00Z
+    end_at: 2023-03-31T20:00:00Z
+    outcome_available_at: 2023-04-07T20:00:00Z
+    starting_weight: 0
+    asset_return: 0.08
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: 0.06, revenue_concentration_change: -0.01, margin_pressure_event: 0}
+    source_refs: [alpha-2023q1-settlement]
+  - episode_id: alpha-2023q2
+    inference_block_id: 2023q2
+    entity_id: ALPHA
+    start_at: 2023-04-03T13:30:00Z
+    end_at: 2023-06-30T20:00:00Z
+    outcome_available_at: 2023-07-07T20:00:00Z
+    starting_weight: 0
+    asset_return: 0.06
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: 0.05, revenue_concentration_change: -0.015, margin_pressure_event: 0}
+    source_refs: [alpha-2023q2-settlement]
+  - episode_id: alpha-2023q3
+    inference_block_id: 2023q3
+    entity_id: ALPHA
+    start_at: 2023-07-03T13:30:00Z
+    end_at: 2023-09-29T20:00:00Z
+    outcome_available_at: 2023-10-06T20:00:00Z
+    starting_weight: 0
+    asset_return: -0.04
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: -0.02, revenue_concentration_change: 0.025, margin_pressure_event: 1}
+    source_refs: [alpha-2023q3-settlement]
+  - episode_id: alpha-2023q4
+    inference_block_id: 2023q4
+    entity_id: ALPHA
+    start_at: 2023-10-02T13:30:00Z
+    end_at: 2023-12-29T21:00:00Z
+    outcome_available_at: 2024-01-05T21:00:00Z
+    starting_weight: 0
+    asset_return: 0.10
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: 0.08, revenue_concentration_change: -0.02, margin_pressure_event: 0}
+    source_refs: [alpha-2023q4-settlement]
+  - episode_id: alpha-2024q1
+    inference_block_id: 2024q1
+    entity_id: ALPHA
+    start_at: 2024-01-02T14:30:00Z
+    end_at: 2024-03-28T20:00:00Z
+    outcome_available_at: 2024-04-05T20:00:00Z
+    starting_weight: 0
+    asset_return: -0.03
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: -0.01, revenue_concentration_change: 0.03, margin_pressure_event: 1}
+    source_refs: [alpha-2024q1-settlement]
+  - episode_id: alpha-2024q2
+    inference_block_id: 2024q2
+    entity_id: ALPHA
+    start_at: 2024-04-01T13:30:00Z
+    end_at: 2024-06-28T20:00:00Z
+    outcome_available_at: 2024-07-05T20:00:00Z
+    starting_weight: 0
+    asset_return: 0.09
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: 0.07, revenue_concentration_change: -0.015, margin_pressure_event: 0}
+    source_refs: [alpha-2024q2-settlement]
+  - episode_id: alpha-2024q3
+    inference_block_id: 2024q3
+    entity_id: ALPHA
+    start_at: 2024-07-01T13:30:00Z
+    end_at: 2024-09-30T20:00:00Z
+    outcome_available_at: 2024-10-07T20:00:00Z
+    starting_weight: 0
+    asset_return: -0.02
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: -0.015, revenue_concentration_change: 0.02, margin_pressure_event: 1}
+    source_refs: [alpha-2024q3-settlement]
+  - episode_id: alpha-2024q4
+    inference_block_id: 2024q4
+    entity_id: ALPHA
+    start_at: 2024-10-01T13:30:00Z
+    end_at: 2024-12-31T21:00:00Z
+    outcome_available_at: 2025-01-08T21:00:00Z
+    starting_weight: 0
+    asset_return: 0.07
+    benchmark_return: 0.02
+    cash_return: 0.01
+    actual_values: {owner_earnings_growth: 0.06, revenue_concentration_change: -0.01, margin_pressure_event: 0}
+    source_refs: [alpha-2024q4-settlement]
+
+forecasts:
+  - {model_id: historical-control, episode_id: alpha-2023q1, trained_through: 2022-12-30T21:00:00Z, issued_at: 2023-01-02T14:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2023q1]}
+  - {model_id: historical-control, episode_id: alpha-2023q2, trained_through: 2023-03-31T20:00:00Z, issued_at: 2023-04-03T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2023q2]}
+  - {model_id: historical-control, episode_id: alpha-2023q3, trained_through: 2023-06-30T20:00:00Z, issued_at: 2023-07-03T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2023q3]}
+  - {model_id: historical-control, episode_id: alpha-2023q4, trained_through: 2023-09-29T20:00:00Z, issued_at: 2023-10-02T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2023q4]}
+  - {model_id: historical-control, episode_id: alpha-2024q1, trained_through: 2023-12-29T21:00:00Z, issued_at: 2024-01-02T14:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2024q1]}
+  - {model_id: historical-control, episode_id: alpha-2024q2, trained_through: 2024-03-28T20:00:00Z, issued_at: 2024-04-01T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2024q2]}
+  - {model_id: historical-control, episode_id: alpha-2024q3, trained_through: 2024-06-28T20:00:00Z, issued_at: 2024-07-01T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2024q3]}
+  - {model_id: historical-control, episode_id: alpha-2024q4, trained_through: 2024-09-30T20:00:00Z, issued_at: 2024-10-01T13:30:00Z, predicted_values: {owner_earnings_growth: 0.03, revenue_concentration_change: 0, margin_pressure_event: 0.5}, target_weight: 0.5, source_refs: [control-forecast-2024q4]}
+  - {model_id: strategy-transition, episode_id: alpha-2023q1, trained_through: 2022-12-30T21:00:00Z, issued_at: 2023-01-02T14:30:00Z, predicted_values: {owner_earnings_growth: 0.05, revenue_concentration_change: -0.015, margin_pressure_event: 0.2}, target_weight: 1, source_refs: [transition-forecast-2023q1]}
+  - {model_id: strategy-transition, episode_id: alpha-2023q2, trained_through: 2023-03-31T20:00:00Z, issued_at: 2023-04-03T13:30:00Z, predicted_values: {owner_earnings_growth: 0.04, revenue_concentration_change: -0.01, margin_pressure_event: 0.2}, target_weight: 1, source_refs: [transition-forecast-2023q2]}
+  - {model_id: strategy-transition, episode_id: alpha-2023q3, trained_through: 2023-06-30T20:00:00Z, issued_at: 2023-07-03T13:30:00Z, predicted_values: {owner_earnings_growth: -0.01, revenue_concentration_change: 0.02, margin_pressure_event: 0.8}, target_weight: 0, source_refs: [transition-forecast-2023q3]}
+  - {model_id: strategy-transition, episode_id: alpha-2023q4, trained_through: 2023-09-29T20:00:00Z, issued_at: 2023-10-02T13:30:00Z, predicted_values: {owner_earnings_growth: 0.07, revenue_concentration_change: -0.015, margin_pressure_event: 0.2}, target_weight: 1, source_refs: [transition-forecast-2023q4]}
+  - {model_id: strategy-transition, episode_id: alpha-2024q1, trained_through: 2023-12-29T21:00:00Z, issued_at: 2024-01-02T14:30:00Z, predicted_values: {owner_earnings_growth: -0.005, revenue_concentration_change: 0.025, margin_pressure_event: 0.8}, target_weight: 0, source_refs: [transition-forecast-2024q1]}
+  - {model_id: strategy-transition, episode_id: alpha-2024q2, trained_through: 2024-03-28T20:00:00Z, issued_at: 2024-04-01T13:30:00Z, predicted_values: {owner_earnings_growth: 0.06, revenue_concentration_change: -0.01, margin_pressure_event: 0.2}, target_weight: 1, source_refs: [transition-forecast-2024q2]}
+  - {model_id: strategy-transition, episode_id: alpha-2024q3, trained_through: 2024-06-28T20:00:00Z, issued_at: 2024-07-01T13:30:00Z, predicted_values: {owner_earnings_growth: -0.01, revenue_concentration_change: 0.015, margin_pressure_event: 0.8}, target_weight: 0, source_refs: [transition-forecast-2024q3]}
+  - {model_id: strategy-transition, episode_id: alpha-2024q4, trained_through: 2024-09-30T20:00:00Z, issued_at: 2024-10-01T13:30:00Z, predicted_values: {owner_earnings_growth: 0.05, revenue_concentration_change: -0.005, margin_pressure_event: 0.2}, target_weight: 1, source_refs: [transition-forecast-2024q4]}

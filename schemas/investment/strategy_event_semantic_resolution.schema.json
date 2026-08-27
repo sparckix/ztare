@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resolutions"],
+  "properties": {
+    "resolutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accession_number", "classification", "implementation_mode",
+          "transaction_form", "operating_object_scope", "issuer_role",
+          "completion_state", "strategy_event_eligibility", "evidence", "reasoning"
+        ],
+        "properties": {
+          "accession_number": {"type": "string"},
+          "classification": {
+            "type": "string",
+            "enum": [
+              "acquisition_completion", "disposition_completion",
+              "partnership_completion", "separation_completion",
+              "portfolio_reconfiguration_completion", "excluded_noncompleted",
+              "excluded_non_operating", "excluded_identity_transition",
+              "excluded_non_event_document", "ambiguous"
+            ]
+          },
+          "implementation_mode": {
+            "type": "string",
+            "enum": ["acquisition", "divestiture", "partnership", "resource_reallocation", "other"]
+          },
+          "transaction_form": {
+            "type": "string",
+            "enum": [
+              "sale_leaseback", "spin_off", "split_off", "joint_venture",
+              "revenue_or_royalty_right", "tender_offer", "merger",
+              "stock_purchase", "asset_purchase", "business_sale", "asset_sale",
+              "equity_interest_sale", "business_purchase",
+              "business_combination_listing", "indeterminate"
+            ]
+          },
+          "operating_object_scope": {
+            "type": "string",
+            "enum": [
+              "whole_company", "product_line", "business_unit", "physical_assets",
+              "intellectual_property_or_rights", "mixed_assets", "assets",
+              "equity_interest", "indeterminate"
+            ]
+          },
+          "issuer_role": {
+            "type": "string",
+            "enum": [
+              "acquirer", "seller", "partner", "separating_parent",
+              "separated_entity", "acquirer_and_seller", "identity_successor",
+              "financial_rights_seller", "indeterminate"
+            ]
+          },
+          "completion_state": {
+            "type": "string",
+            "enum": ["completed", "not_completed", "indeterminate"]
+          },
+          "strategy_event_eligibility": {
+            "type": "string",
+            "enum": [
+              "operating_strategy_event", "operating_strategy_bundle_event",
+              "excluded_not_completed", "excluded_financial_rights_transfer",
+              "excluded_issuer_identity_transition", "excluded_non_event_document",
+              "requires_more_filed_context"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["evidence_role", "quote"],
+              "properties": {
+                "evidence_role": {"type": "string"},
+                "quote": {"type": "string", "minLength": 8}
+              }
+            }
+          },
+          "reasoning": {"type": "string"}
+        }
+      }
+    }
+  }
+}

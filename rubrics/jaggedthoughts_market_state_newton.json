@@ -1,0 +1,85 @@
+{
+  "rubric_version": "1.0",
+  "project": "jaggedthoughts_market_state_newton",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "The project requires an executable mechanism that predicts a linked market-state transition beyond fitting equity returns.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The project uses a custom four-input, three-output chronological gate harness; the scalar global curve-fit adapter cannot evaluate its linked-state ABI.",
+  "enable_cold_shot_seed": true,
+  "holdout_hard_gate": true,
+  "enforce_per_class_farther_tail": true,
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "year": [2012, 2015]
+  },
+  "composition_stagnation_threshold": 3,
+  "persona": "You are an adversarial asset-pricing researcher. Search for a compact executable action or transition mechanism over the frozen implied-ERP and term-spread state. Every Python candidate must preserve the module ABI fit_model(visible_rows) -> parameter mapping, I_model(features, params=None) -> float, and predict_state_change(features, params=None) -> (erp_innovation, term_spread_change); a return-only or uncalibrated equation is invalid. Autoresearch proposes the form while the deterministic harness fits parameters only on the visible partition. Each linked coordinate must beat its strongest identical-information control. Both cross-coordinate finite-difference sensitivities must be nonzero and retain their signs across the chronological partitions. Preserve the LAGRANGIAN declaration and its variable metadata when the mechanism is action-derived. Compare every proposal against controls using identical information. Reject physics vocabulary that does not produce a distinct, testable prediction.",
+  "dimensions": [
+    {
+      "name": "Chronological primary forecast",
+      "weight": 25,
+      "description": "Does the candidate beat zero, historical mean, and same-information level/change/interaction controls on next-year total-return loss across both frozen chronological partitions?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 25,
+      "description": "Does the candidate predict next-year return-orthogonal ERP innovation and term-spread change beyond zero-change and same-state controls? Return fit without per-coordinate linked-state gain earns no Newton credit."
+    },
+    {
+      "name": "Mechanism and rivals",
+      "weight": 20,
+      "description": "Is the action or transition mechanism explicit and executable through both required module functions, with current, drift, interaction, transition, and shrinkage rivals using the same inputs?"
+    },
+    {
+      "name": "Economic consequence",
+      "weight": 15,
+      "description": "Does a bounded paper policy improve after-cost outcome without deriving authority from the backtest?"
+    },
+    {
+      "name": "Parsimony and stability",
+      "weight": 15,
+      "description": "Is the model compact and stable across partitions and reasonable coordinate perturbations?"
+    }
+  ],
+  "penalties": [
+    "NO_LINKED_STATE: A return-only candidate scores zero on Generative linked state.",
+    "WEAK_RIVAL: A candidate that omits the same-information interaction or shrinkage control cannot pass.",
+    "TEMPORAL_OVERCLAIM: Current-snapshot historical evidence cannot grant prospective or capital authority.",
+    "PHYSICS_LABEL_ONLY: Lagrangian or probability-current language without a distinct executable discriminator scores zero on Mechanism and rivals."
+  ],
+  "criteria": {
+    "Chronological primary forecast": "Primary holdout and farther-tail loss beat all declared same-information controls.",
+    "Generative Yield": "Linked state-transition loss beats zero-change and same-state controls.",
+    "Mechanism and rivals": "All required rivals and monotone shrinkage are evaluated on the identical episode matrix.",
+    "Economic consequence": "Paper policy includes costs and no capital authority.",
+    "Parsimony and stability": "The sign and relative advantage survive both chronological evaluation partitions."
+  },
+  "secondary_observable_contract": {
+    "observable": "next-year return-orthogonal ERP innovation and Treasury bond-minus-bill-spread change",
+    "measurement": "per-coordinate RMSE on the frozen chronological holdout and farther-tail rows",
+    "expected_range": "each coordinate strictly below zero-change, same-state interaction, and discrete-transition controls on each partition",
+    "falsifier": "any linked-coordinate control equals or beats the candidate on either partition"
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "erp",
+      "term_spread",
+      "delta_erp",
+      "delta_term_spread",
+      "next_total_return"
+    ],
+    "independent_vars": [
+      "erp",
+      "term_spread",
+      "delta_erp",
+      "delta_term_spread"
+    ],
+    "min_rows": 40,
+    "require_finite": true,
+    "format_provenance": "projects/jaggedthoughts_market_state_newton/evidence_source_receipt.json",
+    "docstring": "Frozen annual US market-state rows compiled from the public NYU historical implied-ERP table; current-revision diagnostic authority only."
+  }
+}

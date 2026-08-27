@@ -1,0 +1,4 @@
+interface:
+  display_name: "JaggedThoughts Capital Research"
+  short_description: "Scout markets and deepen sourced candidates"
+  default_prompt: "Use $jaggedthoughts-capital-research to scout a public-market request, deepen the best evidence-qualified candidate, and return the typed research artifacts."

@@ -1,0 +1,131 @@
+schema: jaggedthoughts-company-strategy-options-v1
+grammar_id: jaggedthoughts.reference.component-strategy
+version: "1"
+evidence_epoch: 2026-06-30T20:00:00Z
+max_depth: 2
+max_programs: 2000
+max_bundle_size: 3
+
+company:
+  id: ALPHA
+  name: Alpha Components (fictional)
+  data_class: reference_fixture
+
+industry_state:
+  boundary: Specialized components serving concentrated industrial buyers.
+  customer_need: Reliable qualified components with low failure and switching costs.
+  evidence_refs: [investment_memo, point_in_time_export]
+  pressures:
+    - id: buyer_concentration
+      actor_kind: customer
+      description: A few large buyers can demand price concessions and dual sourcing.
+      evidence_refs: [investment_memo]
+    - id: substitute_architecture
+      actor_kind: substitute
+      description: A redesigned system can remove the specialized component.
+      evidence_refs: [investment_memo]
+    - id: critical_input
+      actor_kind: supplier
+      description: A constrained material input can absorb margin and interrupt delivery.
+      evidence_refs: [point_in_time_export]
+
+scenarios:
+  - id: stable_demand
+    base: [0.35, 0.25, 0.30, 0.35]
+    evidence_refs: [investment_memo]
+  - id: buyer_stress
+    base: [0.10, -0.10, 0.05, 0.05]
+    evidence_refs: [investment_memo, point_in_time_export]
+
+options:
+  - id: qualify_second_input
+    kind: supply_resilience
+    description: Qualify a second material source before capacity tightens.
+    addresses: [critical_input]
+    claim_status: supported
+    evidence_refs: [point_in_time_export]
+    scenario_effects:
+      stable_demand: [0.05, 0.00, -0.08, 0.12]
+      buyer_stress: [0.10, 0.00, -0.10, 0.18]
+  - id: broaden_customer_program
+    kind: positioning
+    description: Reuse the qualified process in adjacent buyer programs.
+    addresses: [buyer_concentration]
+    claim_status: supported
+    evidence_refs: [investment_memo]
+    scenario_effects:
+      stable_demand: [0.12, 0.18, 0.05, 0.08]
+      buyer_stress: [0.10, 0.12, 0.00, 0.14]
+  - id: co_design_interface
+    kind: complement
+    description: Co-design the customer interface so replacement carries integration cost.
+    addresses: [buyer_concentration, substitute_architecture]
+    claim_status: supported
+    evidence_refs: [investment_memo]
+    scenario_effects:
+      stable_demand: [0.18, 0.12, -0.05, 0.12]
+      buyer_stress: [0.15, 0.05, -0.08, 0.18]
+  - id: commodity_price_push
+    kind: price_action
+    description: Raise price without changing the activity system.
+    addresses: [buyer_concentration, critical_input]
+    incompatible_with: [broaden_customer_program]
+    claim_status: supported
+    evidence_refs: [investment_memo]
+    scenario_effects:
+      stable_demand: [-0.05, 0.08, 0.12, -0.10]
+      buyer_stress: [-0.15, -0.12, 0.05, -0.25]
+
+interactions:
+  - id: resilient_adjacency
+    option_ids: [qualify_second_input, broaden_customer_program]
+    evidence_refs: [investment_memo, point_in_time_export]
+    scenario_effects:
+      stable_demand: [0.08, 0.08, 0.05, 0.06]
+      buyer_stress: [0.12, 0.05, 0.02, 0.12]
+  - id: embedded_diversification
+    option_ids: [broaden_customer_program, co_design_interface]
+    evidence_refs: [investment_memo]
+    scenario_effects:
+      stable_demand: [0.10, 0.12, 0.08, 0.05]
+      buyer_stress: [0.08, 0.08, 0.04, 0.10]
+
+contingent_policies:
+  - id: qualify_then_choose_customer_response
+    frozen_at: 2026-06-30T20:00:00Z
+    commit_option_ids: [qualify_second_input]
+    commit_not_before: 2026-06-30T20:00:00Z
+    recourse_not_before: 2026-09-30T20:00:00Z
+    conditions:
+      - id: adjacent_program_demand_is_strong
+        coordinate: adjacent_program_demand_score
+        operator: ge
+        value: 0.6
+        unit: decimal score
+        threshold_basis: reference_fixture
+        threshold_rationale: Fictional threshold used to exercise recursive policy closure.
+        evidence_refs: [investment_memo]
+      - id: interface_economics_are_adequate
+        coordinate: interface_contribution_margin
+        operator: ge
+        value: 0.2
+        unit: decimal margin
+        threshold_basis: reference_fixture
+        threshold_rationale: Fictional threshold used to exercise the downside recourse branch.
+        evidence_refs: [investment_memo]
+    policy:
+      condition_id: adjacent_program_demand_is_strong
+      if_true:
+        option_ids: [qualify_second_input, broaden_customer_program]
+      if_false:
+        condition_id: interface_economics_are_adequate
+        if_true:
+          option_ids: [qualify_second_input, co_design_interface]
+        if_false:
+          option_ids: [qualify_second_input, commodity_price_push]
+
+representation:
+  id: alpha-reference-industry-representation
+  status: residual
+  residuals:
+    - The fictional fixture does not represent competitor retaliation, implementation timing, or capital-allocation governance.

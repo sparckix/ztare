@@ -1,0 +1,28 @@
+{
+  "schema": "jaggedthoughts-company-contingent-recourse-request-v1",
+  "company_id": "ALPHA",
+  "policy_id": "qualify_then_choose_customer_response",
+  "evaluated_at": "2026-10-05T00:00:00Z",
+  "observations": [
+    {
+      "observation_id": "alpha-demand-q3",
+      "entity_id": "ALPHA",
+      "metric_id": "adjacent_program_demand_score",
+      "value": 0.7,
+      "unit": "decimal score",
+      "observed_at": "2026-09-30T20:00:00Z",
+      "available_at": "2026-10-02T00:00:00Z",
+      "source_ref": "alpha-q3-report"
+    },
+    {
+      "observation_id": "alpha-margin-q3",
+      "entity_id": "ALPHA",
+      "metric_id": "interface_contribution_margin",
+      "value": 0.1,
+      "unit": "decimal margin",
+      "observed_at": "2026-09-30T20:00:00Z",
+      "available_at": "2026-10-02T00:00:00Z",
+      "source_ref": "alpha-q3-report"
+    }
+  ]
+}

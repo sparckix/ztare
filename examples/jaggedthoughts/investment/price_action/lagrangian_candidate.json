@@ -1,0 +1,27 @@
+{
+  "schema": "jaggedthoughts-price-action-candidate-v1",
+  "candidate_id": "quadratic-action-reference",
+  "law_family": "lagrangian",
+  "trial_family_id": "synthetic-price-action-reference",
+  "trained_through": "2026-06-29T20:00:00Z",
+  "issued_at": "2026-06-30T20:00:00Z",
+  "horizon_days": 91,
+  "complexity_terms": 4,
+  "predictions": [
+    {
+      "entity_id": "ALPHA",
+      "start_at": "2026-07-01T20:00:00Z",
+      "end_at": "2026-09-30T20:00:00Z",
+      "predicted_return": 0.12,
+      "predicted_linked_change": -0.02
+    },
+    {
+      "entity_id": "BETA",
+      "start_at": "2026-07-01T20:00:00Z",
+      "end_at": "2026-09-30T20:00:00Z",
+      "predicted_return": -0.08,
+      "predicted_linked_change": 0.03
+    }
+  ],
+  "source_refs": ["sealed-synthetic-training-window"]
+}

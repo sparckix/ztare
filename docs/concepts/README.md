@@ -37,7 +37,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [JaggedThoughts: What Kind of Autonomous Strategy System Is This?](jaggedthoughts_autonomous_strategy.md) - JaggedThoughts as a governed strategy compiler, mechanism learner, policy synthesizer, and evidence controller, with exact capability boundaries.
 - [JaggedThoughts Institutional Learning](jaggedthoughts_institutional_learning.md) - How JaggedThoughts turns company and fund phenotypes into bounded, executable investment laws that learn across evidence epochs.
 - [JaggedThoughts Investment Workbench](jaggedthoughts_investment_workbench.md) - A source-bound investment kernel that composes valuation programs, recursive policies, world-model tournaments, point-in-time evidence, and economic settlement.
-- [JaggedThoughts × Model Discovery Agent architecture audit](jaggedthoughts_model_discovery_agent_architecture_audit.md)
+- [JaggedThoughts × Model Discovery Agent architecture audit](jaggedthoughts_model_discovery_agent_architecture_audit.md) - Architecture audit for model-discriminating research acquisition in JaggedThoughts.
 - [LeanMill Architecture](leanmill_architecture.md) - LeanMill architecture: a governed proof-search environment (components, invariants, soundness model, control flow, and operations).
 - [LeanMill design history and decision log](leanmill_design_history.md) - LeanMill design history and decision log: the dated invariants, RCAs, A/B evidence, and rationale behind the architecture.
 - [LeanMill: what it is, who it's for, and the receipts](leanmill_positioning.md) - What LeanMill is, who it's for, and the receipts behind the claims.

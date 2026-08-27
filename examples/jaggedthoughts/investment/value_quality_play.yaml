@@ -1,0 +1,231 @@
+schema: jaggedthoughts-investment-profile-v1
+profile_id: jaggedthoughts.value-quality.reference
+
+decision:
+  id: alpha-value-quality-2026q2
+  as_of: "2026-06-30T20:00:00Z"
+  owner: reference-paper-book
+  question: What bounded position policy is justified for ALPHA under the declared value-quality play?
+
+entity:
+  id: ALPHA
+  kind: public_equity
+  name: Alpha Components (fictional)
+  currency: USD
+
+benchmark:
+  id: VTI
+  kind: index
+  name: Total-market reference
+  currency: USD
+
+play:
+  id: value-quality-large
+  version: "1"
+  entity_kind: public_equity
+  universe: US large-cap equities
+  benchmark_id: VTI
+  horizon_days: 365
+  min_weight: 0
+  max_weight: 0.15
+  allow_short: false
+  transaction_cost_bps: 15
+
+sources:
+  - id: investment_memo
+    path: sources/value_quality_memo.md
+  - id: point_in_time_export
+    path: observations/value_quality_observations.csv
+
+observations_file: observations/value_quality_observations.csv
+price_metric: price
+
+fingerprint:
+  version: "1"
+  metrics:
+    - {id: fcf_yield, unit: decimal, direction: higher, floor: 0.02, ceiling: 0.12, weight: 0.24}
+    - {id: roic, unit: decimal, direction: higher, floor: 0.05, ceiling: 0.30, weight: 0.22}
+    - {id: net_debt_ebitda, unit: multiple, direction: lower, floor: 0, ceiling: 4, weight: 0.16}
+    - {id: revenue_concentration, unit: decimal, direction: lower, floor: 0.05, ceiling: 0.60, weight: 0.12}
+    - {id: durability, unit: score, direction: higher, floor: 0, ceiling: 1, weight: 0.16}
+    - {id: fragility, unit: score, direction: lower, floor: 0, ceiling: 1, weight: 0.10}
+
+market_state:
+  id: us-equity-premium-committee-2026q2
+  estimates:
+    - id: historical-premium
+      annualized_premium: 0.047
+      downside_return: -0.24
+      weight: 0.30
+      source_refs: [investment_memo]
+    - id: implied-premium
+      annualized_premium: 0.036
+      downside_return: -0.30
+      weight: 0.45
+      source_refs: [investment_memo]
+    - id: valuation-conditioned-premium
+      annualized_premium: 0.028
+      downside_return: -0.34
+      weight: 0.25
+      source_refs: [investment_memo]
+
+valuation:
+  grammar_id: jaggedthoughts.value-quality.valuation
+  version: "1"
+  max_depth: 4
+  max_programs: 5000
+  owner_earnings_metric: normalized_owner_earnings
+  excess_net_cash_metric: excess_net_cash
+  shares_metric: diluted_shares
+  risk_free_rate:
+    id: risk_free_4pct
+    value: 0.04
+    source_refs: [investment_memo]
+  equity_betas:
+    - {id: beta_105, value: 1.05, source_refs: [investment_memo]}
+  forecast_growth_rates:
+    - {id: growth_2pct, value: 0.02, source_refs: [investment_memo]}
+    - {id: growth_5pct, value: 0.05, source_refs: [investment_memo]}
+  terminal_growth_rates:
+    - {id: terminal_2pct, value: 0.02, source_refs: [investment_memo]}
+    - {id: terminal_2_5pct, value: 0.025, source_refs: [investment_memo]}
+  horizons:
+    - {id: horizon_10y, years: 10, source_refs: [investment_memo]}
+  cash_flow_scenarios:
+    - id: base_compounding_cash_flow
+      mechanism_id: base_compounding
+      assumption_ids: [growth_5pct, terminal_2_5pct]
+      source_refs: [investment_memo, point_in_time_export]
+    - id: concentration_stress_cash_flow
+      mechanism_id: concentration_stress
+      assumption_ids: [growth_2pct, terminal_2pct]
+      source_refs: [investment_memo, point_in_time_export]
+
+thesis:
+  id: alpha-value-quality-thesis
+  version: "1"
+  claim: Alpha's cash yield, reinvestment economics, and balance-sheet capacity can support benchmark-relative compounding if customer concentration falls as modeled.
+  mechanism_ids: [base_compounding, concentration_stress]
+  catalysts:
+    - Customer mix broadens without margin dilution.
+    - Working-capital normalization releases cash.
+  falsifiers:
+    - Trailing free-cash-flow yield falls below 4 percent without a matched increase in reinvestment returns.
+    - Net debt to EBITDA exceeds 3 times.
+    - Top-customer concentration remains above 45 percent for two reporting periods.
+  source_refs: [investment_memo, point_in_time_export]
+
+underwriting:
+  id: alpha-value-quality-underwriting
+  outside_view_reference: Concentrated component suppliers attempting to diversify one dominant customer within the investment horizon.
+  outside_view_base_rate: 0.35
+  failure_sequence:
+    - Customer concentration does not decline on the declared schedule.
+    - Buyer bargaining pressure prevents the expected margin and cash conversion path.
+    - Normalized owner earnings undershoot the base cash-flow scenario.
+    - The price-implied return falls below the hurdle or the downside budget binds.
+  hurdle_rate: 0.06
+  next_best_alternative: Retain the capital in the existing total-market and cash sleeves.
+  rival_view: Reported cash yield is temporarily elevated and the concentration discount is warranted.
+  decisive_observation: Customer concentration falls with stable margin and cash conversion in two consecutive reporting periods.
+  action_condition_id: price_implies_hurdle
+  source_refs: [investment_memo, point_in_time_export]
+
+portfolio:
+  id: reference-paper-book
+  currency: USD
+  cash: 50000
+  positions:
+    - entity_id: VTI
+      quantity: 166.6666666667
+
+actions:
+  - id: watch
+    kind: watch
+    description: Keep ALPHA at zero weight while preserving the thesis and next evidence requests.
+    target_weight: 0
+    primitive_cost: 0.1
+    irreversibility: 0
+    evidence_refs: [investment_memo]
+  - id: start_5
+    kind: start
+    description: Open a five-percent paper position with the declared cost charge.
+    target_weight: 0.05
+    primitive_cost: 1
+    irreversibility: 0.1
+    evidence_refs: [investment_memo, point_in_time_export]
+  - id: build_12
+    kind: add
+    description: Build a twelve-percent paper position inside the play limit.
+    target_weight: 0.12
+    primitive_cost: 2
+    irreversibility: 0.3
+    evidence_refs: [investment_memo, point_in_time_export]
+
+policy:
+  grammar_id: jaggedthoughts.value-quality.position-policy
+  version: "1"
+  max_depth: 2
+  max_programs: 1000
+  state:
+    downside_risk: 0.22
+    thesis_confidence: 0.64
+  conditions:
+    - id: premium_supportive
+      path: firm.market_premium
+      operator: ge
+      value: 0.035
+      evidence_refs: [investment_memo]
+    - id: price_implies_hurdle
+      path: firm.valuation_price_implied_excess_return
+      operator: ge
+      value: 0.06
+      evidence_refs: [investment_memo, point_in_time_export]
+  objectives:
+    - {id: excess_return, path: firm.expected_excess_return, direction: maximize, scale: 0.15, utility_weight: 0.45}
+    - {id: downside, path: firm.downside_risk, direction: minimize, scale: 0.40, utility_weight: 0.30}
+    - {id: confidence, path: firm.thesis_confidence, direction: maximize, scale: 1.0, utility_weight: 0.20}
+    - {id: cost, path: firm.implementation_cost, direction: minimize, scale: 0.01, utility_weight: 0.05}
+
+representation:
+  id: value-quality-reference-representation
+  status: residual
+  residuals:
+    - The two mechanism candidates do not model market-impact or liquidity feedback.
+    - The fingerprint uses six declared coordinates and may omit an industry-specific failure mode.
+
+mechanisms:
+  - id: base_compounding
+    description: Cash yield and reinvestment persist while concentration declines.
+    description_units: 5
+    evidence_refs: [investment_memo, point_in_time_export]
+    rules:
+      - id: base_watch
+        actions: [watch]
+        effects: {firm.expected_excess_return: -0.005, firm.downside_risk: -0.01}
+        evidence_refs: [investment_memo]
+      - id: base_start
+        actions: [start_5]
+        effects: {firm.expected_excess_return: 0.025, firm.downside_risk: 0.04, firm.thesis_confidence: 0.08}
+        evidence_refs: [investment_memo, point_in_time_export]
+      - id: base_build
+        actions: [build_12]
+        effects: {firm.expected_excess_return: 0.045, firm.downside_risk: 0.09, firm.thesis_confidence: 0.10}
+        evidence_refs: [investment_memo, point_in_time_export]
+  - id: concentration_stress
+    description: Customer concentration persists and weakens the expected compounding path.
+    description_units: 5
+    evidence_refs: [investment_memo, point_in_time_export]
+    rules:
+      - id: stress_watch
+        actions: [watch]
+        effects: {firm.downside_risk: -0.02, firm.thesis_confidence: -0.03}
+        evidence_refs: [investment_memo]
+      - id: stress_start
+        actions: [start_5]
+        effects: {firm.expected_excess_return: 0.005, firm.downside_risk: 0.12, firm.thesis_confidence: -0.10}
+        evidence_refs: [investment_memo, point_in_time_export]
+      - id: stress_build
+        actions: [build_12]
+        effects: {firm.expected_excess_return: -0.02, firm.downside_risk: 0.20, firm.thesis_confidence: -0.15}
+        evidence_refs: [investment_memo, point_in_time_export]

@@ -1,0 +1,24 @@
+{
+  "schema": "jaggedthoughts-price-action-outcome-v1",
+  "available_at": "2026-09-30T21:00:00Z",
+  "rows": [
+    {
+      "entity_id": "ALPHA",
+      "start_at": "2026-07-01T20:00:00Z",
+      "end_at": "2026-09-30T20:00:00Z",
+      "start_price": 50.0,
+      "end_price": 57.5,
+      "linked_start": 0.24,
+      "linked_end": 0.225
+    },
+    {
+      "entity_id": "BETA",
+      "start_at": "2026-07-01T20:00:00Z",
+      "end_at": "2026-09-30T20:00:00Z",
+      "start_price": 80.0,
+      "end_price": 72.0,
+      "linked_start": 0.19,
+      "linked_end": 0.22
+    }
+  ]
+}

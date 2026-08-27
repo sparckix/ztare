@@ -1,0 +1,91 @@
+{
+  "rubric_version": "1.0",
+  "project": "jaggedthoughts_probability_current_newton",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "The candidate must forecast a linked cross-sectional density transition, not only fit returns.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "A custom multi-bin density harness owns the chronological partitions, proper scores, conservation checks, controls, and economic outcome.",
+  "pre_judge_gate_harness": true,
+  "enable_cold_shot_seed": true,
+  "holdout_hard_gate": true,
+  "enforce_per_class_farther_tail": true,
+  "farther_tail_contract": true,
+  "composition_stagnation_threshold": 3,
+  "persona": "You are an adversarial financial econometrician searching for a compact executable action over a frozen cross-sectional return-density panel. Preserve the module ABI fit_model(visible_rows), predict_density(features, params=None), and I_model(features, params=None), plus LAGRANGIAN, stationary_response(force, local_mass, params=None), action_gradient(response, force, local_mass, params=None), and action_curvature(response, local_mass, params=None). The stationary response must generate the exact face flux consumed by predict_density; the harness verifies zero action gradient, positive curvature, and exact prediction binding. The density response must be positive and mass-conserving before scoring. Every proposal sees exactly current_mass, raw_face_current, bin_centers, center, and scale. It must forecast the complete next density and its implied equal-weight return. The empirical Markov rival uses identical trailing binned transitions and is mandatory. Seek structural restrictions that can generalize; reject physics vocabulary that merely reparameterizes current, duplicates Markov, or gains only through post-score shrinkage.",
+  "dimensions": [
+    {
+      "name": "Chronological density forecast",
+      "weight": 30,
+      "description": "Does the candidate beat persistence, untransformed finite-volume current, and empirical Markov on cross-entropy and Brier loss across both frozen evaluation partitions?"
+    },
+    {
+      "name": "Generative yield",
+      "weight": 25,
+      "description": "Does one candidate-owned action generate both a valid next density and its return implication without consuming outcome information?"
+    },
+    {
+      "name": "Mechanism and rivals",
+      "weight": 20,
+      "description": "Is the executable response distinct from the controls and resistant to a visible-fit candidate-Markov shrinkage rival?"
+    },
+    {
+      "name": "Economic consequence",
+      "weight": 15,
+      "description": "Does the density-implied paper direction improve the declared after-cost outcome on both partitions?"
+    },
+    {
+      "name": "Parsimony and stability",
+      "weight": 10,
+      "description": "Is the mechanism compact, finite, positive, mass-conserving, and stable across chronological partitions?"
+    }
+  ],
+  "penalties": [
+    "NO_DENSITY: A return-only candidate earns no Newton credit.",
+    "MASS_VIOLATION: Negative probability or failure to conserve unit mass fails the candidate.",
+    "WEAK_RIVAL: Omitting empirical Markov or the shrinkage rival fails the comparison.",
+    "TEMPORAL_OVERCLAIM: Current-universe retrospective evidence grants no prospective or capital authority.",
+    "PHYSICS_LABEL_ONLY: An action label without a distinct executable density prediction earns no mechanism credit."
+  ],
+  "criteria": {
+    "Chronological density forecast": "Both proper density scores beat every declared direct control on holdout and farther tail.",
+    "Generative yield": "The same predicted density supplies the linked density and scalar return forecasts.",
+    "Mechanism and rivals": "The action response is distinct and not improved by visible-fit Markov shrinkage.",
+    "Economic consequence": "After-cost paper outcome and return error beat identical-information controls on both partitions.",
+    "Parsimony and stability": "Every forecast is finite, nonnegative, unit-mass, and partition-stable."
+  },
+  "secondary_observable_contract": {
+    "observable": "complete next-session cross-sectional standardized-return density",
+    "measurement": "cross-entropy and Brier loss on frozen chronological holdout and farther-tail episodes",
+    "expected_range": "strictly below persistence, untransformed finite-volume current, empirical Markov, and visible-fit shrinkage rivals",
+    "falsifier": "either density score loses on either chronological partition"
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "issued_at",
+      "end_at",
+      "entity_count",
+      "center",
+      "scale",
+      "current_mean_return",
+      "actual_next_mean_return",
+      "current_p_0",
+      "raw_flux_0",
+      "markov_p_0",
+      "actual_p_0"
+    ],
+    "independent_vars": [
+      "current_mass",
+      "raw_face_current",
+      "bin_centers",
+      "center",
+      "scale"
+    ],
+    "min_rows": 40,
+    "require_finite": true,
+    "format_provenance": "projects/jaggedthoughts_probability_current_newton/evidence_source_receipt.json",
+    "docstring": "Frozen cross-sectional public-price return-density episodes; current-universe retrospective diagnostic authority only."
+  }
+}

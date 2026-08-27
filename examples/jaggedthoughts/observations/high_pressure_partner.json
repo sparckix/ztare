@@ -1,0 +1,32 @@
+{
+  "probe_id": "high_pressure_partner",
+  "action_id": "partner_pilot",
+  "source_state_sha256": "da59d0c003640d4d9505e2eed98466304988e6f09c2c0616d03bfbb8835f677c",
+  "observed_at": "2026-08-08T12:00:00Z",
+  "target": {
+    "decision_id": "service-channel-2026",
+    "epoch": 11,
+    "firm": {
+      "control": 60,
+      "margin": 10,
+      "reach": 40
+    },
+    "actors": [
+      {
+        "id": "competitor",
+        "variables": {
+          "pressure": 80
+        }
+      },
+      {
+        "id": "partner",
+        "variables": {
+          "support": 55
+        }
+      }
+    ],
+    "context": {
+      "market": "reference"
+    }
+  }
+}
