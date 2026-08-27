@@ -22,16 +22,22 @@ def sha(p: Path) -> str | None:
         return None
 
 
-def main():
-    if len(sys.argv) != 5:
-        print("Usage: write_seal PROJECT_BARE PROJ_DIR RUBRIC_PATH SEAL_PATH", file=sys.stderr)
-        sys.exit(1)
+def write_seal(
+    project_bare: str,
+    project_dir: str | Path,
+    rubric_path: str | Path,
+    seal_path: str | Path,
+) -> dict:
+    """Write the attestation after its validators have succeeded.
 
-    project_bare, proj_dir_str, rubric_path_str, seal_path_str = sys.argv[1:]
-    proj = Path(proj_dir_str)
-    rubric = Path(rubric_path_str)
-    seal_path = Path(seal_path_str)
-
+    Validation remains outside this function.  Exposing the writer as one
+    callable lets an evidence-successor transaction reuse the same seal format
+    after its own evidence/leak checks and one deterministic gate evaluation,
+    without replaying the interactive project-creation ceremony.
+    """
+    proj = Path(project_dir)
+    rubric = Path(rubric_path)
+    seal_path = Path(seal_path)
     seal = {
         "project": project_bare,
         "rubric": str(rubric),
@@ -52,7 +58,17 @@ def main():
     }
 
     seal_path.write_text(json.dumps(seal, indent=2), encoding="utf-8")
-    print(f"  ✅ Seal written to {seal_path}")
+    return seal
+
+
+def main():
+    if len(sys.argv) != 5:
+        print("Usage: write_seal PROJECT_BARE PROJ_DIR RUBRIC_PATH SEAL_PATH", file=sys.stderr)
+        sys.exit(1)
+
+    project_bare, proj_dir_str, rubric_path_str, seal_path_str = sys.argv[1:]
+    write_seal(project_bare, proj_dir_str, rubric_path_str, seal_path_str)
+    print(f"  ✅ Seal written to {seal_path_str}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,158 @@
+{
+  "assignment": "withhold",
+  "catalog_scoped_decision": {
+    "action": 0,
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "controlled_object_handle": "o02",
+    "kind": "catalog_scoped_model_decision",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_handles": [],
+    "phase": "withhold_branch_revision",
+    "plan_summary": "Retain the proposed action-0 movement test toward the upper target.",
+    "prediction": "The player object o02 will move in action 0's direction if this plan is committed; the transition will establish that direction mapping.",
+    "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+    "response_decision": {
+      "arguments": {
+        "action": 0,
+        "controlled_object_handle": "o02",
+        "ordered_waypoint_handles": [],
+        "plan_summary": "Retain the proposed action-0 movement test toward the upper target.",
+        "prediction": "The player object o02 will move in action 0's direction if this plan is committed; the transition will establish that direction mapping.",
+        "uncertainty": "No settled transition yet identifies action 0's direction because the prior response was only a proposal checkpoint."
+      },
+      "cached_input_tokens": 0,
+      "call_id": "app-server-call:019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+      "effective_reasoning_context": "all_turns",
+      "input_tokens": 18086,
+      "output_tokens": 158,
+      "previous_response_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+      "requested_reasoning_context": "all_turns",
+      "response_id": "019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+      "schema": "ztare-responses-tool-decision-v1",
+      "tool_name": "commit_arc_plan"
+    },
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "uncertainty": "No settled transition yet identifies action 0's direction because the prior response was only a proposal checkpoint."
+  },
+  "controller_transport": {
+    "fork": {
+      "ephemeral": false,
+      "fork_thread_id": "019fe2ca-0bc5-7b01-b6fe-5c63050b5cf4",
+      "forked_from_id": "019fe2c8-785c-7973-afdd-ea5c0c80186b",
+      "inherited_turn_ids": [
+        "019fe2c8-7a47-7992-9554-0bc3bd47a3ea"
+      ],
+      "kind": "app_server_fork_receipt",
+      "last_turn_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "bf20f3cfa9b5615fca5045d4d0f581d1a93c9a3058ee8fc9c59cea74ad5986b1",
+      "source_thread_id": "019fe2c8-785c-7973-afdd-ea5c0c80186b"
+    },
+    "last_turn_id": "019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+    "schema": "ztare-app-server-controller-thread-v1",
+    "sha256": "a1619ce18b43d07f1d27160bb5625c241f133282f89fc7babf25dc81bf53c2c1",
+    "thread_id": "019fe2ca-0bc5-7b01-b6fe-5c63050b5cf4",
+    "turn": {
+      "assistant_output_sha256": "50f2ce3c8e287f046192ed37174569a867fdbe35db7507f3bd6ce7ccb2937439",
+      "assistant_text": "{\"action\":0,\"controlled_object_handle\":\"o02\",\"ordered_waypoint_handles\":[],\"plan_summary\":\"Retain the proposed action-0 movement test toward the upper target.\",\"prediction\":\"The player object o02 will move in action 0's direction if this plan is committed; the transition will establish that direction mapping.\",\"uncertainty\":\"No settled transition yet identifies action 0's direction because the prior response was only a proposal checkpoint.\"}",
+      "cached_input_tokens": 0,
+      "completed_at": 1786216328,
+      "duration_ms": 7979,
+      "input_tokens": 18086,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "output_tokens": 158,
+      "prompt_sha256": "5b6eb7ded7090a3881f22e74da2504a9b6b4a8a28d3b3e7a4c25245266a81be8",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "9e7957d7412b1d701bbebc829dc21db88a6c4e89380f7f71133472c99516824d",
+      "started_at": 1786216320,
+      "status": "completed",
+      "thread_id": "019fe2ca-0bc5-7b01-b6fe-5c63050b5cf4",
+      "tool_item_count": 0,
+      "turn_id": "019fe2ca-0cb4-7193-8a1e-c3e7066166e9"
+    }
+  },
+  "environment_contact": false,
+  "experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+  "kind": "matched_branch_revision",
+  "pair_index": 1,
+  "parent_response_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+  "post_proposal": {
+    "action_ref": "0",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+    "controller_instance_sha256": "ec50837162ae4666e7e1088e8ec0226480e6423456228de6614839e1d3eb4180",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_refs": [],
+    "parent_proposal_sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412",
+    "predicted_consequence_ref": "sha256:57340485e051bcb68bc3baa76efef17ed6ec9d1760267aafeae850f2b3029012",
+    "proposal_ref": "sha256:1a4096fbebbdb13561d096cd6e354404e2d3d71c0ac4d9276dce9ec44d33997d",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "1700b2ed03237c867ee5a0636aace8ad86d3df3e6d0b23350a6c740b9f001d70"
+  },
+  "presented_intervention_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+  "presented_utf8_bytes": 3849,
+  "response_decision": {
+    "arguments": {
+      "action": 0,
+      "controlled_object_handle": "o02",
+      "ordered_waypoint_handles": [],
+      "plan_summary": "Retain the proposed action-0 movement test toward the upper target.",
+      "prediction": "The player object o02 will move in action 0's direction if this plan is committed; the transition will establish that direction mapping.",
+      "uncertainty": "No settled transition yet identifies action 0's direction because the prior response was only a proposal checkpoint."
+    },
+    "cached_input_tokens": 0,
+    "call_id": "app-server-call:019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+    "effective_reasoning_context": "all_turns",
+    "input_tokens": 18086,
+    "output_tokens": 158,
+    "previous_response_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+    "requested_reasoning_context": "all_turns",
+    "response_id": "019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+    "schema": "ztare-responses-tool-decision-v1",
+    "tool_name": "commit_arc_plan"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "transition": {
+    "assignment": "withhold",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "changed_action": false,
+    "changed_path": false,
+    "changed_prediction": true,
+    "contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+    "controller_instance_sha256": "ec50837162ae4666e7e1088e8ec0226480e6423456228de6614839e1d3eb4180",
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+    "kind": "residual_proposal_transition",
+    "post_proposal_sha256": "1700b2ed03237c867ee5a0636aace8ad86d3df3e6d0b23350a6c740b9f001d70",
+    "pre_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+    "pre_proposal_sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412",
+    "relation": "withheld_spontaneous_contradiction",
+    "schema": "ztare-causal-response-derivative-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "36f17296ef6d119a04c683e758f32d623238988caf9edaca95a2f8253093d47c",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "stratum_sha256": "5a73c8175bdc387e35ce590ffa183c5f0f8da966eaf39efe1449d933e4e580c4",
+    "supported_transport": false,
+    "trial_ref": "h97:pair-01:withhold"
+  }
+}

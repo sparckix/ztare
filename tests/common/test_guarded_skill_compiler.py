@@ -127,6 +127,15 @@ def test_compiler_selects_a_guarded_generator_not_every_path():
     assert len(program.encoding_occurrence_sha256s) == 2
     assert len(program.variants) == 1
     assert program.variants[0].support == 2
+    assert program.variants[0].independent_trace_support == 2
+    assert program.variants[0].distinct_initiation_support == 2
+    assert program.variants[0].cross_initiation_exact_terminal_candidate
+    assert program.cross_initiation_exact_terminal_variant_count == 1
+    assert program.repeated_single_initiation_variant_count == 0
+    assert program.max_distinct_initiation_support == 2
+    assert library.cross_initiation_exact_terminal_variant_count == 1
+    assert library.repeated_single_initiation_variant_count == 0
+    assert library.max_distinct_initiation_support == 2
     assert len(program.side_exits) == 1
     assert program.side_exits[0].failed_step == 2
     assert program.side_exits[0].boundary_kind == "typed_stop"
@@ -140,6 +149,40 @@ def test_compiler_selects_a_guarded_generator_not_every_path():
     unseen = program.decide("never-observed")
     assert unseen.status == "primitive_fallback"
     assert unseen.reason == "guard_unwitnessed"
+
+
+def test_trace_repetition_does_not_imply_cross_initiation_state_variation():
+    repeated = tuple(
+        GuardedActionTrace(
+            trace_ref=f"repeat-{index}",
+            transitions=(
+                _step("same-start", "a", "same-mid", "ea", f"r{index}#0"),
+                _step("same-mid", "b", "same-late", "eb", f"r{index}#1"),
+                _step("same-late", "c", "same-end", "ec", f"r{index}#2"),
+            ),
+        )
+        for index in range(3)
+    )
+
+    library = compile_guarded_skill_library(
+        repeated,
+        min_word_length=3,
+        max_word_length=3,
+        min_variant_support=2,
+    )
+
+    assert len(library.programs) == 1
+    variant = library.programs[0].variants[0]
+    assert variant.independent_trace_support == 3
+    assert variant.distinct_initiation_support == 1
+    assert not variant.cross_initiation_exact_terminal_candidate
+    assert library.cross_initiation_exact_terminal_variant_count == 0
+    assert library.repeated_single_initiation_variant_count == 1
+    receipt = library.to_receipt()
+    assert receipt["max_distinct_initiation_support"] == 1
+    assert not receipt["programs"][0]["variants"][0][
+        "cross_initiation_exact_terminal_candidate"
+    ]
 
 
 def test_compiler_is_invariant_to_trace_order():

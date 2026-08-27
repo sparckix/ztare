@@ -1,0 +1,22 @@
+{
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "kind": "live_runtime_receipt",
+  "status": "blocked_runtime",
+  "recorded_at_utc": "2026-08-06T04:17:52Z",
+  "experiment_sha256": "8f9ae209831786c58ec83cea87e54a33caba821d0f0096d56cee7ba43210a4a6",
+  "boundary": "openai_responses_create",
+  "error_type": "insufficient_quota",
+  "error_code": "credit_balance_exhausted",
+  "model_response_created": false,
+  "controller_proposal_created": false,
+  "eligible_parent_created": false,
+  "branch_revision_created": false,
+  "environment_contact": false,
+  "arc_action_count": 0,
+  "evidence_effect": "none",
+  "retry_condition": "OpenAI project credit balance replenished",
+  "claim_boundary": [
+    "This receipt records a second runtime refusal, not an H97 experimental outcome.",
+    "The H97 success criterion remains unobserved."
+  ]
+}

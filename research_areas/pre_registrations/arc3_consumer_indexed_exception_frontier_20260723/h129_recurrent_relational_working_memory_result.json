@@ -1,0 +1,273 @@
+{
+  "check_count": 14,
+  "checks": {
+    "active_authority_refused_after_settlement": true,
+    "active_then_residual_types": true,
+    "both_failed_divergences_corrected": true,
+    "d4_preserves_action_and_frontier": true,
+    "distinct_revision_schemas": true,
+    "one_target_settlement": true,
+    "palette_preserves_action_and_frontier": true,
+    "source_memory_identity_stable": true,
+    "source_oracle_firewall": true,
+    "stale_scope_refused": true,
+    "successful_path_10_of_10": true,
+    "target_absence_is_observed": true,
+    "target_transport_refuted": true,
+    "working_revision_identity_changes": true
+  },
+  "claim_boundary": "Frozen-trajectory architectural sufficiency only. Live recurrent causality, cross-game transfer, later acquisition savings, critical mass, biological fidelity, and novelty remain unsettled.",
+  "controller_contact": false,
+  "d4_rows": [
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        false,
+        -1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        false,
+        -1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        false,
+        1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        false,
+        1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        true,
+        -1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        true,
+        -1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        true,
+        1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+      "selected_action": 0,
+      "transform": [
+        true,
+        1,
+        1
+      ]
+    }
+  ],
+  "environment_contact": false,
+  "failed_path_first_divergences": [
+    {
+      "actual_action": 3,
+      "compiled_action": 0,
+      "corrects_divergence": true,
+      "oracle_action": 0,
+      "replication": 2,
+      "revision_schema": "ztare-active-relational-working-revision-v1",
+      "turn": 6,
+      "working_revision_sha256": "c917f99f1ab555859ecfbba41848c37816c6ae75538b7213bb8cf37a79c91735"
+    },
+    {
+      "actual_action": 0,
+      "compiled_action": 3,
+      "corrects_divergence": true,
+      "oracle_action": 3,
+      "replication": 3,
+      "revision_schema": "ztare-settled-residual-working-revision-v1",
+      "turn": 7,
+      "working_revision_sha256": "201b50a76202a08553e8a1b8fbeed27e2dfdc829df2c108c1d406ba8cd66ed18"
+    }
+  ],
+  "hypothesis_id": "H-GPSA-RECURRENT-RELATIONAL-WORKING-MEMORY-20260808-129",
+  "identities": {
+    "h127_result_sha256": "9a61127622e25ad4f16fb16edffa2ccf6f8ea2f2e835dda89281d1c52422df4b",
+    "h128_audit_sha256": "6114f5b6bd9101d86f6a9ef442d9b600fa96999eadc72430ac45485678f3b93a",
+    "h128_result_sha256": "8d6d47e71712d7cd1a2ddd051dc86bb54cd7f0644713c941be518e7c9447a932",
+    "source_memory_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935"
+  },
+  "palette_variant": {
+    "frontier_sha256": "34d1334a755a201d3cb5140be484055f8e574968a2bb688a08f86793a06af5be",
+    "observation_sha256": "d5aba5982240868c1c6cf7eab8a069613521e1c1dbc18a29e45dd4dadbc06d79",
+    "selected_action": 0,
+    "working_revision_sha256": "97db89844caaa4e4a7506a42b48e1a2928ea5ca91debde39393041628c346485"
+  },
+  "schema": "ztare-h129-recurrent-relational-working-memory-v1",
+  "status": "passed_offline",
+  "successful_chain": {
+    "active_revision_count": 7,
+    "oracle_action_count": 10,
+    "residual_revision_count": 3,
+    "rows": [
+      {
+        "expected_action": 0,
+        "observation_sha256": "910f639b419322c3cedb66764b31513a1a4c6ea5643297004c9afee5eb05da31",
+        "remaining_budget": 10,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 0,
+        "selected_direction": "up",
+        "turn": 0,
+        "working_revision_sha256": "3e12861d19351a1c60324d066cbc1a479a1b536e49af2f22fcf090df22e97dec"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "8b1eac434c5182da724daa6ed1fd05a0e2cbb01ecfa4723af0b9f587dd7bc7d3",
+        "remaining_budget": 9,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 1,
+        "working_revision_sha256": "5ce5ece0b30a366d95dac804c2c38255a13e1bd31ab51cf74a6130efefa115bc"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "8250bc4c9ce9a86d7dff6835ab2762453e0b6aa27fec8b9bc269a418ded1eda0",
+        "remaining_budget": 8,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 2,
+        "working_revision_sha256": "440c8f2bdc0462a4825412e61905e6bd0e131b0dbc772c4670f519f9adad1f01"
+      },
+      {
+        "expected_action": 1,
+        "observation_sha256": "18d613adec1ccbc67ec6adc3bf274ad3d6c24ba71aa1e4704f44418316fa08fb",
+        "remaining_budget": 7,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 1,
+        "selected_direction": "down",
+        "turn": 3,
+        "working_revision_sha256": "ff9583f5d51a2ba0a0c3e144e65c54461fa44b12b5097effb12aa74802bd9bb4"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "730ba13ca983209b09681c9ef0cdf1750c11d347ffbbfaaec9534ade5a79fe7c",
+        "remaining_budget": 6,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 4,
+        "working_revision_sha256": "8d6b8def8d8cd31e74140e0ba74290358a2195136c7a67e483560052205b192e"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "1cc3082d981772bf7aed1eb9ef998b7795fa23bbdb307cf765992e15974e0595",
+        "remaining_budget": 5,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 5,
+        "working_revision_sha256": "86c4f3e851ed5b1a40d30df2083bba2c6bf38c3029d289568ff28fc5c8e769f7"
+      },
+      {
+        "expected_action": 0,
+        "observation_sha256": "cdb9c6798658ad9030af9a7df1bb96947becc721474d2881a97a43f18bacbacd",
+        "remaining_budget": 4,
+        "revision_schema": "ztare-active-relational-working-revision-v1",
+        "selected_action": 0,
+        "selected_direction": "up",
+        "turn": 6,
+        "working_revision_sha256": "c917f99f1ab555859ecfbba41848c37816c6ae75538b7213bb8cf37a79c91735"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "ed30fa0c77948a6df57eaab7a0ab0e1bf0aad98210195a73cc9d4fd2af1f57fb",
+        "remaining_budget": 3,
+        "revision_schema": "ztare-settled-residual-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 7,
+        "working_revision_sha256": "201b50a76202a08553e8a1b8fbeed27e2dfdc829df2c108c1d406ba8cd66ed18"
+      },
+      {
+        "expected_action": 3,
+        "observation_sha256": "fb0edbc1727f90cace8732c6bd461621f7611eaac3d4e9cd17909f223df05fde",
+        "remaining_budget": 2,
+        "revision_schema": "ztare-settled-residual-working-revision-v1",
+        "selected_action": 3,
+        "selected_direction": "right",
+        "turn": 8,
+        "working_revision_sha256": "75a207cf017df51802e3d8940e5503f3f159d78c095d9ced95e1af5eca54c857"
+      },
+      {
+        "expected_action": 0,
+        "observation_sha256": "9e21a09e4af53556916b8ac96f868cbb595b4de321ab966304c4ef51696c1cf1",
+        "remaining_budget": 1,
+        "revision_schema": "ztare-settled-residual-working-revision-v1",
+        "selected_action": 0,
+        "selected_direction": "up",
+        "turn": 9,
+        "working_revision_sha256": "6740bd06afa411eeb5921fa151b4df133a37920cb739c06370f5345c88217399"
+      }
+    ],
+    "source_memory_sha256s": [
+      "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935"
+    ],
+    "target_settlement": {
+      "active_revision_sha256": "c917f99f1ab555859ecfbba41848c37816c6ae75538b7213bb8cf37a79c91735",
+      "observed_target_entities": [],
+      "projected_target_successors": [
+        {
+          "bearing": "left",
+          "projected_successor": [
+            27,
+            30
+          ],
+          "source": [
+            27,
+            36
+          ]
+        }
+      ],
+      "reason": "target absent after direct contact",
+      "schema": "ztare-target-transport-settlement-v1",
+      "selected_action": 0,
+      "sha256": "ce691ae8b604908fde423e6eed6d55eaf06154554b47df10d8af2f910b159cd2",
+      "source_memory_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "source_observation_sha256": "cdb9c6798658ad9030af9a7df1bb96947becc721474d2881a97a43f18bacbacd",
+      "status": "target_transport_refuted",
+      "successor_observation_sha256": "ed30fa0c77948a6df57eaab7a0ab0e1bf0aad98210195a73cc9d4fd2af1f57fb",
+      "tested_target_transport": true
+    },
+    "target_settlement_count": 1,
+    "transition_settlement_count": 7,
+    "unique_working_revision_count": 10,
+    "working_revision_count": 10
+  }
+}

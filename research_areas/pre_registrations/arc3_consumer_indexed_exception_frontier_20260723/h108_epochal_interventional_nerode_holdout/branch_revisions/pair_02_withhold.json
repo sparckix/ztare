@@ -1,0 +1,158 @@
+{
+  "assignment": "withhold",
+  "catalog_scoped_decision": {
+    "action": 3,
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "controlled_object_handle": "o02",
+    "kind": "catalog_scoped_model_decision",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_handles": [],
+    "phase": "withhold_branch_revision",
+    "plan_summary": "Commit the safe control test away from the movable block.",
+    "prediction": "o02 moves right across the green chamber toward the central barrier.",
+    "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+    "response_decision": {
+      "arguments": {
+        "action": 3,
+        "controlled_object_handle": "o02",
+        "ordered_waypoint_handles": [],
+        "plan_summary": "Commit the safe control test away from the movable block.",
+        "prediction": "o02 moves right across the green chamber toward the central barrier.",
+        "uncertainty": "Index 3 is provisionally interpreted as right; no settled transition has confirmed the mapping."
+      },
+      "cached_input_tokens": 0,
+      "call_id": "app-server-call:019fe2ca-991d-76d0-a21f-d971444050d9",
+      "effective_reasoning_context": "all_turns",
+      "input_tokens": 17104,
+      "output_tokens": 124,
+      "previous_response_id": "019fe2ca-2ce6-72b3-bc81-d9bdd45579af",
+      "requested_reasoning_context": "all_turns",
+      "response_id": "019fe2ca-991d-76d0-a21f-d971444050d9",
+      "schema": "ztare-responses-tool-decision-v1",
+      "tool_name": "commit_arc_plan"
+    },
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "uncertainty": "Index 3 is provisionally interpreted as right; no settled transition has confirmed the mapping."
+  },
+  "controller_transport": {
+    "fork": {
+      "ephemeral": false,
+      "fork_thread_id": "019fe2ca-9866-7f91-9bb4-a9a5d2f8beed",
+      "forked_from_id": "019fe2ca-2c29-7eb2-b283-690b4fbf01bf",
+      "inherited_turn_ids": [
+        "019fe2ca-2ce6-72b3-bc81-d9bdd45579af"
+      ],
+      "kind": "app_server_fork_receipt",
+      "last_turn_id": "019fe2ca-2ce6-72b3-bc81-d9bdd45579af",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "4fc88524faec65676136a3df9798c9b5aa7f6eb140cac8a893013ed9b420dd82",
+      "source_thread_id": "019fe2ca-2c29-7eb2-b283-690b4fbf01bf"
+    },
+    "last_turn_id": "019fe2ca-991d-76d0-a21f-d971444050d9",
+    "schema": "ztare-app-server-controller-thread-v1",
+    "sha256": "a72cf87ad8b16237214e7741249fb17f1e86a41c03c9e096edf6a923e83ca089",
+    "thread_id": "019fe2ca-9866-7f91-9bb4-a9a5d2f8beed",
+    "turn": {
+      "assistant_output_sha256": "2fdcf9399efa0e0ea33f042153a16e691b6ebd0dabcd811af2d402d34b0d33a9",
+      "assistant_text": "{\"action\":3,\"controlled_object_handle\":\"o02\",\"ordered_waypoint_handles\":[],\"plan_summary\":\"Commit the safe control test away from the movable block.\",\"prediction\":\"o02 moves right across the green chamber toward the central barrier.\",\"uncertainty\":\"Index 3 is provisionally interpreted as right; no settled transition has confirmed the mapping.\"}",
+      "cached_input_tokens": 0,
+      "completed_at": 1786216362,
+      "duration_ms": 5978,
+      "input_tokens": 17104,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "output_tokens": 124,
+      "prompt_sha256": "bbb8bdcca40e2d6e8b9453895ad02c0adbaec83b5ef6b9585626f893c63aa593",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "bb92592200a96ca9a49a4975dc7d603e45de2d1a214b2566d8879d44d6c97938",
+      "started_at": 1786216356,
+      "status": "completed",
+      "thread_id": "019fe2ca-9866-7f91-9bb4-a9a5d2f8beed",
+      "tool_item_count": 0,
+      "turn_id": "019fe2ca-991d-76d0-a21f-d971444050d9"
+    }
+  },
+  "environment_contact": false,
+  "experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+  "kind": "matched_branch_revision",
+  "pair_index": 2,
+  "parent_response_id": "019fe2ca-2ce6-72b3-bc81-d9bdd45579af",
+  "post_proposal": {
+    "action_ref": "3",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+    "controller_instance_sha256": "e72525943d7190da2b1fb7cddca5cc1676003a8d3fc9407939d8d92d1a8c137a",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_refs": [],
+    "parent_proposal_sha256": "1e197b63914f300e0096e443597ff65f31df3173835fbbc046d16608ed16fc62",
+    "predicted_consequence_ref": "sha256:2e596c810a4b3d5e082cc393db5dc7d106a412816020073fc0c80d3a0b03ab4a",
+    "proposal_ref": "sha256:5ed0a73bf31020bb09c282363100dcadad42562a64823e5949c3ad70553f7b16",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "1a4f16665513296505273b296f42209baef897ce06e37be6280e00c73951e14d"
+  },
+  "presented_intervention_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+  "presented_utf8_bytes": 3849,
+  "response_decision": {
+    "arguments": {
+      "action": 3,
+      "controlled_object_handle": "o02",
+      "ordered_waypoint_handles": [],
+      "plan_summary": "Commit the safe control test away from the movable block.",
+      "prediction": "o02 moves right across the green chamber toward the central barrier.",
+      "uncertainty": "Index 3 is provisionally interpreted as right; no settled transition has confirmed the mapping."
+    },
+    "cached_input_tokens": 0,
+    "call_id": "app-server-call:019fe2ca-991d-76d0-a21f-d971444050d9",
+    "effective_reasoning_context": "all_turns",
+    "input_tokens": 17104,
+    "output_tokens": 124,
+    "previous_response_id": "019fe2ca-2ce6-72b3-bc81-d9bdd45579af",
+    "requested_reasoning_context": "all_turns",
+    "response_id": "019fe2ca-991d-76d0-a21f-d971444050d9",
+    "schema": "ztare-responses-tool-decision-v1",
+    "tool_name": "commit_arc_plan"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "transition": {
+    "assignment": "withhold",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "changed_action": false,
+    "changed_path": false,
+    "changed_prediction": true,
+    "contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+    "controller_instance_sha256": "e72525943d7190da2b1fb7cddca5cc1676003a8d3fc9407939d8d92d1a8c137a",
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+    "kind": "residual_proposal_transition",
+    "post_proposal_sha256": "1a4f16665513296505273b296f42209baef897ce06e37be6280e00c73951e14d",
+    "pre_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+    "pre_proposal_sha256": "1e197b63914f300e0096e443597ff65f31df3173835fbbc046d16608ed16fc62",
+    "relation": "withheld_spontaneous_contradiction",
+    "schema": "ztare-causal-response-derivative-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "564ee059bc6c069476ab79d19be5a6963e92a8510940e1a9023ed7aeeb1b0120",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "stratum_sha256": "bec0559ddd3b052d5c849d7b49b6597c7bed5b6043434fd6ea8b813d8c9515c9",
+    "supported_transport": false,
+    "trial_ref": "h97:pair-02:withhold"
+  }
+}

@@ -15,7 +15,10 @@ import os
 import re
 import select
 import signal
+import shutil
 import subprocess
+import tempfile
+import threading
 import time
 import uuid
 from dataclasses import dataclass
@@ -31,6 +34,32 @@ CODEX_SANDBOX_SEALED_COMPLETION = "read-only"
 CODEX_SANDBOX_VISIBLE_WORKBENCH = "workspace-write-shell"
 CODEX_SANDBOX_LEGACY_READ_ONLY_SHELL = "read-only-shell"
 CODEX_SANDBOX_WEB_RESEARCH = "read-only-web"
+
+_CODEX_ISOLATED_HOME: tempfile.TemporaryDirectory[str] | None = None
+_CODEX_ISOLATED_HOME_SOURCE = ""
+_CODEX_ISOLATED_HOME_LOCK = threading.Lock()
+
+
+def _codex_isolated_home(source: Path) -> str | None:
+    """Give a sandboxed subscription child writable state without API auth."""
+
+    global _CODEX_ISOLATED_HOME, _CODEX_ISOLATED_HOME_SOURCE
+    auth = source / "auth.json"
+    if not auth.is_file():
+        return None
+    source_key = str(source)
+    with _CODEX_ISOLATED_HOME_LOCK:
+        if _CODEX_ISOLATED_HOME is None or _CODEX_ISOLATED_HOME_SOURCE != source_key:
+            if _CODEX_ISOLATED_HOME is not None:
+                _CODEX_ISOLATED_HOME.cleanup()
+            _CODEX_ISOLATED_HOME = tempfile.TemporaryDirectory(
+                prefix="ztare-codex-subscription-"
+            )
+            _CODEX_ISOLATED_HOME_SOURCE = source_key
+            copied_auth = Path(_CODEX_ISOLATED_HOME.name) / "auth.json"
+            shutil.copy2(auth, copied_auth)
+            copied_auth.chmod(0o600)
+        return _CODEX_ISOLATED_HOME.name
 
 
 def _codex_execution_boundary(command: list[str], sandbox: str) -> None:
@@ -839,7 +868,11 @@ def build_subscription_agent_command(
         # subscription workers opt in explicitly when their contract names an
         # MCP surface; every other Codex call avoids plugin/MCP startup drift.
         if os.environ.get("ZTARE_SUBSCRIPTION_AGENT_REMOTE_MCP", "0") != "1":
-            cmd += ["-c", "features.rmcp_client=false"]
+            # Keep auth in CODEX_HOME, but do not load ambient user settings.
+            # Besides making the tool seal deterministic, this avoids the
+            # config-enabled state DB path that fails in a readonly host
+            # sandbox before inference starts. Sessions remain resumable.
+            cmd += ["--ignore-user-config", "-c", "features.rmcp_client=false"]
         if output_schema is not None:
             schema_path = Path(output_schema)
             if not schema_path.is_file():
@@ -1008,6 +1041,14 @@ def subscription_agent_env(runtime: str, base_env: dict[str, str] | None = None)
         env.pop("OPENAI_API_KEY", None)
         env.pop("OPENAI_BASE_URL", None)
         env.pop("OPENAI_ORG_ID", None)
+        # The Codex host exposes the operator's subscription home read-only.
+        # Give nested subscription workers a process-private writable state
+        # home containing only the same ChatGPT auth; TemporaryDirectory owns
+        # cleanup, and warm resume remains available within this process.
+        if env.get("CODEX_SANDBOX") == "seatbelt" and not env.get("CODEX_HOME"):
+            isolated_home = _codex_isolated_home(Path.home() / ".codex")
+            if isolated_home is not None:
+                env["CODEX_HOME"] = isolated_home
     if runtime == "claude":
         env.pop("ANTHROPIC_API_KEY", None)
         env.pop("CLAUDE_CODE_USE_BEDROCK", None)
@@ -1628,7 +1669,8 @@ def run_subscription_agent_with_recovery(
 def _self_test() -> int:
     repo = Path("/tmp/repo")
     codex = build_subscription_agent_command(runtime="codex", prompt="hi", repo=repo)
-    assert codex[:4] == ["codex", "exec", "--skip-git-repo-check", "--model"], codex
+    assert codex[:3] == ["codex", "exec", "--skip-git-repo-check"], codex
+    assert codex[codex.index("--model") + 1] == "gpt-5.4-mini", codex
     assert "--cd" in codex and str(repo) in codex, codex
     codex_resumed = build_subscription_agent_command(
         runtime="codex",

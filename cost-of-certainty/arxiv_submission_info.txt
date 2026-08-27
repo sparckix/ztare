@@ -1,0 +1,9 @@
+nonmathlib4 — position paper arxiv submission
+=============================================
+Title:    The cost of certainty: Autonomous, general-purpose formal verification
+          for the mechanisms that run markets and institutions, and the library it produces.
+Author:   Daniel Alami (sparckix)
+Engine:   xelatex  (main.tex is self-contained; compile: `xelatex main.tex` twice)
+Primary:  cs.LO (Logic in Computer Science)
+Cross:    cs.AI, econ.TH
+Source:   generated from nonmathlib4/manuscript/cost-of-certainty.md via build.py (pandoc + xelatex).

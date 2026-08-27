@@ -1,0 +1,634 @@
+{
+  "checks": {
+    "calibration_drift_rejected": true,
+    "chain_hashes_round_tripped": true,
+    "choice_set_mismatch_uncredited": true,
+    "controller_mismatch_uncredited": true,
+    "distal_preferences_reconstructed": true,
+    "exact_scope_selection_flipped": true,
+    "immediate_distal_conflict_neutral": true,
+    "legacy_open_open_remained_uncredited": true,
+    "memory_migrated_to_v2": true,
+    "protocol_costs_unchanged": true,
+    "yield_calibration_has_no_task_authority": true,
+    "yield_calibrations_round_tripped": true
+  },
+  "claim_boundary": "controller-neutral offline persistence and selector integration; no ARC score or automatic play-loop chain collection claim",
+  "conflicts": {
+    "advance": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+          "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+        ],
+        "choice_context_sha256": "persistent-shared-source",
+        "continuation_context_sha256": "persistent-controller-v1",
+        "decision_namespace": "persistent-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "task_contract_sha256": "persistent-external-task"
+      },
+      "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "adjudication:persistent-pair-1:advance:attained",
+        "adjudication:persistent-pair-1:detour:open",
+        "adjudication:persistent-pair-2:advance:attained",
+        "adjudication:persistent-pair-2:detour:open",
+        "conflict:immediate-contrast-advance",
+        "conflict:immediate-positive-detour",
+        "legacy:legacy-open-advance"
+      ],
+      "immediate_preference": -1,
+      "immediate_status": "task_hazard",
+      "option_family_sha256": "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+      "preference": 0,
+      "schema": "ztare-combined-decision-task-judgment-v1",
+      "status": "credit_conflict",
+      "temporal_preference": 1,
+      "temporal_status": "task_credited"
+    },
+    "detour": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+          "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+        ],
+        "choice_context_sha256": "persistent-shared-source",
+        "continuation_context_sha256": "persistent-controller-v1",
+        "decision_namespace": "persistent-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "task_contract_sha256": "persistent-external-task"
+      },
+      "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "adjudication:persistent-pair-1:advance:attained",
+        "adjudication:persistent-pair-1:detour:open",
+        "adjudication:persistent-pair-2:advance:attained",
+        "adjudication:persistent-pair-2:detour:open",
+        "conflict:immediate-contrast-advance",
+        "conflict:immediate-positive-detour",
+        "legacy:legacy-open-advance"
+      ],
+      "immediate_preference": 1,
+      "immediate_status": "task_credited",
+      "option_family_sha256": "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211",
+      "preference": 0,
+      "schema": "ztare-combined-decision-task-judgment-v1",
+      "status": "credit_conflict",
+      "temporal_preference": -1,
+      "temporal_status": "task_hazard"
+    }
+  },
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-PERSISTENT-TEMPORAL-JUDGMENT-20260805-99",
+  "judgments": {
+    "advance": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+          "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+        ],
+        "choice_context_sha256": "persistent-shared-source",
+        "continuation_context_sha256": "persistent-controller-v1",
+        "decision_namespace": "persistent-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "task_contract_sha256": "persistent-external-task"
+      },
+      "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "adjudication:persistent-pair-1:advance:attained",
+        "adjudication:persistent-pair-1:detour:open",
+        "adjudication:persistent-pair-2:advance:attained",
+        "adjudication:persistent-pair-2:detour:open"
+      ],
+      "immediate_preference": 0,
+      "immediate_status": "uncredited",
+      "option_family_sha256": "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+      "preference": 1,
+      "schema": "ztare-combined-decision-task-judgment-v1",
+      "status": "task_credited",
+      "temporal_preference": 1,
+      "temporal_status": "task_credited"
+    },
+    "detour": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+          "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+        ],
+        "choice_context_sha256": "persistent-shared-source",
+        "continuation_context_sha256": "persistent-controller-v1",
+        "decision_namespace": "persistent-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "task_contract_sha256": "persistent-external-task"
+      },
+      "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "adjudication:persistent-pair-1:advance:attained",
+        "adjudication:persistent-pair-1:detour:open",
+        "adjudication:persistent-pair-2:advance:attained",
+        "adjudication:persistent-pair-2:detour:open"
+      ],
+      "immediate_preference": 0,
+      "immediate_status": "uncredited",
+      "option_family_sha256": "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211",
+      "preference": -1,
+      "schema": "ztare-combined-decision-task-judgment-v1",
+      "status": "task_hazard",
+      "temporal_preference": -1,
+      "temporal_status": "task_hazard"
+    }
+  },
+  "legacy": {
+    "immediate_preferences": {
+      "advance": 0,
+      "detour": 0
+    },
+    "restored_schema": "ztare-continual-skill-memory-v2",
+    "source_schema": "ztare-continual-skill-memory-v1"
+  },
+  "mismatch_preferences": {
+    "choice_set": {
+      "advance": 0,
+      "detour": 0
+    },
+    "controller": {
+      "advance": 0,
+      "detour": 0
+    }
+  },
+  "persistence": {
+    "calibration_count": 6,
+    "calibrations": [
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+            "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+          ],
+          "choice_context_sha256": "persistent-shared-source",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "evidence_refs": [
+          "edge:persistent-pair-1:advance:0",
+          "edge:persistent-pair-2:advance:0"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 0.30000000000000004,
+        "mean_error": -0.30000000000000004,
+        "mean_observed_yield": 0.5,
+        "mean_predicted_yield": 0.8,
+        "observation_count": 2,
+        "option_family_sha256": "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+        "option_variant_sha256": "advance-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "02cd46a2231c150467b22afaf0db6b0b804b587daddaa9802a9d8baa8f027221",
+        "status": "calibrated",
+        "task_credit_authorized": false
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "finish",
+            "wait"
+          ],
+          "choice_context_sha256": "persistent-pair-2:detour:successor",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "73e14868acece1688462a1ebbc34671c3492054c832d5a38e4065a34b8083a11",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "73e14868acece1688462a1ebbc34671c3492054c832d5a38e4065a34b8083a11",
+        "evidence_refs": [
+          "edge:persistent-pair-2:detour:1"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 0.0,
+        "mean_error": 0.0,
+        "mean_observed_yield": 0.2,
+        "mean_predicted_yield": 0.2,
+        "observation_count": 1,
+        "option_family_sha256": "wait",
+        "option_variant_sha256": "open-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "6bd37c0b9c3d33318c4c8bfabf3c06251c1ce7199e3c216a28f7b09ec1892ab8",
+        "status": "provisional",
+        "task_credit_authorized": false
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "finish",
+            "wait"
+          ],
+          "choice_context_sha256": "persistent-pair-2:advance:successor",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "cbd6a8188990fdd0fbce1e9c3e18327261835dedb555fb9718e3a8e1068ef7c6",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "cbd6a8188990fdd0fbce1e9c3e18327261835dedb555fb9718e3a8e1068ef7c6",
+        "evidence_refs": [
+          "edge:persistent-pair-2:advance:1"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 0.0,
+        "mean_error": 0.0,
+        "mean_observed_yield": 0.2,
+        "mean_predicted_yield": 0.2,
+        "observation_count": 1,
+        "option_family_sha256": "finish",
+        "option_variant_sha256": "attained-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "b2563e835335dd593f512b0a1f413c6683e7e7b880328474a739595fb62e8a1d",
+        "status": "provisional",
+        "task_credit_authorized": false
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "010276a03c0b4e24734c9f99659bc958e26f9d586aee846a4cfc3a51a9b55a56",
+            "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211"
+          ],
+          "choice_context_sha256": "persistent-shared-source",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "b1957725ff1d59d86f2045589f746c66f0ab2c12cfd25028109d620201511b0c",
+        "evidence_refs": [
+          "edge:persistent-pair-1:detour:0",
+          "edge:persistent-pair-2:detour:0"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 1.075,
+        "mean_error": -1.075,
+        "mean_observed_yield": 0.125,
+        "mean_predicted_yield": 1.2,
+        "observation_count": 2,
+        "option_family_sha256": "233dff31a76f20e97cf330a9b2ea25934f477749a1c82c43103fa187d2406211",
+        "option_variant_sha256": "detour-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "bc15782014a45cb8b2e80626345c61e4f02968ec9ce1d2894f432a587146053d",
+        "status": "calibrated",
+        "task_credit_authorized": false
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "finish",
+            "wait"
+          ],
+          "choice_context_sha256": "persistent-pair-1:detour:successor",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "145dbf63a5592e5639ce552fae9dc888ba6a898d44d61fb4541fe7f6ed21ad3e",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "145dbf63a5592e5639ce552fae9dc888ba6a898d44d61fb4541fe7f6ed21ad3e",
+        "evidence_refs": [
+          "edge:persistent-pair-1:detour:1"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 0.0,
+        "mean_error": 0.0,
+        "mean_observed_yield": 0.2,
+        "mean_predicted_yield": 0.2,
+        "observation_count": 1,
+        "option_family_sha256": "wait",
+        "option_variant_sha256": "open-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "cedb71b5cdb0956b3ca97c418182b651c1ab2d04a9407ccaa1d7d9e88079957a",
+        "status": "provisional",
+        "task_credit_authorized": false
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "finish",
+            "wait"
+          ],
+          "choice_context_sha256": "persistent-pair-1:advance:successor",
+          "continuation_context_sha256": "persistent-controller-v1",
+          "decision_namespace": "persistent-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "ec1c62abbbf0c1faf44cf30aebc83eb6cc52f15ed224613de70d37f2498129c1",
+          "task_contract_sha256": "persistent-external-task"
+        },
+        "authority_kind": "observed_information_yield_only",
+        "authority_sha256": "ec1c62abbbf0c1faf44cf30aebc83eb6cc52f15ed224613de70d37f2498129c1",
+        "evidence_refs": [
+          "edge:persistent-pair-1:advance:1"
+        ],
+        "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+        "kind": "decision_yield_calibration",
+        "mean_absolute_error": 0.0,
+        "mean_error": 0.0,
+        "mean_observed_yield": 0.2,
+        "mean_predicted_yield": 0.2,
+        "observation_count": 1,
+        "option_family_sha256": "finish",
+        "option_variant_sha256": "attained-variant",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "e7404577c45e86ffef15ae0fc8d59ce0639f76b37bf4dd52abd4625fe1fe8d87",
+        "status": "provisional",
+        "task_credit_authorized": false
+      }
+    ],
+    "chain_count": 4,
+    "chain_sha256s": [
+      "123057c04a7b255f5d918bc24f9aa4f6894d9294c10ff0fc2373709129d928ef",
+      "91db30efa9e84acbc30d5325fe43885e38fc773fdf407a1a6f093a35914e05e4",
+      "aa8c366c6d2411204e54ba0ced26002fa5511dcc0648c8f3e7ea118bafaf47a6",
+      "e59bf6e12f6fcfc6c985c4be9605e94829083c6d1a0eaaea095f502ddd7610d1"
+    ],
+    "drift_error": "decision yield calibration receipt drifted"
+  },
+  "schema": "ztare-h99-persistent-temporal-judgment-audit-v1",
+  "selection": {
+    "baseline": {
+      "budget_ineligible_protocol_ids": [],
+      "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+      "canonical_protocol_ids": [
+        "advance",
+        "detour"
+      ],
+      "contrast_priority_authority": "unresolved_exact_choice_set_coverage",
+      "contrast_priority_by_protocol_id": {},
+      "deduplicated_protocol_ids": [],
+      "max_primitive_execution_units": null,
+      "prices": [
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.44444444,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 2,
+            "primitive_execution_units": 3.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 4.0
+          },
+          "identification": 0.57938016,
+          "novelty": 1.0,
+          "partition_sha256": "3e685c6bc51c9b52893876fbda5844a6484ea2f57c3ee10bbc6a9f97008708b6",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 2,
+              "primitive_execution_units": 3.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 4.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 3,
+            "preparation_operation_sha256s": [
+              "ac8d8342bbb2362d13f0a559a3621bb407011368895164b628a54f7fc33fc43c",
+              "c100f95c1913f9c72fc1f4ef0847e1e723ffe0bde0b36e5f36c13f81fe8c26ed"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "advance",
+            "target_sha256": "cbda1e055100eb48e41632fa758853c300a563d4f55ab07d5b29914abe197074"
+          },
+          "protocol_id": "advance",
+          "response_class_count": 2,
+          "status": "priced",
+          "weighted_yield": 2.02382461,
+          "yield_density": 0.50595615
+        },
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.66666667,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 1,
+            "primitive_execution_units": 2.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 3.0
+          },
+          "identification": 1.0,
+          "novelty": 1.0,
+          "partition_sha256": "0b078b0d62c73caa28fd4a9cd8b1157b28508d7162816181e62090d5f73a0d04",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 1,
+              "primitive_execution_units": 2.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 3.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 2,
+            "preparation_operation_sha256s": [
+              "3fa5834dc920d385ca9b099c9fe55dcca163a6b256a261f8f147291b0e7cf633"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "detour",
+            "target_sha256": "5846c3e61c503184280b8fc95c952f23b9728e9f022b0cb82d18d61674c70d53"
+          },
+          "protocol_id": "detour",
+          "response_class_count": 3,
+          "status": "priced",
+          "weighted_yield": 2.66666667,
+          "yield_density": 0.88888889
+        }
+      ],
+      "schema": "ztare-guarded-protocol-selection-v1",
+      "selected_protocol_id": "detour",
+      "status": "selected",
+      "task_value_authority": "matched_external_outcome_contrasts_only",
+      "task_value_by_protocol_id": {},
+      "weights": {
+        "compression": 1.0,
+        "identification": 1.0,
+        "novelty": 1.0
+      }
+    },
+    "costs_unchanged": true,
+    "reranked": {
+      "budget_ineligible_protocol_ids": [],
+      "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+      "canonical_protocol_ids": [
+        "advance",
+        "detour"
+      ],
+      "contrast_priority_authority": "unresolved_exact_choice_set_coverage",
+      "contrast_priority_by_protocol_id": {},
+      "deduplicated_protocol_ids": [],
+      "max_primitive_execution_units": null,
+      "prices": [
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.44444444,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 2,
+            "primitive_execution_units": 3.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 4.0
+          },
+          "identification": 0.57938016,
+          "novelty": 1.0,
+          "partition_sha256": "3e685c6bc51c9b52893876fbda5844a6484ea2f57c3ee10bbc6a9f97008708b6",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 2,
+              "primitive_execution_units": 3.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 4.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 3,
+            "preparation_operation_sha256s": [
+              "ac8d8342bbb2362d13f0a559a3621bb407011368895164b628a54f7fc33fc43c",
+              "c100f95c1913f9c72fc1f4ef0847e1e723ffe0bde0b36e5f36c13f81fe8c26ed"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "advance",
+            "target_sha256": "cbda1e055100eb48e41632fa758853c300a563d4f55ab07d5b29914abe197074"
+          },
+          "protocol_id": "advance",
+          "response_class_count": 2,
+          "status": "priced",
+          "weighted_yield": 2.02382461,
+          "yield_density": 0.50595615
+        },
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.66666667,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 1,
+            "primitive_execution_units": 2.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 3.0
+          },
+          "identification": 1.0,
+          "novelty": 1.0,
+          "partition_sha256": "0b078b0d62c73caa28fd4a9cd8b1157b28508d7162816181e62090d5f73a0d04",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 1,
+              "primitive_execution_units": 2.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 3.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 2,
+            "preparation_operation_sha256s": [
+              "3fa5834dc920d385ca9b099c9fe55dcca163a6b256a261f8f147291b0e7cf633"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "detour",
+            "target_sha256": "5846c3e61c503184280b8fc95c952f23b9728e9f022b0cb82d18d61674c70d53"
+          },
+          "protocol_id": "detour",
+          "response_class_count": 3,
+          "status": "priced",
+          "weighted_yield": 2.66666667,
+          "yield_density": 0.88888889
+        }
+      ],
+      "schema": "ztare-guarded-protocol-selection-v1",
+      "selected_protocol_id": "advance",
+      "status": "selected",
+      "task_value_authority": "matched_external_outcome_contrasts_only",
+      "task_value_by_protocol_id": {
+        "advance": 1,
+        "detour": -1
+      },
+      "weights": {
+        "compression": 1.0,
+        "identification": 1.0,
+        "novelty": 1.0
+      }
+    }
+  },
+  "status": "supported"
+}

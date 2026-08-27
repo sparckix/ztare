@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exhaustive tail-minimax composition for the normalized Jacobian family.
+"""Tail-minimax composition audit for the normalized Jacobian family.
 
 Every coefficientwise-polynomial target schedule has exactly one of two
 contact-depth profiles after the exact parity/divisor factorization:
@@ -7,7 +7,14 @@ contact-depth profiles after the exact parity/divisor factorization:
 * all positive-contact coefficients vanish; or
 * a least positive-contact occurrence exists.
 
-The first branch is handled by the split tensor-density polar induction.
+The first branch is reduced by the split tensor-density polar induction to a
+zero-positive-face terminal.  At that terminal the target critical support
+is either finite, where the regular Rees two-flow exclusion applies once its
+schedule carrier is constructed, or infinite, where the actual finite source
+Lie pair must be composed with the semidirect exponential transfer.  The
+transferred group-module coordinate is generally nonpolynomial, so the older
+finite-polynomial density-clock carrier does not follow from finite source
+Lie support.
 The second is handled by the moving-backbone least-positive-contact
 induction.  The radial cone staircase supplies a schedule in the same
 category with symmetric logarithmic rate at most two.
@@ -35,18 +42,6 @@ from gauge_moving_backbone_unconditional_induction import (  # noqa: E402
 from gauge_pure_contact_zero_polar_tensor_induction import (  # noqa: E402
     run as pure_contact_zero_run,
 )
-from ztare.common.filtered_obstruction import (  # noqa: E402
-    FilteredTailClaim,
-    FilteredTailEvidenceScope,
-    FilteredTailMinimaxCompositionProblem,
-    FilteredTailOccurrenceOrder,
-    compile_filtered_tail_minimax_composition,
-    make_filtered_tail_context,
-    make_filtered_tail_evidence,
-)
-from ztare.common.content_bound_evidence import EvidenceAuthority  # noqa: E402
-
-
 def _sha256(payload: object) -> str:
     return hashlib.sha256(
         json.dumps(
@@ -69,16 +64,14 @@ def run(verification_rows: int = 8) -> dict[str, object]:
     least_positive = least_positive_run()
     staircase = staircase_run(maximum_target_order=5)
 
-    pure_certificate = pure["filtered_obstruction_compiler"]
+    pure_certificate = pure["positive_face_descent_certificate"]
     least_positive_certificate = least_positive[
         "asymptotic_rate_transfer"
     ]["compiler_certificate"]
     assert pure_certificate[
-        "strict_subthreshold_factorization_excluded"
-    ] is True
-    assert pure_certificate[
         "finite_positive_prefix_induction_closed"
     ] is True
+    assert pure_certificate["critical_terminal_excluded"] is False
     assert least_positive_certificate["minimum_certified_rate"] == "2"
     assert least_positive_certificate["no_rebilling_verified"] is True
     assert least_positive[
@@ -88,7 +81,7 @@ def run(verification_rows: int = 8) -> dict[str, object]:
     assert staircase["source_forward_dexp_roundtrip"] is True
     assert staircase["target_forward_dexp_roundtrip"] is True
 
-    pure_digest = str(pure_certificate["polar_tensor_certificate_sha256"])
+    pure_digest = str(pure_certificate["certificate_sha256"])
     least_positive_digest = str(
         least_positive_certificate["asymptotic_certificate_sha256"]
     )
@@ -146,70 +139,15 @@ def run(verification_rows: int = 8) -> dict[str, object]:
         "least_positive_branch_certificate_sha256": least_positive_digest,
         "upper_construction_certificate_sha256": upper_digest,
     })
-    context = make_filtered_tail_context(
-        category_id=json.dumps(
-            category,
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-        statistic_id=str(category["statistic"]),
-        occurrence_order=(
-            FilteredTailOccurrenceOrder.NAT_PARAMETER_POSITIVE_GRADE_LEX
-        ),
-        adapter_evidence_sha256=adapter_digest,
-    )
-    evidence = (
-        make_filtered_tail_evidence(
-            claim=FilteredTailClaim.PURE_BRANCH_LOWER,
-            subject_id="jacobian_pure_contact_zero_lower_bound",
-            context=context,
-            bound=2,
-            authority=EvidenceAuthority.FILTERED_COMPILER,
-            scope=(
-                FilteredTailEvidenceScope.ALL_ORDER_FINITE_PREFIX_UNIFORM
-            ),
-            evidence_sha256=pure_digest,
-        ),
-        make_filtered_tail_evidence(
-            claim=FilteredTailClaim.LEAST_POSITIVE_BRANCH_LOWER,
-            subject_id="jacobian_least_positive_contact_lower_bound",
-            context=context,
-            bound=2,
-            authority=EvidenceAuthority.FILTERED_COMPILER,
-            scope=(
-                FilteredTailEvidenceScope.ALL_ORDER_FINITE_PREFIX_UNIFORM
-            ),
-            evidence_sha256=least_positive_digest,
-        ),
-        make_filtered_tail_evidence(
-            claim=FilteredTailClaim.ADMISSIBLE_UPPER,
-            subject_id="jacobian_radial_staircase_upper_bound",
-            context=context,
-            bound=2,
-            authority=EvidenceAuthority.ADAPTER_EXACT,
-            scope=(
-                FilteredTailEvidenceScope.ADMISSIBLE_ALL_ORDER_CONSTRUCTION
-            ),
-            evidence_sha256=upper_digest,
-        ),
-    )
-    compiler_certificate = compile_filtered_tail_minimax_composition(
-        FilteredTailMinimaxCompositionProblem(
-            name="jacobian_unrestricted_symmetric_tail_minimax",
-            threshold=2,
-            context=context,
-            evidence=evidence,
-        )
-    )
-    assert compiler_certificate.unrestricted_minimax_value == "2"
     return {
-        "schema": "axiompack.jacobian_unrestricted_tail_minimax.v1",
+        "schema": "axiompack.jacobian_unrestricted_tail_minimax.v7",
         "schedule_category": category,
         "branch_partition": {
             "pure_contact_zero": {
-                "lower_bound": "2",
-                "all_order": True,
-                "arbitrary_finite_polar_prefix": True,
+                "lower_bound": None,
+                "conditional_lower_bound": None,
+                "positive_face_induction_all_order": True,
+                "selected_critical_terminal_excluded": False,
                 "certificate_sha256": pure_digest,
             },
             "least_positive_contact": {
@@ -233,18 +171,59 @@ def run(verification_rows: int = 8) -> dict[str, object]:
             "certificate_sha256": upper_digest,
         },
         "adapter_certificate_sha256": adapter_digest,
-        "filtered_obstruction_compiler": compiler_certificate.to_dict(),
+        "conditional_filtered_obstruction_compiler": None,
         "result": {
-            "unrestricted_lower_bound": "2",
+            "unrestricted_lower_bound": None,
+            "conditional_unrestricted_lower_bound": None,
             "unrestricted_upper_bound": "2",
-            "sigma_ct": "2",
+            "sigma_ct": None,
+            "missing_proposition": (
+                "derive the exhaustive finite/infinite target-critical "
+                "dichotomy from every strict-subthreshold pure "
+                "zero-positive-face schedule; construct the regular Rees "
+                "carrier in the finite branch and, in the infinite branch, "
+                "bind the finite polynomial Lie pair (A,J) to the exact "
+                "target-left semidirect transfer "
+                "(1-exp(-rho(A)))/rho(A), then exclude that transferred "
+                "orbit without assuming its group-module coordinate is "
+                "polynomial"
+            ),
+            "target_critical_rate_gap": {
+                "ordinary_rate_implies_finite_critical_support": False,
+                "counterfamily_scope": (
+                    "exact infinite critical diagonal with strict ordinary "
+                    "target rate; not itself a coupled gauge schedule"
+                ),
+                "kernel_owner": (
+                    "AxiomPackJacobianTargetCriticalRateGap."
+                    "target_critical_rate_gap_terminal_certificate"
+                ),
+            },
+            "equilibrium_transition_local_collision_sha256": (
+                pure["critical_terminal"]["equilibrium_transition_countermodel"]
+                ["certificate_sha256"]
+            ),
+            "critical_infinite_monodromy_sha256": (
+                pure["critical_terminal"]["critical_infinite_monodromy"]
+                ["certificate_sha256"]
+            ),
+            "finite_regular_monodromy_countermodels_sha256": (
+                pure["critical_terminal"]
+                ["finite_regular_monodromy_countermodels"]
+                ["certificate_sha256"]
+            ),
+            "coupled_julia_elimination_governed_record_sha256": (
+                "9a0b93843527fc75cb9c0121b79d9c89f726f2de29caaf341485bc56610785c2"
+            ),
         },
         "claim_boundary": (
-            "This determines the unrestricted symmetric logarithmic tail "
-            "minimax for the normalized public Jacobian family in the "
-            "declared coefficientwise-polynomial gauge category. It makes "
-            "no claim about the planar Jacobian conjecture or historical "
-            "priority."
+            "The radial staircase proves sigma_ct <= 2. The matching lower "
+            "bound remains open at the schedule-level finite/infinite "
+            "target-critical dichotomy and its two carrier constructions; "
+            "the infinite branch must retain semidirect exponential "
+            "transfer rather than infer polynomial group-module support. "
+            "No conclusion about the planar Jacobian "
+            "conjecture or historical priority follows."
         ),
     }
 

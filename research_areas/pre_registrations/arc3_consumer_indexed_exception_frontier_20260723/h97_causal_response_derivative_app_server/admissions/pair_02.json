@@ -1,0 +1,16 @@
+{
+  "action": "explore_derivative",
+  "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+  "eligible": true,
+  "environment_contact_before_admission": false,
+  "experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+  "kind": "pre_revision_derivative_admission",
+  "pair_index": 2,
+  "pre_basin_rule": "residual_plan_basin_sha256",
+  "pre_proposal_sha256": "b44b1b4f6f75c7e8800056512a18db1a81540a65f967333948793a257f7de56d",
+  "reason": "blind_parent_did_not_satisfy_frozen_residual",
+  "residual_contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "sha256": "53e30b14e3ab822a33ed390bcb3704fbcd1443f1decd15b373b2a492fc452b95",
+  "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+}

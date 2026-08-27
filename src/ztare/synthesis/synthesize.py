@@ -12,7 +12,14 @@ from typing import Any, Callable, Dict, List, Optional
 from ztare.common import utils
 from ztare.common.dispatch_model import dispatch_call_text
 from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.paths import (
+    PROMPTS_DIR,
+    PROJECTS_DIR,
+    RENDERERS_DIR,
+    REPO_ROOT,
+    RUBRICS_DIR,
+    resolve_project_dir,
+)
 
 
 ROOT_DIR = REPO_ROOT
@@ -273,16 +280,6 @@ def qa_passes_for_report_write(qa: Dict[str, Any], *, threshold: int) -> bool:
     if score < threshold:
         return False
     return not qa_blocking_issues(qa)
-
-
-def resolve_project_dir(project_arg: str) -> Path:
-    candidate = Path(project_arg)
-    if candidate.exists():
-        return candidate.resolve()
-    fallback = PROJECTS_DIR / project_arg
-    if fallback.exists():
-        return fallback.resolve()
-    raise FileNotFoundError(f"Project not found: {project_arg}")
 
 
 def synthesis_paths(project_dir: Path) -> Dict[str, Path]:

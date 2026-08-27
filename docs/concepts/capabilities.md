@@ -393,7 +393,7 @@ analogy / framer trees referenced in
 
 ### Full-catalog primitive families
 
-The live architecture index is a generated 1217-row capability catalog. Each row
+The live architecture index is a generated 1384-row capability catalog. Each row
 now carries two derived taxonomy fields:
 
 - `source_category`: where the implementation lives, such as `research-operator`,

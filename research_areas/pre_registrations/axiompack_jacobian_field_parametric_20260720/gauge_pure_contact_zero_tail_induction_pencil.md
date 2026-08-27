@@ -480,12 +480,12 @@ canonical prefix-free critical Witt logarithm is infinite by an all-index
 argument.
 
 The finite critical orbit can be followed through the group action.  If a
-below-rate-two pair had finite critical source and target logarithms, the
+below-rate-two pair additionally had finite critical source and target logarithms, the
 inverse radial holonomy would factor as a product of two polynomial Witt
-flows tangent to the identity.  At a finite branch point such a product is
-analytic unless it passes through infinity.  In the latter case, comparison
-of the two polynomial time coordinates shows that a nonzero linear term
-forces equal degrees.  If the normalized generators first differ in degree
+flows tangent to the identity.  Regular finite selected branches descend
+analytically.  For a branch passing through infinity, comparison of the two
+polynomial time coordinates shows that a nonzero linear term forces equal
+degrees.  If the normalized generators first differ in degree
 (e\ge2), their first fractional exponent is
 
 \[
@@ -493,9 +493,12 @@ forces equal degrees.  If the normalized generators first differ in degree
 \]
 
 If they never differ, they are proportional and reduce to the one-flow
-Julia case.  Neither branch produces the canonical first fractional
-exponent (5/2).  Thus the two-sided finite critical special fiber is now
-excluded by an all-degree argument.
+Julia case.  Neither of these branches produces the canonical first
+fractional exponent (5/2).  They do not exhaust finite continuation:
+equilibrium-to-equilibrium branches can have reciprocal derivative ratios.
+The exact local replay with ratios (3/2) and (2/3) produces a linear term and
+a nonzero (5/2) shell.  The two-sided finite critical special fiber therefore
+remains unresolved.
 
 ### Two-sided finite-log factorization residual
 
@@ -523,7 +526,8 @@ The remaining discriminating test is therefore:
    obstruction and the cusp-stabilizer ambiguity;
 3. prove that each exhaustive outcome is a same-order rate-two payment or
    an exact inverse-flow removal to a strictly lower positive grade;
-4. iterate until the now-closed critical special fiber is reached.
+4. iterate until the unresolved critical selected-factorization problem is
+   reached.
 
 Success is a well-founded polar-prefix induction with a bound on every
 uncharged descent.  A bounded pole-depth solve, or a seed quotient without
@@ -534,8 +538,8 @@ finite critical recurrence.  For a finite prefix, let (h>0) be its maximum
 positive Rees grade.  Prove an exhaustive transition at grade (h): a
 source or target coefficient is paid at rate at least two, or an exact
 inverse-flow graph boundary removes the grade and decreases (h).  Finite
-descent then reaches the critical two-flow obstruction above.  The only
-opposite outcome is an exact polar stabilizer cycle with no paid descendant;
+descent then reaches the critical two-flow problem above.  The only opposite
+outcome is an exact polar stabilizer cycle with no paid descendant;
 such a cycle must be replayed as a candidate below-rate-two contact rather
 than dismissed by a finite jet.
 
@@ -786,10 +790,13 @@ and its limiting rate is therefore
 \]
 
 Thus a strict below-two pair has no positive Rees face.  Finite maximal-face
-descent reaches the separately certified critical two-flow terminal.  This
-closes the arbitrary-finite-prefix induction for the complete pure
-contact-zero category.  It does not yet settle positive-contact corrections
-coupled to an arbitrary contact-zero backbone.
+descent reaches a zero-positive-face critical terminal.  It does not by
+itself reach the finite two-flow category: v105 shows that strict ordinary
+target rate can coexist with infinitely many target-critical rows.  The
+arbitrary-finite-prefix induction is therefore closed only through the
+positive-face descent; its terminal still needs the schedule-level
+finite/infinite target-critical dichotomy and the matching carrier in each
+branch.
 
 The exact replays are
 [`gauge_pure_contact_zero_tensor_density_holonomy.py`](gauge_pure_contact_zero_tensor_density_holonomy.py)

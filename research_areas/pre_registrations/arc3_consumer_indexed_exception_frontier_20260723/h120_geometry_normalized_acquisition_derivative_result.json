@@ -1,0 +1,96 @@
+{
+  "claim_boundary": "Exact local full-dynamics normalization of H119 Levels 1 and 2 only; oracle information was not exposed to an actor.",
+  "controller_contact": false,
+  "disposition": "compounding_signal",
+  "environment_contact": false,
+  "excess_action_counts": [
+    4,
+    0
+  ],
+  "hypothesis_id": "H-GPSA-GEOMETRY-NORMALIZED-ACQUISITION-DERIVATIVE-20260808-120",
+  "identities": {
+    "game": "tu93-0768757b",
+    "game_source_sha256": "80e41888f9f7b1a0c03e02c0aff3814e0fd68eb5b35ef22bb3649c87fc60a23f",
+    "h119_report_sha256": "e0482a75e6d657315e43bf5860a3c15ceec51e7fbda272593dd169529e9ed2c3"
+  },
+  "levels": [
+    {
+      "excess_action_count": 4,
+      "level": 1,
+      "observed_action_count": 22,
+      "oracle_minimum_action_count": 18,
+      "oracle_witness": [
+        3,
+        1,
+        1,
+        3,
+        0,
+        3,
+        1,
+        1,
+        2,
+        2,
+        1,
+        3,
+        3,
+        1,
+        3,
+        0,
+        3,
+        1
+      ],
+      "replay": {
+        "completed": true,
+        "completion_step": 18,
+        "ended_level_index": 1,
+        "ended_score": 1,
+        "witness_length": 18
+      },
+      "search": {
+        "distinct_state_count": 62,
+        "expanded_state_count": 62,
+        "generated_transition_count": 246
+      }
+    },
+    {
+      "excess_action_count": 0,
+      "level": 2,
+      "observed_action_count": 10,
+      "oracle_minimum_action_count": 10,
+      "oracle_witness": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "replay": {
+        "completed": true,
+        "completion_step": 10,
+        "ended_level_index": 2,
+        "ended_score": 1,
+        "witness_length": 10
+      },
+      "search": {
+        "distinct_state_count": 29,
+        "expanded_state_count": 23,
+        "generated_transition_count": 89
+      }
+    }
+  ],
+  "observed_segment_action_counts": [
+    22,
+    10
+  ],
+  "oracle_minimum_action_counts": [
+    18,
+    10
+  ],
+  "schema": "ztare-h120-geometry-normalized-acquisition-derivative-v1",
+  "status": "offline_complete"
+}

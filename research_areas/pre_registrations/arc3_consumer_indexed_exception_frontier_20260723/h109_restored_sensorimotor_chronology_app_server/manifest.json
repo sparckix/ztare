@@ -1,0 +1,1287 @@
+{
+  "claim_boundary": [
+    "H97 tests one parent response at one descendant state.",
+    "H97 can raise observed offspring count from zero to one but cannot establish a supercritical response population.",
+    "H97 does not establish arbitrary learned reward machines, cross-task transfer, benchmark improvement, accelerating gains, or literature novelty."
+  ],
+  "construction_replay": {
+    "offer": {
+      "assignment": "offer",
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "changed_action": false,
+      "changed_path": true,
+      "changed_prediction": true,
+      "contract_sha256": "56a3b66ccd278a76cd2df26212ef2ebf84e6c16a6777e308d0964acf22682e5a",
+      "controller_instance_sha256": "9c8ea27e93ea9d390308c89d5363c4883b8312ee66ba8eee2e40d6e81c4d9c02",
+      "derivative_sha256": "377167e213ede3fb986ee6dcb042c771bed144e8b163b70726f0600a6d9636a4",
+      "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+      "kind": "residual_proposal_transition",
+      "post_proposal_sha256": "075b5f0c39677f0128c4bda7a6f55faafd752d63e4d1ae981791ae0361d4da46",
+      "pre_basin_sha256": "a71de7b57e5c03c3a29d18c30f5a227a95775172ddbbd8761ea55bc2ba711f40",
+      "pre_proposal_sha256": "4f65693eef25a9697da74dc552e5885c90a93492558c65b871be683a5996761a",
+      "relation": "offered_supported_derivative",
+      "schema": "ztare-causal-response-derivative-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+      "sha256": "a8a6494496cb196ae769e754b8fe2b01b45f1f3bea8b73a36010659aa7a5854a",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "stratum_sha256": "h96-construction-stratum",
+      "supported_transport": true,
+      "trial_ref": "h96-construction:offer"
+    },
+    "withhold": {
+      "assignment": "withhold",
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "changed_action": false,
+      "changed_path": true,
+      "changed_prediction": true,
+      "contract_sha256": "56a3b66ccd278a76cd2df26212ef2ebf84e6c16a6777e308d0964acf22682e5a",
+      "controller_instance_sha256": "f7b172ed20024a3049edffb954c08f300b96bc5dba4d4f9003c3ca97e90fb778",
+      "derivative_sha256": "377167e213ede3fb986ee6dcb042c771bed144e8b163b70726f0600a6d9636a4",
+      "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+      "kind": "residual_proposal_transition",
+      "post_proposal_sha256": "d3f563cb9255336c167578ca6baa19e35261c071ce39dfbd35e318aa1cc4912e",
+      "pre_basin_sha256": "3f360e15c72ac2ba815f90bd06973ee7cec08b7e53975011368e788bddf00c13",
+      "pre_proposal_sha256": "13b23186b4646d4ece267dce76efea2d089a0f315f59ec651207b7c46798ec11",
+      "relation": "withheld_already_satisfied",
+      "schema": "ztare-causal-response-derivative-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+      "sha256": "8f2858be3ce21dfc25f2fc4735c1a2f359e499d085a04b7760452cd4799c5d6e",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "stratum_sha256": "h96-construction-stratum",
+      "supported_transport": false,
+      "trial_ref": "h96-construction:withhold"
+    }
+  },
+  "controller_transport": "codex_app_server",
+  "event_family_binding": {
+    "event_identity": "9946a5f51690d834af759412e18e8cc0dcaabde76a1b273d391ebc88dad57eb5",
+    "index_map": "program_waypoint_ref_to_unique_lineage_root",
+    "index_map_total_on_prefix": true,
+    "no_post_payoff_selection": "event_selection_phase_pre_outcome",
+    "no_proxy_family": "exact_lineage_roots_only",
+    "pre_payoff_timing": "frozen_before_target_proposal_and_outcome",
+    "relation_type": "identity",
+    "same_carrier": "source_observation:adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "same_owner_or_source": "source_program:8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "source_event_family": "causal_object_lineage_events:a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+    "target_event_family": "response_program_waypoints:8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+  },
+  "event_family_binding_sha256": "2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+  "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+  "hypothesis_id": "H-GPSA-CAUSAL-RESPONSE-DERIVATIVE-20260803-97",
+  "initial_history_authority": {
+    "chronology_carrier": {
+      "action_arity": 4,
+      "action_count": 7,
+      "actions": [
+        2,
+        2,
+        2,
+        0,
+        0,
+        0,
+        1
+      ],
+      "endpoint_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "kind": "exact_sensorimotor_prefix_chronology",
+      "observation_count": 8,
+      "observation_sha256s": [
+        "e55a1c1775c34a88319adea39042846b6100c4c674bbfc809b9711334430e778",
+        "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+        "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+        "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+        "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+        "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+        "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+      ],
+      "rendering_rule": "ordered_receipt_and_image_then_intervening_action_v1",
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "sha256": "c47380b58dfefaab7c0b853239ae40c4eb73727ee7ff1393fd5770d6b9cab48c",
+      "solution_information_supplied": false,
+      "source_prefix_sha256": "9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65",
+      "transition_count": 7,
+      "transition_sha256s": [
+        "1b0341552615e4f9e867f9fc2ac7784edb0eebdab8125e4f202680ea8008b95a",
+        "27d16dc111fe24b8a8c8c0ae3725c48d3be0abb2dd25f4b8fb89f74519383d81",
+        "7600a958f61b34eae08a93add45db72601ddc225244b6ef1d83086ddd9d394ea",
+        "af6039dd3cd92d9c7d6a9541f4da1aaa5a505c2ba70fc0efdcd276db7dcc6f5f",
+        "56ec7acffd3dae54c61f810ea859e2396b8b56a19f2bd29dd8071fdf68bee762",
+        "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636",
+        "a488b86c4f37b762cb734b4998862f84a0bc7ca7597c3cf7691fdcc7496e9ba4"
+      ]
+    },
+    "chronology_carrier_sha256": "c47380b58dfefaab7c0b853239ae40c4eb73727ee7ff1393fd5770d6b9cab48c",
+    "endpoint_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "kind": "initial_controller_history_authority",
+    "mode": "exact_prefix_chronology",
+    "rendered_parent_input_sha256": "5b51594c4c7909efb78921ccb603a293d68c8479794b84a928403ac7021a1da6",
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "sha256": "c691880ededd7ed1755fc7f133df9679d8814f872a4bb3c094ae7094fee80eca",
+    "source_prefix_sha256": "9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65"
+  },
+  "kind": "experiment_manifest",
+  "lineage_transport": {
+    "appearance_revision_count": 1,
+    "bracketed_occlusion_count": 1,
+    "evidence_refs": [
+      "prefix:9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65",
+      "source_family:2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+      "source_witness:f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd"
+    ],
+    "kind": "causal_object_lineage_transport",
+    "maximum_occlusion_frames": 1,
+    "method": "receipt_backed_unique_lineage",
+    "reason": "unique_lineage_path_complete",
+    "required_source_object_refs": [
+      "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+      "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+      "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7"
+    ],
+    "schema": "ztare-object-lineage-transport-v1",
+    "sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+    "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "status": "transportable",
+    "target_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "traces": [
+      {
+        "appearance_revision_count": 0,
+        "bracketed_occlusion_count": 0,
+        "events": [
+          {
+            "hop_index": 1,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "fedd9aefed9b47165a85f13bd3f75a2240faa24287247c26382d456a29ea70a9",
+            "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+            "source_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+            "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "target_object_ref": "object:e7ab686d922cd4304088ec96a4760fac924f284156b8b42b1442c14bf7dd8759",
+            "target_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "27d16dc111fe24b8a8c8c0ae3725c48d3be0abb2dd25f4b8fb89f74519383d81"
+          },
+          {
+            "hop_index": 2,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "61e4fbc2cfc078cd1f2ab6d199a89d6071a740a8d9341ed39326222288c3ff67",
+            "source_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "source_object_ref": "object:e7ab686d922cd4304088ec96a4760fac924f284156b8b42b1442c14bf7dd8759",
+            "source_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "target_object_ref": "object:ac5f1f5aef7c94517144d584d8e5a60973ac06c6ec9f3253455a36c0382eb9f3",
+            "target_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "7600a958f61b34eae08a93add45db72601ddc225244b6ef1d83086ddd9d394ea"
+          },
+          {
+            "hop_index": 3,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "1f82ad0803551b8f422b29884fec364d4cc2cc87667eb7d18d94b377ef46550e",
+            "source_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "source_object_ref": "object:ac5f1f5aef7c94517144d584d8e5a60973ac06c6ec9f3253455a36c0382eb9f3",
+            "source_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "target_object_ref": "object:328a0e8bf1f03dbd2eb6db785513967cd1b307c6528fac982f6b772cf14daa11",
+            "target_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "af6039dd3cd92d9c7d6a9541f4da1aaa5a505c2ba70fc0efdcd276db7dcc6f5f"
+          },
+          {
+            "hop_index": 4,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "9a08f63fce9a1fc5db943daba34163205c3a29f05825b5a19b621311e7ec6f36",
+            "source_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "source_object_ref": "object:328a0e8bf1f03dbd2eb6db785513967cd1b307c6528fac982f6b772cf14daa11",
+            "source_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "target_object_ref": "object:40be648c8ab8cd5210d78b6af1bc99eab51bfdf4c8d632a1aeffb7fa96b70d5e",
+            "target_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "56ec7acffd3dae54c61f810ea859e2396b8b56a19f2bd29dd8071fdf68bee762"
+          },
+          {
+            "hop_index": 5,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "3ae3e129852cd788bc8a8f91df317f02220bf6c6092e9b2ebec19a6adad9c9ee",
+            "source_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "source_object_ref": "object:40be648c8ab8cd5210d78b6af1bc99eab51bfdf4c8d632a1aeffb7fa96b70d5e",
+            "source_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "target_object_ref": "object:41a0dc22a7fcd2fa8db5b17c210ed2d2472c1dfcaaf4d128df6d7cd89bbc42c0",
+            "target_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+          },
+          {
+            "hop_index": 6,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "b2ec270a371222ab6ceec737e6aac0a108c33533b7fdc7a4a08d393d11989f93",
+            "source_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "source_object_ref": "object:41a0dc22a7fcd2fa8db5b17c210ed2d2472c1dfcaaf4d128df6d7cd89bbc42c0",
+            "source_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "target_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+            "target_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+            "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+            "transition_sha256": "a488b86c4f37b762cb734b4998862f84a0bc7ca7597c3cf7691fdcc7496e9ba4"
+          }
+        ],
+        "kind": "object_lineage_trace",
+        "lineage_sha256": "0bf1d9e95e9606423a6f5eca90708db9e9d280ce1554352111d185ae916b57ae",
+        "reason": "lineage_path_complete",
+        "schema": "ztare-object-lineage-transport-v1",
+        "sha256": "69e38d6bcdbdec533e4a2680112b2e501a8cb0f49aae4e8801cb0fa3563335bc",
+        "source_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+        "source_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2",
+        "status": "resolved",
+        "target_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+        "target_type_sha256": "4331b006555625502f9fb7fbd830a862b3f057239473c9a470c80d587feba1d2"
+      },
+      {
+        "appearance_revision_count": 1,
+        "bracketed_occlusion_count": 0,
+        "events": [
+          {
+            "hop_index": 1,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "98f312e263a32c923a07267985ff087e925662ec883529aba8b3bca33ce95f31",
+            "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+            "source_object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+            "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+            "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "target_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "target_object_ref": "object:21fb337323cb6356213ce65a954d90a7ac0f01511ae462f0f29da64816952fbc",
+            "target_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "target_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "transition_sha256": "27d16dc111fe24b8a8c8c0ae3725c48d3be0abb2dd25f4b8fb89f74519383d81"
+          },
+          {
+            "hop_index": 2,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "96dce3d549a282bdc792bd74e79d620322278872147452673c6c0cdc9109aa08",
+            "source_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "source_object_ref": "object:21fb337323cb6356213ce65a954d90a7ac0f01511ae462f0f29da64816952fbc",
+            "source_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "target_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "target_object_ref": "object:249ea9d05999c18adfa92d2ec02eb9a72f6f34eca6989d9c35fbea900e106161",
+            "target_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "target_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "transition_sha256": "7600a958f61b34eae08a93add45db72601ddc225244b6ef1d83086ddd9d394ea"
+          },
+          {
+            "hop_index": 3,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "07cf64f9b4d9b9381d0009cc5b90e435263b4f52aec84feca257b117acbc30eb",
+            "source_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "source_object_ref": "object:249ea9d05999c18adfa92d2ec02eb9a72f6f34eca6989d9c35fbea900e106161",
+            "source_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "target_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "target_object_ref": "object:610c505c11ecf7a88276f5e2f3ed8ba93842ead33d194e0343001f77a2d23331",
+            "target_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "target_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "transition_sha256": "af6039dd3cd92d9c7d6a9541f4da1aaa5a505c2ba70fc0efdcd276db7dcc6f5f"
+          },
+          {
+            "hop_index": 4,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "a2479dab9faf1990c58befd8ae929f875c9555c1a069ff19fb027e334168b78b",
+            "source_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "source_object_ref": "object:610c505c11ecf7a88276f5e2f3ed8ba93842ead33d194e0343001f77a2d23331",
+            "source_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "target_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "target_object_ref": "object:7bd4aa3ce219a9fc3d561197ca4004b6f823be8ff3f05d6c1c9e376ecaaddf07",
+            "target_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "target_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "transition_sha256": "56ec7acffd3dae54c61f810ea859e2396b8b56a19f2bd29dd8071fdf68bee762"
+          },
+          {
+            "hop_index": 5,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "bbox",
+              "cell_count",
+              "palette"
+            ],
+            "relation": "unique_fixed_support_appearance_revision",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "86eb97033d84b93041d9d0c84be3dcb5cf44e5f3418bddcffb2b5d52e4b4d193",
+            "source_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "source_object_ref": "object:7bd4aa3ce219a9fc3d561197ca4004b6f823be8ff3f05d6c1c9e376ecaaddf07",
+            "source_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+            "target_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "target_object_ref": "object:b3937a3cb840c41992a92c75ea208cd098fafc0ea40c8b7c5a204d0408d3197b",
+            "target_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "target_type_sha256": "23152f1307717e7bb19407562eee3c58d71b9021c742226eecfec048ac3f5eb1",
+            "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+          },
+          {
+            "hop_index": 6,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "9febd30e7eed3ab254aac7f82363d04c8edde8e02b2979988057ddcf88bd6981",
+            "source_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "source_object_ref": "object:b3937a3cb840c41992a92c75ea208cd098fafc0ea40c8b7c5a204d0408d3197b",
+            "source_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "source_type_sha256": "23152f1307717e7bb19407562eee3c58d71b9021c742226eecfec048ac3f5eb1",
+            "target_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+            "target_object_ref": "object:31b0903e4212bbafac6c3e4227db245a17a2df2fe1aa36e4772330fdd3b9fc11",
+            "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "target_type_sha256": "23152f1307717e7bb19407562eee3c58d71b9021c742226eecfec048ac3f5eb1",
+            "transition_sha256": "a488b86c4f37b762cb734b4998862f84a0bc7ca7597c3cf7691fdcc7496e9ba4"
+          }
+        ],
+        "kind": "object_lineage_trace",
+        "lineage_sha256": "7e5345a2688a83ce3f43b68ac2a8a335fcf8abeecd1573d20658a51617448200",
+        "reason": "lineage_path_complete",
+        "schema": "ztare-object-lineage-transport-v1",
+        "sha256": "27c0c17c4344c5c50927ecd7072ebe8598d67ccb57f2783788c79d94293bce3b",
+        "source_object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+        "source_type_sha256": "cb02e0d21db6d2a90071a7be753526009f1784315614f0482ca09e8e05056924",
+        "status": "resolved",
+        "target_object_ref": "object:31b0903e4212bbafac6c3e4227db245a17a2df2fe1aa36e4772330fdd3b9fc11",
+        "target_type_sha256": "23152f1307717e7bb19407562eee3c58d71b9021c742226eecfec048ac3f5eb1"
+      },
+      {
+        "appearance_revision_count": 0,
+        "bracketed_occlusion_count": 1,
+        "events": [
+          {
+            "hop_index": 1,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "f97297b0f3ab0d8fd353f238341bac37c4acebd25be2efff5816b2c00fab4859",
+            "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+            "source_object_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+            "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "target_object_ref": "object:0f57123f21031ecc2561bde0fecdb98b4f8fcec4b87ca1d43dd1a1cb8b7d209e",
+            "target_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "transition_sha256": "27d16dc111fe24b8a8c8c0ae3725c48d3be0abb2dd25f4b8fb89f74519383d81"
+          },
+          {
+            "hop_index": 2,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "b6ffea0beab18f82588f3606290aca302789102a84b7b07302335628b5e95f7b",
+            "source_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "source_object_ref": "object:0f57123f21031ecc2561bde0fecdb98b4f8fcec4b87ca1d43dd1a1cb8b7d209e",
+            "source_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "target_object_ref": "object:e5e4c78ef644861f5b887cc311885e2c9e6fe0cc40396c5a59421860dd046781",
+            "target_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "transition_sha256": "7600a958f61b34eae08a93add45db72601ddc225244b6ef1d83086ddd9d394ea"
+          },
+          {
+            "hop_index": 3,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "f2e1585bc47b584d8b31fb660eeca1c73c8be420ce226a55bf67dcd6990b6438",
+            "source_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "source_object_ref": "object:e5e4c78ef644861f5b887cc311885e2c9e6fe0cc40396c5a59421860dd046781",
+            "source_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "target_object_ref": "object:7c5bfb2db2d52eb25c54a443a3c7fbf05306c79010b402a199e1b40645515987",
+            "target_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "transition_sha256": "af6039dd3cd92d9c7d6a9541f4da1aaa5a505c2ba70fc0efdcd276db7dcc6f5f"
+          },
+          {
+            "hop_index": 4,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "4b3442a8456af84f2c62d3859c8c07e75667b79d2733629f46f7ec29341dee87",
+            "source_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "source_object_ref": "object:7c5bfb2db2d52eb25c54a443a3c7fbf05306c79010b402a199e1b40645515987",
+            "source_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "target_object_ref": "object:84bd73debcc047714dcc73c57886ce26e0e331d2def1fc1b8b0773210f0279d6",
+            "target_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "transition_sha256": "56ec7acffd3dae54c61f810ea859e2396b8b56a19f2bd29dd8071fdf68bee762"
+          },
+          {
+            "hop_index": 5,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "lookahead_unique_type_sha256"
+            ],
+            "relation": "bracketed_occlusion_enter",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "52a96fe963658da02f7efaf6b1f5ffe7b20fa997d696bdfcb64490649264b84c",
+            "source_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "source_object_ref": "object:84bd73debcc047714dcc73c57886ce26e0e331d2def1fc1b8b0773210f0279d6",
+            "source_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "target_object_ref": "",
+            "target_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "target_type_sha256": "",
+            "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+          },
+          {
+            "hop_index": 6,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_reappearance_exit",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "28861e10c7eba016552a32d526f6c100e0909fd95308aa4a74b085bf6acff132",
+            "source_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "source_object_ref": "",
+            "source_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "target_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+            "target_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+            "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+            "transition_sha256": "a488b86c4f37b762cb734b4998862f84a0bc7ca7597c3cf7691fdcc7496e9ba4"
+          }
+        ],
+        "kind": "object_lineage_trace",
+        "lineage_sha256": "0f5fa6360fb156deb779c5b6653a6a81bd015bd9c9a536ebd6ea091cad1d8d34",
+        "reason": "lineage_path_complete",
+        "schema": "ztare-object-lineage-transport-v1",
+        "sha256": "cb70211b0c478086b0bc8b43b11931d5af021a29a8eea66a22d256e152d78fd8",
+        "source_object_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+        "source_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb",
+        "status": "resolved",
+        "target_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+        "target_type_sha256": "e44b2f276b31fceea92d46030ef6f9d8e13c798ef92f553831cb1de7f67addcb"
+      },
+      {
+        "appearance_revision_count": 0,
+        "bracketed_occlusion_count": 0,
+        "events": [
+          {
+            "hop_index": 1,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "9567b9ec7bf714e6cb247600cd12d1cd3f5a0ff45f754d949915fe622a4e475e",
+            "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+            "source_object_ref": "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7",
+            "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "target_object_ref": "object:94c2db27c90d39d14e196fb34b0a41e72e3acb5d095a28026457f2974fed53d4",
+            "target_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "27d16dc111fe24b8a8c8c0ae3725c48d3be0abb2dd25f4b8fb89f74519383d81"
+          },
+          {
+            "hop_index": 2,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "3ab36ff430767245a78815e66e4f7be39f7014f19db0e062a07964fb3c91dd90",
+            "source_catalog_sha256": "2c02c1c5ae2b20fb5f288683b31f8fc331ba9057a88a03d3bac655880a2ec051",
+            "source_object_ref": "object:94c2db27c90d39d14e196fb34b0a41e72e3acb5d095a28026457f2974fed53d4",
+            "source_observation_sha256": "2f9166264635a4c6d3d8b9b220f4933e326ff75ac144446a54097965a4163952",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "target_object_ref": "object:cf5b292f4769515a93539b820914bce576087357cd862221722221b91ae426ea",
+            "target_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "7600a958f61b34eae08a93add45db72601ddc225244b6ef1d83086ddd9d394ea"
+          },
+          {
+            "hop_index": 3,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "1c3e08deaa74771c0ab3c29e7e97d137d08dce7f8ebe968bf3fde07673590236",
+            "source_catalog_sha256": "9567a78a9ba2abe6aee9e8a6f3a29a63f5f276cc9072b221db21426c08ee7a88",
+            "source_object_ref": "object:cf5b292f4769515a93539b820914bce576087357cd862221722221b91ae426ea",
+            "source_observation_sha256": "e899ef31cf69fb90772d655f2a9381ae358c53157dacd71bdf0ca2342b1ee557",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "target_object_ref": "object:1dcdb39722d9f0f841e6b4e2800e41918492138bb267ae814a47fcf7c171e466",
+            "target_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "af6039dd3cd92d9c7d6a9541f4da1aaa5a505c2ba70fc0efdcd276db7dcc6f5f"
+          },
+          {
+            "hop_index": 4,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "674295c4a2cbfb5940daf4acebc47e461a2cec6e1eb961784c03be846a8a4ad7",
+            "source_catalog_sha256": "80cccb7b3553557b2f098d0e03d7464e43f3336affee81497e65289643c55195",
+            "source_object_ref": "object:1dcdb39722d9f0f841e6b4e2800e41918492138bb267ae814a47fcf7c171e466",
+            "source_observation_sha256": "604bbcedb31609601e83b183433586ae00f944a58255a770636b288c4eaad957",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "target_object_ref": "object:b702cc96087655356ea317c88f65dc7342a580aed2eb9b214942dead75d1a992",
+            "target_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "56ec7acffd3dae54c61f810ea859e2396b8b56a19f2bd29dd8071fdf68bee762"
+          },
+          {
+            "hop_index": 5,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "8e2bb70f1be47a1c7c36fb93e1c9498946cbacbf63ced29cc41ce1cdfcd3028b",
+            "source_catalog_sha256": "86508a544930c083063e4f5a292282ec4485a47aa4fac02a2695951c6d1dfc1d",
+            "source_object_ref": "object:b702cc96087655356ea317c88f65dc7342a580aed2eb9b214942dead75d1a992",
+            "source_observation_sha256": "20a1468478a0d17aa5effe1609f1de3603bdbb1431adcfc1db4c12c7cf31f8a0",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "target_object_ref": "object:3d0c9dea212dae7a732ef0425769c0fe794c3fa2393f481422d87c1c926db80f",
+            "target_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+          },
+          {
+            "hop_index": 6,
+            "kind": "object_lineage_event",
+            "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+            "preserved_features": [
+              "type_sha256"
+            ],
+            "relation": "unique_exact_type",
+            "schema": "ztare-object-lineage-transport-v1",
+            "sha256": "3e41167b188aed587120a309ceb0712f6858094d4049a6aeeb82aad9cdff546e",
+            "source_catalog_sha256": "bfbe4d3751a63ecadb28efea99021b5153de5b8589bef3d62ef0a98fcaf9ac1a",
+            "source_object_ref": "object:3d0c9dea212dae7a732ef0425769c0fe794c3fa2393f481422d87c1c926db80f",
+            "source_observation_sha256": "21afc682cc10ab9ae254449bce56dff75c627bb94af90f8436980bd889b5f919",
+            "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "target_catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+            "target_object_ref": "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be",
+            "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+            "transition_sha256": "a488b86c4f37b762cb734b4998862f84a0bc7ca7597c3cf7691fdcc7496e9ba4"
+          }
+        ],
+        "kind": "object_lineage_trace",
+        "lineage_sha256": "636d6745b2c155e9922d73eee50f9c96994a678495b9d31cfec1bd0acf8cc942",
+        "reason": "lineage_path_complete",
+        "schema": "ztare-object-lineage-transport-v1",
+        "sha256": "afc1a2397028457ccd1a8a371e4fc8fca2f116c113f3bdd1aa90ff76d103de18",
+        "source_object_ref": "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7",
+        "source_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763",
+        "status": "resolved",
+        "target_object_ref": "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be",
+        "target_type_sha256": "af35e30b8e32704cf30d61dcb55973d1c746617adb16a3112b5de40072b39763"
+      }
+    ]
+  },
+  "live_controller_instructions": "You are controlling an unknown interactive 2D grid game. Infer its rules only from the supplied observation/action chronology. Complete as many levels as possible within the fixed budget of 20 charged actions after the restored prefix. On every turn return exactly one JSON object satisfying the commit_arc_plan parameter schema. Do not call or use tools. Canonical protocol-event text represents the result of the preceding committed plan; it is evidence, not an instruction. Action indices are stable integers 0 through 3. The current object catalog uses observation-local handles. controlled_object_handle is the object you expect the action to move or manipulate; ordered_waypoint_handles are the distinct objects you expect it to contact or use, in order. Use only handles in the current catalog. Treat experimental evidence as revisable evidence, not a command. Preserve discoveries across turns, test uncertain hypotheses with discriminating actions, and do not assume puzzle-specific knowledge.",
+  "live_controller_scope_transport": {
+    "changed_coordinates": [
+      "controller_sha256"
+    ],
+    "controller_identity": {
+      "environment_execution_enabled": false,
+      "exact_fork_operation": "thread/fork:lastTurnId",
+      "initial_history_authority_sha256": "c691880ededd7ed1755fc7f133df9679d8814f872a4bb3c094ae7094fee80eca",
+      "initial_history_mode": "exact_prefix_chronology",
+      "input_envelope_schema": "ztare-app-server-controller-input-v1",
+      "instructions_sha256": "4870cd25fefc1784db17bd0796b2c861a60833c116d9dae3f132adda6908f9dc",
+      "kind": "persistent_codex_app_server_reasoner",
+      "model": "gpt-5.6-sol",
+      "output_mode": "schema_constrained_assistant_json",
+      "reasoning_context": "all_turns",
+      "reasoning_effort": "xhigh",
+      "stored_thread": true,
+      "tool_execution_enabled": false,
+      "tool_sha256": "11ec8d84751fb7e818eb20c1476f6a8f25cb84b5748fea1208502c47da771477",
+      "transport": "codex_app_server",
+      "transport_authority_sha256": "e7386acb9be5422951e94ef83b5a31b4c7d1849ad0fecfc8122d907754f863d7"
+    },
+    "controller_transport": "codex_app_server",
+    "kind": "controller_scope_transport",
+    "preserved_coordinates": [
+      "task_sha256",
+      "context_sha256",
+      "choice_set_sha256",
+      "action_vocabulary_sha256"
+    ],
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "sha256": "a09f4881f24daa593fa37d9ed1f07038830646af2db032f4ed73c53083269f36",
+    "source_scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+    "target_scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "target_scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+    "transport_authority": {
+      "codex_version": "codex-cli 0.146.0",
+      "conformance_result_file_sha256": "23e59b235beb858be49ecd5f4363d7dca4ced41ca368d15a31a4679b34e8114a",
+      "conformance_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_app_server_fork_conformance_result.json",
+      "conformance_result_sha256": "64c81cc1bea2070aa395b47599ef3240c723c007c90b5ae33599d18e5645c94c",
+      "fork_operation": "thread/fork:lastTurnId",
+      "input_envelope_schema": "ztare-app-server-controller-input-v1",
+      "kind": "codex_app_server_transport_authority",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "sha256": "e7386acb9be5422951e94ef83b5a31b4c7d1849ad0fecfc8122d907754f863d7",
+      "tool_item_count": 0
+    }
+  },
+  "live_controller_tool": {
+    "description": "Commit one charged environment action and the object path that currently justifies it.",
+    "name": "commit_arc_plan",
+    "parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "type": "integer"
+        },
+        "controlled_object_handle": {
+          "type": "string"
+        },
+        "ordered_waypoint_handles": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "type": "array"
+        },
+        "plan_summary": {
+          "type": "string"
+        },
+        "prediction": {
+          "type": "string"
+        },
+        "uncertainty": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "prediction",
+        "plan_summary",
+        "uncertainty",
+        "controlled_object_handle",
+        "ordered_waypoint_handles"
+      ],
+      "type": "object"
+    },
+    "strict": true,
+    "type": "function"
+  },
+  "live_interventions": {
+    "causal_core": {
+      "completed_subgoals": [
+        {
+          "object_handle": "o02",
+          "status": "discharged_before_current_decision"
+        }
+      ],
+      "evidence_status": "two_randomized_externally_settled_parent_responses",
+      "kind": "causal_response_derivative_intervention",
+      "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+      "residual_program": {
+        "controlled_object_handle": "o03",
+        "ordered_waypoint_handles": [
+          "o00"
+        ]
+      },
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "use_rule": "Revise the current action and object path only if this settled residual changes the best plan. Do not reinsert discharged subgoals."
+    },
+    "causal_intervention_revision_sha256": "75e3167ba7775e2ecec579693e147b233775580c1ff1b5d13e72bc1f801e900d",
+    "causal_rendered_sha256": "d496b37d0a467d233a6387aa99560eaf54ec649187d2c76cb2ef1303e6292111",
+    "causal_text": "{\"completed_subgoals\":[{\"object_handle\":\"o02\",\"status\":\"discharged_before_current_decision\"}],\"evidence_status\":\"two_randomized_externally_settled_parent_responses\",\"kind\":\"causal_response_derivative_intervention\",\"lineage_transport_sha256\":\"a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246\",\"residual_program\":{\"controlled_object_handle\":\"o03\",\"ordered_waypoint_handles\":[\"o00\"]},\"schema\":\"ztare-arc3-causal-response-derivative-live-v1\",\"source_program_sha256\":\"8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801\",\"use_rule\":\"Revise the current action and object path only if this settled residual changes the best plan. Do not reinsert discharged subgoals.\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ",
+    "placebo_core": {
+      "evidence_status": "true_non_target_observation_facts",
+      "facts": [
+        "Object handles are local to the current exact observation.",
+        "Action meanings must be inferred from settled transitions.",
+        "Visible overlap can temporarily occlude an object occurrence.",
+        "An unchanged visible frame does not establish task completion."
+      ],
+      "kind": "byte_matched_context_control",
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "use_rule": "Revise the current action and object path only if these general facts change the best plan."
+    },
+    "placebo_rendered_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+    "placebo_text": "{\"evidence_status\":\"true_non_target_observation_facts\",\"facts\":[\"Object handles are local to the current exact observation.\",\"Action meanings must be inferred from settled transitions.\",\"Visible overlap can temporarily occlude an object occurrence.\",\"An unchanged visible frame does not establish task completion.\"],\"kind\":\"byte_matched_context_control\",\"schema\":\"ztare-arc3-causal-response-derivative-live-v1\",\"use_rule\":\"Revise the current action and object path only if these general facts change the best plan.\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ",
+    "primitive_action_cost": 20.0,
+    "rendered_utf8_bytes_per_condition": 3849
+  },
+  "live_response_derivative": {
+    "discharges": [
+      {
+        "coevent_revision_event_sha256": "86eb97033d84b93041d9d0c84be3dcb5cf44e5f3418bddcffb2b5d52e4b4d193",
+        "coevent_source_object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+        "hop_index": 5,
+        "kind": "response_derivative_discharge",
+        "occlusion_event_sha256": "52a96fe963658da02f7efaf6b1f5ffe7b20fa997d696bdfcb64490649264b84c",
+        "reappearance_event_sha256": "28861e10c7eba016552a32d526f6c100e0909fd95308aa4a74b085bf6acff132",
+        "schema": "ztare-causal-response-derivative-v1",
+        "sha256": "25fdd3cf1158226142a6f31138c8545b936d9d7893d7d1a8a1d8abd1ca194368",
+        "source_waypoint_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+        "target_waypoint_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+        "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+      }
+    ],
+    "event_family_binding_sha256": "2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+    "event_selection_phase": "pre_outcome",
+    "evidence_refs": [
+      "construction_derivative:377167e213ede3fb986ee6dcb042c771bed144e8b163b70726f0600a6d9636a4",
+      "controller_scope_transport:a09f4881f24daa593fa37d9ed1f07038830646af2db032f4ed73c53083269f36"
+    ],
+    "kind": "causal_response_derivative",
+    "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+    "reason": "joint_event_prefix_consumed_response_waypoints",
+    "residual_contract": {
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "discharge_receipt_sha256s": [
+        "25fdd3cf1158226142a6f31138c8545b936d9d7893d7d1a8a1d8abd1ca194368"
+      ],
+      "discharged_waypoint_refs": [
+        "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7"
+      ],
+      "evidence_refs": [
+        "construction_derivative:377167e213ede3fb986ee6dcb042c771bed144e8b163b70726f0600a6d9636a4",
+        "controller_scope_transport:a09f4881f24daa593fa37d9ed1f07038830646af2db032f4ed73c53083269f36",
+        "event_family_binding:2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+        "lineage:a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+        "program:8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+      ],
+      "forbidden_controlled_object_refs": [
+        "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7"
+      ],
+      "intervention_revision_sha256": "75e3167ba7775e2ecec579693e147b233775580c1ff1b5d13e72bc1f801e900d",
+      "kind": "residual_response_contract",
+      "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+      "pending_waypoint_refs": [
+        "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+      ],
+      "required_controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+      "schema": "ztare-causal-response-derivative-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+      "sha256": "f02dcd5c0ed636f5be2bfe3dc2a2d403ad3de8b19733db4f92ba8bcd2691396b",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+    },
+    "schema": "ztare-causal-response-derivative-v1",
+    "sha256": "f7e53f343d0e53b3f77037540dcfe52a2c50fa111c0b9cee9acef5beb4c41821",
+    "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "status": "derived",
+    "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+  },
+  "live_test": {
+    "admission_before_branch_revision": true,
+    "branch_revision_inferences_per_pair": 2,
+    "environment_contact_only_after_eligible_parent": true,
+    "game": "ls20",
+    "post_prefix_actions_per_arm": 20,
+    "post_revision_action_inferences_per_arm": 19,
+    "prefix_actions_per_arm": 7,
+    "presented_bytes_per_intervention": 3849,
+    "shared_blind_inferences_per_pair_maximum": 4,
+    "shared_blind_inferences_per_pair_minimum": 1
+  },
+  "matched_controller_fork": {
+    "api": "openai_responses",
+    "arm_order": [
+      [
+        "offer",
+        "withhold"
+      ],
+      [
+        "withhold",
+        "offer"
+      ]
+    ],
+    "branch_authority": "same_previous_response_id",
+    "eligible_parent_rule": "blind_proposal_does_not_satisfy_target_residual_program",
+    "instructions_repeated_on_each_branch": true,
+    "intervention_compiler": {
+      "causal_content": "source program identity, exact lineage identity, target controlled-object handle, pending waypoint handles, discharged waypoint handles, and use rule",
+      "causal_revision_identity": "hash_of_live_scope_source_program_lineage_rendered_content_and_primitive_action_cost",
+      "padding": "utf8_space_padding_to_exact_frozen_bytes",
+      "placebo_content": "true non-target observation and action-interface facts"
+    },
+    "live_scope_transport": {
+      "changed_coordinates": [
+        "controller_sha256"
+      ],
+      "controller_identity_includes": [
+        "api_kind",
+        "model",
+        "reasoning_effort",
+        "reasoning_context",
+        "store",
+        "instructions_sha256",
+        "tool_sha256"
+      ],
+      "preserved_coordinates": [
+        "task_sha256",
+        "context_sha256",
+        "choice_set_sha256",
+        "action_vocabulary_sha256"
+      ]
+    },
+    "maximum_blind_parent_attempts_per_pair": 4,
+    "model": "gpt-5.6-sol",
+    "pair_count": 2,
+    "reasoning_context": "all_turns",
+    "reasoning_effort": "xhigh",
+    "shared_blind_proposal_required": true,
+    "store": true
+  },
+  "negative_derivatives": [
+    {
+      "discharges": [],
+      "event_family_binding_sha256": "2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+      "event_selection_phase": "post_outcome",
+      "evidence_refs": [
+        "negative:post-outcome-selection"
+      ],
+      "kind": "causal_response_derivative",
+      "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+      "reason": "event_selection_not_pre_outcome",
+      "residual_contract": null,
+      "schema": "ztare-causal-response-derivative-v1",
+      "sha256": "7c88af5136602a6ba2c2a62f93f3fbc09d8f262e6924b15743f6b447829aecad",
+      "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "status": "refused",
+      "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+    },
+    {
+      "discharges": [],
+      "event_family_binding_sha256": "b692b7cd4067672c9afe7d158f22f761679f9d7a831bbba237a5e35d0ca59f49",
+      "event_selection_phase": "pre_outcome",
+      "evidence_refs": [
+        "negative:proxy-event-family"
+      ],
+      "kind": "causal_response_derivative",
+      "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+      "reason": "event_family_binding_refused",
+      "residual_contract": null,
+      "schema": "ztare-causal-response-derivative-v1",
+      "sha256": "cff5e113ef4c95cc2b89075d83b237a49e6b0f5a1befc5b8015f4ff7f3473ccf",
+      "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "status": "refused",
+      "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+    },
+    {
+      "discharges": [],
+      "event_family_binding_sha256": "17087cb12870786ff42b8b3ae19b3abd1baeb6862014f9a353fe72bf4733803b",
+      "event_selection_phase": "pre_outcome",
+      "evidence_refs": [
+        "negative:coevent-removed"
+      ],
+      "kind": "causal_response_derivative",
+      "lineage_transport_sha256": "365b4ca94d44250d342c65b0a594e320122989f5a3d074ffc39e548725088122",
+      "reason": "joint_discharge_coevent_missing",
+      "residual_contract": null,
+      "schema": "ztare-causal-response-derivative-v1",
+      "sha256": "25da5184355f5ab4087cbf6124551315798c875369b8eadc75e7264bf9b133c3",
+      "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "status": "refused",
+      "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+    }
+  ],
+  "reproduction_before_h97": {
+    "critical_boundary": 1.0,
+    "evidence_refs": [
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/result.json#sha256=055bd1e186b7cfb877a7d776a330403a997d0130cdbb81c8a5742762db73ec76"
+    ],
+    "false_edge_count": 0,
+    "kind": "response_reproduction_estimate",
+    "parent_count": 1,
+    "parent_family_sha256s": [
+      "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867"
+    ],
+    "primitive_action_cost": 54.0,
+    "promoted_child_count": 0,
+    "promoted_child_family_sha256s": [],
+    "regime": "subcritical",
+    "response_reproduction_number": 0.0,
+    "response_schema_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "schema": "ztare-causal-response-derivative-v1",
+    "sha256": "7cfff2c2813ffdec90d342b5779ae570391398aadfeb81be481541e6d1b98d27",
+    "spectral_radius_lower_bound": 0.0
+  },
+  "response_derivative": {
+    "discharges": [
+      {
+        "coevent_revision_event_sha256": "86eb97033d84b93041d9d0c84be3dcb5cf44e5f3418bddcffb2b5d52e4b4d193",
+        "coevent_source_object_ref": "object:bd7617c223ea2b7514ff3ef0c622ca2990a6b12cb46e6234659c9424739a9b98",
+        "hop_index": 5,
+        "kind": "response_derivative_discharge",
+        "occlusion_event_sha256": "52a96fe963658da02f7efaf6b1f5ffe7b20fa997d696bdfcb64490649264b84c",
+        "reappearance_event_sha256": "28861e10c7eba016552a32d526f6c100e0909fd95308aa4a74b085bf6acff132",
+        "schema": "ztare-causal-response-derivative-v1",
+        "sha256": "25fdd3cf1158226142a6f31138c8545b936d9d7893d7d1a8a1d8abd1ca194368",
+        "source_waypoint_ref": "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+        "target_waypoint_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+        "transition_sha256": "3091c5467e905fb7f07596a25476a58a200146877207dd1708d016f3a9151636"
+      }
+    ],
+    "event_family_binding_sha256": "2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+    "event_selection_phase": "pre_outcome",
+    "evidence_refs": [
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/manifest.json#sha256=eaf153bca34ec97147e859a0d3b6585c8718fe8aef02bd211f6ab69b46846cc0"
+    ],
+    "kind": "causal_response_derivative",
+    "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+    "reason": "joint_event_prefix_consumed_response_waypoints",
+    "residual_contract": {
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "discharge_receipt_sha256s": [
+        "25fdd3cf1158226142a6f31138c8545b936d9d7893d7d1a8a1d8abd1ca194368"
+      ],
+      "discharged_waypoint_refs": [
+        "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7"
+      ],
+      "evidence_refs": [
+        "event_family_binding:2a6b210ba00b2e53d742a741f73e43417edf37699c593c362b3babe1d7664224",
+        "lineage:a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+        "program:8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/manifest.json#sha256=eaf153bca34ec97147e859a0d3b6585c8718fe8aef02bd211f6ab69b46846cc0"
+      ],
+      "forbidden_controlled_object_refs": [
+        "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7"
+      ],
+      "intervention_revision_sha256": "c5b83f8026457a7ffe561d23532bb813a38f5c88be89aa8409d777ea25334d41",
+      "kind": "residual_response_contract",
+      "lineage_transport_sha256": "a52759ba4def02fd96b8d8c258d2378a317b0ad9f383ecccbcd656eab76ad246",
+      "pending_waypoint_refs": [
+        "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+      ],
+      "required_controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+      "schema": "ztare-causal-response-derivative-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "598218dd6a9a7d838bc6c014714e9b244027719193562fc72ea29bb6167f47a7",
+      "sha256": "56a3b66ccd278a76cd2df26212ef2ebf84e6c16a6777e308d0964acf22682e5a",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+    },
+    "schema": "ztare-causal-response-derivative-v1",
+    "sha256": "377167e213ede3fb986ee6dcb042c771bed144e8b163b70726f0600a6d9636a4",
+    "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "status": "derived",
+    "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-v1",
+  "source_contract": {
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "evidence_refs": [
+      "h92_object_linked_judgment_quotient/result.json#sha256=60bacd9d859d05bafb37d6f7df59758ce9ce33f16559109174ae00f5dc379e79",
+      "intervention_transport:064a4b5a5710efc9ab0fc3ee70e4cd2f7d279932ccc7ad74dbc929c49b1ce7eb",
+      "memory:floor_marker_edits_state_glyph_v1",
+      "memory:goal_requires_glyph_match_v1",
+      "object_transport:01ed49838de2679acdeffef5a9c1621361881291220121b1d045f8e0bb6fddcf",
+      "prefix_evidence:556856b95438c44167c16a93a0aa6fe2f1811be57cba388213ec58c67431af3a"
+    ],
+    "forbidden_controlled_object_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+    ],
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "kind": "object_role_path_contract",
+    "required_controlled_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+    "required_waypoint_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a"
+    ],
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+      "controller_sha256": "08ce7a862fb5065546dcb2d5d33eef5b77a4c6e5dd0abe644a1e89d4374a6d84",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d"
+  },
+  "source_family": {
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "kind": "object_response_family",
+    "minimum_first_stage_transport_delta": 1.0,
+    "minimum_intent_to_treat_net_delta": 0.0,
+    "minimum_offer_count": 2,
+    "minimum_withhold_count": 2,
+    "responses": [
+      {
+        "admissible": true,
+        "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+        "complier_net_effect": 0.48,
+        "contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+        "first_stage_transport_delta": 1.0,
+        "intent_to_treat_net_delta": 0.48,
+        "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+        "kind": "object_basin_response",
+        "offer_count": 2,
+        "offer_supported_transport_rate": 1.0,
+        "outcome_sha256s": [
+          "00b649bd93fbbd2bddecca4eef983f75a8387b00c51f893271d1f5bc51addc8a",
+          "b742ab7191145bbf8427a7f093d8c542a8e58717261a6bdeb6d08914d1d343e6",
+          "c9bf5274948c25cf1103197b78ca443b92e5589b3ed779944f9fbe79ff68b5d2",
+          "f27d2db8ec0c17918fcf3a85d9c5ef23dc35c119166c9bf7a5e05bfde99e73e8"
+        ],
+        "pre_basin_sha256": "2a2965d92e56e68c88c806b48d13b763ce9c20256f672f0c515d14cc3030f37e",
+        "primitive_action_cost": 20.0,
+        "schema": "ztare-object-basin-response-family-v1",
+        "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+        "sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+        "status": "identified_positive",
+        "withhold_count": 2,
+        "withhold_supported_transport_rate": 0.0
+      }
+    ],
+    "schema": "ztare-object-basin-response-family-v1",
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+    "source_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/settlements",
+    "source_result_sha256": "21393b17b1b43ee63c1322644b20e0f7d9f9cc66a05f8ba7fb1263447ec8b187"
+  },
+  "source_h96_manifest_file_sha256": "eaf153bca34ec97147e859a0d3b6585c8718fe8aef02bd211f6ab69b46846cc0",
+  "source_h96_manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/manifest.json",
+  "source_h96_result_file_sha256": "055bd1e186b7cfb877a7d776a330403a997d0130cdbb81c8a5742762db73ec76",
+  "source_h96_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h96_causal_object_lineage/result.json",
+  "source_program": {
+    "controlled_object_ref": "object:28bb088c2e48d4142d75c7ac2b40984158e3ce353c2b7f8090b3b5ae62620a21",
+    "evidence_refs": [
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+      "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa"
+    ],
+    "kind": "causal_response_program",
+    "ordered_waypoint_refs": [
+      "object:d439addc7224e3e25a64da7fb371ea591702e6badbe718c0c785e7330301702a",
+      "object:d4585d1fc35c3033cd74977e855fac711644aa3347227e5e48c0ce83c5a272d7"
+    ],
+    "reason": "unique_common_control_and_ordered_program",
+    "schema": "ztare-causal-response-derivative-v1",
+    "sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "source_catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "source_contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "source_family_sha256": "2c6d9acfd471c0b0be49d2c6d5353ab1da369d98885a83a5cd2ed66cfee1d867",
+    "source_intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "source_observation_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+    "source_response_sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+    "source_scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "status": "compiled",
+    "support_count": 2,
+    "support_post_proposal_sha256s": [
+      "0e72cf1abedfb5e68e97e2dc6d69afff33531bf4fc37550c128ac39deaccc093",
+      "db3029ef1e2cb39305d8594ada325facaff4cfb9d723a8addf3d4a0cdadd9ea5"
+    ],
+    "support_transition_sha256s": [
+      "19112cf25093e07a3e111c20276c831036627d7164fc88b4f89f5d3d37f12f99",
+      "3260d55e929f8c93476e680ce6aa035c4c50167b4fdcea80898942943f7faf7f"
+    ]
+  },
+  "source_response": {
+    "admissible": true,
+    "catalog_sha256": "1d5bf78fe391cf5026d66824e2fe7535161b82f462145b1333d1ada9b974575c",
+    "complier_net_effect": 0.48,
+    "contract_sha256": "11041578a5d619f6e87f49f0ef4d4962baca8da76655e3728ae164ea42a7991d",
+    "first_stage_transport_delta": 1.0,
+    "intent_to_treat_net_delta": 0.48,
+    "intervention_revision_sha256": "84cf24d5da91b6fbf4758b982028045215ad33f4037baf84879249dea0b0472f",
+    "kind": "object_basin_response",
+    "offer_count": 2,
+    "offer_supported_transport_rate": 1.0,
+    "outcome_sha256s": [
+      "00b649bd93fbbd2bddecca4eef983f75a8387b00c51f893271d1f5bc51addc8a",
+      "b742ab7191145bbf8427a7f093d8c542a8e58717261a6bdeb6d08914d1d343e6",
+      "c9bf5274948c25cf1103197b78ca443b92e5589b3ed779944f9fbe79ff68b5d2",
+      "f27d2db8ec0c17918fcf3a85d9c5ef23dc35c119166c9bf7a5e05bfde99e73e8"
+    ],
+    "pre_basin_sha256": "2a2965d92e56e68c88c806b48d13b763ce9c20256f672f0c515d14cc3030f37e",
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-object-basin-response-family-v1",
+    "scope_sha256": "5d437a27021878e4fd770c5f54ad01c5f33916c7113c75f5adfd08d3a70d3afb",
+    "sha256": "5bf81c0c63cfb4bab01d9f52eaadbe25a4a65a1f45a9700a1469a0315edd198a",
+    "status": "identified_positive",
+    "withhold_count": 2,
+    "withhold_supported_transport_rate": 0.0
+  },
+  "spec_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_spec.json",
+  "spec_sha256": "dacead207930faafc4da92f5983e7f942af430b469e9ce2fde79d6c94aa1a3b7",
+  "success_criterion": {
+    "discharged_waypoint_count": 1,
+    "eligible_matched_pair_count": 2,
+    "first_stage_derivative_delta": 1.0,
+    "minimum_mean_composite_delta_exclusive": 0.0,
+    "minimum_offer_composite_wins": 1,
+    "minimum_task_delta": 0.0,
+    "negative_derivative_refusal_count_minimum": 3,
+    "offer_supported_derivative_rate": 1.0,
+    "offspring_delta": 1,
+    "pending_waypoint_count": 1,
+    "promoted_child_count": 1,
+    "shared_parent_identity_rate": 1.0,
+    "source_program_support_count": 2,
+    "source_program_waypoint_count": 2,
+    "withhold_spontaneous_derivative_rate": 0.0
+  }
+}

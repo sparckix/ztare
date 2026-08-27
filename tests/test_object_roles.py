@@ -58,6 +58,71 @@ def test_object_signature_keeps_legacy_scalar_role_compatibility():
     assert signature[0] == frozenset({(0, 0), (0, 2)})
 
 
+def _oriented_mover_grid(origin_y: int, origin_x: int, facing: str):
+    grid = [[0] * 25 for _ in range(25)]
+    marker = {
+        "up": (0, 1),
+        "down": (2, 1),
+        "left": (1, 0),
+        "right": (1, 2),
+    }[facing]
+    for dy in range(3):
+        for dx in range(3):
+            grid[origin_y + dy][origin_x + dx] = (
+                4 if (dy, dx) == marker else 9
+            )
+    # Same palette, incompatible component identities: neither singleton may
+    # become part of the controlled object merely through color membership.
+    grid[0][0] = 9
+    grid[24][24] = 4
+    return tuple(tuple(row) for row in grid)
+
+
+def test_pose_quotient_keeps_one_mover_and_all_action_displacements():
+    dynamics = TransitionIdentity(
+        kind="dynamics",
+        authority="episode_collector",
+        source_epoch="e0",
+        target_epoch="e0",
+        evidence_refs=("synthetic:oriented-mover",),
+    )
+    specifications = (
+        (0, "right", "up", 0, -4),
+        (1, "up", "down", 0, 4),
+        (2, "down", "left", -4, 0),
+        (3, "left", "right", 4, 0),
+    )
+    rows = []
+    observed = []
+    for action, prior, facing, dx, dy in specifications:
+        before = _oriented_mover_grid(10, 10, prior)
+        after = _oriented_mover_grid(10 + dy, 10 + dx, facing)
+        second = _oriented_mover_grid(10 + 2 * dy, 10 + 2 * dx, facing)
+        rows.extend((
+            Transition(len(rows), before, action, after, dynamics),
+            Transition(len(rows) + 1, after, action, second, dynamics),
+        ))
+        observed.extend((before, after))
+
+    roles = induce_roles(EpisodeLog(rows), 4).roles
+    mover = next(role for role in roles if role.name == "moves_under_actions")
+    assert len(mover.members) == 1
+    member = mover.members[0]
+    assert member["shape_equivalence"] == "d4_pose_v1"
+    assert member["action_displacements"] == [
+        [0, -4, 0, 2],
+        [1, 4, 0, 2],
+        [2, 0, -4, 2],
+        [3, 0, 4, 2],
+    ]
+    assert len(member["observed_pose_shapes"]) == 4
+    for grid in observed:
+        agent, _resource, _reactive = object_signature(grid, roles)
+        assert len(agent) == 1
+        assert next(iter(agent))[0] == 0
+        assert len(next(iter(agent))) == 4
+
+
 def test_within_epoch_view_does_not_mix_prior_chart_presentations():
     e0 = TransitionIdentity(
         kind="dynamics",

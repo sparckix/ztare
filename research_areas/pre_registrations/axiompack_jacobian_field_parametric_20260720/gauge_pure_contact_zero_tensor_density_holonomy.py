@@ -298,18 +298,22 @@ def _algebraic_normal_two_three() -> tuple[
     return x, discriminant, layers[2], layers[3]
 
 
-def run(verification_rows: int = 14) -> dict[str, object]:
-    if verification_rows < 8:
-        raise ValueError("the tensor-density audit needs eight rows")
+def _algebraic_tensor_density_velocity() -> tuple[
+    sp.Symbol,
+    sp.Expr,
+    QuadraticElement,
+    QuadraticElement,
+    QuadraticElement,
+]:
+    """Return the exact Witt and split-density velocity pair.
+
+    This is the shared algebraic adapter used by both the holonomy replay
+    and the downstream density-clock singularity calculation.
+    """
+
     x, discriminant, normal_two, normal_three = (
         _algebraic_normal_two_three()
     )
-    # The intrinsic split coordinate is
-    #
-    #   Jhat=Bhat+(3*x*Ahat'+5*Ahat)/9,
-    #   Ahat=x*a, Bhat=x*b, Jhat=x*j.
-    #
-    # Hence the row-indexed coefficient function uses +8, not +5.
     tensor_density = _add(
         normal_three,
         _scale(
@@ -320,6 +324,119 @@ def run(verification_rows: int = 14) -> dict[str, object]:
             sp.Rational(1, 9),
         ),
     )
+    return x, discriminant, normal_two, normal_three, tensor_density
+
+
+def _project_target_graph(
+    value: dict[tuple[int, int], Fraction],
+) -> dict[tuple[int, int], Fraction]:
+    """Project one critical Lie coefficient to the target graph ``J=0``."""
+
+    result: dict[tuple[int, int], Fraction] = {}
+    for (normal, radial), coefficient in value.items():
+        if normal != 2:
+            continue
+        result[(2, radial)] = (
+            result.get((2, radial), Fraction(0)) + coefficient
+        )
+        row = radial - 2
+        result[(3, row)] = (
+            result.get((3, row), Fraction(0))
+            - Fraction(3 * row + 8, 9) * coefficient
+        )
+    return {key: coefficient for key, coefficient in result.items()
+            if coefficient}
+
+
+def _critical_residual_prefix(
+    verification_rows: int,
+    x: sp.Symbol,
+    normal_two: QuadraticElement,
+    tensor_density: QuadraticElement,
+    recurrence: dict[str, object],
+) -> sp.Expr:
+    """Return the checked target-left residual prefix in the fixed orientation.
+
+    This is the single coefficient adapter shared with transfer-aware searches.
+    It factors the complete critical logarithm, checks the BCH round trip, and
+    checks the exact scalar ODE before returning any coefficients.
+    """
+
+    logarithm = [dict() for _ in range(verification_rows + 2)]
+    for row in recurrence["rows"]:
+        index = int(row["target_row"])
+        logarithm[index + 1] = {
+            (2, index + 2): Fraction(row["logarithm_normal_two"]),
+            (3, index): Fraction(row["logarithm_normal_three"]),
+        }
+
+    target_factor, source_residual = factor_magnus_by_projection(
+        logarithm,
+        verification_rows + 1,
+        _critical_ops(),
+        _project_target_graph,
+    )
+    assert bch_series(
+        target_factor,
+        source_residual,
+        verification_rows + 1,
+        _critical_ops(),
+    ) == logarithm
+    residual_series = sp.expand(sum(
+        sp.Rational(
+            source_residual[index + 1].get(
+                (3, index), Fraction(0)
+            ).numerator,
+            source_residual[index + 1].get(
+                (3, index), Fraction(0)
+            ).denominator,
+        )
+        * x**index
+        for index in range(1, verification_rows + 1)
+    ))
+    a_series = sp.series(
+        normal_two.rational
+        + normal_two.radical_coefficient * sp.sqrt(
+            36 + 12 * x - 3 * x**2
+        ),
+        x,
+        0,
+        verification_rows + 1,
+    ).removeO().expand()
+    j_series = sp.series(
+        tensor_density.rational
+        + tensor_density.radical_coefficient * sp.sqrt(
+            36 + 12 * x - 3 * x**2
+        ),
+        x,
+        0,
+        verification_rows + 1,
+    ).removeO().expand()
+    ode_residual = sp.series(
+        x * (1 + 2 * x * a_series) * sp.diff(residual_series, x)
+        - j_series
+        - (6 * x * a_series + 3 * x**2 * sp.diff(a_series, x) - 1)
+        * residual_series,
+        x,
+        0,
+        verification_rows + 1,
+    ).removeO().expand()
+    assert ode_residual == 0, sp.factor(ode_residual)
+    return residual_series
+
+
+def run(verification_rows: int = 14) -> dict[str, object]:
+    if verification_rows < 8:
+        raise ValueError("the tensor-density audit needs eight rows")
+    x, discriminant, normal_two, normal_three, tensor_density = (
+        _algebraic_tensor_density_velocity()
+    )
+    # The intrinsic split coordinate is
+    #
+    #   Jhat=Bhat+(3*x*Ahat'+5*Ahat)/9,
+    #   Ahat=x*a, Bhat=x*b, Jhat=x*j.
+    #
+    # Hence the row-indexed coefficient function uses +8, not +5.
 
     recurrence = _critical_recurrence(
         verification_rows,
@@ -399,77 +516,13 @@ def run(verification_rows: int = 14) -> dict[str, object]:
         sp.cancel(j.radical_coefficient),
     )
 
-    logarithm = [dict() for _ in range(verification_rows + 2)]
-    for row in recurrence["rows"]:
-        index = int(row["target_row"])
-        logarithm[index + 1] = {
-            (2, index + 2): Fraction(row["logarithm_normal_two"]),
-            (3, index): Fraction(row["logarithm_normal_three"]),
-        }
-
-    def project_target_graph(
-        value: dict[tuple[int, int], Fraction],
-    ) -> dict[tuple[int, int], Fraction]:
-        result: dict[tuple[int, int], Fraction] = {}
-        for (normal, radial), coefficient in value.items():
-            if normal != 2:
-                continue
-            result[(2, radial)] = (
-                result.get((2, radial), Fraction(0)) + coefficient
-            )
-            row = radial - 2
-            result[(3, row)] = (
-                result.get((3, row), Fraction(0))
-                - Fraction(3 * row + 8, 9) * coefficient
-            )
-        return {key: value for key, value in result.items() if value}
-
-    target_factor, source_residual = factor_magnus_by_projection(
-        logarithm,
-        verification_rows + 1,
-        _critical_ops(),
-        project_target_graph,
+    residual_series = _critical_residual_prefix(
+        verification_rows,
+        x,
+        a,
+        j,
+        recurrence,
     )
-    assert bch_series(
-        target_factor,
-        source_residual,
-        verification_rows + 1,
-        _critical_ops(),
-    ) == logarithm
-    residual_series = sp.expand(sum(
-        sp.Rational(
-            source_residual[index + 1].get(
-                (3, index), Fraction(0)
-            ).numerator,
-            source_residual[index + 1].get(
-                (3, index), Fraction(0)
-            ).denominator,
-        )
-        * x**index
-        for index in range(1, verification_rows + 1)
-    ))
-    a_series = sp.series(
-        a.rational + a.radical_coefficient * sp.sqrt(discriminant),
-        x,
-        0,
-        verification_rows + 1,
-    ).removeO().expand()
-    j_series = sp.series(
-        j.rational + j.radical_coefficient * sp.sqrt(discriminant),
-        x,
-        0,
-        verification_rows + 1,
-    ).removeO().expand()
-    ode_residual = sp.series(
-        x * (1 + 2 * x * a_series) * sp.diff(residual_series, x)
-        - j_series
-        - (6 * x * a_series + 3 * x**2 * sp.diff(a_series, x) - 1)
-        * residual_series,
-        x,
-        0,
-        verification_rows + 1,
-    ).removeO().expand()
-    assert ode_residual == 0, sp.factor(ode_residual)
 
     adapter_payload = {
         "discriminant": str(discriminant),
@@ -521,6 +574,12 @@ def run(verification_rows: int = 14) -> dict[str, object]:
             ),
             "recurrence_shift": "[x^row]B_vel",
             "recurrence_rows_verified": verification_rows,
+        },
+        "normal_two_velocity": {
+            "rational_part": str(sp.factor(a.rational)),
+            "radical_coefficient": str(
+                sp.factor(a.radical_coefficient)
+            ),
         },
         "tensor_density_velocity": {
             "definition": "j_vel=b_vel+(3*x*a_vel'+8*a_vel)/9",

@@ -213,6 +213,88 @@ def _play_round_multilife(
     task_process_tokens = []
     task_decision_windows = []
     task_context_epoch = _adapter_epoch(adapter)
+    run_initial_state = getattr(adapter, "state", None)
+    from ztare.common.equivariance import stable_sha256 as _stable_sha256
+
+    temporal_environment_source_sha256 = str(
+        kw.get("temporal_environment_source_sha256") or ""
+    ).strip()
+    if (
+        not temporal_environment_source_sha256
+        and str(getattr(adapter, "game_id", "") or "").strip()
+    ):
+        temporal_environment_source_sha256 = _stable_sha256({
+            "schema": "ztare-arc3-environment-source-v1",
+            "game_id": str(adapter.game_id),
+            "adapter_type": (
+                f"{type(adapter).__module__}."
+                f"{type(adapter).__qualname__}"
+            ),
+        })
+    temporal_replay_prefix_sha256 = str(
+        kw.get("temporal_replay_prefix_sha256") or ""
+    ).strip()
+    if (
+        not temporal_replay_prefix_sha256
+        and temporal_environment_source_sha256
+    ):
+        temporal_replay_prefix_sha256 = _stable_sha256({
+            "schema": "ztare-arc3-decision-replay-prefix-v1",
+            "environment_source_sha256": (
+                temporal_environment_source_sha256
+            ),
+            "task_contract_sha256": (
+                task_contract.sha256 if task_contract is not None else ""
+            ),
+            "initial_state": run_initial_state,
+            "initial_epoch": task_context_epoch,
+            "action_history_prefix": tuple(
+                kw.get("control_history_prefix") or ()
+            ),
+            "operation_effect_history_prefix": tuple(
+                kw.get("control_operation_effect_history_prefix") or ()
+            ),
+        })
+    replay_assignment = kw.get("control_decision_replay_assignment")
+    if replay_assignment is not None:
+        from ztare.common.two_stage_eligibility_ledger import (
+            SealedDecisionReplayAssignment,
+        )
+
+        if not isinstance(
+            replay_assignment,
+            SealedDecisionReplayAssignment,
+        ):
+            raise TypeError(
+                "control_decision_replay_assignment must be a "
+                "SealedDecisionReplayAssignment"
+            )
+        if task_contract is None:
+            raise ValueError(
+                "prospective replay assignment requires a task contract"
+            )
+        replay_contract = replay_assignment.contract
+        if (
+            replay_contract.first_authority.task_contract_sha256
+            != task_contract.sha256
+        ):
+            raise ValueError(
+                "replay assignment crossed the play-loop task authority"
+            )
+        if (
+            replay_contract.environment_source_sha256
+            != temporal_environment_source_sha256
+        ):
+            raise ValueError(
+                "replay assignment crossed the play-loop environment source"
+            )
+        if (
+            replay_contract.replay_prefix_sha256
+            != temporal_replay_prefix_sha256
+        ):
+            raise ValueError(
+                "replay assignment crossed the play-loop replay prefix"
+            )
     run_goal_edge = kw.get("goal_edge_fn")
     run_goal_fn = kw.get("goal_fn")
     run_acquisition_obligation = kw.get("acquisition_obligation")
@@ -571,6 +653,14 @@ def _play_round_multilife(
                         "task_adjudication:"
                         + leg_adjudication_sha256
                     ),
+                    **{
+                        field: decision_window[field]
+                        for field in (
+                            "information_yield_forecast",
+                            "information_yield_observation",
+                        )
+                        if isinstance(decision_window.get(field), dict)
+                    },
                 })
         leg_outcomes.append(
             {
@@ -849,6 +939,126 @@ def _play_round_multilife(
                 "status": "recording_failed",
                 "error_type": type(task_memory_error).__name__,
             }
+    temporal_episode_draft = {
+        "status": "not_recorded",
+        "reason": (
+            "task contract, complete yield windows, environment source, "
+            "replay prefix, or persistence path absent"
+        ),
+    }
+    if (
+        task_contract is not None
+        and task_decision_windows
+        and kw.get("receipts_dir") is not None
+        and temporal_environment_source_sha256
+        and temporal_replay_prefix_sha256
+    ):
+        try:
+            from ztare.common.two_stage_eligibility_ledger import (
+                assemble_decision_episode_draft,
+                load_decision_episode_drafts,
+                record_decision_episode_draft,
+                save_decision_episode_drafts,
+            )
+
+            final_discharge = adjudicate_task_discharge(
+                adapter,
+                task_contract,
+            )
+            terminal_status = (
+                "attained" if final_discharge.discharged else "open"
+            )
+            terminal_adjudication = final_discharge.to_dict()
+            terminal_adjudication_sha = _stable_sha256(
+                terminal_adjudication
+            )
+            episode_ref = "arc3-decision-episode:" + _stable_sha256({
+                "task_contract_sha256": task_contract.sha256,
+                "environment_source_sha256": (
+                    temporal_environment_source_sha256
+                ),
+                "replay_prefix_sha256": (
+                    temporal_replay_prefix_sha256
+                ),
+                "decision_windows": tuple(
+                    (
+                        row["decision_namespace"],
+                        row["choice_context_sha256"],
+                        row["chosen_option_variant_sha256"],
+                        row["outcome"],
+                        (
+                            row.get("information_yield_observation")
+                            or {}
+                        ).get("sha256"),
+                    )
+                    for row in task_decision_windows
+                ),
+                "terminal_adjudication_sha256": (
+                    terminal_adjudication_sha
+                ),
+            })
+            continuation_policy_sha = _stable_sha256({
+                "schema": "ztare-arc3-continuation-policy-v1",
+                "continuation_context_sha256s": tuple(
+                    row["continuation_context_sha256"]
+                    for row in task_decision_windows
+                ),
+                "carrier_execution_sha256": (
+                    str(kw.get("carrier_execution_sha256") or "")
+                ),
+            })
+            terminal_state_sha = _stable_sha256({
+                "schema": "ztare-arc3-terminal-decision-state-v1",
+                "state": adapter.state,
+                "epoch": _adapter_epoch(adapter),
+                "adjudication_sha256": terminal_adjudication_sha,
+            })
+            draft = assemble_decision_episode_draft(
+                task_decision_windows,
+                episode_ref=episode_ref,
+                task_contract_sha256=task_contract.sha256,
+                environment_source_sha256=(
+                    temporal_environment_source_sha256
+                ),
+                replay_prefix_sha256=(
+                    temporal_replay_prefix_sha256
+                ),
+                continuation_policy_sha256=(
+                    continuation_policy_sha
+                ),
+                terminal_task_status=terminal_status,
+                terminal_adjudication_ref=(
+                    "task_adjudication:" + terminal_adjudication_sha
+                ),
+                terminal_decision_state_sha256=terminal_state_sha,
+            )
+            episode_path = (
+                Path(kw["receipts_dir"])
+                / "temporal_decision_episode_drafts.json"
+            )
+            episodes_before = load_decision_episode_drafts(episode_path)
+            episodes_after = record_decision_episode_draft(
+                episodes_before,
+                draft,
+            )
+            save_decision_episode_drafts(episode_path, episodes_after)
+            temporal_episode_draft = {
+                "status": "recorded",
+                "episode_ref": draft.episode_ref,
+                "episode_sha256": draft.sha256,
+                "window_count": len(draft.windows),
+                "terminal_task_status": draft.terminal_task_status,
+                "ledger_count_before": len(episodes_before),
+                "ledger_count_after": len(episodes_after),
+                "task_credit_authorized": False,
+            }
+        except Exception as episode_error:  # noqa: BLE001
+            temporal_episode_draft = {
+                "status": "recording_failed",
+                "error_type": type(episode_error).__name__,
+                "reason": str(episode_error),
+                "task_credit_authorized": False,
+            }
     # ``lives`` is execution history.  Preserve the terminal lifecycle outcome
     # as status so downstream routing can distinguish task discharge, model
     # refutation, environment boundaries, and bounded planning exhaustion.
@@ -874,6 +1084,9 @@ def _play_round_multilife(
                            ),
                            continual_task_experience=(
                                continual_task_experience
+                           ),
+                           temporal_episode_draft=(
+                               temporal_episode_draft
                            ))
 
 

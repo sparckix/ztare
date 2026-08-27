@@ -1,0 +1,424 @@
+{
+  "arms": [
+    {
+      "action_sequence": [
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 1,
+      "label": "relational_affordance",
+      "levels_gained": 1,
+      "oracle_suffix_exact": true,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 1,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 7,
+            "boundary_kind": "level_completed"
+          }
+        ]
+      },
+      "replication": 1,
+      "report_sha256": "bebf6653ff8d73ce638a67f9ce6109e5e5c498f0f8fd0a4d85a34cffe000205d",
+      "session_ids": [
+        "019fe778-7c95-7d10-bec4-2c65ba0059f6"
+      ],
+      "trace_sha256": "6a3f1c4287f0f75126cb0200f036e164a1c7ef912e4940aabac219a493679cfc"
+    },
+    {
+      "action_sequence": [
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1
+      ],
+      "attempt_index": 1,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 3,
+      "label": "relation_withheld_control",
+      "levels_gained": 0,
+      "oracle_suffix_exact": false,
+      "passed": true,
+      "prior_transport_failures": [
+        {
+          "attempt_index": 0,
+          "checkpoint_count": 0,
+          "final_session_state": {},
+          "returncode": 1,
+          "stderr_tail": "",
+          "stdout_tail": "WARNING: proceeding, even though we could not create PATH aliases: Operation not permitted (os error 1)\r\nError: failed to initialize in-process app-server client: Operation not permitted (os error 1)\r\n",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h126_relational_affordance_branch_acquisition/replication_1_relation_withheld_control_trace.jsonl"
+        }
+      ],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 0,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 1,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 2,
+            "boundary_kind": "reset_before_action"
+          }
+        ]
+      },
+      "replication": 1,
+      "report_sha256": "f2321d251b6d8434230c4a1499d9111a1ac95946c0daa8723aac0a8191c63909",
+      "session_ids": [
+        "019fe774-0977-7383-8bc9-658488040b32"
+      ],
+      "trace_sha256": "2de6ff6aaf0400399d6d36388e941ce02ae9e69cc7bc265cac5c51096230c6e2"
+    },
+    {
+      "action_sequence": [
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 1,
+      "label": "relational_affordance",
+      "levels_gained": 1,
+      "oracle_suffix_exact": true,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 1,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 7,
+            "boundary_kind": "level_completed"
+          }
+        ]
+      },
+      "replication": 2,
+      "report_sha256": "2ad594e6d77cc5f2eeddf2110104d19d80db3a4c6394e7e8df8d7178bacd3aa5",
+      "session_ids": [
+        "019fe77c-6484-7220-beb6-4ceb529d89b9"
+      ],
+      "trace_sha256": "3db5aa08d5830564ab894c925a51d55324c217f4c993c2a007f8fa19d0e606b0"
+    },
+    {
+      "action_sequence": [
+        3,
+        3,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 3,
+      "label": "relation_withheld_control",
+      "levels_gained": 0,
+      "oracle_suffix_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 0,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 1,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 2,
+            "boundary_kind": "reset_before_action"
+          }
+        ]
+      },
+      "replication": 2,
+      "report_sha256": "f8cb291bb1ffef638ff7105dde744386ef82ec4155045e3f01fab47ca8ca32dc",
+      "session_ids": [
+        "019fe77f-a85e-77a3-bf8e-e89d08a3c2dd"
+      ],
+      "trace_sha256": "6a6ea69da307fb29733930d77c1ddc2af5392f7fed85744dac62b0a369bb4aa1"
+    },
+    {
+      "action_sequence": [
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 1,
+      "label": "relational_affordance",
+      "levels_gained": 1,
+      "oracle_suffix_exact": true,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 1,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 7,
+            "boundary_kind": "level_completed"
+          }
+        ]
+      },
+      "replication": 3,
+      "report_sha256": "bc6611cb792d662c14a24470e56eed158bb6723f8d59e77089f4fba5680136d2",
+      "session_ids": [
+        "019fe786-3516-7e62-9dff-c1c88e11faef"
+      ],
+      "trace_sha256": "e72078be16bfe8f67c7cc5b91f4731d0aeaa9af0029fafbb1f658a5f27762796"
+    },
+    {
+      "action_sequence": [
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "branch_carrier_exact": true,
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "controller_replay_exact": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "prefix_replay_exact": true,
+        "recall_receipt_is_one_shot": true,
+        "report_actions_match_result": true,
+        "restored_prefix_exact": true,
+        "schema_counts_match": true
+      },
+      "first_action": 1,
+      "label": "relation_withheld_control",
+      "levels_gained": 1,
+      "oracle_suffix_exact": true,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "controller_grids_match": true,
+        "controller_transition_identities_match": true,
+        "final_levels_completed": 1,
+        "prefix_grids_match": true,
+        "prefix_transition_identities_match": true,
+        "terminal_rows": [
+          {
+            "action_count": 7,
+            "boundary_kind": "level_completed"
+          }
+        ]
+      },
+      "replication": 3,
+      "report_sha256": "16939b480bdb4833988b23a2d6d19aff0cb65b2c0cea634e6c0ccddf31885f01",
+      "session_ids": [
+        "019fe784-a752-7cb1-8673-08474ce51e66"
+      ],
+      "trace_sha256": "d34f8178dc115c003fe7721c626f1fca4b52a0a61ce90120dc7a51fa214db03e"
+    }
+  ],
+  "capsule_difference_paths": [
+    "intervention.arm_kind",
+    "intervention.branch_judgment.direct_contact",
+    "intervention.branch_judgment.lower_contact",
+    "intervention.branch_judgment.reason",
+    "intervention.branch_judgment.selected_action",
+    "intervention.branch_judgment.selected_direction",
+    "intervention.relation.claim",
+    "intervention.relation.mismatch_count",
+    "intervention.relation.status",
+    "intervention.relation.support_count",
+    "intervention.relation.transported_motion_bearing",
+    "padding"
+  ],
+  "capsule_receipt": {
+    "difference_roots": [
+      "intervention",
+      "padding"
+    ],
+    "pair_sha256": "67c8c9da48e9664112282fee92626f974549864c3b5b44a25487dbb4c9b3793d",
+    "relation_withheld_control_sha256": "3bd5b38d3f25ec377182dc74975c53cc6b18b03d2df73c13791b969b42f24709",
+    "relational_affordance_sha256": "5c304911860026965f2c3d196090dd92b349c43005b10c28fafe1e28621de43e",
+    "rendered_prompt_bytes": 1820,
+    "shared_payload_equal": true
+  },
+  "claim_boundary": "Audit validates the fixed within-game restored-branch causal result. Transfer, autonomous target-consequence discovery, multi-generation compounding, broad capability, and literature novelty remain unsettled.",
+  "control_acquisitions": 1,
+  "control_completions": 1,
+  "controller_contact": false,
+  "environment_contact": false,
+  "excluded_pre_action_transport_failures": [
+    {
+      "attempt_index": 0,
+      "checkpoint_count": 0,
+      "final_session_state": {},
+      "returncode": 1,
+      "stderr_tail": "",
+      "stdout_tail": "WARNING: proceeding, even though we could not create PATH aliases: Operation not permitted (os error 1)\r\nError: failed to initialize in-process app-server client: Operation not permitted (os error 1)\r\n",
+      "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h126_relational_affordance_branch_acquisition/replication_1_relation_withheld_control_trace.jsonl"
+    }
+  ],
+  "global_checks": {
+    "all_arms_pass": true,
+    "capsule_difference_paths_exact": true,
+    "capsule_lengths_equal": true,
+    "control_actions_1_of_3": true,
+    "control_completions_1_of_3": true,
+    "manifest_rebuild_exact": true,
+    "one_excluded_pre_action_transport": true,
+    "result_disposition_matches": true,
+    "result_identity_current": true,
+    "six_unique_sessions": true,
+    "six_valid_arms": true,
+    "treatment_actions_3_of_3": true,
+    "treatment_completions_3_of_3": true,
+    "treatment_oracle_suffix_3_of_3": true
+  },
+  "manifest_sha256": "0b17960991e317040ebe3925f849bb80174ab77b9f046da1a7f88116a7a8f745",
+  "result_sha256": "96791887bcd7b16abb89b24eec8085d08c6aca77ebc064bece10da7105257eea",
+  "schema": "ztare-h126-relational-affordance-acquisition-audit-v1",
+  "status": "passed",
+  "successful_exchange_count": 42,
+  "treatment_acquisitions": 3,
+  "treatment_completions": 3,
+  "unique_session_count": 6,
+  "valid_arm_count": 6
+}

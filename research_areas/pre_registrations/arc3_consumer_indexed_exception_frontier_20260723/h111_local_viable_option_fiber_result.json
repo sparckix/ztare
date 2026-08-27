@@ -1,0 +1,1084 @@
+{
+  "canonical": {
+    "effect_signature_sha256": "3b8dddfa3396d2d277be5251cfaa32cd315841a8c4f882dfc33b9b031e7e709a",
+    "history_multiplicity": 1,
+    "levels_gained": 1,
+    "prefix_sha256s": [
+      "ea924b33a47f65a61f3f873629111143e76ae247a63c826f632652a58187758c"
+    ],
+    "prefixes": [
+      [
+        2,
+        2,
+        2,
+        0,
+        0
+      ]
+    ],
+    "source_factor_sha256": "7f684bea9d7ccc27a9f128c8294d01ae82e0470402c22150879375e598fa77f7",
+    "source_grid_sha256": "5985a7ff5f06220cc1e9fae5e5cdd675ac78f494879e78ab0c782ebfe0211e64"
+  },
+  "checks": {
+    "all_identity_mutations_detected": true,
+    "cached_environment_identity_verified": true,
+    "candidate_count_is_106": true,
+    "canonical_effect_signature_reproduced": true,
+    "canonical_level_gain_reproduced": true,
+    "canonical_source_factor_reproduced": true,
+    "canonical_source_grid_reproduced": true,
+    "duplicate_histories_quotiented": true,
+    "h109_refusal_control_excluded": true,
+    "no_controller_contact": true,
+    "nontrivial_viable_source_exists": false
+  },
+  "claim_boundary": {
+    "bounded_local_target_exists": false,
+    "catalytic_learning_supported": false,
+    "cross_task_transfer_supported": false,
+    "literature_novelty_claimed": false,
+    "live_controller_benefit_supported": false,
+    "takeoff_supported": false,
+    "task_credit_at_target_supported": false
+  },
+  "controller_contact": false,
+  "environment_contact": true,
+  "environment_operation_mode": "offline",
+  "h109_refusal_control": {
+    "effect_signature_sha256": "020914c36c0fce1cb163c2428061f924f5ed44856e9de591bd1bd632093334fa",
+    "history_multiplicity": 1,
+    "levels_gained": 0,
+    "prefix_sha256s": [
+      "0c3e7ff9093e62c877497ed8f16e659ce92b8764023d2ab8ddd719f281566303"
+    ],
+    "prefixes": [
+      [
+        2,
+        2,
+        2,
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "source_factor_sha256": "ee4c0a43bbe601f3be4d85566114df766acde9dca218d6f16b3a1a195749d2bf",
+    "source_grid_sha256": "57b50a9cd789e4cacf91eb48cf9684628d7ce17c92f2dd74d3e78915a410fd57"
+  },
+  "hypothesis_id": "H-GPSA-LOCAL-VIABLE-OPTION-FIBER-20260806-111",
+  "identities": {
+    "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+    "environment_source_sha256": "cd6f71ead5d5dd1c5b3d1375c31a69982761aa21b49b9f0873984faffdc19e0b",
+    "h95_effect_signature_sha256": "3b8dddfa3396d2d277be5251cfaa32cd315841a8c4f882dfc33b9b031e7e709a",
+    "h95_source_factor_sha256": "7f684bea9d7ccc27a9f128c8294d01ae82e0470402c22150879375e598fa77f7",
+    "h95_source_grid_sha256": "5985a7ff5f06220cc1e9fae5e5cdd675ac78f494879e78ab0c782ebfe0211e64",
+    "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+    "winning_suffix_sha256": "8c9f75ea641fa3b4e668de034d2090eee91c29b2f21923899066b5a618027498"
+  },
+  "negative_fixtures": {
+    "environment_source_identity": true,
+    "option_word_identity": true,
+    "source_factor_identity": true,
+    "source_grid_identity": true
+  },
+  "schema": "ztare-h111-local-viable-option-fiber-v1",
+  "search": {
+    "candidate_prefix_count": 106,
+    "canonical_prefix": [
+      2,
+      2,
+      2,
+      0,
+      0
+    ],
+    "duplicate_history_count": 94,
+    "maximum_hamming_radius": 2,
+    "primitive_contact_count": 1393,
+    "sources": [
+      {
+        "effect_signature_sha256": "934e26a2edc92ad700290a5a174f29005a10c1dae72c97c23bc8a3e30b57ae02",
+        "history_multiplicity": 2,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "68693b84f4c785bb74bfc90a1c7e2ee93a23936e838c0db84c0fde2f96fa873d",
+          "fa113c7e262522018abeea52ad90d46fa900a1be70da1e17f35481d05c7c7351"
+        ],
+        "prefixes": [
+          [
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "fefdbd01617bb9573ff3e3ae5b38a98dfa9ae36e3e4cba556ad6d1c82166f7da",
+        "source_grid_sha256": "16073ebbd2832343f156cd71806994cbe521744e1fc21f01d6a5acb1443de95b"
+      },
+      {
+        "effect_signature_sha256": "24f1c4e747e4cff0702a5db8f0c9d787ec1fbfbefd95886e0c39057fc35f476a",
+        "history_multiplicity": 9,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "33b4ead29e4b58bd7e773ba8474349b29bd970b13731602242607c0abf6875d1",
+          "d45daae31fb489ec984adf3c7f00c6deee33951eeaed1708dd9cc966614542ad",
+          "da6c51fa03f160df1d5753277da01e4cda49bc8c9d8ca2c5ff950c9fbd206c1e",
+          "bc37a3f2b86f78c46782190ae9a85dc6d1191642404f6c72c867501c4cf1b39f",
+          "63cf99e4f1c5c5481529f680dce3bf3c06844d6958058a9b5d47fd68d52e42ab",
+          "c1e7cde4fff70fc0cf83125114860d43d45bb9e1eaa9e651c643a16aa4838c2b",
+          "cb55bebad8b8bc95f9479c924f47de3033b4d672979c20da244ceeee758a84bc",
+          "81068f4ff4adbd160e3b33d8082f3f4c4cf88baa213231f7add6a306da6ccc4f",
+          "07c0453cce32a97b9b39580727de211e8163a1449990e97777891d0a572c40fa"
+        ],
+        "prefixes": [
+          [
+            1,
+            2,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            1,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            0,
+            3
+          ],
+          [
+            2,
+            2,
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            0
+          ]
+        ],
+        "source_factor_sha256": "dc9df3d9ef4b9b4f4ca855840c95ab5753874f45ea04bbb04ab7c1278aceb28b",
+        "source_grid_sha256": "295a9deb8894f559e7f7c510fee9efcaa4c75db0caa19ae46718386776859d4c"
+      },
+      {
+        "effect_signature_sha256": "0741373b011e5360d5936cb2b56c39c27e4c3264b594b8a97f09b3a259699662",
+        "history_multiplicity": 1,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "d7d10a77c2c862aa8fbb0f30c5ea368f00f8034fa41353f297cf88409445e8a2"
+        ],
+        "prefixes": [
+          [
+            0,
+            2,
+            3,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "a9c8ff10b10916f6250ce1778d6c8bfe18461a6bf0c3ecc75dedca5d65ea6a1d",
+        "source_grid_sha256": "4c8b78d42defd06b59282778d04fa606756ae0b5b5f1c9b7314b1f633f6c623e"
+      },
+      {
+        "effect_signature_sha256": "3b8dddfa3396d2d277be5251cfaa32cd315841a8c4f882dfc33b9b031e7e709a",
+        "history_multiplicity": 1,
+        "levels_gained": 1,
+        "prefix_sha256s": [
+          "ea924b33a47f65a61f3f873629111143e76ae247a63c826f632652a58187758c"
+        ],
+        "prefixes": [
+          [
+            2,
+            2,
+            2,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "7f684bea9d7ccc27a9f128c8294d01ae82e0470402c22150879375e598fa77f7",
+        "source_grid_sha256": "5985a7ff5f06220cc1e9fae5e5cdd675ac78f494879e78ab0c782ebfe0211e64"
+      },
+      {
+        "effect_signature_sha256": "0a031cf0facbf1ca90ea0375dfe1621d00cd08f35808f3a552c02f84dde011f1",
+        "history_multiplicity": 6,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "67fe5a69b30943897eacee6dedcfa6c50c6c90302ca4a19cfbbecef0d3c26a7d",
+          "4cf02674cb7b2b2853c91c6f8df6a2a461064b944cc24e4dceaede28ac16d435",
+          "ba574a7915d87ce8b566c7c7e7cc62edd988156da9887cf5b8ae77fe205aa657",
+          "765b8ee7a7a30c9aa6c44877d62e6a958e6252ba09da3159cde3ede4fd4545c7",
+          "77e21ada1fe377c268ca5be46c7467aae64b4a46227813fd7bd72ee3a54b51aa",
+          "e7ae8a2fef64cd8346d5af504880337384e7bfaf9984383df2015b56903e114a"
+        ],
+        "prefixes": [
+          [
+            0,
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            3,
+            2,
+            0,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "8199a3c14f3a343491fb58af02d5c18d5ec5a34e25c9bfc5a20f88bc4eb66867",
+        "source_grid_sha256": "6ada59f6699590b74ec87575e3d849d10cb6668e4b1c4acea75bf4724cab326a"
+      },
+      {
+        "effect_signature_sha256": "48a46a24ed04312b20a686d0bc18ba08e0b2e88babe04d3fcbd4dd010505de1f",
+        "history_multiplicity": 25,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "edf1a5b622962ab5c0fbe2300da216a396764344be4db7ed357898f6587636bc",
+          "eb0b8bb30da1c64ef041a760d454ae067a143a6a495169a032e3e70cdb9f8f37",
+          "29d19ba511a454587de4d4bb27fb946ec5fc293449d4f48b5077ff280d6b7c23",
+          "10973a758264685b849748445464cf07c6eeab433c1f36d39cc8f2052723ce72",
+          "d05d682fedfd653192748248ff34220dd59c520547adebefbed88f938ded9034",
+          "950ef496f3108217f4d62aecb2bc0fe881eaa6c635edc46ed945ea89572dba5f",
+          "cb22ba493bc4b6b5c659b6be16f32c3c2147dbf5cfd2a90ea076867314c519ff",
+          "3a07ad1dc019aa7fdc78ecf815c9ac8ddb8eeeb1b4c76603883df1a89fc4fe05",
+          "aecc8f7d2edea17a910a3746e22d673369a274d10f4b67b2ea3b1c11c8e86eb2",
+          "0eb567d4fd53059a01a936e28601b1c5ec8422d6a1101f397df381b5f7aa2837",
+          "f86a5dc2e8754f33dea4a6baa0949fb24fa1246e622b379f567eca0814bbd4ce",
+          "feeb3237e1cdc58dca04ebba3d550f4bdaa6182cae4003adeb62a89c4f265376",
+          "dcf2eac2dacff8d30a70b3513270cb487f357a2b7fabbb0b256ba8bf51e1314e",
+          "764dd8806971b89a73554098089d5730a07f401ca38227e72893c43e9cf6882a",
+          "078c0d292206b1ad2b98bdc7e418b747b144f56f5eae3a9497e78ab85c88a76a",
+          "81eba3dca3b9160c7e271b70a382a1af33bbc2d923458684364b340401cfe723",
+          "7b65b748c46bf7337ffcde697d40816afebf61c55f48242ccfa86cceb279c0d5",
+          "4a4b811d5ee377e2dea4cbb26e6044cb7f1ab5de57421bca61383c5ae682808d",
+          "add4e547c4a7d1e6002b1fa15c7fc8a43ab79e52a6de7eae4c553d1167f6d6b1",
+          "597f2cce6910f65728de15ba4945744d3727b5dfbc53e2184aabb4c40ebf7ef4",
+          "47a066a38e10d67e3cdfac83f9b0aa4232c94efff35a9596b0bd346db098be70",
+          "718c87cdd6a9908b0b8abdcd1057b38343fd4dc73ba4755a148717a77e7e28f8",
+          "9b6da9ff48657ca60be476a0098bde7b95311b80e944de80d78b4a7327884aff",
+          "93f63fd91d2e5d3933b6b346a175c3665dfadf49254f8394a6ced9aeccc3f16e",
+          "68a5acf7b37e4d429580677ec773c0bc0060f72bdc92410ae55bbca177db5e6b"
+        ],
+        "prefixes": [
+          [
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            2,
+            2,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            1,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            2,
+            0,
+            1
+          ],
+          [
+            2,
+            1,
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            1
+          ],
+          [
+            2,
+            2,
+            0,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            2,
+            1,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            3,
+            1
+          ],
+          [
+            2,
+            2,
+            3,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            3,
+            2,
+            0
+          ],
+          [
+            2,
+            3,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            3,
+            2,
+            2,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            0,
+            2
+          ],
+          [
+            3,
+            2,
+            2,
+            2,
+            0
+          ]
+        ],
+        "source_factor_sha256": "bb9ff7907d38d8107bcfb240f84bd19ed317e397940432a05fcadd99e48eee7a",
+        "source_grid_sha256": "705664c13e09e195fe7e2508e552487f20f84c271a7b5f92035d043ba22539ff"
+      },
+      {
+        "effect_signature_sha256": "48a46a24ed04312b20a686d0bc18ba08e0b2e88babe04d3fcbd4dd010505de1f",
+        "history_multiplicity": 28,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "ba5b75087504fbe74d84b00e3e5be8d0c812acc4339e318831b8df38d059e519",
+          "4edc2332c2bee5d87d7cb5d2904883d37f1a05c39a3f724abfc1023c56e597c2",
+          "08f8b25bc9ee028df8d132016479fda671244347721d90d0aed8e00b2f7d2100",
+          "35dfbc450e5fcb7805baa9904f9ab6d8d065e44e4f5e6f27d7eae9e762642713",
+          "6efeda8efeba7207207353931c4484a0dc87672ce7009c8482ae099bba73520e",
+          "16f38f974756779f34ff0279dc1cc7ece6cd29e04285f6afa42340379555c915",
+          "b0602145c6e6177b5039dc51a98dd2ac6fbc8352e21ecc7d727fb6eacfd2f7dd",
+          "f382c372a3234f83a81b9b76c16e635262e23e481558710bfd5eab178a3e84cf",
+          "bc433886b2d1bf7b4437e5b8832bab11b49a73bbb1731eed09683dbb2d6204f9",
+          "6594575b1ba4b634716e783b7c73ef35a44e0b8c66ef8d813831fd700c067203",
+          "b44db6a1edd92ea18ef6b42eac8e1af9de1c687eb9eca9cbbacd4f7948b43157",
+          "cb0b361b3e0a4f05c4e3ed36c436ffd784a253bf73d6860fc5c9aaa273fef4c5",
+          "e0a14f715c10e2883910252b515de1911f2843b419d20053a25b1dd33b5d0942",
+          "e2b6c0eeaef1761099ba2dc8aac826ff50646b45c3c27e5502a912107f069390",
+          "1d23d637c4cdb110943977220d6bebaeb75c3b9b624c0b2cc285fedda5d14bc1",
+          "62a49e8d2197bf62e0d1107857a23e315cd1bd0409715881e2623d964eca5185",
+          "17a668da74a2ec40d3907570af7358cd4725e4c43f085debc55d615eb3219171",
+          "4d149a77ee4e97398c34d8b880966acb8472ed568b9378438044707285bad674",
+          "4ab416a8b5232ca2e980bf6640d6c6c0084d10f9c4e548552c180f8cbe04def2",
+          "6b6e73afb7a24e153db915f14b9fb08d07d5ca052a1ffcba05b4f096d679a7aa",
+          "b2b4651049913a2abfdaf70979ccdfa9dd5e89701c00360cb4a707ef6618f94d",
+          "454e02acdce71f6136073ac7d4c089a66bb56f359a5b7e1a035c5d92f92e8746",
+          "afae1d051edd1980bed60b0cd96f18db59e4dd2d3a7563264ac5d985fc5cf262",
+          "f1b61e274caa373c7e73bcfec5b1315210c7f14a3c24f1e7ad448aad573d9a8d",
+          "bad0b9397822ebc29317f673ad18e27980f45bdf745b12c412972520ba759f6d",
+          "a5f94d497c8e07b924ae122c872a051f86a76c07b3b570e4d4a188c55f04b0d2",
+          "77c64f6eaf4e4832113ce3c99bb6ff456ce82ad884dff96df3ab554e75fb0519",
+          "356bcc4a559880883b7033c539954389e3364114400229270bc82039f38b70eb"
+        ],
+        "prefixes": [
+          [
+            0,
+            1,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            2,
+            2,
+            0,
+            3
+          ],
+          [
+            1,
+            2,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            0,
+            3
+          ],
+          [
+            2,
+            0,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            2,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            3
+          ],
+          [
+            2,
+            2,
+            0,
+            3,
+            0
+          ],
+          [
+            2,
+            2,
+            1,
+            0,
+            3
+          ],
+          [
+            2,
+            2,
+            1,
+            3,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            3,
+            3
+          ],
+          [
+            2,
+            2,
+            3,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            2,
+            2,
+            3,
+            1,
+            0
+          ],
+          [
+            2,
+            3,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            3,
+            2,
+            0,
+            1
+          ],
+          [
+            2,
+            3,
+            2,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            0,
+            1
+          ],
+          [
+            3,
+            2,
+            2,
+            1,
+            0
+          ]
+        ],
+        "source_factor_sha256": "31ac2f7ef46dc59198592006112b3ad0995d4b7df2b523a94185ab1c2a9079c6",
+        "source_grid_sha256": "89d0f8c9479f1d99738a26eef3b2a23ccc28add8d0aa556c92cf0a26c3ec5c8f"
+      },
+      {
+        "effect_signature_sha256": "6db31387672267ffe5360e85c8af5398ea2cc8d18a87cd85f4402afb08153024",
+        "history_multiplicity": 11,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "308211c66a95b343e1397f5c24e6f626a6e6d4025d1944fa614631d19390741f",
+          "0343c1641d3ee75ada39397e6d4bd592742e3d92e9a45bbd1045b0e7a22766ca",
+          "625a03e22d2738c7428c3933d2d809f5ed194e03321b4fbf49d5d2315642dc2e",
+          "89a915e3744a728f060fee4537f197e7e439967827e7dab3ea94a1921dd36bba",
+          "cedc1161c25d9b1909d7d82110aa8dbd5cf8fddf47bdecc66f11d3aed45706cb",
+          "36944d030fbd415d2871b8ac7d90d7f3651b0d51a937b61cd198c4cc05ca82f9",
+          "5930be294d7cc9220e9c278c8ca2e1ad461093424fb57ebfba338519bd8d9f03",
+          "5e8ec9d419490bba6cf8a24b7e1ccce7736470b90292f489c07a2b2cba314231",
+          "d23e9ecca788bdb82ffd2395d599374dbf31375da1c165e570f902249b3eb680",
+          "33c7830cff341d3408411597d5d0350065b1afd54063861185ec3cddc4dec13b",
+          "1ef4106a6d359c1662994f38721da4612988b4a6415e73becad57072da0bad8e"
+        ],
+        "prefixes": [
+          [
+            1,
+            2,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            1,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            0,
+            1
+          ],
+          [
+            2,
+            2,
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            3,
+            2
+          ]
+        ],
+        "source_factor_sha256": "a0ae80920f296279d2a76f9e005401917e61b2aee8149551064c601315b5f9e1",
+        "source_grid_sha256": "8d6e717a752819c3c2e22c5082b702b4338442ed6eb6c59b34eca75dec01bca2"
+      },
+      {
+        "effect_signature_sha256": "c8f46efa2056a148ecd839347c0c9b4efa461a14061b6576c4168a8f4c83e7b7",
+        "history_multiplicity": 5,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "0047798493098c5033f6761c6fd880cedadc17ce47151b1ff76a08a07b159e0d",
+          "d7ed2dc42ebd2ac1e64dd43890a196ef67f006a0c265d550f1d7d7958496547d",
+          "67cabe58d6cde1671df2d5820f8f442113973a078d4261ab1343aa19db591f65",
+          "84aecbb74e6e74e526fad8fbbca5f18f3819b7cd9f40d364df8ddd414186eed4",
+          "a228ef9f8e1c415ba33323886ce06cd3001fcc0acdb957903ae9f4b5378feea4"
+        ],
+        "prefixes": [
+          [
+            0,
+            2,
+            2,
+            0,
+            3
+          ],
+          [
+            0,
+            2,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            2,
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            3,
+            2,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "e55eb2bbed1db726b19151a8c351143a363f398731c9c222900928a982e9db6e",
+        "source_grid_sha256": "d5cf05df496c22327398e441709f0fd531e1fc72c77316cd8fb1497c18e73aa3"
+      },
+      {
+        "effect_signature_sha256": "2372db2814f8c342c49069a924652044ec16488d1b1c9e2b7556e16854627fc4",
+        "history_multiplicity": 3,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "6146cae333f0ff441c89df826ad1cb87c94fe3b1159463c2b547948e56e6bceb",
+          "050dcd9e4f55557c56b36efc2c26741c0a8356d96bf918c18a877b893792f06d",
+          "07a76049efab4962f4270c634dd685f717cf78f4992d09caaa1a50bccd4323d4"
+        ],
+        "prefixes": [
+          [
+            2,
+            2,
+            3,
+            0,
+            3
+          ],
+          [
+            2,
+            3,
+            2,
+            0,
+            3
+          ],
+          [
+            3,
+            2,
+            2,
+            0,
+            3
+          ]
+        ],
+        "source_factor_sha256": "bbb69e13513df75c2582fa381cdea325de3ee6a640aef7c3560100fae2fd384c",
+        "source_grid_sha256": "db973475001d85d60e95467520dcfc0d548c2734c52b617100e0817d10656a9b"
+      },
+      {
+        "effect_signature_sha256": "da3c1da0927d0f4b2f83b8a0ad7bc1d1bdd7fa3e7d2bba1e0086ed5478eefe41",
+        "history_multiplicity": 10,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "fc7b519f39c27332302ae45d7c4a93221d7747059cf06248e439d62e3aa4401a",
+          "29ecfaebf5aa467c58da71af7b8591136ce71c5c9475a9b7cfaf42f295a37391",
+          "389381fca9e7781468f358c9e27a0caa2a4db098de408b93313c5359a7e3c425",
+          "b92b8e3daac3d8b88f6a3cf6cd47e35a38574045de58885aa425aa3cb488ace0",
+          "b34a4b1cb266e2f0748faf17117f360d28ee6a783dabf662035e23f74c1ba15a",
+          "462762aef5fbe66dea6e287d5f4b1b7a6225acb40ddd35a39ee667f5667980c1",
+          "878a26943d65b91fe6a3735eed580eb855763e9dad2d2f2dd4d43d7ed41caaf3",
+          "dccf39cc9b226096574e6c966c2401584e1db623c39ec3642d6f9b3fffffd752",
+          "395c08be1c7092c0b0036e9f9025b242a92b6bf56ecdf8a1f25bf82678565ae6",
+          "2acc47a3bb267ad522077858f71f0b2398ea070c3d82d56b3a8bfacd39924e7f"
+        ],
+        "prefixes": [
+          [
+            0,
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            2,
+            0,
+            2
+          ],
+          [
+            0,
+            2,
+            2,
+            2,
+            0
+          ],
+          [
+            1,
+            2,
+            3,
+            0,
+            0
+          ],
+          [
+            1,
+            3,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            3,
+            0,
+            0
+          ],
+          [
+            2,
+            3,
+            1,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2,
+            0,
+            0
+          ],
+          [
+            3,
+            2,
+            1,
+            0,
+            0
+          ]
+        ],
+        "source_factor_sha256": "7dd2cecfbe4300eadaf1e5dbe16e2e8086aa6f57d046947c233e1280434eab81",
+        "source_grid_sha256": "dc5e8ad23c6f58c1eeaa475ead6c7396f1a23d7e87d9cc44c102e0d38021728b"
+      },
+      {
+        "effect_signature_sha256": "00e636ff56d066c63d87e9865323a2b9f3cbbac3f6df610b851302a544724638",
+        "history_multiplicity": 5,
+        "levels_gained": 0,
+        "prefix_sha256s": [
+          "b21c6b68261e2f924ef7b5bddf5a78a05173d3d8458317d2623ba0638ec824ce",
+          "e6ff344252655c17c143ce49d1d6d09006750c242502236462d9f8121c953403",
+          "6ae94190d9fead7bd8f02dd4503f25cf75729a9abebad8c0a3779bd5afa053f3",
+          "08a1878530a876f84ddb08c06772731d9e213ac965407870460d905e7624bd5f",
+          "41b1bf6329005b1423856df8f05b08332f6f3a99c7e73d8ca0c8755726ee39f4"
+        ],
+        "prefixes": [
+          [
+            0,
+            2,
+            2,
+            0,
+            1
+          ],
+          [
+            0,
+            2,
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            3,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            2,
+            3,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            3,
+            0
+          ]
+        ],
+        "source_factor_sha256": "76f87acf9e813c5010da78e75d0c190ce4993281655d35548676b6c73ca01f03",
+        "source_grid_sha256": "f321abca778494fdf5223e6ce14c12814b51a5f524e82f5964535b73ef8dd1d1"
+      }
+    ],
+    "unique_exact_source_count": 12,
+    "viable_distinct_source_count": 0,
+    "viable_distinct_sources": []
+  },
+  "sha256": "94434c3c6edbf2acc9afdd4651565617bb4f5d6391dcccd7822e7db19640a8bc",
+  "status": "rejected"
+}

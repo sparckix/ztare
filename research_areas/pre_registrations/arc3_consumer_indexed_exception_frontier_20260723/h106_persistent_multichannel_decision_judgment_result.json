@@ -1,0 +1,227 @@
+{
+  "checks": {
+    "channel_authorities_explicit": true,
+    "conflicting_pair_arm_refused": true,
+    "derived_preference_not_serialized": true,
+    "four_arms_round_trip_exactly": true,
+    "legacy_v2_migrates_empty": true,
+    "mismatches_are_neutral": true,
+    "protocol_costs_unchanged": true,
+    "restored_h95_compilation": true,
+    "selector_flips_from_information_baseline": true,
+    "task_utility_conflict_is_neutral": true,
+    "utility_channels_positive_and_negative": true
+  },
+  "claim_boundary": "offline persistence and exact-measure selector consumption; no new ARC environment outcome",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-PERSISTENT-MULTICHANNEL-DECISION-JUDGMENT-20260807-106",
+  "memory": {
+    "arm_count": 4,
+    "memory_sha256": "69111028f6628c90266cbafd920d343d9178920db41e3b483a3851c812772ad2",
+    "schema": "ztare-continual-skill-memory-v3",
+    "stored_derived_preference": false
+  },
+  "schema": "ztare-h106-persistent-multichannel-decision-judgment-audit-v1",
+  "selection": {
+    "baseline_protocol_id": "placebo",
+    "causal_judgment": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+          "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+        ],
+        "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+        "decision_namespace": "arc3-response-transport-square",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "authority_channels": {
+        "immediate": "matched_external_terminal_adjudication",
+        "information_yield": "selection_price_only",
+        "temporal": "matched_external_terminal_adjudication",
+        "utility": "matched_external_utility_adjudication"
+      },
+      "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#sha256=3ec395d6e0b9ea238e39057a2326400af493ec9f745df8fcfad5e3990d182d47"
+      ],
+      "immediate_preference": 0,
+      "immediate_status": "uncredited",
+      "option_family_sha256": "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+      "preference": 1,
+      "schema": "ztare-combined-decision-task-judgment-v2",
+      "status": "utility_preferred",
+      "temporal_preference": 0,
+      "temporal_status": "uncredited",
+      "utility_mean_signed_external_delta": 0.48,
+      "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c",
+      "utility_preference": 1,
+      "utility_status": "utility_preferred"
+    },
+    "conflict_judgment": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+          "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+        ],
+        "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+        "decision_namespace": "arc3-response-transport-square",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "authority_channels": {
+        "immediate": "matched_external_terminal_adjudication",
+        "information_yield": "selection_price_only",
+        "temporal": "matched_external_terminal_adjudication",
+        "utility": "matched_external_utility_adjudication"
+      },
+      "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "h106-opposing-adjudication:1:causal",
+        "h106-opposing-adjudication:1:placebo",
+        "h106-opposing-adjudication:2:causal",
+        "h106-opposing-adjudication:2:placebo",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#sha256=3ec395d6e0b9ea238e39057a2326400af493ec9f745df8fcfad5e3990d182d47"
+      ],
+      "immediate_preference": 0,
+      "immediate_status": "uncredited",
+      "option_family_sha256": "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+      "preference": 0,
+      "schema": "ztare-combined-decision-task-judgment-v2",
+      "status": "credit_conflict",
+      "temporal_preference": -1,
+      "temporal_status": "task_hazard",
+      "utility_mean_signed_external_delta": 0.48,
+      "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c",
+      "utility_preference": 1,
+      "utility_status": "utility_preferred"
+    },
+    "costs_after": {
+      "causal": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 2,
+        "primitive_execution_units": 3.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 4.0
+      },
+      "placebo": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 1,
+        "primitive_execution_units": 2.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 3.0
+      }
+    },
+    "costs_before": {
+      "causal": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 2,
+        "primitive_execution_units": 3.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 4.0
+      },
+      "placebo": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 1,
+        "primitive_execution_units": 2.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 3.0
+      }
+    },
+    "mismatch_preferences": {
+      "no_measure": 0,
+      "wrong_context": 0,
+      "wrong_controller": 0,
+      "wrong_measure": 0,
+      "wrong_option_set": 0,
+      "wrong_task": 0
+    },
+    "placebo_judgment": {
+      "authority": {
+        "available_option_family_sha256s": [
+          "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+          "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+        ],
+        "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+        "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+        "decision_namespace": "arc3-response-transport-square",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "authority_channels": {
+        "immediate": "matched_external_terminal_adjudication",
+        "information_yield": "selection_price_only",
+        "temporal": "matched_external_terminal_adjudication",
+        "utility": "matched_external_utility_adjudication"
+      },
+      "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+      "conflict_policy": "nonzero_disagreement_is_neutral",
+      "contrast_priority": 0,
+      "evidence_refs": [
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#sha256=3ec395d6e0b9ea238e39057a2326400af493ec9f745df8fcfad5e3990d182d47"
+      ],
+      "immediate_preference": 0,
+      "immediate_status": "uncredited",
+      "option_family_sha256": "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c",
+      "preference": -1,
+      "schema": "ztare-combined-decision-task-judgment-v2",
+      "status": "utility_hazard",
+      "temporal_preference": 0,
+      "temporal_status": "uncredited",
+      "utility_mean_signed_external_delta": -0.48,
+      "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c",
+      "utility_preference": -1,
+      "utility_status": "utility_hazard"
+    },
+    "reranked_protocol_id": "causal"
+  },
+  "sha256": "047fb5e0f0cb62a26e37d30d51f53e41f2f13c906cf5e63218645a6b122aa66e",
+  "source": {
+    "h105_compilation_sha256": "41746a5bc8d1585c1930b3cb63c3b1df0a335f2496db8d1d021b2e3ce1490cd3",
+    "h95_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/result.json"
+  },
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/common/test_temporal_decision_utility.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": ".....                                                                    [100%]\n5 passed in 1.51s\n",
+    "stdout_sha256": "d792cb3d2b63f99ae860f4d0bdf4ed30680288b4b885b963895ba7ec8ff5816d"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "capital_authority": false,
+  "classification": "phenotype_adoption_found",
+  "entity_id": "FSLR",
+  "ok": true,
+  "provider_called": true,
+  "request_sha256": "5d9c5ede3f412a41fcdc964f8cc13bd8d1bd7c19313f1aa2cb27dddcf9ff144e",
+  "result_path": "institutional_learning/strategy_cohorts/results/5d9c5ede3f412a41fcdc964f8cc13bd8d1bd7c19313f1aa2cb27dddcf9ff144e.json",
+  "schema": "jaggedthoughts-subscription-research-action-v1",
+  "status": "strategy_cohort_classified",
+  "work_id": "investment-strategy-cohort:5d9c5ede3f412a41fcdc964f"
+}

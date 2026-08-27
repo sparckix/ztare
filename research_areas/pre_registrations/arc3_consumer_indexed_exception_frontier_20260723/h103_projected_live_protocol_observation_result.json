@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "action_history_advances_once": true,
+    "authoritative_boundary_is_partial": true,
+    "frame_projection_exact": true,
+    "h102_accepts_exact_target_probe": true,
+    "operation_effect_history_advances_once": true,
+    "projection_identity_drift_refused": true,
+    "receipt_binds_problem_projection_system_history": true,
+    "source_or_probe_mismatch_refused": true,
+    "task_status_not_read": true,
+    "untrusted_boundary_refused": true
+  },
+  "claim_boundary": "frozen-fixture concrete transition projection into an H102 observation; no play-loop episode assembly claim",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-PROJECTED-LIVE-PROTOCOL-OBSERVATION-20260807-103",
+  "schema": "ztare-h103-projected-live-protocol-observation-audit-v1",
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_projected_mechanism_transition_observation.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "....                                                                     [100%]\n4 passed in 0.24s\n",
+    "stdout_sha256": "9c714207acdb4637742c0d3473ba4d87be7b978f65d5b0063c39ad919e6fa9d7"
+  }
+}

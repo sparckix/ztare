@@ -1,0 +1,1156 @@
+{
+  "claim_boundary": [
+    "Two synthetic generations are causally chained without evidence reuse.",
+    "The finite-lineage knowledge growth factor is sqrt(3) and the error factor is zero.",
+    "The result does not settle H97 or demonstrate live ARC offspring.",
+    "The result does not authorize a capability-takeoff claim.",
+    "The result does not establish literature novelty."
+  ],
+  "controller_contact": false,
+  "environment_contact": false,
+  "first_generation": {
+    "criticality": {
+      "assignment_rank": 2,
+      "calibration_tolerance": 0.1,
+      "child_count": 2,
+      "child_settlements": [
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "g1-a",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 2,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "proposal_path_displacement",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h99-g1-observation-1-2",
+            "h99-g1-observation-2-2",
+            "h99-g1-observation-3-2",
+            "h99-g1-observation-4-2"
+          ],
+          "sha256": "d0018cb19f29793f4fb397e4c6e8ddc81c170a52d2aff1d1eb6a234ad091816a",
+          "status": "promoted",
+          "trial_sha256s": [
+            "70abce154132f9a062b5a596f2fb79586016e4017a6cbe50005c71b76c11f2eb",
+            "7786769c4ce8d1382bfc88aa949c24cc878b0576749b631d255f06b45a187bd8",
+            "d29499cb8b20fbd084be3802441c9f38efeab4648d04286fd284ee489a6663b5",
+            "da629e35d6eb8ff41feaeaf20294607d76d8cff1141ab57fc2658bd07a408798"
+          ],
+          "withhold_count": 2,
+          "withhold_supported_rate": 0.0
+        },
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "g1-b",
+          "observed_information_yield_delta": 0.7,
+          "offer_count": 2,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "successor_event_partition",
+          "predicted_information_yield": 0.7,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h99-g1-observation-1-1",
+            "h99-g1-observation-2-1",
+            "h99-g1-observation-3-1",
+            "h99-g1-observation-4-1"
+          ],
+          "sha256": "61870014d3d87297e3cd978e0317c64eee0539937529c2586b9b0ec53f86477a",
+          "status": "promoted",
+          "trial_sha256s": [
+            "1800977cbaacde0c22ec1e4cda8cd485ddc92acf7441fcb661bf2cbff28050ec",
+            "253ca55c82fdacd797f8a4bdab4e10f1f0a6c63776ab813447979b85de7d7d97",
+            "b50b2b5eb909c2e4f34b5017f35a6f0e81dace074ed035789b0a98480dfc159c",
+            "dfca161fa7fc77d08a26a4b8e655b6fd80e56e460a3ecf7d73bb949cfb1eae54"
+          ],
+          "withhold_count": 2,
+          "withhold_supported_rate": 0.0
+        }
+      ],
+      "error_critical_boundary": 1.0,
+      "error_reproduction": 0.0,
+      "error_spectral_radius": 0.0,
+      "false_child_count": 0,
+      "fission_sha256": "078be3dde1f9d686246bb381d770cf8540ccd47d87e28145f32004a82ddad25f",
+      "full_factorial_trajectory_count": 4,
+      "good_spectral_radius": 2.0,
+      "kind": "epistemic_criticality_receipt",
+      "knowledge_critical_boundary": 1.0,
+      "knowledge_reproduction": 2.0,
+      "max_calibration_error": 0.0,
+      "modeled_design_rank": 3,
+      "modeled_term_count": 2,
+      "multiplexing_gain": 2.0,
+      "observed_generations": 1,
+      "parent_count": 1,
+      "promoted_child_count": 2,
+      "proposal_reproduction": 4.0,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "separate_trajectory_cost": 160.0,
+      "settlement_observation_sha256s": [
+        "h99-g1-observation-1-1",
+        "h99-g1-observation-1-2",
+        "h99-g1-observation-2-1",
+        "h99-g1-observation-2-2",
+        "h99-g1-observation-3-1",
+        "h99-g1-observation-3-2",
+        "h99-g1-observation-4-1",
+        "h99-g1-observation-4-2"
+      ],
+      "settlement_schedule_sha256": "",
+      "sha256": "0559086f53147cfb54752310436ef67c8e4febd8df1bff472de2a5362bcb4f92",
+      "shared_trajectory_cost": 80.0,
+      "status": "supercritical_mechanism_candidate",
+      "takeoff_supported": false,
+      "trajectory_compression_ratio": 1.0,
+      "trajectory_refs": [
+        "h99-g1-trajectory-1",
+        "h99-g1-trajectory-2",
+        "h99-g1-trajectory-3",
+        "h99-g1-trajectory-4"
+      ],
+      "trial_sha256s": [
+        "1800977cbaacde0c22ec1e4cda8cd485ddc92acf7441fcb661bf2cbff28050ec",
+        "253ca55c82fdacd797f8a4bdab4e10f1f0a6c63776ab813447979b85de7d7d97",
+        "70abce154132f9a062b5a596f2fb79586016e4017a6cbe50005c71b76c11f2eb",
+        "7786769c4ce8d1382bfc88aa949c24cc878b0576749b631d255f06b45a187bd8",
+        "b50b2b5eb909c2e4f34b5017f35a6f0e81dace074ed035789b0a98480dfc159c",
+        "d29499cb8b20fbd084be3802441c9f38efeab4648d04286fd284ee489a6663b5",
+        "da629e35d6eb8ff41feaeaf20294607d76d8cff1141ab57fc2658bd07a408798",
+        "dfca161fa7fc77d08a26a4b8e655b6fd80e56e460a3ecf7d73bb949cfb1eae54"
+      ]
+    },
+    "fission": {
+      "authority": {
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "derivative_sha256": "1c08a79700a66933347829c4c8e968c8316ced2ea0a96c38170c9ea02917ee0c",
+        "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+        "kind": "response_fission_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+        "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+      },
+      "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+      "axes": [
+        {
+          "axis_id": "proposal_path_displacement",
+          "live_cost": 0.5
+        },
+        {
+          "axis_id": "successor_event_partition",
+          "live_cost": 0.5
+        },
+        {
+          "axis_id": "external_decision_yield",
+          "live_cost": 2.0
+        }
+      ],
+      "basis_niches": [
+        {
+          "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+          "evidence_refs": [
+            "h99-synthetic-replay:g1-b"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "g1-b",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+          ],
+          "predicted_information_yield": 0.7,
+          "response_direction": [
+            "0/1",
+            "1/1",
+            "1/1"
+          ],
+          "response_signature": [
+            "0/1",
+            "1/1",
+            "1/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "ceabfed9a64c9c56033c395f2966f221cecc3063e7e063a9ffcb566c186dd73c"
+        },
+        {
+          "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+          "evidence_refs": [
+            "h99-synthetic-replay:g1-a"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "g1-a",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+          ],
+          "predicted_information_yield": 0.6,
+          "response_direction": [
+            "1/1",
+            "0/1",
+            "1/1"
+          ],
+          "response_signature": [
+            "1/1",
+            "0/1",
+            "1/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "acc11c0ea7ece7af8c38b31a379cebc691490023f8254d3f36ae3a75deafc358"
+        }
+      ],
+      "compression_ratio": 2.0,
+      "direction_quotient_classes": [
+        [
+          "1239fad3d9e08e6b771cfb6dd4629d5cc02d545c999dd22120d286bfb517f4be"
+        ],
+        [
+          "a460215f46b1f1eb959cf241c27cc83ec01f7d054cd3a5754a085ba24e8eab85",
+          "acc11c0ea7ece7af8c38b31a379cebc691490023f8254d3f36ae3a75deafc358"
+        ],
+        [
+          "ceabfed9a64c9c56033c395f2966f221cecc3063e7e063a9ffcb566c186dd73c"
+        ]
+      ],
+      "direction_quotient_count": 3,
+      "independent_offspring_capacity": 2,
+      "kind": "residual_fission_receipt",
+      "lineage_parent_sha256s": [
+        "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+      ],
+      "pivot_axis_by_niche": [
+        {
+          "axis_id": "proposal_path_displacement",
+          "niche_ref": "g1-a"
+        },
+        {
+          "axis_id": "successor_event_partition",
+          "niche_ref": "g1-b"
+        }
+      ],
+      "raw_niche_count": 4,
+      "raw_niche_sha256s": [
+        "1239fad3d9e08e6b771cfb6dd4629d5cc02d545c999dd22120d286bfb517f4be",
+        "a460215f46b1f1eb959cf241c27cc83ec01f7d054cd3a5754a085ba24e8eab85",
+        "acc11c0ea7ece7af8c38b31a379cebc691490023f8254d3f36ae3a75deafc358",
+        "ceabfed9a64c9c56033c395f2966f221cecc3063e7e063a9ffcb566c186dd73c"
+      ],
+      "raw_proposal_reproduction": 4.0,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "selected_live_measurement_cost": 1.0,
+      "selected_measurement_axis_ids": [
+        "proposal_path_displacement",
+        "successor_event_partition"
+      ],
+      "sha256": "078be3dde1f9d686246bb381d770cf8540ccd47d87e28145f32004a82ddad25f"
+    },
+    "lineage_binding": {
+      "authority": {
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "derivative_sha256": "1c08a79700a66933347829c4c8e968c8316ced2ea0a96c38170c9ea02917ee0c",
+        "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+        "kind": "response_fission_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+        "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+      },
+      "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+      "criticality_sha256": "0559086f53147cfb54752310436ef67c8e4febd8df1bff472de2a5362bcb4f92",
+      "criticality_status": "supercritical_mechanism_candidate",
+      "error_reproduction": 0.0,
+      "false_child_count": 0,
+      "false_child_sha256s": [],
+      "fission_sha256": "078be3dde1f9d686246bb381d770cf8540ccd47d87e28145f32004a82ddad25f",
+      "generation_index": 1,
+      "kind": "epistemic_generation_receipt",
+      "knowledge_reproduction": 2.0,
+      "parent_child_sha256s": [
+        "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+      ],
+      "parent_count": 1,
+      "promoted_child_count": 2,
+      "promoted_child_sha256s": [
+        "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+        "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+      ],
+      "promoted_child_types": [
+        {
+          "child_sha256": "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+          "type_id": "successor_event_partition"
+        },
+        {
+          "child_sha256": "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a",
+          "type_id": "proposal_path_displacement"
+        }
+      ],
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "separate_trajectory_cost": 160.0,
+      "settlement_observation_sha256s": [
+        "h99-g1-observation-1-1",
+        "h99-g1-observation-1-2",
+        "h99-g1-observation-2-1",
+        "h99-g1-observation-2-2",
+        "h99-g1-observation-3-1",
+        "h99-g1-observation-3-2",
+        "h99-g1-observation-4-1",
+        "h99-g1-observation-4-2"
+      ],
+      "sha256": "277371cce20bcc7eec1ade7c1d1f0f8dfe4751f72024c4eae2b8803dede7bb11",
+      "shared_trajectory_cost": 80.0,
+      "trajectory_refs": [
+        "h99-g1-trajectory-1",
+        "h99-g1-trajectory-2",
+        "h99-g1-trajectory-3",
+        "h99-g1-trajectory-4"
+      ],
+      "trial_sha256s": [
+        "1800977cbaacde0c22ec1e4cda8cd485ddc92acf7441fcb661bf2cbff28050ec",
+        "253ca55c82fdacd797f8a4bdab4e10f1f0a6c63776ab813447979b85de7d7d97",
+        "70abce154132f9a062b5a596f2fb79586016e4017a6cbe50005c71b76c11f2eb",
+        "7786769c4ce8d1382bfc88aa949c24cc878b0576749b631d255f06b45a187bd8",
+        "b50b2b5eb909c2e4f34b5017f35a6f0e81dace074ed035789b0a98480dfc159c",
+        "d29499cb8b20fbd084be3802441c9f38efeab4648d04286fd284ee489a6663b5",
+        "da629e35d6eb8ff41feaeaf20294607d76d8cff1141ab57fc2658bd07a408798",
+        "dfca161fa7fc77d08a26a4b8e655b6fd80e56e460a3ecf7d73bb949cfb1eae54"
+      ]
+    }
+  },
+  "h97_runtime_boundary": {
+    "evidence_effect": "none",
+    "receipt_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/live_attempt_01_runtime_receipt.json",
+    "status": "blocked_runtime"
+  },
+  "h98_result": {
+    "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h98_epistemic_autocatalysis_result.json",
+    "sha256": "cf1199caa678b753498a497aa92417f0e56feb58d69094ff274f856e9904d21e",
+    "verdict": "supported"
+  },
+  "kind": "offline_mechanism_result",
+  "lineage": {
+    "cross_task_transport_required": true,
+    "error_geometric_growth": 0.0,
+    "error_growth_factors": [
+      0.0,
+      0.0
+    ],
+    "external_settlement_required": true,
+    "final_promoted_child_sha256s": [
+      "93e83d89ca61b92291973da8089dfd9ace7eb0ddbef8ee759eff6e04d3cc1d85",
+      "b6217ee9e8c681046a6620a8ac0cf74ad48d500e81068931853cb8b4763c4e89",
+      "c4cbd0db531513e36590c4bafbda937de63b6dd33c8f9e6cfb3239433b54e8a9"
+    ],
+    "generation_count": 2,
+    "generations": [
+      {
+        "authority": {
+          "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+          "derivative_sha256": "1c08a79700a66933347829c4c8e968c8316ced2ea0a96c38170c9ea02917ee0c",
+          "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+          "kind": "response_fission_authority",
+          "primitive_cost_unit": "charged_environment_action",
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "scope": {
+            "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+            "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+            "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+            "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+          },
+          "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+          "sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+          "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+        },
+        "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+        "criticality_sha256": "0559086f53147cfb54752310436ef67c8e4febd8df1bff472de2a5362bcb4f92",
+        "criticality_status": "supercritical_mechanism_candidate",
+        "error_reproduction": 0.0,
+        "false_child_count": 0,
+        "false_child_sha256s": [],
+        "fission_sha256": "078be3dde1f9d686246bb381d770cf8540ccd47d87e28145f32004a82ddad25f",
+        "generation_index": 1,
+        "kind": "epistemic_generation_receipt",
+        "knowledge_reproduction": 2.0,
+        "parent_child_sha256s": [
+          "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+        ],
+        "parent_count": 1,
+        "promoted_child_count": 2,
+        "promoted_child_sha256s": [
+          "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+          "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+        ],
+        "promoted_child_types": [
+          {
+            "child_sha256": "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+            "type_id": "successor_event_partition"
+          },
+          {
+            "child_sha256": "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a",
+            "type_id": "proposal_path_displacement"
+          }
+        ],
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "separate_trajectory_cost": 160.0,
+        "settlement_observation_sha256s": [
+          "h99-g1-observation-1-1",
+          "h99-g1-observation-1-2",
+          "h99-g1-observation-2-1",
+          "h99-g1-observation-2-2",
+          "h99-g1-observation-3-1",
+          "h99-g1-observation-3-2",
+          "h99-g1-observation-4-1",
+          "h99-g1-observation-4-2"
+        ],
+        "sha256": "277371cce20bcc7eec1ade7c1d1f0f8dfe4751f72024c4eae2b8803dede7bb11",
+        "shared_trajectory_cost": 80.0,
+        "trajectory_refs": [
+          "h99-g1-trajectory-1",
+          "h99-g1-trajectory-2",
+          "h99-g1-trajectory-3",
+          "h99-g1-trajectory-4"
+        ],
+        "trial_sha256s": [
+          "1800977cbaacde0c22ec1e4cda8cd485ddc92acf7441fcb661bf2cbff28050ec",
+          "253ca55c82fdacd797f8a4bdab4e10f1f0a6c63776ab813447979b85de7d7d97",
+          "70abce154132f9a062b5a596f2fb79586016e4017a6cbe50005c71b76c11f2eb",
+          "7786769c4ce8d1382bfc88aa949c24cc878b0576749b631d255f06b45a187bd8",
+          "b50b2b5eb909c2e4f34b5017f35a6f0e81dace074ed035789b0a98480dfc159c",
+          "d29499cb8b20fbd084be3802441c9f38efeab4648d04286fd284ee489a6663b5",
+          "da629e35d6eb8ff41feaeaf20294607d76d8cff1141ab57fc2658bd07a408798",
+          "dfca161fa7fc77d08a26a4b8e655b6fd80e56e460a3ecf7d73bb949cfb1eae54"
+        ]
+      },
+      {
+        "authority": {
+          "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+          "derivative_sha256": "c1b6de2315b6f60a2cb2bb474c411b21d90ce27a8de28a7a8199fca8054c453d",
+          "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+          "kind": "response_fission_authority",
+          "primitive_cost_unit": "charged_environment_action",
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "scope": {
+            "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+            "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+            "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+            "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+            "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+          },
+          "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+          "sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+          "source_program_sha256": "66cd5075f11b85a54539c171b60c95cfad3b540aeec11509ec94c3b565dab9af"
+        },
+        "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+        "criticality_sha256": "6ef1d3c022f942ed2bad701de00ba773c486a1b4f256deab2e25873bbdad667d",
+        "criticality_status": "supercritical_mechanism_candidate",
+        "error_reproduction": 0.0,
+        "false_child_count": 0,
+        "false_child_sha256s": [],
+        "fission_sha256": "9713dc89708a4a80840b0b3675138f3fb37de5052eb41130d69bbe87f795bcd1",
+        "generation_index": 2,
+        "kind": "epistemic_generation_receipt",
+        "knowledge_reproduction": 1.5,
+        "parent_child_sha256s": [
+          "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+          "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+        ],
+        "parent_count": 2,
+        "promoted_child_count": 3,
+        "promoted_child_sha256s": [
+          "93e83d89ca61b92291973da8089dfd9ace7eb0ddbef8ee759eff6e04d3cc1d85",
+          "b6217ee9e8c681046a6620a8ac0cf74ad48d500e81068931853cb8b4763c4e89",
+          "c4cbd0db531513e36590c4bafbda937de63b6dd33c8f9e6cfb3239433b54e8a9"
+        ],
+        "promoted_child_types": [
+          {
+            "child_sha256": "93e83d89ca61b92291973da8089dfd9ace7eb0ddbef8ee759eff6e04d3cc1d85",
+            "type_id": "second_axis_2"
+          },
+          {
+            "child_sha256": "b6217ee9e8c681046a6620a8ac0cf74ad48d500e81068931853cb8b4763c4e89",
+            "type_id": "second_axis_0"
+          },
+          {
+            "child_sha256": "c4cbd0db531513e36590c4bafbda937de63b6dd33c8f9e6cfb3239433b54e8a9",
+            "type_id": "second_axis_1"
+          }
+        ],
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "separate_trajectory_cost": 480.0,
+        "settlement_observation_sha256s": [
+          "h99-g2-observation-1-1",
+          "h99-g2-observation-1-2",
+          "h99-g2-observation-1-3",
+          "h99-g2-observation-2-1",
+          "h99-g2-observation-2-2",
+          "h99-g2-observation-2-3",
+          "h99-g2-observation-3-1",
+          "h99-g2-observation-3-2",
+          "h99-g2-observation-3-3",
+          "h99-g2-observation-4-1",
+          "h99-g2-observation-4-2",
+          "h99-g2-observation-4-3",
+          "h99-g2-observation-5-1",
+          "h99-g2-observation-5-2",
+          "h99-g2-observation-5-3",
+          "h99-g2-observation-6-1",
+          "h99-g2-observation-6-2",
+          "h99-g2-observation-6-3",
+          "h99-g2-observation-7-1",
+          "h99-g2-observation-7-2",
+          "h99-g2-observation-7-3",
+          "h99-g2-observation-8-1",
+          "h99-g2-observation-8-2",
+          "h99-g2-observation-8-3"
+        ],
+        "sha256": "d2987df656c269e6b44b1c6cbb7cc86c77c5b56d5840c3892a2025ae94d489aa",
+        "shared_trajectory_cost": 160.0,
+        "trajectory_refs": [
+          "h99-g2-trajectory-1",
+          "h99-g2-trajectory-2",
+          "h99-g2-trajectory-3",
+          "h99-g2-trajectory-4",
+          "h99-g2-trajectory-5",
+          "h99-g2-trajectory-6",
+          "h99-g2-trajectory-7",
+          "h99-g2-trajectory-8"
+        ],
+        "trial_sha256s": [
+          "0161f5ec915119b05e7058e99a9721de8ca930b023ae3785074de488991d939a",
+          "060aaf9284f0ec0874a79e37efe4a915c2da27db71b57899768423b420a7a2a4",
+          "17d24c12bd181482bb0cfeff12c6081c9b048015948395c72f41cd497fe8fbdd",
+          "18c484f01a58fa63c1ee5694048f8ee566b16a4295945ae238e5e08fb4963878",
+          "191df3cfffcbdfd819eef0712f6a901099953aedef3f901ef475c5e317ca88f5",
+          "19305ea407292b2e452f4b582b7c12b1effe02c19da1aa48df3464cff026b8cb",
+          "1f5659e8b1aac454ffd81c73f459006ff87d354d2235eabd3dc1372243c0911e",
+          "21114228a3dcb9f75bf543b13f199d72301931874174d90a1c1d08ed460048ba",
+          "29c96b9164616d185cf8ff3f161ad1b142f0e8d7004f93107e33acda5f2c68da",
+          "2e6e093e8d72e667c722845ec294febdbe2c6a72ee28effeaf8cf53194fab501",
+          "2fa309692caa07bb789a25cf2058ddac478b6360ef7b3380557a1a309b38754a",
+          "38c5a4e6ade7350fa43525e6d2f06bfa225772d1690df9f708207788e1cbd276",
+          "3cca992f91bf6cd5854455e15996a1111c075febf7874fae01e38fd26fdc92d0",
+          "4d2ee8df8012794bee164a51fde3a9c4cffd2c75e9f958f1380b9e75a4ce8a23",
+          "643489cafa43b6a75ee471aa4d0712c797c05e4d6305b7690ac03770b7db73df",
+          "6fc0e160d783b82a4f33b5e2e30c7d498b67c986c402671e96262673a3be24fc",
+          "8ded04683b99bac65eb87a8885a8e8af0df212b50e0f009e59440e775a1ccccc",
+          "93b24e381849699695267db2824eaed8792b25709bc8143155f37796e6d021ed",
+          "96da225ea5d30e8a2cf6ad285d0acc39dfac89c6f916131a714767ea6646e330",
+          "a2a254847043f41c12f531f2731f65d6fdcb951c6b9c09dbbee0dbe452834e1f",
+          "ac82d4b2bb3c44e2fc011ca1b4fd880e2ad4ade9a2d61878be97a3b804301f2d",
+          "b524ead020bc3dbf6cd4dba77f1c40c4afff5f28e01b161c142d424350c029e9",
+          "bb187411d47e6b870f73461817120e05db05d3c2d12b8c7a66ed1d1328d55398",
+          "ffb430ce5842536d3dd53b5f1d0896122ef1e5e02179669d91972786119c8db2"
+        ]
+      }
+    ],
+    "kind": "epistemic_lineage_receipt",
+    "knowledge_geometric_growth": 1.7320508075688772,
+    "knowledge_growth_factors": [
+      2.0,
+      1.5
+    ],
+    "knowledge_log_growth": 0.5493061443340548,
+    "multiplexing_gain": 2.6666666666666665,
+    "root_parent_sha256s": [
+      "aea8b1d145866fbb7198be0d506a88a57cb6401da1886a4f71b402cf027944a3"
+    ],
+    "schema": "ztare-epistemic-autocatalysis-v1",
+    "sha256": "376b22e614fbf7a21c30ae5e23637830768e19f5f89d432adc3fe59e3935b59d",
+    "status": "multigeneration_mechanism_candidate",
+    "takeoff_supported": false,
+    "total_separate_trajectory_cost": 640.0,
+    "total_shared_trajectory_cost": 240.0,
+    "validated_descendant_multiplier": 3.0
+  },
+  "nearest_prior_art": [
+    {
+      "component": "micro-randomized causal excursion effects",
+      "url": "https://arxiv.org/abs/2107.03544"
+    },
+    {
+      "component": "three-factor eligibility traces",
+      "url": "https://arxiv.org/abs/1801.05219"
+    },
+    {
+      "component": "criticality measurement failure modes",
+      "url": "https://arxiv.org/abs/1908.08163"
+    },
+    {
+      "component": "Bayesian-surprise discovery trees",
+      "url": "https://arxiv.org/abs/2507.00310"
+    },
+    {
+      "component": "recursive two-timescale skill evolution",
+      "url": "https://arxiv.org/abs/2607.05297"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "label": "parent_relabel",
+      "reason": "descendant consumed a non-promoted parent set",
+      "rejected": true
+    },
+    {
+      "label": "program_family_relabel",
+      "reason": "descendant source program crossed child-family identity",
+      "rejected": true
+    },
+    {
+      "label": "derivative_reuse",
+      "reason": "epistemic lineage reused a response derivative",
+      "rejected": true
+    },
+    {
+      "label": "trajectory_reuse",
+      "reason": "epistemic lineage reused a trajectory",
+      "rejected": true
+    },
+    {
+      "label": "trial_reuse",
+      "reason": "epistemic lineage reused a trial",
+      "rejected": true
+    },
+    {
+      "label": "observation_reuse",
+      "reason": "epistemic lineage reused a settlement observation",
+      "rejected": true
+    },
+    {
+      "label": "critical_second_generation",
+      "reason": "subcritical_or_unresolved",
+      "rejected": true
+    },
+    {
+      "label": "false_edge_criticality",
+      "reason": "subcritical_or_unresolved",
+      "rejected": true
+    }
+  ],
+  "schema": "ztare-h99-lineage-bound-epistemic-branching-audit-v1",
+  "second_generation": {
+    "criticality": {
+      "assignment_rank": 3,
+      "calibration_tolerance": 0.1,
+      "child_count": 3,
+      "child_settlements": [
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "g2-0",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 4,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "second_axis_0",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h99-g2-observation-1-1",
+            "h99-g2-observation-2-1",
+            "h99-g2-observation-3-1",
+            "h99-g2-observation-4-1",
+            "h99-g2-observation-5-1",
+            "h99-g2-observation-6-1",
+            "h99-g2-observation-7-1",
+            "h99-g2-observation-8-1"
+          ],
+          "sha256": "942eb0b2df2318a70b519cd702e48562cf92ecb87de8946c23d849bbf5857b33",
+          "status": "promoted",
+          "trial_sha256s": [
+            "0161f5ec915119b05e7058e99a9721de8ca930b023ae3785074de488991d939a",
+            "21114228a3dcb9f75bf543b13f199d72301931874174d90a1c1d08ed460048ba",
+            "3cca992f91bf6cd5854455e15996a1111c075febf7874fae01e38fd26fdc92d0",
+            "4d2ee8df8012794bee164a51fde3a9c4cffd2c75e9f958f1380b9e75a4ce8a23",
+            "8ded04683b99bac65eb87a8885a8e8af0df212b50e0f009e59440e775a1ccccc",
+            "ac82d4b2bb3c44e2fc011ca1b4fd880e2ad4ade9a2d61878be97a3b804301f2d",
+            "b524ead020bc3dbf6cd4dba77f1c40c4afff5f28e01b161c142d424350c029e9",
+            "bb187411d47e6b870f73461817120e05db05d3c2d12b8c7a66ed1d1328d55398"
+          ],
+          "withhold_count": 4,
+          "withhold_supported_rate": 0.0
+        },
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "g2-1",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 4,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "second_axis_1",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h99-g2-observation-1-2",
+            "h99-g2-observation-2-2",
+            "h99-g2-observation-3-2",
+            "h99-g2-observation-4-2",
+            "h99-g2-observation-5-2",
+            "h99-g2-observation-6-2",
+            "h99-g2-observation-7-2",
+            "h99-g2-observation-8-2"
+          ],
+          "sha256": "026216032975d19897e641fec140f1d1db9cc0fca8576dd1cfefc3f933e18f8d",
+          "status": "promoted",
+          "trial_sha256s": [
+            "18c484f01a58fa63c1ee5694048f8ee566b16a4295945ae238e5e08fb4963878",
+            "191df3cfffcbdfd819eef0712f6a901099953aedef3f901ef475c5e317ca88f5",
+            "29c96b9164616d185cf8ff3f161ad1b142f0e8d7004f93107e33acda5f2c68da",
+            "2fa309692caa07bb789a25cf2058ddac478b6360ef7b3380557a1a309b38754a",
+            "38c5a4e6ade7350fa43525e6d2f06bfa225772d1690df9f708207788e1cbd276",
+            "643489cafa43b6a75ee471aa4d0712c797c05e4d6305b7690ac03770b7db73df",
+            "6fc0e160d783b82a4f33b5e2e30c7d498b67c986c402671e96262673a3be24fc",
+            "a2a254847043f41c12f531f2731f65d6fdcb951c6b9c09dbbee0dbe452834e1f"
+          ],
+          "withhold_count": 4,
+          "withhold_supported_rate": 0.0
+        },
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "g2-2",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 4,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "second_axis_2",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h99-g2-observation-1-3",
+            "h99-g2-observation-2-3",
+            "h99-g2-observation-3-3",
+            "h99-g2-observation-4-3",
+            "h99-g2-observation-5-3",
+            "h99-g2-observation-6-3",
+            "h99-g2-observation-7-3",
+            "h99-g2-observation-8-3"
+          ],
+          "sha256": "91c9408ae67e9603b090f76839c7f6877b6982e3b2fe169053f92b31464e51ad",
+          "status": "promoted",
+          "trial_sha256s": [
+            "060aaf9284f0ec0874a79e37efe4a915c2da27db71b57899768423b420a7a2a4",
+            "17d24c12bd181482bb0cfeff12c6081c9b048015948395c72f41cd497fe8fbdd",
+            "19305ea407292b2e452f4b582b7c12b1effe02c19da1aa48df3464cff026b8cb",
+            "1f5659e8b1aac454ffd81c73f459006ff87d354d2235eabd3dc1372243c0911e",
+            "2e6e093e8d72e667c722845ec294febdbe2c6a72ee28effeaf8cf53194fab501",
+            "93b24e381849699695267db2824eaed8792b25709bc8143155f37796e6d021ed",
+            "96da225ea5d30e8a2cf6ad285d0acc39dfac89c6f916131a714767ea6646e330",
+            "ffb430ce5842536d3dd53b5f1d0896122ef1e5e02179669d91972786119c8db2"
+          ],
+          "withhold_count": 4,
+          "withhold_supported_rate": 0.0
+        }
+      ],
+      "error_critical_boundary": 1.0,
+      "error_reproduction": 0.0,
+      "error_spectral_radius": 0.0,
+      "false_child_count": 0,
+      "fission_sha256": "9713dc89708a4a80840b0b3675138f3fb37de5052eb41130d69bbe87f795bcd1",
+      "full_factorial_trajectory_count": 8,
+      "good_spectral_radius": 1.5,
+      "kind": "epistemic_criticality_receipt",
+      "knowledge_critical_boundary": 1.0,
+      "knowledge_reproduction": 1.5,
+      "max_calibration_error": 0.0,
+      "modeled_design_rank": 4,
+      "modeled_term_count": 3,
+      "multiplexing_gain": 3.0,
+      "observed_generations": 1,
+      "parent_count": 2,
+      "promoted_child_count": 3,
+      "proposal_reproduction": 1.5,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "separate_trajectory_cost": 480.0,
+      "settlement_observation_sha256s": [
+        "h99-g2-observation-1-1",
+        "h99-g2-observation-1-2",
+        "h99-g2-observation-1-3",
+        "h99-g2-observation-2-1",
+        "h99-g2-observation-2-2",
+        "h99-g2-observation-2-3",
+        "h99-g2-observation-3-1",
+        "h99-g2-observation-3-2",
+        "h99-g2-observation-3-3",
+        "h99-g2-observation-4-1",
+        "h99-g2-observation-4-2",
+        "h99-g2-observation-4-3",
+        "h99-g2-observation-5-1",
+        "h99-g2-observation-5-2",
+        "h99-g2-observation-5-3",
+        "h99-g2-observation-6-1",
+        "h99-g2-observation-6-2",
+        "h99-g2-observation-6-3",
+        "h99-g2-observation-7-1",
+        "h99-g2-observation-7-2",
+        "h99-g2-observation-7-3",
+        "h99-g2-observation-8-1",
+        "h99-g2-observation-8-2",
+        "h99-g2-observation-8-3"
+      ],
+      "settlement_schedule_sha256": "",
+      "sha256": "6ef1d3c022f942ed2bad701de00ba773c486a1b4f256deab2e25873bbdad667d",
+      "shared_trajectory_cost": 160.0,
+      "status": "supercritical_mechanism_candidate",
+      "takeoff_supported": false,
+      "trajectory_compression_ratio": 1.0,
+      "trajectory_refs": [
+        "h99-g2-trajectory-1",
+        "h99-g2-trajectory-2",
+        "h99-g2-trajectory-3",
+        "h99-g2-trajectory-4",
+        "h99-g2-trajectory-5",
+        "h99-g2-trajectory-6",
+        "h99-g2-trajectory-7",
+        "h99-g2-trajectory-8"
+      ],
+      "trial_sha256s": [
+        "0161f5ec915119b05e7058e99a9721de8ca930b023ae3785074de488991d939a",
+        "060aaf9284f0ec0874a79e37efe4a915c2da27db71b57899768423b420a7a2a4",
+        "17d24c12bd181482bb0cfeff12c6081c9b048015948395c72f41cd497fe8fbdd",
+        "18c484f01a58fa63c1ee5694048f8ee566b16a4295945ae238e5e08fb4963878",
+        "191df3cfffcbdfd819eef0712f6a901099953aedef3f901ef475c5e317ca88f5",
+        "19305ea407292b2e452f4b582b7c12b1effe02c19da1aa48df3464cff026b8cb",
+        "1f5659e8b1aac454ffd81c73f459006ff87d354d2235eabd3dc1372243c0911e",
+        "21114228a3dcb9f75bf543b13f199d72301931874174d90a1c1d08ed460048ba",
+        "29c96b9164616d185cf8ff3f161ad1b142f0e8d7004f93107e33acda5f2c68da",
+        "2e6e093e8d72e667c722845ec294febdbe2c6a72ee28effeaf8cf53194fab501",
+        "2fa309692caa07bb789a25cf2058ddac478b6360ef7b3380557a1a309b38754a",
+        "38c5a4e6ade7350fa43525e6d2f06bfa225772d1690df9f708207788e1cbd276",
+        "3cca992f91bf6cd5854455e15996a1111c075febf7874fae01e38fd26fdc92d0",
+        "4d2ee8df8012794bee164a51fde3a9c4cffd2c75e9f958f1380b9e75a4ce8a23",
+        "643489cafa43b6a75ee471aa4d0712c797c05e4d6305b7690ac03770b7db73df",
+        "6fc0e160d783b82a4f33b5e2e30c7d498b67c986c402671e96262673a3be24fc",
+        "8ded04683b99bac65eb87a8885a8e8af0df212b50e0f009e59440e775a1ccccc",
+        "93b24e381849699695267db2824eaed8792b25709bc8143155f37796e6d021ed",
+        "96da225ea5d30e8a2cf6ad285d0acc39dfac89c6f916131a714767ea6646e330",
+        "a2a254847043f41c12f531f2731f65d6fdcb951c6b9c09dbbee0dbe452834e1f",
+        "ac82d4b2bb3c44e2fc011ca1b4fd880e2ad4ade9a2d61878be97a3b804301f2d",
+        "b524ead020bc3dbf6cd4dba77f1c40c4afff5f28e01b161c142d424350c029e9",
+        "bb187411d47e6b870f73461817120e05db05d3c2d12b8c7a66ed1d1328d55398",
+        "ffb430ce5842536d3dd53b5f1d0896122ef1e5e02179669d91972786119c8db2"
+      ]
+    },
+    "fission": {
+      "authority": {
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "derivative_sha256": "c1b6de2315b6f60a2cb2bb474c411b21d90ce27a8de28a7a8199fca8054c453d",
+        "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+        "kind": "response_fission_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+        "source_program_sha256": "66cd5075f11b85a54539c171b60c95cfad3b540aeec11509ec94c3b565dab9af"
+      },
+      "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+      "axes": [
+        {
+          "axis_id": "second_axis_0",
+          "live_cost": 0.5
+        },
+        {
+          "axis_id": "second_axis_1",
+          "live_cost": 0.5
+        },
+        {
+          "axis_id": "second_axis_2",
+          "live_cost": 0.5
+        }
+      ],
+      "basis_niches": [
+        {
+          "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+          "evidence_refs": [
+            "h99-synthetic-replay:g2-0"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "g2-0",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+            "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+          ],
+          "predicted_information_yield": 0.6,
+          "response_direction": [
+            "1/1",
+            "0/1",
+            "0/1"
+          ],
+          "response_signature": [
+            "1/1",
+            "0/1",
+            "0/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "8d6def2049540685029f7875bdc699006cf0d99bd796176b3f1ff0c8e7d152b2"
+        },
+        {
+          "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+          "evidence_refs": [
+            "h99-synthetic-replay:g2-1"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "g2-1",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+            "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+          ],
+          "predicted_information_yield": 0.6,
+          "response_direction": [
+            "0/1",
+            "1/1",
+            "0/1"
+          ],
+          "response_signature": [
+            "0/1",
+            "1/1",
+            "0/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "b3f86c1f24c97feea37af75535d2111ce98d1b63b06b87edced6a5bac56c5250"
+        },
+        {
+          "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+          "evidence_refs": [
+            "h99-synthetic-replay:g2-2"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "g2-2",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+            "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+          ],
+          "predicted_information_yield": 0.6,
+          "response_direction": [
+            "0/1",
+            "0/1",
+            "1/1"
+          ],
+          "response_signature": [
+            "0/1",
+            "0/1",
+            "1/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "4e545f40373bfb38681930c67a996514f66d82b4ac95e38bdb68e2194fa1ef6e"
+        }
+      ],
+      "compression_ratio": 1.0,
+      "direction_quotient_classes": [
+        [
+          "4e545f40373bfb38681930c67a996514f66d82b4ac95e38bdb68e2194fa1ef6e"
+        ],
+        [
+          "8d6def2049540685029f7875bdc699006cf0d99bd796176b3f1ff0c8e7d152b2"
+        ],
+        [
+          "b3f86c1f24c97feea37af75535d2111ce98d1b63b06b87edced6a5bac56c5250"
+        ]
+      ],
+      "direction_quotient_count": 3,
+      "independent_offspring_capacity": 3,
+      "kind": "residual_fission_receipt",
+      "lineage_parent_sha256s": [
+        "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+        "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+      ],
+      "pivot_axis_by_niche": [
+        {
+          "axis_id": "second_axis_0",
+          "niche_ref": "g2-0"
+        },
+        {
+          "axis_id": "second_axis_1",
+          "niche_ref": "g2-1"
+        },
+        {
+          "axis_id": "second_axis_2",
+          "niche_ref": "g2-2"
+        }
+      ],
+      "raw_niche_count": 3,
+      "raw_niche_sha256s": [
+        "4e545f40373bfb38681930c67a996514f66d82b4ac95e38bdb68e2194fa1ef6e",
+        "8d6def2049540685029f7875bdc699006cf0d99bd796176b3f1ff0c8e7d152b2",
+        "b3f86c1f24c97feea37af75535d2111ce98d1b63b06b87edced6a5bac56c5250"
+      ],
+      "raw_proposal_reproduction": 3.0,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "selected_live_measurement_cost": 1.5,
+      "selected_measurement_axis_ids": [
+        "second_axis_0",
+        "second_axis_1",
+        "second_axis_2"
+      ],
+      "sha256": "9713dc89708a4a80840b0b3675138f3fb37de5052eb41130d69bbe87f795bcd1"
+    },
+    "lineage_binding": {
+      "authority": {
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "derivative_sha256": "c1b6de2315b6f60a2cb2bb474c411b21d90ce27a8de28a7a8199fca8054c453d",
+        "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+        "kind": "response_fission_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+        "source_program_sha256": "66cd5075f11b85a54539c171b60c95cfad3b540aeec11509ec94c3b565dab9af"
+      },
+      "authority_sha256": "2142c39c8b864d2499550418b827e7e01dfb87cf7cff6f4bf2a0162ef11ce836",
+      "criticality_sha256": "6ef1d3c022f942ed2bad701de00ba773c486a1b4f256deab2e25873bbdad667d",
+      "criticality_status": "supercritical_mechanism_candidate",
+      "error_reproduction": 0.0,
+      "false_child_count": 0,
+      "false_child_sha256s": [],
+      "fission_sha256": "9713dc89708a4a80840b0b3675138f3fb37de5052eb41130d69bbe87f795bcd1",
+      "generation_index": 2,
+      "kind": "epistemic_generation_receipt",
+      "knowledge_reproduction": 1.5,
+      "parent_child_sha256s": [
+        "2a63d140c5b1c806f2c5006b4af28e424d53c2dc0a7c8ad85983dc533b992ecd",
+        "49c95b23add99934d37d24483acb72164db032b004a712dd8bde056ed3cadf5a"
+      ],
+      "parent_count": 2,
+      "promoted_child_count": 3,
+      "promoted_child_sha256s": [
+        "93e83d89ca61b92291973da8089dfd9ace7eb0ddbef8ee759eff6e04d3cc1d85",
+        "b6217ee9e8c681046a6620a8ac0cf74ad48d500e81068931853cb8b4763c4e89",
+        "c4cbd0db531513e36590c4bafbda937de63b6dd33c8f9e6cfb3239433b54e8a9"
+      ],
+      "promoted_child_types": [
+        {
+          "child_sha256": "93e83d89ca61b92291973da8089dfd9ace7eb0ddbef8ee759eff6e04d3cc1d85",
+          "type_id": "second_axis_2"
+        },
+        {
+          "child_sha256": "b6217ee9e8c681046a6620a8ac0cf74ad48d500e81068931853cb8b4763c4e89",
+          "type_id": "second_axis_0"
+        },
+        {
+          "child_sha256": "c4cbd0db531513e36590c4bafbda937de63b6dd33c8f9e6cfb3239433b54e8a9",
+          "type_id": "second_axis_1"
+        }
+      ],
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "separate_trajectory_cost": 480.0,
+      "settlement_observation_sha256s": [
+        "h99-g2-observation-1-1",
+        "h99-g2-observation-1-2",
+        "h99-g2-observation-1-3",
+        "h99-g2-observation-2-1",
+        "h99-g2-observation-2-2",
+        "h99-g2-observation-2-3",
+        "h99-g2-observation-3-1",
+        "h99-g2-observation-3-2",
+        "h99-g2-observation-3-3",
+        "h99-g2-observation-4-1",
+        "h99-g2-observation-4-2",
+        "h99-g2-observation-4-3",
+        "h99-g2-observation-5-1",
+        "h99-g2-observation-5-2",
+        "h99-g2-observation-5-3",
+        "h99-g2-observation-6-1",
+        "h99-g2-observation-6-2",
+        "h99-g2-observation-6-3",
+        "h99-g2-observation-7-1",
+        "h99-g2-observation-7-2",
+        "h99-g2-observation-7-3",
+        "h99-g2-observation-8-1",
+        "h99-g2-observation-8-2",
+        "h99-g2-observation-8-3"
+      ],
+      "sha256": "d2987df656c269e6b44b1c6cbb7cc86c77c5b56d5840c3892a2025ae94d489aa",
+      "shared_trajectory_cost": 160.0,
+      "trajectory_refs": [
+        "h99-g2-trajectory-1",
+        "h99-g2-trajectory-2",
+        "h99-g2-trajectory-3",
+        "h99-g2-trajectory-4",
+        "h99-g2-trajectory-5",
+        "h99-g2-trajectory-6",
+        "h99-g2-trajectory-7",
+        "h99-g2-trajectory-8"
+      ],
+      "trial_sha256s": [
+        "0161f5ec915119b05e7058e99a9721de8ca930b023ae3785074de488991d939a",
+        "060aaf9284f0ec0874a79e37efe4a915c2da27db71b57899768423b420a7a2a4",
+        "17d24c12bd181482bb0cfeff12c6081c9b048015948395c72f41cd497fe8fbdd",
+        "18c484f01a58fa63c1ee5694048f8ee566b16a4295945ae238e5e08fb4963878",
+        "191df3cfffcbdfd819eef0712f6a901099953aedef3f901ef475c5e317ca88f5",
+        "19305ea407292b2e452f4b582b7c12b1effe02c19da1aa48df3464cff026b8cb",
+        "1f5659e8b1aac454ffd81c73f459006ff87d354d2235eabd3dc1372243c0911e",
+        "21114228a3dcb9f75bf543b13f199d72301931874174d90a1c1d08ed460048ba",
+        "29c96b9164616d185cf8ff3f161ad1b142f0e8d7004f93107e33acda5f2c68da",
+        "2e6e093e8d72e667c722845ec294febdbe2c6a72ee28effeaf8cf53194fab501",
+        "2fa309692caa07bb789a25cf2058ddac478b6360ef7b3380557a1a309b38754a",
+        "38c5a4e6ade7350fa43525e6d2f06bfa225772d1690df9f708207788e1cbd276",
+        "3cca992f91bf6cd5854455e15996a1111c075febf7874fae01e38fd26fdc92d0",
+        "4d2ee8df8012794bee164a51fde3a9c4cffd2c75e9f958f1380b9e75a4ce8a23",
+        "643489cafa43b6a75ee471aa4d0712c797c05e4d6305b7690ac03770b7db73df",
+        "6fc0e160d783b82a4f33b5e2e30c7d498b67c986c402671e96262673a3be24fc",
+        "8ded04683b99bac65eb87a8885a8e8af0df212b50e0f009e59440e775a1ccccc",
+        "93b24e381849699695267db2824eaed8792b25709bc8143155f37796e6d021ed",
+        "96da225ea5d30e8a2cf6ad285d0acc39dfac89c6f916131a714767ea6646e330",
+        "a2a254847043f41c12f531f2731f65d6fdcb951c6b9c09dbbee0dbe452834e1f",
+        "ac82d4b2bb3c44e2fc011ca1b4fd880e2ad4ade9a2d61878be97a3b804301f2d",
+        "b524ead020bc3dbf6cd4dba77f1c40c4afff5f28e01b161c142d424350c029e9",
+        "bb187411d47e6b870f73461817120e05db05d3c2d12b8c7a66ed1d1328d55398",
+        "ffb430ce5842536d3dd53b5f1d0896122ef1e5e02179669d91972786119c8db2"
+      ]
+    }
+  },
+  "sha256": "929202dfe3297f1d931a1c7593e49fe62c111d2524e2018a9cc02896fecfbf55",
+  "status": "offline_complete",
+  "verdict": "supported"
+}

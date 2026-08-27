@@ -1,0 +1,1012 @@
+{
+  "claim_boundary": [
+    "The compiler distinguishes a cycle, a RAF, and a budget-feasible internally productive capability flux.",
+    "On the preregistered synthetic topology, sparse settlement cost changes feasibility while topology and food closure remain fixed.",
+    "The positive reaction set was constructed from prior H99/H100 outcomes rather than discovered in held-out behavior.",
+    "The result is an algorithm and theory discriminator, not evidence of endogenous self-improvement or capability takeoff.",
+    "RAF and stoichiometric components are established; literature novelty of the compiled join is not established."
+  ],
+  "controller_contact": false,
+  "environment_contact": false,
+  "factorial_cost_counterfactual": {
+    "authority": {
+      "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+      "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+      "kind": "capability_authority",
+      "primitive_cost_unit": "charged_environment_action",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+      "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+    },
+    "food_closure_species_ids": [
+      "D_sparse_settlement_design",
+      "J_lineage_bound_judgment",
+      "base_inference",
+      "external_settlement"
+    ],
+    "growth_flux": null,
+    "kind": "capability_autocatalysis_receipt",
+    "live_reaction_evidence_required": true,
+    "maximal_raf_reaction_ids": [
+      "bootstrap_judgment",
+      "invert_measurement_wall",
+      "reproduce_judgment"
+    ],
+    "primitive_budget": "100/1",
+    "reactions": [
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": true,
+        "catalyst_species_ids": [
+          "base_inference"
+        ],
+        "evidence_refs": [
+          "h95-live-causal-transport"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "0/1",
+        "products": [
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 1,
+            "species_id": "base_inference"
+          },
+          {
+            "count": 1,
+            "species_id": "external_settlement"
+          }
+        ],
+        "reaction_id": "bootstrap_judgment",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": false,
+        "catalyst_species_ids": [
+          "J_lineage_bound_judgment"
+        ],
+        "evidence_refs": [
+          "h99-to-h100-bottleneck-inversion"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "0/1",
+        "products": [
+          {
+            "count": 1,
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reaction_id": "invert_measurement_wall",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": false,
+        "catalyst_species_ids": [
+          "D_sparse_settlement_design"
+        ],
+        "evidence_refs": [
+          "h100-sparse-cost",
+          "h99-lineage"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "160/1",
+        "products": [
+          {
+            "count": 3,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 2,
+            "species_id": "J_lineage_bound_judgment"
+          },
+          {
+            "count": 1,
+            "species_id": "external_settlement"
+          }
+        ],
+        "reaction_id": "reproduce_judgment",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "e95359109e936deb5331c5b4d49623731b1af5a429e0f9b7b048c2046ac6c383"
+      }
+    ],
+    "reason": "no_exact_internal_growth_flux_within_budget_and_error_bound",
+    "schema": "ztare-capability-autocatalysis-v1",
+    "sha256": "ae1d8d033dfa9b70cdb732277c8b0a24c606fc3198a7f601b1af96946b4b6cd4",
+    "species": [
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h100-sparse-settlement"
+        ],
+        "kind": "capability_species",
+        "role": "capability",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "4b4d2223f20416f1b192ced14be7369722f5c1b2a1ed16e917ec027152424e7d",
+        "species_id": "D_sparse_settlement_design"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h96-contract-failure"
+        ],
+        "kind": "capability_species",
+        "role": "error",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "602528a5d64c89e78405ea9800760ade958c6991f97bdbaadfce18d7e1a4895d",
+        "species_id": "E_false_edge_propagation"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h99-lineage-bound-branching"
+        ],
+        "kind": "capability_species",
+        "role": "capability",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "d52397846aa7371ea739e81d12a3ecac67f9460c24ff223c25d570ce27f59c65",
+        "species_id": "J_lineage_bound_judgment"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h95-live-causal-transport"
+        ],
+        "kind": "capability_species",
+        "role": "food",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "427826639cec8a7a274f2b4f8126e6fc396647626671c883f592d72fb44fda6f",
+        "species_id": "base_inference"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h95-external-outcomes"
+        ],
+        "kind": "capability_species",
+        "role": "food",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "c339b5620f7cc62550da5081fbea11e26e6ee8c0b09e9fbb7d0ae488375f0e5c",
+        "species_id": "external_settlement"
+      }
+    ],
+    "status": "nonproductive_or_resource_blocked",
+    "takeoff_supported": false
+  },
+  "h97_runtime_boundary": {
+    "evidence_effect": "none",
+    "receipt_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/live_attempt_01_runtime_receipt.json",
+    "status": "blocked_runtime"
+  },
+  "kind": "offline_theory_discriminator_result",
+  "nearest_prior_art": [
+    {
+      "component": "reflexively autocatalytic food-generated sets",
+      "url": "https://arxiv.org/abs/2303.01809"
+    },
+    {
+      "component": "RAF and stoichiometric autocatalysis relation",
+      "url": "https://arxiv.org/abs/2605.25523"
+    },
+    {
+      "component": "self-referential agent improvement",
+      "url": "https://arxiv.org/abs/2410.04444"
+    }
+  ],
+  "negative_fixtures": {
+    "catalysis": {
+      "authority": {
+        "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+        "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+        "kind": "capability_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+      },
+      "food_closure_species_ids": [
+        "u_food"
+      ],
+      "growth_flux": null,
+      "kind": "capability_autocatalysis_receipt",
+      "live_reaction_evidence_required": true,
+      "maximal_raf_reaction_ids": [],
+      "primitive_budget": "100/1",
+      "reactions": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": false,
+          "catalyst_species_ids": [
+            "u_missing"
+          ],
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 2,
+              "species_id": "u_j"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "u_food"
+            }
+          ],
+          "reaction_id": "uncatalyzed_route",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "ba7220c421098e20c89ac8f655b680d97ae28933a1642ae4e85a5ed873fb324a"
+        }
+      ],
+      "reason": "no_reaction_subset_passed_food_generation_and_catalysis",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "sha256": "35ccf4c38878e70dcbe2413b957effb753c6a4c367e70af840ed52216247451a",
+      "species": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "food",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "b1348ea1d39327ebbe73295db7e11b3df11552d7f442b246d1366701afe120a7",
+          "species_id": "u_food"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "240811ac6ac75802793a58d5fddeba58fa1fcd01712148146801d4e6128fd1e2",
+          "species_id": "u_j"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "error",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "36a1153f3f1a152b0a144678bf38015e29c6b83254248f939b77922128577393",
+          "species_id": "u_missing"
+        }
+      ],
+      "status": "no_reflexively_autocatalytic_food_generated_set",
+      "takeoff_supported": false
+    },
+    "error_growth": {
+      "authority": {
+        "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+        "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+        "kind": "capability_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+      },
+      "food_closure_species_ids": [
+        "D_sparse_settlement_design",
+        "E_false_edge_propagation",
+        "J_lineage_bound_judgment",
+        "base_inference",
+        "external_settlement"
+      ],
+      "growth_flux": null,
+      "kind": "capability_autocatalysis_receipt",
+      "live_reaction_evidence_required": true,
+      "maximal_raf_reaction_ids": [
+        "bootstrap_judgment",
+        "invert_measurement_wall",
+        "reproduce_judgment"
+      ],
+      "primitive_budget": "100/1",
+      "reactions": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": true,
+          "catalyst_species_ids": [
+            "base_inference"
+          ],
+          "evidence_refs": [
+            "h95-live-causal-transport"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 1,
+              "species_id": "J_lineage_bound_judgment"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "base_inference"
+            },
+            {
+              "count": 1,
+              "species_id": "external_settlement"
+            }
+          ],
+          "reaction_id": "bootstrap_judgment",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": false,
+          "catalyst_species_ids": [
+            "J_lineage_bound_judgment"
+          ],
+          "evidence_refs": [
+            "h99-to-h100-bottleneck-inversion"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 1,
+              "species_id": "D_sparse_settlement_design"
+            },
+            {
+              "count": 1,
+              "species_id": "J_lineage_bound_judgment"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "J_lineage_bound_judgment"
+            }
+          ],
+          "reaction_id": "invert_measurement_wall",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": false,
+          "catalyst_species_ids": [
+            "D_sparse_settlement_design"
+          ],
+          "evidence_refs": [
+            "h100-sparse-cost",
+            "h99-lineage"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "80/1",
+          "products": [
+            {
+              "count": 1,
+              "species_id": "E_false_edge_propagation"
+            },
+            {
+              "count": 3,
+              "species_id": "J_lineage_bound_judgment"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 2,
+              "species_id": "J_lineage_bound_judgment"
+            },
+            {
+              "count": 1,
+              "species_id": "external_settlement"
+            }
+          ],
+          "reaction_id": "reproduce_judgment",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "80c28af62c10fb1911aeeeddfa62079338964f6efe63b4ad81bdf51f577b4c8d"
+        }
+      ],
+      "reason": "no_exact_internal_growth_flux_within_budget_and_error_bound",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "sha256": "52c63a247348bf16ab4cd92b80fc4a1d1ccc353c57c295be49c4ae86714c20df",
+      "species": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h100-sparse-settlement"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "4b4d2223f20416f1b192ced14be7369722f5c1b2a1ed16e917ec027152424e7d",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h96-contract-failure"
+          ],
+          "kind": "capability_species",
+          "role": "error",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "602528a5d64c89e78405ea9800760ade958c6991f97bdbaadfce18d7e1a4895d",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h99-lineage-bound-branching"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "d52397846aa7371ea739e81d12a3ecac67f9460c24ff223c25d570ce27f59c65",
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h95-live-causal-transport"
+          ],
+          "kind": "capability_species",
+          "role": "food",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "427826639cec8a7a274f2b4f8126e6fc396647626671c883f592d72fb44fda6f",
+          "species_id": "base_inference"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h95-external-outcomes"
+          ],
+          "kind": "capability_species",
+          "role": "food",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "c339b5620f7cc62550da5081fbea11e26e6ee8c0b09e9fbb7d0ae488375f0e5c",
+          "species_id": "external_settlement"
+        }
+      ],
+      "status": "nonproductive_or_resource_blocked",
+      "takeoff_supported": false
+    },
+    "food_generation": {
+      "authority": {
+        "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+        "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+        "kind": "capability_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+      },
+      "food_closure_species_ids": [
+        "cycle_food"
+      ],
+      "growth_flux": null,
+      "kind": "capability_autocatalysis_receipt",
+      "live_reaction_evidence_required": true,
+      "maximal_raf_reaction_ids": [],
+      "primitive_budget": "100/1",
+      "reactions": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": false,
+          "catalyst_species_ids": [
+            "cycle_j"
+          ],
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 2,
+              "species_id": "cycle_j"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "cycle_d"
+            }
+          ],
+          "reaction_id": "cycle_d_to_j",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "728113f5ae899962d3f0a4791ce6c8ff8973fc946812cc6047ffff9fc5309459"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": false,
+          "catalyst_species_ids": [
+            "cycle_d"
+          ],
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 2,
+              "species_id": "cycle_d"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "cycle_j"
+            }
+          ],
+          "reaction_id": "cycle_j_to_d",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "066f8973ae2ec6d4c65aaa82159ba9918d1daedb2a84e59d64268a5805991170"
+        }
+      ],
+      "reason": "no_reaction_subset_passed_food_generation_and_catalysis",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "sha256": "8a28575e8028006d5bdfc09e0d4dd375dda8f87ac3950b09a91180a5b82e4212",
+      "species": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "fc60d08983cc2b1051e7d62d1de5fee1211c21176505b178d1f688a62d56bd6a",
+          "species_id": "cycle_d"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "food",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "ced6a3d2cd7aae5094b618d2d9ec8925b1905e623c48e32855612d80a0069dcc",
+          "species_id": "cycle_food"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "7d27890d54198fb00f0aa9e8584c4247240c37074ec4ce7108b35a963d170599",
+          "species_id": "cycle_j"
+        }
+      ],
+      "status": "no_reflexively_autocatalytic_food_generated_set",
+      "takeoff_supported": false
+    },
+    "identity": [
+      {
+        "label": "cross_authority_species",
+        "reason": "capability species crossed authority",
+        "rejected": true
+      },
+      {
+        "label": "cross_authority_reaction",
+        "reason": "capability reaction crossed authority",
+        "rejected": true
+      },
+      {
+        "label": "unknown_species_reference",
+        "reason": "capability reaction references unknown species",
+        "rejected": true
+      }
+    ],
+    "internal_production": {
+      "authority": {
+        "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+        "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+        "kind": "capability_authority",
+        "primitive_cost_unit": "charged_environment_action",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+        "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+      },
+      "food_closure_species_ids": [
+        "b_food",
+        "b_j"
+      ],
+      "growth_flux": null,
+      "kind": "capability_autocatalysis_receipt",
+      "live_reaction_evidence_required": true,
+      "maximal_raf_reaction_ids": [
+        "bootstrap_only"
+      ],
+      "primitive_budget": "100/1",
+      "reactions": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "bootstrap": true,
+          "catalyst_species_ids": [
+            "b_food"
+          ],
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "catalytic_capability_reaction",
+          "primitive_cost": "0/1",
+          "products": [
+            {
+              "count": 1,
+              "species_id": "b_j"
+            }
+          ],
+          "reactants": [
+            {
+              "count": 1,
+              "species_id": "b_food"
+            }
+          ],
+          "reaction_id": "bootstrap_only",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "3261fca85b8a9edc8d536e1ac6083ba3b214b12de4d24680dc7eae93f9f36742"
+        }
+      ],
+      "reason": "no_exact_internal_growth_flux_within_budget_and_error_bound",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "sha256": "4968bdb27fbc0a0dde0a9aba5a2a73ae3bef42937ee459d4fa5c5f9bd4e6e27b",
+      "species": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "food",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "ff9f8a878d92b3370556ac41dfb0c52b53f2f82e1158ac5468befe2bcd6d9daf",
+          "species_id": "b_food"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "negative"
+          ],
+          "kind": "capability_species",
+          "role": "capability",
+          "schema": "ztare-capability-autocatalysis-v1",
+          "sha256": "6d57dd70df0c70df7ff24db210055d6ffc47a1572566b5acb221fcc8b3d8436e",
+          "species_id": "b_j"
+        }
+      ],
+      "status": "nonproductive_or_resource_blocked",
+      "takeoff_supported": false
+    }
+  },
+  "prerequisites": {
+    "h100": {
+      "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h100_sparse_orthogonal_settlement_result.json",
+      "sha256": "cfbd4ae7abd41dd777b4488d454087f858571457e5efdc14158fd0839393e23f",
+      "verdict": "supported"
+    },
+    "h99": {
+      "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h99_lineage_bound_epistemic_branching_result.json",
+      "sha256": "929202dfe3297f1d931a1c7593e49fe62c111d2524e2018a9cc02896fecfbf55",
+      "verdict": "supported"
+    }
+  },
+  "same_topology_without_cost_sha256": "f4256223a441e67a761da093dbed583ef80981744524348f7c7240068e658848",
+  "schema": "ztare-h101-capability-autocatalytic-closure-audit-v1",
+  "sha256": "48865454046b1eb0ea985a39bac12fbe15a27025df6d2ce325408ed08fed61a5",
+  "sparse_core": {
+    "authority": {
+      "capability_catalog_sha256": "1a9680ca3bf428132edb37e7543e535b242a62e910148e238fab34cfa4f869cc",
+      "evidence_epoch_sha256": "0a988d5ddbb36ba27bb2e496d2b895bbb2731ed7f07532d7830819acdf0b7bd7",
+      "kind": "capability_authority",
+      "primitive_cost_unit": "charged_environment_action",
+      "schema": "ztare-capability-autocatalysis-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+      "sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e"
+    },
+    "food_closure_species_ids": [
+      "D_sparse_settlement_design",
+      "J_lineage_bound_judgment",
+      "base_inference",
+      "external_settlement"
+    ],
+    "growth_flux": {
+      "internal_net_production": [
+        {
+          "net": 1,
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "net": 0,
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "net": 1,
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "net": 0,
+          "species_id": "base_inference"
+        },
+        {
+          "net": -1,
+          "species_id": "external_settlement"
+        }
+      ],
+      "kind": "capability_growth_flux",
+      "net_production": [
+        {
+          "net": 1,
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "net": 0,
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "net": 2,
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "net": -1,
+          "species_id": "base_inference"
+        },
+        {
+          "net": -2,
+          "species_id": "external_settlement"
+        }
+      ],
+      "reaction_fluxes": [
+        {
+          "flux": 1,
+          "reaction_id": "bootstrap_judgment"
+        },
+        {
+          "flux": 1,
+          "reaction_id": "invert_measurement_wall"
+        },
+        {
+          "flux": 1,
+          "reaction_id": "reproduce_judgment"
+        }
+      ],
+      "schema": "ztare-capability-autocatalysis-v1",
+      "sha256": "3dfac161cfc2fb2dcc48df6ebf748f6094712f01fa4609e55a9189ad10ae263d",
+      "total_primitive_cost": "80/1"
+    },
+    "kind": "capability_autocatalysis_receipt",
+    "live_reaction_evidence_required": true,
+    "maximal_raf_reaction_ids": [
+      "bootstrap_judgment",
+      "invert_measurement_wall",
+      "reproduce_judgment"
+    ],
+    "primitive_budget": "100/1",
+    "reactions": [
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": true,
+        "catalyst_species_ids": [
+          "base_inference"
+        ],
+        "evidence_refs": [
+          "h95-live-causal-transport"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "0/1",
+        "products": [
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 1,
+            "species_id": "base_inference"
+          },
+          {
+            "count": 1,
+            "species_id": "external_settlement"
+          }
+        ],
+        "reaction_id": "bootstrap_judgment",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": false,
+        "catalyst_species_ids": [
+          "J_lineage_bound_judgment"
+        ],
+        "evidence_refs": [
+          "h99-to-h100-bottleneck-inversion"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "0/1",
+        "products": [
+          {
+            "count": 1,
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 1,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reaction_id": "invert_measurement_wall",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "bootstrap": false,
+        "catalyst_species_ids": [
+          "D_sparse_settlement_design"
+        ],
+        "evidence_refs": [
+          "h100-sparse-cost",
+          "h99-lineage"
+        ],
+        "kind": "catalytic_capability_reaction",
+        "primitive_cost": "80/1",
+        "products": [
+          {
+            "count": 3,
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "reactants": [
+          {
+            "count": 2,
+            "species_id": "J_lineage_bound_judgment"
+          },
+          {
+            "count": 1,
+            "species_id": "external_settlement"
+          }
+        ],
+        "reaction_id": "reproduce_judgment",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd"
+      }
+    ],
+    "reason": "raf_and_exact_internal_growth_flux_passed",
+    "schema": "ztare-capability-autocatalysis-v1",
+    "sha256": "05ac779b0ca6f3ea02b67b5f8234c79cf80a42d3e8c09e4782a70fee4af0e1d2",
+    "species": [
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h100-sparse-settlement"
+        ],
+        "kind": "capability_species",
+        "role": "capability",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "4b4d2223f20416f1b192ced14be7369722f5c1b2a1ed16e917ec027152424e7d",
+        "species_id": "D_sparse_settlement_design"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h96-contract-failure"
+        ],
+        "kind": "capability_species",
+        "role": "error",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "602528a5d64c89e78405ea9800760ade958c6991f97bdbaadfce18d7e1a4895d",
+        "species_id": "E_false_edge_propagation"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h99-lineage-bound-branching"
+        ],
+        "kind": "capability_species",
+        "role": "capability",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "d52397846aa7371ea739e81d12a3ecac67f9460c24ff223c25d570ce27f59c65",
+        "species_id": "J_lineage_bound_judgment"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h95-live-causal-transport"
+        ],
+        "kind": "capability_species",
+        "role": "food",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "427826639cec8a7a274f2b4f8126e6fc396647626671c883f592d72fb44fda6f",
+        "species_id": "base_inference"
+      },
+      {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h95-external-outcomes"
+        ],
+        "kind": "capability_species",
+        "role": "food",
+        "schema": "ztare-capability-autocatalysis-v1",
+        "sha256": "c339b5620f7cc62550da5081fbea11e26e6ee8c0b09e9fbb7d0ae488375f0e5c",
+        "species_id": "external_settlement"
+      }
+    ],
+    "status": "productive_autocatalytic_core",
+    "takeoff_supported": false
+  },
+  "status": "offline_complete",
+  "verdict": "supported"
+}

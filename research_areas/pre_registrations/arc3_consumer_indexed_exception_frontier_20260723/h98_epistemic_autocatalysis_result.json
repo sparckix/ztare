@@ -1,0 +1,342 @@
+{
+  "claim_boundary": [
+    "The synthetic mechanism reaches R_k=2 and R_e=0 for one generation.",
+    "The result does not settle H97 or demonstrate live ARC offspring.",
+    "The result does not authorize a capability-takeoff claim.",
+    "The result does not establish literature novelty."
+  ],
+  "conjecture_mode": {
+    "kept": [
+      "rank-quotiented counterfactual fission with multiplexed settlement"
+    ],
+    "prediction_cards": [
+      {
+        "expected_observation": "raw candidates four, independent offspring two",
+        "gate": "exact residual-rank quotient",
+        "horizon": "one offline fission and settlement generation",
+        "intervention": "add orthogonal candidates plus proportional and linear combination confusers",
+        "measurement": "exact residual-signature rank and promoted child count",
+        "novelty_reason": "family count cannot distinguish children from copies",
+        "prediction": "two non-collinear residual signatures yield effective offspring two while proportional duplicates add zero",
+        "receipt": "residual_fission_receipt",
+        "refuter": "dependent candidates increase offspring above matrix rank",
+        "side": "left"
+      },
+      {
+        "expected_observation": "rank two, good radius above one, error radius below one",
+        "gate": "multiplexed settlement and dual-criticality gate",
+        "horizon": "one four-trajectory factorial generation",
+        "intervention": "factorially vary both child offers inside shared trajectories",
+        "measurement": "assignment rank, multiplexing gain, good and error radii",
+        "novelty_reason": "scalar reward without local tags creates correlated credit",
+        "prediction": "micro-randomized trajectories settle two pivot tags at lower cost than isolated child trajectories",
+        "receipt": "epistemic_criticality_receipt",
+        "refuter": "rank-deficient settlement promotes two children, error radius reaches one, or calibration exceeds tolerance",
+        "side": "right"
+      }
+    ],
+    "query_receipt": {
+      "parse_status": "injected",
+      "transport": "injected"
+    },
+    "rejected": [
+      "unbounded brainstorming"
+    ],
+    "specificity": [
+      0.75
+    ]
+  },
+  "controller_contact": false,
+  "criticality": {
+    "assignment_rank": 2,
+    "calibration_tolerance": 0.1,
+    "child_count": 2,
+    "child_settlements": [
+      {
+        "calibration_error": 0.0,
+        "false_edge": false,
+        "first_stage_delta": 1.0,
+        "kind": "residual_child_settlement",
+        "local_value_delta": 0.7000000000000001,
+        "niche_ref": "child-a",
+        "observed_information_yield_delta": 0.6,
+        "offer_count": 2,
+        "offer_supported_rate": 1.0,
+        "pivot_axis_id": "proposal_path_displacement",
+        "predicted_information_yield": 0.6,
+        "promoted": true,
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "settlement_observation_sha256s": [
+          "synthetic-observation-1-2",
+          "synthetic-observation-2-2",
+          "synthetic-observation-3-2",
+          "synthetic-observation-4-2"
+        ],
+        "sha256": "bb8ddf2110bc2b2b42eb7e2e0b7352f51e6d10858cd6a4adbf62430e0639f558",
+        "status": "promoted",
+        "trial_sha256s": [
+          "191d2106d1f0ba692fcfabc06b4de1ad1ac4ffba1dff2d62729541fe2d9317a1",
+          "ab129c6c25d0f28be325d2020e764727a1a1a00d6064fc6bb16cd8e1f7559534",
+          "c693a94b3f560b6725f90ba0a65c8ee48412874aa766afd130738496bc75e73e",
+          "cffd430f4e0588c81ef2c8bc577249a8258220759519f8c7b87753d1f217010f"
+        ],
+        "withhold_count": 2,
+        "withhold_supported_rate": 0.0
+      },
+      {
+        "calibration_error": 0.0,
+        "false_edge": false,
+        "first_stage_delta": 1.0,
+        "kind": "residual_child_settlement",
+        "local_value_delta": 0.7000000000000001,
+        "niche_ref": "child-b",
+        "observed_information_yield_delta": 0.7,
+        "offer_count": 2,
+        "offer_supported_rate": 1.0,
+        "pivot_axis_id": "successor_event_partition",
+        "predicted_information_yield": 0.7,
+        "promoted": true,
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "settlement_observation_sha256s": [
+          "synthetic-observation-1-1",
+          "synthetic-observation-2-1",
+          "synthetic-observation-3-1",
+          "synthetic-observation-4-1"
+        ],
+        "sha256": "dd4dd71da3c2c99a0277e9c07851a33a8721aa4e400d2ec8c90f9c41c9f22452",
+        "status": "promoted",
+        "trial_sha256s": [
+          "56b8d5d151f2860a80449e136c860c89fd132d9d3a88975effd4b314506297b5",
+          "89501dd4858b8071253f92ab3945579bce7033cbe6f0fa44896df527d6b1bb5d",
+          "96d78a16afe02fdb34174c920333d7898a4802637fdf1c9a75876e485729b6ca",
+          "aa9528b475138bbe31c5b88b20300cd01a38d0593d7389ad34481cb64c0e73c2"
+        ],
+        "withhold_count": 2,
+        "withhold_supported_rate": 0.0
+      }
+    ],
+    "error_critical_boundary": 1.0,
+    "error_reproduction": 0.0,
+    "error_spectral_radius": 0.0,
+    "false_child_count": 0,
+    "fission_sha256": "7150192e6f40b291e0a0cbdb5f57d3c90d7b6916393385af49689e5579339f78",
+    "full_factorial_trajectory_count": 4,
+    "good_spectral_radius": 2.0,
+    "kind": "epistemic_criticality_receipt",
+    "knowledge_critical_boundary": 1.0,
+    "knowledge_reproduction": 2.0,
+    "max_calibration_error": 0.0,
+    "modeled_design_rank": 3,
+    "modeled_term_count": 2,
+    "multiplexing_gain": 2.0,
+    "observed_generations": 1,
+    "parent_count": 1,
+    "promoted_child_count": 2,
+    "proposal_reproduction": 4.0,
+    "schema": "ztare-epistemic-autocatalysis-v1",
+    "separate_trajectory_cost": 160.0,
+    "settlement_observation_sha256s": [
+      "synthetic-observation-1-1",
+      "synthetic-observation-1-2",
+      "synthetic-observation-2-1",
+      "synthetic-observation-2-2",
+      "synthetic-observation-3-1",
+      "synthetic-observation-3-2",
+      "synthetic-observation-4-1",
+      "synthetic-observation-4-2"
+    ],
+    "settlement_schedule_sha256": "",
+    "sha256": "aac890305e7fa22716b66f6515e44b1b8729725490944e836927e6d58b1ead95",
+    "shared_trajectory_cost": 80.0,
+    "status": "supercritical_mechanism_candidate",
+    "takeoff_supported": false,
+    "trajectory_compression_ratio": 1.0,
+    "trajectory_refs": [
+      "synthetic-trajectory-1",
+      "synthetic-trajectory-2",
+      "synthetic-trajectory-3",
+      "synthetic-trajectory-4"
+    ],
+    "trial_sha256s": [
+      "191d2106d1f0ba692fcfabc06b4de1ad1ac4ffba1dff2d62729541fe2d9317a1",
+      "56b8d5d151f2860a80449e136c860c89fd132d9d3a88975effd4b314506297b5",
+      "89501dd4858b8071253f92ab3945579bce7033cbe6f0fa44896df527d6b1bb5d",
+      "96d78a16afe02fdb34174c920333d7898a4802637fdf1c9a75876e485729b6ca",
+      "aa9528b475138bbe31c5b88b20300cd01a38d0593d7389ad34481cb64c0e73c2",
+      "ab129c6c25d0f28be325d2020e764727a1a1a00d6064fc6bb16cd8e1f7559534",
+      "c693a94b3f560b6725f90ba0a65c8ee48412874aa766afd130738496bc75e73e",
+      "cffd430f4e0588c81ef2c8bc577249a8258220759519f8c7b87753d1f217010f"
+    ]
+  },
+  "environment_contact": false,
+  "fission": {
+    "authority": {
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "derivative_sha256": "1c08a79700a66933347829c4c8e968c8316ced2ea0a96c38170c9ea02917ee0c",
+      "intervention_revision_sha256": "53069dbfd01af93c9e289401fd39bc50a8594853dc1a7686421175da32bf923d",
+      "kind": "response_fission_authority",
+      "primitive_cost_unit": "charged_environment_action",
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "6c573ed78070fb4e7f5cb6b550fe8b16e6d475add83fc18ef7f7001ef2e84838",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "da10a41c4023440b28ad1fecfdf3afcafe0bc18fec9ead9bd24bdf7a2ffaeb93",
+      "sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+      "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+    },
+    "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+    "axes": [
+      {
+        "axis_id": "proposal_path_displacement",
+        "live_cost": 0.5
+      },
+      {
+        "axis_id": "successor_event_partition",
+        "live_cost": 0.5
+      },
+      {
+        "axis_id": "external_decision_yield",
+        "live_cost": 2.0
+      }
+    ],
+    "basis_niches": [
+      {
+        "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+        "evidence_refs": [
+          "h97-offline-derivative:child-b"
+        ],
+        "kind": "residual_niche_candidate",
+        "niche_ref": "child-b",
+        "offline_replay_cost": 0.1,
+        "parent_child_sha256s": [],
+        "predicted_information_yield": 0.7,
+        "response_direction": [
+          "0/1",
+          "1/1",
+          "1/1"
+        ],
+        "response_signature": [
+          "0/1",
+          "1/1",
+          "1/1"
+        ],
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "sha256": "e529d8233d5cb904bfdabfa97aba9eee42a04c07a0407be88568dc15512432d4"
+      },
+      {
+        "authority_sha256": "647dcebd9440890ca161d08626a32a90231186c37aefdbe2339a86bf6ea84fde",
+        "evidence_refs": [
+          "h97-offline-derivative:child-a"
+        ],
+        "kind": "residual_niche_candidate",
+        "niche_ref": "child-a",
+        "offline_replay_cost": 0.1,
+        "parent_child_sha256s": [],
+        "predicted_information_yield": 0.6,
+        "response_direction": [
+          "1/1",
+          "0/1",
+          "1/1"
+        ],
+        "response_signature": [
+          "1/1",
+          "0/1",
+          "1/1"
+        ],
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "sha256": "511f0a71b08356924424530ab10e461dc3eb3ce2a8af7ec2382c65efbcbc853a"
+      }
+    ],
+    "compression_ratio": 2.0,
+    "direction_quotient_classes": [
+      [
+        "44df408a5db7c7d51be328226232248e399a346da4e8ecf8590706f2beb07d84"
+      ],
+      [
+        "511f0a71b08356924424530ab10e461dc3eb3ce2a8af7ec2382c65efbcbc853a",
+        "9a8031d60890460fd6e92cfd59323862a73e4e4761a86600b9c5975d5c1e8e84"
+      ],
+      [
+        "e529d8233d5cb904bfdabfa97aba9eee42a04c07a0407be88568dc15512432d4"
+      ]
+    ],
+    "direction_quotient_count": 3,
+    "independent_offspring_capacity": 2,
+    "kind": "residual_fission_receipt",
+    "lineage_parent_sha256s": [],
+    "pivot_axis_by_niche": [
+      {
+        "axis_id": "proposal_path_displacement",
+        "niche_ref": "child-a"
+      },
+      {
+        "axis_id": "successor_event_partition",
+        "niche_ref": "child-b"
+      }
+    ],
+    "raw_niche_count": 4,
+    "raw_niche_sha256s": [
+      "44df408a5db7c7d51be328226232248e399a346da4e8ecf8590706f2beb07d84",
+      "511f0a71b08356924424530ab10e461dc3eb3ce2a8af7ec2382c65efbcbc853a",
+      "9a8031d60890460fd6e92cfd59323862a73e4e4761a86600b9c5975d5c1e8e84",
+      "e529d8233d5cb904bfdabfa97aba9eee42a04c07a0407be88568dc15512432d4"
+    ],
+    "raw_proposal_reproduction": 4.0,
+    "schema": "ztare-epistemic-autocatalysis-v1",
+    "selected_live_measurement_cost": 1.0,
+    "selected_measurement_axis_ids": [
+      "proposal_path_displacement",
+      "successor_event_partition"
+    ],
+    "sha256": "7150192e6f40b291e0a0cbdb5f57d3c90d7b6916393385af49689e5579339f78"
+  },
+  "h97_manifest_file_sha256": "e23edc9d9463c63271617740756567a96b5d426cd4c9ddd3207376210b915b21",
+  "h97_manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/manifest.json",
+  "h97_runtime_boundary": {
+    "evidence_effect": "none",
+    "receipt_file_sha256": "e1210bdb1691fd72e9d6203e3d241facecc7754761dcfc7e285b01e22ee89673",
+    "receipt_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/live_attempt_01_runtime_receipt.json",
+    "status": "blocked_runtime"
+  },
+  "kind": "offline_mechanism_result",
+  "negative_fixtures": [
+    {
+      "label": "cross_authority",
+      "reason": "residual candidates crossed response authority",
+      "rejected": true
+    },
+    {
+      "label": "scalar_correlation",
+      "reason": "effective_offspring=1",
+      "rejected": true
+    },
+    {
+      "label": "incomplete_factorial",
+      "reason": "settlement schedule omitted a factorial assignment",
+      "rejected": true
+    },
+    {
+      "label": "false_edge_criticality",
+      "reason": "subcritical_or_unresolved",
+      "rejected": true
+    },
+    {
+      "label": "information_yield_miscalibration",
+      "reason": "subcritical_or_unresolved",
+      "rejected": true
+    },
+    {
+      "label": "declared_two_generations",
+      "reason": "one residual settlement receipt owns exactly one generation",
+      "rejected": true
+    }
+  ],
+  "schema": "ztare-h98-epistemic-autocatalysis-audit-v1",
+  "sha256": "cf1199caa678b753498a497aa92417f0e56feb58d69094ff274f856e9904d21e",
+  "status": "offline_complete",
+  "verdict": "supported"
+}

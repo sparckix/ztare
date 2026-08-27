@@ -1,0 +1,1267 @@
+{
+  "checks": {
+    "all_negative_fixtures_detected": true,
+    "h109_executes_position_suffix": true,
+    "h109_suffix_effect_family_uncredited": true,
+    "h63_exact_target_unwitnessed": true,
+    "h95_both_complete_at_twelve": true,
+    "h95_common_winning_word": true,
+    "h95_effect_family_task_credited": true,
+    "h95_full_option_refused_at_target": true,
+    "h95_full_option_reindexed": true,
+    "no_new_controller_or_environment_contact": true,
+    "position_coarsening_false_admission": true,
+    "position_only_alignment_unique": true,
+    "position_suffix_is_distinct_effect_family": true,
+    "required_nonspatial_factor_differs": true
+  },
+  "claim_boundary": {
+    "benchmark_improvement_supported": false,
+    "compounding_supported": false,
+    "global_unrecoverability_supported": false,
+    "literature_novelty_claimed": false,
+    "one_frozen_graph_refusal_supported": true,
+    "takeoff_supported": false
+  },
+  "controller_contact": false,
+  "environment_contact": false,
+  "frozen_history_viability": {
+    "controlled_position_match_count": 0,
+    "exact_viability_authority": "witnessed_paths_only",
+    "h63_node_count": 132,
+    "target_boundary_plan_status": "start_fiber_unwitnessed",
+    "target_exact_node_present": false
+  },
+  "hypothesis_id": "H-GPSA-VIABILITY-CONDITIONED-OPTION-RECALL-20260806-110",
+  "identities": {
+    "carrier_execution_sha256": "2dc741d6e7e40f8d0f264217c6908010f202e3caf0bb41b35fa3d26fd9c93ef8",
+    "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+    "h109_experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+    "h63_action_system_sha256": "e78d2de1f755875e20d525dccef23608d44cb6e2ff892475031df33ae4ea753c",
+    "h95_experiment_sha256": "560800f2dfa64048ea6d2669950a290014b738b0dee4fc54e24e766c03dd9937",
+    "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+    "target_factor_sha256": "ee4c0a43bbe601f3be4d85566114df766acde9dca218d6f16b3a1a195749d2bf",
+    "target_h63_key_sha256": "634909f091e2e67c31c874398a8115b8a888cec500b2ff09a46f1e934fc52921",
+    "target_observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "task_contract_sha256": "643b0f5ffc8756952b1c616615ad6598f2565e97ff5f45886418b29c27cc4b30"
+  },
+  "negative_fixtures": {
+    "budget": true,
+    "configuration": true,
+    "feasibility": true,
+    "option_word": true,
+    "position": true,
+    "source_lineage": true,
+    "success_authority": true
+  },
+  "position_coarsening_counterexample": {
+    "alignment_index": 4,
+    "controlled_base": [
+      [
+        35,
+        19
+      ]
+    ],
+    "factor_differences": {
+      "finite_configuration": {
+        "differing_indices": [
+          12,
+          13,
+          16,
+          17,
+          18,
+          19,
+          22,
+          23
+        ],
+        "source_values": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "target_values": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    "h109_offer_suffixes": [
+      [
+        0,
+        0,
+        3,
+        3,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        3,
+        3,
+        3,
+        0,
+        0,
+        0
+      ]
+    ],
+    "route_difference_fields": [
+      "controlled_base",
+      "finite_configuration",
+      "one_shot_availability",
+      "ordered_budget",
+      "ordered_feasibility_configuration"
+    ],
+    "route_factor_differences": [
+      [
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              12,
+              13,
+              16,
+              17,
+              18,
+              19,
+              22,
+              23
+            ],
+            "source_values": [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 18,
+            "target": 17
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              3
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 18,
+            "target": 17
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              3
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 17,
+            "target": 16
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              4
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 17,
+            "target": 16
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              4
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 16,
+            "target": 15
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              5
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 16,
+            "target": 15
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              5
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 15,
+            "target": 14
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              6
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "controlled_base": {
+            "source": [
+              [
+                40,
+                29
+              ]
+            ],
+            "target": [
+              [
+                15,
+                34
+              ]
+            ]
+          },
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "one_shot_availability": {
+            "source": [
+              [
+                "15_14_sig11",
+                true
+              ],
+              [
+                "50_39_sig11",
+                true
+              ]
+            ],
+            "target": [
+              [
+                "15_14_sig11",
+                false
+              ],
+              [
+                "50_39_sig11",
+                false
+              ]
+            ]
+          },
+          "ordered_budget": {
+            "source": 21,
+            "target": 14
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "source_values": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "target_values": [
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false
+            ]
+          }
+        }
+      ],
+      [
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              12,
+              13,
+              16,
+              17,
+              18,
+              19,
+              22,
+              23
+            ],
+            "source_values": [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              0,
+              0,
+              1,
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 18,
+            "target": 17
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              3
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 18,
+            "target": 17
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              3
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 17,
+            "target": 16
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              4
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 17,
+            "target": 16
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              4
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 16,
+            "target": 15
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              5
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 16,
+            "target": 15
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              5
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "ordered_budget": {
+            "source": 15,
+            "target": 14
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              6
+            ],
+            "source_values": [
+              true
+            ],
+            "target_values": [
+              false
+            ]
+          }
+        },
+        {
+          "controlled_base": {
+            "source": [
+              [
+                40,
+                29
+              ]
+            ],
+            "target": [
+              [
+                15,
+                34
+              ]
+            ]
+          },
+          "finite_configuration": {
+            "differing_indices": [
+              2,
+              3,
+              8,
+              9,
+              26,
+              27,
+              32,
+              33
+            ],
+            "source_values": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "target_values": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "one_shot_availability": {
+            "source": [
+              [
+                "15_14_sig11",
+                true
+              ],
+              [
+                "50_39_sig11",
+                true
+              ]
+            ],
+            "target": [
+              [
+                "15_14_sig11",
+                false
+              ],
+              [
+                "50_39_sig11",
+                false
+              ]
+            ]
+          },
+          "ordered_budget": {
+            "source": 21,
+            "target": 14
+          },
+          "ordered_feasibility_configuration": {
+            "differing_indices": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "source_values": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "target_values": [
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false
+            ]
+          }
+        }
+      ]
+    ],
+    "source_levels_after_word": [
+      1,
+      1
+    ],
+    "target_levels_after_suffix": [
+      0,
+      0
+    ],
+    "winning_suffix": [
+      0,
+      0,
+      3,
+      3,
+      3,
+      0,
+      0,
+      0
+    ]
+  },
+  "schema": "ztare-h110-viability-conditioned-option-recall-v1",
+  "sha256": "f546f1954012c9e8a5458f3ca6ebfcd30c0e766bcefbb0910456980d58aa91a3",
+  "status": "stage_a_supported",
+  "target_option": {
+    "full_word_reindex": {
+      "failure_kinds": [
+        "operation_unsupported"
+      ],
+      "imported_ref": "h95_full_word_at_h109_target",
+      "lineage_refs": [
+        "h96_causal_object_lineage/manifest.json#descendant_prefix"
+      ],
+      "operations": [
+        "2",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "3",
+        "3",
+        "3",
+        "0",
+        "0",
+        "0"
+      ],
+      "option_sha256": "0d78307a3e5be68c1a1bbd659bb9f19d1146ca532baf4d6c2cfe2d2502720b8d",
+      "requested_initiation_count": 1,
+      "resolved_initiation_count": 0,
+      "source_family_sha256": "",
+      "source_revision_sha256": "",
+      "status": "unsupported",
+      "unresolved_source_sha256s": [
+        "e1e4dad4f8a84a7d71dca4f38ddcebe4889eae6483399806d99bd71236715224"
+      ],
+      "variant_count": 0,
+      "variants": []
+    },
+    "position_suffix_effect_family_sha256": "a8107aa0b45d89e586757ac6a79b06134b434222159f819a96ac203b87d7c915",
+    "position_suffix_effect_variant_sha256": "e02beec0a8511815ddb30d6d2ae24f7c9748b6698da9943f0b4051dc5b05f43e",
+    "position_suffix_reindex": {
+      "failure_kinds": [],
+      "imported_ref": "position_only_h95_suffix_at_h109_target",
+      "lineage_refs": [
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h109_restored_sensorimotor_chronology_app_server/arms/pair_01_offer.json",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h109_restored_sensorimotor_chronology_app_server/arms/pair_02_offer.json"
+      ],
+      "operations": [
+        "0",
+        "0",
+        "3",
+        "3",
+        "3",
+        "0",
+        "0",
+        "0"
+      ],
+      "option_sha256": "c54e6b8c9a337a3292f8ff0023d48d5b3df7ea3a012434fdfd37488ac1e8a299",
+      "requested_initiation_count": 1,
+      "resolved_initiation_count": 1,
+      "source_family_sha256": "",
+      "source_revision_sha256": "",
+      "status": "stable",
+      "unresolved_source_sha256s": [],
+      "variant_count": 1,
+      "variants": [
+        {
+          "context_transition_steps": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "effect_sha256s": [
+            "72565675e620c252e16c5a1da3ac0829e77d5ba2e37c4406973096db5ceb6c88",
+            "8ee5397a5e71a483217bcd1ef92f900281ff18875986ce36d6ce8e5f6cfcd0bc",
+            "5360d265c045af0623adb5aa671a3340a60d5da306d3213d7bff97848692e1f6",
+            "b5e775486e7ace1788aa0e7eaeeec993c113ed8551101171591c8d0ef92f9e65",
+            "5360d265c045af0623adb5aa671a3340a60d5da306d3213d7bff97848692e1f6",
+            "8ee5397a5e71a483217bcd1ef92f900281ff18875986ce36d6ce8e5f6cfcd0bc",
+            "0dcb2fbc994b2b7ff3eff81fa35f668ee454b423625314bdadc003fadacf86e6",
+            "97762d80486324a2ab10c0543c596eec0cee78bf68796c6da9c9c92e9aa70fff"
+          ],
+          "initiation_source_sha256s": [
+            "e1e4dad4f8a84a7d71dca4f38ddcebe4889eae6483399806d99bd71236715224"
+          ],
+          "source_target_sha256_pairs": [
+            {
+              "source_sha256": "e1e4dad4f8a84a7d71dca4f38ddcebe4889eae6483399806d99bd71236715224",
+              "target_sha256": "e3500e0e7d324ad8a98654afef7d4489d1dd3f1ac8f237df61a65b8b6cf3729b"
+            }
+          ],
+          "terminal_context_sha256": "24f82bd1dce8400b63c6e46704fc898dd7ff249db2deee3c4ee015494c66545c",
+          "termination_source_sha256s": [
+            "e3500e0e7d324ad8a98654afef7d4489d1dd3f1ac8f237df61a65b8b6cf3729b"
+          ],
+          "variant_sha256": "21638693b3d3454692eefeb25d6ea3848dabf0b045d8430feda04526cb291e4f"
+        }
+      ]
+    },
+    "position_suffix_task_judgment": {
+      "authority": "matched_external_outcome_contrasts_only",
+      "effect_option_family_sha256": "a8107aa0b45d89e586757ac6a79b06134b434222159f819a96ac203b87d7c915",
+      "enable_support": 0,
+      "evidence_refs": [],
+      "hazard_support": 0,
+      "schema": "ztare-effect-option-task-judgment-v1",
+      "source_family_sha256s": [],
+      "status": "uncredited",
+      "task_contract_sha256": "643b0f5ffc8756952b1c616615ad6598f2565e97ff5f45886418b29c27cc4b30"
+    },
+    "refusal": "full_option_initiation_effect_unsupported;position_suffix_effect_family_uncredited"
+  },
+  "winning_option": {
+    "completion_horizons": [
+      12,
+      12
+    ],
+    "operation_count": 12,
+    "operations": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      3,
+      0,
+      0,
+      0
+    ],
+    "source_effect_family_sha256": "39ec8df56c66afd6767b3e004c839810ca4390392a4cdda3f0dd29a05673fea3",
+    "source_effect_variant_sha256": "e450f15a664b33a820b45d06f7a8a0ca2ce6611f28e3d16b268ed4e940249cf5",
+    "source_option_sha256": "9d75f7271dbfb25341565f4ac88f791fc6b4d574f940b3fd8faf5f2bfbe4ec7d",
+    "source_option_status": "stable",
+    "source_task_judgment": {
+      "authority": "matched_external_outcome_contrasts_only",
+      "effect_option_family_sha256": "39ec8df56c66afd6767b3e004c839810ca4390392a4cdda3f0dd29a05673fea3",
+      "enable_support": 4,
+      "evidence_refs": [
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#external_level_at_horizon_12=1",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#external_level_at_horizon_12=0",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#external_level_at_horizon_12=1",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#external_level_at_horizon_12=0"
+      ],
+      "hazard_support": 0,
+      "schema": "ztare-effect-option-task-judgment-v1",
+      "source_family_sha256s": [],
+      "status": "task_credited",
+      "task_contract_sha256": "643b0f5ffc8756952b1c616615ad6598f2565e97ff5f45886418b29c27cc4b30"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "capsule_receipt": {
+    "neutral_uncertainty_control_sha256": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+    "pair_sha256": "b371a0a55620a08bcf776c82256560b00935116789a5b89a4777d24993cae954",
+    "rendered_prompt_bytes": 1431,
+    "uncertainty_bearing_identity_sha256": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+  },
+  "endpoint_and_thresholds_changed": false,
+  "excluded_replication": 3,
+  "failed_arm": "neutral_uncertainty_control",
+  "failed_returncodes": [
+    0,
+    124
+  ],
+  "failed_trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_3_neutral_uncertainty_control_trace.jsonl",
+  "replacement_order": [
+    "neutral_uncertainty_control",
+    "uncertainty_bearing_identity"
+  ],
+  "replacement_replication": 4,
+  "schema": "ztare-h124-failed-pair-replacement-manifest-v1",
+  "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24"
+}

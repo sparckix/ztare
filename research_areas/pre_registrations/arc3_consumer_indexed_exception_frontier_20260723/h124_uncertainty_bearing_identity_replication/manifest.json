@@ -1,0 +1,106 @@
+{
+  "capsule_receipt": {
+    "neutral_uncertainty_control_sha256": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+    "pair_sha256": "b371a0a55620a08bcf776c82256560b00935116789a5b89a4777d24993cae954",
+    "rendered_prompt_bytes": 1431,
+    "uncertainty_bearing_identity_sha256": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+  },
+  "capsules": {
+    "neutral_uncertainty_control": {
+      "active_uncertainties": [
+        "Identify the mover; action directions, route, obstacle effects, and hazard rules remain unknown."
+      ],
+      "memories": [
+        {
+          "claim": "The source episode contained colored components and four stable action indices. No source-to-target object-role match or direction assignment is supplied; identify the controlled component and action meanings locally.",
+          "guard": "This control carries no object-role compatibility claim; verify every candidate role from target-local response.",
+          "memory_id": "h124_neutral_uncertainty_control",
+          "refusal": "Do not import an object identity, action-direction map, source coordinates, route, hazard rule, or target actions.",
+          "support": {
+            "distinct_action_count": 4,
+            "observed_component_classes": 4,
+            "source_transition_count": 21
+          }
+        }
+      ],
+      "next_decision_questions": [
+        "Which discriminating local action identifies the mover and direction while preserving viable routes?"
+      ],
+      "padding": "",
+      "schema": "ztare-arc3-causal-memory-candidate-v1",
+      "selected_from_result_sha256": "2ceb8612a292aa66af7a7c7a5a0c07d608fda8936764ce1a07cc8f5497d4c966",
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_mechanism_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+      "target_compatibility": {
+        "action_namespace": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "identity_relation": "withheld_control",
+        "matching_mover_count": null,
+        "status": "unsettled"
+      },
+      "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24"
+    },
+    "uncertainty_bearing_identity": {
+      "active_uncertainties": [
+        "Verify the candidate mover; action directions, route, obstacle effects, and hazard rules remain unknown."
+      ],
+      "memories": [
+        {
+          "claim": "The D4 orbit identifies the controlled 3x3 color-9 component with one color-4 pose marker. Four stable action indices moved it in the source episode; their direction assignment remains unknown here and must be inferred locally.",
+          "guard": "Treat the recalled role as a candidate only when exactly one D4-matching component is visible; verify its response.",
+          "memory_id": "h124_uncertainty_bearing_identity",
+          "refusal": "Do not import an action-direction map, source coordinates, route, obstacle behavior, hazard rule, or target actions.",
+          "support": {
+            "distinct_action_count": 4,
+            "observed_pose_count": 4,
+            "source_transition_count": 21
+          }
+        }
+      ],
+      "next_decision_questions": [
+        "Which discriminating local action verifies direction while preserving viable routes?"
+      ],
+      "padding": "        ",
+      "schema": "ztare-arc3-causal-memory-candidate-v1",
+      "selected_from_result_sha256": "2ceb8612a292aa66af7a7c7a5a0c07d608fda8936764ce1a07cc8f5497d4c966",
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_mechanism_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+      "target_compatibility": {
+        "action_namespace": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "identity_relation": "d4_pose_v1",
+        "matching_mover_count": 1,
+        "status": "witnessed"
+      },
+      "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24"
+    }
+  },
+  "orders": {
+    "1": [
+      "uncertainty_bearing_identity",
+      "neutral_uncertainty_control"
+    ],
+    "2": [
+      "neutral_uncertainty_control",
+      "uncertainty_bearing_identity"
+    ],
+    "3": [
+      "uncertainty_bearing_identity",
+      "neutral_uncertainty_control"
+    ]
+  },
+  "replication_count": 3,
+  "schema": "ztare-h124-uncertainty-bearing-identity-manifest-v1",
+  "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+  "target_matching_mover_count": 1
+}

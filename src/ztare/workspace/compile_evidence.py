@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from ztare.common import utils
 from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, REPO_ROOT
+from ztare.common.paths import PROMPTS_DIR, REPO_ROOT, resolve_project_dir
 from ztare.workspace.evidence_gaps import (
     LOCAL_VERIFICATION_RECOVERY_KIND,
     PUBLIC_EVIDENCE_RECOVERY_KIND,
@@ -870,16 +870,6 @@ def positive_int(value: str) -> int:
     if parsed <= 0:
         raise argparse.ArgumentTypeError(f"expected a positive integer, got {value!r}")
     return parsed
-
-
-def resolve_project_dir(project_arg: str) -> Path:
-    candidate = Path(project_arg)
-    if candidate.exists():
-        return candidate.resolve()
-    fallback = PROJECTS_DIR / project_arg
-    if fallback.exists():
-        return fallback.resolve()
-    raise FileNotFoundError(f"Project not found: {project_arg}")
 
 
 class LLMClient:

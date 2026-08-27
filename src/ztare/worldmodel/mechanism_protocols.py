@@ -13,6 +13,7 @@ from typing import Any, Callable, Hashable, Iterable, Mapping
 from ztare.common.equivariance import stable_sha256
 from ztare.common.guarded_experiment_protocol import (
     GuardedExperimentProtocol,
+    GuardedProtocolAssignment,
     GuardedProtocolCandidate,
     GuardedProtocolSelection,
     ProtocolCost,
@@ -113,6 +114,7 @@ def _probe_response(
 class WitnessedProtocolLowering:
     candidate: GuardedProtocolCandidate
     preparation_key_sha256s: tuple[str, ...]
+    response_readout_operations: tuple[Hashable, ...]
     control_plan_receipt: dict[str, Any] | None
     pricing_control_plan_receipt: dict[str, Any] | None = None
     schema: str = "ztare-witnessed-protocol-lowering-v1"
@@ -124,6 +126,10 @@ class WitnessedProtocolLowering:
             "preparation_key_sha256s": list(
                 self.preparation_key_sha256s
             ),
+            "response_readout_operation_sha256s": [
+                stable_sha256(operation)
+                for operation in self.response_readout_operations
+            ],
             "committee": [
                 {
                     "hypothesis_id": row.hypothesis_id,
@@ -424,6 +430,7 @@ def lower_witnessed_protocol(
         preparation_key_sha256s=tuple(
             stable_sha256(key) for key in key_path
         ),
+        response_readout_operations=tuple(compatibility.operations),
         control_plan_receipt=(
             control_plan.to_receipt()
             if control_plan is not None
@@ -435,6 +442,167 @@ def lower_witnessed_protocol(
             else None
         ),
     )
+
+
+def witnessed_protocol_response(
+    system: PartialActionSystem,
+    *,
+    source_key: Hashable,
+    probe: Hashable,
+    response_readout_operations: Iterable[Hashable],
+) -> Hashable:
+    """Read one response from an already compiled witnessed relation."""
+
+    relation_key = source_key, probe
+    if relation_key not in system.relation_effects:
+        raise ValueError("witnessed protocol response relation is absent")
+    return _probe_response(
+        system,
+        source_key,
+        probe,
+        tuple(response_readout_operations),
+    )
+
+
+@dataclass(frozen=True)
+class WitnessedProtocolResponseReadout:
+    """One exact selected-protocol response reconstructed from evidence."""
+
+    protocol_id: str
+    source_key_sha256: str
+    probe_sha256: str
+    response: Hashable
+    observation_evidence_ref: str
+    boundary_kind: str = ""
+    schema: str = "ztare-witnessed-protocol-response-readout-v1"
+
+    @property
+    def response_sha256(self) -> str:
+        return stable_sha256(self.response)
+
+    def to_receipt(self) -> dict[str, Any]:
+        payload = {
+            "schema": self.schema,
+            "protocol_id": self.protocol_id,
+            "source_key_sha256": self.source_key_sha256,
+            "probe_sha256": self.probe_sha256,
+            "response_sha256": self.response_sha256,
+            "observation_evidence_ref": self.observation_evidence_ref,
+            "boundary_kind": self.boundary_kind,
+            "task_credit_authorized": False,
+        }
+        return {**payload, "sha256": stable_sha256(payload)}
+
+    @property
+    def sha256(self) -> str:
+        return str(self.to_receipt()["sha256"])
+
+
+def compile_witnessed_protocol_response_readout(
+    system: PartialActionSystem,
+    lowering: WitnessedProtocolLowering,
+    *,
+    observed_source_key: Hashable,
+    observed_operation: Hashable,
+    observed_successor_key: Hashable | None = None,
+    observed_effect: Hashable | None = None,
+    boundary_kind: str = "",
+    observation_evidence_ref: str,
+) -> WitnessedProtocolResponseReadout:
+    """Apply one exact abstract observation to the frozen response compiler."""
+
+    evidence_ref = str(observation_evidence_ref).strip()
+    if not evidence_ref:
+        raise ValueError("protocol response observation requires evidence")
+    protocol = lowering.candidate.protocol
+    if observed_source_key != protocol.target_key:
+        raise ValueError("observed protocol source does not match target")
+    if observed_operation != protocol.probe:
+        raise ValueError("observed protocol operation does not match probe")
+    if observed_source_key not in system.fibers:
+        raise ValueError("observed protocol source lacks a witnessed fiber")
+    kind = str(boundary_kind or "").strip()
+    if kind:
+        if observed_successor_key is not None:
+            raise ValueError("boundary response cannot carry a successor")
+        added_effect: Hashable = ("boundary", kind)
+    else:
+        if observed_successor_key is None or observed_effect is None:
+            raise ValueError(
+                "ordinary protocol response requires successor and effect"
+            )
+        try:
+            hash(observed_successor_key)
+            hash(observed_effect)
+        except TypeError as error:
+            raise TypeError(
+                "observed successor and effect must be hashable"
+            ) from error
+        added_effect = observed_effect
+
+    relation_key = observed_source_key, observed_operation
+    effects = set(system.relation_effects.get(relation_key, ()))
+    effects.add(added_effect)
+    targets = set(system.relation_targets.get(relation_key, ()))
+    if observed_successor_key is not None:
+        targets.add(observed_successor_key)
+    boundaries = _stable((
+        *(
+            system.boundary_kinds[(observed_operation, effect)]
+            for effect in effects
+            if (observed_operation, effect) in system.boundary_kinds
+        ),
+        *((kind,) if kind else ()),
+    ))
+    operations = tuple(lowering.response_readout_operations)
+    continuations = tuple(sorted(
+        (
+            _continuation_signature(system, target, operations)
+            for target in targets
+        ),
+        key=stable_sha256,
+    ))
+    response = (
+        "typed_boundary_response" if boundaries else "observed_response",
+        _stable(effects),
+        boundaries,
+        continuations,
+    )
+    return WitnessedProtocolResponseReadout(
+        protocol_id=protocol.protocol_id,
+        source_key_sha256=stable_sha256(observed_source_key),
+        probe_sha256=stable_sha256(observed_operation),
+        response=response,
+        observation_evidence_ref=evidence_ref,
+        boundary_kind=kind,
+    )
+
+
+def observe_witnessed_protocol_information_yield(
+    system: PartialActionSystem,
+    lowering: WitnessedProtocolLowering,
+    forecast: Any,
+    **observation: Any,
+) -> tuple[WitnessedProtocolResponseReadout, Any]:
+    """Reconstruct one response and measure it against its frozen forecast."""
+
+    from ztare.common.protocol_information_yield import (
+        observe_protocol_information_yield,
+    )
+
+    if forecast.protocol_id != lowering.candidate.protocol.protocol_id:
+        raise ValueError("yield forecast and protocol lowering mismatch")
+    readout = compile_witnessed_protocol_response_readout(
+        system,
+        lowering,
+        **observation,
+    )
+    measured = observe_protocol_information_yield(
+        forecast,
+        observed_response=readout.response,
+        observation_evidence_ref=readout.sha256,
+    )
+    return readout, measured
 
 
 def select_witnessed_protocols(
@@ -455,6 +623,12 @@ def select_witnessed_protocols(
         Callable[
             [tuple[str, ...]],
             tuple[Mapping[str, int], Mapping[str, int]],
+        ] | None
+    ) = None,
+    decision_assignment_resolver: (
+        Callable[
+            [tuple[str, ...]],
+            GuardedProtocolAssignment | None,
         ] | None
     ) = None,
 ) -> WitnessedProtocolPortfolio:
@@ -493,14 +667,23 @@ def select_witnessed_protocols(
         weights=weights,
         max_primitive_execution_units=max_primitive_execution_units,
     )
-    if (
+    if selection.canonical_protocol_ids and (
         decision_calibration_resolver is not None
-        and selection.canonical_protocol_ids
+        or decision_assignment_resolver is not None
     ):
-        task_values, contrast_priorities = (
-            decision_calibration_resolver(
-            selection.canonical_protocol_ids
+        task_values, contrast_priorities = ({}, {})
+        if decision_calibration_resolver is not None:
+            task_values, contrast_priorities = (
+                decision_calibration_resolver(
+                    selection.canonical_protocol_ids
+                )
             )
+        assignment = (
+            decision_assignment_resolver(
+                selection.canonical_protocol_ids
+            )
+            if decision_assignment_resolver is not None
+            else None
         )
         selection = select_guarded_protocol(
             candidates,
@@ -508,6 +691,7 @@ def select_witnessed_protocols(
             max_primitive_execution_units=max_primitive_execution_units,
             task_value_by_protocol_id=task_values,
             contrast_priority_by_protocol_id=contrast_priorities,
+            assignment=assignment,
         )
     return WitnessedProtocolPortfolio(
         lowerings=lowerings,
@@ -535,6 +719,12 @@ def select_acquisition_protocols(
             tuple[Mapping[str, int], Mapping[str, int]],
         ] | None
     ) = None,
+    decision_assignment_resolver: (
+        Callable[
+            [tuple[str, ...]],
+            GuardedProtocolAssignment | None,
+        ] | None
+    ) = None,
 ) -> WitnessedAcquisitionProtocolPortfolio:
     """Price the complete acquisition-producer family through one door."""
 
@@ -558,6 +748,9 @@ def select_acquisition_protocols(
         decision_calibration_resolver=(
             decision_calibration_resolver
         ),
+        decision_assignment_resolver=(
+            decision_assignment_resolver
+        ),
     )
     return WitnessedAcquisitionProtocolPortfolio(
         frontiers=frontiers,
@@ -571,7 +764,11 @@ __all__ = [
     "WitnessedAcquisitionProtocolPortfolio",
     "WitnessedProtocolLowering",
     "WitnessedProtocolPortfolio",
+    "WitnessedProtocolResponseReadout",
+    "compile_witnessed_protocol_response_readout",
     "lower_witnessed_protocol",
+    "observe_witnessed_protocol_information_yield",
     "select_acquisition_protocols",
     "select_witnessed_protocols",
+    "witnessed_protocol_response",
 ]

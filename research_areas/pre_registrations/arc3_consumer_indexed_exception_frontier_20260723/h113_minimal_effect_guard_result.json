@@ -1,0 +1,195 @@
+{
+  "checks": {
+    "all_identity_mutations_detected": true,
+    "discovery_program_exists": true,
+    "h63_action_system_verified": true,
+    "no_controller_contact": true,
+    "no_environment_contact": true,
+    "qualifying_program_exists": false,
+    "trajectory_split_is_21_7": true
+  },
+  "claim_boundary": "Relative-effect guard prediction only; no task-credit or controller-benefit claim.",
+  "controller_contact": false,
+  "coordinate_names": [
+    "controlled_base",
+    "finite_configuration",
+    "operation_domain_assignment",
+    "ordered_feasibility_configuration",
+    "ordered_budget",
+    "one_shot_availability",
+    "history_suffix",
+    "predictive_context"
+  ],
+  "discovery": {
+    "occurrence_count": 862,
+    "program_count": 4,
+    "trace_count": 25
+  },
+  "environment_contact": false,
+  "holdout": {
+    "covered_unseen_count": 0,
+    "error_count": 0,
+    "exact_unseen_count": 0,
+    "occurrence_count": 276,
+    "trace_count": 7
+  },
+  "hypothesis_id": "H-GPSA-CHRONOLOGICAL-MINIMAL-EFFECT-GUARD-20260806-113",
+  "identities": {
+    "carrier_execution_sha256": "2dc741d6e7e40f8d0f264217c6908010f202e3caf0bb41b35fa3d26fd9c93ef8",
+    "carrier_sha256": "7d0aa2cd08173b33ce4911e3633e16120440aff9dfe1d0242921d5cae0cde95d",
+    "discovery_trajectory_count": 21,
+    "h63_action_system_sha256": "e78d2de1f755875e20d525dccef23608d44cb6e2ff892475031df33ae4ea753c",
+    "holdout_trajectory_count": 7,
+    "projection_sha256": "16d57d6b09019377379a000ea4243f39fadf8164b3a2726e4104cc8f5376407e",
+    "trajectory_count": 28
+  },
+  "mutation_checks": {
+    "coordinate_subset_identity": true,
+    "predicted_effect_identity": true,
+    "program_word_identity": true,
+    "source_identity": true,
+    "split_identity": true
+  },
+  "programs": [
+    {
+      "abstention_count": 0,
+      "correct_unseen_count": 0,
+      "covered_unseen_count": 0,
+      "covered_unseen_trace_count": 0,
+      "discovery_effect_count": 3,
+      "discovery_exact_source_count": 7,
+      "discovery_guard_count": 5,
+      "discovery_occurrence_count": 16,
+      "discovery_trace_count": 11,
+      "error_count": 0,
+      "exercised_predicted_effect_count": 0,
+      "full_coordinate_count": 8,
+      "holdout_exact_unseen_count": 0,
+      "holdout_occurrence_count": 4,
+      "operation_only_ambiguous": true,
+      "proper_subset": true,
+      "qualifies": false,
+      "scored_unseen_rows": [],
+      "selected_coordinate_count": 1,
+      "selected_coordinate_indices": [
+        3
+      ],
+      "selected_coordinate_names": [
+        "ordered_feasibility_configuration"
+      ],
+      "word": [
+        2,
+        1
+      ],
+      "word_sha256": "af1a1fc110b6094c48582b0ef83553cb7908d7a4365424eef28e76ef6c88d630"
+    },
+    {
+      "abstention_count": 0,
+      "correct_unseen_count": 0,
+      "covered_unseen_count": 0,
+      "covered_unseen_trace_count": 0,
+      "discovery_effect_count": 9,
+      "discovery_exact_source_count": 67,
+      "discovery_guard_count": 13,
+      "discovery_occurrence_count": 388,
+      "discovery_trace_count": 19,
+      "error_count": 0,
+      "exercised_predicted_effect_count": 0,
+      "full_coordinate_count": 8,
+      "holdout_exact_unseen_count": 0,
+      "holdout_occurrence_count": 124,
+      "operation_only_ambiguous": true,
+      "proper_subset": true,
+      "qualifies": false,
+      "scored_unseen_rows": [],
+      "selected_coordinate_count": 1,
+      "selected_coordinate_indices": [
+        0
+      ],
+      "selected_coordinate_names": [
+        "controlled_base"
+      ],
+      "word": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "word_sha256": "fd76db5c8ad0929aeca788d3e83adb863069b1dc11c4c707e9c14286388dc970"
+    },
+    {
+      "abstention_count": 0,
+      "correct_unseen_count": 0,
+      "covered_unseen_count": 0,
+      "covered_unseen_trace_count": 0,
+      "discovery_effect_count": 2,
+      "discovery_exact_source_count": 3,
+      "discovery_guard_count": 2,
+      "discovery_occurrence_count": 8,
+      "discovery_trace_count": 8,
+      "error_count": 0,
+      "exercised_predicted_effect_count": 0,
+      "full_coordinate_count": 8,
+      "holdout_exact_unseen_count": 0,
+      "holdout_occurrence_count": 2,
+      "operation_only_ambiguous": true,
+      "proper_subset": true,
+      "qualifies": false,
+      "scored_unseen_rows": [],
+      "selected_coordinate_count": 1,
+      "selected_coordinate_indices": [
+        0
+      ],
+      "selected_coordinate_names": [
+        "controlled_base"
+      ],
+      "word": [
+        0,
+        0,
+        0,
+        2,
+        1,
+        1
+      ],
+      "word_sha256": "9e677744b5abb66dfcdb8ed7cbc26995a8b1b3c10260f0ec6576a494b4bc8e57"
+    },
+    {
+      "abstention_count": 0,
+      "correct_unseen_count": 0,
+      "covered_unseen_count": 0,
+      "covered_unseen_trace_count": 0,
+      "discovery_effect_count": 7,
+      "discovery_exact_source_count": 77,
+      "discovery_guard_count": 13,
+      "discovery_occurrence_count": 450,
+      "discovery_trace_count": 19,
+      "error_count": 0,
+      "exercised_predicted_effect_count": 0,
+      "full_coordinate_count": 8,
+      "holdout_exact_unseen_count": 0,
+      "holdout_occurrence_count": 146,
+      "operation_only_ambiguous": true,
+      "proper_subset": true,
+      "qualifies": false,
+      "scored_unseen_rows": [],
+      "selected_coordinate_count": 1,
+      "selected_coordinate_indices": [
+        0
+      ],
+      "selected_coordinate_names": [
+        "controlled_base"
+      ],
+      "word": [
+        0,
+        0,
+        0
+      ],
+      "word_sha256": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052"
+    }
+  ],
+  "qualifying_program_count": 0,
+  "schema": "ztare-h113-chronological-minimal-effect-guard-v1",
+  "sha256": "9f37e7e6eadc98d9945121f096a7e823fec8618310e156b2573ccff48d182358",
+  "status": "rejected"
+}

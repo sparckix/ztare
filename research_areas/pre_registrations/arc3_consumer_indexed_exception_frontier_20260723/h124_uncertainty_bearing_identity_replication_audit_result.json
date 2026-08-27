@@ -1,0 +1,345 @@
+{
+  "arms": [
+    {
+      "action_sequence": [
+        0,
+        1,
+        0,
+        3,
+        3,
+        3,
+        -1,
+        0,
+        3,
+        3
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": false,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "Probe action 0: the unique 3x3 color-9/4 component should either move one cardinal step and reveal the mapping, or remain in place if action 0 points north into the adjacent color-2 barrier.",
+      "label": "uncertainty_bearing_identity",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 6,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 1,
+      "report_sha256": "15ac9dd167117f5c3a263a96bac25814474be555c675cf8d7fc26e07854caefc",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe4f8-48c7-7b91-a626-9e672667da56"
+      ],
+      "trace_sha256": "ac3d512f58fc6240cf4cd6d2e328f2e7727daf9e3c5c9b175b9341b4b9c57987"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": true,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "Probe action 0: the cyan/white marker should move along one connected red link if this maps to left, right, or down; no change would identify it as the blocked/up direction.",
+      "label": "neutral_uncertainty_control",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 1,
+      "report_sha256": "f84ed6fc5c2e47925e0509ce2c3b18948d5b9566b28044a55180e64fdaf34e60",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe4fd-ca29-7d01-ac7c-cdf5cf6e20ca"
+      ],
+      "trace_sha256": "796624d8c030509e614572ae2d124ae54fd01ce9b3f7e027dda47fd2bf1f2595"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        -1,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": true,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "Action 0 will test one cardinal direction of the unique 3x3 color-9 mover; it should translate by one 3-pixel grid cell and move its color-4 pose marker to the corresponding leading edge, unless that direction is north into the adjacent color-2 block, in which case the mover should remain unchanged.",
+      "label": "uncertainty_bearing_identity",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 2,
+      "report_sha256": "9a96e346dbcfd8835063a49aa9c97fb25f4a765f5bd5dff80769753ee70c5784",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe50b-b1fe-7af3-a01e-1cd6f854872b"
+      ],
+      "trace_sha256": "7a043d353526bd628420632efd9f0a0e94129b49b95bbea26eee247488bac802"
+    },
+    {
+      "action_sequence": [
+        1,
+        3,
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": false,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "Likely a valid cardinal jump: the cyan/15-controlled token should move two logical cells across an adjacent red tile into a black node, revealing action 1\u2019s direction.",
+      "label": "neutral_uncertainty_control",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 6,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 2,
+      "report_sha256": "ef877910e5d9f1fe27f3313d4958f6463cd34421f56220343ea637bcf8309df0",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe504-4d16-7163-bc7d-603b026e4a56"
+      ],
+      "trace_sha256": "08559e056a4b286f028d6b14d1cc8cc50fb0b9c069ebe503411a2ee5bd9f30f4"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        -1,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": true,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "The unique 3x3 color-9 component should move or reorient, identifying action 0's local direction; this first probe avoids importing the recalled direction map.",
+      "label": "uncertainty_bearing_identity",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 5,
+      "report_sha256": "2e866d99b966a454805c8b49f8edf75da2f63477f8b52e0c6dc149089d6f8c51",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe545-ce16-7c41-8626-0b8bb1029366"
+      ],
+      "trace_sha256": "49d2284f7e37f8075a176666db2df53f9c2db1a7f42a51d47230c89429ffa105"
+    },
+    {
+      "action_sequence": [
+        2,
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1
+      ],
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "direct_head_on_prefix": false,
+      "exchange_actions_match": true,
+      "exchange_returncodes_zero": true,
+      "first_prediction": "Probe action 2: the cyan/white marker should move from the upper node near column 36 to one adjacent graph node, identifying this action\u2019s direction; a left move would advance toward the maroon/yellow endpoint.",
+      "label": "neutral_uncertainty_control",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "terminal_actions": [
+          {
+            "action_count": 5,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          }
+        ]
+      },
+      "replication": 5,
+      "report_sha256": "5c7b4a768e4f9831ca44738f12a541685b6965a30f0572c1a898103f6eb92ef5",
+      "schema_counts_match": true,
+      "session_ids": [
+        "019fe548-f898-71c2-9f1a-8d984a4c8d82"
+      ],
+      "trace_sha256": "47e8aa97732aab56f14dfbf6c574a6c4a358e48d00aa731a5390dbb6fd9fe7df"
+    }
+  ],
+  "capsule_receipt": {
+    "neutral_uncertainty_control_sha256": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+    "pair_sha256": "b371a0a55620a08bcf776c82256560b00935116789a5b89a4777d24993cae954",
+    "rendered_prompt_bytes": 1431,
+    "uncertainty_bearing_identity_sha256": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+  },
+  "control_completions": 0,
+  "controller_contact": false,
+  "direct_head_on_prefix_count": 3,
+  "environment_contact": false,
+  "excluded_pairs": [
+    {
+      "control_checkpoint_count": 1,
+      "control_final_count": 0,
+      "control_returncodes": [
+        0,
+        124
+      ],
+      "reason": "control_transport_timeout_before_endpoint",
+      "replication": 3,
+      "treatment": {
+        "action_sequence": [
+          0,
+          3,
+          3,
+          3,
+          3,
+          0,
+          3,
+          3,
+          3,
+          2
+        ],
+        "capsule_is_one_shot": true,
+        "capsule_prompt_turns": [
+          0
+        ],
+        "direct_head_on_prefix": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "first_prediction": "The unique color-9 pose-marked component should move one 3\u00d73 cell upward onto the adjacent color-2 cell, identifying action 0 as up while advancing along the visible route.",
+        "label": "uncertainty_bearing_identity",
+        "levels_gained": 0,
+        "replay": {
+          "all_observations_match": true,
+          "final_levels_completed": 0,
+          "terminal_actions": [
+            {
+              "action_count": 4,
+              "boundary_kind": "terminal_state:GAME_OVER"
+            },
+            {
+              "action_count": 9,
+              "boundary_kind": "terminal_state:GAME_OVER"
+            }
+          ]
+        },
+        "replication": 3,
+        "report_sha256": "0e2a98894d2170a1407cbfe36b803cf531d864d99dc710d831ad4a00d21ed0e4",
+        "schema_counts_match": true,
+        "session_ids": [
+          "019fe510-690a-7c20-a1d8-bae09360627d"
+        ],
+        "trace_sha256": "4edcc1e83cbde7c73587d688423e2d74ef7f65d17399728178a7bde10afdde6e"
+      }
+    },
+    {
+      "actual_prompt_hashes": {
+        "neutral_uncertainty_control": "a0ca89bc0425e1cf1c965841e47a96e284d9baab146fbb73fbe72f1b7bb73f3f",
+        "uncertainty_bearing_identity": "8f71cc660d0b8f22e0d6090fb206aa2a1fa22eafcd2de0f34baec6cc8ac10f8a"
+      },
+      "reason": "compact_prompt_key_order_hash_mismatch",
+      "registered_prompt_hashes": {
+        "neutral_uncertainty_control": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+        "uncertainty_bearing_identity": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+      },
+      "replication": 4
+    }
+  ],
+  "registered_disposition": "refuted",
+  "result_sha256": "86a72142e1e47f4ad521bc283b27ac95d4262b854ace8f3ac84f085522b16457",
+  "schema": "ztare-h124-uncertainty-bearing-identity-audit-v1",
+  "settlement": {
+    "disposition": "refuted",
+    "information_gain": "The uncertainty-bearing D4 mover identity produced zero completions in three valid treatment arms, tied three neutral controls, and did not control the directional hazard-side decision."
+  },
+  "status": "passed",
+  "treatment_completions": 0,
+  "unique_valid_session_count": 6,
+  "valid_arm_count": 6,
+  "valid_replications": [
+    1,
+    2,
+    5
+  ]
+}

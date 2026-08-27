@@ -10134,7 +10134,7 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 
 # H-GPSA-CAUSAL-RESPONSE-DERIVATIVE-20260803-97 - Consume completed subgoals and measure response offspring
 
-- **Status:** pre-registered; no H97 controller contact
+- **Status:** rejected after completed app-server live acquisition
 - **Axis:** causal contract derivative / exact-state counterfactual fork /
   response reproduction
 - **Eigenquestion:** can H95's settled response produce one promoted descendant
@@ -10176,6 +10176,518 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 - **Claim boundary:** one parent, one descendant, two matched pairs, at most
   one child. No supercriticality, cross-task transfer, accelerating gains,
   benchmark improvement, or literature novelty.
+- **Outcome:** a later app-server run completed two exact-parent matched pairs.
+  Causal derivative transport was `2/2`, placebo spontaneous transport `0/2`,
+  task delta `+1`, mean composite delta `+89/200`, and offer wins `1/2`.
+  Promotion still failed because the exact micro-basin compiler received only
+  one offer and one withhold per basin, below its frozen support threshold.
+  Response offspring remained `0`; H97 is rejected. Evidence:
+  `h97_causal_response_derivative_app_server/result.json`, embedded SHA
+  `94916c5531c45d90c4b35d6151c3bc8b2c78846bbdeb06025a63b8ad218bbb92`.
+
+# H-GPSA-EPISTEMIC-AUTOCATALYSIS-20260803-98 - Fission a settled residual into independent causal children
+
+- **Pre-registration authority:**
+  `h98_epistemic_autocatalysis_hypothesis.md` existed before the discriminator;
+  this canonical pointer is retrospective.
+- **Status:** offline algorithm discriminator supported
+- **Axis:** residual fission / response-direction quotient / causal child
+  settlement / dual good-error criticality
+- **Eigenquestion:** can one settled response generate more than one
+  independently useful, externally checkable residual direction after copies
+  and measurement cost are removed?
+- **Discriminating test:** quotient positive-scalar response-signature copies;
+  keep an exact minimum-cost independent basis; settle basis children under
+  randomized shared trajectories; track proposal, supported-child, and
+  false-edge reproduction separately; reject authority, rank, calibration,
+  evidence-reuse, and declared-generation forgeries.
+- **Outcome:** four raw candidates compiled to three direction classes and
+  exact rank two. The synthetic settlement gave `R_p=4`, `R_k=2`, `R_e=0`
+  and `2x` shared-trajectory multiplexing. All declared negatives refused.
+  The receipt says `supercritical_mechanism_candidate` and fixes
+  `takeoff_supported=false`. Evidence:
+  `h98_epistemic_autocatalysis_result.json`, embedded SHA
+  `cf1199caa678b753498a497aa92417f0e56feb58d69094ff274f856e9904d21e`.
+
+# H-GPSA-LINEAGE-BOUND-EPISTEMIC-BRANCHING-20260804-99 - Make promoted children pay for the next generation
+
+- **Pre-registration authority:**
+  `h99_lineage_bound_epistemic_branching_hypothesis.md` existed before the
+  discriminator; this canonical pointer is retrospective.
+- **Status:** offline multigeneration algorithm discriminator supported
+- **Axis:** content-addressed child ancestry / fresh derivative / evidence
+  nonreuse / multigeneration reproduction
+- **Eigenquestion:** can promoted children become the exact parents of a fresh
+  second generation while blocking relabeling and survivor-selection tricks?
+- **Discriminating test:** bind each child to parents, response authority,
+  fission, settlement, and trial evidence; require the next source program to
+  be the canonical promoted-child quotient family; require a changed
+  derivative and fresh trajectories, trials, and observations.
+- **Outcome:** the synthetic lineage grew `1 -> 2 -> 3`, with factors `2.0`
+  and `1.5`, geometric knowledge factor `sqrt(3)`, error growth `0`, and
+  shared/separate trajectory cost `240/640`. Parent relabel, family relabel,
+  derivative reuse, evidence reuse, a critical second generation, and
+  false-edge criticality all blocked. Evidence:
+  `h99_lineage_bound_epistemic_branching_result.json`, embedded SHA
+  `929202dfe3297f1d931a1c7593e49fe62c111d2524e2018a9cc02896fecfbf55`.
+
+# H-GPSA-SPARSE-ORTHOGONAL-SETTLEMENT-20260804-100 - Remove the factorial causal-assay wall
+
+- **Pre-registration authority:**
+  `h100_sparse_orthogonal_settlement_hypothesis.md` existed before the
+  discriminator; this canonical pointer is retrospective.
+- **Status:** offline scaling discriminator supported
+- **Axis:** pre-outcome Walsh design / exact effect rank / named interactions /
+  primitive-contact compression
+- **Eigenquestion:** can a declared sparse effect model settle `r` independent
+  residual children without enumerating all `2^r` offer/withhold assignments?
+- **Discriminating test:** compile collision-free Walsh factor masks and named
+  interaction masks; require exact model rank and complete schedule adherence;
+  compare additive ranks two through twelve with full factorial cost.
+- **Outcome:** rank three used four trajectories and cost `80` versus eight
+  and `160`; rank twelve used sixteen versus `4096`, a `256x` reduction. The
+  synthetic criticality verdict was preserved. Mask collision, missing row,
+  assignment drift, post-outcome interaction relabel, rank forgery, and mixed
+  schedule authority refused. Evidence:
+  `h100_sparse_orthogonal_settlement_result.json`, embedded SHA
+  `cfbd4ae7abd41dd777b4488d454087f858571457e5efdc14158fd0839393e23f`.
+
+# H-GPSA-CAPABILITY-AUTOCATALYTIC-CLOSURE-20260804-101 - Compile critical mass as a feasible catalytic flux
+
+- **Pre-registration authority:**
+  `h101_capability_autocatalytic_closure_hypothesis.md` existed before the
+  discriminator; this canonical pointer is retrospective.
+- **Status:** offline theory/algorithm discriminator supported
+- **Axis:** capability reaction network / food generation / reflexive
+  catalysis / exact stoichiometry / resource and error feasibility
+- **Eigenquestion:** does an authority-compatible capability reaction set
+  contain a food-generated, internally catalyzed, net-productive, error-bounded
+  integer flux under the primitive-contact budget?
+- **Discriminating test:** compile food, capability, and error species plus
+  exact reactions and catalysts. Require maximal RAF membership and one flux
+  that is strictly productive in every internal capability, nonpositive in
+  errors, and budget-feasible. Compare sparse cost `80` with factorial cost
+  `160` on identical topology and food closure.
+- **Outcome:** the sparse synthetic network passed at cost `80` under budget
+  `100`; the identical topology at cost `160` had no feasible productive flux.
+  A food-disconnected cycle, unavailable catalyst, bootstrap-only RAF,
+  error-growing route, unknown species, and cross-authority identities failed.
+  The constructed reaction set does not supply prospective discovery evidence
+  and the receipt fixes `takeoff_supported=false`. Evidence:
+  `h101_capability_autocatalytic_closure_result.json`, embedded SHA
+  `48865454046b1eb0ea985a39bac12fbe15a27025df6d2ce325408ed08fed61a5`.
+
+# H-GPSA-KINETIC-CAPABILITY-THRESHOLD-20260806-102 - Make critical mass depend on stock, rate, and depreciation
+
+- **Pre-registration authority:**
+  `h102_kinetic_capability_threshold_hypothesis.md` existed before the
+  discriminator; this canonical pointer is retrospective.
+- **Status:** offline theory/algorithm discriminator supported
+- **Axis:** exact mass-action capability kinetics / catalyst abundance /
+  depreciation / state-dependent threshold / primitive-cost rate
+- **Eigenquestion:** can one productive H101 RAF be dynamically subcritical at
+  low capability stock, supercritical at higher stock, and resource-blocked at
+  that same higher stock when only sparse cost is restored to factorial cost?
+- **Discriminating test:** bind every H101 reaction to an exact evidence-backed
+  rational rate constant; bind every capability/error species to exact
+  depreciation; compute mass-action reaction rates, internal drift, error
+  drift, and primitive-cost rate from the same vector. Evaluate the fixed ray
+  `D=3J/2` at `J=3/2` and `J=7/4`; require an exact threshold bracket and the
+  sparse/factorial cost counterfactual.
+- **Outcome:** the lower state has judgment drift `-15/64` and is
+  `kinetically_subcritical`; the upper has judgment drift `+133/512`, design
+  drift `+7/2`, and is `kinetically_supercritical_candidate`. The pair brackets
+  `3J^2=8`. Sparse upper-state cost rate is `5145/32 < 300`; factorial cost
+  rate is `5145/16 > 300` and blocks the identical reaction-rate vector. Zero
+  catalyst, positive error drift, reaction/model/state identity drift, float
+  parameters, and post-hoc food changes failed. The rate constants and stocks
+  are synthetic, so prospective kinetic measurement and all capability claims
+  remain open. Evidence: `h102_kinetic_capability_threshold_result.json`,
+  embedded SHA
+  `293de28c17326c47eda707d244a50beab4836e3133ccb3e8e8f5b394201471ad`.
+
+# H-GPSA-ENDOGENOUS-RESIDUAL-REACTION-20260806-103 - Make settled failures propose their own sparse successor assays
+
+- **Status:** pre-registered; compiler and live discriminator not yet run
+- **Axis:** controller-generated residual questions / pre-outcome proposal
+  authority / sparse causal assay / endogenous capability reaction
+- **Eigenquestion:** can one exact settled failure and stored reasoning parent
+  cause a controller to propose at least three rank-independent response
+  directions and freeze a four-trajectory assay before descendant outcomes?
+- **Correction:** H98-H102 consume human-supplied residual candidates. They
+  therefore establish synthetic fission, lineage, scaling, topology, and
+  kinetics without establishing the endogenous reaction that supplies new
+  questions.
+- **Discriminating test:** first compile a fixture-authored controller output
+  under exact task/context/controller/choice-set/action-vocabulary, parent
+  response, family, derivative, failure, history-prefix, prompt, raw-output,
+  evidence, lineage, generation, measurement-catalog, and cost authority.
+  Reuse H98 to quotient copies and H100 to freeze the sparse Walsh assay.
+  Then, only after H97 yields a settled child, fork one stored blind parent
+  into causal derivative and byte-matched irrelevant-context proposals, freeze
+  both before environment contact, and externally settle the causal schedule.
+- **Offline success criterion:** four raw questions become three direction
+  classes and exact rank three; the scalar copy adds no capacity; the additive
+  design uses four trajectories versus eight factorial; the receipt requires
+  live settlement and denies compounding and takeoff.
+- **Live success criterion:** at least two independent causal children are
+  externally supported, false-edge reproduction is below one, predicted
+  information yield calibrates, sparse cost beats factorial cost, causal
+  evidence cannot promote placebo questions, and children are valid fresh
+  next-generation inputs.
+- **Kill condition:** unbound controller input/output; outcome leakage;
+  authority drift; scalar-copy rank inflation; post-outcome assay edits;
+  fewer than two supported causal children; error reproduction at or above
+  replacement; failed calibration; evidence reuse; or synthetic receipts
+  presented as capability evidence.
+- **Claim boundary:** Stage A supports only a substrate-neutral compiler. The
+  established ingredients include replay, active learning, experiment design,
+  metacognitive question generation, automated discovery, skill evolution,
+  Walsh designs, and autocatalytic networks. Autonomous inquiry, live
+  compounding, ARC improvement, takeoff, and literature novelty remain open.
+- **Pre-registration:**
+  `h103_endogenous_residual_reaction_hypothesis.md`.
+
+# H-GPSA-EPOCHAL-INTERVENTIONAL-NERODE-CONSOLIDATION-20260808-108 - Consolidate exact fibers into a predictive causal state
+
+- **Status:** rejected on fresh withheld acquisition
+- **Axis:** immutable episodic fibers / causal predictive quotient / sealed
+  withheld continuation / counterexample-guided epoch refinement
+- **Eigenquestion:** can exact matched episodes be consolidated into a coarser
+  intervention-predictive state that forecasts fresh controller forks without
+  losing episode, assignment, scope, evidence, or primitive-cost authority?
+- **Trigger:** H97 app-server evidence had causal proposal transport `2/2`,
+  placebo `0/2`, task delta `+1`, mean composite delta `+0.445`, and one win,
+  but promoted no child because two different exact micro-basins each had only
+  one offer plus one withhold. H97 remains rejected.
+- **Discriminating test:** use H97 only to construct the coarsest
+  pre-outcome-feature projection with no matched-effect sign contradiction;
+  freeze its state and positive prediction; then acquire two entirely fresh
+  alternating-order exact-parent pairs under the unchanged H97 acquisition
+  protocol. Promote only from the fresh fibers if both map to the frozen state,
+  preserve target first stage, have no negative pair, positive mean value,
+  nonnegative task delta, and at least one win.
+- **Success criterion:** exact training and holdout fibers remain recoverable
+  and disjoint; the frozen state predicts both fresh signs; fresh support is
+  two; exactly one child is promoted; response reproduction changes `0 -> 1`.
+- **Kill condition:** post-outcome projection change; fiber/evidence reuse;
+  authority or cost drift; first-stage miss; negative fresh pair; nonpositive
+  mean; zero wins; prediction error; or promotion from H97 construction data.
+  A failure emits a counterexample for a new epoch and cannot repair H108.
+- **Claim boundary:** at most one same-task predictive state and one child.
+  Autonomous discovery, multiple offspring, multi-generation compounding,
+  supercriticality, benchmark improvement, takeoff, and novelty remain open.
+- **Pre-registration:**
+  `h108_epochal_interventional_nerode_hypothesis.md`.
+- **Outcome:** Stage A froze a positive `+89/200` mean prediction. Two fresh
+  exact-parent pairs preserved causal transport `2/2` and placebo transport
+  `0/2`, but observed mean was `-93/200`, task delta was `-1`, one pair was
+  negative, and no pair won. No state or child promoted; the counterexample is
+  owed to a new epoch. Evidence:
+  `h108_epochal_interventional_nerode_holdout/h108_settlement.json`, embedded
+  SHA `080def66aea450e8aab954ea5ba92403bea2e43e66cd7bb122f14f2bb3ac1f3c`.
+
+# H-GPSA-RESTORED-SENSORIMOTOR-CHRONOLOGY-20260806-109 - Reinstate the pre-fork perception/action trajectory
+
+- **Status:** rejected after supported chronology-carrier repair and fresh live
+  acquisition
+- **Axis:** exact sensorimotor prefix carrier / controller identity /
+  endpoint-only parity / negative-transfer discriminator
+- **Eigenquestion:** does restoring the exact seven-action, eight-observation
+  pre-fork chronology remove the negative effect sign seen under H108's
+  endpoint-only controller while preserving causal proposal transport?
+- **Trigger:** the H97 instructions said to infer from supplied chronology,
+  but `_initial_parent_input` supplied only the endpoint observation and
+  object catalog. The source prefix already contains content-addressed actions,
+  observations, and environment transition links. H97/H108 remain rejected
+  under that endpoint-only controller identity.
+- **Discriminating test:** retain an exactly compatible `endpoint_only`
+  default; add an `exact_prefix_chronology` controller coordinate that verifies
+  the source prefix and renders all observations and intervening actions in
+  order; bind its carrier and rendered-input hashes into the controller scope;
+  then acquire fresh exact-parent causal/placebo pairs under otherwise frozen
+  H97 authority and cost.
+- **Success criterion:** every history/link negative refuses before contact;
+  default artifacts remain unchanged; fresh causal transport is complete,
+  spontaneous placebo transport is zero, task delta is nonnegative, no pair
+  is negative, mean composite delta is positive, and at least one pair wins.
+- **Kill condition:** default drift; missing, reordered, or tampered history;
+  crossed controller authority; first-stage miss; negative pair or task sum;
+  nonpositive mean; zero wins; evidence reuse; or primitive-cost drift.
+- **Refinement:** if grounded chronology still permits a negative pair, stop
+  advisory-memory extensions and test an executable option with initiation,
+  grounded policy, termination/failure, and prospective advantage gating.
+- **Claim boundary:** instrument parity plus at most one same-task
+  negative-transfer result. Autonomous discovery, compounding, takeoff,
+  benchmark gain, and novelty remain open.
+- **Pre-registration:**
+  `h109_restored_sensorimotor_chronology_hypothesis.md`.
+- **Outcome:** Stage A passed all eleven checks, seven negative fixtures, and
+  exact endpoint-only parity. In Stage B, two fresh chronology-restored pairs
+  preserved causal transport `2/2` and placebo transport `0/2`, but task delta,
+  mean composite delta, wins, and promoted children were all zero. The offered
+  memory changed a reasoning path without changing the first action. A
+  retrospective factor comparison then found that the controller reproduced
+  the H95 winning route's spatial skeleton while carrying a different finite
+  configuration, lower budget, and a false feasibility coordinate. Evidence:
+  `h109_restored_sensorimotor_chronology_result.md`; live embedded SHA
+  `9b6d810bd819f81295771f0f5aac616187a606ae65a3c5101b6fe1b82c63d5d6`.
+
+# H-GPSA-VIABILITY-CONDITIONED-OPTION-RECALL-20260806-110 - Refuse remembered policy outside its witnessed viability domain
+
+- **Status:** Stage A supported on frozen history; live viability-conditioned
+  transfer remains untested
+- **Axis:** executable motor option / factor-complete initiation guard /
+  success-predecessor viability / pre-controller refusal
+- **Eigenquestion:** did H97--H109 evaluate memory from a target outside the
+  witnessed viability domain of the H95 winning option, and can the existing
+  guarded-option machinery refuse it without outcome leakage?
+- **Trigger:** both H95 causal offers shared one twelve-action pre-completion
+  word. H109 reproduced its controlled-object route but failed at the terminal
+  action. At matched positions, finite configuration, ordered budget, and
+  feasibility differed from H95.
+- **Discriminating test:** reconstruct the frozen H63 factor graph; compile the
+  common H95 option and success boundary; query exact and coordinate-ablated
+  target reachability; reindex through existing option fibers; and require a
+  typed initiation/effect refusal when the full guard is absent.
+- **Success criterion:** the target is excluded by a required nonspatial
+  factor or unsupported exact viability path; a tempting coarsening falsely
+  admits it; authority/factor mutations refuse; and nonviable targets become
+  refusal controls rather than positive transfer assays.
+- **Kill condition:** an exact compatible success path exists; no required
+  factor distinguishes the target; refusal leaks outcome; or a mutation
+  crosses the guard.
+- **Claim boundary:** one frozen-graph state-selection and option-refusal
+  result only. Global unrecoverability, transfer, benchmark gain, compounding,
+  takeoff, and novelty remain open.
+- **Pre-registration:**
+  `h110_viability_conditioned_option_recall_hypothesis.md`.
+- **Outcome:** all fourteen discriminators and seven mutations passed without
+  new controller/environment contact. The H95 twelve-action option is stable
+  and task-credited from four matched external-outcome witnesses. At the H109
+  target, the full option is unsupported; the spatially aligned suffix belongs
+  to a distinct uncredited effect family. The exact target is absent from the
+  132-node frozen H63 graph and its boundary status is
+  `start_fiber_unwitnessed`. H97--H109 therefore selected a refusal control,
+  not a positive transfer target. Evidence:
+  `h110_viability_conditioned_option_recall_result.md`; embedded SHA
+  `f546f1954012c9e8a5458f3ca6ebfcd30c0e766bcefbb0910456980d58aa91a3`.
+
+# H-GPSA-LOCAL-VIABLE-OPTION-FIBER-20260806-111 - Find a distinct state that preserves the credited option's effect path
+
+- **Status:** rejected; bounded local option fiber is singleton
+- **Axis:** bounded counterfactual prefix neighborhood / exact-state quotient /
+  ordered option-effect identity / positive-transfer target discovery
+- **Eigenquestion:** does the H95 winning suffix act with the same ordered
+  mechanism effects and level boundary from any exact factor state distinct
+  from its canonical source?
+- **Discriminating test:** enumerate the 106 length-five prefixes within action
+  Hamming radius two of the canonical H95 prefix, execute the frozen
+  eight-action suffix from each cached-environment state, quotient duplicate
+  sources, and compare exact factor/effect/boundary identities. Replay H109 as
+  a refusal control.
+- **Success criterion:** at least one distinct exact factor state preserves the
+  full effect signature and level gain; H109 remains excluded; all receipt
+  mutations are detected; and primitive contacts remain explicit.
+- **Kill condition:** only the canonical state succeeds, an apparent target is
+  merely a duplicate history, the effect path changes, H109 is admitted, or an
+  identity mutation crosses the boundary.
+- **Claim boundary:** one bounded target-discovery result. Task credit at the
+  candidate, live benefit, transfer, benchmark gain, catalytic learning,
+  criticality, takeoff, and novelty remain open.
+- **Pre-registration:** `h111_local_viable_option_fiber_hypothesis.md`.
+- **Outcome:** the 106 radius-two prefixes collapsed to 12 exact states; 94
+  histories were duplicates. Eleven distinct alternatives failed, and only
+  the canonical H95 state preserved the effect signature and gained a level.
+  The H109 refusal control also failed. All identity checks and mutations
+  passed across 1,393 primitive contacts with no controller call. The current
+  positive evidence is exact replay support with zero initiation-state
+  intervention rank. Evidence: `h111_local_viable_option_fiber_result.md`;
+  embedded SHA
+  `94434c3c6edbf2acc9afdd4651565617bb4f5d6391dcccd7822e7db19640a8bc`.
+
+# H-GPSA-CLOSED-LOOP-OPTION-RECOVERY-20260806-112 - Replace a brittle motor word with exact-state corrective branches
+
+- **Status:** rejected; no bounded corrective branch found
+- **Axis:** feedback option / exact recovery basin / bounded corrective word /
+  resource-damaged refusal
+- **Eigenquestion:** can any H111 fixed-word failure return to the exact H95
+  option source through at most three actions, while H109 cannot?
+- **Discriminating test:** search corrections length zero through three from
+  each of H111's eleven distinct failed sources, require exact canonical
+  grid+factor recovery, replay the frozen suffix only after recovery, and
+  compile deterministic source-keyed branches. Repeat from H109 and run
+  identity mutations.
+- **Success criterion:** at least one local source recovers and then reproduces
+  the H95 suffix effect+boundary; H109 remains excluded; unknown sources
+  refuse; all mutations are detected; contacts are charged.
+- **Kill condition:** no local recovery, coarse-only admission, correction-time
+  level crossing, changed suffix effect, H109 recovery, ambiguous branching,
+  or mutation leakage.
+- **Claim boundary:** one bounded feedback-basin expansion only. Learned
+  correction generalization, live benefit, transfer, benchmark gain,
+  catalytic learning, criticality, takeoff, and novelty remain open.
+- **Pre-registration:** `h112_closed_loop_option_recovery_hypothesis.md`.
+- **Outcome:** all 85 corrections through length three were searched from each
+  of eleven H111 alternative states and the H109 refusal state. None returned
+  to the exact canonical grid+factor; the feedback receipt therefore retained
+  only its canonical branch. Identity controls passed across 8,006 primitive
+  actions with no controller call. Evidence:
+  `h112_closed_loop_option_recovery_result.md`; embedded SHA
+  `f582dec65f3ac330804f5c9c5da83675efcbbd75bc6e8f58402a5e7123c0480d`.
+
+# H-GPSA-CHRONOLOGICAL-MINIMAL-EFFECT-GUARD-20260806-113 - Predict later option effects from a compressed initiation gate
+
+- **Status:** rejected; chronological holdout has zero exact-state novelty
+- **Axis:** endpoint quotient / minimal sufficient initiation coordinates /
+  chronological exact-state novelty / typed abstention
+- **Eigenquestion:** can a coordinate projection learned on H63 trajectories
+  1--21 predict a retained motor word's relative effect on exact-state-unseen
+  windows in trajectories 22--28?
+- **Discriminating test:** compile programs and enumerate their occurrences on
+  the discovery prefix, select the smallest collision-free subset of named
+  factor/history coordinates, freeze its effect map, then score unseen exact
+  starts in the seven-trajectory chronological holdout. Compare operation-only
+  and exact-state gates and run identity mutations.
+- **Success criterion:** one operation-only-ambiguous word has a proper-subset
+  gate that covers at least five unseen exact starts across at least two
+  holdout traces with zero effect errors and at least two exercised effects;
+  absent guard keys abstain and all mutations are detected.
+- **Kill condition:** no unseen-state holdout, exact-state-sized minimum,
+  incorrect effect prediction, insufficient coverage/effect diversity,
+  holdout fitting, or mutation leakage.
+- **Claim boundary:** one chronological relative-effect predictor only. Task
+  credit, task transfer, controller gain, benchmark gain, catalytic learning,
+  criticality, takeoff, and novelty remain open.
+- **Pre-registration:** `h113_minimal_effect_guard_hypothesis.md`.
+- **Outcome:** the four discovery words were operation-only ambiguous with 3,
+  9, 2, and 7 effects, yet each admitted a collision-free one-coordinate
+  discovery gate. The seven holdout traces contained 276 program windows but
+  every exact initiation identity had appeared in discovery, leaving zero
+  eligible generalization cases. No environment or controller was contacted;
+  identity mutations passed. Evidence:
+  `h113_minimal_effect_guard_result.md`; embedded SHA
+  `9f37e7e6eadc98d9945121f096a7e823fec8618310e156b2573ccff48d182358`.
+
+# H-GPSA-ACTIVE-EFFECT-GUARD-INTERVENTION-20260806-114 - Intervene on non-guard factors and test the compressed effect gate
+
+- **Status:** rejected; exact feasibility gate abstains on all active states
+- **Axis:** active state variation / minimal effect guard / orthogonal factor
+  intervention / prediction-or-abstention
+- **Eigenquestion:** does H113's feasibility-coordinate gate predict `(2,1)`
+  effects on actively generated exact states absent from discovery?
+- **Discriminating test:** enumerate every cached-environment prefix through
+  length five, quotient exact sources, freeze H113's discovery guard, execute
+  `(2,1)` only after pre-word boundary checks, and score predicted effects.
+  Require an equal-guard pair that varies another factor coordinate.
+- **Success criterion:** at least five novel sources across two guard values
+  and two effects, zero covered errors, one orthogonal-coordinate invariance
+  witness, typed abstention, charged actions, and mutation detection.
+- **Kill condition:** one covered error, insufficient intervention rank, no
+  orthogonal witness, boundary leakage, outcome-conditioned fitting, or
+  mutation leakage.
+- **Claim boundary:** one active relative-effect gate only. Task credit,
+  task transfer, controller gain, benchmark gain, catalytic learning,
+  criticality, takeoff, and novelty remain open.
+- **Pre-registration:** `h114_active_effect_guard_intervention_hypothesis.md`.
+- **Outcome:** all 1,365 prefixes through length five produced 51 distinct
+  pre-word sources, all absent from H113 discovery. None shared any of the five
+  discovery feasibility-vector identities, so all 51 correctly abstained and
+  no prediction or orthogonal invariance witness was available. The audit
+  charged 6,372 primitive actions, called no controller, and passed identity
+  mutations. Evidence: `h114_active_effect_guard_intervention_result.md`;
+  embedded SHA
+  `948a7489df13a281a7257629e4e26060aeb86957dbb68462e4704ba20eebd7ac`.
+
+# H-GPSA-ORDINAL-EFFECT-GUARD-EXTRAPOLATION-20260806-115 - Replace exact feasibility lookup with a discovery-fitted ordinal regime
+
+- **Status:** rejected; all 51 above-range effect predictions failed
+- **Axis:** order-ideal compression / scalar sufficient statistic / contiguous
+  threshold induction / out-of-range active extrapolation
+- **Eigenquestion:** does the discovery-fitted budget regime predict `(2,1)`
+  effects on H114 states above the discovery budget maximum?
+- **Discriminating test:** fit the minimum collision-free contiguous interval
+  classifier to discovery budgets/effects, freeze it, replay H114's 51 exact
+  representative prefixes, execute `(2,1)`, and score unseen budgets. Require
+  an equal-budget pair varying another factor coordinate.
+- **Success criterion:** exactly three discovery intervals; at least five
+  above-range sources; zero effect errors or word-boundary crossings; one
+  orthogonal witness; typed abstention; mutation detection.
+- **Kill condition:** effect mismatch, feasibility order-ideal failure,
+  budget/count drift, boundary crossing, no orthogonal witness, post-outcome
+  threshold change, or mutation leakage.
+- **Claim boundary:** one ordinal effect extrapolator only. Task credit, task
+  transfer, controller gain, benchmark gain, catalytic learning, criticality,
+  takeoff, and novelty remain open.
+- **Pre-registration:** `h115_ordinal_effect_guard_hypothesis.md`.
+- **Outcome:** the three declared discovery intervals were reproduced, and all
+  feasibility vectors satisfied the order-ideal/count relation. All 51 H114
+  sources lay above the discovery maximum; all 51 disagreed with the frozen
+  extrapolated effect. Active outcomes contained seven effects, with as many
+  as seven at one budget. No word crossed a task boundary; 111 equal-budget
+  orthogonal pairs were present; 293 actions were charged; identity mutations
+  passed. Evidence: `h115_ordinal_effect_guard_result.md`; embedded SHA
+  `5f643876031359467bb325858a1f283742919adf2263893a6f40de7a02f03b34`.
+
+# H-GPSA-CARRIER-CONDITIONED-OPTION-LOWERING-20260806-116 - Use the forward carrier to lower a remembered word at the current state
+
+- **Status:** stage A supported; carrier predicts all active option effects
+- **Axis:** motor-memory nomination / current-state carrier rollout / predictive
+  effect provenance / exact environment settlement
+- **Eigenquestion:** can the accepted carrier predict `(0,0,0)` effects on all
+  51 H114 states absent from the historical skill corpus?
+- **Discriminating test:** reconstruct each frozen H114 source, carrier-roll
+  `(0,0,0)` before environment contact, then execute it and compare every
+  ordered effect and final grid. Undefined carrier steps refuse.
+- **Success criterion:** all 51 sources novel; all carrier steps defined; exact
+  effects and final grids on every source; at least two effects; no boundary
+  crossing; one distinct-start same-effect pair; mutation detection.
+- **Kill condition:** one defined mismatch, undefined step, final-state drift,
+  insufficient diversity, boundary crossing, source leakage, post-outcome
+  revision, or mutation leakage.
+- **Claim boundary:** one carrier-conditioned effect transport result only.
+  Task credit, task transfer, controller gain, benchmark gain, catalytic
+  learning, criticality, takeoff, and novelty remain open.
+- **Pre-registration:** `h116_carrier_conditioned_option_hypothesis.md`.
+- **Outcome:** historical exact guards abstained on all 51 novel sources. The
+  carrier predicted all 153 intermediate grids, all 51 ordered effect traces,
+  and all 51 final grids exactly for `(0,0,0)`. Fourteen effects and 274
+  distinct-start/same-effect pairs were exercised; no boundary crossed; 344
+  actions were charged; no controller was called; identity mutations passed.
+  Evidence: `h116_carrier_conditioned_option_result.md`; embedded SHA
+  `9f461dba04b2939ca0a6e94a98e888d8bbad7086962141704a1cec424d09fb18`.
+
+# H-GPSA-GENERATIVE-SKILL-EDGE-SEARCH-20260806-117 - Let learned words change the search graph
+
+- **Status:** kernel supported; task consequence unmeasured
+- **Axis:** generative macro edge / deliberation depth / primitive execution
+  cost / intermediate boundary preservation
+- **Eigenquestion:** does moving a carrier-lowerable remembered word from
+  post-search encoding into the factored search graph extend reachable horizon
+  at fixed deliberation depth without erasing primitive cost or boundaries?
+- **Discriminating test:** compare primitive-only and mixed primitive/learned-
+  word search on one deterministic chain, then challenge an intermediate goal
+  and a carrier-undefined learned edge.
+- **Success criterion:** only the mixed search reaches the beyond-bound goal;
+  it returns the exact flattened primitive program, retains its full primitive
+  execution cost, stops at an intermediate goal, and refuses an undefined
+  learned edge; all existing tests remain unchanged.
+- **Kill condition:** free execution cost, skipped intermediate boundary,
+  changed action vocabulary, predictive task settlement, or primitive-path
+  regression.
+- **Claim boundary:** one search-kernel chunking mechanism only. ARC task
+  benefit, cross-task transfer, autonomous skill generation, task credit,
+  catalytic acquisition, takeoff, and novelty remain open.
+- **Pre-registration:** `h117_generative_skill_edge_search_hypothesis.md`.
+- **Outcome:** primitive-only search stopped at primitive/deliberation depth
+  four. One three-action learned edge reached the twelve-action goal in four
+  deliberation moves, returned and charged all twelve primitive actions, and
+  used nine expansions versus twelve for the equal-execution-cost primitive
+  reference. Intermediate goal checks and undefined-carrier refusal passed;
+  action-vocabulary, carrier, and projection mutations were rejected. No
+  environment or controller was contacted. Evidence:
+  `h117_generative_skill_edge_search_result.md`; embedded SHA
+  `0d6e170420c73431960096f1f41037dc31486f721101dfc688484f58db991ded`.
 
 # H-AXIOMPACK-JACOBIAN-Q2C-ARBITRARY-BACKBONE-20260731-88 - Test the terminal ray against the complete contact-zero backbone
 
@@ -10735,13 +11247,13 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
 
 # H-FORMAL-RESIDUAL-COVERAGE-COMPILER-20260802-100 - Compute exact uncovered formal leaves before authority promotion
 
-- **Status:** pre-registered 2026-08-02; discriminating implementation pending
+- **Status:** supported 2026-08-02; governed residual certificate passes
 - **Axis:** claim-decomposition DAG / governed formal receipts / residual
   frontier / authority-promotion eligibility
 - **Eigenquestion:** can AxiomPack compute the exact uncovered proposition set
   of a broad claim and prevent partial theorem coverage from upgrading the
   root's authority?
-- **Hypothesis:** a finite acyclic claim DAG, exact normalized-signature
+- **Hypothesis:** a finite acyclic claim DAG, target/signature/source/toolchain
   identities for formal leaves and inference rules, and ledger-backed governed
   receipt replay suffice to compute a least fixed-point coverage certificate.
   Complete bottom-up coverage plus a direct governed root theorem is necessary
@@ -10763,3 +11275,3670 @@ These three programs are pre-registered before `sandbox_04`'s 20-iter run closes
   selection. It does not prove uncovered Puiseux leaves, validate their
   mathematical statements, or upgrade the critical terminal unless every
   governed requirement actually closes.
+- **Outcome:** the compiler rejects partial-root, semantic, duplicate,
+  extra, cycle, unreachable, same-signature/cross-source, and certificate
+  attacks, and transfers to an alien DAG. Seven governed Puiseux mechanism
+  leaves now replay exactly. The remaining leaf frontier is the selected
+  square-root-series passage, Julia's all-order identity, and the structural
+  two-flow alternative, plus three inference rules and the direct root theorem.
+  Promotion eligibility and authority issuance are both false. The coverage
+  envelope is
+  `37845bc6850a4c59b91c73cb72c364be323deb512614032a38f059c05460f6b7`;
+  the established single-/two-flow and global minimax digests are unchanged.
+
+# H-FORMAL-LOCAL-GERM-AUTONOMOUS-FLOW-KERNEL-20260802-101 - Close the critical Puiseux residual from constructed formal objects
+
+- **Status:** active 2026-08-02; power-series substrate audit started
+- **Axis:** formal local algebraic germ / autonomous-flow Julia identity /
+  two-flow finite-infinity alternative / governed residual coverage
+- **Eigenquestion:** can the three remaining critical-Puiseux leaves be proved
+  from constructed Mathlib objects and universal flow laws, rather than from
+  premises that restate their conclusions, so that the coverage DAG can be
+  closed bottom-up without changing an established Jacobian identity?
+- **Hypothesis:** Mathlib power-series substitution and the binomial series
+  construct the selected square-root branch and its first fractional jet;
+  differentiating a formal one-parameter substitution action yields Julia's
+  identity at every coefficient; and polynomial degree at finite points and
+  the infinity chart give an exhaustive finite/infinity/proportional
+  alternative for two autonomous factors.
+- **Discriminating test:** first construct the square-root series whose square
+  is `24-3*X^2`, propagate its selected odd coefficient through the exact
+  radial logarithmic derivative and formal integration, and prove the
+  normalized endpoint coefficient is nonzero.  Then attempt the all-order
+  Julia identity from a semigroup/ODE interface and the two-flow alternative
+  from exact polynomial and reciprocal-chart identities.  Replay each narrow
+  theorem through governed ratification, recompile the content-bound coverage
+  DAG, and run alien-branch, opposite-square-root, conclusion-as-premise,
+  finite-truncation, and missing-infinity attacks.
+- **Success criterion:** all three leaves have exact Lean signatures exposing
+  their mechanisms; each obtains a positive governed record; the three
+  inference rules and direct root are attempted only after leaf coverage;
+  every attack fails; the coverage residual becomes empty only through
+  bottom-up support; and the established single-flow, two-flow, polar-tensor,
+  and global minimax semantic digests remain byte-identical.
+- **Kill condition:** the selected-germ theorem assumes its endpoint
+  coefficient; Julia is checked only to finite order or assumes `f(F)=F'*f`;
+  the two-flow theorem omits a finite or infinity case; a square-root sign can
+  cross the selected-branch identity; an adapter-semantic node is covered by
+  name resemblance; governed replay fails; or an established digest changes.
+- **Claim boundary:** success would formalize the declared critical Puiseux
+  terminal used in the normalized pure-contact-zero branch.  It would not by
+  itself prove the unrestricted Jacobian conjecture, extend the result beyond
+  the declared gauge/schedule category, or establish historical priority.
+
+### 2026-08-02 cross-Julia elimination amendment
+
+- **New eigenquestion:** can the global maximal-continuation obligation be
+  replaced by algebraic elimination?  For time-one factors `A=exp(f)` and
+  `B=exp(g)` with `F=B ∘ A`, the two Julia identities formally imply
+  `g(F) f(A) = F' f(x) g(A)`.  Unless `f` and `g` are proportional, this
+  should be a nonzero polynomial equation in `A` over the algebraic function
+  field generated by the already constructed endpoint `F`.
+- **Discriminating test:** derive the cross-Julia identity from composition,
+  derivatives, and the two separate Julia identities; use a coefficient
+  determinant witnessing nonproportionality to prove that the cross
+  polynomial is nonzero wherever `g(F) != 0`; then test whether the explicit
+  quadratic algebraicity of the critical endpoint eliminates its radical and
+  produces a nonzero polynomial relation over `C(x)` for the selected inner
+  factor.
+- **Success criterion:** the nonproportional two-flow branch becomes an
+  algebraic-function/Puiseux-normalization problem, with no maximal complex-
+  time ODE continuation premise.  The remaining semantic input is one
+  universal normalization theorem for a selected algebraic root branch.
+- **Kill condition:** the cross identity has the wrong composition
+  orientation; its polynomial can vanish identically for nonproportional
+  generators; radical elimination can annihilate the relation; or finite
+  ramification still requires an independent ODE-continuation assumption.
+
+#### 2026-08-02 amendment outcome and corrected lever
+
+- **Survived:** cross-Julia orientation, hidden-root annihilation, determinant
+  nonzeroness, conjugate-norm noncancellation, fixed-subfield descent, and the
+  complete ramified Julia valuation balances all passed governed kernel
+  ratification.
+- **Killed subclaim:** the selected endpoint was incorrectly proposed as an
+  element of an explicit quadratic algebraic extension of `C(x)`.  Its
+  logarithmic derivative has that form; the endpoint is an exponential
+  integral and has not been shown algebraic over `C(x)`.  No critical
+  fixed-field specialization is credited.
+- **Corrected next lever:** pull the cross-Julia polynomial back to the
+  already constructed critical uniformizer.  Its coefficients are analytic
+  germs.  Prove that a single-valued punctured-holomorphic root of a nonzero
+  analytic polynomial family is meromorphic by coefficient-order root bounds
+  and removability, then feed its exact pole data to the governed ramified
+  Julia valuation carrier.  This route requires no global complex-time ODE
+  classification and no algebraicity assertion for the total endpoint.
+
+#### 2026-08-02 local normalization and ramified-balance outcome
+
+- **Survived:** finite-power monic normalization, uniform Cauchy root bounds,
+  removable extension of the scaled branch, meromorphic descent, highest-
+  active-coefficient selection, analytic cross-Julia pullback, and exact
+  pole-chart extraction all passed governed kernel ratification.
+- **Derived two-flow consequence:** a nonremovable local analytic cross-Julia
+  carrier with both individual Julia identities and one common positive
+  source/target ramification order forces regular finite centers, exact inner
+  and outer pole balances, and equal polynomial-generator degree.  No global
+  maximal-time classification or algebraicity of the total endpoint is used.
+- **Residual:** bind the selected critical order-two germs to this carrier,
+  pass equal degree into the all-order infinity collision/proportional
+  alternative, and exclude both resulting outcomes using the selected
+  critical jets.  Until that consequence and the root assembly compile, the
+  critical Puiseux residual and the unrestricted Jacobian campaign remain
+  open.
+
+#### 2026-08-06 ramified-collision assembly outcome
+
+- **Survived:** the common-uniformizer derivation of the two centered Abel
+  separations, the signed analytic-to-formal infinity-time identification,
+  analytic-order/Taylor-order transport, and the critical cubic collision
+  contradiction all passed governed kernel ratification.
+- **Derived consequence:** under the ramified-balance carrier, exact
+  reciprocal order, monic tangent normalization, and the constructed
+  vanishing linear/cubic critical jets, the two normalized polynomial
+  generators must be equal.  The proof derives the Abel collision from both
+  Julia identities and uses the all-order coefficient alternative; neither
+  equality is a premise.
+- **Residual:** construct the critical specialization of the common carrier,
+  translate normalized equality to original-generator proportionality, and
+  derive the one-flow endpoint identification needed to invoke the governed
+  constructed single-flow obstruction.  The critical root and unrestricted
+  campaign remain open until that proportional assembly and coverage replay
+  compile.
+
+#### 2026-08-06 local critical sink and carrier-construction outcome
+
+- **Survived:** the common ramified root-factor theorem lifts from `ℝ` to
+  every characteristic-zero field; the selected critical analytic adapter
+  excludes arbitrary complex polynomial generators; equal normalized
+  generators glue the two Julia rows into Julia's identity for the complete
+  endpoint; and positive reciprocal order derives hidden-derivative
+  nonvanishing.  The assembled local theorem excludes every completely bound
+  critical `TwoJuliaAbelCarrier` in both normalized-generator branches.
+- **Carrier compression:** a centered `TwoFlowRamifiedCrossCarrier` now
+  constructs the reciprocal chart, both finite Abel coordinates, both
+  infinity Abel coordinates, a common open preconnected punctured ball, all
+  derivative and divisor conditions, exact reciprocal order, both pole-degree
+  balances, and hence a complete `TwoJuliaAbelCarrier`.  The terminal
+  construction has governed record
+  `65e1fffc99cee4b6c047d28cecf00dc3d92b85b6b2e995136f1530fe26a9a420`
+  and kernel-parity record
+  `77b5af83870d907bb03c2884494e1817116ef29a74d4a0638bf38685cc1a67e7`.
+- **Killed shortcut:** the general filtered two-flow Puiseux compiler treats
+  a factorization-identity receipt as if it also supplied selected-route
+  exhaustion and infinity-sheet monodromy.  The formal coverage audit shows
+  those are separate propositions.  That compiler certificate cannot carry
+  the global conclusion until its evidence interface separates the selected
+  continuation/route constructor from the algebraic factorization identity.
+- **Residual:** construct a `TwoFlowRamifiedCrossCarrier` from an arbitrary
+  selected two-polynomial-flow factorization of the critical holonomy, with
+  the selected source/target bindings and generator normalization preserved.
+  Cross-Julia elimination then handles the local nonfinite end; the missing
+  global theorem must still produce the punctured selected hidden branch and
+  its Julia rows.  The active hypothesis and unrestricted Jacobian campaign
+  remain open.
+
+#### 2026-08-06 one-Julia continuation compression
+
+- **Survived:** a finite analytic continuation chain for the inner factor's
+  Julia residual, together with the cross-Julia identity and the two total
+  derivative bindings, reconstructs the outer Julia row.  Cancellation is
+  unconditional in the root multiplicity: the first generator evaluated on
+  the positive-order source germ has a finite exact meromorphic order and is
+  eventually nonzero.
+- **Kernel result:**
+  `FormalAnalyticSelectedInnerCrossAssembly.analytic_selected_inner_cross_assembly_terminal_certificate`
+  has governed record
+  `96d51d087064e2d520a80f2a254d22cff21aec9bdf1c450fe3c723d555a4fc4d`
+  and kernel-parity record
+  `e93a65997e92a20270ed9c9609d337048af4c9825f041321c83d38b45eb6b76b`.
+  Its input contains neither the outer Julia row nor a completed
+  `TwoFlowRamifiedCrossCarrier`.
+- **Residual:** construct the selected hidden algebraic-root continuation
+  from an arbitrary two-flow factorization, carry the cross-root identity and
+  inner Julia identity to the critical chart, and prove that a nonanalytic
+  finite-endpoint composition forces the hidden factor into the no-finite-
+  extension branch.  The outer factor no longer needs an independent
+  continuation proof.
+
+#### 2026-08-06 regular finite descent and equilibrium-transition test
+
+- **Ratified regular slice:**
+  `FormalAnalyticRegularFiniteFlowDescent.analytic_regular_finite_flow_descent_terminal_certificate`
+  constructs an analytic source-coordinate descent for every selected Julia
+  branch whose two finite centers are regular for its polynomial generator.
+  Its governed record is
+  `e7307cce372e27db5e102cad462b444e1347e63b6a289560c802615c85352652`
+  and its kernel-parity record is
+  `4e324e5094b3aa8f8799e174b3abc86dea95d6b3b8de3cf0af2aef3068f2f456`.
+- **Information gained:** finite ramification cannot originate at a
+  regular-to-regular selected branch.  The finite residual is concentrated
+  at generator zeros; mixed regular/equilibrium cases have a valuation
+  mismatch, while equilibrium-to-equilibrium transitions require a new
+  branch class in the route audit.
+- **Preregistered hypothesis:** a simple-equilibrium transition has local
+  exponent equal to the ratio of generator derivatives at its endpoint and
+  source.  Two transitions with ratios (3/2) and (2/3) may therefore compose
+  to a nonzero linear germ whose first generic fractional correction is
+  (5/2), matching the critical local signature.
+- **Discriminating test:** construct rational generators in
+  (x^2\mathbb Q[x]), solve the two local Julia equations to the first
+  competing fractional shell, and compose.  Success requires a nonzero
+  linear term, no lower fractional exponent, and a nonzero (u^{5/2})
+  coefficient.  Identically vanishing coefficient, inconsistent rational
+  derivative-ratio constraints, or a forced earlier fractional shell kills
+  the mechanism.
+- **Claim boundary:** this test concerns a local continuation adversary.  It
+  neither constructs a global factorization of the Jacobian critical
+  holonomy nor discharges the arithmetic requirement that an endpoint
+  equilibrium of a rational polynomial be algebraic.
+- **Outcome:** the mechanism survives.  Exact generators
+  (z^2(z-1)(z-2)(11z-19)) and
+  (z^2(z-2)(z-3)(35z-97)) have derivative ratios (3/2) and (2/3).  Their
+  exact parameterized Julia series compose to
+  (u+(77/12)u^2+(376/81)u^{5/2}+O(u^3)); the lower (u^{3/2}) shell is zero.
+  Replay certificate:
+  `7858bb75adf8f7199b894d35a41b2a9211330a40cc534aee3acbe7aefbdc3210`.
+- **Belief update:** the critical (5/2) exponent excludes one polynomial
+  flow and the ratified nonfinite two-flow carrier, but it does not exclude
+  finite equilibrium-transition chains by local exponent alone.  The next
+  lever is global: derive the time-one/monodromy compatibility of such a
+  chain and combine it with the algebraicity forced at the fixed endpoint
+  (F(-2)).  The active unrestricted minimax claim remains open.
+- **Kernel classification:**
+  `FormalFiniteJuliaValuationClassification.finite_julia_valuation_classification_terminal_certificate`
+  derives the finite balance (q(1-n)=r(1-m)) directly from analytic orders
+  and the Julia row.  It proves that mixed regular/equilibrium centers are
+  impossible and that every finite branch is regular-to-regular with equal
+  order or equilibrium-to-equilibrium.  Governed record:
+  `87e0e5f86155504ff835a62cb66dba4b93bce8dda8535a8c60f1facbc2f24e3c`;
+  kernel-parity record:
+  `32447da15467bd43ee7010841f447fb9cdf3ef43d620008f0a7e656af817282c`.
+- **Sharpened residual:** the finite local route is now exhausted.  Its only
+  nonanalytic branch is equilibrium-to-equilibrium, while the other local
+  branch is the already excluded nonfinite cross carrier.  Global selected
+  continuation and exclusion of the equilibrium chain remain open.
+
+#### 2026-08-06 preregistered monodromy escape test
+
+- **Eigenquestion:** does the critical algebraic connection have an
+  irrational algebraic logarithmic residue whose scalar monodromy orbit is
+  infinite, forcing a selected two-flow factorization to leave its finite
+  equilibrium route on some loop iterate?
+- **Orientation:** the conic parameter
+  (x=6(t^2-1)/(t^2+3)) rationalizes the critical quadratic sheet.  An
+  exploratory partial fraction calculation exposed a squarefree-looking
+  degree-seven pole factor (Q) and a degree-seven residue resultant.  No
+  irreducibility or monodromy conclusion is yet recorded as evidence.
+- **Hypothesis:** (Q) and the residue resultant are irreducible over
+  (\mathbb Q).  Hence a pole residue (\rho) is algebraic irrational and
+  (exp(2\pi i\rho)) has infinite order by Gelfond--Schneider.
+- **Discriminating test:** derive the rational differential from the exact
+  connection, verify the conic parametrization, certify squarefreeness and
+  irreducibility of both degree-seven polynomials, and bind the residue by an
+  exact resultant identity.  Cancellation of the pole, rational residue
+  roots, or reducibility to rational residues kills the mechanism.
+- **Success consequence:** the critical endpoint has an infinite monodromy
+  orbit.  Combined with the ratified finite Julia classification, a future
+  continuation-transfer theorem can force either infinitely many roots of a
+  fixed outer generator or a nonfinite selected branch.
+- **Claim boundary:** the exact residue test does not itself construct the
+  factor-continuation lift around every loop.  That lift remains the global
+  theorem required for the minimax lower bound.
+- **Outcome:** the rationalized differential is
+  (896t(t-3)(t+1)(t^2-6t-3)/((t-1)Q(t)))dt.  The pole is squarefree and
+  noncancelling.  Both (Q) and the degree-seven residue resultant are
+  irreducible modulo (17), so every residue in that orbit is algebraic
+  irrational.  Exact certificate:
+  `c27c46c0e1d4d83a93714ebe4fafe3dae4994320ceac592b2cfd273a5bce898d`.
+- **Compression:** Gelfond--Schneider is stronger than needed.  A positive
+  torsion power of (exp(2\pi i\rho)) and the kernel of complex exponential
+  would imply (\rho\in\mathbb Q).  The residue's degree-seven irrationality
+  therefore gives infinite-order monodromy by an elementary formal kernel.
+- **Next lever:** formalize the exponential no-torsion implication, then
+  construct the continuation-transfer carrier that turns the infinite
+  scalar endpoint orbit into either infinitely many roots of one polynomial
+  or a nonfinite iterate consumed by the ratified cross-carrier sink.
+- **Preregistered kernel corollary:** no positive torsion power should make
+  the natural power orbit injective.  After multiplication by a nonzero
+  endpoint, its range is infinite and therefore cannot lie in the finite root
+  set of a nonzero polynomial.  Success is a Lean theorem producing an
+  iterate with nonzero polynomial evaluation from only irrational residue,
+  nonzero endpoint, and nonzero polynomial.  Requiring an asserted finite
+  root bound or asserted orbit infinitude kills the abstraction.
+- **Next global hypothesis:** equality of the initial two-flow germ with the
+  critical scalar holonomy lifts along every based monodromy loop until a
+  factor leaves all finite charts.  Local polynomial-ODE existence and
+  overlap uniqueness should make bounded finite endpoints extend; unbounded
+  endpoints should construct the established reciprocal ramified carrier.
+- **Discriminating construction:** build a path-local continuation theorem
+  for the Julia ODE, glue it over a finite path cover, and prove the bounded-
+  endpoint extension alternative.  Then iterate around the certified pole.
+  Finite iterates are forced by the ratified valuation theorem into roots of
+  the outer generator, while the infinite-order endpoint orbit escapes that
+  finite root set.  Success constructs a nonfinite cross carrier on some
+  iterate.  A caller-owned route tag, loop lift, or escape predicate kills
+  the construction.
+- **Claim boundary:** this is now the single analytic continuation theorem
+  between the kernel-checked local campaign and the unconditional minimax
+  lower bound.  It remains unproved.
+
+#### 2026-08-06 preregistered residue-irrationality kernel test
+
+- **Eigenquestion:** can the exact degree-seven residue polynomial be shown to
+  have no rational root using only the rational-root theorem and a finite
+  modulo-17 computation, so the coverage leaf becomes a governed proposition
+  rather than an adapter assertion?
+- **Candidate theorem:** define the primitive integer residue polynomial
+  exactly. If a real number is one of its roots, then it is irrational. The
+  proof assumes neither irreducibility nor irrationality: a hypothetical
+  rational root is converted by `num_isRoot_scaleRoots_of_aeval_eq_zero` into
+  an integer root of the denominator-scaled polynomial; reduction modulo 17
+  contradicts an exhaustive finite-field no-root certificate. The leading
+  coefficient is nonzero modulo 17, so the rational denominator remains
+  invertible there.
+- **Discriminating test:** Lean must check the exact coefficients, the
+  denominator divisibility argument, the map/`scaleRoots` transport, the
+  finite `ZMod 17` no-root computation, and the final rational-to-real cast.
+- **Kill conditions:** abandon this route if 17 divides the leading
+  coefficient, if the finite-field polynomial has a root, if mapping the
+  rational-root witness requires an unproved irreducibility premise, or if
+  the terminal theorem accepts irrationality/no-rational-root as an input.
+- **Claim boundary:** this kernel proves irrationality of every real root of
+  the displayed residue polynomial. The adapter must still prove that the
+  critical logarithmic residue is such a root, and the global continuation of
+  factor branches around repeated loops remains separate.
+- **Outcome:** the route passed. The reusable theorem
+  `FormalRationalRootModPrime.rat_no_root_of_mod_prime_no_root` owns the
+  denominator-scaled reduction. The exact degree-seven specialization uses
+  kernel reduction over `ZMod 17` and proves every real eliminant root
+  irrational. The terminal governed record is
+  `b9ac4e8a487f757cde1870bbe795b92b122a502d288802bdd8731490b15a9cf7`
+  with parity record
+  `30c0849fb14a8f082d8bb06c02a04ac5f54ecd373ceb82b178b8b9cd13918523`.
+- **Residual update:** the arithmetic implication is governed. The remaining
+  local monodromy leaf is the formal binding from the selected pole residue to
+  a real root of the exact eliminant; repeated factor-loop continuation is
+  still the global lever.
+
+#### 2026-08-06 preregistered pole-to-eliminant binding test
+
+- **Eigenquestion:** can one construct an actual real pole of the displayed
+  degree-seven denominator and prove, inside Lean, that its logarithmic
+  residue is a root of the governed eliminant?
+- **Candidate theorem:** the pole polynomial changes sign between `-2/5` and
+  `-3/10`, hence has a real root `a` there. Exact Bezout identities make
+  `Q'(a)`, `a-1`, and the numerator nonzero. For
+  `rho=N(a)/((a-1)Q'(a))`, the cleared eliminant is an exact degree-49
+  polynomial divisible by `Q`; therefore the residue polynomial vanishes at
+  `rho`, and the governed prime-reduction theorem makes `rho` irrational.
+- **Discriminating test:** Lean must check the sign bracket, all nonvanishing
+  identities, the complete cleared polynomial factorization, denominator
+  cancellation, and the final eliminant evaluation. The factor quotient is
+  certificate data, not a premise.
+- **Kill conditions:** a nonzero remainder in the factorization, failure of
+  the pole bracket, a hidden no-root/irrationality premise, or a theorem that
+  merely accepts the resultant identity as a callback kills this route.
+- **Claim boundary:** the theorem binds the explicit rational differential
+  `N/((t-1)Q)` to a pole residue. Equality of that rational differential with
+  the original critical connection expression must be proved separately if
+  it is not already present in the formal source.
+- **Outcome:** the route passed. Lean constructs a pole in
+  `[-2/5,-3/10]`, proves simplicity and numerator noncancellation by exact
+  Bezout identities, checks the complete degree-49 divisibility certificate,
+  places the residue on the exact degree-seven eliminant, proves it
+  irrational, and proves every positive exponential-monodromy power
+  nontrivial. The terminal governed record is
+  `25727111271dbc731e3d0c4cdc9688e64bad8a97d28daffa2895d29896b501a7`
+  with kernel-parity record
+  `ca9c9294f633b66ee242df6e67e17b520a092b36c05ef3f6d54bc8e7bb6c3fa5`.
+- **Residual update:** the local pole-to-monodromy chain for the explicit
+  rational differential is governed. The remaining local leaf is the exact
+  equality between the original critical connection differential and that
+  rational expression. The repeated factor-loop continuation theorem remains
+  the global lever.
+
+#### 2026-08-06 preregistered critical-connection rationalization test
+
+- **Eigenquestion:** can the adapter equality between the original algebraic
+  critical connection and `N(t)/((t-1)Q(t))` be checked as an unconditional
+  identity in the rational-function field, rather than as sampled pointwise
+  arithmetic or a supplied callback?
+- **Candidate theorem:** define the original rational and radical velocity
+  rows over `RatFunc ℚ`, the conic parameterization
+  `x=6(t^2-1)/(t^2+3)`, `w=24t/(t^2+3)`, and the exact formal derivative of
+  `x`. Prove the conic equation and derivative identity, then normalize the
+  pulled-back logarithmic differential to
+  `896t(t-3)(t+1)(t^2-6t-3)/((t-1)Q(t))`.
+- **Discriminating test:** Lean must check the entire rational-function
+  equality from the displayed source formulas. The theorem may not accept the
+  simplified differential, a nonzero-denominator callback, or the target
+  equality as a premise.
+- **Kill conditions:** failure of the conic or derivative identity, a
+  nonzero remainder after rational normalization, or a proof that only holds
+  after deleting unspecified points kills the route.
+- **Claim boundary:** success discharges only the local connection-
+  identification leaf. Lifting repeated monodromy loops through an arbitrary
+  two-flow factorization remains separate.
+- **Outcome:** the route passed. Lean checks the conic sheet, analytic
+  derivative formula, pulled-back source connection, simplified velocity and
+  radial denominator, and the final equality in `RatFunc ℝ`. The terminal
+  governed record is
+  `dbc90efc8066be9b0897f097a114dd2c276c8431c8cd990b3a175e5f1e0517ac`
+  with kernel-parity record
+  `42b941559cc67669a5795dbd9a5910b7131b8918598ec9bc2ee96978eb197cb3`.
+- **Residual update:** the local connection-to-explicit-differential leaf is
+  governed. Three semantic leaves remain, all global: repeated factor-loop
+  continuation, selected nonfinite cross-carrier realization, and exhaustive
+  route construction. The scalar endpoint-orbit passage remains a semantic
+  inference over governed local inputs.
+
+#### 2026-08-06 preregistered logarithmic-loop continuation test
+
+- **Eigenquestion:** can the residue multiplier be made to act on explicit
+  scalar-ODE continuation endpoints, rather than remaining disconnected from
+  the critical holonomy and its two-flow consumer?
+- **Candidate:** a substrate-neutral circle carrier owns only a nonzero
+  radius, a decomposition `A(z)=rho/(z-a)+h(z)`, a primitive of `h` along the
+  circle, and a nonzero initial value. The theorem constructs the exponential
+  path, proves the pulled-back scalar ODE, derives the endpoint after `N`
+  turns as `y0 * exp(2*pi*i*rho)^N`, and proves the endpoint orbit injective
+  from positive-power non-torsion.
+- **Discriminating test:** Lean must derive the circle tangent, pole
+  cancellation, exponential chain rule, periodic endpoint equation, and the
+  positive-torsion contradiction. No endpoint-action or injectivity callback
+  is allowed in the carrier.
+- **Kill conditions:** a path without the ODE, an assumed endpoint multiplier,
+  a one-turn-only statement, or an orbit theorem that accepts distinctness as
+  input does not pass.
+- **Claim boundary:** success creates the reusable analytic continuation
+  kernel. The critical specialization must still construct the holomorphic
+  remainder from the exact rational differential, and the global factor-loop
+  lift remains outside this test.
+- **Outcome:** passed. `FormalAnalyticLogarithmicLoop` constructs the
+  continuation path from the carrier data and derives its scalar ODE,
+  repeated-loop endpoint formula, and endpoint injectivity. The terminal has
+  governed record
+  `1869287e878cffd4bac6db000609b64ae3a2f79a4c1a99d55ad80bb1c46d3d0f`
+  with kernel-parity record
+  `347bfcc2f43198054c42ac4a179559709dcd93c1fc2d5aa0af35c0f1ad336047`.
+
+#### 2026-08-06 preregistered critical loop-realization specialization
+
+- **Eigenquestion:** does the exact critical rational differential itself
+  construct a repeated-loop scalar endpoint orbit, after the simple-pole
+  residue is removed algebraically?
+- **Candidate:** complexify `N` and `Q`; divide `Q` by `X-a`; divide the cross
+  numerator `N(z)B(a)-N(a)B(z)` by `X-a`; prove the resulting regular quotient
+  analytic at `a`; obtain a primitive on a positive disk; instantiate the
+  logarithmic-loop kernel and derive the explicit differential ODE plus an
+  injective endpoint map for every nonzero initial value.
+- **Discriminating test:** both polynomial divisions, nonvanishing of the
+  reduced denominator at `a`, local primitive construction, coefficient
+  decomposition on the selected circle, and the final orbit must be checked
+  by Lean.
+- **Kill conditions:** a nonzero division remainder, an assumed primitive,
+  an assumed endpoint multiplier, or loss of the exact `N/((z-1)Q)`
+  coefficient kills the specialization.
+- **Claim boundary:** success pays the scalar endpoint-orbit inference. It
+  does not lift the two factor branches or construct exhaustive route
+  evidence.
+- **Outcome:** passed. `FormalCriticalHolonomyLoop` complexifies the exact
+  coefficient, removes the selected pole by two checked polynomial
+  divisions, constructs a primitive of the regular part on a positive disk,
+  and instantiates the logarithmic-loop kernel. For every nonzero initial
+  value, Lean proves the exact pulled-back ODE, the repeated-loop endpoint
+  formula, and injectivity of the endpoint map. The critical terminal has
+  governed record
+  `54198f8b2fe5854ec115f6195de2383b17816cdb257a24d1294d7b3b47f24c33`
+  with kernel-parity record
+  `37f39e4884122371bec62c696aacd28619425e98a8912213b6a5896fc3d8c3b7`.
+- **Residual update:** coverage v37 governs the connection-holonomy
+  inference. Transporting a chosen factorization from its germ basepoint to
+  the loop is part of the factor-loop transfer leaf. Three global two-flow
+  leaves, four dependent inference rules, and the direct root remain outside
+  formal authority.
+
+#### 2026-08-06 preregistered finite-factor monodromy stress test
+
+- **Eigenquestion:** does finite analytic continuation of a polynomial
+  autonomous time-one map force the continued endpoint to be an equilibrium,
+  as the tentative finite-chain proof would require?
+- **Countermodels:** test `y'=y^3`, whose time-one correspondence
+  `Y^2(1-2x^2)=x^2` has two finite non-equilibrium sheets exchanged around a
+  square-root branch point; then test `y'=y^2(1-y)`, whose Abel relation
+  reduces to `(u-1)exp(u-1)=c` and hence has infinitely many finite regular
+  Lambert-W sheets for generic `c`.
+- **Discriminating test:** exact symbolic differentiation must verify the
+  Julia and Abel identities, the displayed time-one correspondences, and
+  nonvanishing of both vector fields at the selected endpoints.
+- **Kill conditions:** failure of either correspondence or accidental
+  equilibrium endpoints preserves the finite-root route. Passing either
+  finite regular model kills a pointwise finite-to-equilibrium implication;
+  passing the infinite-sheet model also kills its infinite-orbit repair.
+- **Claim boundary:** these are negative controls for the general
+  factor-continuation argument. They do not construct a two-flow
+  factorization of the critical map. If they pass, a valid proof must exploit
+  the coupled critical factorization identity rather than finiteness alone.
+- **Outcome:** both negative controls passed. The cubic correspondence has
+  the two finite regular values `±sqrt(2)/2` at source `1/2`, with exact Julia
+  residual zero. The quartic Abel coordinate has exact derivative
+  `1/(y^2(1-y))`; its selected time-one relation is `w*exp(w)=1`, and the
+  endpoints `1/(1+LambertW_k(1))` are finite and regular. The replay checks 17
+  distinct branches numerically and has certificate
+  `013cafdb99d8de33106059b9a6afe6475991a5e095221166c4a52549d19ec22a`.
+- **Residual update:** finite continuation, even with infinitely many finite
+  branches, does not force endpoint membership in a polynomial's root set.
+  The finite-equilibrium shortcut is forbidden. The next lever is the
+  derivative-eliminated coupled identity
+  `p(G)q(F)=F'p(x)q(G)` together with the critical equation `F'=A(x)F` and
+  non-torsion multiplicative monodromy.
+
+#### 2026-08-06 preregistered coupled-Julia elimination kernel
+
+- **Eigenquestion:** can both Julia rows be converted into a polynomial
+  equation for the hidden endpoint without dividing by either generator?
+- **Candidate theorem:** from `p(G)=G'p(x)`,
+  `q(F)G'=F'q(G)`, and `F'=AF`, derive that `G` is a root of
+  `q(F)•p-(AFp(x))•q` over an arbitrary field.
+- **Discriminating test:** Lean must construct the relation polynomial and
+  prove evaluation at `G` vanishes using only the three displayed identities.
+- **Kill conditions:** a generator nonvanishing premise, rational quotient,
+  branch tag, or accepted eliminated identity kills the kernel.
+- **Claim boundary:** success governs the algebraic consequence of a lifted
+  factorization. It does not construct the lift or exclude the finite
+  algebraic-monodromy branch.
+- **Outcome:** passed over arbitrary commutative rings. Lean constructs
+  `q(F)•p-(AFp(x))•q`, proves the derivative-eliminated identity, and proves
+  the hidden endpoint is a root without any division or regularity premise.
+  The terminal has governed record
+  `9a0b93843527fc75cb9c0121b79d9c89f726f2de29caaf341485bc56610785c2`
+  with kernel-parity record
+  `12eb5debcb68f59547c9a0c41954dbedd1b1a186785610b6044264ca48b19e32`.
+- **Residual update:** coverage v39 records the kernel as the supported
+  inference for `two_flow_factorization_loop_continuation_transfer`. Its only
+  missing child is now the selected analytic continuation carrier. The other
+  two semantic leaves remain nonfinite cross-carrier realization and route
+  exhaustion.
+
+#### 2026-08-06 preregistered finite-state holomorphic continuation kernel
+
+- **Eigenquestion:** does every finite endpoint of
+  `y'=c(z)p(y)` construct a holomorphic continuation germ, with compatibility
+  on overlaps, without assuming whether the endpoint is regular or an
+  equilibrium?
+- **Candidate theorem:** at a regular state, compose a local primitive of
+  `c` with the analytic inverse of the normalized finite Abel coordinate; at
+  an equilibrium, use the constant branch. Prove local uniqueness by Abel
+  cancellation in the regular case and polynomial-factor linear-ODE
+  uniqueness in the equilibrium case.
+- **Discriminating test:** Lean must construct the solution, its analytic
+  germ, the exact differential equation, and eventual equality of any two
+  analytic germs with the same initial state. No supplied solution, inverse,
+  Lipschitz receipt, or route tag is allowed.
+- **Kill conditions:** an equilibrium gap, only real-time differentiability,
+  or uniqueness assumed as a field fails the test.
+- **Claim boundary:** success pays local finite-state extension and overlap
+  gluing only. Infinite finite-sheet monodromy remains possible; maximal
+  path continuation, infinity crossing, and the selected two-factor carrier
+  remain outside the theorem.
+
+#### 2026-08-06 preregistered differential-resultant prolongation kernel
+
+- **Eigenquestion:** does differentiating the governed coupled-Julia
+  relation force every finite selected lift to be a common root of a second,
+  division-free polynomial, so a nonzero resultant converts the infinite
+  scalar orbit into a contradiction?
+- **Candidate theorem:** from analytic `G,F,A` satisfying
+  `p(G)=G'p(x)`, `q(F)G'=F'q(G)`, and `F'=AF`, construct
+  `R(Y)=q(F)p(Y)-AFp(x)q(Y)` and the explicit first prolongation `S(Y)`;
+  prove both evaluate to zero at `G` without accepting either relation as a
+  premise.
+- **Discriminating test:** Lean checks the polynomial chain rules, the
+  derivative of `A`, all substitutions, and the final denominator-free
+  formula. A caller-provided differentiated relation or common-root field
+  fails the test.
+- **Kill conditions:** a missing `A'` term, division by a possibly vanishing
+  generator value, or an `S` formula that does not replay symbolically kills
+  the kernel.
+- **Claim boundary:** a nonzero `Res_Y(R,S)` would make the finite branch
+  consumable by the governed monodromy escape theorem. Identically-zero
+  resultants remain invariant-curve exceptions to classify; loop-lift and
+  route-exhaustion construction remain separate.
+- **Outcome:** passed. The analytic finite-state continuation terminal has
+  governed record
+  `f42f0fb155a84be0eb978de3db8a564de7b8927158fc6407f0685aa2e2375faf`
+  and kernel-parity record
+  `c7e921bdffcaacfc772487d445bf7c94ebdaff48db6475567bd0a6dffd3dbf9e`.
+  The differential-prolongation terminal has governed record
+  `b4ea295e602ace391568b57fcae9ddda7527f64d84efb48153ae54e03e77c6d7`
+  and kernel-parity record
+  `7390005969467ab849af43264df4ee279f91f4a1e153ca72dc5e365716eda747`.
+  The first removes finite local nonextendability; the second forces every
+  analytic coupled lift to satisfy both polynomial relations. Neither claims
+  a nonzero resultant or global selected continuation.
+
+#### 2026-08-06 preregistered saturated resultant and multiplicity induction
+
+- **Eigenquestion:** after saturating away common equilibrium factors, does
+  iterated differential prolongation force a nonzero elimination certificate
+  in arbitrary degree?
+- **Low-degree discriminator:** exactly factor the reduced first resultants
+  for `p=Y^2`, `q=Y^2(1+bY)` and for
+  `p=Y^2(1+cY)`, `q=Y^2(1+dY)`. Support requires nonzero resultants under
+  explicit nonproportionality and source-regularity assumptions.
+- **Induction candidate:** for `D_p(Q)=p*Q.derivative`, `Q != 0`, and
+  `p.eval y != 0`, prove for every `n <= rootMultiplicity y Q` that
+  `D_p^[n] Q != 0` and its root multiplicity at `y` is exactly the original
+  multiplicity minus `n`. The terminal iterate must therefore evaluate
+  nonzero at `y`.
+- **Kill conditions:** an unsaturated universal factor masquerading as an
+  invariant component; assumed nonzeroness of an iterate; a simple-root-only
+  proof; or a low-degree resultant factor compatible with all declared
+  hypotheses and still identically zero.
+- **Claim boundary:** success supplies the all-multiplicity algebraic engine.
+  It does not yet identify the coupled relation's higher prolongations with
+  this fiberwise tower, classify components inside `p(Y)=0`, or construct the
+  selected global factor lift.
+- **Outcome:** supported. The low-degree replay certificate is
+  `9fef9c63a9e75f1ec58af7e33551761a49078f34ba413c001b1b4a5524ea06e6`;
+  its saturated resultants are nonzero in both tested nonproportional
+  families. The all-multiplicity Lean terminal passed governed ratification
+  with closure record
+  `e17e20a66f02bcebdcd2eb69f3caf15511099ee6a932e8e52c06cf0f3958d125`
+  and kernel-parity record
+  `c1007a82d7c3f5199128a4b07bfec5bf712688ee675bfc6af6e6914330e70b9e`.
+
+#### 2026-08-06 preregistered commuting-prolongation triangular bridge
+
+- **Eigenquestion:** on the invariant visible divisor `F=0`, do the source
+  and hidden parts of the normalized total prolongation commute and expose
+  `D_p^n q` with a nonzero leading coefficient?
+- **Candidate:** formalize the binomial family
+  `sum_{j<=n} choose(n,j) * jet(n-j) * D_p^[j](q)`. At a root of `q` of
+  multiplicity `m`, prove its `m`-th member evaluates nonzero from only
+  `p.eval y != 0`, `q != 0`, and `jet 0 != 0`; higher jets remain arbitrary.
+- **Discriminating test:** the proof must derive all lower-term vanishings
+  from the multiplicity kernel and isolate the `j=m` term with coefficient
+  exactly `jet 0`. A supplied triangular nonvanishing or restrictions on
+  higher jets fail the test.
+- **Claim boundary:** this governs the commuting-sum induction pattern. The
+  Jacobian adapter must still prove that its normalized coupled
+  prolongations specialize to this family, saturate the equilibrium locus,
+  and turn fiberwise inconsistency into a nonzero endpoint elimination
+  polynomial.
+- **Outcome:** passed with governed closure record
+  `49ec02a1439d2681231c6db5770ab0f7f78ecbcfea3c286544d4aa0de11f526c`
+  and kernel-parity record
+  `d8f68629c669c1d4bdfe41b46944466c9373a8c4f70fd707d01c1710932298ea`.
+
+#### 2026-08-06 preregistered finite prolongation escape certificate
+
+- **Eigenquestion:** can the point-dependent multiplicity index be bounded
+  uniformly so only finitely many prolongations are needed?
+- **Candidate:** over an algebraically closed characteristic-zero field, a
+  root `y` of nonzero `q` outside `p=0` supplies
+  `n=rootMultiplicity y q <= natDegree q`, and the `n`-th triangular
+  prolongation evaluates nonzero at `y` whenever the zeroth jet is nonzero.
+- **Discriminating test:** Lean constructs `n`, derives its degree bound from
+  the root multiset, and consumes the governed triangular terminal. It may
+  not accept an index selector or common-root exclusion callback.
+- **Claim boundary:** this excludes a common root outside the equilibrium
+  locus for the finite family `0..deg q`. It does not itself construct a
+  resultant/elimination polynomial in the visible endpoint or prove that the
+  actual coupled prolongations specialize to the abstract family.
+- **Outcome:** passed, over every characteristic-zero field rather than only
+  an algebraically closed one. The governed closure record is
+  `9089ac550986408cc211cf0e842673975df09f71be7e260363e7fbdc124c7be4`
+  and the kernel-parity record is
+  `8c144e3632c486b9479c1db29fb37a3f1dd5bcfd18dddc8c1bb1bbff4653c372`.
+- **Residual update:** coverage v40 replays 36 governed supports and exposes
+  exactly four semantic leaves. The new leaf is
+  `two_flow_actual_prolongation_endpoint_elimination`: identify the actual
+  normalized coupled tower with the triangular family on `F=0`, saturate
+  away from `p(Y)=0`, and construct a fixed nonzero endpoint polynomial.
+  The decomposition, coverage, and envelope digests are
+  `109ecb4eb228e64148566f8d028bd2129cad45ac440d7388f064dcedfb80c533`,
+  `53fa71975420fd0a65ed84992cf3431d1ae1c1fdbb64e6f1f21fd4ebb524ed5c`,
+  and
+  `bafdc3741baa75d9b770d5b1cfb328fb7b2c854f704b0ec6be3f0b15261b2fcc`.
+
+#### 2026-08-06 preregistered projection-fallacy inversion
+
+- **Eigenquestion:** does emptiness of the saturated finite regular fiber at
+  `F=0` imply a nonzero elimination polynomial in `F`, or can a dominant
+  invariant component avoid that fiber while projecting densely?
+- **Discriminating test:** verify the exact model `FY-1=0`, whose fiber at
+  `F=0` is empty but whose projection contains every `F != 0`; then verify
+  that the saturated coupled monomial relation
+  `F^(s-1)Y^r-aY^s=0` approaches the equilibrium locus for `s>r` and infinity
+  for `s<r`.
+- **Success criterion:** passing both models retracts unconditional endpoint
+  elimination and replaces it by an elimination-or-dominant-component
+  dichotomy.
+- **Kill conditions:** saturation makes the projection finite, a finite
+  regular point survives over `F=0`, or endpoint elimination follows without
+  a critical-specific invariant-component classification.
+- **Claim boundary:** the test audits the logical bridge from local finite
+  escape to global projection. It neither constructs a critical
+  factorization nor classifies its invariant components.
+- **Outcome:** passed. Exact lexicographic Groebner bases show zero
+  endpoint-elimination ideal for all three models, while their specialized
+  fibers at `F=0` are the unit ideal. The reciprocal component projects to
+  every nonzero endpoint; the coupled monomial components approach the
+  equilibrium locus for `(r,s)=(2,3)` and infinity for `(r,s)=(3,2)`. The
+  certificate is
+  `9693925138efb8db07be2afee0d65d7aba8d5b3d5864bfa976ad510eeea5b90e`.
+- **Residual update:** unconditional endpoint elimination is retracted.
+  Coverage v41 requires actual all-order prolongation specialization and a
+  separate selected dominant-component normalization/routing theorem. Its
+  decomposition, coverage, and envelope digests are
+  `260b17f13b3dcf19e659dbf3fe3bf5c281a8087e0d6c33a2ac670117f87c7a78`,
+  `c11c1e79e74d3dc773351019eff554b673a789d8b9cb2c7669a21353d2219b76`,
+  and
+  `98503afff81d831326c3d05886e797daa8516c14e61bacd733fe3d86106e7164`.
+
+#### 2026-08-06 preregistered invariant-divisor derivation specialization
+
+- **Eigenquestion:** can the all-order specialization of the concrete
+  prolongation tower be reduced to a reusable theorem that polynomial total
+  derivations commute with an invariant-divisor specialization?
+- **Candidate theorem:** construct
+  `D_hat(P)=d_coeff(P)+v*P'`; prove that `Polynomial.map phi` intertwines two
+  such total derivations from coefficient-derivation and velocity
+  compatibility; then prove the same equality for every iterate.
+- **Discriminating test:** specialize a nested polynomial ring at the visible
+  variable `F=0` when the visible velocity is divisible by `F`. The hidden
+  total derivation must reduce at every order to coefficient derivation plus
+  `D_p`, with no supplied tower equality.
+- **Kill conditions:** first order only, assumed iterate compatibility,
+  assumed specialized recurrence, or a field-only construction.
+- **Claim boundary:** success supplies the functorial derivation kernel. The
+  concrete coupled relation normalization, saturated ideal dichotomy, and
+  dominant-component routing remain separate.
+- **Outcome:** passed over every commutative ring. The theorem constructs the
+  coefficient-plus-polynomial-velocity derivation, proves compatibility under
+  a coefficient homomorphism, derives compatibility of every iterate, and
+  specializes the nested hidden derivation at the invariant visible divisor.
+  Its governed closure record is
+  `ac5df55300c07830f6fe1695cb3cb2bd178e9c104d05c27596efeebd8f2c69b4`,
+  kernel-parity record is
+  `acee04551c6b44a2a8ece9393c2ea5574cfa0dda5127bc87abe01e76a0703a49`,
+  and content-bound coverage receipt is
+  `c87bc1088d9a7820c05c1c631ff472e289fda2989850f6a14fb604ee933dc4fc`.
+- **Residual update:** the abstract all-order specialization mechanism is now
+  governed. The concrete normalized coupled relation and its identification
+  with the triangular family remain adapter-semantic and must not be inferred
+  from the generic theorem alone.
+- **Coverage replay:** v42 passes with 37 governed supports and four semantic
+  leaves. The former broad actual-specialization leaf is now a semantic
+  inference over the governed specialization kernel, governed triangular
+  kernel, and the narrower concrete-normalization leaf. The decomposition,
+  coverage, and envelope digests are
+  `5900dc7cba5fdd3f1a72a85ea12372a9258e227a403d2132a61575a90ce10757`,
+  `3b5948d6d99775b36754dd17ad2d35c6d5e2145096cbacf8990fc8161a9a929e`,
+  and
+  `a00489108443fef288c69aefa4b11d339968647406d8941eedd75bf6ad245a2e`.
+
+#### 2026-08-06 preregistered iterated-Leibniz coupled normalization bridge
+
+- **Eigenquestion:** can the actual divided tangent coupled-Julia relation be
+  identified with the governed triangular tower at every order without
+  accepting that recurrence from the caller?
+- **Candidate:** first prove the binomial iterated-Leibniz rule for an
+  arbitrary derivation of a commutative ring. Then construct
+  `R=q(F)p(Y)-F a0 q(Y)` and
+  `Rbar=F qTail(F)p(Y)-a0 q(Y)` from `q=F^2 qTail`, derive
+  `R=F Rbar`, and prove every `F=0` specialization of the total-prolongation
+  tower equals the triangular family with jets `D^k(-a0)`.
+- **Discriminating test:** the Lean terminal must derive the product
+  recurrence by induction from Leibniz and Pascal, construct both nested
+  polynomials, prove the factorization and base specialization, and consume
+  the governed invariant-divisor theorem. No assumed recurrence or supplied
+  specialization equality is permitted.
+- **Kill conditions:** finite-order verification, wrong binomial orientation,
+  a surviving `F qTail(F)p(Y)` term at `F=0`, or a premise already encoding
+  the actual tower.
+- **Claim boundary:** success pays the actual all-order specialization node.
+  The eliminant-or-dominant-component dichotomy and normalization/routing of
+  a dominant component remain separate.
+- **Outcome:** passed. A general commutative-ring derivation theorem derives
+  both binomial iterated-Leibniz forms; its governed record is
+  `b8942ecd8796511053655f85b068a5ab8394e3350630e5008d2d637f1f16cdbc`
+  and kernel-parity record is
+  `e2cc754610595297d71ed9a2b313d412db85cce98bd83f657befaf079229c8e2`.
+  The concrete coupled-Julia theorem constructs the quadratic tangent tail,
+  proves the exact visible factorization and special fiber, and identifies
+  every specialized iterate with the triangular family. Its governed record
+  is
+  `455ad189d87c9b11c1b6b2203557d7d82afca44b7757134d0eae6a40ccbefa0b`
+  and kernel-parity record is
+  `a1c70be8cd61dedc73bd62e00cbb16171868c52775fee575e5b989f9a885e8c0`.
+- **Residual update:** the all-order recurrence is no longer semantic. The
+  adapter must only instantiate the concrete differential coefficient field
+  and prove tangent coefficients, source-scalar binding/nonvanishing, and
+  coefficient constancy before the governed terminal applies.
+- **Coverage replay:** v43 passes with 39 governed supports, 37 bottom-up
+  covered nodes, eight governed inference rules, four semantic leaves, and
+  six uncovered semantic inferences. The all-order specialization inference
+  is governed; only its finite instantiation/equilibrium-routing child remains
+  semantic. The decomposition, coverage, and envelope digests are
+  `82391063fd1f69fc7ee94f37d27f3d1ef1504e5a1b4ab2e6f5a13819a07005e9`,
+  `0de09f36c98907ae04d41a83d0c3fa095d43836603bca6280438ef9502c24040`,
+  and
+  `6b1c3138dcfe7d7d0a8e4229f6cabcfb9ac7e698cbaa0a579dbaa413409ad7e6`.
+
+#### 2026-08-06 preregistered analytic Kummer-lift classification
+
+- **Eigenquestion:** after finite normalization writes the visible coordinate
+  as `unit*t^e`, must every analytic local automorphism lifting
+  `F -> lambda*F` be multiplication by one `e`-th root of `lambda`?
+- **Candidate theorem:** from analyticity, fixed zero, nonzero derivative,
+  positive `e`, nonzero `lambda`, and the germ identity
+  `lifted(t)^e=lambda*t^e`, construct `mu != 0` with `mu^e=lambda` and derive
+  `lifted(t)=mu*t` as a germ.
+- **Discriminating test:** derive analytic order one and an analytic unit
+  quotient, cancel the power identity only on the punctured germ, extend it
+  across zero by continuity, and prove local root rigidity using the
+  difference-of-powers factor. No root or linear form may be supplied.
+- **Kill conditions:** assumed multiplier, finite-jet checking, missing root
+  equation, or an unproved division at the ramification center.
+- **Claim boundary:** success classifies a normalized local lift. It does not
+  construct normalization, the lifted monodromy, a global covering, or the
+  equilibrium/infinity/proportional routing of the selected component.
+- **Outcome:** passed. The Lean theorem constructs the multiplier and its
+  root equation after deriving analytic order one, punctured cancellation,
+  continuous extension across the center, and local root rigidity. Governed
+  record:
+  `b2c0303e108228cdabb399f493680c942e5309fec8b68dc0ff3d08ef380c1a53`;
+  kernel parity:
+  `d2b34c49d719d6ef6f9131dba952363ae75f11c929a68a568b68b2a0afb5f712`;
+  content-bound receipt:
+  `28a3c3f934810f093e2fc0fbbd8231095e23e40d56919ba43ad3354dc4f04552`.
+- **Residual update:** coverage v44 has 40 governed supports and 38
+  bottom-up-covered nodes. The dominant-component leaf is narrowed to the
+  construction of its finite normalization, lifted power-equivariant action,
+  and compatible boundary carrier. Decomposition, coverage, and envelope:
+  `69868626edaad76429180f88c680b279adae6d395a956b3c68809e5dbefdccf1`,
+  `2e60775b2aa89d07ad6e30293b0b68b4ae0702be768e14267f0e84dcf5366f85`,
+  and
+  `a4679f5be30e98498ba5242f17876c1c5ffeee1d2a4f791902acd39edda8d2e2`.
+
+#### 2026-08-06 preregistered separated-polynomial branch valuation
+
+- **Eigenquestion:** does a normalized meromorphic branch of
+  `F*u*p(Y)=a0*q(Y)` have any local boundary behavior beyond the exact
+  finite-equilibrium or infinity multiplicity balances?
+- **Candidate theorem:** for a finite branch `Y=beta+z`, derive
+  `e=r*(mult_q(beta)-mult_p(beta))`, strict multiplicity increase, and
+  `q(beta)=0`; for a pole branch, derive
+  `e=r*(deg p-deg q)` and strict degree decrease.
+- **Discriminating test:** both balances must follow from equality of
+  meromorphic orders plus the governed exact substitution-order theorem.
+  Neither balance, nor the orders of `p(Y)` and `q(Y)`, may be carrier data.
+- **Kill conditions:** wrong pole sign, omitted strict inequalities, zero
+  polynomials, zero scalar/unit, or assumptions already encoding the desired
+  valuation equations.
+- **Claim boundary:** success routes a supplied normalized meromorphic branch.
+  It does not construct normalization, the branch, lifted monodromy, or
+  global overlaps. Capability retrieval was lexical-only; the surfaced
+  filtered compilers do not implement analytic meromorphic-order transport,
+  while `FormalPolynomialMeromorphicOrder` is the reusable governing kernel.
+- **First-pass counterattack:** the initial Lean draft compiled but is not a
+  candidate for ratification. Its nonvanishing `qTail` unit excludes outer
+  generators with tangency order greater than two. It also assumed a nonzero
+  source scalar even though the separated relation and finite order should
+  derive that fact.
+- **Strengthened discriminating test:** absorb `F*qTail(F)` into a single
+  analytic coefficient of arbitrary positive exact order and remove the
+  nonzero-scalar premise. Both finite and pole carriers must first derive
+  `a0 != 0`, then derive the exact multiplicity/degree balance. Retaining
+  either rejected premise kills the strengthened candidate.
+- **Outcome:** passed. The strengthened Lean terminal derives scalar
+  nonvanishing and both exact balances from the separated relation. Governed
+  record `e95beaa9fd0fad531eff65148617cdd474cc79f385e8d08dda9273389dcd431a`;
+  kernel parity `7b2009b293eb040c03a6cc75964cda070fc5218d60b335d26b3ad8db6fea0161`;
+  content-bound receipt
+  `e5e299636988d347285de47fa53d50ad0b58669e4a7e7721109b5cc9a3ee67f7`.
+  Coverage v45 passes with 41 governed supports, 39 bottom-up-covered nodes,
+  four semantic leaves, and seven semantic inferences. Its decomposition,
+  coverage, and envelope digests are
+  `d9ace43ea98ed9fdda6799685376a04ff4b38a6c4ec517096cd9ac399fad0955`,
+  `9137254e11e6ce332b4cee70b94ed820318212dfd65bc87c6cf2825d6f53fa68`,
+  and
+  `a441a6bb7ed15ddc1003a32c65612ca7d2ad66635305c333ae42a0bfa7885b9e`.
+
+#### 2026-08-06 preregistered scalar-free all-order Julia specialization
+
+- **Eigenquestion:** is `a0 != 0` mathematically required for construction
+  and all-order specialization of the normalized coupled-Julia relation, or
+  is it only a later regular-branch condition?
+- **Candidate theorem:** from tangent coefficients, the source scalar
+  binding, and coefficient constancy of `p,q`, construct the tangent tail,
+  exact normalized relation, visible factor, special fiber, invariant
+  divisor, and every triangular prolongation for arbitrary `a0`.
+- **Discriminating test:** the terminal must compile and ratify with no
+  scalar-nonzero premise or conclusion. The case `a0=0` is the sharp
+  signature adversary; no division or hidden branch split may occur.
+- **Kill conditions:** a nonzero scalar in any input carrier, a theorem that
+  only repackages the old terminal and therefore still consumes its nonzero
+  premise, or loss of any all-order conclusion.
+- **Claim boundary:** success narrows the finite instantiation leaf. It does
+  not prove the actual tangent/constancy rows, route the zero-scalar case,
+  normalize a dominant component, or construct factor-loop continuation.
+- **Capability audit:** semantic retrieval was unavailable; lexical results
+  surfaced the coverage and filtered-obstruction compilers but no matching
+  algebraic theorem. The candidate reuses the governed coupled-Julia helper
+  lemmas and adds no `src/ztare` primitive.
+- **Outcome:** passed. The new terminal directly reuses the constructive
+  helper lemmas and preserves every all-order conclusion for arbitrary
+  `a0`. Governed record
+  `1fd61139d56282c44089c43943960ba28990fe7c4ca626718d4bf17e92139b26`;
+  kernel parity
+  `b2936474b087d8b9dc57f3cd90c40b3496bbac5da6a70884fb1b01d3bf24cdab`;
+  content-bound receipt
+  `a31da2183e7d0dc6be267051697204e6ab36f943fb7f7f83f28d078a13a61d6b`.
+  Coverage v46 removes scalar nonvanishing from the actual-relation semantic
+  leaf. Its decomposition, coverage, and envelope digests are
+  `38e1bc8e28cbe99fc13217c2712c32b3643f3b906311a4c5b61091042fa905eb`,
+  `a221941348384f2c61ed74f89d4f58d27eee8fa0e6bdb56b19cbc31e1fa40d71`,
+  and
+  `ec7b246a574afb54ccb82c75e90e9c88a8c33f0641995eb871def097fc472878`.
+
+#### 2026-08-06 preregistered analytic algebraic-branch boundary trichotomy
+
+- **Eigenquestion:** can a selected punctured analytic root of a
+  degree-bounded analytic polynomial family be routed exhaustively to a
+  constant finite equilibrium, a nonconstant finite branch of exact positive
+  order, or a pole branch of exact negative order without accepting hidden
+  meromorphicity or hidden order as input?
+- **Candidate theorem:** for the separated family
+  `visible(t)*p(Y)-scalar*q(Y)`, use the governed analytic-root selector to
+  derive meromorphicity, construct the constant/finite/pole trichotomy,
+  preserve germ overlap with the selected branch, assemble the existing
+  finite or pole relation carrier, and invoke its governed valuation result.
+- **Discriminating test:** the terminal must construct positive natural
+  finite/pole orders and an analytic reciprocal in the pole case. The locally
+  constant case must remain separate and derive a root of `p` or `q`.
+- **Kill conditions:** supplied meromorphicity or hidden order, a carrier that
+  stores a desired balance, loss of selected-branch overlap, or omission of
+  the locally constant case.
+- **Claim boundary:** success is local after a selected single-valued
+  algebraic branch is supplied. Global component normalization, monodromy
+  lifting, loop continuation, and global overlap remain outside the theorem.
+- **Capability/prediction:** semantic retrieval was unavailable; source audit
+  selected the existing analytic-root, meromorphic-chart, and valuation
+  kernels. Scratch forecast `scratch_84ae8c4bc868995d` records `p=0.72` for
+  compilation, ratification, and residual narrowing.
+- **Outcome:** passed. The theorem derives the separated relation from root
+  membership, constructs the constant/finite/pole trichotomy, extracts exact
+  positive natural orders in both nonconstant cases, preserves selected-branch
+  germ overlap, and invokes the governed valuation carriers. Governed record
+  `2dba25c7e49e10d69fd7079b255909a3b14949f1cd161c08032898e5354960d9`;
+  kernel parity
+  `3043417fdff95b2e5a81e7e0069cb3a69525651ea49eb162ab4f6bc0d2ef2f77`;
+  content-bound receipt
+  `e0972768c378472a259c30b7e8f0819df70802344dfba0e3fb17047e932479be`.
+  Scratch forecast `scratch_84ae8c4bc868995d` resolved success. Coverage v47
+  has 42 governed supports and 40 bottom-up-covered nodes. Its decomposition,
+  coverage, and envelope digests are
+  `04e102bf922f69251d0f752ab9647472a8cc2a2f3acbd966e6b6945b7b83a8dc`,
+  `7aa43f05573ed0a28e8af4ee5ec4f8a7b9e5e8136e855318121811bcaedd9251`,
+  and
+  `3894e79063eb6b838cb70d0709f94f83b66a8ab014cc761c3e9a6decad5c43c3`.
+
+#### 2026-08-06 preregistered raw separated-branch assembly
+
+- **Eigenquestion:** does a selected punctured analytic branch satisfying
+  `visible(t)*p(branch(t))=scalar*q(branch(t))`, with positive visible order,
+  construct the degree-bounded analytic root carrier needed by the v47
+  boundary theorem without an active-coefficient or normalization premise?
+- **Candidate theorem:** define the exact polynomial family
+  `C(visible(t))*p-C(scalar)*q`, prove its coefficient analyticity and degree
+  bound, derive root membership from the relation, and prove an active
+  coefficient by splitting on `scalar=0` before invoking the governed v47
+  boundary trichotomy.
+- **Discriminating test:** the scalar-zero branch must use eventual
+  nonvanishing of the positive-order visible germ and a leading coefficient
+  of `p`; the scalar-nonzero branch must derive `visible(center)=0` and use a
+  leading coefficient of `q`. No activity witness may be supplied.
+- **Kill conditions:** a stored degree-bounded root carrier, stored active
+  coefficient, hidden meromorphicity/order/classification, loss of the exact
+  selected branch, or a nonzero-scalar premise.
+- **Claim boundary:** success removes local polynomial-family packaging from
+  the dominant-component leaf. It does not construct selected continuation,
+  global normalization, loop monodromy, or overlap with the original factor.
+- **Capability/prediction:** semantic retrieval was unavailable. Direct source
+  audit found and will reuse the degree-bound pattern in
+  `FormalAnalyticCrossJuliaMeromorphic` and the governed root selector. Scratch
+  forecast `scratch_d732e433290a0b40` records `p=0.78` for focused compilation,
+  ratification, and residual narrowing.
+- **Outcome:** passed. The Lean terminal constructs the full degree-bounded
+  analytic root carrier and v47 boundary outcome from the raw selected branch.
+  It derives activity in both scalar cases and preserves the original branch.
+  Governed record
+  `c41ea283911e4d1c4dfe7e6abb8ebcd7cdd79e129ecb7ba626da94c1566d0757`;
+  kernel parity
+  `662f74a7a84338104eeb282f5dd89ae0cb49ee1ae87fd56f9cb0be455bc5046e`;
+  content-bound receipt
+  `cfd0c2aa47ee55f71e52c2db9a82d964d9a9a387cd4286a84d2c959736b3e832`.
+  Scratch forecast `scratch_d732e433290a0b40` resolved success. Coverage v48
+  replays 43 governed supports and covers 41 nodes bottom-up. Its
+  decomposition, coverage, and envelope digests are
+  `f2b6cafc36d33e3cae58020c7a6fd96c9d8336bf0c8350c3ac789d65785c92f0`,
+  `8e0ca6f61b2d659ee1e66b245791f764dbb34a7079785a4796cb1fc2ad2b8a3d`,
+  and
+  `2708dbff611a5c9fc92f94c77ebc0faa0d3d9e17655a6b6c9853ac9c7cdec209`.
+
+#### 2026-08-06 preregistered finite-endpoint ODE continuation
+
+- **Eigenquestion:** does every punctured holomorphic solution of
+  `y'=c(z)p(y)` with a finite endpoint limit extend analytically through the
+  endpoint while preserving the ODE there?
+- **Candidate theorem:** update the branch by its finite limit, derive
+  continuity and analyticity by removable singularity, transfer the ODE on
+  the punctured germ, and extend the derivative identity across the center by
+  continuity.
+- **Discriminating test:** construct the extension, exact punctured overlap,
+  endpoint value, and full-neighborhood ODE. No extension, boundedness,
+  center derivative, or regular-state premise may be supplied.
+- **Kill conditions:** an output containing only finite analytic extension,
+  loss of the ODE at the center, assuming `p(state) != 0`, or replacing the
+  finite-limit premise with the desired analytic continuation.
+- **Claim boundary:** success proves the finite-limit closedness step. Maximal
+  path construction, existence of the finite limit, escape compactness, and
+  reciprocal infinity passage remain separate.
+- **Capability/prediction:** semantic retrieval was unavailable. The route
+  reuses the punctured-extension and analytic-derivative kernels. Scratch
+  forecast `scratch_74031138ae2f3f1a` records `p=0.84` for compilation and
+  governed ratification.
+- **Outcome:** passed. The terminal constructs an analytic center-updated
+  extension, preserves exact punctured overlap and the finite endpoint value,
+  and proves the controlled-polynomial ODE on a full neighborhood. Governed
+  record
+  `59606a1a955c9c7de78db4abb65a374b4c485ca1984b199b18be661045fe67fa`;
+  kernel parity
+  `8f8831e7ad1882b9cfd797cc1ea255e943c3183eba7682befdb2b5b2bd933814`;
+  content-bound receipt
+  `4a49afa18c8bd78e47cf080e3ffd8121bd3a1b44b851a97c156e5f2b4dffaff6`.
+  The remaining continuation question is maximal-path construction plus the
+  endpoint compactness/escape alternative; finite-limit closedness is now
+  governed.
+- **Coverage replay:** v49 passes with 44 governed supports, 42 bottom-up-
+  covered nodes, four semantic leaves, and eight semantic inferences. The old
+  selected-factor continuation leaf becomes an inference whose only semantic
+  child is the maximal-path/escape carrier. Decomposition, coverage, and
+  envelope:
+  `f84f452c6f35927543db6aeaceb6a1319126e03f9c1624763c9b3827fa354555`,
+  `ebc80ffb8e3c84749b12ddc2119f062f1307a3f5c4409f3324a760384fa459bd`,
+  and
+  `489e9c13c9e95a93187fc2a0f11ff80d9ae6d7d6b97ed30de5b167d177da363f`.
+
+#### 2026-08-06 preregistered bounded-derivative endpoint compactness
+
+- **Eigenquestion:** does every differentiable trajectory on a finite
+  half-open interval with uniformly bounded derivative have a finite endpoint
+  limit in an arbitrary complete real normed space?
+- **Candidate theorem:** use the mean-value theorem to construct a Lipschitz
+  restriction on `Ioo a T`, send the Cauchy left-neighborhood filter at `T`
+  through that uniformly continuous restriction, and use completeness to
+  construct the endpoint state.
+- **Discriminating test:** the terminal must conclude
+  `exists state, Tendsto trajectory (nhdsLT T) (nhds state)` from only
+  `a<T`, interval differentiability, and one uniform derivative bound.  The
+  codomain must remain an arbitrary complete real normed space.
+- **Kill conditions:** a supplied endpoint state, limit, Cauchy property,
+  compactness callback, or convergent subsequence; a sequence-only
+  conclusion; or specialization to the complex polynomial-flow case.
+- **Claim boundary:** success supplies endpoint compactness after a speed
+  bound is known.  Deriving that bound from bounded controlled-polynomial
+  motion, constructing a maximal lift, and routing unbounded motion through a
+  reciprocal chart remain separate.
+- **Capability/prediction:** semantic retrieval was unavailable.  Direct
+  Mathlib inspection selected its derivative-to-Lipschitz and complete-Cauchy
+  filter theorems; no new analytical utility is introduced. Scratch forecast
+  `scratch_964544973b3602d9` records `p=0.88` for focused compilation,
+  ratification, and mechanical residual narrowing.
+- **Outcome:** passed. The terminal constructs the left-endpoint limit in any
+  complete real normed codomain from interval differentiability and a uniform
+  derivative bound. It carries no endpoint state, Cauchy witness, bounded-
+  image premise, or selected subsequence. Governed record
+  `9bcdf8d78a402b45c78d2570e29386625f4aa855e840d8e863b4c73661abb421`;
+  kernel parity
+  `a087563bedaf4fccd761b5ea77be5940110c956dfb69e32df201542474f9842d`;
+  content-bound receipt
+  `af1b0f0210f871aa32ff741e1baa5ce23d0ea186b5188d5925ad5357051e12ed`.
+  Scratch forecast `scratch_964544973b3602d9` resolved success. Coverage v50
+  has 45 governed supports, 43 bottom-up-covered nodes, four semantic leaves,
+  and nine semantic inferences. Its decomposition, coverage, and envelope
+  digests are
+  `d539231d949cafdba63f7a9e14185a92361ac9576f89b5ab69a94189bf913884`,
+  `8f19048cdd37b796cdd13c1d44528f18a4cbdb56ee9a98573101aa22638978f7`,
+  and
+  `88bf8d42e46b00dee8885932c1226fb71916a378e1e9be599baeaa1a617bb708`.
+
+#### 2026-08-06 preregistered bounded controlled-polynomial endpoint compactness
+
+- **Eigenquestion:** does a complex trajectory satisfying
+  `y'=driver*p(y)` on a finite half-open real interval acquire a finite
+  endpoint limit from uniform bounds on the driver and state alone?
+- **Candidate theorem:** construct the explicit polynomial evaluation bound
+  `sum i in p.support, nnnorm(p.coeff i)*R^i`, derive a uniform derivative
+  bound from the ODE, and invoke the governed v50 complete-space endpoint
+  theorem.
+- **Discriminating test:** the terminal must output both the explicit speed
+  bound and a finite `nhdsLT` limit. The carrier may supply only the ODE,
+  driver bound, state bound, and finite interval.
+- **Kill conditions:** a supplied derivative or evaluation bound, endpoint
+  state, endpoint limit, Lipschitz/Cauchy/compactness callback, exclusion of
+  constant or zero polynomials, or an unbound existential speed constant.
+- **Claim boundary:** success turns bounded controlled-polynomial state into
+  finite-limit compactness. Maximal lift construction and the passage from
+  unbounded state to a reciprocal analytic escape chart remain separate.
+- **Capability/prediction:** semantic retrieval was unavailable. Direct
+  Mathlib inspection selected finite polynomial evaluation and norm-sum
+  primitives plus the governed v50 theorem. Scratch forecast
+  `scratch_3b4e7ca8928d3bde` records `p=0.76` for compilation, ratification,
+  and coverage narrowing.
+- **Outcome:** passed. The terminal constructs the exact coefficient-sum
+  polynomial evaluation bound, derives the uniform derivative bound from the
+  ODE and driver/state radii, and constructs the finite endpoint limit. No
+  derivative or evaluation bound is carrier input. Governed record
+  `01b18c94801a24c0cbef421dda8c279e8168e14d94d9c751aee46daf6ed737db`;
+  kernel parity
+  `213d59d16705027030b58194c5a62247db08ca0aee598fffbd2b4001981196e9`;
+  content-bound receipt
+  `55bb145bb04cc6f05ed8b301054c1f44189da4f628cdd488f6a169ea2b47f1a5`.
+  Scratch forecast `scratch_3b4e7ca8928d3bde` resolved success. Coverage v51
+  has 46 governed supports, 44 bottom-up-covered nodes, four semantic leaves,
+  and ten semantic inferences. Its decomposition, coverage, and envelope
+  digests are
+  `7d2b7266c44cb9cddaac79ade0a822a3d356b7a0510b43a31df2d9e39fc0b4b6`,
+  `751972381243875f8daab5b5ccb5cfb42c1fc7831cd412b42728063d3bb05b02`,
+  and
+  `457b902e4f5717877031b7e415877db20bad3fc1c422a22b66df8f8dbe3472d9`.
+
+#### 2026-08-06 preregistered norm-escape reciprocal endpoint
+
+- **Eigenquestion:** can a pathwise complex norm escape at a finite left
+  endpoint be converted, without added ODE hypotheses, into the exact
+  reciprocal endpoint limit and eventual nonvanishing fields?
+- **Candidate theorem:** transport norm escape through the cobounded filter
+  and the inversion-at-infinity theorem.
+- **Discriminating test:** construct reciprocal convergence to zero and
+  eventual nonvanishing of the original trajectory from only
+  `Tendsto (norm ∘ trajectory) (nhdsLT T) atTop`.
+- **Kill conditions:** any stored reciprocal/nonvanishing premise, a
+  sequence-only result, or an explicit pointwise growth schedule replacing
+  filter convergence.
+- **Claim boundary:** this is the topological chart-change edge only. The
+  maximal-lift, escape, holomorphic-germ, and infinity-sheet entry steps remain
+  separate obligations.
+- **Capability/prediction:** semantic primitive retrieval was unavailable.
+  Direct Mathlib inspection found the cobounded norm equivalence and inversion
+  limit, so no new general analytical machinery is proposed. Scratch forecast
+  `scratch_488cb8dd4d412dc7` records `p=0.91`.
+- **Outcome:** passed. The arbitrary-filter, arbitrary-nontrivially-normed-
+  field terminal constructs eventual nonvanishing and reciprocal convergence
+  to zero from norm escape alone. Governed record
+  `67e0c54d559d3425a3156e43f04dd5cd41c91abc54b4daaee8460c8f93ea8af7`;
+  kernel parity
+  `ec078158444523cebba177e996852ad36543fd1200a551cd59e5e004bce54475`;
+  content-bound receipt
+  `4ce398507c2ed80e4f370afa548a06f742f87376a5ed8de61d3ad8d652acf934`.
+  Scratch forecast `scratch_488cb8dd4d412dc7` resolves success. Coverage v52
+  has 47 governed supports and 45 bottom-up-covered nodes. It splits the
+  remaining escape obligation into maximal-lift norm escape and the selected
+  holomorphic reciprocal-germ upgrade; neither is claimed by this theorem.
+
+#### 2026-08-06 preregistered uniform-restart escape alternative
+
+- **Eigenquestion:** does restriction-stable local uniqueness plus a restart
+  time uniform on every bounded state ball imply finite endpoint extension or
+  norm escape for an abstract trajectory category?
+- **Candidate theorem:** a bounded return close enough to the endpoint starts
+  a solution across it; uniqueness on the open overlap identifies that
+  restart with the selected trajectory. If no extension exists, the negation
+  of every terminal norm threshold is impossible, yielding norm convergence
+  to infinity.
+- **Discriminating test:** construct both the dichotomy and the maximal/no-
+  extension corollary without a supplied bounded-return time or restart-
+  agreement field.
+- **Kill conditions:** any stored endpoint extension, escape, eventual norm
+  lower bound, selected return point, or agreement of the restart with the
+  original trajectory; restart radii that shrink with the restart point.
+- **Claim boundary:** the theorem is abstract continuation logic. The selected
+  polynomial-flow adapter must still construct its maximal lift, uniformly
+  restartable solution category, and the separate holomorphic reciprocal
+  chart.
+- **Capability/prediction:** semantic primitive retrieval was unavailable;
+  direct filter/order audit found the necessary existing topology lemmas.
+  Scratch forecast `scratch_cbada169b873247e` records `p=0.72`.
+- **Outcome:** passed. `FormalUniformRestartEndpointEscape` constructs the
+  finite-extension-or-norm-escape dichotomy for an arbitrary normed state
+  space and abstract solution predicate, then derives norm escape from the
+  absence of extension. The carrier stores neither alternative, no bounded
+  return, and no restart-agreement field. Governed record
+  `1c7573b2d50b3d7e3de72d9c0c9a2aa1dfb91c2ee67dfa782d179e93d1577391`;
+  recompilable closure source
+  `a709f3189b17032155e5cbb3a9c0b32167850d7dc254446c4a589db45797119b`;
+  kernel parity
+  `518bbfa31e9b38e284595e7d13c18ad67f82a79ef98b019707d44c6ccbb886b3`;
+  content-bound receipt
+  `ca90dc44704eae98a224ba6c95fe69289c89b2cc241021c795f1b14e5fda1c07`.
+  Scratch forecast `scratch_cbada169b873247e` resolved success. Coverage v53
+  has 48 governed supports, 46 bottom-up-covered nodes, 40 directly ratified
+  nodes, five semantic leaves, and twelve semantic inferences. The maximal-
+  lift alternative now owes only the selected maximal solution carrier,
+  restriction-stable local uniqueness, uniform bounded-ball restart, the
+  controlled-polynomial bindings, and nonextendability. Its decomposition,
+  coverage, and envelope digests are
+  `e7d52b4144ff91bfb5e4d95452e55434c6cb0aeeb8bb0905d355172434057a68`,
+  `d1f5da0d9c83ab6313e431bb955df6f20f193662115e1a3a83b1a5629e4e3a5b`,
+  and
+  `81c7b86f7a2d8ad278cc475676e24093b0c5a72b2187382e90ff73e88feba11f`.
+
+#### 2026-08-06 preregistered bounded-state uniform restart
+
+- **Eigenquestion:** for a continuous globally bounded complex driver and a
+  fixed complex polynomial, can one restart time be constructed uniformly
+  over every real center and every initial state in a prescribed norm ball?
+- **Candidate theorem:** put polynomial evaluation on the compact state ball
+  of radius `R+1`, construct its real Lipschitz constant and explicit norm
+  bound, and use the one-unit margin in a Picard--Lindelof rectangle to choose
+  a time radius independent of the center and state.
+- **Discriminating test:** construct `epsilon>0` before quantifying over
+  restart centers and initial states, and return an exact solution of
+  `y'=driver(t)*p(y)` on the corresponding open symmetric interval.
+- **Kill conditions:** a supplied local solution, restart radius, Lipschitz
+  constant, Picard witness, or state/center-dependent time; loss of constant,
+  zero, or equilibrium cases; or only closed-interval differentiability.
+- **Claim boundary:** this addresses uniform local restart only. The selected
+  maximal lift, overlap uniqueness, nonextendability, factor-loop adapter,
+  and holomorphic reciprocal-germ upgrade remain separate.
+- **Capability/prediction:** semantic primitive retrieval was unavailable.
+  Direct source audit found the existing pointwise holomorphic germ theorem,
+  the governed coefficient-sum bound, and Mathlib's Picard--Lindelof engine.
+  No new apparatus primitive is proposed. Scratch forecast
+  `scratch_67de62bfa93f8379` records `p=0.67`.
+- **Outcome:** passed. The kernel constructs one positive restart time per
+  bounded state ball uniformly over all real centers and complex initial
+  states, including equilibrium and zero/constant-polynomial cases. It
+  derives the polynomial Lipschitz and field bounds and supplies no solution
+  or Picard witness as input. Governed record
+  `39f57f7f8537e0dcfe07130160bb26c3f00f1685a74d29d6e7b4de5adfd62251`;
+  kernel parity
+  `e6490bb04a535ae9466605d9a5e405a5a190860d62d165851e014aaa0543d6e2`;
+  content-bound receipt
+  `eea30edabd7b12f683d878baf193f806cd4ba9db05d2be38c52941d11db68da9`.
+  Scratch forecast `scratch_67de62bfa93f8379` resolved success. Coverage v54
+  has 49 governed supports, 47 bottom-up-covered nodes, 41 directly ratified
+  nodes, five semantic leaves, and thirteen semantic inferences. Uniform
+  restart is discharged; the narrowed continuation carrier owes maximal-lift
+  construction, bounded-driver adaptation, overlap uniqueness,
+  nonextendability, and the exact selected-flow bindings.
+
+#### 2026-08-06 preregistered controlled-polynomial overlap uniqueness
+
+- **Eigenquestion:** do two solutions of one complex controlled-polynomial
+  ODE, equal at one anchor, agree on their entire preconnected real overlap
+  from a global driver bound alone?
+- **Candidate theorem:** compactify the interval from anchor to an arbitrary
+  target, derive a common trajectory-image radius, bound the polynomial
+  derivative on that ball by its coefficient sum, and invoke the correctly
+  oriented Gronwall uniqueness theorem.
+- **Discriminating test:** derive complete-domain `EqOn` from preconnectedness,
+  anchor equality, both ODE laws, and the driver bound; no uniqueness,
+  solution bound, Lipschitz witness, analyticity, or fixed compact interval
+  may be supplied.
+- **Kill conditions:** only local equality, a globally Lipschitz polynomial
+  premise, a state-bound field, loss of equilibrium or constant cases, or a
+  hidden continuation callback.
+- **Claim boundary:** this can discharge the uniqueness law in the selected
+  maximal-lift carrier. Maximal-lift construction, bounded loop-driver
+  adaptation, nonextendability, branch bindings, and holomorphic reciprocal
+  compactification remain.
+- **Capability/prediction:** repository audit found local autonomous and
+  holomorphic uniqueness neighbors but no matching complete time-dependent
+  overlap theorem. The candidate reuses interval Gronwall and the governed
+  coefficient bound; no new apparatus primitive is proposed. Scratch forecast
+  `scratch_b1cedce08fcf638a` records `p=0.64`.
+- **Outcome:** passed. The kernel derives complete preconnected-domain
+  equality for two bounded-driver controlled-polynomial trajectories from
+  their pointwise ODE laws and one anchor equality. It constructs compact
+  state bounds and oriented Gronwall comparisons internally. Governed record
+  `9f35200f054a5351365e5b287f9868fd031343dc7eca98ba425527a8efc79da6`;
+  kernel parity
+  `24ca35b345f1888a1550e93df137e5296a526315def0e47f5ca6610e5b031750`;
+  content-bound receipt
+  `419f63bac8ac57b8c6c1ba880f8d34709e372ff26bc7006f012210bbed8c68ed`.
+  Scratch forecast `scratch_b1cedce08fcf638a` resolved success. Coverage v55
+  has 50 governed supports, 48 bottom-up-covered nodes, 42 directly ratified
+  nodes, five semantic leaves, and fourteen semantic inferences. The selected
+  continuation carrier no longer owes overlap uniqueness.
+
+#### 2026-08-06 preregistered canonical maximal polynomial trajectory
+
+- **Eigenquestion:** do governed restart and overlap uniqueness construct the
+  canonical maximal solution through arbitrary bounded-driver initial data?
+- **Candidate theorem:** union every open preconnected candidate domain through
+  the anchor, select a representative candidate at each time, use complete
+  overlap uniqueness for choice independence, and transport the local ODE to
+  the union curve.
+- **Discriminating test:** return the open preconnected maximal domain, exact
+  initial value and ODE, plus domain inclusion and `EqOn` for every candidate,
+  with no maximal object, global solution, Zorn witness, or compatibility law
+  supplied.
+- **Kill conditions:** only a maximal-domain existential, postulated union ODE,
+  global state boundedness, or excluded equilibrium/constant cases.
+- **Claim boundary:** selected loop-driver/initial-data adaptation, exact
+  endpoint nonextension and gluing, selected branch bindings, and reciprocal
+  holomorphic compactification remain.
+- **Capability/prediction:** semantic retrieval found no matching maximal-ODE
+  primitive. The union-of-compatible-germs proof reuses v54 and v55 and adds
+  no apparatus utility. Scratch forecast `scratch_01b0071f5e6c1e80` records
+  `p=0.56`.
+
+#### 2026-08-08 preregistered differential-germ evaluation kernel
+
+- **Eigenquestion:** does nested polynomial evaluation into an arbitrary
+  differential target transport the stored bivariate derivation, all of its
+  iterates, and its finite derivative-prefix ideal from only coefficient-map
+  compatibility and the exact visible and hidden generator ODEs?
+- **Candidate theorem:** prove the moving-point chain rule for
+  `polynomialTotalDerivation` by polynomial induction, apply it first to the
+  visible coefficient ring and then to the hidden polynomial ring, and
+  derive every prefix-generator vanishing from one initial relation equality.
+- **Discriminating test:** no positive-iterate vanishing or arbitrary-
+  polynomial substitution law may be an input; the exact stored hidden
+  velocity must survive gcd saturation; and nested hidden-velocity evaluation
+  must be derived. A focused build must expose first-order, iterate, and ideal
+  consequences.
+- **Kill conditions:** assuming the desired chain rule, conflating derivation
+  velocity with saturated relation generators, restricting the kernel to the
+  July rational functions, or storing the derivative-prefix conclusion.
+- **Claim boundary:** success is a substrate-neutral algebraic bridge. The
+  Jacobian adapter still owes a local differential target, coefficient
+  embedding, common-factor cancellation on the selected germs, and the
+  initial saturated relation equality.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback found no matching evaluation kernel. Scratch forecast
+  `scratch_ae89f6517655c68d` records `p=0.78`. Full pencil and attack ledger:
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`,
+  v81.
+
+#### 2026-08-08 preregistered localization derivation extension
+
+- **Eigenquestion:** can an integer-linear derivation be extended uniquely
+  across any commutative localization by extending its square-zero graph?
+- **Candidate theorem:** map `a` to `(a,da)` in the trivial square-zero
+  extension of the localization, lift that ring homomorphism through the
+  localization universal property, take its second projection, and prove the
+  first projection is the identity. Use localization extensionality again to
+  prove uniqueness, then specialize formal power series to Laurent series.
+- **Discriminating test:** construction, exact algebra-map binding, and
+  uniqueness must build without selected fraction representatives; the
+  Laurent specialization must use Mathlib's existing fraction-ring instance.
+- **Kill conditions:** a caller-supplied extension, quotient well-definedness
+  premise, uniqueness only among constructor outputs, or a new coefficientwise
+  Laurent-product framework.
+- **Claim boundary:** this supplies the differential target category. The
+  rational-derivative embedding and the two selected analytic flow germs
+  remain adapter obligations.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback found the components but no assembled primitive. Scratch forecast
+  `scratch_3d8c976ebaaa13ca` records `p=0.69`. Full pencil: v82 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered differential Laurent branch obstruction
+
+- **Eigenquestion:** does the canonical differential Laurent carrier turn one
+  selected tangent formal branch into an immediate contradiction to every
+  nonzero finite visible eliminant?
+- **Candidate theorem:** construct the coefficientwise derivation on formal
+  power series, add the linear visible connection `(L X) d/dX`, extend it by
+  the localization kernel, transport one initial saturated relation through
+  all stored derivative iterates, and contradict `e(X)=0` using the canonical
+  polynomial embedding.
+- **Discriminating test:** the target connection and visible injectivity are
+  constructed; no iterate vanishing, eliminant root, whole rational-function
+  Taylor map, or visible-transcendence premise is accepted.
+- **Kill conditions:** an assumed target derivation, assumed positive iterate,
+  hidden use of a centered Taylor map on the coefficient field, or a theorem
+  that silently assumes the initial saturated relation or branch ODE while
+  claiming to construct the July adapter.
+- **Claim boundary:** the general theorem retains the initial saturated
+  relation and hidden ODE as explicit inputs.  It covers the selected
+  unramified tangent stratum only; actual Julia assembly, common-factor
+  cancellation, branch construction, and ramified/dominant strata remain.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback found nearby filtered-obstruction records but no assembled
+  connection.  Scratch forecast `scratch_d1a5144a794cf663` records `p=0.64`
+  (`PL-SCRATCH-fc5848261226`). Full pencil: v83 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered algebraic eigenvector Darboux exclusion
+
+- **Eigenquestion:** does a nonzero algebraic eigenvector of an Euler
+  differential connection force a Darboux minimal polynomial forbidden by
+  distinct-weight nonresonance?
+- **Candidate theorem:** differentiate the minimal-polynomial root equation,
+  derive divisibility by the Euler total derivative, collapse its support by
+  the existing filtered Darboux theorem, and contradict nonzero eigenvector
+  status. Then specialize every cross row to the certified critical rational
+  connection.
+- **Discriminating test:** minimal-polynomial Darboux divisibility, one-weight
+  collapse, and the final zero conclusion are derived; no loop, finite-cover,
+  Puiseux, or conjugate enumeration is supplied.
+- **Kill conditions:** caller-supplied invariant minimal polynomial, a new
+  residue callback at the critical boundary, or an algebraicity conclusion
+  claimed without the actual nonzero polynomial evaluation.
+- **Claim boundary:** success deletes the analytic finite-monodromy step after
+  `e(F)=0`. The factorization adapter still owes the two Julia rows, the
+  initial saturated relation, and differential evaluation on the actual
+  one-dimensional germ.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback surfaced existing filtered and differential components. Scratch
+  forecast `scratch_6c067648f74794e4` records `p=0.74`
+  (`PL-SCRATCH-564c3dd159bd`). Full pencil: v84 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered critical finite-prefix germ exclusion
+
+- **Eigenquestion:** does one initial coupled relation on the actual
+  differential germ plus the finite visible eliminant contradict the critical
+  visible eigenvector equation without analytic continuation?
+- **Candidate theorem:** transport the finite derivative-prefix ideal from the
+  initial relation, obtain `e(F)=0`, construct algebraicity of `F`, and invoke
+  the critical algebraic-eigenvector exclusion.
+- **Discriminating test:** no positive iterate, algebraicity, minimal
+  polynomial, loop, or orbit is input; the same nonzero eliminant supplies the
+  algebraicity witness.
+- **Kill conditions:** an unrelated algebraic witness, a stored all-order
+  vanishing callback, or a conclusion that hides the initial relation and ODE
+  premises.
+- **Claim boundary:** success composes the algebraic endgame. The selected
+  factorization still must construct the two ODEs and the initial saturated
+  relation on the actual differential germ.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback found no separate composite. Scratch forecast
+  `scratch_ecc520d9794961c4` records `p=0.86`
+  (`PL-SCRATCH-a3bb38a7ef6e`). Full pencil: v85 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+# H-GPSA-ACQUISITION-DERIVATIVE-SCHEMA-ISOMORPHISM-20260808-118 - Credit abstractions by later acquisition
+
+- **Status:** closed 2026-08-08 — zero conjectures admitted
+- **Axis:** cross-task memory identity / target-local lowering / delayed
+  acquisition derivative / meta-plastic selection
+- **Eigenquestion:** what invariant should cross a task boundary when a
+  task-credited motor episode is expected to reduce the cost of acquiring a
+  later non-equivalent skill?
+- **Hypothesis:** a typed conjecture transport between task-credited
+  generative skill search and biological schema consolidation will identify a
+  substrate-neutral causal abstraction distinct from either operation word.
+  Target lowering will require a prospective commuting witness, and the
+  abstraction will be selected only by its matched effect on later acquisition
+  cost.
+- **Discriminating test:** run Codex conjecture mode over the two frozen
+  fingerprints and require complete lowerings, prediction cards, kill
+  conditions, and prior-art inversion. Reject DreamCoder/LAPS library
+  compression, options, successor features, ordinary meta-learning, the
+  existing explicit operation-bijection transport, H117 macros, and H101/H102
+  kinetics unless a candidate supplies a distinct executable discriminator.
+- **Success criterion:** one surviving candidate defines persistent identity,
+  pre-outcome target lowering/refusal, a net acquisition derivative including
+  all relevant costs, a derivative-driven update to abstraction/morphism
+  selection, and one apparatus test not already owned by the compared systems.
+- **Kill condition:** zero survivors; copied source/task identity; known-system
+  recurrence; no commuting witness; no matched derivative; no update to future
+  search; or reliance on new ARC contact.
+- **Claim boundary:** a pass selects an algorithmic test only. It does not
+  establish biological fidelity, ARC transfer, catalytic learning, capability
+  acceleration, or literature novelty.
+- **Pre-registration:**
+  `h118_acquisition_derivative_schema_isomorphism_hypothesis.md`.
+- **Result:** the corrected `gpt-5.6-sol` xhigh dispatch returned three
+  schema-valid candidates. Manual disposition rejected the authority-gated
+  transducer and delayed-settlement loop as current-mechanism recurrences. The
+  applicability atlas was rejected against task-similarity kernel
+  meta-learning, limited-memory continual learning, transfer-gain selection,
+  and learning-progress curricula.
+- **Information gain:** the frozen ARC evidence has one independently
+  task-credited option episode and one successful initiation state. It cannot
+  identify a cross-task quotient or an applicability topology. Increase the
+  rank of independent task-credit positives before implementing another
+  persistent schema selector.
+- **Evidence:**
+  `h118_acquisition_derivative_schema_isomorphism_result.json` and
+  `h118_acquisition_derivative_schema_isomorphism_result.md`.
+
+# H-GPSA-INDEPENDENT-TASK-CREDIT-RANK-20260808-119 - Add a second positive game
+
+- **Status:** passed 2026-08-08
+- **Axis:** intervention-rank expansion / persistent controller / external
+  task boundary / trajectory authority
+- **Eigenquestion:** can an unchanged persistent `gpt-5.6-sol` max-effort
+  actor earn a level on a distinct ARC-AGI-3 game within 32 primitive actions?
+- **Hypothesis:** a direct persistent actor on `tu93`, with no injected skill,
+  carrier, sleep memory, or task knowledge, will cross at least one external
+  level boundary.
+- **Discriminating test:** run one subscription-resume session at max effort,
+  budget 32, while durably persisting every raw exchange and environment turn.
+- **Success criterion:** `levels_completed >= 1`, `status=level_gained`, and a
+  complete trace. This raises distinct task-credit game identities from one to
+  two.
+- **Kill condition:** zero levels at action 32, controller/transport failure,
+  or incomplete trajectory persistence.
+- **Claim boundary:** a pass supplies independent positive variation only. It
+  does not establish transfer, schema induction, acquisition savings,
+  compounding, broad ARC capability, or novelty.
+- **Pre-registration:** `h119_independent_task_credit_rank_hypothesis.md`.
+- **Result:** the unchanged persistent Sol-max actor gained two levels, at
+  actions 22 and 32. The append-only record contains 32 successful raw
+  exchanges, 32 turn checkpoints, one stable session, and a final result.
+- **Information gain:** distinct task-credit game identities increased from
+  one to two. Because no external memory or skill mechanism was active, this
+  is a baseline capability result and supplies no architecture lift.
+- **Evidence:** `h119_independent_task_credit_rank_result.md`,
+  `h119_tu93_persistent_sol_max_report.json`, and
+  `h119_tu93_persistent_sol_max_trace.jsonl`.
+
+# H-GPSA-GEOMETRY-NORMALIZED-ACQUISITION-DERIVATIVE-20260808-120 - Price apparent acceleration
+
+- **Status:** completed 2026-08-08 — within-session signal, source unresolved
+- **Axis:** acquisition cost / task geometry / primitive intervention cost /
+  within-run acceleration
+- **Eigenquestion:** is H119's 22-action then 10-action level progression a
+  reduction in excess acquisition cost or only a difference in path length?
+- **Hypothesis:** after exact full-dynamics normalization, Level 2 has lower
+  excess cost than Level 1.
+- **Discriminating test:** compute and successfully replay exact minimum
+  completion witnesses for `tu93` Levels 1 and 2 from the locally cached game,
+  then compare observed-minus-oracle action counts.
+- **Success criterion:** `excess_2 < excess_1` with `excess_1 > 0`.
+- **Ceiling disposition:** both excesses zero; apparent acceleration is fully
+  explained by geometry and the derivative is unmeasurable on these levels.
+- **Kill condition:** `excess_2 >= excess_1` outside the ceiling case, or an
+  invalid oracle/witness replay.
+- **Claim boundary:** two-level retrospective normalization only; no actor
+  receives oracle information.
+- **Pre-registration:**
+  `h120_geometry_normalized_acquisition_derivative_hypothesis.md`.
+- **Result:** exact full-dynamics minima were 18 actions for Level 1 and 10 for
+  Level 2; H119 used 22 and 10. Excess primitive cost fell from four to zero,
+  meeting the preregistered within-run signal.
+- **Causal boundary:** a fresh controller may also solve Level 2 optimally from
+  its initial visual state. Until that matched control runs, the result cannot
+  be assigned to learned fast state or to any external architecture.
+- **Evidence:**
+  `h120_geometry_normalized_acquisition_derivative_result.json`,
+  `h120_geometry_normalized_acquisition_derivative_result.md`, and
+  `h120_geometry_normalized_acquisition_derivative_audit.py`.
+
+# H-GPSA-COLD-LEVEL2-FAST-STATE-COUNTERFACTUAL-20260808-121 - Remove Level-1 history
+
+- **Status:** completed 2026-08-08 — fast-state supported in one matched pair
+- **Axis:** fast recurrent state / task-order confound / exact observation /
+  matched primitive budget
+- **Eigenquestion:** did Level-1 session history enable H119's oracle-optimal
+  Level-2 trajectory?
+- **Hypothesis:** a fresh Sol-max session placed at the exact Level-2 initial
+  observation will fail to complete within the 10-action oracle minimum.
+- **Discriminating test:** compare H119's frozen persistent treatment against
+  one cold session on the locally cached full dynamics, with byte-identical
+  start grid, model, effort, action vocabulary, and 10-action budget.
+- **Success criterion:** treatment completes in 10 and cold control completes
+  zero levels.
+- **Observation-sufficient disposition:** cold control also completes in 10;
+  Level-1 history is unnecessary for this behavior.
+- **Invalid condition:** start-grid mismatch, trajectory-persistence failure,
+  or an apparent completion below the exact oracle minimum.
+- **Claim boundary:** session-state causality on one Level-2 start only; no
+  credit to external ZTARE memory or planning machinery.
+- **Pre-registration:**
+  `h121_cold_level2_fast_state_counterfactual_hypothesis.md`.
+- **Pre-disposition identity correction:** the initially frozen H119 SHA names
+  a lifecycle-bearing settled-observation receipt, so it cannot equal a cold
+  control receipt whose action/level/epoch fields differ. Match the exact grid
+  carrier (`grid_shape` + `grid_rle_rows`) at canonical SHA-256
+  `dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24`.
+  Do not rerun inference; settle the existing ten-exchange trace by
+  deterministic environment replay.
+- **Result:** exact grid carriers matched. The persistent treatment completed
+  Level 2 in the 10-action oracle minimum; the cold control completed zero
+  levels, entered `GAME_OVER` at action 5, and used one stable ten-tick session.
+  Deterministic replay matched every recorded level and epoch.
+- **Information gain:** prior session state mediated task value in this pair.
+  The candidate carried object shifts from an operation word toward a sparse
+  policy-generating representation: action semantics, actor/goal identity,
+  affordance graph, and hazard-facing rules. A minimal representation-surgery
+  test is required before assigning content or generality.
+- **Architecture boundary:** both arms omitted external ZTARE memory and
+  planning, so the result supplies no external-architecture lift.
+- **Evidence:**
+  `h121_cold_level2_fast_state_counterfactual_result.json`,
+  `h121_cold_level2_fast_state_counterfactual_result.md`,
+  `h121_cold_level2_fast_state_counterfactual_trace.jsonl`, and
+  `h121_cold_level2_fast_state_counterfactual_settlement.py`.
+
+# H-GPSA-POSE-QUOTIENTED-MOVER-IDENTITY-20260808-122 - Pose is state, not object identity
+
+- **Status:** passed 2026-08-08
+- **Axis:** abstraction-functor identity / D4 pose quotient / action semantics /
+  object permanence
+- **Eigenquestion:** does exact colored-shape equality fragment one rotating
+  player and erase part of the learned action map?
+- **Baseline:** H119 Level 1 compiles into two pose-specific mover members and
+  exposes only actions 1 and 3, despite witnessed movement under all four
+  cardinal actions.
+- **Hypothesis:** canonical D4 colored-shape identity, with pose retained as a
+  state coordinate, yields one mover orbit with mappings `0=(-6,0)`,
+  `1=(+6,0)`, `2=(0,-6)`, and `3=(0,+6)`.
+- **Discriminating test:** change the existing component-orbit identity,
+  recompile H119, require one four-action orbit and stable member identity at
+  every pose, and retain static same-palette confuser rejection.
+- **Kill condition:** fragmented identity, missing/wrong action displacement,
+  confuser merge, pose-local signature loss, or regression.
+- **Claim boundary:** object/action abstraction repair only; no task or memory
+  lift follows without a downstream mediator test.
+- **Pre-registration:** `h122_pose_quotiented_mover_identity_hypothesis.md`.
+- **Result:** one D4 mover identity spans all 22 H119 pre-boundary observations,
+  retains four pose coordinates, and recovers the full action map with supports
+  `0:3`, `1:7`, `2:3`, `3:8`. The rotating-marker and static same-palette
+  confuser regressions pass; 29 targeted tests pass.
+- **Information gain:** the old alpha map encoded pose inside object identity,
+  fragmenting the exact action semantics implicated by H121. H122 relocates
+  pose to state while preserving the mover's invariant identity.
+- **Evidence:** `h122_pose_quotiented_mover_identity_result.json`,
+  `h122_pose_quotiented_mover_identity_result.md`, and
+  `h122_pose_quotiented_mover_identity_audit.py`.
+
+# H-GPSA-POSE-ACTION-MEDIATOR-SURGERY-20260808-123 - Restore the fast-state action map
+
+- **Status:** closed 2026-08-08 — inverted/refuted
+- **Axis:** sparse behavioral mediator / one-shot recall / target-local D4
+  compatibility / matched acquisition cost
+- **Eigenquestion:** is H122's pose-quotiented action map sufficient to restore
+  H121's persistent-session advantage in a fresh Level-2 controller?
+- **Hypothesis:** a one-shot `pose_action_map` capsule completes within the
+  10-action oracle budget; an exact-byte `pose_only_placebo` does not.
+- **Discriminating test:** two fresh Sol-max sessions, exact Level-2 grid,
+  exact-byte capsules, deterministic hash-derived arm order, one-shot recall,
+  full local dynamics, and complete raw traces.
+- **Success criterion:** causal arm gains one level and placebo gains zero.
+- **Alternative dispositions:** both zero = map insufficient; both one =
+  content not isolated; causal zero/placebo one = inverted/refuted.
+- **Invalid condition:** capsule-byte mismatch, target mover mismatch,
+  start-grid mismatch, repeated recall, trace failure, or sub-oracle completion.
+- **Claim boundary:** one within-game cross-level mediation pair; no cross-game,
+  population, multi-generation, broad-capability, or novelty claim.
+- **Pre-registration:** `h123_pose_action_mediator_surgery_hypothesis.md`.
+- **Result:** the exact-byte `pose_only_placebo` completed Level 2 at the
+  10-action oracle while `pose_action_map` gained zero levels and hit
+  `GAME_OVER` at action 5. Both arms had one-shot recall, one stable fresh
+  Sol-max session, and ten successful raw exchanges. Fresh-module replay
+  matched every observation.
+- **Information gain:** the correct actuator map was not a sufficient
+  behavioral mediator in this pair. With mapping uncertainty preserved, the
+  placebo selected a discriminating first action that also began the optimal
+  route, then inferred the directional hazard and flanked it. The explicit-map
+  arm allocated attention to a mistaken route belief and approached head-on.
+  Consolidation must therefore settle memories by downstream policy effect,
+  including exploration suppression, rather than descriptive correctness.
+- **Evidence:** `h123_pose_action_mediator_surgery_result.json`,
+  `h123_pose_action_mediator_surgery_result.md`,
+  `h123_pose_action_mediator_surgery_audit.py`, and
+  `h123_pose_action_mediator_surgery_audit_result.json`.
+
+# H-GPSA-UNCERTAINTY-BEARING-IDENTITY-REPLICATION-20260808-124 - Settle the selected mediator
+
+- **Status:** closed 2026-08-08 — refuted
+- **Axis:** causal memory admission / uncertainty allocation / repeated
+  matched acquisition / D4 mover identity
+- **Eigenquestion:** does H123's successful uncertainty-bearing pose identity
+  improve fresh Level-2 acquisition over a neutral equal-byte uncertainty
+  control across three new matched pairs?
+- **Hypothesis:** treatment completes at least two of three oracle-budget arms
+  and exceeds control completions by at least two.
+- **Discriminating test:** six fresh Sol-max sessions, fresh game module per
+  arm, exact Level-2 carrier, 10-action budget, one-shot equal-byte capsules,
+  pair-hash-seeded alternating order, and complete raw traces. A pre-contact
+  amendment replaced independent order hashes after they yielded the same
+  order three times; no H124 session or output existed at amendment.
+- **Kill condition:** control completions greater than or equal to treatment,
+  capsule mismatch, start mismatch, repeated recall, session reuse, module
+  reuse, or trace failure.
+- **Claim boundary:** repeated within-game mediation only; no cross-game,
+  multi-generation, broad-capability, or novelty conclusion.
+- **Pre-registration:**
+  `h124_uncertainty_bearing_identity_replication_hypothesis.md`.
+- **Operational amendment:** replication 3 control timed out with transport
+  code 124 on its second call and no endpoint. Pair 3 is excluded under the
+  registered trace-failure rule. A fully fresh replication 4 replaces both
+  arms in the next alternating order; thresholds remain fixed and apply to
+  complete pairs 1, 2, and 4.
+- **Carrier correction:** audit found that replication 4 compact-rendered the
+  manifest's sorted key order, so its prompt hashes differed from the frozen
+  receipt despite equal 1,431-byte arm lengths. Pair 4 and provisional result
+  `d05600...` are excluded. Replication 5 rebuilds and hash-checks canonical
+  capsule bytes before contact; fixed thresholds apply to pairs 1, 2, and 5.
+- **Result:** three canonical-byte valid pairs produced zero treatment and zero
+  control completions. All six valid arms had distinct fresh sessions,
+  one-shot recall, complete raw exchanges, and exact deterministic replay.
+  Treatment chose the correct first action in `3/3` sessions versus `1/3`
+  controls, but no treatment selected the lower flank by action 4.
+- **Information gain:** uncertainty-bearing mover identity causally controls a
+  subordinate self-localization/probe decision but does not compose into task
+  gain. The next missing factor is relational affordance: agent bearing ×
+  other-object pose × contact direction × terminal risk × viable alternate
+  route. Credit and memory admission must be factored at these decision seams
+  while task-level admission remains conjunctive.
+- **Evidence:**
+  `h124_uncertainty_bearing_identity_replication_result.json`,
+  `h124_uncertainty_bearing_identity_replication_result.md`,
+  `h124_uncertainty_bearing_identity_replication_audit.py`, and
+  `h124_uncertainty_bearing_identity_replication_audit_result.json`.
+
+# H-GPSA-PALETTE-QUOTIENTED-POSE-MOTION-AFFORDANCE-20260808-125 - Recover the missing relation
+
+- **Status:** passed offline 2026-08-08; causal acquisition remains unsettled
+- **Axis:** palette quotient / D4 covariance / pose-motion relation /
+  affordance competition / viability-preserving route choice
+- **Eigenquestion:** can Level-1 evidence teach a palette-invariant relation
+  from edge-marker bearing to motion bearing, transport it to the distinct
+  oriented Level-2 entity, and select the lower transverse approach at H124's
+  failure seam?
+- **Hypothesis:** an offline compiler learns one supported relation, detects a
+  west-facing distinct-palette entity, distinguishes direct head-on and lower
+  transverse routes, and covariantly selects down after `up,right,right` under
+  D4 transformations.
+- **Discriminating test:** H119 Level-1 transitions plus settled Level-2 start
+  only; learned stride/node baseline, connector regularity, source-derived goal
+  role, 10-action feasibility, D4/palette invariance, and malformed/mutation
+  rejection. No game implementation, environment step, or controller call.
+- **Kill condition:** literal target color/coordinate dependence, unsupported
+  pose-motion law, collapsed contact classes, wrong branch, budget failure,
+  noncommuting D4 transform, or missed mutation.
+- **Claim boundary:** offline relational compiler only; no task, controller,
+  cross-game, compounding, broad-capability, or novelty conclusion.
+- **Pre-registration:**
+  `h125_palette_quotiented_pose_motion_affordance_hypothesis.md`.
+- **Result:** all 24 fixed checks passed. The source relation had `21/21`
+  support and zero mismatches; the compiler found four routes and selected
+  the 10-action transverse route by choosing `down` at the frozen branch.
+  All eight D4 transforms shared one canonical frontier identity, palette
+  renaming preserved semantics, and source/target/route mutations were caught
+  or changed the decision as predicted.
+- **Information gain:** H122's pose coordinate becomes decision-relevant only
+  after composition with a learned pose-to-motion relation and route-relative
+  exposure. This resolves the offline abstraction gap exposed by H124 while
+  leaving controller acquisition and task effect for a separate intervention.
+- **Evidence:**
+  `h125_palette_quotiented_pose_motion_affordance_result.json`
+  (`bf2dfe105aa9bad163cacaf47c45ca87310abe65e59ec17d804cb3e77cd077f1`),
+  `h125_palette_quotiented_pose_motion_affordance_audit.py`, and
+  `src/ztare/worldmodel/relational_affordance.py`.
+
+# H-GPSA-RELATIONAL-AFFORDANCE-BRANCH-ACQUISITION-20260808-126 - Causal branch acquisition
+
+- **Status:** supported task effect 2026-08-08; audit passed
+- **Axis:** restored decision state / exact-byte matched recall / learned
+  relational affordance / branch acquisition / task completion
+- **Eigenquestion:** does H125's source-supported pose-to-motion relation
+  cause fresh Sol-max controllers to choose the lower branch at H124's exact
+  failure seam and complete the level within the oracle-tight remainder?
+- **Frozen state:** H125 result
+  `bf2dfe105aa9bad163cacaf47c45ca87310abe65e59ec17d804cb3e77cd077f1`;
+  restored prefix `[0,3,3]`; branch grid carrier
+  `ca4abcef3c6f6861cffda7087786b546a7d5cdfaf4c0e2723d342e4c3d7cd9a5`;
+  remaining budget 7.
+- **Intervention:** three fresh-session matched pairs. Both arms receive the
+  same action map, entities, graph, routes, budget, and unknown target outcome.
+  Treatment alone receives the supported motion cone and the compiled
+  head-on/transverse branch judgment. Capsules are compact-JSON byte-length
+  matched and injected once at the restored branch.
+- **Primary criterion:** treatment first action `down` in at least `2/3` and
+  at least two more acquisitions than control. Task criterion: treatment
+  completion in at least `2/3` and at least two more completions than control.
+- **Kill condition:** carrier, capsule, session, injection, exchange, or replay
+  drift; any difference outside the declared mediator; or threshold failure.
+- **Claim boundary:** repeated within-game branch acquisition only; no
+  cross-game, autonomous-target-discovery, multi-generation, broad-capability,
+  or novelty conclusion.
+- **Pre-registration:**
+  `h126_relational_affordance_branch_acquisition_hypothesis.md`.
+- **Pre-contact capsule freeze:** both arms are 1,820 compact-JSON bytes;
+  treatment `5c3049...de43e`, control `3bd5b3...24709`, ordered pair
+  `67c8c9...b3793d`; shared payload equality passed and arm order is
+  control-first, treatment-first, control-first.
+- **Result:** treatment selected `down` and completed in `3/3`; control did so
+  in `1/3`. Acquisition and completion differences are both +2, passing the
+  fixed `supported_task_effect` criterion. All three treatments executed the
+  exact seven-action oracle suffix.
+- **Audit:** six unique sessions, 42 successful exchanges, exact compact
+  capsule difference paths, one-shot recall, restored-prefix identity, and
+  deterministic transition replay passed. One sandboxed app-server failure
+  occurred before action/session creation and remains as an excluded trace.
+- **Information gain:** the first task-level replicated causal lift in this
+  campaign comes from a composition of invariant token identity, a covariant
+  pose-to-motion relation, and viability-relative route choice. H123 and H124
+  show that action semantics and mover identity alone do not supply the same
+  lift. The next compounding boundary is autonomous proposal, settlement, and
+  reuse of this relational judgment without a hand-authored target capsule.
+- **Evidence:**
+  `h126_relational_affordance_branch_acquisition_result.json`
+  (`96791887bcd7b16abb89b24eec8085d08c6aca77ebc064bece10da7105257eea`),
+  `h126_relational_affordance_branch_acquisition_audit_result.json`
+  (`13abfad64202814da4729797acdde765437560c03f7c95d296127135e72bfd34`),
+  probe and audit scripts.
+
+# H-GPSA-AUTONOMOUS-RELATIONAL-AFFORDANCE-RECALL-20260808-127 - Remove target hand-translation
+
+- **Status:** passed offline 2026-08-08; live start-state consumption remains
+- **Axis:** raw history / automatic decision seam / source-memory identity /
+  exact consumption scope / sparse recall
+- **Eigenquestion:** can H125's relation and H126's task-paid judgment be
+  proposed from raw source rows plus the current target observation, without
+  supplied target palette, coordinates, route, prefix, bearing, or action?
+- **Hypothesis:** one compiler learns the source relation and goal role,
+  extracts the target scene, discovers the first route divergence, emits a
+  target-bound proposal over a target-invariant source memory revision, and is
+  selected by the existing wake-sleep router only under the exact five-axis
+  scope.
+- **Discriminating test:** recover the `up,right,right` common approach and
+  `down`/action-1 branch from frozen H119 inputs; preserve source-memory
+  identity under palette/D4 target presentation; change proposal identity
+  under target/graph/seam/budget/scope mutations; reject five independent
+  scope drifts and structural failure cases; enforce a target-literal firewall.
+- **Kill condition:** any audit-supplied target semantic, presentation leakage
+  into the memory revision, wrong branch, cross-scope selection, silent
+  mutation, or compiler source literal.
+- **Claim boundary:** autonomous offline proposal/selection only; controller
+  start-state consumption, online settlement, cross-game transfer, acquisition
+  catalysis, broad capability, and novelty remain unsettled.
+- **Pre-registration:**
+  `h127_autonomous_relational_affordance_recall_hypothesis.md`.
+- **Result:** all 21 checks passed. Raw source rows and the current grid yielded
+  the `up,right,right` common approach, a `right/down` competition, and the
+  `down`/action-1 intervention. Exact-scope sparse recall selected one candidate;
+  all five independent scope mutations selected zero.
+- **Correction:** the autonomous test exposed a literal goal-color dependency
+  hidden by H125's joint source/target palette permutation. Goal identity now
+  uses the unique nonstructural uniform lattice region attached through the
+  learned connector. Literal goal color remains source evidence, while
+  palette/D4 target presentations preserve memory/frontier identity.
+- **Information gain:** the H126 judgment can now be generated without target
+  palette, coordinates, route, prefix, bearing, or action arguments. This pays
+  the offline proposal/selection seam. Fresh-controller consumption from the
+  full Level-2 start is the next discriminator.
+- **Evidence:**
+  `h127_autonomous_relational_affordance_recall_result.json`
+  (`9a61127622e25ad4f16fb16edffa2ccf6f8ea2f2e835dda89281d1c52422df4b`),
+  audit and compiler module.
+
+# H-GPSA-COMPILER-NATIVE-START-STATE-ACQUISITION-20260808-128 - Consume automatic recall from turn zero
+
+- **Status:** closed 2026-08-08 — compiler consumption supported; task
+  criterion failed
+- **Axis:** raw compiler digest / full target start / structural redaction /
+  oracle-tight task effect
+- **Eigenquestion:** does the exact H127 digest improve fresh Sol-max behavior
+  from the full Level-2 start, without a restored branch or probe-authored
+  target semantic?
+- **Intervention:** three exact-byte matched fresh-session pairs, budget 10.
+  Treatment embeds the independent raw-evidence H127 digest. Control is a fixed
+  redaction retaining identities, action map, observed bearing, common
+  approach, route distances, budget, uncertainty, scope, and retrieval cost,
+  while removing pose-motion support, contact/risk classes, and selection.
+- **Pre-contact identity amendment:** H127's H119 context is `c654ce...eae4`;
+  a fresh Level-2 reset is `910f63...da31` under the same grid carrier. H128
+  recompiles the proposal under `910f63...da31`. Memory/frontier identities
+  must remain equal; proposal/scope/recall identities must change.
+- **Pre-contact freeze:** fresh proposal `e4f86c...f4df1`, scope
+  `54c543...2243f`; both envelopes 3,912 bytes; treatment
+  `07cb6f...bba83`, control `e32e61...a5186`, pair `e4b385...2bad4`;
+  15 redaction leaves; orders treatment-first, control-first,
+  treatment-first.
+- **Primary criterion:** treatment action prefix `[0,3,3,1]` in at least `2/3`
+  and at least two more than control. Task criterion: treatment completion in
+  at least `2/3` and at least two more than control.
+- **Kill condition:** probe-authored treatment semantics, undeclared leaf
+  difference, compiler/scope/start drift, shared session/game state, recall
+  beyond turn zero, exchange or replay mismatch, or threshold failure.
+- **Claim boundary:** automatic within-game start-state recall/task effect;
+  online settlement, cross-game transfer, later acquisition catalysis, broad
+  capability, and novelty remain unsettled.
+- **Pre-registration:**
+  `h128_compiler_native_start_state_acquisition_hypothesis.md`.
+- **Result:** treatment acquired the registered seam in `3/3` arms versus
+  `0/3` controls, a +3 difference. Treatment completed in `1/3` versus `0/3`
+  controls, so the preregistered task threshold failed and the disposition is
+  `supported_compiler_consumption_only`.
+- **Audit:** six unique sessions, 60 successful exchanges, exact independent
+  compiler reconstruction, equal 3,912-byte envelopes, all 15 declared
+  redaction leaves, one-shot turn-zero recall, and deterministic replay passed.
+- **Information gain:** a compiler-generated memory can control a decision
+  four actions after recall, but that memory does not reliably govern the
+  successor states created by its own intervention. The two failures occurred
+  after the learned seam: one inserted an extra right before contact and one
+  inserted an extra up after contact. The next missing identity is an active
+  state-bound working-memory revision with explicit re-evaluation and
+  settlement authority.
+- **Evidence:**
+  `h128_compiler_native_start_state_acquisition_result.json`
+  (`8d6d47e71712d7cd1a2ddd051dc86bb54cd7f0644713c941be518e7c9447a932`),
+  `h128_compiler_native_start_state_acquisition_audit_result.json`
+  (`6114f5b6bd9101d86f6a9ef442d9b600fa96999eadc72430ac45485678f3b93a`),
+  probe and audit scripts.
+
+# H-GPSA-RECURRENT-RELATIONAL-WORKING-MEMORY-20260808-129 - Re-bind and settle active memory
+
+- **Status:** passed offline 2026-08-08; live causal refresh remains unsettled
+- **Axis:** stable source memory / observation-bound working revision /
+  prediction-error settlement / residual-navigation lifecycle
+- **Eigenquestion:** can one source-supported relational memory repeatedly
+  compile one current action, settle its target transport from the observed
+  successor, and transfer authority to a distinct residual-navigation phase?
+- **Motivation:** H128 acquired the learned seam in `3/3` treatments but
+  completed in only `1/3`. Frozen-state orientation shows current-observation
+  replanning selects the oracle action at both failed divergence states. At
+  contact, the target disappears rather than executing the transported source
+  motion law.
+- **Hypothesis:** immutable observation-bound working revisions preserve the
+  source memory identity, reject stale context, choose the current frontier
+  action, and score the successor. Target disappearance produces one
+  `target_transport_refuted` settlement and a separate
+  `settled_residual_navigation` revision.
+- **Discriminating test:** replay all three frozen H128 treatment histories;
+  require `10/10` oracle recommendations on the successful path, correction at
+  both first failed-path divergences, exact predecessor/scope identity, one
+  settlement, residual continuation, and palette/D4/mutation checks. No new
+  controller or environment contact.
+- **Prediction:** `p=0.74`; main risk is extraction of the residual route after
+  target disappearance.
+- **Kill condition:** source-memory mutation, stale-context consumption,
+  duplicate settlement, oracle-suffix leakage, target literal dependence, or
+  phase represented only by a mutable flag.
+- **Claim boundary:** an offline pass establishes architectural sufficiency on
+  frozen histories only. Live task effect, cross-game transfer, later
+  acquisition savings, critical mass, biological fidelity, and novelty remain
+  unsettled.
+- **Pre-registration:**
+  `h129_recurrent_relational_working_memory_hypothesis.md`.
+- **Result:** all 14 checks passed. The successful frozen H128 trajectory
+  produced ten unique current-observation revisions and `10/10` oracle
+  actions while preserving one source-memory SHA. The working compiler chose
+  the oracle counterfactual at both failed H128 first divergences.
+- **Settlement:** direct transverse contact projected the target to `(27,30)`
+  but observed no target entity. One `target_transport_refuted` receipt moved
+  authority from seven active revisions to three distinct settled-residual
+  revisions. Stale scope and post-settlement active reuse were refused.
+- **Information gain:** H128's failure is explained by missing recurrent
+  action authority plus missing prediction-error lifecycle, not by missing
+  source relation or route geometry. This remains a frozen-history
+  sufficiency result; the matched live current-state-versus-stale-refresh test
+  is now the controlling discriminator.
+- **Evidence:**
+  `h129_recurrent_relational_working_memory_result.json`
+  (`9b44881450716c38a69fdad31d422a28783d8abf59d00dfd493e21c2b53714e2`),
+  audit, canonical modules, and focused tests.
+
+# H-GPSA-LIVE-RECURRENT-ACTION-AUTHORITY-20260808-130 - Refresh current action causally
+
+- **Status:** pre-registered 2026-08-08 before harness change or controller
+  contact
+- **Axis:** exact-current-state refresh / working action authority / matched
+  prompt cost / fresh task completion
+- **Eigenquestion:** does H129's current-state working revision convert H128's
+  reliable fork acquisition into fresh Level-2 completion beyond repeated
+  memory exposure?
+- **Intervention:** three fresh-session matched pairs, budget 10. Both arms get
+  the same exact H128 capsule at turn zero. On turns 1–9 both invoke H129 and
+  receive one 2,048-byte refresh. Treatment receives the current revision and
+  one action; control preserves current observation/scope, source memory,
+  remaining budget, settlement identity, and refresh cost while mechanically
+  withholding revision/action authority.
+- **Primary criterion:** treatment completes at least `2/3` and exceeds
+  control completions by at least two. Secondary: at least 90% treatment
+  current-action adherence and a ≥20-point adherence difference.
+- **Prediction:** `p=0.69` for the task criterion; main risk is the controller
+  ignoring a correct one-action revision.
+- **Kill condition:** target/oracle literal in provider, session/game sharing,
+  stale observation binding, non-2,048-byte refresh, undeclared control
+  content, repeated injection, exchange failure, or replay drift.
+- **Claim boundary:** recurrent within-game causality only; cross-game/later
+  acquisition derivatives, second-generation reproduction, critical mass,
+  biological fidelity, and novelty remain unsettled.
+- **Pre-registration:**
+  `h130_live_recurrent_action_authority_hypothesis.md`.
+- **Pre-contact amendment:** the first launch stopped before controller,
+  action, session, or exchange because a caller-side provider reset preceded
+  the harness's authoritative reset. Equal grid bytes acquired a different
+  adapter epoch, and exact observation binding refused it. The empty trace is
+  retained/excluded; provider initialization now consumes the harness's
+  turn-zero settled observation. Intervention, orders, thresholds, and sample
+  size remain frozen.
+
+
+#### 2026-08-08 preregistered two-Julia common-equilibrium confinement
+
+- **Eigenquestion:** do the raw two Julia rows, exact endpoint ODEs, and the
+  actual tangent generators force the hidden endpoint onto their complete
+  common-equilibrium locus?
+- **Candidate theorem:** derive the unsaturated normalized relation from the
+  Julia rows, cancel its visible factor, evaluate the complete-gcd
+  factorization, and use the v85 finite-eliminant endgame whenever the gcd is
+  nonzero at the hidden endpoint. Conclude that the gcd vanishes there.
+- **Discriminating test:** the saturated relation and eliminant are constructed
+  from the actual-generator certificate; no relation equality, positive
+  iterate, algebraicity witness, loop, or monodromy orbit is supplied.
+- **Kill conditions:** coefficient-map mismatch, replacing the original
+  hidden velocity by its quotient, canceling a zero evaluated factor, or
+  claiming the remaining common-equilibrium branch is excluded by Julia rows
+  alone.
+- **Claim boundary:** success exhausts every branch off the common-equilibrium
+  locus. A separate flow-injectivity or equilibrium-uniqueness adapter must
+  still rule out a hidden common equilibrium for the selected nonconstant
+  inner flow.
+- **Capability/prediction:** semantic retrieval was unavailable; lexical
+  fallback surfaced the existing filtered two-flow compiler. The proof must
+  compose the v81-v85 kernels and exact complete-gcd factorization rather than
+  add another framework. Scratch forecast `scratch_45370abfd373ca70`
+  records `p=0.73` (`PL-SCRATCH-172331fab1fe`). Full pencil: v86 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered coherent parameter-scaled critical eliminant
+
+- **Eigenquestion:** does the finite critical eliminant survive the exact
+  parameter normalization with hidden speed `c=x_t/p(x)`, normalized relation
+  scalar `a0=(L/x_t)p(x)`, ordinary coefficient derivative, and visible
+  weight `L`?
+- **Candidate theorem:** prove all normalization scalars nonzero, separate the
+  stored velocity `c*p` from the unscaled relation generators `p,q`, reuse
+  critical cross-weight exclusion with `c` absorbed into the quadratic tail,
+  and return the corrected actual finite eliminant after complete-gcd
+  saturation.
+- **Discriminating test:** every scalar and factorization is constructed;
+  neither the hidden ODE nor source scalar is normalized by assertion. The gcd
+  remains owned by the unscaled relation pair.
+- **Kill conditions:** any mix of `d/dt` with hidden velocity `p`, use of
+  `a0=L*p(x)`, rescaling the hidden direction without the visible/coefficient
+  directions, or a new residue callback.
+- **Claim boundary:** success repairs the algebraic eliminant adapter. The
+  differential germ and two correctly parameterized Julia rows remain the
+  next reachability seam.
+- **Capability/prediction:** reuse the independent-velocity saturation and
+  critical rational nonresonance kernels; add no parallel framework. Scratch
+  forecast `scratch_e3619113d70fd025` records `p=0.68`
+  (`PL-SCRATCH-ae16c2bddcaa`). Full pencil: v87 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered parameterized two-Julia confinement
+
+- **Eigenquestion:** do the exact parameterized Julia rows construct the
+  scaled hidden ODE and corrected initial relation, forcing the hidden germ
+  onto the complete common-equilibrium locus?
+- **Candidate theorem:** from `DF=LF`, `x_t p(G)=(DG)p(x)`,
+  `q(F)DG=(DF)q(G)`, and `F!=0`, derive `DG=(x_t/p(x))p(G)`, derive the
+  normalized relation with coefficient `L/x_t`, and exclude every branch
+  where the unscaled generator gcd is nonzero using v87 and v85.
+- **Discriminating test:** hidden ODE, normalized relation, eliminant,
+  positive iterates, and algebraicity are all constructed; the raw inner row
+  retains `x_t`.
+- **Kill conditions:** returning to the v80 scaling, identifying a Julia
+  Jacobian with `DG`, or claiming the gcd-zero equilibrium branch is already
+  excluded.
+- **Claim boundary:** success leaves one explicit dynamical branch: a selected
+  inner time-one trajectory ending at a common equilibrium. That branch must
+  be excluded by flow invertibility or equilibrium uniqueness plus actual
+  carrier bindings.
+- **Capability/prediction:** thin composition only; no new obstruction
+  framework. Scratch forecast `scratch_52f96f9fab167ddc` records `p=0.72`
+  (`PL-SCRATCH-7ea49ac8d05f`). Full pencil: v88 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered equilibrium endpoint exclusion
+
+- **Eigenquestion:** does v88 force both generator evaluations to vanish, and
+  can an autonomous analytic time-one trajectory from a regular source be
+  excluded from ending at such an equilibrium?
+- **Candidate theorem:** evaluate the complete-gcd factorizations to derive
+  `p(G)=q(G)=0`; then base equilibrium-trajectory uniqueness at time `1` to
+  prove `p(y(0))!=0 -> p(y(1))!=0` on any open preconnected flow-time domain
+  containing `0,1`.
+- **Discriminating test:** neither generator-zero row, flow injectivity, nor
+  endpoint nonvanishing is supplied.
+- **Kill conditions:** confusing source-parameter differentiation with flow-
+  time differentiation, or claiming the pointwise theorem already constructs
+  the July germ/trajectory binding.
+- **Claim boundary:** success leaves germ construction, point selection, and
+  exact carrier bindings upstream; it removes the last downstream dynamical
+  argument once those bindings are available.
+- **Capability/prediction:** extend the existing v88 and equilibrium-rigidity
+  owners only. Scratch forecast `scratch_be1e9873423d748e` records `p=0.91`
+  (`PL-SCRATCH-6b8d1c9e12dd`). Full pencil: v89 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 preregistered centered rational-to-Laurent differential carrier
+
+- **Eigenquestion:** can `RatFunc Real`, analytic Taylor germs, and ordinary
+  differentiation coexist canonically in one complex Laurent-series field?
+- **Candidate theorem:** map `t` to `z0+X`, prove centered polynomial
+  substitution injective, lift to an injective RatFunc homomorphism, and prove
+  compatibility of rational and Laurent formal derivatives plus exact
+  constant/variable bindings.
+- **Discriminating test:** denominator nonvanishing and field-generation are
+  constructed; no whole RatFunc map to power series or derivative callback is
+  supplied.
+- **Kill conditions:** mapping `t-z0` to a nonunit in the target, proving the
+  derivative law only on generators, or introducing a Laurent derivation
+  different from the localization-owned one.
+- **Claim boundary:** success constructs the differential carrier. Transport
+  of the selected analytic Julia rows, visible nonvanishing, and time-one
+  trajectory binding remain.
+- **Capability/prediction:** compose existing substitution, localization, and
+  RatFunc APIs in one reusable module. Scratch forecast
+  `scratch_c22f8f4aac91bfdb` records `p=0.57`
+  (`PL-SCRATCH-b81ce578cf92`). Full pencil: v90 in
+  `research_areas/pre_registrations/formal_residual_coverage_compiler_20260802/formal_residual_coverage_pencil.md`.
+
+#### 2026-08-08 v90 pre-implementation coordinate amendment
+
+- **Audit result:** the existing July analytic carrier uses a local coordinate
+  `u`, while the rational critical coefficient field uses
+  `s(u)=(3-q(u))/(q(u)+1)`.  The centered `s -> center+X` map is therefore a
+  normal form, not the direct adapter.
+- **Strengthened hypothesis:** every zero-constant complex power-series
+  coordinate with invertible linear coefficient canonically embeds
+  `RatFunc Real` into complex Laurent series by sending the rational variable
+  to that coordinate, and the scaled Laurent derivation `(s')^-1 d/dX`
+  intertwines the ordinary rational derivative.
+- **Discriminating test:** prove field-map injectivity, nonvanishing of `s'`,
+  exact variable binding, and all-rational derivative compatibility.  No
+  denominator or derivative-intertwining callback is allowed.
+- **Claim boundary:** this constructs the coordinate-covariant carrier.  The
+  exact July formula for `s(u)` and transport of the analytic Julia rows
+  remain separate instantiation obligations.
+
+#### 2026-08-08 v90 outcome: tangent Laurent carrier compiled
+
+- **Result:** `FormalRatFuncLaurentTangentCarrier` constructs an injective
+  `RatFunc Real -> LaurentSeries Complex` map for every zero-constant formal
+  coordinate with invertible linear coefficient, binds the rational
+  variable to that coordinate, constructs the normalized Laurent
+  derivation, and proves all-rational derivative intertwining.
+- **Information gain:** the critical coefficient field and analytic Taylor
+  germs now have one compatible differential field.  The shortest July route
+  is the ramification-center pole route: invert the reciprocal Taylor series,
+  transport cleared Julia rows, apply v88, and exclude a polynomial zero at a
+  Laurent pole.  A separate flow-time trajectory is unnecessary on this
+  branch.
+- **Prediction:** scratch `scratch_c22f8f4aac91bfdb` resolves success.
+- **Boundary:** the exact `s(u)` identities, generator bindings, cleared Julia
+  transport, and Laurent-pole exclusion still have to be composed.
+
+#### 2026-08-08 preregistered exact July critical-coordinate binding
+
+- **Eigenquestion:** does `s(u)=(3-qOfT(u))/(qOfT(u)+1)` construct the exact
+  tangent rational coordinate and normalized coefficient bindings consumed by
+  v88?
+- **Candidate theorem:** prove analytic tangent data for `s`, instantiate the
+  v90 Laurent carrier, bind `xOfParameter` to the Taylor germ of
+  `analyticLocalX`, and bind `explicitRationalDifferential` to the normalized
+  analytic endpoint coefficient under the same derivation.
+- **Discriminating test:** every chart, denominator, derivative, source, and
+  coefficient compatibility is constructed; no point-evaluation field map or
+  derivative callback is allowed.
+- **Kill conditions:** wrong radical-sheet sign, mapping the rational
+  parameter to `u`, or proving only the Mobius identity without the Laurent
+  coefficient rows.
+- **Claim boundary:** success pays the critical-coordinate part of the v88
+  instantiation.  Cleared Julia-row transport, generator binding, and pole
+  exclusion remain.
+- **Prediction:** scratch `scratch_f12e7a72b8d8f93d`, `p=0.61`, prediction
+  `PL-SCRATCH-068ffdf1e7d1`.
+
+#### 2026-08-08 v91 outcome: exact critical Laurent coordinate compiled
+
+- **Result:** `AxiomPackJacobianCriticalLaurentCoordinate` constructs
+  `s(u)=3u/analyticDiscriminantRoot(u)`, proves its tangent is invertible,
+  binds the rational source and explicit logarithmic differential to their
+  Taylor/Laurent realizations, and derives the selected visible ODE under the
+  normalized Laurent derivation.
+- **Information gain:** the Mobius, derivative, source, and connection
+  compatibilities required by v88 now share one algebra map and one
+  derivation.  The remaining ramification-center cut is transport of the two
+  cleared Julia rows and exclusion of a polynomial zero at the hidden pole.
+- **Prediction:** scratch `scratch_f12e7a72b8d8f93d` resolves success.
+- **Boundary:** no claim is made that every arbitrary two-flow factorization
+  has already been routed to this selected ramification chart.
+
+#### 2026-08-08 preregistered Laurent reciprocal-Julia pole discharge
+
+- **Eigenquestion:** does the analytic reciprocal germ at the ramification
+  center construct both Laurent Julia rows and force a contradiction with
+  v88's common-generator zero?
+- **Candidate theorem:** clear each punctured Julia row by powers of the
+  reciprocal, extend the analytic identities across the center, Taylor-map
+  them to `LaurentSeries Complex`, instantiate v88, and prove every nonzero
+  polynomial is nonzero at the inverse zero-constant germ by polynomial
+  reversal and its leading coefficient.
+- **Discriminating test:** the hidden Laurent element, raw Julia rows, and
+  pole nonvanishing are constructed; none is accepted as a callback, and the
+  selected source/visible bindings must be paid.
+- **Kill conditions:** Taylor-evaluating the pole before denominator clearing,
+  silently changing coefficient embeddings, or treating a conditional
+  ramified carrier as an exhaustive factorization theorem.
+- **Claim boundary:** success excludes the selected ramification-center
+  nonfinite branch.  Any finite/proportional or route-exhaustion residual
+  remains separately named.
+- **Prediction:** scratch `scratch_2a0ea82b2c03c5ee`, `p=0.64`, prediction
+  `PL-SCRATCH-6adb76111ed2`.
+
+#### 2026-08-08 v92 outcome: reciprocal kernel passed, specialization incomplete
+
+- **Result:** exact Laurent polynomial nonvanishing, cleared reciprocal-Julia
+  transport, and the selected-carrier pole contradiction all compile.
+- **Failed discriminator:** the selected carrier's source and target Taylor
+  identifications remain hypotheses, so the no-callback July specialization
+  was not constructed.
+- **Information gain:** after those two bindings, the ramification-center
+  endgame contains no residual mathematics.  The failure points upstream to
+  factorization reachability rather than pole analysis.
+- **Prediction:** scratch `scratch_2a0ea82b2c03c5ee` resolves failure.
+
+#### 2026-08-08 preregistered local normalization-point two-flow exclusion
+
+- **Eigenquestion:** can the exact two-flow contradiction be obtained at the
+  original `q=1`, `s=1`, `x=0` formal germ, avoiding every global
+  continuation alternative?
+- **Candidate theorem:** build an affine-centered rational Laurent carrier,
+  construct the exact source and visible base germs, derive both Julia rows
+  from two `AutonomousSubstitutionTimeOne` witnesses plus their composition,
+  invoke v88, and contradict injectivity of polynomial substitution by the
+  tangent hidden germ.
+- **Discriminating test:** arbitrary generator degrees, no continuation or
+  route premises, no supplied Julia rows, and no source/target compatibility
+  callbacks.  The flow witnesses retain the all-germ autonomous commutation
+  identity.
+- **Kill conditions:** a degree cap, a bare Julia premise, an unbound target
+  series, or a flow record weaker than the intended formal time-one object.
+- **Claim boundary:** success would prove the all-degree local formal
+  two-polynomial-flow exclusion for the exact July germ.  Its implication for
+  the unrestricted symmetric tail-minimax still requires checking that the
+  minimax factorization notion is definitionally this formal-flow category.
+- **Prediction:** scratch `scratch_775b015e11f82bc4`, `p=0.52`, prediction
+  `PL-SCRATCH-000f7db964ff`.
+
+#### 2026-08-08 v93 identity amendment: tangent normalization belongs to the flow object
+
+- **Audit finding:** the existing `AutonomousSubstitutionTimeOne` admits the
+  zero endpoint for every origin-vanishing generator; all-germ commutation
+  and a fixed origin do not determine a time-one substitution.
+- **Amended carrier:** extend that object with endpoint linear coefficient
+  one.  Derive substitution injectivity and the Julia row from the refined
+  object; do not request either as a July-specific hypothesis.
+- **Discriminating test:** the local base-germ contradiction must still be
+  all-degree and must construct the two parameterized Julia rows, visible
+  equation, and hidden nonvanishing from the two refined flow witnesses and
+  composition equality.
+- **Kill condition:** if tangent normalization still does not make the
+  required polynomial substitution injective, v93 fails and the precise
+  missing group identity must be named.
+
+#### 2026-08-08 v93 outcome: local all-degree two-flow obstruction compiled
+
+- **Result:**
+  `AxiomPackJacobianCriticalBaseTwoFlowExclusion.critical_base_two_flow_impossible`
+  has a successful focused kernel build.  It excludes arbitrary-degree pairs
+  of nonzero tangent `ℝ[X]` generators whose normalized autonomous
+  time-one substitutions compose the exact July source germ to its exact
+  visible germ.
+- **Constructed consequences:** the two parameterized Julia rows, affine
+  Laurent transport, visible differential equation, and hidden polynomial
+  nonvanishing all follow from the flow records and composition equality.
+  The hidden germ has linear coefficient `-3`, obtained from the formal chain
+  rule and the two endpoint normalizations.
+- **Information gain:** global continuation, route exhaustiveness, and
+  ramification selection are unnecessary for this local formal category.
+  The remaining minimax residual is a category adapter, not another local
+  two-flow calculation.
+- **Boundary:** the unrestricted symmetric tail-minimax is not yet concluded.
+  The filtered compiler must construct the theorem's generators, flow
+  records, and exact base-germ composition; a digest-only two-flow flag is
+  insufficient.
+- **Prediction:** scratch `scratch_775b015e11f82bc4`, prediction
+  `PL-SCRATCH-000f7db964ff`, resolves success.
+
+#### 2026-08-08 preregistered inverse-substitution terminal bridge
+
+- **Eigenquestion:** does formal inversion of the exact source germ identify
+  the pure zero-positive-face critical two-flow terminal with the local
+  category excluded by v93?
+- **Candidate theorem:** define the intrinsic critical holonomy as
+  `baseVisible.subst baseSource.substInv`; derive its substitution through
+  `baseSource` equals `baseVisible`; package the exact two-flow terminal as
+  generators, normalized autonomous endpoints, and endpoint factorization;
+  then derive `False` from v93.
+- **Discriminating test:** no degree cap, Puiseux branch, continuation route,
+  supplied Julia row, or supplied source-to-visible binding.  The terminal
+  object must carry content, not a digest-only factorization label.
+- **Kill condition:** if the filtered pure terminal permits objects outside
+  exact finite compositions of two normalized autonomous polynomial
+  time-one substitutions, the minimax implication remains open and that
+  broader category must be named.
+- **Compiler action if successful:** add a typed local-two-flow terminal
+  lifecycle and reject the historical bare
+  `TWO_FLOW_FACTORIZATION_IDENTITY` receipt as terminal authority before
+  rerunning the polar and unrestricted compositions.
+
+#### 2026-08-08 inverse-substitution bridge outcome
+
+- **Result:** `AxiomPackJacobianCriticalHolonomyTwoFlowExclusion` has a
+  successful focused kernel build.  Formal substitution inversion derives
+  the source-to-visible binding, and the exact intrinsic critical holonomy
+  admits no `CriticalHolonomyTwoFlowFactorization` at any generator degree.
+- **Audit correction:** the executable pure-tail adapter does not yet produce
+  that structure.  Its zero-positive-face endpoint contains a string, a
+  digest, and a conditional Boolean; it contains no generators, endpoints,
+  normalized flow records, or composition equality.
+- **Information gain:** the former global continuation residual was an
+  avoidable coordinate detour.  The remaining residual is upstream Rees
+  realization: strict subthreshold plus zero positive support must construct
+  the typed critical factorization.
+- **Next discriminator:** separate compiler-owned finiteness of the critical
+  support, adapter-owned specialization of the gauge group identity, and
+  kernel-owned exclusion.  A single empty terminal receipt is no longer an
+  acceptable proof interface.
+- **Boundary:** neither the pure lower bound nor the unrestricted minimax has
+  been promoted yet.
+
+#### 2026-08-08 preregistered typed critical-terminal compiler lifecycle
+
+- **Eigenquestion:** can realization of a strict-subthreshold zero face and
+  exclusion of its normalized two-flow category be carried as separate,
+  non-substitutable propositions?
+- **Candidate:** add a content-bound context with schedule category,
+  factorization category, source germ, visible germ, normalization order,
+  specialization identity, and exclusion identity.  Compile exactly two
+  typed receipts into one terminal certificate.
+- **Discriminating test:** missing, duplicated, finite-window, cross-context,
+  wrong-germ, wrong-normalization, and historical digest-only evidence all
+  fail closed.  The polar tensor compiler consumes the resulting terminal
+  certificate identity rather than an empty conclusion.
+- **Boundary:** this is a general proof-interface correction.  The Jacobian
+  adapter must still construct the all-schedule specialization proposition
+  before the minimax result changes status.
+
+#### 2026-08-09 typed critical-terminal lifecycle outcome
+
+- **Result:** the filtered compiler now composes separate exact-realization
+  and exact-category-exclusion receipts into a replayable terminal
+  certificate.  The polar tensor compiler requires that certificate object
+  and its content identity; an empty conclusion or the historical Puiseux
+  digest is rejected.  The focused suite passes 108 tests.
+- **Information gain:** the previous conditional lower-bound path crossed an
+  invalid evidence boundary.  The remaining mathematical object is exactly
+  the Rees specialization arrow, not a continuation or route-exhaustion
+  theorem.
+- **Boundary:** no unrestricted lower-bound conclusion is recorded from the
+  repaired interface until the exact adapter receipt exists.
+
+#### 2026-08-09 preregistered finite critical-support kernel
+
+- **Eigenquestion:** do coefficientwise-finite rows plus eventual strict
+  negativity of an integer Rees grade force the complete grade-zero support
+  finite?
+- **Candidate:** define critical support as sigma pairs `(n,a)` with
+  `a ∈ rows n` and grade zero; extract an eventual cutoff and contain the set
+  in the finite dependent union of rows before the cutoff.
+- **Discriminating test:** arbitrary atom type and grade function, no uniform
+  cardinality bound, and no use of the separate no-positive-face premise.
+- **Kill condition:** if this data does not suffice, name the missing
+  compactness hypothesis and revise the adapter ownership boundary.
+- **Next lever if successful:** construct the Jacobian-specific Rees
+  specialization homomorphism from the finite critical support to the two
+  normalized polynomial-flow factors.
+
+#### 2026-08-09 finite critical-support outcome
+
+- **Result:** `FilteredCriticalSupport.criticalSupport_finite` passes a
+  focused 767-job kernel build for arbitrary finite rows and integer grades.
+- **Information gain:** eventual strict negativity alone owns finiteness of
+  the grade-zero face.  The no-positive-face condition has the separate job
+  of making critical evaluation regular.
+- **Boundary:** this theorem does not create the critical polynomial flows or
+  specialize the contact identity.
+
+#### 2026-08-09 preregistered autonomous-flow specialization functor
+
+- **Eigenquestion:** does every surjective coefficient-ring homomorphism map
+  a normalized autonomous substitution, including its all-germ commutation
+  law, to the corresponding normalized autonomous substitution?
+- **Candidate:** lift each target germ through coefficientwise surjectivity,
+  map the source commutation equality, and use exact map/substitution and
+  map/derivative identities.  Prove exact endpoint compositions descend too.
+- **Kill conditions:** loss of the all-germ field, failure of coefficient map
+  to commute with substitution, or reliance on a family-specific Julia row.
+- **Next lever if successful:** build the regular critical Rees residue map
+  and show its generator images have finite polynomial support.
+
+#### 2026-08-09 autonomous-flow specialization outcome
+
+- **Result:** surjective coefficient specialization now constructs the full
+  normalized autonomous-substitution record and maps exact endpoint
+  compositions.  The downstream critical-holonomy build passes 3,406 jobs.
+- **Information gain:** after a regular Rees carrier is constructed, no new
+  endpoint ODE or Julia calculation is required at the critical face.
+- **Boundary:** the theorem does not assert that an arbitrary strict
+  Jacobian contact supplies a regular Rees carrier.
+
+#### 2026-08-09 preregistered regular Rees contact exclusion
+
+- **Eigenquestion:** does constant-term specialization on the concrete ring
+  `ℂ⟦ε⟧` carry a regular two-flow Rees contact into the exact intrinsic July
+  factorization category?
+- **Candidate:** package Rees generators/endpoints, their normalized flows,
+  exact polynomial critical images, nonzero tangent coefficients, and the
+  constant-lifted holonomy composition; specialize and invoke the v94 empty
+  category theorem.
+- **Kill conditions:** coefficient specialization does not preserve nested
+  substitution, generator bindings mismatch, composition orientation flips,
+  or a degree cap enters.
+- **Boundary:** success leaves the schedule-to-regular-Rees-carrier theorem
+  as the sole family-specific residual.
+
+#### 2026-08-09 regular Rees contact exclusion outcome
+
+- **Result:** the concrete nested-power-series carrier specializes by Rees
+  constant term to the exact critical holonomy factorization, and its
+  category is empty by a focused 3,407-job kernel build.
+- **Information gain:** the critical endpoint and composition portion of the
+  schedule adapter is now a functorial consequence, not a new calculation.
+- **Boundary:** arbitrary strict schedules have not yet been shown to create
+  the regular Rees carrier.
+
+#### 2026-08-09 preregistered diagonal Rees polynomial extractor
+
+- **Eigenquestion:** does the coefficient rule
+  `[X^d ε^e] R(a) = [X^d] a_(d+e)` plus eventual
+  `natDegree(a_n) < n` canonically produce the finite critical polynomial?
+- **Candidate:** define the nested power series, prove constant-term
+  coefficient equals the schedule diagonal, truncate at the eventual
+  cutoff, and prove coefficientwise equality at every spatial order.
+- **Kill conditions:** an existential polynomial witness, a bounded spatial
+  check, or any additional uniform row-support hypothesis.
+- **Next lever if successful:** bind the two normalized Jacobian low rows and
+  the exact group identity to the extracted source and target polynomials.
+
+#### 2026-08-09 diagonal Rees polynomial outcome
+
+- **Result:** the canonical nested Rees series and its finite critical
+  truncation are coefficientwise equal under eventual strict diagonal
+  degree; the focused 3,299-job build passes.
+- **Boundary:** the exact schedule-to-Witt degree dictionary and group
+  endpoint identity remain adapter obligations.
+
+#### 2026-08-09 preregistered coefficient-map strengthening
+
+- **Eigenquestion:** can surjectivity be removed from autonomous-flow
+  specialization by mapping the coordinate Julia identity and reconstructing
+  all-germ commutation via the chain rule?
+- **Discriminating test:** arbitrary commutative-ring homomorphism, full flow
+  object as output, unchanged substitution orientation.
+- **Kill condition:** mapping or reconstruction fails outside surjective
+  coefficient maps.
+- **Next lever if successful:** compose critical Rees evaluation over `ℝ`
+  with coefficient extension to `ℂ` in the schedule adapter.
+
+#### 2026-08-09 preregistered zero-generator identity completion
+
+- **Eigenquestion:** can vanishing critical generators be admitted without
+  separately proving both schedule diagonals nonzero?
+- **Candidate:** require the exponential-owned implication `generator = 0`
+  implies `endpoint = X`; replace every zero generator by the fixed nonzero
+  tangent polynomial `X^2` with the same identity endpoint; invoke the
+  existing nonzero two-flow exclusion on the padded pair.
+- **Discriminating test:** compile all four zero/nonzero cases, preserve exact
+  endpoint composition, and do not infer the zero law from Julia commutation.
+- **Kill condition:** identity padding changes the holonomy or fails the
+  tangent/nonzero conditions.
+- **Next lever if successful:** weaken the regular Rees carrier accordingly
+  and make canonical exponential specialization, rather than forced low-row
+  nonvanishing, the remaining schedule obligation.
+
+#### 2026-08-09 zero-generator identity completion outcome
+
+- **Result:** the critical holonomy module pads each zero generator by the
+  fixed nonzero tangent polynomial `X^2` after the exponential-owned identity
+  endpoint law is supplied.  All four zero/nonzero cases reduce to the
+  existing nonzero two-flow exclusion without changing the endpoints or
+  composition.  The weakened regular Rees carrier requires only critical
+  endpoint-composition equality and compiles in a focused 3,407-job build.
+- **Information gain:** forced nonzero diagonal coefficients are unnecessary.
+  The remaining adapter must preserve canonical exponentials strongly enough
+  that zero specialized generator implies identity specialized endpoint;
+  normalized Julia commutation by itself cannot do so.
+- **Boundary:** no arbitrary strict schedule has yet been converted into the
+  regular Rees carrier.
+
+#### 2026-08-09 preregistered target-critical finiteness audit
+
+- **Eigenquestion:** does a target logarithmic derivation-excess rate strictly
+  below two force the target critical Rees face to have finite support, as
+  required by the proposed two-polynomial-flow schedule adapter?
+- **Candidate counterexample:** at rows `n = 3b - 5`, place the contact-zero
+  Hamiltonian `Q^b`, for `b >= 2`.  Its target Rees weight is exactly
+  `6b = 2(n+5)`, so every term lies on the critical face, while its ordinary
+  target derivation excess is `b-1` and `(b-1)/(3b-5) -> 1/3`.
+- **Discriminating test:** prove the exact row/weight equality, contact-zero
+  membership, coefficientwise finiteness, and an eventual rational rate
+  bound below two without using a finite window.
+- **Kill condition:** if the declared target grading differs from the
+  `(4,6)` Rees grading or `Q^b` is excluded from the complete contact-zero
+  algebra, repair the dictionary before drawing a conclusion.
+- **Next lever if successful:** abandon target-critical finiteness as the
+  schedule bridge and classify the orbit of the infinite critical target
+  Witt group on the canonical weight-`3/2` tensor-density residual.  The
+  lower bound survives only if that orbit cannot contain a finite or
+  source-subcritical representative compatible with the full contact.
+
+#### 2026-08-09 target-critical finiteness audit outcome
+
+- **Result:** the counterfamily survives.  For every `b >= 2`, `Q^b` is a
+  multiple of `Q^2`, occupies the exact critical row `3b-5`, and has ordinary
+  target derivation-excess ratio at most one.  Those rows are strictly
+  increasing.  The all-index arithmetic certificate passes a focused
+  3,297-job kernel build.
+- **Information gain:** strict ordinary target rate below two does not imply
+  finite target-critical support.  Consequently the row-computed finite
+  two-flow exclusion cannot be the unconditional schedule terminal without
+  an additional coupled-contact argument that removes or charges the
+  infinite target factor.
+- **Next discriminator:** express the split module as a formal tensor-density
+  action and decide whether an arbitrary infinite critical target
+  diffeomorphism can send the canonical residual to a polynomial source
+  representative.  A positive formal conjugacy kills any critical-only lower
+  bound and forces the next obstruction into the off-critical contact tower.
+
+#### 2026-08-09 preregistered simple-zero tensor-density orbit test
+
+- **Eigenquestion:** is every formal weight-`3/2` tensor density with a
+  nonzero simple-zero leader in the tangent-diffeomorphism orbit of its
+  leading monomial?
+- **Candidate isomorphism:** write `K = c*x*v(x)`, `v(0)=1`, and
+  `phi=x*w(x)^3`.  Under the finite action
+  `T_phi(p)=p(phi)/(phi')^(3/2)`, the equation `K=T_phi(c*x)` is equivalent
+  to the linear Euler equation `w+3*x*w'=v^(-2/3)`.  Its coefficient
+  multipliers are `1+3n`, all invertible in characteristic zero.
+- **Discriminating test:** verify the finite-action convention from the
+  infinitesimal representation, confirm the canonical July residual has a
+  nonzero simple-zero leader, construct the conjugator to arbitrary exact
+  order, and replay the orbit equation coefficientwise.
+- **Kill conditions:** a different density weight or action orientation, a
+  higher-order/zero leader, a missing formal `(-2/3)` power, or failure of a
+  target critical Witt series to realize the tangent diffeomorphism.
+- **Boundary:** success refutes a critical-quotient-only lower bound.  It does
+  not construct a full polynomial contact because lifting the conjugator
+  through every higher normal layer may introduce the rate-two payment.
+
+#### 2026-08-09 simple-zero tensor-density orbit test outcome
+
+- **Result:** the declared kill condition fired.  The exact infinitesimal
+  conversion is `C=K/x`; the standard weight-`3/2` action belongs to `C`, not
+  to the row-indexed residual `K`.  The candidate
+  `K=c*phi/(phi')^(3/2)` therefore used the wrong carrier even though its
+  standalone formal identity replayed.
+- **Information gain:** the row-indexed module is a twisted density with
+  finite action
+  `T_phi(K)=x*K(phi)/(phi*(phi')^(3/2))`.  For the monomial `K0=c*x`, its
+  orbit equation reduces to `phi'=v^(-2/3)` when `K=c*x*v`.
+- **Boundary:** no campaign conclusion is taken from the killed v106
+  adapter.
+
+#### 2026-08-09 preregistered twisted-density unit-orbit test
+
+- **Eigenquestion:** does the corrected row-indexed tensor action send every
+  simple-zero residual `K=c*x*v`, `v(0)=1`, to the finite representative
+  `c*x` under a unique tangent formal diffeomorphism?
+- **Candidate:** define `r=v^(-2/3)` by the formal rational-power recurrence
+  and `phi(x)=integral_0^x r(t)dt`.  Then `phi(0)=0`, `phi'(0)=1`, and the
+  squared orbit identity is `K^2*(phi')^3=c^2*x^2`.
+- **Discriminating test:** replay the corrected identity on alien units and
+  on the exact July residual, check the first nontrivial coefficients, and
+  reject constant or higher-order-zero inputs.
+- **Kill conditions:** any nonzero squared residual, loss of tangency, or a
+  mismatch between the finite action and the exact infinitesimal split
+  representation.
+- **Next lever if successful:** prove that the resulting formal target
+  diffeomorphism is realizable by coefficientwise-polynomial critical target
+  controls, then test its lift through the next normal layer.
+
+#### 2026-08-09 twisted-density unit-orbit outcome
+
+- **Result:** the exact July residual has valuation one and leading
+  coefficient `-1/144`.  Coefficientwise rational power and integration give
+  a unique tangent conjugator beginning
+  `x-x^2/12+x^3/216-55*x^4/145152+...`; the corrected squared orbit identity
+  vanishes through all eight exact replay rows.  The reusable primitive and
+  its alien/rejection suite pass 121 focused tests together with the formal
+  Lie and filtered-obstruction suites.
+- **Information gain:** the unrestricted formal diffeomorphism orbit of the
+  residual contains the linear monomial.  The rate question therefore lives
+  in the complexity of the conjugator's iterative logarithm, not in the
+  module element's formal orbit class.
+- **Boundary:** the conjugator is an infinite formal germ until proved
+  otherwise.  No finite-polynomial source factor, target realization, full
+  contact, or minimax value follows from this normal form.
+- **Next discriminator:** compute the conjugator's iterative logarithm and
+  decide all-order whether it is polynomial; then extend from the linear
+  representative to every finite polynomial module representative.
+
+#### 2026-08-09 preregistered conjugator D-log test
+
+- **Eigenquestion:** is the unique tangent conjugator that linearizes the
+  July tensor residual the time-one map of a finite polynomial Witt
+  generator?
+- **Candidate obstruction:** recover its iterative logarithm
+  coefficientwise, verify the time-one replay, and derive a Julia/analytic
+  obstruction from the exact quadratic-field ODE rather than extrapolating
+  nonzero rows.
+- **Discriminating test:** a polynomial D-log is a counterexample to the
+  linear-representative obstruction; an all-index fractional singularity or
+  finite polynomial eliminant excludes it.  A finite nonzero prefix alone is
+  not decisive.
+- **Next lever:** regardless of the linear verdict, classify orbit equations
+  with an arbitrary finite polynomial residual, since a source factor is not
+  required to normalize to the leading monomial.
+
+#### 2026-08-09 conjugator D-log test outcome
+
+- **Result:** the exact quadratic-sheet ODE and two Bernstein-positive
+  rationalized numerators imply `K(x)>0` on `-2<x<0`, hence
+  `k0=K(-2)>0`.  Its local recurrence has nonzero fractional coefficient
+  `25*sqrt(6)*(108*k0+1)/11556` at `u^(3/2)`.  The normalizing endpoint
+  consequently has a nonzero `u^(5/2)` term.
+- **All-order obstruction:** Julia's identity for a polynomial generator
+  forces the source and image branch centers to be roots of equal integral
+  multiplicity, while the first fractional coefficient forces that
+  multiplicity to equal `5/2`.  Therefore the v107 normalizer has no finite
+  polynomial iterative logarithm.
+- **Boundary:** this excludes the finite source actor paired with the linear
+  module representative.  Other finite polynomial representatives remain
+  quantified in the minimax problem.
+
+#### 2026-08-09 preregistered density-clock orbit test
+
+- **Eigenquestion:** can the exact July residual lie in the tensor-density
+  orbit of any valuation-one polynomial `L` under the time-one endpoint of
+  any finite polynomial tangent vector field `f`?
+- **Candidate isomorphism:** attach the clock
+  `S_K'= (K/x)^(-2/3)`.  The density action becomes composition,
+  `S_(T_h K)=S_K o h`, reducing the orbit equation to
+  `phi_K=phi_L o exp(f*d/dx)`.
+- **Discriminating test:** the exact `5/2` branch excludes every continuation
+  landing at a regular point of `phi_L`.  Prove, using scalar monodromy or a
+  differential eliminant, that repeated continuation cannot remain among
+  the finitely many zeros of `L` and infinity.
+- **Kill conditions:** failure of the composition orientation, absorption
+  of every continued branch by polynomial zeros, absence of a selected
+  continuation consequence from the formal orbit identity, or an explicit
+  polynomial countermodel.
+- **Success criterion:** an all-degree exclusion quantified over both finite
+  polynomials.  Bounded-degree search is diagnostic only.
+
+##### 2026-08-09 v109 exceptional-chart refinement before execution
+
+- **Candidate finite-zero obstruction:** if a selected continuation of the
+  polynomial-flow endpoint lands at a nonzero zero of `L` of multiplicity
+  `r`, equality of clock derivatives forces its ramification index to be
+  `alpha=3/(3-2*r)`.  Positivity leaves only `r=1` and `alpha=3`.  The
+  separated autonomous-flow equation at finite polynomial equilibria should
+  then place the endpoint in the integer-power/logarithmic local lattice,
+  whereas composing the simple-zero density clock would have to reproduce
+  the July clock's first nonintegral exponent `5/2`.
+- **Candidate infinity obstruction:** if the endpoint escapes to infinity,
+  Julia valuation gives ramification `alpha=1/(deg(f)-1)`.  Clock balance
+  then forces `2*deg(L)=3*deg(f)+2`, so `deg(f)` is even.  The composed
+  infinity clock has exponent lattice `1 + N/(deg(f)-1)` (with possible
+  logarithmic decorations).  Since `deg(f)-1` is odd, `5/2` is absent.
+- **Discriminating test:** prove the two valuation balances and the claimed
+  local exponent lattices for arbitrary polynomial degrees, including simple
+  and multiple equilibria, and bind them to the already certified nonzero
+  regular and `5/2` coefficients of the July clock.
+- **Counterattacks:** a resonant logarithm creates a half-integral power; an
+  equilibrium-to-equilibrium autonomous branch has a Puiseux denominator not
+  predicted by root multiplicities; cancellation in the leading infinity
+  coefficient changes the degree balance; or a finite zero of multiplicity
+  at least two has a finite clock image.  Any one kills this refinement and
+  restores the monodromy/differential-eliminant route.
+- **Boundary:** the arithmetic valuation shell is not the theorem.  Success
+  still requires a local analytic/formal carrier showing that no exponent
+  outside the derived lattice can occur, and then an adapter from every
+  putative finite-polynomial orbit equation to one of the regular,
+  finite-zero, or infinity charts.
+
+#### 2026-08-09 density-clock exceptional-endpoint refinement
+
+- **Candidate trichotomy:** after selected continuation to `u=x+2`, the
+  polynomial clock endpoint is regular finite, a nonzero root of `L`, or
+  infinity.  The regular case inherits exponent `5/2`; a finite clock at a
+  root forces a simple root and cubic inverse behavior; a finite clock at
+  infinity has exponent `-(2*deg(L)-5)/3`.
+- **Predicted contradictions:** the simple-root route makes Julia's first
+  fractional comparison demand multiplicity `3/2`.  The infinity route
+  first forces `2*deg(L)=3*deg(f)+2`, hence even `deg(f)`, and then places
+  the nonzero `3/2` correction outside the `1/(deg(f)-1)` exponent lattice.
+- **Discriminating test:** compile the three cases as exact rational
+  arithmetic, test nearby integral-exponent countermodels, and refuse the
+  campaign adapter unless a separate selected-continuation theorem supplies
+  a branch at the quadratic point.
+- **Success criterion:** a substrate-neutral conditional orbit exclusion
+  whose sole unfilled premise is selected continuation, rather than a
+  bounded-degree calculation or an implicit global assumption.
+
+##### v109 exceptional-endpoint arithmetic outcome
+
+- **Result:** the all-degree rational shell passed the focused Lean build and
+  LeanMill ratification.  Finite-zero balance forces `(r, alpha)=(1,3)`;
+  nonzero `3/2` coefficient comparison is incompatible with a natural root
+  multiplicity; and the infinity degree relation forces an odd ramification
+  denominator whose lattice excludes `3/2`.
+- **Authority:** terminal theorem
+  `FormalTensorDensityClockEndpointArithmetic.tensor_density_clock_endpoint_arithmetic_terminal_certificate`;
+  closure-record SHA
+  `a06ac2b3f2bbbe53d786e4f9b360c79103c1ccc3f25307b09acfa29c3a6cc6f9`;
+  kernel-parity SHA
+  `03d774f7a0e6fc436b1a85bcdec6f3000f4a474e3c01c5d209a753ade39baf42`.
+- **Boundary:** this is the arithmetic consequence of already-supplied local
+  leading terms.  It supplies neither selected analytic continuation nor the
+  local Puiseux/lattice expansions, and it does not derive a finite `f,L`
+  orbit from every strict schedule.  No unrestricted minimax value follows.
+- **Next lever:** construct the selected-continuation and local-series
+  carrier, then bind its three exhaustive endpoint cases to this arithmetic
+  theorem through the filtered-obstruction compiler.
+
+#### v110 preregistered exact diagonal-support dichotomy
+
+- **Eigenquestion:** can finite versus infinite target-critical support be
+  expressed directly by the diagonal coefficients selected by critical Rees
+  evaluation, rather than by ordinary target degree?
+- **Prediction:** finite diagonal support yields an eventual-zero cutoff and
+  an exact canonical polynomial critical residue; infinite support yields a
+  nonzero diagonal row past every cutoff.
+- **Discriminating test:** prove the dichotomy for arbitrary polynomial rows
+  over any commutative ring and preserve the old eventual-degree theorem only
+  as a sufficient corollary.  The v105 diagonal must inhabit the infinite
+  route, not be coerced into the finite one.
+- **Boundary:** this pays the support split and finite residue extraction.  It
+  does not construct Rees flow endpoints, a twisted-clock orbit, selected
+  continuation, or an unrestricted minimax lower bound.
+
+##### v110 exact diagonal-support outcome
+
+- **Result:** the generic support dichotomy and exact finite Rees polynomial
+  extraction compile over arbitrary commutative rings.  The July finite
+  schedule carrier now needs only eventual diagonal vanishing; its exclusion
+  theorem still compiles with zero generators allowed.
+- **Authority:** support-split record
+  `23dd001f7d82aa8a650df32669b007c5c50b837adf91488e2a3465c88ad1b85f`
+  with parity
+  `40549035f8941e0f4a7dd2e59c48bfe4a15e023a93a576788461f5ce10ebf6a4`;
+  finite-schedule exclusion record
+  `cdbd19534f5aec32cd99ab8fbff5f115d5f92a3f2aa6ec1e747524d209e5540a`
+  with parity
+  `c891579ff060968f71479e4db696b691bd1206a2898ed02e4ae4b317966606d1`.
+- **Information gain:** finite critical support, rather than a bound on every
+  row degree, is the exact extractor identity.  This removes an artificial
+  hypothesis from the finite route while preserving the v105 infinite route.
+- **Next lever:** derive the flow/endpoint fields of the finite carrier or the
+  finite-`(f,L)` clock fields of the infinite carrier from one common actual
+  zero-face schedule object.
+
+#### 2026-08-09 preregistered algebraic-eliminant continuation test
+
+- **Eigenquestion:** do the exact tensor-density orbit identity and Julia
+  identity force every putative finite-polynomial endpoint germ `h` to be
+  algebraic over `C(x)`, thereby supplying a selected Puiseux continuation
+  above the July branch point?
+- **Candidate:** eliminate `h'` to obtain
+  `K^2*h^2*f(h)^3 = x^2*f(x)^3*L(h)^2`.  Treating `h` as an independent
+  variable gives a polynomial over `C(x,K)`.  If it vanished identically,
+  proportionality would force `K^2` to be rational; the certified nonzero
+  `u^(3/2)` coefficient of `K^2` forbids this.
+- **Discriminating test:** formalize nondegeneracy of the eliminant, the
+  algebraicity consequence, and continuation on the normalization to a
+  point over `x=-2`; then feed its finite/infinity endpoint into the v109a
+  trichotomy compiler.
+- **Kill conditions:** loss of implication when the orbit identity is
+  squared, an additional identically-zero degeneracy, failure of the chosen
+  irreducible component to reach `x=-2`, or a local endpoint outside the
+  regular/root/infinity Puiseux cases.
+- **Success criterion:** discharge the selected-continuation receipt for all
+  nonzero finite polynomials `f,L`; do not infer the remaining strict-
+  schedule-to-orbit adapter.
+
+##### v109b algebraic-eliminant outcome
+
+- **Result:** the existing `FormalTensorDensityJuliaEliminant` owner proves
+  the exact derivative-free polynomial relation, endpoint algebraicity over
+  its coefficient field when that polynomial is nonzero, and a reusable
+  separated-polynomial nondegeneracy criterion.
+- **Authority:** terminal theorem
+  `FormalTensorDensityJuliaEliminant.tensor_density_julia_eliminant_terminal_certificate`;
+  closure-record SHA
+  `dec2cc6edd591f96c6b2248262c5c4ad929001e24a4c5e4b1f6aa636f9ce288a`;
+  kernel-parity SHA
+  `256011d0cdba34f7dc5ca36742cb7785744633f78a490b81612c06edda8ebdbc`.
+- **Boundary correction:** the coefficient field contains the July residual
+  `K`, so the checked theorem gives algebraicity over that larger field, not
+  yet over `C(x)`.  No finite cover of the `x`-line, selected continuation to
+  `x=-2`, or local Puiseux chart follows from this result alone.  The
+  non-descent premise for `K^2` also remains to be bound to the certified
+  nonzero fractional coefficient.
+- **Next lever:** determine whether the actual schedule supplies a
+  finite-`(f,L)` orbit at all; only then construct a selected local carrier
+  near the July branch point and bind it to the existing analytic-root and
+  exceptional-endpoint arithmetic kernels.
+
+#### v111 preregistered semidirect schedule-to-orbit kernel
+
+- **Eigenquestion:** does the zero-face group factorization itself force the
+  finite-source twisted orbit equation after the arbitrary target factor is
+  eliminated?
+- **Prediction:** in every semidirect product `N semidirect G`,
+  `(K,1)=(1,t)(L,f)` implies `t=f^-1` and `K=f^-1 acts on L`.
+- **Orientation control:** the reversed equation
+  `(K,1)=(L,f)(1,t)` instead implies `K=L`; the two orientations may not be
+  conflated.
+- **Kill condition:** failure of either coordinate projection, an action by
+  `f` instead of `f^-1`, or an identical module law in both orientations.
+- **Boundary:** the theorem consumes a supplied semidirect factorization.
+  It does not derive that factorization, finite source critical support, the
+  July action identification, a selected endpoint branch, or the minimax
+  lower bound.
+
+##### v111 semidirect schedule-to-orbit outcome
+
+- **Result:** the abstract target-left factorization forces the inverse
+  actor orbit equation, while the target-right negative control leaves the
+  module coordinate untransported.
+- **Authority:** terminal theorem
+  `FormalSemidirectFactorizationOrbit.semidirect_factorization_orbit_terminal_certificate`;
+  closure-record SHA
+  `cfc115a3bfcc2d7501d2bce8c33a2b83d9045c5d647ce48db8153cbb00d8d04d`;
+  kernel-parity SHA
+  `9bdf4eeab31975fd6d43a8aeb9ff7dfbff80db129a0409b8c74d2b8d02d76350`.
+- **Information gain:** the infinite target D-log need not be polynomial.
+  It cancels in the Witt projection; the orbit obstruction correctly
+  quantifies over the finite source actor and finite source module residual.
+- **Next lever:** make the compiler distinguish the all-schedule
+  semidirect-realization arrow from the already-existing conditional
+  finite-polynomial density-orbit exclusion, then build the Jacobian
+  realization receipt.
+
+#### v112 preregistered support-to-cost critical finiteness
+
+- **Eigenquestion:** exactly when does a strict tail bound force a critical
+  face to have finite support?
+- **Prediction:** if every surviving row pays cost at least
+  `slope * row`, while the tail cost is eventually strictly smaller than
+  `slope * row`, then the support is eventually empty and finite; infinite
+  support forces threshold-paying rows past every cutoff.
+- **Negative control:** `support row := True` and `cost row := 0` retains
+  infinite support under a strict positive-slope tail.  The compiler must
+  accept this countermodel when the support-to-cost binding is absent.
+- **Kill conditions:** any proof that derives finiteness from tail cost
+  alone, assumes the support charge implicitly, or needs a global degree
+  bound instead of the rowwise implication.
+- **Boundary:** the reusable theorem does not establish the July source
+  support-to-cost dictionary, convert the limsup statistic to an eventual
+  inequality, construct the schedule factorization, or apply to the cheap
+  target diagonal.  Those remain adapter obligations.
+
+##### v112 support-to-cost outcome
+
+- **Result:** the general kernel derives eventual vanishing, finite critical
+  support, and late threshold payments from the two typed inequalities; the
+  zero-cost/infinite-support negative control also compiles.
+- **Authority:** terminal
+  `FormalFilteredCriticalSupport.filtered_critical_support_terminal_certificate`;
+  closure-record SHA
+  `306c6ae9b3ebf749437139baf182a012a094c0ae6122bbaaaf4394c3414cf264`;
+  kernel-parity SHA
+  `f35fa02f3c47ec0fbba27903b42d29f4d6589b6aea2325da75c35a4aa5542a46`.
+- **Compiler consequence:** the existing filtered-obstruction owner now
+  requires separate all-row receipts for strict tail and support charge.
+  Seven focused tests pass; missing-charge and filtration-graft controls are
+  rejected.
+- **Next lever:** instantiate the source support-to-cost and strict-limsup
+  arrows for every July zero-face source schedule, then apply v111 to the
+  resulting finite source semidirect coordinates.
+
+#### v113 preregistered substitution-specialization kernel
+
+- **Eigenquestion:** does critical coefficient evaluation automatically
+  transport the complete Rees endpoint factorization with the correct
+  substitution orientation?
+- **Prediction:** every coefficient ring homomorphism commutes with
+  power-series substitution, so a complete `subst inner outer = residual`
+  identity yields the mapped identity in the same order; the reversed
+  complete identity yields only the reversed mapped identity.
+- **Discriminating test:** remove the finite July carrier's assumed critical
+  endpoint factorization and derive it from a complete residual binding plus
+  complete endpoint factorization.
+- **Kill conditions:** factor reversal, an unnecessary bijectivity premise,
+  or retention of the specialized equation as input data.
+- **Boundary:** this is an identity-transport theorem.  It does not build
+  schedule endpoints, flow witnesses, source support receipts, or the
+  infinite-support semidirect action.
+
+##### v113 substitution-specialization outcome
+
+- **Result:** existing theorem
+  `FormalAutonomousFlow.map_endpoint_composition` transports the complete
+  endpoint equation through critical coefficient evaluation in the declared
+  substitution order.  Both July Rees carriers now derive the critical
+  equation from complete residual data; neither retains it as an input.
+- **Authority:** the regular-Rees terminal has closure-record SHA
+  `e22e4bbe0db63cdb1c9034860fffbe3cd7f01047de39335a73fb47755e743431`
+  and kernel-parity SHA
+  `1fa51ca9ea1988703b803aa248b36e41fc5c4863a2dd5a598af44a1aee499459`.
+  The row-computed schedule terminal has closure-record SHA
+  `a5cb12f07dc0ac9f59914f9ac7898c992a6f7476a396c5ddec52061d0346d334`
+  and kernel-parity SHA
+  `ceb68c5f40cef78e30ec7f1e5ff9dbcbe87bc91e26c3ab182de3dc000c2a16ab`.
+- **Information gain:** the finite branch no longer asks an adapter to prove
+  the same endpoint identity twice.  It still owes complete endpoint/flow
+  construction and residual binding from the actual schedule; the infinite
+  target-critical branch is unchanged.
+- **Next lever:** derive finite source-critical support from the July
+  source-cost dictionary and a strict asymptotic margin, then bind the
+  resulting finite source coordinates to the zero-face semidirect carrier.
+
+#### v114 preregistered positive-margin affine source support
+
+- **Eigenquestion:** does a uniform positive margin below rate two force
+  finite July source-critical support despite the critical-row/log-order
+  shift, and is that margin sharp?
+- **Prediction:** from eventual
+  `d*cost(n+1) + m*(n+1) <= d*slope*(n+1)` with `d,m>0`, derive eventual
+  `cost(n+1) < slope*n`; compose it with the support charge to obtain finite
+  support.  The July normal-two and normal-three coordinate costs both
+  simplify to `2*n`.
+- **Negative control:** `cost(q)=2*(q-1)` is pointwise below `2*q` for
+  positive `q`, pays the exact `2*n` charge at `q=n+1`, and permits support
+  in every row.  Zero uniform margin must therefore fail.
+- **Category correction:** consolidate v112 into the pre-existing
+  `ZtareProofs.FilteredCriticalSupport` owner instead of retaining a second
+  near-duplicate module.
+- **Kill conditions:** any missing positivity premise, erasure of the affine
+  shift, implicit source noncancellation, or inference about target-critical
+  support.
+- **Boundary:** the family adapter still owes the theorem that a nonzero
+  critical source coordinate survives in the complete source row with cost
+  at least its coordinate degree.  Schedule factorization, twisted action,
+  selected continuation, and the minimax lower bound remain outside v114.
+- **Scratch forecast:** `PL-SCRATCH-18baa5af8e01`.
+
+##### v114 positive-margin affine source-support outcome
+
+- **Result:** the established `ZtareProofs.FilteredCriticalSupport` owner now
+  contains the support-to-cost theorem, the positive-margin affine-shift
+  theorem, and the pointwise-strict zero-margin countermodel.  The duplicate
+  v112 module and root import were removed.
+- **Generic authority:** terminal
+  `support_to_cost_affine_margin_terminal_certificate`; closure-record SHA
+  `6e3a4f284a4e64490a351e1074f0256ed87b349cf380f54cc3fe569e8111df09`;
+  kernel-parity SHA
+  `18312b83ce9bdd8800364e7035bcb058240c6baf8ed41ee5c2152279b39b4046`.
+- **July correction:** the initial prediction that both exact coordinate
+  degrees equal `2*row` was false.  In the moving chart the exact source
+  vector degrees are `2*row+3` (normal two) and `2*row` (normal three); their
+  common lower charge is `2*row`.
+- **July authority:** corrected terminal
+  `AxiomPackJacobianCriticalSourceCost.`
+  `critical_source_cost_terminal_certificate`; closure-record SHA
+  `20ea74d4372b74efd326c62c503c3f3abb250d5bb0d053e969bbf30b8b90f9f2`;
+  kernel-parity SHA
+  `d644ea94a15997c47b63296320f1726dcc812e600dff37d5c12abd8f5bc2b3d8`.
+- **Information gain:** a uniform positive margin is exactly what absorbs
+  the critical-row/log-order offset.  Pointwise `cost(q)<2*q` does not: the
+  explicit infinite-support sequence `cost(q)=2*(q-1)` saturates the
+  critical `2*n` charge.
+- **Remaining edge:** bind every actual nonzero normal-two/normal-three
+  critical coordinate to the complete source row cost without degree-lowering
+  cancellation, then use its finite support to construct the zero-face
+  source semidirect factor.  Target support and continuation remain separate.
+
+#### v115 preregistered sparse source-row visibility
+
+- **Eigenquestion:** can the v114 coordinate-visibility callbacks be derived
+  from the complete source row's finitely supported bivariate coefficients?
+- **Prediction:** for a sparse row `p : (Nat × Nat) →₀ R`, define complete
+  source cost as the support supremum of `a+b-3`.  A nonzero coefficient at
+  `(n+2,n+4)` or `(n,n+3)` then has cost at most the complete row cost by
+  finite-support membership, yielding the exact degrees `2*n+3` and `2*n`
+  and the common `2*n` support charge without an external visibility premise.
+- **Discriminating test:** extend the existing July source-cost owner with
+  the sparse-row carrier, prove coefficient-to-supremum visibility, and
+  derive finite coefficient-defined critical support from v114's positive
+  margin.  The terminal may not quantify over visibility callbacks.
+- **Kill conditions:** an external critical predicate not tied to a row
+  coefficient; an incorrect moving exponent pair; an omitted density shift;
+  or a hidden monomial-noncancellation premise.
+- **Boundary:** the actual schedule extractor must still be identified with
+  these coefficients.  Target support, semidirect carrier construction,
+  selected continuation, and the minimax lower bound remain open.
+- **Scratch forecast:** `PL-SCRATCH-d2e179848b80`.
+
+##### v115 sparse source-row visibility outcome
+
+- **Result:** complete source rows are now sparse bivariate coefficient maps,
+  complete cost is the support supremum of `a+b-3`, and nonzero critical
+  coefficients derive their own cost visibility through support membership.
+  Positive margin therefore forces finite coefficient-defined source-critical
+  support with no visibility callbacks.
+- **Authority:** terminal
+  `AxiomPackJacobianCriticalSourceCost.`
+  `critical_source_sparse_visibility_terminal_certificate`; closure-record SHA
+  `72532e2ba5644c9384401db6bec4d507e77b5c68a8428847ee082267287c29e2`;
+  kernel-parity SHA
+  `4923ff880207258605539f964d19ed11f892335aebf8fe11d19d6756504d947c`.
+- **Forecast:** `PL-SCRATCH-d2e179848b80` resolved `TRUE` against the governed
+  terminal.
+- **Information gain:** the former degree-lowering-cancellation concern was
+  a carrier-identity gap.  Once the actual row is one coefficient map, equal
+  exponents are already combined and a nonzero resulting coefficient belongs
+  to the same finite support whose supremum defines row cost.
+- **Next lever:** prove the schedule extractor/complete-row coefficient
+  identity, then use finite source support to construct the source side of the
+  zero-face semidirect carrier.  The target finite/infinite dichotomy remains.
+
+#### v116 preregistered twisted-density action and clock law
+
+- **Eigenquestion:** does the corrected row-indexed density transport form an
+  exact tangent-substitution action whose normalized clock is equivariant?
+- **Prediction:** for normalized `v` and tangent `phi`, define
+  `T_phi(v)=(v subst phi)*(phi')^(-3/2)` and
+  `S_v=integralZero(v^(-2/3))`.  Then `T_X=id`,
+  `T_psi(T_phi(v))=T_(phi subst psi)(v)`, and
+  `S_(T_phi(v))=S_v subst phi` in Mathlib's substitution argument order.
+- **Discriminating test:** prove the identity, composition, and clock laws
+  from formal substitution, the chain rule, and algebraic normalized-root
+  uniqueness; ratify one terminal containing all three.
+- **Negative control:** explicit noncommuting tangent endpoints must distinguish
+  `subst psi phi` from the reversed `subst phi psi`.
+- **Kill conditions:** orientation reversal, an assumed analytic branch,
+  failure to prove fractional-power product compatibility, or an unmatched
+  clock integration constant.
+- **Boundary:** schedule realization, selected continuation, local endpoint
+  carriers, and the minimax lower bound remain outside this action theorem.
+- **Scratch forecast:** `PL-SCRATCH-d718a6324eb3`.
+
+##### v116 twisted-density action and clock outcome
+
+- **Result:** normalized units and tangent endpoints now carry an exact
+  corrected tensor-density action.  Identity, noncommutative composition in
+  the declared substitution order, algebraic fractional-power compatibility,
+  and exact clock equivariance all compile.  A quadratic/cubic pair proves
+  that reversing the order changes the endpoint.
+- **Authority:** terminal
+  `ZtareProofs.FormalTwistedTensorDensityClockAction.`
+  `twisted_tensor_density_clock_action_terminal_certificate`;
+  closure-record SHA
+  `3b54af88cab04aa92c4f7d1c1da45c24305269af01ea532a47c1f6a82f4b99b5`;
+  kernel-parity SHA
+  `4e215ae713ec3cf5b1e80e3ab481995c10bb9f1451e05feb87061a5056253a53`.
+- **Forecast:** `PL-SCRATCH-d718a6324eb3` resolved `TRUE`.
+- **Information gain:** the twisted clock formula is now a group-action
+  theorem rather than an orientation-sensitive paper calculation.  The
+  remaining infinite-branch difficulty is realization and continuation, not
+  the formal clock identity.
+- **Next lever:** construct the typed infinite target-critical schedule
+  carrier that supplies a finite polynomial actor/residual orbit equation;
+  then attach the three selected-continuation endpoint carriers.
+
+#### v117 preregistered typed twisted semidirect action
+
+- **Eigenquestion:** can v111's abstract target-left semidirect projection be
+  instantiated by v116's exact tangent-substitution action, including the
+  induced density-clock identity?
+- **Prediction:** normalized units form a group, tangent endpoints form the
+  compositional group with `inner * outer = subst inner outer`, and twisted
+  transport defines a homomorphism into `MulAut`.  Therefore
+  `(K,1)=(1,t)(L,h)` forces `t=h^-1`,
+  `K=T_(h^-1)(L)`, and `S_K=S_L subst h^-1`.
+- **Discriminating test:** construct the two group instances from
+  power-series inverse and `substInv`, package the twisted transport as a
+  multiplicative automorphism action, and instantiate the existing abstract
+  semidirect theorem.  The final clock equation must follow from v116.
+- **Kill conditions:** reversed endpoint multiplication, failure of the
+  inverse action, use of `h` in place of `h^-1`, or accepting the orbit/clock
+  equations as fields.
+- **Boundary:** this pays the abstract-to-twisted-action bridge only.  The
+  actual strict schedule still has to construct the semidirect equality and
+  finite polynomial source logarithms; selected continuation and the minimax
+  lower bound remain open.
+- **Scratch forecast:** `PL-SCRATCH-5a04bef54fc7`.
+
+##### v117 normalized-unit action outcome
+
+- **Result:** refuted before implementation.  `T_phi(v*w)` contains one
+  derivative-density factor, while `T_phi(v)*T_phi(w)` contains two.
+  Normalized units therefore cannot be the normal group acted on by
+  multiplicative automorphisms.
+- **Forecast:** `PL-SCRATCH-5a04bef54fc7` resolved `FALSE` under the declared
+  plain-function-action kill condition.
+- **Information gain:** the semidirect normal group must retain additive
+  tensor densities.  Normalization to units is a later affine slice used by
+  the clock, not the group law.
+
+#### v118 preregistered additive density automorphism carrier
+
+- **Eigenquestion:** does tangent transport act by additive automorphisms on
+  arbitrary formal tensor densities, and does this instantiate v111 before
+  restricting to the normalized clock slice?
+- **Prediction:** `D_phi(C)=(C subst phi)*(phi')^(-3/2)` is additive, has
+  inverse `D_(phi^-1)`, and defines a tangent-endpoint homomorphism into
+  `AddAut`.  Transport through `Multiplicative` supplies the exact `MulAut`
+  action v111 expects.
+- **Discriminating test:** kernel-check the tangent endpoint group, additive
+  automorphism action, `Multiplicative` semidirect instantiation, and the
+  derived normalized-unit orbit plus clock equation.
+- **Kill conditions:** any doubled density factor, reversed substitution
+  product, assumed inverse action, or orbit/clock field in the carrier.
+- **Boundary:** the theorem consumes the target-left semidirect equality.  An
+  actual strict schedule must still construct it and prove finite polynomial
+  source logarithms; continuation and the minimax lower bound remain open.
+- **Scratch forecast:** `PL-SCRATCH-42814af9bd34`.
+
+##### v118 additive-density semidirect outcome
+
+- **Result:** the fixed-origin tangent endpoints form the intended
+  substitution group; arbitrary tensor densities carry an additive
+  automorphism action; and its `Multiplicative` transport instantiates the
+  abstract semidirect projection.  The normalized residual orbit and clock
+  substitution are derived from the target-left equality.
+- **Authority:** terminal
+  `ZtareProofs.FormalTwistedTensorDensityClockAction.`
+  `additive_density_semidirect_terminal_certificate`; closure-record SHA
+  `49b710e61c44447fe64947831cc176ac01de12fc2a3ca6a0d8bf2dce722901a1`;
+  kernel-parity SHA
+  `002036fe98424c2925204e360541c3dceaa09603ec32db0e4ef72699aafd5452`.
+- **Forecast:** `PL-SCRATCH-42814af9bd34` resolved `TRUE`.
+- **Information gain:** normalized units are an affine clock slice, while the
+  semidirect normal group is the additive density space.  The abstract action
+  identification is paid; schedule realization is not.
+- **Next lever:** construct the target-left semidirect equality and finite
+  source actor/module from the actual strict schedule, then attach selected
+  continuation.
+
+#### v119 preregistered zero-face schedule-support conjunction
+
+- **Eigenquestion:** can v115's coefficient-defined finite source support and
+  the exact finite-or-unbounded target diagonal Rees alternative be composed
+  into one support-level theorem without assuming either branch's later
+  realization data?
+- **Prediction:** a direct conjunction theorem over sparse source rows and
+  polynomial target rows compiles from the two existing owners under only the
+  positive affine source-margin hypotheses.
+- **Discriminating test:** kernel-check and LeanMill-ratify the conjunction of
+  finite critical source support with the exact target alternative: canonical
+  finite truncation or nonzero diagonal entries past every cutoff.
+- **Kill conditions:** any new coordinate-visibility callback, target degree
+  premise, source/target row identification, factorization field, flow,
+  endpoint, semidirect equation, or residual binding.
+- **Boundary:** the theorem is the support partition only.  It does not bind
+  the actual schedule extractor, derive a positive margin from strict limsup,
+  construct the finite branch, realize the infinite branch, or establish the
+  unrestricted minimax equality.
+- **Recurrence:** the general Python support compiler already exists as
+  `compile_filtered_critical_support`; v119 adds only the family-specific Lean
+  conjunction and introduces no competing compiler category.
+- **Scratch forecast:** `scratch_04f59b67bc279c02`.
+
+##### v119 zero-face schedule-support outcome
+
+- **Result:** one support-only terminal conjoins finite sparse
+  source-critical support with the exact target diagonal alternative:
+  canonical finite truncation or diagonal survival past every cutoff.
+- **Authority:** terminal
+  `AxiomPackJacobianZeroFaceScheduleSupport.`
+  `zero_face_schedule_support_terminal_certificate`; closure-record SHA
+  `eaf73f746cb623b3582199fd5e5711c3bc378049f2008b207cae49cd80596cda`;
+  kernel-parity SHA
+  `2c502ef79f6358a683db408a7407b2e03dfeeba5a35253050afade77b3ca4d0c`.
+- **Forecast:** `scratch_04f59b67bc279c02` resolved `TRUE`.
+- **Information gain:** the unconditional support partition needs no target
+  degree hypothesis and no synthetic branch record.  The schedule-row
+  identity and the realization maps remain visible obligations.
+- **Next lever:** derive the shifted strict tail used by v115 directly from
+  the ordinary source linear-growth limsup, then bind the actual schedule
+  extractor.
+
+#### v120 preregistered strict-limsup affine-shift bridge
+
+- **Eigenquestion:** does unshifted source
+  `LinearGrowth.linearGrowthSup cost < slope` imply eventual
+  `cost (row+1) < slope*row` and finite threshold-charged support?
+- **Prediction:** choose a finite real rate strictly between the EReal limsup
+  and slope, use Mathlib's eventual linear upper bound, then absorb the `+1`
+  through an Archimedean cutoff.
+- **Discriminating test:** extend the existing `FilteredCriticalSupport` owner
+  with the shifted strict-tail theorem and its finite-support consequence,
+  kernel-check, and LeanMill-ratify one terminal.
+- **Kill conditions:** a shifted limsup hypothesis, extra boundedness,
+  monotonicity, positive-margin data, merely pointwise strictness, or a weak
+  non-strict shifted conclusion.
+- **Boundary:** this pays only the ordinary-limsup arithmetic bridge.  Actual
+  schedule coefficient identities and both realization branches remain open.
+- **Scratch forecast:** `PL-SCRATCH-87448ef8ef85`.
+
+##### v120 strict-limsup affine-shift outcome
+
+- **Result:** unshifted `LinearGrowth.linearGrowthSup cost < slope` now
+  implies eventual `cost (row+1) < slope*row`, and therefore finite support
+  for every threshold-charged row predicate.
+- **Authority:** terminal
+  `ZtareProofs.FilteredCriticalSupport.`
+  `linear_growth_affine_shift_terminal_certificate`; closure-record SHA
+  `a5b466a9ac4db1ad5323c53455cbe8b443bae5f57a253bd4c15edd36591495ea`;
+  kernel-parity SHA
+  `e4686fd8715ce2fc3b0d32d7e25866bcc71cb1e3a9aca704598c75812b620715`.
+- **Forecast:** `PL-SCRATCH-87448ef8ef85` resolved `TRUE`.
+- **Information gain:** the positive-margin adapter premise was unnecessary;
+  strict ordinary upper linear growth supplies enough uniform room to absorb
+  the row/order shift.
+- **Next lever:** bind this theorem to the July sparse source cost and the
+  target diagonal partition, then attack the schedule-to-row identity.
+
+#### v121 preregistered declared-statistic July support split
+
+- **Eigenquestion:** can the July sparse support and target diagonal
+  alternative be concluded from the ordinary unshifted source
+  `linearGrowthSup < 2`, with the manual margin data removed?
+- **Prediction:** v120 plus v115 directly yields finite coefficient-defined
+  source support; conjoining v110's target dichotomy needs no new hypothesis.
+- **Discriminating test:** add and ratify a family source theorem and a
+  zero-face support terminal whose only asymptotic input is the declared
+  unshifted source statistic.
+- **Kill conditions:** wrong shifted cost sequence, retained
+  margin/denominator/cutoff, external visibility, or a weakened target branch.
+- **Boundary:** actual schedule-to-row identity and both realization branches
+  remain separate.
+- **Scratch forecast:** `PL-SCRATCH-eeb879bd1ab3`.
+
+##### v121 declared-statistic July support outcome
+
+- **Result:** the July source critical support is finite directly from
+  `linearGrowthSup sparseCompleteSourceCost < 2`; the zero-face terminal keeps
+  the exact finite-or-unbounded target diagonal alternative.
+- **Authority:** terminal
+  `AxiomPackJacobianZeroFaceScheduleSupport.`
+  `zero_face_schedule_support_of_linearGrowthSup_terminal_certificate`;
+  closure-record SHA
+  `acff60762c85dff1703df6ad02d47d48635287a8e62704f5522e263510faa6af`;
+  kernel-parity SHA
+  `199e75db1032e96b9aa9471a1faff13de61abc8133a82734ec53e024f5870635`.
+- **Forecast:** `PL-SCRATCH-eeb879bd1ab3` resolved `TRUE`.
+- **Information gain:** the support partition now uses the same source tail
+  statistic as the minimax problem.  No asymptotic adapter gap remains between
+  strict source rate and finite declared critical support.
+- **Next lever:** package the two finite source coordinate sequences as exact
+  polynomials, then bind them to the actual strict schedule.
+
+#### v122 preregistered finite source-coordinate polynomial packaging
+
+- **Eigenquestion:** does finite support of the two July sparse critical
+  source coordinates canonically yield two exact polynomial power series?
+- **Prediction:** pure diagonal rows `a_n*X^n` identify any scalar sequence
+  with its critical Rees residue; the existing finite-diagonal theorem then
+  packages each projected finite coordinate support.
+- **Discriminating test:** extend the established diagonal Rees owner with
+  pure-diagonal identification, then ratify a July terminal producing both
+  polynomial coordinates from the same sparse-row finite-support theorem.
+- **Kill conditions:** assumed cutoffs, detached support predicates, row-zero
+  mismatch, duplicate finite-series machinery, or realization data.
+- **Boundary:** actor/density normalization, semidirect realization, and
+  continuation remain separate.
+- **Scratch forecast:** `PL-SCRATCH-6bb65bdf3d27`.
+
+##### v122 finite source-coordinate polynomial outcome
+
+- **Result:** pure diagonal Rees rows canonically package a finite scalar
+  coefficient sequence as a polynomial power series.  The July terminal
+  applies this to both sparse critical source coordinates from their common
+  finite support.
+- **Authority:** terminal
+  `AxiomPackJacobianCriticalSourceCost.`
+  `critical_source_sparse_polynomial_coordinates_terminal_certificate`;
+  closure-record SHA
+  `c79b730de86585bda03d2c274e6dffb43e89ddb948eb79b5f38b8d8dbaafeddc`;
+  kernel-parity SHA
+  `4da99b3e30bee99e99df564afb9e2ad25f3a0d5be5b93ae8f5fc5030f79add36`.
+- **Forecast:** `PL-SCRATCH-6bb65bdf3d27` resolved `TRUE`.
+- **Information gain:** finite source support now yields explicit canonical
+  polynomial coordinates; no cutoff or polynomial carrier is accepted as an
+  input.
+- **Next lever:** prove the July actor/density normalization and derive the
+  semidirect factorization from the actual strict schedule.
+
+#### v123 preregistered Lie-coordinate/group-module distinction
+
+- **Eigenquestion:** do the two finite polynomial source logarithmic
+  coordinates from v122 force the additive module coordinate of the
+  semidirect group exponential to be polynomial?
+- **Prediction:** no.  For the existing row-indexed action,
+  `A=x, J=x^5` gives
+  `rho(A)^k J = 2^k*k!*x^(5+k)`, so exponential transfer has nonzero
+  coefficient `2^k/(k+1)` at every depth; target-left cancellation only adds
+  alternating signs.
+- **Discriminating test:** kernel-check the all-depth iterate formula, the
+  nonzero transfer coefficients, and nonpolynomiality of the associated
+  power series in the established polar tensor arithmetic owner.
+- **Kill conditions:** an action-orientation mismatch, spatial-degree
+  collisions between depths, a zero coefficient, or finite support.
+- **Boundary:** a negative result corrects the infinite-branch carrier but
+  does not exclude a schedule-specific resonant cancellation.  The repaired
+  branch must consume finite Lie data `(A,J)` and the exact semidirect
+  exponential transfer; it may not assume a polynomial group-module
+  coordinate.
+- **Scratch forecast:** `PL-SCRATCH-d019aaa77f6f`.
+
+##### v123 Lie/group distinction outcome
+
+- **Result:** the finite polynomial pair `A=X, J=X^5` has checked iterates
+  `rho(X)^k(X^5)=2^k*k!*X^(5+k)`.  Its semidirect exponential module series
+  has nonzero coefficient `2^k/(k+1)` in every degree `5+k` and is not a
+  polynomial; target-left sign alternation preserves nonvanishing.
+- **Authority:** terminal
+  `AxiomPackJacobianPolarTensorInductionArithmetic.`
+  `tensor_lie_group_module_distinction_terminal_certificate`;
+  closure-record SHA
+  `f078f6860f5f1b371deac82b6a68839d74ec5e387349b6c463ca9eb263a14939`;
+  kernel-parity SHA
+  `2b2557b49a2005f96866c1e04fa7674c0ea5104d387773dd1249f7429722ebbb`.
+- **Forecast:** `PL-SCRATCH-d019aaa77f6f` resolved `TRUE`.
+- **Information gain:** v122 supplies polynomial Lie coordinates, not a
+  polynomial semidirect group-module coordinate.  The finite-`(f,L)` clock
+  branch needs an additional polynomiality theorem or must be replaced by a
+  transfer-aware obstruction.
+- **Next lever:** make the general density-clock compiler demand that missing
+  polynomiality arrow explicitly, then formulate the July terminal in finite
+  Lie coordinates plus exact exponential transfer.
+
+#### v124 preregistered density-clock polynomiality receipt
+
+- **Eigenquestion:** can the existing density-clock compiler distinguish
+  polynomiality of its group-module density `L` from polynomiality of an
+  upstream Lie-module logarithm?
+- **Prediction:** a fourth, separately scoped content-bound claim for exact
+  semidirect group-module polynomiality can be added to the existing compiler
+  without creating a second lifecycle.
+- **Discriminating test:** the complete fixture passes with four claims;
+  omission, finite-window scope, or claim substitution fails closed.
+- **Kill conditions:** folding polynomiality back into the orbit identity,
+  accepting finite-support Lie data as evidence, or weakening the selected
+  endpoint and local-lattice claims.
+- **Boundary:** this compiler repair exposes the July obligation but does not
+  discharge it or prove the minimax lower bound.
+- **Scratch forecast:** `PL-SCRATCH-a6642d08fc9f`.
+
+##### v124 density-clock compiler repair outcome
+
+- **Result:** the existing density-clock and algebraic-continuation compilers
+  now require a separately scoped exact receipt that `L` is a polynomial
+  semidirect group-module coordinate.  Finite Lie-module support is named as
+  an inadmissible inference source.
+- **Verification:** all 125 filtered-obstruction tests pass; omission and
+  finite-window polynomiality evidence fail closed.
+- **Forecast:** `PL-SCRATCH-a6642d08fc9f` resolved `TRUE`.
+- **Information gain:** AxiomPack now represents the distinction exposed by
+  v123 instead of relying on campaign prose.  The old finite-polynomial clock
+  theorem remains usable for categories that can prove its stronger premise.
+- **Next lever:** derive the zero-face target-left identity directly in Lie
+  coordinates as `K=((1-exp(-rho(A)))/rho(A))J`, then find an all-degree
+  obstruction for polynomial `A,J` against the July critical residual.
+
+#### v125 preregistered finite source Lie-coordinate normalization
+
+- **Eigenquestion:** do v122's scalar polynomials canonically construct the
+  July finite Lie pair with the audited row/intrinsic shifts?
+- **Prediction:** from normal-two `a` and normal-three `b`, the exact pair is
+  `f=2*X*a` and `J=X*(b+(3*X*a'+8*a)/9)`, with
+  `[X^(n+1)]J=b_n+(3*n+8)*a_n/9`.
+- **Discriminating test:** extend the existing source-cost owner over `QQ`,
+  derive all polynomials from the v122 finite-support theorem, and
+  kernel-check the exact power-series and coefficient identities.
+- **Kill conditions:** `+5` instead of the row-indexed `+8`, a missing outer
+  `X`, unshifted `a` used as the tangent field, or supplied polynomial
+  witnesses.
+- **Boundary:** this constructs Lie coordinates only; endpoints,
+  group-module polynomiality, schedule factorization, and the lower bound
+  remain downstream.
+- **Scratch forecast:** `PL-SCRATCH-b82346b2d1e4`.
+
+##### v125 finite source Lie-coordinate outcome
+
+- **Result:** strict source growth canonically produces scalar polynomials
+  `a,b` and the finite intrinsic Lie pair
+  `f=2*X*a`, `J=X*(b+(3*X*a'+8*a)/9)`.  The checked coefficient identity is
+  `[X^(n+1)]J=b_n+(3*n+8)*a_n/9`.
+- **Authority:** terminal
+  `AxiomPackJacobianCriticalSourceCost.`
+  `critical_source_finite_lie_coordinates_terminal_certificate`;
+  closure-record SHA
+  `d6ac4679ac0974b71b29bb2d5aef4f4d35c77299aaf8a58fd8e8d32eafbd0a49`;
+  kernel-parity SHA
+  `7cb570420e6b0afd27e4b5d72168cc2897a5d22a5810a6e0bb6f5a1cfcabaade`.
+- **Forecast:** `PL-SCRATCH-b82346b2d1e4` resolved `TRUE`.
+- **Information gain:** the outer coordinate shift, tangent scalar `2`, and
+  row-indexed `+8` are now fixed by the kernel.  The theorem constructs Lie
+  coordinates only and does not infer a polynomial group-module coordinate.
+- **Next lever:** prove the target-left Duhamel identity for the actual
+  zero-face schedule and obstruct its all-degree equality with the fixed July
+  residual.
+
+#### v126 preregistered target-left exponential convolution
+
+- **Eigenquestion:** does inverse-actor multiplication turn the source
+  semidirect exponential coefficient `D^j J/(j+1)!` into exactly
+  `(-1)^n D^n J/(n+1)!` at total depth `n`?
+- **Prediction:** the convolution reduces to the alternating binomial
+  identity
+  `sum_(i+j=n) (-1)^i/(i!*(j+1)!)=(-1)^n/(n+1)!`.
+- **Discriminating test:** kernel-check the factorial convolution and its
+  functorial action for every rational vector space and linear endomorphism
+  in the existing semidirect owner.
+- **Kill conditions:** wrong sign, wrong factorial shift, right-factor
+  orientation, or a theorem restricted to the July monomial counterexample.
+- **Boundary:** this pays the universal depthwise transfer only; July action,
+  spatial local finiteness, and actual-schedule factorization remain separate.
+- **Scratch forecast:** `PL-SCRATCH-c5fbc82a9035`.
+
+##### v126 target-left exponential convolution outcome
+
+- **Result:** for every rational module, linear action `D`, module vector
+  `J`, and total depth `n`, inverse-actor multiplication on the left converts
+  the source semidirect coefficient into
+  `(-1)^n D^n J/(n+1)!`.
+- **Authority:** terminal
+  `FormalSemidirectFactorizationOrbit.`
+  `semidirect_exponential_targetLeft_terminal_certificate`;
+  closure-record SHA
+  `e7e3d553e9649a1f564ef816cdd875e9603ef81fb5367e0209959f23726bde0b`;
+  kernel-parity SHA
+  `07494e54ad0083b3e0a35fa7e81d15680beb93ffff288eec72e8a5e15dde9cc5`.
+- **Forecast:** `PL-SCRATCH-c5fbc82a9035` resolved `TRUE`.
+- **Information gain:** the target-left sign and factorial shift are now
+  derived from the semidirect convolution, not carried by the July adapter.
+- **Next lever:** instantiate the linear action by the exact July tensor
+  operator, flatten action depth by its positive spatial filtration, and
+  bind that series to the strict zero-face schedule.
+
+#### v127 preregistered July tensor-action flattening
+
+- **Eigenquestion:** do `X|A` and `X|J` force
+  `X^(k+1)|rho(A)^k J`, so the target-left action-depth series is locally
+  finite in spatial degree?
+- **Prediction:** the derivative loses at most one power of `X`, while the
+  leading `X*A` factor restores two, giving one net power per action.
+- **Discriminating test:** kernel-check the divisibility step, its all-depth
+  induction, every omitted spatial coefficient, and cutoff independence of
+  the flattened v126 transfer.
+- **Kill conditions:** actor/tangent-generator confusion, missing actor
+  vanishing, unproved derivative divisibility, or a finite-window sum called
+  an infinite transfer.
+- **Boundary:** actual-schedule zero coefficients, Lie-coordinate identity,
+  group factorization, and fixed-residual equality remain downstream.
+- **Scratch forecast:** `PL-SCRATCH-ab6ca4889869`.
+
+##### v127 July tensor-action flattening outcome
+
+- **Result:** `X|A` and `X|J` imply
+  `X^(k+1)|rho(A)^k J` at every action depth.  The resulting target-left
+  transfer is a coefficientwise locally finite power series, and any cutoff
+  beyond the requested spatial degree computes the same coefficient.
+- **Authority:** terminal
+  `AxiomPackJacobianPolarTensorInductionArithmetic.`
+  `tensor_action_spatial_flattening_terminal_certificate`;
+  closure-record SHA
+  `33b6be97da3cd5069e2085e3211d0f4a8b7bc0ab53ef828a154da9e86efacd2e`;
+  kernel-parity SHA
+  `591e948bb6d82ea32f485a7cd6540c71d35c26c7c51e00f9b38cfbe0aa0f55c2`.
+- **Forecast:** `PL-SCRATCH-ab6ca4889869` resolved `TRUE`.
+- **Information gain:** the false polynomial-group-coordinate route has a
+  correct replacement: finite Lie data can produce an infinite but formally
+  well-defined target-left density transfer.
+- **Next lever:** bind v125's actor/module to one actual schedule, derive
+  their origin vanishing, and identify the flattened transfer with the fixed
+  July residual before attempting its all-degree exclusion.
+
+#### v128 preregistered strict-source transfer composition
+
+- **Eigenquestion:** does strict source growth alone construct the intrinsic
+  actor `Ahat=X*a`, module `J=X*j`, and their locally finite target-left
+  transfer, with tangent generator exactly `f=2*Ahat`?
+- **Prediction:** v125 supplies the canonical finite `a,J`; both outer
+  `X` factors discharge v127's divisibility hypotheses definitionally.
+- **Discriminating test:** compose the two ratified terminals without caller-
+  supplied polynomials, cutoffs, vanishing facts, or transfer coefficients.
+- **Kill conditions:** use of `a` or `f` as the action actor, a missing factor
+  `2`, a missing `X`, or a fixed truncation.
+- **Boundary:** equality with the fixed residual and the all-degree exclusion
+  remain separate.
+- **Scratch forecast:** `PL-SCRATCH-327d2b81295b`.
+
+##### v128 strict-source transfer composition outcome
+
+- **Result:** strict source growth canonically constructs
+  `Ahat=X*a`, `f=2*Ahat`, `J=X*j`, their exact row/series bindings, both
+  origin divisibilities, and every coefficient of the locally finite
+  target-left Duhamel transfer.
+- **Authority:** terminal
+  `AxiomPackJacobianCriticalSourceTransfer.`
+  `critical_source_lie_to_transfer_terminal_certificate`;
+  closure-record SHA
+  `f42bc170ed0bb6d397f36447430ce7d1db1531b06731df5abaa7dc7928361196`;
+  kernel-parity SHA
+  `81f2d0515a37e3d10c35a792854c87fe1c0b113607b7cff96e883eadf2b1d605`.
+- **Forecast:** `PL-SCRATCH-327d2b81295b` resolved `TRUE`.
+- **Information gain:** finite source Lie data now reaches a canonical
+  generally infinite group-module transfer without the invalid polynomiality
+  inference.
+- **Next lever:** prove the actual zero-face schedule equation equating this
+  transfer with the fixed July residual, then attack its all-degree
+  incompatibility with polynomial `Ahat,J`.
+
+#### v129 preregistered transfer-aware polynomial-prefix search
+
+- **Eigenquestion:** for fixed degree caps on origin-vanishing polynomial
+  `A,J`, when do the exact equations
+  `K=((1-exp(-rho(A)))/rho(A))*J` first become inconsistent with the fixed
+  July residual?
+- **Prediction:** every fixed cap eventually fails, and the failures expose
+  either a stable resonance/leading-coefficient invariant or a systematic
+  degree-versus-prefix law.
+- **Discriminating test:** reuse the checked residual orientation, construct
+  the locally finite target-left transfer exactly over `QQ`, solve escalating
+  cap/prefix systems, and retain the first exact incompatibility certificate.
+- **Kill conditions:** no inference from a finite cap to the all-order claim;
+  no floating solve or rank-only surrogate; no instantaneous/logarithmic
+  coordinate conflation; no second independently oriented residual replay.
+- **Boundary:** the search selects the next all-order theorem.  It does not
+  supply the actual-schedule equality and cannot by itself establish the
+  minimax lower bound.
+- **Scratch forecast:** `PL-SCRATCH-16bbafe746dd`.
+
+##### v129 transfer-aware polynomial-prefix outcome
+
+- **Result:** all six preregistered degree caps generate the unit ideal at an
+  exact finite prefix.  Their first failure degrees are `3,4,5,6,7,8`, equal
+  to `degree(A)+degree(J)+1` throughout the grid.
+- **Verification:** the replay consumes the existing checked residual,
+  inverts and replays the target-left transfer exactly, and uses rational
+  Groebner bases; every terminal basis is `[1]`.
+- **Forecast:** `PL-SCRATCH-16bbafe746dd` resolved `TRUE`.
+- **Information gain:** no cap-uniform fixed-jet contradiction appeared.
+  Actor coefficients postpone failure one order at a time, so the next
+  theorem must control arbitrary finite degree through continuation,
+  ramification, or a global differential invariant.
+- **Boundary:** the observed degree law is not extrapolated beyond the
+  declared grid, and the schedule-to-transfer equality is still separate.
+
+#### v130 preregistered Duhamel ramification parity
+
+- **Eigenquestion:** can a polynomial tensor-density Duhamel transfer acquire
+  the July residual's first fractional exponent `3/2` on a through-infinity
+  sheet or a multiple-equilibrium transition?
+- **Prediction:** both exponent equations are parity-impossible.  Infinity
+  would require `2*e=2*d+5`; a transition with multiplicities `m,n>=2`
+  would require `(m-1)*(2*q-2*n-1)=0`.
+- **Discriminating test:** add both cleared-denominator arithmetic theorems
+  and a simple-equilibrium negative control to the existing tensor-density
+  endpoint owner, then kernel- and LeanMill-ratify one terminal.
+- **Kill conditions:** wrong actor/vector-field degree shift, a statement
+  restricted to one leading monomial, or accidental exclusion of the simple
+  equilibrium route.
+- **Boundary:** the characteristic formula, continuation routing, and the
+  remaining simple-equilibrium branch are not supplied by the arithmetic
+  terminal.
+- **Scratch forecast:** `PL-SCRATCH-15cc975f46b4`.
+
+##### v130 Duhamel ramification parity outcome
+
+- **Result:** through-infinity and multiple-equilibrium Duhamel carriers
+  cannot produce first exponent `3/2`; the kernel derives the two parity
+  contradictions and retains the simple-equilibrium negative control.
+- **Authority:** terminal
+  `FormalTensorDensityClockEndpointArithmetic.`
+  `tensor_density_duhamel_ramification_arithmetic_terminal_certificate`;
+  closure-record SHA
+  `849d2a9d7c493c1d2896c4f9779f48b93ff27ea1b2aab7365f9b2bbee445bbae`;
+  kernel-parity SHA
+  `9f071ea12770468df2420a73862c49158f3e15d19fee7860ff64d2f1bf99b7b8`.
+- **Forecast:** `PL-SCRATCH-15cc975f46b4` resolved `TRUE`.
+- **Information gain:** the continuation obstruction is no longer a generic
+  Puiseux problem.  Only the simple-start equilibrium branch is locally
+  compatible with the July `3/2` residual term.
+- **Next lever:** combine the fixed July value/coefficient data with the
+  semidirect characteristic identity on a simple-equilibrium transition.
+
+#### v131 preregistered same-row zero-face partition
+
+- **Eigenquestion:** can one kernel terminal bind v128's canonical strict-
+  source transfer and the target diagonal support dichotomy to the same row
+  schedule?
+- **Prediction:** a named source-row proposition plus the existing support
+  theorem yields the joint partition without new algebra or supplied branch
+  carriers.
+- **Discriminating test:** consume only source rows, target rows, and
+  `linearGrowthSup<2`; construct the canonical source transfer and a
+  proposition-level target finite/infinite alternative.
+- **Kill conditions:** crossed row families, supplied cutoffs/polynomials,
+  an opaque branch flag, or finite/infinite realization objects smuggled into
+  the support theorem.
+- **Boundary:** finite Rees endpoints and the infinite fixed-residual
+  semidirect equality remain branch-specific constructors.
+- **Scratch forecast:** `PL-SCRATCH-ef9acb2fe481`.
+
+##### v131 same-row zero-face partition outcome
+
+- **Result:** one strict-source theorem now constructs the canonical source
+  actor/module transfer and the exact target finite/infinite diagonal split
+  on the same supplied row families.
+- **Authority:** terminal
+  `AxiomPackJacobianZeroFaceScheduleSupport.`
+  `zero_face_same_row_transfer_partition_terminal_certificate`;
+  closure-record SHA
+  `5e567bde6f7dda3628b4c7eec9a7bf2e519ef2801e97c18f51ac10d089e821ff`;
+  kernel-parity SHA
+  `80219f167cf4e294646efa8edc814e83b9c7ca807de83e06411c119d4a2cf760`.
+- **Forecast:** `PL-SCRATCH-ef9acb2fe481` resolved `TRUE`.
+- **Information gain:** the induction fork no longer permits a source
+  transfer from one row family and a target support branch from another.
+- **Next lever:** construct the finite target branch's complete regular Rees
+  endpoints from these same schedule rows, then return to the infinite
+  simple-equilibrium branch.
+
+#### v132 preregistered mixed-adic Rees-flow construction audit
+
+- **Eigenquestion:** do the finite-branch row hypotheses imply that every
+  monomial `X^p epsilon^q` in the complete Rees tangent generator has
+  `p+q>=2`, making `exp(g*d/dX) X` coefficientwise finite?
+- **Prediction:** the outer `X` kills every spatial-constant coefficient and
+  the critical scalar constant kills the unique mixed-degree-one coefficient
+  `X*epsilon^0`; iteration then raises mixed total degree by at least one.
+- **Discriminating test:** audit existing repo/Mathlib exponential machinery,
+  kernel-probe both smallness premises from the current schedule, and specify
+  the smallest constructor yielding the endpoint, Julia identity, map
+  compatibility, and zero-specialization law.
+- **Kill conditions:** a surviving mixed-degree-zero/one monomial, an
+  unproved coefficientwise infinite sum, a strengthened row hypothesis, or a
+  duplicate autonomous-flow category.
+- **Boundary:** generic endpoint construction does not identify the composed
+  endpoint with the fixed July residual; that same-schedule binding remains a
+  separate finite-branch obligation.
+- **Scratch forecast:** `PL-SCRATCH-2300dcc21414`.

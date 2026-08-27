@@ -1,0 +1,174 @@
+{
+  "arm_order": [
+    "offer",
+    "withhold"
+  ],
+  "experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+  "fork_authority": {
+    "branches": [
+      {
+        "assignment": "offer",
+        "branch_turn_id": "019fe2c9-62af-7c41-b61b-766a5d05142a",
+        "fork_receipt_sha256": "49b4dbb8caced454dc2e4f70ceefac8044220139d84bcc4c43030c974989feac",
+        "fork_thread_id": "019fe2c9-61dd-7011-875f-246ab6f23f26",
+        "turn_receipt_sha256": "30ddfc2885787807082749b7dae63589efc87f2be1b531a1e08ecd06c8a8d041"
+      },
+      {
+        "assignment": "withhold",
+        "branch_turn_id": "019fe2ca-0cb4-7193-8a1e-c3e7066166e9",
+        "fork_receipt_sha256": "bf20f3cfa9b5615fca5045d4d0f581d1a93c9a3058ee8fc9c59cea74ad5986b1",
+        "fork_thread_id": "019fe2ca-0bc5-7b01-b6fe-5c63050b5cf4",
+        "turn_receipt_sha256": "9e7957d7412b1d701bbebc829dc21db88a6c4e89380f7f71133472c99516824d"
+      }
+    ],
+    "compatibility_authority": {
+      "child_count": 2,
+      "child_previous_response_ids": [
+        "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+        "019fe2c8-7a47-7992-9554-0bc3bd47a3ea"
+      ],
+      "child_response_ids": [
+        "019fe2c9-62af-7c41-b61b-766a5d05142a",
+        "019fe2ca-0cb4-7193-8a1e-c3e7066166e9"
+      ],
+      "parent_response_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+      "reasoning_context": "all_turns",
+      "schema": "ztare-responses-counterfactual-fork-v1",
+      "shared_parent": true
+    },
+    "controller_transport": "codex_app_server",
+    "parent_thread_id": "019fe2c8-785c-7973-afdd-ea5c0c80186b",
+    "parent_turn_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+    "reasoning_context": "all_turns",
+    "schema": "ztare-app-server-counterfactual-fork-v1",
+    "sha256": "d733ed044f3ba57d08213daaade12f6abb6e6aefebb68d8a7198d49b3c4def1a",
+    "shared_parent": true
+  },
+  "kind": "matched_pair_settlement",
+  "offer_composite_minus_withhold": 0.0,
+  "offer_metrics": {
+    "efficiency_score": 0.0,
+    "information_yield": 1.0,
+    "information_yield_measure": "unique_settled_successor_observation_sha256s/action_budget",
+    "task_score": 0.0,
+    "unique_settled_successor_count": 20
+  },
+  "offer_outcome": {
+    "assignment": "offer",
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_01_offer.json#sha256=bbd6faf1fae39298a0a581658462f3298f128b3619076a21fd4da40f4d7302e4",
+    "external_value": 0.0,
+    "kind": "instrumented_proposal_outcome",
+    "net_external_value": 0.0,
+    "offer_cost": 0.0,
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "sha256": "ff6c055746ba44c7fa2ff0a15e6707d662c5733f07c803f92781b5ff63cbe82a",
+    "transition_sha256": "71e424b9700f3f2aafe42d57ca68403ae020f9307443678609f0b51ce2410611"
+  },
+  "offer_task_minus_withhold": 0.0,
+  "offer_transition": {
+    "assignment": "offer",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "changed_action": false,
+    "changed_path": true,
+    "changed_prediction": true,
+    "contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+    "controller_instance_sha256": "ec50837162ae4666e7e1088e8ec0226480e6423456228de6614839e1d3eb4180",
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+    "kind": "residual_proposal_transition",
+    "post_proposal_sha256": "f13afe73ae2eff84925342f97439730ede9d6b71df2e4bfa49832facbb8b3ad9",
+    "pre_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+    "pre_proposal_sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412",
+    "relation": "offered_supported_derivative",
+    "schema": "ztare-causal-response-derivative-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "71e424b9700f3f2aafe42d57ca68403ae020f9307443678609f0b51ce2410611",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "stratum_sha256": "5a73c8175bdc387e35ce590ffa183c5f0f8da966eaf39efe1449d933e4e580c4",
+    "supported_transport": true,
+    "trial_ref": "h97:pair-01:offer"
+  },
+  "pair_index": 1,
+  "pre_proposal": {
+    "action_ref": "0",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+    "controller_instance_sha256": "ec50837162ae4666e7e1088e8ec0226480e6423456228de6614839e1d3eb4180",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_refs": [],
+    "parent_proposal_sha256": "",
+    "predicted_consequence_ref": "sha256:e5c34d377d5eb918c35ff4237a28b9269730b8114efedee218bec430d970df86",
+    "proposal_ref": "sha256:e3b947166f3ce58f930eb2779bbfe63abfbec556d26a7fe98e754f14f734026b",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "shared_parent_response_id": "019fe2c8-7a47-7992-9554-0bc3bd47a3ea",
+  "withhold_metrics": {
+    "efficiency_score": 0.0,
+    "information_yield": 1.0,
+    "information_yield_measure": "unique_settled_successor_observation_sha256s/action_budget",
+    "task_score": 0.0,
+    "unique_settled_successor_count": 20
+  },
+  "withhold_outcome": {
+    "assignment": "withhold",
+    "external_outcome_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_01_withhold.json#sha256=58ad512bf88c028bda52216a0ac7fa129f5d9c26b6762df323b022aa32b519c4",
+    "external_value": 0.0,
+    "kind": "instrumented_proposal_outcome",
+    "net_external_value": 0.0,
+    "offer_cost": 0.0,
+    "primitive_action_cost": 20.0,
+    "schema": "ztare-instrumented-proposal-plasticity-v1",
+    "sha256": "8109ea3df808b64750427b5c7d5c0dcc4007bafa5c3c9cd626d7cf8aa858b732",
+    "transition_sha256": "36f17296ef6d119a04c683e758f32d623238988caf9edaca95a2f8253093d47c"
+  },
+  "withhold_transition": {
+    "assignment": "withhold",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "changed_action": false,
+    "changed_path": false,
+    "changed_prediction": true,
+    "contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+    "controller_instance_sha256": "ec50837162ae4666e7e1088e8ec0226480e6423456228de6614839e1d3eb4180",
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+    "kind": "residual_proposal_transition",
+    "post_proposal_sha256": "1700b2ed03237c867ee5a0636aace8ad86d3df3e6d0b23350a6c740b9f001d70",
+    "pre_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+    "pre_proposal_sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412",
+    "relation": "withheld_spontaneous_contradiction",
+    "schema": "ztare-causal-response-derivative-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "36f17296ef6d119a04c683e758f32d623238988caf9edaca95a2f8253093d47c",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "stratum_sha256": "5a73c8175bdc387e35ce590ffa183c5f0f8da966eaf39efe1449d933e4e580c4",
+    "supported_transport": false,
+    "trial_ref": "h97:pair-01:withhold"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "checks": {
+    "authority_and_source_edits_refused": true,
+    "distal_preferences_reconstructed": true,
+    "draft_collection_denies_task_credit": true,
+    "equal_outcomes_uninformative": true,
+    "expired_trace_refused": true,
+    "missing_observed_yield_evidence_refused": true,
+    "primitive_cost_unchanged": true,
+    "sealed_exact_source_pair_binds": true,
+    "undeclared_or_wrong_arm_refused": true,
+    "yield_calibration_separate": true
+  },
+  "claim_boundary": "controller-neutral offline episode collection and sealed replay binding; no ARC observed-yield instrument or live score claim",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-TWO-STAGE-ELIGIBILITY-LEDGER-20260807-100",
+  "research_isomorphism_candidate_sha256": "8c61f401aeb4fc808257690939e516f024a5c5867489a28b4a8de7e57e15fed8",
+  "schema": "ztare-h100-two-stage-eligibility-ledger-audit-v1",
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/common/test_two_stage_eligibility_ledger.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": ".............                                                            [100%]\n13 passed in 0.73s\n",
+    "stdout_sha256": "454583727d0491956b2efdb1bc3050065705b9e4a9c2711ff99f2d96a43f89f4"
+  }
+}

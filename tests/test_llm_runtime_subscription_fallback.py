@@ -191,6 +191,29 @@ def test_api_and_subscription_both_fail_raises(monkeypatch: pytest.MonkeyPatch) 
     assert "codex CLI timed out" in err
 
 
+def test_large_prompt_is_streamed_to_subscription_stdin(
+    monkeypatch: pytest.MonkeyPatch, tmp_path,
+) -> None:
+    from ztare.common import subscription_agent_runtime as subscription_runtime
+
+    prompt = "p" * (subscription_runtime.prompt_inline_max_bytes() + 1)
+    observed = {}
+
+    def _run_cli(command, **kwargs):  # noqa: ANN001
+        observed["command"] = command
+        observed["stdin_text"] = kwargs.get("stdin_text")
+        return subprocess.CompletedProcess(command, 0, stdout="answer", stderr="")
+
+    monkeypatch.setattr(subscription_runtime, "_run_cli", _run_cli)
+    response = LLMRuntime()._dispatch_via_codex_subscription(
+        prompt, "gpt-5.6-sol", repo=tmp_path, timeout_seconds=1
+    )
+
+    assert observed == {"command": observed["command"], "stdin_text": prompt}
+    assert observed["command"][-1] == "-"
+    assert response.text == "answer"
+
+
 # ── Test 6: CODEX_SERVABLE_FAMILIES constant is sane ─────────────────────────
 
 def test_codex_servable_families_constant() -> None:

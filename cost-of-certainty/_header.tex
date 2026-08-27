@@ -1,0 +1,30 @@
+
+\usepackage{newunicodechar}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{⊆}{\ensuremath{\subseteq}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{∨}{\ensuremath{\vee}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+% Greek letters appear inside \texttt code spans (fee γ, prevalence π); the MONO font has no Greek,
+% so route them through math mode too (renders in any surrounding font).
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{π}{\ensuremath{\pi}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+% Long snake_case / camelCase theorem names in narrow table columns overflow. seqsplit lets a monospace
+% identifier break anywhere needed (only at line-end, so names that fit stay intact). Applied to TABLE cells
+% only (post-processing below), so prose identifiers like `nonmathlib4` never break mid-word.
+\usepackage{seqsplit}
+% Prose snake_case names (e.g. no_history_enables_round_trip_arbitrage) also overflow at a line-end; allow a
+% break after each underscore document-wide. Safe: only underscores break, so `nonmathlib4` stays whole.
+\let\origunderscore\_
+\renewcommand{\_}{\origunderscore\allowbreak}
+% Keep the two wide tables inside the text block.
+\let\oldlongtable\longtable
+\AtBeginDocument{\setlength{\LTleft}{0pt}\setlength{\LTright}{0pt}}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-27T14:44:16Z",
+  "generated_at": "2026-07-23T04:17:43Z",
   "ledger_path": "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl",
   "recent_action_impact_rows": [
     {
@@ -434,6 +434,135 @@
       }
     },
     {
+      "action_impact_id": "ai_b45e9711117a5a4f",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "operator_card_ids": [
+          "OP-RMI-01",
+          "OP-MME-01",
+          "OP-AWR-01",
+          "OP-BCG-01"
+        ],
+        "operator_card_routes": [
+          {
+            "card_id": "OP-RMI-01",
+            "matched_terms": [
+              "semantic:-0.0225"
+            ],
+            "name": "Reflexive Mining Instrument Check",
+            "route_mode": "semantic_atlas",
+            "score": -2.25
+          },
+          {
+            "card_id": "OP-MME-01",
+            "matched_terms": [
+              "semantic:-0.0262"
+            ],
+            "name": "Meta-Language Edge Carrier",
+            "route_mode": "semantic_atlas",
+            "score": -2.62
+          },
+          {
+            "card_id": "OP-AWR-01",
+            "matched_terms": [
+              "semantic:-0.0263"
+            ],
+            "name": "Autoresearch Workbench Routing",
+            "route_mode": "semantic_atlas",
+            "score": -2.63
+          },
+          {
+            "card_id": "OP-BCG-01",
+            "matched_terms": [
+              "exception"
+            ],
+            "name": "Branch-Coverage Gate",
+            "route_mode": "lexical_fallback",
+            "score": 2.0
+          }
+        ],
+        "project_family": "projects/arc3_ls20_gov",
+        "rubric_ready": true,
+        "stable_evaluator": true,
+        "task": "Test whether consumer-indexed state-action support and exception-weighted acquisition repair ARC Level 3 exploration without game-specific coordinates",
+        "why_not_autoresearch": "The principal explicitly restricted this investigation to Codex-only probes; invoking the configured autoresearch worker would call other model runtimes. Use deterministic bank analysis, code tests, and governed environment actions only.",
+        "workbench_router_decision": "invoke_autoresearch",
+        "worker": {
+          "transport": "api",
+          "worker_archetype": "fungible_llm_call",
+          "worker_capability": "bare_llm_call",
+          "worker_identity": "fungible",
+          "worker_state": "stateless_externalized_briefing"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_arc3_canonical_acquisition_20260723",
+        "domain": "agentic_workbench",
+        "project_id": "projects/arc3_ls20_gov",
+        "stage": "pretick",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "router decision invoke_autoresearch; selected stay_out_of_loop"
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": [],
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-07-23T04:17:42Z",
+      "schema_version": 1,
+      "selected_action": "stay_out_of_loop",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_arc3_canonical_acquisition_20260723.json"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_arc3_canonical_acquisition_20260723.json"
+        ]
+      }
+    },
+    {
       "action_impact_id": "ai_ebe823d77a3fa764",
       "candidate_actions": [
         "run_now",
@@ -595,8 +724,8 @@
     "source_health": "analytics/public/action_intelligence/state/source_health.json"
   },
   "summary": {
-    "action_impact_rows": 7,
-    "agentic_workbench_rows": 5,
+    "action_impact_rows": 8,
+    "agentic_workbench_rows": 6,
     "blocking_source_health_issues": 0,
     "consumed_surfacing_events": 0,
     "forecast_ops_rows": 2,

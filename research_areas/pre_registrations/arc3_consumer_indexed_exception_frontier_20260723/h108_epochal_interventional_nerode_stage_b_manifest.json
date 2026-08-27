@@ -1,0 +1,64 @@
+{
+  "acquisition_protocol": {
+    "arm_order": [
+      [
+        "offer",
+        "withhold"
+      ],
+      [
+        "withhold",
+        "offer"
+      ]
+    ],
+    "controller_transport": "codex_app_server",
+    "output_dir": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout",
+    "pair_count": 2,
+    "primitive_action_cost_per_arm": "20/1",
+    "script_file_sha256": "24db4cc5078b39bc4d46261df0237c910fa84d4dfd8d76c8ad509ec0e332ef9c",
+    "script_ref": "scripts/public/control/arc3_causal_response_derivative_probe.py",
+    "settlement_script_file_sha256": "6ce20a528b752aa11f91eaa3d61779502154696366520092201a9c72c9028226",
+    "settlement_script_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_stage_b_settlement.py",
+    "source_h97_experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+    "timeout_seconds": 900.0
+  },
+  "authority_correction_refs": [
+    "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_pre_live_observation_occurrence_authority_amendment.md",
+    "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_pre_live_subscription_fork_transport_amendment.md"
+  ],
+  "claim_boundary": {
+    "compounding_supported": false,
+    "literature_novelty_claimed": false,
+    "supercriticality_supported": false,
+    "takeoff_supported": false
+  },
+  "environment_contact": false,
+  "frozen_epoch_sha256": "04aa622b06d79fd73594bbe4c4e8337bf23b652b287fb7efe885b30b672b52c5",
+  "hypothesis_id": "H-GPSA-EPOCHAL-INTERVENTIONAL-NERODE-CONSOLIDATION-20260808-108",
+  "kind": "prospective_withheld_branch_prediction",
+  "schema": "ztare-h108-epochal-interventional-nerode-stage-b-manifest-v1",
+  "sealed_prediction": {
+    "predicted_sign": "positive",
+    "predicted_value_delta": "89/200",
+    "projection": [],
+    "quotient_key": [],
+    "state_sha256": "89e71c631456870b2b0d4d4965abd259802066a50757c4151d2c974d27ba3a45"
+  },
+  "sha256": "1c75388b9fc349107d1ee4035bf05fee8cfe35632ace0a8efec6f099e2ca8a4e",
+  "stage_a_result_file_sha256": "2e4fc3762bd1f5614735c77dccbc27bb49b07b6aaf75e80cf468fa9b82e6424f",
+  "stage_a_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_stage_a_result.json",
+  "stage_a_result_sha256": "16b27144963d13b2651315172717b578ee16cde6c95825c41a071822f5b14e5d",
+  "status": "frozen_before_holdout_contact",
+  "success_criterion": {
+    "fresh_exact_fibers": 2,
+    "minimum_positive_pairs": 1,
+    "negative_pairs": 0,
+    "nonnegative_total_task_delta": true,
+    "offer_supported_transport_rate": "2/2",
+    "positive_mean_value_delta": true,
+    "positive_sign_predictions_correct": "2/2",
+    "promoted_child_count": 1,
+    "response_reproduction_change": "0->1",
+    "single_frozen_state": true,
+    "withhold_supported_transport_rate": "0/2"
+  }
+}

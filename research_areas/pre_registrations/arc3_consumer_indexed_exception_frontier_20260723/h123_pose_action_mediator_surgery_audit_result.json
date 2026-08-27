@@ -1,0 +1,228 @@
+{
+  "arm_order": [
+    "pose_only_placebo",
+    "pose_action_map"
+  ],
+  "arms": {
+    "pose_action_map": {
+      "action_sequence": [
+        3,
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1
+      ],
+      "all_exchange_outputs_parse": true,
+      "all_exchange_returncodes_zero": true,
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "exchange_actions_match_report": true,
+      "first_prediction": "Move the marked 3x3 color-9 piece right through the open corridor; upward is blocked by the color-2 block directly above.",
+      "levels_gained": 0,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 0,
+        "first_terminal_action": 5,
+        "observation_count": 11,
+        "transition_rows": [
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 1,
+            "boundary_kind": "terminal_state:GAME_OVER",
+            "kind": "epoch_boundary",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 2,
+            "boundary_kind": "reset_before_action",
+            "kind": "reset_boundary",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 2,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 2,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 2,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 2,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          }
+        ]
+      },
+      "report_sha256": "9d9c8cd21645dc3a325cac1079b8a067adafe2163799057bc9d2472754a7cc43",
+      "schema_counts": {
+        "ztare-arc3-probe-final-result-v1": 1,
+        "ztare-arc3-probe-run-manifest-v1": 1,
+        "ztare-arc3-probe-turn-checkpoint-v1": 10,
+        "ztare-codex-subscription-exchange-v1": 10
+      },
+      "stable_session": true,
+      "trace_schema_counts_match": true,
+      "trace_sha256": "b45386e1412c96c47d62c58433b3d4bbd01be2c787eeb78513f33610e7600681"
+    },
+    "pose_only_placebo": {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "all_exchange_outputs_parse": true,
+      "all_exchange_returncodes_zero": true,
+      "capsule_is_one_shot": true,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "exchange_actions_match_report": true,
+      "first_prediction": "Test whether action 0 is north: the mover should advance from the lower-left start to the black node directly above; other outcomes will identify or exclude that direction mapping.",
+      "levels_gained": 1,
+      "replay": {
+        "all_observations_match": true,
+        "final_levels_completed": 1,
+        "first_terminal_action": 10,
+        "observation_count": 11,
+        "transition_rows": [
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 0,
+            "boundary_kind": null,
+            "kind": "unclassified",
+            "levels_completed": 0
+          },
+          {
+            "adapter_epoch": 1,
+            "boundary_kind": "level_completed",
+            "kind": "epoch_boundary",
+            "levels_completed": 1
+          }
+        ]
+      },
+      "report_sha256": "5d57d352f4235dd613cfac186fda4cd27e8410bb593cb4b2a18c7e341e0f716e",
+      "schema_counts": {
+        "ztare-arc3-probe-final-result-v1": 1,
+        "ztare-arc3-probe-run-manifest-v1": 1,
+        "ztare-arc3-probe-turn-checkpoint-v1": 10,
+        "ztare-codex-subscription-exchange-v1": 10
+      },
+      "stable_session": true,
+      "trace_schema_counts_match": true,
+      "trace_sha256": "0848390f140be3f8984ddfd8b4051f00484a1f7787ad80ed00158b6a7099c033"
+    }
+  },
+  "capsule_receipt": {
+    "pair_sha256": "b4f86b327d8438c0c2bc77f6acfb6846a5812ca7f19fa060cc272dddac3c79ab",
+    "pose_action_map_sha256": "d3487e433a94e317a3a8fda32da12c9fdd28a297727c834763dc68bcea93b09a",
+    "pose_only_placebo_sha256": "fbffa7c5c05d32205cdfdc95840c982df1b94553a057777a28da52ee7f16006d",
+    "rendered_prompt_bytes": 1173
+  },
+  "controller_contact": false,
+  "environment_contact": false,
+  "registered_disposition": "inverted_refuted",
+  "result_sha256": "2ceb8612a292aa66af7a7c7a5a0c07d608fda8936764ce1a07cc8f5497d4c966",
+  "schema": "ztare-h123-pose-action-mediator-surgery-audit-v1",
+  "settlement": {
+    "causal_levels": 0,
+    "disposition": "inverted_refuted",
+    "information_gain": "A correct actuator map was not a sufficient behavioral mediator in this pair. The uncertainty-bearing placebo selected the oracle route; the map arm selected a fatal head-on route.",
+    "placebo_levels": 1
+  },
+  "status": "passed"
+}

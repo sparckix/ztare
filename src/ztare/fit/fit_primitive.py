@@ -25,6 +25,9 @@ import math
 import re
 from dataclasses import dataclass, field
 
+from ztare.orchestrator.evidence_contract import EvidenceContractError, EvidenceSpec
+from ztare.fit.parsers import parse_evidence_typed
+
 try:
     import yaml as _yaml
 except ImportError:  # pragma: no cover
@@ -724,6 +727,7 @@ def _evaluate_discrete_exact(
     evidence_text: str,
     *,
     expression_grammar: str | None = None,
+    evidence_spec: EvidenceSpec | None = None,
 ) -> FitResult:
     """Evaluate a fully-specified expression against integer-valued evidence.
 
@@ -732,7 +736,17 @@ def _evaluate_discrete_exact(
     parameters.  Score = exact-match fraction after rounding both sides
     to nearest integer.
     """
-    parsed = parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
+    try:
+        parsed = (
+            parse_evidence_typed(evidence_text, evidence_spec)
+            if evidence_spec else parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
+        )
+    except EvidenceContractError as error:
+        return FitFailure(
+            failure_class="evidence_contract_error",
+            attempted_template=declaration.expression,
+            solver_diagnostics=str(error),
+        )
     if parsed is None:
         return FitFailure(
             failure_class="evidence_parse_error",
@@ -818,6 +832,7 @@ def fit_parameters(
     score_mode: str = "continuous_l2",
     n_starts: int = 1,
     gate_threshold: float = 0.05,
+    evidence_spec: EvidenceSpec | None = None,
 ) -> FitResult:
     """Fit parameters for a declared functional form against visible-slice evidence.
 
@@ -854,11 +869,22 @@ def fit_parameters(
             ),
         )
 
+    if evidence_spec and tuple(declaration.independent_vars) != evidence_spec.independent_vars:
+        return FitFailure(
+            failure_class="evidence_contract_mismatch",
+            attempted_template=declaration.expression,
+            solver_diagnostics=(
+                f"Declaration variables {declaration.independent_vars!r} do not match "
+                f"the typed evidence variables {list(evidence_spec.independent_vars)!r}."
+            ),
+        )
+
     if score_mode == "discrete_exact":
         return _evaluate_discrete_exact(
             declaration,
             evidence_text,
             expression_grammar=expression_grammar,
+            evidence_spec=evidence_spec,
         )
 
     if not _SCIPY_AVAILABLE:
@@ -868,7 +894,17 @@ def fit_parameters(
             solver_diagnostics="scipy is not installed",
         )
 
-    parsed = parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
+    try:
+        parsed = (
+            parse_evidence_typed(evidence_text, evidence_spec)
+            if evidence_spec else parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
+        )
+    except EvidenceContractError as error:
+        return FitFailure(
+            failure_class="evidence_contract_error",
+            attempted_template=declaration.expression,
+            solver_diagnostics=str(error),
+        )
     if parsed is None:
         return FitFailure(
             failure_class="evidence_parse_error",

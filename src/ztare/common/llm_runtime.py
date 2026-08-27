@@ -1493,6 +1493,7 @@ class LLMRuntime:
             runtime="codex",
             repo=_Path(repo).resolve(),
             timeout_seconds=timeout_seconds,
+            stdin_text=prompt if command and command[-1] == "-" else None,
         )
         if result.returncode != 0:
             raise RuntimeError(

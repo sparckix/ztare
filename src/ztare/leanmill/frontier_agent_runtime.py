@@ -161,6 +161,7 @@ def read_completed_frontier_role_call(
             context="durable frontier role result",
             max_wire_bytes=_MAX_DURABLE_ROLE_RESULT_BYTES,
             max_integer_bits=4_096,
+            allow_finite_floats=True,
         )
     except (TypeError, ValueError, RecursionError) as exc:
         raise ValueError("durable frontier role result is not bounded JSON") from exc

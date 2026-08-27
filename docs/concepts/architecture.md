@@ -631,11 +631,63 @@ itself: D4 is the human project surface; RD utilities are route/tool support
 for agents and advanced users; the in-loop validator is the stricter checking
 lane when a claim or report needs support.
 
-### World-model boundary (interactive substrates)
+### World-model boundary
 
-The world-model kernel (`src/ztare/worldmodel/`) extends the validator to
-substrates where evidence is earned by acting in an environment rather than
-given up front ([GP-250](../../research_areas/seams/substrates/arc/GP-250_arc_agi_3_interactive_program_synthesis_seam.md)).
+The world-model kernel (`src/ztare/worldmodel/`) now has a substrate-general
+evaluation membrane. `evaluation.py` defines candidate, forecast, and settled
+episode views, validates a complete chronology-safe candidate-by-episode
+matrix, and computes a conservative paired survivor set over domain-lowered
+loss coordinates. Domain adapters own observable meaning, loss construction,
+actions, costs, and authority. The investment adapter is the first non-grid
+consumer: it lowers fundamental, linked-observable, probabilistic, and economic
+scores into the common comparison contract.
+
+### Capability-adaptive execution boundary
+
+`src/ztare/common/execution_market.py` separates a frozen task and verifier from
+its replaceable answer producers. Deterministic programs, direct frontier
+reasoning, model-authored programs, and verified hybrids can receive one task
+contract and accumulate same-family, same-epoch receipts. Sparse evidence runs
+as bounded shadow work; primary routing requires independently checked attempts
+across distinct tasks. The task owns the authority ceiling, so capability
+evidence cannot enlarge consequence authority. The first adapter is the
+JaggedThoughts source-bound implied-growth tournament. See
+[Capability-Adaptive Execution](capability_adaptive_execution.md).
+
+### JaggedThoughts investment boundary
+
+`src/ztare/investment/` is a substrate adapter over the shared strategy and
+world-model kernels. It owns security, fund, benchmark, play, source-epoch,
+profile-lifecycle, paper-book, portfolio, and settlement identities. It reuses
+`src/ztare/strategy/` for mechanism simulation, recursive policy enumeration,
+representation audit, and bounded frontier certificates. It reuses
+`src/ztare/worldmodel/evaluation.py` for candidate-by-episode chronology and
+survivor semantics.
+
+The operator projection is file-backed and local:
+
+```text
+public or operator source bytes
+  -> append-only observed/available-at rows
+  -> typed signal programs and receipts
+  -> company/fund opportunity screens
+  -> archived draft -> active paper decision
+  -> compatible portfolio frontier
+  -> later outcome and counterfactual scorecard
+  -> golden leaves, lineage, and disposable UI read model
+```
+
+SQLite is the typed local store; observation CSV preserves source epochs; JSON
+and Markdown are projections. The investment React panel consumes only the
+read model and explicit transition endpoints. Experimental market generators
+remain separate golden-leaf types and cannot enter the opportunity funnel
+without a distinct prospective evaluation profile. See
+[JaggedThoughts Investment Workbench](jaggedthoughts_investment_workbench.md)
+and the [operator guide](../guides/jaggedthoughts_capital_workbench.md).
+
+The interactive subsystem extends the validator to substrates where evidence
+is earned by acting in an environment rather than given up front
+([GP-250](../../research_areas/seams/substrates/arc/GP-250_arc_agi_3_interactive_program_synthesis_seam.md)).
 An environment is treated as an open conjecture about a transition law:
 episodes are the search, and a ratified transition program is the closure. The
 subsystem supplies a typed seed grammar and evaluator for transition programs

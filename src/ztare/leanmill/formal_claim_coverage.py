@@ -40,9 +40,9 @@ class FormalClaimCoverageError(ValueError):
 
 
 class FormalPropositionIdentityKind(str, Enum):
-    """Whether a proposition already has an exact Lean target signature."""
+    """Whether a proposition has a governed Lean elaboration context."""
 
-    LEAN_TARGET_SIGNATURE = "lean_target_signature"
+    GOVERNED_LEAN_PROPOSITION = "governed_lean_proposition"
     ADAPTER_SEMANTIC = "adapter_semantic"
 
 
@@ -395,7 +395,7 @@ def _validate_graph(
         )
         if (
             node.identity_kind
-            is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+            is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
         ):
             if node.lean_identity is None:
                 raise FormalClaimCoverageError(
@@ -426,9 +426,9 @@ def _validate_graph(
         if previous_role != f"proposition:{node.node_id}":
             raise FormalClaimCoverageError(
                 (
-                    "formal_claim_signature_duplicate"
+                    "formal_claim_lean_identity_duplicate"
                     if node.identity_kind
-                    is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+                    is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
                     else "formal_claim_semantic_identity_duplicate"
                 ),
                 "one proposition identity occurs in multiple claim roles",
@@ -455,7 +455,7 @@ def _validate_graph(
                 )
             if (
                 node.inference_identity_kind
-                is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+                is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
             ):
                 if node.inference_lean_identity is None:
                     raise FormalClaimCoverageError(
@@ -493,9 +493,9 @@ def _validate_graph(
             if previous_role != f"inference:{node.node_id}":
                 raise FormalClaimCoverageError(
                     (
-                        "formal_claim_signature_duplicate"
+                        "formal_claim_lean_identity_duplicate"
                         if node.inference_identity_kind
-                        is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+                        is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
                         else "formal_claim_semantic_identity_duplicate"
                     ),
                     "one proposition identity occurs in multiple claim roles",
@@ -659,7 +659,7 @@ def compile_formal_claim_coverage(
         node.proposition_sha256: node.node_id
         for node in nodes.values()
         if node.identity_kind
-        is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+        is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
     }
     inference_roles = {
         str(node.inference_proposition_sha256): node.node_id
@@ -667,7 +667,7 @@ def compile_formal_claim_coverage(
         if (
             node.inference_proposition_sha256 is not None
             and node.inference_identity_kind
-            is FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+            is FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
         )
     }
     allowed_identities = set(proposition_roles) | set(inference_roles)

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.paths import REPO_ROOT, RUBRICS_DIR, resolve_project_dir
 from ztare.common.utils import parse_llm_json
 
 
@@ -57,16 +57,6 @@ def _status_ts() -> str:
 
 def _file_ts() -> str:
     return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-
-
-def resolve_project_dir(project_arg: str) -> Path:
-    candidate = Path(project_arg)
-    if candidate.exists():
-        return candidate.resolve()
-    fallback = PROJECTS_DIR / project_arg
-    if fallback.exists():
-        return fallback.resolve()
-    raise FileNotFoundError(f"Project not found: {project_arg}")
 
 
 def resolve_rubric_path(rubric_arg: str) -> Path:

@@ -15,6 +15,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [ARC-AGI-3 World-Model System (GP-250)](arc_agi_3_system.md) - GP-250: the worldmodel substrate and governed action loop for ARC-AGI-3 interactive grid games.
 - [ZTARE Architecture](architecture.md) - The current ZTARE architecture: in-loop validation, out-of-loop research operations, and reflexive intelligence.
 - [Capabilities](capabilities.md) - What ZTARE currently has: the architectural stack, operating discipline, and named primitives, each grounded in a module or deeper doc.
+- [Capability-Adaptive Execution](capability_adaptive_execution.md) - A task-typed market where deterministic programs, frontier reasoning, model-authored programs, and verified hybrids compete under one evidence and authority con
 - [Chaos-substrate primitives: apparatus-wide canonical principles](chaos_substrate_primitives.md) - Apparatus-wide canonical primitives for chaotic/dynamical substrates.
 - [Workflow: closed-loop theorem-writer pipeline](closed_loop_theorem_writer_workflow.md) - The four-stage closed loop turning LLM-nominated Lean theorems into verified proofs.
 - [Closure-Claim Governance](closure_claim_governance.md) - The single authored surface for how the architecture governs closure claims.
@@ -33,6 +34,10 @@ _Folder index. Prose may be added above the auto-index block._
 - [Pattern: graph diagnostic → agent belief update → strategy change](graph_diagnostic_belief_update_pattern.md) - Pattern: using a graph diagnostic to force an agent belief update.
 - [Graph interfaces](graph_interfaces.md) - Canonical registry and protocol for graph records and decision receipts used by ZTARE.
 - [ZTARE Harness Specification](harness_specification.md) - Specification for a harness, the deterministic pre-judge evaluator.
+- [JaggedThoughts: What Kind of Autonomous Strategy System Is This?](jaggedthoughts_autonomous_strategy.md) - JaggedThoughts as a governed strategy compiler, mechanism learner, policy synthesizer, and evidence controller, with exact capability boundaries.
+- [JaggedThoughts Institutional Learning](jaggedthoughts_institutional_learning.md) - How JaggedThoughts turns company and fund phenotypes into bounded, executable investment laws that learn across evidence epochs.
+- [JaggedThoughts Investment Workbench](jaggedthoughts_investment_workbench.md) - A source-bound investment kernel that composes valuation programs, recursive policies, world-model tournaments, point-in-time evidence, and economic settlement.
+- [JaggedThoughts × Model Discovery Agent architecture audit](jaggedthoughts_model_discovery_agent_architecture_audit.md)
 - [LeanMill Architecture](leanmill_architecture.md) - LeanMill architecture: a governed proof-search environment (components, invariants, soundness model, control flow, and operations).
 - [LeanMill design history and decision log](leanmill_design_history.md) - LeanMill design history and decision log: the dated invariants, RCAs, A/B evidence, and rationale behind the architecture.
 - [LeanMill: what it is, who it's for, and the receipts](leanmill_positioning.md) - What LeanMill is, who it's for, and the receipts behind the claims.
@@ -52,5 +57,5 @@ _Folder index. Prose may be added above the auto-index block._
 - [Primitive glossary: universal research language](universal_research_language.md) - The substrate-neutral structural-move vocabulary used to route research ticks independent of the active substrate.
 - [ZTARE Tenant Architecture](ztare_research_company_architecture.md) - How the ZTARE tenant instantiates cognitive-firm primitives.
 
-<sub>0 sub-folder(s), 43 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 48 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

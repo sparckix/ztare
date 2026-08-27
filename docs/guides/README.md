@@ -14,6 +14,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [First 30 Minutes](first-30-minutes.md) - First 30 minutes for a new ZTARE reader or agent: green offline check, the durable records, the right route.
 - [ZTARE for researchers](for_researchers.md) - How researchers and reviewers should inspect ZTARE runs, traces, and claims.
 - [Forking ZTARE](forking_the_kernel.md) - How to fork ZTARE while keeping the reusable kernel, project policy, and private state separate.
+- [JaggedThoughts Capital Workbench](jaggedthoughts_capital_workbench.md) - Operate the JaggedThoughts Capital Workbench from public sources through paper-policy activation, portfolio assembly, model diagnostics, and later settlement.
 - [Manual Console](manual_console.md) - Driving the repo via the manual console without the autonomous runtime.
 - [Org Runtime Docker Deploy](org_runtime_docker_deploy.md) - Running the AI-org runtime on a VPS/clean machine via Docker.
 - [Org runtime quickstart](org_runtime_quickstart.md) - Quickstart for the autonomous org runtime.
@@ -25,5 +26,5 @@ _Folder index. Prose may be added above the auto-index block._
 - [ZTARE Pilot Brief](ztare_pilot_executive_brief.md) - One-page pilot brief: using ZTARE to audit AI-assisted decision work.
 - [ZTARE use cases](ztare_use_cases.md) - Use cases for ZTARE across diligence, legal, scientific, policy, product, security, formal, and other source-backed reasoning work.
 
-<sub>0 sub-folder(s), 16 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 17 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

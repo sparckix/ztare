@@ -8,6 +8,7 @@ from ztare.common.guarded_experiment_protocol import (
     CANONICAL_PRICING_ENGINE,
     GuardedExperimentProtocol,
     GuardedProtocolCandidate,
+    GuardedProtocolAssignment,
     ProtocolCost,
     ProtocolResponseHypothesis,
     ProtocolYieldWeights,
@@ -238,3 +239,110 @@ def test_matched_task_value_reranks_without_changing_execution_cost():
         "epistemic-best": 0,
         "task-credited": 1,
     }
+
+
+def test_sealed_assignment_is_separate_from_value_and_preserves_cost() -> None:
+    epistemic_best = GuardedProtocolCandidate(
+        protocol=_protocol("epistemic-best", preparation=("a",)),
+        committee=_committee(("x", "y", "z")),
+    )
+    assigned = GuardedProtocolCandidate(
+        protocol=_protocol("assigned", preparation=("a", "b", "c")),
+        committee=_committee(("x", "x", "y")),
+    )
+    baseline = select_guarded_protocol(
+        (epistemic_best, assigned),
+        weights=WEIGHTS,
+        task_value_by_protocol_id={
+            "epistemic-best": 1,
+            "assigned": -1,
+        },
+    )
+    assignment = GuardedProtocolAssignment(
+        assignment_ref="prospective-pair-1:arm-b",
+        assigned_protocol_id="assigned",
+        canonical_protocol_ids=("assigned", "epistemic-best"),
+        decision_choice_authority_sha256="choice-authority",
+        source_assignment_sha256="sealed-assignment",
+        assignment_evidence_ref="randomization:coin-1",
+    )
+    selected = select_guarded_protocol(
+        (epistemic_best, assigned),
+        weights=WEIGHTS,
+        task_value_by_protocol_id={
+            "epistemic-best": 1,
+            "assigned": -1,
+        },
+        contrast_priority_by_protocol_id={
+            "epistemic-best": 1,
+            "assigned": 0,
+        },
+        assignment=assignment,
+    )
+
+    assert baseline.selected_protocol_id == "epistemic-best"
+    assert selected.selected_protocol_id == "assigned"
+    assert {
+        row.protocol_id: row.cost.to_receipt()
+        for row in selected.prices
+    } == {
+        row.protocol_id: row.cost.to_receipt()
+        for row in baseline.prices
+    }
+    receipt = selected.to_receipt()
+    assert receipt["selection_authority"] == (
+        "sealed_experiment_assignment"
+    )
+    assert receipt["assignment"]["task_value_authorized"] is False
+    assert receipt["assignment"]["external_utility_authorized"] is False
+    assert receipt["assignment"]["information_yield_authorized"] is False
+    assert receipt["task_value_by_protocol_id"] == {
+        "assigned": -1,
+        "epistemic-best": 1,
+    }
+
+
+def test_sealed_assignment_refuses_choice_set_or_admissibility_drift() -> None:
+    first = GuardedProtocolCandidate(
+        protocol=_protocol("first", preparation=("a",)),
+        committee=_committee(("x", "y", "z")),
+    )
+    second = GuardedProtocolCandidate(
+        protocol=_protocol(
+            "second",
+            preparation=("a", "b"),
+            novel=False,
+        ),
+        committee=_committee(("x", "x", "y")),
+    )
+    with pytest.raises(ValueError, match="canonical choice set"):
+        select_guarded_protocol(
+            (first, second),
+            weights=WEIGHTS,
+            assignment=GuardedProtocolAssignment(
+                assignment_ref="assignment",
+                assigned_protocol_id="first",
+                canonical_protocol_ids=("first",),
+                decision_choice_authority_sha256="authority",
+                source_assignment_sha256="source",
+                assignment_evidence_ref="randomization",
+            ),
+        )
+
+    with pytest.raises(ValueError, match="valued affordable canonical"):
+        select_guarded_protocol(
+            (first, second),
+            weights=ProtocolYieldWeights(
+                identification=0,
+                compression=0,
+                novelty=1,
+            ),
+            assignment=GuardedProtocolAssignment(
+                assignment_ref="assignment",
+                assigned_protocol_id="second",
+                canonical_protocol_ids=("first", "second"),
+                decision_choice_authority_sha256="authority",
+                source_assignment_sha256="source",
+                assignment_evidence_ref="randomization",
+            ),
+        )

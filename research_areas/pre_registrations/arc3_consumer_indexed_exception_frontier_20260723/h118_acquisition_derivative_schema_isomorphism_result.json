@@ -1,0 +1,66 @@
+{
+  "schema": "ztare-h118-acquisition-derivative-schema-isomorphism-result-v1",
+  "hypothesis_id": "H-GPSA-ACQUISITION-DERIVATIVE-SCHEMA-ISOMORPHISM-20260808-118",
+  "status": "zero_candidates_admitted",
+  "environment_contact": false,
+  "controller_contact": true,
+  "dispatch": {
+    "provider": "codex",
+    "transport": "subscription_cli",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "returncode": 0,
+    "dispatch_id": "cc8b6324a39cca65a02164b783706ed14b6ae5402f031a73c87ad7992597d4b8",
+    "prompt_sha256": "64d1ad99c40be39bf998fb73653aff46c4f8c70f36b8369455b00ee4cdd2198f",
+    "session_id": "019fe4ae-2e45-7061-b0f7-bcf2a972e114",
+    "candidate_count": 3
+  },
+  "candidates": [
+    {
+      "candidate_hash": "309cb1f170def4ae55a41d3767e7fe1e078f989e8b53709ed3dcae894485384a",
+      "name": "Authority-Gated Predictive Transducer",
+      "disposition": "rejected_recurrence",
+      "reason": "Recombines the existing carrier-conditioned effect transport, explicit operation-bijection transport, and the preregistered acquisition-derivative estimand without a distinct executable update law."
+    },
+    {
+      "candidate_hash": "ff6ba6d7c7e939327aa6bf7032b93c58cc1b0f1866b4ca3c392b9db6b3ad000c",
+      "name": "Capacity-Limited Applicability Atlas",
+      "disposition": "rejected_prior_art_and_identifiability",
+      "reason": "Its broad algorithmic axes recur in task-similarity kernel meta-learning, limited-memory continual learning, transfer-gain prediction, and learning-progress curricula. More decisively, the frozen ARC evidence contains only one independently task-credited positive episode, so no target-morphism topology or local negative-transfer boundary is identifiable."
+    },
+    {
+      "candidate_hash": "ac4452a28bf0f8eb715903aa65e3274cd9b0973447e14d1eb2d88e86bc8057bb",
+      "name": "Delayed Counterfactual Settlement Loop",
+      "disposition": "rejected_recurrence",
+      "reason": "Repackages the existing two-stage eligibility and delayed-settlement mechanisms around a later child-acquisition label without a new causal carrier or discriminator available in the frozen evidence."
+    }
+  ],
+  "primary_prior_art": [
+    {
+      "title": "CURIOUS: Intrinsically Motivated Modular Multi-Goal Reinforcement Learning",
+      "url": "https://arxiv.org/abs/1810.06284",
+      "matched_axis": "absolute learning-progress selection over goal modules"
+    },
+    {
+      "title": "Teacher algorithms for curriculum learning of Deep RL in continuously parameterized environments",
+      "url": "https://arxiv.org/abs/1910.07224",
+      "matched_axis": "capacity-adaptive sampling by local absolute learning progress"
+    },
+    {
+      "title": "Task-similarity Aware Meta-learning through Nonparametric Kernel Regression",
+      "url": "https://arxiv.org/abs/2006.07212",
+      "matched_axis": "learned task descriptors and similarity kernels under few tasks and outliers"
+    },
+    {
+      "title": "DreamCoder: Growing generalizable, interpretable knowledge with wake-sleep Bayesian program learning",
+      "url": "https://arxiv.org/abs/2006.08381",
+      "matched_axis": "wake-sleep abstraction selection that changes later program search"
+    }
+  ],
+  "information_gain": {
+    "rejected_claim": "A new persistent schema-selection module is currently justified by the one positive ARC option episode.",
+    "surviving_constraint": "A reusable abstraction requires independently varied task-credit positives and matched descendants before its invariant and applicability boundary can be identified.",
+    "next_discriminator": "Attempt to add a task-credited episode on a distinct ARC game with a persistent unchanged Sol-max actor and complete exchange persistence; success raises positive intervention rank but does not establish transfer."
+  },
+  "claim_boundary": "H118 rejects all three generated correspondences under the frozen criteria. It does not show that acquisition derivatives, task-morphism charts, or delayed settlement are useless; it shows that adding those mechanisms now would outrun both novelty evidence and ARC identifiability."
+}

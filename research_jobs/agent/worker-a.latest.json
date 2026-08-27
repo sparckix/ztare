@@ -1,0 +1,12 @@
+{
+  "capital_authority": false,
+  "classification": "family_adoption_only",
+  "entity_id": "AVGO",
+  "ok": true,
+  "provider_called": true,
+  "request_sha256": "bfd254e3e4e7f40613f72c1e27cdf126faa1edfcca1c9bf999371278f4586257",
+  "result_path": "institutional_learning/strategy_cohorts/results/bfd254e3e4e7f40613f72c1e27cdf126faa1edfcca1c9bf999371278f4586257.json",
+  "schema": "jaggedthoughts-subscription-research-action-v1",
+  "status": "strategy_cohort_classified",
+  "work_id": "investment-strategy-cohort:bfd254e3e4e7f40613f72c1e"
+}

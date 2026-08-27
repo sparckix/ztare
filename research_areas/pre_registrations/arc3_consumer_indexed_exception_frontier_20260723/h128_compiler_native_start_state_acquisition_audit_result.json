@@ -1,0 +1,433 @@
+{
+  "arms": [
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": true,
+      "label": "compiler_native_recall",
+      "levels_gained": 1,
+      "oracle_sequence_exact": true,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 1,
+        "terminal_rows": [
+          {
+            "action_count": 10,
+            "boundary_kind": "level_completed"
+          }
+        ],
+        "transition_identities_match": true
+      },
+      "replication": 1,
+      "report_sha256": "80d90fbddfc7a5b4fa95b8db38ad353d470cc50af0d93232d4a484a688aa1fd6",
+      "session_ids": [
+        "019fe7a1-3126-7f73-8517-923b2c5a0869"
+      ],
+      "trace_sha256": "d0be1028ad55248475467e30cef72d746b6a18abec66287881a510107ca2d9e3"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": false,
+      "label": "relation_redacted_control",
+      "levels_gained": 0,
+      "oracle_sequence_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 0,
+        "terminal_rows": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 5,
+            "boundary_kind": "reset_before_action"
+          }
+        ],
+        "transition_identities_match": true
+      },
+      "replication": 1,
+      "report_sha256": "97d87015ca3fae7268c30f726c0da6f7e2a281484f91d281a858d86a6b2e0f53",
+      "session_ids": [
+        "019fe7a4-c9d9-70f3-af70-cd195ccf4e1c"
+      ],
+      "trace_sha256": "7523df97892607263089e16c4bbc272c240ab4b58c1b743b6d566332cdbd2e39"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": true,
+      "label": "compiler_native_recall",
+      "levels_gained": 0,
+      "oracle_sequence_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 0,
+        "terminal_rows": [],
+        "transition_identities_match": true
+      },
+      "replication": 2,
+      "report_sha256": "0e347e52c7527efba8af125830ae891769dec8dcdfc5a4e20681f2f0611751c8",
+      "session_ids": [
+        "019fe7ae-2a28-75e2-a489-563485f2dcc5"
+      ],
+      "trace_sha256": "2b9d7cfab6989214e6f55323cf39f1a72472e7f99bad2eeec2a45da384a6f25d"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1,
+        3
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": false,
+      "label": "relation_redacted_control",
+      "levels_gained": 0,
+      "oracle_sequence_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 0,
+        "terminal_rows": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 5,
+            "boundary_kind": "reset_before_action"
+          }
+        ],
+        "transition_identities_match": true
+      },
+      "replication": 2,
+      "report_sha256": "b9ac154098a92ad425080a0255c2feb227b7587bf9663396da4467e89a5d87e0",
+      "session_ids": [
+        "019fe7a9-c7d1-79a0-b61b-895198168435"
+      ],
+      "trace_sha256": "7ac989c12b4a0eaca2743cf6ab6fddb45e1315772d4eaeda26159d992d02b969"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        0,
+        0,
+        3,
+        3
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": true,
+      "label": "compiler_native_recall",
+      "levels_gained": 0,
+      "oracle_sequence_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 0,
+        "terminal_rows": [],
+        "transition_identities_match": true
+      },
+      "replication": 3,
+      "report_sha256": "81050a04bd2e7be32a8f688ce222c9d4149775e7d434bc98ce0f4d17db3cab5c",
+      "session_ids": [
+        "019fe7b2-2140-7a70-8e14-dac8ed22ef4f"
+      ],
+      "trace_sha256": "aaf1f01def8299d756e967d017a878718fbfb3487e948630ecfb45ae0db489b5"
+    },
+    {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        3,
+        2
+      ],
+      "attempt_index": 0,
+      "capsule_prompt_turns": [
+        0
+      ],
+      "checks": {
+        "budget_exact": true,
+        "capsule_is_one_shot": true,
+        "exchange_actions_match": true,
+        "exchange_returncodes_zero": true,
+        "exchange_session_matches": true,
+        "fresh_start_exact": true,
+        "grid_replay_exact": true,
+        "identity_replay_exact": true,
+        "one_session": true,
+        "outcome_matches": true,
+        "recall_receipt_is_one_shot": true,
+        "result_actions_match": true,
+        "schema_counts_match": true,
+        "start_carrier_exact": true
+      },
+      "decision_seam_acquired": false,
+      "label": "relation_redacted_control",
+      "levels_gained": 0,
+      "oracle_sequence_exact": false,
+      "passed": true,
+      "prior_transport_failures": [],
+      "replay": {
+        "all_grids_match": true,
+        "final_levels_completed": 0,
+        "terminal_rows": [
+          {
+            "action_count": 4,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 5,
+            "boundary_kind": "reset_before_action"
+          },
+          {
+            "action_count": 9,
+            "boundary_kind": "terminal_state:GAME_OVER"
+          },
+          {
+            "action_count": 10,
+            "boundary_kind": "reset_before_action"
+          }
+        ],
+        "transition_identities_match": true
+      },
+      "replication": 3,
+      "report_sha256": "944d66bf268f2713ddc9e5c5287ac331ddb4b2c79221a8a19e0baa00dfea605c",
+      "session_ids": [
+        "019fe7b4-64d6-7532-990e-605b2904003b"
+      ],
+      "trace_sha256": "455718d8d354a08c98d6ae5cbf8cb8a216724fb404af872a0e87ddb1eea29e2d"
+    }
+  ],
+  "capsule_receipt": {
+    "compiler_native_recall_sha256": "07cb6fc716ce91671f9ed98332cf88689024e49b644a839cc5d3e67e917bba83",
+    "compiler_proposal_sha256": "e4f86c6f11117fde9a3883d92dff4dd5419e0b23b4c8fb89aef35ae9385f4df1",
+    "compiler_recall_sha256": "dd26326342668a887b5c6e29aa2843358e6cefbc325946854e115e3d8ebe1fa8",
+    "compiler_scope_sha256": "54c543400b5324ff993775ee688618a2dfcfda8a7aeabbb2beda05e46502243f",
+    "embedded_control_digest_sha256": "12140a0fea0cb87fba0d28a1669c45caef2520dc99538e9f91adea80c213e087",
+    "embedded_treatment_digest_sha256": "e23343c8296ac9bef7380717932167909570c3727d659e9c536472cd3adf3001",
+    "pair_sha256": "e4b385f07a5c26bb813b9dfc82dd86cae209060e947391f58f3c149ae3b2bad4",
+    "redaction_difference_paths": [
+      "active_uncertainties[0]",
+      "decision_seam.branches[0].contact_kind",
+      "decision_seam.branches[0].risk_rank",
+      "decision_seam.branches[1].contact_kind",
+      "decision_seam.branches[1].risk_rank",
+      "decision_seam.selected_action",
+      "decision_seam.selected_contact_kind",
+      "decision_seam.selected_direction",
+      "decision_seam.sha256",
+      "memory_revision.relation.kind",
+      "memory_revision.relation.mismatch_count",
+      "memory_revision.relation.passed",
+      "memory_revision.relation.support_count",
+      "memory_revision.sha256",
+      "target_compatibility.status"
+    ],
+    "relation_redacted_control_sha256": "e32e61d5d22981e27f61ff3ae34b9e098aba2e63eedda654a51ca35974ea5186",
+    "rendered_prompt_bytes": 3912
+  },
+  "claim_boundary": "Audit validates automatic compiler consumption at the delayed decision seam. Recurrent post-transition recompilation, online settlement, cross-game transfer, later acquisition catalysis, broad capability, and novelty remain unsettled.",
+  "control_acquisitions": 0,
+  "control_completions": 0,
+  "controller_contact": false,
+  "environment_contact": false,
+  "global_checks": {
+    "all_arms_pass": true,
+    "capsule_lengths_equal": true,
+    "control_completions_0_of_3": true,
+    "control_seams_0_of_3": true,
+    "fresh_context_bound": true,
+    "manifest_rebuild_exact": true,
+    "memory_identity_preserved": true,
+    "no_transport_exclusions": true,
+    "redaction_paths_exact": true,
+    "result_disposition_matches": true,
+    "result_identity_current": true,
+    "six_unique_sessions": true,
+    "six_valid_arms": true,
+    "treatment_completions_1_of_3": true,
+    "treatment_digest_is_independent_compiler_output": true,
+    "treatment_seams_3_of_3": true
+  },
+  "manifest_sha256": "38f1f95029a39a6806ef876b6f1e2ae1f0e660980feb4debde112bb295e6585e",
+  "redaction_difference_paths": [
+    "active_uncertainties[0]",
+    "decision_seam.branches[0].contact_kind",
+    "decision_seam.branches[0].risk_rank",
+    "decision_seam.branches[1].contact_kind",
+    "decision_seam.branches[1].risk_rank",
+    "decision_seam.selected_action",
+    "decision_seam.selected_contact_kind",
+    "decision_seam.selected_direction",
+    "decision_seam.sha256",
+    "memory_revision.relation.kind",
+    "memory_revision.relation.mismatch_count",
+    "memory_revision.relation.passed",
+    "memory_revision.relation.support_count",
+    "memory_revision.sha256",
+    "target_compatibility.status"
+  ],
+  "result_sha256": "8d6d47e71712d7cd1a2ddd051dc86bb54cd7f0644713c941be518e7c9447a932",
+  "schema": "ztare-h128-compiler-native-start-state-audit-v1",
+  "status": "passed",
+  "successful_exchange_count": 60,
+  "treatment_acquisitions": 3,
+  "treatment_completions": 1,
+  "unique_session_count": 6,
+  "valid_arm_count": 6
+}

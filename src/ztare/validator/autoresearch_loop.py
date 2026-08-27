@@ -4836,6 +4836,8 @@ workspace_dir.mkdir(parents=True, exist_ok=True)
 # Every revert would then see None in the snapshot and erase whatever fit was
 # written by iteration N, starving GP-087 of the base expression.
 if rubric_data.get("enable_fit_primitive", False) and evidence_text:
+    from ztare.orchestrator.evidence_contract import get_evidence_spec as _get_evidence_spec
+    _fit_evidence_spec = _get_evidence_spec(rubric_data)
     _baseline_fit_path = workspace_dir / "fit_result.json"
     if not _baseline_fit_path.exists():
         print("🔧 GP-087 baseline math init: fit_result.json absent — running baseline fit...")
@@ -4845,6 +4847,7 @@ if rubric_data.get("enable_fit_primitive", False) and evidence_text:
                 _baseline_decl,
                 evidence_text,
                 score_mode=rubric_data.get("fit_score_mode", "continuous_l2"),
+                evidence_spec=_fit_evidence_spec,
             )
             _baseline_json = fit_result_to_json(_baseline_fit, _baseline_decl)
             _baseline_fit_path.write_text(_baseline_json)
@@ -6497,6 +6500,7 @@ for i in range(ITERATIONS):
                             score_mode=_fit_score_mode,
                             n_starts=_n_starts,
                             gate_threshold=_gate_thr_for_fit,
+                            evidence_spec=_fit_evidence_spec,
                         )
                     else:
                         # Safety-net fallback for substrate classes without
@@ -6509,6 +6513,7 @@ for i in range(ITERATIONS):
                             score_mode=_fit_score_mode,
                             n_starts=_n_starts,
                             gate_threshold=_gate_thr_for_fit,
+                            evidence_spec=_fit_evidence_spec,
                         )
                     if isinstance(_fit_result, FitSuccess):
                         if python_code is not None:

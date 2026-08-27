@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ztare.common.factored_search import search_factored
+from ztare.common.factored_search import FactoredSearchMacro, search_factored
 from ztare.common.transition_congruence import (
     LabeledSuccessorRefinementProblem,
 )
@@ -418,6 +418,153 @@ def test_depth_bound_is_not_reported_as_frontier_exhaustion():
 
     assert result.status == "depth_bound_exhausted"
     assert result.deepest_depth == 2
+
+
+class _MacroChainProblem:
+    problem_id = "macro-chain-v1"
+    projection_sha256 = "9" * 64
+    factor_names = ("state",)
+    terminal_factor_names = ("goal_edge",)
+    feasibility_factor_names = ()
+    availability_factor_names = ()
+    evidence_refs = ("fixture:macro-chain",)
+    exact_transition_identity = True
+
+    @staticmethod
+    def dominance_key(state):
+        return state
+
+    @staticmethod
+    def dominance_vector(_state):
+        return ()
+
+    @staticmethod
+    def goal_edge(state, intervention, time):
+        assert state == time
+        return state == 11 and intervention == "advance"
+
+    @staticmethod
+    def admissible(state):
+        return state <= 12
+
+    @staticmethod
+    def estimate(_state):
+        return 0
+
+
+def _macro_advance():
+    return FactoredSearchMacro(
+        skill_sha256="7" * 64,
+        carrier_execution_sha256="6" * 64,
+        projection_sha256=_MacroChainProblem.projection_sha256,
+        operations=("advance", "advance", "advance"),
+        evidence_refs=("fixture:settled-skill",),
+    )
+
+
+def test_generative_skill_edge_extends_deliberation_horizon_without_free_cost():
+    predict = lambda state, _operation, time: state + 1 if state == time else None
+    primitive = search_factored(
+        predict=predict,
+        start=0,
+        interventions=("advance",),
+        problem=_MacroChainProblem(),
+        max_depth=4,
+        max_states=100,
+        max_primitive_cost=12,
+    )
+    chunked = search_factored(
+        predict=predict,
+        start=0,
+        interventions=("advance",),
+        problem=_MacroChainProblem(),
+        max_depth=4,
+        max_states=100,
+        macros=(_macro_advance(),),
+        max_primitive_cost=12,
+        carrier_execution_sha256="6" * 64,
+    )
+
+    assert primitive.status == "depth_bound_exhausted"
+    assert primitive.deepest_depth == 4
+    assert chunked.status == "edge_found"
+    assert chunked.actions == ("advance",) * 12
+    assert chunked.primitive_action_cost == 12
+    assert chunked.deepest_depth <= 4
+    assert chunked.deepest_primitive_depth == 12
+    assert any(ref.startswith("skill:") for ref in chunked.search_move_refs)
+    assert chunked.macro_edges_attempted > 0
+
+
+def test_generative_skill_edge_checks_goal_inside_the_word():
+    class IntermediateGoal(_MacroChainProblem):
+        @staticmethod
+        def goal_edge(state, intervention, time):
+            assert state == time
+            return state == 1 and intervention == "advance"
+
+    result = search_factored(
+        predict=lambda state, _operation, time: (
+            state + 1 if state == time else None
+        ),
+        start=0,
+        interventions=("advance",),
+        problem=IntermediateGoal(),
+        max_depth=1,
+        max_states=10,
+        macros=(_macro_advance(),),
+        max_primitive_cost=3,
+        carrier_execution_sha256="6" * 64,
+    )
+
+    assert result.status == "edge_found"
+    assert result.actions == ("advance", "advance")
+    assert result.primitive_action_cost == 2
+
+
+def test_generative_skill_edge_refuses_a_midword_undefined_carrier():
+    result = search_factored(
+        predict=lambda state, _operation, _time: (
+            None if state == 1 else state + 1
+        ),
+        start=0,
+        interventions=("advance",),
+        problem=_MacroChainProblem(),
+        max_depth=4,
+        max_states=20,
+        macros=(_macro_advance(),),
+        max_primitive_cost=12,
+        carrier_execution_sha256="6" * 64,
+    )
+
+    assert result.status == "projected_frontier_exhausted"
+    assert result.actions == ()
+    assert result.macro_edges_attempted > 0
+    assert result.macro_edges_admitted == 0
+
+
+def test_generative_skill_edge_cannot_invent_an_operation():
+    alien = FactoredSearchMacro(
+        skill_sha256="8" * 64,
+        carrier_execution_sha256="6" * 64,
+        projection_sha256=_MacroChainProblem.projection_sha256,
+        operations=("advance", "alien"),
+        evidence_refs=("fixture:alien-skill",),
+    )
+
+    try:
+        search_factored(
+            predict=lambda state, _operation, _time: state + 1,
+            start=0,
+            interventions=("advance",),
+            problem=_MacroChainProblem(),
+            macros=(alien,),
+            carrier_execution_sha256="6" * 64,
+        )
+    except ValueError as error:
+        assert "action vocabulary" in str(error)
+    else:
+        raise AssertionError("macro action-vocabulary drift was accepted")
 
 
 def test_finite_projected_frontier_keeps_exhaustive_status():

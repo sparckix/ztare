@@ -2,8 +2,9 @@
 
 Date: 2026-07-29
 
-Status: motor compression and fast recurrent-state value confirmed;
-outcome-priced recall and Level 3 remain open
+Status: one-hop outcome-priced judgment transport confirmed; temporal
+derivative live test and Level 3 remain open; sparse catalytic-growth compiler
+supported offline
 
 This result combines the frozen H63 history audit with three bounded
 active-epoch planner runs. The frozen audit made no environment call. Every
@@ -347,6 +348,78 @@ may disagree around a loop even when their endpoints look equivalent. The
 next compiler must expose that path defect and make it consequential for
 admission before claiming chained temporal credit.
 
+## H96--H101 continuation: the compounding criterion changed
+
+H96 tested descendant transport. Receipt-backed appearance lineage preserved
+all four objects through a fixed-support revision and a bracketed occlusion,
+where static matching preserved only three. The causal arm gained one level
+and the placebo did not. The response contract still failed because its future
+marker waypoint had already been consumed, and the placebo blind proposal was
+in another basin. No child family was promoted. The failure localized the
+next object to a temporal response derivative rather than another object map.
+
+H97 compiled that derivative from the two H95 witnesses and the H96 lineage
+event. It discharges the completed marker obligation from `moving occurrence
+-> marker -> target`, yielding `moving occurrence -> target`. Its harness
+stores one blind Responses API parent and forks causal/placebo continuations
+from the same `previous_response_id`. Offline and fake-runtime tests pass. The
+two live attempts ended at API credit exhaustion before model response,
+controller proposal, environment contact, or action, so H97 has no outcome
+evidence.
+
+H98 introduced residual fission. It quotients proportional candidate response
+signatures, selects an exact independent basis, and settles each child with
+randomized offer/withhold traces. Its one-generation synthetic fixture reached
+`R_p = 4`, `R_k = 2`, and `R_e = 0`. H99 bound promoted children to exact
+parents and required the next generation to consume that exact child family
+under a changed response derivative and fresh evidence. The synthetic lineage
+grew `1 -> 2 -> 3`, with generation factors `2` and `1.5`, geometric knowledge
+factor `sqrt(3)`, and zero error growth.
+
+H100 then rejected the complete-factorial measurement assumption implicit in
+those receipts. A pre-outcome Walsh schedule preserves exact additive effect
+rank with four trajectories for three children and sixteen for twelve
+children, versus eight and `4096` complete-factorial trajectories. Named
+interactions expand the code explicitly; missing rows, assignment drift,
+mask collisions, and post-outcome effect-model changes refuse.
+
+H101 replaces the scalar reproduction threshold with an authority-typed
+catalytic reaction network. A candidate capability core must satisfy food
+generation, reflexive catalysis, exact internal net production, nonpositive
+false-edge production, and one primitive-contact budget on the same integer
+flux. The synthetic H99/H100 topology passes at sparse cost `80` under budget
+`100`. Changing only that cost to the factorial `160` blocks productive flux;
+cycle-only, missing-catalyst, bootstrap-only, error-growing, and
+cross-authority controls also fail.
+
+H102 adds exact capability stock, reaction kinetics, and depreciation. The
+same productive H101 RAF is subcritical at `J=3/2, D=9/4` with judgment drift
+`-15/64`, and supercritical at `J=7/4, D=21/8` with judgment drift `+133/512`.
+Those stocks bracket the exact surface `3 J^2 = 8`. At the upper stock, sparse
+settlement costs `5145/32` per rate unit under budget `300`; factorial
+settlement costs `5145/16` and is blocked without changing reaction rates or
+drift. Catalyst abundance, depreciation, error drift, and primitive-cost rate
+therefore join RAF/stoichiometric closure as separate criticality gates.
+
+These additions establish a sharper measurement surface for compounding:
+
+```text
+settled response
+-> independent residual directions
+-> sparse causal assay
+-> content-addressed child lineage
+-> typed capability reactions
+-> budget-feasible productive catalytic flux
+-> stock-dependent kinetic drift above depreciation
+```
+
+The live evidence frontier remains H97. H98--H102 use constructed offline
+reactions, outcomes, rate constants, and stock states. A prospective controller
+must still generate its own residual directions, discover a missing
+measurement catalyst, settle the children, reuse them in a later generation,
+and yield measured production/depreciation rates. The compilers record that
+boundary with `takeoff_supported = false`.
+
 ## Evidence
 
 - `continual_skill_memory_audit_result.json`
@@ -396,6 +469,25 @@ admission before claiming chained temporal credit.
   `ec5c63057dcdd7ba18b1ceb29fa75ffe883b5548eee2ac6ee9ce30e8b1f15bf9`;
   file
   `6fd1cb577eb0fed0799622e02f0da35120ca58988defda2e622baf242cdebbea`)
+- `h97_causal_response_derivative/live_attempt_01_runtime_receipt.json` and
+  `live_attempt_02_runtime_receipt.json`
+  (`blocked_runtime`; evidence effect `none`)
+- `h98_epistemic_autocatalysis_result.json`
+  (embedded result
+  `cf1199caa678b753498a497aa92417f0e56feb58d69094ff274f856e9904d21e`)
+- `h99_lineage_bound_epistemic_branching_result.json`
+  (embedded result
+  `929202dfe3297f1d931a1c7593e49fe62c111d2524e2018a9cc02896fecfbf55`)
+- `h100_sparse_orthogonal_settlement_result.json`
+  (embedded result
+  `cfbd4ae7abd41dd777b4488d454087f858571457e5efdc14158fd0839393e23f`)
+- `h101_capability_autocatalytic_closure_result.json`
+  (embedded result
+  `48865454046b1eb0ea985a39bac12fbe15a27025df6d2ce325408ed08fed61a5`)
+- `h102_kinetic_capability_threshold_result.json`
+  (embedded result
+  `293de28c17326c47eda707d244a50beab4836e3133ccb3e8e8f5b394201471ad`)
+- H98--H102 focused verification: `61 passed`
 - earlier cumulative focused verification: `274 passed`
 - H90 identity/harness verification: `23 passed`
 - H91 proposal-plasticity verification: `37 passed`

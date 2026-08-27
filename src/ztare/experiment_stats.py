@@ -326,8 +326,11 @@ def _ols_fit(xs_cols: Sequence[Sequence[float]], ys: Sequence[float]) -> tuple:
     p = k + 1
     XtX = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     Xty = [sum(X[i][a] * ys[i] for i in range(n)) for a in range(p)]
-    # Gauss-Jordan inverse on XtX, then beta = XtX^-1 Xty
-    aug = [row[:] + [Xty[i]] for i, row in enumerate(XtX)]
+    # Gauss-Jordan inverse on XtX, then beta = XtX^-1 Xty.
+    aug = [
+        row[:] + [float(i == j) for j in range(p)]
+        for i, row in enumerate(XtX)
+    ]
     for i in range(p):
         pivot = aug[i][i]
         if abs(pivot) < 1e-12:
@@ -339,17 +342,22 @@ def _ols_fit(xs_cols: Sequence[Sequence[float]], ys: Sequence[float]) -> tuple:
                     break
             else:
                 raise ValueError("singular design matrix (collinear channels)")
-        for c in range(i, p + 1):
+        for c in range(i, 2 * p):
             aug[i][c] /= pivot
         for r in range(p):
             if r == i: continue
             factor = aug[r][i]
             if factor == 0: continue
-            for c in range(i, p + 1):
+            for c in range(i, 2 * p):
                 aug[r][c] -= factor * aug[i][c]
-    beta = [aug[i][p] for i in range(p)]
+    inverse = [row[p:] for row in aug]
+    beta = [sum(inverse[i][j] * Xty[j] for j in range(p)) for i in range(p)]
     y_hat = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
-    return beta, y_hat
+    leverage = [
+        sum(X[i][a] * inverse[a][b] * X[i][b] for a in range(p) for b in range(p))
+        for i in range(n)
+    ]
+    return beta, y_hat, leverage
 
 
 def ols_multichannel_r2(xs_cols: Sequence[Sequence[float]], ys: Sequence[float],
@@ -358,7 +366,8 @@ def ols_multichannel_r2(xs_cols: Sequence[Sequence[float]], ys: Sequence[float],
     and leave-one-out cross-validated R² (Q²). LOO-CV strips the optimism bias
     that makes small-N R² unreliable.
 
-    Returns dict with: n, k, r2, r2_adj, r2_loo, beta, channel_names.
+    Returns dict with: n, k, r2, r2_adj, r2_loo, beta (display-rounded),
+    beta_exact (for downstream calculations), residual_rmse, channel_names.
     r2_loo < 0 means the model predicts WORSE than the mean — overfit.
     """
     n = len(ys)
@@ -370,24 +379,18 @@ def ols_multichannel_r2(xs_cols: Sequence[Sequence[float]], ys: Sequence[float],
     if ss_tot == 0:
         return {"error": "zero variance in ys"}
 
-    beta, y_hat = _ols_fit(xs_cols, ys)
+    beta, y_hat, leverage = _ols_fit(xs_cols, ys)
     ss_res = sum((ys[i] - y_hat[i]) ** 2 for i in range(n))
     r2 = 1.0 - ss_res / ss_tot
     r2_adj = 1.0 - (1.0 - r2) * (n - 1) / (n - k - 1)
 
-    # leave-one-out CV
-    press = 0.0
-    for hold in range(n):
-        idx = [i for i in range(n) if i != hold]
-        xs_train = [[col[i] for i in idx] for col in xs_cols]
-        ys_train = [ys[i] for i in idx]
-        try:
-            beta_h, _ = _ols_fit(xs_train, ys_train)
-        except ValueError:
-            return {"error": "singular design matrix in LOO fold"}
-        x_held = [1.0] + [float(col[hold]) for col in xs_cols]
-        y_pred = sum(beta_h[a] * x_held[a] for a in range(k + 1))
-        press += (ys[hold] - y_pred) ** 2
+    # Exact ordinary-least-squares PRESS identity: deleted residual eᵢ/(1-hᵢᵢ).
+    if any(1.0 - value <= 1e-12 for value in leverage):
+        return {"error": "singular design matrix in LOO fold"}
+    press = sum(
+        ((ys[index] - y_hat[index]) / (1.0 - leverage[index])) ** 2
+        for index in range(n)
+    )
     r2_loo = 1.0 - press / ss_tot
 
     return {
@@ -396,6 +399,8 @@ def ols_multichannel_r2(xs_cols: Sequence[Sequence[float]], ys: Sequence[float],
         "r2_adj": round(r2_adj, 4),
         "r2_loo": round(r2_loo, 4),
         "beta": [round(b, 4) for b in beta],
+        "beta_exact": beta,
+        "residual_rmse": math.sqrt(ss_res / max(1, n - k - 1)),
         "channel_names": list(channel_names) if channel_names else [f"x{i+1}" for i in range(k)],
     }
 

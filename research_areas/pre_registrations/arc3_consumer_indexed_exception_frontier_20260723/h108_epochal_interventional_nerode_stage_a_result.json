@@ -1,0 +1,355 @@
+{
+  "authority": {
+    "candidate_projections": [
+      [],
+      [
+        "control_relation"
+      ],
+      [
+        "pending_waypoint_order_satisfied"
+      ],
+      [
+        "pending_waypoint_prefix_length"
+      ],
+      [
+        "control_relation",
+        "pending_waypoint_order_satisfied"
+      ],
+      [
+        "control_relation",
+        "pending_waypoint_prefix_length"
+      ],
+      [
+        "pending_waypoint_order_satisfied",
+        "pending_waypoint_prefix_length"
+      ],
+      [
+        "control_relation",
+        "pending_waypoint_order_satisfied",
+        "pending_waypoint_prefix_length"
+      ]
+    ],
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "eligibility_rule_sha256": "cfb341b8f828373b660b28dd8a9143300855ef736268f3232c7e7bcbe265efd2",
+    "epoch": 1,
+    "feature_catalog": [
+      "control_relation",
+      "pending_waypoint_order_satisfied",
+      "pending_waypoint_prefix_length"
+    ],
+    "intervention_set_sha256": "a59617c109a5f1e908853b3368002338bdf9cb3e9f538bb894b3c0ddb330091f",
+    "kind": "interventional_nerode_authority",
+    "minimum_holdout_fibers": 2,
+    "minimum_training_fibers": 2,
+    "primitive_action_cost": "20/1",
+    "response_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "restored_prefix_sha256": "9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65",
+    "schema": "ztare-interventional-nerode-consolidation-v1",
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+    "training_set_sha256": "ba14672a8b0627ecaa84004d006c3de0e178116b631300fa441785876d5be0e8",
+    "utility_measure_sha256": "f2beba0878a36d95aae6cc2747ff87527c4721885736a1da7106e39a9f594644"
+  },
+  "checks": {
+    "all_negative_controls_refused": true,
+    "coarsest_empty_projection_selected": true,
+    "exact_micro_basins_recoverable": true,
+    "exact_prediction_mean_89_over_200": true,
+    "h97_remains_rejected": true,
+    "one_provisional_state": true,
+    "promotion_denied_before_holdout": true,
+    "sealed_positive_prediction": true,
+    "two_exact_training_fibers": true
+  },
+  "claim_boundary": {
+    "child_reproduction_supported": false,
+    "compounding_supported": false,
+    "literature_novelty_claimed": false,
+    "predictive_validation_supported": false,
+    "retrospective_compiler_construction_only": true,
+    "supercriticality_supported": false,
+    "takeoff_supported": false
+  },
+  "environment_contact": false,
+  "frozen_epoch": {
+    "authority": {
+      "candidate_projections": [
+        [],
+        [
+          "control_relation"
+        ],
+        [
+          "pending_waypoint_order_satisfied"
+        ],
+        [
+          "pending_waypoint_prefix_length"
+        ],
+        [
+          "control_relation",
+          "pending_waypoint_order_satisfied"
+        ],
+        [
+          "control_relation",
+          "pending_waypoint_prefix_length"
+        ],
+        [
+          "pending_waypoint_order_satisfied",
+          "pending_waypoint_prefix_length"
+        ],
+        [
+          "control_relation",
+          "pending_waypoint_order_satisfied",
+          "pending_waypoint_prefix_length"
+        ]
+      ],
+      "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+      "eligibility_rule_sha256": "cfb341b8f828373b660b28dd8a9143300855ef736268f3232c7e7bcbe265efd2",
+      "epoch": 1,
+      "feature_catalog": [
+        "control_relation",
+        "pending_waypoint_order_satisfied",
+        "pending_waypoint_prefix_length"
+      ],
+      "intervention_set_sha256": "a59617c109a5f1e908853b3368002338bdf9cb3e9f538bb894b3c0ddb330091f",
+      "kind": "interventional_nerode_authority",
+      "minimum_holdout_fibers": 2,
+      "minimum_training_fibers": 2,
+      "primitive_action_cost": "20/1",
+      "response_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+      "restored_prefix_sha256": "9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65",
+      "schema": "ztare-interventional-nerode-consolidation-v1",
+      "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+      "sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+      "training_set_sha256": "ba14672a8b0627ecaa84004d006c3de0e178116b631300fa441785876d5be0e8",
+      "utility_measure_sha256": "f2beba0878a36d95aae6cc2747ff87527c4721885736a1da7106e39a9f594644"
+    },
+    "compounding_supported": false,
+    "kind": "interventional_nerode_epoch",
+    "promotion_authorized": false,
+    "schema": "ztare-interventional-nerode-consolidation-v1",
+    "selected_projection": [],
+    "sha256": "04aa622b06d79fd73594bbe4c4e8337bf23b652b287fb7efe885b30b672b52c5",
+    "states": [
+      {
+        "authority_sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+        "exact_micro_basin_sha256s": [
+          "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+          "2fe38cd37049526c44e9f6a790b5eb7083ff756f24346e328569d91c370da8ca"
+        ],
+        "kind": "interventional_nerode_state",
+        "predicted_sign": "positive",
+        "predicted_value_delta": "89/200",
+        "projection": [],
+        "quotient_key": [],
+        "schema": "ztare-interventional-nerode-consolidation-v1",
+        "sha256": "89e71c631456870b2b0d4d4965abd259802066a50757c4151d2c974d27ba3a45",
+        "training_fiber_sha256s": [
+          "3705c3ef0be6983d2dc10407becb1ee74c3851f2bf07d42f5a7b535186ec1f37",
+          "f8754a1797a4afb0d523b396e5f0c6b8058152e860e67aa626375b4293a18ea5"
+        ]
+      }
+    ],
+    "status": "provisional_prediction_model",
+    "takeoff_supported": false,
+    "training_fibers": [
+      {
+        "authority_sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/arms/pair_02_offer.json#sha256=0cbcbfef31c3e73b1d7a3de5b06a396d7258456f020fc912b462bbd02c58696e",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/arms/pair_02_withhold.json#sha256=f2ae6e899d470e807482e0134ffc513ddbd17d5cc38494d81a11c698ef970b5c",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/settlements/pair_02.json#sha256=b2e7db2a070e697bdbac22d80a6c226680e11966c0e9ba13737172d5e1ddda80"
+        ],
+        "exact_micro_basin_sha256": "2fe38cd37049526c44e9f6a790b5eb7083ff756f24346e328569d91c370da8ca",
+        "feature_values": [
+          [
+            "control_relation",
+            "\"forbidden\""
+          ],
+          [
+            "pending_waypoint_order_satisfied",
+            "true"
+          ],
+          [
+            "pending_waypoint_prefix_length",
+            "1"
+          ]
+        ],
+        "fiber_sha256": "3705c3ef0be6983d2dc10407becb1ee74c3851f2bf07d42f5a7b535186ec1f37",
+        "fork_authority_sha256": "13b41868d90e0df3a56aeec882504427da2621d374a0fabc3ebbdd9a6091cdde",
+        "kind": "exact_interventional_fiber",
+        "offer_evidence_sha256": "f99af908ce13de742a30217d3e0da7a1589210bbd4b30b70525113bb31c67f47",
+        "offer_primitive_action_cost": "20/1",
+        "offer_supported": true,
+        "offer_transition_sha256": "c2bd06d1184fe94281bd5fca1e6ac93e592b989e7d5b9cbc8ead083421f7dacf",
+        "parent_state_sha256": "804bc8985d87ec8575d98647afeb678876acf795872bb7ffa3722826d5283548",
+        "phase": "training",
+        "pre_observation_content_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "pre_observation_occurrence_sha256": "b2dafdcc12bb0b626292f633804687890b605a773813582a9193f819764af316",
+        "pre_proposal_sha256": "b44b1b4f6f75c7e8800056512a18db1a81540a65f967333948793a257f7de56d",
+        "schema": "ztare-interventional-nerode-consolidation-v1",
+        "sha256": "1ba34861272e61304a37a511714da9a1a8663f6bdb759b7c7dbf779ce047d3ee",
+        "task_delta": 1,
+        "value_delta": "89/100",
+        "withhold_evidence_sha256": "b767aac9175b5393e01e45be280b89b70fdb27014c21bfee991ab0f489c197ca",
+        "withhold_primitive_action_cost": "20/1",
+        "withhold_supported": false,
+        "withhold_transition_sha256": "78f7ac5dbe9489a51a1470efec0fa3b995ee211a52bf830fc22298a0fc49a5a4"
+      },
+      {
+        "authority_sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/arms/pair_01_offer.json#sha256=fba950b37dbaa7dd35c080ec9d8af07b89a20244c19cc79b09d6d08de791c784",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/arms/pair_01_withhold.json#sha256=1093f97324e9749ab740159d8fd58a13b96c7151eafdd060812a5a101a153264",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/settlements/pair_01.json#sha256=1eafd4df08f00cb71f8d68aadcc7000dd9ebccd5cabe0c104d7f0d9e1922a8ee"
+        ],
+        "exact_micro_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+        "feature_values": [
+          [
+            "control_relation",
+            "\"forbidden\""
+          ],
+          [
+            "pending_waypoint_order_satisfied",
+            "false"
+          ],
+          [
+            "pending_waypoint_prefix_length",
+            "0"
+          ]
+        ],
+        "fiber_sha256": "f8754a1797a4afb0d523b396e5f0c6b8058152e860e67aa626375b4293a18ea5",
+        "fork_authority_sha256": "63b00725745d5a8effd8197c65a9ad299d4dad6db12c0bdf434953a4d565d006",
+        "kind": "exact_interventional_fiber",
+        "offer_evidence_sha256": "074efff91bb0d1ac3c86853fa12a86efa97619ea284a9b6bf3fac5811565000e",
+        "offer_primitive_action_cost": "20/1",
+        "offer_supported": true,
+        "offer_transition_sha256": "a56d8025e8d40bb9aed726d875163139ca97adfd52df523e23188df0fceb8422",
+        "parent_state_sha256": "01d4369f410e5b2b2d3c14b35d505d1e550530a2f3628716b13fc9ae65302b55",
+        "phase": "training",
+        "pre_observation_content_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "pre_observation_occurrence_sha256": "50ab2c58f4c8f066c4ceea6ac74fe45735783381eca4d4dc978799723a41aa00",
+        "pre_proposal_sha256": "e67229df3f90ad3b0695d74994c983014e7c9b2e491d1f6aa767ab122452f044",
+        "schema": "ztare-interventional-nerode-consolidation-v1",
+        "sha256": "6db09efc2c55b89a2f44e1d504da73a518a93a6511f14b3452a5d5ef0ec67b67",
+        "task_delta": 0,
+        "value_delta": "0/1",
+        "withhold_evidence_sha256": "f3d0f282c7561a05773863720876d3fda7d71f75d0d2e3fdcb553d6619c7c860",
+        "withhold_primitive_action_cost": "20/1",
+        "withhold_supported": false,
+        "withhold_transition_sha256": "309d71a780eb3f5bf882f77a5a3d54d044c855b1ddbaa0af1952e3620e29e96f"
+      }
+    ]
+  },
+  "frozen_inputs": {
+    "eligibility_rule": {
+      "admission_phase": "before_branch_revision",
+      "eligible_value": false,
+      "predicate": "proposal_satisfies_residual_response",
+      "rule": "blind_proposal_does_not_satisfy_target_residual_program"
+    },
+    "intervention_set": {
+      "causal_intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+      "causal_rendered_sha256": "d496b37d0a467d233a6387aa99560eaf54ec649187d2c76cb2ef1303e6292111",
+      "controller_transport": "codex_app_server",
+      "placebo_rendered_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+      "primitive_action_cost": "20.0",
+      "rendered_utf8_bytes_per_condition": 3849
+    },
+    "training_set": {
+      "pair_evidence": [
+        {
+          "offer_outcome_sha256": "074efff91bb0d1ac3c86853fa12a86efa97619ea284a9b6bf3fac5811565000e",
+          "pair_index": 1,
+          "withhold_outcome_sha256": "f3d0f282c7561a05773863720876d3fda7d71f75d0d2e3fdcb553d6619c7c860"
+        },
+        {
+          "offer_outcome_sha256": "f99af908ce13de742a30217d3e0da7a1589210bbd4b30b70525113bb31c67f47",
+          "pair_index": 2,
+          "withhold_outcome_sha256": "b767aac9175b5393e01e45be280b89b70fdb27014c21bfee991ab0f489c197ca"
+        }
+      ],
+      "source_experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+      "source_result_sha256": "94916c5531c45d90c4b35d6151c3bc8b2c78846bbdeb06025a63b8ad218bbb92"
+    },
+    "utility_measure": {
+      "efficiency_score_weight": "1/5",
+      "information_yield_in_utility": false,
+      "matched_task_field": "offer_task_minus_withhold",
+      "matched_value_field": "offer_composite_minus_withhold",
+      "task_score_weight": "4/5"
+    }
+  },
+  "hypothesis_id": "H-GPSA-EPOCHAL-INTERVENTIONAL-NERODE-CONSOLIDATION-20260808-108",
+  "kind": "retrospective_construction_audit",
+  "negative_controls": [
+    {
+      "expected_reason_fragment": "no candidate projection",
+      "name": "sign_opposite_effect",
+      "reason": "no candidate projection predicts the training contrasts",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "no candidate projection",
+      "name": "first_stage_drift",
+      "reason": "no candidate projection predicts the training contrasts",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "crossed consolidation authority",
+      "name": "authority_drift",
+      "reason": "fiber crossed consolidation authority",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "feature catalog drifted",
+      "name": "post_outcome_feature_insertion",
+      "reason": "fiber feature catalog drifted",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "reused training evidence",
+      "name": "training_evidence_reuse",
+      "reason": "holdout reused training evidence",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "exact fiber identity was reused",
+      "name": "exact_fiber_duplication",
+      "reason": "exact fiber identity was reused",
+      "refused": true
+    },
+    {
+      "expected_reason_fragment": "projection library",
+      "name": "candidate_library_mutation",
+      "reason": "candidate projection library is incomplete or noncanonical",
+      "refused": true
+    }
+  ],
+  "schema": "ztare-h108-epochal-interventional-nerode-stage-a-v1",
+  "sha256": "16b27144963d13b2651315172717b578ee16cde6c95825c41a071822f5b14e5d",
+  "source": {
+    "h97_experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+    "h97_manifest_file_sha256": "b9e80a2e520f2891dcdb0b2268aaea0390dda4651cbe626c264c26a61b3dfd8e",
+    "h97_manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/manifest.json",
+    "h97_result_file_sha256": "85952b40ee0c5b45f4bfca426f217ee864dc28a825fb91eee9170a7740b6db47",
+    "h97_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative_app_server/result.json",
+    "h97_result_sha256": "94916c5531c45d90c4b35d6151c3bc8b2c78846bbdeb06025a63b8ad218bbb92",
+    "h97_verdict": "rejected",
+    "observation_occurrence_authority_amendment_file_sha256": "1313c08266e45481587a2acc87674256444b379b37d51f63b43a0f54b1b120c9",
+    "observation_occurrence_authority_amendment_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_pre_live_observation_occurrence_authority_amendment.md"
+  },
+  "stage_a_observations": {
+    "exact_micro_basin_sha256s": [
+      "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+      "2fe38cd37049526c44e9f6a790b5eb7083ff756f24346e328569d91c370da8ca"
+    ],
+    "predicted_sign": "positive",
+    "predicted_value_delta": "89/200",
+    "promoted_child_count": 0,
+    "selected_projection": [],
+    "state_count": 1,
+    "training_fiber_count": 2
+  },
+  "status": "retrospective_construction_complete",
+  "verdict": "stage_a_passed_no_promotion"
+}

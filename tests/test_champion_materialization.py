@@ -194,6 +194,30 @@ def test_no_better_candidate_writes_noop_receipt(tmp_path, monkeypatch):
     assert "does not strictly dominate" in rows[-1].get("reason", "")
 
 
+def test_equal_rank_candidate_replaces_unselectable_live_carrier(tmp_path, monkeypatch):
+    proj = _make_project(tmp_path, test_model_src="PROGRAM = 'wrong-role'")
+    cand = _cand(proj, "candidate_valid.py", src="PROGRAM = 'selected'")
+    payload = {"harness_ok": True, "score": 80, "gated_sha256": "aa"}
+
+    with (
+        patch(f"{_MODULE}._collect_candidates", return_value=[cand]),
+        patch(f"{_MODULE}._run_harness", return_value=payload),
+        # _observed_tier_passes is no longer consulted for candidate
+        # eligibility (folded into _dominance_check, which owns the full
+        # contract incl. the row-dominance escape); the only remaining call
+        # is the live-carrier selectability check.
+        patch(f"{_MODULE}._observed_tier_passes", side_effect=[False]),
+        patch(f"{_MODULE}._dominance_check", return_value=True),
+        patch(f"{_MODULE}._rank_key", return_value=(10, 0, 5)),
+        patch(f"{_MODULE}._live_gate_result", side_effect=[payload, payload]),
+    ):
+        receipt = materialize_champion_from_memory(proj)
+
+    assert receipt["result"] == "promoted"
+    assert receipt["dominance_receipt"]["live_selectable_before"] is False
+    assert (proj / "test_model.py").read_text() == "PROGRAM = 'selected'"
+
+
 # ---------------------------------------------------------------------------
 # Test 5: ZTARE_CHAMPION_MATERIALIZATION=0 → untouched
 # ---------------------------------------------------------------------------

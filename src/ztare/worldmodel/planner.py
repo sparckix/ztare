@@ -72,6 +72,75 @@ class Plan:
     simulated_terminal: "Grid | None" = None
 
 
+def compile_replay_protocol_assignment(
+    assignment,
+    *,
+    task_contract_sha256: str,
+    decision_namespace: str,
+    choice_context_sha256: str,
+    continuation_context_sha256: str,
+    canonical_protocol_ids,
+):
+    """Bind a sealed option-family arm to one current canonical protocol."""
+
+    from ztare.common.continual_skill_memory import (
+        decision_option_family_sha256,
+    )
+    from ztare.common.guarded_experiment_protocol import (
+        GuardedProtocolAssignment,
+    )
+    from ztare.common.temporal_decision_credit import (
+        DecisionChoiceAuthority,
+    )
+    from ztare.common.two_stage_eligibility_ledger import (
+        SealedDecisionReplayAssignment,
+    )
+
+    if not isinstance(assignment, SealedDecisionReplayAssignment):
+        raise TypeError(
+            "assignment must be a SealedDecisionReplayAssignment"
+        )
+    protocol_ids = tuple(sorted(map(str, canonical_protocol_ids)))
+    family_by_protocol = {
+        protocol_id: decision_option_family_sha256(
+            decision_namespace,
+            protocol_id,
+        )
+        for protocol_id in protocol_ids
+    }
+    authority = DecisionChoiceAuthority(
+        task_contract_sha256=task_contract_sha256,
+        decision_namespace=decision_namespace,
+        choice_context_sha256=choice_context_sha256,
+        continuation_context_sha256=continuation_context_sha256,
+        available_option_family_sha256s=tuple(sorted(
+            family_by_protocol.values()
+        )),
+    )
+    if authority != assignment.contract.first_authority:
+        raise ValueError(
+            "replay assignment crossed planner choice authority"
+        )
+    matching = tuple(
+        protocol_id
+        for protocol_id, family_sha256 in family_by_protocol.items()
+        if family_sha256 == assignment.option_family_sha256
+    )
+    if len(matching) != 1:
+        raise ValueError(
+            "replay assignment does not name exactly one canonical "
+            "planner protocol"
+        )
+    return GuardedProtocolAssignment(
+        assignment_ref=assignment.assignment_ref,
+        assigned_protocol_id=matching[0],
+        canonical_protocol_ids=protocol_ids,
+        decision_choice_authority_sha256=authority.sha256,
+        source_assignment_sha256=assignment.sha256,
+        assignment_evidence_ref=assignment.randomization_evidence_ref,
+    )
+
+
 def _goal_sources_at(predicate, step: int) -> tuple:
     """Return source presentations that can still fire at ``step``.
 
@@ -742,6 +811,8 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                 control_history_trajectories=None,
                 carrier_execution_sha256: str = "",
                 control_task_contract_sha256: str = "",
+                control_external_utility_measure_sha256: str = "",
+                control_decision_replay_assignment=None,
                 max_steps: int = 400, max_replans: int = 8,
                 plan_depth: int = 12, receipts_dir=None) -> PursuitReceipt:
     """Plan under `champion`, execute against the live adapter, stop on the
@@ -905,6 +976,7 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
     active_skill_windows: list[dict] = []
     planned_skill_windows: list[dict] = []
     continual_skill_runtime: dict = {}
+    active_protocol_readout_context: dict[str, Any] | None = None
 
     def _skill_window_receipts() -> tuple[list[dict], list[dict], list[dict]]:
         """Separate selected, completed, and partially executed skill windows."""
@@ -1068,6 +1140,74 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
     _t_predict: float = 0.0
     _pursuit_started: str = datetime.utcnow().isoformat()
 
+    # Compile repeated evidence words before search so they can change the
+    # graph explored by the carrier.  The historical compiler nominates only
+    # an operation word; the current accepted carrier predicts each concrete
+    # image, and the adapter still settles the returned primitive program.
+    factored_search_macros = ()
+    factored_search_macro_state = {
+        "status": "unavailable",
+        "macro_count": 0,
+    }
+    if (
+        factored_projection is not None
+        and control_history_trajectories
+        and str(carrier_execution_sha256).strip()
+    ):
+        try:
+            from ztare.common.factored_search import FactoredSearchMacro
+            from ztare.worldmodel.mechanism_effects import (
+                compile_history_guarded_skill_library,
+            )
+
+            search_skill_library = compile_history_guarded_skill_library(
+                tuple(control_history_trajectories),
+                projection=factored_projection,
+                min_word_length=2,
+                max_word_length=8,
+                min_variant_support=2,
+            )
+            factored_search_macros = tuple(
+                FactoredSearchMacro(
+                    skill_sha256=program.skill_sha256,
+                    carrier_execution_sha256=carrier_execution_sha256,
+                    projection_sha256=(
+                        factored_projection.projection_sha256
+                    ),
+                    operations=program.operations,
+                    evidence_refs=tuple(sorted({
+                        ref
+                        for occurrence in program.occurrences
+                        for ref in occurrence.evidence_refs
+                    })),
+                )
+                for program in (
+                    search_skill_library.programs
+                    if search_skill_library is not None
+                    else ()
+                )
+            )
+            factored_search_macro_state = {
+                "status": "compiled",
+                "macro_count": len(factored_search_macros),
+                "source_library_sha256": (
+                    search_skill_library.source_sha256
+                    if search_skill_library is not None
+                    else ""
+                ),
+                "authority": (
+                    "history_nominates_word_current_carrier_predicts_"
+                    "adapter_settles"
+                ),
+            }
+        except Exception as macro_error:  # noqa: BLE001
+            factored_search_macros = ()
+            factored_search_macro_state = {
+                "status": "primitive_fallback",
+                "macro_count": 0,
+                "error_type": type(macro_error).__name__,
+            }
+
     def _factored_attempt(
         problem,
         policy: str,
@@ -1108,6 +1248,17 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                 start_time=adapter.t,
                 max_depth=plan_depth * 6,
                 max_states=cap,
+                macros=factored_search_macros,
+                max_primitive_cost=(
+                    max(1, int(max_steps - len(trace)))
+                    if factored_search_macros
+                    else None
+                ),
+                carrier_execution_sha256=(
+                    carrier_execution_sha256
+                    if factored_search_macros
+                    else ""
+                ),
             )
             if (
                 result.status != "search_budget_exhausted"
@@ -1125,6 +1276,15 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
             "problem_id": problem.problem_id,
             "exhaustive": result.status == "projected_frontier_exhausted",
         }
+        if factored_search_macros:
+            outcome.update({
+                "deliberation_depth": result.deepest_depth,
+                "primitive_depth": result.deepest_primitive_depth,
+                "primitive_action_cost": result.primitive_action_cost,
+                "macro_edges_attempted": result.macro_edges_attempted,
+                "macro_edges_admitted": result.macro_edges_admitted,
+                "generative_skill_edges": factored_search_macro_state,
+            })
         temporal_certificate = getattr(
             problem, "time_translation_certificate", None
         )
@@ -1181,6 +1341,7 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
     try:
         while len(trace) < max_steps and replans <= replan_limit:
             plan = None
+            active_protocol_readout_context = None
             active_skill_windows = []
             planned_acquisition_transaction = False
             factored_planning_outcome = {}
@@ -1627,7 +1788,11 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                     )
                                     skill_context = (
                                         "compiled_fiber_skill_context",
-                                        mechanism_problem.projection_sha256,
+                                        getattr(
+                                            mechanism_problem,
+                                            "projection_sha256",
+                                            factored_projection.projection_sha256,
+                                        ),
                                         str(carrier_execution_sha256 or ""),
                                     )
                                     prior_memory = (
@@ -1796,7 +1961,11 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                 )
                                 effect_namespace = (
                                     "compiled-fiber-effects-v1:"
-                                    + mechanism_problem.projection_sha256
+                                    + getattr(
+                                        mechanism_problem,
+                                        "projection_sha256",
+                                        factored_projection.projection_sha256,
+                                    )
                                 )
                                 effect_option_namespace = effect_namespace
                                 effect_option_families = (
@@ -2058,7 +2227,11 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                     "guarded-protocol-information-yield-v1"
                                 ),
                                 "projection_sha256": (
-                                    mechanism_problem.projection_sha256
+                                    getattr(
+                                        mechanism_problem,
+                                        "projection_sha256",
+                                        factored_projection.projection_sha256,
+                                    )
                                 ),
                                 "operation_namespace": (
                                     control_operation_namespace
@@ -2066,6 +2239,25 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                             })
                         )
                         decision_option_judgments = []
+                        temporal_decision_compilation = None
+                        temporal_utility_compilation = None
+                        if continual_skill_memory is not None:
+                            from ztare.common.continual_skill_memory import (
+                                compile_persisted_temporal_decision_credit,
+                                compile_persisted_temporal_decision_utility,
+                            )
+
+                            temporal_decision_compilation = (
+                                compile_persisted_temporal_decision_credit(
+                                    continual_skill_memory,
+                                )
+                            )
+                            if control_external_utility_measure_sha256:
+                                temporal_utility_compilation = (
+                                    compile_persisted_temporal_decision_utility(
+                                        continual_skill_memory,
+                                    )
+                                )
 
                         def resolve_protocol_decision_calibration(
                             protocol_ids,
@@ -2077,7 +2269,7 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                 return {}, {}
                             from ztare.common.continual_skill_memory import (
                                 decision_option_family_sha256,
-                                judge_decision_option_task_credit,
+                                judge_combined_decision_option_task_credit,
                             )
 
                             family_by_protocol = {
@@ -2096,7 +2288,7 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                             contrast_priorities = {}
                             for protocol_id in protocol_ids:
                                 judgment = (
-                                    judge_decision_option_task_credit(
+                                    judge_combined_decision_option_task_credit(
                                         continual_skill_memory,
                                         decision_namespace=(
                                             decision_namespace
@@ -2118,6 +2310,15 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                         available_option_family_sha256s=(
                                             available_families
                                         ),
+                                        temporal_compilation=(
+                                            temporal_decision_compilation
+                                        ),
+                                        external_utility_measure_sha256=(
+                                            control_external_utility_measure_sha256
+                                        ),
+                                        utility_compilation=(
+                                            temporal_utility_compilation
+                                        ),
                                     )
                                 )
                                 decision_option_judgments.append(
@@ -2130,6 +2331,27 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                     judgment.contrast_priority
                                 )
                             return task_values, contrast_priorities
+
+                        def resolve_protocol_decision_assignment(
+                            protocol_ids,
+                        ):
+                            assignment = control_decision_replay_assignment
+                            if assignment is None:
+                                return None
+                            return compile_replay_protocol_assignment(
+                                assignment,
+                                task_contract_sha256=(
+                                    control_task_contract_sha256
+                                ),
+                                decision_namespace=decision_namespace,
+                                choice_context_sha256=(
+                                    decision_choice_context_sha256
+                                ),
+                                continuation_context_sha256=(
+                                    decision_continuation_context_sha256
+                                ),
+                                canonical_protocol_ids=tuple(protocol_ids),
+                            )
 
                         protocol_portfolio = select_acquisition_protocols(
                             mechanism_problem.action_system,
@@ -2168,6 +2390,12 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                             decision_calibration_resolver=(
                                 resolve_protocol_decision_calibration
                             ),
+                            decision_assignment_resolver=(
+                                resolve_protocol_decision_assignment
+                                if control_decision_replay_assignment
+                                is not None
+                                else None
+                            ),
                         )
                         protocol_lowerings = (
                             protocol_portfolio.lowerings
@@ -2204,6 +2432,39 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                 )
                             }
                             selected_price = protocol_selection.selected
+                            selected_lowering = next(
+                                lowering
+                                for lowering in protocol_lowerings
+                                if (
+                                    lowering.candidate.protocol.protocol_id
+                                    == selected_price.protocol_id
+                                )
+                            )
+                            from ztare.common.protocol_information_yield import (
+                                compile_protocol_information_yield_forecast,
+                            )
+
+                            information_yield_forecast = (
+                                compile_protocol_information_yield_forecast(
+                                    selected_lowering.candidate,
+                                    selected_price,
+                                )
+                            )
+                            if (
+                                control_decision_replay_assignment is not None
+                                and information_yield_forecast.measure_sha256
+                                != control_decision_replay_assignment.contract
+                                .information_yield_measure_sha256
+                            ):
+                                raise ValueError(
+                                    "replay assignment crossed the planner's "
+                                    "information-yield measure"
+                                )
+                            active_protocol_readout_context = {
+                                "mechanism_problem": mechanism_problem,
+                                "lowering": selected_lowering,
+                                "forecast": information_yield_forecast,
+                            }
                             selected_family = family_by_protocol[
                                 selected_price.protocol_id
                             ]
@@ -2256,7 +2517,24 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                                     protocol_selection
                                     .canonical_protocol_ids
                                 ),
+                                "information_yield_forecast": (
+                                    information_yield_forecast.to_receipt()
+                                ),
                             }
+                            if protocol_selection.assignment is not None:
+                                task_decision_choice.update({
+                                    "selection_authority": (
+                                        "sealed_experiment_assignment"
+                                    ),
+                                    "replay_assignment": (
+                                        control_decision_replay_assignment
+                                        .to_receipt()
+                                    ),
+                                    "replay_assignment_sha256": (
+                                        control_decision_replay_assignment
+                                        .sha256
+                                    ),
+                                })
                         protocol_diagnostics = {
                             "factor_novelty_predecessor": (
                                 factor_novelty_outcome
@@ -2387,6 +2665,11 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                             ),
                             "decision_option_task_judgments": list(
                                 decision_option_judgments
+                            ),
+                            "temporal_decision_credit_compilation": (
+                                temporal_decision_compilation.to_receipt()
+                                if temporal_decision_compilation is not None
+                                else None
                             ),
                             "task_decision_choice": (
                                 task_decision_choice
@@ -3393,6 +3676,107 @@ def pursue_goal(adapter, champion: Program, *, goal_fn=None, goal_edge_fn=None,
                         identity=transition_identity,
                     )
                 )
+                live_transition = observed[-1]
+                if (
+                    active_protocol_readout_context is not None
+                    and action_index == len(plan.actions) - 1
+                ):
+                    decision_choice = last_planning_outcome.get(
+                        "task_decision_choice"
+                    )
+                    if isinstance(decision_choice, dict):
+                        try:
+                            from ztare.worldmodel.mechanism_effects import (
+                                predictive_prefixes_from_transitions,
+                                project_mechanism_transition_observation,
+                            )
+                            from ztare.worldmodel.mechanism_protocols import (
+                                observe_witnessed_protocol_information_yield,
+                            )
+
+                            (
+                                live_action_history,
+                                live_effect_history,
+                            ) = predictive_prefixes_from_transitions(
+                                observed[:-1],
+                                projection=factored_projection,
+                                action_prefix=tuple(
+                                    control_history_prefix or ()
+                                ),
+                                operation_effect_prefix=tuple(
+                                    control_operation_effect_history_prefix
+                                    or ()
+                                ),
+                            )
+                            live_evidence_ref = (
+                                "live_protocol_transition:"
+                                + _stable_sha256({
+                                    "time": live_transition.t,
+                                    "source": live_transition.s,
+                                    "operation": live_transition.a,
+                                    "successor": live_transition.s_next,
+                                    "identity": (
+                                        live_transition.identity.to_dict()
+                                        if live_transition.identity is not None
+                                        else None
+                                    ),
+                                })
+                            )
+                            projected_observation = (
+                                project_mechanism_transition_observation(
+                                    active_protocol_readout_context[
+                                        "mechanism_problem"
+                                    ],
+                                    live_transition,
+                                    action_history=live_action_history,
+                                    operation_effect_history=(
+                                        live_effect_history
+                                    ),
+                                    evidence_ref=live_evidence_ref,
+                                )
+                            )
+                            response_readout, yield_observation = (
+                                observe_witnessed_protocol_information_yield(
+                                    active_protocol_readout_context[
+                                        "mechanism_problem"
+                                    ].action_system,
+                                    active_protocol_readout_context[
+                                        "lowering"
+                                    ],
+                                    active_protocol_readout_context[
+                                        "forecast"
+                                    ],
+                                    **projected_observation.to_response_kwargs(),
+                                )
+                            )
+                            decision_choice[
+                                "projected_transition_observation"
+                            ] = projected_observation.to_receipt()
+                            decision_choice[
+                                "information_yield_response_readout"
+                            ] = response_readout.to_receipt()
+                            decision_choice[
+                                "information_yield_observation"
+                            ] = yield_observation.to_receipt()
+                        except (
+                            AttributeError,
+                            KeyError,
+                            TypeError,
+                            ValueError,
+                        ) as readout_error:
+                            decision_choice[
+                                "information_yield_observation"
+                            ] = {
+                                "schema": (
+                                    "ztare-protocol-information-yield-"
+                                    "observation-unavailable-v1"
+                                ),
+                                "status": "unavailable",
+                                "error_type": type(readout_error).__name__,
+                                "reason": str(readout_error),
+                                "task_credit_authorized": False,
+                            }
+                    active_protocol_readout_context = None
                 if _witnessed_pairs is not None:
                     try:
                         _witnessed_pairs.add((_support_alpha(state), a))

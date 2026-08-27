@@ -63,11 +63,59 @@ class FactoredSearchResult:
     status: str
     actions: tuple[Any, ...] = ()
     continuation_actions: tuple[Any, ...] = ()
+    search_move_refs: tuple[str, ...] = ()
     generated: int = 0
     expanded: int = 0
     frontier_remaining: int = 0
     deepest_depth: int = 0
+    deepest_primitive_depth: int = 0
+    primitive_action_cost: int = 0
+    macro_edges_attempted: int = 0
+    macro_edges_admitted: int = 0
     projection_counterexample: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class FactoredSearchMacro:
+    """One evidence-bound operation word exposed as a search move.
+
+    The macro changes deliberation depth only.  Search still rolls every
+    primitive operation through the supplied carrier, advances time after each
+    operation, checks intermediate goals and admissibility, and returns the
+    flattened primitive program for external execution.
+    """
+
+    skill_sha256: str
+    carrier_execution_sha256: str
+    projection_sha256: str
+    operations: tuple[Hashable, ...]
+    evidence_refs: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        for name in (
+            "skill_sha256",
+            "carrier_execution_sha256",
+            "projection_sha256",
+        ):
+            digest = str(getattr(self, name)).strip()
+            if len(digest) != 64 or any(
+                character not in "0123456789abcdef" for character in digest
+            ):
+                raise ValueError(f"macro {name} must be a lowercase SHA-256")
+            object.__setattr__(self, name, digest)
+        if len(self.operations) < 2:
+            raise ValueError("factored-search macro needs at least two operations")
+        for operation in self.operations:
+            _hashable(operation, "macro operation")
+        refs = tuple(sorted({
+            str(value).strip()
+            for value in self.evidence_refs
+            if str(value).strip()
+        }))
+        if not refs:
+            raise ValueError("factored-search macro requires evidence refs")
+        object.__setattr__(self, "operations", tuple(self.operations))
+        object.__setattr__(self, "evidence_refs", refs)
 
 
 def _hashable(value: Any, label: str) -> Hashable:
@@ -118,6 +166,9 @@ def search_factored(
     advance_time: Callable[[Any], Any] = lambda value: value + 1,
     max_depth: int = 72,
     max_states: int = 5000,
+    macros: tuple[FactoredSearchMacro, ...] = (),
+    max_primitive_cost: int | None = None,
+    carrier_execution_sha256: str = "",
 ) -> FactoredSearchResult:
     """Best-first search with product-order feasibility dominance.
 
@@ -134,6 +185,41 @@ def search_factored(
         raise ValueError("factored search requires problem and projection identity")
     if max_depth < 1 or max_states < 1:
         raise ValueError("factored search bounds must be positive")
+    if max_primitive_cost is not None and max_primitive_cost < 1:
+        raise ValueError("max_primitive_cost must be positive when supplied")
+    macro_rows = tuple(macros)
+    if any(not isinstance(row, FactoredSearchMacro) for row in macro_rows):
+        raise TypeError("macros must contain FactoredSearchMacro values")
+    if len({row.skill_sha256 for row in macro_rows}) != len(macro_rows):
+        raise ValueError("factored-search macros repeat a skill identity")
+    if macro_rows:
+        execution_digest = str(carrier_execution_sha256).strip()
+        if not execution_digest:
+            raise ValueError("factored-search macros require carrier identity")
+        if any(
+            row.carrier_execution_sha256 != execution_digest
+            for row in macro_rows
+        ):
+            raise ValueError("factored-search macro crossed carrier identity")
+        if any(
+            row.projection_sha256 != problem.projection_sha256
+            for row in macro_rows
+        ):
+            raise ValueError("factored-search macro crossed projection identity")
+    intervention_set = frozenset(interventions)
+    if any(
+        operation not in intervention_set
+        for row in macro_rows
+        for operation in row.operations
+    ):
+        raise ValueError("factored-search macro crossed the action vocabulary")
+    moves = tuple(
+        (f"primitive:{index}", (intervention,), False)
+        for index, intervention in enumerate(interventions)
+    ) + tuple(
+        (f"skill:{row.skill_sha256}", row.operations, True)
+        for row in macro_rows
+    )
     if not problem.admissible(start):
         return FactoredSearchResult(status="start_outside_feasibility_domain")
 
@@ -148,9 +234,9 @@ def search_factored(
         return FactoredSearchResult(status="state_found")
     pareto: dict[
         Hashable,
-        list[tuple[int, tuple[float, ...], Any, Any]],
+        list[tuple[int, int, tuple[float, ...], Any, Any]],
     ] = {
-        start_key: [(0, start_vector, start, start_time)]
+        start_key: [(0, 0, start_vector, start, start_time)]
     }
     # A quotient key claims that its transition image is well-defined.  Keep a
     # witness per (key, intervention); a second image refutes that claim.
@@ -302,7 +388,8 @@ def search_factored(
 
     def admitted(
         key: Hashable,
-        depth: int,
+        decision_depth: int,
+        primitive_depth: int,
         vector: tuple[float, ...],
         state: Any,
         time_value: Any,
@@ -314,9 +401,10 @@ def search_factored(
         dominators = [
             row
             for row in rows
-            if row[0] <= depth
-            and len(row[1]) == len(vector)
-            and all(old >= new for old, new in zip(row[1], vector))
+            if row[0] <= primitive_depth
+            and row[1] <= decision_depth
+            and len(row[2]) == len(vector)
+            and all(old >= new for old, new in zip(row[2], vector))
         ]
         if dominators:
             # Exact (state, time) identity makes deterministic transition
@@ -325,7 +413,13 @@ def search_factored(
             # dominate the cost of a conservative fallback search.
             if exact_transition_identity:
                 return False, None
-            for _old_depth, _old_vector, old_state, old_time in dominators:
+            for (
+                _old_primitive_depth,
+                _old_decision_depth,
+                _old_vector,
+                old_state,
+                old_time,
+            ) in dominators:
                 counterexample = dominance_counterexample(
                     key=key,
                     dominator_state=old_state,
@@ -339,12 +433,19 @@ def search_factored(
         dominated_rows = [
             row
             for row in rows
-            if depth <= row[0]
-            and len(row[1]) == len(vector)
-            and all(new >= old for new, old in zip(vector, row[1]))
+            if primitive_depth <= row[0]
+            and decision_depth <= row[1]
+            and len(row[2]) == len(vector)
+            and all(new >= old for new, old in zip(vector, row[2]))
         ]
         if not exact_transition_identity:
-            for _old_depth, _old_vector, old_state, old_time in dominated_rows:
+            for (
+                _old_primitive_depth,
+                _old_decision_depth,
+                _old_vector,
+                old_state,
+                old_time,
+            ) in dominated_rows:
                 counterexample = dominance_counterexample(
                     key=key,
                     dominator_state=state,
@@ -358,43 +459,120 @@ def search_factored(
             row
             for row in rows
             if not (
-                depth <= row[0]
-                and len(row[1]) == len(vector)
-                and all(new >= old for new, old in zip(vector, row[1]))
+                primitive_depth <= row[0]
+                and decision_depth <= row[1]
+                and len(row[2]) == len(vector)
+                and all(new >= old for new, old in zip(vector, row[2]))
             )
         ]
-        rows.append((depth, vector, state, time_value))
+        rows.append((
+            primitive_depth,
+            decision_depth,
+            vector,
+            state,
+            time_value,
+        ))
         return True, None
 
-    tie = generated = expanded = deepest = 0
+    tie = generated = expanded = deepest = deepest_primitive = 0
+    macro_attempted = macro_admitted = 0
     depth_truncated = False
-    frontier: list[tuple[float, int, int, Any, Any, tuple[Any, ...]]] = [
-        (_estimate(problem, start), 0, tie, start, start_time, ())
+    primitive_truncated = False
+    frontier: list[
+        tuple[
+            float,
+            int,
+            int,
+            int,
+            Any,
+            Any,
+            tuple[Any, ...],
+            tuple[str, ...],
+        ]
+    ] = [
+        (_estimate(problem, start), 0, 0, tie, start, start_time, (), ())
     ]
     while frontier and generated < max_states:
-        _priority, depth, _tie, state, time_value, path = heapq.heappop(frontier)
+        (
+            _priority,
+            decision_depth,
+            primitive_depth,
+            _tie,
+            state,
+            time_value,
+            path,
+            move_path,
+        ) = heapq.heappop(frontier)
         expanded += 1
-        deepest = max(deepest, depth)
-        if depth >= max_depth:
+        deepest = max(deepest, decision_depth)
+        deepest_primitive = max(deepest_primitive, primitive_depth)
+        if decision_depth >= max_depth:
             depth_truncated = True
             continue
         source_key = _dominance_key(problem, state, time_value)
-        for intervention in interventions:
-            if problem.goal_edge(state, intervention, time_value):
-                return FactoredSearchResult(
-                    status="edge_found",
-                    actions=path + (intervention,),
-                    generated=generated,
-                    expanded=expanded,
-                    frontier_remaining=len(frontier),
-                    deepest_depth=max(deepest, depth + 1),
-                )
-            successor = predict(state, intervention, time_value)
-            if successor is None or not problem.admissible(successor):
+        for move_sha256, operations, is_macro in moves:
+            if is_macro:
+                macro_attempted += 1
+            successor = state
+            successor_time = time_value
+            emitted_operations = []
+            edge_failed = False
+            for operation in operations:
+                next_primitive_depth = primitive_depth + len(emitted_operations) + 1
+                if (
+                    max_primitive_cost is not None
+                    and next_primitive_depth > max_primitive_cost
+                ):
+                    primitive_truncated = True
+                    edge_failed = True
+                    break
+                if problem.goal_edge(successor, operation, successor_time):
+                    actions = path + tuple(emitted_operations) + (operation,)
+                    return FactoredSearchResult(
+                        status="edge_found",
+                        actions=actions,
+                        search_move_refs=move_path + (move_sha256,),
+                        generated=generated,
+                        expanded=expanded,
+                        frontier_remaining=len(frontier),
+                        deepest_depth=max(deepest, decision_depth + 1),
+                        deepest_primitive_depth=max(
+                            deepest_primitive,
+                            next_primitive_depth,
+                        ),
+                        primitive_action_cost=len(actions),
+                        macro_edges_attempted=macro_attempted,
+                        macro_edges_admitted=macro_admitted,
+                    )
+                next_state = predict(successor, operation, successor_time)
+                if next_state is None or not problem.admissible(next_state):
+                    edge_failed = True
+                    break
+                successor = next_state
+                successor_time = advance_time(successor_time)
+                emitted_operations.append(operation)
+                if state_target is not None and state_target(successor):
+                    actions = path + tuple(emitted_operations)
+                    return FactoredSearchResult(
+                        status="state_found",
+                        actions=actions,
+                        search_move_refs=move_path + (move_sha256,),
+                        generated=generated,
+                        expanded=expanded,
+                        frontier_remaining=len(frontier),
+                        deepest_depth=max(deepest, decision_depth + 1),
+                        deepest_primitive_depth=max(
+                            deepest_primitive,
+                            primitive_depth + len(emitted_operations),
+                        ),
+                        primitive_action_cost=len(actions),
+                        macro_edges_attempted=macro_attempted,
+                        macro_edges_admitted=macro_admitted,
+                    )
+            if edge_failed:
                 continue
-            successor_time = advance_time(time_value)
             successor_key = _dominance_key(problem, successor, successor_time)
-            image_key = (source_key, intervention)
+            image_key = (source_key, move_sha256)
             prior_image = transition_images.get(image_key)
             if prior_image is not None and prior_image != successor_key:
                 return FactoredSearchResult(
@@ -403,28 +581,24 @@ def search_factored(
                     expanded=expanded,
                     frontier_remaining=len(frontier),
                     deepest_depth=deepest,
+                    deepest_primitive_depth=deepest_primitive,
+                    macro_edges_attempted=macro_attempted,
+                    macro_edges_admitted=macro_admitted,
                     projection_counterexample={
                         "source_key": repr(source_key),
-                        "intervention": repr(intervention),
+                        "intervention": repr(move_sha256),
                         "prior_successor_key": repr(prior_image),
                         "successor_key": repr(successor_key),
                     },
                 )
             transition_images[image_key] = successor_key
-            if state_target is not None and state_target(successor):
-                return FactoredSearchResult(
-                    status="state_found",
-                    actions=path + (intervention,),
-                    generated=generated,
-                    expanded=expanded,
-                    frontier_remaining=len(frontier),
-                    deepest_depth=max(deepest, depth + 1),
-                )
             successor_vector = _vector(problem, successor)
-            next_depth = depth + 1
+            next_decision_depth = decision_depth + 1
+            next_primitive_depth = primitive_depth + len(operations)
             is_admitted, merge_counterexample = admitted(
                 successor_key,
-                next_depth,
+                next_decision_depth,
+                next_primitive_depth,
                 successor_vector,
                 successor,
                 successor_time,
@@ -436,22 +610,30 @@ def search_factored(
                     expanded=expanded,
                     frontier_remaining=len(frontier),
                     deepest_depth=deepest,
+                    deepest_primitive_depth=deepest_primitive,
+                    macro_edges_attempted=macro_attempted,
+                    macro_edges_admitted=macro_admitted,
                     projection_counterexample=merge_counterexample,
                 )
             if not is_admitted:
                 continue
+            if is_macro:
+                macro_admitted += 1
             generated += 1
             tie += 1
-            next_path = path + (intervention,)
+            next_path = path + tuple(operations)
+            next_move_path = move_path + (move_sha256,)
             heapq.heappush(
                 frontier,
                 (
-                    next_depth + _estimate(problem, successor),
-                    next_depth,
+                    next_decision_depth + _estimate(problem, successor),
+                    next_decision_depth,
+                    next_primitive_depth,
                     tie,
                     successor,
                     successor_time,
                     next_path,
+                    next_move_path,
                 ),
             )
             if generated >= max_states:
@@ -467,17 +649,17 @@ def search_factored(
             (
                 row
                 for row in sorted(frontier)
-                if selector is None or selector(row[3], row[5])
+                if selector is None or selector(row[4], row[6])
             ),
             None,
         )
         if selected is not None:
-            continuation = selected[5]
+            continuation = selected[6]
     status = (
         "search_budget_exhausted"
         if frontier
         else "depth_bound_exhausted"
-        if depth_truncated
+        if depth_truncated or primitive_truncated
         else "projected_frontier_exhausted"
     )
     return FactoredSearchResult(
@@ -490,11 +672,15 @@ def search_factored(
         expanded=expanded,
         frontier_remaining=len(frontier),
         deepest_depth=deepest,
+        deepest_primitive_depth=deepest_primitive,
+        macro_edges_attempted=macro_attempted,
+        macro_edges_admitted=macro_admitted,
     )
 
 
 __all__ = [
     "FactoredSearchProblem",
+    "FactoredSearchMacro",
     "FactoredSearchResult",
     "FactoredStateTarget",
     "FactoredContinuationSelector",

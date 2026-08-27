@@ -1,0 +1,517 @@
+{
+  "additive_scaling": [
+    {
+      "full_factorial_trajectory_count": 4,
+      "model_rank": 3,
+      "modeled_term_count": 2,
+      "rank": 2,
+      "schedule_sha256": "c5ba5ab0aa1130e1da3ea37ebb35d81480eb891205b45019fa75e1f55cffe689",
+      "sparse_trajectory_count": 4,
+      "trajectory_compression_ratio": 1.0
+    },
+    {
+      "full_factorial_trajectory_count": 8,
+      "model_rank": 4,
+      "modeled_term_count": 3,
+      "rank": 3,
+      "schedule_sha256": "85be869406c8f71d93443d4665402c6a351f730f6a3c4eff7f5803b144df5f4f",
+      "sparse_trajectory_count": 4,
+      "trajectory_compression_ratio": 2.0
+    },
+    {
+      "full_factorial_trajectory_count": 16,
+      "model_rank": 5,
+      "modeled_term_count": 4,
+      "rank": 4,
+      "schedule_sha256": "9d56d9533e276df41f8a110f21ce2ce06cdec50952499363c4993259e54a7865",
+      "sparse_trajectory_count": 8,
+      "trajectory_compression_ratio": 2.0
+    },
+    {
+      "full_factorial_trajectory_count": 32,
+      "model_rank": 6,
+      "modeled_term_count": 5,
+      "rank": 5,
+      "schedule_sha256": "eb04dfbaa9efb66523d4c85e8bb4ee31480e2867acf02e4f60bece18ac5e0835",
+      "sparse_trajectory_count": 8,
+      "trajectory_compression_ratio": 4.0
+    },
+    {
+      "full_factorial_trajectory_count": 64,
+      "model_rank": 7,
+      "modeled_term_count": 6,
+      "rank": 6,
+      "schedule_sha256": "ceb73eeb7d46bc98c09cc3138b80c550c1f219cff55edd0883309a14e92fbd26",
+      "sparse_trajectory_count": 8,
+      "trajectory_compression_ratio": 8.0
+    },
+    {
+      "full_factorial_trajectory_count": 128,
+      "model_rank": 8,
+      "modeled_term_count": 7,
+      "rank": 7,
+      "schedule_sha256": "08aa7e5b40a4fddbb14c200a58c810a3f4b0a2705423aef34683c796e352ab2d",
+      "sparse_trajectory_count": 8,
+      "trajectory_compression_ratio": 16.0
+    },
+    {
+      "full_factorial_trajectory_count": 256,
+      "model_rank": 9,
+      "modeled_term_count": 8,
+      "rank": 8,
+      "schedule_sha256": "69e091e5f1e5b4cf5bf2d0b3fed084af4ebc5d663e853be35348fd2335853e5e",
+      "sparse_trajectory_count": 16,
+      "trajectory_compression_ratio": 16.0
+    },
+    {
+      "full_factorial_trajectory_count": 512,
+      "model_rank": 10,
+      "modeled_term_count": 9,
+      "rank": 9,
+      "schedule_sha256": "c2339aaee637a6ece0afc2f2bd0d35072a8d350068ac29d26c34bfae23359ea6",
+      "sparse_trajectory_count": 16,
+      "trajectory_compression_ratio": 32.0
+    },
+    {
+      "full_factorial_trajectory_count": 1024,
+      "model_rank": 11,
+      "modeled_term_count": 10,
+      "rank": 10,
+      "schedule_sha256": "4b7123550ea8b48a669474be1313face51cd95cceeb32dc67108ed7281e9b665",
+      "sparse_trajectory_count": 16,
+      "trajectory_compression_ratio": 64.0
+    },
+    {
+      "full_factorial_trajectory_count": 2048,
+      "model_rank": 12,
+      "modeled_term_count": 11,
+      "rank": 11,
+      "schedule_sha256": "fed932955cae509e3eabc54fb1e79fc770e97b37a1062307712e4d168979ce07",
+      "sparse_trajectory_count": 16,
+      "trajectory_compression_ratio": 128.0
+    },
+    {
+      "full_factorial_trajectory_count": 4096,
+      "model_rank": 13,
+      "modeled_term_count": 12,
+      "rank": 12,
+      "schedule_sha256": "abf8d6fa5018bd8a5a96d68e98e19306e7dec8ccaca7f9d9ae568525160b0e37",
+      "sparse_trajectory_count": 16,
+      "trajectory_compression_ratio": 256.0
+    }
+  ],
+  "claim_boundary": [
+    "The synthetic settlement compiler removes the complete-factorial requirement for a declared sparse effect model.",
+    "Rank-three shared cost falls from 160 to 80 primitive action units while the synthetic criticality verdict is unchanged.",
+    "The result does not settle H97 or demonstrate live ARC offspring.",
+    "The result does not authorize a capability-takeoff claim.",
+    "Walsh and fractional-factorial components are established; literature novelty is not established."
+  ],
+  "controller_contact": false,
+  "declared_interaction": {
+    "assignment_patterns": [
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        -1,
+        1,
+        1
+      ],
+      [
+        1,
+        -1,
+        1
+      ],
+      [
+        -1,
+        -1,
+        1
+      ],
+      [
+        1,
+        1,
+        -1
+      ],
+      [
+        -1,
+        1,
+        -1
+      ],
+      [
+        1,
+        -1,
+        -1
+      ],
+      [
+        -1,
+        -1,
+        -1
+      ]
+    ],
+    "factor_masks": [
+      {
+        "mask": 1,
+        "niche_ref": "child-0"
+      },
+      {
+        "mask": 2,
+        "niche_ref": "child-1"
+      },
+      {
+        "mask": 4,
+        "niche_ref": "child-2"
+      }
+    ],
+    "fission_sha256": "1a2b6485f8e6db7ee2cc32733843709e8f4dc8e2c3b3bb7172d38169303eaa19",
+    "full_factorial_trajectory_count": 8,
+    "kind": "sparse_settlement_schedule",
+    "model_rank": 5,
+    "modeled_interactions": [
+      [
+        "child-0",
+        "child-1"
+      ]
+    ],
+    "modeled_term_count": 4,
+    "niche_refs": [
+      "child-0",
+      "child-1",
+      "child-2"
+    ],
+    "schema": "ztare-epistemic-autocatalysis-v1",
+    "sha256": "6b61ac5237ab5436c723cca50815fcf370a880c40c56226aa921e66d71ba7f1b",
+    "term_masks": [
+      {
+        "mask": 1,
+        "term": [
+          "child-0"
+        ]
+      },
+      {
+        "mask": 2,
+        "term": [
+          "child-1"
+        ]
+      },
+      {
+        "mask": 4,
+        "term": [
+          "child-2"
+        ]
+      },
+      {
+        "mask": 3,
+        "term": [
+          "child-0",
+          "child-1"
+        ]
+      }
+    ],
+    "trajectory_compression_ratio": 1.0,
+    "trajectory_count": 8
+  },
+  "environment_contact": false,
+  "h97_runtime_boundary": {
+    "evidence_effect": "none",
+    "receipt_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/live_attempt_01_runtime_receipt.json",
+    "status": "blocked_runtime"
+  },
+  "h99_result": {
+    "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h99_lineage_bound_epistemic_branching_result.json",
+    "sha256": "929202dfe3297f1d931a1c7593e49fe62c111d2524e2018a9cc02896fecfbf55",
+    "verdict": "supported"
+  },
+  "kind": "offline_scaling_result",
+  "nearest_prior_art": [
+    {
+      "component": "micro-randomized causal excursion effects",
+      "url": "https://arxiv.org/abs/2107.03544"
+    },
+    {
+      "component": "model-based design of experiments",
+      "url": "https://arxiv.org/abs/2406.09557"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "label": "zero_factor_mask",
+      "reason": "factor masks must be distinct and nonzero",
+      "rejected": true
+    },
+    {
+      "label": "repeated_factor_mask",
+      "reason": "factor masks must be distinct and nonzero",
+      "rejected": true
+    },
+    {
+      "label": "missing_schedule_row",
+      "reason": "trials differ from compiled sparse settlement schedule",
+      "rejected": true
+    },
+    {
+      "label": "assignment_drift",
+      "reason": "trials differ from compiled sparse settlement schedule",
+      "rejected": true
+    },
+    {
+      "label": "post_outcome_interaction_relabel",
+      "reason": "trials differ from compiled sparse settlement schedule",
+      "rejected": true
+    },
+    {
+      "label": "full_factorial_and_sparse_double_authority",
+      "reason": "sparse settlement schedule requires full factorial disabled",
+      "rejected": true
+    },
+    {
+      "label": "rank_deficient_pattern_forgery",
+      "reason": "assignment patterns crossed Walsh factor masks",
+      "rejected": true
+    }
+  ],
+  "rank_three_settlement": {
+    "absolute_cost_reduction": 80.0,
+    "criticality": {
+      "assignment_rank": 3,
+      "calibration_tolerance": 0.1,
+      "child_count": 3,
+      "child_settlements": [
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "child-0",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 2,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "axis-0",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h100-rank3-observation-1-1",
+            "h100-rank3-observation-2-1",
+            "h100-rank3-observation-3-1",
+            "h100-rank3-observation-4-1"
+          ],
+          "sha256": "b1453a28f4a469414cc3122481f5675876312c746ec6c50b482eea1d1505fd59",
+          "status": "promoted",
+          "trial_sha256s": [
+            "26d91a91f07ffe0a455b8f0388d4bda8bf28186b23fd43001172933cee5199cf",
+            "293b460999799e47db4f714c4753bd317454bdb3acb233dcf303b08372f81065",
+            "7fb8f451dbcebf03e451426475887f2b4bc5606df5273e7a851d317d91227f94",
+            "da76205b98f2690f5972e361cd65ad7fd472484298d023f6359ba6848416cb34"
+          ],
+          "withhold_count": 2,
+          "withhold_supported_rate": 0.0
+        },
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "child-1",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 2,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "axis-1",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h100-rank3-observation-1-2",
+            "h100-rank3-observation-2-2",
+            "h100-rank3-observation-3-2",
+            "h100-rank3-observation-4-2"
+          ],
+          "sha256": "b529ddfaad77e9bb87b94cb105264a7162783c0eeba6004486fc7a0ad8ac869b",
+          "status": "promoted",
+          "trial_sha256s": [
+            "3e9f5e1feb21f5c6358bf5d9b6ea4678462b97b3e703efad5c307de4664cfa17",
+            "5a1de5ee36519254a9c6631f99935d5efa927d9b9ef74824770080373cd05579",
+            "79e85758535f8af9ca0191b7975c38274d74559acb0085814bddf5e60905a2fd",
+            "ef1acfbdf20486491e90b87d46dfc409159a9b37f69e8eff4c20c8f81a46fc62"
+          ],
+          "withhold_count": 2,
+          "withhold_supported_rate": 0.0
+        },
+        {
+          "calibration_error": 0.0,
+          "false_edge": false,
+          "first_stage_delta": 1.0,
+          "kind": "residual_child_settlement",
+          "local_value_delta": 0.7000000000000001,
+          "niche_ref": "child-2",
+          "observed_information_yield_delta": 0.6,
+          "offer_count": 2,
+          "offer_supported_rate": 1.0,
+          "pivot_axis_id": "axis-2",
+          "predicted_information_yield": 0.6,
+          "promoted": true,
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "settlement_observation_sha256s": [
+            "h100-rank3-observation-1-3",
+            "h100-rank3-observation-2-3",
+            "h100-rank3-observation-3-3",
+            "h100-rank3-observation-4-3"
+          ],
+          "sha256": "82aed3db81abc777c2cd117e5231f437ecd5d7f338e5c640736b6d9eb668bc5d",
+          "status": "promoted",
+          "trial_sha256s": [
+            "0dd7fb616d51eed98d435574d0c1049804a83aa9d5b36d5c6d4e2d78c231bec7",
+            "19c7102d2d02c1fcad46736698a9d98f6a95c91a73662ff02f953b99fb1075a2",
+            "2e9665d0cbd7caaf4bad665970ece96dce51a396c9fbcdaa21649f6d18117b38",
+            "8beaca3567d868f20489659b08afdbe8b9987a23c23c7396d07e8039266377bf"
+          ],
+          "withhold_count": 2,
+          "withhold_supported_rate": 0.0
+        }
+      ],
+      "error_critical_boundary": 1.0,
+      "error_reproduction": 0.0,
+      "error_spectral_radius": 0.0,
+      "false_child_count": 0,
+      "fission_sha256": "fc531d63e1abc629a347df0469941f669a572587df4f0d27d7288930c32de12c",
+      "full_factorial_trajectory_count": 8,
+      "good_spectral_radius": 1.5,
+      "kind": "epistemic_criticality_receipt",
+      "knowledge_critical_boundary": 1.0,
+      "knowledge_reproduction": 1.5,
+      "max_calibration_error": 0.0,
+      "modeled_design_rank": 4,
+      "modeled_term_count": 3,
+      "multiplexing_gain": 3.0,
+      "observed_generations": 1,
+      "parent_count": 2,
+      "promoted_child_count": 3,
+      "proposal_reproduction": 1.5,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "separate_trajectory_cost": 240.0,
+      "settlement_observation_sha256s": [
+        "h100-rank3-observation-1-1",
+        "h100-rank3-observation-1-2",
+        "h100-rank3-observation-1-3",
+        "h100-rank3-observation-2-1",
+        "h100-rank3-observation-2-2",
+        "h100-rank3-observation-2-3",
+        "h100-rank3-observation-3-1",
+        "h100-rank3-observation-3-2",
+        "h100-rank3-observation-3-3",
+        "h100-rank3-observation-4-1",
+        "h100-rank3-observation-4-2",
+        "h100-rank3-observation-4-3"
+      ],
+      "settlement_schedule_sha256": "09b306a09ed86a2d8ba734d1cff9579a4b140b6b1cf06228d931ce3759c407c7",
+      "sha256": "03cea4d7a431f170752bc64faabcbcf184694930a652aad51f3620a8b759312b",
+      "shared_trajectory_cost": 80.0,
+      "status": "supercritical_mechanism_candidate",
+      "takeoff_supported": false,
+      "trajectory_compression_ratio": 2.0,
+      "trajectory_refs": [
+        "h100-rank3-trajectory-1",
+        "h100-rank3-trajectory-2",
+        "h100-rank3-trajectory-3",
+        "h100-rank3-trajectory-4"
+      ],
+      "trial_sha256s": [
+        "0dd7fb616d51eed98d435574d0c1049804a83aa9d5b36d5c6d4e2d78c231bec7",
+        "19c7102d2d02c1fcad46736698a9d98f6a95c91a73662ff02f953b99fb1075a2",
+        "26d91a91f07ffe0a455b8f0388d4bda8bf28186b23fd43001172933cee5199cf",
+        "293b460999799e47db4f714c4753bd317454bdb3acb233dcf303b08372f81065",
+        "2e9665d0cbd7caaf4bad665970ece96dce51a396c9fbcdaa21649f6d18117b38",
+        "3e9f5e1feb21f5c6358bf5d9b6ea4678462b97b3e703efad5c307de4664cfa17",
+        "5a1de5ee36519254a9c6631f99935d5efa927d9b9ef74824770080373cd05579",
+        "79e85758535f8af9ca0191b7975c38274d74559acb0085814bddf5e60905a2fd",
+        "7fb8f451dbcebf03e451426475887f2b4bc5606df5273e7a851d317d91227f94",
+        "8beaca3567d868f20489659b08afdbe8b9987a23c23c7396d07e8039266377bf",
+        "da76205b98f2690f5972e361cd65ad7fd472484298d023f6359ba6848416cb34",
+        "ef1acfbdf20486491e90b87d46dfc409159a9b37f69e8eff4c20c8f81a46fc62"
+      ]
+    },
+    "factorial_shared_cost_counterfactual": 160.0,
+    "schedule": {
+      "assignment_patterns": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          -1,
+          1,
+          -1
+        ],
+        [
+          1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          1
+        ]
+      ],
+      "factor_masks": [
+        {
+          "mask": 1,
+          "niche_ref": "child-0"
+        },
+        {
+          "mask": 2,
+          "niche_ref": "child-1"
+        },
+        {
+          "mask": 3,
+          "niche_ref": "child-2"
+        }
+      ],
+      "fission_sha256": "fc531d63e1abc629a347df0469941f669a572587df4f0d27d7288930c32de12c",
+      "full_factorial_trajectory_count": 8,
+      "kind": "sparse_settlement_schedule",
+      "model_rank": 4,
+      "modeled_interactions": [],
+      "modeled_term_count": 3,
+      "niche_refs": [
+        "child-0",
+        "child-1",
+        "child-2"
+      ],
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "sha256": "09b306a09ed86a2d8ba734d1cff9579a4b140b6b1cf06228d931ce3759c407c7",
+      "term_masks": [
+        {
+          "mask": 1,
+          "term": [
+            "child-0"
+          ]
+        },
+        {
+          "mask": 2,
+          "term": [
+            "child-1"
+          ]
+        },
+        {
+          "mask": 3,
+          "term": [
+            "child-2"
+          ]
+        }
+      ],
+      "trajectory_compression_ratio": 2.0,
+      "trajectory_count": 4
+    },
+    "sparse_shared_cost": 80.0
+  },
+  "schema": "ztare-h100-sparse-orthogonal-settlement-audit-v1",
+  "sha256": "cfbd4ae7abd41dd777b4488d454087f858571457e5efdc14158fd0839393e23f",
+  "status": "offline_complete",
+  "verdict": "supported"
+}

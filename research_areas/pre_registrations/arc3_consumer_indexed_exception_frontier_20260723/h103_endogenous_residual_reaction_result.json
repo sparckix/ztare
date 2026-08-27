@@ -1,0 +1,505 @@
+{
+  "checks": {
+    "all_negatives_rejected": true,
+    "direction_quotient_count": true,
+    "factorial_trajectory_count": true,
+    "independent_residual_rank": true,
+    "model_rank": true,
+    "no_capability_claim": true,
+    "raw_output_rebinds_downstream_identity": true,
+    "raw_question_count": true,
+    "sparse_trajectory_count": true,
+    "strict_trajectory_savings": true
+  },
+  "claim_boundary": [
+    "The offline controller output is fixture-authored.",
+    "The compiler binds one settled failure to rank quotienting and a pre-outcome sparse assay.",
+    "No controller generated questions during this audit.",
+    "No descendant environment action or outcome was observed.",
+    "Compounding, ARC improvement, capability takeoff, and literature novelty remain unsupported."
+  ],
+  "controller_contact": false,
+  "discovery": {
+    "compounding_supported": false,
+    "direction_quotient_count": 3,
+    "factorial_trajectory_count": 8,
+    "fission": {
+      "authority": {
+        "catalog_sha256": "b0ab86372bc140d0ae5d54e324eabeca58d5d0139364535cfa489f0e3db438d2",
+        "derivative_sha256": "00847b47a14d030440ca61f69f75ca1221c8dcd1f3ef2a1e6c32d7a1c6ec5a40",
+        "intervention_revision_sha256": "h97-causal-intervention-revision",
+        "kind": "response_fission_authority",
+        "primitive_cost_unit": "charged-environment-action",
+        "schema": "ztare-epistemic-autocatalysis-v1",
+        "scope": {
+          "action_vocabulary_sha256": "arc3-four-action-vocabulary",
+          "choice_set_sha256": "arc3-four-action-choice-set",
+          "context_sha256": "h97-descendant-context",
+          "controller_sha256": "gpt-5.6-sol:xhigh:all-turns",
+          "task_sha256": "h97-frozen-task"
+        },
+        "scope_sha256": "b6836e7838110da2f5756261e91069aeed05a2a7e9b39b100845114de6007e4c",
+        "sha256": "fb52e9a64ebc54cdd716db951ad6faeb66a453cd3c597e86808d357c90067557",
+        "source_program_sha256": "h95-common-response-program"
+      },
+      "authority_sha256": "fb52e9a64ebc54cdd716db951ad6faeb66a453cd3c597e86808d357c90067557",
+      "axes": [
+        {
+          "axis_id": "failure-mode-discrimination",
+          "live_cost": 1.0
+        },
+        {
+          "axis_id": "controller-plan-change",
+          "live_cost": 1.0
+        },
+        {
+          "axis_id": "external-task-delta",
+          "live_cost": 2.0
+        }
+      ],
+      "basis_niches": [
+        {
+          "authority_sha256": "fb52e9a64ebc54cdd716db951ad6faeb66a453cd3c597e86808d357c90067557",
+          "evidence_refs": [
+            "cc9cd1df40e781f8fb272fbe7864126f8116ea056f40c05f514255633ecfb974",
+            "fixture-controller-raw-output",
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix",
+            "payload-contract-consumption"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "residual-contract-consumption",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "h95-settled-parent"
+          ],
+          "predicted_information_yield": 0.75,
+          "response_direction": [
+            "1/1",
+            "0/1",
+            "0/1"
+          ],
+          "response_signature": [
+            "1/1",
+            "0/1",
+            "0/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "ee6dbb7c675e755bf35ee75abedac9df23d91b81b47870f4b65bccf3b2f85d63"
+        },
+        {
+          "authority_sha256": "fb52e9a64ebc54cdd716db951ad6faeb66a453cd3c597e86808d357c90067557",
+          "evidence_refs": [
+            "cc9cd1df40e781f8fb272fbe7864126f8116ea056f40c05f514255633ecfb974",
+            "fixture-controller-raw-output",
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix",
+            "payload-plan-revision"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "residual-plan-revision",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "h95-settled-parent"
+          ],
+          "predicted_information_yield": 0.6666666666666666,
+          "response_direction": [
+            "0/1",
+            "1/1",
+            "0/1"
+          ],
+          "response_signature": [
+            "0/1",
+            "1/1",
+            "0/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "0bdaf8722ba3714fe16638df3c17e727e8571e4a8b448808c84cdf39ee1a85e5"
+        },
+        {
+          "authority_sha256": "fb52e9a64ebc54cdd716db951ad6faeb66a453cd3c597e86808d357c90067557",
+          "evidence_refs": [
+            "cc9cd1df40e781f8fb272fbe7864126f8116ea056f40c05f514255633ecfb974",
+            "fixture-controller-raw-output",
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix",
+            "payload-external-effect"
+          ],
+          "kind": "residual_niche_candidate",
+          "niche_ref": "residual-external-effect",
+          "offline_replay_cost": 0.1,
+          "parent_child_sha256s": [
+            "h95-settled-parent"
+          ],
+          "predicted_information_yield": 0.5,
+          "response_direction": [
+            "0/1",
+            "0/1",
+            "1/1"
+          ],
+          "response_signature": [
+            "0/1",
+            "0/1",
+            "1/1"
+          ],
+          "schema": "ztare-epistemic-autocatalysis-v1",
+          "sha256": "e978052649b5d9fc555ee324657a037f109b160e30605d982537b407c9fe0d0f"
+        }
+      ],
+      "compression_ratio": 1.3333333333333333,
+      "direction_quotient_classes": [
+        [
+          "0bdaf8722ba3714fe16638df3c17e727e8571e4a8b448808c84cdf39ee1a85e5"
+        ],
+        [
+          "38afe4bd9132bf73e3130fb893e61fc2e3c05fee7c9981e8f46d17091109bb75",
+          "ee6dbb7c675e755bf35ee75abedac9df23d91b81b47870f4b65bccf3b2f85d63"
+        ],
+        [
+          "e978052649b5d9fc555ee324657a037f109b160e30605d982537b407c9fe0d0f"
+        ]
+      ],
+      "direction_quotient_count": 3,
+      "independent_offspring_capacity": 3,
+      "kind": "residual_fission_receipt",
+      "lineage_parent_sha256s": [
+        "h95-settled-parent"
+      ],
+      "pivot_axis_by_niche": [
+        {
+          "axis_id": "failure-mode-discrimination",
+          "niche_ref": "residual-contract-consumption"
+        },
+        {
+          "axis_id": "external-task-delta",
+          "niche_ref": "residual-external-effect"
+        },
+        {
+          "axis_id": "controller-plan-change",
+          "niche_ref": "residual-plan-revision"
+        }
+      ],
+      "raw_niche_count": 4,
+      "raw_niche_sha256s": [
+        "0bdaf8722ba3714fe16638df3c17e727e8571e4a8b448808c84cdf39ee1a85e5",
+        "38afe4bd9132bf73e3130fb893e61fc2e3c05fee7c9981e8f46d17091109bb75",
+        "e978052649b5d9fc555ee324657a037f109b160e30605d982537b407c9fe0d0f",
+        "ee6dbb7c675e755bf35ee75abedac9df23d91b81b47870f4b65bccf3b2f85d63"
+      ],
+      "raw_proposal_reproduction": 4.0,
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "selected_live_measurement_cost": 4.0,
+      "selected_measurement_axis_ids": [
+        "controller-plan-change",
+        "failure-mode-discrimination",
+        "external-task-delta"
+      ],
+      "sha256": "dd7a75c9d9787899cf47949021b177ecded0c49755267126da8e97faad08a724"
+    },
+    "fission_sha256": "dd7a75c9d9787899cf47949021b177ecded0c49755267126da8e97faad08a724",
+    "independent_residual_rank": 3,
+    "kind": "endogenous_residual_discovery_receipt",
+    "live_settlement_required": true,
+    "measurement_axes": [
+      {
+        "axis_id": "failure-mode-discrimination",
+        "live_cost": 1.0
+      },
+      {
+        "axis_id": "controller-plan-change",
+        "live_cost": 1.0
+      },
+      {
+        "axis_id": "external-task-delta",
+        "live_cost": 2.0
+      }
+    ],
+    "measurement_catalog_sha256": "b0ab86372bc140d0ae5d54e324eabeca58d5d0139364535cfa489f0e3db438d2",
+    "proposal": {
+      "authority": {
+        "allowed_input_evidence_sha256s": [
+          "h95-response-family",
+          "h96-settled-failure",
+          "h97-source-derivative",
+          "h97-source-history-prefix"
+        ],
+        "canonical_controller_output_sha256": "cc9cd1df40e781f8fb272fbe7864126f8116ea056f40c05f514255633ecfb974",
+        "controller_instance_sha256": "fixture-controller-instance",
+        "controller_prompt_sha256": "fixture-controller-prompt",
+        "controller_response_id": "fixture-descendant-controller-response",
+        "generation_index": 2,
+        "intervention_revision_sha256": "h97-causal-intervention-revision",
+        "kind": "endogenous_residual_authority",
+        "measurement_catalog_sha256": "b0ab86372bc140d0ae5d54e324eabeca58d5d0139364535cfa489f0e3db438d2",
+        "parent_child_sha256s": [
+          "h95-settled-parent"
+        ],
+        "primitive_cost_unit": "charged-environment-action",
+        "raw_controller_output_sha256": "fixture-controller-raw-output",
+        "schema": "ztare-endogenous-residual-discovery-v1",
+        "scope": {
+          "action_vocabulary_sha256": "arc3-four-action-vocabulary",
+          "choice_set_sha256": "arc3-four-action-choice-set",
+          "context_sha256": "h97-descendant-context",
+          "controller_sha256": "gpt-5.6-sol:xhigh:all-turns",
+          "task_sha256": "h97-frozen-task"
+        },
+        "scope_sha256": "b6836e7838110da2f5756261e91069aeed05a2a7e9b39b100845114de6007e4c",
+        "settled_failure_sha256": "h96-settled-failure",
+        "sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+        "source_derivative_sha256": "h97-source-derivative",
+        "source_environment_step": 7,
+        "source_history_prefix_sha256": "h97-source-history-prefix",
+        "source_program_sha256": "h95-common-response-program",
+        "source_response_family_sha256": "h95-response-family",
+        "stored_parent_response_id": "fixture-stored-parent-response"
+      },
+      "authority_sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+      "controller_output_bound": true,
+      "frozen_environment_step": 7,
+      "kind": "endogenous_residual_proposal",
+      "modeled_interactions": [],
+      "preoutcome_frontier_preserved": true,
+      "proposal_ref": "h103-fixture-controller-proposal",
+      "questions": [
+        {
+          "authority_sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+          "input_evidence_sha256s": [
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix"
+          ],
+          "kind": "controller_residual_question",
+          "offline_replay_cost": "1/10",
+          "predicted_information_yield": "3/4",
+          "question_payload_sha256": "payload-contract-consumption",
+          "question_ref": "residual-contract-consumption",
+          "response_signature": [
+            "1/1",
+            "0/1",
+            "0/1"
+          ],
+          "schema": "ztare-endogenous-residual-discovery-v1",
+          "sha256": "a8c1fe7256faa937fb048bb9590751e72efd30d6c8d4f404af1c85afa3a2d452"
+        },
+        {
+          "authority_sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+          "input_evidence_sha256s": [
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix"
+          ],
+          "kind": "controller_residual_question",
+          "offline_replay_cost": "1/10",
+          "predicted_information_yield": "2/3",
+          "question_payload_sha256": "payload-plan-revision",
+          "question_ref": "residual-plan-revision",
+          "response_signature": [
+            "0/1",
+            "1/1",
+            "0/1"
+          ],
+          "schema": "ztare-endogenous-residual-discovery-v1",
+          "sha256": "61bde0b1b3833baabc5a2eb11c14c82711e6eb65692f91249bb470095a99266f"
+        },
+        {
+          "authority_sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+          "input_evidence_sha256s": [
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix"
+          ],
+          "kind": "controller_residual_question",
+          "offline_replay_cost": "1/10",
+          "predicted_information_yield": "1/2",
+          "question_payload_sha256": "payload-external-effect",
+          "question_ref": "residual-external-effect",
+          "response_signature": [
+            "0/1",
+            "0/1",
+            "1/1"
+          ],
+          "schema": "ztare-endogenous-residual-discovery-v1",
+          "sha256": "f923b00f09f5051f041b151060a2a8c579ae2fdb1df3cbff18625f9b29f270ea"
+        },
+        {
+          "authority_sha256": "13448d7474a761361213413fbfbe93643793d5e21c4e0fedf54bd160d63a6222",
+          "input_evidence_sha256s": [
+            "h95-response-family",
+            "h96-settled-failure",
+            "h97-source-derivative",
+            "h97-source-history-prefix"
+          ],
+          "kind": "controller_residual_question",
+          "offline_replay_cost": "1/10",
+          "predicted_information_yield": "1/4",
+          "question_payload_sha256": "payload-contract-copy",
+          "question_ref": "residual-contract-copy",
+          "response_signature": [
+            "2/1",
+            "0/1",
+            "0/1"
+          ],
+          "schema": "ztare-endogenous-residual-discovery-v1",
+          "sha256": "b975d1b60b6c29308c37f9c81ae52d241a27124fcc3049b41746ec4110fb0898"
+        }
+      ],
+      "schema": "ztare-endogenous-residual-discovery-v1",
+      "sha256": "d60c45f7a282d76a89a338ce125e5bd984c118607a9f6b7567b4d5a408cad41a"
+    },
+    "proposal_sha256": "d60c45f7a282d76a89a338ce125e5bd984c118607a9f6b7567b4d5a408cad41a",
+    "raw_question_count": 4,
+    "schedule": {
+      "assignment_patterns": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          -1,
+          1,
+          -1
+        ],
+        [
+          1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          1
+        ]
+      ],
+      "factor_masks": [
+        {
+          "mask": 1,
+          "niche_ref": "residual-contract-consumption"
+        },
+        {
+          "mask": 2,
+          "niche_ref": "residual-external-effect"
+        },
+        {
+          "mask": 3,
+          "niche_ref": "residual-plan-revision"
+        }
+      ],
+      "fission_sha256": "dd7a75c9d9787899cf47949021b177ecded0c49755267126da8e97faad08a724",
+      "full_factorial_trajectory_count": 8,
+      "kind": "sparse_settlement_schedule",
+      "model_rank": 4,
+      "modeled_interactions": [],
+      "modeled_term_count": 3,
+      "niche_refs": [
+        "residual-contract-consumption",
+        "residual-external-effect",
+        "residual-plan-revision"
+      ],
+      "schema": "ztare-epistemic-autocatalysis-v1",
+      "sha256": "8292bd05ac799ae739773187a20a5ea5e6b316d65dd0917c6908411b1c745d93",
+      "term_masks": [
+        {
+          "mask": 1,
+          "term": [
+            "residual-contract-consumption"
+          ]
+        },
+        {
+          "mask": 2,
+          "term": [
+            "residual-external-effect"
+          ]
+        },
+        {
+          "mask": 3,
+          "term": [
+            "residual-plan-revision"
+          ]
+        }
+      ],
+      "trajectory_compression_ratio": 2.0,
+      "trajectory_count": 4
+    },
+    "schedule_sha256": "8292bd05ac799ae739773187a20a5ea5e6b316d65dd0917c6908411b1c745d93",
+    "schema": "ztare-endogenous-residual-discovery-v1",
+    "sha256": "119578f58fca3e4d85256d13e51391ede001074b5a0a8d25ca49d133e6744ade",
+    "sparse_trajectory_count": 4,
+    "status": "preoutcome_branching_assay_candidate",
+    "strict_trajectory_savings": true,
+    "takeoff_supported": false
+  },
+  "environment_contact": false,
+  "fixture_provenance": "fixture_authored_controller_output",
+  "h97_runtime_boundary": {
+    "attempt": 3,
+    "error_code": "credit_balance_exhausted",
+    "evidence_effect": "none",
+    "model_response_created": false,
+    "status": "blocked_runtime"
+  },
+  "identity_change_on_raw_output_replacement": {
+    "fission_authority_changed": true,
+    "fission_changed": true,
+    "proposal_authority_changed": true,
+    "schedule_changed": true
+  },
+  "negative_fixtures": [
+    {
+      "label": "cross_question_authority",
+      "reason": "controller question crossed proposal authority",
+      "rejected": true
+    },
+    {
+      "label": "post_hoc_question_edit",
+      "reason": "parsed questions do not match canonical controller output",
+      "rejected": true
+    },
+    {
+      "label": "descendant_outcome_evidence",
+      "reason": "question used evidence outside proposal input",
+      "rejected": true
+    },
+    {
+      "label": "missing_settled_failure",
+      "reason": "question omitted settled-failure evidence",
+      "rejected": true
+    },
+    {
+      "label": "post_outcome_environment_step",
+      "reason": "proposal crossed the pre-outcome environment frontier",
+      "rejected": true
+    },
+    {
+      "label": "measurement_catalog_drift",
+      "reason": "measurement-axis catalog crossed proposal authority",
+      "rejected": true
+    },
+    {
+      "label": "unknown_interaction_question",
+      "reason": "modeled interaction crossed residual basis",
+      "rejected": true
+    },
+    {
+      "label": "float_information_yield",
+      "reason": "predicted_information_yield must be an exact rational, not bool/float",
+      "rejected": true
+    }
+  ],
+  "next_discriminator": "after H97 settles a child, obtain causal and placebo controller proposals from one stored parent before descendant contact, then settle the frozen sparse assay against external outcomes",
+  "preregistration": "h103_endogenous_residual_reaction_hypothesis.md",
+  "result_sha256": "5ca6dd146cdb7e1d7788e51a4cdb154402b56ebe78da2ee80015e1f8a3d41a94",
+  "schema": "ztare-h103-endogenous-residual-reaction-audit-v1",
+  "status": "offline_complete",
+  "verdict": "supported_offline_mechanism"
+}

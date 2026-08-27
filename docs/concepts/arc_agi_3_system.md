@@ -2010,6 +2010,459 @@ paths, charge or refuse noncommuting loops before delivery, and settle whether
 that defect predicts false reuse. That is the next boundary between one
 certified reactivation and accumulated skill.
 
+H96 tested the first descendant transport and rejected it at the response
+contract. Receipt-backed appearance lineage resolved all four required objects
+through one fixed-support revision and one bracketed occlusion, while static
+transport resolved only three. The causal arm gained one level and the placebo
+did not, but the causal revised proposal still named a future waypoint that the
+prefix had already consumed. The placebo blind proposal also occupied a
+different basin. No descendant response family was promoted. This was a useful
+separation: object continuity survived while the response program required a
+temporal derivative.
+
+H97 compiled that derivative before outcome. Two H95 witnesses induced the
+program `moving occurrence -> marker -> target`; the joint lineage event
+consumed the marker obligation and left `moving occurrence -> target`.
+The controller harness stores one blind Responses API parent, forks causal and
+placebo revisions from the exact same `previous_response_id`, persists each
+exchange immediately, and can resume without duplicating a call. A later
+app-server run completed two matched pairs: causal derivative transport was
+`2/2`, placebo spontaneous transport `0/2`, task delta `+1`, mean composite
+delta `+89/200`, and offer wins `1/2`. The experiment still rejected because
+the two exact micro-basins each contained only one offer and one withhold,
+below the frozen promotion threshold. Response offspring remained zero.
+
+H108 attempted the coarsest intervention-predictive quotient consistent with
+H97. It froze a positive `+89/200` mean prediction and then acquired two fresh
+exact-parent pairs. Causal transport again passed `2/2` and placebo transport
+`0/2`, but the fresh mean was `-93/200`, task delta was `-1`, one pair was
+negative, and neither pair won. The predictive quotient therefore rejected
+and emitted a new-epoch counterexample.
+
+H109 repaired a separate harness defect before refining that quotient. The
+controller instructions referred to an observation/action chronology, while
+the initial call had supplied only the endpoint image and object catalog. The
+new controller coordinate verifies and renders all seven prefix actions,
+eight settled observations, and seven transition links. Eleven identity checks
+and seven negative fixtures passed, and the old endpoint-only artifacts stayed
+byte-identical. Two fresh chronology-restored pairs removed H108's negative
+mean but produced task delta `0`, mean delta `0`, wins `0`, and children `0`.
+In both pairs the causal memory changed the reported reasoning path without
+changing the first action.
+
+The cross-epoch comparison exposed a more important category error. Every
+observed path-only displacement in H97--H109 had exactly zero value. The two
+action displacements had opposite signs, `+89/100` and `-93/100`; semantic
+support did not determine action advantage. Both successful H95 offers also
+shared the same first twelve actions and completed at action twelve. H109
+reproduced the same controlled-object route from the descendant state but
+failed because the corresponding factor states had a different finite
+configuration, one fewer budget unit, and a false feasibility coordinate.
+Spatial path alignment had hidden a changed initiation/viability identity.
+
+H110 moved the judgment boundary before controller advice and tested it on
+frozen history. All fourteen discriminators and seven mutations passed. The
+H95 twelve-action option reindexed as stable and its effect family received
+four matched external-outcome credit witnesses. At the H109 target, the full
+option was unsupported. Its tempting eight-action spatial suffix was
+executable, but compiled into a different effect family with no task credit.
+The exact target was also absent from the 132-node H63 history graph, whose
+boundary query returned `start_fiber_unwitnessed`.
+
+A remembered response must therefore lower to an executable motor option, and
+the current factor must lie in that option's witnessed success-predecessor
+domain. Exact initiation, configuration/resource guard, deterministic effect
+path, and externally credited termination are required. A missing guard
+produces a typed refusal; a changed reasoning path is an intermediate readout
+and cannot count as successful memory transport. This is one frozen-graph
+result, not evidence of transfer or benchmark improvement.
+
+H111 then searched for a positive transfer target rather than replaying the
+canonical state. All 106 action prefixes within Hamming radius two of the H95
+route collapsed to 12 exact source states. Ninety-four histories were exact
+state duplicates. Eleven distinct states failed under the H95 suffix, and only
+the canonical source preserved its ordered effect signature and gained a
+level. The current positive evidence therefore has two successful trace
+references but one successful initiation state: outcome replication is
+present; initiation-state intervention rank is zero.
+
+H112 tested whether a short feedback correction could enlarge that singleton
+basin. It searched all 85 correction words of length zero through three from
+each of the eleven failed H111 states, then retried the H95 suffix. None
+returned to the credited initiation identity; the H109 control also remained
+unrecovered. The 8,006 primitive contacts reject this particular local repair
+radius. They do not reject longer correction policies or a state-conditional
+option learned from actively varied starts.
+
+This exposes the next promotion boundary. Independent trace count can establish
+repeatability without establishing transport. A transferable skill needs
+successful variation across exact initiation coordinates while preserving
+effect and task-boundary identity. Basin growth should therefore select
+counterfactual states at the uncertain viability frontier, quotient duplicate
+states before counting support, and promote only after a held-out state
+variation succeeds.
+
+The closest public systems narrow the candidate contribution. Option-Critic
+learns internal option policies and termination; affordance models restrict
+actions by state; option-indexed HRL retrieves task-relevant options; CURIOUS
+schedules goals by measured learning progress; and ASSAY uses randomized
+skill masking to estimate per-skill, per-task causal effects. Those components
+cannot be claimed here as new. The remaining untested conjunction is exact
+effect-quotiented motor-option identity, viability-bound refusal, matched
+external task credit, intervention-rank promotion, and a causal derivative of
+one skill on the acquisition cost of later non-equivalent skills. No novelty
+claim attaches until a source-bound prior-art comparison and prospective
+results distinguish that conjunction.
+
+The retrospective compiler audit exposes a category boundary that earlier
+summaries blurred. Across the frozen guarded library, 113 of 154 exact-
+terminal variants have at least two trace references, but none has two
+distinct exact initiation identities. The endpoint-quotient layer does recover
+21 relative-effect families, 15 spanning multiple exact starts, with as many
+as 51 starts in one family. That quotient is useful; all 21 families still
+have zero external task credit.
+
+H113 then asked whether those observational effect families could be selected
+before acting in a later exact state. Discovery-only fitting found a single
+factor coordinate sufficient to separate every retained word's effects:
+`ordered_feasibility_configuration` for `(2,1)` and `controlled_base` for the
+other three words. But the seven-trajectory chronological holdout contained
+276 word windows and zero unseen exact initiation states. Its 138 saved control
+tokens measure compression of replayed paths, not state generalization.
+
+H114 replaced replay with active variation. All 1,365 prefixes through length
+five yielded 51 exact states absent from H113 discovery, but none shared one of
+the five learned feasibility-vector values. The exact categorical gate
+therefore abstained on all 51. This is a second compression boundary: selecting
+one factor coordinate is insufficient when the coordinate itself is an
+unquotiented high-cardinality object. The next guard must compress the Boolean
+feasibility vector into operation-relevant relations and survive active
+execution; nearest-neighbour imputation after observing the effect cannot pay.
+
+H115 tested the simplest internal quotient. The Boolean vectors are order
+ideals and their true-count equals `ordered_budget`; discovery supports three
+contiguous budget regimes. Extrapolating the high-budget regime to 51 active
+states failed 51/51. Those states produced seven effects, including up to seven
+effects at the same budget, with no task-boundary crossing. Local spatial
+relation therefore governs the word: each primitive may translate, consume a
+budget item, or become identity depending on current geometry.
+
+The architectural correction is to compile remembered words through the
+accepted forward carrier at the current concrete state. The carrier predicts a
+state-conditional effect path; history supplies compression and calibration;
+the environment settles the prediction. Exact historical guards remain safe
+fallbacks, while scalar interpolation cannot invent causal authority. The
+carrier is already used for factored search, but the guarded-skill reindexer
+currently consults only the witnessed partial-action graph. Connecting those
+surfaces is the next algorithmic seam.
+
+H116 tests that connection without changing the planner. For remembered word
+`(0,0,0)`, exact historical guards abstained on all 51 H114 states. The accepted
+carrier nevertheless predicted every one of 153 intermediate grids, all 51
+ordered effect traces, and all 51 final grids exactly before execution. The
+states exercised 14 effects and 274 distinct-start/same-effect pairs, with no
+task-boundary crossing. Carrier-conditioned lowering is therefore supported
+as an effect-transport mechanism on this active set. External task credit and
+downstream acquisition leverage remain unmeasured.
+
+H117 found the next integration error. Guarded skills were offered to the
+execution-plan compiler only after primitive search had selected a path. They
+could reduce the encoded token count and affect protocol pricing, but could
+not alter reachability, search depth, or the distribution of candidate plans.
+The factored-search kernel now accepts evidence-bound learned words as
+generative moves. It runs every internal operation through the current carrier,
+advances environment time and checks feasibility at every primitive step,
+returns only flattened primitive actions for execution, and keeps separate
+deliberation and primitive-cost clocks.
+
+On the H117 deterministic discriminator, primitive-only search at depth four
+could not reach a twelve-action goal. One three-operation learned word reached
+the same goal in four deliberation moves while retaining primitive cost twelve.
+The equal-cost primitive reference required twelve deliberation moves and
+twelve expansions; the learned-word arm used four and nine. An intermediate
+goal stopped at the exact internal prefix, and an undefined carrier step
+refused the learned edge. The planner now compiles repeated history words
+before factored search so the mechanism is reachable in its normal path. This
+result belongs to the synthetic search kernel; ARC task improvement and
+catalytic acquisition still require external settlement.
+
+### From identity fragments to relational-affordance task lift (H118--H126, 2026-08-08)
+
+H118 forced the analogy and prior-art candidates through the accumulated ARC
+evidence. Every proposed isomorphism was rejected as an authority for reuse;
+the positive task-evidence matrix still had rank one. This prevented another
+round of mechanism naming from counting as capability growth.
+
+H119 then ran the architecture-free direct Sol-max controller on `tu93`. One
+persistent session gained two levels in 32 actions: Level 1 used 22 actions and
+Level 2 used 10. H120's exact breadth-first oracle established minima 18 and
+10, so the second level was solved with zero excess. H121 restored the exact
+Level-2 start for a fresh Sol-max session; it gained zero levels in 10 actions
+and reached `GAME_OVER` on action 5. This single matched state exposed a fast
+within-session advantage while retaining task-order confounding.
+
+H122 repaired the object category used by the memory path. The four rendered
+poses of the controlled 3x3 token form one D4-quotiented identity; pose remains
+a covariant state coordinate and the action map remains an evidence-backed
+relation. H123 injected that correct action map against an equal-byte pose-only
+placebo. The map arm failed and the placebo completed. Correct actuator facts
+can narrow exploration in the wrong direction when the route-relative
+judgment is absent.
+
+H124 repeated the weaker uncertainty-bearing identity across three canonical-
+byte pairs. Treatment and control each completed `0/3`. Treatment chose the
+correct first action in `3/3`, versus `1/3` controls, then entered the direct
+hazard route. Object identity therefore affected localization and probing but
+did not compose into the task endpoint. The missing coordinate was relational:
+controlled-token pose × other-token pose × predicted motion × contact
+direction × viable alternate route.
+
+H125 compiled that coordinate from frozen evidence. A structurally defined
+oriented token quotients palette names and D4 presentation while retaining its
+marker bearing. Across 21 Level-1 transitions, marker bearing predicted motion
+bearing with zero mismatches. The relation transported to one distinct-palette
+Level-2 token and supplied a leftward motion cone. A target-local graph
+compiler compared four goal-reaching routes, classified closing head-on versus
+transverse exposure, enforced the 10-action budget, and selected `down` after
+`up,right,right`. All 24 fixed checks passed, including eight D4 transforms,
+palette renaming, and source/target/route mutations.
+
+This is a direct extension of the existing alpha/functor/quotient core:
+
+```text
+raw colored component
+  -- alpha_palette,D4 --> invariant oriented-token identity
+  + covariant bearing fiber
+  -- transition relation --> proposed motion cone
+  + current route graph / budget
+  -- viability quotient --> branch intervention or typed abstention
+```
+
+The new algorithmic object is the middle relation and its consumer boundary.
+An invariant quotient alone erased the information H124 needed; an unquotiented
+pose overfit presentation. H125 keeps identity invariant, state covariant, and
+prediction relational. This corresponds loosely to ventral-stream object
+stability, dorsal-stream motion relation, and basal-ganglia affordance
+competition. Those biological and algorithmic ingredients have substantial
+prior art. The exact evidence-bound composition remains a candidate
+contribution pending a source-bound nearest-system comparison and transfer.
+
+H126 tested consumption at H124's exact failure seam. Three fresh Sol-max
+treatments and three fresh controls started after the restored prefix
+`[0,3,3]` with seven charged actions left. Both 1,820-byte capsules shared the
+action map, object identities, graph, route lengths, goal role, budget, and
+target uncertainty. Treatment alone received H125's supported motion relation
+and compiled contact judgment. Treatment selected `down` and completed in
+`3/3`; control did so in `1/3`. Both differences are +2 and pass the frozen
+task-effect criterion. Every treatment executed the exact seven-action oracle
+suffix.
+
+The H126 audit verified six unique sessions, 42 successful exchanges, exact
+capsule leaf differences, one-shot injection, restored-prefix identity, and
+deterministic transition replay. It is the first replicated task-level causal
+gain in the H87--H126 architecture campaign. Its scope is one game and one
+frozen branch. The offline compiler generated a target-bound capsule before
+each session, so autonomous proposal/settlement and cross-task catalysis remain
+open.
+
+Evidence should be reported in five non-substitutable stages:
+
+1. **Macro:** a repeated operation word reduces description or control cost.
+2. **Effect option:** a state gate predicts a relative effect across varied
+   exact initiation identities, with typed abstention outside support.
+3. **Task-credited option:** an external task boundary pays the option rather
+   than merely its sensory effect.
+4. **Transferable task skill:** task credit survives a held-out intervention on
+   initiation state.
+5. **Catalytic skill:** possessing one transferable task skill causally lowers
+   the contact cost of acquiring a later, non-equivalent one.
+
+The frozen ARC evidence establishes stage one and retrospectively identifies
+multi-state effect families, but H113 finds no unseen-state holdout for their
+predictive gates. H110 establishes one local task-credited option. H111 and
+H112 reject the tested routes from that option to stage four. H126 establishes
+a task-credited relational judgment transported across levels and palettes at
+one frozen branch; it has not yet earned cross-task identity. H98--H102 specify
+useful synthetic accounting for stage five, while their constructed species
+and kinetic constants cannot supply the missing intervention evidence.
+
+The next candidate learning operator is therefore intervention-rank basin
+growth: perturb factor coordinates near a task-credited local option, quotient
+duplicate exact states before payment, choose trials by expected viability-
+boundary reduction per primitive contact, learn a state-conditional policy or
+typed refusal, and withhold transferable identity until a held-out perturbed
+state preserves the externally credited boundary. Compounding requires a
+further library-on/library-off fork showing that the promoted skill reduces
+the acquisition cost of a later non-equivalent skill. That causal derivative,
+not stored library size, is the proposed critical-mass coordinate.
+
+The missing closed loop has three updates, not another store:
+
+1. **Sensorimotor update:** prediction error changes the carrier or its
+   applicability boundary. H116 exercised prediction and settlement, but did
+   not learn a revised carrier because the accepted carrier was already exact
+   on that intervention set.
+2. **Consolidation update:** externally settled episodes create generative
+   moves that change later search. H117 supplies the generic search consumer;
+   H126 supplies a task-credited relational intervention through the recall
+   consumer. The two surfaces still require automatic composition.
+3. **Meta-plastic update:** downstream acquisition savings change which
+   abstraction compiler, quotient, and experiment policy will generate the
+   next candidates. The repository measures causal response credit and
+   synthetic capability flux, but no observed downstream acquisition
+   derivative currently updates `alpha_sleep` or the operator catalog.
+
+The brain analogy is specific at this boundary. Episodic replay nominates a
+sequence; invariant perception binds recurring entities; a dorsal relational
+model predicts motion in the current scene; competing routes are priced by
+viability; action chunking turns the selected route into one deliberative
+choice; reward-modulated consolidation retains representations that improve
+later behavior. H117 repairs pre-search chunking. H122--H125 separate invariant
+identity from covariant relation and current affordance. H126 supplies the
+first task-paid consumption. Reward-modulated selection by later acquisition
+value remains absent.
+
+H98 inverted the one-child ceiling into a candidate reproduction operator. A
+settled response may create several offline residual questions, but raw branch
+count carries no authority. The compiler quotients positive-scalar copies,
+keeps an exact linear basis of response signatures, selects a minimum-cost
+independent measurement-axis basis, and settles each basis child through
+factorial offer/withhold assignments at distinct decision indices inside shared
+trajectories. It measures three rates separately:
+
+```text
+R_p = offline residual proposals / settled parents
+R_k = externally supported independent children / settled parents
+R_e = spontaneous or contradicted children / settled parents
+```
+
+The synthetic discriminator produced four raw candidates, three direction
+classes, rank two, `R_p = 4`, `R_k = 2`, `R_e = 0`, and a `2x` shared-trajectory
+cost gain. Proportional copies, scalar measurement, crossed authority,
+rank-deficient assignment, false edges, information-yield miscalibration, and
+declared extra generations are all rejected. One generation is recorded only
+as `supercritical_mechanism_candidate`.
+
+H99 then made the children causal inputs rather than a report statistic. Each
+promoted child identity binds its lineage parents, response authority,
+candidate, fission, settlement, and trial evidence. The next generation must
+consume the exact promoted-child set; its source program is the canonical
+quotient family of those children; its response derivative must change; task,
+context, controller, choice set, action vocabulary, catalog, intervention
+revision, and primitive-cost unit remain invariant. Trajectory, trial, and
+settlement-observation identities cannot pay twice.
+
+The positive synthetic chain grew from one parent to two promoted children,
+then from those two parents to three promoted children. Its generation factors
+were `2.0` and `1.5`; geometric knowledge growth was `sqrt(3) = 1.732...`, error
+growth was `0`, final validated-descendant multiplication was `3x`, and shared
+trajectory cost was `240` versus `640` for separate tests (`2.67x`). Parent
+relabeling, program-family relabeling, derivative reuse, evidence reuse, a
+critical second generation with `R_k = 1`, and `R_e >= 1` all block the lineage.
+The receipt remains `multigeneration_mechanism_candidate` and hard-codes
+`takeoff_supported = false`.
+
+H100 found an exponential measurement wall inside that encouraging receipt.
+The H98/H99 settlement compiler required every offer/withhold combination, so
+an independent-child rank of `r` cost `2^r` shared trajectories. The repair
+pre-registers the effect model and assigns each child a collision-free Walsh
+mask. Main effects then require the smallest power-of-two design whose model
+matrix has full rank. Named interactions receive product masks and expand the
+design only when needed. For rank three, the same synthetic `R_k = 1.5`
+settlement used four trajectories and cost `80`, versus eight trajectories and
+cost `160` under the complete factorial. At rank twelve, the additive design
+uses sixteen trajectories versus `4096`, a `256x` trajectory reduction. Zero
+or repeated masks, missing rows, assignment drift, post-outcome interaction
+relabeling, rank forgery, and mixed sparse/factorial authority all refuse.
+
+H101 corrected the criticality object itself. Judgment reproduction depends on
+distinct capabilities: residual diagnosis, measurement design, external
+settlement, compression, and error control. These are joint-input reactions,
+so one offspring ratio loses the catalytic dependency structure. The compiler
+represents fixed competence and external observations as food species;
+evidence-backed capabilities and false edges are typed species; improvements
+are exact stoichiometric reactions with catalysts, primitive-contact cost, and
+one authority.
+
+A candidate core must be food-generated, reflexively catalyzed, strictly net
+productive in every internal capability coordinate, nonpositive in every
+error coordinate, and feasible under one shared primitive budget. The
+preregistered synthetic network passes at H100's sparse cost `80` under budget
+`100`. Holding its topology and food closure fixed while restoring the
+factorial cost `160` removes every feasible productive flux. A directed cycle
+without food reachability, an unavailable catalyst, bootstrap production
+alone, positive false-edge production, and crossed authority all fail. The
+receipt hard-codes `takeoff_supported = false` because its reactions were
+constructed from H99/H100 outcomes rather than discovered prospectively.
+
+H102 adds the missing kinetic coordinate. RAF membership and a feasible flux
+describe what a network could do; a current capability stock must also make
+those reactions fast enough to outrun depreciation and interference. Each
+reaction receives an exact evidence-bound mass-action rate constant, each
+capability/error species receives an exact depreciation rate, and the same
+state-dependent rate vector pays both drift and primitive-cost rate.
+
+The preregistered H101 topology is subcritical at
+`J = 3/2, D = 9/4`, where judgment drift is `-15/64`. It is supercritical at
+`J = 7/4, D = 21/8`, where judgment drift is `+133/512` and design drift is
+`+7/2`. These exact states bracket the Allee-type surface `3 J^2 = 8` without
+floating comparison. At the upper stock, sparse settlement costs `5145/32`
+per rate unit under budget `300`; factorial settlement costs `5145/16` and is
+resource-blocked with the same reaction rates and drift. Zero catalyst,
+positive error drift, parameter floats, and post-hoc bracket changes refuse.
+The kinetic constants are synthetic, so H102 also fixes
+`takeoff_supported = false`.
+
+The current capability-growth circuit is:
+
+```text
+surprise / settled response
+    -> residual counterfactual fission                 [Invert]
+    -> direction quotient + exact response rank        [Compress]
+    -> sparse orthogonal observation code
+    -> multiplexed randomized settlement               [Scale]
+    -> content-addressed promoted children
+    -> exact next-generation parent family
+    -> capability reaction inference
+    -> admit only food-generated catalyzed productive fluxes within cost
+    -> measure stock-dependent drift minus depreciation
+    -> cross the kinetic threshold without destabilizing errors or cost
+```
+
+This reveals the category error in the earlier memory architecture. Skill
+compression accumulated cheaper control programs; response credit improved a
+local decision; neither object measured whether one settled judgment generated
+more than one independently useful, externally checkable judgment in the next
+generation. The order parameter is now a feasible multi-type capability flux
+after quotienting copies, charging contact, and tracking false-edge
+production. The earlier `R_k > 1`, `R_e < 1` condition remains a necessary
+generation-level projection, while H101 prevents that projection from hiding
+a missing catalyst or an exponential settlement bill. H102 prevents a
+topologically valid core from hiding insufficient catalyst abundance or
+capability turnover.
+
+The remaining takeoff gates are empirical. H126 crosses one task boundary: a
+task-credited relational judgment changed a fresh controller's route and
+completion rate. Its target capsule was compiled offline for one known branch.
+The next matched gate must let accumulated history invoke the relational
+compiler automatically, settle the transported target hypothesis from the
+resulting transition, and show that the settled descendant reduces acquisition
+cost on a non-equivalent task under the same primitive-contact and controller
+budgets. Re-executing the H126 route does not count as a descendant skill. The
+key estimand is saved environment contact plus saved deliberation minus skill
+acquisition, retrieval, verification, and error costs. Only a positive held-out
+derivative may update the sleep compiler or retrieval policy.
+
+Residual questions are also still fixture-authored rather than generated by
+the controller's own failure state. H98--H102 settlement, reactions, and
+kinetic parameters are synthetic. A prospectively observed reaction requires
+one settled failure to generate the diagnosis and measurement design that
+produce independently settled descendants, without fixture-authored niches.
+Repeated positive derivatives must then survive task/context transport under
+an explicit authority morphism, measured depreciation, and bounded false-edge
+production. Until those gates pass, accelerated capability growth remains
+unobserved.
+
 The miss also changed the apparatus. Live research-isomorphism conjectures now
 owe a `prior_art_inversion` plan containing non-empty search queries,
 comparison axes, and a match-based kill condition. A model-generated plan is

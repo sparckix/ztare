@@ -98,6 +98,9 @@ WORLDMODEL TYPED PAYLOAD CONTRACT:
   when submitting a candidate delta. Omit or leave empty only for typed
   workbench action requests or `LOWERABILITY_BLOCKED`
   receipts.
+- On a task-hypothesis turn, `test_model_py` is instead a standalone module
+  defining exactly one `GOAL_PREDICATE(state) -> bool`. Do not import, repeat,
+  or mutate the transition carrier; the kernel binds the immutable companion.
 - If the science turn is stuck, the rider is free-form one-line text; do not
   surface a JSON schema for it in the prompt.
 - Do not place receipts inside `test_model_py`; the runner will render them outside code.

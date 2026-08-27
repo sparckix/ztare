@@ -1,0 +1,205 @@
+{
+  "acquisition": {
+    "acquisition_verdict": "rejected",
+    "holdout_dir": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout",
+    "manifest_file_sha256": "b9e80a2e520f2891dcdb0b2268aaea0390dda4651cbe626c264c26a61b3dfd8e",
+    "manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/manifest.json",
+    "pair_count": 2,
+    "result_file_sha256": "fee395fa6cb88d10affffb69938a1632aa03c67ad78ea177ef8db786b2ccf93f",
+    "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/result.json",
+    "result_sha256": "36584a3a5cd1ad320e0b965a8719195bdcfc64fe5329dc90703d296b626d0550"
+  },
+  "authority_checks": {
+    "acquisition_protocol_experiment_preserved": true,
+    "arm_order_preserved": true,
+    "controller_transport_preserved": true,
+    "derivative_preserved": true,
+    "eligibility_rule_preserved": true,
+    "intervention_set_preserved": true,
+    "pair_count_preserved": true,
+    "primitive_action_cost_preserved": true,
+    "response_program_preserved": true,
+    "restored_prefix_preserved": true,
+    "scope_preserved": true,
+    "training_frozen_input_receipts_preserved": true
+  },
+  "claim_boundary": {
+    "autonomous_question_generation_supported": false,
+    "compounding_supported": false,
+    "cross_task_transfer_supported": false,
+    "literature_novelty_claimed": false,
+    "one_response_child_supported": false,
+    "same_task_predictive_consolidation_supported": false,
+    "supercriticality_supported": false,
+    "takeoff_supported": false
+  },
+  "environment_contact": true,
+  "frozen_epoch_sha256": "04aa622b06d79fd73594bbe4c4e8337bf23b652b287fb7efe885b30b672b52c5",
+  "hypothesis_id": "H-GPSA-EPOCHAL-INTERVENTIONAL-NERODE-CONSOLIDATION-20260808-108",
+  "identity_disjointness_checks": {
+    "training_holdout_fork_disjoint": true,
+    "training_holdout_outcome_evidence_disjoint": true,
+    "training_holdout_parent_state_disjoint": true,
+    "training_holdout_pre_observation_occurrence_disjoint": true,
+    "training_holdout_pre_proposal_disjoint": true,
+    "training_holdout_transition_disjoint": true
+  },
+  "kind": "fresh_withheld_branch_settlement",
+  "observation_identity": {
+    "content_recurrence_allowed": true,
+    "holdout_content_sha256s": [
+      "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+    ],
+    "occurrence_identity_disjoint": true,
+    "training_content_sha256s": [
+      "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf"
+    ]
+  },
+  "observed": {
+    "mean_value_delta": "-93/200",
+    "negative_pair_count": 1,
+    "offer_supported_count": 2,
+    "positive_pair_count": 0,
+    "total_task_delta": -1,
+    "withhold_supported_count": 0
+  },
+  "response_reproduction_after": 0,
+  "response_reproduction_before": 0,
+  "schema": "ztare-h108-epochal-interventional-nerode-stage-b-result-v1",
+  "sealed_prediction": {
+    "predicted_sign": "positive",
+    "predicted_value_delta": "89/200",
+    "projection": [],
+    "quotient_key": [],
+    "state_sha256": "89e71c631456870b2b0d4d4965abd259802066a50757c4151d2c974d27ba3a45"
+  },
+  "settlement": {
+    "checks": {
+      "at_least_one_positive_pair": false,
+      "known_frozen_state": true,
+      "minimum_fresh_fibers": true,
+      "no_negative_pair_delta": false,
+      "nonnegative_total_task_delta": false,
+      "positive_mean_value_delta": false,
+      "sealed_sign_prediction_every_pair": false,
+      "single_predicted_state": true,
+      "target_first_stage_every_pair": true,
+      "training_holdout_identity_disjoint": true
+    },
+    "compounding_supported": false,
+    "counterexamples": [
+      {
+        "exact_micro_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+        "fiber_sha256": "053207512c03dbc07151caff7de4031020800b2629a8dfe4108901afb3b9481b",
+        "frozen_catalog_has_distinguishing_projection": false,
+        "minimal_distinguishing_feature_keys": [],
+        "next_epoch_required": true
+      }
+    ],
+    "epoch_sha256": "04aa622b06d79fd73594bbe4c4e8337bf23b652b287fb7efe885b30b672b52c5",
+    "holdout_fibers": [
+      {
+        "authority_sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_02_offer.json#sha256=f5245756d53af448d93e21626a3704d71a44da2352242189dedd3f6ed0c86bdf",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_02_withhold.json#sha256=98821946c3c4e3d46844b6f33828b3c070ec35a166a1ed95413816f74e55a1e8",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/settlements/pair_02.json#sha256=f09fa980504801a4508a894f87c7d66941fad8e4f15e2ad2032e381b9a61cd8e"
+        ],
+        "exact_micro_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+        "feature_values": [
+          [
+            "control_relation",
+            "\"forbidden\""
+          ],
+          [
+            "pending_waypoint_order_satisfied",
+            "false"
+          ],
+          [
+            "pending_waypoint_prefix_length",
+            "0"
+          ]
+        ],
+        "fiber_sha256": "053207512c03dbc07151caff7de4031020800b2629a8dfe4108901afb3b9481b",
+        "fork_authority_sha256": "b6b663b42d9191f3de022298c50f8481cc622ff2211d4b43a3b2230e5af80d8e",
+        "kind": "exact_interventional_fiber",
+        "offer_evidence_sha256": "fa2d5ab489649e4748be0f8a5b83da062764d11a0b8e665947e7a12ebb7c4b55",
+        "offer_primitive_action_cost": "20/1",
+        "offer_supported": true,
+        "offer_transition_sha256": "bb8bfc915c69cab549c7dc25ffd91d1ade6674b51e3836a333cb8a9185a63595",
+        "parent_state_sha256": "2fe553fceaca6596468fdbfe196a396adb7466cf6625451843b14d9eddf797fb",
+        "phase": "holdout",
+        "pre_observation_content_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "pre_observation_occurrence_sha256": "d088c75c4c548e5fc834d0b7e38397fd76d577e063257f3377180c71543de8c5",
+        "pre_proposal_sha256": "1e197b63914f300e0096e443597ff65f31df3173835fbbc046d16608ed16fc62",
+        "schema": "ztare-interventional-nerode-consolidation-v1",
+        "sha256": "058e1c3d2a8b3e85e1e4bf9134bd4f7d350300607273e5eae8c474ac45439f8d",
+        "task_delta": -1,
+        "value_delta": "-93/100",
+        "withhold_evidence_sha256": "f0c35f3ce16f642e2b74ed9658496f636bffa48aff4ec098557b9d2556d9fdf5",
+        "withhold_primitive_action_cost": "20/1",
+        "withhold_supported": false,
+        "withhold_transition_sha256": "564ee059bc6c069476ab79d19be5a6963e92a8510940e1a9023ed7aeeb1b0120"
+      },
+      {
+        "authority_sha256": "5876d675671257a01ef7d231f424556e72d100059d9fdd33f74c2793decc19e9",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_01_offer.json#sha256=bbd6faf1fae39298a0a581658462f3298f128b3619076a21fd4da40f4d7302e4",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/arms/pair_01_withhold.json#sha256=58ad512bf88c028bda52216a0ac7fa129f5d9c26b6762df323b022aa32b519c4",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_holdout/settlements/pair_01.json#sha256=e27ad8a551a6d2b10683cf6e26cfb859cac47b3ae7321e020b0b752e7aa5259b"
+        ],
+        "exact_micro_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+        "feature_values": [
+          [
+            "control_relation",
+            "\"forbidden\""
+          ],
+          [
+            "pending_waypoint_order_satisfied",
+            "false"
+          ],
+          [
+            "pending_waypoint_prefix_length",
+            "0"
+          ]
+        ],
+        "fiber_sha256": "7f50646229012b53ac89086d078332b5287bba1c5ad888a3c921f1b5e8ecede1",
+        "fork_authority_sha256": "d733ed044f3ba57d08213daaade12f6abb6e6aefebb68d8a7198d49b3c4def1a",
+        "kind": "exact_interventional_fiber",
+        "offer_evidence_sha256": "ff6c055746ba44c7fa2ff0a15e6707d662c5733f07c803f92781b5ff63cbe82a",
+        "offer_primitive_action_cost": "20/1",
+        "offer_supported": true,
+        "offer_transition_sha256": "71e424b9700f3f2aafe42d57ca68403ae020f9307443678609f0b51ce2410611",
+        "parent_state_sha256": "1a16b0bf627a3728c4c12720dc7f15cf55821478f594c361d0fa1b9f681ae49b",
+        "phase": "holdout",
+        "pre_observation_content_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "pre_observation_occurrence_sha256": "ff36da5a8bfcf1610d7776ea5181484cf330fc255447bf8126d97482c55624e0",
+        "pre_proposal_sha256": "05dc844c2885316b8d1aca350102daa0646e4ad238f88501aed7bd3abbc1c412",
+        "schema": "ztare-interventional-nerode-consolidation-v1",
+        "sha256": "02b993794b33e72b8eac74472b3a26aa3c1bbc02ee2d76f5023a8d3e0e4f1c33",
+        "task_delta": 0,
+        "value_delta": "0/1",
+        "withhold_evidence_sha256": "8109ea3df808b64750427b5c7d5c0dcc4007bafa5c3c9cd626d7cf8aa858b732",
+        "withhold_primitive_action_cost": "20/1",
+        "withhold_supported": false,
+        "withhold_transition_sha256": "36f17296ef6d119a04c683e758f32d623238988caf9edaca95a2f8253093d47c"
+      }
+    ],
+    "kind": "interventional_nerode_settlement",
+    "promoted": false,
+    "promoted_child_count": 0,
+    "promoted_state_sha256s": [],
+    "schema": "ztare-interventional-nerode-consolidation-v1",
+    "sha256": "1999469fbf0dd2b00303329bbbeae6242bc517c1ea8df78305bdd5abb3536132",
+    "status": "refinement_required",
+    "supercriticality_supported": false,
+    "takeoff_supported": false
+  },
+  "sha256": "080def66aea450e8aab954ea5ba92403bea2e43e66cd7bb122f14f2bb3ac1f3c",
+  "stage_a_result_sha256": "16b27144963d13b2651315172717b578ee16cde6c95825c41a071822f5b14e5d",
+  "stage_b_manifest_file_sha256": "2a128764828c0c336683c9e8b36ee3dfc661e2991497ec698f88eebea2da00fc",
+  "stage_b_manifest_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h108_epochal_interventional_nerode_stage_b_manifest.json",
+  "stage_b_manifest_sha256": "1c75388b9fc349107d1ee4035bf05fee8cfe35632ace0a8efec6f099e2ca8a4e",
+  "status": "fresh_holdout_complete",
+  "verdict": "refinement_required"
+}

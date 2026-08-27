@@ -310,6 +310,72 @@ def price_guarded_protocol(
 
 
 @dataclass(frozen=True)
+class GuardedProtocolAssignment:
+    """Externally sealed instruction to execute one canonical protocol.
+
+    Assignment is an experiment-control authority.  It does not confer task
+    value, utility, contrast priority, or information yield on the selected
+    protocol.
+    """
+
+    assignment_ref: str
+    assigned_protocol_id: str
+    canonical_protocol_ids: tuple[str, ...]
+    decision_choice_authority_sha256: str
+    source_assignment_sha256: str
+    assignment_evidence_ref: str
+    schema: str = "ztare-guarded-protocol-assignment-v1"
+
+    def __post_init__(self) -> None:
+        for name in (
+            "assignment_ref",
+            "assigned_protocol_id",
+            "decision_choice_authority_sha256",
+            "source_assignment_sha256",
+            "assignment_evidence_ref",
+        ):
+            value = str(getattr(self, name) or "").strip()
+            if not value:
+                raise ValueError(f"{name} must be nonempty")
+            object.__setattr__(self, name, value)
+        canonical = tuple(sorted(
+            str(protocol_id).strip()
+            for protocol_id in self.canonical_protocol_ids
+        ))
+        if not canonical or any(not row for row in canonical):
+            raise ValueError("canonical_protocol_ids must be nonempty")
+        if len(set(canonical)) != len(canonical):
+            raise ValueError("canonical protocol identities must be unique")
+        if self.assigned_protocol_id not in canonical:
+            raise ValueError(
+                "assigned protocol is outside the frozen canonical set"
+            )
+        object.__setattr__(self, "canonical_protocol_ids", canonical)
+
+    def to_receipt(self) -> dict[str, Any]:
+        payload = {
+            "schema": self.schema,
+            "assignment_ref": self.assignment_ref,
+            "assigned_protocol_id": self.assigned_protocol_id,
+            "canonical_protocol_ids": list(self.canonical_protocol_ids),
+            "decision_choice_authority_sha256": (
+                self.decision_choice_authority_sha256
+            ),
+            "source_assignment_sha256": self.source_assignment_sha256,
+            "assignment_evidence_ref": self.assignment_evidence_ref,
+            "authority": "sealed_experiment_assignment",
+            "task_value_authorized": False,
+            "external_utility_authorized": False,
+            "information_yield_authorized": False,
+        }
+        return {**payload, "sha256": stable_sha256(payload)}
+
+    @property
+    def sha256(self) -> str:
+        return str(self.to_receipt()["sha256"])
+
+
+@dataclass(frozen=True)
 class GuardedProtocolSelection:
     status: str
     selected_protocol_id: str
@@ -322,10 +388,11 @@ class GuardedProtocolSelection:
     budget_ineligible_protocol_ids: tuple[str, ...] = ()
     task_value_by_protocol_id: tuple[tuple[str, int], ...] = ()
     contrast_priority_by_protocol_id: tuple[tuple[str, int], ...] = ()
+    assignment: GuardedProtocolAssignment | None = None
     schema: str = "ztare-guarded-protocol-selection-v1"
 
     def to_receipt(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema": self.schema,
             "status": self.status,
             "selected_protocol_id": self.selected_protocol_id,
@@ -362,6 +429,16 @@ class GuardedProtocolSelection:
             "prices": [price.to_receipt() for price in self.prices],
             "canonical_pricing_engine": CANONICAL_PRICING_ENGINE,
         }
+        if self.assignment is not None:
+            payload.update({
+                "selection_authority": "sealed_experiment_assignment",
+                "assignment": self.assignment.to_receipt(),
+                "assignment_sha256": self.assignment.sha256,
+                "assignment_task_value_authorized": False,
+                "assignment_external_utility_authorized": False,
+                "assignment_information_yield_authorized": False,
+            })
+        return payload
 
 
 def select_guarded_protocol(
@@ -371,6 +448,7 @@ def select_guarded_protocol(
     max_primitive_execution_units: float | None = None,
     task_value_by_protocol_id: Mapping[str, int] | None = None,
     contrast_priority_by_protocol_id: Mapping[str, int] | None = None,
+    assignment: GuardedProtocolAssignment | None = None,
 ) -> GuardedProtocolSelection:
     """Canonicalize feasible equal experiments, then maximize yield density.
 
@@ -445,25 +523,43 @@ def select_guarded_protocol(
         deduplicated.extend(row.protocol_id for row in rows[1:])
     canonical.sort(key=lambda row: row.protocol_id)
     eligible = [row for row in canonical if row.weighted_yield > 0]
-    selected = (
-        max(
-            eligible,
-            key=lambda row: (
-                task_values.get(row.protocol_id, 0),
-                contrast_priorities.get(row.protocol_id, 0),
-                row.yield_density,
-                row.weighted_yield,
-                row.identification,
-                row.compression_gain,
-                row.novelty,
-                -row.cost.total_units,
-                # ``max`` needs the reverse of lexical protocol order.
-                tuple(-ord(char) for char in row.protocol_id),
+    canonical_ids = tuple(row.protocol_id for row in canonical)
+    if assignment is not None:
+        if assignment.canonical_protocol_ids != canonical_ids:
+            raise ValueError(
+                "protocol assignment crossed the canonical choice set"
+            )
+        selected = next(
+            (
+                row for row in eligible
+                if row.protocol_id == assignment.assigned_protocol_id
             ),
+            None,
         )
-        if eligible
-        else None
-    )
+        if selected is None:
+            raise ValueError(
+                "assigned protocol is not a valued affordable canonical option"
+            )
+    else:
+        selected = (
+            max(
+                eligible,
+                key=lambda row: (
+                    task_values.get(row.protocol_id, 0),
+                    contrast_priorities.get(row.protocol_id, 0),
+                    row.yield_density,
+                    row.weighted_yield,
+                    row.identification,
+                    row.compression_gain,
+                    row.novelty,
+                    -row.cost.total_units,
+                    # ``max`` needs the reverse of lexical protocol order.
+                    tuple(-ord(char) for char in row.protocol_id),
+                ),
+            )
+            if eligible
+            else None
+        )
     valued = [row for row in admitted if row.weighted_yield > 0]
     feasible_valued = [
         row for row in feasible if row.weighted_yield > 0
@@ -507,6 +603,7 @@ def select_guarded_protocol(
             for protocol_id, value in contrast_priorities.items()
             if protocol_id in {row.protocol_id for row in priced}
         )),
+        assignment=assignment,
     )
 
 
@@ -514,6 +611,7 @@ __all__ = [
     "CANONICAL_PRICING_ENGINE",
     "GuardedExperimentProtocol",
     "GuardedProtocolCandidate",
+    "GuardedProtocolAssignment",
     "GuardedProtocolPrice",
     "GuardedProtocolSelection",
     "ProtocolCost",

@@ -230,6 +230,28 @@ class SkillVariant:
     def independent_trace_support(self) -> int:
         return len(self.trace_refs)
 
+    @property
+    def distinct_initiation_support(self) -> int:
+        """Number of exact initiation identities, independent of repeats."""
+        return len({
+            stable_sha256(key) for key in self.initiation_keys
+        })
+
+    @property
+    def cross_initiation_exact_terminal_candidate(self) -> bool:
+        """Whether one exact effect/terminal image varies the start identity.
+
+        This is deliberately weaker than transferable-skill evidence: the
+        compiler does not own task credit or held-out evaluation.  It prevents
+        repeated traces from one exact state from masquerading as state
+        variation.  Effect families that intentionally quotient terminal
+        identity are owned by ``boundary_reachability``.
+        """
+        return (
+            self.independent_trace_support >= 2
+            and self.distinct_initiation_support >= 2
+        )
+
     def to_receipt(self) -> dict[str, Any]:
         return {
             "variant_sha256": self.variant_sha256,
@@ -242,6 +264,10 @@ class SkillVariant:
             ),
             "support": self.support,
             "independent_trace_support": self.independent_trace_support,
+            "distinct_initiation_support": self.distinct_initiation_support,
+            "cross_initiation_exact_terminal_candidate": (
+                self.cross_initiation_exact_terminal_candidate
+            ),
             "occurrence_sha256s": list(self.occurrence_sha256s),
             "trace_refs": list(self.trace_refs),
             "evidence_refs": list(self.evidence_refs),
@@ -327,6 +353,31 @@ class GuardedSkillProgram:
             "concrete_lineage": lineage_refs,
         })
 
+    @property
+    def cross_initiation_exact_terminal_variant_count(self) -> int:
+        return sum(
+            variant.cross_initiation_exact_terminal_candidate
+            for variant in self.variants
+        )
+
+    @property
+    def repeated_single_initiation_variant_count(self) -> int:
+        return sum(
+            variant.independent_trace_support >= 2
+            and variant.distinct_initiation_support == 1
+            for variant in self.variants
+        )
+
+    @property
+    def max_distinct_initiation_support(self) -> int:
+        return max(
+            (
+                variant.distinct_initiation_support
+                for variant in self.variants
+            ),
+            default=0,
+        )
+
     def decide(self, initiation_key: Hashable) -> SkillExecutionDecision:
         if initiation_key not in self.admitted_initiation_keys:
             reason = (
@@ -375,6 +426,15 @@ class GuardedSkillProgram:
             "variants": [
                 variant.to_receipt() for variant in self.variants
             ],
+            "cross_initiation_exact_terminal_variant_count": (
+                self.cross_initiation_exact_terminal_variant_count
+            ),
+            "repeated_single_initiation_variant_count": (
+                self.repeated_single_initiation_variant_count
+            ),
+            "max_distinct_initiation_support": (
+                self.max_distinct_initiation_support
+            ),
             "side_exits": [
                 side_exit.to_receipt() for side_exit in self.side_exits
             ],
@@ -427,12 +487,45 @@ class GuardedSkillLibrary:
             == self.source_operations_by_trace
         )
 
+    @property
+    def cross_initiation_exact_terminal_variant_count(self) -> int:
+        return sum(
+            program.cross_initiation_exact_terminal_variant_count
+            for program in self.programs
+        )
+
+    @property
+    def repeated_single_initiation_variant_count(self) -> int:
+        return sum(
+            program.repeated_single_initiation_variant_count
+            for program in self.programs
+        )
+
+    @property
+    def max_distinct_initiation_support(self) -> int:
+        return max(
+            (
+                program.max_distinct_initiation_support
+                for program in self.programs
+            ),
+            default=0,
+        )
+
     def to_receipt(self) -> dict[str, Any]:
         return {
             "schema": self.schema,
             "source_sha256": self.source_sha256,
             "program_count": len(self.programs),
             "programs": [program.to_receipt() for program in self.programs],
+            "cross_initiation_exact_terminal_variant_count": (
+                self.cross_initiation_exact_terminal_variant_count
+            ),
+            "repeated_single_initiation_variant_count": (
+                self.repeated_single_initiation_variant_count
+            ),
+            "max_distinct_initiation_support": (
+                self.max_distinct_initiation_support
+            ),
             "primitive_token_count": self.primitive_token_count,
             "encoded_token_count": self.encoded_token_count,
             "dictionary_token_count": self.dictionary_token_count,

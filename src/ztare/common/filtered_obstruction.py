@@ -57,6 +57,12 @@ FILTERED_POLAR_WITT_CONTEXT_SCHEMA = "ztare.filtered_polar_witt_context.v1"
 FILTERED_POLAR_TENSOR_CONTEXT_SCHEMA = (
     "ztare.filtered_polar_tensor_context.v1"
 )
+FILTERED_CRITICAL_TWO_FLOW_CONTEXT_SCHEMA = (
+    "ztare.filtered_critical_two_flow_context.v1"
+)
+FILTERED_CRITICAL_SUPPORT_CONTEXT_SCHEMA = (
+    "ztare.filtered_critical_support_context.v1"
+)
 
 
 class FilteredTailOccurrenceOrder(str, Enum):
@@ -80,6 +86,21 @@ class FilteredTailEvidenceScope(str, Enum):
 
     ALL_ORDER_FINITE_PREFIX_UNIFORM = "all_order_finite_prefix_uniform"
     ADMISSIBLE_ALL_ORDER_CONSTRUCTION = "admissible_all_order_construction"
+    FINITE_WINDOW = "finite_window"
+
+
+class FilteredCriticalSupportClaim(str, Enum):
+    """The two typed arrows required for critical-support finiteness."""
+
+    STRICT_TAIL_BOUND = "strict_tail_bound"
+    SUPPORT_TO_COST_CHARGE = "support_to_cost_charge"
+
+
+class FilteredCriticalSupportEvidenceScope(str, Enum):
+    """The mathematical extent of a critical-support premise."""
+
+    ALL_EVENTUAL_TAIL_ROWS = "all_eventual_tail_rows"
+    ALL_CRITICAL_SUPPORT_ROWS = "all_critical_support_rows"
     FINITE_WINDOW = "finite_window"
 
 
@@ -117,6 +138,56 @@ class FilteredPuiseuxEvidenceScope(str, Enum):
     EXACT_FIRST_FRACTIONAL_GERM = "exact_first_fractional_germ"
     EXACT_FORMAL_FLOW_IDENTITY = "exact_formal_flow_identity"
     FINITE_TRUNCATION = "finite_truncation"
+
+
+class FilteredDensityClockClaim(str, Enum):
+    """Adapter arrows needed by the weight-3/2 clock orbit theorem."""
+
+    GROUP_MODULE_POLYNOMIALITY = (
+        "semidirect_group_module_coordinate_polynomial"
+    )
+    CLOCK_FACTORIZATION_IDENTITY = "density_clock_factorization_identity"
+    SELECTED_ENDPOINT_TRICHOTOMY = "selected_clock_endpoint_trichotomy"
+    LOCAL_ENDPOINT_PUISEUX_LATTICES = (
+        "local_clock_endpoint_puiseux_lattices"
+    )
+
+
+class FilteredDensityClockEvidenceScope(str, Enum):
+    """The mathematical extent of a density-clock orbit proposition."""
+
+    EXACT_SEMIDIRECT_EXPONENTIAL_POLYNOMIALITY = (
+        "exact_semidirect_exponential_group_module_polynomiality"
+    )
+    EXACT_FORMAL_CLOCK_FACTORIZATION = "exact_formal_clock_factorization"
+    SELECTED_ANALYTIC_BRANCH_EXHAUSTIVE = (
+        "selected_analytic_branch_exhaustive"
+    )
+    ALL_POLYNOMIAL_ROOT_AND_INFINITY_CHARTS = (
+        "all_polynomial_root_and_infinity_charts"
+    )
+    FINITE_WINDOW = "finite_window"
+
+
+class FilteredAlgebraicContinuationClaim(str, Enum):
+    """Premises turning a density orbit into a selected algebraic branch."""
+
+    CRITICAL_SQUARE_OUTSIDE_BASE_FIELD = (
+        "critical_square_outside_base_field"
+    )
+    ALGEBRAIC_PLACE_PUISEUX_EXTENSION = (
+        "algebraic_place_puiseux_extension"
+    )
+
+
+class FilteredAlgebraicContinuationEvidenceScope(str, Enum):
+    """The extent of one algebraic-continuation proposition."""
+
+    EXACT_CRITICAL_FUNCTION_FIELD = "exact_critical_function_field"
+    ALL_FINITE_ALGEBRAIC_EXTENSIONS_AT_SELECTED_PLACE = (
+        "all_finite_algebraic_extensions_at_selected_place"
+    )
+    FINITE_WINDOW = "finite_window"
 
 
 class FilteredPolarTensorModel(str, Enum):
@@ -173,6 +244,29 @@ class FilteredPolarTensorEvidenceScope(str, Enum):
     FINITE_WINDOW = "finite_window"
 
 
+class FilteredCriticalTwoFlowClaim(str, Enum):
+    """The two non-substitutable arrows closing a critical terminal."""
+
+    ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION = (
+        "zero_face_realizes_two_flow_factorization"
+    )
+    NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED = (
+        "normalized_two_flow_factorization_excluded"
+    )
+
+
+class FilteredCriticalTwoFlowEvidenceScope(str, Enum):
+    """The mathematical extent of a critical-terminal proposition."""
+
+    ALL_STRICT_SUBTHRESHOLD_ZERO_FACES = (
+        "all_strict_subthreshold_zero_faces"
+    )
+    EXACT_NORMALIZED_AUTONOMOUS_TWO_FLOW_CATEGORY = (
+        "exact_normalized_autonomous_two_flow_category"
+    )
+    FINITE_WINDOW = "finite_window"
+
+
 @dataclass(frozen=True)
 class FilteredTailContext:
     """The category/statistic identity shared by every tail premise."""
@@ -182,6 +276,20 @@ class FilteredTailContext:
     statistic_id: str
     occurrence_order: FilteredTailOccurrenceOrder
     adapter_evidence_sha256: str
+    context_sha256: str
+
+
+@dataclass(frozen=True)
+class FilteredCriticalSupportContext:
+    """Identity of one support/cost comparison at a critical slope."""
+
+    schema: str
+    category_id: str
+    support_id: str
+    cost_id: str
+    slope: str
+    adapter_evidence_sha256: str
+    compiler_kernel_sha256: str
     context_sha256: str
 
 
@@ -219,6 +327,21 @@ class FilteredPolarWittContext:
     model: FilteredPolarWittModel
     adapter_evidence_sha256: str
     centralizer_evidence_sha256: str
+    context_sha256: str
+
+
+@dataclass(frozen=True)
+class FilteredCriticalTwoFlowContext:
+    """Identity of one schedule-to-factorization terminal composition."""
+
+    schema: str
+    schedule_category_id: str
+    factorization_category_id: str
+    source_germ_id: str
+    visible_germ_id: str
+    minimum_generator_vanishing_order: int
+    specialization_evidence_sha256: str
+    exclusion_evidence_sha256: str
     context_sha256: str
 
 
@@ -537,6 +660,43 @@ class FilteredPuiseuxFlowProblem:
 
 
 @dataclass(frozen=True)
+class FilteredDensityClockOrbitProblem:
+    """Exclude a finite polynomial orbit using a weight-3/2 density clock.
+
+    The local germ has first fractional exponent ``5/2``.  The adapter also
+    supplies separate authority that the semidirect *group-module*
+    coordinate is polynomial, the clock factorization through a
+    polynomial-flow endpoint, a selected continuation whose endpoint is
+    exhaustively regular finite, a nonzero polynomial root, or infinity,
+    and the complete local Puiseux lattices in those charts.  Polynomiality
+    of an upstream Lie-module logarithm is not a substitute for group-module
+    polynomiality.  The compiler owns the resulting exponent arithmetic in
+    all three cases.
+    """
+
+    name: str
+    context: FilteredPuiseuxContext
+    evidence: tuple[ContentBoundEvidenceReceipt, ...]
+
+
+@dataclass(frozen=True)
+class FilteredAlgebraicClockContinuationProblem:
+    """Derive selected endpoint coverage from a polynomial density orbit.
+
+    The compiler combines the exact squared weight-`3/2` orbit identity with
+    the time-one Julia identity.  Their derivative-free eliminant is nonzero
+    because the critical residual square does not descend to the rational
+    source field.  Thus the endpoint germ is algebraic over the selected
+    critical sheet.  A separately owned place-extension theorem then gives
+    a Puiseux chart above the named branch point.
+    """
+
+    name: str
+    context: FilteredPuiseuxContext
+    evidence: tuple[ContentBoundEvidenceReceipt, ...]
+
+
+@dataclass(frozen=True)
 class FilteredTwoFlowPuiseuxProblem:
     """A regular fractional germ tested against two polynomial flows.
 
@@ -566,6 +726,22 @@ class FilteredTwoFlowPuiseuxProblem:
     context: FilteredPuiseuxContext
     evidence: tuple[ContentBoundEvidenceReceipt, ...]
     minimum_generator_vanishing_order: int
+
+
+@dataclass(frozen=True)
+class FilteredCriticalTwoFlowProblem:
+    """Compose zero-face realization with exact two-flow exclusion.
+
+    This lifecycle deliberately carries no witness-shaped booleans.  Its two
+    receipts certify different arrows: the substrate adapter maps every
+    schedule in the named zero-face category into the named factorization
+    category, while the obstruction authority proves that exact category
+    empty.  Neither receipt can stand in for the other.
+    """
+
+    name: str
+    context: FilteredCriticalTwoFlowContext
+    evidence: tuple[ContentBoundEvidenceReceipt, ...]
 
 
 @dataclass(frozen=True)
@@ -642,6 +818,7 @@ class FilteredPolarTensorFactorizationProblem:
     degree_multiplier: RationalInput
     context: FilteredPolarTensorContext
     evidence: tuple[ContentBoundEvidenceReceipt, ...]
+    critical_terminal_certificate: FilteredCriticalTwoFlowCertificate
 
 
 @dataclass(frozen=True)
@@ -659,6 +836,21 @@ class FilteredTailMinimaxCompositionProblem:
     name: str
     threshold: RationalInput
     context: FilteredTailContext
+    evidence: tuple[ContentBoundEvidenceReceipt, ...]
+
+
+@dataclass(frozen=True)
+class FilteredCriticalSupportProblem:
+    """Compile eventual critical-support finiteness from two typed arrows.
+
+    The strict tail estimate and the support-to-cost implication are distinct
+    propositions.  Keeping them as separate content-bound receipts blocks a
+    tail estimate in one filtration from being promoted to support finiteness
+    in another.
+    """
+
+    name: str
+    context: FilteredCriticalSupportContext
     evidence: tuple[ContentBoundEvidenceReceipt, ...]
 
 
@@ -1102,6 +1294,8 @@ class FilteredPuiseuxFlowCertificate:
     regular_linear_coefficient_nonzero: bool
     fractional_coefficient_nonzero: bool
     julia_equation_verified_by_adapter: bool
+    time_one_realization_verified_by_adapter: bool
+    zero_generator_excluded_by_nonidentity_germ: bool
     nonroot_exponent_mismatch: bool
     forced_root_multiplicity: str
     forced_root_multiplicity_is_noninteger: bool
@@ -1110,6 +1304,62 @@ class FilteredPuiseuxFlowCertificate:
     local_expansion_certificate_sha256: str
     puiseux_flow_certificate_sha256: str
     evidence_receipt_sha256: tuple[tuple[str, str], ...]
+    proof_contract_sha256: str
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class FilteredDensityClockOrbitCertificate:
+    schema: str
+    problem_name: str
+    first_fractional_exponent: str
+    fractional_increment: str
+    density_weight: str
+    residual_valuation: int
+    group_module_polynomiality_verified_by_adapter: bool
+    regular_finite_case_excluded: bool
+    multiple_nonzero_root_clock_diverges: bool
+    simple_root_inverse_order: int
+    simple_root_forced_generator_multiplicity: str
+    simple_root_case_excluded: bool
+    infinity_clock_finite_minimum_residual_degree: int
+    infinity_degree_relation: str
+    infinity_generator_degree_even: bool
+    infinity_fractional_increment_outside_lattice: bool
+    infinity_case_excluded: bool
+    selected_polynomial_orbit_excluded: bool
+    adapter_completeness_inferred: bool
+    context_sha256: str
+    evidence_receipt_sha256: tuple[tuple[str, str], ...]
+    density_clock_orbit_certificate_sha256: str
+    proof_contract_sha256: str
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class FilteredAlgebraicClockContinuationCertificate:
+    schema: str
+    problem_name: str
+    squared_density_identity_verified_by_adapter: bool
+    group_module_polynomiality_verified_by_adapter: bool
+    time_one_julia_identity_verified_by_adapter: bool
+    zero_generator_excluded_before_elimination: bool
+    critical_square_outside_base_field: bool
+    critical_square_first_nonbase_exponent: str
+    derivative_free_eliminant_nonzero: bool
+    endpoint_algebraic_over_selected_critical_field: bool
+    selected_place_extension_verified_by_adapter: bool
+    selected_endpoint_is_finite_or_infinity: bool
+    selected_endpoint_trichotomy_derived: bool
+    adapter_completeness_inferred: bool
+    context_sha256: str
+    evidence_receipt_sha256: tuple[tuple[str, str], ...]
+    algebraic_continuation_certificate_sha256: str
+    selected_endpoint_receipt_sha256: str
     proof_contract_sha256: str
 
     def to_dict(self) -> dict[str, object]:
@@ -1139,6 +1389,41 @@ class FilteredTwoFlowPuiseuxCertificate:
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class FilteredCriticalTwoFlowCertificate:
+    """Content identity of a composed critical-terminal contradiction."""
+
+    schema: str
+    problem_name: str
+    schedule_category_id: str
+    factorization_category_id: str
+    source_germ_id: str
+    visible_germ_id: str
+    minimum_generator_vanishing_order: int
+    zero_face_realizes_two_flow_factorization: bool
+    normalized_two_flow_factorization_excluded: bool
+    critical_terminal_excluded: bool
+    specialization_evidence_sha256: str
+    exclusion_evidence_sha256: str
+    context_sha256: str
+    evidence_receipt_sha256: tuple[tuple[str, str], ...]
+    evidence_authority: tuple[tuple[str, str], ...]
+    critical_two_flow_certificate_sha256: str
+    proof_contract_sha256: str
+
+    def to_dict(self) -> dict[str, object]:
+        result = asdict(self)
+        result["evidence_receipt_sha256"] = [
+            {"claim": claim, "sha256": digest}
+            for claim, digest in self.evidence_receipt_sha256
+        ]
+        result["evidence_authority"] = [
+            {"claim": claim, "authority": authority}
+            for claim, authority in self.evidence_authority
+        ]
+        return result
 
 
 @dataclass(frozen=True)
@@ -1251,6 +1536,41 @@ class FilteredTailMinimaxCompositionCertificate:
     def to_dict(self) -> dict[str, object]:
         result = asdict(self)
         result["branch_partition"] = list(self.branch_partition)
+        result["evidence_receipt_sha256"] = [
+            {"claim": claim, "sha256": digest}
+            for claim, digest in self.evidence_receipt_sha256
+        ]
+        result["evidence_authority"] = [
+            {"claim": claim, "authority": authority}
+            for claim, authority in self.evidence_authority
+        ]
+        return result
+
+
+@dataclass(frozen=True)
+class FilteredCriticalSupportCertificate:
+    schema: str
+    problem_name: str
+    category_id: str
+    support_id: str
+    cost_id: str
+    slope: str
+    eventual_critical_support_vanishing: bool
+    critical_support_finite: bool
+    infinite_support_forces_late_threshold_cost: bool
+    strict_tail_alone_implies_finite_support: bool
+    premise_removal_countermodel_accepted: bool
+    adapter_completeness_inferred: bool
+    adapter_evidence_sha256: str
+    compiler_kernel_sha256: str
+    context_sha256: str
+    evidence_receipt_sha256: tuple[tuple[str, str], ...]
+    evidence_authority: tuple[tuple[str, str], ...]
+    critical_support_certificate_sha256: str
+    proof_contract_sha256: str
+
+    def to_dict(self) -> dict[str, object]:
+        result = asdict(self)
         result["evidence_receipt_sha256"] = [
             {"claim": claim, "sha256": digest}
             for claim, digest in self.evidence_receipt_sha256
@@ -4288,7 +4608,10 @@ def _filtered_puiseux_claim_conclusion(
             ),
         }
     if claim is FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY:
-        return {"identity": "f(F)=F_prime*f"}
+        return {
+            "identity": "f(F)=F_prime*f",
+            "flow_endpoint": "F=exp(fD)(x)",
+        }
     if claim is FilteredPuiseuxClaim.TWO_FLOW_FACTORIZATION_IDENTITY:
         return {"identity": "F=exp(gD)_after_exp(fD)"}
     raise FilteredObstructionError(
@@ -4330,6 +4653,307 @@ def make_filtered_puiseux_evidence(
         )
     except ContentBoundEvidenceError as error:
         raise FilteredObstructionError(error.code, str(error)) from error
+
+
+def _filtered_density_clock_claim_conclusion(
+    claim: FilteredDensityClockClaim,
+) -> dict[str, str]:
+    if claim is FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY:
+        return {
+            "coordinate": "L",
+            "coordinate_level": "semidirect_group_module",
+            "polynomiality": "finite_polynomial",
+            "not_inferred_from": "finite_lie_module_support",
+        }
+    if claim is FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY:
+        return {
+            "identity": "phi_K=phi_L_after_polynomial_flow_endpoint",
+            "squared_density_identity": (
+                "K^2*h^2*(h_prime)^3=x^2*L(h)^2"
+            ),
+            "density_weight": "3/2",
+            "residual_valuation": "1",
+        }
+    if claim is FilteredDensityClockClaim.SELECTED_ENDPOINT_TRICHOTOMY:
+        return {
+            "endpoint_partition": (
+                "regular_finite|nonzero_polynomial_root|infinity"
+            )
+        }
+    if claim is FilteredDensityClockClaim.LOCAL_ENDPOINT_PUISEUX_LATTICES:
+        return {
+            "regular_finite": "inverse_clock_preserves_first_5/2_term",
+            "simple_nonzero_root": (
+                "cubic_inverse_with_nonzero_relative_3/2_term"
+            ),
+            "infinity": (
+                "flow_lattice_generated_by_1/(degree-1)_with_"
+                "nonzero_relative_3/2_term"
+            ),
+        }
+    raise FilteredObstructionError(
+        "density_clock_claim_unknown",
+        "the density-clock evidence claim is not recognized",
+    )
+
+
+def make_filtered_density_clock_evidence(
+    *,
+    claim: FilteredDensityClockClaim,
+    context: FilteredPuiseuxContext,
+    authority: EvidenceAuthority,
+    scope: FilteredDensityClockEvidenceScope,
+    evidence_sha256: str,
+) -> ContentBoundEvidenceReceipt:
+    """Bind one clock-factorization proposition to its fractional germ."""
+
+    _replay_filtered_puiseux_context(context)
+    if not isinstance(claim, FilteredDensityClockClaim):
+        raise FilteredObstructionError(
+            "density_clock_claim_unknown",
+            "the density-clock evidence claim is not recognized",
+        )
+    if not isinstance(scope, FilteredDensityClockEvidenceScope):
+        raise FilteredObstructionError(
+            "density_clock_evidence_scope_unknown",
+            "the density-clock evidence scope is not recognized",
+        )
+    try:
+        return make_content_bound_evidence(
+            claim_id=claim.value,
+            subject_id=context.germ_id,
+            context_sha256=context.context_sha256,
+            authority=authority,
+            scope_id=scope.value,
+            conclusion=_filtered_density_clock_claim_conclusion(claim),
+            evidence_sha256=evidence_sha256,
+        )
+    except ContentBoundEvidenceError as error:
+        raise FilteredObstructionError(error.code, str(error)) from error
+
+
+def _validated_density_clock_evidence(
+    *,
+    context: FilteredPuiseuxContext,
+    evidence: tuple[ContentBoundEvidenceReceipt, ...],
+    required_claims: tuple[FilteredDensityClockClaim, ...] | None = None,
+) -> dict[FilteredDensityClockClaim, ContentBoundEvidenceReceipt]:
+    required = (
+        tuple(FilteredDensityClockClaim)
+        if required_claims is None
+        else required_claims
+    )
+    if len(evidence) != len(required):
+        raise FilteredObstructionError(
+            "density_clock_evidence_claim_set_incomplete",
+            "the density-clock compiler needs its exact structural propositions",
+        )
+    receipts: dict[
+        FilteredDensityClockClaim, ContentBoundEvidenceReceipt
+    ] = {}
+    expected_scope = {
+        FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY: (
+            FilteredDensityClockEvidenceScope.EXACT_SEMIDIRECT_EXPONENTIAL_POLYNOMIALITY
+        ),
+        FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY: (
+            FilteredDensityClockEvidenceScope.EXACT_FORMAL_CLOCK_FACTORIZATION
+        ),
+        FilteredDensityClockClaim.SELECTED_ENDPOINT_TRICHOTOMY: (
+            FilteredDensityClockEvidenceScope.SELECTED_ANALYTIC_BRANCH_EXHAUSTIVE
+        ),
+        FilteredDensityClockClaim.LOCAL_ENDPOINT_PUISEUX_LATTICES: (
+            FilteredDensityClockEvidenceScope.ALL_POLYNOMIAL_ROOT_AND_INFINITY_CHARTS
+        ),
+    }
+    for carried in evidence:
+        try:
+            receipt = replay_content_bound_evidence(carried)
+            claim = FilteredDensityClockClaim(receipt.claim_id)
+        except (ContentBoundEvidenceError, ValueError) as error:
+            code = getattr(error, "code", "density_clock_claim_unknown")
+            raise FilteredObstructionError(code, str(error)) from error
+        if claim in receipts:
+            raise FilteredObstructionError(
+                "density_clock_evidence_claim_duplicate",
+                f"density-clock claim {claim.value!r} occurs more than once",
+            )
+        if receipt.subject_id != context.germ_id:
+            raise FilteredObstructionError(
+                "density_clock_evidence_subject_mismatch",
+                "the density-clock proposition belongs to another germ",
+            )
+        if receipt.context_sha256 != context.context_sha256:
+            raise FilteredObstructionError(
+                "density_clock_evidence_context_mismatch",
+                "the density-clock proposition belongs to another context",
+            )
+        if receipt.authority is EvidenceAuthority.FINITE_EXPERIMENT:
+            raise FilteredObstructionError(
+                "density_clock_evidence_authority_insufficient",
+                "finite experiments cannot discharge a clock orbit theorem",
+            )
+        if receipt.scope_id != expected_scope[claim].value:
+            raise FilteredObstructionError(
+                "density_clock_evidence_scope_mismatch",
+                f"density-clock claim {claim.value!r} has the wrong scope",
+            )
+        if receipt.conclusion() != _filtered_density_clock_claim_conclusion(
+            claim
+        ):
+            raise FilteredObstructionError(
+                "density_clock_evidence_conclusion_malformed",
+                f"density-clock claim {claim.value!r} has the wrong conclusion",
+            )
+        receipts[claim] = receipt
+    if set(receipts) != set(required):
+        raise FilteredObstructionError(
+            "density_clock_evidence_claim_set_incomplete",
+            "density-clock evidence does not cover its exact claim set",
+        )
+    return receipts
+
+
+def _filtered_algebraic_continuation_claim_conclusion(
+    claim: FilteredAlgebraicContinuationClaim,
+) -> dict[str, str]:
+    if claim is (
+        FilteredAlgebraicContinuationClaim.CRITICAL_SQUARE_OUTSIDE_BASE_FIELD
+    ):
+        return {
+            "element": "K^2",
+            "base_field": "rational_source_function_field",
+            "first_nonbase_exponent": "3/2",
+            "coefficient_status": "nonzero",
+        }
+    if claim is (
+        FilteredAlgebraicContinuationClaim.ALGEBRAIC_PLACE_PUISEUX_EXTENSION
+    ):
+        return {
+            "theorem": (
+                "selected_place_extends_to_every_finite_algebraic_"
+                "function_field_extension"
+            ),
+            "endpoint": "finite_or_infinity_puiseux_chart",
+        }
+    raise FilteredObstructionError(
+        "algebraic_continuation_claim_unknown",
+        "the algebraic-continuation evidence claim is not recognized",
+    )
+
+
+def make_filtered_algebraic_continuation_evidence(
+    *,
+    claim: FilteredAlgebraicContinuationClaim,
+    context: FilteredPuiseuxContext,
+    authority: EvidenceAuthority,
+    scope: FilteredAlgebraicContinuationEvidenceScope,
+    evidence_sha256: str,
+) -> ContentBoundEvidenceReceipt:
+    """Bind one exact algebraic-continuation proposition to a germ."""
+
+    _replay_filtered_puiseux_context(context)
+    if not isinstance(claim, FilteredAlgebraicContinuationClaim):
+        raise FilteredObstructionError(
+            "algebraic_continuation_claim_unknown",
+            "the algebraic-continuation claim is not recognized",
+        )
+    if not isinstance(scope, FilteredAlgebraicContinuationEvidenceScope):
+        raise FilteredObstructionError(
+            "algebraic_continuation_evidence_scope_unknown",
+            "the algebraic-continuation scope is not recognized",
+        )
+    try:
+        return make_content_bound_evidence(
+            claim_id=claim.value,
+            subject_id=context.germ_id,
+            context_sha256=context.context_sha256,
+            authority=authority,
+            scope_id=scope.value,
+            conclusion=_filtered_algebraic_continuation_claim_conclusion(
+                claim
+            ),
+            evidence_sha256=evidence_sha256,
+        )
+    except ContentBoundEvidenceError as error:
+        raise FilteredObstructionError(error.code, str(error)) from error
+
+
+def _validated_algebraic_continuation_evidence(
+    *,
+    context: FilteredPuiseuxContext,
+    evidence: tuple[ContentBoundEvidenceReceipt, ...],
+) -> dict[
+    FilteredAlgebraicContinuationClaim,
+    ContentBoundEvidenceReceipt,
+]:
+    required = tuple(FilteredAlgebraicContinuationClaim)
+    if len(evidence) != len(required):
+        raise FilteredObstructionError(
+            "algebraic_continuation_evidence_claim_set_incomplete",
+            "the algebraic-continuation compiler needs both propositions",
+        )
+    expected_scope = {
+        FilteredAlgebraicContinuationClaim.CRITICAL_SQUARE_OUTSIDE_BASE_FIELD: (
+            FilteredAlgebraicContinuationEvidenceScope.EXACT_CRITICAL_FUNCTION_FIELD
+        ),
+        FilteredAlgebraicContinuationClaim.ALGEBRAIC_PLACE_PUISEUX_EXTENSION: (
+            FilteredAlgebraicContinuationEvidenceScope.ALL_FINITE_ALGEBRAIC_EXTENSIONS_AT_SELECTED_PLACE
+        ),
+    }
+    receipts: dict[
+        FilteredAlgebraicContinuationClaim,
+        ContentBoundEvidenceReceipt,
+    ] = {}
+    for carried in evidence:
+        try:
+            receipt = replay_content_bound_evidence(carried)
+            claim = FilteredAlgebraicContinuationClaim(receipt.claim_id)
+        except (ContentBoundEvidenceError, ValueError) as error:
+            code = getattr(
+                error,
+                "code",
+                "algebraic_continuation_claim_unknown",
+            )
+            raise FilteredObstructionError(code, str(error)) from error
+        if claim in receipts:
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_claim_duplicate",
+                f"algebraic-continuation claim {claim.value!r} is duplicated",
+            )
+        if receipt.subject_id != context.germ_id:
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_subject_mismatch",
+                "the algebraic-continuation proposition belongs to another germ",
+            )
+        if receipt.context_sha256 != context.context_sha256:
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_context_mismatch",
+                "the algebraic-continuation proposition has another context",
+            )
+        if receipt.authority is EvidenceAuthority.FINITE_EXPERIMENT:
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_authority_insufficient",
+                "finite experiments cannot certify algebraic continuation",
+            )
+        if receipt.scope_id != expected_scope[claim].value:
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_scope_mismatch",
+                f"algebraic-continuation claim {claim.value!r} has the wrong scope",
+            )
+        if receipt.conclusion() != (
+            _filtered_algebraic_continuation_claim_conclusion(claim)
+        ):
+            raise FilteredObstructionError(
+                "algebraic_continuation_evidence_conclusion_malformed",
+                f"algebraic-continuation claim {claim.value!r} is malformed",
+            )
+        receipts[claim] = receipt
+    if set(receipts) != set(required):
+        raise FilteredObstructionError(
+            "algebraic_continuation_evidence_claim_set_incomplete",
+            "algebraic-continuation evidence does not cover both claims",
+        )
+    return receipts
 
 
 def _validated_puiseux_evidence(
@@ -4428,12 +5052,15 @@ def compile_filtered_puiseux_flow_obstruction(
     """Exclude a polynomial flow generator from a fractional holonomy germ.
 
     For a regular germ whose first fractional exponent is lambda, Julia's
-    equation gives an exhaustive dichotomy.  If the generator does not
-    vanish at the base point, differentiation exposes lambda-1 one order
-    before composition can expose lambda.  If it does vanish, valuation
-    matching gives equal integer multiplicities at the base and image
-    points, while the first fractional coefficient forces that multiplicity
-    to equal lambda.  A nonintegral lambda excludes both branches.
+    equation gives an exhaustive dichotomy for a declared time-one flow
+    endpoint.  The zero generator is excluded because its time-one map is
+    the identity, whereas the germ has a nonzero fractional coefficient.
+    If a nonzero generator does not vanish at the base point,
+    differentiation exposes lambda-1 one order before composition can
+    expose lambda.  If it does vanish, valuation matching gives equal
+    integer multiplicities at the base and image points, while the first
+    fractional coefficient forces that multiplicity to equal lambda.  A
+    nonintegral lambda excludes both branches.
     """
 
     if not problem.name:
@@ -4473,6 +5100,8 @@ def compile_filtered_puiseux_flow_obstruction(
         "regular_linear_coefficient_nonzero": True,
         "fractional_coefficient_nonzero": True,
         "julia_equation_applies": True,
+        "time_one_realization_applies": True,
+        "zero_generator_excluded_by_nonidentity_germ": True,
         "local_expansion_certificate_sha256": digest,
         "forced_root_multiplicity": str(exponent),
     }
@@ -4490,13 +5119,15 @@ def compile_filtered_puiseux_flow_obstruction(
         "semantic_certificate_sha256": certificate_sha256,
     })
     return FilteredPuiseuxFlowCertificate(
-        schema="ztare.filtered_puiseux_flow_certificate.v2",
+        schema="ztare.filtered_puiseux_flow_certificate.v3",
         problem_name=problem.name,
         first_fractional_exponent=str(exponent),
         derivative_fractional_exponent=str(derivative_exponent),
         regular_linear_coefficient_nonzero=True,
         fractional_coefficient_nonzero=True,
         julia_equation_verified_by_adapter=True,
+        time_one_realization_verified_by_adapter=True,
+        zero_generator_excluded_by_nonidentity_germ=True,
         nonroot_exponent_mismatch=True,
         forced_root_multiplicity=str(exponent),
         forced_root_multiplicity_is_noninteger=True,
@@ -4505,6 +5136,303 @@ def compile_filtered_puiseux_flow_obstruction(
         local_expansion_certificate_sha256=digest,
         puiseux_flow_certificate_sha256=certificate_sha256,
         evidence_receipt_sha256=receipt_rows,
+        proof_contract_sha256=proof_contract_sha256,
+    )
+
+
+def compile_filtered_density_clock_orbit_obstruction(
+    problem: FilteredDensityClockOrbitProblem,
+) -> FilteredDensityClockOrbitCertificate:
+    """Exclude a finite polynomial weight-3/2 density-clock orbit.
+
+    The adapter separately certifies that ``L`` is a polynomial coordinate
+    in the semidirect *group*, rather than merely a polynomial Lie-module
+    logarithm.  The selected endpoint is regular finite, a nonzero root of
+    that polynomial residual, or infinity.  The regular case is the ordinary
+    Puiseux/Julia contradiction.  A finite clock at a root forces that root
+    to be simple; inversion is cubic and the ``5/2`` germ forces generator
+    multiplicity ``3/2``.  At infinity, leading balance forces
+    ``2*e=3*d+2``.  Thus ``d`` is even, so the nonzero ``3/2`` correction is
+    outside the ``1/(d-1)`` exponent lattice and cannot satisfy Julia's
+    equation.
+
+    The compiler does not construct the selected continuation.  It requires
+    that proposition as separately scoped content-bound evidence.
+    """
+
+    if not problem.name:
+        raise FilteredObstructionError(
+            "empty_problem_name",
+            "density-clock orbit problem name must be nonempty",
+        )
+    context = _replay_filtered_puiseux_context(problem.context)
+    exponent = _rational(context.first_fractional_exponent)
+    if exponent != sp.Rational(5, 2):
+        raise FilteredObstructionError(
+            "unsupported_density_clock_fractional_exponent",
+            "the compiled weight-3/2 clock theorem requires exponent 5/2",
+        )
+    puiseux_claim_ids = {
+        FilteredPuiseuxClaim.REGULAR_LINEAR_COEFFICIENT_NONZERO.value,
+        FilteredPuiseuxClaim.FIRST_FRACTIONAL_COEFFICIENT_NONZERO.value,
+        FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY.value,
+    }
+    clock_claim_ids = {claim.value for claim in FilteredDensityClockClaim}
+    if len(problem.evidence) != len(puiseux_claim_ids | clock_claim_ids):
+        raise FilteredObstructionError(
+            "density_clock_orbit_evidence_claim_set_incomplete",
+            "the density-clock orbit theorem has an incomplete claim set",
+        )
+    puiseux_evidence = tuple(
+        receipt for receipt in problem.evidence
+        if receipt.claim_id in puiseux_claim_ids
+    )
+    clock_evidence = tuple(
+        receipt for receipt in problem.evidence
+        if receipt.claim_id in clock_claim_ids
+    )
+    regular_certificate = compile_filtered_puiseux_flow_obstruction(
+        FilteredPuiseuxFlowProblem(
+            name=f"{problem.name}.regular_finite",
+            context=context,
+            evidence=puiseux_evidence,
+        )
+    )
+    clock_receipts = _validated_density_clock_evidence(
+        context=context,
+        evidence=clock_evidence,
+    )
+
+    fractional_increment = exponent - 1
+    simple_root_inverse_order = 3
+    simple_root_forced_multiplicity = (
+        1 + fractional_increment / simple_root_inverse_order
+    )
+    if simple_root_forced_multiplicity.q == 1:
+        raise FilteredObstructionError(
+            "density_clock_simple_root_not_excluded",
+            "the simple-root Julia balance has integral multiplicity",
+        )
+
+    # At infinity the leading clock exponent is -(2*e-5)/3.  Matching a
+    # nonzero linear source coordinate and Julia's leading order gives
+    # 2*e=3*d+2.  Integral e then makes d even, hence d-1 odd.  The branch
+    # increment 3/2 cannot be an integer multiple of 1/(d-1).
+    infinity_degree_relation = "2*e=3*d+2"
+    infinity_generator_degree_even = True
+    infinity_fractional_increment_outside_lattice = True
+
+    receipt_rows = tuple(sorted(
+        (
+            receipt.claim_id,
+            receipt.receipt_sha256,
+        )
+        for receipt in problem.evidence
+    ))
+    payload = {
+        "problem": problem.name,
+        "context_sha256": context.context_sha256,
+        "first_fractional_exponent": str(exponent),
+        "fractional_increment": str(fractional_increment),
+        "density_weight": "3/2",
+        "residual_valuation": 1,
+        "group_module_polynomiality_receipt_sha256": clock_receipts[
+            FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY
+        ].receipt_sha256,
+        "regular_puiseux_certificate_sha256": (
+            regular_certificate.puiseux_flow_certificate_sha256
+        ),
+        "simple_root_inverse_order": simple_root_inverse_order,
+        "simple_root_forced_generator_multiplicity": str(
+            simple_root_forced_multiplicity
+        ),
+        "infinity_degree_relation": infinity_degree_relation,
+        "evidence_receipt_sha256": receipt_rows,
+    }
+    certificate_sha256 = content_sha256(payload)
+    proof_contract_sha256 = content_sha256({
+        "schema": "ztare.filtered_density_clock_orbit_proof.v1",
+        "context_sha256": context.context_sha256,
+        "evidence_receipt_sha256": receipt_rows,
+        "semantic_certificate_sha256": certificate_sha256,
+    })
+    return FilteredDensityClockOrbitCertificate(
+        schema="ztare.filtered_density_clock_orbit_certificate.v1",
+        problem_name=problem.name,
+        first_fractional_exponent=str(exponent),
+        fractional_increment=str(fractional_increment),
+        density_weight="3/2",
+        residual_valuation=1,
+        group_module_polynomiality_verified_by_adapter=True,
+        regular_finite_case_excluded=(
+            regular_certificate.polynomial_generator_excluded
+        ),
+        multiple_nonzero_root_clock_diverges=True,
+        simple_root_inverse_order=simple_root_inverse_order,
+        simple_root_forced_generator_multiplicity=str(
+            simple_root_forced_multiplicity
+        ),
+        simple_root_case_excluded=True,
+        infinity_clock_finite_minimum_residual_degree=3,
+        infinity_degree_relation=infinity_degree_relation,
+        infinity_generator_degree_even=infinity_generator_degree_even,
+        infinity_fractional_increment_outside_lattice=(
+            infinity_fractional_increment_outside_lattice
+        ),
+        infinity_case_excluded=True,
+        selected_polynomial_orbit_excluded=True,
+        adapter_completeness_inferred=False,
+        context_sha256=context.context_sha256,
+        evidence_receipt_sha256=receipt_rows,
+        density_clock_orbit_certificate_sha256=certificate_sha256,
+        proof_contract_sha256=proof_contract_sha256,
+    )
+
+
+def compile_filtered_algebraic_clock_continuation(
+    problem: FilteredAlgebraicClockContinuationProblem,
+) -> FilteredAlgebraicClockContinuationCertificate:
+    """Turn an exact polynomial density orbit into endpoint coverage.
+
+    The weight-`3/2` orbit and time-one Julia equations imply the separated
+    eliminant
+
+        K^2 * Y^2 * f(Y)^3 - x^2 * f(x)^3 * L(Y)^2.
+
+    The zero-generator case would make the endpoint the identity and force
+    the critical residual square into the rational base field.  Otherwise
+    ``Y^2*f(Y)^3`` is nonzero.  If the displayed eliminant vanished as a
+    polynomial in ``Y``, leading-coefficient comparison would again put
+    ``K^2`` in the base field.  Hence the endpoint is algebraic over the
+    selected critical sheet.  The separately supplied place-extension
+    theorem then yields a finite or infinity Puiseux endpoint over the
+    selected branch point.
+    """
+
+    if not problem.name:
+        raise FilteredObstructionError(
+            "empty_problem_name",
+            "algebraic clock-continuation problem name must be nonempty",
+        )
+    context = _replay_filtered_puiseux_context(problem.context)
+    exponent = _rational(context.first_fractional_exponent)
+    if exponent != sp.Rational(5, 2):
+        raise FilteredObstructionError(
+            "unsupported_algebraic_continuation_exponent",
+            "the critical continuation compiler requires exponent 5/2",
+        )
+    julia_id = FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY.value
+    polynomiality_id = (
+        FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY.value
+    )
+    clock_id = FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY.value
+    algebraic_ids = {
+        claim.value for claim in FilteredAlgebraicContinuationClaim
+    }
+    expected_ids = {julia_id, polynomiality_id, clock_id, *algebraic_ids}
+    if (
+        len(problem.evidence) != len(expected_ids)
+        or {receipt.claim_id for receipt in problem.evidence} != expected_ids
+    ):
+        raise FilteredObstructionError(
+            "algebraic_clock_continuation_evidence_claim_set_incomplete",
+            "the compiler needs Julia, group-module polynomiality, density, "
+            "nonbase, and place receipts",
+        )
+    julia_receipts = _validated_puiseux_evidence(
+        context=context,
+        evidence=tuple(
+            receipt for receipt in problem.evidence
+            if receipt.claim_id == julia_id
+        ),
+        required_claims=(FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY,),
+    )
+    clock_receipts = _validated_density_clock_evidence(
+        context=context,
+        evidence=tuple(
+            receipt for receipt in problem.evidence
+            if receipt.claim_id in {polynomiality_id, clock_id}
+        ),
+        required_claims=(
+            FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY,
+            FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY,
+        ),
+    )
+    algebraic_receipts = _validated_algebraic_continuation_evidence(
+        context=context,
+        evidence=tuple(
+            receipt for receipt in problem.evidence
+            if receipt.claim_id in algebraic_ids
+        ),
+    )
+    receipt_rows = tuple(sorted(
+        (receipt.claim_id, receipt.receipt_sha256)
+        for receipt in problem.evidence
+    ))
+    payload = {
+        "problem": problem.name,
+        "context_sha256": context.context_sha256,
+        "squared_density_identity_receipt_sha256": clock_receipts[
+            FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY
+        ].receipt_sha256,
+        "group_module_polynomiality_receipt_sha256": clock_receipts[
+            FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY
+        ].receipt_sha256,
+        "time_one_julia_identity_receipt_sha256": julia_receipts[
+            FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY
+        ].receipt_sha256,
+        "critical_square_nonbase_receipt_sha256": algebraic_receipts[
+            FilteredAlgebraicContinuationClaim.CRITICAL_SQUARE_OUTSIDE_BASE_FIELD
+        ].receipt_sha256,
+        "selected_place_extension_receipt_sha256": algebraic_receipts[
+            FilteredAlgebraicContinuationClaim.ALGEBRAIC_PLACE_PUISEUX_EXTENSION
+        ].receipt_sha256,
+        "critical_square_first_nonbase_exponent": "3/2",
+        "zero_generator_excluded_before_elimination": True,
+        "derivative_free_eliminant_nonzero": True,
+        "endpoint_algebraic_over_selected_critical_field": True,
+        "selected_endpoint_trichotomy_derived": True,
+    }
+    certificate_sha256 = content_sha256(payload)
+    selected_endpoint_receipt = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.SELECTED_ENDPOINT_TRICHOTOMY,
+        context=context,
+        authority=EvidenceAuthority.FILTERED_COMPILER,
+        scope=(
+            FilteredDensityClockEvidenceScope.SELECTED_ANALYTIC_BRANCH_EXHAUSTIVE
+        ),
+        evidence_sha256=certificate_sha256,
+    )
+    proof_contract_sha256 = content_sha256({
+        "schema": "ztare.filtered_algebraic_clock_continuation_proof.v1",
+        "context_sha256": context.context_sha256,
+        "evidence_receipt_sha256": receipt_rows,
+        "semantic_certificate_sha256": certificate_sha256,
+        "selected_endpoint_receipt_sha256": (
+            selected_endpoint_receipt.receipt_sha256
+        ),
+    })
+    return FilteredAlgebraicClockContinuationCertificate(
+        schema="ztare.filtered_algebraic_clock_continuation_certificate.v1",
+        problem_name=problem.name,
+        squared_density_identity_verified_by_adapter=True,
+        group_module_polynomiality_verified_by_adapter=True,
+        time_one_julia_identity_verified_by_adapter=True,
+        zero_generator_excluded_before_elimination=True,
+        critical_square_outside_base_field=True,
+        critical_square_first_nonbase_exponent="3/2",
+        derivative_free_eliminant_nonzero=True,
+        endpoint_algebraic_over_selected_critical_field=True,
+        selected_place_extension_verified_by_adapter=True,
+        selected_endpoint_is_finite_or_infinity=True,
+        selected_endpoint_trichotomy_derived=True,
+        adapter_completeness_inferred=False,
+        context_sha256=context.context_sha256,
+        evidence_receipt_sha256=receipt_rows,
+        algebraic_continuation_certificate_sha256=certificate_sha256,
+        selected_endpoint_receipt_sha256=(
+            selected_endpoint_receipt.receipt_sha256
+        ),
         proof_contract_sha256=proof_contract_sha256,
     )
 
@@ -5014,6 +5942,405 @@ def compile_filtered_polar_witt_factorization(
     )
 
 
+def _filtered_critical_two_flow_context_core(
+    context: FilteredCriticalTwoFlowContext,
+) -> dict[str, object]:
+    return {
+        "schema": context.schema,
+        "schedule_category_id": context.schedule_category_id,
+        "factorization_category_id": context.factorization_category_id,
+        "source_germ_id": context.source_germ_id,
+        "visible_germ_id": context.visible_germ_id,
+        "minimum_generator_vanishing_order": (
+            context.minimum_generator_vanishing_order
+        ),
+        "specialization_evidence_sha256": (
+            context.specialization_evidence_sha256
+        ),
+        "exclusion_evidence_sha256": context.exclusion_evidence_sha256,
+    }
+
+
+def _replay_filtered_critical_two_flow_context(
+    context: FilteredCriticalTwoFlowContext,
+) -> FilteredCriticalTwoFlowContext:
+    if context.schema != FILTERED_CRITICAL_TWO_FLOW_CONTEXT_SCHEMA:
+        raise FilteredObstructionError(
+            "critical_two_flow_context_schema_mismatch",
+            "the critical two-flow context schema is not recognized",
+        )
+    identities = (
+        context.schedule_category_id,
+        context.factorization_category_id,
+        context.source_germ_id,
+        context.visible_germ_id,
+    )
+    if any(not isinstance(value, str) or not value.strip() for value in identities):
+        raise FilteredObstructionError(
+            "critical_two_flow_context_identity_empty",
+            "the schedule, factorization, source, and visible identities "
+            "must be nonempty",
+        )
+    minimum_order = context.minimum_generator_vanishing_order
+    if (
+        isinstance(minimum_order, bool)
+        or not isinstance(minimum_order, int)
+        or minimum_order < 2
+    ):
+        raise FilteredObstructionError(
+            "critical_two_flow_normalization_too_weak",
+            "the generators must vanish through at least linear order",
+        )
+    try:
+        require_sha256_digest(
+            context.specialization_evidence_sha256,
+            context="critical two-flow specialization evidence",
+        )
+        require_sha256_digest(
+            context.exclusion_evidence_sha256,
+            context="critical two-flow exclusion evidence",
+        )
+        require_sha256_digest(
+            context.context_sha256,
+            context="critical two-flow context",
+        )
+    except ValueError as error:
+        raise FilteredObstructionError(
+            "invalid_critical_two_flow_context_digest",
+            str(error),
+        ) from error
+    expected = content_sha256(_filtered_critical_two_flow_context_core(context))
+    if context.context_sha256 != expected:
+        raise FilteredObstructionError(
+            "critical_two_flow_context_digest_mismatch",
+            "the critical two-flow context content does not replay",
+        )
+    return context
+
+
+def make_filtered_critical_two_flow_context(
+    *,
+    schedule_category_id: str,
+    factorization_category_id: str,
+    source_germ_id: str,
+    visible_germ_id: str,
+    minimum_generator_vanishing_order: int,
+    specialization_evidence_sha256: str,
+    exclusion_evidence_sha256: str,
+) -> FilteredCriticalTwoFlowContext:
+    """Create one replayable schedule-to-factorization context."""
+
+    provisional = FilteredCriticalTwoFlowContext(
+        schema=FILTERED_CRITICAL_TWO_FLOW_CONTEXT_SCHEMA,
+        schedule_category_id=schedule_category_id,
+        factorization_category_id=factorization_category_id,
+        source_germ_id=source_germ_id,
+        visible_germ_id=visible_germ_id,
+        minimum_generator_vanishing_order=(
+            minimum_generator_vanishing_order
+        ),
+        specialization_evidence_sha256=specialization_evidence_sha256,
+        exclusion_evidence_sha256=exclusion_evidence_sha256,
+        context_sha256="0" * 64,
+    )
+    context = replace(
+        provisional,
+        context_sha256=content_sha256(
+            _filtered_critical_two_flow_context_core(provisional)
+        ),
+    )
+    return _replay_filtered_critical_two_flow_context(context)
+
+
+def _filtered_critical_two_flow_claim_conclusion(
+    claim: FilteredCriticalTwoFlowClaim,
+    context: FilteredCriticalTwoFlowContext,
+) -> dict[str, object]:
+    shared = {
+        "factorization_category_id": context.factorization_category_id,
+        "source_germ_id": context.source_germ_id,
+        "visible_germ_id": context.visible_germ_id,
+        "minimum_generator_vanishing_order": (
+            context.minimum_generator_vanishing_order
+        ),
+    }
+    if claim is (
+        FilteredCriticalTwoFlowClaim.ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION
+    ):
+        return {
+            **shared,
+            "schedule_category_id": context.schedule_category_id,
+            "relation": "every_zero_face_schedule_realizes_factorization",
+        }
+    if claim is (
+        FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED
+    ):
+        return {
+            **shared,
+            "category_empty": True,
+        }
+    raise FilteredObstructionError(
+        "critical_two_flow_evidence_claim_unknown",
+        "the critical two-flow evidence claim is not recognized",
+    )
+
+
+def make_filtered_critical_two_flow_evidence(
+    *,
+    claim: FilteredCriticalTwoFlowClaim,
+    subject_id: str,
+    context: FilteredCriticalTwoFlowContext,
+    authority: EvidenceAuthority,
+    scope: FilteredCriticalTwoFlowEvidenceScope,
+    evidence_sha256: str,
+) -> ContentBoundEvidenceReceipt:
+    """Bind one arrow of the critical-terminal composition."""
+
+    _replay_filtered_critical_two_flow_context(context)
+    if not isinstance(claim, FilteredCriticalTwoFlowClaim):
+        raise FilteredObstructionError(
+            "critical_two_flow_evidence_claim_unknown",
+            "the critical two-flow evidence claim is not recognized",
+        )
+    if not isinstance(scope, FilteredCriticalTwoFlowEvidenceScope):
+        raise FilteredObstructionError(
+            "critical_two_flow_evidence_scope_unknown",
+            "the critical two-flow evidence scope is not recognized",
+        )
+    try:
+        return make_content_bound_evidence(
+            claim_id=claim.value,
+            subject_id=subject_id,
+            context_sha256=context.context_sha256,
+            authority=authority,
+            scope_id=scope.value,
+            conclusion=_filtered_critical_two_flow_claim_conclusion(
+                claim, context
+            ),
+            evidence_sha256=evidence_sha256,
+        )
+    except ContentBoundEvidenceError as error:
+        raise FilteredObstructionError(error.code, str(error)) from error
+
+
+def _filtered_critical_two_flow_certificate_payload(
+    certificate: FilteredCriticalTwoFlowCertificate,
+) -> dict[str, object]:
+    return {
+        "problem": certificate.problem_name,
+        "schedule_category_id": certificate.schedule_category_id,
+        "factorization_category_id": certificate.factorization_category_id,
+        "source_germ_id": certificate.source_germ_id,
+        "visible_germ_id": certificate.visible_germ_id,
+        "minimum_generator_vanishing_order": (
+            certificate.minimum_generator_vanishing_order
+        ),
+        "zero_face_realizes_two_flow_factorization": (
+            certificate.zero_face_realizes_two_flow_factorization
+        ),
+        "normalized_two_flow_factorization_excluded": (
+            certificate.normalized_two_flow_factorization_excluded
+        ),
+        "critical_terminal_excluded": certificate.critical_terminal_excluded,
+        "specialization_evidence_sha256": (
+            certificate.specialization_evidence_sha256
+        ),
+        "exclusion_evidence_sha256": certificate.exclusion_evidence_sha256,
+        "context_sha256": certificate.context_sha256,
+    }
+
+
+def _replay_filtered_critical_two_flow_certificate(
+    certificate: FilteredCriticalTwoFlowCertificate,
+) -> FilteredCriticalTwoFlowCertificate:
+    if certificate.schema != "ztare.filtered_critical_two_flow_certificate.v1":
+        raise FilteredObstructionError(
+            "critical_two_flow_certificate_schema_mismatch",
+            "the critical two-flow certificate schema is not recognized",
+        )
+    if not (
+        certificate.zero_face_realizes_two_flow_factorization
+        and certificate.normalized_two_flow_factorization_excluded
+        and certificate.critical_terminal_excluded
+    ):
+        raise FilteredObstructionError(
+            "critical_two_flow_certificate_not_terminal",
+            "the carried certificate does not exclude the critical terminal",
+        )
+    expected = content_sha256(
+        _filtered_critical_two_flow_certificate_payload(certificate)
+    )
+    if certificate.critical_two_flow_certificate_sha256 != expected:
+        raise FilteredObstructionError(
+            "critical_two_flow_certificate_digest_mismatch",
+            "the critical two-flow certificate content does not replay",
+        )
+    proof_payload = {
+        "schema": "ztare.filtered_critical_two_flow_proof_contract.v1",
+        "theorem_sha256": expected,
+        "context_sha256": certificate.context_sha256,
+        "evidence_receipt_sha256": [
+            digest for _, digest in certificate.evidence_receipt_sha256
+        ],
+    }
+    if content_sha256(proof_payload) != certificate.proof_contract_sha256:
+        raise FilteredObstructionError(
+            "critical_two_flow_proof_contract_digest_mismatch",
+            "the critical two-flow proof contract does not replay",
+        )
+    return certificate
+
+
+def compile_filtered_critical_two_flow_terminal(
+    problem: FilteredCriticalTwoFlowProblem,
+) -> FilteredCriticalTwoFlowCertificate:
+    """Compose an exact zero-face realization with category exclusion."""
+
+    if not problem.name:
+        raise FilteredObstructionError(
+            "empty_problem_name",
+            "critical two-flow problem name must be nonempty",
+        )
+    context = _replay_filtered_critical_two_flow_context(problem.context)
+    required_claims = tuple(FilteredCriticalTwoFlowClaim)
+    if len(problem.evidence) != len(required_claims):
+        raise FilteredObstructionError(
+            "critical_two_flow_evidence_claim_set_incomplete",
+            "critical two-flow composition needs exactly two proposition receipts",
+        )
+    receipts: dict[
+        FilteredCriticalTwoFlowClaim,
+        ContentBoundEvidenceReceipt,
+    ] = {}
+    for carried in problem.evidence:
+        try:
+            receipt = replay_content_bound_evidence(carried)
+        except ContentBoundEvidenceError as error:
+            raise FilteredObstructionError(error.code, str(error)) from error
+        try:
+            claim = FilteredCriticalTwoFlowClaim(receipt.claim_id)
+        except ValueError as error:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_claim_unknown",
+                f"unknown critical two-flow claim {receipt.claim_id!r}",
+            ) from error
+        if claim in receipts:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_claim_duplicate",
+                f"critical two-flow claim {claim.value!r} occurs more than once",
+            )
+        if receipt.context_sha256 != context.context_sha256:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_context_mismatch",
+                f"critical two-flow claim {claim.value!r} belongs to another context",
+            )
+        receipts[claim] = receipt
+    if set(receipts) != set(required_claims):
+        raise FilteredObstructionError(
+            "critical_two_flow_evidence_claim_set_incomplete",
+            "critical two-flow evidence does not cover the exact claim set",
+        )
+    subjects = [receipts[claim].subject_id for claim in required_claims]
+    if len(subjects) != len(set(subjects)):
+        raise FilteredObstructionError(
+            "critical_two_flow_evidence_subject_reused",
+            "realization and exclusion need distinct proposition subjects",
+        )
+    expected_scopes = {
+        FilteredCriticalTwoFlowClaim.ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION: (
+            FilteredCriticalTwoFlowEvidenceScope.ALL_STRICT_SUBTHRESHOLD_ZERO_FACES
+        ),
+        FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED: (
+            FilteredCriticalTwoFlowEvidenceScope.EXACT_NORMALIZED_AUTONOMOUS_TWO_FLOW_CATEGORY
+        ),
+    }
+    expected_authorities = {
+        FilteredCriticalTwoFlowClaim.ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION: (
+            EvidenceAuthority.ADAPTER_EXACT
+        ),
+        FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED: (
+            EvidenceAuthority.FILTERED_COMPILER
+        ),
+    }
+    expected_digests = {
+        FilteredCriticalTwoFlowClaim.ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION: (
+            context.specialization_evidence_sha256
+        ),
+        FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED: (
+            context.exclusion_evidence_sha256
+        ),
+    }
+    for claim in required_claims:
+        receipt = receipts[claim]
+        if receipt.scope_id != expected_scopes[claim].value:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_scope_mismatch",
+                f"critical two-flow claim {claim.value!r} has the wrong scope",
+            )
+        if receipt.authority is not expected_authorities[claim]:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_authority_mismatch",
+                f"critical two-flow claim {claim.value!r} has the wrong authority",
+            )
+        if receipt.evidence_sha256 != expected_digests[claim]:
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_artifact_mismatch",
+                f"critical two-flow claim {claim.value!r} has the wrong artifact",
+            )
+        if receipt.conclusion() != _filtered_critical_two_flow_claim_conclusion(
+            claim, context
+        ):
+            raise FilteredObstructionError(
+                "critical_two_flow_evidence_conclusion_mismatch",
+                f"critical two-flow claim {claim.value!r} names another proposition",
+            )
+    receipt_rows = tuple(
+        (claim.value, receipts[claim].receipt_sha256)
+        for claim in required_claims
+    )
+    authority_rows = tuple(
+        (claim.value, receipts[claim].authority.value)
+        for claim in required_claims
+    )
+    provisional = FilteredCriticalTwoFlowCertificate(
+        schema="ztare.filtered_critical_two_flow_certificate.v1",
+        problem_name=problem.name,
+        schedule_category_id=context.schedule_category_id,
+        factorization_category_id=context.factorization_category_id,
+        source_germ_id=context.source_germ_id,
+        visible_germ_id=context.visible_germ_id,
+        minimum_generator_vanishing_order=(
+            context.minimum_generator_vanishing_order
+        ),
+        zero_face_realizes_two_flow_factorization=True,
+        normalized_two_flow_factorization_excluded=True,
+        critical_terminal_excluded=True,
+        specialization_evidence_sha256=(
+            context.specialization_evidence_sha256
+        ),
+        exclusion_evidence_sha256=context.exclusion_evidence_sha256,
+        context_sha256=context.context_sha256,
+        evidence_receipt_sha256=receipt_rows,
+        evidence_authority=authority_rows,
+        critical_two_flow_certificate_sha256="0" * 64,
+        proof_contract_sha256="0" * 64,
+    )
+    certificate_sha256 = content_sha256(
+        _filtered_critical_two_flow_certificate_payload(provisional)
+    )
+    proof_contract_sha256 = content_sha256({
+        "schema": "ztare.filtered_critical_two_flow_proof_contract.v1",
+        "theorem_sha256": certificate_sha256,
+        "context_sha256": context.context_sha256,
+        "evidence_receipt_sha256": [digest for _, digest in receipt_rows],
+    })
+    return _replay_filtered_critical_two_flow_certificate(replace(
+        provisional,
+        critical_two_flow_certificate_sha256=certificate_sha256,
+        proof_contract_sha256=proof_contract_sha256,
+    ))
+
+
 def _filtered_polar_tensor_context_core(
     context: FilteredPolarTensorContext,
 ) -> dict[str, object]:
@@ -5111,6 +6438,9 @@ def make_filtered_polar_tensor_evidence(
     authority: EvidenceAuthority,
     scope: FilteredPolarTensorEvidenceScope,
     evidence_sha256: str,
+    critical_terminal_certificate: (
+        FilteredCriticalTwoFlowCertificate | None
+    ) = None,
 ) -> ContentBoundEvidenceReceipt:
     """Bind one adapter proposition to the split tensor context."""
 
@@ -5125,6 +6455,35 @@ def make_filtered_polar_tensor_evidence(
             "polar_tensor_evidence_scope_unknown",
             "the polar tensor evidence scope is not recognized",
         )
+    if claim is FilteredPolarTensorClaim.CRITICAL_TERMINAL_EXCLUDED:
+        if critical_terminal_certificate is None:
+            raise FilteredObstructionError(
+                "polar_tensor_terminal_certificate_missing",
+                "terminal evidence must carry a critical two-flow certificate",
+            )
+        terminal = _replay_filtered_critical_two_flow_certificate(
+            critical_terminal_certificate
+        )
+        conclusion: dict[str, object] = {
+            "terminal_certificate_schema": terminal.schema,
+            "terminal_context_sha256": terminal.context_sha256,
+            "terminal_certificate_sha256": (
+                terminal.critical_two_flow_certificate_sha256
+            ),
+            "critical_terminal_excluded": True,
+        }
+        if evidence_sha256 != terminal.critical_two_flow_certificate_sha256:
+            raise FilteredObstructionError(
+                "polar_tensor_terminal_evidence_mismatch",
+                "terminal evidence must identify the carried terminal certificate",
+            )
+    else:
+        if critical_terminal_certificate is not None:
+            raise FilteredObstructionError(
+                "polar_tensor_terminal_certificate_misplaced",
+                "only the terminal claim may carry a terminal certificate",
+            )
+        conclusion = {}
     try:
         return make_content_bound_evidence(
             claim_id=claim.value,
@@ -5132,7 +6491,7 @@ def make_filtered_polar_tensor_evidence(
             context_sha256=context.context_sha256,
             authority=authority,
             scope_id=scope.value,
-            conclusion={},
+            conclusion=conclusion,
             evidence_sha256=evidence_sha256,
         )
     except ContentBoundEvidenceError as error:
@@ -5190,6 +6549,14 @@ def compile_filtered_polar_tensor_factorization(
             "declared threshold",
         )
     context = _replay_filtered_polar_tensor_context(problem.context)
+    terminal_certificate = _replay_filtered_critical_two_flow_certificate(
+        problem.critical_terminal_certificate
+    )
+    if terminal_certificate.schedule_category_id != context.category_id:
+        raise FilteredObstructionError(
+            "polar_tensor_terminal_category_mismatch",
+            "the critical terminal certificate belongs to another schedule category",
+        )
     if context.model is not (
         FilteredPolarTensorModel.WITT_DENSITY_2_NEG3_NEG5
     ):
@@ -5265,10 +6632,20 @@ def compile_filtered_polar_tensor_factorization(
                 f"polar tensor claim {claim.value!r} has scope "
                 f"{receipt.scope_id!r}, expected {expected_scopes[claim].value!r}",
             )
-        if receipt.conclusion():
+        expected_conclusion: dict[str, object] = {}
+        if claim is FilteredPolarTensorClaim.CRITICAL_TERMINAL_EXCLUDED:
+            expected_conclusion = {
+                "terminal_certificate_schema": terminal_certificate.schema,
+                "terminal_context_sha256": terminal_certificate.context_sha256,
+                "terminal_certificate_sha256": (
+                    terminal_certificate.critical_two_flow_certificate_sha256
+                ),
+                "critical_terminal_excluded": True,
+            }
+        if receipt.conclusion() != expected_conclusion:
             raise FilteredObstructionError(
                 "polar_tensor_evidence_conclusion_malformed",
-                "polar tensor proposition receipts have no scalar conclusion",
+                "the polar tensor receipt names the wrong proposition",
             )
 
     face_receipt = receipts[
@@ -5286,6 +6663,13 @@ def compile_filtered_polar_tensor_factorization(
     terminal_digest = receipts[
         FilteredPolarTensorClaim.CRITICAL_TERMINAL_EXCLUDED
     ].evidence_sha256
+    if terminal_digest != (
+        terminal_certificate.critical_two_flow_certificate_sha256
+    ):
+        raise FilteredObstructionError(
+            "polar_tensor_terminal_evidence_mismatch",
+            "the terminal receipt does not identify the carried certificate",
+        )
     rate_formula = f"{multiplier}*d/(d-h)"
     payload = {
         "problem": problem.name,
@@ -5321,7 +6705,7 @@ def compile_filtered_polar_tensor_factorization(
     }
     proof_contract_sha256 = content_sha256(proof_payload)
     return FilteredPolarTensorFactorizationCertificate(
-        schema="ztare.filtered_polar_tensor_factorization_certificate.v2",
+        schema="ztare.filtered_polar_tensor_factorization_certificate.v3",
         problem_name=problem.name,
         threshold=str(threshold),
         degree_multiplier=str(multiplier),
@@ -5357,6 +6741,280 @@ def compile_filtered_polar_tensor_factorization(
         ),
         polar_tensor_certificate_sha256=certificate_sha256,
         proof_contract_sha256=proof_contract_sha256,
+    )
+
+
+def _filtered_critical_support_context_core(
+    context: FilteredCriticalSupportContext,
+) -> dict[str, object]:
+    return {
+        "schema": context.schema,
+        "category_id": context.category_id,
+        "support_id": context.support_id,
+        "cost_id": context.cost_id,
+        "slope": context.slope,
+        "adapter_evidence_sha256": context.adapter_evidence_sha256,
+        "compiler_kernel_sha256": context.compiler_kernel_sha256,
+    }
+
+
+def _replay_filtered_critical_support_context(
+    context: FilteredCriticalSupportContext,
+) -> FilteredCriticalSupportContext:
+    if context.schema != FILTERED_CRITICAL_SUPPORT_CONTEXT_SCHEMA:
+        raise FilteredObstructionError(
+            "critical_support_context_schema_mismatch",
+            "the critical-support context schema is not recognized",
+        )
+    for field_name in ("category_id", "support_id", "cost_id"):
+        value = getattr(context, field_name)
+        if not isinstance(value, str) or not value.strip():
+            raise FilteredObstructionError(
+                "critical_support_context_identity_empty",
+                f"critical-support {field_name} must be nonempty",
+            )
+    slope = _rational(context.slope)
+    if slope <= 0:
+        raise FilteredObstructionError(
+            "critical_support_slope_nonpositive",
+            "the critical-support slope must be positive",
+        )
+    if context.slope != str(slope):
+        raise FilteredObstructionError(
+            "critical_support_slope_not_canonical",
+            "the critical-support slope must use canonical rational syntax",
+        )
+    try:
+        require_sha256_digest(
+            context.adapter_evidence_sha256,
+            context="critical-support adapter evidence",
+        )
+        require_sha256_digest(
+            context.compiler_kernel_sha256,
+            context="critical-support compiler kernel",
+        )
+        require_sha256_digest(
+            context.context_sha256,
+            context="critical-support context",
+        )
+    except ValueError as error:
+        raise FilteredObstructionError(
+            "invalid_critical_support_context_digest",
+            str(error),
+        ) from error
+    expected = content_sha256(
+        _filtered_critical_support_context_core(context)
+    )
+    if context.context_sha256 != expected:
+        raise FilteredObstructionError(
+            "critical_support_context_digest_mismatch",
+            "the critical-support context content does not replay",
+        )
+    return context
+
+
+def make_filtered_critical_support_context(
+    *,
+    category_id: str,
+    support_id: str,
+    cost_id: str,
+    slope: RationalInput,
+    adapter_evidence_sha256: str,
+    compiler_kernel_sha256: str,
+) -> FilteredCriticalSupportContext:
+    """Create one replayable critical support/cost comparison identity."""
+
+    provisional = FilteredCriticalSupportContext(
+        schema=FILTERED_CRITICAL_SUPPORT_CONTEXT_SCHEMA,
+        category_id=category_id,
+        support_id=support_id,
+        cost_id=cost_id,
+        slope=str(_rational(slope)),
+        adapter_evidence_sha256=adapter_evidence_sha256,
+        compiler_kernel_sha256=compiler_kernel_sha256,
+        context_sha256="0" * 64,
+    )
+    context = replace(
+        provisional,
+        context_sha256=content_sha256(
+            _filtered_critical_support_context_core(provisional)
+        ),
+    )
+    return _replay_filtered_critical_support_context(context)
+
+
+def make_filtered_critical_support_evidence(
+    *,
+    claim: FilteredCriticalSupportClaim,
+    subject_id: str,
+    context: FilteredCriticalSupportContext,
+    authority: EvidenceAuthority,
+    scope: FilteredCriticalSupportEvidenceScope,
+    evidence_sha256: str,
+) -> ContentBoundEvidenceReceipt:
+    """Bind one of the two non-substitutable critical-support arrows."""
+
+    _replay_filtered_critical_support_context(context)
+    if not isinstance(claim, FilteredCriticalSupportClaim):
+        raise FilteredObstructionError(
+            "critical_support_evidence_claim_unknown",
+            "the critical-support evidence claim is not recognized",
+        )
+    if not isinstance(scope, FilteredCriticalSupportEvidenceScope):
+        raise FilteredObstructionError(
+            "critical_support_evidence_scope_unknown",
+            "the critical-support evidence scope is not recognized",
+        )
+    relation = {
+        FilteredCriticalSupportClaim.STRICT_TAIL_BOUND: (
+            "cost_lt_slope_times_row_eventually"
+        ),
+        FilteredCriticalSupportClaim.SUPPORT_TO_COST_CHARGE: (
+            "support_implies_slope_times_row_le_cost"
+        ),
+    }[claim]
+    try:
+        return make_content_bound_evidence(
+            claim_id=claim.value,
+            subject_id=subject_id,
+            context_sha256=context.context_sha256,
+            authority=authority,
+            scope_id=scope.value,
+            conclusion={"relation": relation, "slope": context.slope},
+            evidence_sha256=evidence_sha256,
+        )
+    except ContentBoundEvidenceError as error:
+        raise FilteredObstructionError(error.code, str(error)) from error
+
+
+def compile_filtered_critical_support(
+    problem: FilteredCriticalSupportProblem,
+) -> FilteredCriticalSupportCertificate:
+    """Compose strict tail and support charge into finite critical support."""
+
+    if not problem.name:
+        raise FilteredObstructionError(
+            "empty_problem_name",
+            "critical-support problem name must be nonempty",
+        )
+    context = _replay_filtered_critical_support_context(problem.context)
+    required_claims = tuple(FilteredCriticalSupportClaim)
+    if len(problem.evidence) != len(required_claims):
+        raise FilteredObstructionError(
+            "critical_support_evidence_claim_set_incomplete",
+            "critical-support compilation needs both typed arrows",
+        )
+    receipts: dict[
+        FilteredCriticalSupportClaim, ContentBoundEvidenceReceipt
+    ] = {}
+    for carried in problem.evidence:
+        try:
+            receipt = replay_content_bound_evidence(carried)
+        except ContentBoundEvidenceError as error:
+            raise FilteredObstructionError(error.code, str(error)) from error
+        try:
+            claim = FilteredCriticalSupportClaim(receipt.claim_id)
+        except ValueError as error:
+            raise FilteredObstructionError(
+                "critical_support_evidence_claim_unknown",
+                f"unknown critical-support claim {receipt.claim_id!r}",
+            ) from error
+        if claim in receipts:
+            raise FilteredObstructionError(
+                "critical_support_evidence_claim_duplicate",
+                f"critical-support claim {claim.value!r} occurs twice",
+            )
+        if receipt.context_sha256 != context.context_sha256:
+            raise FilteredObstructionError(
+                "critical_support_evidence_context_mismatch",
+                f"critical-support claim {claim.value!r} has another context",
+            )
+        if receipt.authority is EvidenceAuthority.FINITE_EXPERIMENT:
+            raise FilteredObstructionError(
+                "critical_support_evidence_authority_insufficient",
+                "finite experiments cannot certify an all-row implication",
+            )
+        receipts[claim] = receipt
+    if set(receipts) != set(required_claims):
+        raise FilteredObstructionError(
+            "critical_support_evidence_claim_set_incomplete",
+            "critical-support evidence does not cover both typed arrows",
+        )
+    if len({receipt.subject_id for receipt in receipts.values()}) != 2:
+        raise FilteredObstructionError(
+            "critical_support_evidence_subject_reused",
+            "strict-tail and support-charge arrows need distinct subjects",
+        )
+    expected_scopes = {
+        FilteredCriticalSupportClaim.STRICT_TAIL_BOUND:
+            FilteredCriticalSupportEvidenceScope.ALL_EVENTUAL_TAIL_ROWS,
+        FilteredCriticalSupportClaim.SUPPORT_TO_COST_CHARGE:
+            FilteredCriticalSupportEvidenceScope.ALL_CRITICAL_SUPPORT_ROWS,
+    }
+    expected_relations = {
+        FilteredCriticalSupportClaim.STRICT_TAIL_BOUND:
+            "cost_lt_slope_times_row_eventually",
+        FilteredCriticalSupportClaim.SUPPORT_TO_COST_CHARGE:
+            "support_implies_slope_times_row_le_cost",
+    }
+    for claim in required_claims:
+        receipt = receipts[claim]
+        if receipt.scope_id != expected_scopes[claim].value:
+            raise FilteredObstructionError(
+                "critical_support_evidence_scope_mismatch",
+                f"critical-support claim {claim.value!r} has wrong scope",
+            )
+        if receipt.conclusion() != {
+            "relation": expected_relations[claim],
+            "slope": context.slope,
+        }:
+            raise FilteredObstructionError(
+                "critical_support_evidence_conclusion_mismatch",
+                f"critical-support claim {claim.value!r} changed relation",
+            )
+    evidence_rows = tuple(
+        (claim.value, receipts[claim].receipt_sha256)
+        for claim in required_claims
+    )
+    authority_rows = tuple(
+        (claim.value, receipts[claim].authority.value)
+        for claim in required_claims
+    )
+    adapter_digest = content_sha256({
+        "context_sha256": context.context_sha256,
+        "evidence_receipt_sha256": evidence_rows,
+    })
+    proof_contract_sha256 = content_sha256({
+        "compiler_kernel_sha256": context.compiler_kernel_sha256,
+        "strict_tail_arrow": evidence_rows[0],
+        "support_to_cost_arrow": evidence_rows[1],
+        "consequence": "eventual_vanishing_and_finite_support",
+        "premise_removal_control": "cheap_infinite_support",
+    })
+    certificate_core = {
+        "schema": "ztare.filtered_critical_support_certificate.v1",
+        "problem_name": problem.name,
+        "category_id": context.category_id,
+        "support_id": context.support_id,
+        "cost_id": context.cost_id,
+        "slope": context.slope,
+        "eventual_critical_support_vanishing": True,
+        "critical_support_finite": True,
+        "infinite_support_forces_late_threshold_cost": True,
+        "strict_tail_alone_implies_finite_support": False,
+        "premise_removal_countermodel_accepted": True,
+        "adapter_completeness_inferred": False,
+        "adapter_evidence_sha256": adapter_digest,
+        "compiler_kernel_sha256": context.compiler_kernel_sha256,
+        "context_sha256": context.context_sha256,
+        "evidence_receipt_sha256": evidence_rows,
+        "evidence_authority": authority_rows,
+        "proof_contract_sha256": proof_contract_sha256,
+    }
+    certificate_sha256 = content_sha256(certificate_core)
+    return FilteredCriticalSupportCertificate(
+        **certificate_core,
+        critical_support_certificate_sha256=certificate_sha256,
     )
 
 

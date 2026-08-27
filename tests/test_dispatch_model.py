@@ -1831,12 +1831,14 @@ def test_codex_subscription_remote_mcp_is_default_off_and_explicitly_opt_in(
         runtime="codex", prompt="hi", repo=tmp_path
     )
     assert "features.rmcp_client=false" in command
+    assert "--ignore-user-config" in command
 
     monkeypatch.setenv("ZTARE_SUBSCRIPTION_AGENT_REMOTE_MCP", "1")
     command = build_subscription_agent_command(
         runtime="codex", prompt="hi", repo=tmp_path
     )
     assert "features.rmcp_client=false" not in command
+    assert "--ignore-user-config" not in command
 
 
 def test_codex_web_research_keeps_mcp_and_shell_off(tmp_path, monkeypatch) -> None:

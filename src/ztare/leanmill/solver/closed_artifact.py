@@ -22,6 +22,7 @@ from ztare.leanmill.ratification_policy import (
 
 SCHEMA = "leanmill.verified_closure_artifact.v2"
 TOOLCHAIN_SCHEMA = "leanmill.closure_toolchain_identity.v1"
+TOOLCHAIN_PROBE_TIMEOUT_SECONDS = 30
 KERNEL_PARITY_SCHEMA = "leanmill.kernel_parity_record.v2"
 
 
@@ -589,7 +590,7 @@ def _run_text(command: tuple[str, ...], *, cwd: Path | None = None) -> str:
             cwd=str(cwd) if cwd is not None else None,
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
             check=False,
         )
     except (OSError, subprocess.SubprocessError):

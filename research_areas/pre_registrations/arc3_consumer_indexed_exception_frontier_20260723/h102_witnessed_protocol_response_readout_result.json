@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "boundary_remains_typed": true,
+    "direct_equals_augmented_recompilation": true,
+    "existing_relation_is_unioned": true,
+    "known_response_selects_frozen_cell": true,
+    "new_effect_refutes_committee": true,
+    "observation_evidence_required": true,
+    "probe_mismatch_refused": true,
+    "protocol_cost_unchanged": true,
+    "source_mismatch_refused": true,
+    "task_credit_authority_absent": true
+  },
+  "claim_boundary": "common abstract partial-action response readout; no ARC transition-to-abstract-observation extraction claim",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-WITNESSED-PROTOCOL-RESPONSE-READOUT-20260807-102",
+  "schema": "ztare-h102-witnessed-protocol-response-readout-audit-v1",
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_witnessed_protocol_response_readout.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "....                                                                     [100%]\n4 passed in 0.17s\n",
+    "stdout_sha256": "d07a1be384f84d9d95b6d48bfc797264bdf209a84dca560c1775e944c8887ef5"
+  }
+}

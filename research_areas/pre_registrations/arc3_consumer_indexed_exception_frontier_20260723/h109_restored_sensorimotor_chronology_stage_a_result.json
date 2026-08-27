@@ -1,0 +1,38 @@
+{
+  "checks": {
+    "all_actions_rendered_in_order": true,
+    "all_observations_rendered_in_order": true,
+    "all_tampered_history_fixtures_refused": true,
+    "app_server_endpoint_manifest_byte_equivalent": true,
+    "controller_coordinate_changed": true,
+    "endpoint_identity_verified": true,
+    "noncontroller_scope_coordinates_preserved": true,
+    "observation_image_count_exact": true,
+    "rendered_parent_input_hash_verified": true,
+    "responses_endpoint_manifest_byte_equivalent": true,
+    "source_prefix_hash_verified": true
+  },
+  "claim_boundary": "apparatus_identity_and_renderer_only; no controller or task effect measured",
+  "counts": {
+    "actions": 7,
+    "negative_fixtures": 7,
+    "observations": 8,
+    "rendered_current_endpoint_images": 1,
+    "rendered_observation_images": 8,
+    "transitions": 7
+  },
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-RESTORED-SENSORIMOTOR-CHRONOLOGY-20260806-109",
+  "identities": {
+    "chronology_carrier_sha256": "c47380b58dfefaab7c0b853239ae40c4eb73727ee7ff1393fd5770d6b9cab48c",
+    "endpoint_app_server_experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+    "endpoint_responses_experiment_sha256": "8f9ae209831786c58ec83cea87e54a33caba821d0f0096d56cee7ba43210a4a6",
+    "h109_experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+    "initial_history_authority_sha256": "c691880ededd7ed1755fc7f133df9679d8814f872a4bb3c094ae7094fee80eca",
+    "source_prefix_sha256": "9fa0f034da648f03fbc1b64e313404a4466ea0eaa26acf223639d59533174a65"
+  },
+  "model_contact": false,
+  "result_sha256": "bc392b924f901c900c38778cdd7a7a80b057464d5827d5d06ec25c5d2fc3f5e6",
+  "schema": "ztare-h109-restored-sensorimotor-chronology-stage-a-v1",
+  "status": "stage_a_supported"
+}

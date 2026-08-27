@@ -1,0 +1,93 @@
+{
+  "capsule_receipt": {
+    "pair_sha256": "b4f86b327d8438c0c2bc77f6acfb6846a5812ca7f19fa060cc272dddac3c79ab",
+    "pose_action_map_sha256": "d3487e433a94e317a3a8fda32da12c9fdd28a297727c834763dc68bcea93b09a",
+    "pose_only_placebo_sha256": "fbffa7c5c05d32205cdfdc95840c982df1b94553a057777a28da52ee7f16006d",
+    "rendered_prompt_bytes": 1173
+  },
+  "capsules": {
+    "pose_action_map": {
+      "active_uncertainties": [
+        "The target route, obstacle effects, and hazard rules are unknown."
+      ],
+      "memories": [
+        {
+          "claim": "The D4 orbit identifies the controlled 3x3 color-9 component with one color-4 pose marker. Under the stable target action namespace, action 0 moves up, action 1 moves down, action 2 moves left, and action 3 moves right.",
+          "guard": "Consume only when exactly one D4-matching mover is visible and the action namespace remains [0,1,2,3].",
+          "memory_id": "h122_pose_action_map",
+          "refusal": "Do not import source coordinates, route, obstacle behavior, or a target action sequence.",
+          "support": {
+            "action_0": 3,
+            "action_1": 7,
+            "action_2": 3,
+            "action_3": 8
+          }
+        }
+      ],
+      "next_decision_questions": [
+        "Which graph route reaches the visible target while respecting new entities?"
+      ],
+      "padding": "                                                                                     ",
+      "schema": "ztare-arc3-selected-sleep-memory-v1",
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_result_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+      "target_compatibility": {
+        "action_namespace": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "identity_relation": "d4_pose_v1",
+        "matching_mover_count": 1,
+        "status": "witnessed"
+      }
+    },
+    "pose_only_placebo": {
+      "active_uncertainties": [
+        "The target route, obstacle effects, and hazard rules are unknown."
+      ],
+      "memories": [
+        {
+          "claim": "The D4 orbit identifies the controlled 3x3 color-9 component with one color-4 pose marker. Four stable target action indices moved it in the source episode; their direction assignment is withheld and must be inferred locally.",
+          "guard": "Consume only when exactly one D4-matching mover is visible and the action namespace remains [0,1,2,3].",
+          "memory_id": "h122_pose_only_placebo",
+          "refusal": "Do not import a direction assignment, source coordinates, route, obstacle behavior, or a target action sequence.",
+          "support": {
+            "distinct_action_count": 4,
+            "observed_pose_count": 4,
+            "source_transition_count": 21,
+            "total_motion_support": 21
+          }
+        }
+      ],
+      "next_decision_questions": [
+        "Which graph route reaches the visible target while respecting new entities?"
+      ],
+      "padding": "",
+      "schema": "ztare-arc3-selected-sleep-memory-v1",
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_result_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+      "target_compatibility": {
+        "action_namespace": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "identity_relation": "d4_pose_v1",
+        "matching_mover_count": 1,
+        "status": "witnessed"
+      }
+    }
+  },
+  "order": [
+    "pose_only_placebo",
+    "pose_action_map"
+  ],
+  "schema": "ztare-h123-pose-action-mediator-manifest-v1",
+  "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+  "target_matching_mover_count": 1
+}

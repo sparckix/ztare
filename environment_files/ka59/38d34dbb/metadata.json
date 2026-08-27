@@ -1,0 +1,19 @@
+{
+  "game_id": "ka59-38d34dbb",
+  "title": "KA59",
+  "default_fps": 10,
+  "tags": [
+    "keyboard_click"
+  ],
+  "baseline_actions": [
+    28,
+    109,
+    51,
+    51,
+    33,
+    132,
+    326
+  ],
+  "local_dir": "environment_files/ka59/38d34dbb",
+  "date_downloaded": "2026-07-03T05:49:41.519985+00:00"
+}

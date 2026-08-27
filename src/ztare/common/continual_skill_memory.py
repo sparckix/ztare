@@ -39,9 +39,26 @@ from ztare.common.guarded_skill_compiler import (
     SkillOccurrence,
     SkillVariant,
 )
+from ztare.common.temporal_decision_credit import (
+    DecisionChoiceAuthority,
+    DecisionEligibilityChain,
+    DecisionYieldCalibration,
+    TemporalDecisionCreditCompilation,
+    compile_decision_yield_calibration,
+    compile_temporal_decision_credit,
+)
+from ztare.common.temporal_decision_utility import (
+    TemporalDecisionUtilityArm,
+    TemporalDecisionUtilityCompilation,
+    compile_temporal_decision_utility,
+)
 
 
-MEMORY_SCHEMA = "ztare-continual-skill-memory-v1"
+MEMORY_SCHEMA = "ztare-continual-skill-memory-v3"
+LEGACY_MEMORY_SCHEMAS = frozenset({
+    "ztare-continual-skill-memory-v1",
+    "ztare-continual-skill-memory-v2",
+})
 OUTCOME_CLASSES = frozenset({"attained", "open", "failed"})
 INTRINSIC_SIGNAL_KINDS = frozenset({
     "mdl_admission",
@@ -676,6 +693,11 @@ class ContinualSkillMemory:
     task_decision_experiences: tuple[
         TaskDecisionChoiceExperience, ...
     ] = ()
+    temporal_decision_chains: tuple[DecisionEligibilityChain, ...] = ()
+    temporal_utility_arms: tuple[TemporalDecisionUtilityArm, ...] = ()
+    decision_yield_calibrations: tuple[
+        DecisionYieldCalibration, ...
+    ] = ()
     credit_witnesses: tuple[CausalCreditWitness, ...] = ()
     skill_transports: tuple[SkillTransportMemory, ...] = ()
     schema: str = MEMORY_SCHEMA
@@ -725,6 +747,82 @@ class ContinualSkillMemory:
             raise ValueError(
                 "task decision experiences must be unique and canonical"
             )
+        temporal_chain_ids = [
+            chain.sha256 for chain in self.temporal_decision_chains
+        ]
+        if temporal_chain_ids != sorted(
+            temporal_chain_ids
+        ) or len(temporal_chain_ids) != len(set(temporal_chain_ids)):
+            raise ValueError(
+                "temporal decision chains must be unique and canonical"
+            )
+        chain_refs = [
+            chain.chain_ref for chain in self.temporal_decision_chains
+        ]
+        if len(chain_refs) != len(set(chain_refs)):
+            raise ValueError("temporal decision chain refs must be unique")
+        pair_arms = [
+            (chain.matched_pair_ref, chain.arm_id)
+            for chain in self.temporal_decision_chains
+        ]
+        if len(pair_arms) != len(set(pair_arms)):
+            raise ValueError(
+                "temporal matched-pair arm identities must be unique"
+            )
+        pair_counts: dict[str, int] = {}
+        for chain in self.temporal_decision_chains:
+            pair_counts[chain.matched_pair_ref] = (
+                pair_counts.get(chain.matched_pair_ref, 0) + 1
+            )
+        if any(count > 2 for count in pair_counts.values()):
+            raise ValueError(
+                "temporal matched pairs may contain at most two arms"
+            )
+        utility_arm_ids = [
+            arm.sha256 for arm in self.temporal_utility_arms
+        ]
+        if utility_arm_ids != sorted(
+            utility_arm_ids
+        ) or len(utility_arm_ids) != len(set(utility_arm_ids)):
+            raise ValueError(
+                "temporal utility arms must be unique and canonical"
+            )
+        utility_pair_arms = [
+            (arm.matched_pair_ref, arm.arm_id)
+            for arm in self.temporal_utility_arms
+        ]
+        if len(utility_pair_arms) != len(set(utility_pair_arms)):
+            raise ValueError(
+                "temporal utility pair-arm identities must be unique"
+            )
+        utility_pair_counts: dict[str, int] = {}
+        for arm in self.temporal_utility_arms:
+            utility_pair_counts[arm.matched_pair_ref] = (
+                utility_pair_counts.get(arm.matched_pair_ref, 0) + 1
+            )
+        if any(count > 2 for count in utility_pair_counts.values()):
+            raise ValueError(
+                "temporal utility pairs may contain at most two arms"
+            )
+        calibration_ids = [
+            row.sha256 for row in self.decision_yield_calibrations
+        ]
+        if calibration_ids != sorted(
+            calibration_ids
+        ) or len(calibration_ids) != len(set(calibration_ids)):
+            raise ValueError(
+                "decision yield calibrations must be unique and canonical"
+            )
+        expected_calibrations = tuple(sorted(
+            compile_decision_yield_calibration(
+                self.temporal_decision_chains,
+            ),
+            key=lambda row: row.sha256,
+        ))
+        if self.decision_yield_calibrations != expected_calibrations:
+            raise ValueError(
+                "persisted yield calibration drifted from temporal chains"
+            )
         witness_ids = [
             witness.witness_sha256 for witness in self.credit_witnesses
         ]
@@ -771,6 +869,18 @@ class ContinualSkillMemory:
                 experience.to_dict()
                 for experience in self.task_decision_experiences
             ],
+            "temporal_decision_chains": [
+                chain.to_receipt()
+                for chain in self.temporal_decision_chains
+            ],
+            "temporal_utility_arms": [
+                arm.to_receipt()
+                for arm in self.temporal_utility_arms
+            ],
+            "decision_yield_calibrations": [
+                calibration.to_receipt()
+                for calibration in self.decision_yield_calibrations
+            ],
             "credit_witnesses": [
                 witness.to_dict() for witness in self.credit_witnesses
             ],
@@ -802,6 +912,15 @@ class ContinualSkillMemory:
             "task_decision_experience_count": len(
                 self.task_decision_experiences
             ),
+            "temporal_decision_chain_count": len(
+                self.temporal_decision_chains
+            ),
+            "temporal_utility_arm_count": len(
+                self.temporal_utility_arms
+            ),
+            "decision_yield_calibration_count": len(
+                self.decision_yield_calibrations
+            ),
             "credit_witness_count": len(self.credit_witnesses),
             "enable_witness_count": sum(
                 witness.direction == "enables"
@@ -817,6 +936,52 @@ class ContinualSkillMemory:
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "ContinualSkillMemory":
+        source_schema = str(payload.get(
+            "schema",
+            "ztare-continual-skill-memory-v1",
+        ))
+        if (
+            source_schema != MEMORY_SCHEMA
+            and source_schema not in LEGACY_MEMORY_SCHEMAS
+        ):
+            raise ValueError(
+                f"unsupported continual memory schema: {source_schema}"
+            )
+        temporal_chains = tuple(sorted(
+            (
+                DecisionEligibilityChain.from_receipt(dict(row))
+                for row in payload.get("temporal_decision_chains", ())
+            ),
+            key=lambda chain: chain.sha256,
+        ))
+        temporal_utility_arms = tuple(sorted(
+            (
+                TemporalDecisionUtilityArm.from_receipt(dict(row))
+                for row in payload.get("temporal_utility_arms", ())
+            ),
+            key=lambda arm: arm.sha256,
+        ))
+        derived_calibrations = tuple(sorted(
+            compile_decision_yield_calibration(temporal_chains),
+            key=lambda row: row.sha256,
+        ))
+        persisted_calibrations = tuple(sorted(
+            (
+                DecisionYieldCalibration.from_receipt(dict(row))
+                for row in payload.get(
+                    "decision_yield_calibrations",
+                    (),
+                )
+            ),
+            key=lambda row: row.sha256,
+        ))
+        if (
+            "decision_yield_calibrations" in payload
+            and persisted_calibrations != derived_calibrations
+        ):
+            raise ValueError(
+                "persisted yield calibration drifted from temporal chains"
+            )
         memory = cls(
             families=tuple(sorted(
                 (
@@ -856,6 +1021,9 @@ class ContinualSkillMemory:
                 ),
                 key=lambda experience: experience.experience_sha256,
             )),
+            temporal_decision_chains=temporal_chains,
+            temporal_utility_arms=temporal_utility_arms,
+            decision_yield_calibrations=derived_calibrations,
             credit_witnesses=tuple(sorted(
                 (
                     CausalCreditWitness.from_dict(row)
@@ -870,7 +1038,7 @@ class ContinualSkillMemory:
                 ),
                 key=lambda transport: transport.transport_sha256,
             )),
-            schema=str(payload.get("schema", MEMORY_SCHEMA)),
+            schema=MEMORY_SCHEMA,
         )
         derived = _derive_all_credit_witnesses(
             memory.task_experiences,
@@ -1695,6 +1863,181 @@ def record_task_decision_experience(
     )
 
 
+def record_temporal_decision_chain(
+    memory: ContinualSkillMemory,
+    chain: DecisionEligibilityChain,
+) -> ContinualSkillMemory:
+    """Append one finite decision chain and rederive yield calibration."""
+
+    conflicting = [
+        row for row in memory.temporal_decision_chains
+        if (
+            row.chain_ref == chain.chain_ref
+            and row.sha256 != chain.sha256
+        )
+    ]
+    if conflicting:
+        raise ValueError(
+            "one temporal chain identity cannot carry conflicting evidence"
+        )
+    pair_arm_conflicts = [
+        row for row in memory.temporal_decision_chains
+        if (
+            row.matched_pair_ref == chain.matched_pair_ref
+            and row.arm_id == chain.arm_id
+            and row.sha256 != chain.sha256
+        )
+    ]
+    if pair_arm_conflicts:
+        raise ValueError(
+            "one temporal matched-pair arm cannot carry conflicting chains"
+        )
+    pair_rows = [
+        row for row in memory.temporal_decision_chains
+        if (
+            row.matched_pair_ref == chain.matched_pair_ref
+            and row.sha256 != chain.sha256
+        )
+    ]
+    if len(pair_rows) >= 2:
+        raise ValueError("temporal matched pairs admit exactly two arms")
+    by_id = {
+        row.sha256: row for row in memory.temporal_decision_chains
+    }
+    by_id[chain.sha256] = chain
+    chains = tuple(sorted(
+        by_id.values(),
+        key=lambda row: row.sha256,
+    ))
+    calibrations = tuple(sorted(
+        compile_decision_yield_calibration(chains),
+        key=lambda row: row.sha256,
+    ))
+    return replace(
+        memory,
+        temporal_decision_chains=chains,
+        decision_yield_calibrations=calibrations,
+    )
+
+
+def temporal_decision_chain_pairs(
+    memory: ContinualSkillMemory,
+) -> tuple[
+    tuple[DecisionEligibilityChain, DecisionEligibilityChain],
+    ...,
+]:
+    """Return only complete, canonically ordered matched temporal pairs."""
+
+    by_pair: dict[str, list[DecisionEligibilityChain]] = {}
+    for chain in memory.temporal_decision_chains:
+        by_pair.setdefault(chain.matched_pair_ref, []).append(chain)
+    pairs = []
+    for pair_ref, rows in sorted(by_pair.items()):
+        if len(rows) != 2:
+            continue
+        ordered = tuple(sorted(
+            rows,
+            key=lambda row: (row.arm_id, row.sha256),
+        ))
+        if ordered[0].matched_pair_ref != pair_ref:
+            raise ValueError("temporal pair identity drifted")
+        pairs.append((ordered[0], ordered[1]))
+    return tuple(pairs)
+
+
+def record_temporal_utility_arm(
+    memory: ContinualSkillMemory,
+    arm: TemporalDecisionUtilityArm,
+) -> ContinualSkillMemory:
+    """Append one external-utility arm without persisting a preference."""
+
+    conflicts = [
+        row for row in memory.temporal_utility_arms
+        if (
+            row.matched_pair_ref == arm.matched_pair_ref
+            and row.arm_id == arm.arm_id
+            and row.sha256 != arm.sha256
+        )
+    ]
+    if conflicts:
+        raise ValueError(
+            "one temporal utility pair arm cannot carry conflicting evidence"
+        )
+    pair_rows = [
+        row for row in memory.temporal_utility_arms
+        if (
+            row.matched_pair_ref == arm.matched_pair_ref
+            and row.sha256 != arm.sha256
+        )
+    ]
+    if len(pair_rows) >= 2:
+        raise ValueError("temporal utility pairs admit exactly two arms")
+    by_id = {
+        row.sha256: row for row in memory.temporal_utility_arms
+    }
+    by_id[arm.sha256] = arm
+    return replace(
+        memory,
+        temporal_utility_arms=tuple(sorted(
+            by_id.values(),
+            key=lambda row: row.sha256,
+        )),
+    )
+
+
+def temporal_utility_arm_pairs(
+    memory: ContinualSkillMemory,
+) -> tuple[
+    tuple[TemporalDecisionUtilityArm, TemporalDecisionUtilityArm],
+    ...,
+]:
+    """Return complete, canonically ordered external-utility pairs."""
+
+    by_pair: dict[str, list[TemporalDecisionUtilityArm]] = {}
+    for arm in memory.temporal_utility_arms:
+        by_pair.setdefault(arm.matched_pair_ref, []).append(arm)
+    pairs = []
+    for pair_ref, rows in sorted(by_pair.items()):
+        if len(rows) != 2:
+            continue
+        ordered = tuple(sorted(
+            rows,
+            key=lambda row: (row.arm_id, row.sha256),
+        ))
+        if ordered[0].matched_pair_ref != pair_ref:
+            raise ValueError("temporal utility pair identity drifted")
+        pairs.append((ordered[0], ordered[1]))
+    return tuple(pairs)
+
+
+def compile_persisted_temporal_decision_utility(
+    memory: ContinualSkillMemory,
+    *,
+    minimum_support: int = 2,
+) -> TemporalDecisionUtilityCompilation:
+    """Derive graded judgments only from complete persisted utility pairs."""
+
+    return compile_temporal_decision_utility(
+        temporal_utility_arm_pairs(memory),
+        minimum_support=minimum_support,
+    )
+
+
+def compile_persisted_temporal_decision_credit(
+    memory: ContinualSkillMemory,
+    *,
+    minimum_support: int = 2,
+    max_eligibility_delay_steps: int = 4,
+) -> TemporalDecisionCreditCompilation:
+    """Compile distal task value only from persisted complete chain pairs."""
+
+    return compile_temporal_decision_credit(
+        temporal_decision_chain_pairs(memory),
+        minimum_support=minimum_support,
+        max_eligibility_delay_steps=max_eligibility_delay_steps,
+    )
+
+
 @dataclass(frozen=True)
 class IntrinsicSkillJudgment:
     """CEGAR/quotient/MDL judgment for one exact skill revision."""
@@ -2102,6 +2445,246 @@ def judge_decision_option_task_credit(
             for witness in (*enabling, *hazardous)
             for ref in witness.evidence_refs
         ),
+    )
+
+
+@dataclass(frozen=True)
+class CombinedDecisionOptionTaskJudgment:
+    """Fail-closed combination of task and declared external-utility evidence."""
+
+    authority: DecisionChoiceAuthority
+    option_family_sha256: str
+    status: str
+    preference: int
+    immediate_status: str
+    immediate_preference: int
+    temporal_status: str
+    temporal_preference: int
+    utility_status: str
+    utility_preference: int
+    utility_measure_sha256: str
+    utility_mean_signed_external_delta: float
+    contrast_priority: int
+    evidence_refs: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.preference not in {-1, 0, 1}:
+            raise ValueError("combined task preference must be -1, 0, or 1")
+        if self.immediate_preference not in {-1, 0, 1}:
+            raise ValueError("immediate preference must be -1, 0, or 1")
+        if self.temporal_preference not in {-1, 0, 1}:
+            raise ValueError("temporal preference must be -1, 0, or 1")
+        if self.utility_preference not in {-1, 0, 1}:
+            raise ValueError("utility preference must be -1, 0, or 1")
+        if self.contrast_priority not in {0, 1}:
+            raise ValueError("contrast priority must be zero or one")
+
+    def to_receipt(self) -> dict[str, Any]:
+        return {
+            "schema": "ztare-combined-decision-task-judgment-v2",
+            "authority": self.authority.to_receipt(),
+            "authority_sha256": self.authority.sha256,
+            "option_family_sha256": self.option_family_sha256,
+            "status": self.status,
+            "preference": self.preference,
+            "immediate_status": self.immediate_status,
+            "immediate_preference": self.immediate_preference,
+            "temporal_status": self.temporal_status,
+            "temporal_preference": self.temporal_preference,
+            "utility_status": self.utility_status,
+            "utility_preference": self.utility_preference,
+            "utility_measure_sha256": self.utility_measure_sha256,
+            "utility_mean_signed_external_delta": (
+                self.utility_mean_signed_external_delta
+            ),
+            "contrast_priority": self.contrast_priority,
+            "evidence_refs": list(self.evidence_refs),
+            "conflict_policy": "nonzero_disagreement_is_neutral",
+            "authority_channels": {
+                "immediate": "matched_external_terminal_adjudication",
+                "temporal": "matched_external_terminal_adjudication",
+                "utility": "matched_external_utility_adjudication",
+                "information_yield": "selection_price_only",
+            },
+        }
+
+
+def judge_combined_decision_option_task_credit(
+    memory: ContinualSkillMemory,
+    *,
+    decision_namespace: str,
+    option_family_sha256: str,
+    task_contract_sha256: str,
+    choice_context_sha256: str,
+    continuation_context_sha256: str,
+    available_option_family_sha256s: Iterable[str],
+    minimum_temporal_support: int = 2,
+    max_eligibility_delay_steps: int = 4,
+    temporal_compilation: TemporalDecisionCreditCompilation | None = None,
+    external_utility_measure_sha256: str = "",
+    minimum_utility_support: int = 2,
+    utility_compilation: TemporalDecisionUtilityCompilation | None = None,
+) -> CombinedDecisionOptionTaskJudgment:
+    """Combine exact-scope task and declared utility without precedence."""
+
+    available = _sorted_unique(available_option_family_sha256s)
+    authority = DecisionChoiceAuthority(
+        task_contract_sha256=task_contract_sha256,
+        decision_namespace=decision_namespace,
+        choice_context_sha256=choice_context_sha256,
+        continuation_context_sha256=continuation_context_sha256,
+        available_option_family_sha256s=available,
+    )
+    option_family = _nonempty(
+        option_family_sha256,
+        "option_family_sha256",
+    )
+    immediate = judge_decision_option_task_credit(
+        memory,
+        decision_namespace=authority.decision_namespace,
+        option_family_sha256=option_family,
+        task_contract_sha256=authority.task_contract_sha256,
+        choice_context_sha256=authority.choice_context_sha256,
+        continuation_context_sha256=(
+            authority.continuation_context_sha256
+        ),
+        available_option_family_sha256s=(
+            authority.available_option_family_sha256s
+        ),
+    )
+    compilation = (
+        temporal_compilation
+        if temporal_compilation is not None
+        else compile_persisted_temporal_decision_credit(
+            memory,
+            minimum_support=minimum_temporal_support,
+            max_eligibility_delay_steps=max_eligibility_delay_steps,
+        )
+    )
+    temporal = next(
+        (
+            row for row in compilation.judgments
+            if (
+                row.authority == authority
+                and row.option_family_sha256 == option_family
+            )
+        ),
+        None,
+    )
+    temporal_status = (
+        temporal.status if temporal is not None else "uncredited"
+    )
+    temporal_preference = (
+        temporal.preference if temporal is not None else 0
+    )
+    selected_measure_sha256 = str(
+        external_utility_measure_sha256 or ""
+    ).strip()
+    utility_source = (
+        utility_compilation
+        if utility_compilation is not None
+        else (
+            compile_persisted_temporal_decision_utility(
+                memory,
+                minimum_support=minimum_utility_support,
+            )
+            if selected_measure_sha256
+            else None
+        )
+    )
+    utility = next(
+        (
+            row for row in utility_source.judgments
+            if (
+                row.authority == authority
+                and row.option_family_sha256 == option_family
+                and row.utility_measure.sha256
+                == selected_measure_sha256
+            )
+        ),
+        None,
+    ) if utility_source is not None and selected_measure_sha256 else None
+    utility_status = (
+        utility.status if utility is not None else "uncredited"
+    )
+    utility_preference = (
+        utility.preference if utility is not None else 0
+    )
+    task_conflict = (
+        immediate.status == "credit_conflict"
+        or temporal_status == "credit_conflict"
+        or (
+            immediate.preference != 0
+            and temporal_preference != 0
+            and immediate.preference != temporal_preference
+        )
+    )
+    if task_conflict:
+        task_preference = 0
+    elif immediate.preference != 0:
+        task_preference = immediate.preference
+    else:
+        task_preference = temporal_preference
+    conflict = (
+        task_conflict
+        or utility_status == "utility_conflict"
+        or (
+            task_preference != 0
+            and utility_preference != 0
+            and task_preference != utility_preference
+        )
+    )
+    if conflict:
+        status = "credit_conflict"
+        preference = 0
+    elif task_preference != 0:
+        status = (
+            "task_credited"
+            if task_preference > 0
+            else "task_hazard"
+        )
+        preference = task_preference
+    elif utility_preference != 0:
+        status = (
+            "utility_preferred"
+            if utility_preference > 0
+            else "utility_hazard"
+        )
+        preference = utility_preference
+    else:
+        status = "uncredited"
+        preference = 0
+    return CombinedDecisionOptionTaskJudgment(
+        authority=authority,
+        option_family_sha256=option_family,
+        status=status,
+        preference=preference,
+        immediate_status=immediate.status,
+        immediate_preference=immediate.preference,
+        temporal_status=temporal_status,
+        temporal_preference=temporal_preference,
+        utility_status=utility_status,
+        utility_preference=utility_preference,
+        utility_measure_sha256=selected_measure_sha256,
+        utility_mean_signed_external_delta=(
+            utility.mean_signed_external_delta
+            if utility is not None
+            else 0.0
+        ),
+        contrast_priority=immediate.contrast_priority,
+        evidence_refs=_sorted_unique((
+            *immediate.evidence_refs,
+            *(
+                temporal.evidence_refs
+                if temporal is not None
+                else ()
+            ),
+            *(
+                utility.evidence_refs
+                if utility is not None
+                else ()
+            ),
+        )),
     )
 
 
@@ -2681,6 +3264,7 @@ def load_continual_skill_memory(
 
 __all__ = [
     "CausalCreditWitness",
+    "CombinedDecisionOptionTaskJudgment",
     "ContinualSkillMemory",
     "DecisionOptionTaskJudgment",
     "EffectOptionTaskJudgment",
@@ -2697,9 +3281,12 @@ __all__ = [
     "TaskDecisionChoiceExperience",
     "TaskOptionChoiceExperience",
     "ValidatedSkillTransfer",
+    "compile_persisted_temporal_decision_credit",
+    "compile_persisted_temporal_decision_utility",
     "consumable_skill_revision_sha256s",
     "decision_option_family_sha256",
     "empty_continual_skill_memory",
+    "judge_combined_decision_option_task_credit",
     "judge_decision_option_task_credit",
     "judge_intrinsic_revision",
     "judge_effect_option_task_credit",
@@ -2710,10 +3297,14 @@ __all__ = [
     "propose_skill_transport",
     "rehydrate_validated_skill_programs",
     "record_library_quotient_transport",
+    "record_temporal_decision_chain",
+    "record_temporal_utility_arm",
     "record_task_decision_experience",
     "record_intrinsic_signal",
     "record_task_choice_experience",
     "record_task_experience",
     "save_continual_skill_memory",
+    "temporal_decision_chain_pairs",
+    "temporal_utility_arm_pairs",
     "validate_skill_transport",
 ]

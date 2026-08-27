@@ -1,0 +1,166 @@
+{
+  "assignment": "withhold",
+  "catalog_scoped_decision": {
+    "action": 1,
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "controlled_object_handle": "o02",
+    "kind": "catalog_scoped_model_decision",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_handles": [
+      "o03"
+    ],
+    "phase": "withhold_branch_revision",
+    "plan_summary": "Commit the downward move to test the corridor-block interaction.",
+    "prediction": "o02 will move downward and contact or push o03 toward the lower passage.",
+    "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+    "response_decision": {
+      "arguments": {
+        "action": 1,
+        "controlled_object_handle": "o02",
+        "ordered_waypoint_handles": [
+          "o03"
+        ],
+        "plan_summary": "Commit the downward move to test the corridor-block interaction.",
+        "prediction": "o02 will move downward and contact or push o03 toward the lower passage.",
+        "uncertainty": "The direction-to-index mapping and o03's push behavior remain unverified."
+      },
+      "cached_input_tokens": 0,
+      "call_id": "app-server-call:019fe01e-1761-7bc1-8a28-120a45cbfca4",
+      "effective_reasoning_context": "all_turns",
+      "input_tokens": 17794,
+      "output_tokens": 181,
+      "previous_response_id": "019fe01d-0739-73f2-a467-4fb627e782df",
+      "requested_reasoning_context": "all_turns",
+      "response_id": "019fe01e-1761-7bc1-8a28-120a45cbfca4",
+      "schema": "ztare-responses-tool-decision-v1",
+      "tool_name": "commit_arc_plan"
+    },
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "uncertainty": "The direction-to-index mapping and o03's push behavior remain unverified."
+  },
+  "controller_transport": {
+    "fork": {
+      "ephemeral": false,
+      "fork_thread_id": "019fe01e-15f2-7681-aeed-fe85abcccb00",
+      "forked_from_id": "019fe01d-0304-7d13-ad30-f0e665766fd3",
+      "inherited_turn_ids": [
+        "019fe01d-0739-73f2-a467-4fb627e782df"
+      ],
+      "kind": "app_server_fork_receipt",
+      "last_turn_id": "019fe01d-0739-73f2-a467-4fb627e782df",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "03a3c71a34295958461a8dba640087f73ce96ee0acabb24c28bf12d79f3a0d8e",
+      "source_thread_id": "019fe01d-0304-7d13-ad30-f0e665766fd3"
+    },
+    "last_turn_id": "019fe01e-1761-7bc1-8a28-120a45cbfca4",
+    "schema": "ztare-app-server-controller-thread-v1",
+    "sha256": "c1fbe5be3eeea8b99a3f1afc8d45bc6fbe740bda48ade97da9d9773248793314",
+    "thread_id": "019fe01e-15f2-7681-aeed-fe85abcccb00",
+    "turn": {
+      "assistant_output_sha256": "f0259db3f570d2da861df58a32f5d0c50b651ff3b0dac2238dd81f3410f5c11e",
+      "assistant_text": "{\"action\":1,\"controlled_object_handle\":\"o02\",\"ordered_waypoint_handles\":[\"o03\"],\"plan_summary\":\"Commit the downward move to test the corridor-block interaction.\",\"prediction\":\"o02 will move downward and contact or push o03 toward the lower passage.\",\"uncertainty\":\"The direction-to-index mapping and o03's push behavior remain unverified.\"}",
+      "cached_input_tokens": 0,
+      "completed_at": 1786171507,
+      "duration_ms": 11576,
+      "input_tokens": 17794,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "output_tokens": 181,
+      "prompt_sha256": "c82f2ad9513be00e5cf9b713c3e8f160584c16c24b3e334b02aa5b78a192df60",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "f184ca1c14d1faa3b87ef65eba27bcb65b9aea7538bc270ec272186d0e74d4af",
+      "started_at": 1786171496,
+      "status": "completed",
+      "thread_id": "019fe01e-15f2-7681-aeed-fe85abcccb00",
+      "tool_item_count": 0,
+      "turn_id": "019fe01e-1761-7bc1-8a28-120a45cbfca4"
+    }
+  },
+  "environment_contact": false,
+  "experiment_sha256": "926af6ddd4e3e9e1aa1ee54ea8d2fe15661189c0e9529434fd3abfc7abba44c2",
+  "kind": "matched_branch_revision",
+  "pair_index": 1,
+  "parent_response_id": "019fe01d-0739-73f2-a467-4fb627e782df",
+  "post_proposal": {
+    "action_ref": "1",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:4a1f362bcd28e0c40f519570cc7c8c00681171761d6ee69837246f984105b1f7",
+    "controller_instance_sha256": "0abe79aa49c037290cedd3b70922b894396c7e8e0493980e414be5df12e2f2bc",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_refs": [
+      "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910"
+    ],
+    "parent_proposal_sha256": "e67229df3f90ad3b0695d74994c983014e7c9b2e491d1f6aa767ab122452f044",
+    "predicted_consequence_ref": "sha256:686631bc7347731ee019c5db52259257a42d082931ac4034c0e3ac670042bb47",
+    "proposal_ref": "sha256:0b868fad13dc85d49ca097b03605fbf80fc539fcda1a58a56a986465e5ff8854",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "c3fff73557e357e5b7c2636cfbc9b519095d387e9391662a05d691fea37b25d0"
+  },
+  "presented_intervention_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+  "presented_utf8_bytes": 3849,
+  "response_decision": {
+    "arguments": {
+      "action": 1,
+      "controlled_object_handle": "o02",
+      "ordered_waypoint_handles": [
+        "o03"
+      ],
+      "plan_summary": "Commit the downward move to test the corridor-block interaction.",
+      "prediction": "o02 will move downward and contact or push o03 toward the lower passage.",
+      "uncertainty": "The direction-to-index mapping and o03's push behavior remain unverified."
+    },
+    "cached_input_tokens": 0,
+    "call_id": "app-server-call:019fe01e-1761-7bc1-8a28-120a45cbfca4",
+    "effective_reasoning_context": "all_turns",
+    "input_tokens": 17794,
+    "output_tokens": 181,
+    "previous_response_id": "019fe01d-0739-73f2-a467-4fb627e782df",
+    "requested_reasoning_context": "all_turns",
+    "response_id": "019fe01e-1761-7bc1-8a28-120a45cbfca4",
+    "schema": "ztare-responses-tool-decision-v1",
+    "tool_name": "commit_arc_plan"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "transition": {
+    "assignment": "withhold",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "changed_action": false,
+    "changed_path": false,
+    "changed_prediction": true,
+    "contract_sha256": "d939275b46d1415633268af5ca51e8a9e2e36cf7698fad14475dfc6e066eb2bd",
+    "controller_instance_sha256": "0abe79aa49c037290cedd3b70922b894396c7e8e0493980e414be5df12e2f2bc",
+    "derivative_sha256": "8eed38f62671e44cfd444769a42495c61d5655c8d74c4fc7adf8a046670d9351",
+    "intervention_revision_sha256": "3f57810ad16451b8fc7d54ae380d55696650f84b988dbdcee12b0b4074157d24",
+    "kind": "residual_proposal_transition",
+    "post_proposal_sha256": "c3fff73557e357e5b7c2636cfbc9b519095d387e9391662a05d691fea37b25d0",
+    "pre_basin_sha256": "16eb461f41f2860ee809935deaa9e959b02970254f8314fc04b053667df053d0",
+    "pre_proposal_sha256": "e67229df3f90ad3b0695d74994c983014e7c9b2e491d1f6aa767ab122452f044",
+    "relation": "withheld_spontaneous_contradiction",
+    "schema": "ztare-causal-response-derivative-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "90a98102acac2e7a8c456dd1704d9ae4e0b8f810edde83c8c272087582a97180",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "9025abf8c5ecdf1a7c4c56bb9b85f50d94f877e2b4cfebe7a41766d623afbf16",
+    "sha256": "309d71a780eb3f5bf882f77a5a3d54d044c855b1ddbaa0af1952e3620e29e96f",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+    "stratum_sha256": "76d187cd15cffab5b8bed5d31fa1ec9a9b5aaa785cc0d47cef29c678a5c285cd",
+    "supported_transport": false,
+    "trial_ref": "h97:pair-01:withhold"
+  }
+}

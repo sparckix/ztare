@@ -271,9 +271,28 @@ def connect(db: str) -> sqlite3.Connection:
     for col in ("family", "station", "expected_exit", "required_capability"):
         if col not in existing_cols:
             cx.execute(f"ALTER TABLE work_items ADD COLUMN {col} TEXT")
+    cx.execute(
+        """UPDATE work_items
+           SET required_capability=json_extract(payload_json, '$.required_capability')
+           WHERE required_capability IS NULL
+             AND json_valid(payload_json)
+             AND json_type(payload_json, '$.required_capability')='text'
+             AND json_extract(payload_json, '$.required_capability') <> ''"""
+    )
     cx.execute("CREATE INDEX IF NOT EXISTS idx_work_pick ON work_items(status, priority DESC, created_at)")
     cx.execute("CREATE INDEX IF NOT EXISTS idx_work_family_kind_status ON work_items(family, kind, status)")
     cx.execute("CREATE INDEX IF NOT EXISTS idx_work_required_capability ON work_items(required_capability) WHERE required_capability IS NOT NULL")
+    cx.execute(
+        """
+        CREATE TABLE IF NOT EXISTS work_budget_counters (
+          budget_key TEXT NOT NULL,
+          window_key TEXT NOT NULL,
+          used INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          PRIMARY KEY (budget_key, window_key)
+        )
+        """
+    )
     cx.execute(
         """
         CREATE TABLE IF NOT EXISTS worker_heartbeats (
@@ -494,6 +513,7 @@ def enqueue(cx: sqlite3.Connection, *, kind: str, priority: int, payload: dict[s
     family = str(payload.get("family") or "")
     station = str(payload.get("station") or "")
     expected_exit = str(payload.get("expected_exit") or payload.get("exit_kind") or "")
+    required_capability = str(payload.get("required_capability") or "") or None
     now = _now()
     payload_json = _json(payload)
     for attempt in range(8):
@@ -501,20 +521,20 @@ def enqueue(cx: sqlite3.Connection, *, kind: str, priority: int, payload: dict[s
             cx.execute(
                 """
                 INSERT OR IGNORE INTO work_items
-                (work_id, kind, priority, status, attempts, max_attempts, claimed_by, lease_until, family, station, expected_exit, payload_json, created_at, updated_at)
-                VALUES (?, ?, ?, 'queued', 0, ?, NULL, NULL, ?, ?, ?, ?, ?, ?)
+                (work_id, kind, priority, status, attempts, max_attempts, claimed_by, lease_until, family, station, expected_exit, required_capability, payload_json, created_at, updated_at)
+                VALUES (?, ?, ?, 'queued', 0, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (work_id, kind, int(priority), int(max_attempts), family, station, expected_exit, payload_json, now, now),
+                (work_id, kind, int(priority), int(max_attempts), family, station, expected_exit, required_capability, payload_json, now, now),
             )
             cx.execute(
                 """
                 UPDATE work_items
                 SET kind=?, priority=?, status='queued', attempts=0, max_attempts=?,
                     claimed_by=NULL, lease_until=NULL, family=?, station=?, expected_exit=?,
-                    payload_json=?, updated_at=?
+                    required_capability=?, payload_json=?, updated_at=?
                 WHERE work_id=? AND status IN ('failed', 'retired', 'dead_letter')
                 """,
-                (kind, int(priority), int(max_attempts), family, station, expected_exit, payload_json, now, work_id),
+                (kind, int(priority), int(max_attempts), family, station, expected_exit, required_capability, payload_json, now, work_id),
             )
             cx.commit()
             return work_id
@@ -1046,6 +1066,15 @@ def claim(
     kinds: list[str],
     lease_s: int,
     capabilities: list[str] | None = None,
+    budget_key: str | None = None,
+    budget_window: str = "",
+    budget_limit: int | None = None,
+    observed_budget_used: int = 0,
+    budget_units_by_kind: Mapping[str, int] | None = None,
+    reserved_kind: str | tuple[str, ...] | list[str] | None = None,
+    reserved_work_ids: tuple[str, ...] | list[str] | None = None,
+    reserve_after_other_claims: int | None = None,
+    observed_other_claims: int = 0,
 ) -> dict[str, Any] | None:
     """Claim the highest-priority queued item this worker can serve.
 
@@ -1058,11 +1087,53 @@ def claim(
     If `capabilities` is None (default), no capability filter — existing
     callers keep working unchanged.
     """
+    if (reserved_kind is None) != (reserve_after_other_claims is None):
+        raise ValueError("reserved_kind and reserve_after_other_claims must be set together")
+    if reserved_work_ids is not None and reserved_kind is None:
+        raise ValueError("reserved_work_ids require a reserved kind")
+    if reserved_kind is not None and (budget_key is None or int(reserve_after_other_claims) < 0):
+        raise ValueError("reserved-kind cadence requires a budget key and nonnegative threshold")
     reclaim_expired(cx)
     terminalize_exhausted_queued(cx)
     if not _record_claim_ready_heartbeat(cx, worker_id=worker_id, worker_kind="claim_waiting",
                                           payload={"claim_kinds": kinds, "capabilities": capabilities}):
         return None
+    if budget_key is not None:
+        if not budget_window or budget_limit is None or budget_limit < 1:
+            raise ValueError("budgeted claims require a window and positive limit")
+        cx.execute("BEGIN IMMEDIATE")
+        prior = cx.execute(
+            "SELECT used FROM work_budget_counters WHERE budget_key=? AND window_key=?",
+            (budget_key, budget_window),
+        ).fetchone()
+        budget_used = max(int(prior["used"] if prior else 0), int(observed_budget_used))
+        if budget_used >= budget_limit:
+            cx.execute(
+                """
+                INSERT INTO work_budget_counters (budget_key, window_key, used, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(budget_key, window_key) DO UPDATE SET
+                  used=excluded.used, updated_at=excluded.updated_at
+                """,
+                (budget_key, budget_window, budget_used, _now()),
+            )
+            cx.commit()
+            return None
+    reserved_kinds = _normalize_reserved_kinds(reserved_kind)
+    reserved_ids = {
+        str(work_id) for work_id in reserved_work_ids or () if str(work_id)
+    } if reserved_work_ids is not None else None
+    reserve_key = _reserved_kind_counter_key(budget_key, reserved_kinds) if reserved_kinds else ""
+    reserve_window = "lifetime"
+    reserve_streak = 0
+    if reserve_key:
+        prior = cx.execute(
+            "SELECT used FROM work_budget_counters WHERE budget_key=? AND window_key=?",
+            (reserve_key, reserve_window),
+        ).fetchone()
+        reserve_streak = max(
+            int(prior["used"] if prior else 0), int(observed_other_claims),
+        )
     now = _now()
     where_kind = ""
     params: list[Any] = []
@@ -1077,16 +1148,33 @@ def claim(
             % ",".join("?" for _ in capabilities)
         )
         params.extend(capabilities)
-    row = cx.execute(
+    rows = list(cx.execute(
         f"""
         SELECT * FROM work_items
         WHERE status='queued' AND attempts < max_attempts {where_kind} {where_cap}
         ORDER BY priority DESC, created_at ASC
-        LIMIT 1
         """,
         params,
-    ).fetchone()
+    ))
+    if reserve_key and reserve_streak >= int(reserve_after_other_claims):
+        reserved = [
+            candidate for candidate in rows
+            if candidate["kind"] in reserved_kinds
+            and (reserved_ids is None or candidate["work_id"] in reserved_ids)
+        ]
+        rows = reserved or rows
+    row = None
+    budget_units = 1
+    for candidate in rows:
+        units = int((budget_units_by_kind or {}).get(str(candidate["kind"]), 1))
+        if units < 1:
+            raise ValueError("claim budget units must be positive")
+        if budget_key is None or budget_used + units <= int(budget_limit):
+            row, budget_units = candidate, units
+            break
     if row is None:
+        if budget_key is not None:
+            cx.commit()
         return None
     cur = cx.execute(
         """
@@ -1099,11 +1187,138 @@ def claim(
     if cur.rowcount != 1:
         cx.rollback()
         return None
+    if budget_key is not None:
+        cx.execute(
+            """
+            INSERT INTO work_budget_counters (budget_key, window_key, used, updated_at)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(budget_key, window_key) DO UPDATE SET
+              used=excluded.used, updated_at=excluded.updated_at
+            """,
+            (budget_key, budget_window, budget_used + budget_units, now),
+        )
+    if reserve_key:
+        served_reserved = row["kind"] in reserved_kinds and (
+            reserved_ids is None or row["work_id"] in reserved_ids
+        )
+        next_streak = 0 if served_reserved else reserve_streak + 1
+        cx.execute(
+            """
+            INSERT INTO work_budget_counters (budget_key, window_key, used, updated_at)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(budget_key, window_key) DO UPDATE SET
+              used=excluded.used, updated_at=excluded.updated_at
+            """,
+            (reserve_key, reserve_window, next_streak, now),
+        )
+    cx.execute(
+        """
+        UPDATE worker_heartbeats
+        SET last_seen_at=?, claimed_work_id=?, worker_kind=?
+        WHERE worker_id=?
+        """,
+        (now, str(row["work_id"]), str(row["kind"]), worker_id),
+    )
     cx.commit()
     row = cx.execute("SELECT * FROM work_items WHERE work_id=?", (row["work_id"],)).fetchone()
-    if row:
-        record_worker_heartbeat(cx, worker_id=worker_id, claimed_work_id=str(row["work_id"]), worker_kind=str(row["kind"]))
     return row_to_dict(row) if row else None
+
+
+def budget_used(cx: sqlite3.Connection, *, budget_key: str, budget_window: str) -> int:
+    row = cx.execute(
+        "SELECT used FROM work_budget_counters WHERE budget_key=? AND window_key=?",
+        (budget_key, budget_window),
+    ).fetchone()
+    return int(row["used"] if row else 0)
+
+
+def reconcile_idle_budget(
+    cx: sqlite3.Connection, *, budget_key: str, budget_window: str,
+    observed_used: int, kinds: list[str],
+) -> tuple[int, bool]:
+    """Match a claim budget to durable dispatch receipts when no live claim exists."""
+    if not budget_key or not budget_window or observed_used < 0 or not kinds:
+        raise ValueError("budget reconciliation requires identity, nonnegative usage, and kinds")
+    cx.execute("BEGIN IMMEDIATE")
+    placeholders = ",".join("?" for _ in kinds)
+    live = int(cx.execute(
+        f"""SELECT COUNT(*) AS count FROM work_items
+             WHERE status IN ('claimed', 'running')
+               AND (lease_until IS NULL OR lease_until >= ?)
+               AND kind IN ({placeholders})""",
+        (_now(), *kinds),
+    ).fetchone()["count"])
+    prior = budget_used(cx, budget_key=budget_key, budget_window=budget_window)
+    used = prior if live else int(observed_used)
+    cx.execute(
+        """
+        INSERT INTO work_budget_counters (budget_key, window_key, used, updated_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(budget_key, window_key) DO UPDATE SET
+          used=excluded.used, updated_at=excluded.updated_at
+        """,
+        (budget_key, budget_window, used, _now()),
+    )
+    cx.commit()
+    return used, not live
+
+
+def _normalize_reserved_kinds(
+    reserved_kind: str | tuple[str, ...] | list[str] | None,
+) -> tuple[str, ...]:
+    if reserved_kind is None:
+        return ()
+    values = (reserved_kind,) if isinstance(reserved_kind, str) else tuple(reserved_kind)
+    return tuple(sorted({str(value) for value in values if str(value)}))
+
+
+def _reserved_kind_counter_key(
+    budget_key: str, reserved_kind: str | tuple[str, ...] | list[str],
+) -> str:
+    return f"{budget_key}:reserve:{'+'.join(_normalize_reserved_kinds(reserved_kind))}"
+
+
+def reserved_kind_streak(
+    cx: sqlite3.Connection, *, budget_key: str,
+    reserved_kind: str | tuple[str, ...] | list[str],
+) -> int:
+    return budget_used(
+        cx, budget_key=_reserved_kind_counter_key(budget_key, reserved_kind),
+        budget_window="lifetime",
+    )
+
+
+def reserve_budget(
+    cx: sqlite3.Connection,
+    *,
+    budget_key: str,
+    budget_window: str,
+    budget_limit: int,
+    units: int = 1,
+    observed_budget_used: int = 0,
+) -> tuple[bool, int]:
+    """Atomically reserve units, reconciling any older durable receipts first."""
+    if not budget_key or not budget_window or budget_limit < 1 or units < 0:
+        raise ValueError("budget reservation requires identity, window, positive limit, and nonnegative units")
+    cx.execute("BEGIN IMMEDIATE")
+    prior = cx.execute(
+        "SELECT used FROM work_budget_counters WHERE budget_key=? AND window_key=?",
+        (budget_key, budget_window),
+    ).fetchone()
+    used = max(int(prior["used"] if prior else 0), int(observed_budget_used))
+    accepted = used + units <= budget_limit
+    used += units if accepted else 0
+    cx.execute(
+        """
+        INSERT INTO work_budget_counters (budget_key, window_key, used, updated_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(budget_key, window_key) DO UPDATE SET
+          used=excluded.used, updated_at=excluded.updated_at
+        """,
+        (budget_key, budget_window, used, _now()),
+    )
+    cx.commit()
+    return accepted, used
 
 
 def claim_matching(

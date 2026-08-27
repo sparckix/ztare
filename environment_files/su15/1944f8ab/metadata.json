@@ -1,0 +1,21 @@
+{
+  "game_id": "su15-1944f8ab",
+  "title": "SU15",
+  "default_fps": 20,
+  "tags": [
+    "click"
+  ],
+  "baseline_actions": [
+    22,
+    42,
+    26,
+    115,
+    36,
+    31,
+    8,
+    40,
+    41
+  ],
+  "local_dir": "environment_files/su15/1944f8ab",
+  "date_downloaded": "2026-07-03T05:49:40.452180+00:00"
+}

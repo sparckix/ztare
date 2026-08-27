@@ -1,0 +1,728 @@
+{
+  "checks": {
+    "advance_distal_credit_support_two": true,
+    "choice_set_mismatch_refused": true,
+    "controller_mismatch_refused": true,
+    "credited_first_decisions_nonterminal": true,
+    "detour_distal_hazard_support_two": true,
+    "expired_trace_refused": true,
+    "open_open_information_does_not_credit": true,
+    "protocol_costs_unchanged": true,
+    "selection_flipped": true,
+    "yield_calibration_separate": true
+  },
+  "claim_boundary": "Anonymous synthetic one-step delayed credit and yield-error receipts only; no ARC or H97 outcome.",
+  "environment_contact": false,
+  "hypothesis_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h98_matched_temporal_decision_credit_hypothesis.md",
+  "negative_controls": {
+    "choice_set_mismatch": {
+      "authority": "matched_external_terminal_adjudication",
+      "contrast_chain_sha256": "",
+      "eligibility_delay_steps": null,
+      "enabling_option_family_sha256": "",
+      "evidence_refs": [],
+      "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+      "hazardous_option_family_sha256": "",
+      "kind": "matched_temporal_credit_receipt",
+      "matched_pair_ref": "pair-22",
+      "positive_chain_sha256": "",
+      "reason": "first_choice_authority_mismatch",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "25c3c16df9bf7265588a577cfc5ec1fdda552fce29a5693ccfb7740a6e32501f",
+      "status": "refused"
+    },
+    "controller_mismatch": {
+      "authority": "matched_external_terminal_adjudication",
+      "contrast_chain_sha256": "",
+      "eligibility_delay_steps": null,
+      "enabling_option_family_sha256": "",
+      "evidence_refs": [],
+      "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+      "hazardous_option_family_sha256": "",
+      "kind": "matched_temporal_credit_receipt",
+      "matched_pair_ref": "pair-21",
+      "positive_chain_sha256": "",
+      "reason": "first_choice_authority_mismatch",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "f80229038eb779aa366119fce51f2057f1aa892ab7ed71d09afb0a20545347bd",
+      "status": "refused"
+    },
+    "expired_trace": {
+      "authority": "matched_external_terminal_adjudication",
+      "contrast_chain_sha256": "",
+      "eligibility_delay_steps": null,
+      "enabling_option_family_sha256": "",
+      "evidence_refs": [],
+      "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+      "hazardous_option_family_sha256": "",
+      "kind": "matched_temporal_credit_receipt",
+      "matched_pair_ref": "pair-23",
+      "positive_chain_sha256": "",
+      "reason": "eligibility_trace_expired",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "bd1a70d78b5606c404e2cefb53934104286f55597e5c8a833fd6dc7c02721eeb",
+      "status": "refused"
+    },
+    "open_open": {
+      "judgments": [],
+      "kind": "temporal_decision_credit_compilation",
+      "max_eligibility_delay_steps": 1,
+      "minimum_support": 2,
+      "pair_receipts": [
+        {
+          "authority": "matched_external_terminal_adjudication",
+          "contrast_chain_sha256": "",
+          "eligibility_delay_steps": 1,
+          "enabling_option_family_sha256": "",
+          "evidence_refs": [
+            "adjudication:pair-11:advance:open",
+            "adjudication:pair-11:detour:open"
+          ],
+          "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+          "hazardous_option_family_sha256": "",
+          "kind": "matched_temporal_credit_receipt",
+          "matched_pair_ref": "pair-11",
+          "positive_chain_sha256": "",
+          "reason": "terminal_task_outcomes_not_contrasted",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "e4771be095cd47723a3ea382dd8536dc60717abd0d811ac84d4e4e0155f4bc82",
+          "status": "uninformative"
+        },
+        {
+          "authority": "matched_external_terminal_adjudication",
+          "contrast_chain_sha256": "",
+          "eligibility_delay_steps": 1,
+          "enabling_option_family_sha256": "",
+          "evidence_refs": [
+            "adjudication:pair-12:advance:open",
+            "adjudication:pair-12:detour:open"
+          ],
+          "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+          "hazardous_option_family_sha256": "",
+          "kind": "matched_temporal_credit_receipt",
+          "matched_pair_ref": "pair-12",
+          "positive_chain_sha256": "",
+          "reason": "terminal_task_outcomes_not_contrasted",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "2fc1a00b055d605f0e337e8e953d9461b0b53232a55b3a803d7afdbeaa8ac169",
+          "status": "uninformative"
+        }
+      ],
+      "schema": "ztare-temporal-decision-credit-v1",
+      "settled_pair_count": 0,
+      "sha256": "8315e4d4e43ea6f291c231cf60a203386993353e767d2fa52cb98175b0cc61c3",
+      "task_credit_authority": "matched_external_terminal_adjudication"
+    }
+  },
+  "schema": "ztare-h98-matched-temporal-decision-credit-audit-v1",
+  "selection": {
+    "baseline": {
+      "budget_ineligible_protocol_ids": [],
+      "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+      "canonical_protocol_ids": [
+        "advance-family",
+        "detour-family"
+      ],
+      "contrast_priority_authority": "unresolved_exact_choice_set_coverage",
+      "contrast_priority_by_protocol_id": {},
+      "deduplicated_protocol_ids": [],
+      "max_primitive_execution_units": null,
+      "prices": [
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.44444444,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 2,
+            "primitive_execution_units": 3.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 4.0
+          },
+          "identification": 0.57938016,
+          "novelty": 1.0,
+          "partition_sha256": "3e685c6bc51c9b52893876fbda5844a6484ea2f57c3ee10bbc6a9f97008708b6",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 2,
+              "primitive_execution_units": 3.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 4.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 3,
+            "preparation_operation_sha256s": [
+              "ac8d8342bbb2362d13f0a559a3621bb407011368895164b628a54f7fc33fc43c",
+              "c100f95c1913f9c72fc1f4ef0847e1e723ffe0bde0b36e5f36c13f81fe8c26ed"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "advance-family",
+            "target_sha256": "a2d53abe53ce8383285bca5ef884523bcb7d8cb981629bb1156b71384758fc5a"
+          },
+          "protocol_id": "advance-family",
+          "response_class_count": 2,
+          "status": "priced",
+          "weighted_yield": 2.02382461,
+          "yield_density": 0.50595615
+        },
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.66666667,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 1,
+            "primitive_execution_units": 2.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 3.0
+          },
+          "identification": 1.0,
+          "novelty": 1.0,
+          "partition_sha256": "0b078b0d62c73caa28fd4a9cd8b1157b28508d7162816181e62090d5f73a0d04",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 1,
+              "primitive_execution_units": 2.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 3.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 2,
+            "preparation_operation_sha256s": [
+              "3fa5834dc920d385ca9b099c9fe55dcca163a6b256a261f8f147291b0e7cf633"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "detour-family",
+            "target_sha256": "93ad98017fda2b78113c2fa7c8bbeee5bb3e2938be9588e83b759813f8003b09"
+          },
+          "protocol_id": "detour-family",
+          "response_class_count": 3,
+          "status": "priced",
+          "weighted_yield": 2.66666667,
+          "yield_density": 0.88888889
+        }
+      ],
+      "schema": "ztare-guarded-protocol-selection-v1",
+      "selected_protocol_id": "detour-family",
+      "status": "selected",
+      "task_value_authority": "matched_external_outcome_contrasts_only",
+      "task_value_by_protocol_id": {},
+      "weights": {
+        "compression": 1.0,
+        "identification": 1.0,
+        "novelty": 1.0
+      }
+    },
+    "baseline_costs": {
+      "advance-family": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 2,
+        "primitive_execution_units": 3.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 4.0
+      },
+      "detour-family": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 1,
+        "primitive_execution_units": 2.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 3.0
+      }
+    },
+    "distal_credit_reranked": {
+      "budget_ineligible_protocol_ids": [],
+      "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+      "canonical_protocol_ids": [
+        "advance-family",
+        "detour-family"
+      ],
+      "contrast_priority_authority": "unresolved_exact_choice_set_coverage",
+      "contrast_priority_by_protocol_id": {},
+      "deduplicated_protocol_ids": [],
+      "max_primitive_execution_units": null,
+      "prices": [
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.44444444,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 2,
+            "primitive_execution_units": 3.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 4.0
+          },
+          "identification": 0.57938016,
+          "novelty": 1.0,
+          "partition_sha256": "3e685c6bc51c9b52893876fbda5844a6484ea2f57c3ee10bbc6a9f97008708b6",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 2,
+              "primitive_execution_units": 3.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 4.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 3,
+            "preparation_operation_sha256s": [
+              "ac8d8342bbb2362d13f0a559a3621bb407011368895164b628a54f7fc33fc43c",
+              "c100f95c1913f9c72fc1f4ef0847e1e723ffe0bde0b36e5f36c13f81fe8c26ed"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "advance-family",
+            "target_sha256": "a2d53abe53ce8383285bca5ef884523bcb7d8cb981629bb1156b71384758fc5a"
+          },
+          "protocol_id": "advance-family",
+          "response_class_count": 2,
+          "status": "priced",
+          "weighted_yield": 2.02382461,
+          "yield_density": 0.50595615
+        },
+        {
+          "canonical_pricing_engine": "ztare.common.information_yield_pricing.price_experiment",
+          "committee_sha256": "45d026bf4e369879d9d6488751394617f3956a98e0a6a12b00cf52bfb7202057",
+          "committee_size": 3,
+          "compression_gain": 0.66666667,
+          "cost": {
+            "control_units": 1,
+            "irreversibility_units": 0.0,
+            "preparation_execution_units": 1,
+            "primitive_execution_units": 2.0,
+            "probe_execution_units": 1,
+            "readout_units": 0.0,
+            "total_units": 3.0
+          },
+          "identification": 1.0,
+          "novelty": 1.0,
+          "partition_sha256": "0b078b0d62c73caa28fd4a9cd8b1157b28508d7162816181e62090d5f73a0d04",
+          "protocol": {
+            "cost": {
+              "control_units": 1,
+              "irreversibility_units": 0.0,
+              "preparation_execution_units": 1,
+              "primitive_execution_units": 2.0,
+              "probe_execution_units": 1,
+              "readout_units": 0.0,
+              "total_units": 3.0
+            },
+            "evidence_ref_count": 0,
+            "evidence_refs": [],
+            "evidence_refs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "guard_admitted": true,
+            "guard_reason": "",
+            "novel_context": true,
+            "operation_count": 2,
+            "preparation_operation_sha256s": [
+              "3fa5834dc920d385ca9b099c9fe55dcca163a6b256a261f8f147291b0e7cf633"
+            ],
+            "probe_sha256": "59a56e97bc0c924749081be8364b10d76825954e22b551848e381828522a6443",
+            "protocol_id": "detour-family",
+            "target_sha256": "93ad98017fda2b78113c2fa7c8bbeee5bb3e2938be9588e83b759813f8003b09"
+          },
+          "protocol_id": "detour-family",
+          "response_class_count": 3,
+          "status": "priced",
+          "weighted_yield": 2.66666667,
+          "yield_density": 0.88888889
+        }
+      ],
+      "schema": "ztare-guarded-protocol-selection-v1",
+      "selected_protocol_id": "advance-family",
+      "status": "selected",
+      "task_value_authority": "matched_external_outcome_contrasts_only",
+      "task_value_by_protocol_id": {
+        "advance-family": 1,
+        "detour-family": -1
+      },
+      "weights": {
+        "compression": 1.0,
+        "identification": 1.0,
+        "novelty": 1.0
+      }
+    },
+    "reranked_costs": {
+      "advance-family": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 2,
+        "primitive_execution_units": 3.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 4.0
+      },
+      "detour-family": {
+        "control_units": 1,
+        "irreversibility_units": 0.0,
+        "preparation_execution_units": 1,
+        "primitive_execution_units": 2.0,
+        "probe_execution_units": 1,
+        "readout_units": 0.0,
+        "total_units": 3.0
+      }
+    }
+  },
+  "status": "offline_complete",
+  "temporal_credit": {
+    "judgments": [
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "advance-family",
+            "detour-family"
+          ],
+          "choice_context_sha256": "shared-source-state",
+          "continuation_context_sha256": "controller-v1",
+          "decision_namespace": "anonymous-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+          "task_contract_sha256": "external-task"
+        },
+        "authority_kind": "matched_external_terminal_adjudication",
+        "authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "enable_support": 2,
+        "evidence_refs": [
+          "adjudication:pair-1:advance:attained",
+          "adjudication:pair-1:detour:open",
+          "adjudication:pair-2:advance:attained",
+          "adjudication:pair-2:detour:open"
+        ],
+        "hazard_support": 0,
+        "kind": "temporal_decision_task_judgment",
+        "matched_pair_sha256s": [
+          "3ac7acb82ccfd795317e9c3d273934de38edc0bf615536936b69eda761c8586f",
+          "ab2bbfb304db9b1022363ec4328656d79e8725d08415354f71081e341f64c887"
+        ],
+        "maximum_delay_steps": 1,
+        "option_family_sha256": "advance-family",
+        "preference": 1,
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "a9b2b70d8c7ec1e8af6dcec10e75f162c7d30825a400376fbc409964921c2776",
+        "status": "task_credited"
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "advance-family",
+            "detour-family"
+          ],
+          "choice_context_sha256": "shared-source-state",
+          "continuation_context_sha256": "controller-v1",
+          "decision_namespace": "anonymous-protocol-choice",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+          "task_contract_sha256": "external-task"
+        },
+        "authority_kind": "matched_external_terminal_adjudication",
+        "authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "enable_support": 0,
+        "evidence_refs": [
+          "adjudication:pair-1:advance:attained",
+          "adjudication:pair-1:detour:open",
+          "adjudication:pair-2:advance:attained",
+          "adjudication:pair-2:detour:open"
+        ],
+        "hazard_support": 2,
+        "kind": "temporal_decision_task_judgment",
+        "matched_pair_sha256s": [
+          "3ac7acb82ccfd795317e9c3d273934de38edc0bf615536936b69eda761c8586f",
+          "ab2bbfb304db9b1022363ec4328656d79e8725d08415354f71081e341f64c887"
+        ],
+        "maximum_delay_steps": 1,
+        "option_family_sha256": "detour-family",
+        "preference": -1,
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "904e47f69a5f63bd885ad5ad825a0ab61db523e5dae3a3ffaa72a495c4646f34",
+        "status": "task_hazard"
+      }
+    ],
+    "kind": "temporal_decision_credit_compilation",
+    "max_eligibility_delay_steps": 1,
+    "minimum_support": 2,
+    "pair_receipts": [
+      {
+        "authority": "matched_external_terminal_adjudication",
+        "contrast_chain_sha256": "f44f23f0cd70f08b6b9a4d9cddc9513ae9a80408fb31ca0b8bb6d768b828988f",
+        "eligibility_delay_steps": 1,
+        "enabling_option_family_sha256": "advance-family",
+        "evidence_refs": [
+          "adjudication:pair-1:advance:attained",
+          "adjudication:pair-1:detour:open"
+        ],
+        "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "hazardous_option_family_sha256": "detour-family",
+        "kind": "matched_temporal_credit_receipt",
+        "matched_pair_ref": "pair-1",
+        "positive_chain_sha256": "bda30b603ac9403ef785e2d98142720ca89a308af9775262c7fa9a7b8462552c",
+        "reason": "matched_delayed_terminal_contrast",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "ab2bbfb304db9b1022363ec4328656d79e8725d08415354f71081e341f64c887",
+        "status": "settled"
+      },
+      {
+        "authority": "matched_external_terminal_adjudication",
+        "contrast_chain_sha256": "b7c73fcfbdd7055ad69e6db22b3c69b5f9da14e94b8d54b74d616a9a56507bf3",
+        "eligibility_delay_steps": 1,
+        "enabling_option_family_sha256": "advance-family",
+        "evidence_refs": [
+          "adjudication:pair-2:advance:attained",
+          "adjudication:pair-2:detour:open"
+        ],
+        "first_authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "hazardous_option_family_sha256": "detour-family",
+        "kind": "matched_temporal_credit_receipt",
+        "matched_pair_ref": "pair-2",
+        "positive_chain_sha256": "f7daed6114a5a98702ea89f8fd470df5c358e0df58378eece15e06dcfae8b966",
+        "reason": "matched_delayed_terminal_contrast",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "3ac7acb82ccfd795317e9c3d273934de38edc0bf615536936b69eda761c8586f",
+        "status": "settled"
+      }
+    ],
+    "schema": "ztare-temporal-decision-credit-v1",
+    "settled_pair_count": 2,
+    "sha256": "4475ef8c66237b3f00f62655f8bdf3335e69a58eee2f1bc91d22945870d28d75",
+    "task_credit_authority": "matched_external_terminal_adjudication"
+  },
+  "verdict": "supported",
+  "yield_calibration": [
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "finish-family",
+          "wait-family"
+        ],
+        "choice_context_sha256": "pair-1:detour:state-1",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "0f7e8083e008a9e5e84abe9a95efb7842bc55d28e6e3ea6f56e490f43f49fabb",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "0f7e8083e008a9e5e84abe9a95efb7842bc55d28e6e3ea6f56e490f43f49fabb",
+      "evidence_refs": [
+        "edge:pair-1:detour:1"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 0.0,
+      "mean_error": 0.0,
+      "mean_observed_yield": 0.2,
+      "mean_predicted_yield": 0.2,
+      "observation_count": 1,
+      "option_family_sha256": "wait-family",
+      "option_variant_sha256": "terminal-open",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "9da999f5435a31b0fe53c844bef1d81f761f13416b66bd3bc8c1551fd4825768",
+      "status": "provisional",
+      "task_credit_authorized": false
+    },
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "finish-family",
+          "wait-family"
+        ],
+        "choice_context_sha256": "pair-1:advance:state-1",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "1088cba6db3b7462840b4bfdd4ae0356debccb443a4232b8d6759f269ca00581",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "1088cba6db3b7462840b4bfdd4ae0356debccb443a4232b8d6759f269ca00581",
+      "evidence_refs": [
+        "edge:pair-1:advance:1"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 0.0,
+      "mean_error": 0.0,
+      "mean_observed_yield": 0.2,
+      "mean_predicted_yield": 0.2,
+      "observation_count": 1,
+      "option_family_sha256": "finish-family",
+      "option_variant_sha256": "terminal-attained",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "271d6e5790dc25b37ca568872e581326ad31c41cb7ab080ec350f4f770b5ac10",
+      "status": "provisional",
+      "task_credit_authorized": false
+    },
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "finish-family",
+          "wait-family"
+        ],
+        "choice_context_sha256": "pair-2:advance:state-1",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "a7c9d64f6204fda053aba05e990fb286865ecd8c59169379166cf90b703ac8c2",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "a7c9d64f6204fda053aba05e990fb286865ecd8c59169379166cf90b703ac8c2",
+      "evidence_refs": [
+        "edge:pair-2:advance:1"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 0.0,
+      "mean_error": 0.0,
+      "mean_observed_yield": 0.2,
+      "mean_predicted_yield": 0.2,
+      "observation_count": 1,
+      "option_family_sha256": "finish-family",
+      "option_variant_sha256": "terminal-attained",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "4baccdf5b0166298a383b6fe7c9c81d1d77653b1fc0cfe182b4473cd1d857e92",
+      "status": "provisional",
+      "task_credit_authorized": false
+    },
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "advance-family",
+          "detour-family"
+        ],
+        "choice_context_sha256": "shared-source-state",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+      "evidence_refs": [
+        "edge:pair-1:advance:0",
+        "edge:pair-2:advance:0"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 0.30000000000000004,
+      "mean_error": -0.30000000000000004,
+      "mean_observed_yield": 0.5,
+      "mean_predicted_yield": 0.8,
+      "observation_count": 2,
+      "option_family_sha256": "advance-family",
+      "option_variant_sha256": "advance-family-variant",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "89ef13dc9aaf5ae6e0fda2032cecf93a9763719bbd17c103583bcd5f7d64f616",
+      "status": "calibrated",
+      "task_credit_authorized": false
+    },
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "advance-family",
+          "detour-family"
+        ],
+        "choice_context_sha256": "shared-source-state",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "cf2147d49d2c19f520358e0b7e39ee27b73bd2c00fb44d63c5fe8e79e71f858c",
+      "evidence_refs": [
+        "edge:pair-1:detour:0",
+        "edge:pair-2:detour:0"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 1.075,
+      "mean_error": -1.075,
+      "mean_observed_yield": 0.125,
+      "mean_predicted_yield": 1.2,
+      "observation_count": 2,
+      "option_family_sha256": "detour-family",
+      "option_variant_sha256": "detour-family-variant",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "f1b768a4dd661229bc5db475afd035b0da627c61779587a8d1d771781c1f6b7d",
+      "status": "calibrated",
+      "task_credit_authorized": false
+    },
+    {
+      "authority": {
+        "available_option_family_sha256s": [
+          "finish-family",
+          "wait-family"
+        ],
+        "choice_context_sha256": "pair-2:detour:state-1",
+        "continuation_context_sha256": "controller-v1",
+        "decision_namespace": "anonymous-protocol-choice",
+        "kind": "decision_choice_authority",
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "f2279fc2ce74008efc11197ed2ec6e476db3674f3dd34e6343a4e954cc5f4507",
+        "task_contract_sha256": "external-task"
+      },
+      "authority_kind": "observed_information_yield_only",
+      "authority_sha256": "f2279fc2ce74008efc11197ed2ec6e476db3674f3dd34e6343a4e954cc5f4507",
+      "evidence_refs": [
+        "edge:pair-2:detour:1"
+      ],
+      "information_yield_measure_sha256": "heldout-version-space-reduction-v1",
+      "kind": "decision_yield_calibration",
+      "mean_absolute_error": 0.0,
+      "mean_error": 0.0,
+      "mean_observed_yield": 0.2,
+      "mean_predicted_yield": 0.2,
+      "observation_count": 1,
+      "option_family_sha256": "wait-family",
+      "option_variant_sha256": "terminal-open",
+      "schema": "ztare-temporal-decision-credit-v1",
+      "sha256": "abfc31049d0aecb7817e2723842d7a61cae46c7fdbbf302bd30754b6ab3a020f",
+      "status": "provisional",
+      "task_credit_authorized": false
+    }
+  ]
+}

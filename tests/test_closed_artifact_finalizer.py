@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+from types import SimpleNamespace
 
 
 def _positive_target_governance() -> dict:
@@ -85,6 +86,28 @@ def test_toolchain_identity_is_content_bound_and_path_neutral(
     assert first["project"] == "proofs"
     assert str(tmp_path) not in repr(first)
     assert first["identity_sha256"] != second["identity_sha256"]
+
+
+def test_toolchain_probe_allows_cold_lake_startup(monkeypatch) -> None:
+    from ztare.leanmill.solver import closed_artifact
+
+    observed = {}
+
+    def fake_run(command, **kwargs):
+        observed["command"] = command
+        observed["timeout"] = kwargs["timeout"]
+        return SimpleNamespace(returncode=0, stdout="Lean cold", stderr="")
+
+    monkeypatch.setattr(closed_artifact.subprocess, "run", fake_run)
+
+    assert closed_artifact._run_text(("lake", "env", "lean", "--version")) == (
+        "Lean cold"
+    )
+    assert observed == {
+        "command": ["lake", "env", "lean", "--version"],
+        "timeout": closed_artifact.TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
+    }
+    assert closed_artifact.TOOLCHAIN_PROBE_TIMEOUT_SECONDS >= 30
 
 
 def test_kernel_parity_record_binds_closure_toolchain_and_environment() -> None:

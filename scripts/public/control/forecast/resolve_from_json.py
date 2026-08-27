@@ -3,7 +3,7 @@
 
 This is a narrow wrapper for VPS use: it avoids fragile shell quoting for
 resolution notes and JSON-list fields while still delegating all authority and
-ordering checks to forecast_pool.py.
+ordering checks to the forecast pool CLI.
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import forecast_pool
+import pool as forecast_pool
 
 
 DEFAULTS: dict[str, Any] = {

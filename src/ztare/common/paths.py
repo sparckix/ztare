@@ -15,3 +15,14 @@ GLOBAL_PRIMITIVES_DIR = REPO_ROOT / "global_primitives"
 PAPERS_DIR = REPO_ROOT / "papers"
 PAPER1_DIR = PAPERS_DIR / "paper1"
 PAPER2_DIR = PAPERS_DIR / "paper2"
+
+
+def resolve_project_dir(project: str | Path) -> Path:
+    """Resolve an explicit project path before interpreting a bare slug."""
+    candidate = Path(project).expanduser()
+    if candidate.exists():
+        return candidate.resolve()
+    fallback = PROJECTS_DIR / candidate
+    if fallback.exists():
+        return fallback.resolve()
+    raise FileNotFoundError(f"Project not found: {project}")

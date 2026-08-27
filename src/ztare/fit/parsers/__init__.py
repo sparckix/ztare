@@ -192,21 +192,31 @@ def _parse_sweep_block(text: str, spec: EvidenceSpec) -> ParsedEvidence:
 
 def _parse_delimited(text: str, spec: EvidenceSpec, delim: str) -> ParsedEvidence:
     """Common implementation for CSV / TSV / explicit-delimiter formats."""
-    n_indep = len(spec.independent_vars) or max(1, len(spec.columns) - 1)
+    independent = spec.independent_vars or spec.columns[:-1]
+    n_indep = len(independent) or max(1, len(spec.columns) - 1)
     xs: list[list[float]] = [[] for _ in range(n_indep)]
     ys: list[float] = []
+    indexes: tuple[int, ...] | None = None
+    target_index: int | None = None
 
     for raw in text.splitlines()[spec.header_skip:]:
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
         parts = [p.strip() for p in line.split(delim)]
+        if indexes is None and spec.columns and set(spec.columns) <= set(parts):
+            header = {name: index for index, name in enumerate(parts)}
+            indexes = tuple(header[name] for name in independent)
+            target_index = header[spec.columns[-1]]
+            continue
+        row_indexes = indexes or tuple(range(n_indep))
+        row_target = target_index if target_index is not None else n_indep
         if len(parts) < n_indep + 1:
             continue
         try:
-            row_x = [float(parts[i]) for i in range(n_indep)]
-            y = float(parts[n_indep])
-        except ValueError:
+            row_x = [float(parts[i]) for i in row_indexes]
+            y = float(parts[row_target])
+        except (IndexError, ValueError):
             continue  # header row
         for i, v in enumerate(row_x):
             xs[i].append(v)

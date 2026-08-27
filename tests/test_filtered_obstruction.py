@@ -8,11 +8,23 @@ import ztare.common.filtered_obstruction as filtered_obstruction_module
 from ztare.common.content_bound_evidence import EvidenceAuthority
 from ztare.common.filtered_obstruction import (
     FilteredAction,
+    FilteredAlgebraicClockContinuationProblem,
+    FilteredAlgebraicContinuationClaim,
+    FilteredAlgebraicContinuationEvidenceScope,
     FilteredAsymptoticClaim,
     FilteredAsymptoticEvidenceScope,
     FilteredAsymptoticInductionProblem,
     FilteredAsymptoticRateWitness,
     FilteredBasisVector,
+    FilteredCriticalTwoFlowClaim,
+    FilteredCriticalTwoFlowEvidenceScope,
+    FilteredCriticalTwoFlowProblem,
+    FilteredCriticalSupportClaim,
+    FilteredCriticalSupportEvidenceScope,
+    FilteredCriticalSupportProblem,
+    FilteredDensityClockClaim,
+    FilteredDensityClockEvidenceScope,
+    FilteredDensityClockOrbitProblem,
     FilteredCoupledBlock,
     FilteredCoupledBlockProblem,
     FilteredGraphQuotientProblem,
@@ -45,8 +57,12 @@ from ztare.common.filtered_obstruction import (
     FilteredTailOccurrenceOrder,
     FilteredTwoFlowPuiseuxProblem,
     compile_filtered_surplus_projection,
+    compile_filtered_algebraic_clock_continuation,
     compile_filtered_asymptotic_induction,
     compile_filtered_coupled_blocks,
+    compile_filtered_critical_two_flow_terminal,
+    compile_filtered_critical_support,
+    compile_filtered_density_clock_orbit_obstruction,
     compile_filtered_graph_quotient,
     compile_filtered_induction,
     compile_filtered_symbol_cokernel,
@@ -62,7 +78,13 @@ from ztare.common.filtered_obstruction import (
     compile_filtered_two_flow_puiseux_obstruction,
     make_filtered_tail_context,
     make_filtered_tail_evidence,
+    make_filtered_algebraic_continuation_evidence,
     make_filtered_asymptotic_evidence,
+    make_filtered_critical_two_flow_context,
+    make_filtered_critical_two_flow_evidence,
+    make_filtered_critical_support_context,
+    make_filtered_critical_support_evidence,
+    make_filtered_density_clock_evidence,
     make_filtered_puiseux_context,
     make_filtered_puiseux_evidence,
     make_filtered_polar_tensor_context,
@@ -1730,11 +1752,258 @@ def test_puiseux_flow_compiler_excludes_a_polynomial_generator() -> None:
     assert certificate.nonroot_exponent_mismatch
     assert certificate.forced_root_multiplicity == "5/2"
     assert certificate.forced_root_multiplicity_is_noninteger
+    assert certificate.time_one_realization_verified_by_adapter
+    assert certificate.zero_generator_excluded_by_nonidentity_germ
     assert certificate.polynomial_generator_excluded
     assert not certificate.adapter_completeness_inferred
     assert len(certificate.evidence_receipt_sha256) == 3
     assert certificate.puiseux_flow_certificate_sha256 == (
-        "f92d623f934ca99088d243307796c6c17e79269165da95ac70ec56136b2034cc"
+        "955e6c42c3e9501bffa6579529f02184d9fd22694bbfe3c1772715bd54dafd8e"
+    )
+
+
+def _density_clock_problem(
+    *,
+    exponent: str = "5/2",
+    polynomiality_scope: FilteredDensityClockEvidenceScope = (
+        FilteredDensityClockEvidenceScope.EXACT_SEMIDIRECT_EXPONENTIAL_POLYNOMIALITY
+    ),
+    selected_scope: FilteredDensityClockEvidenceScope = (
+        FilteredDensityClockEvidenceScope.SELECTED_ANALYTIC_BRANCH_EXHAUSTIVE
+    ),
+) -> FilteredDensityClockOrbitProblem:
+    context = _puiseux_context(
+        germ_id="alien_weight_three_halves_density_clock.germ",
+        exponent=exponent,
+        digest="a" * 64,
+    )
+    puiseux = _puiseux_evidence(
+        context,
+        flow_claim=FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY,
+    )
+    polynomiality = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=polynomiality_scope,
+        evidence_sha256="9" * 64,
+    )
+    clock = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=(
+            FilteredDensityClockEvidenceScope.EXACT_FORMAL_CLOCK_FACTORIZATION
+        ),
+        evidence_sha256="b" * 64,
+    )
+    selected = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.SELECTED_ENDPOINT_TRICHOTOMY,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=selected_scope,
+        evidence_sha256="c" * 64,
+    )
+    local_lattices = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.LOCAL_ENDPOINT_PUISEUX_LATTICES,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=(
+            FilteredDensityClockEvidenceScope.ALL_POLYNOMIAL_ROOT_AND_INFINITY_CHARTS
+        ),
+        evidence_sha256="2" * 64,
+    )
+    return FilteredDensityClockOrbitProblem(
+        name="alien_selected_density_clock_orbit",
+        context=context,
+        evidence=(*puiseux, polynomiality, clock, local_lattices, selected),
+    )
+
+
+def test_density_clock_compiler_excludes_every_selected_endpoint_case() -> None:
+    certificate = compile_filtered_density_clock_orbit_obstruction(
+        _density_clock_problem()
+    )
+    assert certificate.regular_finite_case_excluded
+    assert certificate.multiple_nonzero_root_clock_diverges
+    assert certificate.simple_root_inverse_order == 3
+    assert certificate.simple_root_forced_generator_multiplicity == "3/2"
+    assert certificate.simple_root_case_excluded
+    assert certificate.infinity_degree_relation == "2*e=3*d+2"
+    assert certificate.infinity_generator_degree_even
+    assert certificate.infinity_fractional_increment_outside_lattice
+    assert certificate.infinity_case_excluded
+    assert certificate.selected_polynomial_orbit_excluded
+    assert certificate.group_module_polynomiality_verified_by_adapter
+    assert not certificate.adapter_completeness_inferred
+
+
+def _algebraic_clock_continuation_problem(
+    *,
+    exponent: str = "5/2",
+    place_scope: FilteredAlgebraicContinuationEvidenceScope = (
+        FilteredAlgebraicContinuationEvidenceScope.ALL_FINITE_ALGEBRAIC_EXTENSIONS_AT_SELECTED_PLACE
+    ),
+) -> FilteredAlgebraicClockContinuationProblem:
+    context = _puiseux_context(
+        germ_id="alien_algebraic_density_clock.germ",
+        exponent=exponent,
+        digest="d" * 64,
+    )
+    julia = _puiseux_evidence(
+        context,
+        flow_claim=FilteredPuiseuxClaim.JULIA_FLOW_IDENTITY,
+    )[2]
+    polynomiality = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=(
+            FilteredDensityClockEvidenceScope.EXACT_SEMIDIRECT_EXPONENTIAL_POLYNOMIALITY
+        ),
+        evidence_sha256="9" * 64,
+    )
+    clock = make_filtered_density_clock_evidence(
+        claim=FilteredDensityClockClaim.CLOCK_FACTORIZATION_IDENTITY,
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=(
+            FilteredDensityClockEvidenceScope.EXACT_FORMAL_CLOCK_FACTORIZATION
+        ),
+        evidence_sha256="e" * 64,
+    )
+    nonbase = make_filtered_algebraic_continuation_evidence(
+        claim=(
+            FilteredAlgebraicContinuationClaim.CRITICAL_SQUARE_OUTSIDE_BASE_FIELD
+        ),
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=(
+            FilteredAlgebraicContinuationEvidenceScope.EXACT_CRITICAL_FUNCTION_FIELD
+        ),
+        evidence_sha256="f" * 64,
+    )
+    place = make_filtered_algebraic_continuation_evidence(
+        claim=(
+            FilteredAlgebraicContinuationClaim.ALGEBRAIC_PLACE_PUISEUX_EXTENSION
+        ),
+        context=context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=place_scope,
+        evidence_sha256="1" * 64,
+    )
+    return FilteredAlgebraicClockContinuationProblem(
+        name="alien_algebraic_density_clock_continuation",
+        context=context,
+        evidence=(julia, polynomiality, clock, nonbase, place),
+    )
+
+
+def test_algebraic_clock_continuation_derives_selected_endpoint() -> None:
+    certificate = compile_filtered_algebraic_clock_continuation(
+        _algebraic_clock_continuation_problem()
+    )
+    assert certificate.squared_density_identity_verified_by_adapter
+    assert certificate.group_module_polynomiality_verified_by_adapter
+    assert certificate.time_one_julia_identity_verified_by_adapter
+    assert certificate.zero_generator_excluded_before_elimination
+    assert certificate.critical_square_outside_base_field
+    assert certificate.critical_square_first_nonbase_exponent == "3/2"
+    assert certificate.derivative_free_eliminant_nonzero
+    assert certificate.endpoint_algebraic_over_selected_critical_field
+    assert certificate.selected_place_extension_verified_by_adapter
+    assert certificate.selected_endpoint_is_finite_or_infinity
+    assert certificate.selected_endpoint_trichotomy_derived
+    assert certificate.selected_endpoint_receipt_sha256
+    assert not certificate.adapter_completeness_inferred
+
+
+def test_algebraic_clock_continuation_rejects_finite_place_scope() -> None:
+    problem = _algebraic_clock_continuation_problem(
+        place_scope=(
+            FilteredAlgebraicContinuationEvidenceScope.FINITE_WINDOW
+        )
+    )
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_algebraic_clock_continuation(problem)
+    assert error.value.code == (
+        "algebraic_continuation_evidence_scope_mismatch"
+    )
+
+
+def test_algebraic_clock_continuation_rejects_missing_nonbase_claim() -> None:
+    problem = _algebraic_clock_continuation_problem()
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_algebraic_clock_continuation(
+            replace(problem, evidence=problem.evidence[:-2] + problem.evidence[-1:])
+        )
+    assert error.value.code == (
+        "algebraic_clock_continuation_evidence_claim_set_incomplete"
+    )
+
+
+def test_algebraic_clock_continuation_rejects_wrong_exponent() -> None:
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_algebraic_clock_continuation(
+            _algebraic_clock_continuation_problem(exponent="7/3")
+        )
+    assert error.value.code == (
+        "unsupported_algebraic_continuation_exponent"
+    )
+
+
+def test_density_clock_compiler_rejects_missing_selected_continuation() -> None:
+    problem = _density_clock_problem()
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_density_clock_orbit_obstruction(
+            replace(problem, evidence=problem.evidence[:-1])
+        )
+    assert error.value.code == (
+        "density_clock_orbit_evidence_claim_set_incomplete"
+    )
+
+
+def test_density_clock_compiler_rejects_missing_group_module_polynomiality() -> None:
+    problem = _density_clock_problem()
+    evidence = tuple(
+        receipt for receipt in problem.evidence
+        if receipt.claim_id !=
+        FilteredDensityClockClaim.GROUP_MODULE_POLYNOMIALITY.value
+    )
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_density_clock_orbit_obstruction(
+            replace(problem, evidence=evidence)
+        )
+    assert error.value.code == (
+        "density_clock_orbit_evidence_claim_set_incomplete"
+    )
+
+
+def test_density_clock_compiler_rejects_finite_window_group_module_polynomiality() -> None:
+    problem = _density_clock_problem(
+        polynomiality_scope=FilteredDensityClockEvidenceScope.FINITE_WINDOW
+    )
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_density_clock_orbit_obstruction(problem)
+    assert error.value.code == "density_clock_evidence_scope_mismatch"
+
+
+def test_density_clock_compiler_rejects_finite_selected_scope() -> None:
+    problem = _density_clock_problem(
+        selected_scope=FilteredDensityClockEvidenceScope.FINITE_WINDOW
+    )
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_density_clock_orbit_obstruction(problem)
+    assert error.value.code == "density_clock_evidence_scope_mismatch"
+
+
+def test_density_clock_compiler_rejects_another_fractional_exponent() -> None:
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_density_clock_orbit_obstruction(
+            _density_clock_problem(exponent="7/3")
+        )
+    assert error.value.code == (
+        "unsupported_density_clock_fractional_exponent"
     )
 
 
@@ -1850,7 +2119,7 @@ def test_two_flow_puiseux_compiler_excludes_finite_factorization() -> None:
     assert len(certificate.evidence_receipt_sha256) == 3
     assert certificate.proportional_julia_receipt_sha256
     assert certificate.two_flow_puiseux_certificate_sha256 == (
-        "78ac6ab89f4d74c41c10698c29009fd2b0d312d46cae8cdf6603d6f8bcc278a7"
+        "1cd2a8e7a41bc6723f73cabc9d1cf7f2babd8a0007232f95174930da2520356a"
     )
 
 
@@ -2079,6 +2348,225 @@ def test_polar_witt_compiler_rejects_finite_or_wrong_owned_evidence() -> None:
     )
 
 
+def _critical_two_flow_problem(
+    *,
+    name: str = "alien_critical_two_flow_terminal",
+    schedule_category_id: str = "alien zero-face schedule category",
+    factorization_category_id: str = (
+        "alien normalized autonomous polynomial two-flow category"
+    ),
+    source_germ_id: str = "alien exact source germ",
+    visible_germ_id: str = "alien exact visible germ",
+    minimum_generator_vanishing_order: int = 2,
+    specialization_evidence_sha256: str = "5" * 64,
+    exclusion_evidence_sha256: str = "6" * 64,
+    realization_scope: FilteredCriticalTwoFlowEvidenceScope = (
+        FilteredCriticalTwoFlowEvidenceScope.ALL_STRICT_SUBTHRESHOLD_ZERO_FACES
+    ),
+    exclusion_scope: FilteredCriticalTwoFlowEvidenceScope = (
+        FilteredCriticalTwoFlowEvidenceScope.EXACT_NORMALIZED_AUTONOMOUS_TWO_FLOW_CATEGORY
+    ),
+    realization_authority: EvidenceAuthority = EvidenceAuthority.ADAPTER_EXACT,
+    exclusion_authority: EvidenceAuthority = EvidenceAuthority.FILTERED_COMPILER,
+    realization_subject_id: str | None = None,
+    exclusion_subject_id: str | None = None,
+) -> FilteredCriticalTwoFlowProblem:
+    context = make_filtered_critical_two_flow_context(
+        schedule_category_id=schedule_category_id,
+        factorization_category_id=factorization_category_id,
+        source_germ_id=source_germ_id,
+        visible_germ_id=visible_germ_id,
+        minimum_generator_vanishing_order=(
+            minimum_generator_vanishing_order
+        ),
+        specialization_evidence_sha256=specialization_evidence_sha256,
+        exclusion_evidence_sha256=exclusion_evidence_sha256,
+    )
+    realization = make_filtered_critical_two_flow_evidence(
+        claim=(
+            FilteredCriticalTwoFlowClaim.ZERO_FACE_REALIZES_TWO_FLOW_FACTORIZATION
+        ),
+        subject_id=realization_subject_id or f"{name}.zero_face_realization",
+        context=context,
+        authority=realization_authority,
+        scope=realization_scope,
+        evidence_sha256=specialization_evidence_sha256,
+    )
+    exclusion = make_filtered_critical_two_flow_evidence(
+        claim=(
+            FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED
+        ),
+        subject_id=exclusion_subject_id or f"{name}.two_flow_exclusion",
+        context=context,
+        authority=exclusion_authority,
+        scope=exclusion_scope,
+        evidence_sha256=exclusion_evidence_sha256,
+    )
+    return FilteredCriticalTwoFlowProblem(
+        name=name,
+        context=context,
+        evidence=(realization, exclusion),
+    )
+
+
+def test_critical_two_flow_problem_has_no_boolean_assertion_fields() -> None:
+    annotations = get_type_hints(FilteredCriticalTwoFlowProblem)
+    assert bool not in annotations.values()
+
+
+def test_critical_two_flow_compiler_composes_two_distinct_arrows() -> None:
+    problem = _critical_two_flow_problem()
+    first = compile_filtered_critical_two_flow_terminal(problem)
+    second = compile_filtered_critical_two_flow_terminal(problem)
+    assert first.zero_face_realizes_two_flow_factorization
+    assert first.normalized_two_flow_factorization_excluded
+    assert first.critical_terminal_excluded
+    assert first.minimum_generator_vanishing_order == 2
+    assert first.evidence_receipt_sha256 == second.evidence_receipt_sha256
+    assert first.critical_two_flow_certificate_sha256 == (
+        second.critical_two_flow_certificate_sha256
+    )
+    assert len(first.evidence_receipt_sha256) == 2
+    assert first.evidence_receipt_sha256[0][1] != (
+        first.evidence_receipt_sha256[1][1]
+    )
+    assert first.proof_contract_sha256 != (
+        first.critical_two_flow_certificate_sha256
+    )
+
+
+@pytest.mark.parametrize(
+    ("changes", "error_code"),
+    (
+        (
+            {
+                "realization_scope": (
+                    FilteredCriticalTwoFlowEvidenceScope.FINITE_WINDOW
+                )
+            },
+            "critical_two_flow_evidence_scope_mismatch",
+        ),
+        (
+            {
+                "exclusion_scope": (
+                    FilteredCriticalTwoFlowEvidenceScope.FINITE_WINDOW
+                )
+            },
+            "critical_two_flow_evidence_scope_mismatch",
+        ),
+        (
+            {"realization_authority": EvidenceAuthority.FINITE_EXPERIMENT},
+            "critical_two_flow_evidence_authority_mismatch",
+        ),
+        (
+            {"exclusion_authority": EvidenceAuthority.ADAPTER_EXACT},
+            "critical_two_flow_evidence_authority_mismatch",
+        ),
+        (
+            {"minimum_generator_vanishing_order": 1},
+            "critical_two_flow_normalization_too_weak",
+        ),
+    ),
+)
+def test_critical_two_flow_compiler_rejects_wrong_scope_authority_or_category(
+    changes: dict[str, object],
+    error_code: str,
+) -> None:
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_critical_two_flow_terminal(
+            _critical_two_flow_problem(**changes)  # type: ignore[arg-type]
+        )
+    assert error.value.code == error_code
+
+
+def test_critical_two_flow_compiler_rejects_reuse_missing_and_grafting() -> None:
+    problem = _critical_two_flow_problem()
+    with pytest.raises(FilteredObstructionError) as reused_error:
+        compile_filtered_critical_two_flow_terminal(
+            _critical_two_flow_problem(
+                realization_subject_id="same.proposition",
+                exclusion_subject_id="same.proposition",
+            )
+        )
+    assert reused_error.value.code == "critical_two_flow_evidence_subject_reused"
+
+    with pytest.raises(FilteredObstructionError) as missing_error:
+        compile_filtered_critical_two_flow_terminal(
+            replace(problem, evidence=problem.evidence[:1])
+        )
+    assert missing_error.value.code == (
+        "critical_two_flow_evidence_claim_set_incomplete"
+    )
+
+    with pytest.raises(FilteredObstructionError) as duplicate_error:
+        compile_filtered_critical_two_flow_terminal(
+            replace(
+                problem,
+                evidence=(problem.evidence[0], problem.evidence[0]),
+            )
+        )
+    assert duplicate_error.value.code == (
+        "critical_two_flow_evidence_claim_duplicate"
+    )
+
+    other = _critical_two_flow_problem(
+        name="alien_changed_germs",
+        source_germ_id="changed source germ",
+        visible_germ_id="changed visible germ",
+    )
+    with pytest.raises(FilteredObstructionError) as context_error:
+        compile_filtered_critical_two_flow_terminal(
+            replace(problem, evidence=(other.evidence[0], problem.evidence[1]))
+        )
+    assert context_error.value.code == (
+        "critical_two_flow_evidence_context_mismatch"
+    )
+
+
+def test_critical_two_flow_compiler_rejects_wrong_artifact_and_old_puiseux_claim() -> None:
+    problem = _critical_two_flow_problem()
+    wrong_artifact = make_filtered_critical_two_flow_evidence(
+        claim=(
+            FilteredCriticalTwoFlowClaim.NORMALIZED_TWO_FLOW_FACTORIZATION_EXCLUDED
+        ),
+        subject_id="wrong.exclusion.artifact",
+        context=problem.context,
+        authority=EvidenceAuthority.FILTERED_COMPILER,
+        scope=(
+            FilteredCriticalTwoFlowEvidenceScope.EXACT_NORMALIZED_AUTONOMOUS_TWO_FLOW_CATEGORY
+        ),
+        evidence_sha256="9" * 64,
+    )
+    with pytest.raises(FilteredObstructionError) as artifact_error:
+        compile_filtered_critical_two_flow_terminal(
+            replace(problem, evidence=(problem.evidence[0], wrong_artifact))
+        )
+    assert artifact_error.value.code == (
+        "critical_two_flow_evidence_artifact_mismatch"
+    )
+
+    old_context = make_filtered_puiseux_context(
+        germ_id="historical digest-only germ",
+        local_coordinate_id="historical coordinate",
+        first_fractional_exponent="5/2",
+        local_expansion_evidence_sha256="7" * 64,
+    )
+    old_receipt = make_filtered_puiseux_evidence(
+        claim=FilteredPuiseuxClaim.TWO_FLOW_FACTORIZATION_IDENTITY,
+        context=old_context,
+        authority=EvidenceAuthority.ADAPTER_EXACT,
+        scope=FilteredPuiseuxEvidenceScope.EXACT_FORMAL_FLOW_IDENTITY,
+        evidence_sha256="8" * 64,
+    )
+    with pytest.raises(FilteredObstructionError) as old_claim_error:
+        compile_filtered_critical_two_flow_terminal(
+            replace(problem, evidence=(problem.evidence[0], old_receipt))
+        )
+    assert old_claim_error.value.code == (
+        "critical_two_flow_evidence_claim_unknown"
+    )
+
+
 def _polar_tensor_problem(
     *,
     name: str = "alien_split_tensor_factorization",
@@ -2104,6 +2592,12 @@ def _polar_tensor_problem(
         filtration_id=filtration_id,
         model=FilteredPolarTensorModel.WITT_DENSITY_2_NEG3_NEG5,
         adapter_evidence_sha256="3" * 64,
+    )
+    terminal_certificate = compile_filtered_critical_two_flow_terminal(
+        _critical_two_flow_problem(
+            name=f"{name}.critical_terminal",
+            schedule_category_id=category_id,
+        )
     )
     evidence = (
         make_filtered_polar_tensor_evidence(
@@ -2132,7 +2626,10 @@ def _polar_tensor_problem(
             context=context,
             authority=terminal_authority,
             scope=terminal_scope,
-            evidence_sha256="5" * 64,
+            evidence_sha256=(
+                terminal_certificate.critical_two_flow_certificate_sha256
+            ),
+            critical_terminal_certificate=terminal_certificate,
         ),
     )
     return FilteredPolarTensorFactorizationProblem(
@@ -2141,6 +2638,7 @@ def _polar_tensor_problem(
         degree_multiplier=degree_multiplier,  # type: ignore[arg-type]
         context=context,
         evidence=evidence,
+        critical_terminal_certificate=terminal_certificate,
     )
 
 
@@ -2168,7 +2666,7 @@ def test_polar_tensor_compiler_closes_finite_prefix_induction() -> None:
     assert certificate.strict_subthreshold_factorization_excluded
     assert not certificate.adapter_completeness_inferred
     assert certificate.polar_tensor_certificate_sha256 == (
-        "fae8ed2e458734d2012ca4f2dec4ba37817ffcf1dbd699621119abe4d1908e84"
+        "474e0f7ef76124fed915cb592c749cd6a14be001f4e3a97fa5fde39276ca69c7"
     )
     assert len(certificate.evidence_receipt_sha256) == 3
     assert certificate.proof_contract_sha256 != (
@@ -2268,6 +2766,138 @@ def test_polar_tensor_compiler_rejects_duplicate_missing_and_unknown_model() -> 
             replace(problem, context=unknown_context)
         )
     assert model_error.value.code == "polar_tensor_model_unknown"
+
+
+def _critical_support_problem(
+    *,
+    name: str = "alien_newton_diagonal_support",
+    category_id: str = "alien filtered row schedules",
+    support_scope: FilteredCriticalSupportEvidenceScope = (
+        FilteredCriticalSupportEvidenceScope.ALL_CRITICAL_SUPPORT_ROWS
+    ),
+    tail_scope: FilteredCriticalSupportEvidenceScope = (
+        FilteredCriticalSupportEvidenceScope.ALL_EVENTUAL_TAIL_ROWS
+    ),
+    support_authority: EvidenceAuthority = EvidenceAuthority.ADAPTER_EXACT,
+    tail_authority: EvidenceAuthority = EvidenceAuthority.ADAPTER_EXACT,
+) -> FilteredCriticalSupportProblem:
+    context = make_filtered_critical_support_context(
+        category_id=category_id,
+        support_id="surviving Newton diagonal",
+        cost_id="charged derivation excess",
+        slope=2,
+        adapter_evidence_sha256="1" * 64,
+        compiler_kernel_sha256=(
+            "18312b83ce9bdd8800364e7035bcb058240c6baf8ed41ee5c2152279b39b4046"
+        ),
+    )
+    evidence = (
+        make_filtered_critical_support_evidence(
+            claim=FilteredCriticalSupportClaim.STRICT_TAIL_BOUND,
+            subject_id=f"{name}.strict_tail",
+            context=context,
+            authority=tail_authority,
+            scope=tail_scope,
+            evidence_sha256="2" * 64,
+        ),
+        make_filtered_critical_support_evidence(
+            claim=FilteredCriticalSupportClaim.SUPPORT_TO_COST_CHARGE,
+            subject_id=f"{name}.support_charge",
+            context=context,
+            authority=support_authority,
+            scope=support_scope,
+            evidence_sha256="3" * 64,
+        ),
+    )
+    return FilteredCriticalSupportProblem(
+        name=name,
+        context=context,
+        evidence=evidence,
+    )
+
+
+def test_critical_support_compiler_transfers_to_alien_newton_tail() -> None:
+    certificate = compile_filtered_critical_support(
+        _critical_support_problem()
+    )
+    assert certificate.eventual_critical_support_vanishing
+    assert certificate.critical_support_finite
+    assert certificate.infinite_support_forces_late_threshold_cost
+    assert not certificate.strict_tail_alone_implies_finite_support
+    assert certificate.premise_removal_countermodel_accepted
+    assert not certificate.adapter_completeness_inferred
+    assert len(certificate.evidence_receipt_sha256) == 2
+    assert certificate.proof_contract_sha256 != (
+        certificate.critical_support_certificate_sha256
+    )
+
+
+def test_critical_support_problem_has_no_boolean_assertion_fields() -> None:
+    annotations = get_type_hints(FilteredCriticalSupportProblem)
+    assert bool not in annotations.values()
+
+
+@pytest.mark.parametrize(
+    ("changes", "error_code"),
+    (
+        (
+            {
+                "tail_scope": (
+                    FilteredCriticalSupportEvidenceScope.FINITE_WINDOW
+                )
+            },
+            "critical_support_evidence_scope_mismatch",
+        ),
+        (
+            {
+                "support_scope": (
+                    FilteredCriticalSupportEvidenceScope.FINITE_WINDOW
+                )
+            },
+            "critical_support_evidence_scope_mismatch",
+        ),
+        (
+            {"support_authority": EvidenceAuthority.FINITE_EXPERIMENT},
+            "critical_support_evidence_authority_insufficient",
+        ),
+    ),
+)
+def test_critical_support_compiler_rejects_unpaid_arrows(
+    changes: dict[str, object],
+    error_code: str,
+) -> None:
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_critical_support(
+            _critical_support_problem(**changes)  # type: ignore[arg-type]
+        )
+    assert error.value.code == error_code
+
+
+def test_critical_support_compiler_rejects_missing_charge() -> None:
+    problem = _critical_support_problem()
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_critical_support(
+            replace(problem, evidence=problem.evidence[:1])
+        )
+    assert error.value.code == (
+        "critical_support_evidence_claim_set_incomplete"
+    )
+
+
+def test_critical_support_compiler_rejects_cross_context_graft() -> None:
+    problem = _critical_support_problem()
+    other = _critical_support_problem(
+        name="alien_other_support",
+        category_id="another filtered row category",
+    )
+    with pytest.raises(FilteredObstructionError) as error:
+        compile_filtered_critical_support(
+            replace(
+                problem,
+                evidence=(problem.evidence[0], other.evidence[1]),
+            )
+        )
+    assert error.value.code == "critical_support_evidence_context_mismatch"
 
 
 def _tail_minimax_problem(

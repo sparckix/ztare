@@ -1,21 +1,31 @@
 # Pure contact-zero finite-prefix induction
 
-## Result
+## Conditional result and unconditional upper bound
 
 For every coefficientwise-polynomial pure contact-zero gauge schedule for
-the normalized Jacobian family, including an arbitrary finite
-supercritical/polar prefix, the symmetric logarithmic limsup is at least
-two.
+the normalized Jacobian family, the maximal-positive-Rees-face induction
+forces a rate strictly above two until it reaches the zero-positive-face
+terminal.  The local all-degree theorem excludes the exact intrinsic critical
+holonomy from the normalized two-polynomial-flow category, and a second
+kernel theorem excludes its regular Rees lift.  That is the finite
+target-critical route.  The v105 rate-gap theorem shows that strict ordinary
+target rate alone does not force finite critical support.  The remaining
+premise must therefore split every actual strict zero-positive-face schedule
+into a finite branch constructing the regular Rees carrier or an infinite
+branch constructing the exact semidirect exponential transfer from the finite
+polynomial source Lie pair `(A,J)` and excluding its generally nonpolynomial
+group-module orbit.
 
-Together with the existing radial staircase, this determines the minimax
-value within the pure contact-zero category:
+The existing radial staircase establishes the unconditional upper bound
 
 \[
-\boxed{\sigma_{\rm pure\;ct0}=2.}
+\sigma_{\rm pure\;ct0}\le 2.
 \]
 
-This result does not include positive-contact corrections coupled to an
-arbitrary contact-zero backbone.
+Conditional on exclusion of both target-critical routes, the lower induction
+and the staircase give \(\sigma_{\rm pure\;ct0}=2\).  Positive-contact
+corrections coupled to an arbitrary contact-zero backbone are handled by a
+separate induction.
 
 ## Critical source quotient
 
@@ -81,32 +91,43 @@ infinite orbit is paid by the source.  Its parameter-order increment is
 \frac{2d}{d-h}>2.
 \]
 
-Hence a strict below-two factorization has no positive Rees face.  The
-finite induction reaches the already certified critical two-flow terminal.
+Hence a strict below-two factorization has no positive Rees face.  The finite
+induction reaches the zero-positive-face critical terminal.  If its target
+critical support is finite, formal inversion identifies the resulting
+two-flow terminal with the intrinsic July holonomy, and the regular Rees
+kernel excludes it after the exact schedule carrier is built.  If the target
+critical support is infinite, the finite-Rees specialization is unavailable;
+the required carrier instead binds the schedule's finite polynomial Lie pair
+`(A,J)` to the exact transfer
+`(1-exp(-rho(A)))/rho(A) J`.  The prior finite-polynomial `L` reduction is not
+valid in general: the v123 kernel counterexample has finite `A,J` but a
+nonterminating group-module coordinate.  The existing density-clock endpoint
+arithmetic therefore applies only if a separate polynomiality theorem is
+proved; a transfer-aware all-degree obstruction remains the active route.
 
 The replay
 [`gauge_pure_contact_zero_polar_tensor_induction.py`](gauge_pure_contact_zero_polar_tensor_induction.py)
 binds the critical module, tensor recurrence, Newton separation,
-semidirect transfer, cost dictionary, and terminal certificate to the
-general-purpose filtered-obstruction compiler.
+semidirect transfer, and cost dictionary.  It now stops at the critical
+terminal and reports no compiled pure lower bound until the realization
+certificate exists.
 
-The migrated compiler input has no Boolean assertion fields.  One
-content-bound context selects the universal split model
-`split_witt_density_2_neg3_neg5`; exactly three receipts bind the finite
-maximal-face decomposition, critical-module infinite support, and critical
-terminal exclusion.  The theorem identity is unchanged:
-
-```text
-polar_tensor_certificate_sha256 =
-2790198e149ffbd07ef7e677c45fff7df2d4e539d02af9ce3081bb67ebdab632
-```
-
-The evidence envelope has identity
+The general compiler input has no Boolean assertion fields.  Its terminal
+lifecycle now requires two separate content-bearing arrows: exact zero-face
+realization and exact factorization-category exclusion.  The polar compiler
+then consumes the resulting certificate object.  Empty terminal conclusions,
+arbitrary digests, finite-window evidence, cross-germ grafts, and the older
+Puiseux factorization receipt are rejected.  The replay therefore exposes
+only the positive-face descent certificate until the missing realization
+arrow is constructed.  The current positive-face identity is:
 
 ```text
-proof_contract_sha256 =
-c3ac1c7ca4b850303eee0da24df11b5a472f43cd3b55eccb968c2bdfeb956023
+positive_face_descent_certificate_sha256 =
+0961e9e3a10bd71e4869495098239ae12686ab3a51510fdc7a78d78a2b6a0a8c
 ```
+
+The historical polar tensor and proof-contract hashes are not carried as
+current lower-bound evidence.
 
 ## Verification boundary
 
@@ -117,6 +138,7 @@ critical residual, and the source degree dictionary.  Finite recurrence
 rows are used only to verify orientation of the all-order algebraic
 identities.
 
-The separate moving-backbone induction now covers schedules with positive
-contact depth, and the exhaustive global composition is recorded in
+The separate moving-backbone induction covers schedules with positive
+contact depth.  The current global composition, whose contact-zero lower
+branch retains the schedule-to-Rees specialization dependency, is recorded in
 [`gauge_unrestricted_tail_minimax_result.md`](gauge_unrestricted_tail_minimax_result.md).

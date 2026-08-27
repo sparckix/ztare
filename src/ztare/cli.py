@@ -2487,6 +2487,7 @@ _FORENSIC_WORKBENCH_VERBS = (
     "save-scoring-guide",
     "settings",
 )
+_INVESTMENT_VERBS = ("compile", "settle", "price-eval", "store")
 
 
 def _completion_word_list(words: Iterable[str]) -> str:
@@ -2504,6 +2505,7 @@ def _completion_verb_sets() -> dict[str, str]:
         "project": _completion_word_list(_SUBSTRATE_VERBS),
         "substrate": _completion_word_list(_SUBSTRATE_VERBS),
         "forensic-workbench": _completion_word_list(_FORENSIC_WORKBENCH_VERBS),
+        "investment": _completion_word_list(_INVESTMENT_VERBS),
         "primitive": _completion_word_list(_PRIMITIVE_VERBS),
         "pde": _completion_word_list(_PDE_VERBS),
         "audit": _completion_word_list(_AUDIT_VERBS),
@@ -2694,6 +2696,10 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
             },
         ),
     ),
+    "investment": (
+        "JaggedThoughts investment workbench: compile | settle | price-eval | store.",
+        lambda rest: _delegate_module("ztare.investment.cli", rest),
+    ),
     "project": (
         "Project userland: walkthrough | source-init | source-check | source-index | evidence-bind | evidence-replay | evidence-fetch | evidence-gap | new | prepare | seal | intake | prep-ledger.",
         _cmd_project_router,
@@ -2779,6 +2785,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
             "forensic_workbench_settings.py",
         ),
     ),
+    "investment": (_SUBCOMMANDS["investment"][0], _SUBCOMMANDS["investment"][1], ()),
     "project": (_SUBCOMMANDS["project"][0], _SUBCOMMANDS["project"][1], ()),
     "substrate": (_SUBCOMMANDS["substrate"][0], _SUBCOMMANDS["substrate"][1], ()),
     "primitive": (_SUBCOMMANDS["primitive"][0], _SUBCOMMANDS["primitive"][1], ()),

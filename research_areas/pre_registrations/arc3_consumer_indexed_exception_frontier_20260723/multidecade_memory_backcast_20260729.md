@@ -692,6 +692,99 @@ quotient states reached through different prefixes and test whether
 branch-resolved defect predicts false reuse better than endpoint identity
 alone.
 
+## H96--H101 backcast update: from memory to epistemic metabolism
+
+H96 supplied a useful rejection. Appearance lineage preserved all four object
+occurrences and the causal controller gained a level, yet the transported
+response contract still asked for a marker that the prefix had already
+consumed. The placebo proposal also occupied another basin. Object continuity
+therefore cannot carry a temporal program across a completed subgoal. H97
+compiled the missing Brzozowski-style response derivative and an exact stored
+Responses API parent fork. Two live calls ended at exhausted API credit before
+model, controller, environment, or action contact, leaving the causal question
+open.
+
+H98 and H99 then inverted the one-child ceiling. A settled response may emit
+many residual questions; positive-scalar copies are quotiented; exact response
+rank determines the independent children; randomized settlement determines
+which children earn causal ancestry. A two-generation synthetic chain grew
+`1 -> 2 -> 3`, with geometric knowledge factor `sqrt(3)` and zero false-edge
+growth. That result exposed another hidden category boundary: the offspring is
+an independently settled question-answering direction, rather than a stored
+memory, tool, file, or proposal count.
+
+H100 found that the proposed reproduction law carried an exponential assay
+cost. Complete factorial settlement requires `2^r` trajectories for rank
+`r`; growth would become less measurable as it became more interesting. A
+pre-outcome Walsh code reduced the additive rank-twelve assay to sixteen
+trajectories from `4096`, while retaining exact rank and explicit named
+interaction authority. This is the sparse-attention analogy in executable
+form: allocate observation channels to an identifiable causal basis instead
+of broadcasting every combination.
+
+H101 then replaces scalar loop gain with an epistemic metabolism. Different
+capabilities are species; evidence-backed improvements are catalytic
+reactions; model competence and external observations are the food set;
+primitive actions are the resource budget; false transfers are error species.
+A candidate turning point requires a food-generated, reflexively catalyzed,
+stoichiometrically productive, error-bounded flux under one budget. On the
+synthetic H99/H100 topology, sparse assay cost `80` admits such a flux under
+budget `100`; factorial cost `160` blocks it while topology and food closure
+stay fixed. Cycles without food, missing catalysts, bootstrap-only production,
+error amplification, and authority changes all fail.
+
+H102 adds kinetics and depreciation. The same H101 RAF can decay at low
+capability stock and amplify at higher stock because reproduction consumes two
+judgment units and needs the design catalyst. Exact mass-action evaluation
+gives judgment drift `-15/64` at `J=3/2, D=9/4` and `+133/512` at
+`J=7/4, D=21/8`, bracketing the surface `3 J^2 = 8`. Sparse settlement keeps
+the upper-state cost rate below budget; factorial settlement blocks that same
+reaction-rate vector. Topological closure therefore becomes one gate inside a
+state-dependent developmental threshold.
+
+From the 2036 vantage, this suggests a further category transition:
+
+| 2025 object | 2036 backcast object |
+|---|---|
+| Model capability | A typed ecology of capabilities with joint-input dependencies |
+| Memory accumulation | Production of independently settled residual directions |
+| Retrieval bandwidth | An experimental-design budget over identifiable causal effects |
+| Recursive improvement count | A food-generated catalytic flux with explicit error metabolism |
+| Critical mass | Capability stock and catalytic throughput outrun depreciation and assay cost |
+| Self-improvement demo | A prospectively discovered reaction that helps discover and test its descendants |
+
+The brain analogy is now narrower and more demanding. Wake experience supplies
+food and local prediction errors. Replay performs counterfactual fission.
+Sparse settlement plays the role of selective reactivation. Consolidation
+promotes only lineages whose intervention effects survive external outcome.
+Executive control allocates the resulting catalysts. Homeostatic processes
+remove false-edge production and unaffordable reactions. A summary or skill
+file can participate in this cycle, but its existence does not make the cycle
+autocatalytic.
+
+The remaining plain-sight variable is **reaction discovery**. H101's positive
+reactions were authored after observing H99/H100. A capable 2036 system should
+infer the missing catalyst from a failed reproduction attempt, design the
+sparse assay, and prospectively produce settled descendants that become inputs
+to the next generation. The minimum next experiment is therefore a matched
+exact-state fork in which the causal arm receives the compiled residual and
+the placebo arm does not. The causal arm must discover a non-authored
+measurement reaction, reduce primitive-contact cost, and produce a held-out
+child lineage. H97 is the first unresolved edge of that experiment.
+
+The historical invariant now has a fourth term:
+
+```text
+2005: learn the representation
+2015: learn the task interface
+2025: learn which memory may perturb policy
+2036: learn the capability reactions that reproduce better experimenters
+```
+
+H101 makes the last line falsifiable as a network-and-flux criterion; H102 adds
+the stock-and-rate threshold. Neither supplies prospectively measured reaction
+kinetics.
+
 ## Novelty correction
 
 The selected direction is convergent with published 2026 agent-memory work.

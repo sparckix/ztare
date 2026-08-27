@@ -87,6 +87,36 @@ def test_project_display_label_uses_visible_project_language() -> None:
     assert module.project_display_label("ai_capex") == "AI CapEx"
 
 
+def test_opportunities_projection_keeps_recent_and_selected_rows() -> None:
+    module = load_server_module()
+    payload = {
+        "schema": "read-model", "read_model_sha256": "a" * 64,
+        "research_learning": {"rows": [{"id": index} for index in range(105)]},
+        "research_memory": {
+            "sources": [{"id": index} for index in range(20)],
+            "mechanism_families": ["large"],
+        },
+        "latest_enrichment_cycle": {
+            "candidates": [
+                {"id": "keep", "selection_status": "selected"},
+                {"id": "drop", "selection_status": "not_selected"},
+            ],
+            "jobs": ["large"],
+        },
+    }
+
+    projected = module._served_investment_projection(payload, "Opportunities")
+
+    assert [row["id"] for row in projected["research_learning"]["rows"]] == list(range(5, 105))
+    assert len(projected["research_memory"]["sources"]) == 12
+    assert projected["latest_enrichment_cycle"]["candidates"] == [
+        {"id": "keep", "selection_status": "selected"},
+    ]
+    assert projected["served_projection_limits"]["research_learning_rows"] == {
+        "total": 105, "served": 100,
+    }
+
+
 def test_health_payload_adds_plain_evidence_labels(monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     assert module.display_action_label("unconsumed_surface") == "work log is missing"

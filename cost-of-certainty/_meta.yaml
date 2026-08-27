@@ -1,0 +1,12 @@
+---
+title: 'The cost of certainty'
+subtitle: 'Autonomous, general-purpose formal verification for the mechanisms that run markets and institutions, and the library it produces.'
+author: Daniel Alami
+date: July 2026
+abstract: |
+  A machine-checked proof used to cost a specialist six months, and the specialists were mathematicians with every reason to formalize perfectoid spaces and none to formalize a credit-agreement covenant. So the covenant went unformalized, along with the waterfall, the quorum bound, the pricing invariant, and most of the logic that runs money and institutions. The people who could verify and the systems worth verifying were rarely the same.
+  
+  This paper argues that a closed-loop, general-purpose verification apparatus collapses that cost toward the cost of compute, and it shows what falls out. A human writes a natural-language blueprint. From there the apparatus runs without a verification engineer in the loop: it formalizes the blueprint in Lean 4 through a faithfulness firewall, searches for a proof, and re-verifies every closure with a governance kernel the proving agent cannot influence. Autonomy starts at the blueprint, where the residual human judgment lives. The output is `nonmathlib4`: a growing library of kernel-checked theorems in finance, strategy, distributed systems, cryptography, compliance, social choice, and corporate governance, each self-contained, each reporting only the three standard axioms, none carrying a `sorry`. We table nineteen of them and walk through one in full: no round-trip arbitrage is possible at any state a constant-product market maker can reach.
+  
+  The kernel certifies that the proof follows from the stated specification. It says nothing about whether the specification denotes the concept a human had in mind. Our Shamir secret-sharing result sits on that line: it proves the algebraic secrecy bijection, not the measure-theoretic Shannon statement. Owning that boundary is what separates a verified claim from an oversold one.
+---

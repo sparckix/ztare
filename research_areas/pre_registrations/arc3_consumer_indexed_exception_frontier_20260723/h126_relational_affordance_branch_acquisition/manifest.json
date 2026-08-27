@@ -1,0 +1,170 @@
+{
+  "branch_grid_carrier_sha256": "ca4abcef3c6f6861cffda7087786b546a7d5cdfaf4c0e2723d342e4c3d7cd9a5",
+  "capsule_receipt": {
+    "difference_roots": [
+      "intervention",
+      "padding"
+    ],
+    "pair_sha256": "67c8c9da48e9664112282fee92626f974549864c3b5b44a25487dbb4c9b3793d",
+    "relation_withheld_control_sha256": "3bd5b38d3f25ec377182dc74975c53cc6b18b03d2df73c13791b969b42f24709",
+    "relational_affordance_sha256": "5c304911860026965f2c3d196090dd92b349c43005b10c28fafe1e28621de43e",
+    "rendered_prompt_bytes": 1820,
+    "shared_payload_equal": true
+  },
+  "capsules": {
+    "relation_withheld_control": {
+      "active_uncertainties": [
+        "The target entity dynamics and contact outcome have not been observed in this epoch."
+      ],
+      "guard": "Use the branch judgment only at the bound grid carrier with one controlled token, one distinct oriented entity, the stated action namespace, and both route candidates.",
+      "intervention": {
+        "arm_kind": "compiled_relation_withheld",
+        "branch_judgment": {
+          "direct_contact": "unknown",
+          "lower_contact": "unknown",
+          "reason": "relative exposure remains unscored while the target outcome and marker-to-motion relation are uncertain",
+          "selected_action": null,
+          "selected_direction": null
+        },
+        "relation": {
+          "claim": "marker-to-motion relation unresolved",
+          "kind": "palette_quotiented_pose_motion_relation_v1",
+          "mismatch_count": null,
+          "status": "withheld_control",
+          "support_count": null,
+          "transported_motion_bearing": null
+        }
+      },
+      "padding": "               ",
+      "refusal": "Do not import source coordinates, a target contact outcome, or an exact future action sequence. Re-evaluate after each observed target transition.",
+      "schema": "ztare-arc3-relational-affordance-recall-v1",
+      "shared_evidence": {
+        "action_by_direction": {
+          "down": 1,
+          "left": 2,
+          "right": 3,
+          "up": 0
+        },
+        "branch_candidates": [
+          {
+            "first_direction": "right",
+            "graph_distance_to_goal": 5,
+            "name": "direct"
+          },
+          {
+            "first_direction": "down",
+            "graph_distance_to_goal": 7,
+            "name": "lower"
+          }
+        ],
+        "controlled_token": {
+          "count": 1,
+          "kind": "palette_quotiented_oriented_token_v1"
+        },
+        "distinct_entity": {
+          "count": 1,
+          "kind": "palette_quotiented_oriented_token_v1",
+          "observed_marker_bearing": "left"
+        },
+        "goal_role": "source_derived_uniform_region"
+      },
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_result_sha256": "bf2dfe105aa9bad163cacaf47c45ca87310abe65e59ec17d804cb3e77cd077f1",
+      "target_state": {
+        "grid_carrier_sha256": "ca4abcef3c6f6861cffda7087786b546a7d5cdfaf4c0e2723d342e4c3d7cd9a5",
+        "remaining_action_budget": 7,
+        "restored_primitive_action_cost": 3
+      }
+    },
+    "relational_affordance": {
+      "active_uncertainties": [
+        "The target entity dynamics and contact outcome have not been observed in this epoch."
+      ],
+      "guard": "Use the branch judgment only at the bound grid carrier with one controlled token, one distinct oriented entity, the stated action namespace, and both route candidates.",
+      "intervention": {
+        "arm_kind": "compiled_relation_available",
+        "branch_judgment": {
+          "direct_contact": "closing_head_on",
+          "lower_contact": "transverse",
+          "reason": "preserve the budget-feasible nonclosing route while the target outcome remains uncertain",
+          "selected_action": 1,
+          "selected_direction": "down"
+        },
+        "relation": {
+          "claim": "marker bearing predicts motion bearing",
+          "kind": "palette_quotiented_pose_motion_relation_v1",
+          "mismatch_count": 0,
+          "status": "supported_source_transport_candidate",
+          "support_count": 21,
+          "transported_motion_bearing": "left"
+        }
+      },
+      "padding": "",
+      "refusal": "Do not import source coordinates, a target contact outcome, or an exact future action sequence. Re-evaluate after each observed target transition.",
+      "schema": "ztare-arc3-relational-affordance-recall-v1",
+      "shared_evidence": {
+        "action_by_direction": {
+          "down": 1,
+          "left": 2,
+          "right": 3,
+          "up": 0
+        },
+        "branch_candidates": [
+          {
+            "first_direction": "right",
+            "graph_distance_to_goal": 5,
+            "name": "direct"
+          },
+          {
+            "first_direction": "down",
+            "graph_distance_to_goal": 7,
+            "name": "lower"
+          }
+        ],
+        "controlled_token": {
+          "count": 1,
+          "kind": "palette_quotiented_oriented_token_v1"
+        },
+        "distinct_entity": {
+          "count": 1,
+          "kind": "palette_quotiented_oriented_token_v1",
+          "observed_marker_bearing": "left"
+        },
+        "goal_role": "source_derived_uniform_region"
+      },
+      "source_epoch": 0,
+      "source_game": "tu93-0768757b",
+      "source_result_sha256": "bf2dfe105aa9bad163cacaf47c45ca87310abe65e59ec17d804cb3e77cd077f1",
+      "target_state": {
+        "grid_carrier_sha256": "ca4abcef3c6f6861cffda7087786b546a7d5cdfaf4c0e2723d342e4c3d7cd9a5",
+        "remaining_action_budget": 7,
+        "restored_primitive_action_cost": 3
+      }
+    }
+  },
+  "h125_result_sha256": "bf2dfe105aa9bad163cacaf47c45ca87310abe65e59ec17d804cb3e77cd077f1",
+  "hypothesis_id": "H-GPSA-RELATIONAL-AFFORDANCE-BRANCH-ACQUISITION-20260808-126",
+  "orders": {
+    "1": [
+      "relation_withheld_control",
+      "relational_affordance"
+    ],
+    "2": [
+      "relational_affordance",
+      "relation_withheld_control"
+    ],
+    "3": [
+      "relation_withheld_control",
+      "relational_affordance"
+    ]
+  },
+  "remaining_budget": 7,
+  "replication_count": 3,
+  "restored_prefix_actions": [
+    0,
+    3,
+    3
+  ],
+  "schema": "ztare-h126-relational-affordance-manifest-v1"
+}

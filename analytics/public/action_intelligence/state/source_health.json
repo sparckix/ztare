@@ -1,7 +1,7 @@
 {
   "counts": {
-    "action_impact_rows": 7,
-    "agentic_workbench_rows": 5,
+    "action_impact_rows": 8,
+    "agentic_workbench_rows": 6,
     "aggregates": 335,
     "blocking": 0,
     "consumed_surfacing_events": 0,
@@ -12,7 +12,7 @@
     "surfacing_event_rows": 0,
     "warning": 3
   },
-  "generated_at": "2026-06-27T14:44:16Z",
+  "generated_at": "2026-07-23T04:17:42Z",
   "issues": [
     {
       "affected_domains": [

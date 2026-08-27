@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 
@@ -290,6 +291,54 @@ def test_subscription_probe_runs_sparse_level_boundary_sleep() -> None:
     )
 
 
+def test_subscription_probe_refreshes_recall_before_each_later_decision() -> None:
+    module = _load()
+    adapter = _Adapter()
+    actor = _SleepingSubscriptionThread()
+    calls = []
+
+    def provider(observation, turn_index, observations, turns):
+        calls.append({
+            "observation_sha256": observation["sha256"],
+            "turn_index": turn_index,
+            "observation_count": len(observations),
+            "prior_turn_count": len(turns),
+        })
+        if turn_index == 0:
+            return None
+        return {
+            "digest": {
+                "schema": "ztare-test-current-decision-recall-v1",
+                "turn_index": turn_index,
+                "observation_sha256": observation["sha256"],
+            }
+        }
+
+    payload = module.run_subscription_probe(
+        adapter=adapter,
+        game_id="fake-game",
+        budget=4,
+        model_id="gpt-5.6-sol",
+        reasoning_effort="xhigh",
+        timeout_seconds=30,
+        resume_session=True,
+        thread=actor,
+        initial_recall_digest={"schema": "initial-memory"},
+        decision_recall_provider=provider,
+    )
+
+    assert len(calls) == 4
+    assert [row["turn_index"] for row in calls] == [0, 1, 2, 3]
+    assert [row["prior_turn_count"] for row in calls] == [0, 1, 2, 3]
+    assert payload["actor"]["decision_recall_provider_enabled"] is True
+    assert payload["actor"]["decision_recall_count"] == 3
+    assert len(actor.injected_digests) == 4
+    assert actor.injected_digests[0]["schema"] == "initial-memory"
+    assert [
+        row["turn_index"] for row in actor.injected_digests[1:]
+    ] == [1, 2, 3]
+
+
 def test_subscription_actor_burns_recall_after_one_decision() -> None:
     module = _load()
     prompts = []
@@ -327,6 +376,48 @@ def test_subscription_actor_burns_recall_after_one_decision() -> None:
     assert "RECALLED CONSOLIDATED MEMORY" not in prompts[1]
     assert first["recall_injection"]["direct_injection_count"] == 1
     assert second["recall_injection"] is None
+
+
+def test_subscription_actor_observes_raw_exchange_before_parsing() -> None:
+    module = _load()
+    exchanges = []
+
+    def runner(**kwargs):
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(
+                ["codex"],
+                0,
+                stdout=(
+                    '{"action":0,"prediction":"one cell changes"}'
+                ),
+                stderr="raw runtime trace",
+            ),
+            final_session_state={
+                "session_id": "session-1",
+                "tick_count": 1,
+            },
+        )
+
+    actor = module.CodexSubscriptionArcThread(
+        model_id="gpt-5.6-sol",
+        reasoning_effort="max",
+        instructions="choose one action",
+        timeout_seconds=30,
+        exchange_observer=exchanges.append,
+        runner=runner,
+    )
+    decision = actor.decide({"sha256": "observation-0"})
+
+    assert decision["action"] == 0
+    assert exchanges[0]["schema"] == (
+        "ztare-codex-subscription-exchange-v1"
+    )
+    assert exchanges[0]["prompt"]
+    assert exchanges[0]["stdout"].startswith("{")
+    assert exchanges[0]["stderr"] == "raw runtime trace"
+    assert exchanges[0]["final_session_state"]["session_id"] == (
+        "session-1"
+    )
 
 
 def test_subscription_actor_records_blind_proposal_and_offered_revision() -> None:

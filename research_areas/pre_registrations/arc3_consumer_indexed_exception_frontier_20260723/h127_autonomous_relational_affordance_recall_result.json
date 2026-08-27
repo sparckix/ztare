@@ -1,0 +1,791 @@
+{
+  "checks": {
+    "all_scope_drifts_refused": true,
+    "ambiguous_goal_refused": true,
+    "compiler_requires_no_derived_target_arguments": true,
+    "d4_target_preserves_memory_and_frontier": true,
+    "decision_seam_approach_derived": true,
+    "decision_seam_competes": true,
+    "decision_seam_selects_down": true,
+    "digest_reconstructs_exactly": true,
+    "empty_source_refused": true,
+    "exact_scope_selected_once": true,
+    "malformed_entity_refused": true,
+    "observation_changes_proposal_identity": true,
+    "overbudget_safe_route_refused": true,
+    "palette_target_preserves_memory": true,
+    "prompt_cost_remains_unpriced": true,
+    "scope_changes_proposal_identity": true,
+    "single_route_refused": true,
+    "source_memory_excludes_target_presentation": true,
+    "source_mismatch_refused": true,
+    "source_relation_support_21": true,
+    "target_literal_firewall": true
+  },
+  "claim_boundary": "Autonomous offline proposal and exact-scope sparse selection. Controller start-state consumption, online target settlement, cross-game transfer, later acquisition catalysis, broad capability, and literature novelty remain unsettled.",
+  "compiler_input_surface": [
+    "acquisition_provenance",
+    "boundary_action",
+    "boundary_source_grid",
+    "boundary_support_refs",
+    "budget",
+    "predicted_decision_delta",
+    "primitive_action_cost",
+    "retrieval_cost",
+    "scope",
+    "source_rows",
+    "source_support_refs",
+    "target_grid",
+    "target_observation_sha256"
+  ],
+  "controller_contact": false,
+  "d4_rows": [
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        false,
+        -1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        false,
+        -1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        false,
+        1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        false,
+        1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        true,
+        -1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        true,
+        -1,
+        1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        true,
+        1,
+        -1
+      ]
+    },
+    {
+      "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "selected_action": 1,
+      "selected_contact_kind": "transverse",
+      "transform": [
+        true,
+        1,
+        1
+      ]
+    }
+  ],
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-AUTONOMOUS-RELATIONAL-AFFORDANCE-RECALL-20260808-127",
+  "identities": {
+    "compiler_module_sha256": "2e735b68b43e1db8d752815330094819a46baec17c9254af14f25392404feea3",
+    "h119_report_sha256": "e0482a75e6d657315e43bf5860a3c15ceec51e7fbda272593dd169529e9ed2c3",
+    "h126_audit_sha256": "13abfad64202814da4729797acdde765437560c03f7c95d296127135e72bfd34",
+    "h126_result_sha256": "96791887bcd7b16abb89b24eec8085d08c6aca77ebc064bece10da7105257eea",
+    "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+    "target_observation_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4"
+  },
+  "memory_revision": {
+    "boundary_support_refs": [
+      "h119:turn:21"
+    ],
+    "goal_role": {
+      "kind": "boundary_predecessor_uniform_goal_v1",
+      "size": 3
+    },
+    "relation": {
+      "action_by_direction": [
+        [
+          "down",
+          1
+        ],
+        [
+          "left",
+          2
+        ],
+        [
+          "right",
+          3
+        ],
+        [
+          "up",
+          0
+        ]
+      ],
+      "kind": "palette_quotiented_pose_motion_relation_v1",
+      "mismatch_count": 0,
+      "passed": true,
+      "stride": 6,
+      "structural_key": [
+        [
+          0,
+          0,
+          "body"
+        ],
+        [
+          0,
+          1,
+          "body"
+        ],
+        [
+          0,
+          2,
+          "body"
+        ],
+        [
+          1,
+          0,
+          "body"
+        ],
+        [
+          1,
+          1,
+          "body"
+        ],
+        [
+          1,
+          2,
+          "body"
+        ],
+        [
+          2,
+          0,
+          "body"
+        ],
+        [
+          2,
+          1,
+          "marker"
+        ],
+        [
+          2,
+          2,
+          "body"
+        ]
+      ],
+      "support_count": 21,
+      "token_size": 3
+    },
+    "schema": "ztare-relational-affordance-memory-revision-v1",
+    "sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+    "source_support_refs": [
+      "h119:turn:0",
+      "h119:turn:1",
+      "h119:turn:10",
+      "h119:turn:11",
+      "h119:turn:12",
+      "h119:turn:13",
+      "h119:turn:14",
+      "h119:turn:15",
+      "h119:turn:16",
+      "h119:turn:17",
+      "h119:turn:18",
+      "h119:turn:19",
+      "h119:turn:2",
+      "h119:turn:20",
+      "h119:turn:21",
+      "h119:turn:3",
+      "h119:turn:4",
+      "h119:turn:5",
+      "h119:turn:6",
+      "h119:turn:7",
+      "h119:turn:8",
+      "h119:turn:9"
+    ]
+  },
+  "mutation_receipts": {
+    "ambiguous_goal_grid_sha256": "9ab63cdf88d097e40cb6a11102458613599c0cb267210c8e15dc3fd6c13c8444",
+    "changed_observation_proposal_sha256": "c34fa9d87f204a4a605d93dc4f2bcad5419174fe0b4b117ddc80e96c0b050514",
+    "changed_scope_proposal_sha256": "890b2db39eca1a6f28d698334a791bcae540749a086495a331823c81fc874c81",
+    "malformed_entity_grid_sha256": "b8c41033a2c3a21dd7565008902748342890ca343b266c32b53cefe3ba32aeeb"
+  },
+  "palette_variant": {
+    "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+    "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+    "proposal_sha256": "f417a81969ed14fd14c6bc26181c9417ee054aebe0bf6c8263342365436755f4",
+    "target_observation_sha256": "d5aba5982240868c1c6cf7eab8a069613521e1c1dbc18a29e45dd4dadbc06d79"
+  },
+  "proposal": {
+    "candidate": {
+      "acquisition_provenance": {
+        "boundary_support_sha256s": [
+          "d9c601bfd2960b51eb5098fda2e9ae0dad6d6f0ed21a54d93d11e95ce247e091"
+        ],
+        "controller_instance_sha256": "7efb6b080f4e4c38d2486fe2372aa664d624528e6a64e63aeb3d95d888302b6a",
+        "episode_sha256": "e0482a75e6d657315e43bf5860a3c15ceec51e7fbda272593dd169529e9ed2c3",
+        "kind": "memory_acquisition_provenance",
+        "observation_sha256": "caaa89fbb3c428c6b54b2fe407e974c26fd0dc61a6ed0e484a398f995bc80a3c",
+        "schema": "ztare-wake-sleep-recall-identities-v1",
+        "sha256": "69612d85b63efef9bc289de746d15e5164e3f5c481c3391340fc701c4709b697",
+        "support_sha256s": [
+          "0ca6f89d67624b494969c8571f38e099422426c0e74dafa8520726692aff095f",
+          "0d21a447fbd927a972be094d1d9a7bc02b63e8ecc3bd64c91ff453b1eeea649a",
+          "10b87f0b35c6c9c28c998f8880ac45712cd2bea15cded79cbe948d58b20069ef",
+          "1502f3937260f542bf894790634472da3fb38a87f47a6cc31de37cb64fd0e294",
+          "15c6c50f20812bf9ff4e776181505d8d69af7ba83f6a5f0f6ba3716cd395262c",
+          "164b8fa2f94138c772df15f429a86988b0086ee4d4a21fc524213392beb7cd57",
+          "40492b88bd1fb6cd051a6d474d9ef4ef6de839c29bc9023042f56664886e4dfe",
+          "42b3645ccf628d54216ac65a59ddc80e4fe3fa7c7d4a6935c7af20636020ad08",
+          "4ec1ac7783986788c9db6905b9647791b3bd039734268c248aebc2c880f6fae0",
+          "7556256ab0cefab28b53e4668c8b151b1c71a1d7041cb84ad546b7965ca2be41",
+          "7c378cbf1942b076263c28b7ca1ed5a47c863cf992040ddd66a82a7969d2b2d8",
+          "821bd9c42b5ca347537d6c5d639ed993ed2091031b6fb4e1b256c2fb26eeefa1",
+          "850ec08277722e1fcfb6b8e31ffda651df7d51e2b31f4b2ecba733c72414d702",
+          "8bccf3de8475f11e65646c820b06434fd9a435536481d065baac9f1b4c513c87",
+          "9a8db8c89cfc70afa4abc0c896260be46106d16a56b0747c348d356f768f8456",
+          "b94956e0b10e74e058b209a51a469897dcf663849599fade80716b4b1e071817",
+          "bf8ddcbdaeef9475eabc34d4846790738a1c8763aa1857d0b9536517fca13b00",
+          "c07a992a3cf8bdd149a5ccbf45443a935b37a48dbc469b4c67ba2b14094f3b5c",
+          "d9c601bfd2960b51eb5098fda2e9ae0dad6d6f0ed21a54d93d11e95ce247e091",
+          "e28f61b7e60bb8cc3d51ba6e47a7135a121268b181f5d9e7ecb1582491b0a620",
+          "e7599eae0d81827c41a438ae66cfbe346fb5ec22d648e933b135710af42446ce",
+          "ee2d32a94244f5d31fdd84e084255838df0b75713dec2163209b0fcb86d3e69c"
+        ]
+      },
+      "actionability_score": 1.0,
+      "authority_score": 21.0,
+      "boundary_support_refs": [
+        "h119:turn:21"
+      ],
+      "content_ref": "relational_affordance_proposal:a606753f1fa48bd9c583d89e13b3f567633df34876695cb04fce30d97de28ced",
+      "guard_features": [
+        "budget:10",
+        "entity_count:1",
+        "exact_scope",
+        "frontier:54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+        "route_divergence"
+      ],
+      "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+      "predicted_decision_delta": 0.6666666666666666,
+      "primitive_action_cost": 10.0,
+      "prompt_token_cost": 0,
+      "provider_id": "relational_affordance_recall_compiler_v1",
+      "recency_score": 1.0,
+      "retrieval_cost": 0.05,
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "controller_sha256": "b2b2e90e3fa628edde404b959937d43b6f4d314b19b2cbe592aa0cc183da89fb",
+        "task_sha256": "6bdf4da8154e7633ee03143b7c3eef78e9f5ca743dc35a494e9b834cc9cb279c"
+      },
+      "scope_sha256": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3",
+      "semantic_features": [
+        "decision_seam",
+        "marker_bearing",
+        "motion_cone",
+        "oriented_token",
+        "relative_contact",
+        "viability_route"
+      ],
+      "support_refs": [
+        "h119:turn:0",
+        "h119:turn:1",
+        "h119:turn:10",
+        "h119:turn:11",
+        "h119:turn:12",
+        "h119:turn:13",
+        "h119:turn:14",
+        "h119:turn:15",
+        "h119:turn:16",
+        "h119:turn:17",
+        "h119:turn:18",
+        "h119:turn:19",
+        "h119:turn:2",
+        "h119:turn:20",
+        "h119:turn:21",
+        "h119:turn:3",
+        "h119:turn:4",
+        "h119:turn:5",
+        "h119:turn:6",
+        "h119:turn:7",
+        "h119:turn:8",
+        "h119:turn:9"
+      ]
+    },
+    "digest": {
+      "active_uncertainties": [
+        "target entity dynamics and contact outcome remain unsettled"
+      ],
+      "decision_seam": {
+        "approach_action_count": 3,
+        "approach_actions": [
+          0,
+          3,
+          3
+        ],
+        "approach_directions": [
+          "up",
+          "right",
+          "right"
+        ],
+        "branches": [
+          {
+            "action": 1,
+            "contact_kind": "transverse",
+            "direction": "down",
+            "remaining_action_count": 7,
+            "risk_rank": 1,
+            "total_action_count": 10
+          },
+          {
+            "action": 3,
+            "contact_kind": "head_on",
+            "direction": "right",
+            "remaining_action_count": 5,
+            "risk_rank": 2,
+            "total_action_count": 8
+          }
+        ],
+        "budget": 10,
+        "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+        "schema": "ztare-relational-decision-seam-v1",
+        "selected_action": 1,
+        "selected_contact_kind": "transverse",
+        "selected_direction": "down",
+        "sha256": "2a66d46b079b349a96978c34de0fb4a2497f37d0f00bea2422a19563f8a1b673"
+      },
+      "guard": "consume only under the exact scope and frontier identity; recompute after any observed transition",
+      "memory_revision": {
+        "boundary_support_refs": [
+          "h119:turn:21"
+        ],
+        "goal_role": {
+          "kind": "boundary_predecessor_uniform_goal_v1",
+          "size": 3
+        },
+        "relation": {
+          "action_by_direction": [
+            [
+              "down",
+              1
+            ],
+            [
+              "left",
+              2
+            ],
+            [
+              "right",
+              3
+            ],
+            [
+              "up",
+              0
+            ]
+          ],
+          "kind": "palette_quotiented_pose_motion_relation_v1",
+          "mismatch_count": 0,
+          "passed": true,
+          "stride": 6,
+          "structural_key": [
+            [
+              0,
+              0,
+              "body"
+            ],
+            [
+              0,
+              1,
+              "body"
+            ],
+            [
+              0,
+              2,
+              "body"
+            ],
+            [
+              1,
+              0,
+              "body"
+            ],
+            [
+              1,
+              1,
+              "body"
+            ],
+            [
+              1,
+              2,
+              "body"
+            ],
+            [
+              2,
+              0,
+              "body"
+            ],
+            [
+              2,
+              1,
+              "marker"
+            ],
+            [
+              2,
+              2,
+              "body"
+            ]
+          ],
+          "support_count": 21,
+          "token_size": 3
+        },
+        "schema": "ztare-relational-affordance-memory-revision-v1",
+        "sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+        "source_support_refs": [
+          "h119:turn:0",
+          "h119:turn:1",
+          "h119:turn:10",
+          "h119:turn:11",
+          "h119:turn:12",
+          "h119:turn:13",
+          "h119:turn:14",
+          "h119:turn:15",
+          "h119:turn:16",
+          "h119:turn:17",
+          "h119:turn:18",
+          "h119:turn:19",
+          "h119:turn:2",
+          "h119:turn:20",
+          "h119:turn:21",
+          "h119:turn:3",
+          "h119:turn:4",
+          "h119:turn:5",
+          "h119:turn:6",
+          "h119:turn:7",
+          "h119:turn:8",
+          "h119:turn:9"
+        ]
+      },
+      "refusal": "source memory supplies no target contact outcome or future action suffix; current-scene planning owns the approach and branch intervention",
+      "schema": "ztare-autonomous-relational-affordance-recall-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "controller_sha256": "b2b2e90e3fa628edde404b959937d43b6f4d314b19b2cbe592aa0cc183da89fb",
+        "task_sha256": "6bdf4da8154e7633ee03143b7c3eef78e9f5ca743dc35a494e9b834cc9cb279c"
+      },
+      "scope_sha256": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3",
+      "target_compatibility": {
+        "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+        "matching_entity_count": 1,
+        "observation_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "status": "source_supported_target_proposal",
+        "transported_entity_bearings": [
+          "left"
+        ]
+      }
+    },
+    "proposal_sha256": "a606753f1fa48bd9c583d89e13b3f567633df34876695cb04fce30d97de28ced",
+    "schema": "ztare-relational-affordance-recall-proposal-v1",
+    "sha256": "810c1584188f264155ee2a554731284b95981bece8d59e1f525b5373c379da43"
+  },
+  "schema": "ztare-h127-autonomous-relational-affordance-recall-v1",
+  "scope_drift_rows": [
+    {
+      "candidate_count": 0,
+      "field": "task_sha256",
+      "selected": false,
+      "selection_count": 0
+    },
+    {
+      "candidate_count": 0,
+      "field": "controller_sha256",
+      "selected": false,
+      "selection_count": 0
+    },
+    {
+      "candidate_count": 0,
+      "field": "context_sha256",
+      "selected": false,
+      "selection_count": 0
+    },
+    {
+      "candidate_count": 0,
+      "field": "choice_set_sha256",
+      "selected": false,
+      "selection_count": 0
+    },
+    {
+      "candidate_count": 0,
+      "field": "action_vocabulary_sha256",
+      "selected": false,
+      "selection_count": 0
+    }
+  ],
+  "selected": {
+    "digest": {
+      "active_uncertainties": [
+        "target entity dynamics and contact outcome remain unsettled"
+      ],
+      "decision_seam": {
+        "approach_action_count": 3,
+        "approach_actions": [
+          0,
+          3,
+          3
+        ],
+        "approach_directions": [
+          "up",
+          "right",
+          "right"
+        ],
+        "branches": [
+          {
+            "action": 1,
+            "contact_kind": "transverse",
+            "direction": "down",
+            "remaining_action_count": 7,
+            "risk_rank": 1,
+            "total_action_count": 10
+          },
+          {
+            "action": 3,
+            "contact_kind": "head_on",
+            "direction": "right",
+            "remaining_action_count": 5,
+            "risk_rank": 2,
+            "total_action_count": 8
+          }
+        ],
+        "budget": 10,
+        "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+        "schema": "ztare-relational-decision-seam-v1",
+        "selected_action": 1,
+        "selected_contact_kind": "transverse",
+        "selected_direction": "down",
+        "sha256": "2a66d46b079b349a96978c34de0fb4a2497f37d0f00bea2422a19563f8a1b673"
+      },
+      "guard": "consume only under the exact scope and frontier identity; recompute after any observed transition",
+      "memory_revision": {
+        "boundary_support_refs": [
+          "h119:turn:21"
+        ],
+        "goal_role": {
+          "kind": "boundary_predecessor_uniform_goal_v1",
+          "size": 3
+        },
+        "relation": {
+          "action_by_direction": [
+            [
+              "down",
+              1
+            ],
+            [
+              "left",
+              2
+            ],
+            [
+              "right",
+              3
+            ],
+            [
+              "up",
+              0
+            ]
+          ],
+          "kind": "palette_quotiented_pose_motion_relation_v1",
+          "mismatch_count": 0,
+          "passed": true,
+          "stride": 6,
+          "structural_key": [
+            [
+              0,
+              0,
+              "body"
+            ],
+            [
+              0,
+              1,
+              "body"
+            ],
+            [
+              0,
+              2,
+              "body"
+            ],
+            [
+              1,
+              0,
+              "body"
+            ],
+            [
+              1,
+              1,
+              "body"
+            ],
+            [
+              1,
+              2,
+              "body"
+            ],
+            [
+              2,
+              0,
+              "body"
+            ],
+            [
+              2,
+              1,
+              "marker"
+            ],
+            [
+              2,
+              2,
+              "body"
+            ]
+          ],
+          "support_count": 21,
+          "token_size": 3
+        },
+        "schema": "ztare-relational-affordance-memory-revision-v1",
+        "sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+        "source_support_refs": [
+          "h119:turn:0",
+          "h119:turn:1",
+          "h119:turn:10",
+          "h119:turn:11",
+          "h119:turn:12",
+          "h119:turn:13",
+          "h119:turn:14",
+          "h119:turn:15",
+          "h119:turn:16",
+          "h119:turn:17",
+          "h119:turn:18",
+          "h119:turn:19",
+          "h119:turn:2",
+          "h119:turn:20",
+          "h119:turn:21",
+          "h119:turn:3",
+          "h119:turn:4",
+          "h119:turn:5",
+          "h119:turn:6",
+          "h119:turn:7",
+          "h119:turn:8",
+          "h119:turn:9"
+        ]
+      },
+      "refusal": "source memory supplies no target contact outcome or future action suffix; current-scene planning owns the approach and branch intervention",
+      "schema": "ztare-autonomous-relational-affordance-recall-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "controller_sha256": "b2b2e90e3fa628edde404b959937d43b6f4d314b19b2cbe592aa0cc183da89fb",
+        "task_sha256": "6bdf4da8154e7633ee03143b7c3eef78e9f5ca743dc35a494e9b834cc9cb279c"
+      },
+      "scope_sha256": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3",
+      "selection": {
+        "direct_injection_limit": 1,
+        "memory_key": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3:858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+        "recall_sha256": "9ede148765214df405dff5fd785858d36fc826458cd52b3dfcbfc7a0589ebeac"
+      },
+      "target_compatibility": {
+        "frontier_sha256": "54c6bfeb79bf0e9eccee4650e88b9d55155b8378ef2960d47e1387f60dc9570f",
+        "matching_entity_count": 1,
+        "observation_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "status": "source_supported_target_proposal",
+        "transported_entity_bearings": [
+          "left"
+        ]
+      }
+    },
+    "proposal_sha256": "a606753f1fa48bd9c583d89e13b3f567633df34876695cb04fce30d97de28ced",
+    "recall": {
+      "calibration_penalty_weight": 0.25,
+      "candidate_memory_keys": [
+        "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3:858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935"
+      ],
+      "exploration_weight": 0.0,
+      "guard_overlap_weight": 0.25,
+      "kind": "recall",
+      "max_items": 1,
+      "max_prompt_tokens": null,
+      "prior_strength": 2.0,
+      "schema": "ztare-wake-sleep-credit-router-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4",
+        "controller_sha256": "b2b2e90e3fa628edde404b959937d43b6f4d314b19b2cbe592aa0cc183da89fb",
+        "task_sha256": "6bdf4da8154e7633ee03143b7c3eef78e9f5ca743dc35a494e9b834cc9cb279c"
+      },
+      "scope_sha256": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3",
+      "selected_prompt_tokens": 0,
+      "selections": [
+        {
+          "calibrated_decision_delta": 0.6666666666666666,
+          "calibration_penalty": 0.0,
+          "guard_overlap": 0.0,
+          "guard_overlap_cost": 0.0,
+          "lifecycle": "candidate",
+          "memory_key": "318906e508f4708fb0a0a8ffc530dc5cf32d30bb2cdb1c030acf61afe39663a3:858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+          "memory_revision_sha256": "858791e0752c25121f1f04c0c702346b91bd104a93a6e140ad2784243f0dc935",
+          "predicted_decision_delta": 0.6666666666666666,
+          "primitive_action_cost": 10.0,
+          "prompt_token_cost": 0,
+          "provider_id": "relational_affordance_recall_compiler_v1",
+          "retrieval_cost": 0.05,
+          "score": 0.6166666666666666
+        }
+      ],
+      "sha256": "9ede148765214df405dff5fd785858d36fc826458cd52b3dfcbfc7a0589ebeac"
+    },
+    "schema": "ztare-selected-relational-affordance-recall-v1",
+    "selected": true,
+    "sha256": "38ff2e20af9edf245e8daa53b208f03cba0af8ebf0528d0090ac3070a2fa32af"
+  },
+  "status": "passed"
+}

@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-08-13T16:10:56Z",
+  "error": "public fund implementation_sleeve_source_refs must be nonempty",
+  "ok": false,
+  "pid": 79195,
+  "poll_seconds": 300.0,
+  "schema": "jaggedthoughts-discovery-service-v1",
+  "started_at": "2026-08-13T16:10:56Z",
+  "starter": "forensic_workbench_server_or_investment_cli",
+  "status": "error",
+  "stops_with_process": true
+}

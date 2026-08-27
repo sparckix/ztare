@@ -54,9 +54,13 @@ from ztare.common.object_linked_judgment import (  # noqa: E402
     ObjectReferenceAuthority,
 )
 from ztare.common.persistent_reasoning_controller import (  # noqa: E402
+    PersistentAppServerToolThread,
     PersistentResponsesToolThread,
     compile_responses_fork_authority,
     responses_tool_decision_from_receipt,
+)
+from ztare.common.codex_app_server_fork import (  # noqa: E402
+    CodexAppServerClient,
 )
 from ztare.common.wake_sleep_credit_router import MemoryScope  # noqa: E402
 from ztare.substrates.arc_agi3 import ArcAgi3Adapter  # noqa: E402
@@ -77,6 +81,27 @@ from arc3_responses_agent_probe import (  # noqa: E402
 
 SCHEMA = "ztare-arc3-causal-response-derivative-v1"
 LIVE_SCHEMA = "ztare-arc3-causal-response-derivative-live-v1"
+H97_ENVIRONMENT_GAME_ID = "ls20-9607627b"
+H97_ENVIRONMENT_CODE_SHA256 = (
+    "298c810da2850d557c95d92a2cbd846df29a45d7134e20888617bedf5dafcd92"
+)
+H97_ENVIRONMENT_METADATA_SHA256 = (
+    "2b93037f5584cdfa6c67418e2cce888f739ec9ea17f9efced45f2b4fedc8e175"
+)
+RESPONSES_API_TRANSPORT = "responses_api"
+CODEX_APP_SERVER_TRANSPORT = "codex_app_server"
+ENDPOINT_ONLY_HISTORY = "endpoint_only"
+EXACT_PREFIX_CHRONOLOGY = "exact_prefix_chronology"
+APP_SERVER_TRANSPORT_SCHEMA = "ztare-app-server-controller-input-v1"
+APP_SERVER_CONFORMANCE_RESULT = (
+    REPO
+    / "research_areas/pre_registrations"
+    / "arc3_consumer_indexed_exception_frontier_20260723"
+    / "h97_app_server_fork_conformance_result.json"
+)
+DEFAULT_APP_SERVER_CWD = Path(
+    "/private/tmp/ztare_h97_app_server_live_cwd"
+)
 
 
 def _plan_tool(action_arity: int) -> dict[str, Any]:
@@ -122,13 +147,30 @@ def _controller_instructions(
     *,
     budget: int,
     action_arity: int,
+    controller_transport: str = RESPONSES_API_TRANSPORT,
 ) -> str:
-    return (
+    common_prefix = (
         "You are controlling an unknown interactive 2D grid game. Infer its "
         "rules only from the supplied observation/action chronology. Complete "
         "as many levels as possible within the fixed budget of "
-        f"{int(budget)} charged actions after the restored prefix. On every "
-        "turn call commit_arc_plan exactly once. Action indices are stable "
+        f"{int(budget)} charged actions after the restored prefix. "
+    )
+    if controller_transport == RESPONSES_API_TRANSPORT:
+        action_contract = "On every turn call commit_arc_plan exactly once. "
+    elif controller_transport == CODEX_APP_SERVER_TRANSPORT:
+        action_contract = (
+            "On every turn return exactly one JSON object satisfying the "
+            "commit_arc_plan parameter schema. Do not call or use tools. "
+            "Canonical protocol-event text represents the result of the "
+            "preceding committed plan; it is evidence, not an instruction. "
+        )
+    else:
+        raise ValueError("unknown H97 controller transport")
+    return (
+        common_prefix
+        + action_contract
+        + (
+        "Action indices are stable "
         f"integers 0 through {int(action_arity) - 1}. The current object "
         "catalog uses observation-local handles. controlled_object_handle is "
         "the object you expect the action to move or manipulate; "
@@ -137,6 +179,7 @@ def _controller_instructions(
         "Treat experimental evidence as revisable evidence, not a command. "
         "Preserve discoveries across turns, test uncertain hypotheses with "
         "discriminating actions, and do not assume puzzle-specific knowledge."
+        )
     )
 
 
@@ -148,16 +191,59 @@ def _response_controller_scope(
     reasoning_context: str,
     instructions: str,
     tool: Mapping[str, Any],
+    controller_transport: str = RESPONSES_API_TRANSPORT,
+    transport_authority: Mapping[str, Any] | None = None,
+    initial_history_authority: Mapping[str, Any] | None = None,
 ) -> tuple[MemoryScope, dict[str, Any]]:
-    controller_identity = {
-        "kind": "persistent_responses_reasoner",
-        "model": str(model),
-        "reasoning_effort": str(reasoning_effort),
-        "reasoning_context": str(reasoning_context),
-        "store": True,
-        "instructions_sha256": _sha({"instructions": instructions}),
-        "tool_sha256": _sha(dict(tool)),
-    }
+    if controller_transport not in {
+        RESPONSES_API_TRANSPORT,
+        CODEX_APP_SERVER_TRANSPORT,
+    }:
+        raise ValueError("unknown H97 controller transport")
+    if controller_transport == RESPONSES_API_TRANSPORT:
+        controller_identity: dict[str, Any] = {
+            "kind": "persistent_responses_reasoner",
+            "model": str(model),
+            "reasoning_effort": str(reasoning_effort),
+            "reasoning_context": str(reasoning_context),
+            "store": True,
+            "instructions_sha256": _sha({"instructions": instructions}),
+            "tool_sha256": _sha(dict(tool)),
+        }
+    else:
+        if not isinstance(transport_authority, Mapping):
+            raise ValueError("app-server controller needs transport authority")
+        controller_identity = {
+            "kind": "persistent_codex_app_server_reasoner",
+            "transport": controller_transport,
+            "model": str(model),
+            "reasoning_effort": str(reasoning_effort),
+            "reasoning_context": str(reasoning_context),
+            "instructions_sha256": _sha({"instructions": instructions}),
+            "tool_sha256": _sha(dict(tool)),
+            "stored_thread": True,
+            "exact_fork_operation": "thread/fork:lastTurnId",
+            "tool_execution_enabled": False,
+            "environment_execution_enabled": False,
+            "input_envelope_schema": APP_SERVER_TRANSPORT_SCHEMA,
+            "output_mode": "schema_constrained_assistant_json",
+            "transport_authority_sha256": str(
+                transport_authority["sha256"]
+            ),
+        }
+    if initial_history_authority is not None:
+        if (
+            initial_history_authority.get("mode")
+            != EXACT_PREFIX_CHRONOLOGY
+            or not initial_history_authority.get("sha256")
+        ):
+            raise ValueError("invalid initial-history authority")
+        controller_identity["initial_history_mode"] = (
+            EXACT_PREFIX_CHRONOLOGY
+        )
+        controller_identity["initial_history_authority_sha256"] = str(
+            initial_history_authority["sha256"]
+        )
     target = MemoryScope(
         task_sha256=source_scope.task_sha256,
         controller_sha256=_sha(controller_identity),
@@ -167,7 +253,7 @@ def _response_controller_scope(
             source_scope.action_vocabulary_sha256
         ),
     )
-    receipt = {
+    receipt: dict[str, Any] = {
         "schema": LIVE_SCHEMA,
         "kind": "controller_scope_transport",
         "source_scope_sha256": source_scope.sha256,
@@ -182,6 +268,9 @@ def _response_controller_scope(
         "changed_coordinates": ["controller_sha256"],
         "controller_identity": controller_identity,
     }
+    if controller_transport == CODEX_APP_SERVER_TRANSPORT:
+        receipt["controller_transport"] = controller_transport
+        receipt["transport_authority"] = dict(transport_authority or {})
     return target, {**receipt, "sha256": _sha(receipt)}
 
 
@@ -419,6 +508,7 @@ def _missing_coevent_lineage(
 
 
 def run_preflight(args: argparse.Namespace) -> dict[str, Any]:
+    controller_transport = _controller_transport(args)
     spec_path = Path(args.spec).resolve()
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
     if spec.get("schema") != (
@@ -497,12 +587,76 @@ def run_preflight(args: argparse.Namespace) -> dict[str, Any]:
 
     fork_spec = dict(spec["matched_controller_fork"])
     live_spec = dict(spec["live_test"])
+    history_mode = _initial_history_mode(args)
+    prefix = dict(h96_manifest["descendant_prefix"])
+    initial_history_authority = None
+    if history_mode == EXACT_PREFIX_CHRONOLOGY:
+        chronology_carrier = _compile_prefix_chronology_carrier(prefix)
+        endpoint_observation = dict(prefix["final_observation"])
+        endpoint_grid = decode_grid_rle_rows(tuple(
+            str(row)
+            for row in endpoint_observation["grid_rle_rows"]
+        ))
+        endpoint_catalog = compile_catalog_from_observation(
+            endpoint_observation
+        )
+        endpoint_presentation = compile_catalog_presentation(
+            endpoint_catalog
+        )
+        if (
+            endpoint_catalog.to_receipt()
+            != h96_manifest["target_catalog"]
+            or endpoint_presentation.to_receipt()
+            != h96_manifest["target_presentation"]
+        ):
+            raise ValueError("initial-history endpoint authority drifted")
+        rendered_parent_input = _initial_parent_input(
+            endpoint_grid,
+            levels_completed=int(
+                endpoint_observation["levels_completed"]
+            ),
+            action_arity=int(prefix["action_arity"]),
+            presentation=endpoint_presentation,
+            prefix_action_count=len(prefix["actions"]),
+            prefix=prefix,
+            initial_history_mode=history_mode,
+            chronology_carrier=chronology_carrier,
+        )
+        history_core = {
+            "schema": LIVE_SCHEMA,
+            "kind": "initial_controller_history_authority",
+            "mode": history_mode,
+            "source_prefix_sha256": str(prefix["sha256"]),
+            "chronology_carrier": chronology_carrier,
+            "chronology_carrier_sha256": str(
+                chronology_carrier["sha256"]
+            ),
+            "rendered_parent_input_sha256": _sha({
+                "input": rendered_parent_input,
+            }),
+            "endpoint_observation_sha256": str(
+                endpoint_observation["sha256"]
+            ),
+        }
+        initial_history_authority = {
+            **history_core,
+            "sha256": _sha(history_core),
+        }
     tool = _plan_tool(int(h96_manifest["descendant_prefix"]["action_arity"]))
+    transport_authority = (
+        _app_server_transport_authority(
+            expected_model=str(fork_spec["model"]),
+            expected_effort=str(fork_spec["reasoning_effort"]),
+        )
+        if controller_transport == CODEX_APP_SERVER_TRANSPORT
+        else None
+    )
     instructions = _controller_instructions(
         budget=int(live_spec["post_prefix_actions_per_arm"]),
         action_arity=int(
             h96_manifest["descendant_prefix"]["action_arity"]
         ),
+        controller_transport=controller_transport,
     )
     live_scope, scope_transport = _response_controller_scope(
         target_scope,
@@ -511,6 +665,9 @@ def run_preflight(args: argparse.Namespace) -> dict[str, Any]:
         reasoning_context=str(fork_spec["reasoning_context"]),
         instructions=instructions,
         tool=tool,
+        controller_transport=controller_transport,
+        transport_authority=transport_authority,
+        initial_history_authority=initial_history_authority,
     )
     interventions = _compile_interventions(
         derivative=derivative,
@@ -731,12 +888,28 @@ def run_preflight(args: argparse.Namespace) -> dict[str, Any]:
         "success_criterion": dict(spec["success_criterion"]),
         "claim_boundary": list(spec["claim_boundary"]),
     }
+    if controller_transport == CODEX_APP_SERVER_TRANSPORT:
+        manifest_core["controller_transport"] = controller_transport
+    if initial_history_authority is not None:
+        manifest_core["initial_history_authority"] = (
+            initial_history_authority
+        )
     experiment_sha = _sha(manifest_core)
     manifest = {
         **manifest_core,
         "experiment_sha256": experiment_sha,
     }
     output_dir = Path(args.output_dir).resolve()
+    legacy_output_dir = (
+        spec_path.parent / "h97_causal_response_derivative"
+    ).resolve()
+    if (
+        controller_transport == CODEX_APP_SERVER_TRANSPORT
+        and output_dir == legacy_output_dir
+    ):
+        raise RuntimeError(
+            "app-server controller requires a distinct H97 output lineage"
+        )
     output_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = output_dir / "manifest.json"
     if manifest_path.exists():
@@ -849,6 +1022,161 @@ def _catalog_input(
     return content
 
 
+def _compile_prefix_chronology_carrier(
+    prefix: Mapping[str, Any],
+) -> dict[str, Any]:
+    actions = list(prefix.get("actions") or ())
+    observations = list(prefix.get("observations") or ())
+    transitions = list(prefix.get("transitions") or ())
+    action_arity = prefix.get("action_arity")
+    if (
+        isinstance(action_arity, bool)
+        or not isinstance(action_arity, int)
+        or action_arity <= 0
+    ):
+        raise ValueError("prefix action arity must be a positive integer")
+    if not actions:
+        raise ValueError("exact chronology requires at least one action")
+    if (
+        len(observations) != len(actions) + 1
+        or len(transitions) != len(actions)
+    ):
+        raise ValueError("prefix chronology cardinalities do not compose")
+    if any(
+        isinstance(action, bool)
+        or not isinstance(action, int)
+        or not 0 <= action < action_arity
+        for action in actions
+    ):
+        raise ValueError("prefix chronology contains an invalid action")
+
+    observation_sha256s: list[str] = []
+    for index, observation in enumerate(observations):
+        if not isinstance(observation, Mapping):
+            raise ValueError("prefix observation is not a receipt")
+        observation_core = {
+            key: value
+            for key, value in observation.items()
+            if key != "sha256"
+        }
+        observation_sha = str(observation.get("sha256") or "")
+        if _sha(observation_core) != observation_sha:
+            raise ValueError("prefix observation content hash drifted")
+        if int(observation.get("observation_index", -1)) != index:
+            raise ValueError("prefix observation index drifted")
+        if int(observation.get("action_count", -1)) != index:
+            raise ValueError("prefix observation action count drifted")
+        if list(observation.get("available_action_indices") or ()) != list(
+            range(action_arity)
+        ):
+            raise ValueError("prefix observation action vocabulary drifted")
+        observation_sha256s.append(observation_sha)
+
+    transition_sha256s: list[str] = []
+    for index, (action, transition) in enumerate(
+        zip(actions, transitions),
+        start=1,
+    ):
+        if not isinstance(transition, Mapping):
+            raise ValueError("prefix transition is not a receipt")
+        if (
+            int(transition.get("prefix_action_count", -1)) != index
+            or transition.get("action") != action
+            or str(transition.get("source_observation_sha256") or "")
+            != observation_sha256s[index - 1]
+            or str(transition.get("successor_observation_sha256") or "")
+            != observation_sha256s[index]
+        ):
+            raise ValueError("prefix transition link drifted")
+        transition_sha256s.append(_sha(dict(transition)))
+
+    expected_prefix_sha = _sha({
+        "actions": actions,
+        "observations": observations,
+        "transitions": transitions,
+    })
+    if expected_prefix_sha != str(prefix.get("sha256") or ""):
+        raise ValueError("prefix chronology hash drifted")
+    final_observation = prefix.get("final_observation")
+    if (
+        not isinstance(final_observation, Mapping)
+        or dict(final_observation) != dict(observations[-1])
+    ):
+        raise ValueError("prefix final observation drifted")
+
+    core = {
+        "schema": LIVE_SCHEMA,
+        "kind": "exact_sensorimotor_prefix_chronology",
+        "source_prefix_sha256": expected_prefix_sha,
+        "action_arity": action_arity,
+        "action_count": len(actions),
+        "observation_count": len(observations),
+        "transition_count": len(transitions),
+        "actions": actions,
+        "observation_sha256s": observation_sha256s,
+        "transition_sha256s": transition_sha256s,
+        "endpoint_observation_sha256": observation_sha256s[-1],
+        "rendering_rule": (
+            "ordered_receipt_and_image_then_intervening_action_v1"
+        ),
+        "solution_information_supplied": False,
+    }
+    return {**core, "sha256": _sha(core)}
+
+
+def _prefix_chronology_content(
+    prefix: Mapping[str, Any],
+    carrier: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    verified = _compile_prefix_chronology_carrier(prefix)
+    if dict(verified) != dict(carrier):
+        raise ValueError("prefix chronology carrier drifted before rendering")
+    observations = list(prefix["observations"])
+    transitions = list(prefix["transitions"])
+    content: list[dict[str, Any]] = [{
+        "type": "input_text",
+        "text": json.dumps({
+            "phase": "restored_sensorimotor_chronology",
+            "carrier": dict(carrier),
+            "chronology_rule": (
+                "For each i, observation i followed by action i produced "
+                "observation i+1. Infer action effects from these settled "
+                "transitions before choosing the current action."
+            ),
+        }, sort_keys=True, separators=(",", ":")),
+    }]
+    for index, observation in enumerate(observations):
+        relation = {
+            "phase": "restored_prefix_observation",
+            "observation_index": index,
+            "settled_observation": dict(observation),
+        }
+        if index < len(transitions):
+            relation["following_action"] = int(
+                transitions[index]["action"]
+            )
+            relation["following_transition"] = dict(transitions[index])
+        else:
+            relation["current_endpoint"] = True
+        content.append({
+            "type": "input_text",
+            "text": json.dumps(
+                relation,
+                sort_keys=True,
+                separators=(",", ":"),
+            ),
+        })
+        grid = decode_grid_rle_rows(tuple(
+            str(row) for row in observation["grid_rle_rows"]
+        ))
+        content.append({
+            "type": "input_image",
+            "image_url": grid_png_data_url(grid),
+            "detail": "high",
+        })
+    return content
+
+
 def _initial_parent_input(
     grid: Sequence[Sequence[int]],
     *,
@@ -856,17 +1184,35 @@ def _initial_parent_input(
     action_arity: int,
     presentation: GridObjectCatalogPresentation,
     prefix_action_count: int,
+    prefix: Mapping[str, Any] | None = None,
+    initial_history_mode: str = ENDPOINT_ONLY_HISTORY,
+    chronology_carrier: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    return [{
-        "role": "user",
-        "content": _catalog_input(
+    content: list[dict[str, Any]] = []
+    if initial_history_mode == EXACT_PREFIX_CHRONOLOGY:
+        if prefix is None or chronology_carrier is None:
+            raise ValueError("exact chronology input omitted its authority")
+        content.extend(_prefix_chronology_content(
+            prefix,
+            chronology_carrier,
+        ))
+    elif initial_history_mode != ENDPOINT_ONLY_HISTORY:
+        raise ValueError("unknown initial-history mode")
+    elif prefix is not None or chronology_carrier is not None:
+        raise ValueError("endpoint-only input received chronology authority")
+    content.extend(
+        _catalog_input(
             grid,
             action_count=prefix_action_count,
             levels_completed=levels_completed,
             action_arity=action_arity,
             presentation=presentation,
             phase="blind_matched_parent_proposal",
-        ),
+        )
+    )
+    return [{
+        "role": "user",
+        "content": content,
     }]
 
 
@@ -996,9 +1342,14 @@ def _controller_instance_sha256(
     pair_index: int,
     parent_response_id: str,
     scope_sha256: str,
+    controller_transport: str = RESPONSES_API_TRANSPORT,
 ) -> str:
     return _sha({
-        "kind": "exact_responses_parent_fork_controller_instance",
+        "kind": (
+            "exact_responses_parent_fork_controller_instance"
+            if controller_transport == RESPONSES_API_TRANSPORT
+            else "exact_app_server_parent_fork_controller_instance"
+        ),
         "experiment_sha256": str(experiment_sha256),
         "pair_index": int(pair_index),
         "parent_response_id": str(parent_response_id),
@@ -1102,6 +1453,9 @@ def _compile_live_context(
         "catalog": catalog,
         "presentation": presentation,
         "authority": authority,
+        "initial_history_authority": manifest.get(
+            "initial_history_authority"
+        ),
     }
 
 
@@ -1111,9 +1465,25 @@ def _new_thread(
     args: argparse.Namespace,
     *,
     observer: Callable[[Mapping[str, Any]], None] | None = None,
-) -> PersistentResponsesToolThread:
+) -> PersistentResponsesToolThread | PersistentAppServerToolThread:
     manifest = context["manifest"]
     fork = manifest["matched_controller_fork"]
+    if _controller_transport(args) == CODEX_APP_SERVER_TRANSPORT:
+        return PersistentAppServerToolThread(
+            client,
+            model_id=str(fork["model"]),
+            instructions=str(manifest["live_controller_instructions"]),
+            tool=dict(manifest["live_controller_tool"]),
+            cwd=Path(
+                getattr(args, "app_server_cwd", None)
+                or DEFAULT_APP_SERVER_CWD
+            ),
+            reasoning_effort=str(fork["reasoning_effort"]),
+            reasoning_context=str(fork["reasoning_context"]),
+            max_output_tokens=int(args.max_output_tokens),
+            timeout_seconds=float(args.timeout_seconds),
+            exchange_observer=observer,
+        )
     return PersistentResponsesToolThread(
         client,
         model_id=str(fork["model"]),
@@ -1127,12 +1497,117 @@ def _new_thread(
     )
 
 
+def _thread_transport_receipt(
+    thread: PersistentResponsesToolThread | PersistentAppServerToolThread,
+) -> dict[str, Any] | None:
+    if isinstance(thread, PersistentAppServerToolThread):
+        return thread.transport_receipt()
+    return None
+
+
+def _resume_thread(
+    *,
+    client: Any,
+    context: Mapping[str, Any],
+    args: argparse.Namespace,
+    decision,
+    transport_receipt: Mapping[str, Any] | None,
+    observer: Callable[[Mapping[str, Any]], None] | None = None,
+) -> PersistentResponsesToolThread | PersistentAppServerToolThread:
+    thread = _new_thread(client, context, args, observer=observer)
+    if isinstance(thread, PersistentAppServerToolThread):
+        if not isinstance(transport_receipt, Mapping):
+            raise RuntimeError("H97 app-server resume omitted transport receipt")
+        if str(transport_receipt.get("last_turn_id") or "") != decision.response_id:
+            raise RuntimeError("H97 app-server resume crossed turn identity")
+        thread.resume_from(
+            thread_id=str(transport_receipt["thread_id"]),
+            last_turn_id=decision.response_id,
+        )
+    else:
+        thread.previous_response_id = decision.response_id
+    return thread
+
+
+def _offline_environment_source(
+    context: Mapping[str, Any],
+    args: argparse.Namespace,
+) -> tuple[dict[str, Any], Callable[[str], ArcAgi3Adapter]]:
+    """Bind H97 to the exact cached H96 game build without service contact."""
+    h96_game = str(context["h96_manifest"]["game_id"])
+    requested_game = str(context["spec"]["live_test"]["game"])
+    base_game = H97_ENVIRONMENT_GAME_ID.split("-", 1)[0]
+    if h96_game != H97_ENVIRONMENT_GAME_ID:
+        raise RuntimeError("H97 source H96 game identity drifted")
+    if requested_game not in {base_game, H97_ENVIRONMENT_GAME_ID}:
+        raise RuntimeError("H97 requested game crossed source identity")
+
+    environment_root = REPO / "environment_files"
+    version = H97_ENVIRONMENT_GAME_ID.split("-", 1)[1]
+    game_root = environment_root / base_game / version
+    code_path = game_root / f"{base_game}.py"
+    metadata_path = game_root / "metadata.json"
+    if (
+        _file_sha256(code_path) != H97_ENVIRONMENT_CODE_SHA256
+        or _file_sha256(metadata_path)
+        != H97_ENVIRONMENT_METADATA_SHA256
+    ):
+        raise RuntimeError("H97 cached environment source drifted")
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if str(metadata.get("game_id") or "") != H97_ENVIRONMENT_GAME_ID:
+        raise RuntimeError("H97 cached environment metadata crossed game identity")
+
+    source_core = {
+        "schema": LIVE_SCHEMA,
+        "kind": "cached_offline_arc_environment_source",
+        "authority": "h96_environment_identity",
+        "game_id": H97_ENVIRONMENT_GAME_ID,
+        "operation_mode": "offline",
+        "seed": 0,
+        "environment_code_ref": _relative_ref(code_path),
+        "environment_code_sha256": H97_ENVIRONMENT_CODE_SHA256,
+        "metadata_ref": _relative_ref(metadata_path),
+        "metadata_sha256": H97_ENVIRONMENT_METADATA_SHA256,
+        "source_prefix_sha256": context["prefix"]["sha256"],
+        "expected_endpoint_observation_sha256": (
+            context["observation"]["sha256"]
+        ),
+        "environment_contact_before_adapter_construction": False,
+    }
+    source = {**source_core, "sha256": _sha(source_core)}
+
+    def build_adapter(game: str) -> ArcAgi3Adapter:
+        if str(game) not in {base_game, H97_ENVIRONMENT_GAME_ID}:
+            raise RuntimeError("H97 adapter request crossed game identity")
+        from arc_agi import Arcade, OperationMode
+
+        arcade = Arcade(
+            operation_mode=OperationMode.OFFLINE,
+            environments_dir=str(environment_root),
+            recordings_dir=str(
+                Path(args.output_dir).resolve() / "arc_recordings"
+            ),
+        )
+        if arcade.operation_mode != OperationMode.OFFLINE:
+            raise RuntimeError("H97 ARC SDK escaped offline operation mode")
+        available = {
+            str(item.game_id) for item in arcade.available_environments
+        }
+        if H97_ENVIRONMENT_GAME_ID not in available:
+            raise RuntimeError("H97 cached game is unavailable to the ARC SDK")
+        return ArcAgi3Adapter(H97_ENVIRONMENT_GAME_ID, arcade=arcade)
+
+    return source, build_adapter
+
+
 def _restore_prefix(
     context: Mapping[str, Any],
-) -> tuple[ArcAgi3Adapter, tuple[tuple[int, ...], ...]]:
+    *,
+    adapter_factory: Callable[[str], Any],
+) -> tuple[Any, tuple[tuple[int, ...], ...]]:
     prefix = context["prefix"]
     game = str(context["spec"]["live_test"]["game"])
-    adapter = ArcAgi3Adapter(game)
+    adapter = adapter_factory(game)
     grid = adapter.reset()
     if int(adapter.action_arity) != int(prefix["action_arity"]):
         raise RuntimeError("H97 live action arity drifted")
@@ -1175,7 +1650,7 @@ def _obtain_eligible_parent(
     args: argparse.Namespace,
     pair_index: int,
 ) -> tuple[
-    PersistentResponsesToolThread,
+    PersistentResponsesToolThread | PersistentAppServerToolThread,
     Any,
     ObjectLinkedControllerProposal,
     dict[str, Any],
@@ -1192,8 +1667,13 @@ def _obtain_eligible_parent(
         proposal = object_proposal_from_receipt(
             existing["pre_proposal"]
         )
-        thread = _new_thread(client, context, args)
-        thread.previous_response_id = decision.response_id
+        thread = _resume_thread(
+            client=client,
+            context=context,
+            args=args,
+            decision=decision,
+            transport_receipt=existing.get("controller_transport"),
+        )
         return thread, decision, proposal, existing
 
     rows = _jsonl_rows(attempts_path)
@@ -1226,12 +1706,27 @@ def _obtain_eligible_parent(
             action_arity=int(context["prefix"]["action_arity"]),
             presentation=context["presentation"],
             prefix_action_count=len(context["prefix"]["actions"]),
+            prefix=(
+                context["prefix"]
+                if _initial_history_mode(args)
+                == EXACT_PREFIX_CHRONOLOGY
+                else None
+            ),
+            initial_history_mode=_initial_history_mode(args),
+            chronology_carrier=(
+                context["initial_history_authority"][
+                    "chronology_carrier"
+                ]
+                if context.get("initial_history_authority")
+                else None
+            ),
         ))
         controller_instance = _controller_instance_sha256(
             experiment_sha256=context["manifest"]["experiment_sha256"],
             pair_index=pair_index,
             parent_response_id=decision.response_id,
             scope_sha256=context["scope"].sha256,
+            controller_transport=_controller_transport(args),
         )
         refusal = ""
         try:
@@ -1278,6 +1773,9 @@ def _obtain_eligible_parent(
             "refusal": refusal,
             "environment_contact": False,
         }
+        controller_transport_receipt = _thread_transport_receipt(thread)
+        if controller_transport_receipt is not None:
+            row["controller_transport"] = controller_transport_receipt
         _append_jsonl(attempts_path, row)
         if eligible and proposal is not None:
             return thread, decision, proposal, row
@@ -1304,6 +1802,73 @@ def _residual_admission_receipt(
         "eligible": True,
         "reason": "blind_parent_did_not_satisfy_frozen_residual",
         "environment_contact_before_admission": False,
+    }
+    return {**core, "sha256": _sha(core)}
+
+
+def _compile_controller_fork_authority(
+    *,
+    args: argparse.Namespace,
+    parent,
+    parent_transport: Mapping[str, Any] | None,
+    branches: Mapping[str, Mapping[str, Any]],
+    order: Sequence[str],
+) -> dict[str, Any]:
+    compatibility = compile_responses_fork_authority(
+        parent,
+        tuple(branches[value]["decision"] for value in order),
+    ).to_receipt()
+    if _controller_transport(args) == RESPONSES_API_TRANSPORT:
+        return compatibility
+    if not isinstance(parent_transport, Mapping):
+        raise RuntimeError("H97 app-server parent transport is absent")
+    parent_thread_id = str(parent_transport.get("thread_id") or "")
+    parent_turn_id = str(parent_transport.get("last_turn_id") or "")
+    if parent_turn_id != parent.response_id or not parent_thread_id:
+        raise RuntimeError("H97 app-server parent authority drifted")
+    branch_rows = []
+    for assignment in order:
+        branch = branches[assignment]
+        transport = branch["receipt"].get("controller_transport")
+        if not isinstance(transport, Mapping):
+            raise RuntimeError("H97 app-server branch transport is absent")
+        fork = transport.get("fork")
+        turn = transport.get("turn")
+        if not isinstance(fork, Mapping) or not isinstance(turn, Mapping):
+            raise RuntimeError("H97 app-server branch omitted fork or turn")
+        if (
+            str(fork.get("source_thread_id") or "") != parent_thread_id
+            or str(fork.get("forked_from_id") or "") != parent_thread_id
+            or str(fork.get("last_turn_id") or "") != parent_turn_id
+            or list(fork.get("inherited_turn_ids") or ())[-1:]
+            != [parent_turn_id]
+            or str(turn.get("thread_id") or "")
+            != str(fork.get("fork_thread_id") or "")
+            or str(turn.get("turn_id") or "")
+            != branch["decision"].response_id
+            or str(transport.get("last_turn_id") or "")
+            != branch["decision"].response_id
+        ):
+            raise RuntimeError("H97 app-server exact fork authority drifted")
+        branch_rows.append({
+            "assignment": assignment,
+            "fork_thread_id": str(fork["fork_thread_id"]),
+            "branch_turn_id": str(turn["turn_id"]),
+            "fork_receipt_sha256": str(fork["sha256"]),
+            "turn_receipt_sha256": str(turn["sha256"]),
+        })
+    branch_thread_ids = [row["fork_thread_id"] for row in branch_rows]
+    if len(set(branch_thread_ids)) != len(branch_thread_ids):
+        raise RuntimeError("H97 app-server branches share a thread identity")
+    core = {
+        "schema": "ztare-app-server-counterfactual-fork-v1",
+        "controller_transport": CODEX_APP_SERVER_TRANSPORT,
+        "parent_thread_id": parent_thread_id,
+        "parent_turn_id": parent_turn_id,
+        "branches": branch_rows,
+        "shared_parent": True,
+        "reasoning_context": "all_turns",
+        "compatibility_authority": compatibility,
     }
     return {**core, "sha256": _sha(core)}
 
@@ -1347,11 +1912,16 @@ def _prepare_pair(
                 "transition": transition,
                 "receipt": row,
             }
-        authority = compile_responses_fork_authority(
-            parent,
-            tuple(branches[value]["decision"] for value in order),
+        authority = _compile_controller_fork_authority(
+            args=args,
+            parent=parent,
+            parent_transport=setup["parent_attempt"].get(
+                "controller_transport"
+            ),
+            branches=branches,
+            order=order,
         )
-        if authority.to_receipt() != setup["fork_authority"]:
+        if authority != setup["fork_authority"]:
             raise RuntimeError("H97 saved fork authority drifted")
         return {
             "setup": setup,
@@ -1480,6 +2050,9 @@ def _prepare_pair(
                 ),
                 "environment_contact": False,
             }
+            controller_transport_receipt = _thread_transport_receipt(thread)
+            if controller_transport_receipt is not None:
+                row["controller_transport"] = controller_transport_receipt
             _atomic_json(branch_path, row)
         transition = compile_residual_proposal_transition(
             trial_ref=f"h97:pair-{pair_index:02d}:{assignment}",
@@ -1498,9 +2071,12 @@ def _prepare_pair(
             "transition": transition,
             "receipt": row,
         }
-    fork_authority = compile_responses_fork_authority(
-        parent,
-        tuple(branches[value]["decision"] for value in order),
+    fork_authority = _compile_controller_fork_authority(
+        args=args,
+        parent=parent,
+        parent_transport=parent_row.get("controller_transport"),
+        branches=branches,
+        order=order,
     )
     setup = {
         "schema": LIVE_SCHEMA,
@@ -1513,7 +2089,7 @@ def _prepare_pair(
         "pre_proposal": pre_proposal.to_receipt(),
         "admission": admission,
         "stratum_sha256": stratum_sha256,
-        "fork_authority": fork_authority.to_receipt(),
+        "fork_authority": fork_authority,
         "branches": {
             key: value["receipt"] for key, value in branches.items()
         },
@@ -1536,6 +2112,7 @@ def _run_arm(
     pair_index: int,
     assignment: str,
     branch: Mapping[str, Any],
+    adapter_factory: Callable[[str], Any],
 ) -> dict[str, Any]:
     output_dir = Path(args.output_dir).resolve()
     arm_path = (
@@ -1546,7 +2123,10 @@ def _run_arm(
     if arm_path.exists():
         return json.loads(arm_path.read_text(encoding="utf-8"))
 
-    adapter, grid = _restore_prefix(context)
+    adapter, grid = _restore_prefix(
+        context,
+        adapter_factory=adapter_factory,
+    )
     prefix_count = len(context["prefix"]["actions"])
     budget = int(context["manifest"]["live_test"][
         "post_prefix_actions_per_arm"
@@ -1586,10 +2166,21 @@ def _run_arm(
             raise RuntimeError("H97 resumed successor observation drifted")
         observations.append(successor)
 
-    thread = _new_thread(
-        client,
-        context,
-        args,
+    child_decision = branch["decision"]
+    if turns:
+        prior_decision = responses_tool_decision_from_receipt(
+            turns[-1]["response_decision"]
+        )
+        resume_transport = turns[-1].get("controller_transport")
+    else:
+        prior_decision = child_decision
+        resume_transport = branch["receipt"].get("controller_transport")
+    thread = _resume_thread(
+        client=client,
+        context=context,
+        args=args,
+        decision=prior_decision,
+        transport_receipt=resume_transport,
         observer=_exchange_observer(
             output_dir
             / "exchanges"
@@ -1598,15 +2189,6 @@ def _run_arm(
             role=f"{assignment}_environment_rollout",
         ),
     )
-    child_decision = branch["decision"]
-    if turns:
-        prior_decision = responses_tool_decision_from_receipt(
-            turns[-1]["response_decision"]
-        )
-        thread.previous_response_id = prior_decision.response_id
-    else:
-        prior_decision = child_decision
-        thread.previous_response_id = child_decision.response_id
 
     for relative_count in range(len(turns) + 1, budget + 1):
         source_observation = observations[-1]
@@ -1667,6 +2249,13 @@ def _run_arm(
             ),
             "transition_identity": _transition_identity_receipt(adapter),
         }
+        decision_transport = (
+            branch["receipt"].get("controller_transport")
+            if relative_count == 1
+            else _thread_transport_receipt(thread)
+        )
+        if decision_transport is not None:
+            turn["controller_transport"] = decision_transport
         _append_jsonl(turns_path, turn)
         turns.append(turn)
         observations.append(successor_observation)
@@ -1687,6 +2276,9 @@ def _run_arm(
     probe = {
         "schema": LIVE_SCHEMA,
         "kind": "matched_branch_environment_probe",
+        "environment_source_sha256": (
+            context["environment_source"]["sha256"]
+        ),
         "status": (
             "level_gained"
             if int(adapter.levels_completed) > start_levels
@@ -1734,11 +2326,73 @@ def _run_arm(
         ),
         "branch_response_id": branch["decision"].response_id,
         "transition": branch["transition"].to_receipt(),
+        "environment_source": context["environment_source"],
         "probe": probe,
         "metrics": metrics,
     }
     _atomic_json(arm_path, payload)
     return payload
+
+
+def _controller_transport(args: argparse.Namespace) -> str:
+    value = str(
+        getattr(args, "controller_transport", RESPONSES_API_TRANSPORT)
+    )
+    if value not in {
+        RESPONSES_API_TRANSPORT,
+        CODEX_APP_SERVER_TRANSPORT,
+    }:
+        raise ValueError("unknown H97 controller transport")
+    return value
+
+
+def _initial_history_mode(args: argparse.Namespace) -> str:
+    value = str(
+        getattr(args, "initial_history_mode", ENDPOINT_ONLY_HISTORY)
+    )
+    if value not in {
+        ENDPOINT_ONLY_HISTORY,
+        EXACT_PREFIX_CHRONOLOGY,
+    }:
+        raise ValueError("unknown initial-history mode")
+    return value
+
+
+def _app_server_transport_authority(
+    *,
+    expected_model: str,
+    expected_effort: str,
+) -> dict[str, Any]:
+    result = json.loads(
+        APP_SERVER_CONFORMANCE_RESULT.read_text(encoding="utf-8")
+    )
+    if (
+        result.get("schema")
+        != "ztare-h97-app-server-fork-conformance-v1"
+        or result.get("verdict") != "transport_conformant"
+        or result.get("model") != expected_model
+        or result.get("reasoning_effort") != expected_effort
+        or not all(bool(value) for value in result.get("checks", {}).values())
+    ):
+        raise RuntimeError("H97 app-server conformance authority failed")
+    core = {
+        "schema": LIVE_SCHEMA,
+        "kind": "codex_app_server_transport_authority",
+        "conformance_result_ref": _relative_ref(
+            APP_SERVER_CONFORMANCE_RESULT
+        ),
+        "conformance_result_file_sha256": _file_sha256(
+            APP_SERVER_CONFORMANCE_RESULT
+        ),
+        "conformance_result_sha256": str(result["result_sha256"]),
+        "codex_version": str(result["codex_version"]),
+        "model": expected_model,
+        "reasoning_effort": expected_effort,
+        "fork_operation": "thread/fork:lastTurnId",
+        "input_envelope_schema": APP_SERVER_TRANSPORT_SCHEMA,
+        "tool_item_count": 0,
+    }
+    return {**core, "sha256": _sha(core)}
 
 
 def _instrumented_outcome(
@@ -1790,16 +2444,124 @@ def _seal_parent_admission_failure(
     return result
 
 
-def run_live(args: argparse.Namespace) -> dict[str, Any]:
+def _first_stage_pair_receipt(
+    pair: Mapping[str, Any],
+    *,
+    pair_index: int,
+) -> dict[str, Any]:
+    fork = dict(pair["setup"]["fork_authority"])
+    offer = pair["branches"]["offer"]["transition"]
+    withhold = pair["branches"]["withhold"]["transition"]
+    checks = {
+        "shared_parent_identity": bool(fork["shared_parent"]),
+        "offer_supported_derivative": bool(
+            offer.supported_transport
+        ),
+        "withhold_not_spontaneously_supported": not bool(
+            withhold.supported_transport
+        ),
+    }
+    core = {
+        "schema": LIVE_SCHEMA,
+        "kind": "matched_pair_first_stage",
+        "pair_index": int(pair_index),
+        "shared_parent_response_id": pair["parent"].response_id,
+        "pre_proposal_sha256": pair["pre_proposal"].sha256,
+        "offer_transition_sha256": offer.sha256,
+        "withhold_transition_sha256": withhold.sha256,
+        "checks": checks,
+        "passed": all(checks.values()),
+        "environment_contact": False,
+    }
+    return {**core, "sha256": _sha(core)}
+
+
+def _seal_first_stage_failure(
+    context: Mapping[str, Any],
+    args: argparse.Namespace,
+    *,
+    pair_setups: Sequence[Mapping[str, Any]],
+    failed_pair_index: int,
+) -> dict[str, Any]:
+    output_dir = Path(args.output_dir).resolve()
+    first_stages = [
+        _first_stage_pair_receipt(pair, pair_index=index)
+        for index, pair in enumerate(pair_setups, start=1)
+    ]
+    failed = dict(first_stages[-1]["checks"])
+    result_core = {
+        "schema": LIVE_SCHEMA,
+        "kind": "experiment_result",
+        "status": "live_complete",
+        "verdict": "rejected",
+        "experiment_sha256": context["manifest"]["experiment_sha256"],
+        "manifest_ref": _relative_ref(context["manifest_path"]),
+        "staged_spending_amendment_ref": _relative_ref(
+            Path(args.spec).resolve().parent
+            / "h97_pre_live_staged_spending_amendment.md"
+        ),
+        "failed_checks": [
+            f"pair_{failed_pair_index:02d}:{name}"
+            for name, passed in failed.items()
+            if not passed
+        ],
+        "failed_pair_index": int(failed_pair_index),
+        "first_stages": first_stages,
+        "environment_contact": False,
+        "response_reproduction_before": (
+            context["manifest"]["reproduction_before_h97"]
+        ),
+        "response_reproduction_after": (
+            context["manifest"]["reproduction_before_h97"]
+        ),
+        "claim_boundary": list(context["manifest"]["claim_boundary"]),
+    }
+    result = {**result_core, "sha256": _sha(result_core)}
+    _atomic_json(output_dir / "result.json", result)
+    return result
+
+
+def run_live(
+    args: argparse.Namespace,
+    *,
+    client: Any | None = None,
+    adapter_factory: Callable[[str], Any] | None = None,
+    environment_source: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     context = _compile_live_context(args)
+    if adapter_factory is None:
+        environment_source, adapter_factory = _offline_environment_source(
+            context,
+            args,
+        )
+    elif environment_source is None:
+        source_core = {
+            "schema": LIVE_SCHEMA,
+            "kind": "injected_environment_source",
+            "authority": "test_injection",
+            "external_evidence_authorized": False,
+        }
+        environment_source = {
+            **source_core,
+            "sha256": _sha(source_core),
+        }
+    context = {
+        **context,
+        "environment_source": dict(environment_source),
+    }
     output_dir = Path(args.output_dir).resolve()
     result_path = output_dir / "result.json"
     if result_path.exists():
         return json.loads(result_path.read_text(encoding="utf-8"))
-    bootstrap_dotenv_from_repo_root()
-    from openai import OpenAI
+    if client is None:
+        if _controller_transport(args) == CODEX_APP_SERVER_TRANSPORT:
+            raise RuntimeError(
+                "app-server live mode requires an initialized app-server client"
+            )
+        bootstrap_dotenv_from_repo_root()
+        from openai import OpenAI
 
-    client = OpenAI()
+        client = OpenAI()
     orders = tuple(
         tuple(str(value) for value in row)
         for row in context["manifest"]["matched_controller_fork"][
@@ -1828,6 +2590,17 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                 failed_pair_index=pair_index,
             )
         pair_setups.append(pair)
+        first_stage = _first_stage_pair_receipt(
+            pair,
+            pair_index=pair_index,
+        )
+        if not first_stage["passed"]:
+            return _seal_first_stage_failure(
+                context,
+                args,
+                pair_setups=pair_setups,
+                failed_pair_index=pair_index,
+            )
 
     all_outcomes: list[InstrumentedProposalOutcome] = []
     pair_rows = []
@@ -1846,6 +2619,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                 pair_index=pair_index,
                 assignment=assignment,
                 branch=branch,
+                adapter_factory=adapter_factory,
             )
             arms[assignment] = arm
             arm_path = (
@@ -2014,6 +2788,28 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "verdict": "supported" if supported else "rejected",
         "experiment_sha256": context["manifest"]["experiment_sha256"],
         "manifest_ref": _relative_ref(context["manifest_path"]),
+        "staged_spending_amendment_ref": _relative_ref(
+            Path(args.spec).resolve().parent
+            / "h97_pre_live_staged_spending_amendment.md"
+        ),
+        "environment_source_correction_ref": _relative_ref(
+            Path(args.spec).resolve().parent
+            / "h97_pre_live_environment_source_correction.md"
+        ),
+        "environment_source": context["environment_source"],
+        "environment_contact": True,
+        "prefix_replay_action_count": (
+            len(context["prefix"]["actions"]) * len(all_outcomes)
+        ),
+        "post_prefix_action_count": (
+            int(
+                context["manifest"]["live_test"][
+                    "post_prefix_actions_per_arm"
+                ]
+            )
+            * len(all_outcomes)
+        ),
+        "arc_action_count": int(total_primitive_cost),
         "pairs": pair_rows,
         "target_residual_estimate": estimate.to_receipt(),
         "promoted_child_response_family": child_family.to_receipt(),
@@ -2082,19 +2878,62 @@ def main() -> int:
     )
     parser.add_argument(
         "--output-dir",
-        default=str(base / "h97_causal_response_derivative"),
+        default=None,
     )
+    parser.add_argument(
+        "--controller-transport",
+        choices=(RESPONSES_API_TRANSPORT, CODEX_APP_SERVER_TRANSPORT),
+        default=RESPONSES_API_TRANSPORT,
+    )
+    parser.add_argument(
+        "--initial-history-mode",
+        choices=(ENDPOINT_ONLY_HISTORY, EXACT_PREFIX_CHRONOLOGY),
+        default=ENDPOINT_ONLY_HISTORY,
+    )
+    parser.add_argument(
+        "--app-server-cwd",
+        default=str(DEFAULT_APP_SERVER_CWD),
+    )
+    parser.add_argument("--app-server-trace", default=None)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--max-output-tokens", type=int, default=4096)
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
     args = parser.parse_args()
+    if args.output_dir is None:
+        if args.initial_history_mode == EXACT_PREFIX_CHRONOLOGY:
+            lineage = (
+                "h109_restored_sensorimotor_chronology_app_server"
+                if args.controller_transport == CODEX_APP_SERVER_TRANSPORT
+                else "h109_restored_sensorimotor_chronology"
+            )
+        else:
+            lineage = (
+                "h97_causal_response_derivative_app_server"
+                if args.controller_transport == CODEX_APP_SERVER_TRANSPORT
+                else "h97_causal_response_derivative"
+            )
+        args.output_dir = str(base / lineage)
     if args.max_output_tokens <= 0 or args.timeout_seconds <= 0:
         raise SystemExit("output-token and timeout limits must be positive")
-    result = (
-        run_preflight(args)
-        if args.preflight_only
-        else run_live(args)
-    )
+    if args.preflight_only:
+        result = run_preflight(args)
+    elif args.controller_transport == CODEX_APP_SERVER_TRANSPORT:
+        app_cwd = Path(args.app_server_cwd).resolve()
+        app_cwd.mkdir(parents=True, exist_ok=True)
+        trace_path = (
+            Path(args.app_server_trace).resolve()
+            if args.app_server_trace
+            else Path(args.output_dir).resolve()
+            / "app_server_protocol_trace.jsonl"
+        )
+        with CodexAppServerClient(
+            trace_path=trace_path,
+            cwd=app_cwd,
+            timeout_seconds=float(args.timeout_seconds),
+        ) as app_client:
+            result = run_live(args, client=app_client)
+    else:
+        result = run_live(args)
     if not args.preflight_only:
         print(json.dumps({
             "result_path": _relative_ref(

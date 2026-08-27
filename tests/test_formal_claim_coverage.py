@@ -26,7 +26,7 @@ from ztare.leanmill.formal_claim_coverage import (
 )
 
 
-LEAN = FormalPropositionIdentityKind.LEAN_TARGET_SIGNATURE
+LEAN = FormalPropositionIdentityKind.GOVERNED_LEAN_PROPOSITION
 SEMANTIC = FormalPropositionIdentityKind.ADAPTER_SEMANTIC
 
 
@@ -517,7 +517,7 @@ def test_graph_rejects_duplicate_formal_and_semantic_identities() -> None:
             nodes=(root, formal_child),
             adapter_evidence_sha256=_digest("identity:adapter"),
         )
-    assert formal_error.value.code == "formal_claim_signature_duplicate"
+    assert formal_error.value.code == "formal_claim_lean_identity_duplicate"
 
     semantic_root = replace(
         root,

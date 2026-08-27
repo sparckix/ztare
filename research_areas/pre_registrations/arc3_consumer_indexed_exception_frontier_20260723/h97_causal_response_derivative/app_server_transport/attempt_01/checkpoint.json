@@ -1,0 +1,134 @@
+{
+  "branch_a": {
+    "output": {
+      "current_branch_nonce": "BRANCH-A-7F3C",
+      "inherited_root_token": "ROOT-91C7-E5A2",
+      "other_branch_nonce": ""
+    },
+    "turn": {
+      "assistant_output_sha256": "cc6ee4bbc6cd723a9563b08cad67d6dbba7fdeb038d588062ef3854b418cf776",
+      "assistant_text": "{\"current_branch_nonce\":\"BRANCH-A-7F3C\",\"inherited_root_token\":\"ROOT-91C7-E5A2\",\"other_branch_nonce\":\"\"}",
+      "completed_at": 1786159455,
+      "duration_ms": 5593,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "prompt_sha256": "00129960369d2b0cea0a5482b1f30dfa994ad7ffdb9308e20965cf382263cb75",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "b43046ce399f7d35ddb08d5a199396364b8890d896e89aa1134bb2871a40dac1",
+      "started_at": 1786159450,
+      "status": "completed",
+      "thread_id": "019fdf66-46f6-74e0-aad6-6f1a0a4ee7f6",
+      "tool_item_count": 0,
+      "turn_id": "019fdf66-483a-7060-b16a-ad5d5fc9d588"
+    }
+  },
+  "branch_b": {
+    "output": {
+      "current_branch_nonce": "BRANCH-B-2D8E",
+      "inherited_root_token": "ROOT-91C7-E5A2",
+      "other_branch_nonce": ""
+    },
+    "turn": {
+      "assistant_output_sha256": "05a052cfc9cad17887a5ab07bcb85f870a129f7d35f5de39802816e6a898718b",
+      "assistant_text": "{\"current_branch_nonce\":\"BRANCH-B-2D8E\",\"inherited_root_token\":\"ROOT-91C7-E5A2\",\"other_branch_nonce\":\"\"}",
+      "completed_at": 1786159459,
+      "duration_ms": 3871,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "prompt_sha256": "f188206903a1b9eb30ee80c869deddc27961aac54a6df06a2591189029a55f51",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "7a3aca1f4d5d24a19ab0f8dd0d0c4f1ce56e5361a52281a2ea82ecf94f68d14f",
+      "started_at": 1786159455,
+      "status": "completed",
+      "thread_id": "019fdf66-4795-7302-bd9b-f7d033493810",
+      "tool_item_count": 0,
+      "turn_id": "019fdf66-5e1f-78d0-91dc-3bdb3a6fd096"
+    }
+  },
+  "forks": {
+    "a": {
+      "ephemeral": false,
+      "fork_thread_id": "019fdf66-46f6-74e0-aad6-6f1a0a4ee7f6",
+      "forked_from_id": "019fdf66-3449-78d3-bf12-39224bb60ea6",
+      "inherited_turn_ids": [
+        "019fdf66-35a7-7670-8754-2fd2a5ddc49a"
+      ],
+      "kind": "app_server_fork_receipt",
+      "last_turn_id": "019fdf66-35a7-7670-8754-2fd2a5ddc49a",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "ff743b7fa23a4ae224723864729dd388c3b54f98c5249599156170ea0a1500be",
+      "source_thread_id": "019fdf66-3449-78d3-bf12-39224bb60ea6"
+    },
+    "b": {
+      "ephemeral": false,
+      "fork_thread_id": "019fdf66-4795-7302-bd9b-f7d033493810",
+      "forked_from_id": "019fdf66-3449-78d3-bf12-39224bb60ea6",
+      "inherited_turn_ids": [
+        "019fdf66-35a7-7670-8754-2fd2a5ddc49a"
+      ],
+      "kind": "app_server_fork_receipt",
+      "last_turn_id": "019fdf66-35a7-7670-8754-2fd2a5ddc49a",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "aef9b12047ad8888a7ed15660e8ff60111bad7a7b0dd721817f17f5800d46d11",
+      "source_thread_id": "019fdf66-3449-78d3-bf12-39224bb60ea6"
+    }
+  },
+  "parent": {
+    "output": {
+      "parent_marker": "parent_complete",
+      "root_token": "ROOT-91C7-E5A2"
+    },
+    "thread": {
+      "agentNickname": null,
+      "agentRole": null,
+      "canAcceptDirectInput": true,
+      "cliVersion": "0.146.0",
+      "createdAt": 1786159445,
+      "cwd": "/private/tmp/ztare_h97_app_server_fork_cwd",
+      "ephemeral": false,
+      "extra": null,
+      "forkedFromId": null,
+      "gitInfo": null,
+      "historyMode": "legacy",
+      "id": "019fdf66-3449-78d3-bf12-39224bb60ea6",
+      "isPinned": false,
+      "modelProvider": "openai",
+      "name": null,
+      "parentThreadId": null,
+      "path": "<operator-home>/.codex/sessions/2026/08/07/rollout-2026-08-07T20-24-05-019fdf66-3449-78d3-bf12-39224bb60ea6.jsonl",
+      "preview": "",
+      "recencyAt": 1786159445,
+      "sessionId": "019fdf66-3449-78d3-bf12-39224bb60ea6",
+      "source": "vscode",
+      "status": {
+        "type": "idle"
+      },
+      "threadSource": null,
+      "turns": [],
+      "updatedAt": 1786159445
+    },
+    "turn": {
+      "assistant_output_sha256": "47d3a95af5e7d073aa773900e4ed721679eb14d203dc33f9a4867aadb4c6f40a",
+      "assistant_text": "{\"parent_marker\":\"parent_complete\",\"root_token\":\"ROOT-91C7-E5A2\"}",
+      "completed_at": 1786159449,
+      "duration_ms": 4397,
+      "item_types": [
+        "agentMessage"
+      ],
+      "kind": "app_server_turn_receipt",
+      "prompt_sha256": "fe23d84dca4d77331db670b11c445676ec33c03a76ddaadfc59def0dc2dbb120",
+      "schema": "ztare-codex-app-server-fork-v1",
+      "sha256": "6d1a50326b60e1f24e047e03317035123278fc7e71afad9bf7f766606cd5c039",
+      "started_at": 1786159445,
+      "status": "completed",
+      "thread_id": "019fdf66-3449-78d3-bf12-39224bb60ea6",
+      "tool_item_count": 0,
+      "turn_id": "019fdf66-35a7-7670-8754-2fd2a5ddc49a"
+    }
+  },
+  "schema": "ztare-h97-app-server-fork-checkpoint-v1"
+}

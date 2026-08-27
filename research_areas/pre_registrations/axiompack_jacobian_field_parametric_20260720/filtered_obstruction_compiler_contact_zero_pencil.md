@@ -1,7 +1,8 @@
 # Filtered Obstruction Compiler and the moving contact-zero backbone
 
-**Status:** exact finite quotient, induction, Puiseux-flow, and two-flow
-factorization compilers; the finite polar-prefix descent remains open
+**Status:** exact finite quotient, induction, one-flow Puiseux, local
+two-flow carrier, and finite polar-prefix descent; selected two-flow
+continuation remains open
 
 ## Governing identity
 
@@ -445,6 +446,23 @@ may contain infinitely many velocity coefficients.
 
 ## Puiseux flow lifecycles
 
+### 2026-08-06 authority correction
+
+The one-flow implication is complete.  The two-flow compiler currently has
+only a `TWO_FLOW_FACTORIZATION_IDENTITY` receipt, yet it derives regular
+finite-route analyticity, equal infinity degrees, the first unequal
+infinity exponent, proportional reduction, and final exclusion.  A bare
+factorization identity does not construct the selected punctured hidden
+branch or prove that its continuation exhausts the finite and infinity
+routes.
+
+The local half is now kernel-checked: a constructed
+`TwoFlowRamifiedCrossCarrier` builds a complete `TwoJuliaAbelCarrier`, and
+the selected critical jets exclude that carrier.  The compiler's two-flow
+output must remain conditional until a separate content-bound proposition
+constructs the cross carrier from an arbitrary selected polynomial-flow
+factorization.  Model identity cannot discharge that proposition.
+
 The compiler now owns two substrate-neutral all-index implications.
 
 For one polynomial generator, a regular germ
@@ -470,15 +488,42 @@ fractional exponent
 \]
 
 If they are proportional, their product is one polynomial flow.  Therefore
-a first nonintegral exponent greater than two excludes the complete
-two-sided finite factorization.
+a first nonintegral exponent greater than two excludes any two-sided finite
+factorization whose selected continuation supplies the declared
+finite/infinity alternative.
+
+That alternative is not exhaustive.  Two finite selected branches can move
+between simple equilibria.  Their local exponents are ratios of generator
+derivatives, and reciprocal ratios can restore a linear composition.  The
+exact equilibrium-transition replay constructs rational generators in
+(x^2\mathbb Q[x]) with ratios (3/2) and (2/3) and obtains
+
+\[
+u+\frac{77}{12}u^2+\frac{376}{81}u^{5/2}+O(u^3).
+\]
+
+The first fractional exponent therefore collides exactly with the Jacobian
+critical germ.  This is a local Julia carrier, not a global time-one
+factorization, but it invalidates the compiler's finite/infinity route
+exhaustion as a general implication.
+
+The critical scalar holonomy nevertheless has an exact infinite-monodromy
+escape.  Rationalizing its quadratic sheet produces a degree-seven pole
+whose residue polynomial is irreducible modulo (17).  The residue is
+irrational, so its exponential multiplier has no positive torsion power.
+The reusable finite-root kernel then guarantees an iterate outside the root
+set of any fixed nonzero outer generator.  The compiler still needs a
+content-bound continuation receipt that lifts these scalar loop iterates to
+the two factor branches; a bare factorization identity cannot supply it.
 
 The Jacobian inverse radial holonomy has first fractional exponent (5/2)
-with a nonzero coefficient.  The one-flow and two-flow compiler receipts
-therefore close the prefix-free and arbitrary finite **critical**
-special-fiber cases.  Both receipts keep adapter completeness false: the
-Jacobian adapter owns the exact local expansion and the passage from a
-below-rate-two critical pair to the two-flow identity.
+with a nonzero coefficient.  The one-flow compiler receipt closes the
+prefix-free critical case.  The two-flow receipt closes only the conditional
+nonfinite local alternative above.  The Jacobian adapter still owes the
+passage from a below-rate-two critical pair to either a selected punctured
+cross carrier or an exhaustive finite-equilibrium carrier, followed by
+exclusion of the branch produced.  Infinite scalar monodromy reduces that
+global task to the loop-transfer proposition.
 
 The remaining category is a finite **positive Rees-grade** prefix.  Its
 specialization is polar, so it must be routed through a well-founded
@@ -529,8 +574,8 @@ the source factor.  The resulting slope
 \frac{2d}{d-h}>2
 \]
 
-eliminates the maximal positive face.  Finite induction reaches the bound
-critical terminal.
+eliminates the maximal positive face.  Finite induction reaches the critical
+terminal, whose exclusion retains the selected-continuation dependency.
 
 The alien suite checks the positive lifecycle and rejects missing support,
 quotient, target-module, cost, infinite-support, terminal, and rate
@@ -552,10 +597,11 @@ premises, category mismatches, weak lower bounds, and a nonmatching upper
 bound are rejecting tests.
 
 The Jacobian adapter binds the pure tensor induction, the least-positive
-moving-backbone induction, and the radial staircase.  It returns the exact
-unrestricted value two.  This small composition layer is substrate-neutral;
-it can be reused whenever a zero/least-positive filtration dichotomy and an
-independent matching construction are the final proof objects.
+moving-backbone induction, and the radial staircase.  Its exact unrestricted
+value-two output is conditional because the pure tensor receipt inherits the
+unproved critical-terminal transition.  The composition layer remains
+substrate-neutral and reusable once every lower-branch receipt has the
+authority its proposition requires.
 
 ## Kill and stop conditions
 
@@ -567,7 +613,8 @@ independent matching construction are the final proof objects.
 - Stop loop one only after an alien replay, both negative controls, the moving
   repair, and a Jacobian adapter replay pass.
 - Do not close the Jacobian campaign on the finite critical certificate.  The
-  live residual is the all-finite polar-prefix removal/charge induction.
+  polar-prefix removal/charge induction is available, while the selected
+  two-flow continuation-to-cross-carrier theorem remains live.
 
 ## Intended formal surface
 

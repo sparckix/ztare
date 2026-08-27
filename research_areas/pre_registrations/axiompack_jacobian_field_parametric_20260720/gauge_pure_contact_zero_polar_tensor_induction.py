@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unconditional finite-polar-prefix induction in the split ``(A,J)`` pair.
+"""Finite-polar-prefix induction in the split ``(A,J)`` pair.
 
 The plain Witt quotient loses the source cost of the normal-three companion.
 The split tensor coordinate repairs that defect:
@@ -20,8 +20,11 @@ after the finitely many other maximal-face defects are excluded.  The exact
 semidirect inverse transfer has nonzero even coefficients at every depth;
 because the target module is zero, all of that orbit is paid by the source.
 Its order and source-degree slopes are ``d-h`` and ``2*d``, giving strict
-rate above two for every positive face.  Finite descent reaches the already
-certified critical two-flow terminal.
+rate above two for every positive face.  Finite descent reaches the critical
+terminal.  Strict ordinary target rate does not force finite critical
+support, so the terminal must split into finite-support Rees and
+infinite-support twisted-clock routes; their schedule-carrier construction
+and exhaustive routing remain open.
 """
 
 from __future__ import annotations
@@ -54,18 +57,6 @@ from gauge_pure_contact_zero_tensor_density_holonomy import (  # noqa: E402
 from gauge_pure_contact_zero_witt_puiseux_obstruction import (  # noqa: E402
     run as witt_puiseux_run,
 )
-from ztare.common.filtered_obstruction import (  # noqa: E402
-    FilteredPolarTensorClaim,
-    FilteredPolarTensorEvidenceScope,
-    FilteredPolarTensorFactorizationProblem,
-    FilteredPolarTensorModel,
-    compile_filtered_polar_tensor_factorization,
-    make_filtered_polar_tensor_context,
-    make_filtered_polar_tensor_evidence,
-)
-from ztare.common.content_bound_evidence import EvidenceAuthority  # noqa: E402
-
-
 def _sha256(payload: object) -> str:
     return hashlib.sha256(
         json.dumps(
@@ -169,14 +160,14 @@ def run(verification_rows: int = 8) -> dict[str, object]:
     module_digest = str(
         module_certificate["quadratic_differential_certificate_sha256"]
     )
-    terminal_certificate = critical_terminal[
-        "filtered_two_flow_obstruction_compiler"
+    legacy_terminal_certificate = critical_terminal[
+        "conditional_two_flow_obstruction_compiler"
     ]
-    terminal_digest = str(
-        terminal_certificate["two_flow_puiseux_certificate_sha256"]
+    legacy_terminal_digest = str(
+        legacy_terminal_certificate["two_flow_puiseux_certificate_sha256"]
     )
     assert module_certificate["polynomial_solution_excluded"] is True
-    assert terminal_certificate[
+    assert legacy_terminal_certificate[
         "polynomial_two_flow_factorization_excluded"
     ] is True
     assert split["kernel_is_split_witt_subalgebra"] is True
@@ -186,7 +177,7 @@ def run(verification_rows: int = 8) -> dict[str, object]:
             "abelian_source_residual"
         ]["adapter_certificate_sha256"],
         "critical_module_certificate_sha256": module_digest,
-        "critical_terminal_certificate_sha256": terminal_digest,
+        "legacy_conditional_puiseux_sha256": legacy_terminal_digest,
         "split_semidirect": split,
         "tensor_orbit": tensor_orbit,
         "tensor_newton": tensor_newton,
@@ -203,70 +194,24 @@ def run(verification_rows: int = 8) -> dict[str, object]:
         "coefficientwise_polynomial_to_finite_face_defects": True,
     }
     adapter_digest = _sha256(adapter_payload)
-    context = make_filtered_polar_tensor_context(
-        category_id=(
-            "pure contact-zero radial/normal-three split graph quotient"
-        ),
-        filtration_id=(
-            "Rees grade h=d-order with source degree multiplier two"
-        ),
-        model=FilteredPolarTensorModel.WITT_DENSITY_2_NEG3_NEG5,
-        adapter_evidence_sha256=adapter_digest,
-    )
-    evidence = (
-        make_filtered_polar_tensor_evidence(
-            claim=(
-                FilteredPolarTensorClaim.FINITE_MAXIMAL_FACE_DECOMPOSITION
-            ),
-            subject_id="jacobian_pure_contact_zero_maximal_face_decomposition",
-            context=context,
-            authority=EvidenceAuthority.ADAPTER_EXACT,
-            scope=(
-                FilteredPolarTensorEvidenceScope.ALL_FINITE_POSITIVE_FACES
-            ),
-            evidence_sha256=adapter_digest,
-        ),
-        make_filtered_polar_tensor_evidence(
-            claim=(
-                FilteredPolarTensorClaim.CRITICAL_MODULE_INFINITE_SUPPORT
-            ),
-            subject_id="jacobian_critical_tensor_module_infinite_support",
-            context=context,
-            authority=EvidenceAuthority.FILTERED_COMPILER,
-            scope=(
-                FilteredPolarTensorEvidenceScope.ALL_CRITICAL_MODULE_ORDERS
-            ),
-            evidence_sha256=module_digest,
-        ),
-        make_filtered_polar_tensor_evidence(
-            claim=FilteredPolarTensorClaim.CRITICAL_TERMINAL_EXCLUDED,
-            subject_id="jacobian_zero_positive_face_terminal_excluded",
-            context=context,
-            authority=EvidenceAuthority.FILTERED_COMPILER,
-            scope=(
-                FilteredPolarTensorEvidenceScope.ZERO_POSITIVE_FACE_TERMINAL
-            ),
-            evidence_sha256=terminal_digest,
-        ),
-    )
-    compiler_certificate = compile_filtered_polar_tensor_factorization(
-        FilteredPolarTensorFactorizationProblem(
-            name=(
-                "jacobian_pure_contact_zero_"
-                "arbitrary_finite_polar_prefix"
-            ),
-            threshold=2,
-            degree_multiplier=2,
-            context=context,
-            evidence=evidence,
-        )
-    )
-    assert compiler_certificate.finite_positive_prefix_induction_closed
-    assert compiler_certificate.strict_subthreshold_factorization_excluded
+    positive_face_payload = {
+        "schema": "axiompack.jacobian_positive_face_descent.v1",
+        "adapter_certificate_sha256": adapter_digest,
+        "critical_module_certificate_sha256": module_digest,
+        "tensor_action": tensor_orbit["action"],
+        "maximum_positive_resonant_start_exponents": 4,
+        "newton_invariant": tensor_newton["newton_invariant"],
+        "semidirect_transfer": semidirect_transfer["inverse_transfer"],
+        "positive_face_rate": tensor_newton["limiting_rate"],
+        "finite_positive_prefix_induction_closed": True,
+        "descent_endpoint": "zero_positive_face_critical_terminal",
+        "critical_terminal_excluded": False,
+    }
+    positive_face_digest = _sha256(positive_face_payload)
     return {
         "schema": (
             "axiompack.jacobian_pure_contact_zero_"
-            "polar_tensor_induction.v1"
+            "polar_tensor_induction.v4"
         ),
         "split_tensor_density": split,
         "critical_module": tensor_holonomy["abelian_source_residual"],
@@ -275,19 +220,62 @@ def run(verification_rows: int = 8) -> dict[str, object]:
         "semidirect_transfer": semidirect_transfer,
         "rees_dictionary": rees,
         "critical_terminal": {
-            "certificate_sha256": terminal_digest,
-            "polynomial_two_flow_factorization_excluded": True,
+            "legacy_conditional_puiseux_sha256": legacy_terminal_digest,
+            "global_two_flow_factorization_excluded": False,
+            "conditional_compiler_exclusion": True,
+            "missing_proposition": (
+                "construct an exhaustive finite/infinite target-critical "
+                "schedule dichotomy; bind the finite branch to the regular "
+                "Rees two-flow carrier and the infinite branch to the exact "
+                "semidirect exponential transfer of its finite polynomial "
+                "Lie pair (A,J), without assuming a polynomial group-module "
+                "coordinate"
+            ),
+            "target_critical_support_routes": {
+                "finite": (
+                    "regular Rees two-flow carrier with exact generator and "
+                    "endpoint bindings"
+                ),
+                "infinite": (
+                    "actual-schedule transfer-aware finite-(A,J) Lie "
+                    "carrier and all-degree group-module orbit exclusion"
+                ),
+                "filtration_only_finiteness_refuted_by": (
+                    "AxiomPackJacobianTargetCriticalRateGap."
+                    "target_critical_rate_gap_terminal_certificate"
+                ),
+            },
+            "equilibrium_transition_countermodel": critical_terminal[
+                "equilibrium_transition_countermodel"
+            ],
+            "critical_infinite_monodromy": critical_terminal[
+                "critical_infinite_monodromy"
+            ],
+            "finite_regular_monodromy_countermodels": critical_terminal[
+                "finite_regular_monodromy_countermodels"
+            ],
+            "two_flow_authority_boundary": critical_terminal[
+                "two_flow_authority_boundary"
+            ],
         },
         "adapter_certificate_sha256": adapter_digest,
-        "filtered_obstruction_compiler": compiler_certificate.to_dict(),
+        "positive_face_descent_certificate": {
+            **positive_face_payload,
+            "certificate_sha256": positive_face_digest,
+        },
+        "conditional_filtered_obstruction_compiler": None,
+        "unconditional_positive_face_induction": {
+            "finite_positive_prefix_induction_closed": True,
+            "descent_endpoint": "zero_positive_face_critical_terminal",
+            "critical_terminal_excluded": False,
+            "certificate_sha256": positive_face_digest,
+        },
         "claim_boundary": (
             "For the pure contact-zero quotient, every arbitrary finite "
-            "positive-Rees prefix is excluded by the maximal-face tensor "
-            "induction, and the zero-positive-face branch is excluded by "
-            "the certified critical terminal. Global campaign closure "
-            "still requires auditing that the contact-depth dichotomy and "
-            "the rate-two upper construction cover the declared schedule "
-            "category without an omitted branch."
+            "positive-Rees face descends by the maximal-face tensor "
+            "induction. Exclusion of the zero-positive-face branch remains "
+            "blocked on the schedule-level finite/infinite target-critical "
+            "dichotomy and its two exact carrier constructions."
         ),
     }
 

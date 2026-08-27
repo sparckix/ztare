@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from ztare.common.information_yield_pricing import (
     ResidualYieldCoordinates,
     YieldComponents,
+    posterior_predictive_information_bits,
+    posterior_predictive_task_information_bits,
     price_experiment,
     residual_information_yield,
 )
@@ -49,6 +51,25 @@ ENGINE_REGISTRY: dict[str, ResearchSignalEngine] = {
         engine_id="experiment_pricing",
         callable_ref="ztare.common.information_yield_pricing.price_experiment",
         role="rank observations by committee separation, compression, and novelty",
+    ),
+    "posterior_predictive_information": ResearchSignalEngine(
+        engine_id="posterior_predictive_information",
+        callable_ref=(
+            "ztare.common.information_yield_pricing."
+            "posterior_predictive_information_bits"
+        ),
+        role=(
+            "measure exact model-outcome mutual information from caller-owned "
+            "categorical predictions and model weights"
+        ),
+    ),
+    "posterior_predictive_task_information": ResearchSignalEngine(
+        engine_id="posterior_predictive_task_information",
+        callable_ref=(
+            "ztare.common.information_yield_pricing."
+            "posterior_predictive_task_information_bits"
+        ),
+        role="rank probes by information about a named downstream target",
     ),
     "residual_information_yield": ResearchSignalEngine(
         engine_id="residual_information_yield",
@@ -97,6 +118,8 @@ __all__ = [
     "engine_registry",
     "evaluate_compression_progress",
     "evaluate_information_yield",
+    "posterior_predictive_information_bits",
+    "posterior_predictive_task_information_bits",
     "price_experiment",
     "residual_information_yield",
     "render_loop_control_prompt_context",

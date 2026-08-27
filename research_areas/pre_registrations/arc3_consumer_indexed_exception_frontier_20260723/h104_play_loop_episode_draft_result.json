@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "adjacency_and_terminal_state_preserved": true,
+    "chronological_windows_form_draft": true,
+    "draft_hash_round_trips": true,
+    "environment_and_prefix_required": true,
+    "immediate_choice_recording_preserved": true,
+    "measure_or_evidence_drift_refused": true,
+    "no_temporal_chain_or_task_preference_created": true,
+    "play_loop_persists_draft": true,
+    "repeated_episode_is_idempotent": true,
+    "unavailable_or_cross_forecast_yield_refused": true
+  },
+  "claim_boundary": "offline ARC play-loop episode-draft collection; no live replay contract or counterfactual arm execution claim",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-PLAY-LOOP-EPISODE-DRAFT-20260807-104",
+  "schema": "ztare-h104-play-loop-episode-draft-audit-v1",
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_play_loop_episode_draft.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "..                                                                       [100%]\n2 passed in 0.32s\n",
+    "stdout_sha256": "87b1ffae008cb01b1cb73d443fc6366001240a196a4124ad7aea5b0a001096d6"
+  }
+}

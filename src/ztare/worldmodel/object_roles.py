@@ -72,11 +72,50 @@ def _component_image(grid, component):
     return (y0, x0), shape
 
 
+def _d4_shape_variants(shape):
+    """Return normalized colored images under the square's D4 action.
+
+    Component identity owns colored incidence, while the selected variant is
+    pose.  Coordinates are normalized after each transform so translation
+    remains a separate state coordinate.
+    """
+
+    variants = set()
+    for swap in (False, True):
+        for sy in (-1, 1):
+            for sx in (-1, 1):
+                transformed = []
+                for y, x, color in shape:
+                    ty, tx = (x, y) if swap else (y, x)
+                    transformed.append((sy * ty, sx * tx, int(color)))
+                min_y = min(y for y, _x, _color in transformed)
+                min_x = min(x for _y, x, _color in transformed)
+                variants.add(tuple(sorted(
+                    (y - min_y, x - min_x, color)
+                    for y, x, color in transformed
+                )))
+    return tuple(sorted(variants))
+
+
+def _canonical_d4_shape(shape):
+    return _d4_shape_variants(shape)[0]
+
+
 def _component_images(grid, colors):
     images: "dict[tuple, list[tuple[int, int]]]" = defaultdict(list)
     for component in _components(grid, colors):
         origin, shape = _component_image(grid, component)
         images[shape].append(origin)
+    return images
+
+
+def _component_pose_images(grid, colors):
+    """Index origins and observed poses by D4-invariant object identity."""
+
+    images: "dict[tuple, list[tuple[tuple[int, int], tuple]]]" = defaultdict(list)
+    for component in _components(grid, colors):
+        origin, pose = _component_image(grid, component)
+        images[_canonical_d4_shape(pose)].append((origin, pose))
     return images
 
 
@@ -91,15 +130,28 @@ def _translated_component_orbits(rows, colors, *, min_support: int = 2):
     if not colors:
         return []
     support: "dict[tuple, Counter]" = defaultdict(Counter)
+    observed_poses: "dict[tuple, set[tuple]]" = defaultdict(set)
     for tr in rows:
         if tr.identity is not None and tr.identity.is_authoritative \
                 and tr.identity.is_boundary:
             continue
-        before = _component_images(tr.s, set(colors))
-        after = _component_images(tr.s_next, set(colors))
+        before = _component_pose_images(tr.s, set(colors))
+        after = _component_pose_images(tr.s_next, set(colors))
         for shape in before.keys() & after.keys():
-            lost = list((Counter(before[shape]) - Counter(after[shape])).elements())
-            gained = list((Counter(after[shape]) - Counter(before[shape])).elements())
+            before_by_origin = {
+                origin: pose for origin, pose in before[shape]
+            }
+            after_by_origin = {
+                origin: pose for origin, pose in after[shape]
+            }
+            lost = list((
+                Counter(before_by_origin.keys())
+                - Counter(after_by_origin.keys())
+            ).elements())
+            gained = list((
+                Counter(after_by_origin.keys())
+                - Counter(before_by_origin.keys())
+            ).elements())
             # Ambiguous fission/fusion or multiple simultaneous copies do not
             # establish a particular object's transport identity.
             if len(lost) != 1 or len(gained) != 1:
@@ -116,6 +168,10 @@ def _translated_component_orbits(rows, colors, *, min_support: int = 2):
             if max(abs(dy), abs(dx)) > 2 * max(height, width):
                 continue
             support[shape][(int(tr.a), dy, dx)] += 1
+            observed_poses[shape].update((
+                before_by_origin[lost[0]],
+                after_by_origin[gained[0]],
+            ))
 
     members = []
     for shape, motion_counts in support.items():
@@ -125,6 +181,11 @@ def _translated_component_orbits(rows, colors, *, min_support: int = 2):
         members.append({
             "kind": _COMPONENT_ORBIT_KIND,
             "shape": [list(cell) for cell in shape],
+            "shape_equivalence": "d4_pose_v1",
+            "observed_pose_shapes": [
+                [list(cell) for cell in pose]
+                for pose in sorted(observed_poses[shape])
+            ],
             "action_displacements": [
                 [action, dy, dx, count]
                 for (action, dy, dx), count in sorted(motion_counts.items())
@@ -169,8 +230,14 @@ def _reactive_field(rows, orbit_members) -> "dict | None":
             shape = tuple(tuple(int(value) for value in cell)
                           for cell in member["shape"])
             colors = {cell[2] for cell in shape}
-            before = _component_images(tr.s, colors).get(shape, [])
-            after = _component_images(tr.s_next, colors).get(shape, [])
+            before = [
+                origin for origin, _pose
+                in _component_pose_images(tr.s, colors).get(shape, [])
+            ]
+            after = [
+                origin for origin, _pose
+                in _component_pose_images(tr.s_next, colors).get(shape, [])
+            ]
             lost = list((Counter(before) - Counter(after)).elements())
             gained = list((Counter(after) - Counter(before)).elements())
             if len(lost) != 1 or len(gained) != 1:
@@ -389,11 +456,27 @@ def object_signature(grid, roles) -> tuple:
                 shape = tuple(tuple(int(value) for value in cell)
                               for cell in member["shape"])
                 colors = {cell[2] for cell in shape}
-                for observed_shape, origins in _component_images(grid, colors).items():
-                    if observed_shape == shape:
-                        located.extend(
-                            (member_index, int(y), int(x)) for y, x in origins
-                        )
+                pose_shapes = {
+                    tuple(tuple(int(value) for value in cell) for cell in pose)
+                    for pose in member.get("observed_pose_shapes", [])
+                }
+                pose_variants = _d4_shape_variants(shape)
+                retain_pose = len(pose_shapes) > 1
+                for observed_shape, images in _component_pose_images(
+                    grid, colors
+                ).items():
+                    if observed_shape != shape:
+                        continue
+                    for (y, x), pose in images:
+                        if retain_pose:
+                            located.append((
+                                member_index,
+                                int(y),
+                                int(x),
+                                pose_variants.index(pose),
+                            ))
+                        else:
+                            located.append((member_index, int(y), int(x)))
             agent = frozenset(located)
         else:
             # Compatibility for substrate adapters and historical receipts that

@@ -94,9 +94,41 @@ PRIMITIVE_MODULES = [
     "src/ztare/common/constraint_isomorphism.py",  # strange loop (common/ not auto-swept)
     "src/ztare/common/factored_search.py",         # consumer-indexed projected search
     "src/ztare/common/graph_carrier.py",           # graph diagnostic carrier schema/receipt guard
+    "src/ztare/common/filtered_obstruction.py",    # filtered quotient / symbol cokernel / reachability
+    "src/ztare/common/epistemic_autocatalysis.py", # rank-quotiented residual fission / dual criticality
+    "src/ztare/common/capability_autocatalysis.py", # authority-typed catalytic capability closure
+    "src/ztare/common/capability_kinetics.py", # exact state-dependent catalytic drift / threshold
+    "src/ztare/common/content_identity.py",        # canonical JSON content identities
+    "src/ztare/common/content_bound_evidence.py",  # authority-typed content-bound proof receipts
+    "src/ztare/common/execution_market.py",        # task-typed capability routing and receipts
+    "src/ztare/investment/adaptive_execution.py", # source-bound valuation execution adapter
+    "src/ztare/investment/capital_cycle.py",      # recurring opportunity book and paper-capital cadence
+    "src/ztare/investment/candidate_payoff_forecast.py",  # typed authored payoff bounds and scheduling
+    "src/ztare/investment/closed_book.py",         # prospective forecast blocks and settlement
+    "src/ztare/investment/company_quality.py",     # filing-bounded durable-earnings diagnostics
+    "src/ztare/investment/discovery.py",           # scheduled finite-universe opportunity discovery
+    "src/ztare/investment/factor_analysis.py",     # benchmark/factor exposure decomposition
+    "src/ztare/investment/fund_sleeve_comparison.py",  # normalized fund risk/cost comparison
+    "src/ztare/investment/market_flow.py",         # probability-current/Lagrangian experiment leaf
+    "src/ztare/investment/research_jobs.py",       # bounded acquisition, leases, dossiers, learning
+    "src/ztare/investment/research_questions.py",  # typed evidence-acquisition program frontier
+    "src/ztare/investment/universe_catalog.py",    # broad public-market catalog and typed scout
+    "src/ztare/investment/strategy_options.py",    # industry response option frontier lowering
+    "src/ztare/investment/strategy_constraint_challenge.py",  # source-bound additive constraint successors
+    "src/ztare/investment/strategy_alpha_scheduler.py",  # independent prospective strategy episodes
+    "src/ztare/investment/strategy_valuation_bridge.py", # strategy programs to priced payoff bounds
+    "src/ztare/investment/portfolio.py",           # exact constrained portfolio frontier
+    "src/ztare/investment/portfolio_policy.py",    # prospective complete-policy tournaments and attribution
+    "src/ztare/investment/portfolio_risk_challenger.py",  # decision-selected covariance regularization
+    "src/ztare/investment/sources.py",             # point-in-time source consumption and history
+    "src/ztare/investment/signals.py",             # source-bound finance signal programs
+    "src/ztare/investment/valuation.py",           # valuation program envelope and inverse frontier
+    "src/ztare/leanmill/filtered_evidence_authority.py",  # governed theorem-to-evidence authority bridge
+    "src/ztare/leanmill/formal_claim_coverage.py",  # governed formal-leaf coverage / residual frontier
     "src/ztare/workspace/source_freshness.py",     # source-bound artifact freshness / stale-provenance guard
     "src/ztare/forecasting/prediction_contract.py",  # neutral forecast/prediction contract read model
     "src/ztare/reports/forecast_capability_audit.py",  # forecast lifecycle / scratch / decision-use audit
+    "src/ztare/worldmodel/evaluation.py",  # substrate-general model/forecast/episode tournament membrane
     "src/ztare/validator/autoresearch_prediction_contract.py",  # in-loop adapter over neutral prediction contracts
     "src/ztare/validator/probability_dag_carrier.py",  # autoresearch probability-DAG scoring/carriers
     "src/ztare/validator/source_claim_graph_carrier.py",  # source/evidence/gap graph carriers
@@ -127,6 +159,70 @@ PRIMITIVE_DIRS = [
 # only the primitives whose NAME != its USE-CASE words. This is also the "when to use"
 # guidance the precheck surfaces. (Un-aliased primitives still match via doc / --semantic.)
 WHEN_TO_USE = {
+    "compile_company_quality_report": (
+        "public company durable earnings power revenue durability earnings quality cash conversion "
+        "accrual balance sheet leverage filing point in time screen"
+    ),
+    "compile_opportunity_book": (
+        "investment capital cycle opportunity book paper posture cash allocation underwriting research repair "
+        "discovery decisions strategy frontier closed book recurring autonomous engine risk ceilings"
+    ),
+    "due_forecast_windows": (
+        "investment prospective closed book forecast cadence horizon non overlapping entity schedule settlement"
+    ),
+    "compile_discovery_run": (
+        "investment scheduled autonomous discovery opportunity ranking recursive enumeration frontier closure "
+        "public equities funds evidence epoch valuation quality candidate screen activation"
+    ),
+    "compile_research_intent": (
+        "investment natural language market research query typed intent universe equity ETF fund "
+        "capitalization style theme ticker public market scout"
+    ),
+    "compile_market_scout": (
+        "investment broad public market catalog opportunity search universe filter rejection accounting "
+        "equity ETF fund enrichment queue frontier closure"
+    ),
+    "compile_company_strategy_frontier": (
+        "investment company strategy industry analysis forces pressures options choices recursive enumeration "
+        "reinforcement incompatibility local peaks rugged frontier closure earnings durability"
+    ),
+    "discovery_schedule_status": (
+        "investment periodic schedule due cadence autonomous discovery service source refresh"
+    ),
+    "analyze_factor_exposure": (
+        "fund ETF factor beta decomposition benchmark residual alpha tracking error value size momentum quality"
+    ),
+    "compile_market_flow_backtest": (
+        "market probability current Fokker Planck Lagrangian price movement return density backtest controls chronology"
+    ),
+    "estimate_probability_current": (
+        "estimate Fokker Planck probability current continuity density drift diffusion return state"
+    ),
+    "compile_portfolio_assembly": (
+        "investment portfolio construction exact enumeration constraints Pareto frontier capital turnover downside allocation"
+    ),
+    "consume_public_sources": (
+        "investment public data SEC FRED prices CSV point in time availability source receipts append observation history"
+    ),
+    "derive_signals": (
+        "investment finance formal signal grammar present value ratio yield arithmetic source lineage observations"
+    ),
+    "compile_valuation_envelope": (
+        "investment valuation present value owner earnings implied growth implied return equity risk premium expectations frontier"
+    ),
+    "compile_formal_claim_coverage": (
+        "broad theorem claim formalization coverage residual uncovered leaves "
+        "inference rules partial root promotion governed receipts claim DAG"
+    ),
+    "make_governed_formal_proposition_identity": (
+        "formal theorem proposition identity target signature posed source "
+        "toolchain cross context same printed statement alien receipt"
+    ),
+    "make_content_bound_evidence_from_governed_ratification": (
+        "formal kernel authority governed carried theorem ratification "
+        "content bound filtered evidence exact target source proof goal "
+        "toolchain parity axiom stale cross theorem"
+    ),
     "jaccard_distance": "set overlap similarity diversity redundancy complementarity shared distinct coverage union ensemble",
     "evaluate_information_yield": "stop iterating loop stagnation non-informative no new information convergence when to stop wasted",
     "IterationSignal": "stop iterating loop stagnation non-informative convergence repeated identical",
@@ -138,6 +234,8 @@ WHEN_TO_USE = {
     "bf_bic_paired_t": "model comparison bayes factor BIC paired conditions evidence ratio",
     "bootstrap_ci": "confidence interval uncertainty resample bootstrap error bars",
     "paired_permutation_test": "significance A/B comparison paired permutation sign-flip p-value",
+    "validate_evaluation_matrix": "world model tournament candidate forecast episode point in time chronology complete comparison matrix leakage backtest",
+    "conservative_paired_survivor_set": "world model tournament model committee survivor set paired loss FDR multiple comparison backtest uncertainty",
     "tost_equivalence": "equivalence no difference indistinguishable two one-sided",
     "build_ablation_layers": "ablation inject premises helpers frontier distance how far above how much help",
     "build_semantic_premise_shelf": "lean proof mathlib semantic premise retrieval shelf candidate lemmas theorem search missing API exact lemma source context before proof attempt",
@@ -196,6 +294,10 @@ WHEN_TO_USE = {
     "score_prediction_row": "autoresearch adapter prediction Brier score p_success actual_success constant baseline calibration",
     "summarize_prediction_contracts": "autoresearch trace prediction receipts adapter measurement lane forecast Brier baseline scoreable rows",
     "build_forecast_capability_audit": "forecast pool lifecycle scratch forecast decision use calibration read model capability audit hidden scheduler boundary",
+    "compile_filtered_obstruction": "exact rational filtered quotient coinvariant moving relations left annihilator certificate algebraic obstruction finite graded action",
+    "compile_fixed_grade_obstruction": "fixed associated grade coinvariant reject negative filtration shift wrong category before rank computation",
+    "compile_filtered_symbol_cokernel": "cross grade symbol map negative filtration order Rees complex cokernel moving relation transport exact rational witness",
+    "compile_filtered_reachability": "forcing span reachable quotient after relations control images distinguish ambient cokernel from excited obstruction exact rational certificate",
 }
 
 

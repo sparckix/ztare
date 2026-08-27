@@ -1,0 +1,1070 @@
+{
+  "analytic_threshold_bracket": {
+    "critical_surface": "3*J^2=8",
+    "lower_J": "3/2",
+    "lower_below": true,
+    "lower_surface": "27/4",
+    "upper_J": "7/4",
+    "upper_above": true,
+    "upper_surface": "147/16"
+  },
+  "claim_boundary": [
+    "The same productive RAF is subcritical or supercritical according to exact capability stock and depreciation.",
+    "Sparse assay cost permits the upper-state rate while factorial cost blocks the same reaction-rate vector.",
+    "The kinetic constants and stock states are preregistered synthetic fixtures rather than measured agent dynamics.",
+    "The result corrects the criticality criterion but does not demonstrate endogenous growth, live ARC compounding, or capability takeoff.",
+    "Mass-action and Allee-threshold components are established; literature novelty of the compiled join is not established."
+  ],
+  "controller_contact": false,
+  "critical_bracket": {
+    "capability_species_ids": [
+      "D_sparse_settlement_design",
+      "J_lineage_bound_judgment"
+    ],
+    "continuity_basis": "exact_polynomial_mass_action",
+    "fixed_food_species_ids": [
+      "base_inference",
+      "external_settlement"
+    ],
+    "kind": "capability_critical_bracket_receipt",
+    "lower": {
+      "internal_drift": [
+        {
+          "drift": "9/4",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "drift": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "drift": "-15/64",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "kind": "capability_kinetic_drift_receipt",
+      "measured_kinetic_parameters_required": true,
+      "model": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "autocatalysis_receipt_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558",
+        "depreciation_rates": [
+          {
+            "rate": "1/1",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "evidence_refs": [
+          "h102-preregistered-kinetic-fixture"
+        ],
+        "kind": "capability_kinetic_model",
+        "primitive_budget_rate": "300/1",
+        "reaction_rate_laws": [
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:bootstrap_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "0/1",
+            "reaction_id": "bootstrap_judgment",
+            "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:invert_measurement_wall"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "2/1",
+            "reaction_id": "invert_measurement_wall",
+            "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:reproduce_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "1/4",
+            "reaction_id": "reproduce_judgment",
+            "reaction_sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "ac79d9b1cc17df989bf255a4b384336cc0e32231c6a55d2f2d9e4b3b2820a591"
+          }
+        ],
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3"
+      },
+      "primitive_cost_rate": "405/4",
+      "reaction_rates": [
+        {
+          "rate": "0/1",
+          "reaction_id": "bootstrap_judgment"
+        },
+        {
+          "rate": "9/2",
+          "reaction_id": "invert_measurement_wall"
+        },
+        {
+          "rate": "81/64",
+          "reaction_id": "reproduce_judgment"
+        }
+      ],
+      "reason": "capability_reaction_rate_did_not_outrun_depreciation",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "06cd98784e09906efb0ce63ca2e424cb8877fdd3aeeddbf0c2d77620c7809ba8",
+      "state": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h102-preregistered-state:lower-3-over-2"
+        ],
+        "kind": "capability_stock_state",
+        "kinetic_model_sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3",
+        "scale_parameter": "3/2",
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "5db177e4e7e9fd852ba2fd42e2b605055464b61d782e39ba0a7824d91e9f4551",
+        "species_amounts": [
+          {
+            "amount": "9/4",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "amount": "0/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "amount": "3/2",
+            "species_id": "J_lineage_bound_judgment"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "base_inference"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "external_settlement"
+          }
+        ],
+        "state_id": "lower-3-over-2"
+      },
+      "status": "kinetically_subcritical",
+      "takeoff_supported": false,
+      "topology_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558"
+    },
+    "reason": "fixed_model_exact_drift_changed_sign_across_capability_stock",
+    "schema": "ztare-capability-kinetics-v1",
+    "sha256": "33d290db25eec74ee39b196c1182b20245a8148fe657a483dc2c00c4836d1080",
+    "status": "critical_stock_bracket",
+    "takeoff_supported": false,
+    "upper": {
+      "internal_drift": [
+        {
+          "drift": "7/2",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "drift": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "drift": "133/512",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "kind": "capability_kinetic_drift_receipt",
+      "measured_kinetic_parameters_required": true,
+      "model": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "autocatalysis_receipt_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558",
+        "depreciation_rates": [
+          {
+            "rate": "1/1",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "evidence_refs": [
+          "h102-preregistered-kinetic-fixture"
+        ],
+        "kind": "capability_kinetic_model",
+        "primitive_budget_rate": "300/1",
+        "reaction_rate_laws": [
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:bootstrap_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "0/1",
+            "reaction_id": "bootstrap_judgment",
+            "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:invert_measurement_wall"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "2/1",
+            "reaction_id": "invert_measurement_wall",
+            "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:reproduce_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "1/4",
+            "reaction_id": "reproduce_judgment",
+            "reaction_sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "ac79d9b1cc17df989bf255a4b384336cc0e32231c6a55d2f2d9e4b3b2820a591"
+          }
+        ],
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3"
+      },
+      "primitive_cost_rate": "5145/32",
+      "reaction_rates": [
+        {
+          "rate": "0/1",
+          "reaction_id": "bootstrap_judgment"
+        },
+        {
+          "rate": "49/8",
+          "reaction_id": "invert_measurement_wall"
+        },
+        {
+          "rate": "1029/512",
+          "reaction_id": "reproduce_judgment"
+        }
+      ],
+      "reason": "positive_capability_drift_with_stable_errors_within_budget",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "54a23197f52a9e698630cbadcce52595a0ae700b48b23ad3c9ada1dfc826c332",
+      "state": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h102-preregistered-state:upper-7-over-4"
+        ],
+        "kind": "capability_stock_state",
+        "kinetic_model_sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3",
+        "scale_parameter": "7/4",
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "c2852b4383689535a5262486564bce24484028461520a0b115c97faf1c1bf325",
+        "species_amounts": [
+          {
+            "amount": "21/8",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "amount": "0/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "amount": "7/4",
+            "species_id": "J_lineage_bound_judgment"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "base_inference"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "external_settlement"
+          }
+        ],
+        "state_id": "upper-7-over-4"
+      },
+      "status": "kinetically_supercritical_candidate",
+      "takeoff_supported": false,
+      "topology_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558"
+    }
+  },
+  "environment_contact": false,
+  "factorial_cost_counterfactual": {
+    "internal_drift": [
+      {
+        "drift": "7/2",
+        "species_id": "D_sparse_settlement_design"
+      },
+      {
+        "drift": "0/1",
+        "species_id": "E_false_edge_propagation"
+      },
+      {
+        "drift": "133/512",
+        "species_id": "J_lineage_bound_judgment"
+      }
+    ],
+    "kind": "capability_kinetic_drift_receipt",
+    "measured_kinetic_parameters_required": true,
+    "model": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "autocatalysis_receipt_sha256": "99733c9c3770495f3179d2edee7e0de3b5791d3b5c71f1a519e3584eede0af39",
+      "depreciation_rates": [
+        {
+          "rate": "1/1",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "evidence_refs": [
+        "h102-preregistered-kinetic-fixture"
+      ],
+      "kind": "capability_kinetic_model",
+      "primitive_budget_rate": "300/1",
+      "reaction_rate_laws": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:bootstrap_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "0/1",
+          "reaction_id": "bootstrap_judgment",
+          "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:invert_measurement_wall"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "2/1",
+          "reaction_id": "invert_measurement_wall",
+          "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:reproduce_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "1/4",
+          "reaction_id": "reproduce_judgment",
+          "reaction_sha256": "e95359109e936deb5331c5b4d49623731b1af5a429e0f9b7b048c2046ac6c383",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "12328e9dd3fa9ad2aac7e1e297c50cc76eda36062a309979376bbeab3ab67a67"
+        }
+      ],
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "287c89514327494474facc9e6a77f37af4a65e584b30522c47bb5d2fbfc1196c"
+    },
+    "primitive_cost_rate": "5145/16",
+    "reaction_rates": [
+      {
+        "rate": "0/1",
+        "reaction_id": "bootstrap_judgment"
+      },
+      {
+        "rate": "49/8",
+        "reaction_id": "invert_measurement_wall"
+      },
+      {
+        "rate": "1029/512",
+        "reaction_id": "reproduce_judgment"
+      }
+    ],
+    "reason": "productive_rate_exceeded_primitive_budget_rate",
+    "schema": "ztare-capability-kinetics-v1",
+    "sha256": "b88574a0bbba844dd685573d31c99c765326d99a78c288f15641fd03908de867",
+    "state": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "evidence_refs": [
+        "h102-preregistered-state:factorial-upper-7-over-4"
+      ],
+      "kind": "capability_stock_state",
+      "kinetic_model_sha256": "287c89514327494474facc9e6a77f37af4a65e584b30522c47bb5d2fbfc1196c",
+      "scale_parameter": "7/4",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "c1032c72ab18b66b68693576dd79cb77319fd689c4fa81757adb7c4ba8db5ffd",
+      "species_amounts": [
+        {
+          "amount": "21/8",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "amount": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "amount": "7/4",
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "base_inference"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "external_settlement"
+        }
+      ],
+      "state_id": "factorial-upper-7-over-4"
+    },
+    "status": "resource_rate_blocked",
+    "takeoff_supported": false,
+    "topology_sha256": "99733c9c3770495f3179d2edee7e0de3b5791d3b5c71f1a519e3584eede0af39"
+  },
+  "h101_source": {
+    "result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h101_capability_autocatalytic_closure_result.json",
+    "sha256": "48865454046b1eb0ea985a39bac12fbe15a27025df6d2ce325408ed08fed61a5",
+    "source_authority_replayed_exactly": true,
+    "verdict": "supported"
+  },
+  "h97_runtime_boundary": {
+    "error_code": "credit_balance_exhausted",
+    "evidence_effect": "none",
+    "receipt_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h97_causal_response_derivative/live_attempt_02_runtime_receipt.json",
+    "status": "blocked_runtime"
+  },
+  "kind": "offline_theory_discriminator_result",
+  "lower_state": {
+    "internal_drift": [
+      {
+        "drift": "9/4",
+        "species_id": "D_sparse_settlement_design"
+      },
+      {
+        "drift": "0/1",
+        "species_id": "E_false_edge_propagation"
+      },
+      {
+        "drift": "-15/64",
+        "species_id": "J_lineage_bound_judgment"
+      }
+    ],
+    "kind": "capability_kinetic_drift_receipt",
+    "measured_kinetic_parameters_required": true,
+    "model": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "autocatalysis_receipt_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558",
+      "depreciation_rates": [
+        {
+          "rate": "1/1",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "evidence_refs": [
+        "h102-preregistered-kinetic-fixture"
+      ],
+      "kind": "capability_kinetic_model",
+      "primitive_budget_rate": "300/1",
+      "reaction_rate_laws": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:bootstrap_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "0/1",
+          "reaction_id": "bootstrap_judgment",
+          "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:invert_measurement_wall"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "2/1",
+          "reaction_id": "invert_measurement_wall",
+          "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:reproduce_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "1/4",
+          "reaction_id": "reproduce_judgment",
+          "reaction_sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "ac79d9b1cc17df989bf255a4b384336cc0e32231c6a55d2f2d9e4b3b2820a591"
+        }
+      ],
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3"
+    },
+    "primitive_cost_rate": "405/4",
+    "reaction_rates": [
+      {
+        "rate": "0/1",
+        "reaction_id": "bootstrap_judgment"
+      },
+      {
+        "rate": "9/2",
+        "reaction_id": "invert_measurement_wall"
+      },
+      {
+        "rate": "81/64",
+        "reaction_id": "reproduce_judgment"
+      }
+    ],
+    "reason": "capability_reaction_rate_did_not_outrun_depreciation",
+    "schema": "ztare-capability-kinetics-v1",
+    "sha256": "06cd98784e09906efb0ce63ca2e424cb8877fdd3aeeddbf0c2d77620c7809ba8",
+    "state": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "evidence_refs": [
+        "h102-preregistered-state:lower-3-over-2"
+      ],
+      "kind": "capability_stock_state",
+      "kinetic_model_sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3",
+      "scale_parameter": "3/2",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "5db177e4e7e9fd852ba2fd42e2b605055464b61d782e39ba0a7824d91e9f4551",
+      "species_amounts": [
+        {
+          "amount": "9/4",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "amount": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "amount": "3/2",
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "base_inference"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "external_settlement"
+        }
+      ],
+      "state_id": "lower-3-over-2"
+    },
+    "status": "kinetically_subcritical",
+    "takeoff_supported": false,
+    "topology_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558"
+  },
+  "nearest_prior_art": [
+    {
+      "component": "mass-action autocatalysis and persistence",
+      "url": "https://arxiv.org/abs/1309.3957"
+    },
+    {
+      "component": "RAF structure and reaction-rate extensions",
+      "url": "https://doi.org/10.1098/rsif.2020.0488"
+    },
+    {
+      "component": "concentration and flux regimes in mass-action autocatalytic networks",
+      "url": "https://www.nature.com/articles/s42005-024-01704-8"
+    },
+    {
+      "component": "autocatalytic cores with explicit catalysts",
+      "url": "https://arxiv.org/abs/2603.02770"
+    },
+    {
+      "component": "dynamic hysteresis in an autocatalytic network",
+      "url": "https://arxiv.org/abs/2607.24163"
+    }
+  ],
+  "negative_dynamic_fixtures": {
+    "identity_and_exactness": [
+      {
+        "label": "wrong_reaction_sha",
+        "reason": "kinetic rate law crossed reaction identity",
+        "rejected": true
+      },
+      {
+        "label": "missing_reaction_law",
+        "reason": "kinetic model must bind every reaction exactly once",
+        "rejected": true
+      },
+      {
+        "label": "float_rate_constant",
+        "reason": "rate_constant must be an exact rational",
+        "rejected": true
+      },
+      {
+        "label": "cross_authority_state",
+        "reason": "capability stock state crossed kinetic authority",
+        "rejected": true
+      },
+      {
+        "label": "posthoc_food_bracket",
+        "reason": "critical bracket changed food stock",
+        "rejected": true
+      }
+    ],
+    "positive_error_drift": {
+      "internal_drift": [
+        {
+          "drift": "7/2",
+          "species_id": "x_d"
+        },
+        {
+          "drift": "1029/512",
+          "species_id": "x_e"
+        },
+        {
+          "drift": "133/512",
+          "species_id": "x_j"
+        }
+      ],
+      "kind": "capability_kinetic_drift_receipt",
+      "measured_kinetic_parameters_required": true,
+      "model": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "autocatalysis_receipt_sha256": "6280939ba51f56a1bc672201a80abac0bf950e72ed5a088a9a9d02d288d123fe",
+        "depreciation_rates": [
+          {
+            "rate": "1/1",
+            "species_id": "x_d"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "x_e"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "x_j"
+          }
+        ],
+        "evidence_refs": [
+          "negative"
+        ],
+        "kind": "capability_kinetic_model",
+        "primitive_budget_rate": "300/1",
+        "reaction_rate_laws": [
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "negative"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "0/1",
+            "reaction_id": "x_bootstrap",
+            "reaction_sha256": "3e10e868fb78f0ef9cb510e4d90a882781f4399f5c7d3bafd4021aad0addbaf4",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "50214261b5c2bca3425d582ea25c91fea464dcf6a281e0dd8ab7858e91f0c6c4"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "negative"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "1/1",
+            "reaction_id": "x_cleanup",
+            "reaction_sha256": "19f55fd863ac1092462b096072706669a056a68e4cbacef64df91bc1869d8811",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "861683369728a841e4cceed00cdacf3b45c700c209a79607d6d2c2e2b8b3f253"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "negative"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "2/1",
+            "reaction_id": "x_design",
+            "reaction_sha256": "9bca0377f71dd9b07d877b18e542d8dda310d4aa722743fdfe1bcce2194d071c",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "beb3177d76886ae23ef44efb374786c90aa0659e3f9f5b749afbd00d2101a424"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "negative"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "1/4",
+            "reaction_id": "x_reproduce",
+            "reaction_sha256": "114f866a311eb8dc9bfbcb9d403f57969be1af0833155878f7cba85ca2d12b69",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "3f8dc838f17f30604953fa0743fe5bc6788cda19a706b040cb53daa4a7ba1f8d"
+          }
+        ],
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "6342a36d418240dec9d3220a37628bdc75b6038b7bdb1f090ae4336c4e7ccbbc"
+      },
+      "primitive_cost_rate": "0/1",
+      "reaction_rates": [
+        {
+          "rate": "0/1",
+          "reaction_id": "x_bootstrap"
+        },
+        {
+          "rate": "0/1",
+          "reaction_id": "x_cleanup"
+        },
+        {
+          "rate": "49/8",
+          "reaction_id": "x_design"
+        },
+        {
+          "rate": "1029/512",
+          "reaction_id": "x_reproduce"
+        }
+      ],
+      "reason": "positive_error_drift",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "03a41517022940d610c609d70303c9ccb3ab7ab7cc6f39e52c8c694a0aacc7ca",
+      "state": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "negative"
+        ],
+        "kind": "capability_stock_state",
+        "kinetic_model_sha256": "6342a36d418240dec9d3220a37628bdc75b6038b7bdb1f090ae4336c4e7ccbbc",
+        "scale_parameter": "7/4",
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "ae82805b44fd1b1f6aba3a3bbf65ad3d7144f05a2741d3b6f93befaa8409f7b6",
+        "species_amounts": [
+          {
+            "amount": "21/8",
+            "species_id": "x_d"
+          },
+          {
+            "amount": "0/1",
+            "species_id": "x_e"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "x_food"
+          },
+          {
+            "amount": "7/4",
+            "species_id": "x_j"
+          }
+        ],
+        "state_id": "error-unstable"
+      },
+      "status": "error_rate_unstable",
+      "takeoff_supported": false,
+      "topology_sha256": "6280939ba51f56a1bc672201a80abac0bf950e72ed5a088a9a9d02d288d123fe"
+    },
+    "zero_catalyst": {
+      "internal_drift": [
+        {
+          "drift": "49/8",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "drift": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "drift": "-7/4",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "kind": "capability_kinetic_drift_receipt",
+      "measured_kinetic_parameters_required": true,
+      "model": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "autocatalysis_receipt_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558",
+        "depreciation_rates": [
+          {
+            "rate": "1/1",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "rate": "1/1",
+            "species_id": "J_lineage_bound_judgment"
+          }
+        ],
+        "evidence_refs": [
+          "h102-preregistered-kinetic-fixture"
+        ],
+        "kind": "capability_kinetic_model",
+        "primitive_budget_rate": "300/1",
+        "reaction_rate_laws": [
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:bootstrap_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "0/1",
+            "reaction_id": "bootstrap_judgment",
+            "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:invert_measurement_wall"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "2/1",
+            "reaction_id": "invert_measurement_wall",
+            "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+          },
+          {
+            "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+            "evidence_refs": [
+              "h102-synthetic-rate:reproduce_judgment"
+            ],
+            "kind": "capability_reaction_rate_law",
+            "rate_constant": "1/4",
+            "reaction_id": "reproduce_judgment",
+            "reaction_sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd",
+            "schema": "ztare-capability-kinetics-v1",
+            "sha256": "ac79d9b1cc17df989bf255a4b384336cc0e32231c6a55d2f2d9e4b3b2820a591"
+          }
+        ],
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3"
+      },
+      "primitive_cost_rate": "0/1",
+      "reaction_rates": [
+        {
+          "rate": "0/1",
+          "reaction_id": "bootstrap_judgment"
+        },
+        {
+          "rate": "49/8",
+          "reaction_id": "invert_measurement_wall"
+        },
+        {
+          "rate": "0/1",
+          "reaction_id": "reproduce_judgment"
+        }
+      ],
+      "reason": "capability_reaction_rate_did_not_outrun_depreciation",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "6ede20501c8874565dbb1694ae3eaac367c9c2d8cc0cf97eb15bc1ac2b480769",
+      "state": {
+        "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+        "evidence_refs": [
+          "h102-preregistered-state:zero-design-catalyst"
+        ],
+        "kind": "capability_stock_state",
+        "kinetic_model_sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3",
+        "scale_parameter": "7/4",
+        "schema": "ztare-capability-kinetics-v1",
+        "sha256": "174a7f025010dc0877a0308171848b69770bcb8a94af40d14336392fc0c11bbf",
+        "species_amounts": [
+          {
+            "amount": "0/1",
+            "species_id": "D_sparse_settlement_design"
+          },
+          {
+            "amount": "0/1",
+            "species_id": "E_false_edge_propagation"
+          },
+          {
+            "amount": "7/4",
+            "species_id": "J_lineage_bound_judgment"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "base_inference"
+          },
+          {
+            "amount": "1/1",
+            "species_id": "external_settlement"
+          }
+        ],
+        "state_id": "zero-design-catalyst"
+      },
+      "status": "kinetically_subcritical",
+      "takeoff_supported": false,
+      "topology_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558"
+    }
+  },
+  "same_topology_without_cost_sha256": "c19c948ec981a8ec2c50660740655425f3ef866901f8020c945f202ac3088e8f",
+  "schema": "ztare-h102-kinetic-capability-threshold-audit-v1",
+  "sha256": "293de28c17326c47eda707d244a50beab4836e3133ccb3e8e8f5b394201471ad",
+  "status": "offline_complete",
+  "upper_state": {
+    "internal_drift": [
+      {
+        "drift": "7/2",
+        "species_id": "D_sparse_settlement_design"
+      },
+      {
+        "drift": "0/1",
+        "species_id": "E_false_edge_propagation"
+      },
+      {
+        "drift": "133/512",
+        "species_id": "J_lineage_bound_judgment"
+      }
+    ],
+    "kind": "capability_kinetic_drift_receipt",
+    "measured_kinetic_parameters_required": true,
+    "model": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "autocatalysis_receipt_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558",
+      "depreciation_rates": [
+        {
+          "rate": "1/1",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "rate": "1/1",
+          "species_id": "J_lineage_bound_judgment"
+        }
+      ],
+      "evidence_refs": [
+        "h102-preregistered-kinetic-fixture"
+      ],
+      "kind": "capability_kinetic_model",
+      "primitive_budget_rate": "300/1",
+      "reaction_rate_laws": [
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:bootstrap_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "0/1",
+          "reaction_id": "bootstrap_judgment",
+          "reaction_sha256": "e2371f2558449e50e21cd2ba27b853d4ccfbe60626189859758e5f491d2ac795",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "54367e2fc7f1b38592ab542e5034c690bd4e02b7175bdc5289640997277aa5f0"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:invert_measurement_wall"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "2/1",
+          "reaction_id": "invert_measurement_wall",
+          "reaction_sha256": "f71be32a2dcaa03d928a46faacd7985ef0faac9327255f5ea32d5f6906180612",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "b939b6d849666edb6be08d194f51332426d57a816c8edb3f3ef40f9800266236"
+        },
+        {
+          "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+          "evidence_refs": [
+            "h102-synthetic-rate:reproduce_judgment"
+          ],
+          "kind": "capability_reaction_rate_law",
+          "rate_constant": "1/4",
+          "reaction_id": "reproduce_judgment",
+          "reaction_sha256": "f0f29fa7d8446a571a0691fb1dbbdf743325aa2c01e97f00374a728ef4ee6ebd",
+          "schema": "ztare-capability-kinetics-v1",
+          "sha256": "ac79d9b1cc17df989bf255a4b384336cc0e32231c6a55d2f2d9e4b3b2820a591"
+        }
+      ],
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3"
+    },
+    "primitive_cost_rate": "5145/32",
+    "reaction_rates": [
+      {
+        "rate": "0/1",
+        "reaction_id": "bootstrap_judgment"
+      },
+      {
+        "rate": "49/8",
+        "reaction_id": "invert_measurement_wall"
+      },
+      {
+        "rate": "1029/512",
+        "reaction_id": "reproduce_judgment"
+      }
+    ],
+    "reason": "positive_capability_drift_with_stable_errors_within_budget",
+    "schema": "ztare-capability-kinetics-v1",
+    "sha256": "54a23197f52a9e698630cbadcce52595a0ae700b48b23ad3c9ada1dfc826c332",
+    "state": {
+      "authority_sha256": "3a3dbf332d596f070f17f1a1b46bca968348115a3d910fc1097943655c7a4a8e",
+      "evidence_refs": [
+        "h102-preregistered-state:upper-7-over-4"
+      ],
+      "kind": "capability_stock_state",
+      "kinetic_model_sha256": "bc36a5e195ef90212d8ba231fbfac3f1e3cbd0269f0ee45f7f132edb0b6f44c3",
+      "scale_parameter": "7/4",
+      "schema": "ztare-capability-kinetics-v1",
+      "sha256": "c2852b4383689535a5262486564bce24484028461520a0b115c97faf1c1bf325",
+      "species_amounts": [
+        {
+          "amount": "21/8",
+          "species_id": "D_sparse_settlement_design"
+        },
+        {
+          "amount": "0/1",
+          "species_id": "E_false_edge_propagation"
+        },
+        {
+          "amount": "7/4",
+          "species_id": "J_lineage_bound_judgment"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "base_inference"
+        },
+        {
+          "amount": "1/1",
+          "species_id": "external_settlement"
+        }
+      ],
+      "state_id": "upper-7-over-4"
+    },
+    "status": "kinetically_supercritical_candidate",
+    "takeoff_supported": false,
+    "topology_sha256": "552c53a5bec113d417f4f23f429678a31b086ad6351db328768fe9a3c11d6558"
+  },
+  "verdict": "supported"
+}

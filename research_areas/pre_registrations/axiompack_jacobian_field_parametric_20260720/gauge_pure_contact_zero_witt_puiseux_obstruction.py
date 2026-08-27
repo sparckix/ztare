@@ -15,10 +15,13 @@ would force its integer multiplicity to equal 5/2.
 This adapter verifies every substrate-specific coefficient and checks the
 Julia equation against the exact Magnus recurrence.  The multiplicity step
 is an all-index local argument, not a finite-row extrapolation.  It also
-compiles the degree-independent two-flow theorem needed for arbitrary finite
-critical source/target prefixes: a through-infinity factorization by two
-polynomial fields tangent to the identity has first fractional exponent
-strictly below two unless the fields are proportional.
+replays the conditional degree-independent two-flow calculation: after a
+selected factorization supplies a through-infinity continuation, two
+polynomial fields tangent to the identity have first fractional exponent
+strictly below two unless the fields are proportional.  Construction of that
+selected continuation is separate.  Finite equilibrium transitions and
+finite regular monodromy sheets show that neither finiteness nor the old
+finite/infinity split supplies the missing route theorem.
 """
 
 from __future__ import annotations
@@ -43,6 +46,15 @@ from gauge_pure_contact_zero_delta_critical_recurrence import (  # noqa: E402
 )
 from gauge_pure_contact_zero_parity_algebraic_connection import (  # noqa: E402
     _algebraic_normal_two,
+)
+from gauge_equilibrium_transition_puiseux_collision import (  # noqa: E402
+    build_certificate as build_equilibrium_transition_certificate,
+)
+from gauge_critical_monodromy_residue import (  # noqa: E402
+    build_certificate as build_critical_monodromy_certificate,
+)
+from gauge_polynomial_flow_finite_monodromy_countermodels import (  # noqa: E402
+    build_certificate as build_finite_monodromy_countermodels,
 )
 from ztare.common.filtered_obstruction import (  # noqa: E402
     FilteredPuiseuxClaim,
@@ -221,10 +233,21 @@ def run(verification_rows: int = 8) -> dict[str, object]:
         )
     )
     assert two_flow_certificate.polynomial_two_flow_factorization_excluded
+    equilibrium_transition = build_equilibrium_transition_certificate()
+    assert equilibrium_transition["first_fractional_exponent"] == "5/2"
+    assert equilibrium_transition["first_fractional_coefficient"] != "0"
+    critical_monodromy = build_critical_monodromy_certificate()
+    assert critical_monodromy[
+        "monodromy_multiplier_has_infinite_order"
+    ] is True
+    finite_monodromy_countermodels = build_finite_monodromy_countermodels()
+    assert finite_monodromy_countermodels["cubic_two_sheet_model"][
+        "finite_regular_sheet_exchange"
+    ] is True
     return {
         "schema": (
             "axiompack.jacobian_pure_contact_zero_"
-            "witt_puiseux_obstruction.v1"
+            "witt_puiseux_obstruction.v4"
         ),
         "inverse_radial_holonomy": {
             "differential_equation": "F'/F=1/(x*(1+2*x*V(x)))",
@@ -257,16 +280,53 @@ def run(verification_rows: int = 8) -> dict[str, object]:
             "polynomial_critical_witt_logarithm_exists": False,
         },
         "filtered_obstruction_compiler": compiler_certificate.to_dict(),
-        "filtered_two_flow_obstruction_compiler": (
+        "conditional_two_flow_obstruction_compiler": (
             two_flow_certificate.to_dict()
         ),
+        "two_flow_authority_boundary": {
+            "selected_continuation_to_cross_carrier_constructed": False,
+            "finite_infinity_route_exhaustion_established": False,
+            "equilibrium_transition_route_excluded": False,
+            "finite_coupled_monodromy_route_excluded": False,
+            "finite_regular_monodromy_countermodels_established": True,
+            "scalar_infinite_monodromy_established": True,
+            "factor_continuation_loop_transfer_constructed": False,
+            "global_two_flow_factorization_excluded": False,
+            "equilibrium_transition_collision_certificate_sha256": (
+                equilibrium_transition["certificate_sha256"]
+            ),
+            "critical_monodromy_residue_certificate_sha256": (
+                critical_monodromy["certificate_sha256"]
+            ),
+            "finite_regular_monodromy_countermodels_sha256": (
+                finite_monodromy_countermodels["certificate_sha256"]
+            ),
+            "coupled_julia_elimination_governed_record_sha256": (
+                "9a0b93843527fc75cb9c0121b79d9c89f726f2de29caaf341485bc56610785c2"
+            ),
+            "local_cross_carrier_exclusion_governed_record_sha256": (
+                "65e1fffc99cee4b6c047d28cecf00dc3d92b85b6b2e995136f1530fe26a9a420"
+            ),
+            "compiler_output_status": (
+                "conditional local nonfinite route only; selected loop "
+                "continuation, finite coupled monodromy, and exhaustive "
+                "routing omitted"
+            ),
+        },
+        "equilibrium_transition_countermodel": equilibrium_transition,
+        "finite_regular_monodromy_countermodels": finite_monodromy_countermodels,
+        "critical_infinite_monodromy": critical_monodromy,
         "claim_boundary": (
             "The canonical pure-parity critical normal-two holonomy is "
-            "neither one polynomial flow nor a product of two polynomial "
-            "flows tangent to the identity. This closes the two-sided "
-            "finite critical special-fiber factorization. Arbitrary finite "
-            "supercritical/polar prefixes still require a well-founded "
-            "removal theorem before the unrestricted tail bound follows."
+            "not one polynomial flow. A fully constructed critical "
+            "two-flow ramified cross carrier is also excluded. An arbitrary "
+            "factorization may instead select finite equilibrium or regular "
+            "monodromy sheets. The scalar holonomy has an infinite "
+            "monodromy orbit and the two Julia rows have a governed "
+            "division-free eliminant, but construction of the selected "
+            "factor lifts, exclusion of their complete finite coupled "
+            "branch, nonfinite-carrier realization, and exhaustive routing "
+            "remain open."
         ),
     }
 

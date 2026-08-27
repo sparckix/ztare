@@ -1,0 +1,89 @@
+{
+  "claim_boundary": "One matched treatment-control pair on one Level-2 start. The result selects a representation-extraction test but does not estimate a population effect or credit external ZTARE memory.",
+  "control": {
+    "action_sequence": [
+      2,
+      0,
+      3,
+      3,
+      3,
+      3,
+      -1,
+      0,
+      3,
+      3
+    ],
+    "budget": 10,
+    "history": "cold_level_2",
+    "levels_gained": 0,
+    "recorded_adapter_epochs": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3
+    ],
+    "terminal_boundary_action": 5
+  },
+  "controller_contact": true,
+  "disposition": "fast_state_supported_single_pair",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-COLD-LEVEL2-FAST-STATE-COUNTERFACTUAL-20260808-121",
+  "information_gain": "In this matched pair, prior session history saved at least the cold controller's action-map exploration and hazardous approach. The carried object is not identified by this test.",
+  "matched_start": {
+    "control_observation_receipt_sha256": "910f639b419322c3cedb66764b31513a1a4c6ea5643297004c9afee5eb05da31",
+    "equal": true,
+    "grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+    "treatment_observation_receipt_sha256": "c654ced9fcd15bcc9937e6748e64c4d55b5fe15b21547acbb982068947f7eae4"
+  },
+  "schema": "ztare-h121-cold-level2-fast-state-counterfactual-v1",
+  "status": "complete",
+  "trace_integrity": {
+    "deterministic_replay_matched": true,
+    "empty_stdout_count": 0,
+    "event_count": 21,
+    "exchange_count": 10,
+    "exchange_returncodes": [
+      0
+    ],
+    "session_ids": [
+      "019fe4ca-e8e7-7201-9104-0d3ed3c5bc72"
+    ],
+    "session_tick_counts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "turn_count": 10
+  },
+  "treatment": {
+    "action_sequence": [
+      0,
+      3,
+      3,
+      1,
+      3,
+      3,
+      0,
+      3,
+      3,
+      0
+    ],
+    "budget": 10,
+    "history": "persistent_after_level_1",
+    "levels_gained": 1,
+    "oracle_excess_action_count": 0
+  }
+}

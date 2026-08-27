@@ -1490,3 +1490,7 @@
 {"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}
 {"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}
 {"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 0.0, "run_tag": "dag_search"}
+{"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}
+{"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}
+{"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}
+{"signal": "move_prior", "domain": "lean", "p": 0.3, "y": 1.0, "run_tag": "cascade"}

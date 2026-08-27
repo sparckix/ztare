@@ -1,0 +1,148 @@
+{
+  "baseline": {
+    "actions": [],
+    "deepest_deliberation_depth": 4,
+    "deepest_primitive_depth": 4,
+    "expanded": 5,
+    "generated": 4,
+    "macro_edges_admitted": 0,
+    "macro_edges_attempted": 0,
+    "primitive_action_cost": 0,
+    "search_move_refs": [],
+    "status": "depth_bound_exhausted"
+  },
+  "checks": {
+    "all_identity_mutations_detected": true,
+    "chunked_goal_found": true,
+    "deliberation_bound_preserved": true,
+    "deliberation_saved_at_equal_execution_cost": true,
+    "intermediate_goal_preserved": true,
+    "primitive_cost_preserved": true,
+    "primitive_horizon_extended": true,
+    "primitive_only_depth_bounded": true,
+    "primitive_program_exact": true,
+    "primitive_reference_goal_found": true,
+    "search_expansions_reduced": true,
+    "skill_move_consumed": true,
+    "undefined_macro_refused": true
+  },
+  "chunked": {
+    "actions": [
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance"
+    ],
+    "deepest_deliberation_depth": 4,
+    "deepest_primitive_depth": 12,
+    "expanded": 9,
+    "generated": 10,
+    "macro_edges_admitted": 8,
+    "macro_edges_attempted": 9,
+    "primitive_action_cost": 12,
+    "search_move_refs": [
+      "skill:7777777777777777777777777777777777777777777777777777777777777777",
+      "skill:7777777777777777777777777777777777777777777777777777777777777777",
+      "skill:7777777777777777777777777777777777777777777777777777777777777777",
+      "skill:7777777777777777777777777777777777777777777777777777777777777777"
+    ],
+    "status": "edge_found"
+  },
+  "claim_boundary": "Synthetic search-kernel chunking only; no ARC task benefit, task credit, cross-task transfer, catalytic acquisition, takeoff, or novelty claim.",
+  "controller_contact": false,
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-GENERATIVE-SKILL-EDGE-SEARCH-20260806-117",
+  "identities": {
+    "carrier_execution_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+    "projection_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+    "skill_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+    "word": [
+      "advance",
+      "advance",
+      "advance"
+    ]
+  },
+  "intermediate_goal": {
+    "actions": [
+      "advance",
+      "advance"
+    ],
+    "deepest_deliberation_depth": 1,
+    "deepest_primitive_depth": 2,
+    "expanded": 1,
+    "generated": 1,
+    "macro_edges_admitted": 0,
+    "macro_edges_attempted": 1,
+    "primitive_action_cost": 2,
+    "search_move_refs": [
+      "skill:7777777777777777777777777777777777777777777777777777777777777777"
+    ],
+    "status": "edge_found"
+  },
+  "mutation_checks": {
+    "action_vocabulary": true,
+    "carrier_identity": true,
+    "projection_identity": true
+  },
+  "primitive_reference": {
+    "actions": [
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance",
+      "advance"
+    ],
+    "deepest_deliberation_depth": 12,
+    "deepest_primitive_depth": 12,
+    "expanded": 12,
+    "generated": 11,
+    "macro_edges_admitted": 0,
+    "macro_edges_attempted": 0,
+    "primitive_action_cost": 12,
+    "search_move_refs": [
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0",
+      "primitive:0"
+    ],
+    "status": "edge_found"
+  },
+  "schema": "ztare-h117-generative-skill-edge-search-v1",
+  "sha256": "0d6e170420c73431960096f1f41037dc31486f721101dfc688484f58db991ded",
+  "status": "kernel_supported",
+  "undefined_carrier": {
+    "actions": [],
+    "deepest_deliberation_depth": 1,
+    "deepest_primitive_depth": 1,
+    "expanded": 2,
+    "generated": 1,
+    "macro_edges_admitted": 0,
+    "macro_edges_attempted": 2,
+    "primitive_action_cost": 0,
+    "search_move_refs": [],
+    "status": "projected_frontier_exhausted"
+  }
+}

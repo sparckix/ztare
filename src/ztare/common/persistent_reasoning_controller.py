@@ -10,7 +10,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
+
+from ztare.common.codex_app_server_fork import (
+    AppServerForkReceipt,
+    AppServerProtocolError,
+    AppServerTurnReceipt,
+    CodexAppServerClient,
+    stable_sha256,
+)
 
 
 class ResponsesContinuationError(RuntimeError):
@@ -291,6 +300,306 @@ class PersistentResponsesToolThread:
             output_tokens=output_tokens,
             cached_input_tokens=cached,
         )
+
+
+def _protocol_event_text(payload: Mapping[str, Any]) -> str:
+    return json.dumps(
+        {
+            "schema": "ztare-app-server-controller-input-v1",
+            **dict(payload),
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
+def _app_server_content_inputs(
+    content: Iterable[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    lowered: list[dict[str, Any]] = []
+    for row in content:
+        kind = str(row.get("type") or "")
+        if kind == "input_text":
+            lowered.append({"type": "text", "text": str(row.get("text") or "")})
+        elif kind == "input_image":
+            url = str(row.get("image_url") or "")
+            if not url:
+                raise ResponsesContinuationError(
+                    "input_image omitted image_url"
+                )
+            lowered.append({"type": "image", "url": url})
+        else:
+            raise ResponsesContinuationError(
+                f"unsupported Responses content item {kind!r}"
+            )
+    return lowered
+
+
+def app_server_inputs_from_responses_items(
+    input_items: Iterable[Mapping[str, Any]],
+) -> tuple[dict[str, Any], ...]:
+    """Lower a sealed Responses input envelope to app-server user inputs.
+
+    The app-server has no function-call item for this controller.  Tool-result
+    semantics therefore travel as a canonical protocol-event text followed by
+    any observation text/images carried in that result.
+    """
+
+    lowered: list[dict[str, Any]] = []
+    for item in input_items:
+        kind = str(item.get("type") or "")
+        if kind == "function_call_output":
+            call_id = str(item.get("call_id") or "")
+            if not call_id:
+                raise ResponsesContinuationError(
+                    "function_call_output omitted call_id"
+                )
+            output = item.get("output")
+            lowered.append({
+                "type": "text",
+                "text": _protocol_event_text({
+                    "event": "function_call_output",
+                    "call_id": call_id,
+                    "output_kind": (
+                        "content_items" if isinstance(output, list) else "text"
+                    ),
+                    "output": output if not isinstance(output, list) else None,
+                }),
+            })
+            if isinstance(output, list):
+                lowered.extend(_app_server_content_inputs(output))
+            continue
+        if "role" in item:
+            role = str(item.get("role") or "")
+            if role != "user":
+                raise ResponsesContinuationError(
+                    f"unsupported Responses input role {role!r}"
+                )
+            content = item.get("content")
+            if not isinstance(content, list):
+                raise ResponsesContinuationError(
+                    "role input omitted content items"
+                )
+            lowered.extend(_app_server_content_inputs(content))
+            continue
+        if kind in {"input_text", "input_image"}:
+            lowered.extend(_app_server_content_inputs((item,)))
+            continue
+        raise ResponsesContinuationError(
+            f"unsupported Responses input item {kind!r}"
+        )
+    if not lowered:
+        raise ResponsesContinuationError("controller input lowered to empty")
+    return tuple(lowered)
+
+
+class PersistentAppServerToolThread:
+    """Stored Codex thread exposed through the H97 decision interface.
+
+    The assistant emits one schema-constrained JSON message; no app-server
+    tool item is available to the controller.  The compatibility decision
+    keeps downstream proposal code transport-agnostic while the separate
+    transport receipt retains thread and exact-fork authority.
+    """
+
+    def __init__(
+        self,
+        client: CodexAppServerClient,
+        *,
+        model_id: str,
+        instructions: str,
+        tool: Mapping[str, Any],
+        cwd: Path,
+        reasoning_effort: str = "xhigh",
+        reasoning_context: str = "all_turns",
+        max_output_tokens: int = 4096,
+        timeout_seconds: float = 300,
+        exchange_observer: (
+            Callable[[Mapping[str, Any]], None] | None
+        ) = None,
+    ) -> None:
+        if reasoning_context != "all_turns":
+            raise ValueError("app-server fork requires all_turns context")
+        if not model_id:
+            raise ValueError("model_id is required")
+        if not instructions.strip():
+            raise ValueError("instructions are required")
+        if tool.get("type") != "function" or not tool.get("name"):
+            raise ValueError("tool must be one function-shaped output schema")
+        parameters = tool.get("parameters")
+        if not isinstance(parameters, Mapping):
+            raise ValueError("tool parameters must be a JSON schema")
+        self._client = client
+        self.model_id = str(model_id)
+        self.instructions = str(instructions)
+        self.tool = dict(tool)
+        self.tool_name = str(tool["name"])
+        self.output_schema = dict(parameters)
+        self.cwd = Path(cwd).resolve()
+        self.reasoning_effort = str(reasoning_effort)
+        self.reasoning_context = str(reasoning_context)
+        self.max_output_tokens = int(max_output_tokens)
+        self.timeout_seconds = float(timeout_seconds)
+        self.exchange_observer = exchange_observer
+        self.request_index = 0
+        self.previous_response_id: str | None = None
+        self._thread_id: str | None = None
+        self.last_turn_receipt: AppServerTurnReceipt | None = None
+        self.last_fork_receipt: AppServerForkReceipt | None = None
+
+    @property
+    def thread_id(self) -> str:
+        if not self._thread_id:
+            raise ResponsesContinuationError(
+                "app-server thread has not been started or resumed"
+            )
+        return self._thread_id
+
+    def _new_sibling(self) -> "PersistentAppServerToolThread":
+        return PersistentAppServerToolThread(
+            self._client,
+            model_id=self.model_id,
+            instructions=self.instructions,
+            tool=self.tool,
+            cwd=self.cwd,
+            reasoning_effort=self.reasoning_effort,
+            reasoning_context=self.reasoning_context,
+            max_output_tokens=self.max_output_tokens,
+            timeout_seconds=self.timeout_seconds,
+            exchange_observer=self.exchange_observer,
+        )
+
+    def _ensure_started(self) -> None:
+        if self._thread_id:
+            return
+        started = self._client.start_thread(
+            model=self.model_id,
+            cwd=self.cwd,
+            base_instructions=self.instructions,
+        )
+        thread = started.get("thread")
+        if not isinstance(thread, Mapping) or not thread.get("id"):
+            raise AppServerProtocolError("thread/start omitted identity")
+        self._thread_id = str(thread["id"])
+
+    def resume_from(
+        self,
+        *,
+        thread_id: str,
+        last_turn_id: str,
+    ) -> "PersistentAppServerToolThread":
+        if self._thread_id is not None:
+            raise ResponsesContinuationError(
+                "cannot resume over an existing app-server thread"
+            )
+        result = self._client.resume_thread(
+            str(thread_id),
+            model=self.model_id,
+            cwd=self.cwd,
+        )
+        thread = result.get("thread")
+        if not isinstance(thread, Mapping) or str(thread.get("id") or "") != str(thread_id):
+            raise AppServerProtocolError("thread/resume crossed identity")
+        self._thread_id = str(thread_id)
+        self.previous_response_id = str(last_turn_id)
+        return self
+
+    def fork_from_current(self) -> "PersistentAppServerToolThread":
+        if not self._thread_id or not self.previous_response_id:
+            raise ResponsesContinuationError(
+                "cannot fork before a completed app-server turn"
+            )
+        fork = self._client.fork_thread(
+            source_thread_id=self._thread_id,
+            last_turn_id=self.previous_response_id,
+            model=self.model_id,
+            cwd=self.cwd,
+        )
+        child = self._new_sibling()
+        child._thread_id = fork.fork_thread_id
+        child.previous_response_id = fork.last_turn_id
+        child.last_fork_receipt = fork
+        return child
+
+    def set_exchange_observer(
+        self,
+        observer: Callable[[Mapping[str, Any]], None] | None,
+    ) -> None:
+        self.exchange_observer = observer
+
+    def transport_receipt(self) -> dict[str, Any]:
+        core = {
+            "schema": "ztare-app-server-controller-thread-v1",
+            "thread_id": self.thread_id,
+            "last_turn_id": self.previous_response_id,
+            "turn": (
+                self.last_turn_receipt.to_receipt()
+                if self.last_turn_receipt is not None
+                else None
+            ),
+            "fork": (
+                self.last_fork_receipt.to_receipt()
+                if self.last_fork_receipt is not None
+                else None
+            ),
+        }
+        return {**core, "sha256": stable_sha256(core)}
+
+    def decide(
+        self,
+        input_items: Iterable[Mapping[str, Any]],
+    ) -> ResponsesToolDecision:
+        self._ensure_started()
+        prior = self.previous_response_id
+        lowered = app_server_inputs_from_responses_items(input_items)
+        receipt = self._client.run_turn(
+            thread_id=self.thread_id,
+            prompt=lowered,
+            output_schema=self.output_schema,
+            model=self.model_id,
+            effort=self.reasoning_effort,
+            timeout_seconds=self.timeout_seconds,
+        )
+        if receipt.tool_item_count:
+            raise ResponsesContinuationError(
+                "app-server controller used a forbidden tool item"
+            )
+        try:
+            arguments = json.loads(receipt.assistant_text)
+        except json.JSONDecodeError as exc:
+            raise ResponsesContinuationError(
+                "app-server assistant output was not JSON"
+            ) from exc
+        if not isinstance(arguments, dict):
+            raise ResponsesContinuationError(
+                "app-server assistant output must be an object"
+            )
+        self.request_index += 1
+        self.last_turn_receipt = receipt
+        self.previous_response_id = receipt.turn_id
+        decision = ResponsesToolDecision(
+            response_id=receipt.turn_id,
+            previous_response_id=prior,
+            call_id=f"app-server-call:{receipt.turn_id}",
+            tool_name=self.tool_name,
+            arguments=arguments,
+            requested_reasoning_context=self.reasoning_context,
+            effective_reasoning_context="all_turns",
+            input_tokens=receipt.input_tokens,
+            output_tokens=receipt.output_tokens,
+            cached_input_tokens=receipt.cached_input_tokens,
+        )
+        if self.exchange_observer is not None:
+            self.exchange_observer({
+                "schema": "ztare-app-server-controller-exchange-v1",
+                "request_index": self.request_index,
+                "input_envelope": list(lowered),
+                "input_envelope_sha256": stable_sha256(lowered),
+                "output_schema_sha256": stable_sha256(self.output_schema),
+                "response_decision": decision.to_receipt(),
+                "transport": self.transport_receipt(),
+            })
+        return decision
 
 
 def compile_responses_fork_authority(

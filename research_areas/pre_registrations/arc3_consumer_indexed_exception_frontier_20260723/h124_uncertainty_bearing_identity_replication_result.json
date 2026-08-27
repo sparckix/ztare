@@ -1,0 +1,255 @@
+{
+  "attempted_replication_count": 5,
+  "capsule_receipt": {
+    "neutral_uncertainty_control_sha256": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+    "pair_sha256": "b371a0a55620a08bcf776c82256560b00935116789a5b89a4777d24993cae954",
+    "rendered_prompt_bytes": 1431,
+    "uncertainty_bearing_identity_sha256": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+  },
+  "claim_boundary": "Three complete canonical-byte within-game cross-level pairs after excluding transport- and carrier-invalid pairs. No cross-game, multi-generation, broad-capability, population, or literature-novelty conclusion follows.",
+  "completion_difference": 0,
+  "control_completions": 0,
+  "controller_contact": true,
+  "disposition": "refuted",
+  "environment_contact": false,
+  "excluded_pairs": [
+    {
+      "control_returncodes": [
+        0,
+        124
+      ],
+      "reason": "control_transport_timeout_before_endpoint",
+      "replication": 3,
+      "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_3_neutral_uncertainty_control_trace.jsonl"
+    },
+    {
+      "actual_prompt_hashes": {
+        "neutral_uncertainty_control": "a0ca89bc0425e1cf1c965841e47a96e284d9baab146fbb73fbe72f1b7bb73f3f",
+        "uncertainty_bearing_identity": "8f71cc660d0b8f22e0d6090fb206aa2a1fa22eafcd2de0f34baec6cc8ac10f8a"
+      },
+      "reason": "compact_prompt_key_order_hash_mismatch",
+      "registered_prompt_hashes": {
+        "neutral_uncertainty_control": "e02880f7aef9169a2d4c8b5abb0b51491d59d2bb03deccffe129cb7dc726bb28",
+        "uncertainty_bearing_identity": "d4ba2869feafc74ef85f33946bc682f033c413d641b5de2f933c32ae4f43f8bd"
+      },
+      "replication": 4
+    }
+  ],
+  "hypothesis_id": "H-GPSA-UNCERTAINTY-BEARING-IDENTITY-REPLICATION-20260808-124",
+  "identities": {
+    "h122_result_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+    "h123_audit_sha256": "e9a681df3d1aae8bf34d14f5427525bece3081d4199f218e3d8bacb6d629bf33",
+    "h123_result_sha256": "2ceb8612a292aa66af7a7c7a5a0c07d608fda8936764ce1a07cc8f5497d4c966",
+    "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+    "target_matching_mover_count": 1
+  },
+  "pairs": [
+    {
+      "arms": {
+        "neutral_uncertainty_control": {
+          "action_sequence": [
+            0,
+            3,
+            3,
+            3,
+            3,
+            0,
+            3,
+            3,
+            1,
+            3
+          ],
+          "actions_executed": 10,
+          "first_action": 0,
+          "first_level_action": null,
+          "label": "neutral_uncertainty_control",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 1,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_1_neutral_uncertainty_control_report.json",
+          "session_ids": [
+            "019fe4fd-ca29-7d01-ac7c-cdf5cf6e20ca"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_1_neutral_uncertainty_control_trace.jsonl"
+        },
+        "uncertainty_bearing_identity": {
+          "action_sequence": [
+            0,
+            1,
+            0,
+            3,
+            3,
+            3,
+            -1,
+            0,
+            3,
+            3
+          ],
+          "actions_executed": 10,
+          "first_action": 0,
+          "first_level_action": null,
+          "label": "uncertainty_bearing_identity",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 1,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_1_uncertainty_bearing_identity_report.json",
+          "session_ids": [
+            "019fe4f8-48c7-7b91-a626-9e672667da56"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_1_uncertainty_bearing_identity_trace.jsonl"
+        }
+      },
+      "order": [
+        "uncertainty_bearing_identity",
+        "neutral_uncertainty_control"
+      ],
+      "pair_outcome": "tie",
+      "replication": 1
+    },
+    {
+      "arms": {
+        "neutral_uncertainty_control": {
+          "action_sequence": [
+            1,
+            3,
+            0,
+            3,
+            3,
+            3,
+            3,
+            0,
+            3,
+            3
+          ],
+          "actions_executed": 10,
+          "first_action": 1,
+          "first_level_action": null,
+          "label": "neutral_uncertainty_control",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 2,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_2_neutral_uncertainty_control_report.json",
+          "session_ids": [
+            "019fe504-4d16-7163-bc7d-603b026e4a56"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_2_neutral_uncertainty_control_trace.jsonl"
+        },
+        "uncertainty_bearing_identity": {
+          "action_sequence": [
+            0,
+            3,
+            3,
+            3,
+            -1,
+            0,
+            3,
+            3,
+            1,
+            3
+          ],
+          "actions_executed": 10,
+          "first_action": 0,
+          "first_level_action": null,
+          "label": "uncertainty_bearing_identity",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 2,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_2_uncertainty_bearing_identity_report.json",
+          "session_ids": [
+            "019fe50b-b1fe-7af3-a01e-1cd6f854872b"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_2_uncertainty_bearing_identity_trace.jsonl"
+        }
+      },
+      "order": [
+        "neutral_uncertainty_control",
+        "uncertainty_bearing_identity"
+      ],
+      "pair_outcome": "tie",
+      "replication": 2
+    },
+    {
+      "arms": {
+        "neutral_uncertainty_control": {
+          "action_sequence": [
+            2,
+            0,
+            3,
+            3,
+            3,
+            3,
+            0,
+            3,
+            3,
+            1
+          ],
+          "actions_executed": 10,
+          "first_action": 2,
+          "first_level_action": null,
+          "label": "neutral_uncertainty_control",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 5,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_5_neutral_uncertainty_control_report.json",
+          "session_ids": [
+            "019fe548-f898-71c2-9f1a-8d984a4c8d82"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_5_neutral_uncertainty_control_trace.jsonl"
+        },
+        "uncertainty_bearing_identity": {
+          "action_sequence": [
+            0,
+            3,
+            3,
+            3,
+            -1,
+            0,
+            3,
+            3,
+            1,
+            3
+          ],
+          "actions_executed": 10,
+          "first_action": 0,
+          "first_level_action": null,
+          "label": "uncertainty_bearing_identity",
+          "levels_gained": 0,
+          "lower_branch_by_action_4": false,
+          "one_shot_recall": true,
+          "replication": 5,
+          "report_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_5_uncertainty_bearing_identity_report.json",
+          "session_ids": [
+            "019fe545-ce16-7c41-8626-0b8bb1029366"
+          ],
+          "status": "budget_exhausted",
+          "trace_path": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h124_uncertainty_bearing_identity_replication/replication_5_uncertainty_bearing_identity_trace.jsonl"
+        }
+      },
+      "order": [
+        "uncertainty_bearing_identity",
+        "neutral_uncertainty_control"
+      ],
+      "pair_outcome": "tie",
+      "replication": 5
+    }
+  ],
+  "schema": "ztare-h124-uncertainty-bearing-identity-replication-v1",
+  "status": "complete",
+  "treatment_completions": 0,
+  "valid_replication_count": 3,
+  "valid_replications": [
+    1,
+    2,
+    5
+  ]
+}

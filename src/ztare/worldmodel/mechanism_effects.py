@@ -1051,6 +1051,172 @@ def transition_boundary_kind(transition: Any) -> str:
     return ""
 
 
+@dataclass(frozen=True)
+class ProjectedMechanismTransitionObservation:
+    """One live transition projected under a frozen mechanism problem."""
+
+    problem_id: str
+    projection_sha256: str
+    action_system_sha256: str
+    history_kind: str
+    source_key: Hashable
+    operation: Hashable
+    successor_key: Hashable | None
+    effect: Hashable | None
+    boundary_kind: str
+    action_history_before: tuple[Hashable, ...]
+    action_history_after: tuple[Hashable, ...]
+    operation_effect_history_before: tuple[Hashable, ...]
+    operation_effect_history_after: tuple[Hashable, ...]
+    evidence_ref: str
+    schema: str = "ztare-projected-mechanism-transition-observation-v1"
+
+    def to_response_kwargs(self) -> dict[str, Any]:
+        return {
+            "observed_source_key": self.source_key,
+            "observed_operation": self.operation,
+            "observed_successor_key": self.successor_key,
+            "observed_effect": self.effect,
+            "boundary_kind": self.boundary_kind,
+            "observation_evidence_ref": self.evidence_ref,
+        }
+
+    def to_receipt(self) -> dict[str, Any]:
+        payload = {
+            "schema": self.schema,
+            "problem_id": self.problem_id,
+            "projection_sha256": self.projection_sha256,
+            "action_system_sha256": self.action_system_sha256,
+            "history_kind": self.history_kind,
+            "source_key_sha256": stable_sha256(self.source_key),
+            "operation_sha256": stable_sha256(self.operation),
+            "successor_key_sha256": (
+                stable_sha256(self.successor_key)
+                if self.successor_key is not None
+                else None
+            ),
+            "effect_sha256": (
+                stable_sha256(self.effect)
+                if self.effect is not None
+                else None
+            ),
+            "boundary_kind": self.boundary_kind,
+            "action_history_before_sha256": stable_sha256(
+                self.action_history_before
+            ),
+            "action_history_after_sha256": stable_sha256(
+                self.action_history_after
+            ),
+            "operation_effect_history_before_sha256": stable_sha256(
+                self.operation_effect_history_before
+            ),
+            "operation_effect_history_after_sha256": stable_sha256(
+                self.operation_effect_history_after
+            ),
+            "evidence_ref": self.evidence_ref,
+            "task_status_read": False,
+        }
+        return {**payload, "sha256": stable_sha256(payload)}
+
+    @property
+    def sha256(self) -> str:
+        return str(self.to_receipt()["sha256"])
+
+
+def project_mechanism_transition_observation(
+    mechanism_problem: Any,
+    transition: Any,
+    *,
+    action_history: Iterable[Hashable] = (),
+    operation_effect_history: Iterable[Hashable] = (),
+    evidence_ref: str,
+) -> ProjectedMechanismTransitionObservation:
+    """Project one transition with exactly one history advance."""
+
+    ref = str(evidence_ref).strip()
+    if not ref:
+        raise ValueError(
+            "projected mechanism observations require evidence_ref"
+        )
+    projection = mechanism_problem.projection
+    projection_sha = str(projection.projection_sha256)
+    if projection_sha != str(mechanism_problem.projection_sha256):
+        raise ValueError("mechanism problem projection identity drifted")
+    action_before = tuple(action_history)
+    effect_before = tuple(operation_effect_history)
+    history_kind = str(
+        getattr(mechanism_problem.history_lift, "history_kind", "")
+        or ""
+    )
+
+    def observed_key(
+        state: Any,
+        actions: tuple[Hashable, ...],
+        effects: tuple[Hashable, ...],
+    ) -> Hashable:
+        if history_kind == "operation_effect":
+            return mechanism_problem.observed_start_key(
+                state,
+                actions,
+                effects,
+            )
+        return mechanism_problem.observed_start_key(state, actions)
+
+    source_key = observed_key(
+        transition.s,
+        action_before,
+        effect_before,
+    )
+    boundary = transition_boundary_kind(transition)
+    if boundary and not bool(
+        getattr(getattr(transition, "identity", None), "is_authoritative", False)
+    ):
+        raise ValueError(
+            "projected live boundary lacks adapter or collector authority"
+        )
+    if boundary:
+        action_after = ()
+        effect_after = ()
+        successor_key = None
+        effect = None
+    else:
+        action_after, effect_after = (
+            predictive_prefixes_from_transitions(
+                (transition,),
+                projection=projection,
+                action_prefix=action_before,
+                operation_effect_prefix=effect_before,
+            )
+        )
+        successor_key = observed_key(
+            transition.s_next,
+            action_after,
+            effect_after,
+        )
+        effect = fiber_mechanism_effect(
+            projection.factor(transition.s),
+            projection.factor(transition.s_next),
+        )
+    return ProjectedMechanismTransitionObservation(
+        problem_id=str(mechanism_problem.problem_id),
+        projection_sha256=projection_sha,
+        action_system_sha256=str(
+            mechanism_problem.action_system.sha256
+        ),
+        history_kind=history_kind,
+        source_key=source_key,
+        operation=transition.a,
+        successor_key=successor_key,
+        effect=effect,
+        boundary_kind=boundary,
+        action_history_before=action_before,
+        action_history_after=tuple(action_after),
+        operation_effect_history_before=effect_before,
+        operation_effect_history_after=tuple(effect_after),
+        evidence_ref=ref,
+    )
+
+
 def guarded_skill_traces_from_history_evidence(
     history_trajectories: Iterable[HistoryTrajectoryEvidence],
     *,
@@ -1355,6 +1521,7 @@ __all__ = [
     "HistoryAnnotatedState",
     "HistoryLiftSelection",
     "HistoryTrajectoryEvidence",
+    "ProjectedMechanismTransitionObservation",
     "build_fiber_action_system",
     "fiber_exception_weight",
     "fiber_mechanism_effect",
@@ -1362,6 +1529,7 @@ __all__ = [
     "guarded_skill_option_specs",
     "operation_effect_token",
     "predictive_prefixes_from_transitions",
+    "project_mechanism_transition_observation",
     "select_fiber_history_action_system",
     "transition_boundary_kind",
 ]

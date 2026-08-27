@@ -1,0 +1,287 @@
+{
+  "binary_baseline": {
+    "judgments": [
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+            "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+          ],
+          "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+          "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+          "decision_namespace": "arc3-response-transport-square",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "authority_kind": "matched_external_terminal_adjudication",
+        "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "enable_support": 1,
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650"
+        ],
+        "hazard_support": 0,
+        "kind": "temporal_decision_task_judgment",
+        "matched_pair_sha256s": [
+          "9194f3c9cb1185f92992b107507a3f0ab55bb4ed32e1c46e2733a30f027e7d71"
+        ],
+        "maximum_delay_steps": 0,
+        "option_family_sha256": "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+        "preference": 0,
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "8ce231fcde3dcde2e0b285ac5b540de1dca24a65dc4c211ecbb707c0ca433ed1",
+        "status": "undersampled"
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+            "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+          ],
+          "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+          "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+          "decision_namespace": "arc3-response-transport-square",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "authority_kind": "matched_external_terminal_adjudication",
+        "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "enable_support": 0,
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650"
+        ],
+        "hazard_support": 1,
+        "kind": "temporal_decision_task_judgment",
+        "matched_pair_sha256s": [
+          "9194f3c9cb1185f92992b107507a3f0ab55bb4ed32e1c46e2733a30f027e7d71"
+        ],
+        "maximum_delay_steps": 0,
+        "option_family_sha256": "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c",
+        "preference": 0,
+        "schema": "ztare-temporal-decision-credit-v1",
+        "sha256": "bc60e87a9e71f1589c353c3b9c55adb1f0069cd0eda5d218d917bae48bf9537e",
+        "status": "undersampled"
+      }
+    ],
+    "settled_pair_count": 1,
+    "sha256": "16a7150ac501bf61b0eaa93040bf08a0711b23f4acd99d311ad9190d52a00409"
+  },
+  "checks": {
+    "binary_baseline_undersampled": true,
+    "graded_support_two": true,
+    "h95_identity_verified": true,
+    "h96_context_cannot_pool": true,
+    "mean_delta_matches_h95": true,
+    "mismatches_refused": true,
+    "pair_1_delta_0_89": true,
+    "pair_2_equal_terminal_delta_0_07": true,
+    "primitive_costs_unchanged": true,
+    "separate_authority_channels": true,
+    "tie_uninformative": true
+  },
+  "claim_boundary": "graded exact-authority analysis of frozen H95 outcomes; no new environment result or benchmark claim",
+  "environment_contact": false,
+  "evidence_mode": "retrospective_analysis_of_prospectively_collected_h95_pairs",
+  "graded": {
+    "judgments": [
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+            "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+          ],
+          "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+          "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+          "decision_namespace": "arc3-response-transport-square",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "authority_kind": "matched_external_utility_adjudication",
+        "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#sha256=3ec395d6e0b9ea238e39057a2326400af493ec9f745df8fcfad5e3990d182d47"
+        ],
+        "hazard_support": 0,
+        "information_yield_authorized": false,
+        "kind": "temporal_decision_utility_judgment",
+        "matched_pair_sha256s": [
+          "9e147e8d50a74a433bd459f058dbc62cd6eeb33533f7ba2dba637d53f940eca9",
+          "d386efea322f0fa94c78d7be703cf76986f59c712cf696c3223e9f0ff102b2dd"
+        ],
+        "mean_signed_external_delta": 0.48,
+        "option_family_sha256": "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+        "preference": 1,
+        "preferred_support": 2,
+        "schema": "ztare-temporal-decision-utility-v1",
+        "sha256": "82e3410bb65fb5df330bed16c8664d162953005657729e09a82a9dd2e3731038",
+        "status": "utility_preferred",
+        "terminal_task_credit_authorized": false,
+        "utility_measure": {
+          "authority": "external_measure_contract",
+          "component_weights": [
+            {
+              "name": "efficiency_score",
+              "weight": 0.2
+            },
+            {
+              "name": "task_score",
+              "weight": 0.8
+            }
+          ],
+          "direction": "higher_is_better",
+          "kind": "external_utility_measure",
+          "measure_id": "h95-weighted-task-efficiency-v1",
+          "schema": "ztare-temporal-decision-utility-v1",
+          "sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c"
+      },
+      {
+        "authority": {
+          "available_option_family_sha256s": [
+            "4667660ba5e14451e29467868ff6710a7498b950efd36c672da264f84119348f",
+            "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c"
+          ],
+          "choice_context_sha256": "adfb2918e6741bc547cf90d5387c41953231db8a786bfa1b31dfe12d84a67690",
+          "continuation_context_sha256": "b0d5e46395d5979e2f8fba721422b4257e9e6de6037a90f40c3050ab6b4b43fa",
+          "decision_namespace": "arc3-response-transport-square",
+          "kind": "decision_choice_authority",
+          "schema": "ztare-temporal-decision-credit-v1",
+          "sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "authority_kind": "matched_external_utility_adjudication",
+        "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+        "evidence_refs": [
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_offer_causal_mechanics.json#sha256=8812e85243f41b403736c6dd031fef7e4152444c158a1f786988220e69f30caa",
+          "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_02_withhold_redundant_true_memory.json#sha256=3ec395d6e0b9ea238e39057a2326400af493ec9f745df8fcfad5e3990d182d47"
+        ],
+        "hazard_support": 2,
+        "information_yield_authorized": false,
+        "kind": "temporal_decision_utility_judgment",
+        "matched_pair_sha256s": [
+          "9e147e8d50a74a433bd459f058dbc62cd6eeb33533f7ba2dba637d53f940eca9",
+          "d386efea322f0fa94c78d7be703cf76986f59c712cf696c3223e9f0ff102b2dd"
+        ],
+        "mean_signed_external_delta": -0.48,
+        "option_family_sha256": "746b3f089719515dd7d585babf8527a44d83c0faa37c620d67b0bbe3b693c59c",
+        "preference": -1,
+        "preferred_support": 0,
+        "schema": "ztare-temporal-decision-utility-v1",
+        "sha256": "ae8851e7c2492b38b3fbbf8727ddb9c742b2543a59d1b6ecc5e54c3bd78865f4",
+        "status": "utility_hazard",
+        "terminal_task_credit_authorized": false,
+        "utility_measure": {
+          "authority": "external_measure_contract",
+          "component_weights": [
+            {
+              "name": "efficiency_score",
+              "weight": 0.2
+            },
+            {
+              "name": "task_score",
+              "weight": 0.8
+            }
+          ],
+          "direction": "higher_is_better",
+          "kind": "external_utility_measure",
+          "measure_id": "h95-weighted-task-efficiency-v1",
+          "schema": "ztare-temporal-decision-utility-v1",
+          "sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c",
+          "task_contract_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c"
+      }
+    ],
+    "mean_settled_external_delta": 0.48,
+    "pair_deltas": [
+      0.89,
+      0.06999999999999995
+    ],
+    "settled_pair_count": 2,
+    "sha256": "41746a5bc8d1585c1930b3cb63c3b1df0a335f2496db8d1d021b2e3ce1490cd3"
+  },
+  "hypothesis_id": "H-GPSA-GRADED-EXTERNAL-TEMPORAL-UTILITY-20260807-105",
+  "negative_controls": {
+    "equal_utility": {
+      "authority": "matched_external_utility_adjudication",
+      "authority_sha256": "aa87ef7dd50e23488f1fd85a545554394ef91de6d36e7a93f5f5c985f828a743",
+      "contrast_arm_sha256": "",
+      "evidence_refs": [
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_offer_causal_mechanics.json#sha256=f92d16e0b1f96ef8eb30ac275c3f242331b90aad2f629d79454bb553f2b6f1bd",
+        "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/arms/pair_01_withhold_redundant_true_memory.json#sha256=1ec50925c3bce9573c20b826dd8c7be30d695c7a1b881293474f3f5cce57f650"
+      ],
+      "external_value_delta": 0.0,
+      "hazardous_option_family_sha256": "",
+      "information_yield_authorized": false,
+      "kind": "matched_temporal_utility_receipt",
+      "matched_pair_ref": "h95-pair:4ebb48406504387280e93832345be634e3d03136845d205930d647954cb3495a",
+      "preferred_arm_sha256": "",
+      "preferred_option_family_sha256": "",
+      "primitive_action_cost_per_arm": 20.0,
+      "reason": "external_utility_tie",
+      "schema": "ztare-temporal-decision-utility-v1",
+      "sha256": "3f32f21d5b0245edbe528af6f95dff9ea5fb58e343a1bc9584709973d1ae0fb6",
+      "status": "uninformative",
+      "terminal_task_credit_authorized": false,
+      "utility_measure_sha256": "e12ae43634fb37ead5f1cea3ee6de18c9ad326b964089e85bec66b03d6622c5c"
+    },
+    "mismatches": {
+      "choice_context": {
+        "reason": "decision_choice_authority_mismatch",
+        "status": "refused"
+      },
+      "continuation_policy": {
+        "reason": "continuation_policy_mismatch",
+        "status": "refused"
+      },
+      "external_evidence": {
+        "reason": "external_evidence_identity_reused",
+        "status": "refused"
+      },
+      "primitive_cost": {
+        "reason": "primitive_action_cost_mismatch",
+        "status": "refused"
+      },
+      "utility_measure": {
+        "reason": "external_utility_measure_mismatch",
+        "status": "refused"
+      }
+    }
+  },
+  "schema": "ztare-h105-graded-external-temporal-utility-audit-v1",
+  "sha256": "b96118fbbcc407ebca3fd659a5b1cccd565de4ef7a5b919b242edc1ff2dc9288",
+  "source": {
+    "h95_embedded_sha256": "ec5c63057dcdd7ba18b1ceb29fa75ffe883b5548eee2ac6ee9ce30e8b1f15bf9",
+    "h95_file_sha256": "6fd1cb577eb0fed0799622e02f0da35120ca58988defda2e622baf242cdebbea",
+    "h95_result_ref": "research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h95_response_transport_square/result.json"
+  },
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/common/test_temporal_decision_utility.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "....                                                                     [100%]\n4 passed in 0.68s\n",
+    "stdout_sha256": "17fe163e95c457698a997b5d42f3765328a8eedb529782b973c7dc17096bf32b"
+  }
+}

@@ -275,6 +275,9 @@ class CodexSubscriptionArcThread:
         instructions: str,
         timeout_seconds: float,
         resume_session: bool = True,
+        exchange_observer: (
+            Callable[[Mapping[str, Any]], None] | None
+        ) = None,
         runner=None,
     ) -> None:
         self.model_id = model_id
@@ -282,6 +285,7 @@ class CodexSubscriptionArcThread:
         self.instructions = instructions
         self.timeout_seconds = int(timeout_seconds)
         self.resume_session = bool(resume_session)
+        self.exchange_observer = exchange_observer
         self.session_state: dict[str, Any] | None = None
         self._runner = runner
         self._turn_index = 0
@@ -353,6 +357,19 @@ class CodexSubscriptionArcThread:
                     previous_effort
                 )
         result = run.result
+        if self.exchange_observer is not None:
+            self.exchange_observer({
+                "schema": "ztare-codex-subscription-exchange-v1",
+                "turn_index": self._turn_index,
+                "prompt": prompt,
+                "output_schema": str(output_schema),
+                "returncode": int(result.returncode),
+                "stdout": str(result.stdout or ""),
+                "stderr": str(result.stderr or ""),
+                "final_session_state": dict(
+                    run.final_session_state or {}
+                ),
+            })
         if result.returncode != 0:
             raise RuntimeError(
                 "Codex subscription action turn failed "
@@ -1042,6 +1059,9 @@ def run_probe(
     max_output_tokens: int,
     timeout_seconds: float,
     turn_observer: Callable[[Mapping[str, Any]], None] | None = None,
+    exchange_observer: (
+        Callable[[Mapping[str, Any]], None] | None
+    ) = None,
 ) -> dict[str, Any]:
     start = adapter.reset()
     start_levels = int(adapter.levels_completed)
@@ -1066,6 +1086,7 @@ def run_probe(
         reasoning_context=reasoning_context,
         max_output_tokens=max_output_tokens,
         timeout_seconds=timeout_seconds,
+        exchange_observer=exchange_observer,
     )
     input_items = _initial_input(
         start,
@@ -1177,10 +1198,25 @@ def run_subscription_probe(
     resume_session: bool = True,
     thread: CodexSubscriptionArcThread | None = None,
     turn_observer: Callable[[Mapping[str, Any]], None] | None = None,
+    exchange_observer: (
+        Callable[[Mapping[str, Any]], None] | None
+    ) = None,
     level_boundary_sleep_top_k: int = 0,
     initial_recall_digest: Mapping[str, Any] | None = None,
     initial_recall_consumption_receipt: (
         Mapping[str, Any] | None
+    ) = None,
+    decision_recall_provider: (
+        Callable[
+            [
+                Mapping[str, Any],
+                int,
+                Sequence[Mapping[str, Any]],
+                Sequence[Mapping[str, Any]],
+            ],
+            Mapping[str, Any] | None,
+        ]
+        | None
     ) = None,
     restored_prefix_actions: Sequence[int] = (),
 ) -> dict[str, Any]:
@@ -1238,6 +1274,7 @@ def run_subscription_probe(
         instructions=instructions,
         timeout_seconds=timeout_seconds,
         resume_session=resume_session,
+        exchange_observer=exchange_observer,
     )
     turns: list[dict[str, Any]] = []
     observations = [prefix_observations[-1]]
@@ -1268,6 +1305,7 @@ def run_subscription_probe(
             ),
         )
     sleep_cycles: list[dict[str, Any]] = []
+    decision_recall_count = 0
     segment_start = 0
     for action_count in range(1, int(budget) + 1):
         source_observation = observations[-1]
@@ -1282,6 +1320,41 @@ def run_subscription_probe(
             "adapter_epoch": source_observation["adapter_epoch"],
             "sha256": source_observation["sha256"],
         })
+        if decision_recall_provider is not None:
+            provided = decision_recall_provider(
+                source_observation,
+                action_count - 1,
+                tuple(observations),
+                tuple(turns),
+            )
+            if provided is not None:
+                if not isinstance(provided, Mapping):
+                    raise TypeError(
+                        "decision recall provider must return a mapping"
+                    )
+                digest = provided.get("digest")
+                if not isinstance(digest, Mapping):
+                    raise ValueError(
+                        "decision recall provider omitted a digest mapping"
+                    )
+                consumption_receipt = provided.get("consumption_receipt")
+                if (
+                    consumption_receipt is not None
+                    and not isinstance(consumption_receipt, Mapping)
+                ):
+                    raise ValueError(
+                        "decision recall consumption receipt is not a mapping"
+                    )
+                queue_recall = getattr(actor, "queue_recall_digest", None)
+                if not callable(queue_recall):
+                    raise RuntimeError(
+                        "decision recall requested but actor cannot queue recall"
+                    )
+                queue_recall(
+                    digest,
+                    consumption_receipt=consumption_receipt,
+                )
+                decision_recall_count += 1
         decision = actor.decide(observation)
         action = decision.get("action")
         if isinstance(action, bool) or not isinstance(action, int):
@@ -1388,6 +1461,10 @@ def run_subscription_probe(
             "initial_recall_injected": (
                 initial_recall_digest is not None
             ),
+            "decision_recall_provider_enabled": (
+                decision_recall_provider is not None
+            ),
+            "decision_recall_count": decision_recall_count,
         },
         "budget": int(budget),
         "restored_prefix": {
@@ -1457,6 +1534,19 @@ def _emit_turn_progress(turn: Mapping[str, Any]) -> None:
     )
 
 
+def _append_trace_event(
+    path: Path,
+    event: Mapping[str, Any],
+) -> None:
+    """Durably append one inference or environment event."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(dict(event), sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--game", default="ls20")
@@ -1485,6 +1575,19 @@ def main() -> int:
     parser.add_argument("--max-output-tokens", type=int, default=4096)
     parser.add_argument("--timeout-seconds", type=float, default=300)
     parser.add_argument(
+        "--trace-jsonl",
+        default="",
+        help=(
+            "new append-only path for immediate prompt/raw-output/turn "
+            "persistence; refuses an existing file"
+        ),
+    )
+    parser.add_argument(
+        "--output",
+        default="",
+        help="new report path; defaults to the project workspace report",
+    )
+    parser.add_argument(
         "--level-boundary-sleep-top-k",
         type=int,
         default=0,
@@ -1507,6 +1610,43 @@ def main() -> int:
             "transport"
         )
 
+    trace_path = (
+        Path(args.trace_jsonl).expanduser().resolve()
+        if str(args.trace_jsonl).strip()
+        else None
+    )
+    if trace_path is not None and trace_path.exists():
+        raise SystemExit("--trace-jsonl must name a new file")
+    requested_output = (
+        Path(args.output).expanduser().resolve()
+        if str(args.output).strip()
+        else None
+    )
+    if requested_output is not None and requested_output.exists():
+        raise SystemExit("--output must name a new file")
+
+    def trace_event(event: Mapping[str, Any]) -> None:
+        if trace_path is not None:
+            _append_trace_event(trace_path, event)
+
+    def observe_turn(turn: Mapping[str, Any]) -> None:
+        _emit_turn_progress(turn)
+        trace_event({
+            "schema": "ztare-arc3-probe-turn-checkpoint-v1",
+            "turn": dict(turn),
+        })
+
+    trace_event({
+        "schema": "ztare-arc3-probe-run-manifest-v1",
+        "game": str(args.game),
+        "budget": int(args.budget),
+        "model": str(args.model),
+        "reasoning_effort": str(args.reasoning_effort),
+        "reasoning_context": str(args.reasoning_context),
+        "transport": str(args.transport),
+        "subscription_session": str(args.subscription_session),
+    })
+
     bootstrap_dotenv_from_repo_root()
     from openai import OpenAI
 
@@ -1520,7 +1660,8 @@ def main() -> int:
             reasoning_effort=args.reasoning_effort,
             timeout_seconds=args.timeout_seconds,
             resume_session=args.subscription_session == "resume",
-            turn_observer=_emit_turn_progress,
+            turn_observer=observe_turn,
+            exchange_observer=trace_event,
             level_boundary_sleep_top_k=(
                 args.level_boundary_sleep_top_k
             ),
@@ -1536,7 +1677,8 @@ def main() -> int:
             reasoning_context=args.reasoning_context,
             max_output_tokens=args.max_output_tokens,
             timeout_seconds=args.timeout_seconds,
-            turn_observer=_emit_turn_progress,
+            turn_observer=observe_turn,
+            exchange_observer=trace_event,
         )
     project = REPO / "projects" / f"arc3_{args.game.split('-', 1)[0]}_gov"
     run_label = (
@@ -1549,12 +1691,21 @@ def main() -> int:
         if args.transport == "subscription"
         else "api"
     )
-    output = project / "workspace" / f"arc3_{run_label}_agent_probe_report.json"
+    output = requested_output or (
+        project
+        / "workspace"
+        / f"arc3_{run_label}_agent_probe_report.json"
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    trace_event({
+        "schema": "ztare-arc3-probe-final-result-v1",
+        "result": payload,
+        "report_path": str(output),
+    })
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0 if payload["status"] == "level_gained" else 1
 

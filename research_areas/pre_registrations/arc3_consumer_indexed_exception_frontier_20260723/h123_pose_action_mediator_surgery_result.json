@@ -1,0 +1,76 @@
+{
+  "arm_order": [
+    "pose_only_placebo",
+    "pose_action_map"
+  ],
+  "arms": {
+    "pose_action_map": {
+      "action_sequence": [
+        3,
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        3,
+        3,
+        1
+      ],
+      "actions_executed": 10,
+      "first_level_action": null,
+      "label": "pose_action_map",
+      "levels_gained": 0,
+      "one_shot_recall": true,
+      "report_path": "<repo>/research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h123_pose_action_mediator_surgery/pose_action_map_report.json",
+      "session_ids": [
+        "019fe4e6-99f2-7be3-9a57-c93282f6cf3b"
+      ],
+      "status": "budget_exhausted",
+      "trace_path": "<repo>/research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h123_pose_action_mediator_surgery/pose_action_map_trace.jsonl"
+    },
+    "pose_only_placebo": {
+      "action_sequence": [
+        0,
+        3,
+        3,
+        1,
+        3,
+        3,
+        0,
+        3,
+        3,
+        0
+      ],
+      "actions_executed": 10,
+      "first_level_action": 10,
+      "label": "pose_only_placebo",
+      "levels_gained": 1,
+      "one_shot_recall": true,
+      "report_path": "<repo>/research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h123_pose_action_mediator_surgery/pose_only_placebo_report.json",
+      "session_ids": [
+        "019fe4e2-1165-7e92-9c5b-4c6d93e4607e"
+      ],
+      "status": "level_gained",
+      "trace_path": "<repo>/research_areas/pre_registrations/arc3_consumer_indexed_exception_frontier_20260723/h123_pose_action_mediator_surgery/pose_only_placebo_trace.jsonl"
+    }
+  },
+  "capsule_receipt": {
+    "pair_sha256": "b4f86b327d8438c0c2bc77f6acfb6846a5812ca7f19fa060cc272dddac3c79ab",
+    "pose_action_map_sha256": "d3487e433a94e317a3a8fda32da12c9fdd28a297727c834763dc68bcea93b09a",
+    "pose_only_placebo_sha256": "fbffa7c5c05d32205cdfdc95840c982df1b94553a057777a28da52ee7f16006d",
+    "rendered_prompt_bytes": 1173
+  },
+  "claim_boundary": "One exact-byte within-game cross-level mediation pair. No population, cross-game, multi-generation, broad-capability, or literature-novelty conclusion follows.",
+  "controller_contact": true,
+  "disposition": "inverted_refuted",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-POSE-ACTION-MEDIATOR-SURGERY-20260808-123",
+  "identities": {
+    "h122_result_sha256": "60dbf8f66377625a28f08a1252c07f11f99f17673848cd16dab535ae712f0dd7",
+    "target_grid_carrier_sha256": "dde09802332964a1530f9c3b3509a3732aec0d69325f2d3af29cca5162c06b24",
+    "target_matching_mover_count": 1
+  },
+  "schema": "ztare-h123-pose-action-mediator-surgery-v1",
+  "status": "complete"
+}

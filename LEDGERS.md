@@ -9,6 +9,7 @@ Public ledgers are private-ref-masked by `scripts/public/publish_mask.py`
 | Ledger | What it records | Written by | Read by | Visibility |
 |---|---|---|---|---|
 | [research_areas/EXPERIMENT_TRACK_RECORD.md](research_areas/EXPERIMENT_TRACK_RECORD.md) | Canonical E/F-row experiment track record (~2.2k rows) | agents / RD | seam-health audit, NS graph stack, substrate recommender (36 refs) | public (masked) |
+| [research_areas/synthesis/axiompack_mathematical_campaign_ledger.md](research_areas/synthesis/axiompack_mathematical_campaign_ledger.md) | Mathematical validity, priority, recovery, and lifecycle status across AxiomPack campaigns | campaign adjudication | principal, campaign selection, source review | public |
 | [rubrics/goodhart_log.jsonl](rubrics/goodhart_log.jsonl) | Goodhart/rigging incidents per rubric | `mform_alignment_audit.py` | M-form alignment audit | public (masked) |
 | [global_primitives/incidents/primitive_incidents.jsonl](global_primitives/incidents/primitive_incidents.jsonl) | Primitive-failure incidents | `extract_incidents.py`, `draft_primitives.py` | primitive drafting | public (masked) |
 | [analytics/public/ledgers/catch/catch_ledger.jsonl](analytics/public/ledgers/catch/catch_ledger.jsonl) | SOX/PCAOB-style ratified catch ledger | agents (append-only) | catch validator, P0 catch-rate | internal |

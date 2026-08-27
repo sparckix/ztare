@@ -43,6 +43,7 @@ tenant overlay.
 | `ztare action-intel …` | Action intelligence read surface: decisions, routes, and outcome impact | `action_intelligence.py` |
 | `ztare autoresearch …` | In-loop autoresearch run and read-only trace/projection/replay surfaces | `Makefile` targets plus report modules |
 | `ztare forensic-workbench …` | Local Project Workbench state, review receipts, and saved next steps | `forensic_workbench_state.py`, `forensic_workbench_review.py`, `forensic_workbench_action.py` |
+| `ztare investment <verb> …` | JaggedThoughts investment compilation, settlement, pricing evaluation, and store operations | `src/ztare/investment/cli.py` |
 | `ztare project ...` | Public project userland before run readiness: walkthrough, source files/checks, evidence-output binding, project-local checks, create, prepare, seal, intake, optional prep ledger | `generate_substrate.py` + `Makefile` targets + workspace modules + `substrate_queue.py` |
 | `ztare synth ...` | Build or refresh a project report support contract and synthesis outputs | `src/ztare/synthesis/synthesize.py` |
 | `ztare card build|verify|open ...` | Build or verify a portable project claim card from the synthesis contract; `build --format all --record` also writes its Workbench receipt | `src/ztare/workspace/claim_card.py`; optional wrapper `scripts/public/control/claim_card.py` |

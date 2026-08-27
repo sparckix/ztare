@@ -1,0 +1,554 @@
+{
+  "admission": {
+    "action": "explore_derivative",
+    "derivative_sha256": "f7e53f343d0e53b3f77037540dcfe52a2c50fa111c0b9cee9acef5beb4c41821",
+    "eligible": true,
+    "environment_contact_before_admission": false,
+    "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+    "kind": "pre_revision_derivative_admission",
+    "pair_index": 1,
+    "pre_basin_rule": "residual_plan_basin_sha256",
+    "pre_proposal_sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0",
+    "reason": "blind_parent_did_not_satisfy_frozen_residual",
+    "residual_contract_sha256": "f02dcd5c0ed636f5be2bfe3dc2a2d403ad3de8b19733db4f92ba8bcd2691396b",
+    "schema": "ztare-arc3-causal-response-derivative-live-v1",
+    "sha256": "10a99e037e8cb62bf866d9948e80ec52d587f40686c6c10f8019048dc895b8de",
+    "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801"
+  },
+  "arm_order": [
+    "offer",
+    "withhold"
+  ],
+  "branches": {
+    "offer": {
+      "assignment": "offer",
+      "catalog_scoped_decision": {
+        "action": 0,
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "controlled_object_handle": "o03",
+        "kind": "catalog_scoped_model_decision",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_handles": [
+          "o00"
+        ],
+        "phase": "offer_branch_revision",
+        "plan_summary": "Move the gray/red block upward, then continue through the upper corridor toward the target.",
+        "prediction": "Action 0 will shift o03 upward by five cells while preserving its orientation.",
+        "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+        "response_decision": {
+          "arguments": {
+            "action": 0,
+            "controlled_object_handle": "o03",
+            "ordered_waypoint_handles": [
+              "o00"
+            ],
+            "plan_summary": "Move the gray/red block upward, then continue through the upper corridor toward the target.",
+            "prediction": "Action 0 will shift o03 upward by five cells while preserving its orientation.",
+            "uncertainty": "Low movement uncertainty; moderate uncertainty about the final alignment with o00."
+          },
+          "cached_input_tokens": 0,
+          "call_id": "app-server-call:019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+          "effective_reasoning_context": "all_turns",
+          "input_tokens": 33505,
+          "output_tokens": 124,
+          "previous_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+          "requested_reasoning_context": "all_turns",
+          "response_id": "019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+          "schema": "ztare-responses-tool-decision-v1",
+          "tool_name": "commit_arc_plan"
+        },
+        "schema": "ztare-arc3-causal-response-derivative-live-v1",
+        "uncertainty": "Low movement uncertainty; moderate uncertainty about the final alignment with o00."
+      },
+      "controller_transport": {
+        "fork": {
+          "ephemeral": false,
+          "fork_thread_id": "019fe31e-29ef-7202-88df-1d49a56035e6",
+          "forked_from_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16",
+          "inherited_turn_ids": [
+            "019fe31d-6948-7bd1-9afe-622be77616ab"
+          ],
+          "kind": "app_server_fork_receipt",
+          "last_turn_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+          "schema": "ztare-codex-app-server-fork-v1",
+          "sha256": "f1cd2129c4106631ab961b203ff7f91eae33960c2328e961f2e1f7f52876caca",
+          "source_thread_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16"
+        },
+        "last_turn_id": "019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+        "schema": "ztare-app-server-controller-thread-v1",
+        "sha256": "ccf295af5a149e9af7d270a73a70cdc7e453d01c5a29dca788637e604d60f8c9",
+        "thread_id": "019fe31e-29ef-7202-88df-1d49a56035e6",
+        "turn": {
+          "assistant_output_sha256": "5b155ec94bfd079ef7e0dfc02a344981eead6dc8cd548f903f93611e484f96ad",
+          "assistant_text": "{\"action\":0,\"controlled_object_handle\":\"o03\",\"ordered_waypoint_handles\":[\"o00\"],\"plan_summary\":\"Move the gray/red block upward, then continue through the upper corridor toward the target.\",\"prediction\":\"Action 0 will shift o03 upward by five cells while preserving its orientation.\",\"uncertainty\":\"Low movement uncertainty; moderate uncertainty about the final alignment with o00.\"}",
+          "cached_input_tokens": 0,
+          "completed_at": 1786221842,
+          "duration_ms": 9237,
+          "input_tokens": 33505,
+          "item_types": [
+            "agentMessage"
+          ],
+          "kind": "app_server_turn_receipt",
+          "output_tokens": 124,
+          "prompt_sha256": "efdc19031a7ae2dc6bfd647bfc828ea4468bcdd9dd92d2a03ffc611ad8eff794",
+          "schema": "ztare-codex-app-server-fork-v1",
+          "sha256": "aa23ab3597dc603167c77a5965bf2cecee9f42e0d702632df099a57ea2137731",
+          "started_at": 1786221833,
+          "status": "completed",
+          "thread_id": "019fe31e-29ef-7202-88df-1d49a56035e6",
+          "tool_item_count": 0,
+          "turn_id": "019fe31e-2ca8-7af1-9035-3fcba56a9fb9"
+        }
+      },
+      "environment_contact": false,
+      "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+      "kind": "matched_branch_revision",
+      "pair_index": 1,
+      "parent_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+      "post_proposal": {
+        "action_ref": "0",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "consumed_intervention_revision_sha256": "75e3167ba7775e2ecec579693e147b233775580c1ff1b5d13e72bc1f801e900d",
+        "controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+        "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+        "kind": "object_linked_controller_proposal",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_refs": [
+          "object:dae43c2313554cae80b2067609f97b9ba8ea89fbe6f8c0c027d0b3a0033af6be"
+        ],
+        "parent_proposal_sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0",
+        "predicted_consequence_ref": "sha256:ed6c5f1614e1d33441b55b99e4d22bded28088917d4a9a2f7b18c9ca96e065d2",
+        "proposal_ref": "sha256:5cf6257b8d14627e6607819dc9c489a7571ef90524ba3e3e6f9da496113000c2",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+        "sha256": "402950326a652e319ecf97796ba9a5d3ffb677666b6d0e86358cb818a8d8deab"
+      },
+      "presented_intervention_sha256": "d496b37d0a467d233a6387aa99560eaf54ec649187d2c76cb2ef1303e6292111",
+      "presented_utf8_bytes": 3849,
+      "response_decision": {
+        "arguments": {
+          "action": 0,
+          "controlled_object_handle": "o03",
+          "ordered_waypoint_handles": [
+            "o00"
+          ],
+          "plan_summary": "Move the gray/red block upward, then continue through the upper corridor toward the target.",
+          "prediction": "Action 0 will shift o03 upward by five cells while preserving its orientation.",
+          "uncertainty": "Low movement uncertainty; moderate uncertainty about the final alignment with o00."
+        },
+        "cached_input_tokens": 0,
+        "call_id": "app-server-call:019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+        "effective_reasoning_context": "all_turns",
+        "input_tokens": 33505,
+        "output_tokens": 124,
+        "previous_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+        "requested_reasoning_context": "all_turns",
+        "response_id": "019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+        "schema": "ztare-responses-tool-decision-v1",
+        "tool_name": "commit_arc_plan"
+      },
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "transition": {
+        "assignment": "offer",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "changed_action": false,
+        "changed_path": true,
+        "changed_prediction": true,
+        "contract_sha256": "f02dcd5c0ed636f5be2bfe3dc2a2d403ad3de8b19733db4f92ba8bcd2691396b",
+        "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+        "derivative_sha256": "f7e53f343d0e53b3f77037540dcfe52a2c50fa111c0b9cee9acef5beb4c41821",
+        "intervention_revision_sha256": "75e3167ba7775e2ecec579693e147b233775580c1ff1b5d13e72bc1f801e900d",
+        "kind": "residual_proposal_transition",
+        "post_proposal_sha256": "402950326a652e319ecf97796ba9a5d3ffb677666b6d0e86358cb818a8d8deab",
+        "pre_basin_sha256": "c00b570012195a497e4ce880a6a81a919f6a9cc68f3e2fbf2ed7607893231b55",
+        "pre_proposal_sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0",
+        "relation": "offered_supported_derivative",
+        "schema": "ztare-causal-response-derivative-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+        "sha256": "5456c2595794a9e97d71612d05f6bb101ee65ae7214fafd77188c471896aed66",
+        "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+        "stratum_sha256": "884879dd010ebc40de64df5b76e31b9f1c429664366abc8a9c77d540074d46c2",
+        "supported_transport": true,
+        "trial_ref": "h97:pair-01:offer"
+      }
+    },
+    "withhold": {
+      "assignment": "withhold",
+      "catalog_scoped_decision": {
+        "action": 0,
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "controlled_object_handle": "o03",
+        "kind": "catalog_scoped_model_decision",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_handles": [],
+        "phase": "withhold_branch_revision",
+        "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+        "prediction": "The controlled block should shift upward by five cells without contacting another cataloged object.",
+        "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+        "response_decision": {
+          "arguments": {
+            "action": 0,
+            "controlled_object_handle": "o03",
+            "ordered_waypoint_handles": [],
+            "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+            "prediction": "The controlled block should shift upward by five cells without contacting another cataloged object.",
+            "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed."
+          },
+          "cached_input_tokens": 0,
+          "call_id": "app-server-call:019fe31e-5312-7332-a8e3-6716ce4c23a6",
+          "effective_reasoning_context": "all_turns",
+          "input_tokens": 33406,
+          "output_tokens": 155,
+          "previous_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+          "requested_reasoning_context": "all_turns",
+          "response_id": "019fe31e-5312-7332-a8e3-6716ce4c23a6",
+          "schema": "ztare-responses-tool-decision-v1",
+          "tool_name": "commit_arc_plan"
+        },
+        "schema": "ztare-arc3-causal-response-derivative-live-v1",
+        "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed."
+      },
+      "controller_transport": {
+        "fork": {
+          "ephemeral": false,
+          "fork_thread_id": "019fe31e-5147-7450-b680-e70affc94696",
+          "forked_from_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16",
+          "inherited_turn_ids": [
+            "019fe31d-6948-7bd1-9afe-622be77616ab"
+          ],
+          "kind": "app_server_fork_receipt",
+          "last_turn_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+          "schema": "ztare-codex-app-server-fork-v1",
+          "sha256": "bd8a1c2a5f3b0e584cf2123430a57e84e5c8aa3641ba8424d996a43ec662c8c2",
+          "source_thread_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16"
+        },
+        "last_turn_id": "019fe31e-5312-7332-a8e3-6716ce4c23a6",
+        "schema": "ztare-app-server-controller-thread-v1",
+        "sha256": "7baaeec58451b328f1ba4f356193270581fcddf868c8f9243035131848df2ffc",
+        "thread_id": "019fe31e-5147-7450-b680-e70affc94696",
+        "turn": {
+          "assistant_output_sha256": "4842bb5179d959816ec1ebf92488b651dcea3cc9c38af0df43f0622b19e77c14",
+          "assistant_text": "{\"action\":0,\"controlled_object_handle\":\"o03\",\"ordered_waypoint_handles\":[],\"plan_summary\":\"Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.\",\"prediction\":\"The controlled block should shift upward by five cells without contacting another cataloged object.\",\"uncertainty\":\"Low on action 0 meaning up; moderate on the exact target alignment needed.\"}",
+          "cached_input_tokens": 0,
+          "completed_at": 1786221850,
+          "duration_ms": 6768,
+          "input_tokens": 33406,
+          "item_types": [
+            "agentMessage"
+          ],
+          "kind": "app_server_turn_receipt",
+          "output_tokens": 155,
+          "prompt_sha256": "833aaab90ea09bdd23022fbf084c203c613270416ea2bcf427d37fb7a24ae1bd",
+          "schema": "ztare-codex-app-server-fork-v1",
+          "sha256": "5f622a686b6d9f064c366e10bb5e5df7f1c630665c8c7950e44c748cd3b78fc6",
+          "started_at": 1786221843,
+          "status": "completed",
+          "thread_id": "019fe31e-5147-7450-b680-e70affc94696",
+          "tool_item_count": 0,
+          "turn_id": "019fe31e-5312-7332-a8e3-6716ce4c23a6"
+        }
+      },
+      "environment_contact": false,
+      "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+      "kind": "matched_branch_revision",
+      "pair_index": 1,
+      "parent_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+      "post_proposal": {
+        "action_ref": "0",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "consumed_intervention_revision_sha256": "",
+        "controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+        "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+        "kind": "object_linked_controller_proposal",
+        "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "ordered_waypoint_refs": [],
+        "parent_proposal_sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0",
+        "predicted_consequence_ref": "sha256:68ac68832becda3f15aa0266380daaf390ca827b5a7e57f619dba088cc7eb880",
+        "proposal_ref": "sha256:9a4d4894ead716f871bdcdba4984070108e885815bcf1afa60d9b63a6d8fc88d",
+        "schema": "ztare-object-linked-judgment-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+        "sha256": "4748ea0e000e1d77f455b16a4a09021e5ad312e558198f69946389bd65690499"
+      },
+      "presented_intervention_sha256": "9089791e4bd03c43e27d98aa5d3f9103ed7ef33cceed767a62010a9b8f94842d",
+      "presented_utf8_bytes": 3849,
+      "response_decision": {
+        "arguments": {
+          "action": 0,
+          "controlled_object_handle": "o03",
+          "ordered_waypoint_handles": [],
+          "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+          "prediction": "The controlled block should shift upward by five cells without contacting another cataloged object.",
+          "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed."
+        },
+        "cached_input_tokens": 0,
+        "call_id": "app-server-call:019fe31e-5312-7332-a8e3-6716ce4c23a6",
+        "effective_reasoning_context": "all_turns",
+        "input_tokens": 33406,
+        "output_tokens": 155,
+        "previous_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+        "requested_reasoning_context": "all_turns",
+        "response_id": "019fe31e-5312-7332-a8e3-6716ce4c23a6",
+        "schema": "ztare-responses-tool-decision-v1",
+        "tool_name": "commit_arc_plan"
+      },
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "transition": {
+        "assignment": "withhold",
+        "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+        "changed_action": false,
+        "changed_path": false,
+        "changed_prediction": true,
+        "contract_sha256": "f02dcd5c0ed636f5be2bfe3dc2a2d403ad3de8b19733db4f92ba8bcd2691396b",
+        "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+        "derivative_sha256": "f7e53f343d0e53b3f77037540dcfe52a2c50fa111c0b9cee9acef5beb4c41821",
+        "intervention_revision_sha256": "75e3167ba7775e2ecec579693e147b233775580c1ff1b5d13e72bc1f801e900d",
+        "kind": "residual_proposal_transition",
+        "post_proposal_sha256": "4748ea0e000e1d77f455b16a4a09021e5ad312e558198f69946389bd65690499",
+        "pre_basin_sha256": "c00b570012195a497e4ce880a6a81a919f6a9cc68f3e2fbf2ed7607893231b55",
+        "pre_proposal_sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0",
+        "relation": "withheld_spontaneous_other",
+        "schema": "ztare-causal-response-derivative-v1",
+        "scope": {
+          "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+          "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+          "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+          "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+          "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+        },
+        "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+        "sha256": "a2e23b44947836e827a4d7d58233f46bf1950d7683a3986d18fc82e83693eeb3",
+        "source_program_sha256": "8e785bb667905d3d1809de408e13750c6a1b730e4b8974e90ac0b23a93757801",
+        "stratum_sha256": "884879dd010ebc40de64df5b76e31b9f1c429664366abc8a9c77d540074d46c2",
+        "supported_transport": false,
+        "trial_ref": "h97:pair-01:withhold"
+      }
+    }
+  },
+  "environment_contact": false,
+  "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+  "fork_authority": {
+    "branches": [
+      {
+        "assignment": "offer",
+        "branch_turn_id": "019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+        "fork_receipt_sha256": "f1cd2129c4106631ab961b203ff7f91eae33960c2328e961f2e1f7f52876caca",
+        "fork_thread_id": "019fe31e-29ef-7202-88df-1d49a56035e6",
+        "turn_receipt_sha256": "aa23ab3597dc603167c77a5965bf2cecee9f42e0d702632df099a57ea2137731"
+      },
+      {
+        "assignment": "withhold",
+        "branch_turn_id": "019fe31e-5312-7332-a8e3-6716ce4c23a6",
+        "fork_receipt_sha256": "bd8a1c2a5f3b0e584cf2123430a57e84e5c8aa3641ba8424d996a43ec662c8c2",
+        "fork_thread_id": "019fe31e-5147-7450-b680-e70affc94696",
+        "turn_receipt_sha256": "5f622a686b6d9f064c366e10bb5e5df7f1c630665c8c7950e44c748cd3b78fc6"
+      }
+    ],
+    "compatibility_authority": {
+      "child_count": 2,
+      "child_previous_response_ids": [
+        "019fe31d-6948-7bd1-9afe-622be77616ab",
+        "019fe31d-6948-7bd1-9afe-622be77616ab"
+      ],
+      "child_response_ids": [
+        "019fe31e-2ca8-7af1-9035-3fcba56a9fb9",
+        "019fe31e-5312-7332-a8e3-6716ce4c23a6"
+      ],
+      "parent_response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+      "reasoning_context": "all_turns",
+      "schema": "ztare-responses-counterfactual-fork-v1",
+      "shared_parent": true
+    },
+    "controller_transport": "codex_app_server",
+    "parent_thread_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16",
+    "parent_turn_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+    "reasoning_context": "all_turns",
+    "schema": "ztare-app-server-counterfactual-fork-v1",
+    "sha256": "e3144eb01b447c8b168819a986016a0c6962b88819ac71d62fceb9baf4ab3c4d",
+    "shared_parent": true
+  },
+  "kind": "matched_parent_fork",
+  "pair_index": 1,
+  "parent_attempt": {
+    "attempt_index": 1,
+    "catalog_scoped_decision": {
+      "action": 0,
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "controlled_object_handle": "o03",
+      "kind": "catalog_scoped_model_decision",
+      "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "ordered_waypoint_handles": [],
+      "phase": "blind_matched_parent_proposal",
+      "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+      "prediction": "The controlled block should shift upward by five cells from its current position without contacting another cataloged object.",
+      "presentation_sha256": "1541391f3c6079d8037ed66f713a578b9edeb68697057fd9e89bf82c1c787f9b",
+      "response_decision": {
+        "arguments": {
+          "action": 0,
+          "controlled_object_handle": "o03",
+          "ordered_waypoint_handles": [],
+          "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+          "prediction": "The controlled block should shift upward by five cells from its current position without contacting another cataloged object.",
+          "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed at the top."
+        },
+        "cached_input_tokens": 0,
+        "call_id": "app-server-call:019fe31d-6948-7bd1-9afe-622be77616ab",
+        "effective_reasoning_context": "all_turns",
+        "input_tokens": 31679,
+        "output_tokens": 1812,
+        "previous_response_id": null,
+        "requested_reasoning_context": "all_turns",
+        "response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+        "schema": "ztare-responses-tool-decision-v1",
+        "tool_name": "commit_arc_plan"
+      },
+      "schema": "ztare-arc3-causal-response-derivative-live-v1",
+      "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed at the top."
+    },
+    "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+    "controller_transport": {
+      "fork": null,
+      "last_turn_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+      "schema": "ztare-app-server-controller-thread-v1",
+      "sha256": "2bd67d0708f11811a9be491a6c5e6fd2bac27e7ec509d5ff4d7a50a86ca0b508",
+      "thread_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16",
+      "turn": {
+        "assistant_output_sha256": "3084e6acf3fb52653097326da943ce0162ab1b99946087d68cf0afb346887ddd",
+        "assistant_text": "{\"action\":0,\"controlled_object_handle\":\"o03\",\"ordered_waypoint_handles\":[],\"plan_summary\":\"Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.\",\"prediction\":\"The controlled block should shift upward by five cells from its current position without contacting another cataloged object.\",\"uncertainty\":\"Low on action 0 meaning up; moderate on the exact target alignment needed at the top.\"}",
+        "cached_input_tokens": 0,
+        "completed_at": 1786221832,
+        "duration_ms": 49181,
+        "input_tokens": 31679,
+        "item_types": [
+          "agentMessage"
+        ],
+        "kind": "app_server_turn_receipt",
+        "output_tokens": 1812,
+        "prompt_sha256": "04fcbda76028408cdc841aacabf4770623882f5bc8a15bce2b75eb5d3c2e8d5c",
+        "schema": "ztare-codex-app-server-fork-v1",
+        "sha256": "6c30d960046c2cacd38150ceab308ed17512d08b4b9e40353308526f920b6def",
+        "started_at": 1786221783,
+        "status": "completed",
+        "thread_id": "019fe31d-65ec-7ab3-8a0b-2842270f4b16",
+        "tool_item_count": 0,
+        "turn_id": "019fe31d-6948-7bd1-9afe-622be77616ab"
+      }
+    },
+    "eligibility_rule": "blind_proposal_does_not_satisfy_target_residual_program",
+    "eligible": true,
+    "environment_contact": false,
+    "experiment_sha256": "f86911a76d20338561a5ba15fb212d169d86003954aedc4a8b63aebdb8d3899f",
+    "kind": "blind_parent_attempt",
+    "pair_index": 1,
+    "pre_proposal": {
+      "action_ref": "0",
+      "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+      "consumed_intervention_revision_sha256": "",
+      "controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+      "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+      "kind": "object_linked_controller_proposal",
+      "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "ordered_waypoint_refs": [],
+      "parent_proposal_sha256": "",
+      "predicted_consequence_ref": "sha256:871a3160b0b49d0afb04918d292fe4fb514786da50e60ec894c06b7c20439a96",
+      "proposal_ref": "sha256:7d266027482d0df5d710390cf968841364bceca6c65e11bde72f23f52da6c2e8",
+      "schema": "ztare-object-linked-judgment-v1",
+      "scope": {
+        "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+        "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+        "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+        "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+        "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+      },
+      "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+      "sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0"
+    },
+    "refusal": "",
+    "response_decision": {
+      "arguments": {
+        "action": 0,
+        "controlled_object_handle": "o03",
+        "ordered_waypoint_handles": [],
+        "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+        "prediction": "The controlled block should shift upward by five cells from its current position without contacting another cataloged object.",
+        "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed at the top."
+      },
+      "cached_input_tokens": 0,
+      "call_id": "app-server-call:019fe31d-6948-7bd1-9afe-622be77616ab",
+      "effective_reasoning_context": "all_turns",
+      "input_tokens": 31679,
+      "output_tokens": 1812,
+      "previous_response_id": null,
+      "requested_reasoning_context": "all_turns",
+      "response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+      "schema": "ztare-responses-tool-decision-v1",
+      "tool_name": "commit_arc_plan"
+    },
+    "schema": "ztare-arc3-causal-response-derivative-live-v1"
+  },
+  "parent_response_decision": {
+    "arguments": {
+      "action": 0,
+      "controlled_object_handle": "o03",
+      "ordered_waypoint_handles": [],
+      "plan_summary": "Move the 5\u00d75 gray/red block upward toward the open top corridor, then route right and up to the target.",
+      "prediction": "The controlled block should shift upward by five cells from its current position without contacting another cataloged object.",
+      "uncertainty": "Low on action 0 meaning up; moderate on the exact target alignment needed at the top."
+    },
+    "cached_input_tokens": 0,
+    "call_id": "app-server-call:019fe31d-6948-7bd1-9afe-622be77616ab",
+    "effective_reasoning_context": "all_turns",
+    "input_tokens": 31679,
+    "output_tokens": 1812,
+    "previous_response_id": null,
+    "requested_reasoning_context": "all_turns",
+    "response_id": "019fe31d-6948-7bd1-9afe-622be77616ab",
+    "schema": "ztare-responses-tool-decision-v1",
+    "tool_name": "commit_arc_plan"
+  },
+  "pre_proposal": {
+    "action_ref": "0",
+    "catalog_sha256": "9e535780acc9fd9599049acd20354628a7ad2dbfbf08a081ebb680f7512751de",
+    "consumed_intervention_revision_sha256": "",
+    "controlled_object_ref": "object:0dd38c622efa2070f589dcff588f08ff977ecba6c66339a7ad389b66e703f910",
+    "controller_instance_sha256": "4d42a1b811060836126c3d6a214e71f46d64ee8d0ef5b1631d2eba855c10c57b",
+    "kind": "object_linked_controller_proposal",
+    "observation_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+    "ordered_waypoint_refs": [],
+    "parent_proposal_sha256": "",
+    "predicted_consequence_ref": "sha256:871a3160b0b49d0afb04918d292fe4fb514786da50e60ec894c06b7c20439a96",
+    "proposal_ref": "sha256:7d266027482d0df5d710390cf968841364bceca6c65e11bde72f23f52da6c2e8",
+    "schema": "ztare-object-linked-judgment-v1",
+    "scope": {
+      "action_vocabulary_sha256": "b067304800a27bf414739005f88c7c0e62e8f877c92982b0588c4aaa663f2770",
+      "choice_set_sha256": "93526da15b2c9077798e78a874e77f8153127f29a8e0d9de1434ae4086a8981c",
+      "context_sha256": "82e380095fe14a67f08a83d0fe7440877b83537d8ef72b6e58704c4d206175cf",
+      "controller_sha256": "0354f9c4c04a4a7b931c83ff8bb133553c264d72cfcf6d83944d108f47bac379",
+      "task_sha256": "71032e1146ee110191461d8bf9999628038de674fd12fb8aff079603957cfb0b"
+    },
+    "scope_sha256": "3318c24cf262b4de02900a0738b88b37bb76d6d180343f10a3aca0a36e0f70f6",
+    "sha256": "708696b95172efb19ae239f49407b573b1491000c70411ca8525510e387222d0"
+  },
+  "schema": "ztare-arc3-causal-response-derivative-live-v1",
+  "stratum_sha256": "884879dd010ebc40de64df5b76e31b9f1c429664366abc8a9c77d540074d46c2"
+}

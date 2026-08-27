@@ -3,55 +3,58 @@
   "lane": "solver_lane",
   "mode": "cascade",
   "provider": "placebo",
-  "generated_at": "2026-07-16T02:56:13.241021+00:00",
+  "generated_at": "2026-07-19T15:48:06.776067+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "placebo",
   "results": [
     {
-      "name": "adhoc::AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
-      "target_name": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+      "name": "adhoc::iso_lemma1::2026-07-19T15:47:24.370255+00:00",
+      "target_name": "iso_lemma1",
       "kind": "c_pool_no_template",
       "outcome": "closed",
       "compile_ok": true,
       "compile_tail": "pre-verified champion (mode-agnostic splice)",
       "exit_code": 0,
-      "proof_text": "by\n  exact \u27e8finalistOne_is_elementaryTwoSolution,\n    finalistOne_identity_extraction_hypotheses,\n    finalistOne_extracted_t2_groupoid,\n    finalistOne_not_reconstructible_from_extracted_t2_groupoid\u27e9",
-      "provider": "existing_artifact",
+      "proof_text": "by\n  intro \u03b9 _ _ claims pool i\n  unfold WaterfallDistribution\n  exact min_le_left (claims i) (pool - SeniorClaimsBefore claims i)",
+      "provider": "legacy_corpus_carried_artifact",
       "providers_tried": [
         {
-          "provider": "existing_artifact",
+          "provider": "legacy_corpus_carried_artifact",
           "outcome": "compiled",
           "compile_ok": true,
-          "provider_wallclock_s": 9.53,
+          "provider_wallclock_s": 0.85,
           "agent_kind": "preverified_champion",
           "contract_validation": {
             "contract_schema": "leanmill-solver-action-contract-v1",
             "receipts": {
               "kernel_compile_receipt": {
+                "available": true,
                 "passed": true,
                 "tail": "pre-verified champion (mode-agnostic splice)"
               },
               "matched_negative_control_receipt": {
                 "kind": "source_aware_conclusion_perturbation",
-                "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
-                "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
-                "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
-                "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
-                "positive_compiled": true,
+                "target_identity": "iso_lemma1",
+                "target_signature_sha256": "d7ae7c674969ea93ff28d31773bf9050aad43ac37e5ac035120dde80b6a7e410",
+                "positive_probe_sha256": "ee1b33c2f4467875f486bff663a37dfd5c7cd89c9ac073bf19e69a328cbafde5",
+                "negative_probe_sha256": "c04b4689b281ab700f3a1722808dc52addcc3285b28d899bc9da65720d721b62",
                 "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+                "positive_compiled": true,
                 "negative_compiled": false,
                 "status": "pass",
                 "passed": true,
                 "discriminating": true,
                 "differential": "confirmed",
                 "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
-                "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
-                "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+                "posed_source_sha256": "605940463a57233e5025ae848c34be7543c6f8d796fa8fec0b4c2bfc5cceb90d",
+                "closure_source_sha256": "251c397143a2878f61de109cce9c66d5070063f42f50c03871dcd3ed42851d28",
+                "available": true,
                 "admitted_under_policy": true,
                 "policy": "require_discriminating_control",
                 "tail": "positive source compiles and the same proof does not close the negated conclusion"
               },
               "axiom_allowlist_receipt": {
+                "available": true,
                 "passed": true,
                 "axioms": [
                   "Classical.choice",
@@ -61,37 +64,39 @@
                 "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
               },
               "l3_anti_pattern_receipt": {
+                "available": false,
                 "passed": null,
                 "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
               },
               "governance_kernel_receipt": {
-                "passed": true,
-                "confirmed": [],
-                "flags": [],
-                "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
+                "available": false,
+                "passed": null,
+                "status": "deferred_to_closed_artifact_finalizer",
+                "tail": "the common closed-artifact finalizer owns the authoritative kernel invocation"
               }
             },
             "credit_ready_at_solver_layer": true,
-            "required_receipts_all_passed_at_solver_layer": true,
+            "required_receipts_all_passed_at_solver_layer": false,
             "axiom_tier": "kernel_pure",
             "positive_axiom_receipt_required": true,
             "discriminating_mnc_required": true,
+            "authoritative_kernel_deferred": true,
             "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
           }
         }
       ],
       "provider_error": "none",
-      "provider_wallclock_s": 51.58,
+      "provider_wallclock_s": 27.89,
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1784170521,
-        "row_id": "adhoc::AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
-        "target_theorem_name": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
+        "generated_at_epoch": 1784476058,
+        "row_id": "adhoc::iso_lemma1::2026-07-19T15:47:24.370255+00:00",
+        "target_theorem_name": "iso_lemma1",
         "ratification_only": true,
         "matched_negative_control_mode": "source_aware_conclusion_perturbation",
-        "source_file": "ztare_proofs/.solver_scratch/AdHoc_AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample_5958769871.lean",
+        "source_file": "ztare_proofs/.solver_scratch/AdHoc_iso_lemma1_e40bd087a8.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": ":\n    ElementaryTwoSolution finalistOne \u2227\n      (\u2200 c, ExtractionHypotheses finalistOne c (fun x => x)) \u2227\n      (\u2200 c,\n        T2GroupoidLaws\n          (extractedStar finalistOne c)\n          (extractedCircle finalistOne c)\n          (extractedLeft finalistOne c (fun x => x))\n          (extractedRight finalistOne c (fun x => x))) \u2227\n      \u00ac \u2203 (c : Carrier) (brace : Carrier \u2192 Carrier),\n        ExtractionHypotheses finalistOne c brace \u2227\n          \u2200 x y z,\n            finalistOne x",
+        "goal_excerpt": ": \u2200 {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n      (claims : ClaimSchedule \u03b9) (pool : NNReal) (i : \u03b9),\n        WaterfallDistribution claims pool i \u2264 claims i",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -123,44 +128,44 @@
           {
             "id": "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
             "kind": "anti-pattern",
-            "score": 797.9,
-            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5",
+            "score": 813.9,
+            "why": "matched claim; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5",
             "description": "A Lean proof compiles, is sorry-free, axiom-clean (clears GP-211) yet is NOT a novel closure: vacuous / gold-name-verbatim / one-exact? / indirect-leakage / scalar-currency. 5 sub-modes mechanized by the v33 Tier-0 organ"
           },
           {
             "id": "V33-INDIRECT-LEAKAGE-GATE",
             "kind": "gate",
-            "score": 786.4,
-            "why": "matched fun; bucket pde_ns_lean, graph_mining; impact 4",
+            "score": 799.4,
+            "why": "matched claim; bucket pde_ns_lean, graph_mining; impact 4",
             "description": "Tier-0 closure-governance organ: flags bare simp/fun_prop/aesop closures where the global @[simp]/@[fun_prop] set silently carries the gold lemma; independent confirm via floor-fails-but-global-closes. Mechanizes AP-013 "
           },
           {
-            "id": "RESIDUAL-TO-LEVER",
+            "id": "NS-L3A-CONCENTRATION-WORKMAP",
             "kind": "primitive",
-            "score": 782.4,
-            "why": "bucket negative_to_object; impact 4",
-            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
-          },
-          {
-            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
-            "kind": "primitive",
-            "score": 778.4,
-            "why": "bucket pde_ns_lean, orchestration_compression; impact 4",
-            "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes"
+            "score": 796.4,
+            "why": "matched type; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4",
+            "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths."
           },
           {
             "id": "V33-SINGLE-LEMMA-EXACT-GATE",
             "kind": "gate",
-            "score": 778.4,
-            "why": "bucket pde_ns_lean, graph_mining; impact 4",
+            "score": 792.4,
+            "why": "matched claim; bucket pde_ns_lean, graph_mining; impact 4",
             "description": "Tier-0 closure-governance organ: flags one-exact? closures; independent confirm via Lean's own exact? suggester. Mechanizes AP-013 single_lemma_exact sub-mode."
           },
           {
-            "id": "DIRECT-EQUATIONAL-DEDUCTION-BASELINE",
+            "id": "V33-CURRENCY-MISMATCH-GATE",
+            "kind": "gate",
+            "score": 792.3,
+            "why": "matched type; bucket pde_ns_lean, graph_mining; impact 3",
+            "description": "Tier-0 closure-governance organ: flags scalar-wrapper-vs-field obligation mismatches; independent confirm via Lean kernel type-slot rejection. Mechanizes AP-013 scalar_wrapper_currency_mismatch sub-mode (general currency"
+          },
+          {
+            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
             "kind": "primitive",
-            "score": 774.05,
-            "why": "bucket negative_to_object; impact 3; graph_bonus 1.75",
-            "description": "Receipt direct substitution instances and one contextual equational rewrite before AxiomPack prices residual consequences."
+            "score": 790.4,
+            "why": "bucket pde_ns_lean, orchestration_compression; impact 4",
+            "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes"
           }
         ],
         "action_program": [
@@ -213,30 +218,33 @@
         "contract_schema": "leanmill-solver-action-contract-v1",
         "receipts": {
           "kernel_compile_receipt": {
+            "available": true,
             "passed": true,
             "tail": "pre-verified champion (mode-agnostic splice)"
           },
           "matched_negative_control_receipt": {
             "kind": "source_aware_conclusion_perturbation",
-            "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
-            "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
-            "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
-            "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
-            "positive_compiled": true,
+            "target_identity": "iso_lemma1",
+            "target_signature_sha256": "d7ae7c674969ea93ff28d31773bf9050aad43ac37e5ac035120dde80b6a7e410",
+            "positive_probe_sha256": "ee1b33c2f4467875f486bff663a37dfd5c7cd89c9ac073bf19e69a328cbafde5",
+            "negative_probe_sha256": "c04b4689b281ab700f3a1722808dc52addcc3285b28d899bc9da65720d721b62",
             "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+            "positive_compiled": true,
             "negative_compiled": false,
             "status": "pass",
             "passed": true,
             "discriminating": true,
             "differential": "confirmed",
             "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
-            "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
-            "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+            "posed_source_sha256": "605940463a57233e5025ae848c34be7543c6f8d796fa8fec0b4c2bfc5cceb90d",
+            "closure_source_sha256": "251c397143a2878f61de109cce9c66d5070063f42f50c03871dcd3ed42851d28",
+            "available": true,
             "admitted_under_policy": true,
             "policy": "require_discriminating_control",
             "tail": "positive source compiles and the same proof does not close the negated conclusion"
           },
           "axiom_allowlist_receipt": {
+            "available": true,
             "passed": true,
             "axioms": [
               "Classical.choice",
@@ -246,39 +254,53 @@
             "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
           },
           "l3_anti_pattern_receipt": {
+            "available": false,
             "passed": null,
             "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
           },
           "governance_kernel_receipt": {
-            "passed": true,
-            "confirmed": [],
-            "flags": [],
-            "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
+            "available": false,
+            "passed": null,
+            "status": "deferred_to_closed_artifact_finalizer",
+            "tail": "the common closed-artifact finalizer owns the authoritative kernel invocation"
           }
         },
         "credit_ready_at_solver_layer": true,
-        "required_receipts_all_passed_at_solver_layer": true,
+        "required_receipts_all_passed_at_solver_layer": false,
         "axiom_tier": "kernel_pure",
         "positive_axiom_receipt_required": true,
         "discriminating_mnc_required": true,
+        "authoritative_kernel_deferred": true,
         "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
+      },
+      "verified_closure_artifact": {
+        "schema": "leanmill.verified_closure_artifact.v2",
+        "target_name": "iso_lemma1",
+        "target_qualified_name": "iso_lemma1",
+        "closure_source": "import Mathlib\n\n-- \ud83d\udcca LEARNED move track-record (all attempts so far) \u2014 the apparatus's OWN kernel-arbitrated close-rates (a caught cheat counts as a loss). Prefer what has CLOSED; don't burn budget on dead moves. Advisory, not a constraint:\n--   claude_warm: 84/589 closed (14%)\n--   native_hammer: 63/679 closed (9%)\n--   cold_shot_fanout: 1/93 closed (1%)\n--   external_frontier_prover: 0/19 closed (0%)\n--   generalize: 0/7 closed (0%)\n\n\n\nabbrev ClaimSchedule (\u03b9 : Type*) := \u03b9 \u2192 NNReal\n\nabbrev PaymentSchedule (\u03b9 : Type*) := \u03b9 \u2192 NNReal\n\ndef DistributionFeasible {\u03b9 : Type*} [Fintype \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) (pay : PaymentSchedule \u03b9) : Prop :=\n  (\u2200 i : \u03b9, pay i \u2264 claims i) \u2227 (\u2211 i, pay i) \u2264 pool\n\nnoncomputable def SeniorClaimsBefore {\u03b9 : Type*} [Fintype \u03b9] [Preorder \u03b9]\n    (claims : ClaimSchedule \u03b9) (i : \u03b9) : NNReal := by\n  classical\n  exact \u2211 j \u2208 Finset.univ.filter (fun j : \u03b9 => j < i), claims j\n\nnoncomputable def WaterfallDistribution {\u03b9 : Type*} [Fintype \u03b9] [Preorder \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) : PaymentSchedule \u03b9 :=\n  fun i => min (claims i) (pool - SeniorClaimsBefore claims i)\n\nprivate theorem nnreal_min_add_min_tsub (x p y : NNReal) :\n    min x p + min (p - x) y = min p (x + y) := by\n  rcases le_total p x with hp | hx\n  \u00b7 have hpx : p - x = 0 := tsub_eq_zero_of_le hp\n    rw [min_eq_right hp, hpx, min_eq_left (zero_le y), min_eq_left (le_add_right hp)]\n    simp\n  \u00b7 have hpx : x + (p - x) = p := add_tsub_cancel_of_le hx\n    rw [min_eq_left hx]\n    rcases le_total y (p - x) with hy | hpy\n    \u00b7 have hxy : x + y \u2264 p := by\n        rw [\u2190 hpx]\n        simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left hy x\n      rw [min_eq_right hy, min_eq_right hxy]\n    \u00b7 have hpxy : p \u2264 x + y := by\n        rw [\u2190 hpx]\n        simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left hpy x\n      rw [min_eq_left hpy, min_eq_left hpxy, hpx]\n\nprivate theorem sorted_list_waterfall_sum\n    {\u03b9 : Type*} [LinearOrder \u03b9] (claims : ClaimSchedule \u03b9) :\n    \u2200 (l : List \u03b9), l.Pairwise (fun a b => a < b) \u2192 \u2200 pool : NNReal,\n      (l.map fun i =>\n        min (claims i) (pool - ((l.filter fun j => j < i).map claims).sum)).sum =\n          min pool ((l.map claims).sum)\n  | [], _, pool => by simp\n  | a :: t, hs, pool => by\n      cases hs with\n      | cons hhead htail =>\n          have hfilter_a : (t.filter fun j => j < a) = [] := by\n            apply List.filter_eq_nil_iff.mpr\n            intro b hb\n            simpa using not_lt_of_ge (le_of_lt (hhead b hb))\n          have htail_sum :\n              (t.map fun i =>\n                min (claims i)\n                  (pool - (((a :: t).filter fun j => j < i).map claims).sum)).sum =\n                (t.map fun i =>\n                  min (claims i)\n                    ((pool - claims a) - ((t.filter fun j => j < i).map claims).sum)).sum := by\n            apply congrArg List.sum\n            apply List.map_congr_left\n            intro i hi\n            have hai : a < i := hhead i hi\n            simp [List.filter_cons, hai, tsub_add_eq_tsub_tsub]\n          have ih := sorted_list_waterfall_sum claims t htail (pool - claims a)\n          have hfilter_cons_a : ((a :: t).filter fun j => j < a) = [] := by\n            simp [List.filter_cons, hfilter_a]\n          simp only [List.map_cons, List.sum_cons]\n          rw [hfilter_cons_a]\n          simp only [List.map_nil, List.sum_nil, tsub_zero]\n          rw [htail_sum, ih]\n          exact nnreal_min_add_min_tsub (claims a) pool ((t.map claims).sum)\n\nprivate theorem seniorClaimsBefore_eq_sorted_filter_sum\n    {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n    (claims : ClaimSchedule \u03b9) (i : \u03b9) :\n    SeniorClaimsBefore claims i =\n      (((Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)).filter fun j => j < i).map claims).sum := by\n  classical\n  let l := Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)\n  have hfilter_toFinset :\n      (l.filter fun j => j < i).toFinset = (Finset.univ.filter fun j : \u03b9 => j < i) := by\n    apply Finset.ext\n    intro j\n    simp [l]\n  have hnodup_filter : (l.filter fun j => j < i).Nodup := by\n    simpa [l] using ((Finset.sort_nodup (s := (Finset.univ : Finset \u03b9))\n      (r := fun a b : \u03b9 => a \u2264 b)).filter (p := fun j => decide (j < i)))\n  calc\n    SeniorClaimsBefore claims i =\n        \u2211 j \u2208 Finset.univ.filter (fun j : \u03b9 => j < i), claims j := by\n      unfold SeniorClaimsBefore\n      apply Finset.sum_congr\n      \u00b7 ext j\n        simp\n      \u00b7 intro j hj\n        rfl\n    _ = (l.filter fun j => j < i).toFinset.sum claims := by\n      rw [hfilter_toFinset]\n    _ = (((l.filter fun j => j < i).map claims).sum) := by\n      rw [List.sum_toFinset claims hnodup_filter]\n\nprivate theorem waterfall_sum_eq_min\n    {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) :\n    (\u2211 i, WaterfallDistribution claims pool i) = min pool (\u2211 i, claims i) := by\n  classical\n  let l := Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)\n  have hpair : l.Pairwise (fun a b => a < b) := by\n    simpa [l] using (Finset.sortedLT_sort (Finset.univ : Finset \u03b9)).pairwise\n  have hpay_list :\n      (l.map fun i => WaterfallDistribution claims pool i).sum =\n        (l.map fun i =>\n          min (claims i) (pool - ((l.filter fun j => j < i).map claims).sum)).sum := by\n    apply congrArg List.sum\n    apply List.map_congr_left\n    intro i hi\n    rw [WaterfallDistribution, seniorClaimsBefore_eq_sorted_filter_sum]\n  have hsum_pay :\n      (\u2211 i, WaterfallDistribution claims pool i) =\n        (l.map fun i => WaterfallDistribution claims pool i).sum := by\n    rw [\u2190 List.sum_toFinset (fun i => WaterfallDistribution claims pool i)\n      (Finset.sort_nodup (s := (Finset.univ : Finset \u03b9)) (r := fun a b : \u03b9 => a \u2264 b))]\n    simp [l]\n  have hsum_claims :\n      (l.map claims).sum = \u2211 i, claims i := by\n    rw [\u2190 List.sum_toFinset claims\n      (Finset.sort_nodup (s := (Finset.univ : Finset \u03b9)) (r := fun a b : \u03b9 => a \u2264 b))]\n    simp [l]\n  rw [hsum_pay, hpay_list, sorted_list_waterfall_sum claims l hpair pool, hsum_claims]\n\ntheorem iso_lemma1 : \u2200 {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n      (claims : ClaimSchedule \u03b9) (pool : NNReal) (i : \u03b9),\n        WaterfallDistribution claims pool i \u2264 claims i := by\n  intro \u03b9 _ _ claims pool i\n  unfold WaterfallDistribution\n  exact min_le_left (claims i) (pool - SeniorClaimsBefore claims i)\n\n#print axioms iso_lemma1\n",
+        "posed_source": "import Mathlib\n\n-- \ud83d\udcca LEARNED move track-record (all attempts so far) \u2014 the apparatus's OWN kernel-arbitrated close-rates (a caught cheat counts as a loss). Prefer what has CLOSED; don't burn budget on dead moves. Advisory, not a constraint:\n--   claude_warm: 84/589 closed (14%)\n--   native_hammer: 63/679 closed (9%)\n--   cold_shot_fanout: 1/93 closed (1%)\n--   external_frontier_prover: 0/19 closed (0%)\n--   generalize: 0/7 closed (0%)\n\n\n\nabbrev ClaimSchedule (\u03b9 : Type*) := \u03b9 \u2192 NNReal\n\nabbrev PaymentSchedule (\u03b9 : Type*) := \u03b9 \u2192 NNReal\n\ndef DistributionFeasible {\u03b9 : Type*} [Fintype \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) (pay : PaymentSchedule \u03b9) : Prop :=\n  (\u2200 i : \u03b9, pay i \u2264 claims i) \u2227 (\u2211 i, pay i) \u2264 pool\n\nnoncomputable def SeniorClaimsBefore {\u03b9 : Type*} [Fintype \u03b9] [Preorder \u03b9]\n    (claims : ClaimSchedule \u03b9) (i : \u03b9) : NNReal := by\n  classical\n  exact \u2211 j \u2208 Finset.univ.filter (fun j : \u03b9 => j < i), claims j\n\nnoncomputable def WaterfallDistribution {\u03b9 : Type*} [Fintype \u03b9] [Preorder \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) : PaymentSchedule \u03b9 :=\n  fun i => min (claims i) (pool - SeniorClaimsBefore claims i)\n\nprivate theorem nnreal_min_add_min_tsub (x p y : NNReal) :\n    min x p + min (p - x) y = min p (x + y) := by\n  rcases le_total p x with hp | hx\n  \u00b7 have hpx : p - x = 0 := tsub_eq_zero_of_le hp\n    rw [min_eq_right hp, hpx, min_eq_left (zero_le y), min_eq_left (le_add_right hp)]\n    simp\n  \u00b7 have hpx : x + (p - x) = p := add_tsub_cancel_of_le hx\n    rw [min_eq_left hx]\n    rcases le_total y (p - x) with hy | hpy\n    \u00b7 have hxy : x + y \u2264 p := by\n        rw [\u2190 hpx]\n        simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left hy x\n      rw [min_eq_right hy, min_eq_right hxy]\n    \u00b7 have hpxy : p \u2264 x + y := by\n        rw [\u2190 hpx]\n        simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left hpy x\n      rw [min_eq_left hpy, min_eq_left hpxy, hpx]\n\nprivate theorem sorted_list_waterfall_sum\n    {\u03b9 : Type*} [LinearOrder \u03b9] (claims : ClaimSchedule \u03b9) :\n    \u2200 (l : List \u03b9), l.Pairwise (fun a b => a < b) \u2192 \u2200 pool : NNReal,\n      (l.map fun i =>\n        min (claims i) (pool - ((l.filter fun j => j < i).map claims).sum)).sum =\n          min pool ((l.map claims).sum)\n  | [], _, pool => by simp\n  | a :: t, hs, pool => by\n      cases hs with\n      | cons hhead htail =>\n          have hfilter_a : (t.filter fun j => j < a) = [] := by\n            apply List.filter_eq_nil_iff.mpr\n            intro b hb\n            simpa using not_lt_of_ge (le_of_lt (hhead b hb))\n          have htail_sum :\n              (t.map fun i =>\n                min (claims i)\n                  (pool - (((a :: t).filter fun j => j < i).map claims).sum)).sum =\n                (t.map fun i =>\n                  min (claims i)\n                    ((pool - claims a) - ((t.filter fun j => j < i).map claims).sum)).sum := by\n            apply congrArg List.sum\n            apply List.map_congr_left\n            intro i hi\n            have hai : a < i := hhead i hi\n            simp [List.filter_cons, hai, tsub_add_eq_tsub_tsub]\n          have ih := sorted_list_waterfall_sum claims t htail (pool - claims a)\n          have hfilter_cons_a : ((a :: t).filter fun j => j < a) = [] := by\n            simp [List.filter_cons, hfilter_a]\n          simp only [List.map_cons, List.sum_cons]\n          rw [hfilter_cons_a]\n          simp only [List.map_nil, List.sum_nil, tsub_zero]\n          rw [htail_sum, ih]\n          exact nnreal_min_add_min_tsub (claims a) pool ((t.map claims).sum)\n\nprivate theorem seniorClaimsBefore_eq_sorted_filter_sum\n    {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n    (claims : ClaimSchedule \u03b9) (i : \u03b9) :\n    SeniorClaimsBefore claims i =\n      (((Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)).filter fun j => j < i).map claims).sum := by\n  classical\n  let l := Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)\n  have hfilter_toFinset :\n      (l.filter fun j => j < i).toFinset = (Finset.univ.filter fun j : \u03b9 => j < i) := by\n    apply Finset.ext\n    intro j\n    simp [l]\n  have hnodup_filter : (l.filter fun j => j < i).Nodup := by\n    simpa [l] using ((Finset.sort_nodup (s := (Finset.univ : Finset \u03b9))\n      (r := fun a b : \u03b9 => a \u2264 b)).filter (p := fun j => decide (j < i)))\n  calc\n    SeniorClaimsBefore claims i =\n        \u2211 j \u2208 Finset.univ.filter (fun j : \u03b9 => j < i), claims j := by\n      unfold SeniorClaimsBefore\n      apply Finset.sum_congr\n      \u00b7 ext j\n        simp\n      \u00b7 intro j hj\n        rfl\n    _ = (l.filter fun j => j < i).toFinset.sum claims := by\n      rw [hfilter_toFinset]\n    _ = (((l.filter fun j => j < i).map claims).sum) := by\n      rw [List.sum_toFinset claims hnodup_filter]\n\nprivate theorem waterfall_sum_eq_min\n    {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n    (claims : ClaimSchedule \u03b9) (pool : NNReal) :\n    (\u2211 i, WaterfallDistribution claims pool i) = min pool (\u2211 i, claims i) := by\n  classical\n  let l := Finset.univ.sort (fun a b : \u03b9 => a \u2264 b)\n  have hpair : l.Pairwise (fun a b => a < b) := by\n    simpa [l] using (Finset.sortedLT_sort (Finset.univ : Finset \u03b9)).pairwise\n  have hpay_list :\n      (l.map fun i => WaterfallDistribution claims pool i).sum =\n        (l.map fun i =>\n          min (claims i) (pool - ((l.filter fun j => j < i).map claims).sum)).sum := by\n    apply congrArg List.sum\n    apply List.map_congr_left\n    intro i hi\n    rw [WaterfallDistribution, seniorClaimsBefore_eq_sorted_filter_sum]\n  have hsum_pay :\n      (\u2211 i, WaterfallDistribution claims pool i) =\n        (l.map fun i => WaterfallDistribution claims pool i).sum := by\n    rw [\u2190 List.sum_toFinset (fun i => WaterfallDistribution claims pool i)\n      (Finset.sort_nodup (s := (Finset.univ : Finset \u03b9)) (r := fun a b : \u03b9 => a \u2264 b))]\n    simp [l]\n  have hsum_claims :\n      (l.map claims).sum = \u2211 i, claims i := by\n    rw [\u2190 List.sum_toFinset claims\n      (Finset.sort_nodup (s := (Finset.univ : Finset \u03b9)) (r := fun a b : \u03b9 => a \u2264 b))]\n    simp [l]\n  rw [hsum_pay, hpay_list, sorted_list_waterfall_sum claims l hpair pool, hsum_claims]\n\ntheorem iso_lemma1 : \u2200 {\u03b9 : Type*} [Fintype \u03b9] [LinearOrder \u03b9]\n      (claims : ClaimSchedule \u03b9) (pool : NNReal) (i : \u03b9),\n        WaterfallDistribution claims pool i \u2264 claims i := by\n  sorry\n\n#print axioms iso_lemma1\n",
+        "closure_sha256": "251c397143a2878f61de109cce9c66d5070063f42f50c03871dcd3ed42851d28",
+        "posed_sha256": "605940463a57233e5025ae848c34be7543c6f8d796fa8fec0b4c2bfc5cceb90d",
+        "posed_target_signature_sha256": "973e98336bcb5e12efbe6cd586e096e958227c12313a543b46989779140bc5d6",
+        "closed_target_signature_sha256": "973e98336bcb5e12efbe6cd586e096e958227c12313a543b46989779140bc5d6"
       },
       "matched_negative_control": {
         "kind": "source_aware_conclusion_perturbation",
-        "target_identity": "AxiomPackT2ReconstructionCounterexample.finalistOne_t2_reconstruction_counterexample",
-        "target_signature_sha256": "22dea8b6890c50470c86ce68b69dceb5238d32f97e95edb8d36c27bb36558856",
-        "positive_probe_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
-        "negative_probe_sha256": "a2cfc6ec0f013c1a9708f36f93a3753439ebd0012f363e543f31ce149bff11cf",
-        "positive_compiled": true,
+        "target_identity": "iso_lemma1",
+        "target_signature_sha256": "d7ae7c674969ea93ff28d31773bf9050aad43ac37e5ac035120dde80b6a7e410",
+        "positive_probe_sha256": "ee1b33c2f4467875f486bff663a37dfd5c7cd89c9ac073bf19e69a328cbafde5",
+        "negative_probe_sha256": "c04b4689b281ab700f3a1722808dc52addcc3285b28d899bc9da65720d721b62",
         "perturbation": "target conclusion C replaced by \u00ac(C); same proof body",
+        "positive_compiled": true,
         "negative_compiled": false,
         "status": "pass",
         "passed": true,
         "discriminating": true,
         "differential": "confirmed",
         "interpretation": "positive source compiles and the same proof does not close the negated conclusion",
-        "posed_source_sha256": "c38451d7945c8af9e8e47d5f27dfd641d26485155b39ddcd51ffc4609aa4cc11",
-        "closure_source_sha256": "9afa59f3e37e9651b694cc97c080ff50917247ed6c59278d609a4e82a036197d",
+        "posed_source_sha256": "605940463a57233e5025ae848c34be7543c6f8d796fa8fec0b4c2bfc5cceb90d",
+        "closure_source_sha256": "251c397143a2878f61de109cce9c66d5070063f42f50c03871dcd3ed42851d28",
+        "available": true,
         "admitted_under_policy": true,
         "policy": "require_discriminating_control",
         "tail": "positive source compiles and the same proof does not close the negated conclusion",
@@ -288,10 +310,10 @@
         "triage_class": "formalization_bound",
         "confidence": "low",
         "attempt": true,
-        "obligation": "Decompose",
-        "gap_type": "AUXILIARY",
-        "rationale": "AUXILIARY gap-type but no construction obligation \u2014 likely an encodable lemma around a test object; attempt, but the gap-type warrants a watchful eye.",
-        "target_strength": "unknown"
+        "obligation": "Bound",
+        "gap_type": "UNKNOWN",
+        "rationale": "Bound obligation \u2014 known-math shape; attempt with the standard pipeline.",
+        "target_strength": "elementary"
       },
       "in_repo_reference_check": {
         "kind": "reachable_solved_references",

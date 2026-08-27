@@ -1,7 +1,6 @@
 import argparse
-from pathlib import Path
 
-from ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import resolve_project_dir
 
 
 MODE_DESCRIPTIONS = {
@@ -125,16 +124,6 @@ MODE_HINTS = {
         ],
     },
 }
-
-
-def resolve_project_dir(project_arg: str) -> Path:
-    candidate = Path(project_arg)
-    if candidate.exists():
-        return candidate.resolve()
-    fallback = PROJECTS_DIR / project_arg
-    if fallback.exists():
-        return fallback.resolve()
-    raise FileNotFoundError(f"Project not found: {project_arg}")
 
 
 def render_charter(mode: str) -> str:

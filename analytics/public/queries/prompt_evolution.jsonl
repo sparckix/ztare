@@ -908,3 +908,5 @@
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "3cbc87c7681f34db4617feaa2c8801931bc5e42d8d0f560e756dd4cd92885f18", "closed": 1, "run_tag": "orbit_identity_handoff_smoke", "ts": "2026-07-15T04:25:43.963722+00:00"}
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "c41d1d5fa19a68a328ef28662f1a561cb5cc784e24224212c1fe4c907c04c5c0", "closed": 0, "run_tag": "", "ts": "2026-07-15T16:53:08.141533+00:00"}
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "c41d1d5fa19a68a328ef28662f1a561cb5cc784e24224212c1fe4c907c04c5c0", "closed": 1, "run_tag": "", "ts": "2026-07-15T16:53:08.150500+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "3e4fe9a685401b9df29b8a85f98d1b288f470593d2f1ba0ee742a24567d7da0f", "closed": 1, "run_tag": "axiompack-e4-interpretation_obligation_0", "ts": "2026-07-18T20:03:46.718069+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "c35af899cbb1d515005e5db1c07cf0eba5371cc30b0c6435ccefd365592ab90a", "closed": 1, "run_tag": "axiompack-e4-transported_1_963c17d8fb", "ts": "2026-07-18T20:09:31.199219+00:00"}

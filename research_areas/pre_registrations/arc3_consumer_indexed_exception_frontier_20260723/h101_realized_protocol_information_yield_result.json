@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "common_cell_realized_yield_is_0_5": true,
+    "expected_realized_equals_predicted": true,
+    "forecast_identity_binds_committee_and_partition": true,
+    "missing_observation_evidence_refused": true,
+    "predicted_identification_is_0_75": true,
+    "protocol_cost_unchanged": true,
+    "singleton_cell_realized_yield_is_1": true,
+    "singleton_measure_is_zero": true,
+    "task_credit_authority_absent": true,
+    "unseen_response_refutes_committee": true
+  },
+  "claim_boundary": "compatible protocol forecast/observation units over a frozen response partition; no ARC post-intervention response claim",
+  "environment_contact": false,
+  "hypothesis_id": "H-GPSA-REALIZED-PROTOCOL-INFORMATION-YIELD-20260807-101",
+  "schema": "ztare-h101-realized-protocol-information-yield-audit-v1",
+  "status": "supported",
+  "verification": {
+    "command": [
+      "<repo>/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/common/test_protocol_information_yield.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "....                                                                     [100%]\n4 passed in 0.28s\n",
+    "stdout_sha256": "f6e6b8418565fbd6476bef4cd4eea6509c221f48d795a78ffe3933df059705b7"
+  }
+}
