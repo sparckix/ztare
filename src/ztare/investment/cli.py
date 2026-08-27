@@ -442,6 +442,7 @@ def _workspace(args: argparse.Namespace) -> int:
             benchmark_id=args.benchmark_id,
             probe_weight=args.probe_weight,
             horizon_days=args.horizon_days,
+            kernel_removal_trial=args.kernel_removal_trial,
         )
     elif args.workspace_command == "closed-book-settle":
         result = settle_workspace_closed_book_forecasts(path, as_of=args.as_of)
@@ -834,6 +835,10 @@ def build_parser() -> argparse.ArgumentParser:
     workspace_closed_book_open.add_argument("--benchmark-id", default="SPY")
     workspace_closed_book_open.add_argument("--probe-weight", type=float, default=0.05)
     workspace_closed_book_open.add_argument("--horizon-days", type=int, default=90)
+    workspace_closed_book_open.add_argument(
+        "--kernel-removal-trial", action="store_true",
+        help="Freeze four same-model removal arms on one prospective paper watch.",
+    )
     workspace_closed_book_open.add_argument("--output")
     workspace_closed_book_settle = workspace_commands.add_parser(
         "closed-book-settle",

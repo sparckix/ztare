@@ -85,6 +85,11 @@ def default_capital_cycle_policy() -> dict[str, Any]:
             "max_new_per_cycle": 4,
             "scope": "current_eligible_zero_weight_only",
         },
+        "kernel_removal_trial": {
+            "enabled": True,
+            "horizon_days": 90,
+            "maximum_independent_blocks": 8,
+        },
         "risk": {
             "max_gross_paper_weight": 0.80,
             "max_single_name_weight": 0.10,
@@ -171,6 +176,14 @@ def load_capital_cycle_policy(path: str | Path) -> dict[str, Any]:
     ).strip()
     if not watch_actor:
         raise ValueError("paper-watch auto-enrollment requires an actor_id")
+    removal = dict(policy.get("kernel_removal_trial") or {})
+    removal_horizon = int(removal.get("horizon_days") or 90)
+    removal_maximum = int(removal.get("maximum_independent_blocks") or 8)
+    if (
+        removal_horizon not in {row["horizon_days"] for row in normalized_windows}
+        or not 1 <= removal_maximum <= 40
+    ):
+        raise ValueError("kernel removal trial requires a declared horizon and 1-40 blocks")
     body = {
         **policy,
         "forecast_windows": normalized_windows,
@@ -185,6 +198,11 @@ def load_capital_cycle_policy(path: str | Path) -> dict[str, Any]:
             "actor_id": watch_actor,
             "max_new_per_cycle": watch_limit,
             "scope": watch_scope,
+        },
+        "kernel_removal_trial": {
+            "enabled": bool(removal.get("enabled", False)),
+            "horizon_days": removal_horizon,
+            "maximum_independent_blocks": removal_maximum,
         },
         "max_new_forecast_episodes_per_cycle": maximum,
         "include_qualified_discovery_in_forecasts": bool(

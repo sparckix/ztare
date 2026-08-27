@@ -28,6 +28,12 @@ from .golden_store import (
     GoldenEdge, GoldenLeaf, GoldenStore, research_evidence_is_admissible,
 )
 from .paper_watch import paper_watch_decision
+from .kernel_removal_trial import (
+    ARMS as KERNEL_REMOVAL_ARMS,
+    compile_kernel_removal_action,
+    compile_kernel_removal_arms,
+    compile_kernel_removal_status,
+)
 from .evidence_vault import evidence_manifest_ref
 from .factor_analysis import load_price_points
 from .prospective_return_window import (
@@ -780,6 +786,32 @@ def _paper_watch_evidence_packet(
     )
     decision_sha = str(decision.get("decision_sha256") or "")
     research_program = _research_program_snapshot(root, dossier_payload)
+    learning = _read_json(root / "institutional_learning" / "latest.json") or {}
+    learning_available = str(learning.get("generated_at") or "")
+    institutional_memory = (
+        {
+            key: learning.get(key) for key in (
+                "schema", "generated_at", "state_sha256", "status", "candidates",
+                "evaluations", "cohorts", "law_search", "mechanism_graph",
+                "strategy_regularities", "next_activation",
+            )
+        }
+        if learning_available
+        and timestamp_key(learning_available) <= timestamp_key(opened_at) else {}
+    )
+    assembly = _read_json(root / "portfolio" / "latest_assembly.json") or {}
+    assembly_available = str(assembly.get("as_of") or "")
+    portfolio_context = (
+        {
+            key: assembly.get(key) for key in (
+                "schema", "as_of", "portfolio_assembly_sha256", "benchmark_id",
+                "constraints", "uncertainty_set", "selected_target_weights",
+                "selected_metrics", "feasible_alternatives", "scope_closed",
+            )
+        }
+        if assembly_available
+        and timestamp_key(assembly_available) <= timestamp_key(opened_at) else {}
+    )
     packet.update({
         "subject": {
             "kind": "paper_watch_decision",
@@ -803,6 +835,7 @@ def _paper_watch_evidence_packet(
             "decision_closed": False,
         },
         "research_snapshot": {
+            "public_sources": list(dossier_payload.get("sources") or ()),
             "research": dict(decision.get("research") or {}),
             "business_fingerprint": dict(decision.get("business_fingerprint") or {}),
             "strategy_frontier": decision.get("strategy_frontier"),
@@ -816,6 +849,8 @@ def _paper_watch_evidence_packet(
             },
             "evidence": evidence,
             "research_program": research_program,
+            "institutional_memory": institutional_memory,
+            "portfolio_context": portfolio_context,
         },
         "strategy_snapshot": {
             "phenotype": phenotype,
@@ -839,6 +874,7 @@ def _paper_watch_evidence_packet(
             availability_basis="typed_paper_watch_decision",
         ))
     dossier_paths = {
+        "research_snapshot.public_sources",
         "research_snapshot.research", "research_snapshot.business_fingerprint",
         "research_snapshot.strategy_frontier", "research_snapshot.underwriting",
         "strategy_snapshot",
@@ -862,7 +898,30 @@ def _paper_watch_evidence_packet(
             source_sha256=str(research_program.get("request_sha256") or "") or None,
             availability_basis="content_addressed_research_request",
         ))
-    required_field_paths.update(watch_paths | dossier_paths | {program_path})
+    optional_context_paths = set()
+    if institutional_memory:
+        field_path = "research_snapshot.institutional_memory"
+        optional_context_paths.add(field_path)
+        availability_rows.append(_field_availability_row(
+            field_path=field_path, source_id="institutional-learning:latest",
+            available_at=learning_available, as_of=opened_at,
+            observed_at=learning_available,
+            source_sha256=stable_sha256(institutional_memory),
+            availability_basis="point_in_time_institutional_memory",
+        ))
+    if portfolio_context:
+        field_path = "research_snapshot.portfolio_context"
+        optional_context_paths.add(field_path)
+        availability_rows.append(_field_availability_row(
+            field_path=field_path, source_id="portfolio-assembly:latest",
+            available_at=assembly_available, as_of=opened_at,
+            observed_at=assembly_available,
+            source_sha256=str(assembly.get("portfolio_assembly_sha256") or "") or None,
+            availability_basis="point_in_time_portfolio_assembly",
+        ))
+    required_field_paths.update(
+        watch_paths | dossier_paths | {program_path} | optional_context_paths
+    )
     packet["field_availability"] = _field_availability_certificate(
         rows=availability_rows, required_field_paths=required_field_paths,
         as_of=opened_at,
@@ -1186,6 +1245,7 @@ def _episode_identity(packet: Mapping[str, Any]) -> str:
         "candidate_payoff_forecast_result_sha256": str(
             payoff.get("forecast_result_sha256") or ""
         ),
+        "forecast_experiment": str(packet.get("forecast_experiment") or "standard"),
     })
 
 
@@ -1254,6 +1314,8 @@ def _open_closed_book_forecast(
     config: FrontierAgentConfig | None = None,
     agent_result: Mapping[str, Any] | None = None,
     ablation_agent_results: Mapping[str, Mapping[str, Any]] | None = None,
+    kernel_removal_trial: bool = False,
+    kernel_removal_agent_results: Mapping[str, Mapping[str, Any]] | None = None,
     payoff_forecast_result: Mapping[str, Any] | None = None,
     strategy_experiment_nomination: Mapping[str, Any] | None = None,
     price_rows_by_entity: Mapping[str, tuple[dict[str, Any], ...]] | None = None,
@@ -1271,7 +1333,8 @@ def _open_closed_book_forecast(
     ):
         raise ValueError("candidate payoff forecasts require an un-nominated discovery candidate")
     if sum(value is not None for value in (
-        agent_result, ablation_agent_results, payoff_forecast_result,
+        agent_result, ablation_agent_results, kernel_removal_agent_results,
+        payoff_forecast_result,
     )) > 1:
         raise ValueError("closed-book accepts one injected forecast mode")
     opened_at = _utc_now()
@@ -1349,6 +1412,10 @@ def _open_closed_book_forecast(
             "paper_decision",
             str(decision["decision_id"]),
         )
+    if kernel_removal_trial or kernel_removal_agent_results is not None:
+        packet_body = {key: value for key, value in packet.items() if key != "packet_sha256"}
+        packet_body["forecast_experiment"] = "investment_kernel_removal_trial"
+        packet = {**packet_body, "packet_sha256": stable_sha256(packet_body)}
     subject = dict(packet["subject"])
     archive = dict(packet.get("evidence_archive") or {})
     archive_target = (
@@ -1461,18 +1528,113 @@ def _open_closed_book_forecast(
     provider_ref = ""
     provider_calls: list[dict[str, Any]] = []
     ablation_packets = compile_underwriting_ablation_arms(packet)
+    removal_packets = (
+        compile_kernel_removal_arms(packet)
+        if kernel_removal_trial or kernel_removal_agent_results is not None else {}
+    )
     use_ablation = (
         bool(ablation_packets)
+        and not removal_packets
         and agent_result is None
         and sealed_payoff_result is None
     )
     if ablation_agent_results is not None and not ablation_packets:
         raise ValueError("underwriting ablation results require a researched paper watch")
+    if (kernel_removal_trial or kernel_removal_agent_results is not None) and not removal_packets:
+        raise ValueError("kernel removal trial requires a researched paper watch")
     ablation_candidate_ids: dict[str, str] = {}
+    removal_candidate_ids: dict[str, str] = {}
     underwriting_method_policy = None
     underwriting_method_route = None
     selected_ablation_arms = tuple(UNDERWRITING_ABLATION_ARMS)
-    if use_ablation:
+    if removal_packets:
+        mechanism_by_role = {
+            "direct_public_packet": ("subscription_direct_source_synthesis",),
+            "fixed_memo_checklist": ("fixed_memo_falsifier_method",),
+            "typed_kernel": ("typed_identity_chronology_arithmetic",),
+            "full_investment_os": (
+                "typed_identity_chronology_arithmetic",
+                "recursive_strategy_portfolio_learning_context",
+            ),
+        }
+        errors = []
+        for arm_role in KERNEL_REMOVAL_ARMS:
+            arm_packet = removal_packets[arm_role]
+            call_id = stable_sha256({
+                "packet_sha256": arm_packet["packet_sha256"],
+                "runtime": config.runtime,
+                "runtime_version": runtime_version,
+                "model": config.model,
+                "reasoning_effort": config.reasoning_effort,
+                "prompt_contract": _PROMPT_CONTRACT,
+            })
+            artifact_dir = root / "closed_book" / "agent_calls" / call_id
+            arm_ref = artifact_dir.relative_to(root).as_posix()
+            result = (
+                dict(kernel_removal_agent_results[arm_role])
+                if kernel_removal_agent_results is not None
+                and arm_role in kernel_removal_agent_results else None
+            )
+            called = False
+            if result is None and kernel_removal_agent_results is None:
+                role = SubscriptionJSONRole(
+                    role=f"jaggedthoughts_kernel_removal_{arm_role}",
+                    agent_id=f"jaggedthoughts-kernel-removal-{arm_role}-{call_id[:12]}",
+                    repo=_repo_root(), artifact_dir=artifact_dir, config=config,
+                    output_schema=closed_book_agent_output_schema(),
+                )
+                try:
+                    result = role(_ablation_agent_prompt(arm_packet))
+                    called = bool(role.provider_call_count)
+                except Exception as error:
+                    errors.append(f"{arm_role}:{type(error).__name__}: {error}"[:1_000])
+            elif result is None:
+                errors.append(f"{arm_role}:injected_result_absent")
+            provider_called = provider_called or called
+            provider_calls.append({
+                "arm_role": arm_role,
+                "packet_sha256": arm_packet["packet_sha256"],
+                "artifact_ref": arm_ref,
+                "called": called,
+            })
+            if result is None:
+                continue
+            try:
+                _validate_ablation_forecast(arm_packet, result)
+                candidate_id = f"kernel_removal_{arm_role}"
+                candidates.append(_candidate(
+                    candidate_id=candidate_id,
+                    family="investment_kernel_removal_trial",
+                    mechanism_ids=mechanism_by_role[arm_role],
+                    expected_active_return=float(result["expected_active_return"]),
+                    underperformance_probability=float(
+                        result["underperformance_probability"]
+                    ),
+                    target_weight=float(result["target_weight"]),
+                    source_refs=(
+                        str(arm_packet["packet_sha256"]),
+                        arm_ref if called else "injected-agent-result",
+                    ),
+                    generated_at=_utc_now(),
+                    producer={
+                        "mode": "direct_agent", "runtime": config.runtime,
+                        "runtime_version": runtime_version, "model": config.model,
+                        "reasoning_effort": config.reasoning_effort,
+                        "prompt_contract": _PROMPT_CONTRACT,
+                        "process_bundle_sha256": process_bundle["process_bundle_sha256"],
+                    },
+                    explanation={
+                        "removal_arm": arm_role,
+                        "mechanism_summary": result["mechanism_summary"],
+                        "strongest_rival": result["strongest_rival"],
+                        "falsifier": result["falsifier"],
+                    },
+                ))
+                removal_candidate_ids[arm_role] = candidate_id
+            except (KeyError, TypeError, ValueError) as error:
+                errors.append(f"{arm_role}:{type(error).__name__}: {error}"[:1_000])
+        provider_error = "; ".join(errors) or None
+    elif use_ablation:
         try:
             current_ablation = dict(
                 closed_book_status(root).get("underwriting_ablation") or {}
@@ -1661,6 +1823,14 @@ def _open_closed_book_forecast(
             and set(selected_ablation_arms) == set(UNDERWRITING_ABLATION_ARMS)
         ) else None
     )
+    removal_action = (
+        compile_kernel_removal_action(
+            packet, arm_packets=removal_packets,
+            forecast_candidate_ids=removal_candidate_ids,
+            process_bundle_sha256=process_bundle["process_bundle_sha256"],
+            compiled_at=sealed_at,
+        ) if removal_packets else None
+    )
     return_window = compile_prospective_return_window(
         sealed_at=sealed_at,
         horizon_days=horizon_days,
@@ -1696,6 +1866,7 @@ def _open_closed_book_forecast(
         "evidence_packet": packet,
         "candidate_forecasts": candidates,
         "underwriting_information_ablation": ablation_action,
+        "kernel_removal_trial": removal_action,
         "underwriting_method_policy": underwriting_method_policy,
         "underwriting_method_route": underwriting_method_route,
         "evaluation_integrity": evaluation_integrity,
@@ -1777,6 +1948,8 @@ def open_closed_book_forecast(
     config: FrontierAgentConfig | None = None,
     agent_result: Mapping[str, Any] | None = None,
     ablation_agent_results: Mapping[str, Mapping[str, Any]] | None = None,
+    kernel_removal_trial: bool = False,
+    kernel_removal_agent_results: Mapping[str, Mapping[str, Any]] | None = None,
     payoff_forecast_result: Mapping[str, Any] | None = None,
     strategy_experiment_nomination: Mapping[str, Any] | None = None,
     price_rows_by_entity: Mapping[str, tuple[dict[str, Any], ...]] | None = None,
@@ -1802,6 +1975,8 @@ def open_closed_book_forecast(
             config=config,
             agent_result=agent_result,
             ablation_agent_results=ablation_agent_results,
+            kernel_removal_trial=kernel_removal_trial,
+            kernel_removal_agent_results=kernel_removal_agent_results,
             payoff_forecast_result=payoff_forecast_result,
             strategy_experiment_nomination=strategy_experiment_nomination,
             price_rows_by_entity=price_rows_by_entity,
@@ -2614,6 +2789,10 @@ def closed_book_status(root: Path) -> dict[str, Any]:
         evidence_runs, evidence_settlements,
         inference_block_ids=overlap_cluster_ids(evidence_settlements),
     )
+    kernel_removal = compile_kernel_removal_status(
+        evidence_runs, evidence_settlements,
+        inference_block_ids=overlap_cluster_ids(evidence_settlements),
+    )
     return {
         "schema": CLOSED_BOOK_STATUS_SCHEMA,
         "enabled": True,
@@ -2640,6 +2819,7 @@ def closed_book_status(root: Path) -> dict[str, Any]:
         "world_model_tournament": world_model,
         "forecast_learning": forecast_learning,
         "underwriting_ablation": underwriting_ablation,
+        "kernel_removal_trial": kernel_removal,
         "temporal_policy": {
             "prospective_shadow": "eligible to evaluate the full frozen engine after settlement",
             "historical_deterministic_replay": "diagnostic until selection trials and later prospective evidence are counted",

@@ -3354,9 +3354,105 @@ neighboring state grids, and matched alternative phenotypes remain later vetoes.
 
 This is the division of labor. Recursive enumeration plus Z3 proves which authored
 strategy bundles are feasible and that the bounded bundle space was exhausted. The
-current Lagrangian/path-logit is explicitly a flat-phenotype model and carries no
-recursive credit. A later recursive successor may condition on a program only after an
-adopted AST and its solver certificate are verified. The path model asks whether a
-source-timed phenotype transfers to later business
-states. A separate return tournament asks whether any business-state advantage was
-mispriced. None of those layers may borrow the conclusion of another.
+flat Lagrangian/path-logit still carries no recursive credit. Its executable successor,
+`strategy_program_representation_ablation.py`, starts only after primary sources
+identify one exact integrated program and every constituent implementation event.
+It projects each constituent to a cross-company mechanism phenotype and each authored
+interaction to a content-bound interaction phenotype. Using the same empirical Markov
+offset, ridge estimator, paths, and chronological partitions, it compares the
+integrated choice system with the identical leaf phenotypes flattened into a bag and
+with an issuer-clustered shuffle. Future-time and unseen-company losses must improve
+on every control by at least 0.001, and the improvement must recur in at least 87.5%
+of issuer blocks, before the representation survives. Each partition requires eight
+issuers with four independent two-step paths apiece, and every tested interaction must
+appear in at least four fit and four unseen issuers. Program-adoption results are
+revalidated against their frozen primary-source request; program-definition and
+path-row hashes are recomputed at the evaluator boundary. Issuer partitions and the
+time cutoff are reused once minted instead of being reselected after later evidence.
+
+This successor tests transfer of a previously observed interaction phenotype to later
+periods and unseen issuers. It does not yet test an interaction operator on a novel
+composition. The latter needs a shared typed interaction representation that can
+evaluate a composition identity absent from fitting data; a one-hot conjunction hash
+cannot earn that claim.
+
+The successor deliberately does not test syntax-tree depth. The company-strategy
+grammar uses an associative/commutative option-set quotient, so alternative bracketings
+have the same meaning. Treating their depth as an empirical variable would reward
+syntax with no strategic distinction. At the current workspace epoch the activation
+is content-hashed and blocked on measurement recovery plus exact-program path support.
+The path model asks whether a source-timed integrated choice system transfers to later
+business states. A separate return tournament asks whether any business-state
+advantage was mispriced. None of those layers may borrow the conclusion of another.
+
+## Removal trial: can the subscription LLM replace the machinery?
+
+The kernel is removable, not presumed useful. Closed-book episodes should compare four
+arms using the same frozen source snapshot, company universe, horizon, model family,
+call budget, and paper-position rule:
+
+1. a subscription LLM working directly from the available public-source packet;
+2. the same LLM with a fixed investment memo and falsifier checklist;
+3. the same LLM proposing a thesis and forecast through typed identity, chronology,
+   arithmetic, and freeze/settlement gates;
+4. the full typed program, recursive frontier, portfolio, and institutional-learning
+   path.
+
+The primary endpoints are benchmark-relative forecast loss, calibration, decision
+regret, return after declared costs, drawdown, turnover, and abstention quality.
+Secondary endpoints are event grounding, unsupported-claim rate, stale-evidence use,
+and transfer to unseen companies and unseen choice compositions. Connected return
+windows form inference blocks. A passive historical replay is diagnostic only: the
+[temporal-leakage analysis of Zhang and Stadie](https://arxiv.org/abs/2608.02985)
+shows that passive LLM backtests cannot separate recency from memorized outcome
+knowledge without an external reference. Promotion therefore requires prospective
+episodes or a matched clean control.
+
+This contest is not a detour into benchmark production. It is a deletion rule for the
+capital-allocation engine. If the direct-LLM arm matches or beats the typed successors
+on independent blocks, the dominated machinery loses its routing and policy role. If
+typed freeze/settlement helps but recursive structure does not beat the identical-leaf
+bag, retain the former and remove recursive predictive credit. Current adjacent work
+supports the strength of these controls: [InvestLogicBench](https://arxiv.org/abs/2608.06108)
+finds that plausible investment prose and event grounding diverge; [InvestPhilBench](https://arxiv.org/abs/2606.25984)
+reports that aggregate prose-oriented scores can saturate while gate reconstruction
+still fails; and [InvestorBench](https://aclanthology.org/2025.acl-long.126/) compares
+thirteen LLM backbones across stocks, ETFs, and other financial tasks. JaggedThoughts
+must beat strong versions of those agent baselines on the operator's settled decisions,
+not merely expose a more elaborate trace.
+
+The contest is now executable through the ordinary subscription account runtime:
+
+```bash
+PYTHONPATH=src ./venv/bin/python -m ztare.investment.cli workspace \
+  --path projects/jaggedthoughts_capital/workspace/investment \
+  closed-book-open --paper-watch-decision-id <id> \
+  --horizon-days 90 --kernel-removal-trial
+```
+
+`kernel_removal_trial.py` compiles four content-addressed, nested packets from one
+point-in-time field certificate. The direct arm receives the common public-source
+catalog and source-grounded research summary; later arms add a fixed method, typed
+calculations and chronology, then the strategy/portfolio context. Each arm receives
+one isolated subscription session and the same strict forecast schema and 5% positive-
+edge paper probe. `closed_book.py` freezes the four candidates before the return window,
+settles all of them on the same later prices, and sends only these four candidates to
+the existing world-model tournament with `direct_public_packet` as baseline. Eight
+overlap-clustered blocks are required for a retention verdict. The World Models view
+shows collection progress. No arm receives paper-policy or capital authority.
+
+The first live block is `closed-book-f7b28bd373d352c118ed`, sealed on Genpact
+against a 90-day SPY-relative outcome due after 2026-11-25. All four subscription
+calls completed on the declared `gpt-5.6-sol` / medium process. Direct synthesis,
+fixed checklist, and typed kernel independently returned +1.5% active return and
+46% underperformance probability; the full-OS arm returned +1.2% and 46%. This
+agreement is not evidence that any arm predicts well. It is an early diagnostic that
+the added machinery changed the narrative more than the numeric forecast on this
+episode. The later common outcome and independent blocks decide whether any layer
+earns retention.
+
+The capital-cycle policy now owns continuation. It reserves at most one 90-day
+paper-watch window while another removal window is open, prefers a new issuer, and
+stops after eight non-overlapping blocks. This prevents repeated same-market-window
+forecasts from being counted as independent evidence and prevents the four-call trial
+from silently consuming every candidate budget.

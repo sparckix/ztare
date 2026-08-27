@@ -669,6 +669,24 @@ from .strategy_path_lagrangian import (
     compile_strategy_path_tournament,
     compile_workspace_strategy_path_activation,
 )
+from .strategy_program_representation_ablation import (
+    ACTIVATION_SCHEMA as STRATEGY_PROGRAM_REPRESENTATION_ACTIVATION_SCHEMA,
+    INPUT_SCHEMA as STRATEGY_PROGRAM_PATH_INPUT_SCHEMA,
+    TOURNAMENT_SCHEMA as STRATEGY_PROGRAM_REPRESENTATION_TOURNAMENT_SCHEMA,
+    compile_strategy_program_path_input,
+    compile_strategy_program_representation_activation,
+    compile_strategy_program_representation_tournament,
+    compile_workspace_strategy_program_representation_activation,
+)
+from .kernel_removal_trial import (
+    ACTION_SCHEMA as KERNEL_REMOVAL_ACTION_SCHEMA,
+    ARMS as KERNEL_REMOVAL_ARMS,
+    ARM_SCHEMA as KERNEL_REMOVAL_ARM_SCHEMA,
+    STATUS_SCHEMA as KERNEL_REMOVAL_STATUS_SCHEMA,
+    compile_kernel_removal_action,
+    compile_kernel_removal_arms,
+    compile_kernel_removal_status,
+)
 from .workspace import (
     activate_workspace_profile,
     build_read_model,
@@ -883,6 +901,13 @@ __all__ = [
     "STRATEGY_EVENT_MONITOR_SCHEMA",
     "compile_strategy_event_activations",
     "compile_strategy_event_monitor",
+    "KERNEL_REMOVAL_ACTION_SCHEMA",
+    "KERNEL_REMOVAL_ARMS",
+    "KERNEL_REMOVAL_ARM_SCHEMA",
+    "KERNEL_REMOVAL_STATUS_SCHEMA",
+    "compile_kernel_removal_action",
+    "compile_kernel_removal_arms",
+    "compile_kernel_removal_status",
     "analyze_factor_exposure",
     "HISTORICAL_FACTOR_CONTROL_SCHEMA",
     "RETURN_COVARIANCE_SCHEMA",

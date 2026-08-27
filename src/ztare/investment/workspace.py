@@ -281,6 +281,9 @@ from .company_state_path_action import compile_company_state_path_action
 from .company_state_path_action_settlement import compile_company_state_path_action_status
 from .max_caliber_recovery import compile_max_caliber_readiness, compile_workspace_recovery
 from .strategy_path_lagrangian import compile_workspace_strategy_path_activation
+from .strategy_program_representation_ablation import (
+    compile_workspace_strategy_program_representation_activation,
+)
 from .strategy_state_transition_join import compile_workspace_strategy_state_transition_join
 from .metrics import metric_universe_surface
 from .paper import OutcomeSnapshot, settle_paper_decision
@@ -2558,6 +2561,12 @@ def build_workspace(
         strategy_path_lagrangian = compile_workspace_strategy_path_activation(root)
     except (OSError, TypeError, ValueError) as error:
         strategy_path_lagrangian = {"status": "unavailable", "error": str(error)}
+    try:
+        strategy_program_representation = (
+            compile_workspace_strategy_program_representation_activation(root)
+        )
+    except (OSError, TypeError, ValueError) as error:
+        strategy_program_representation = {"status": "unavailable", "error": str(error)}
     phase_seconds["strategy_move_library"] = round(
         time.perf_counter() - phase_started, 3,
     )
@@ -2580,6 +2589,7 @@ def build_workspace(
         "strategy_state_transition_join": strategy_state_transition_join,
         "max_caliber_recovery": max_caliber_recovery,
         "strategy_path_lagrangian": strategy_path_lagrangian,
+        "strategy_program_representation": strategy_program_representation,
         "compiled_decision_count": len(decisions),
         "company_quality_compiled_count": sum(row.get("status") == "compiled" for row in company_quality_statuses),
         "portfolio_compiled": assembly is not None,
@@ -8926,6 +8936,13 @@ def _build_read_model_unlocked(workspace: str | Path | None = None) -> dict[str,
         "status": "awaiting_input_gates", "blockers": [], "tournament": None,
         "signal_authority": False, "capital_authority": False,
     }
+    strategy_program_representation = _read_json(
+        root / "experiments" / "results" / "strategy-program-representation-ablation.json"
+    ) or {
+        "schema": "jaggedthoughts-strategy-program-representation-activation-v1",
+        "status": "awaiting_input_gates", "blockers": [], "tournament": None,
+        "capital_authority": False,
+    }
     strategy_move_learning = _read_json(
         root / "institutional_learning" / "strategy_moves" / "latest.json"
     ) or {
@@ -10030,6 +10047,7 @@ def _build_read_model_unlocked(workspace: str | Path | None = None) -> dict[str,
         "strategy_state_transition_join": strategy_state_transition_join,
         "max_caliber_recovery": max_caliber_recovery,
         "strategy_path_lagrangian": strategy_path_lagrangian,
+        "strategy_program_representation": strategy_program_representation,
         "max_caliber_readiness": max_caliber_readiness,
         "institutional_edge_map": institutional_edge_map,
         "learning_credit_assignment": learning_credit_assignment,
@@ -10222,6 +10240,10 @@ def _build_read_model_unlocked(workspace: str | Path | None = None) -> dict[str,
             "strategy_path_lagrangian_latest": (
                 "experiments/results/strategy-path-lagrangian.json"
                 if strategy_path_lagrangian.get("activation_sha256") else None
+            ),
+            "strategy_program_representation_latest": (
+                "experiments/results/strategy-program-representation-ablation.json"
+                if strategy_program_representation.get("activation_sha256") else None
             ),
             "learning_schedule_latest": (
                 "institutional_learning/scheduler/latest.json"
@@ -11230,6 +11252,16 @@ def _advance_workspace_strategy_business_clock(
             "error": f"{type(error).__name__}: {error}"[:1_000],
             "forecast_count": 0, "capital_authority": False,
         }
+    try:
+        strategy_program_representation = (
+            compile_workspace_strategy_program_representation_activation(root)
+        )
+    except (FileNotFoundError, KeyError, OSError, TypeError, ValueError) as error:
+        strategy_program_representation = {
+            "status": "unavailable",
+            "error": f"{type(error).__name__}: {error}"[:1_000],
+            "capital_authority": False,
+        }
     clock_body = {
         "schema": "jaggedthoughts-strategy-business-clock-v1",
         "advanced_at": str(state.get("generated_at") or _utc_now()),
@@ -11273,6 +11305,12 @@ def _advance_workspace_strategy_business_clock(
             "comparison_sha256"
         ),
         "strategy_program_comparison_status": program_comparison.get("status"),
+        "strategy_program_representation_activation_sha256": (
+            strategy_program_representation.get("activation_sha256")
+        ),
+        "strategy_program_representation_status": (
+            strategy_program_representation.get("status")
+        ),
         "strategy_valuation_bridge_readiness_sha256": (
             strategy_valuation_bridge.get("readiness_sha256")
         ),
@@ -11403,6 +11441,7 @@ def _advance_workspace_strategy_business_clock(
         "strategy_program_control_acquisition": program_control_acquisition,
         "strategy_program_control_outcomes": program_control_outcomes,
         "strategy_program_comparison": program_comparison,
+        "strategy_program_representation": strategy_program_representation,
         "strategy_law_induction": laws,
         "strategy_calibration_successors": strategy_calibration_successors,
         "strategy_valuation_bridge": strategy_valuation_bridge,
@@ -11739,6 +11778,7 @@ def _open_capital_cycle_forecast(
             dict(window["strategy_experiment_nomination"])
             if isinstance(window.get("strategy_experiment_nomination"), Mapping) else None
         ),
+        kernel_removal_trial=bool(window.get("kernel_removal_trial")),
         price_rows_by_entity=price_rows_by_entity,
     )
     candidate_ids = tuple(sorted({
@@ -11784,6 +11824,65 @@ def _open_capital_cycle_forecast(
         "search_trial_family": search_trial_family,
         "strategy_alpha_issuance": strategy_alpha_issuance,
     }
+
+
+def _schedule_kernel_removal_trial(
+    root: Path, windows: list[dict[str, Any]], policy: Mapping[str, Any], *, now: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Reserve at most one non-overlapping paper-watch window for deletion evidence."""
+    config = dict(policy.get("kernel_removal_trial") or {})
+    horizon = int(config.get("horizon_days") or 90)
+    maximum = int(config.get("maximum_independent_blocks") or 8)
+    runs = [
+        row for path in sorted((root / "closed_book" / "runs").glob("*.json"))
+        if (row := _read_json(path))
+        and (row.get("kernel_removal_trial") or {}).get("status")
+        == "sealed_four_arm_forecast"
+        and int(row.get("horizon_days") or 0) == horizon
+    ]
+    open_runs = [row for row in runs if timestamp_key(str(row["end_at"])) > timestamp_key(now)]
+    body = {
+        "schema": "jaggedthoughts-kernel-removal-schedule-v1",
+        "enabled": bool(config.get("enabled")),
+        "horizon_days": horizon,
+        "sealed_block_count": len(runs),
+        "maximum_independent_blocks": maximum,
+        "open_block_count": len(open_runs),
+        "selected_entity_id": None,
+        "status": "disabled",
+        "capital_authority": False,
+    }
+    if not body["enabled"]:
+        return windows, {**body, "schedule_sha256": stable_sha256(body)}
+    if len(runs) >= maximum:
+        body["status"] = "cohort_full"
+        return windows, {**body, "schedule_sha256": stable_sha256(body)}
+    if open_runs:
+        body["status"] = "awaiting_nonoverlapping_window"
+        return windows, {**body, "schedule_sha256": stable_sha256(body)}
+    used = {
+        str((row.get("evidence_packet") or {}).get("entity", {}).get("entity_id") or "")
+        for row in runs
+    }
+    eligible = [
+        (index, row) for index, row in enumerate(windows)
+        if row.get("paper_watch_decision_id")
+        and int(row.get("horizon_days") or 0) == horizon
+    ]
+    if not eligible:
+        body["status"] = "awaiting_due_paper_watch"
+        return windows, {**body, "schedule_sha256": stable_sha256(body)}
+    index, selected = min(eligible, key=lambda pair: (
+        str(pair[1].get("entity_id") or "") in used,
+        stable_sha256({
+            "entity_id": str(pair[1].get("entity_id") or ""),
+            "cohort": "kernel_removal",
+        }),
+    ))
+    windows[index] = {**selected, "kernel_removal_trial": True}
+    body["status"] = "trial_window_reserved"
+    body["selected_entity_id"] = selected.get("entity_id")
+    return windows, {**body, "schedule_sha256": stable_sha256(body)}
 
 
 def run_workspace_capital_cycle(
@@ -11936,6 +12035,9 @@ def run_workspace_capital_cycle(
                 }
                 strategy_alpha_preopen_actions.append(deferred)
                 preopen_deferred.append(deferred)
+        ready_windows, kernel_removal_schedule = _schedule_kernel_removal_trial(
+            root, ready_windows, policy, now=started_at,
+        )
         forecast_actions: list[dict[str, Any]] = []
         forecast_prices = _price_rows_by_entity(
             root,
@@ -11997,6 +12099,7 @@ def run_workspace_capital_cycle(
                     }
                 ),
                 "forecast_actions": forecast_actions,
+                "kernel_removal_schedule": kernel_removal_schedule,
                 "institutional_learning": _capital_cycle_institutional_learning_ref(
                     institutional_learning,
                 ),
@@ -12248,6 +12351,7 @@ def run_workspace_capital_cycle(
                 if row.get("action_sha256")
             ],
             "strategy_alpha_schedule_sha256": strategy_alpha_schedule["schedule_sha256"],
+            "kernel_removal_schedule_sha256": kernel_removal_schedule["schedule_sha256"],
             "settlement_evaluated_at": settlement.get("evaluated_at"),
             "research_question_policy_outcome_cycle_sha256": (
                 research_question_policy_outcomes.get("cycle_sha256")
@@ -12294,6 +12398,7 @@ def run_workspace_capital_cycle(
             "forecast_budget": budget,
             "forecast_actions": forecast_actions,
             "strategy_alpha_schedule": strategy_alpha_schedule,
+            "kernel_removal_schedule": kernel_removal_schedule,
             "strategy_alpha_preopen_actions": strategy_alpha_preopen_actions,
             "market_state": market_state,
             "institutional_learning": _capital_cycle_institutional_learning_ref(
@@ -12806,6 +12911,7 @@ def open_workspace_closed_book_forecast(
     benchmark_id: str = "SPY",
     probe_weight: float = 0.05,
     horizon_days: int = 90,
+    kernel_removal_trial: bool = False,
 ) -> dict[str, Any]:
     """Freeze one prospective evidence packet and its candidate forecasts."""
 
@@ -12820,6 +12926,7 @@ def open_workspace_closed_book_forecast(
         benchmark_id=benchmark_id,
         probe_weight=probe_weight,
         horizon_days=horizon_days,
+        kernel_removal_trial=kernel_removal_trial,
     )
     strategy_alpha_issuance = process_strategy_alpha_issuance_actions(
         root, run_ids=(str(result["run_id"]),),

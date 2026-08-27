@@ -1347,6 +1347,40 @@ def due_strategy_program_adoption_requests(
             for option in frontier.get("option_catalog") or ()
             if isinstance(option, Mapping)
         }
+        interactions = {
+            str(row.get("interaction_id")): row
+            for row in frontier.get("interaction_catalog") or ()
+            if isinstance(row, Mapping)
+        }
+
+        def program_representation(raw: Mapping[str, Any], option_ids: list[str]) -> dict[str, Any]:
+            phenotype_by_option = {
+                option_id: str((moves.get((frontier_sha, option_id)) or {}).get(
+                    "mechanism_phenotype_sha256"
+                ) or "")
+                for option_id in option_ids
+            }
+            active_ids = sorted(map(str, raw.get("active_interaction_ids") or ()))
+            interaction_phenotypes = []
+            for interaction_id in active_ids:
+                constituent_phenotypes = sorted({
+                    phenotype_by_option.get(str(option_id), "")
+                    for option_id in (interactions.get(interaction_id) or {}).get("option_ids") or ()
+                })
+                if len(constituent_phenotypes) >= 2 and all(
+                    len(value) == 64 for value in constituent_phenotypes
+                ):
+                    interaction_phenotypes.append(stable_sha256({
+                        "constituent_mechanism_phenotype_sha256s": constituent_phenotypes,
+                    }))
+            return {
+                "mechanism_phenotype_sha256s": sorted({
+                    value for value in phenotype_by_option.values() if len(value) == 64
+                }),
+                "active_interaction_ids": active_ids,
+                "interaction_phenotype_sha256s": sorted(interaction_phenotypes),
+            }
+
         programs: dict[str, dict[str, Any]] = {}
         for role, rows in (
             ("global_frontier", frontier.get("frontier_programs") or ()),
@@ -1366,6 +1400,7 @@ def due_strategy_program_adoption_requests(
                     "options": [],
                     "excluded_option_ids": [],
                     "source_refs": sorted({str(value) for value in raw.get("evidence_refs") or ()}),
+                    **program_representation(raw, option_ids),
                 })
                 row["roles"].append(role)
                 if not row["options"]:
@@ -1400,6 +1435,14 @@ def due_strategy_program_adoption_requests(
                     str(ref) for option_id in option_ids
                     for ref in (catalog.get(option_id) or {}).get("evidence_refs") or ()
                 }),
+                **program_representation(
+                    next((
+                        candidate for candidate in frontier.get("programs") or ()
+                        if isinstance(candidate, Mapping)
+                        and candidate.get("program_id") == program_id
+                    ), {}),
+                    option_ids,
+                ),
             })
             row["roles"].append("one_choice_base")
             if edge.get("added_option_id"):

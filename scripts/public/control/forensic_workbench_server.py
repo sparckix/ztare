@@ -359,7 +359,8 @@ _INVESTMENT_VIEW_FIELDS = {
         "strategy_law_induction", "strategy_move_learning", "strategy_outcome_acquisition",
         "strategy_program_comparison", "strategy_program_control_acquisition",
         "strategy_program_learning", "strategy_program_outcome_acquisition",
-        "strategy_program_transfer", "strategy_transfer_acquisition", "strategy_valuation_bridge",
+        "strategy_program_representation", "strategy_program_transfer",
+        "strategy_transfer_acquisition", "strategy_valuation_bridge",
         "strategy_state_control_acquisition", "strategy_state_experiment",
         "strategy_state_successor", "strategy_state_transition_join", "strategy_transfer",
         "historical_strategy_control_design", "historical_strategy_control_acquisition",
@@ -817,6 +818,7 @@ def investment_workspace_action(action: str, request: dict[str, Any] | None = No
             benchmark_id=str(inputs.get("benchmark_id") or "SPY"),
             probe_weight=float(inputs.get("probe_weight") or 0.05),
             horizon_days=int(inputs.get("horizon_days") or 90),
+            kernel_removal_trial=bool(inputs.get("kernel_removal_trial", False)),
         )
     if normalized == "closed-book-settle":
         return investment_workspace_core.settle_workspace_closed_book_forecasts(

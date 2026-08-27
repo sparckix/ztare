@@ -878,3 +878,65 @@ surface: the engine can learn that a sourced predicate excluded a combination la
 observed to work, without rewriting the old frontier or turning one example into a
 law. Both the contract and settlement retain zero research, paper-policy, and capital
 authority until comparison blocks accumulate.
+
+### Turn 30 - Codex (2026-08-26) - recursive credit receives a same-estimator removal test
+
+The strategy grammar's associative/commutative quotient makes alternative AST
+bracketings semantically equivalent. Tree depth is therefore excluded from empirical
+credit. The candidate distinction is an integrated choice system's source-authored
+interaction structure, not its printed syntax.
+
+Program-adoption requests now carry cross-company mechanism phenotypes for the exact
+constituent choices and content-bound interaction phenotypes for active joint effects.
+An exact primary-source program-adoption result can bind those pre-outcome features to
+later two-step company-state paths. A new tournament fits one conditional-logit family
+with one empirical Markov offset across all arms: identical leaf bag, leaf bag plus
+integrated interactions, and an issuer-clustered representation shuffle. It uses
+strict future-time and unseen-issuer partitions and blocks when holdouts introduce
+unseen feature identities. Recursive representation survives only by beating every
+control on cross-entropy and Brier loss in both partitions by a frozen minimum, with
+the same direction in at least 87.5% of issuer blocks. Each partition requires eight
+issuers with four two-step paths each; every tested interaction needs four fit and four
+unseen issuers. The compiler semantically revalidates adoption evidence against its
+frozen primary-source request, freezes issuer partitions and cutoff once minted, and
+checks program-definition and row hashes at entry. This tests transfer of known
+interaction phenotypes, not a novel interaction operator. The current production
+activation is blocked on measurement recovery and the minimum exact-program path
+support; it grants no signal or capital authority.
+
+The broader system now has an explicit deletion contest against a strong subscription
+LLM. Closed-book episodes compare direct source-packet reasoning, a fixed memo/falsifier
+process, typed freeze/settlement, and the full recursive engine under identical source,
+model, budget, horizon, and paper-position rules. Primary outcomes are forecast loss,
+calibration, decision regret, after-cost paper return, drawdown, turnover, and
+abstention; event grounding and unsupported claims diagnose why an arm failed. Passive
+historical LLM replay cannot promote an arm without a matched clean reference because
+recency and memorized outcome knowledge are not identifiable from the replay alone.
+The research-tool claim is secondary: first use this comparison to remove machinery
+that does not improve the capital-allocation loop.
+
+The contest is executable as `closed-book-open --kernel-removal-trial` on an exact
+paper-watch decision. Four isolated subscription sessions receive one common source
+snapshot, one model/process identity, one output schema, and one 5% paper probe. The
+arm packets admit direct synthesis, then a fixed memo method, then typed calculations
+and chronology, then the investment-OS context. The ordinary return-window settlement
+and shared world-model tournament score the four-arm matrix with the direct arm as
+baseline; the workbench exposes independent-block progress. Historical replay cannot
+settle the deletion rule.
+
+### Turn 31 - Codex (2026-08-26) - the first deletion block is live
+
+The first prospective four-arm block is `closed-book-f7b28bd373d352c118ed`
+on Genpact versus SPY, with its common 90-day outcome due after 2026-11-25.
+Four isolated account-subscription calls completed under one declared
+`gpt-5.6-sol` / medium process identity. Direct source synthesis, the fixed memo
+checklist, and the typed kernel each froze +1.5% active return and 46%
+underperformance probability; the full investment-OS arm froze +1.2% and 46%.
+The explanations differ more than the numbers. This is a diagnostic warning against
+retaining machinery for trace richness alone, not an outcome comparison.
+
+The recurring capital-cycle policy now reserves at most one removal trial while a
+same-horizon block remains open, prefers an unused issuer, and stops the cohort after
+eight non-overlapping 90-day blocks. The ordinary settlement and world-model
+tournament own the later verdict. Same-window cross-sectional repetitions do not
+inflate the independent-block count.
