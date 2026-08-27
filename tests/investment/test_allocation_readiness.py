@@ -1,5 +1,11 @@
+import json
+
 from ztare.common.equivariance import stable_sha256
-from ztare.investment.allocation_readiness import _activation, compile_allocation_readiness
+from ztare.investment.allocation_readiness import (
+    _activation,
+    _discovery_for_book,
+    compile_allocation_readiness,
+)
 
 
 def _sealed(body, field):
@@ -18,6 +24,22 @@ def _rank_input(candidates, eligible=True):
         }],
     }
     return _sealed(body, "rank_program_input_sha256")
+
+
+def test_workspace_readiness_uses_the_book_discovery_epoch(tmp_path):
+    old = {"run_id": "discovery-old", "run_sha256": "a" * 64}
+    latest = {"run_id": "discovery-new", "run_sha256": "b" * 64}
+    archive = tmp_path / "discovery" / "runs" / "discovery-old.json"
+    archive.parent.mkdir(parents=True)
+    archive.write_text(json.dumps(old), encoding="utf-8")
+    (tmp_path / "discovery" / "latest.json").write_text(
+        json.dumps(latest), encoding="utf-8",
+    )
+
+    assert _discovery_for_book(tmp_path, {
+        "discovery_run_id": "discovery-old",
+        "discovery_run_sha256": "a" * 64,
+    }) == old
 
 
 def test_fund_proposal_blocker_precedes_generic_review_gap():

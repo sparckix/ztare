@@ -940,3 +940,40 @@ same-horizon block remains open, prefers an unused issuer, and stops the cohort 
 eight non-overlapping 90-day blocks. The ordinary settlement and world-model
 tournament own the later verdict. Same-window cross-sectional repetitions do not
 inflate the independent-block count.
+
+### Turn 32 - Codex (2026-08-26) - formal machinery receives a strong LLM control
+
+The deletion contest now binds the execution identity as well as the evidence identity.
+An admissible block carries one charged call per arm, four distinct subscription
+sessions, and one runtime/model/schema contract. The first Genpact block predates this
+receipt. It remains an immutable diagnostic but cannot enter the inferential cohort;
+the scheduler no longer lets it prevent the first execution-bound block.
+
+The fixed-method arm is strengthened to address the relevant counterfactual. The LLM
+receives no supplied grammar and must recursively construct its own
+premise/mechanism/rival/falsifier/observable tree, search alternative explanations,
+and freeze a decisive path before forecasting. The typed and full-system arms must
+beat that control, not a shallow checklist. The four-arm contest still estimates the
+bundled marginal value of the typed kernel and complete OS; it does not separately
+identify grammar, Z3 feasibility, and frontier closure. The complementary
+same-estimator representation tournament owns the narrower identical-leaves versus
+interaction-structure question and is currently blocked on exact adoption paths and
+measurement recovery.
+
+The recurring paper-allocation join also now resolves the immutable discovery run
+named by its opportunity book instead of rereading a newer `latest` pointer. Missing
+factor-return coordinates remain explicit `null` values and abstain only inside the
+rules that consume them. Broad-sleeve, equal-weight, cash-flow-coordinate, and risk
+policy rivals can therefore compile while factor-based rules receive no credit from
+missing inputs. This repairs a worker-concurrency failure without weakening the
+chronology or inventing a return assumption.
+
+The ordinary service then published
+`capital-cycle-a684ef39374fc43cfcc3` against
+`discovery-20260827035056-8409f0c7`; the epoch error did not recur. Ten candidates
+were eligible, four were activated under the cycle budget (`LZ`, `PYPL`, `SSTK`,
+`ZD`), six were deferred, and all four activated candidates were admitted to the
+research-paper portfolio at zero active weight. The household projection is available
+instead of erroring: nine implementation rules currently map to one distinct decision,
+all four factor-return inputs are unavailable, and the policy tournament therefore
+stays unopened. Cash remains 100% and no capital authority is granted.

@@ -685,6 +685,7 @@ from .kernel_removal_trial import (
     STATUS_SCHEMA as KERNEL_REMOVAL_STATUS_SCHEMA,
     compile_kernel_removal_action,
     compile_kernel_removal_arms,
+    compile_kernel_removal_execution_receipt,
     compile_kernel_removal_status,
 )
 from .workspace import (
@@ -907,6 +908,7 @@ __all__ = [
     "KERNEL_REMOVAL_STATUS_SCHEMA",
     "compile_kernel_removal_action",
     "compile_kernel_removal_arms",
+    "compile_kernel_removal_execution_receipt",
     "compile_kernel_removal_status",
     "analyze_factor_exposure",
     "HISTORICAL_FACTOR_CONTROL_SCHEMA",

@@ -176,9 +176,10 @@ def _paper_implementation(
             continue
         cap = _fraction(projection.get("target_weight_cap"), f"{entity_id}.target_weight_cap")
         rank = ranks.get((entity_kind, entity_id), {})
-        factor_total = require_finite(
-            economics.get("expected_total_return_after_fee"),
-            f"{entity_id}.factor_total_return_assumption",
+        factor_total_raw = economics.get("expected_total_return_after_fee")
+        factor_total = (
+            None if factor_total_raw is None else
+            require_finite(factor_total_raw, f"{entity_id}.factor_total_return_assumption")
         )
         cash_flow_coordinates = [
             dict(row) for row in diagnostics.get("valuation_implied_return_coordinates") or ()
@@ -195,6 +196,7 @@ def _paper_implementation(
             "factor_total_return_assumption": factor_total,
             "factor_incremental_return_vs_broad_sleeve": (
                 factor_total - scenario["expected_returns"][sleeve_id]
+                if factor_total is not None else None
             ),
             "cash_flow_implied_return_coordinate": cash_flow_implied,
             "cash_flow_implied_incremental_vs_broad_sleeve": (
@@ -212,9 +214,11 @@ def _paper_implementation(
                 projection.get("expected_active_return_claims") or ()
             ),
             "factor_total_return_assumption": factor_total,
-            "factor_incremental_return_vs_broad_sleeve": min(
-                row["factor_incremental_return_vs_broad_sleeve"]
-                for row in sleeve_comparisons
+            "factor_incremental_return_vs_broad_sleeve": (
+                min(
+                    row["factor_incremental_return_vs_broad_sleeve"]
+                    for row in sleeve_comparisons
+                ) if factor_total is not None else None
             ),
             "cash_flow_implied_return_coordinate": cash_flow_implied,
             "cash_flow_implied_incremental_vs_broad_sleeve": (
@@ -308,12 +312,12 @@ def _paper_implementation(
         ("equal_weight", {key: 1.0 for key in equities}, None,
          "admitted_equity_equal_weight_control"),
         ("factor_incremental_vs_broad_sleeve", {
-            key: max(0.0, row["factor_incremental_return_vs_broad_sleeve"])
+            key: max(0.0, row["factor_incremental_return_vs_broad_sleeve"] or 0.0)
             for key, row in equities.items()
         }, "factor_incremental_return_vs_broad_sleeve",
          "zero_alpha_factor_total_return_spread"),
         ("factor_incremental_to_downside", {
-            key: max(0.0, row["factor_incremental_return_vs_broad_sleeve"])
+            key: max(0.0, row["factor_incremental_return_vs_broad_sleeve"] or 0.0)
             / max(row["downside_risk"], 1e-6)
             for key, row in equities.items()
         }, "factor_incremental_return_vs_broad_sleeve",
@@ -391,7 +395,11 @@ def _paper_implementation(
                 str(capital_market_basis["basis_sha256"]),
             ],
         ))
-    for fund in (row for row in admitted if row["entity_kind"] == "public_fund"):
+    for fund in (
+        row for row in admitted
+        if row["entity_kind"] == "public_fund"
+        and row["factor_incremental_return_vs_broad_sleeve"] is not None
+    ):
         weight = min(sleeve_weights[fund["sleeve_id"]], fund["target_weight_cap"])
         compiled = proposal(
             f"admitted_fund_challenger:{fund['entity_id']}",
@@ -482,6 +490,9 @@ def _paper_implementation(
             ),
             "research_rank_is_expected_return": False,
             "admission_return_basis": "declared_zero_alpha_factor_scenario",
+            "factor_total_return_unavailable_count": sum(
+                row["factor_total_return_assumption"] is None for row in admitted
+            ),
             "cash_flow_implied_return_is_forecast": False,
             "candidate_signal_comparator": "same_sleeve_broad_proxy",
             "tax_lot_and_account_location_modeled": False,

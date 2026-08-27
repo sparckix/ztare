@@ -3392,7 +3392,9 @@ arms using the same frozen source snapshot, company universe, horizon, model fam
 call budget, and paper-position rule:
 
 1. a subscription LLM working directly from the available public-source packet;
-2. the same LLM with a fixed investment memo and falsifier checklist;
+2. the same LLM with a fixed memo contract but no supplied grammar: it must build
+   its own recursive premise/mechanism/rival/falsifier/observable tree, search
+   alternative paths, and freeze the decisive path;
 3. the same LLM proposing a thesis and forecast through typed identity, chronology,
    arithmetic, and freeze/settlement gates;
 4. the full typed program, recursive frontier, portfolio, and institutional-learning
@@ -3407,6 +3409,20 @@ windows form inference blocks. A passive historical replay is diagnostic only: t
 shows that passive LLM backtests cannot separate recency from memorized outcome
 knowledge without an external reference. Promotion therefore requires prospective
 episodes or a matched clean control.
+
+The research design follows a stronger version of the system-versus-general-model
+comparison used in [Beyond Black Boxes](https://pubsonline.informs.org/doi/full/10.1287/stsc.2025.0432),
+which randomized 976 managers across human-only, general-model, and designed-agent
+conditions. JaggedThoughts holds the model and evidence fixed and deletes machinery
+inside the system so any lift can be attributed to the admitted layer rather than to
+a different model or information budget.
+
+This contest isolates reasoning after evidence acquisition. It does not answer whether
+a web-enabled LLM can acquire a better point-in-time packet than the discovery and
+research pipeline. That requires a separate prospective acquisition deletion: same
+issuer, cutoff, research budget, forecast schema, and later outcome; one arm receives
+the pipeline packet and one arm uses a subscription research session whose cited bytes
+are archived before either forecast is frozen.
 
 This contest is not a detour into benchmark production. It is a deletion rule for the
 capital-allocation engine. If the direct-LLM arm matches or beats the typed successors
@@ -3432,27 +3448,56 @@ PYTHONPATH=src ./venv/bin/python -m ztare.investment.cli workspace \
 
 `kernel_removal_trial.py` compiles four content-addressed, nested packets from one
 point-in-time field certificate. The direct arm receives the common public-source
-catalog and source-grounded research summary; later arms add a fixed method, typed
-calculations and chronology, then the strategy/portfolio context. Each arm receives
+catalog and source-grounded research summary; the next arm makes the LLM build and
+freeze its own decomposition tree; later arms add typed calculations and chronology,
+then the strategy/portfolio context. Each arm receives
 one isolated subscription session and the same strict forecast schema and 5% positive-
-edge paper probe. `closed_book.py` freezes the four candidates before the return window,
+edge paper probe. An execution receipt binds one charged call per arm, distinct
+sessions, and one runtime/model/schema identity. `closed_book.py` freezes the four
+candidates before the return window,
 settles all of them on the same later prices, and sends only these four candidates to
 the existing world-model tournament with `direct_public_packet` as baseline. Eight
 overlap-clustered blocks are required for a retention verdict. The World Models view
 shows collection progress. No arm receives paper-policy or capital authority.
 
-The first live block is `closed-book-f7b28bd373d352c118ed`, sealed on Genpact
+The first diagnostic block is `closed-book-f7b28bd373d352c118ed`, sealed on Genpact
 against a 90-day SPY-relative outcome due after 2026-11-25. All four subscription
 calls completed on the declared `gpt-5.6-sol` / medium process. Direct synthesis,
 fixed checklist, and typed kernel independently returned +1.5% active return and
 46% underperformance probability; the full-OS arm returned +1.2% and 46%. This
 agreement is not evidence that any arm predicts well. It is an early diagnostic that
 the added machinery changed the narrative more than the numeric forecast on this
-episode. The later common outcome and independent blocks decide whether any layer
-earns retention.
+episode. Its immutable action predates the execution-receipt contract, so it cannot
+enter the inferential cohort. The scheduler ignores it when reserving the first
+execution-bound trial; its later common outcome remains diagnostic.
 
 The capital-cycle policy now owns continuation. It reserves at most one 90-day
 paper-watch window while another removal window is open, prefers a new issuer, and
 stops after eight non-overlapping blocks. This prevents repeated same-market-window
 forecasts from being counted as independent evidence and prevents the four-call trial
 from silently consuming every candidate budget.
+
+## Paper allocation must bind one completed discovery epoch
+
+Discovery and capital-cycle workers may overlap, but an allocation join may not mix
+their `latest` pointers. An opportunity book therefore resolves its rank-program
+input from the immutable discovery run named by the book's run id and content hash.
+If the archive and book disagree, allocation stops. A later discovery publication
+cannot silently change the ranking eligibility of an earlier paper book.
+
+Signal absence is handled at the rule that consumes the signal. An instrument may be
+admitted for paper research while its factor-total-return assumption is unavailable.
+That missing value remains `null`; factor-spread rules assign it no selection mass,
+while broad-sleeve, equal-weight, cash-flow-coordinate, and verified risk-policy
+rivals remain computable. One missing coordinate no longer makes the complete
+household comparison unavailable.
+
+The autonomous cycle `capital-cycle-a684ef39374fc43cfcc3` bound the completed
+`discovery-20260827035056-8409f0c7` epoch, activated four of 10 eligible paper
+watches (`LZ`, `PYPL`, `SSTK`, `ZD`), and deferred six under the declared cycle
+budget. All four entered the research-paper portfolio with zero active weight. Nine
+implementation rules currently collapse to one decision-equivalence class, so the
+complete-policy tournament correctly remains unopened. All four lack a numeric
+factor-total-return assumption; no factor rule receives return credit from that gap.
+The output remains an assumption-labelled paper comparison awaiting more distinct
+decisions and operator policy selection, with brokerage and capital authority disabled.

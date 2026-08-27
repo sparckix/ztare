@@ -19,6 +19,8 @@ from .tournament import (
 ARM_SCHEMA = "jaggedthoughts-investment-kernel-removal-arm-v1"
 ACTION_SCHEMA = "jaggedthoughts-investment-kernel-removal-trial-v1"
 STATUS_SCHEMA = "jaggedthoughts-investment-kernel-removal-status-v1"
+EXECUTION_SCHEMA = "jaggedthoughts-investment-kernel-removal-execution-v1"
+DESIGN_ID = "jaggedthoughts-kernel-removal-llm-decomposition-v2"
 ARMS = (
     "direct_public_packet",
     "fixed_memo_checklist",
@@ -79,7 +81,21 @@ def compile_kernel_removal_arms(
             "thesis", "strongest_rival", "decisive_observation", "falsifiers",
             "valuation_bridge", "expected_active_return",
         ],
-        "rule": "use every section and preserve unresolved disagreement",
+        "llm_owned_decomposition": {
+            "root": "benchmark-relative return over the declared horizon",
+            "node_types": [
+                "premise", "mechanism", "rival", "falsifier", "observable",
+            ],
+            "requirements": [
+                "recursively expand material alternative explanations",
+                "identify contradictions and omitted evidence without a supplied grammar",
+                "freeze the decisive path and its falsifiers before forecasting",
+            ],
+        },
+        "rule": (
+            "use every section, build the decomposition yourself, search rival paths, "
+            "and preserve unresolved disagreement"
+        ),
     }
     overlays = {
         "direct_public_packet": {},
@@ -120,6 +136,7 @@ def compile_kernel_removal_arms(
     for role in ARMS:
         body = {
             "schema": ARM_SCHEMA,
+            "experiment_design_id": DESIGN_ID,
             "role": role,
             "common_source_snapshot_sha256": common_sha,
             "common_source_snapshot": common,
@@ -134,18 +151,84 @@ def compile_kernel_removal_arms(
     return packets
 
 
+def compile_kernel_removal_execution_receipt(
+    *,
+    arm_packets: Mapping[str, Mapping[str, Any]],
+    process_bundle: Mapping[str, Any],
+    calls: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Prove the four arms used distinct one-call sessions under one process."""
+    process = dict(process_bundle)
+    process_sha = str(process.pop("process_bundle_sha256", ""))
+    if (
+        process.get("schema") != "jaggedthoughts-forecast-process-bundle-v1"
+        or process_sha != stable_sha256(process)
+        or process.get("model_identity_complete") is not True
+        or process.get("provider_call_budget_per_role") != 1
+        or process.get("cross_role_session_reuse") is not False
+    ):
+        raise ValueError("kernel removal trial requires one complete process identity")
+    if set(arm_packets) != set(ARMS) or set(calls) != set(ARMS):
+        raise ValueError("kernel removal execution requires exactly four arm calls")
+
+    rows = []
+    for role in ARMS:
+        packet_sha = str((arm_packets[role] or {}).get("packet_sha256") or "")
+        row = dict(calls[role])
+        call = dict(row.get("call_receipt") or {})
+        if (
+            row.get("packet_sha256") != packet_sha
+            or row.get("provider_call_charge") != 1
+            or call.get("schema") != "leanmill.frontier_subscription_role_call.v1"
+            or call.get("role") != f"jaggedthoughts_kernel_removal_{role}"
+            or call.get("runtime") != process.get("runtime")
+            or call.get("model") != process.get("resolved_model")
+            or call.get("returncode") != 0
+            or call.get("provider_call_charge") != 1
+            or call.get("output_schema_digest") != process.get("output_schema_sha256")
+        ):
+            raise ValueError(f"kernel removal call changed process identity: {role}")
+        if any(len(str(call.get(field) or "")) != 64 for field in (
+            "prompt_digest", "result_digest", "output_schema_digest",
+        )):
+            raise ValueError(f"kernel removal call lacks durable digests: {role}")
+        rows.append({
+            "role": role,
+            "packet_sha256": packet_sha,
+            "agent_id": call.get("agent_id"),
+            "prompt_digest": call.get("prompt_digest"),
+            "result_digest": call.get("result_digest"),
+            "call_receipt_sha256": stable_sha256(call),
+            "artifact_ref": row.get("artifact_ref"),
+        })
+    if len({row["agent_id"] for row in rows}) != len(ARMS):
+        raise ValueError("kernel removal arms must use independent agent sessions")
+    if len({row["prompt_digest"] for row in rows}) != len(ARMS):
+        raise ValueError("kernel removal arm prompts did not preserve arm identity")
+    body = {
+        "schema": EXECUTION_SCHEMA,
+        "same_model_process_sha256": process_sha,
+        "arm_calls": rows,
+        "provider_call_count": len(rows),
+        "execution_complete": True,
+    }
+    return {**body, "execution_sha256": stable_sha256(body)}
+
+
 def compile_kernel_removal_action(
     evidence_packet: Mapping[str, Any], *,
     arm_packets: Mapping[str, Mapping[str, Any]],
     forecast_candidate_ids: Mapping[str, str],
     process_bundle_sha256: str,
     compiled_at: str,
+    execution_receipt: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Freeze the arm identities before the common outcome exists."""
     packet = _verified_packet(evidence_packet)
     if set(arm_packets) != set(ARMS):
         raise ValueError("kernel removal trial requires exactly four arms")
     source_hashes = set()
+    design_ids = set()
     arms = []
     for role in ARMS:
         arm = dict(arm_packets[role])
@@ -157,6 +240,7 @@ def compile_kernel_removal_action(
         ):
             raise ValueError(f"invalid kernel removal arm: {role}")
         source_hashes.add(str(arm.get("common_source_snapshot_sha256") or ""))
+        design_ids.add(str(arm.get("experiment_design_id") or ""))
         arms.append({
             "role": role,
             "packet_sha256": claimed,
@@ -164,6 +248,20 @@ def compile_kernel_removal_action(
         })
     if len(source_hashes) != 1 or "" in source_hashes:
         raise ValueError("kernel removal arms do not share one source snapshot")
+    if design_ids != {DESIGN_ID}:
+        raise ValueError("kernel removal arms do not share one experiment design")
+    execution_envelope = dict(execution_receipt or {})
+    execution = dict(execution_envelope)
+    execution_sha = str(execution.pop("execution_sha256", ""))
+    execution_complete = (
+        execution.get("schema") == EXECUTION_SCHEMA
+        and execution_sha == stable_sha256(execution)
+        and execution.get("execution_complete") is True
+        and execution.get("same_model_process_sha256") == process_bundle_sha256
+        and {row.get("role") for row in execution.get("arm_calls") or ()} == set(ARMS)
+        and {row.get("packet_sha256") for row in execution.get("arm_calls") or ()}
+        == {row["packet_sha256"] for row in arms}
+    )
     availability = dict(packet.get("field_availability") or {})
     body = {
         "schema": ACTION_SCHEMA,
@@ -176,9 +274,12 @@ def compile_kernel_removal_action(
             "horizon_days": packet.get("horizon_days"),
         }),
         "source_snapshot_sha256": next(iter(source_hashes)),
+        "experiment_design_id": DESIGN_ID,
         "field_availability_certificate_sha256": availability.get("certificate_sha256"),
         "full_evidence_packet_sha256": packet["packet_sha256"],
         "same_model_process_sha256": process_bundle_sha256,
+        "execution_receipt_sha256": execution_sha or None,
+        "execution_receipt": execution_envelope or None,
         "arms": arms,
         "settlement": {
             "target": "entity price return minus benchmark price return",
@@ -189,7 +290,7 @@ def compile_kernel_removal_action(
         },
         "status": (
             "sealed_four_arm_forecast"
-            if set(forecast_candidate_ids) == set(ARMS)
+            if set(forecast_candidate_ids) == set(ARMS) and execution_complete
             else "incomplete_arm_generation"
         ),
         "deletion_rule": (
@@ -216,30 +317,57 @@ def compile_kernel_removal_status(
         for run in runs
         if (run.get("kernel_removal_trial") or {}).get("schema") == ACTION_SCHEMA
     ]
+    def eligible(run: Mapping[str, Any], trial: Mapping[str, Any]) -> bool:
+        action = dict(trial)
+        action_sha = str(action.pop("action_sha256", ""))
+        execution = dict(trial.get("execution_receipt") or {})
+        execution_sha = str(execution.pop("execution_sha256", ""))
+        process = dict((run.get("provider") or {}).get("process_bundle") or {})
+        process_sha = str(process.pop("process_bundle_sha256", ""))
+        arms = tuple(trial.get("arms") or ())
+        return (
+            action_sha == stable_sha256(action)
+            and trial.get("status") == "sealed_four_arm_forecast"
+            and len(arms) == len(ARMS)
+            and {row.get("role") for row in arms} == set(ARMS)
+            and len({row.get("forecast_candidate_id") for row in arms}) == len(ARMS)
+            and execution_sha == trial.get("execution_receipt_sha256")
+            and execution_sha == stable_sha256(execution)
+            and execution.get("execution_complete") is True
+            and process_sha == trial.get("same_model_process_sha256")
+            and process_sha == stable_sha256(process)
+            and process.get("model_identity_complete") is True
+        )
     sealed = [
         (run, trial) for run, trial in trials
-        if trial.get("status") == "sealed_four_arm_forecast"
-        and {row.get("role") for row in trial.get("arms") or ()} == set(ARMS)
+        if eligible(run, trial)
     ]
     settled = [
         (run, trial) for run, trial in sealed
         if str(run.get("run_id") or "") in settlement_by_run
+        and str(run.get("run_id") or "") in inference_block_ids
     ]
-    blocks = {
-        inference_block_ids[str(run["run_id"])]
-        for run, _ in settled if str(run.get("run_id") or "") in inference_block_ids
-    }
+    blocks: set[str] = set()
     tournament = None
     if settled:
-        cohorts: dict[tuple[int, str], list[tuple[Mapping[str, Any], Mapping[str, Any]]]] = {}
+        cohorts: dict[
+            tuple[int, str, str],
+            list[tuple[Mapping[str, Any], Mapping[str, Any]]],
+        ] = {}
         for run, trial in settled:
             process_sha = str(trial.get("same_model_process_sha256") or "")
             cohorts.setdefault(
-                (int(run.get("horizon_days") or 0), process_sha), [],
+                (
+                    int(run.get("horizon_days") or 0), process_sha,
+                    str(trial.get("experiment_design_id") or "legacy"),
+                ), [],
             ).append((run, settlement_by_run[str(run["run_id"])]))
-        (horizon_days, process_sha), cohort = max(
+        (horizon_days, process_sha, design_id), cohort = max(
             cohorts.items(), key=lambda item: (len(item[1]), item[0]),
         )
+        blocks = {
+            inference_block_ids[str(run["run_id"])] for run, _ in cohort
+        }
         first_run, _ = cohort[0]
         first_trial = dict(first_run["kernel_removal_trial"])
         candidate_id_by_role = {
@@ -318,7 +446,9 @@ def compile_kernel_removal_status(
                 (packet.get("field_availability") or {}).get("rows") or ()
             )
         tournament = evaluate_world_model_tournament(
-            tournament_id=f"kernel-removal::{horizon_days}d::{process_sha[:12]}",
+            tournament_id=(
+                f"kernel-removal::{horizon_days}d::{process_sha[:12]}::{design_id}"
+            ),
             owner="jaggedthoughts-kernel-removal-ledger",
             as_of=max(str(settlement["evaluated_at"]) for _, settlement in cohort),
             mode="prospective_shadow",
@@ -343,6 +473,7 @@ def compile_kernel_removal_status(
         "schema": STATUS_SCHEMA,
         "declared_run_count": len(trials),
         "sealed_run_count": len(sealed),
+        "unbound_execution_receipt_diagnostic_run_count": len(trials) - len(sealed),
         "settled_episode_count": len(settled),
         "inference_block_count": len(blocks),
         "minimum_inference_blocks": 8,
@@ -350,6 +481,7 @@ def compile_kernel_removal_status(
             "ready_for_world_model_verdict" if len(blocks) >= 8 else
             "collecting_independent_blocks" if settled else
             "awaiting_settlements" if sealed else
+            "awaiting_execution_bound_trial" if trials else
             "awaiting_sealed_trial"
         ),
         "scorer": "closed_book.world_model_tournament",
@@ -366,7 +498,8 @@ def compile_kernel_removal_status(
 
 
 __all__ = [
-    "ACTION_SCHEMA", "ARMS", "ARM_SCHEMA", "STATUS_SCHEMA",
+    "ACTION_SCHEMA", "ARMS", "ARM_SCHEMA", "DESIGN_ID", "EXECUTION_SCHEMA",
+    "STATUS_SCHEMA",
     "compile_kernel_removal_action", "compile_kernel_removal_arms",
-    "compile_kernel_removal_status",
+    "compile_kernel_removal_execution_receipt", "compile_kernel_removal_status",
 ]

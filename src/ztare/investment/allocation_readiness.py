@@ -456,6 +456,19 @@ def _rows(path: Path) -> list[dict[str, Any]]:
     return [_read(row) for row in sorted(path.glob("*.json"))] if path.is_dir() else []
 
 
+def _discovery_for_book(root: Path, book: Mapping[str, Any]) -> dict[str, Any]:
+    """Read the immutable discovery run named by an opportunity book."""
+    run_id = str(book.get("discovery_run_id") or "")
+    run_sha256 = str(book.get("discovery_run_sha256") or "")
+    path = root / "discovery" / "runs" / f"{run_id}.json"
+    if not path.is_file():
+        path = root / "discovery" / "latest.json"
+    discovery = _read(path)
+    if discovery.get("run_id") != run_id or discovery.get("run_sha256") != run_sha256:
+        raise ValueError("opportunity book does not match its archived discovery run")
+    return discovery
+
+
 def compile_workspace_allocation_readiness(
     workspace: str | Path, *, opportunity_book: Mapping[str, Any] | None = None,
     underwriting_index: Mapping[str, Any] | None = None,
@@ -463,11 +476,12 @@ def compile_workspace_allocation_readiness(
 ) -> dict[str, Any]:
     root = Path(workspace).expanduser().resolve()
     portfolio_path = root / "portfolio" / "latest_assembly.json"
-    discovery = _read(root / "discovery" / "latest.json")
+    book = dict(opportunity_book or _read(root / "opportunity_books" / "latest.json"))
+    discovery = _discovery_for_book(root, book)
     policies = _rows(root / "portfolio_policy" / "runs")
     forecasts = _rows(root / "closed_book" / "runs")
     return compile_allocation_readiness(
-        opportunity_book=opportunity_book or _read(root / "opportunity_books" / "latest.json"),
+        opportunity_book=book,
         underwriting_index=underwriting_index or _read(root / "underwriting" / "latest.json"),
         rank_program_input=discovery["rank_program_input"],
         decisions=operator_forecast_decisions(root, include_drafts=True),

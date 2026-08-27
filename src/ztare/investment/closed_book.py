@@ -32,6 +32,7 @@ from .kernel_removal_trial import (
     ARMS as KERNEL_REMOVAL_ARMS,
     compile_kernel_removal_action,
     compile_kernel_removal_arms,
+    compile_kernel_removal_execution_receipt,
     compile_kernel_removal_status,
 )
 from .evidence_vault import evidence_manifest_ref
@@ -1496,6 +1497,8 @@ def _open_closed_book_forecast(
         visible_workbench=False,
         web_research=False,
     )
+    if config.visible_workbench or config.web_research:
+        raise ValueError("closed-book forecasting requires a sealed subscription session")
     runtime_version = subscription_runtime_version(config.runtime)
     requested_model = str(config.model or "account-default")
     model_identity_complete = requested_model not in {
@@ -1511,6 +1514,9 @@ def _open_closed_book_forecast(
         "reasoning_effort": config.reasoning_effort,
         "prompt_contract": _PROMPT_CONTRACT,
         "output_schema_sha256": stable_sha256(closed_book_agent_output_schema()),
+        "timeout_seconds": config.timeout_seconds,
+        "provider_call_budget_per_role": 1,
+        "cross_role_session_reuse": False,
         "web_research": False,
         "shell_access": False,
         "repository_tool_access": False,
@@ -1544,6 +1550,7 @@ def _open_closed_book_forecast(
         raise ValueError("kernel removal trial requires a researched paper watch")
     ablation_candidate_ids: dict[str, str] = {}
     removal_candidate_ids: dict[str, str] = {}
+    removal_call_receipts: dict[str, dict[str, Any]] = {}
     underwriting_method_policy = None
     underwriting_method_route = None
     selected_ablation_arms = tuple(UNDERWRITING_ABLATION_ARMS)
@@ -1586,6 +1593,19 @@ def _open_closed_book_forecast(
                 try:
                     result = role(_ablation_agent_prompt(arm_packet))
                     called = bool(role.provider_call_count)
+                    if role.calls:
+                        removal_call_receipts[arm_role] = {
+                            "packet_sha256": arm_packet["packet_sha256"],
+                            "artifact_ref": arm_ref,
+                            "provider_call_charge": sum(
+                                int(row.get("provider_call_charge", 1))
+                                for row in role.calls
+                            ),
+                            "call_receipt": {
+                                key: value for key, value in role.calls[-1].items()
+                                if key != "replayed"
+                            },
+                        }
                 except Exception as error:
                     errors.append(f"{arm_role}:{type(error).__name__}: {error}"[:1_000])
             elif result is None:
@@ -1829,6 +1849,14 @@ def _open_closed_book_forecast(
             forecast_candidate_ids=removal_candidate_ids,
             process_bundle_sha256=process_bundle["process_bundle_sha256"],
             compiled_at=sealed_at,
+            execution_receipt=(
+                compile_kernel_removal_execution_receipt(
+                    arm_packets=removal_packets,
+                    process_bundle=process_bundle,
+                    calls=removal_call_receipts,
+                )
+                if set(removal_call_receipts) == set(KERNEL_REMOVAL_ARMS) else None
+            ),
         ) if removal_packets else None
     )
     return_window = compile_prospective_return_window(

@@ -11838,6 +11838,8 @@ def _schedule_kernel_removal_trial(
         if (row := _read_json(path))
         and (row.get("kernel_removal_trial") or {}).get("status")
         == "sealed_four_arm_forecast"
+        and ((row.get("kernel_removal_trial") or {}).get("execution_receipt") or {})
+        .get("execution_complete") is True
         and int(row.get("horizon_days") or 0) == horizon
     ]
     open_runs = [row for row in runs if timestamp_key(str(row["end_at"])) > timestamp_key(now)]
