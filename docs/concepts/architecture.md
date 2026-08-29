@@ -21,12 +21,12 @@ four:
    mining, experiment ledgers, catch ledgers, and read models that help the
    organization learn from its own behavior.
 
-ZTARE rests on three refusals:
+Three boundaries shape the design:
 
 ```text
-Do not ask an AI to certify its own work.
-Do not ask a chat transcript to be organizational state.
-Do not let intelligence stay trapped in conversation.
+Generators cannot certify their own output.
+Durable state belongs in files and ledgers, not chat transcripts.
+Useful findings must feed the next decision or run.
 ```
 
 ZTARE separates generation, verification, authority, execution, and learning
@@ -40,7 +40,7 @@ caveats. This page is the machinery itself.
 ## Contents
 
 Orientation, [Model capability is not the unit](#model-capability-is-not-the-unit-of-analysis) ·
-[Research trace flywheel](#research-trace-flywheel) ·
+[Research trace](#research-trace) ·
 [How next work is chosen](#how-next-work-is-chosen) ·
 [Architecture at a glance](#architecture-at-a-glance) ·
 [Work item lifecycle](#work-item-lifecycle)
@@ -69,22 +69,20 @@ Reference, [What to use when](#what-to-use-when) ·
 
 ## Model capability is not the unit of analysis
 
-A stronger model does not buy a stronger result. The same capability that searches
-more of the space and proposes a sharper argument will also exploit a weak
-evaluation surface, misattribute prior work, or quietly close a branch before
-the evidence is in. A better model sharpens both edges at once.
+Model capability alone does not determine whether a result is reliable. A model
+that searches more of the space and proposes sharper arguments can also exploit
+a weak evaluation surface, misattribute prior work, or close a branch before
+the evidence is in.
 
-So the model is only half of what produces auditable work. The other half is the
-environment it runs inside: bounded evidence, judges it cannot see, deterministic
-checks, ledgers that outlive the run, non-claims written down on purpose, and fast demotion of the wrong story. None of that comes from the weights.
-It comes from the repository, which is what the rest of this page describes.
+Auditable work also depends on the environment: bounded evidence, hidden judges,
+deterministic checks, durable ledgers, explicit non-claims, and prompt demotion
+of unsupported conclusions. The repository implements those constraints.
 
-## Research trace flywheel
+## Research trace
 
-Most research organizations already run fragments of this loop: agents generate
-candidate work, tools test it, experts review it, and the traces can feed
-evaluation, post-training, or the next model. ZTARE makes the loop explicit and
-pins it to a repository so it does not live in anyone's memory.
+Research teams already run parts of this loop: agents generate candidate work,
+tools test it, experts review it, and the records inform later evaluation or
+training. ZTARE makes the sequence explicit and stores it in the repository.
 
 ```text
 research act -> artifact -> adversarial review -> check / demotion / null
@@ -92,11 +90,10 @@ research act -> artifact -> adversarial review -> check / demotion / null
 -> better future routing, prompts, checks, rubrics, and training/eval data
 ```
 
-The transferable lesson is narrow: keep the full trace before it collapses into
-a polished answer. The expensive part of research is rarely the answer that
-shipped. It is the failed proof attempt, the source-blocked claim, the
-attribution that had to be corrected, the causal story that got demoted; the judgments that cost the most and usually get thrown away. As supervision, those
-are often worth more than the solution alone.
+Keep the trace before it is compressed into a final answer. Failed proof
+attempts, source-blocked claims, corrected attributions, and rejected causal
+stories record why a line of work changed. Those records can supervise future
+routing and evaluation.
 
 The use case, then, is to produce labeled traces of that judgment:
 
@@ -107,11 +104,9 @@ The use case, then, is to produce labeled traces of that judgment:
 - train or evaluate future systems on those labeled traces and on final
   solutions
 
-This is why a public workbench earns its place even where private labs already
-run their own agent loops. A weight update ships the conclusion and hides the
-institution that reached it. A filesystem-first repo keeps that institution in
-view: the artifacts, the failed claims, the checks, the demotions, the source
-gaps, the people who decided.
+A filesystem-first repository keeps the artifacts, failed claims, checks,
+demotions, source gaps, and review decisions available after a run. That record
+can be inspected even when the deployed output is only a model or final answer.
 
 For plain-language definitions, see [glossary.md](glossary.md).
 

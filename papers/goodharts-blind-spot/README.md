@@ -1,6 +1,20 @@
-# BlindSpot-Bench: Measuring the Oversight Gap Exactly
+# Archived obsolete BlindSpot manuscript
 
-Clean public source bundle for the paper. The code and the released **BlindSpot-Bench** benchmark are maintained in a separate repository (the source of truth); this directory is the flagship public mirror of the paper itself. The earlier "Goodhart's Blind Spot" version is archived under `old/`.
+**Status:** invalidated and superseded. Do not cite this manuscript as a
+current result.
+
+A prerelease code-and-evidence audit found that the prototype did not activate
+the claimed resource-consequence mechanism and did not retain evidence needed
+for several provenance and attribution claims. The maintained correction and
+replacement study are in the public
+[`blindspot-bench`](https://github.com/sparckix/blindspot-bench) repository.
+
+This directory remains only to preserve the development record.
+
+## Historical bundle description
+
+Historical source bundle for the invalidated paper. It is not the source of
+truth for current BlindSpot claims.
 
 Files:
 - `draft.md`, working markdown draft (canonical text)
@@ -9,7 +23,7 @@ Files:
 - `refs.bib`, bibliography
 - `main.pdf`, public mirror PDF
 
-One-line summary: a three-layer testbed makes the LLM **oversight gap** (overseer belief minus ground truth) an exactly computed number; under a gamed channel the gap opens as a threshold and **localizes** by probe *stability*, the locus fingerprints the agent (withhold vs. fabricate), it is observable without ground truth, and the pattern reproduces in a second non-economy world and under a non-LLM optimizer.
+The claims summarized in the historical manuscript below are not maintained.
 
 <!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
 <!-- AUTO-INDEX:END -->

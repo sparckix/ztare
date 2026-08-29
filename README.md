@@ -11,17 +11,17 @@
 
 ### Decide what you can stand behind.
 
-_A local-first engine that pressure-tests the claim inside any document — and hands back a **governed decision**, not a vibe._
+_A local-first engine that pressure-tests claims against their sources and returns an inspectable decision record._
 
 [![public-smoke](https://github.com/sparckix/ztare/actions/workflows/public-smoke.yml/badge.svg)](https://github.com/sparckix/ztare/actions/workflows/public-smoke.yml)
 [![release](https://img.shields.io/github/v/release/sparckix/ztare)](https://github.com/sparckix/ztare/releases)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-`Deterministic gates` · `Governed artifacts` · `Proposer ≠ grader` · `Local-first` · `Point it at any use-case`
+`Deterministic gates` · `Source-linked decisions` · `Proposer ≠ grader` · `Local-first`
 
-Bring a project folder, report, PRD, model output, proof note, dataset, or repo. Paste a document and get it
-back with **every claim tagged against governed evidence** — backed, contradicted, or an untested assumption —
-then a decision brief that says what the call hinges on.
+Bring a project folder, report, PRD, model output, proof note, dataset, or repo. Paste a document and ZTARE
+compares its claims with the project's evidence. It marks claims as backed, contradicted, or untested and
+shows where no evidence match was found, then produces a decision brief naming what the call hinges on.
 
 ![The ZTARE Project Workbench Verdict view separates the compiled reliance decision from an uncalibrated run estimate, explains why mapped sources still need inference verification, names the next evidence gap, and links each unresolved claim to its source files. The left rail keeps the project path from thesis and evidence through pressure-test, open points, Verdict, and History.](docs/images/workbench.png)
 
@@ -67,9 +67,11 @@ make hello
 
 `make hello` runs offline in seconds and shows the core discipline end to end: a plausible overclaim gets demoted to bounded wording, missing evidence gets named, a malformed project brief is blocked before any model spend, and the next falsifier is printed. No API key, no persistent state.
 
-## The problem it attacks
+## The problem
 
-A plausible answer with no clean audit trail. That failure gets worse when one model both produces the work and grades it, so ZTARE keeps drafting, checking, evidence, report readiness, and review as separate steps. A model can draft or search. The claim only counts as far as the sources and checks support it.
+AI can produce a plausible answer without leaving a usable audit trail. The risk grows when one model both
+produces the work and grades it. ZTARE separates drafting, evidence binding, checking, report readiness, and
+review. Claims are limited to what the recorded sources and checks support.
 
 Before you trust a piece of work, ZTARE helps you answer:
 
@@ -85,7 +87,8 @@ project -> thesis -> local sources -> evidence state -> readiness check / run
 -> verdict, support issue, saved review, or next test
 ```
 
-Code has compilers; reasoning needs similar discipline. Long term, the aim is to turn important thinking into objects you can check, log, revise, and hand to the next person or agent. For now the path is deliberately focused: local project review over inspectable sources and files.
+The aim is to turn consequential reasoning into records that another person or agent can inspect, revise, and
+replay. The current release concentrates on local project review over inspectable sources and files.
 
 ## The Project Workbench
 
@@ -165,7 +168,7 @@ Each project gets its own brief, evidence binding, trace, and review files under
 
 Find the full command surface, including the guarded model-backed entry, in the [CLI guide](docs/guides/cli.md), the walkthrough tour in the [quickstart](docs/guides/quickstart.md), and a scripted first session in [first 30 minutes](docs/guides/first-30-minutes.md).
 
-## What is actually here
+## Current components
 
 | Track | Maturity | What it does |
 |---|---|---|
@@ -178,7 +181,7 @@ Find the full command surface, including the guarded model-backed entry, in the 
 
 Terminology is layered: **workbench** is the user-facing product, **kernel** the trusted checks and contracts, **engine** a runnable subsystem. The [glossary](docs/concepts/glossary.md#core-concepts) is the reference.
 
-## Point it at any use-case — Scenarios & plugins
+## Scenarios and plugins
 
 The kernel is domain-neutral. A **Scenario** (`scenarios/<name>.yaml`) binds it to a use-case — a rubric, run
 config, which capability plugins to use, which governed artifacts to emit — without forking core code. Create a
@@ -207,13 +210,13 @@ See the [scenarios concept doc](docs/concepts/scenarios.md).
 
 - **The proposer does not grade itself.** Generation, adversarial review, scoring, and deterministic gates are separate actors.
 - **A compile is necessary but insufficient.** A proof or program can compile while laundering the target through a hypothesis, citation, or hidden oracle; governance checks those cases separately.
-- **Failures are first-class evidence.** Nulls, refusals, residuals, and failed branches are recorded because they change the next experiment.
-- **Worker transport is metadata.** API calls, subscription CLIs, and local workers are interchangeable; the typed contract and check decide whether a result counts.
+- **Record failed branches.** Nulls, refusals, residuals, and failed branches can change the next experiment.
+- **Judge the result, not its transport.** API calls, subscription CLIs, and local workers are interchangeable; the typed contract and check decide whether a result counts.
 - **Chat is not the system of record.** Durable files live under `projects/`, `research_areas/`, `org/`, `papers/`, and generated analytics.
 
-## Evidence first
+## Inspect the evidence
 
-Judge the repo by whether you can inspect the path from a source file to a claim boundary, never by its size:
+Judge the repo by whether you can inspect the path from a source file to a claim boundary:
 
 - [Live analytics dashboard](https://sparckix.github.io/ztare/) — volume, taste, and compounding metrics through a leak-gated pipeline
 - [Evidence atlas](docs/evidence_atlas/README.md) — public claims crosswalked to experiments, runnable checks, and caveats
@@ -221,7 +224,9 @@ Judge the repo by whether you can inspect the path from a source file to a claim
 - [LLM gaming behavior catalog](docs/gaming_behavior_catalog.md) — self-certifying code strategies with catch patterns, tied to executable anchors by `make gaming-catalog-audit`
 - [Experiment track record](research_areas/EXPERIMENT_TRACK_RECORD.md) and [insights ledger](research_areas/insights_ledger.md) — the durable experiment and finding record
 
-Five questions to ask of any run: did a command catch a weak claim? can you find the file behind the verdict? can you see what the result does not prove? can you see the next check that would change the answer? can you reproduce the path without trusting a chat transcript?
+For any run, ask whether a command caught a weak claim, whether the verdict points to its supporting file,
+what the result leaves unresolved, which check could change the answer, and whether the path can be replayed
+without a chat transcript.
 
 ```bash
 make first-run     # full offline public review path: value demo, catalog audit,

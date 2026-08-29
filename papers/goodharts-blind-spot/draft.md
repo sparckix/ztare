@@ -1,6 +1,13 @@
 # BlindSpot-Bench: measuring the oversight gap
 ## A pilot study of Goodhart-style failure in a gamed supervision channel (architecture A)
 
+> **Archived and invalidated.** A prerelease code-and-evidence audit found that
+> the prototype did not activate the claimed resource-consequence mechanism
+> and did not retain evidence required for several attribution and provenance
+> claims. This manuscript is preserved only as development history. See the
+> maintained correction and replacement study in
+> [`blindspot-bench`](https://github.com/sparckix/blindspot-bench).
+
 **Daniel Alami**
 *Preprint, 2026. Testbed and results on architecture A. Architectures B/C, the awareness and scrambled arms, and larger-scale and broader-model replication remain future work and are not claimed here.*
 

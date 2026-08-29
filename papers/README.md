@@ -13,15 +13,31 @@ Use the citation metadata inside the specific paper or artifact you rely on.
 The repository-level `CITATION.cff` is only a fallback for tools that require
 one citation target for the whole repository.
 
-## Current public manuscripts
+## Portfolio status
 
-- [`Specification Gaming in LLM-Generated Code`](cognitive-camouflage/draft.md) — frozen original-9 benchmark lineage; Cognitive Camouflage as an LLM-evaluation failure mode.
-- [`Governed Adversarial Evaluator Hardening`](governed-evaluator-hardening/draft.md) — mined-constraint hardening mechanisms plus contract-gated recursive improvement (merges the former Adversarial Precedent Memory and Contract-Governed Hardening papers).
-- [`Cognitive Firm`](cognitive-firm/draft.md) — managerial capitalism for artificial intelligence.
-- [`Epistemic Generation`](epistemic-generation/draft.md) — mechanization placement and research-move vocabularies.
-- [`Epistemic Verification`](epistemic-verification/draft.md) — manuscript in revision.
-- [`LLM Forecast Calibration Cross Corpus`](llm-forecast-calibration-cross-corpus/draft.md) — forecast-row calibration across model families and benchmark corpora.
-- [`When Consciousness Cannot Be Identified`](consciousness-admissibility/main.pdf) — scientific admissibility and identification in consciousness attribution.
+The repository preserves development history. A directory's presence here does
+not mean that its manuscript is a current empirical result.
+
+### Formative studies under consolidation
+
+- [`Specification Gaming in LLM-Generated Code`](cognitive-camouflage/draft.md) — formative evidence about self-authored tests and adversarial execution.
+- [`Governed Adversarial Evaluator Hardening`](governed-evaluator-hardening/draft.md) — formative evidence about deterministic and contract-based checks. This and Cognitive Camouflage are being consolidated around one held-out benchmark.
+
+### Research programs requiring new evidence
+
+- [`Cognitive Firm`](cognitive-firm/draft.md) — an architectural hypothesis awaiting a factorial evaluation of proposal, judgment, and authorization.
+- [`Epistemic Verification`](epistemic-verification/draft.md) — a candidate review codebook awaiting independent annotation, reliability measurement, and prospective validation.
+- [`LLM Forecast Calibration Cross Corpus`](llm-forecast-calibration-cross-corpus/draft.md) — an over-broad draft to be split; the temporal-provenance question may support a future multi-benchmark audit.
+
+### Archived or exploratory manuscripts
+
+- [`Epistemic Generation`](epistemic-generation/draft.md) — archived in its current combined form.
+- [`When Consciousness Cannot Be Identified`](consciousness-admissibility/main.pdf) — exploratory formal work; not a current empirical contribution.
+- [`Experimental Mathematics Letter`](experimental_math_letter/draft.md) — archived pending a substantially larger symbolic-regression benchmark.
+- [`Goodhart's Blind Spot`](goodharts-blind-spot/draft.md) — obsolete manuscript invalidated by a prerelease code-and-evidence audit. The current BlindSpot study lives in the separate `blindspot-bench` repository.
+
+Superseded drafts remain available for provenance and should not be cited as
+independent current contributions.
 
 <!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 

@@ -6,28 +6,24 @@ description: "What ZTARE currently has: the architectural stack, operating disci
 
 > Up: [`docs/README.md`](../README.md)
 
-What ZTARE currently has. Each capability points to the deeper
-doc or the actual module that implements it, and is grounded elsewhere in the
-repository.
+This inventory links each current capability to its implementation and, where
+available, its evidence or deeper documentation.
 
-The page sits between three neighbours:
-[`system_position_and_module_map.md`](system_position_and_module_map.md) is the
-architectural framing. [`architecture.md`](architecture.md) is the
-implementation map. [`public_claim_register.md`](../public_claim_register.md)
-is the per-claim result surface.
-[`evidence_atlas/README.md`](../evidence_atlas/README.md) is the
-reviewer-facing evidence crosswalk. [`priority_roadmap.md`](../../priority_roadmap.md)
-is what is next.
+Use [`system_position_and_module_map.md`](system_position_and_module_map.md) for
+architectural framing, [`architecture.md`](architecture.md) for implementation,
+[`public_claim_register.md`](../public_claim_register.md) for claim-level
+results, [`evidence_atlas/README.md`](../evidence_atlas/README.md) for the
+evidence crosswalk, and [`priority_roadmap.md`](../../priority_roadmap.md) for
+planned work.
 
-The capabilities are organised in three layers: the architectural stack
-(what the system is), the operating discipline (what it does, across
-projects and evaluator surfaces), and a short list of named primitives
-(specific reusable tools).
+The inventory has three parts: the architectural stack, operating discipline
+across projects and evaluators, and named reusable tools.
 
-Capability here means "there is an implementation surface a reviewer can
-inspect or run." It does not mean the capability has external validation,
-benchmark lift, or broad domain reliability. When a capability supports a
-public claim, the claim register and evidence atlas carry that scope.
+An entry means that a reviewer can inspect or run an implementation. External
+validation, benchmark lift, and broad domain reliability require separate
+evidence. The claim register and evidence atlas state that scope for public
+claims.
+
 For the v1.1 reasoning-compiler language, the inspectable capability map is
 [`reasoning_compiler_capabilities.json`](../evidence_atlas/reasoning_compiler_capabilities.json).
 `make reasoning-compiler-capability-audit` checks that each row names an input
@@ -1102,7 +1098,7 @@ Pattern 12 (Sealed Forecast Pool for Execution Control). The reflexive
 counterpart is Primitive 9 (Reflexive Forecast Market) in
 [`docs/concepts/reflexive_engineering.md`](reflexive_engineering.md). The
 forecasting-role obligations live in
-[`org/mandates/forecasting_agent_mandate.md`](../../org/mandates/forecasting_agent_mandate.md).
+[`org/mandates/templates/forecasting_agent_mandate.md`](../../org/mandates/templates/forecasting_agent_mandate.md).
 
 ### Gaming behavior catalog and runtime guard
 

@@ -5,9 +5,13 @@ description: "First 30 minutes for a new ZTARE reader or agent: green offline ch
 
 > Up: [Documentation map](../README.md)
 
-Thirty minutes should leave you with three things: a green offline value check, a map of the durable records, and the right route for your task. Most mistakes come from launching a loop before the project is ready, or from treating out-of-loop agent work as if it were an in-loop validation run.
+This tour verifies the offline path, shows where ZTARE keeps durable records,
+and helps you choose the route for your task. It starts with readiness because
+premature loop launches and misrouted agent work produce misleading run records.
 
-One question frames the current public roadmap: can a project move from thesis and source files to a bounded result, support issue, saved review, or next falsifier? Keep it in mind while reading. Many older files serve as historical provenance; this path is the current entry point.
+The current public path moves a project from thesis and source files to a
+bounded result, support issue, saved review, or next falsifier. Older files
+remain available for provenance; this guide describes the supported entry path.
 
 ## 0–5: run the first value check
 
@@ -18,7 +22,9 @@ python -m pip install -e ".[full]"
 make hello
 ```
 
-`make hello` is the first value check: a ready project-intake file validates, a malformed intake file is blocked before in-loop routing, and a plausible overclaim is demoted to bounded wording, missing evidence, and a next falsifier. It writes no persistent runtime state.
+`make hello` validates a ready project-intake file, blocks a malformed intake
+before in-loop routing, and narrows a plausible overclaim while naming missing
+evidence and the next falsifier. It writes no persistent runtime state.
 
 For the full offline public review path, use `make first-run`. It chains the value demo, gaming-catalog audit, benchmark-evidence checks, the frozen evaluator-hardening proof-point check, claim-boundary audit, terminology audit, public smoke, adversarial entry-path checks, and docs checks.
 
@@ -33,7 +39,11 @@ ztare autoresearch trace \
   --brief
 ```
 
-The [ops demo](../../projects/ops_root_cause_diagnosis_demo/) is synthetic, but it is a real ZTARE path: typed local sources, a bounded root-cause claim, explicit rivals, evidence gaps, graph-derived in-loop focus, readiness check, and an optional one-iteration run. Use it before a custom project because it shows the boundary between source and evidence prep, read-only inspection, and the validation engine.
+The synthetic [ops demo](../../projects/ops_root_cause_diagnosis_demo/)
+exercises the supported path: typed local sources, a bounded root-cause claim,
+explicit rivals, evidence gaps, graph-derived in-loop focus, a readiness check,
+and an optional one-iteration run. Use it before a custom project to see where
+source preparation ends and validation begins.
 
 A healthy brief trace shows `run readiness: ready`, fresh source and evidence state, no blockers, and the remaining local verification targets. Use `--json` on the same trace command when a script needs the full carrier chain.
 
@@ -45,9 +55,13 @@ make demo
 make smoke-public
 ```
 
-`make gaming-catalog-audit` checks the [public catalog](../gaming_behavior_catalog.md) against the live vector registry, promotion evidence, hardening map, and current executable fixture anchors. It is the quick way to verify that the catalog hook remains evidence-bounded.
+`make gaming-catalog-audit` checks the [public catalog](../gaming_behavior_catalog.md)
+against the live vector registry, promotion evidence, hardening map, and current
+executable fixtures. This verifies that catalog entries still point to their
+registered behaviors and checks.
 
-`make demo` runs three small evaluation-failure reproducers and shows a related discipline: a check can pass while the structural question still fails.
+`make demo` runs three small cases in which an evaluation passes despite missing
+the property it was meant to test.
 
 `make smoke-public` exercises the org runtime structure and transition-log replay, the forecast-pool contract flow (forecast, aggregate, resolve, score, calibrate), and the action-intelligence read models. It makes no live model calls. Maintainer-only publish checks and Docker checks live in the [Makefile reference](../reference/make_targets.md), outside the first-reader path.
 
@@ -63,7 +77,9 @@ ZTARE is Obsidian-compatible by default. Open the repository root as the vault, 
 6. [public_claim_register.md](../public_claim_register.md)
 7. [system_position_and_module_map.md](../concepts/system_position_and_module_map.md)
 
-Chat is not the system of record. Durable files live under `projects/`, `research_areas/`, `org/`, `ztare_workspace/`, `analytics/`, and the public ledgers.
+Durable records live under `projects/`, `research_areas/`, `org/`,
+`ztare_workspace/`, `analytics/`, and the public ledgers. Chat transcripts do
+not replace those files.
 
 One boundary to keep straight: ZTARE is the applied research stack and tenant overlay, while the reusable organization kernel lives in [cognitive-firm](https://github.com/sparckix/cognitive-firm). Read `org/` here as the ZTARE deployment of that kernel, with no second canonical upstream.
 
@@ -71,7 +87,7 @@ As a mental model while reading:
 
 ```text
 local project -> thesis -> sources and evidence -> readiness check
--> readiness check or run -> saved review, support issue, or next test
+-> bounded run when ready -> saved review, support issue, or next test
 ```
 
 ## 25–30: pick the right route

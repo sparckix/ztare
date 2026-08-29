@@ -2,11 +2,10 @@
 
 > **Up:** [Repository root](../README.md) · **Tooling:** [scripts/](../scripts/README.md) · [analytics/](../analytics/README.md)
 
-The canonical public map for the docs tree. The root `README.md` is
-the entry point. This map sorts each document into its layer and marks
-which documents are canonical versus supporting context. Every doc carries an
-`> **Up:**` breadcrumb back here, so the tree is walkable in both
-directions and in an Obsidian vault as well as on GitHub.
+Start with the root `README.md`, then choose one of the reading paths below.
+The layer map distinguishes canonical documents from supporting and historical
+material. `> **Up:**` breadcrumbs make the tree navigable on GitHub and as an
+Obsidian vault.
 
 ## Layer map
 
@@ -44,8 +43,6 @@ directions and in an Obsidian vault as well as on GitHub.
 | Internal boundary | maintainer-only docs | internal / not public evidence | Maintainer audit support. Listed only to mark the boundary. Not a first-read path or public evidence source. |
 | Landings | `docs/landings/` | prototype UI artifacts | Static visual demos for governance and org-runtime concepts. |
 
-## Recommended paths
-
 ## Cognitive-firm boundary
 
 The reusable org kernel lives in
@@ -54,6 +51,8 @@ The `org/` tree in this repo is the ZTARE overlay and compatibility surface:
 role templates, local gates, channels, runtime docs, and tenant-specific
 symlinks where a live deployment has them. Public ZTARE should not treat a
 tenant notification provider as part of the generic kernel.
+
+## Recommended paths
 
 ### New reader
 

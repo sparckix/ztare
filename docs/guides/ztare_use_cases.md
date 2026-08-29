@@ -6,13 +6,12 @@ description: "Use cases for ZTARE across diligence, legal, scientific, policy, p
 
 > Up: [`docs/guides/README.md`](README.md)
 
-ZTARE is for work where a fluent answer is not enough. Use it when you need to
-turn a messy project into something you can inspect, challenge, narrow, and
-hand to someone else with the source files still attached.
+ZTARE is for decisions that must remain traceable to local sources. It turns a
+messy project into a record that another person can inspect, challenge, narrow,
+and continue.
 
-The common object is not an industry, and it is not the UI. It is a reasoning
-project with a thesis, sources, evidence, checks, a review trail, and a next
-step.
+Across industries, the unit of work is the same: a project with a thesis,
+sources, evidence, checks, a review trail, and a next step.
 
 ```text
 project -> thesis -> sources -> evidence -> checks -> review -> next step
@@ -23,12 +22,11 @@ transcript, repo, or model output. Evidence is the part of that source that is
 actually tied to the project thesis. ZTARE helps you keep that difference
 inspectable.
 
-The Project Workbench is one visualization and control surface over this state.
-The repo also contains CLI paths, evidence compilers, run-readiness checks,
-report-readiness checks, evaluator-hardening artifacts, LeanMill proof
-governance, public evidence maps, and read models. The use cases below are for
-ZTARE as the reasoning compiler; the workbench is how many users will operate
-the local project path.
+The Project Workbench displays and controls this state. The repo also contains
+CLI paths, evidence compilers, readiness checks, evaluator-hardening artifacts,
+LeanMill proof governance, public evidence maps, and read models. The use cases
+below cover the full source-to-decision process; many users will operate the
+local project path through the workbench.
 
 ## Who should use it
 
@@ -52,7 +50,7 @@ Weak fits:
 - generic task management
 - team chat or inbox workflows
 - domains where the user cannot inspect or share the underlying material
-- situations where professional judgment can be skipped
+- tasks where a lightweight answer is sufficient
 
 ## Professions and jobs
 
@@ -88,8 +86,8 @@ Use ZTARE to:
 - surface missing or stale support before a memo leaves the team
 - record reviewer decisions without treating model prose as authority
 
-This is not a legal-advice engine. It is a source-backed reasoning system for
-lawyers and legal teams who remain responsible for the judgment.
+Lawyers and legal teams remain responsible for legal judgment; ZTARE organizes
+the sources, claims, and review record behind that judgment.
 
 Example projects:
 
@@ -231,8 +229,8 @@ Examples:
 - a policy or compliance project where a rule can be represented formally, but
   interpretation and evidence still belong in the project file
 
-Do not treat a formal check as the whole answer. It is one strong check inside a
-larger project.
+A formal result is one component of the larger project. The surrounding source
+review and accountable judgment remain separate.
 
 ## How to choose the first project
 

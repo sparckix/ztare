@@ -5,18 +5,16 @@ description: "How ZTARE positions itself among related AI research systems and h
 
 > Up: [Documentation map](../README.md)
 
-ZTARE is a local reasoning system for turning important reasoning into durable,
-inspectable state. It turns sources, code, proofs, data, model outputs,
-checks, failures, forecasts, reports, and review decisions into project and
-claim states a reviewer can inspect.
+ZTARE is a local system for turning research and decision work into durable,
+inspectable records. It connects sources, code, proofs, data, model outputs,
+checks, failures, forecasts, reports, and review decisions to project claims.
 
-The technical machinery matters, but it is not the whole object. The system
-also includes a human reviewer, agentic workers, role offices, source
-boundaries, verification tools, governance gates, public/private boundaries,
-ledgers, and publication discipline.
+Its operating model includes a human reviewer, agentic workers, assigned roles,
+source boundaries, verification tools, approval gates, public/private
+boundaries, ledgers, and publication rules.
 
 The repo contains theorem-proving, symbolic-regression, agent-dashboard, and
-paper surfaces, but those are components of a larger research trace: sources,
+paper modules. They contribute to a larger research trace: sources,
 proposals, tests, failures, demotions, forecasts, proof attempts, claims,
 non-claims, next falsifiers, and the authority path that decides what those
 artifacts are allowed to mean.
@@ -28,18 +26,16 @@ ZTARE turns messy reasoning work into durable state: what was being decided,
 what supported it, what failed, what changed, and what should be checked next.
 ```
 
-That is the product-level differentiator. Chat products produce fluent work.
-Coding agents change repositories. Observability systems trace applications.
-Proof tools check formal artifacts. ZTARE compiles reasoning work into a local
-record that can be audited, demoted, resumed, or handed to another person or
-agent.
+Chat products produce answers. Coding agents change repositories. Observability
+systems trace applications. Proof tools check formal artifacts. ZTARE records
+how a claim moved from source material through checks and review so the work can
+be audited, narrowed, resumed, or handed to someone else.
 
 Term boundaries matter here:
 
 - ZTARE is the whole local reasoning system: repo, CLI, docs, engines, project
   files, read models, and review surfaces.
-- Project Workbench is one interface over ZTARE project state. It
-  should not be treated as the whole system.
+- Project Workbench is one interface over ZTARE project state.
 - Kernel is the trusted boundary: checks, contracts, demotions, source
   readiness, and ledger/read-model rules.
 - Engine is runnable machinery: validation, proof search, evidence
@@ -47,14 +43,13 @@ Term boundaries matter here:
 - Apparatus is an experiment setup: prompts, rubrics, agents, datasets,
   scripts, costs, and records from a run.
 
-The long-term idea is simple: code has compilers, and reasoning needs similar
-discipline. A code compiler does not make a program useful. It gives source
-code a form that other tools can parse, check, reject, and inspect. ZTARE
-borrows that shape for reasoning work: questions become project objects,
-proposals become bounded claims, sources become typed evidence state, runs
-become verdicts or holds, and reviews become saved records with a next check. This
-is a design direction, not a claim that the current repo compiles all
-reasoning.
+ZTARE borrows one useful property from compilers: explicit intermediate
+representations that tools can parse, check, reject, and inspect. Questions
+become project objects, proposals become bounded claims, sources become typed
+evidence state, runs become verdicts or holds, and reviews become saved records
+with a next check.
+This remains a design direction; the current repo covers the documented project
+paths rather than every form of reasoning.
 
 ## Product boundary
 
@@ -65,9 +60,9 @@ the right boundary.
 
 The boundary is durable reasoning state. A chat or agent product can generate,
 edit, search, code, summarize, or run tools. An observability system can trace
-an application. A proof assistant can check a formal artifact. ZTARE owns the
-local state that decides what a project or claim is allowed to mean after those
-systems have acted:
+an application. A proof assistant can check a formal artifact. ZTARE maintains
+the local state that records how a project or claim should be interpreted after
+those systems have acted:
 
 ```text
 bounded claim -> source intake -> attempt -> adversarial check
@@ -75,12 +70,11 @@ bounded claim -> source intake -> attempt -> adversarial check
 -> ledgered state that the next run must inherit
 ```
 
-This makes outside models and agent products workers, judges, or input
-channels inside ZTARE. They are useful when they produce files,
-proposals, critiques, traces, forecasts, proof fragments, or source summaries
-that ZTARE can bind to a project and inspect. They are insufficient when the
-project needs a defensible record of what was checked, what failed, what was
-demoted, and what the next run is forbidden to forget.
+Outside models and agent products act as workers, judges, or input channels
+inside ZTARE. They produce files, proposals, critiques, traces, forecasts,
+proof fragments, or source summaries that ZTARE can bind to a project and
+inspect. ZTARE maintains the separate record of what was checked, what failed,
+what was demoted, and what the next run must retain.
 
 The practical test for positioning is simple:
 
@@ -93,10 +87,9 @@ The practical test for positioning is simple:
   weakest links, replayable checks, demotions, saved review records, and next
   falsifiers, ZTARE is the system to use.
 
-That means the repo has several modules that look different on the surface but
-serve one architecture: make research moves explicit enough that another
-agentic worker, the human reviewer, or a future model can inspect, reuse,
-refute, or demote them.
+The modules share one requirement: research moves must be explicit enough for
+another agent, the human reviewer, or a future model to inspect, reuse, refute,
+or demote them.
 
 ## Neuro-symbolic boundary
 
@@ -136,9 +129,8 @@ ZTARE sits at the intersection of six related system families:
 - Research-operations systems: systems that allocate attention, forecast
   branch value, track outcomes, and learn from organizational behavior.
 
-ZTARE is not trying to reduce itself to any one of those categories. It
-composes them around one public object: the claim lifecycle, which spans more than a single model call,
-tool invocation, dashboard, or proof script:
+ZTARE combines these system families around one public object: the claim
+lifecycle across model calls, tool invocations, dashboards, and proof scripts:
 
 ```text
 source -> attempt -> critique -> executable check -> forecast / gate
@@ -156,9 +148,8 @@ questions:
 - which next falsifier would change the decision
 - whether the organization learned how to route the next attempt better
 
-That is why ZTARE keeps so much filesystem state. The value extends past the
-answer to the labeled path by which the answer, non-answer, or
-demotion was produced.
+The filesystem state preserves the path that produced an answer, an unresolved
+result, or a demotion.
 
 ## Related systems
 
